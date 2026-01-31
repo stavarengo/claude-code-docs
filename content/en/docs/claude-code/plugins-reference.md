@@ -1,3 +1,7 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://code.claude.com/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
 # Plugins reference
 
 > Complete technical reference for Claude Code plugin system, including schemas, CLI commands, and component specifications.
@@ -115,7 +119,6 @@ Plugins can provide event handlers that respond to Claude Code events automatica
 * `Stop`: When Claude attempts to stop
 * `SubagentStart`: When a subagent is started
 * `SubagentStop`: When a subagent attempts to stop
-* `Setup`: When `--init`, `--init-only`, or `--maintenance` flags are used
 * `SessionStart`: At the beginning of sessions
 * `SessionEnd`: At the end of sessions
 * `PreCompact`: Before conversation history is compacted
@@ -728,8 +731,3 @@ Follow semantic versioning for plugin releases:
 * [Hooks](/en/hooks) - Event handling and automation
 * [MCP](/en/mcp) - External tool integration
 * [Settings](/en/settings) - Configuration options for plugins
-
-
----
-
-> To find navigation and other pages in this documentation, fetch the llms.txt file at: https://code.claude.com/docs/llms.txt

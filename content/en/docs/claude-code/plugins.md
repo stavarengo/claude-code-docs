@@ -1,3 +1,7 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://code.claude.com/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
 # Create plugins
 
 > Create custom plugins to extend Claude Code with skills, agents, hooks, and MCP servers.
@@ -346,7 +350,7 @@ If you already have skills or hooks in your `.claude/` directory, you can conver
     mkdir my-plugin/hooks
     ```
 
-    Create `my-plugin/hooks/hooks.json` with your hooks configuration. Copy the `hooks` object from your `.claude/settings.json` or `settings.local.json`—the format is the same:
+    Create `my-plugin/hooks/hooks.json` with your hooks configuration. Copy the `hooks` object from your `.claude/settings.json` or `settings.local.json`, since the format is the same. The command receives hook input as JSON on stdin, so use `jq` to extract the file path:
 
     ```json my-plugin/hooks/hooks.json theme={null}
     {
@@ -354,7 +358,7 @@ If you already have skills or hooks in your `.claude/` directory, you can conver
         "PostToolUse": [
           {
             "matcher": "Write|Edit",
-            "hooks": [{ "type": "command", "command": "npm run lint:fix $FILE" }]
+            "hooks": [{ "type": "command", "command": "jq -r '.tool_input.file_path' | xargs npm run lint:fix" }]
           }
         ]
       }
@@ -404,8 +408,3 @@ Now that you understand Claude Code's plugin system, here are suggested paths fo
   * [Subagents](/en/sub-agents): agent configuration and capabilities
   * [Hooks](/en/hooks): event handling and automation
   * [MCP](/en/mcp): external tool integration
-
-
----
-
-> To find navigation and other pages in this documentation, fetch the llms.txt file at: https://code.claude.com/docs/llms.txt

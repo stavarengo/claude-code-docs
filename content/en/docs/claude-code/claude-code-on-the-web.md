@@ -1,3 +1,7 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://code.claude.com/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
 # Claude Code on the web
 
 > Run Claude Code tasks asynchronously on secure cloud infrastructure
@@ -433,6 +437,9 @@ When using "Limited" network access, the following domains are allowed by defaul
 * gradle.org
 * [www.gradle.org](http://www.gradle.org)
 * services.gradle.org
+* plugins.gradle.org
+* kotlin.org
+* [www.kotlin.org](http://www.kotlin.org)
 * spring.io
 * repo.spring.io
 
@@ -574,8 +581,3 @@ Claude Code on the web shares rate limits with all other Claude and Claude Code 
 * [Settings reference](/en/settings)
 * [Security](/en/security)
 * [Data usage](/en/data-usage)
-
-
----
-
-> To find navigation and other pages in this documentation, fetch the llms.txt file at: https://code.claude.com/docs/llms.txt

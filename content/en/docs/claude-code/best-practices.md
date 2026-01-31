@@ -1,3 +1,7 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://code.claude.com/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
 # Best Practices for Claude Code
 
 > Tips and patterns for getting the most out of Claude Code, from configuring your environment to scaling across parallel sessions.
@@ -69,6 +73,8 @@ The recommended workflow has four phases:
     I want to add Google OAuth. What files need to change?
     What's the session flow? Create a plan.
     ```
+
+    Press `Ctrl+G` to open the plan in your text editor for direct editing before Claude proceeds.
   </Step>
 
   <Step title="Implement">
@@ -316,7 +322,7 @@ Tell Claude to use subagents explicitly: *"Use a subagent to review this code fo
   Run `/plugin` to browse the marketplace. Plugins add skills, tools, and integrations without configuration.
 </Tip>
 
-[Plugins](/en/plugins) bundle skills, hooks, subagents, and MCP servers into a single installable unit from the community and Anthropic.
+[Plugins](/en/plugins) bundle skills, hooks, subagents, and MCP servers into a single installable unit from the community and Anthropic. If you work with a typed language, install a [code intelligence plugin](/en/discover-plugins#code-intelligence) to give Claude precise symbol navigation and automatic error detection after edits.
 
 For guidance on choosing between skills, subagents, hooks, and MCP, see [Extend Claude Code](/en/features-overview#match-features-to-your-goal).
 
@@ -513,7 +519,7 @@ For large migrations or analyses, you can distribute work across many parallel C
     ```bash  theme={null}
     for file in $(cat files.txt); do
       claude -p "Migrate $file from React to Vue. Return OK or FAIL." \
-        --allowedTools "Edit,Bash(git commit:*)"
+        --allowedTools "Edit,Bash(git commit *)"
     done
     ```
   </Step>
@@ -589,8 +595,3 @@ Over time, you'll develop intuition that no guide can capture. You'll know when 
     Store project conventions and persistent context
   </Card>
 </CardGroup>
-
-
----
-
-> To find navigation and other pages in this documentation, fetch the llms.txt file at: https://code.claude.com/docs/llms.txt

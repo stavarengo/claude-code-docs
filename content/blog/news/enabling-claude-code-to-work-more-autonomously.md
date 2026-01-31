@@ -58,10 +58,10 @@ These updates are available now for Claude Code users.
 Related content
 ---------------
 
-### Mariano-Florentino Cuéllar appointed to Anthropic’s Long-Term Benefit Trust
+### ServiceNow chooses Claude to power customer apps and increase internal productivity
 
-[Read more](https://www.anthropic.com/news/mariano-florentino-long-term-benefit-trust)
+[Read more](https://www.anthropic.com/news/servicenow-anthropic-claude)
 
-### Anthropic and Teach For All launch global AI training initiative for educators
+### Anthropic partners with the UK Government to bring AI assistance to GOV.UK services
 
-[Read more](https://www.anthropic.com/news/anthropic-teach-for-all)
+[Read more](https://www.anthropic.com/news/gov-UK-partnership)

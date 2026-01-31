@@ -1,3 +1,7 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://code.claude.com/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
 # Common workflows
 
 > Step-by-step guides for exploring codebases, fixing bugs, refactoring, testing, and other everyday tasks with Claude Code.
@@ -81,6 +85,7 @@ Suppose you need to locate code related to a specific feature or functionality.
 
   * Be specific about what you're looking for
   * Use domain language from the project
+  * Install a [code intelligence plugin](/en/discover-plugins#code-intelligence) for your language to give Claude precise "go to definition" and "find references" navigation
 </Tip>
 
 ***
@@ -270,6 +275,8 @@ Claude analyzes the current implementation and create a comprehensive plan. Refi
 > How should we handle database migration?
 ```
 
+<Tip>Press `Ctrl+G` to open the plan in your default text editor, where you can edit it directly before Claude proceeds.</Tip>
+
 ### Configure Plan Mode as default
 
 ```json  theme={null}
@@ -323,40 +330,40 @@ For comprehensive coverage, ask Claude to identify edge cases you might have mis
 
 ## Create pull requests
 
-Suppose you need to create a well-documented pull request for your changes.
+You can create pull requests by asking Claude directly ("create a pr for my changes") or by using the `/commit-push-pr` skill, which commits, pushes, and opens a PR in one step.
+
+```
+> /commit-push-pr
+```
+
+If you have a Slack MCP server configured and specify channels in your CLAUDE.md (for example, "post PR URLs to #team-prs"), the skill automatically posts the PR URL to those channels.
+
+For more control over the process, guide Claude through it step-by-step or [create your own skill](/en/skills):
 
 <Steps>
   <Step title="Summarize your changes">
     ```
-    > summarize the changes I've made to the authentication module 
+    > summarize the changes I've made to the authentication module
     ```
   </Step>
 
-  <Step title="Generate a pull request with Claude">
+  <Step title="Generate a pull request">
     ```
-    > create a pr 
+    > create a pr
     ```
   </Step>
 
   <Step title="Review and refine">
     ```
-    > enhance the PR description with more context about the security improvements 
-    ```
-  </Step>
-
-  <Step title="Add testing details">
-    ```
-    > add information about how these changes were tested 
+    > enhance the PR description with more context about the security improvements
     ```
   </Step>
 </Steps>
 
-<Tip>
-  Tips:
+When you create a PR using `gh pr create`, the session is automatically linked to that PR. You can resume it later with `claude --from-pr <number>`.
 
-  * Ask Claude directly to make a PR for you
-  * Review Claude's generated PR before submitting
-  * Ask Claude to highlight potential risks or considerations
+<Tip>
+  Review Claude's generated PR before submitting and ask Claude to highlight potential risks or considerations.
 </Tip>
 
 ## Handle documentation
@@ -555,6 +562,7 @@ When starting Claude Code, you can resume a previous session:
 
 * `claude --continue` continues the most recent conversation in the current directory
 * `claude --resume` opens a conversation picker or resumes by name
+* `claude --from-pr 123` resumes sessions linked to a specific pull request
 
 From inside an active session, use `/resume` to switch to a different conversation.
 
@@ -857,8 +865,3 @@ Claude has built-in access to its documentation and can answer questions about i
     Clone our development container reference implementation
   </Card>
 </CardGroup>
-
-
----
-
-> To find navigation and other pages in this documentation, fetch the llms.txt file at: https://code.claude.com/docs/llms.txt
