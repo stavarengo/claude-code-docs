@@ -2,8 +2,8 @@ name: Sync Content from External Repository
 
 on:
   schedule:
-    # Temporarily run every 5 minutes to verify schedule works
-    - cron: '*/5 * * * *'
+    # Run daily at 5:15am UTC (off-peak time for better reliability)
+    - cron: '15 5 * * *'
   # Allow manual trigger
   workflow_dispatch:
 
