@@ -2,20 +2,16 @@
 set -e
 
 CRAWLER_REPO="https://github.com/stavarengo/claude-code-docs-crawler.git"
-CRAWLER_DIR="crawler"
+TEMP_DIR="/tmp/crawler-repo"
 
-# Clone crawler into this repo's workspace and strip its .git so that
-# git rev-parse --show-toplevel resolves to THIS repo root.
-# The crawler's default CONTENT_DIR is path.join(REPO_ROOT, "content"),
-# which then points directly to ./content here — no copy step needed.
-echo "Cloning crawler..."
-rm -rf "$CRAWLER_DIR"
-git clone --depth 1 "$CRAWLER_REPO" "$CRAWLER_DIR"
-rm -rf "$CRAWLER_DIR/.git"
+# Clone crawler repository
+echo "Cloning crawler repository..."
+rm -rf "$TEMP_DIR"
+git clone --depth 1 "$CRAWLER_REPO" "$TEMP_DIR"
 
 # Install dependencies and run crawler
 echo "Installing dependencies..."
-cd "$CRAWLER_DIR"
+cd "$TEMP_DIR"
 npm install
 echo "Running crawl..."
 npm run crawl
@@ -23,8 +19,10 @@ echo "Generating index..."
 npm run generateIndex
 cd -
 
-# Clean up crawler source (not part of this repo)
-rm -rf "$CRAWLER_DIR"
+# Sync content folder
+echo "Syncing content folder..."
+rm -rf content/
+cp -r "$TEMP_DIR/content/" content/
 
 # Configure git
 git config user.name "github-actions[bot]"
@@ -43,5 +41,11 @@ fi
 
 echo "Pushing changes..."
 git push
+
+# Clean up temp folder if not running in CI
+if [ "$CI" != "true" ]; then
+  echo "Cleaning up temp folder... ($TEMP_DIR)"
+  rm -rf "$TEMP_DIR"
+fi
 
 echo "Done!"
