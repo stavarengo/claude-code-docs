@@ -36,7 +36,7 @@ echo "Committing changes..."
 if git diff --staged --quiet; then
   git commit --allow-empty -m "chore: empty commit no content changes"
 else
-  git commit -m "chore: sync content from stavarengo/claude-code-docs-crawler"
+  git commit -m "chore: update content"
 fi
 
 echo "Pushing changes..."
