@@ -8,6 +8,10 @@
 
 Subagents are specialized AI assistants that handle specific types of tasks. Each subagent runs in its own context window with a custom system prompt, specific tool access, and independent permissions. When Claude encounters a task that matches a subagent's description, it delegates to that subagent, which works independently and returns results.
 
+<Note>
+  If you need multiple agents working in parallel and communicating with each other, see [agent teams](/en/agent-teams) instead. Subagents work within a single session; agent teams coordinate across separate sessions.
+</Note>
+
 Subagents help you:
 
 * **Preserve context** by keeping exploration and implementation out of your main conversation
@@ -281,7 +285,7 @@ The full content of each skill is injected into the subagent's context, not just
 
 #### Enable persistent memory
 
-The `memory` field designates a persistent directory for the subagent to write to across conversations. The subagent uses this directory to build up knowledge over time: codebase patterns, debugging insights, architectural decisions, and other learnings.
+The `memory` field gives the subagent a persistent directory that survives across conversations. The subagent uses this directory to build up knowledge over time, such as codebase patterns, debugging insights, and architectural decisions.
 
 ```yaml  theme={null}
 ---
@@ -315,8 +319,8 @@ When memory is enabled:
 * Ask the subagent to update its memory after completing a task: "Now that you're done, save what you learned to your memory." Over time, this builds a knowledge base that makes the subagent more effective.
 * Include memory instructions directly in the subagent's markdown file so it proactively maintains its own knowledge base:
 
-  ```
-  **Update your agent memory** as you discover codepaths, patterns, library
+  ```markdown  theme={null}
+  Update your agent memory as you discover codepaths, patterns, library
   locations, and key architectural decisions. This builds up institutional
   knowledge across conversations. Write concise notes about what you found
   and where.
@@ -510,6 +514,8 @@ Each subagent explores its area independently, then Claude synthesizes the findi
 <Warning>
   When subagents complete, their results return to your main conversation. Running many subagents that each return detailed results can consume significant context.
 </Warning>
+
+For tasks that need sustained parallelism or exceed your context window, [agent teams](/en/agent-teams) give each worker its own independent context.
 
 #### Chain subagents
 
