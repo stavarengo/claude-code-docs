@@ -1,7 +1,7 @@
 {
   "seedUrl": "https://code.claude.com/docs/llms.txt",
   "scopePrefix": "https://code.claude.com/docs/en/",
-  "lastUpdate": "2026-02-11T05:46:09.548Z",
+  "lastUpdate": "2026-02-12T05:43:42.992Z",
   "result": "partial",
   "stats": {
     "uniqueUrls": 59,
@@ -22,297 +22,297 @@
     "code.claude.com/docs/llms.txt": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:02.889Z"
+      "fetchedAt": "2026-02-12T05:43:34.526Z"
     },
     "code.claude.com/docs/en/agent-teams.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:02.962Z"
+      "fetchedAt": "2026-02-12T05:43:34.636Z"
     },
     "code.claude.com/docs/en/amazon-bedrock.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:03.036Z"
+      "fetchedAt": "2026-02-12T05:43:34.743Z"
     },
     "code.claude.com/docs/en/analytics.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:03.115Z"
+      "fetchedAt": "2026-02-12T05:43:34.835Z"
     },
     "code.claude.com/docs/en/authentication.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:03.208Z"
+      "fetchedAt": "2026-02-12T05:43:34.939Z"
     },
     "code.claude.com/docs/en/best-practices.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:03.285Z"
+      "fetchedAt": "2026-02-12T05:43:35.042Z"
     },
     "code.claude.com/docs/en/checkpointing.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:03.981Z"
+      "fetchedAt": "2026-02-12T05:43:35.733Z"
     },
     "code.claude.com/docs/en/chrome.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:04.059Z"
+      "fetchedAt": "2026-02-12T05:43:35.899Z"
     },
     "code.claude.com/docs/en/claude-code-on-the-web.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:04.137Z"
+      "fetchedAt": "2026-02-12T05:43:36.002Z"
     },
     "code.claude.com/docs/en/cli-reference.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:04.213Z"
+      "fetchedAt": "2026-02-12T05:43:36.099Z"
     },
     "code.claude.com/docs/en/common-workflows.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:04.297Z"
+      "fetchedAt": "2026-02-12T05:43:36.197Z"
     },
     "code.claude.com/docs/en/costs.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:04.377Z"
+      "fetchedAt": "2026-02-12T05:43:36.308Z"
     },
     "code.claude.com/docs/en/data-usage.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:04.465Z"
+      "fetchedAt": "2026-02-12T05:43:36.409Z"
     },
     "code.claude.com/docs/en/desktop.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:04.543Z"
+      "fetchedAt": "2026-02-12T05:43:36.506Z"
     },
     "code.claude.com/docs/en/devcontainer.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:04.618Z"
+      "fetchedAt": "2026-02-12T05:43:36.603Z"
     },
     "code.claude.com/docs/en/discover-plugins.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:04.696Z"
+      "fetchedAt": "2026-02-12T05:43:36.722Z"
     },
     "code.claude.com/docs/en/fast-mode.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:04.773Z"
+      "fetchedAt": "2026-02-12T05:43:36.835Z"
     },
     "code.claude.com/docs/en/features-overview.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:04.851Z"
+      "fetchedAt": "2026-02-12T05:43:36.930Z"
     },
     "code.claude.com/docs/en/github-actions.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:04.921Z"
+      "fetchedAt": "2026-02-12T05:43:37.033Z"
     },
     "code.claude.com/docs/en/gitlab-ci-cd.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:04.994Z"
+      "fetchedAt": "2026-02-12T05:43:37.132Z"
     },
     "code.claude.com/docs/en/google-vertex-ai.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:05.062Z"
+      "fetchedAt": "2026-02-12T05:43:37.231Z"
     },
     "code.claude.com/docs/en/headless.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:05.137Z"
+      "fetchedAt": "2026-02-12T05:43:37.324Z"
     },
     "code.claude.com/docs/en/hooks.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:05.218Z"
+      "fetchedAt": "2026-02-12T05:43:37.453Z"
     },
     "code.claude.com/docs/en/hooks-guide.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:05.305Z"
+      "fetchedAt": "2026-02-12T05:43:37.552Z"
     },
     "code.claude.com/docs/en/how-claude-code-works.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:05.392Z"
+      "fetchedAt": "2026-02-12T05:43:37.659Z"
     },
     "code.claude.com/docs/en/interactive-mode.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:05.465Z"
+      "fetchedAt": "2026-02-12T05:43:37.754Z"
     },
     "code.claude.com/docs/en/jetbrains.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:05.545Z"
+      "fetchedAt": "2026-02-12T05:43:37.854Z"
     },
     "code.claude.com/docs/en/keybindings.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:05.619Z"
+      "fetchedAt": "2026-02-12T05:43:37.955Z"
     },
     "code.claude.com/docs/en/legal-and-compliance.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:05.700Z"
+      "fetchedAt": "2026-02-12T05:43:38.060Z"
     },
     "code.claude.com/docs/en/llm-gateway.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:05.776Z"
+      "fetchedAt": "2026-02-12T05:43:38.162Z"
     },
     "code.claude.com/docs/en/mcp.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:05.881Z"
+      "fetchedAt": "2026-02-12T05:43:38.269Z"
     },
     "code.claude.com/docs/en/memory.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:05.954Z"
+      "fetchedAt": "2026-02-12T05:43:38.362Z"
     },
     "code.claude.com/docs/en/microsoft-foundry.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:06.063Z"
+      "fetchedAt": "2026-02-12T05:43:38.462Z"
     },
     "code.claude.com/docs/en/model-config.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:06.148Z"
+      "fetchedAt": "2026-02-12T05:43:38.592Z"
     },
     "code.claude.com/docs/en/monitoring-usage.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:06.232Z"
+      "fetchedAt": "2026-02-12T05:43:38.697Z"
     },
     "code.claude.com/docs/en/network-config.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:06.305Z"
+      "fetchedAt": "2026-02-12T05:43:38.791Z"
     },
     "code.claude.com/docs/en/output-styles.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:06.380Z"
+      "fetchedAt": "2026-02-12T05:43:38.891Z"
     },
     "code.claude.com/docs/en/overview.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:06.453Z"
+      "fetchedAt": "2026-02-12T05:43:38.989Z"
     },
     "code.claude.com/docs/en/permissions.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:06.526Z"
+      "fetchedAt": "2026-02-12T05:43:39.091Z"
     },
     "code.claude.com/docs/en/plugin-marketplaces.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:06.603Z"
+      "fetchedAt": "2026-02-12T05:43:39.187Z"
     },
     "code.claude.com/docs/en/plugins.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:06.683Z"
+      "fetchedAt": "2026-02-12T05:43:39.286Z"
     },
     "code.claude.com/docs/en/plugins-reference.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:06.750Z"
+      "fetchedAt": "2026-02-12T05:43:39.386Z"
     },
     "code.claude.com/docs/en/quickstart.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:06.827Z"
+      "fetchedAt": "2026-02-12T05:43:39.482Z"
     },
     "code.claude.com/docs/en/sandboxing.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:06.926Z"
+      "fetchedAt": "2026-02-12T05:43:39.579Z"
     },
     "code.claude.com/docs/en/security.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:07.001Z"
+      "fetchedAt": "2026-02-12T05:43:39.688Z"
     },
     "code.claude.com/docs/en/server-managed-settings.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:07.092Z"
+      "fetchedAt": "2026-02-12T05:43:39.784Z"
     },
     "code.claude.com/docs/en/settings.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:07.167Z"
+      "fetchedAt": "2026-02-12T05:43:39.882Z"
     },
     "code.claude.com/docs/en/setup.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:07.239Z"
+      "fetchedAt": "2026-02-12T05:43:39.976Z"
     },
     "code.claude.com/docs/en/skills.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:07.315Z"
+      "fetchedAt": "2026-02-12T05:43:40.143Z"
     },
     "code.claude.com/docs/en/slack.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:07.383Z"
+      "fetchedAt": "2026-02-12T05:43:40.253Z"
     },
     "code.claude.com/docs/en/statusline.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:07.466Z"
+      "fetchedAt": "2026-02-12T05:43:40.352Z"
     },
     "code.claude.com/docs/en/sub-agents.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:07.561Z"
+      "fetchedAt": "2026-02-12T05:43:40.456Z"
     },
     "code.claude.com/docs/en/terminal-config.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:07.636Z"
+      "fetchedAt": "2026-02-12T05:43:40.555Z"
     },
     "code.claude.com/docs/en/third-party-integrations.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:07.702Z"
+      "fetchedAt": "2026-02-12T05:43:40.679Z"
     },
     "code.claude.com/docs/en/troubleshooting.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:07.776Z"
+      "fetchedAt": "2026-02-12T05:43:40.789Z"
     },
     "code.claude.com/docs/en/vs-code.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:07.865Z"
+      "fetchedAt": "2026-02-12T05:43:40.886Z"
     },
     "https://code.claude.com/docs/en/reference.md": {
       "status": "failed",
       "statusReason": "httpError",
-      "fetchedAt": "2026-02-11T05:46:08.805Z"
+      "fetchedAt": "2026-02-12T05:43:42.309Z"
     },
     "https://code.claude.com/docs/en/examples.md": {
       "status": "failed",
       "statusReason": "httpError",
-      "fetchedAt": "2026-02-11T05:46:09.388Z"
+      "fetchedAt": "2026-02-12T05:43:42.815Z"
     },
     "raw.githubusercontent.com/aws-solutions-library-samples/guidance-for-claude-code-with-amazon-bedrock/main/assets/docs/MONITORING.md": {
       "status": "success",
       "statusReason": "new",
-      "fetchedAt": "2026-02-11T05:46:09.517Z"
+      "fetchedAt": "2026-02-12T05:43:42.960Z"
     }
   },
   "urlResolution": {
