@@ -197,8 +197,8 @@ Extended thinking can be used alongside tool use, allowing Claude to reason thro
 
 Important limitations:
 
-1. **Tool choice limitation**: Only supports `tool_choice: {"type": "auto"}` (default) or `tool_choice: {"type": "none"}`.
-2. **Preserving thinking blocks**: During tool use, you must pass `thinking` blocks back to the API for the last assistant message.
+1. **Tool choice limitation:** Only supports `tool_choice: {"type": "auto"}` (default) or `tool_choice: {"type": "none"}`.
+2. **Preserving thinking blocks:** During tool use, you must pass `thinking` blocks back to the API for the last assistant message.
 
 ### Preserving thinking blocks
 
@@ -471,7 +471,7 @@ Each server-sent event includes a named event type and associated JSON data. Eac
 3. One or more `message_delta` events, indicating top-level changes to the final `Message` object.
 4. A final `message_stop` event.
 
-**Warning**: The token counts shown in the `usage` field of the `message_delta` event are _cumulative_.
+**Warning:** The token counts shown in the `usage` field of the `message_delta` event are _cumulative_.
 
 ### Content block delta types
 
