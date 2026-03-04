@@ -46,13 +46,9 @@ Dive into practical examples and hands-on tutorials with the collection of Jupyt
 
 From crafting the perfect prompt to understanding API details, these resources can help.
 
-<CardGroup cols={3}>
+<CardGroup cols={2}>
   <Card title="Prompt Engineering Guide" icon="edit" href="/docs/en/build-with-claude/prompt-engineering/overview">
     Master the art of prompt crafting to get the most out of Claude.
-  </Card>
-
-  <Card title="Prompt Library" icon="books" href="/docs/en/resources/prompt-library">
-    Find a wide range of pre-crafted prompts for various tasks and industries. Perfect for inspiration or quick starts.
   </Card>
 
   <Card title="API Documentation" icon="code" href="/docs/en/api/overview">

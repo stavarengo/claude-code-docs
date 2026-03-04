@@ -12,18 +12,18 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 715 pages - /docs - Content included below
-- German (Deutsch) (de) - 198 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 198 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 198 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 198 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 198 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 198 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 198 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 198 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 198 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 198 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 198 pages - /docs/id - Visit website for content
+- English (en) - 650 pages - /docs - Content included below
+- German (Deutsch) (de) - 133 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 133 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 133 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 133 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 133 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 133 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 133 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 133 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 133 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 133 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 133 pages - /docs/id - Visit website for content
 
 ---
 
@@ -680,77 +680,12 @@ The full documentation is available in the following languages on https://platfo
 
 - [Overview](https://platform.claude.com/docs/en/about-claude/use-case-guides/overview.md) - Guides to common use cases
 - [Overview](https://platform.claude.com/docs/en/resources/overview.md)
-- [Adaptive editor](https://platform.claude.com/docs/en/resources/prompt-library/adaptive-editor.md)
-- [Airport code analyst](https://platform.claude.com/docs/en/resources/prompt-library/airport-code-analyst.md)
-- [Alien anthropologist](https://platform.claude.com/docs/en/resources/prompt-library/alien-anthropologist.md)
-- [Alliteration alchemist](https://platform.claude.com/docs/en/resources/prompt-library/alliteration-alchemist.md)
-- [Babel's broadcasts](https://platform.claude.com/docs/en/resources/prompt-library/babels-broadcasts.md)
-- [Brand builder](https://platform.claude.com/docs/en/resources/prompt-library/brand-builder.md)
-- [Career coach](https://platform.claude.com/docs/en/resources/prompt-library/career-coach.md)
-- [Cite your sources](https://platform.claude.com/docs/en/resources/prompt-library/cite-your-sources.md)
-- [Code clarifier](https://platform.claude.com/docs/en/resources/prompt-library/code-clarifier.md)
-- [Code consultant](https://platform.claude.com/docs/en/resources/prompt-library/code-consultant.md)
 - [Content moderation](https://platform.claude.com/docs/en/about-claude/use-case-guides/content-moderation.md)
-- [Corporate clairvoyant](https://platform.claude.com/docs/en/resources/prompt-library/corporate-clairvoyant.md)
-- [Cosmic Keystrokes](https://platform.claude.com/docs/en/resources/prompt-library/cosmic-keystrokes.md)
-- [CSV converter](https://platform.claude.com/docs/en/resources/prompt-library/csv-converter.md)
-- [Culinary creator](https://platform.claude.com/docs/en/resources/prompt-library/culinary-creator.md)
 - [Customer support agent](https://platform.claude.com/docs/en/about-claude/use-case-guides/customer-support-chat.md)
-- [Data organizer](https://platform.claude.com/docs/en/resources/prompt-library/data-organizer.md)
-- [Direction decoder](https://platform.claude.com/docs/en/resources/prompt-library/direction-decoder.md)
-- [Dream interpreter](https://platform.claude.com/docs/en/resources/prompt-library/dream-interpreter.md)
-- [Efficiency estimator](https://platform.claude.com/docs/en/resources/prompt-library/efficiency-estimator.md)
-- [Email extractor](https://platform.claude.com/docs/en/resources/prompt-library/email-extractor.md)
-- [Emoji encoder](https://platform.claude.com/docs/en/resources/prompt-library/emoji-encoder.md)
-- [Ethical dilemma navigator](https://platform.claude.com/docs/en/resources/prompt-library/ethical-dilemma-navigator.md)
-- [Excel formula expert](https://platform.claude.com/docs/en/resources/prompt-library/excel-formula-expert.md)
-- [Function fabricator](https://platform.claude.com/docs/en/resources/prompt-library/function-fabricator.md)
-- [Futuristic fashion advisor](https://platform.claude.com/docs/en/resources/prompt-library/futuristic-fashion-advisor.md)
-- [Git gud](https://platform.claude.com/docs/en/resources/prompt-library/git-gud.md)
 - [Glossary](https://platform.claude.com/docs/en/about-claude/glossary.md)
-- [Google apps scripter](https://platform.claude.com/docs/en/resources/prompt-library/google-apps-scripter.md)
-- [Grading guru](https://platform.claude.com/docs/en/resources/prompt-library/grading-guru.md)
-- [Grammar genie](https://platform.claude.com/docs/en/resources/prompt-library/grammar-genie.md)
-- [Hal the humorous helper](https://platform.claude.com/docs/en/resources/prompt-library/hal-the-humorous-helper.md)
-- [Idiom illuminator](https://platform.claude.com/docs/en/resources/prompt-library/idiom-illuminator.md)
-- [Interview question crafter](https://platform.claude.com/docs/en/resources/prompt-library/interview-question-crafter.md)
-- [LaTeX legend](https://platform.claude.com/docs/en/resources/prompt-library/latex-legend.md)
 - [Legal summarization](https://platform.claude.com/docs/en/about-claude/use-case-guides/legal-summarization.md)
-- [Lesson planner](https://platform.claude.com/docs/en/resources/prompt-library/lesson-planner.md)
-- [Master moderator](https://platform.claude.com/docs/en/resources/prompt-library/master-moderator.md)
-- [Meeting scribe](https://platform.claude.com/docs/en/resources/prompt-library/meeting-scribe.md)
-- [Memo maestro](https://platform.claude.com/docs/en/resources/prompt-library/memo-maestro.md)
-- [Mindfulness mentor](https://platform.claude.com/docs/en/resources/prompt-library/mindfulness-mentor.md)
-- [Mood colorizer](https://platform.claude.com/docs/en/resources/prompt-library/mood-colorizer.md)
-- [Motivational muse](https://platform.claude.com/docs/en/resources/prompt-library/motivational-muse.md)
-- [Neologism creator](https://platform.claude.com/docs/en/resources/prompt-library/neologism-creator.md)
-- [Perspectives ponderer](https://platform.claude.com/docs/en/resources/prompt-library/perspectives-ponderer.md)
-- [Philosophical musings](https://platform.claude.com/docs/en/resources/prompt-library/philosophical-musings.md)
-- [PII purifier](https://platform.claude.com/docs/en/resources/prompt-library/pii-purifier.md)
-- [Polyglot superpowers](https://platform.claude.com/docs/en/resources/prompt-library/polyglot-superpowers.md)
-- [Portmanteau poet](https://platform.claude.com/docs/en/resources/prompt-library/portmanteau-poet.md)
-- [Product naming pro](https://platform.claude.com/docs/en/resources/prompt-library/product-naming-pro.md)
-- [Prompt Library](https://platform.claude.com/docs/en/resources/prompt-library/library.md)
-- [Prose polisher](https://platform.claude.com/docs/en/resources/prompt-library/prose-polisher.md)
-- [Pun-dit](https://platform.claude.com/docs/en/resources/prompt-library/pun-dit.md)
-- [Python bug buster](https://platform.claude.com/docs/en/resources/prompt-library/python-bug-buster.md)
-- [Review classifier](https://platform.claude.com/docs/en/resources/prompt-library/review-classifier.md)
-- [Riddle me this](https://platform.claude.com/docs/en/resources/prompt-library/riddle-me-this.md)
-- [Sci-fi scenario simulator](https://platform.claude.com/docs/en/resources/prompt-library/sci-fi-scenario-simulator.md)
-- [Second-grade simplifier](https://platform.claude.com/docs/en/resources/prompt-library/second-grade-simplifier.md)
-- [Simile savant](https://platform.claude.com/docs/en/resources/prompt-library/simile-savant.md)
-- [Socratic sage](https://platform.claude.com/docs/en/resources/prompt-library/socratic-sage.md)
-- [Spreadsheet sorcerer](https://platform.claude.com/docs/en/resources/prompt-library/spreadsheet-sorcerer.md)
-- [SQL sorcerer](https://platform.claude.com/docs/en/resources/prompt-library/sql-sorcerer.md)
-- [Storytelling sidekick](https://platform.claude.com/docs/en/resources/prompt-library/storytelling-sidekick.md)
 - [System Prompts](https://platform.claude.com/docs/en/release-notes/system-prompts.md)
 - [Ticket routing](https://platform.claude.com/docs/en/about-claude/use-case-guides/ticket-routing.md)
-- [Time travel consultant](https://platform.claude.com/docs/en/resources/prompt-library/time-travel-consultant.md)
-- [Tongue twister](https://platform.claude.com/docs/en/resources/prompt-library/tongue-twister.md)
-- [Trivia generator](https://platform.claude.com/docs/en/resources/prompt-library/trivia-generator.md)
-- [Tweet tone detector](https://platform.claude.com/docs/en/resources/prompt-library/tweet-tone-detector.md)
-- [VR fitness innovator](https://platform.claude.com/docs/en/resources/prompt-library/vr-fitness-innovator.md)
-- [Website wizard](https://platform.claude.com/docs/en/resources/prompt-library/website-wizard.md)
 
 ### Release Notes
 

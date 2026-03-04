@@ -96,7 +96,7 @@ message = anthropic.Anthropic().messages.create(
 
 Claude can read both text and images in requests. Both `base64` and `url` source types are supported for images, along with the `image/jpeg`, `image/png`, `image/gif`, and `image/webp` media types.
 
-```python
+```python nocheck
 import anthropic
 import base64
 import httpx
@@ -202,7 +202,23 @@ Important limitations:
 
 ### Preserving thinking blocks
 
-```python
+```python nocheck
+import anthropic
+
+client = anthropic.Anthropic()
+
+weather_tool = {
+    "name": "get_weather",
+    "description": "Get the current weather for a location.",
+    "input_schema": {
+        "type": "object",
+        "properties": {"location": {"type": "string", "description": "The city name."}},
+        "required": ["location"],
+    },
+}
+
+weather_data = {"temperature": 72}
+
 # First request - Claude responds with thinking and tool request
 response = client.messages.create(
     model="claude-opus-4-6",
@@ -248,7 +264,38 @@ continuation = client.messages.create(
 
 Extended thinking with tool use in Claude 4 models supports interleaved thinking, which enables Claude to think between tool calls. To enable on Claude 4, 4.5, and Sonnet 4.6 models, add the beta header `interleaved-thinking-2025-05-14` to your API request.
 
-```python
+```python nocheck
+import anthropic
+
+client = anthropic.Anthropic()
+
+calculator_tool = {
+    "name": "calculator",
+    "description": "Perform arithmetic calculations.",
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "expression": {
+                "type": "string",
+                "description": "The math expression to evaluate.",
+            }
+        },
+        "required": ["expression"],
+    },
+}
+
+database_tool = {
+    "name": "database_query",
+    "description": "Query the product database.",
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "query": {"type": "string", "description": "The database query."}
+        },
+        "required": ["query"],
+    },
+}
+
 response = client.beta.messages.create(
     model="claude-sonnet-4-6",
     max_tokens=16000,
