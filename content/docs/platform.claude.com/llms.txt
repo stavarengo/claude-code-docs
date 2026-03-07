@@ -12,7 +12,7 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 650 pages - /docs - Content included below
+- English (en) - 651 pages - /docs - Content included below
 - German (Deutsch) (de) - 133 pages - /docs/de - Visit website for content
 - Spanish (Español) (es) - 133 pages - /docs/es - Visit website for content
 - French (Français) (fr) - 133 pages - /docs/fr - Visit website for content
@@ -73,9 +73,9 @@ The full documentation is available in the following languages on https://platfo
 - [Fine-grained tool streaming](https://platform.claude.com/docs/en/agents-and-tools/tool-use/fine-grained-tool-streaming.md)
 - [Structured outputs in the SDK](https://platform.claude.com/docs/en/agent-sdk/structured-outputs.md) - Get structured output from agents
 - [User approvals and input](https://platform.claude.com/docs/en/agent-sdk/user-input.md) - Handle approvals and user input
-- [Handling stop reasons](https://platform.claude.com/docs/en/agent-sdk/stop-reasons.md) - Handle stop reasons
 - [Handling stop reasons](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons.md)
 - [Hosting the Agent SDK](https://platform.claude.com/docs/en/agent-sdk/hosting.md)
+- [How the agent loop works](https://platform.claude.com/docs/en/agent-sdk/agent-loop.md)
 - [How to implement tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/implement-tool-use.md)
 - [Increase output consistency](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/increase-consistency.md)
 - [Control execution with hooks](https://platform.claude.com/docs/en/agent-sdk/hooks.md) - Intercept and control agent behavior with hooks
@@ -100,7 +100,6 @@ The full documentation is available in the following languages on https://platfo
 - [File checkpointing](https://platform.claude.com/docs/en/agent-sdk/file-checkpointing.md) - Rewind file changes with checkpointing
 - [Search results](https://platform.claude.com/docs/en/build-with-claude/search-results.md)
 - [Securely deploying AI agents](https://platform.claude.com/docs/en/agent-sdk/secure-deployment.md)
-- [Session Management](https://platform.claude.com/docs/en/agent-sdk/sessions.md)
 - [Best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices.md) - Skill authoring best practices
 - [Skills for enterprise](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/enterprise.md)
 - [Slash Commands in the SDK](https://platform.claude.com/docs/en/agent-sdk/slash-commands.md)
@@ -117,6 +116,7 @@ The full documentation is available in the following languages on https://platfo
 - [Track cost and usage](https://platform.claude.com/docs/en/agent-sdk/cost-tracking.md)
 - [TypeScript V2 (preview)](https://platform.claude.com/docs/en/agent-sdk/typescript-v2-preview.md) - TypeScript SDK V2 interface (preview)
 - [Usage and Cost API](https://platform.claude.com/docs/en/build-with-claude/usage-cost-api.md)
+- [Use Claude Code features](https://platform.claude.com/docs/en/agent-sdk/claude-code-features.md) - Use Claude Code features in the SDK
 - [Using Skills with the API](https://platform.claude.com/docs/en/build-with-claude/skills-guide.md) - Using Agent Skills with the API
 - [Using the Evaluation Tool](https://platform.claude.com/docs/en/test-and-evaluate/eval-tool.md)
 - [Using the Messages API](https://platform.claude.com/docs/en/build-with-claude/working-with-messages.md)
@@ -124,6 +124,7 @@ The full documentation is available in the following languages on https://platfo
 - [Web fetch tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-fetch-tool.md)
 - [Web search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool.md)
 - [What's new in Claude 4.6](https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-6.md)
+- [Work with sessions](https://platform.claude.com/docs/en/agent-sdk/sessions.md)
 - [Workspaces](https://platform.claude.com/docs/en/build-with-claude/workspaces.md)
 - [Zero Data Retention](https://platform.claude.com/docs/en/build-with-claude/zero-data-retention.md) - Zero Data Retention (ZDR)
 
