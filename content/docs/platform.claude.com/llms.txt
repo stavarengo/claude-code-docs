@@ -690,7 +690,7 @@ The full documentation is available in the following languages on https://platfo
 
 ### Release Notes
 
-- [Claude Developer Platform](https://platform.claude.com/docs/en/release-notes/overview.md)
+- [Claude Platform](https://platform.claude.com/docs/en/release-notes/overview.md)
 
 ---
 
