@@ -68,7 +68,7 @@ The full documentation is available in the following languages on https://platfo
 - [Define success and build evaluations](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests.md) - Define success criteria and build evaluations
 - [Effort](https://platform.claude.com/docs/en/build-with-claude/effort.md)
 - [Embeddings](https://platform.claude.com/docs/en/build-with-claude/embeddings.md)
-- [Fast mode (research preview)](https://platform.claude.com/docs/en/build-with-claude/fast-mode.md)
+- [Fast mode (beta: research preview)](https://platform.claude.com/docs/en/build-with-claude/fast-mode.md)
 - [Files API](https://platform.claude.com/docs/en/build-with-claude/files.md)
 - [Fine-grained tool streaming](https://platform.claude.com/docs/en/agents-and-tools/tool-use/fine-grained-tool-streaming.md)
 - [Structured outputs in the SDK](https://platform.claude.com/docs/en/agent-sdk/structured-outputs.md) - Get structured output from agents
