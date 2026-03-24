@@ -12,7 +12,7 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 606 pages - /docs - Content included below
+- English (en) - 607 pages - /docs - Content included below
 - German (Deutsch) (de) - 133 pages - /docs/de - Visit website for content
 - Spanish (Español) (es) - 133 pages - /docs/es - Visit website for content
 - French (Français) (fr) - 133 pages - /docs/fr - Visit website for content
@@ -59,11 +59,10 @@ The full documentation is available in the following languages on https://platfo
 - [Compaction](https://platform.claude.com/docs/en/build-with-claude/compaction.md)
 - [Computer use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool.md)
 - [Handling Permissions](https://platform.claude.com/docs/en/agent-sdk/permissions.md) - Configure permissions
-- [MCP in the SDK](https://platform.claude.com/docs/en/agent-sdk/mcp.md) - Connect to external tools with MCP
+- [Connect MCP servers](https://platform.claude.com/docs/en/agent-sdk/mcp.md) - Connect to external tools with MCP
 - [Console prompting tools](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-tools.md)
 - [Context editing](https://platform.claude.com/docs/en/build-with-claude/context-editing.md)
 - [Context windows](https://platform.claude.com/docs/en/build-with-claude/context-windows.md)
-- [Custom Tools](https://platform.claude.com/docs/en/agent-sdk/custom-tools.md)
 - [Data residency](https://platform.claude.com/docs/en/build-with-claude/data-residency.md)
 - [Define success and build evaluations](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests.md) - Define success criteria and build evaluations
 - [Effort](https://platform.claude.com/docs/en/build-with-claude/effort.md)
@@ -72,6 +71,7 @@ The full documentation is available in the following languages on https://platfo
 - [Files API](https://platform.claude.com/docs/en/build-with-claude/files.md)
 - [Fine-grained tool streaming](https://platform.claude.com/docs/en/agents-and-tools/tool-use/fine-grained-tool-streaming.md)
 - [Structured outputs in the SDK](https://platform.claude.com/docs/en/agent-sdk/structured-outputs.md) - Get structured output from agents
+- [Define custom tools](https://platform.claude.com/docs/en/agent-sdk/custom-tools.md) - Give Claude custom tools
 - [User approvals and input](https://platform.claude.com/docs/en/agent-sdk/user-input.md) - Handle approvals and user input
 - [Handling stop reasons](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons.md)
 - [Hosting the Agent SDK](https://platform.claude.com/docs/en/agent-sdk/hosting.md)
@@ -98,6 +98,7 @@ The full documentation is available in the following languages on https://platfo
 - [Reducing latency](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency.md)
 - [Remote MCP servers](https://platform.claude.com/docs/en/agents-and-tools/remote-mcp-servers.md)
 - [File checkpointing](https://platform.claude.com/docs/en/agent-sdk/file-checkpointing.md) - Rewind file changes with checkpointing
+- [Tool search](https://platform.claude.com/docs/en/agent-sdk/tool-search.md) - Scale to many tools with tool search
 - [Search results](https://platform.claude.com/docs/en/build-with-claude/search-results.md)
 - [Securely deploying AI agents](https://platform.claude.com/docs/en/agent-sdk/secure-deployment.md)
 - [Best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices.md) - Skill authoring best practices
