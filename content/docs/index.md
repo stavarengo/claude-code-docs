@@ -421,3 +421,17 @@ openai/developers.openai.com/api/reference/resources/webhooks/methods:{unwrap.md
 openai/developers.openai.com/api/reference/responses:{overview.md}
 openai/developers.openai.com/api/reference/ruby/resources/webhooks/methods/unwrap:{index.md}
 openai/developers.openai.com/api/reference/typescript/resources/webhooks/methods/unwrap:{index.md}
+openai/developers.openai.com/codex:{agent-approvals-security.md,app-server.md,app.md,auth.md,cli.md,cloud.md,codex-for-oss-terms.md,config-advanced.md,config-basic.md,config-reference.md,config-sample.md,config-schema.json,custom-prompts.md,explore.md,feature-maturity.md,github-action.md,hooks.md,ide.md,llms-full.txt,llms.txt,mcp.md,models.md,noninteractive.md,open-source.md,overview.md,plugins.md,pricing.md,prompting.md,quickstart.md,rules.md,sdk.md,security.md,skills.md,speed.md,subagents.md,videos.md,windows.md,workflows.md}
+openai/developers.openai.com/codex/app:{automations.md,commands.md,features.md,local-environments.md,review.md,settings.md,troubleshooting.md,windows.md,worktrees.md}
+openai/developers.openai.com/codex/auth:{ci-cd-auth.md}
+openai/developers.openai.com/codex/cli:{features.md,reference.md,slash-commands.md}
+openai/developers.openai.com/codex/cloud:{environments.md,internet-access.md}
+openai/developers.openai.com/codex/community:{codex-for-oss.md}
+openai/developers.openai.com/codex/concepts:{customization.md,cyber-safety.md,sandboxing.md,subagents.md}
+openai/developers.openai.com/codex/enterprise:{admin-setup.md,governance.md,managed-configuration.md}
+openai/developers.openai.com/codex/guides:{agents-md.md,agents-sdk.md,build-ai-native-engineering-team.md}
+openai/developers.openai.com/codex/ide:{commands.md,features.md,settings.md,slash-commands.md}
+openai/developers.openai.com/codex/integrations:{github.md,linear.md,slack.md}
+openai/developers.openai.com/codex/learn:{best-practices.md}
+openai/developers.openai.com/codex/plugins:{build.md}
+openai/developers.openai.com/codex/security:{faq.md,setup.md,threat-model.md}
