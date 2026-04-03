@@ -120,7 +120,7 @@ Use this as a compact map of Codex docs. Each page has a Markdown twin at `/code
 - [Build plugins](https://developers.openai.com/codex/plugins/build.md): Create, test, and distribute plugins for Codex
 
 ## Pricing
-- [Codex Pricing](https://developers.openai.com/codex/pricing.md): Codex is included in your ChatGPT Plus, Pro, Business, Edu, or Enterprise plan
+- [Codex Pricing](https://developers.openai.com/codex/pricing.md): Codex is included in your ChatGPT Free, Go, Plus, Pro, Business, Edu, or Enterprise plan
 
 ## Prompting
 - [Prompting](https://developers.openai.com/codex/prompting.md): Interacting with the Codex agent
