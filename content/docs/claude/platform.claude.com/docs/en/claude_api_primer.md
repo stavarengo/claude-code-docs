@@ -80,7 +80,7 @@ You can pre-fill part of Claude's response in the last position of the input mes
 
 ```python
 message = anthropic.Anthropic().messages.create(
-    model="claude-opus-4-6",
+    model="claude-sonnet-4-5",
     max_tokens=1,
     messages=[
         {

@@ -8248,7 +8248,7 @@ The table below indicates when application state is stored for each endpoint. Ze
 - Audio outputs application state is stored for 1 hour to enable [multi-turn conversations](https://developers.openai.com/api/docs/guides/audio).
 - When Zero Data Retention is enabled for an organization, the `store` parameter will always be treated as `false`, even if the request attempts to set the value to `true`.
 - See [image and file inputs](#image-and-file-inputs).
-- Extended prompt caching requires storing key/value tensors to GPU-local storage as application state. This storage requirement means that requests leveraging extended prompt caching are not Zero Data Retention eligible. To learn more, see the [prompt caching guide](https://developers.openai.com/api/docs/guides/prompt-caching#prompt-cache-retention).
+- Extended prompt caching requires storing key/value tensors to GPU-local storage as application state. This data is stored on the local GPU machines and is not retained after the 24 hour data expiration. To learn more, see the [prompt caching guide](https://developers.openai.com/api/docs/guides/prompt-caching#prompt-cache-retention).
 
 #### `/v1/responses`
 
@@ -8259,9 +8259,10 @@ The table below indicates when application state is stored for each endpoint. Ze
 - See [image and file inputs](#image-and-file-inputs).
 - MCP servers (used with the [remote MCP server tool](https://developers.openai.com/api/docs/guides/tools-remote-mcp)) are third-party services, and data sent to an MCP server is subject to their data retention policies.
 - OpenAI-hosted containers cannot be used when Zero Data Retention is enabled. [Hosted Shell](https://developers.openai.com/api/docs/guides/tools-shell#hosted-shell-quickstart) and [Code Interpreter](https://developers.openai.com/api/docs/guides/tools-code-interpreter) can be used with [Modified Abuse Monitoring](https://developers.openai.com/api/docs/guides/your-data#modified-abuse-monitoring) instead.
+- Hosted containers used by [Hosted Shell](https://developers.openai.com/api/docs/guides/tools-shell#hosted-shell-quickstart) and [Code Interpreter](https://developers.openai.com/api/docs/guides/tools-code-interpreter) may write temporary application state to the container filesystem (backed by ephemeral block storage) while the container is active. Container data is deleted when the container expires or is explicitly deleted.
 - Extended prompt caching requires storing key/value tensors to GPU-local storage as application state. This storage requirement means that requests leveraging extended prompt caching are not Zero Data Retention eligible. To learn more, see the [prompt caching guide](https://developers.openai.com/api/docs/guides/prompt-caching#prompt-cache-retention).
 - For server-side compaction, no data is retained when `store="false"`.
-- We support [Skills](https://developers.openai.com/api/docs/guides/tools-skills) in two form factors, both local execution and hosted container-based execution. Skills running in OpenAI-hosted containers cannot be used when Zero Data Retention is enabled.
+- We support [Skills](https://developers.openai.com/api/docs/guides/tools-skills) in two form factors, both local execution and hosted container-based execution. Hosted skills follow the same container lifecycle as hosted shell: mounted skills and container files remain available while the container is active and are discarded when the container expires or is deleted.
 - Data transmitted to third-party services over network connections is subject to their data retention policies.
 
 #### `/v1/assistants`, `/v1/threads`, and `/v1/vector_stores`
@@ -19617,16 +19618,16 @@ All requests, including those with fewer than 1024 tokens, will display a `cache
 
 6. **Does Prompt Caching work on Zero Data Retention requests?**
 
-   In-memory cache retention is Zero Data Retention eligible.
-   If you specify extended caching in the request, then that request is not considered Zero Data Retention eligible because the key/value tensors may be held in GPU-local storage, and the key-value tensors are derived from customer content.
-   However, the extended caching request will not be blocked if Zero Data Retention is enabled for your project. The other Zero Data Retention still applies, such as excluding customer content from abuse logs and preventing use of `store=True`.
+   In-memory cache retention does not save any data to disk.
+   Extended prompt caching may store key/value tensors in GPU-local storage, and the key-value tensors are derived from customer content. This data is not retained beyond cache expiration -- the key-value tensors are retained for 1-2 hours (most usage) and at most 24 hours.
+   Extended prompt caching requests are not blocked if Zero Data Retention is enabled for your project. Other Zero Data Retention still applies, such as excluding customer content from abuse logs and preventing use of `store=True`.
    See the [Your data](https://developers.openai.com/api/docs/guides/your-data) guide for more context on Zero Data Retention.
 
 7. **Does Prompt Caching work with Data Residency?**
 
    In-memory Prompt Caching is compatable with all Data Residency regions.
 
-   Extended caching is only compatible with Data Residency regions that include Regional Inference.
+   Extended caching temporarily stores data on GPU machines and will only be kept in-region when using Regional Inference.
 
 ---
 
@@ -26646,6 +26647,169 @@ When multiple controls are present:
 - Request-level `network_policy` further restricts access.
 - Requests fail if `allowed_domains` includes domains outside your org allow list.
 
+## Data retention and container lifecycle
+
+Hosted containers used by Hosted Shell and Code Interpreter may write temporary application state to the container filesystem (backed by ephemeral block storage) while the container is active. Container data is deleted when the container expires or is explicitly deleted.
+
+For more details on data controls, see [ZDR and data residency](https://developers.openai.com/api/docs/guides/your-data).
+
+### Download artifacts
+
+Hosted shell can produce downloadable files. Use the same container/files APIs as code interpreter to retrieve artifacts written under `/mnt/data`.
+
+### Additional data controls
+
+If you want to keep content and files ephemeral within the hosted lifecycle, you can inline files in the request and mount inline skills in the container.
+
+Use inline files and inline skills
+
+```javascript
+import fs from "fs";
+import OpenAI from "openai";
+
+const client = new OpenAI();
+
+const inlineZip = fs.readFileSync("csv_insights.zip").toString("base64");
+const reportCsv = fs.readFileSync("report.csv").toString("base64");
+
+const container = await client.containers.create({
+  name: "inline-skill-container",
+  skills: [
+    {
+      type: "inline",
+      name: "csv-insights",
+      description: "Summarize CSV files and produce a markdown report.",
+      source: {
+        type: "base64",
+        media_type: "application/zip",
+        data: inlineZip,
+      },
+    },
+  ],
+});
+
+const response = await client.responses.create({
+  model: "gpt-5.4",
+  tools: [
+    {
+      type: "shell",
+      environment: {
+        type: "container_reference",
+        container_id: container.id,
+      },
+    },
+  ],
+  input: [
+    {
+      role: "user",
+      content: [
+        {
+          type: "input_file",
+          filename: "report.csv",
+          file_data: \`data:text/csv;base64,\${reportCsv}\`,
+        },
+        {
+          type: "input_text",
+          text: "Use the csv-insights skill to summarize report.csv.",
+        },
+      ],
+    },
+  ],
+});
+
+console.log(response.output_text);
+```
+
+```python
+import base64
+from openai import OpenAI
+
+client = OpenAI()
+
+with open("csv_insights.zip", "rb") as f:
+    inline_zip = base64.b64encode(f.read()).decode("utf-8")
+
+with open("report.csv", "rb") as f:
+    base64_string = base64.b64encode(f.read()).decode("utf-8")
+
+container = client.containers.create(
+    name="inline-skill-container",
+    skills=[
+        {
+            "type": "inline",
+            "name": "csv-insights",
+            "description": "Summarize CSV files and produce a markdown report.",
+            "source": {
+                "type": "base64",
+                "media_type": "application/zip",
+                "data": inline_zip,
+            },
+        }
+    ],
+)
+
+response = client.responses.create(
+    model="gpt-5.4",
+    tools=[
+        {
+            "type": "shell",
+            "environment": {
+                "type": "container_reference",
+                "container_id": container.id,
+            },
+        }
+    ],
+    input=[
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "input_file",
+                    "filename": "report.csv",
+                    "file_data": f"data:text/csv;base64,{base64_string}",
+                },
+                {
+                    "type": "input_text",
+                    "text": "Use the csv-insights skill to summarize report.csv.",
+                },
+            ],
+        }
+    ],
+)
+
+print(response.output_text)
+```
+
+
+For follow-up requests, pass the same `container_id` with `container_reference`. The mounted skills and existing container files remain available while the container is active.
+
+### Proactively delete a container
+
+You can explicitly delete the container when the work is done instead of waiting for inactivity expiration.
+
+Delete a container
+
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+
+const deleted = await client.containers.delete("container_id");
+
+console.log(deleted);
+```
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+deleted = client.containers.delete("container_id")
+
+print(deleted)
+```
+
+
 ## Domain secrets
 
 Use `domain_secrets` when a domain in your `allowed_domains` list requires private authorization headers, such as `Authorization: Bearer <token>`.
@@ -26796,23 +26960,6 @@ response = client.responses.create(
 print(response.output_text)
 ```
 
-
-## Download artifacts
-
-Hosted shell can produce downloadable files. Use the same container/files APIs as code interpreter to retrieve artifacts written under `/mnt/data`.
-
-### Data retention and container lifecycle
-
-Hosted shell runs in OpenAI-hosted containers. If your org or project enables Zero Data Retention (ZDR), OpenAI-hosted containers aren't available, so hosted shell can't run in ZDR mode. Hosted shell and Code Interpreter work with Modified Abuse Monitoring (MAM) instead.
-
-If you need shell execution while using ZDR, use [local shell mode](#local-shell-mode) so commands run in infrastructure you manage.
-
-For data controls details, see [ZDR and data residency](https://developers.openai.com/api/docs/guides/your-data).
-
-Hosted shell uses the same container lifecycle as Code Interpreter. Treat hosted containers as ephemeral and store any data you need on your own systems. Files and artifacts created or uploaded in hosted shell live in the container filesystem (for example, under `/mnt/data`) while the container is active so you can reuse the container and download artifacts.
-
-- A hosted shell container expires after 20 minutes of inactivity. Download any files you need while the container is active. When the container expires, OpenAI discards the container data and you can't recover it.
-- You can't reactivate an expired container. Create a new container and upload files again.
 
 ## Shell output in Responses
 
@@ -27128,7 +27275,7 @@ For workflows that can perform write or high-impact actions, require explicit ap
 
 #### Validate data residency and retention requirements
 
-We support Skills in two form factors: local execution and hosted container-based execution. Skills running in OpenAI hosted containers can't be used when Zero Data Retention is enabled. Read more about our [data controls](https://developers.openai.com/api/docs/guides/your-data).
+We support Skills in two form factors: local execution and hosted container-based execution. Hosted skills follow the same container lifecycle as hosted shell: mounted skills and container files remain available while the container is active and are discarded when the container expires or is deleted. If you want execution to stay entirely on infrastructure you manage, use local shell mode. Read more about our [data controls](https://developers.openai.com/api/docs/guides/your-data).
 
 ---
 
