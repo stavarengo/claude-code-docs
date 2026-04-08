@@ -41,8 +41,8 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Advanced integrations with ChatKit](https://developers.openai.com/api/docs/guides/custom-chatkit.md): Use your own server with ChatKit to integrate agent workflows into your product with more customization.
 - [Advanced usage](https://developers.openai.com/api/docs/guides/advanced-usage.md): Discover advanced usage techniques for OpenAI's API, including reproducible outputs, token management, and parameter settings.
 - [Agent Builder](https://developers.openai.com/api/docs/guides/agent-builder.md): Use the OpenAI Agent Builder to start from templates, compose nodes, preview runs, and export workflows to code.
-- [Agent evals](https://developers.openai.com/api/docs/guides/agent-evals.md): Use agent evals to create datasets, configure graders, and track evaluation runs for your agents.
-- [Agents](https://developers.openai.com/api/docs/guides/agents.md): Learn how to build agents and workflows with OpenAI and AgentKit.
+- [Agent definitions](https://developers.openai.com/api/docs/guides/agents/define-agents.md): Learn how to define an agent's instructions, model, tools, and local context in the OpenAI Agents SDK.
+- [Agents SDK](https://developers.openai.com/api/docs/guides/agents.md): Learn how the OpenAI Agents SDK fits together and which docs to read next.
 - [Agents SDK](https://developers.openai.com/api/docs/guides/agents-sdk.md): Learn how to build agents with the OpenAI Agents SDK.
 - [Apply Patch](https://developers.openai.com/api/docs/guides/tools-apply-patch.md): Allow models to propose structured diffs that your integration applies.
 - [Audio and speech](https://developers.openai.com/api/docs/guides/audio.md): Learn how to work with audio and speech in the OpenAI API.
@@ -65,6 +65,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Deep research](https://developers.openai.com/api/docs/guides/deep-research.md): Use deep research models for complex analysis and research tasks.
 - [Direct preference optimization](https://developers.openai.com/api/docs/guides/direct-preference-optimization.md): Fine-tune models for subjective decision-making by comparing model outputs.
 - [Error codes](https://developers.openai.com/api/docs/guides/error-codes.md): An overview of error codes from the OpenAI API and Python library, including solutions and guidance.
+- [Evaluate agent workflows](https://developers.openai.com/api/docs/guides/agent-evals.md): Learn how to evaluate agent workflows with traces, graders, datasets, and evaluation runs on the OpenAI platform.
 - [Evaluate external models](https://developers.openai.com/api/docs/guides/external-models.md): Learn how to run evals on non-OpenAI models, using the OpenAI platform.
 - [Evaluation best practices](https://developers.openai.com/api/docs/guides/evaluation-best-practices.md): Learn best practices for designing evals to test and improve model performance in production.
 - [File inputs](https://developers.openai.com/api/docs/guides/file-inputs.md): Learn how to use files as file inputs in the OpenAI API.
@@ -74,9 +75,11 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Function calling](https://developers.openai.com/api/docs/guides/function-calling.md): Learn how function calling enables large language models to connect to external data and systems.
 - [Getting started with datasets](https://developers.openai.com/api/docs/guides/evaluation-getting-started.md): Learn how to get started with evals using datasets.
 - [Graders](https://developers.openai.com/api/docs/guides/graders.md): Learn about graders used for evals and fine-tuning.
+- [Guardrails and human review](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals.md): Learn how to use guardrails and human review in the OpenAI Agents SDK for safer, more controlled workflows.
 - [Image generation](https://developers.openai.com/api/docs/guides/image-generation.md): Learn how to generate or edit images with the OpenAI API and image generation models.
 - [Image generation](https://developers.openai.com/api/docs/guides/tools-image-generation.md): Allow models to generate or edit images.
 - [Images and vision](https://developers.openai.com/api/docs/guides/images-vision.md): Learn how to understand or generate images with the OpenAI API.
+- [Integrations and observability](https://developers.openai.com/api/docs/guides/agents/integrations-observability.md): Learn how to integrate MCP into Agents SDK workflows and how to trace and debug runs.
 - [Latency optimization](https://developers.openai.com/api/docs/guides/latency-optimization.md): Improve latency across a wide variety of LLM-related use cases.
 - [Local shell](https://developers.openai.com/api/docs/guides/tools-local-shell.md): Enable agents to run commands in a local shell.
 - [Manage permissions in the OpenAI platform](https://developers.openai.com/api/docs/guides/rbac.md): Learn how to use role-based access control to assign permissions, create custom roles, group users, and scope access across both the OpenAI API and dashboard.
@@ -85,9 +88,11 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Migrate to the Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses.md)
 - [Model optimization](https://developers.openai.com/api/docs/guides/model-optimization.md): Ensure quality model outputs with evals and fine-tuning in the OpenAI platform.
 - [Model selection](https://developers.openai.com/api/docs/guides/model-selection.md): Learn how to choose the right model by balancing accuracy, latency, and cost for optimal performance.
+- [Models and providers](https://developers.openai.com/api/docs/guides/agents/models.md): Learn how to choose models, set defaults, and think about providers and transport in the OpenAI Agents SDK.
 - [Moderation](https://developers.openai.com/api/docs/guides/moderation.md): Learn how to use OpenAI's moderation endpoint to identify harmful content in text and images.
 - [Node reference](https://developers.openai.com/api/docs/guides/node-reference.md): Explore all available nodes for composing workflows in Agent Builder.
 - [Optimizing LLM Accuracy](https://developers.openai.com/api/docs/guides/optimizing-llm-accuracy.md): Learn strategies to enhance the accuracy of large language models using techniques like prompt engineering, retrieval-augmented generation, and fine-tuning.
+- [Orchestration and handoffs](https://developers.openai.com/api/docs/guides/agents/orchestration.md): Learn how to orchestrate multiple agents with handoffs and agents-as-tools in the OpenAI Agents SDK.
 - [Predicted Outputs](https://developers.openai.com/api/docs/guides/predicted-outputs.md): Understand how to reduce latency for model responses where much of the response is known ahead of time.
 - [Priority processing](https://developers.openai.com/api/docs/guides/priority-processing.md): Get faster processing in the API while retaining flexible pay-as-you-go pricing.
 - [Production best practices](https://developers.openai.com/api/docs/guides/production-best-practices.md): Explore best practices for transitioning your AI projects from prototype to production, including scaling, security, and cost management.
@@ -97,6 +102,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Prompt guidance for GPT-5.4](https://developers.openai.com/api/docs/guides/prompt-guidance.md): Learn prompt patterns and migration guidance for GPT-5.4, including completeness checks, verification loops, tool persistence, and structured outputs.
 - [Prompt optimizer](https://developers.openai.com/api/docs/guides/prompt-optimizer.md): Learn how to use your dataset to automatically improve your prompts.
 - [Prompting](https://developers.openai.com/api/docs/guides/prompting.md): Learn how to create, optimize, save, and reuse prompts with OpenAI models.
+- [Quickstart](https://developers.openai.com/api/docs/guides/agents/quickstart.md): Build your first agent with the OpenAI Agents SDK, add tools and handoffs, and understand where to go next.
 - [Rate limits](https://developers.openai.com/api/docs/guides/rate-limits.md): Rate limits are restrictions that our API imposes on the number of times a user or client can access our services within a specified period of time.
 - [Realtime API](https://developers.openai.com/api/docs/guides/realtime.md): Learn how to build low-latency, multimodal LLM applications with the Realtime API.
 - [Realtime API with MCP](https://developers.openai.com/api/docs/guides/realtime-mcp.md): Learn how to configure MCP tools in the Realtime API and handle the resulting event flow.
@@ -109,7 +115,9 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Reasoning models](https://developers.openai.com/api/docs/guides/reasoning.md): Learn how to use OpenAI reasoning models in the Responses API, choose a reasoning effort, manage reasoning tokens, and keep reasoning state across turns.
 - [Reinforcement fine-tuning](https://developers.openai.com/api/docs/guides/reinforcement-fine-tuning.md): Fine-tune models for expert-level performance within a domain.
 - [Reinforcement fine-tuning use cases](https://developers.openai.com/api/docs/guides/rft-use-cases.md): Explore best practices and practical use cases for reinforcement fine-tuning (RFT) with OpenAI models.
+- [Results and state](https://developers.openai.com/api/docs/guides/agents/results.md): Learn which result surfaces matter most in the OpenAI Agents SDK and how they connect to resumable workflow state.
 - [Retrieval](https://developers.openai.com/api/docs/guides/retrieval.md): Learn how to search your data using semantic similarity with the OpenAI API.
+- [Running agents](https://developers.openai.com/api/docs/guides/agents/running-agents.md): Learn how to run agents, stream output, and choose the right conversation-state strategy in the OpenAI Agents SDK.
 - [Safety best practices](https://developers.openai.com/api/docs/guides/safety-best-practices.md): Learn how to implement safety measures like moderation, adversarial testing, human oversight, and prompt engineering to ensure responsible AI deployment.
 - [Safety checks](https://developers.openai.com/api/docs/guides/safety-checks.md): Learn how OpenAI assesses for safety, OpenAI classifiers across safety categories, and implementation tips for how to pass safety checks.
 - [Safety in building agents](https://developers.openai.com/api/docs/guides/agent-builder-safety.md): Minimize prompt injections and other risks when building agent workflows with OpenAI Agent Builder.
@@ -132,7 +140,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Video generation with Sora](https://developers.openai.com/api/docs/guides/video-generation.md): Learn how to generate, refine, and manage videos using the OpenAI Videos API.
 - [Vision fine-tuning](https://developers.openai.com/api/docs/guides/vision-fine-tuning.md): Fine-tune models for better image understanding.
 - [Voice activity detection (VAD)](https://developers.openai.com/api/docs/guides/realtime-vad.md): Learn about automatic voice activity detection in the Realtime API.
-- [Voice agents](https://developers.openai.com/api/docs/guides/voice-agents.md): Learn how to build agents that can work with audio and speech.
+- [Voice agents](https://developers.openai.com/api/docs/guides/voice-agents.md): Learn how to build voice agents with the OpenAI Agents SDK, choose the right architecture, and connect voice workflows to the rest of the agent stack.
 - [Web search](https://developers.openai.com/api/docs/guides/tools-web-search.md): Allow models to search the web the latest information before generating a response.
 - [Webhooks](https://developers.openai.com/api/docs/guides/webhooks.md): Use webhooks to receive real-time updates from the OpenAI API.
 - [Webhooks and server-side controls](https://developers.openai.com/api/docs/guides/realtime-server-controls.md): Learn how to use webhooks and server-side controls with the Realtime API.

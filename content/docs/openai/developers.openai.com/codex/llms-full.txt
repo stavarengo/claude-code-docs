@@ -3639,7 +3639,7 @@ export const globalFlagOptions = [
     key: "--model, -m",
     type: "string",
     description:
-      "Override the model set in configuration (for example `gpt-5-codex`).",
+      "Override the model set in configuration (for example `gpt-5.4`).",
   },
   {
     key: "--oss",
@@ -5512,7 +5512,7 @@ Profiles are not currently supported in the Codex IDE extension.
 Define profiles under `[profiles.<name>]` in `config.toml`, then run `codex --profile <name>`:
 
 ```toml
-model = "gpt-5-codex"
+model = "gpt-5.4"
 approval_policy = "on-request"
 model_catalog_json = "/Users/me/.codex/model-catalogs/default.json"
 
@@ -5629,7 +5629,7 @@ A model provider defines how Codex connects to a model (base URL, wire API, and 
 Define additional providers and point `model_provider` at them:
 
 ```toml
-model = "gpt-5.1"
+model = "gpt-5.4"
 model_provider = "proxy"
 
 [model_providers.proxy]
@@ -6208,7 +6208,7 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
     {
       key: "model",
       type: "string",
-      description: "Model to use (e.g., `gpt-5-codex`).",
+      description: "Model to use (e.g., `gpt-5.4`).",
     },
     {
       key: "review_model",
@@ -7822,7 +7822,7 @@ enabled = true
 # hide_rate_limit_model_nudge = true
 # hide_gpt5_1_migration_prompt = true
 # "hide_gpt-5.1-codex-max_migration_prompt" = true
-# model_migrations = { "gpt-4.1" = "gpt-5.1" }
+# model_migrations = { "gpt-5.3-codex" = "gpt-5.4" }
 
 ################################################################################
 # Centralized Feature Flags (preferred)
@@ -9417,7 +9417,7 @@ Expected: The output lists files relative to the custom `.codex` directory.
 
 # Running Codex as an MCP server
 
-You can run Codex as an MCP server and connect it from other MCP clients (for example, an agent built with the [OpenAI Agents SDK](https://openai.github.io/openai-agents-js/guides/mcp/)).
+You can run Codex as an MCP server and connect it from other MCP clients (for example, an agent built with the [OpenAI Agents SDK MCP integration](https://developers.openai.com/api/docs/guides/agents/integrations-observability#mcp)).
 
 To start Codex as an MCP server, you can use the following command:
 
@@ -10434,7 +10434,7 @@ You can switch models with the switcher under the chat input.
 
 ## Adjust reasoning effort
 
-You can adjust reasoning effort to control how long Codex thinks before responding. Higher effort can help on complex tasks, but responses take longer. Higher effort also uses more tokens and can consume your rate limits faster (especially with GPT-5-Codex).
+You can adjust reasoning effort to control how long Codex thinks before responding. Higher effort can help on complex tasks, but responses take longer. Higher effort also uses more tokens and can consume your rate limits faster, especially with higher-capability models.
 
 Use the same model switcher shown above, and choose `low`, `medium`, or `high` for each model. Start with `medium`, and only switch to `high` when you need more depth.
 
@@ -11202,7 +11202,7 @@ For most tasks in Codex, start with `gpt-5.4`. It combines strong coding,
 
 ## Other models
 
-Codex works best with the models listed above.
+When you sign in with ChatGPT, Codex works best with the models listed above.
 
 You can also point Codex at any model and provider that supports either the [Chat Completions](https://platform.openai.com/docs/api-reference/chat) or [Responses APIs](https://platform.openai.com/docs/api-reference/responses) to fit your specific use case.
 
@@ -12503,25 +12503,13 @@ Select your appropriate plan type in the table below to see rates.
             <td style="text-align:center">375 credits</td>
           </tr>
           <tr>
-            <td>GPT-5.3-Codex</td>
-            <td style="text-align:center">43.75 credits</td>
-            <td style="text-align:center">4.375 credits</td>
-            <td style="text-align:center">350 credits</td>
-          </tr>
-          <tr>
-            <td>GPT-5.1-Codex-mini</td>
-            <td style="text-align:center">6.25 credits</td>
-            <td style="text-align:center">0.625 credits</td>
-            <td style="text-align:center">50 credits</td>
-          </tr>
-          <tr>
-            <td>GPT-5.4-Mini</td>
+            <td>GPT-5.4-mini</td>
             <td style="text-align:center">18.75 credits</td>
             <td style="text-align:center">1.875 credits</td>
             <td style="text-align:center">113 credits</td>
           </tr>
           <tr>
-            <td>GPT-5.2-Codex</td>
+            <td>GPT-5.3-Codex</td>
             <td style="text-align:center">43.75 credits</td>
             <td style="text-align:center">4.375 credits</td>
             <td style="text-align:center">350 credits</td>
@@ -12531,12 +12519,6 @@ Select your appropriate plan type in the table below to see rates.
             <td style="text-align:center">43.75 credits</td>
             <td style="text-align:center">4.375 credits</td>
             <td style="text-align:center">350 credits</td>
-          </tr>
-          <tr>
-            <td>GPT-5.1-Codex-Max</td>
-            <td style="text-align:center">31.25 credits</td>
-            <td style="text-align:center">3.125 credits</td>
-            <td style="text-align:center">250 credits</td>
           </tr>
           <tr>
             <td>GPT-5.3-Codex-Spark</td>
@@ -12579,7 +12561,7 @@ Select your appropriate plan type in the table below to see rates.
               GPT-5.3-Codex
             </th>
             <th scope="col" style="text-align:center">
-              GPT-5.1-Codex-mini
+              GPT-5.4-mini
             </th>
           </tr>
         </thead>
@@ -12589,7 +12571,7 @@ Select your appropriate plan type in the table below to see rates.
             <td style="text-align:center">1 message</td>
             <td style="text-align:center">\~7 credits</td>
             <td style="text-align:center">\~5 credits</td>
-            <td style="text-align:center">\~1 credit</td>
+            <td style="text-align:center">\~2 credits</td>
           </tr>
           <tr>
             <td>Cloud Tasks</td>
@@ -12614,9 +12596,7 @@ Select your appropriate plan type in the table below to see rates.
           </tr>
           <tr>
             <td colspan="5" style="text-align:center">
-              These averages also apply to legacy GPT-5.2, GPT-5.2-Codex,
-              GPT-5.1, GPT-5.1-Codex-Max, GPT-5, GPT-5-Codex, and
-              GPT-5-Codex-Mini.
+              These averages also apply to GPT-5.2.
             </td>
           </tr>
         </tfoot>
