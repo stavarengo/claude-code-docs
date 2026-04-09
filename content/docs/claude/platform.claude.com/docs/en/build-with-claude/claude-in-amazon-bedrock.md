@@ -98,7 +98,7 @@ go get github.com/anthropics/anthropic-sdk-go/bedrock
 <Tabs>
 <Tab title="Gradle">
 ```kotlin
-implementation("com.anthropic:anthropic-java-bedrock:2.18.0")
+implementation("com.anthropic:anthropic-java-bedrock:2.20.0")
 ```
 </Tab>
 <Tab title="Maven">
@@ -106,7 +106,7 @@ implementation("com.anthropic:anthropic-java-bedrock:2.18.0")
 <dependency>
     <groupId>com.anthropic</groupId>
     <artifactId>anthropic-java-bedrock</artifactId>
-    <version>2.18.0</version>
+    <version>2.20.0</version>
 </dependency>
 ```
 </Tab>
@@ -317,7 +317,7 @@ Claude in Amazon Bedrock supports features that run inside the model. Features t
 **Not supported:**
 
 - Anthropic-defined tools (Web Search, Web Fetch, Remote MCP, Memory, Files API, Computer Use, Skills, Code Execution)
-- Agent API
+- Managed Agents API
 - Message Batches API
 - `/v1/users` endpoint
 

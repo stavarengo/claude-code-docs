@@ -4,7 +4,7 @@ An open-source Agent Skill that provides Claude with up-to-date API reference ma
 
 ---
 
-The `claude-api` skill is an open-source [Agent Skill](/docs/en/agents-and-tools/agent-skills/overview) that provides Claude with detailed, up-to-date reference material for building applications with the Claude API and [Agent SDK](/docs/en/agent-sdk/overview). It covers 8 programming languages: Python, TypeScript, Java, Go, Ruby, C#, PHP, and cURL.
+The `claude-api` skill is an open-source [Agent Skill](/docs/en/agents-and-tools/agent-skills/overview) that provides Claude with detailed, up-to-date reference material for building applications with the Claude API. It covers 8 programming languages: Python, TypeScript, Java, Go, Ruby, C#, PHP, and cURL.
 
 The skill comes bundled with [Claude Code](https://code.claude.com/docs/en/overview) and is also available in the open-source [Anthropic skills repository](https://github.com/anthropics/skills/tree/main/skills/claude-api), where you can install it in any environment that supports Agent Skills.
 
@@ -18,7 +18,6 @@ When triggered, the skill equips Claude with:
 - **Tool use guidance:** Language-specific examples and [conceptual foundations](/docs/en/agents-and-tools/tool-use/overview) for function calling
 - **Streaming patterns:** Implementation details for building chat UIs and handling incremental display
 - **Batch processing:** Offline batch processing at 50% cost
-- **Agent SDK reference:** Installation, built-in tools, permissions, MCP integration, and common patterns (Python and TypeScript)
 - **Current model information:** Model IDs, context window sizes, and pricing
 - **Common pitfalls:** Detailed guidance on avoiding frequent mistakes when integrating with the API
 
@@ -30,7 +29,6 @@ The skill activates in two ways:
 
 - `anthropic` (Python)
 - `@anthropic-ai/sdk` (TypeScript/JavaScript)
-- `claude_agent_sdk` (Agent SDK)
 
 **Manual invocation** by typing `/claude-api` in any environment where the skill is installed.
 
@@ -40,16 +38,16 @@ The skill does not activate for general programming tasks, ML/data-science work,
 
 The skill detects your project's language automatically by examining project files (for example, `requirements.txt` for Python, `tsconfig.json` for TypeScript, `go.mod` for Go) and loads the appropriate documentation.
 
-| Language   | SDK documentation | Tool runner | Agent SDK |
-|------------|-------------------|-------------|-----------|
-| Python     | Yes               | Yes (beta)  | Yes       |
-| TypeScript | Yes               | Yes (beta)  | Yes       |
-| Java       | Yes               | No          | No        |
-| Go         | Yes               | No          | No        |
-| Ruby       | Yes               | Yes (beta)  | No        |
-| C#         | Yes               | No          | No        |
-| PHP        | Yes               | No          | No        |
-| cURL       | Yes               | N/A         | N/A       |
+| Language   | SDK documentation | Tool runner |
+|------------|-------------------|-------------|
+| Python     | Yes               | Yes (beta)  |
+| TypeScript | Yes               | Yes (beta)  |
+| Java       | Yes               | No          |
+| Go         | Yes               | No          |
+| Ruby       | Yes               | Yes (beta)  |
+| C#         | Yes               | No          |
+| PHP        | Yes               | No          |
+| cURL       | Yes               | N/A         |
 
 If your project uses multiple languages, Claude asks which one applies. For unsupported languages (Rust, Swift, C++), the skill provides cURL/raw HTTP examples.
 
@@ -91,11 +89,6 @@ Here are examples of tasks the skill helps Claude handle:
 Build a streaming chat UI with the Claude API in TypeScript
 ```
 
-**Working with the Agent SDK:**
-```text
-Create an agent with file and terminal tools using the Agent SDK
-```
-
 In each case, the skill loads the relevant language-specific documentation and guides Claude through the implementation using current API patterns and best practices.
 
 ## Next steps
@@ -114,13 +107,6 @@ In each case, the skill loads the relevant language-specific documentation and g
     href="/docs/en/api/client-sdks"
   >
     Browse the official Anthropic SDKs for all supported languages
-  </Card>
-  <Card
-    title="Agent SDK"
-    icon="cube"
-    href="/docs/en/agent-sdk/overview"
-  >
-    Build AI agents with built-in tools, permissions, and MCP support
   </Card>
   <Card
     title="Skills repository"

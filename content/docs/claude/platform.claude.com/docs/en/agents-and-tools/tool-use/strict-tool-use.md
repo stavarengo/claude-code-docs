@@ -62,6 +62,31 @@ curl https://api.anthropic.com/v1/messages \
   }'
 ```
 
+```bash CLI
+ant messages create --transform content <<'YAML'
+model: claude-opus-4-6
+max_tokens: 1024
+messages:
+  - role: user
+    content: What is the weather in San Francisco?
+tools:
+  - name: get_weather
+    description: Get the current weather in a given location
+    strict: true
+    input_schema:
+      type: object
+      properties:
+        location:
+          type: string
+          description: The city and state, e.g. San Francisco, CA
+        unit:
+          type: string
+          enum: [celsius, fahrenheit]
+      required: [location]
+      additionalProperties: false
+YAML
+```
+
 ```python Python hidelines={1..2}
 import anthropic
 
@@ -366,7 +391,7 @@ puts message.content
 
 **Response format:** Tool use blocks with validated inputs in `response.content[x].input`
 
-```json
+```json Output
 {
   "type": "tool_use",
   "name": "get_weather",
@@ -401,6 +426,32 @@ puts message.content
 Ensure tool parameters exactly match your schema:
 
 <CodeGroup>
+
+```bash CLI
+ant messages create <<'YAML'
+model: claude-opus-4-6
+max_tokens: 1024
+messages:
+  - role: user
+    content: Search for flights to Tokyo departing June 1, 2026
+tools:
+  - name: search_flights
+    strict: true
+    input_schema:
+      type: object
+      properties:
+        destination:
+          type: string
+        departure_date:
+          type: string
+          format: date
+        passengers:
+          type: integer
+          enum: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      required: [destination, departure_date]
+      additionalProperties: false
+YAML
+```
 
 ```python Python hidelines={1..2}
 from anthropic import Anthropic
@@ -696,6 +747,40 @@ puts message
 Build reliable multi-step agents with guaranteed tool parameters:
 
 <CodeGroup>
+
+```bash CLI
+ant messages create <<'YAML'
+model: claude-opus-4-6
+max_tokens: 1024
+messages:
+  - role: user
+    content: >-
+      Help me plan a trip from New York to Paris for 2 people,
+      departing June 1, 2026
+tools:
+  - name: search_flights
+    strict: true
+    input_schema:
+      type: object
+      properties:
+        origin: {type: string}
+        destination: {type: string}
+        departure_date: {type: string, format: date}
+        travelers: {type: integer, enum: [1, 2, 3, 4, 5, 6]}
+      required: [origin, destination, departure_date]
+      additionalProperties: false
+  - name: search_hotels
+    strict: true
+    input_schema:
+      type: object
+      properties:
+        city: {type: string}
+        check_in: {type: string, format: date}
+        guests: {type: integer, enum: [1, 2, 3, 4]}
+      required: [city, check_in]
+      additionalProperties: false
+YAML
+```
 
 ```python Python hidelines={1..2}
 from anthropic import Anthropic

@@ -20,7 +20,16 @@ For fast, cost-effective tasks: Claude Haiku 4.5: claude-haiku-4-5-20251001
 
 ### Basic request and response
 
-```python
+<CodeGroup>
+
+```bash CLI
+ant messages create \
+  --model claude-opus-4-6 \
+  --max-tokens 1024 \
+  --message '{"role": "user", "content": "Hello, Claude"}'
+```
+
+```python Python
 import anthropic
 import os
 
@@ -34,7 +43,9 @@ message = anthropic.Anthropic(
 print(message)
 ```
 
-```json
+</CodeGroup>
+
+```json Output
 {
   "id": "msg_01XFDUDYJgAACzvnptvVoYEL",
   "type": "message",
@@ -59,7 +70,23 @@ print(message)
 
 The Messages API is stateless, which means that you always send the full conversational history to the API. You can use this pattern to build up a conversation over time. Earlier conversational turns don't necessarily need to actually originate from Claude. You can use synthetic `assistant` messages.
 
-```python
+<CodeGroup>
+
+```bash CLI
+ant messages create <<'YAML'
+model: claude-opus-4-6
+max_tokens: 1024
+messages:
+  - role: user
+    content: Hello, Claude
+  - role: assistant
+    content: Hello!
+  - role: user
+    content: Can you describe LLMs to me?
+YAML
+```
+
+```python Python
 import anthropic
 
 message = anthropic.Anthropic().messages.create(
@@ -74,11 +101,27 @@ message = anthropic.Anthropic().messages.create(
 print(message)
 ```
 
+</CodeGroup>
+
 ### Putting words in Claude's mouth
 
 You can pre-fill part of Claude's response in the last position of the input messages list. This can be used to shape Claude's response. The example below uses `"max_tokens": 1` to get a single multiple choice answer from Claude.
 
-```python
+<CodeGroup>
+
+```bash CLI
+ant messages create <<'YAML'
+model: claude-sonnet-4-5
+max_tokens: 1
+messages:
+  - role: user
+    content: "What is latin for Ant? (A) Apoidea, (B) Rhopalocera, (C) Formicidae"
+  - role: assistant
+    content: "The answer is ("
+YAML
+```
+
+```python Python
 message = anthropic.Anthropic().messages.create(
     model="claude-sonnet-4-5",
     max_tokens=1,
@@ -92,11 +135,53 @@ message = anthropic.Anthropic().messages.create(
 )
 ```
 
+</CodeGroup>
+
 ### Vision
 
 Claude can read both text and images in requests. Both `base64` and `url` source types are supported for images, along with the `image/jpeg`, `image/png`, `image/gif`, and `image/webp` media types.
 
-```python nocheck
+<CodeGroup>
+
+```bash CLI nocheck
+IMAGE_URL="https://upload.wikimedia.org/wikipedia/commons/a/a7"
+IMAGE_URL="$IMAGE_URL/Camponotus_flavomarginatus_ant.jpg"
+
+# Option 1: Base64-encoded image (@ prefix auto-encodes binary files as base64)
+curl -sSo ant.jpg "$IMAGE_URL"
+
+ant messages create <<'YAML'
+model: claude-opus-4-6
+max_tokens: 1024
+messages:
+  - role: user
+    content:
+      - type: image
+        source:
+          type: base64
+          media_type: image/jpeg
+          data: "@./ant.jpg"
+      - type: text
+        text: What is in the above image?
+YAML
+
+# Option 2: URL-referenced image
+ant messages create <<YAML
+model: claude-opus-4-6
+max_tokens: 1024
+messages:
+  - role: user
+    content:
+      - type: image
+        source:
+          type: url
+          url: $IMAGE_URL
+      - type: text
+        text: What is in the above image?
+YAML
+```
+
+```python Python nocheck
 import anthropic
 import base64
 import httpx
@@ -149,6 +234,8 @@ message_from_url = anthropic.Anthropic().messages.create(
 )
 ```
 
+</CodeGroup>
+
 ## Extended thinking
 
 Extended thinking can sometimes help Claude with very hard tasks. When it's enabled, temperature must be set to 1.
@@ -164,7 +251,23 @@ Extended thinking is supported in the following models:
 
 When extended thinking is turned on, Claude creates `thinking` content blocks where it outputs its internal reasoning. The API response will include `thinking` content blocks, followed by `text` content blocks.
 
-```python
+<CodeGroup>
+
+```bash CLI
+ant messages create \
+  --transform content --format yaml <<'YAML'
+model: claude-opus-4-6
+max_tokens: 16000
+thinking:
+  type: enabled
+  budget_tokens: 10000
+messages:
+  - role: user
+    content: Are there an infinite number of prime numbers such that n mod 4 == 3?
+YAML
+```
+
+```python Python
 import anthropic
 
 client = anthropic.Anthropic()
@@ -189,6 +292,8 @@ for block in response.content:
         print(f"\nResponse: {block.text}")
 ```
 
+</CodeGroup>
+
 The `budget_tokens` parameter determines the maximum number of tokens Claude is allowed to use for its internal reasoning process. In Claude 4 models, this limit applies to full thinking tokens, and not to the summarized output. Larger budgets can improve response quality by enabling more thorough analysis for complex problems. One rule: the value of max_tokens must be strictly greater than the value of budget_tokens so that Claude has space to write its response after thinking is complete.
 
 ## Extended thinking with tool use
@@ -202,7 +307,69 @@ Important limitations:
 
 ### Preserving thinking blocks
 
-```python nocheck
+<CodeGroup>
+
+```bash CLI nocheck
+# First request: capture the assistant content array (thinking + tool_use
+# blocks, signatures intact) as compact JSON.
+ASSISTANT_CONTENT=$(ant messages create \
+  --transform content --format jsonl <<'YAML'
+model: claude-opus-4-6
+max_tokens: 16000
+thinking:
+  type: enabled
+  budget_tokens: 10000
+tools:
+  - name: get_weather
+    description: Get the current weather for a location.
+    input_schema:
+      type: object
+      properties:
+        location:
+          type: string
+          description: The city name.
+      required: [location]
+messages:
+  - role: user
+    content: "What's the weather in Paris?"
+YAML
+)
+
+TOOL_USE_ID=$(printf '%s' "$ASSISTANT_CONTENT" \
+  | grep -o 'toolu_[A-Za-z0-9]*')
+
+# Second request: pass the captured blocks back unchanged as the assistant
+# message. The thinking block must accompany the tool_use block.
+ant messages create <<YAML
+model: claude-opus-4-6
+max_tokens: 16000
+thinking:
+  type: enabled
+  budget_tokens: 10000
+tools:
+  - name: get_weather
+    description: Get the current weather for a location.
+    input_schema:
+      type: object
+      properties:
+        location:
+          type: string
+          description: The city name.
+      required: [location]
+messages:
+  - role: user
+    content: "What's the weather in Paris?"
+  - role: assistant
+    content: $ASSISTANT_CONTENT
+  - role: user
+    content:
+      - type: tool_result
+        tool_use_id: $TOOL_USE_ID
+        content: "Current temperature: 72°F"
+YAML
+```
+
+```python Python nocheck
 import anthropic
 
 client = anthropic.Anthropic()
@@ -260,11 +427,49 @@ continuation = client.messages.create(
 )
 ```
 
+</CodeGroup>
+
 ### Interleaved thinking
 
 Extended thinking with tool use in Claude 4 models supports interleaved thinking, which enables Claude to think between tool calls. To enable on Claude 4, 4.5, and Sonnet 4.6 models, add the beta header `interleaved-thinking-2025-05-14` to your API request.
 
-```python nocheck
+<CodeGroup>
+
+```bash CLI nocheck
+ant beta:messages create --beta interleaved-thinking-2025-05-14 <<'YAML'
+model: claude-sonnet-4-6
+max_tokens: 16000
+thinking:
+  type: enabled
+  budget_tokens: 10000
+tools:
+  - name: calculator
+    description: Perform arithmetic calculations.
+    input_schema:
+      type: object
+      properties:
+        expression:
+          type: string
+          description: The math expression to evaluate.
+      required:
+        - expression
+  - name: database_query
+    description: Query the product database.
+    input_schema:
+      type: object
+      properties:
+        query:
+          type: string
+          description: The database query.
+      required:
+        - query
+messages:
+  - role: user
+    content: "What's the total revenue if we sold 150 units of product A at $50 each?"
+YAML
+```
+
+```python Python nocheck
 import anthropic
 
 client = anthropic.Anthropic()
@@ -310,6 +515,8 @@ response = client.beta.messages.create(
     betas=["interleaved-thinking-2025-05-14"],
 )
 ```
+
+</CodeGroup>
 
 With interleaved thinking and ONLY with interleaved thinking (not regular extended thinking), the `budget_tokens` can exceed the `max_tokens` parameter, as `budget_tokens` in this case represents the total budget across all thinking blocks within one assistant turn.
 
@@ -495,7 +702,21 @@ When creating a Message, you can set `"stream": true` to incrementally stream th
 
 ### Streaming with SDKs
 
-```python
+<CodeGroup>
+
+```bash CLI
+ant messages create --stream --format jsonl \
+  --model claude-opus-4-6 \
+  --max-tokens 1024 \
+  --message '{role: user, content: "Hello"}' \
+  | while IFS= read -r event; do
+      [[ $event == *'"text_delta"'* ]] || continue
+      text=${event#*'"text":"'}
+      printf '%b' "${text%\"*}"
+    done
+```
+
+```python Python
 import anthropic
 
 client = anthropic.Anthropic()
@@ -508,6 +729,8 @@ with client.messages.stream(
     for text in stream.text_stream:
         print(text, end="", flush=True)
 ```
+
+</CodeGroup>
 
 ### Event types
 
