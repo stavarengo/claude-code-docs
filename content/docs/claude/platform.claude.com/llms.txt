@@ -12,18 +12,18 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 1060 pages - /docs - Content included below
-- German (Deutsch) (de) - 133 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 133 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 133 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 133 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 133 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 133 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 133 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 133 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 133 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 133 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 133 pages - /docs/id - Visit website for content
+- English (en) - 1062 pages - /docs - Content included below
+- German (Deutsch) (de) - 144 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 144 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 144 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 144 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 144 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 144 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 144 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 144 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 144 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 144 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 144 pages - /docs/id - Visit website for content
 
 ---
 
@@ -45,6 +45,7 @@ The full documentation is available in the following languages on https://platfo
 - [Accessing GitHub](https://platform.claude.com/docs/en/managed-agents/github.md)
 - [Adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking.md)
 - [Adding files](https://platform.claude.com/docs/en/managed-agents/files.md)
+- [Advisor tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool.md)
 - [Authenticate with vaults](https://platform.claude.com/docs/en/managed-agents/vaults.md)
 - [Bash tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/bash-tool.md)
 - [Batch processing](https://platform.claude.com/docs/en/build-with-claude/batch-processing.md)
@@ -101,6 +102,7 @@ The full documentation is available in the following languages on https://platfo
 - [Text editor tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/text-editor-tool.md)
 - [Ticket routing](https://platform.claude.com/docs/en/about-claude/use-case-guides/ticket-routing.md)
 - [Token counting](https://platform.claude.com/docs/en/build-with-claude/token-counting.md)
+- [Tool reference](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference.md)
 - [Tool search](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool.md) - Tool search tool
 - [Tools](https://platform.claude.com/docs/en/managed-agents/tools.md)
 - [Using memory](https://platform.claude.com/docs/en/managed-agents/memory.md) - Using agent memory

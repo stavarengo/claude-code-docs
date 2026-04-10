@@ -13,7 +13,7 @@ claude/platform.claude.com/docs/en/about-claude/models:{choosing-a-model.md,migr
 claude/platform.claude.com/docs/en/about-claude/use-case-guides:{content-moderation.md,customer-support-chat.md,legal-summarization.md,overview.md,ticket-routing.md}
 claude/platform.claude.com/docs/en/agents-and-tools:{mcp-connector.md,remote-mcp-servers.md}
 claude/platform.claude.com/docs/en/agents-and-tools/agent-skills:{best-practices.md,claude-api-skill.md,enterprise.md,overview.md,quickstart.md}
-claude/platform.claude.com/docs/en/agents-and-tools/tool-use:{bash-tool.md,build-a-tool-using-agent.md,code-execution-tool.md,computer-use-tool.md,define-tools.md,fine-grained-tool-streaming.md,handle-tool-calls.md,how-tool-use-works.md,memory-tool.md,overview.md,parallel-tool-use.md,programmatic-tool-calling.md,server-tools.md,strict-tool-use.md,text-editor-tool.md,tool-reference.md,tool-runner.md,tool-search-tool.md,tool-use-with-prompt-caching.md,troubleshooting-tool-use.md,web-fetch-tool.md,web-search-tool.md}
+claude/platform.claude.com/docs/en/agents-and-tools/tool-use:{advisor-tool.md,bash-tool.md,build-a-tool-using-agent.md,code-execution-tool.md,computer-use-tool.md,define-tools.md,fine-grained-tool-streaming.md,handle-tool-calls.md,how-tool-use-works.md,memory-tool.md,overview.md,parallel-tool-use.md,programmatic-tool-calling.md,server-tools.md,strict-tool-use.md,text-editor-tool.md,tool-reference.md,tool-runner.md,tool-search-tool.md,tool-use-with-prompt-caching.md,troubleshooting-tool-use.md,web-fetch-tool.md,web-search-tool.md}
 claude/platform.claude.com/docs/en/api:{admin.md,beta-headers.md,beta.md,client-sdks.md,completions.md,errors.md,ip-addresses.md,messages.md,models.md,openai-sdk.md,overview.md,rate-limits.md,service-tiers.md,supported-regions.md,versioning.md}
 claude/platform.claude.com/docs/en/api/admin:{api_keys.md,cost_report.md,invites.md,organizations.md,usage_report.md,users.md,workspaces.md}
 claude/platform.claude.com/docs/en/api/admin/api_keys:{list.md,retrieve.md,update.md}
@@ -100,9 +100,9 @@ claude/platform.claude.com/docs/en/api/go/completions:{create.md}
 claude/platform.claude.com/docs/en/api/go/messages:{batches.md,count_tokens.md,create.md}
 claude/platform.claude.com/docs/en/api/go/messages/batches:{cancel.md,create.md,delete.md,list.md,results.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/go/models:{list.md,retrieve.md}
-claude/platform.claude.com/docs/en/api/java:{completions.md,messages.md,models.md}
-claude/platform.claude.com/docs/en/api/java/beta:{environments.md,files.md,messages.md,models.md,sessions.md,skills.md,vaults.md}
-claude/platform.claude.com/docs/en/api/java/beta/agents:{archive.md,list.md,retrieve.md,versions.md}
+claude/platform.claude.com/docs/en/api/java:{beta.md,completions.md,messages.md,models.md}
+claude/platform.claude.com/docs/en/api/java/beta:{agents.md,environments.md,files.md,messages.md,models.md,sessions.md,skills.md,vaults.md}
+claude/platform.claude.com/docs/en/api/java/beta/agents:{archive.md,create.md,list.md,retrieve.md,update.md,versions.md}
 claude/platform.claude.com/docs/en/api/java/beta/agents/versions:{list.md}
 claude/platform.claude.com/docs/en/api/java/beta/environments:{archive.md,create.md,delete.md,list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/java/beta/files:{delete.md,download.md,list.md,retrieve_metadata.md,upload.md}

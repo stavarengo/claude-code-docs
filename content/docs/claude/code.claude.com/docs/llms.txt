@@ -45,7 +45,7 @@
 - [Explore the .claude directory](https://code.claude.com/docs/en/claude-directory.md): Where Claude Code reads CLAUDE.md, settings.json, hooks, skills, commands, subagents, rules, and auto memory. Explore the .claude directory in your project and ~/.claude in your home directory.
 - [CLI reference](https://code.claude.com/docs/en/cli-reference.md): Complete reference for Claude Code command-line interface, including commands and flags.
 - [Code Review](https://code.claude.com/docs/en/code-review.md): Set up automated PR reviews that catch logic errors, security vulnerabilities, and regressions using multi-agent analysis of your full codebase
-- [Built-in commands](https://code.claude.com/docs/en/commands.md): Complete reference for built-in commands available in Claude Code.
+- [Commands](https://code.claude.com/docs/en/commands.md): Complete reference for commands available in Claude Code, including built-in commands and bundled skills.
 - [Common workflows](https://code.claude.com/docs/en/common-workflows.md): Step-by-step guides for exploring codebases, fixing bugs, refactoring, testing, and other everyday tasks with Claude Code.
 - [Let Claude use your computer from the CLI](https://code.claude.com/docs/en/computer-use.md): Enable computer use in the Claude Code CLI so Claude can open apps, click, type, and see your screen on macOS. Test native apps, debug visual issues, and automate GUI-only tools without leaving your terminal.
 - [Explore the context window](https://code.claude.com/docs/en/context-window.md): An interactive simulation of how Claude Code's context window fills during a session. See what loads automatically, what each file read costs, and when rules and hooks fire.
@@ -55,7 +55,7 @@
 - [Get started with the desktop app](https://code.claude.com/docs/en/desktop-quickstart.md): Install Claude Code on desktop and start your first coding session
 - [Schedule recurring tasks in Claude Code Desktop](https://code.claude.com/docs/en/desktop-scheduled-tasks.md): Set up scheduled tasks in Claude Code Desktop to run Claude automatically on a recurring basis for daily code reviews, dependency audits, or morning briefings.
 - [Development containers](https://code.claude.com/docs/en/devcontainer.md): Learn about the Claude Code development container for teams that need consistent, secure environments.
-- [Discover and install prebuilt plugins through marketplaces](https://code.claude.com/docs/en/discover-plugins.md): Find and install plugins from marketplaces to extend Claude Code with new commands, agents, and capabilities.
+- [Discover and install prebuilt plugins through marketplaces](https://code.claude.com/docs/en/discover-plugins.md): Find and install plugins from marketplaces to extend Claude Code with new skills, agents, and capabilities.
 - [Environment variables](https://code.claude.com/docs/en/env-vars.md): Complete reference for environment variables that control Claude Code behavior.
 - [Speed up responses with fast mode](https://code.claude.com/docs/en/fast-mode.md): Get faster Opus 4.6 responses in Claude Code by toggling fast mode.
 - [Extend Claude Code](https://code.claude.com/docs/en/features-overview.md): Understand when to use CLAUDE.md, Skills, subagents, hooks, MCP, and plugins.

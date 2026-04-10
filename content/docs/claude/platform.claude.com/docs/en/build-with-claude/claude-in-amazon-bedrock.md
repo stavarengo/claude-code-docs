@@ -170,13 +170,13 @@ print(message.content[0].text)
 import AnthropicBedrockMantle from "@anthropic-ai/bedrock-sdk";
 
 const client = new AnthropicBedrockMantle({
-  awsRegion: "us-east-1",
+  awsRegion: "us-east-1"
 });
 
 const message = await client.messages.create({
   model: "CLAUDE_MODEL_ID",
   max_tokens: 1024,
-  messages: [{ role: "user", content: "Hello, Claude" }],
+  messages: [{ role: "user", content: "Hello, Claude" }]
 });
 
 const block = message.content[0];
@@ -332,8 +332,6 @@ Default quota is 2 million input tokens per minute (TPM). You can request up to 
 ## Data retention
 
 All inference data is retained for 30 days in your AWS storage. There is no zero-data-retention opt-out on this offering. For standard customers, Anthropic can inspect stored data for safety and abuse review. For Select-tier customers, only AWS can inspect data; Anthropic can run automated operations but not manual review. For details on Select-tier eligibility, contact your Anthropic account executive.
-
-If your application requires zero data retention (ZDR), consider Claude Platform on AWS, where ZDR is available by contacting sales.
 
 ## Observability
 
