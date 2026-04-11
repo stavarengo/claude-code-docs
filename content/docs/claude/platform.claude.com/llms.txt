@@ -12,7 +12,7 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 1062 pages - /docs - Content included below
+- English (en) - 1063 pages - /docs - Content included below
 - German (Deutsch) (de) - 144 pages - /docs/de - Visit website for content
 - Spanish (Español) (es) - 144 pages - /docs/es - Visit website for content
 - French (Français) (fr) - 144 pages - /docs/fr - Visit website for content
@@ -118,6 +118,7 @@ The full documentation is available in the following languages on https://platfo
 - [Admin API overview](https://platform.claude.com/docs/en/build-with-claude/administration-api.md)
 - [API and data retention](https://platform.claude.com/docs/en/build-with-claude/api-and-data-retention.md)
 - [Claude Code Analytics API](https://platform.claude.com/docs/en/build-with-claude/claude-code-analytics-api.md)
+- [Amazon Bedrock (research preview)](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock-research-preview.md) - Claude in Amazon Bedrock (research preview)
 - [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry.md) - Claude in Microsoft Foundry
 - [Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock.md) - Claude on Amazon Bedrock
 - [Vertex AI](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai.md) - Claude on Vertex AI
