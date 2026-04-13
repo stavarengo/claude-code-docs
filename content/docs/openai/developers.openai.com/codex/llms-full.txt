@@ -156,9 +156,9 @@ Codex enforces the sandbox differently depending on your OS:
 
 - **macOS** uses Seatbelt policies and runs commands using `sandbox-exec` with a profile (`-p`) that corresponds to the `--sandbox` mode you selected. When restricted read access enables platform defaults, Codex appends a curated macOS platform policy (instead of broadly allowing `/System`) to preserve common tool compatibility.
 - **Linux** uses the bubblewrap pipeline plus `seccomp` by default. `use_legacy_landlock` is available when you need the older path. In managed proxy mode, the default bubblewrap pipeline routes egress through a proxy-only bridge and fails closed if it cannot build valid loopback proxy routes.
-- **Windows** uses the Linux sandbox implementation when running in [Windows Subsystem for Linux (WSL)](https://developers.openai.com/codex/windows#windows-subsystem-for-linux). When running natively on Windows, Codex uses a [Windows sandbox](https://developers.openai.com/codex/windows#windows-sandbox) implementation.
+- **Windows** uses the Linux sandbox implementation when running in [Windows Subsystem for Linux 2 (WSL2)](https://developers.openai.com/codex/windows#windows-subsystem-for-linux). WSL1 was supported through Codex `0.114`; starting in `0.115`, the Linux sandbox moved to `bubblewrap`, so WSL1 is no longer supported. When running natively on Windows, Codex uses a [Windows sandbox](https://developers.openai.com/codex/windows#windows-sandbox) implementation.
 
-If you use the Codex IDE extension on Windows, it supports WSL directly. Set the following in your VS Code settings to keep the agent inside WSL whenever it's available:
+If you use the Codex IDE extension on Windows, it supports WSL2 directly. Set the following in your VS Code settings to keep the agent inside WSL2 whenever it's available:
 
 ```json
 {
@@ -1268,7 +1268,7 @@ The [Codex app for Windows](https://get.microsoft.com/installer/download/9PLM9XG
 working across projects, running parallel agent threads, and reviewing results.
 It runs natively on Windows using PowerShell and the
 [Windows sandbox](https://developers.openai.com/codex/windows#windows-sandbox), or you can configure it to
-run in [Windows Subsystem for Linux (WSL)](#windows-subsystem-for-linux-wsl).
+run in [Windows Subsystem for Linux 2 (WSL2)](#windows-subsystem-for-linux-wsl).
 
 ## Download and update the Codex app
 
@@ -1292,7 +1292,7 @@ winget install Codex -s msstore
 
 ## Native sandbox
 
-The Codex app on Windows supports a native [Windows sandbox](https://developers.openai.com/codex/windows#windows-sandbox) when the agent runs in PowerShell, and uses Linux sandboxing when you run the agent in [Windows Subsystem for Linux (WSL)](#windows-subsystem-for-linux-wsl). To apply sandbox protections in either mode, set sandbox permissions to **Default permissions** in the Composer before sending messages to Codex.
+The Codex app on Windows supports a native [Windows sandbox](https://developers.openai.com/codex/windows#windows-sandbox) when the agent runs in PowerShell, and uses Linux sandboxing when you run the agent in [Windows Subsystem for Linux 2 (WSL2)](#windows-subsystem-for-linux-wsl). To apply sandbox protections in either mode, set sandbox permissions to **Default permissions** in the Composer before sending messages to Codex.
 
 Running Codex in full access mode means Codex is not limited to your project
   directory and might perform unintentional destructive actions that can lead to
@@ -1345,7 +1345,7 @@ expecting the new default terminal to appear.
 
 By default, the Codex app uses the Windows-native agent. That means the agent
 runs commands in PowerShell. The app can still work with projects that live in
-Windows Subsystem for Linux (WSL) by using the `wsl` CLI when needed.
+Windows Subsystem for Linux 2 (WSL2) by using the `wsl` CLI when needed.
 
 If you want to add a project from the WSL filesystem, click **Add new project**
 or press <kbd>Ctrl</kbd>+<kbd>O</kbd>, then type `\\wsl$\` into the File
@@ -1357,10 +1357,13 @@ your Windows filesystem and accessing them from WSL through
 `/mnt/<drive>/...`. This setup is more reliable than opening projects
 directly from the WSL filesystem.
 
-If you want the agent itself to run in WSL, open **[Settings](codex://settings)**,
+If you want the agent itself to run in WSL2, open **[Settings](codex://settings)**,
 switch the agent from Windows native to WSL, and **restart the app**. The
 change doesn't take effect until you restart. Your projects should remain in
 place after restart.
+
+WSL1 was supported through Codex `0.114`. Starting in Codex `0.115`, the Linux
+sandbox moved to `bubblewrap`, so WSL1 is no longer supported.
 
 You configure the integrated terminal independently from the agent. See
 [Customize for your dev setup](#customize-for-your-dev-setup) for the
@@ -3317,7 +3320,7 @@ ChatGPT Plus, Pro, Business, Edu, and Enterprise plans include Codex. Learn more
 ## CLI setup
 
 The Codex CLI is available on macOS and Linux. Windows support is
-  experimental. For the best Windows experience, use Codex in a WSL workspace
+  experimental. For the best Windows experience, use Codex in a WSL2 workspace
   and follow our <a href="/codex/windows">Windows setup guide</a>.
 
 If you're new to Codex, read the [best practices guide](https://developers.openai.com/codex/learn/best-practices).
@@ -3914,7 +3917,7 @@ export const commandOverview = [
     href: "/codex/cli/reference#codex-sandbox",
     type: "experimental",
     description:
-      "Run arbitrary commands inside Codex-provided macOS seatbelt or Linux sandboxes (Landlock by default, optional bubblewrap pipeline).",
+      "Run arbitrary commands inside Codex-provided macOS seatbelt or Linux bubblewrap sandboxes.",
   },
 ];
 
@@ -5376,7 +5379,7 @@ operations. If Codex runs tools like `git`, package managers, or test runners,
 those commands inherit the same sandbox boundaries.
 
 Codex uses platform-native enforcement on each OS. The implementation differs
-between macOS, Linux, WSL, and native Windows, but the idea is the same across
+between macOS, Linux, WSL2, and native Windows, but the idea is the same across
 surfaces: give the agent a bounded place to work so routine tasks can run
 autonomously inside clear limits.
 
@@ -5427,10 +5430,10 @@ sudo dnf install bubblewrap
 
 
 
-Codex uses the system `bwrap` at `/usr/bin/bwrap` when it is available. If it
-is missing, Codex falls back to a bundled helper, but that helper requires
-unprivileged user namespaces. Installing your distro's `bubblewrap` package is
-the most reliable setup.
+Codex uses the first `bwrap` executable it finds on `PATH`. If no `bwrap`
+executable is available, Codex falls back to a bundled helper, but that helper
+requires unprivileged user namespaces. Installing your distro's `bubblewrap`
+package keeps this setup reliable.
 
 Codex surfaces a startup warning when `bwrap` is missing or cannot create user
 namespaces. On distributions that restrict them with AppArmor, you can enable
@@ -10368,8 +10371,8 @@ You can get the Codex extension from the [Visual Studio Code Marketplace](https:
 - [Download for JetBrains IDEs](#jetbrains-ide-integration)
 
 The Codex VS Code extension is available on macOS and Linux. Windows support
-  is experimental. For the best Windows experience, use Codex in a WSL workspace
-  and follow our <a href="/codex/windows">Windows setup guide</a>.
+  is experimental. For the best Windows experience, use Codex in a WSL2
+  workspace and follow our <a href="/codex/windows">Windows setup guide</a>.
 
 After you install it, you'll find Codex in your editor sidebar.
 In VS Code, Codex opens in the right sidebar by default.
@@ -12245,19 +12248,19 @@ Teams can now get started with Codex with no fixed monthly costs. For a
       </PricingCard>
       <PricingCard
         name="Pro"
-        subtitle="Choose 5x or 20x higher rate limits than Plus."
+        subtitle="Choose 10x or 20x higher rate limits than Plus."
         priceEyebrow="From"
         price="$100"
         interval="/month"
         ctaLabel="Get Pro"
         ctaHref="https://chatgpt.com/explore/pro?utm_internal_source=openai_developers_codex"
         highlight="Everything in Plus and:"
-        footnoteLabel="*Codex usage boost ends May 31, 2026."
+        footnoteLabel="*Current usage includes an additional boost ending May 31, 2026. Pro $100 is currently 10x Plus. Pro $200 is currently 20x Plus (equivalent to the 2x promo available since February 2026)."
       >
         - Priority request processing
         - Access to GPT-5.3-Codex-Spark (research preview), a fast Codex model
           for day-to-day coding tasks
-        - 5x or 20x higher rate limits than Plus*
+        - 10x or 20x higher rate limits than Plus*
         - Other [ChatGPT features](https://chatgpt.com/pricing) as part of the
           Pro plan
       </PricingCard>
@@ -12472,8 +12475,7 @@ require Codex to hold more context will use significantly more per message.
           </tr>
           <tr>
             <td colspan="4" style="text-align:center">
-              The limits shown for Pro 5x include a 2x usage boost that ends May
-              31, 2026.
+              Pro $100 currently runs at 10x Plus limits through May 31, 2026.
             </td>
           </tr>
           <tr>
@@ -12536,6 +12538,12 @@ require Codex to hold more context will use significantly more per message.
                 *The usage limits for local messages and cloud tasks share a
                 **five-hour window**. Additional weekly limits may apply.
               </a>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="4" style="text-align:center">
+              Pro $200 remains at 20x Plus limits. This is equivalent to the 2x
+              promo available since February 2026.
             </td>
           </tr>
           <tr>
@@ -14163,7 +14171,7 @@ practical ways:
 
 - natively on Windows with the stronger `elevated` sandbox,
 - natively on Windows with the fallback `unelevated` sandbox,
-- or inside [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/install) (WSL), which uses the Linux sandbox implementation.
+- or inside [Windows Subsystem for Linux 2](https://learn.microsoft.com/en-us/windows/wsl/install) (WSL2), which uses the Linux sandbox implementation.
 
 ## Windows sandbox
 
@@ -14234,16 +14242,19 @@ When a command fails because the Windows sandbox can't read a directory, use:
 
 The path must be an existing absolute directory. After the command succeeds, later commands that run in the sandbox can read that directory during the current session.
 
-We recommend using the native Windows sandbox by default. The native Windows sandbox will offer the best perfomance and highest speeds while keeping the same security. Choose WSL when you
+We recommend using the native Windows sandbox by default. The native Windows sandbox will offer the best perfomance and highest speeds while keeping the same security. Choose WSL2 when you
 need a Linux-native environment on Windows, when your workflow already lives in
-WSL, or when neither native Windows sandbox mode meets your needs.
+WSL2, or when neither native Windows sandbox mode meets your needs.
 
 ## Windows Subsystem for Linux
 
-If you choose WSL, Codex runs inside the Linux environment instead of using the
+If you choose WSL2, Codex runs inside the Linux environment instead of using the
 native Windows sandbox. This is useful if you need Linux-native tooling on
-Windows, if your repositories and developer workflow already live in WSL, or
+Windows, if your repositories and developer workflow already live in WSL2, or
 if neither native Windows sandbox mode works for your environment.
+
+WSL1 was supported through Codex `0.114`. Starting in Codex `0.115`, the Linux
+sandbox moved to `bubblewrap`, so WSL1 is no longer supported.
 
 ### Launch VS Code from inside WSL
 
