@@ -45,7 +45,7 @@ Use this as a compact map of Codex docs. Each page has a Markdown twin at `/code
 ## Concepts
 - [Customization](https://developers.openai.com/codex/concepts/customization.md): How to customize Codex with project guidance, skills, MCP, and subagents
 - [Cyber Safety](https://developers.openai.com/codex/concepts/cyber-safety.md): Cybersecurity safeguards and trusted access for Codex users
-- [Sandboxing](https://developers.openai.com/codex/concepts/sandboxing.md): How Codex uses sandboxes across the Codex app, IDE, and CLI
+- [Sandbox](https://developers.openai.com/codex/concepts/sandboxing.md): How Codex uses sandboxes across the Codex app, IDE, and CLI
 - [Subagents](https://developers.openai.com/codex/concepts/subagents.md): How subagent workflows keep Codex focused and how to choose models for different agents
 
 ## Config Advanced

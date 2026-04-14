@@ -15,7 +15,7 @@ This page covers how to operate Codex safely, including sandboxing, approvals,
 By default, the agent runs with network access turned off. Locally, Codex uses an OS-enforced sandbox that limits what it can touch (typically to the current workspace), plus an approval policy that controls when it must stop and ask you before acting.
 
 For a high-level explanation of how sandboxing works across the Codex app, IDE
-extension, and CLI, see [Sandboxing](https://developers.openai.com/codex/concepts/sandboxing).
+extension, and CLI, see [sandboxing](https://developers.openai.com/codex/concepts/sandboxing).
 For a broader enterprise security overview, see the [Codex security white paper](https://trust.openai.com/?itemUid=382f924d-54f3-43a8-a9df-c39e6c959958&source=click).
 
 ## Sandbox and approvals
@@ -85,7 +85,9 @@ This option works with all `--sandbox` modes, so you still control Codex's level
 
 If you need Codex to read files, make edits, and run commands with network access without approval prompts, use `--sandbox danger-full-access` (or the `--dangerously-bypass-approvals-and-sandbox` flag). Use caution before doing so.
 
-For a middle ground, `approval_policy = { granular = { ... } }` lets you keep specific approval prompt categories interactive while automatically rejecting others. The granular policy covers sandbox approvals, execpolicy-rule prompts, MCP elicitations, `request_permissions` prompts, and skill-script approvals.
+For a middle ground, `approval_policy = { granular = { ... } }` lets you keep specific approval prompt categories interactive while automatically rejecting others. The granular policy covers sandbox approvals, execpolicy-rule prompts, MCP prompts, `request_permissions` prompts, and skill-script approvals.
+
+Set `approvals_reviewer = "guardian_subagent"` to route eligible approval reviews through the Guardian reviewer subagent instead of prompting the user directly. Admin requirements can constrain this with `allowed_approvals_reviewers`.
 
 ### Common sandbox and approval combinations
 
@@ -155,8 +157,8 @@ The `sandbox` command is also available as `codex debug`, and the platform helpe
 Codex enforces the sandbox differently depending on your OS:
 
 - **macOS** uses Seatbelt policies and runs commands using `sandbox-exec` with a profile (`-p`) that corresponds to the `--sandbox` mode you selected. When restricted read access enables platform defaults, Codex appends a curated macOS platform policy (instead of broadly allowing `/System`) to preserve common tool compatibility.
-- **Linux** uses the bubblewrap pipeline plus `seccomp` by default. `use_legacy_landlock` is available when you need the older path. In managed proxy mode, the default bubblewrap pipeline routes egress through a proxy-only bridge and fails closed if it cannot build valid loopback proxy routes.
-- **Windows** uses the Linux sandbox implementation when running in [Windows Subsystem for Linux 2 (WSL2)](https://developers.openai.com/codex/windows#windows-subsystem-for-linux). WSL1 was supported through Codex `0.114`; starting in `0.115`, the Linux sandbox moved to `bubblewrap`, so WSL1 is no longer supported. When running natively on Windows, Codex uses a [Windows sandbox](https://developers.openai.com/codex/windows#windows-sandbox) implementation.
+- **Linux** uses the `bwrap` pipeline plus `seccomp` by default. `use_legacy_landlock` is available when you need the older path. In managed proxy mode, the default `bwrap` pipeline routes egress through a proxy-only bridge and fails closed if it can't build valid local proxy routes.
+- **Windows** uses the Linux sandbox implementation when running in [Windows Subsystem for Linux 2 (WSL2)](https://developers.openai.com/codex/windows#windows-subsystem-for-linux). WSL1 was supported through Codex `0.114`; starting in `0.115`, the Linux sandbox moved to `bwrap`, so WSL1 is no longer supported. When running natively on Windows, Codex uses a [Windows sandbox](https://developers.openai.com/codex/windows#windows-sandbox) implementation.
 
 If you use the Codex IDE extension on Windows, it supports WSL2 directly. Set the following in your VS Code settings to keep the agent inside WSL2 whenever it's available:
 
@@ -1456,7 +1458,7 @@ The Windows app uses the same Codex home directory as native Codex on Windows:
 `%USERPROFILE%\.codex`.
 
 If you also run the Codex CLI inside WSL, the CLI uses the Linux home
-directory by default, so it does not automatically share configuration, cached
+directory by default, so it doesn't automatically share configuration, cached
 auth, or session history with the Windows app.
 
 To share them, use one of these approaches:
@@ -1478,15 +1480,15 @@ features. Install it with `winget install Git.Git` from PowerShell or `cmd.exe`.
 
 ### Git isn't detected for projects opened from `\\wsl$`
 
-For now, if you want to use the Windows-native agent with a project that is
-also accessible from WSL, the most reliable workaround is to store the project
+For now, if you want to use the Windows-native agent with a project also
+accessible from WSL, the most reliable workaround is to store the project
 on the native Windows drive and access it in WSL through `/mnt/<drive>/...`.
 
-### Cmder is not listed in the open dialog
+### `Cmder` isn't listed in the open dialog
 
-If Cmder is installed but doesn't show in Codex's open dialog, add it to the
-Windows Start Menu: right-click Cmder and choose **Add to Start**, then restart
-Codex or reboot.
+If `Cmder` is installed but doesn't show in Codex's open dialog, add it to the
+Windows Start Menu: right-click `Cmder` and choose **Add to Start**, then
+restart Codex or reboot.
 
 ---
 
@@ -1876,31 +1878,36 @@ If a client sends an experimental method or field without opting in, app-server 
 - `thread/unarchive` - restore an archived thread rollout back into the active sessions directory; returns the restored `thread` and emits `thread/unarchived`.
 - `thread/status/changed` - notification emitted when a loaded thread's runtime `status` changes.
 - `thread/compact/start` - trigger conversation history compaction for a thread; returns `{}` immediately while progress streams via `turn/*` and `item/*` notifications.
+- `thread/shellCommand` - run a user-initiated shell command against a thread. This runs outside the sandbox with full access and doesn't inherit the thread sandbox policy.
+- `thread/backgroundTerminals/clean` - stop all running background terminals for a thread (experimental; requires `capabilities.experimentalApi`).
 - `thread/rollback` - drop the last N turns from the in-memory context and persist a rollback marker; returns the updated `thread`.
 - `turn/start` - add user input to a thread and begin Codex generation; responds with the initial `turn` and streams events. For `collaborationMode`, `settings.developer_instructions: null` means "use built-in instructions for the selected mode."
 - `turn/steer` - append user input to the active in-flight turn for a thread; returns the accepted `turnId`.
 - `turn/interrupt` - request cancellation of an in-flight turn; success is `{}` and the turn ends with `status: "interrupted"`.
 - `review/start` - kick off the Codex reviewer for a thread; emits `enteredReviewMode` and `exitedReviewMode` items.
 - `command/exec` - run a single command under the server sandbox without starting a thread/turn.
-- `command/exec/write` - write stdin bytes to a running `command/exec` session or close stdin.
+- `command/exec/write` - write `stdin` bytes to a running `command/exec` session or close `stdin`.
 - `command/exec/resize` - resize a running PTY-backed `command/exec` session.
-- `command/exec/terminate` - terminate a running `command/exec` session.
+- `command/exec/terminate` - stop a running `command/exec` session.
 - `model/list` - list available models (set `includeHidden: true` to include entries with `hidden: true`) with effort options, optional `upgrade`, and `inputModalities`.
 - `experimentalFeature/list` - list feature flags with lifecycle stage metadata and cursor pagination.
 - `collaborationMode/list` - list collaboration mode presets (experimental, no pagination).
 - `skills/list` - list skills for one or more `cwd` values (supports `forceReload` and optional `perCwdExtraUserRoots`).
-- `plugin/list` - list discovered plugin marketplaces and plugin state, including install/auth policy metadata.
+- `plugin/list` - list discovered plugin marketplaces and plugin state, including install/auth policy metadata, marketplace errors, featured plugin ids, and the development-only `forceRemoteSync` option.
 - `plugin/read` - read one plugin by marketplace path and plugin name, including bundled skills, apps, and MCP server names.
+- `plugin/install` - install a plugin from a marketplace path.
+- `plugin/uninstall` - uninstall an installed plugin.
 - `app/list` - list available apps (connectors) with pagination plus accessibility/enabled metadata.
 - `skills/config/write` - enable or disable skills by path.
 - `mcpServer/oauth/login` - start an OAuth login for a configured MCP server; returns an authorization URL and emits `mcpServer/oauthLogin/completed` on completion.
 - `tool/requestUserInput` - prompt the user with 1-3 short questions for a tool call (experimental); questions can set `isOther` for a free-form option.
 - `config/mcpServer/reload` - reload MCP server configuration from disk and queue a refresh for loaded threads.
-- `mcpServerStatus/list` - list MCP servers, tools, resources, and auth status (cursor + limit pagination).
+- `mcpServerStatus/list` - list MCP servers, tools, resources, and auth status (cursor + limit pagination). Use `detail: "full"` for full data or `detail: "toolsAndAuthOnly"` to omit resources.
+- `mcpServer/resource/read` - read a single MCP resource through an initialized MCP server.
 - `windowsSandbox/setupStart` - start Windows sandbox setup for `elevated` or `unelevated` mode; returns quickly and later emits `windowsSandbox/setupCompleted`.
 - `feedback/upload` - submit a feedback report (classification + optional reason/logs + conversation id, plus optional `extraLogFiles` attachments).
 - `config/read` - fetch the effective configuration on disk after resolving configuration layering.
-- `externalAgentConfig/detect` - detect migratable external-agent artifacts with `includeHome` and optional `cwds`; each detected item includes `cwd` (`null` for home).
+- `externalAgentConfig/detect` - detect external-agent artifacts that can be migrated with `includeHome` and optional `cwds`; each detected item includes `cwd` (`null` for home).
 - `externalAgentConfig/import` - apply selected external-agent migration items by passing explicit `migrationItems` with `cwd` (`null` for home).
 - `config/value/write` - write a single configuration key/value to the user's `config.toml` on disk.
 - `config/batchWrite` - apply configuration edits atomically to the user's `config.toml` on disk.
@@ -2123,8 +2130,8 @@ When `nextCursor` is `null`, you have reached the final page.
 `thread/unsubscribe` removes the current connection's subscription to a thread. The response status is one of:
 
 - `unsubscribed` when the connection was subscribed and is now removed.
-- `notSubscribed` when the connection was not subscribed to that thread.
-- `notLoaded` when the thread is not loaded.
+- `notSubscribed` when the connection wasn't subscribed to that thread.
+- `notLoaded` when the thread isn't loaded.
 
 If this was the last subscriber, the server unloads the thread and emits a `thread/status/changed` transition to `notLoaded` plus `thread/closed`.
 
@@ -2171,13 +2178,35 @@ App-server emits progress as standard `turn/*` and `item/*` notifications on the
 { "id": 25, "result": {} }
 ```
 
+### Run a thread shell command
+
+Use `thread/shellCommand` for user-initiated shell commands that belong to a thread. The request returns immediately with `{}` while progress streams through standard `turn/*` and `item/*` notifications.
+
+This API runs outside the sandbox with full access and doesn't inherit the thread sandbox policy. Clients should expose it only for explicit user-initiated commands.
+
+If the thread already has an active turn, the command runs as an auxiliary action on that turn and its formatted output is injected into the turn's message stream. If the thread is idle, app-server starts a standalone turn for the shell command.
+
+```json
+{ "method": "thread/shellCommand", "id": 26, "params": { "threadId": "thr_b", "command": "git status --short" } }
+{ "id": 26, "result": {} }
+```
+
+### Clean background terminals
+
+Use `thread/backgroundTerminals/clean` to stop all running background terminals associated with a thread. This method is experimental and requires `capabilities.experimentalApi = true`.
+
+```json
+{ "method": "thread/backgroundTerminals/clean", "id": 27, "params": { "threadId": "thr_b" } }
+{ "id": 27, "result": {} }
+```
+
 ### Roll back recent turns
 
 Use `thread/rollback` to remove the last `numTurns` entries from the in-memory context and persist a rollback marker in the rollout log. The returned `thread` includes `turns` populated after the rollback.
 
 ```json
-{ "method": "thread/rollback", "id": 26, "params": { "threadId": "thr_b", "numTurns": 1 } }
-{ "id": 26, "result": { "thread": { "id": "thr_b", "name": "Bug bash notes", "ephemeral": false } } }
+{ "method": "thread/rollback", "id": 28, "params": { "threadId": "thr_b", "numTurns": 1 } }
+{ "id": 28, "result": { "thread": { "id": "thr_b", "name": "Bug bash notes", "ephemeral": false } } }
 ```
 
 ## Turns
@@ -2825,7 +2854,7 @@ Apply multiple app edits atomically:
 
 ### Detect and import external agent config
 
-Use `externalAgentConfig/detect` to discover migratable external-agent artifacts, then pass the selected entries to `externalAgentConfig/import`.
+Use `externalAgentConfig/detect` to discover external-agent artifacts that can be migrated, then pass the selected entries to `externalAgentConfig/import`.
 
 Detection example:
 
@@ -2865,7 +2894,7 @@ Import example:
 { "id": 64, "result": {} }
 ```
 
-Supported `itemType` values are `AGENTS_MD`, `CONFIG`, `SKILLS`, and `MCP_SERVER_CONFIG`. Detection returns only items that still have work to do. For example, AGENTS migration is skipped when `AGENTS.md` already exists and is non-empty, and skill imports do not overwrite existing skill directories.
+Supported `itemType` values are `AGENTS_MD`, `CONFIG`, `SKILLS`, and `MCP_SERVER_CONFIG`. Detection returns only items that still have work to do. For example, AGENTS migration is skipped when `AGENTS.md` already exists and is non-empty, and skill imports don't overwrite existing skill directories.
 
 ## Auth endpoints
 
@@ -4574,7 +4603,8 @@ the command name to filter the list.
 | [`/sandbox-add-read-dir`](#grant-sandbox-read-access-with-sandbox-add-read-dir) | Grant sandbox read access to an extra directory (Windows only). | Unblock commands that need to read an absolute directory path outside the current readable roots.         |
 | [`/agent`](#switch-agent-threads-with-agent)                                    | Switch the active agent thread.                                 | Inspect or continue work in a spawned subagent thread.                                                    |
 | [`/apps`](#browse-apps-with-apps)                                               | Browse apps (connectors) and insert them into your prompt.      | Attach an app as `$app-slug` before asking Codex to use it.                                               |
-| [`/clear`](#clear-the-terminal-and-start-a-new-chat-with-clear)                 | Clear the terminal and start a fresh chat.                      | Reset the visible UI and conversation together when you want a clean slate.                               |
+| [`/plugins`](#browse-plugins-with-plugins)                                      | Browse installed and discoverable plugins.                      | Inspect plugin tools, install suggested plugins, or manage plugin availability.                           |
+| [`/clear`](#clear-the-terminal-and-start-a-new-chat-with-clear)                 | Clear the terminal and start a fresh chat.                      | Reset the visible UI and conversation together when you want a fresh start.                               |
 | [`/compact`](#keep-transcripts-lean-with-compact)                               | Summarize the visible conversation to free tokens.              | Use after long runs so Codex retains key points without blowing the context window.                       |
 | [`/copy`](#copy-the-latest-response-with-copy)                                  | Copy the latest completed Codex output.                         | Grab the latest finished response or plan text without manually selecting it.                             |
 | [`/diff`](#review-changes-with-diff)                                            | Show the Git diff, including files Git isn't tracking yet.      | Review Codex's edits before you commit or run tests.                                                      |
@@ -4590,6 +4620,7 @@ the command name to filter the list.
 | [`/plan`](#switch-to-plan-mode-with-plan)                                       | Switch to plan mode and optionally send a prompt.               | Ask Codex to propose an execution plan before implementation work starts.                                 |
 | [`/personality`](#set-a-communication-style-with-personality)                   | Choose a communication style for responses.                     | Make Codex more concise, more explanatory, or more collaborative without changing your instructions.      |
 | [`/ps`](#check-background-terminals-with-ps)                                    | Show experimental background terminals and their recent output. | Check long-running commands without leaving the main transcript.                                          |
+| [`/stop`](#stop-background-terminals-with-stop)                                 | Stop all background terminals.                                  | Cancel background terminal work started by the current session.                                           |
 | [`/fork`](#fork-the-current-conversation-with-fork)                             | Fork the current conversation into a new thread.                | Branch the active session to explore a new approach without losing the current transcript.                |
 | [`/resume`](#resume-a-saved-conversation-with-resume)                           | Resume a saved conversation from your session list.             | Continue work from a previous CLI session without starting over.                                          |
 | [`/new`](#start-a-new-conversation-with-new)                                    | Start a new conversation inside the same CLI session.           | Reset the chat context without leaving the CLI when you want a fresh prompt in the same repo.             |
@@ -4598,6 +4629,7 @@ the command name to filter the list.
 | [`/status`](#inspect-the-session-with-status)                                   | Display session configuration and token usage.                  | Confirm the active model, approval policy, writable roots, and remaining context capacity.                |
 | [`/debug-config`](#inspect-config-layers-with-debug-config)                     | Print config layer and requirements diagnostics.                | Debug precedence and policy requirements, including experimental network constraints.                     |
 | [`/statusline`](#configure-footer-items-with-statusline)                        | Configure TUI status-line fields interactively.                 | Pick and reorder footer items (model/context/limits/git/tokens/session) and persist in config.toml.       |
+| [`/title`](#configure-terminal-title-items-with-title)                          | Configure terminal window or tab title fields interactively.    | Pick and reorder title items such as project, status, thread, branch, model, and task progress.           |
 
 `/quit` and `/exit` both exit the CLI. Use them only after you have saved or
 committed any important work.
@@ -4730,6 +4762,17 @@ Available status-line items include model, model+reasoning, context stats, rate
 limits, git branch, token counters, session id, current directory/project root,
 and Codex version.
 
+### Configure terminal title items with `/title`
+
+1. Type `/title`.
+2. Use the picker to toggle and reorder items, then confirm.
+
+Expected: The terminal window or tab title updates immediately and persists to
+`tui.terminal_title` in `config.toml`.
+
+Available title items include app name, project, spinner, status, thread, git
+branch, model, and task progress.
+
 ### Check background terminals with `/ps`
 
 1. Type `/ps`.
@@ -4739,6 +4782,14 @@ Expected: Codex shows each background terminal's command plus up to three
 recent, non-empty output lines so you can gauge progress at a glance.
 
 Background terminals appear when `unified_exec` is in use; otherwise, the list may be empty.
+
+### Stop background terminals with `/stop`
+
+1. Type `/stop`.
+2. Confirm if Codex asks before stopping the listed terminals.
+
+Expected: Codex stops all background terminals for the current session. `/clean`
+is still available as an alias for `/stop`.
 
 ### Keep transcripts lean with `/compact`
 
@@ -4770,7 +4821,7 @@ Expected: Codex adds the file to the conversation, ensuring follow-up turns refe
 Expected: Codex starts a fresh conversation in the same CLI session, so you
 can switch tasks without leaving your terminal.
 
-Unlike `/clear`, `/new` does not clear the current terminal view first.
+Unlike `/clear`, `/new` doesn't clear the current terminal view first.
 
 ### Resume a saved conversation with `/resume`
 
@@ -4822,6 +4873,14 @@ Expected: You see the configured Model Context Protocol (MCP) tools Codex can ca
 
 Expected: Codex inserts the app mention into the composer as `$app-slug`, so
 you can immediately ask Codex to use it.
+
+### Browse plugins with `/plugins`
+
+1. Type `/plugins`.
+2. Pick a plugin from the list to inspect its capabilities or available actions.
+
+Expected: Codex opens the plugin browser so you can review installed plugins and
+discoverable plugins that your configuration allows.
 
 ### Switch agent threads with `/agent`
 
@@ -5356,9 +5415,9 @@ Legitimate or non-cybersecurity activity may occasionally be flagged. When rerou
 
 ---
 
-# Sandboxing
+# Sandbox
 
-Sandboxing is the boundary that lets Codex act autonomously without giving it
+The sandbox is the boundary that lets Codex act autonomously without giving it
 unrestricted access to your machine. When Codex runs local commands in the
 **Codex app**, **IDE extension**, or **CLI**, those commands run inside a
 constrained environment instead of running with full access by default.
@@ -5385,11 +5444,11 @@ autonomously inside clear limits.
 
 ## Why it matters
 
-Sandboxing reduces approval fatigue. Instead of asking you to confirm every
+The sandbox reduces approval fatigue. Instead of asking you to confirm every
 low-risk command, Codex can read files, make edits, and run routine project
 commands within the boundary you already approved.
 
-It also gives you a clearer trust model for agentic work. You are not just
+It also gives you a clearer trust model for agentic work. You aren't just
 trusting the agent's intentions; you are trusting that the agent is operating
 inside enforced limits. That makes it easier to let Codex work independently
 while still knowing when it will stop and ask for help.
@@ -5432,12 +5491,12 @@ sudo dnf install bubblewrap
 
 Codex uses the first `bwrap` executable it finds on `PATH`. If no `bwrap`
 executable is available, Codex falls back to a bundled helper, but that helper
-requires unprivileged user namespaces. Installing your distro's `bubblewrap`
-package keeps this setup reliable.
+requires support for unprivileged user namespace creation. Installing the
+distribution package that provides `bwrap` keeps this setup reliable.
 
-Codex surfaces a startup warning when `bwrap` is missing or cannot create user
-namespaces. On distributions that restrict them with AppArmor, you can enable
-them with:
+Codex surfaces a startup warning when `bwrap` is missing or when the helper
+can't create the needed user namespace. On distributions that restrict this
+AppArmor setting, you can enable it with:
 
 ```bash
 sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
@@ -5474,7 +5533,7 @@ should pause for approval.
 
 At a high level, the common sandbox modes are:
 
-- `read-only`: Codex can inspect files, but it cannot edit files or run
+- `read-only`: Codex can inspect files, but it can't edit files or run
   commands without approval.
 - `workspace-write`: Codex can read files, edit within the workspace, and run
   routine local commands inside that boundary. This is the default low-friction
@@ -5485,11 +5544,11 @@ At a high level, the common sandbox modes are:
 
 The common approval policies are:
 
-- `untrusted`: Codex asks before running commands that are not in its trusted
+- `untrusted`: Codex asks before running commands that aren't in its trusted
   set.
 - `on-request`: Codex works inside the sandbox by default and asks when it
   needs to go beyond that boundary.
-- `never`: Codex does not stop for approval prompts.
+- `never`: Codex doesn't stop for approval prompts.
 
 Full access means using `sandbox_mode = "danger-full-access"` together with
 `approval_policy = "never"`. By contrast, `--full-auto` is the lower-risk local
@@ -5499,7 +5558,13 @@ automation preset: `sandbox_mode = "workspace-write"` and
 If you need Codex to work across more than one directory, writable roots let
 you extend the places it can modify without removing the sandbox entirely. If
 you need a broader or narrower trust boundary, adjust the default sandbox mode
-and approval policy instead of relying on ad hoc exceptions.
+and approval policy instead of relying on one-off exceptions.
+
+For reusable permission sets, set `default_permissions` to a named profile and
+define `[permissions.<name>.filesystem]` or `[permissions.<name>.network]`.
+Managed network profiles use map tables such as
+`[permissions.<name>.network.domains]` and
+`[permissions.<name>.network.unix_sockets]` for domain and socket rules.
 
 When a workflow needs a specific exception, use [rules](https://developers.openai.com/codex/rules). Rules
 let you allow, prompt, or forbid command prefixes outside the sandbox, which is
@@ -5737,7 +5802,7 @@ Set `project_root_markers = []` to skip searching parent directories and treat t
 
 ## Custom model providers
 
-A model provider defines how Codex connects to a model (base URL, wire API, and optional HTTP headers).
+A model provider defines how Codex connects to a model (base URL, wire API, authentication, and optional HTTP headers). Custom providers can't reuse the reserved built-in provider IDs: `openai`, `ollama`, and `lmstudio`.
 
 Define additional providers and point `model_provider` at them:
 
@@ -5750,7 +5815,7 @@ name = "OpenAI using LLM proxy"
 base_url = "http://proxy.example.com"
 env_key = "OPENAI_API_KEY"
 
-[model_providers.ollama]
+[model_providers.local_ollama]
 name = "Ollama"
 base_url = "http://localhost:11434/v1"
 
@@ -5767,6 +5832,23 @@ Add request headers when needed:
 http_headers = { "X-Example-Header" = "example-value" }
 env_http_headers = { "X-Example-Features" = "EXAMPLE_FEATURES" }
 ```
+
+Use command-backed authentication when a provider needs Codex to fetch bearer tokens from an external credential helper:
+
+```toml
+[model_providers.proxy]
+name = "OpenAI using LLM proxy"
+base_url = "https://proxy.example.com/v1"
+wire_api = "responses"
+
+[model_providers.proxy.auth]
+command = "/usr/local/bin/fetch-codex-token"
+args = ["--audience", "codex"]
+timeout_ms = 5000
+refresh_interval_ms = 300000
+```
+
+The auth command receives no `stdin` and must print the token to stdout. Codex trims surrounding whitespace, treats an empty token as an error, and refreshes proactively at `refresh_interval_ms`; set `refresh_interval_ms = 0` to refresh only after an authentication retry. Don't combine `[model_providers.<id>.auth]` with `env_key`, `experimental_bearer_token`, or `requires_openai_auth`.
 
 ## OSS mode (local providers)
 
@@ -5786,12 +5868,12 @@ base_url = "https://YOUR_PROJECT_NAME.openai.azure.com/openai"
 env_key = "AZURE_OPENAI_API_KEY"
 query_params = { api-version = "2025-04-01-preview" }
 wire_api = "responses"
-
-[model_providers.openai]
 request_max_retries = 4
 stream_max_retries = 10
 stream_idle_timeout_ms = 300000
 ```
+
+To change the base URL for the built-in OpenAI provider, use `openai_base_url`; don't create `[model_providers.openai]`, because you can't override built-in provider IDs.
 
 ## ChatGPT customers using data residency
 
@@ -6400,6 +6482,12 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
         "When `true`, skill-script approval prompts are allowed to surface.",
     },
     {
+      key: "approvals_reviewer",
+      type: "user | guardian_subagent",
+      description:
+        "Select who reviews eligible approval prompts. Defaults to `user`; `guardian_subagent` routes supported reviews through the Guardian reviewer subagent.",
+    },
+    {
       key: "allow_login_shell",
       type: "boolean",
       description:
@@ -6602,6 +6690,12 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
       key: "apps.<id>.tools.<tool>.approval_mode",
       type: "auto | prompt | approve",
       description: "Per-tool approval behavior override for a single app tool.",
+    },
+    {
+      key: "tool_suggest.discoverables",
+      type: "array<table>",
+      description:
+        'Allow tool suggestions for additional discoverable connectors or plugins. Each entry uses `type = "connector"` or `"plugin"` and an `id`.',
     },
     {
       key: "features.apps",
@@ -6839,6 +6933,12 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
         "Suppress the warning that appears when under-development feature flags are enabled.",
     },
     {
+      key: "model_providers.<id>",
+      type: "table",
+      description:
+        "Custom provider definition. Built-in provider IDs (`openai`, `ollama`, and `lmstudio`) are reserved and cannot be overridden.",
+    },
+    {
       key: "model_providers.<id>.name",
       type: "string",
       description: "Display name for a custom model provider.",
@@ -6914,6 +7014,40 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
       type: "boolean",
       description:
         "Whether that provider supports the Responses API WebSocket transport.",
+    },
+    {
+      key: "model_providers.<id>.auth",
+      type: "table",
+      description:
+        "Command-backed bearer token configuration for a custom provider. Do not combine with `env_key`, `experimental_bearer_token`, or `requires_openai_auth`.",
+    },
+    {
+      key: "model_providers.<id>.auth.command",
+      type: "string",
+      description:
+        "Command to run when Codex needs a bearer token. The command must print the token to stdout.",
+    },
+    {
+      key: "model_providers.<id>.auth.args",
+      type: "array<string>",
+      description: "Arguments passed to the token command.",
+    },
+    {
+      key: "model_providers.<id>.auth.timeout_ms",
+      type: "number",
+      description:
+        "Maximum token command runtime in milliseconds (default: 5000).",
+    },
+    {
+      key: "model_providers.<id>.auth.refresh_interval_ms",
+      type: "number",
+      description:
+        "How often Codex proactively refreshes the token in milliseconds (default: 300000). Set to `0` to refresh only after an authentication retry.",
+    },
+    {
+      key: "model_providers.<id>.auth.cwd",
+      type: "string (path)",
+      description: "Working directory for the token command.",
     },
     {
       key: "model_reasoning_effort",
@@ -7231,6 +7365,12 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
         "Ordered list of TUI footer status-line item identifiers. `null` disables the status line.",
     },
     {
+      key: "tui.terminal_title",
+      type: "array<string> | null",
+      description:
+        'Ordered list of terminal window/tab title item identifiers. Defaults to `["spinner", "project"]`; `null` disables title updates.',
+    },
+    {
       key: "tui.theme",
       type: "string",
       description:
@@ -7389,20 +7529,16 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
       description: "Network proxy mode used for subprocess traffic.",
     },
     {
-      key: "permissions.<name>.network.allowed_domains",
-      type: "array<string>",
-      description: "Allowlist of domains permitted through the managed proxy.",
-    },
-    {
-      key: "permissions.<name>.network.denied_domains",
-      type: "array<string>",
-      description: "Denylist of domains blocked by the managed proxy.",
-    },
-    {
-      key: "permissions.<name>.network.allow_unix_sockets",
-      type: "array<string>",
+      key: "permissions.<name>.network.domains",
+      type: "map<string, allow | deny>",
       description:
-        "Allowlist of Unix socket paths permitted through the managed proxy.",
+        "Domain rules for the managed proxy. Use domain names or wildcard patterns as keys, with `allow` or `deny` values.",
+    },
+    {
+      key: "permissions.<name>.network.unix_sockets",
+      type: "map<string, allow | none>",
+      description:
+        "Unix socket rules for the managed proxy. Use socket paths as keys, with `allow` or `none` values.",
     },
     {
       key: "permissions.<name>.network.allow_local_binding",
@@ -7489,6 +7625,12 @@ canonical keys that `config.toml` uses. Omitted keys remain unconstrained.
       type: "array<string>",
       description:
         "Allowed values for `approval_policy` (for example `untrusted`, `on-request`, `never`, and `granular`).",
+    },
+    {
+      key: "allowed_approvals_reviewers",
+      type: "array<string>",
+      description:
+        "Allowed values for `approvals_reviewer` (for example `user` and `guardian_subagent`).",
     },
     {
       key: "allowed_sandbox_modes",
@@ -7694,6 +7836,9 @@ model_provider = "openai"
 # - never: never prompt (risky)
 # - { granular = { ... } }: allow or auto-reject selected prompt categories
 approval_policy = "on-request"
+# Who reviews eligible approval prompts: user (default) | guardian_subagent
+# approvals_reviewer = "user"
+
 # Example granular policy:
 # approval_policy = { granular = {
 #   sandbox_approval = true,
@@ -7712,6 +7857,8 @@ allow_login_shell = true
 # - workspace-write
 # - danger-full-access (no sandbox; extremely risky)
 sandbox_mode = "read-only"
+# Named permissions profile to apply by default. Required before using [permissions.<name>].
+# default_permissions = "workspace"
 
 ################################################################################
 # Authentication & Login
@@ -7859,7 +8006,8 @@ experimental_use_profile = false
 # Managed network proxy settings
 ################################################################################
 
-[permissions.network]
+# Set `default_permissions = "workspace"` before enabling this profile.
+# [permissions.workspace.network]
 # enabled = true
 # proxy_url = "http://127.0.0.1:43128"
 # admin_url = "http://127.0.0.1:43129"
@@ -7871,10 +8019,14 @@ experimental_use_profile = false
 # dangerously_allow_non_loopback_admin = false
 # dangerously_allow_all_unix_sockets = false
 # mode = "limited"                           # limited | full
-# allowed_domains = ["api.openai.com"]
-# denied_domains = ["example.com"]
-# allow_unix_sockets = ["/var/run/docker.sock"]
 # allow_local_binding = false
+#
+# [permissions.workspace.network.domains]
+# "api.openai.com" = "allow"
+# "example.com" = "deny"
+#
+# [permissions.workspace.network.unix_sockets]
+# "/var/run/docker.sock" = "allow"
 
 ################################################################################
 # History (table)
@@ -7911,6 +8063,12 @@ show_tooltips = true
 # ["model-with-reasoning", "context-remaining", "current-dir"].
 # Set to [] to hide the footer.
 # status_line = ["model", "context-remaining", "git-branch"]
+
+# Ordered list of terminal window/tab title item IDs. When unset, Codex uses:
+# ["spinner", "project"]. Set to [] to clear the title.
+# Available IDs include app-name, project, spinner, status, thread, git-branch, model,
+# and task-progress.
+# terminal_title = ["spinner", "project"]
 
 # Syntax-highlighting theme (kebab-case). Use /theme in the TUI to preview and save.
 # You can also add custom .tmTheme files under $CODEX_HOME/themes.
@@ -8001,6 +8159,7 @@ enabled = true
 # - openai
 # - ollama
 # - lmstudio
+# These IDs are reserved. Use a different ID for custom providers.
 
 [model_providers]
 
@@ -8009,7 +8168,7 @@ enabled = true
 # name = "OpenAI Data Residency"
 # base_url = "https://us.api.openai.com/v1"        # example with 'us' domain prefix
 # wire_api = "responses"                           # only supported value
-# # requires_openai_auth = true                    # built-in OpenAI defaults to true
+# # requires_openai_auth = true                    # use only for providers backed by OpenAI auth
 # # request_max_retries = 4                        # default 4; max 100
 # # stream_max_retries = 5                         # default 5; max 100
 # # stream_idle_timeout_ms = 300000                # default 300_000 (5m)
@@ -8028,8 +8187,20 @@ enabled = true
 # env_key_instructions = "Set AZURE_OPENAI_API_KEY in your environment"
 # # supports_websockets = false
 
+# --- Example: command-backed bearer token auth ---
+# [model_providers.proxy]
+# name = "OpenAI using LLM proxy"
+# base_url = "https://proxy.example.com/v1"
+# wire_api = "responses"
+#
+# [model_providers.proxy.auth]
+# command = "/usr/local/bin/fetch-codex-token"
+# args = ["--audience", "codex"]
+# timeout_ms = 5000
+# refresh_interval_ms = 300000
+
 # --- Example: Local OSS (e.g., Ollama-compatible) ---
-# [model_providers.ollama]
+# [model_providers.local_ollama]
 # name = "Ollama"
 # base_url = "http://localhost:11434/v1"
 # wire_api = "responses"
@@ -8055,6 +8226,13 @@ enabled = true
 # [apps.google_drive.tools."files/delete"]
 # enabled = false
 # approval_mode = "approve"
+
+# Optional tool suggestion allowlist for connectors or plugins Codex can offer to install.
+# [tool_suggest]
+# discoverables = [
+#   { type = "connector", id = "gmail" },
+#   { type = "plugin", id = "figma@openai-curated" },
+# ]
 
 ################################################################################
 # Profiles (named presets)
@@ -12736,7 +12914,7 @@ input tokens and output tokens your workspace consumes. Read about tokens
 [here](https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them).
 
 This format replaces average per-message estimates for your plan with a direct
-mapping between token usage and credits. It is most useful when you want a
+mapping between token usage and credits. This is most useful when you want a
 clearer view of how input, cached input, and output affect credit consumption.
 
 Under this model, actual credit usage depends on the mix of input, cached input,
@@ -13298,7 +13476,7 @@ Use the SDK when you need to:
 
 ## TypeScript library
 
-The TypeScript library provides a way to control Codex from within your application that is more comprehensive and flexible than non-interactive mode.
+The TypeScript library provides a way to control Codex from within your application that's more comprehensive and flexible than non-interactive mode.
 
 Use the library server-side; it requires Node.js 18 or later.
 
@@ -13344,6 +13522,54 @@ console.log(result2);
 ```
 
 For more details, check out the [TypeScript repo](https://github.com/openai/codex/tree/main/sdk/typescript).
+
+## Python library
+
+The Python SDK is experimental and controls the local Codex app-server over JSON-RPC. It requires Python 3.10 or later and a local checkout of the open-source Codex repo.
+
+### Installation
+
+From the Codex repo root, install the SDK in editable mode:
+
+```bash
+cd sdk/python
+python -m pip install -e .
+```
+
+For manual local SDK usage, pass `AppServerConfig(codex_bin=...)` to point at a local `codex` binary, or use the repo examples and notebook bootstrap.
+
+### Usage
+
+Start Codex, create a thread, and run a prompt:
+
+```python
+from codex_app_server import Codex
+
+with Codex() as codex:
+    thread = codex.thread_start(model="gpt-5.4")
+    result = thread.run("Make a plan to diagnose and fix the CI failures")
+    print(result.final_response)
+```
+
+Use `AsyncCodex` when your application is already asynchronous:
+
+```python
+import asyncio
+
+from codex_app_server import AsyncCodex
+
+
+async def main() -> None:
+    async with AsyncCodex() as codex:
+        thread = await codex.thread_start(model="gpt-5.4")
+        result = await thread.run("Implement the plan")
+        print(result.final_response)
+
+
+asyncio.run(main())
+```
+
+For more details, check out the [Python repo](https://github.com/openai/codex/tree/main/sdk/python).
 
 ---
 
@@ -14189,12 +14415,12 @@ sandbox = "elevated" # or "unelevated"
 
 `elevated` is the preferred native Windows sandbox. It uses dedicated
 lower-privilege sandbox users, filesystem permission boundaries, firewall
-rules, and local policy changes needed for sandboxed command execution.
+rules, and local policy changes needed for commands that run in the sandbox.
 
 `unelevated` is the fallback native Windows sandbox. It runs commands with a
 restricted Windows token derived from your current user, applies ACL-based
 filesystem boundaries, and uses environment-level offline controls instead of
-the dedicated offline-user firewall rule. It is weaker than `elevated`, but it
+the dedicated offline-user firewall rule. It's weaker than `elevated`, but it
 is still useful when administrator-approved setup is blocked by local or
 enterprise policy.
 
@@ -14218,15 +14444,15 @@ Running Codex in full access mode means Codex is not limited to your project
 
 ### Windows version matrix
 
-| Windows version                  | Support level   | Notes                                                                                                                                                                                        |
-| -------------------------------- | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Windows 11                       | Recommended     | Best baseline for Codex on Windows. Use this if you are standardizing an enterprise deployment.                                                                                              |
-| Recent, fully updated Windows 10 | Best effort     | Can work, but is less reliable than Windows 11. For Windows 10, Codex depends on modern console support, including ConPTY. In practice, Windows 10 October 2018 Update or newer is required. |
-| Older Windows 10 builds          | Not recommended | More likely to miss required console components such as ConPTY and more likely to fail in enterprise setups.                                                                                 |
+| Windows version                  | Support level   | Notes                                                                                                                                                                                 |
+| -------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Windows 11                       | Recommended     | Best baseline for Codex on Windows. Use this if you are standardizing an enterprise deployment.                                                                                       |
+| Recent, fully updated Windows 10 | Best effort     | Can work, but is less reliable than Windows 11. For Windows 10, Codex depends on modern console support, including ConPTY. In practice, Windows 10 version 1809 or newer is required. |
+| Older Windows 10 builds          | Not recommended | More likely to miss required console components such as ConPTY and more likely to fail in enterprise setups.                                                                          |
 
 Additional environment assumptions:
 
-- `winget` should be available. If it is missing, update Windows or install
+- `winget` should be available. If it's missing, update Windows or install
   the Windows Package Manager before setting up Codex.
 - The recommended native sandbox depends on administrator-approved setup.
 - Some enterprise-managed devices block the required setup steps even when the
@@ -14242,7 +14468,7 @@ When a command fails because the Windows sandbox can't read a directory, use:
 
 The path must be an existing absolute directory. After the command succeeds, later commands that run in the sandbox can read that directory during the current session.
 
-We recommend using the native Windows sandbox by default. The native Windows sandbox will offer the best perfomance and highest speeds while keeping the same security. Choose WSL2 when you
+Use the native Windows sandbox by default. The native Windows sandbox offers the best performance and highest speeds while keeping the same security. Choose WSL2 when you
 need a Linux-native environment on Windows, when your workflow already lives in
 WSL2, or when neither native Windows sandbox mode meets your needs.
 
