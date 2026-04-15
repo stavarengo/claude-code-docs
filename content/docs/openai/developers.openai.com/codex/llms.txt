@@ -68,9 +68,6 @@ Use this as a compact map of Codex docs. Each page has a Markdown twin at `/code
 - [Governance](https://developers.openai.com/codex/enterprise/governance.md): Governance guidance for managing Codex in your organization
 - [Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration.md): Configure managed Codex requirements and defaults
 
-## Explore
-- [Explore](https://developers.openai.com/codex/explore.md): Get ideas on what you can build with Codex
-
 ## Feature Maturity
 - [Feature Maturity](https://developers.openai.com/codex/feature-maturity.md): How to interpret feature maturity levels in Codex docs and releases
 

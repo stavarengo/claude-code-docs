@@ -78,7 +78,7 @@ Get audio speeches usage details for the organization.
 
   - `result: array of object { input_tokens, num_model_requests, object, 10 more }  or object { input_tokens, num_model_requests, object, 4 more }  or object { input_tokens, num_model_requests, object, 4 more }  or 6 more`
 
-    - `UsageCompletionsResult = object { input_tokens, num_model_requests, object, 10 more }`
+    - `UsageCompletionsResult object { input_tokens, num_model_requests, object, 10 more }`
 
       The aggregated completions usage details of the specific time bucket.
 
@@ -134,7 +134,7 @@ Get audio speeches usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageEmbeddingsResult = object { input_tokens, num_model_requests, object, 4 more }`
+    - `UsageEmbeddingsResult object { input_tokens, num_model_requests, object, 4 more }`
 
       The aggregated embeddings usage details of the specific time bucket.
 
@@ -166,7 +166,7 @@ Get audio speeches usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageModerationsResult = object { input_tokens, num_model_requests, object, 4 more }`
+    - `UsageModerationsResult object { input_tokens, num_model_requests, object, 4 more }`
 
       The aggregated moderations usage details of the specific time bucket.
 
@@ -198,7 +198,7 @@ Get audio speeches usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageImagesResult = object { images, num_model_requests, object, 6 more }`
+    - `UsageImagesResult object { images, num_model_requests, object, 6 more }`
 
       The aggregated images usage details of the specific time bucket.
 
@@ -238,7 +238,7 @@ Get audio speeches usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageAudioSpeechesResult = object { characters, num_model_requests, object, 4 more }`
+    - `UsageAudioSpeechesResult object { characters, num_model_requests, object, 4 more }`
 
       The aggregated audio speeches usage details of the specific time bucket.
 
@@ -270,7 +270,7 @@ Get audio speeches usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageAudioTranscriptionsResult = object { num_model_requests, object, seconds, 4 more }`
+    - `UsageAudioTranscriptionsResult object { num_model_requests, object, seconds, 4 more }`
 
       The aggregated audio transcriptions usage details of the specific time bucket.
 
@@ -302,7 +302,7 @@ Get audio speeches usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageVectorStoresResult = object { object, usage_bytes, project_id }`
+    - `UsageVectorStoresResult object { object, usage_bytes, project_id }`
 
       The aggregated vector stores usage details of the specific time bucket.
 
@@ -318,7 +318,7 @@ Get audio speeches usage details for the organization.
 
         When `group_by=project_id`, this field provides the project ID of the grouped usage result.
 
-    - `UsageCodeInterpreterSessionsResult = object { object, num_sessions, project_id }`
+    - `UsageCodeInterpreterSessionsResult object { object, num_sessions, project_id }`
 
       The aggregated code interpreter sessions usage details of the specific time bucket.
 
@@ -334,7 +334,7 @@ Get audio speeches usage details for the organization.
 
         When `group_by=project_id`, this field provides the project ID of the grouped usage result.
 
-    - `CostsResult = object { object, amount, line_item, project_id }`
+    - `CostsResult object { object, amount, line_item, project_id }`
 
       The aggregated costs details of the specific time bucket.
 
@@ -527,7 +527,7 @@ Get audio transcriptions usage details for the organization.
 
   - `result: array of object { input_tokens, num_model_requests, object, 10 more }  or object { input_tokens, num_model_requests, object, 4 more }  or object { input_tokens, num_model_requests, object, 4 more }  or 6 more`
 
-    - `UsageCompletionsResult = object { input_tokens, num_model_requests, object, 10 more }`
+    - `UsageCompletionsResult object { input_tokens, num_model_requests, object, 10 more }`
 
       The aggregated completions usage details of the specific time bucket.
 
@@ -583,7 +583,7 @@ Get audio transcriptions usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageEmbeddingsResult = object { input_tokens, num_model_requests, object, 4 more }`
+    - `UsageEmbeddingsResult object { input_tokens, num_model_requests, object, 4 more }`
 
       The aggregated embeddings usage details of the specific time bucket.
 
@@ -615,7 +615,7 @@ Get audio transcriptions usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageModerationsResult = object { input_tokens, num_model_requests, object, 4 more }`
+    - `UsageModerationsResult object { input_tokens, num_model_requests, object, 4 more }`
 
       The aggregated moderations usage details of the specific time bucket.
 
@@ -647,7 +647,7 @@ Get audio transcriptions usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageImagesResult = object { images, num_model_requests, object, 6 more }`
+    - `UsageImagesResult object { images, num_model_requests, object, 6 more }`
 
       The aggregated images usage details of the specific time bucket.
 
@@ -687,7 +687,7 @@ Get audio transcriptions usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageAudioSpeechesResult = object { characters, num_model_requests, object, 4 more }`
+    - `UsageAudioSpeechesResult object { characters, num_model_requests, object, 4 more }`
 
       The aggregated audio speeches usage details of the specific time bucket.
 
@@ -719,7 +719,7 @@ Get audio transcriptions usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageAudioTranscriptionsResult = object { num_model_requests, object, seconds, 4 more }`
+    - `UsageAudioTranscriptionsResult object { num_model_requests, object, seconds, 4 more }`
 
       The aggregated audio transcriptions usage details of the specific time bucket.
 
@@ -751,7 +751,7 @@ Get audio transcriptions usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageVectorStoresResult = object { object, usage_bytes, project_id }`
+    - `UsageVectorStoresResult object { object, usage_bytes, project_id }`
 
       The aggregated vector stores usage details of the specific time bucket.
 
@@ -767,7 +767,7 @@ Get audio transcriptions usage details for the organization.
 
         When `group_by=project_id`, this field provides the project ID of the grouped usage result.
 
-    - `UsageCodeInterpreterSessionsResult = object { object, num_sessions, project_id }`
+    - `UsageCodeInterpreterSessionsResult object { object, num_sessions, project_id }`
 
       The aggregated code interpreter sessions usage details of the specific time bucket.
 
@@ -783,7 +783,7 @@ Get audio transcriptions usage details for the organization.
 
         When `group_by=project_id`, this field provides the project ID of the grouped usage result.
 
-    - `CostsResult = object { object, amount, line_item, project_id }`
+    - `CostsResult object { object, amount, line_item, project_id }`
 
       The aggregated costs details of the specific time bucket.
 
@@ -958,7 +958,7 @@ Get code interpreter sessions usage details for the organization.
 
   - `result: array of object { input_tokens, num_model_requests, object, 10 more }  or object { input_tokens, num_model_requests, object, 4 more }  or object { input_tokens, num_model_requests, object, 4 more }  or 6 more`
 
-    - `UsageCompletionsResult = object { input_tokens, num_model_requests, object, 10 more }`
+    - `UsageCompletionsResult object { input_tokens, num_model_requests, object, 10 more }`
 
       The aggregated completions usage details of the specific time bucket.
 
@@ -1014,7 +1014,7 @@ Get code interpreter sessions usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageEmbeddingsResult = object { input_tokens, num_model_requests, object, 4 more }`
+    - `UsageEmbeddingsResult object { input_tokens, num_model_requests, object, 4 more }`
 
       The aggregated embeddings usage details of the specific time bucket.
 
@@ -1046,7 +1046,7 @@ Get code interpreter sessions usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageModerationsResult = object { input_tokens, num_model_requests, object, 4 more }`
+    - `UsageModerationsResult object { input_tokens, num_model_requests, object, 4 more }`
 
       The aggregated moderations usage details of the specific time bucket.
 
@@ -1078,7 +1078,7 @@ Get code interpreter sessions usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageImagesResult = object { images, num_model_requests, object, 6 more }`
+    - `UsageImagesResult object { images, num_model_requests, object, 6 more }`
 
       The aggregated images usage details of the specific time bucket.
 
@@ -1118,7 +1118,7 @@ Get code interpreter sessions usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageAudioSpeechesResult = object { characters, num_model_requests, object, 4 more }`
+    - `UsageAudioSpeechesResult object { characters, num_model_requests, object, 4 more }`
 
       The aggregated audio speeches usage details of the specific time bucket.
 
@@ -1150,7 +1150,7 @@ Get code interpreter sessions usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageAudioTranscriptionsResult = object { num_model_requests, object, seconds, 4 more }`
+    - `UsageAudioTranscriptionsResult object { num_model_requests, object, seconds, 4 more }`
 
       The aggregated audio transcriptions usage details of the specific time bucket.
 
@@ -1182,7 +1182,7 @@ Get code interpreter sessions usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageVectorStoresResult = object { object, usage_bytes, project_id }`
+    - `UsageVectorStoresResult object { object, usage_bytes, project_id }`
 
       The aggregated vector stores usage details of the specific time bucket.
 
@@ -1198,7 +1198,7 @@ Get code interpreter sessions usage details for the organization.
 
         When `group_by=project_id`, this field provides the project ID of the grouped usage result.
 
-    - `UsageCodeInterpreterSessionsResult = object { object, num_sessions, project_id }`
+    - `UsageCodeInterpreterSessionsResult object { object, num_sessions, project_id }`
 
       The aggregated code interpreter sessions usage details of the specific time bucket.
 
@@ -1214,7 +1214,7 @@ Get code interpreter sessions usage details for the organization.
 
         When `group_by=project_id`, this field provides the project ID of the grouped usage result.
 
-    - `CostsResult = object { object, amount, line_item, project_id }`
+    - `CostsResult object { object, amount, line_item, project_id }`
 
       The aggregated costs details of the specific time bucket.
 
@@ -1411,7 +1411,7 @@ Get completions usage details for the organization.
 
   - `result: array of object { input_tokens, num_model_requests, object, 10 more }  or object { input_tokens, num_model_requests, object, 4 more }  or object { input_tokens, num_model_requests, object, 4 more }  or 6 more`
 
-    - `UsageCompletionsResult = object { input_tokens, num_model_requests, object, 10 more }`
+    - `UsageCompletionsResult object { input_tokens, num_model_requests, object, 10 more }`
 
       The aggregated completions usage details of the specific time bucket.
 
@@ -1467,7 +1467,7 @@ Get completions usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageEmbeddingsResult = object { input_tokens, num_model_requests, object, 4 more }`
+    - `UsageEmbeddingsResult object { input_tokens, num_model_requests, object, 4 more }`
 
       The aggregated embeddings usage details of the specific time bucket.
 
@@ -1499,7 +1499,7 @@ Get completions usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageModerationsResult = object { input_tokens, num_model_requests, object, 4 more }`
+    - `UsageModerationsResult object { input_tokens, num_model_requests, object, 4 more }`
 
       The aggregated moderations usage details of the specific time bucket.
 
@@ -1531,7 +1531,7 @@ Get completions usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageImagesResult = object { images, num_model_requests, object, 6 more }`
+    - `UsageImagesResult object { images, num_model_requests, object, 6 more }`
 
       The aggregated images usage details of the specific time bucket.
 
@@ -1571,7 +1571,7 @@ Get completions usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageAudioSpeechesResult = object { characters, num_model_requests, object, 4 more }`
+    - `UsageAudioSpeechesResult object { characters, num_model_requests, object, 4 more }`
 
       The aggregated audio speeches usage details of the specific time bucket.
 
@@ -1603,7 +1603,7 @@ Get completions usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageAudioTranscriptionsResult = object { num_model_requests, object, seconds, 4 more }`
+    - `UsageAudioTranscriptionsResult object { num_model_requests, object, seconds, 4 more }`
 
       The aggregated audio transcriptions usage details of the specific time bucket.
 
@@ -1635,7 +1635,7 @@ Get completions usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageVectorStoresResult = object { object, usage_bytes, project_id }`
+    - `UsageVectorStoresResult object { object, usage_bytes, project_id }`
 
       The aggregated vector stores usage details of the specific time bucket.
 
@@ -1651,7 +1651,7 @@ Get completions usage details for the organization.
 
         When `group_by=project_id`, this field provides the project ID of the grouped usage result.
 
-    - `UsageCodeInterpreterSessionsResult = object { object, num_sessions, project_id }`
+    - `UsageCodeInterpreterSessionsResult object { object, num_sessions, project_id }`
 
       The aggregated code interpreter sessions usage details of the specific time bucket.
 
@@ -1667,7 +1667,7 @@ Get completions usage details for the organization.
 
         When `group_by=project_id`, this field provides the project ID of the grouped usage result.
 
-    - `CostsResult = object { object, amount, line_item, project_id }`
+    - `CostsResult object { object, amount, line_item, project_id }`
 
       The aggregated costs details of the specific time bucket.
 
@@ -1866,7 +1866,7 @@ Get embeddings usage details for the organization.
 
   - `result: array of object { input_tokens, num_model_requests, object, 10 more }  or object { input_tokens, num_model_requests, object, 4 more }  or object { input_tokens, num_model_requests, object, 4 more }  or 6 more`
 
-    - `UsageCompletionsResult = object { input_tokens, num_model_requests, object, 10 more }`
+    - `UsageCompletionsResult object { input_tokens, num_model_requests, object, 10 more }`
 
       The aggregated completions usage details of the specific time bucket.
 
@@ -1922,7 +1922,7 @@ Get embeddings usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageEmbeddingsResult = object { input_tokens, num_model_requests, object, 4 more }`
+    - `UsageEmbeddingsResult object { input_tokens, num_model_requests, object, 4 more }`
 
       The aggregated embeddings usage details of the specific time bucket.
 
@@ -1954,7 +1954,7 @@ Get embeddings usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageModerationsResult = object { input_tokens, num_model_requests, object, 4 more }`
+    - `UsageModerationsResult object { input_tokens, num_model_requests, object, 4 more }`
 
       The aggregated moderations usage details of the specific time bucket.
 
@@ -1986,7 +1986,7 @@ Get embeddings usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageImagesResult = object { images, num_model_requests, object, 6 more }`
+    - `UsageImagesResult object { images, num_model_requests, object, 6 more }`
 
       The aggregated images usage details of the specific time bucket.
 
@@ -2026,7 +2026,7 @@ Get embeddings usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageAudioSpeechesResult = object { characters, num_model_requests, object, 4 more }`
+    - `UsageAudioSpeechesResult object { characters, num_model_requests, object, 4 more }`
 
       The aggregated audio speeches usage details of the specific time bucket.
 
@@ -2058,7 +2058,7 @@ Get embeddings usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageAudioTranscriptionsResult = object { num_model_requests, object, seconds, 4 more }`
+    - `UsageAudioTranscriptionsResult object { num_model_requests, object, seconds, 4 more }`
 
       The aggregated audio transcriptions usage details of the specific time bucket.
 
@@ -2090,7 +2090,7 @@ Get embeddings usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageVectorStoresResult = object { object, usage_bytes, project_id }`
+    - `UsageVectorStoresResult object { object, usage_bytes, project_id }`
 
       The aggregated vector stores usage details of the specific time bucket.
 
@@ -2106,7 +2106,7 @@ Get embeddings usage details for the organization.
 
         When `group_by=project_id`, this field provides the project ID of the grouped usage result.
 
-    - `UsageCodeInterpreterSessionsResult = object { object, num_sessions, project_id }`
+    - `UsageCodeInterpreterSessionsResult object { object, num_sessions, project_id }`
 
       The aggregated code interpreter sessions usage details of the specific time bucket.
 
@@ -2122,7 +2122,7 @@ Get embeddings usage details for the organization.
 
         When `group_by=project_id`, this field provides the project ID of the grouped usage result.
 
-    - `CostsResult = object { object, amount, line_item, project_id }`
+    - `CostsResult object { object, amount, line_item, project_id }`
 
       The aggregated costs details of the specific time bucket.
 
@@ -2343,7 +2343,7 @@ Get images usage details for the organization.
 
   - `result: array of object { input_tokens, num_model_requests, object, 10 more }  or object { input_tokens, num_model_requests, object, 4 more }  or object { input_tokens, num_model_requests, object, 4 more }  or 6 more`
 
-    - `UsageCompletionsResult = object { input_tokens, num_model_requests, object, 10 more }`
+    - `UsageCompletionsResult object { input_tokens, num_model_requests, object, 10 more }`
 
       The aggregated completions usage details of the specific time bucket.
 
@@ -2399,7 +2399,7 @@ Get images usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageEmbeddingsResult = object { input_tokens, num_model_requests, object, 4 more }`
+    - `UsageEmbeddingsResult object { input_tokens, num_model_requests, object, 4 more }`
 
       The aggregated embeddings usage details of the specific time bucket.
 
@@ -2431,7 +2431,7 @@ Get images usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageModerationsResult = object { input_tokens, num_model_requests, object, 4 more }`
+    - `UsageModerationsResult object { input_tokens, num_model_requests, object, 4 more }`
 
       The aggregated moderations usage details of the specific time bucket.
 
@@ -2463,7 +2463,7 @@ Get images usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageImagesResult = object { images, num_model_requests, object, 6 more }`
+    - `UsageImagesResult object { images, num_model_requests, object, 6 more }`
 
       The aggregated images usage details of the specific time bucket.
 
@@ -2503,7 +2503,7 @@ Get images usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageAudioSpeechesResult = object { characters, num_model_requests, object, 4 more }`
+    - `UsageAudioSpeechesResult object { characters, num_model_requests, object, 4 more }`
 
       The aggregated audio speeches usage details of the specific time bucket.
 
@@ -2535,7 +2535,7 @@ Get images usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageAudioTranscriptionsResult = object { num_model_requests, object, seconds, 4 more }`
+    - `UsageAudioTranscriptionsResult object { num_model_requests, object, seconds, 4 more }`
 
       The aggregated audio transcriptions usage details of the specific time bucket.
 
@@ -2567,7 +2567,7 @@ Get images usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageVectorStoresResult = object { object, usage_bytes, project_id }`
+    - `UsageVectorStoresResult object { object, usage_bytes, project_id }`
 
       The aggregated vector stores usage details of the specific time bucket.
 
@@ -2583,7 +2583,7 @@ Get images usage details for the organization.
 
         When `group_by=project_id`, this field provides the project ID of the grouped usage result.
 
-    - `UsageCodeInterpreterSessionsResult = object { object, num_sessions, project_id }`
+    - `UsageCodeInterpreterSessionsResult object { object, num_sessions, project_id }`
 
       The aggregated code interpreter sessions usage details of the specific time bucket.
 
@@ -2599,7 +2599,7 @@ Get images usage details for the organization.
 
         When `group_by=project_id`, this field provides the project ID of the grouped usage result.
 
-    - `CostsResult = object { object, amount, line_item, project_id }`
+    - `CostsResult object { object, amount, line_item, project_id }`
 
       The aggregated costs details of the specific time bucket.
 
@@ -2794,7 +2794,7 @@ Get moderations usage details for the organization.
 
   - `result: array of object { input_tokens, num_model_requests, object, 10 more }  or object { input_tokens, num_model_requests, object, 4 more }  or object { input_tokens, num_model_requests, object, 4 more }  or 6 more`
 
-    - `UsageCompletionsResult = object { input_tokens, num_model_requests, object, 10 more }`
+    - `UsageCompletionsResult object { input_tokens, num_model_requests, object, 10 more }`
 
       The aggregated completions usage details of the specific time bucket.
 
@@ -2850,7 +2850,7 @@ Get moderations usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageEmbeddingsResult = object { input_tokens, num_model_requests, object, 4 more }`
+    - `UsageEmbeddingsResult object { input_tokens, num_model_requests, object, 4 more }`
 
       The aggregated embeddings usage details of the specific time bucket.
 
@@ -2882,7 +2882,7 @@ Get moderations usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageModerationsResult = object { input_tokens, num_model_requests, object, 4 more }`
+    - `UsageModerationsResult object { input_tokens, num_model_requests, object, 4 more }`
 
       The aggregated moderations usage details of the specific time bucket.
 
@@ -2914,7 +2914,7 @@ Get moderations usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageImagesResult = object { images, num_model_requests, object, 6 more }`
+    - `UsageImagesResult object { images, num_model_requests, object, 6 more }`
 
       The aggregated images usage details of the specific time bucket.
 
@@ -2954,7 +2954,7 @@ Get moderations usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageAudioSpeechesResult = object { characters, num_model_requests, object, 4 more }`
+    - `UsageAudioSpeechesResult object { characters, num_model_requests, object, 4 more }`
 
       The aggregated audio speeches usage details of the specific time bucket.
 
@@ -2986,7 +2986,7 @@ Get moderations usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageAudioTranscriptionsResult = object { num_model_requests, object, seconds, 4 more }`
+    - `UsageAudioTranscriptionsResult object { num_model_requests, object, seconds, 4 more }`
 
       The aggregated audio transcriptions usage details of the specific time bucket.
 
@@ -3018,7 +3018,7 @@ Get moderations usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageVectorStoresResult = object { object, usage_bytes, project_id }`
+    - `UsageVectorStoresResult object { object, usage_bytes, project_id }`
 
       The aggregated vector stores usage details of the specific time bucket.
 
@@ -3034,7 +3034,7 @@ Get moderations usage details for the organization.
 
         When `group_by=project_id`, this field provides the project ID of the grouped usage result.
 
-    - `UsageCodeInterpreterSessionsResult = object { object, num_sessions, project_id }`
+    - `UsageCodeInterpreterSessionsResult object { object, num_sessions, project_id }`
 
       The aggregated code interpreter sessions usage details of the specific time bucket.
 
@@ -3050,7 +3050,7 @@ Get moderations usage details for the organization.
 
         When `group_by=project_id`, this field provides the project ID of the grouped usage result.
 
-    - `CostsResult = object { object, amount, line_item, project_id }`
+    - `CostsResult object { object, amount, line_item, project_id }`
 
       The aggregated costs details of the specific time bucket.
 
@@ -3225,7 +3225,7 @@ Get vector stores usage details for the organization.
 
   - `result: array of object { input_tokens, num_model_requests, object, 10 more }  or object { input_tokens, num_model_requests, object, 4 more }  or object { input_tokens, num_model_requests, object, 4 more }  or 6 more`
 
-    - `UsageCompletionsResult = object { input_tokens, num_model_requests, object, 10 more }`
+    - `UsageCompletionsResult object { input_tokens, num_model_requests, object, 10 more }`
 
       The aggregated completions usage details of the specific time bucket.
 
@@ -3281,7 +3281,7 @@ Get vector stores usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageEmbeddingsResult = object { input_tokens, num_model_requests, object, 4 more }`
+    - `UsageEmbeddingsResult object { input_tokens, num_model_requests, object, 4 more }`
 
       The aggregated embeddings usage details of the specific time bucket.
 
@@ -3313,7 +3313,7 @@ Get vector stores usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageModerationsResult = object { input_tokens, num_model_requests, object, 4 more }`
+    - `UsageModerationsResult object { input_tokens, num_model_requests, object, 4 more }`
 
       The aggregated moderations usage details of the specific time bucket.
 
@@ -3345,7 +3345,7 @@ Get vector stores usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageImagesResult = object { images, num_model_requests, object, 6 more }`
+    - `UsageImagesResult object { images, num_model_requests, object, 6 more }`
 
       The aggregated images usage details of the specific time bucket.
 
@@ -3385,7 +3385,7 @@ Get vector stores usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageAudioSpeechesResult = object { characters, num_model_requests, object, 4 more }`
+    - `UsageAudioSpeechesResult object { characters, num_model_requests, object, 4 more }`
 
       The aggregated audio speeches usage details of the specific time bucket.
 
@@ -3417,7 +3417,7 @@ Get vector stores usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageAudioTranscriptionsResult = object { num_model_requests, object, seconds, 4 more }`
+    - `UsageAudioTranscriptionsResult object { num_model_requests, object, seconds, 4 more }`
 
       The aggregated audio transcriptions usage details of the specific time bucket.
 
@@ -3449,7 +3449,7 @@ Get vector stores usage details for the organization.
 
         When `group_by=user_id`, this field provides the user ID of the grouped usage result.
 
-    - `UsageVectorStoresResult = object { object, usage_bytes, project_id }`
+    - `UsageVectorStoresResult object { object, usage_bytes, project_id }`
 
       The aggregated vector stores usage details of the specific time bucket.
 
@@ -3465,7 +3465,7 @@ Get vector stores usage details for the organization.
 
         When `group_by=project_id`, this field provides the project ID of the grouped usage result.
 
-    - `UsageCodeInterpreterSessionsResult = object { object, num_sessions, project_id }`
+    - `UsageCodeInterpreterSessionsResult object { object, num_sessions, project_id }`
 
       The aggregated code interpreter sessions usage details of the specific time bucket.
 
@@ -3481,7 +3481,7 @@ Get vector stores usage details for the organization.
 
         When `group_by=project_id`, this field provides the project ID of the grouped usage result.
 
-    - `CostsResult = object { object, amount, line_item, project_id }`
+    - `CostsResult object { object, amount, line_item, project_id }`
 
       The aggregated costs details of the specific time bucket.
 
@@ -3591,3 +3591,2469 @@ curl "https://api.openai.com/v1/organization/usage/vector_stores?start_time=1730
     "next_page": null
 }
 ```
+
+## Domain Types
+
+### Usage Get Audio Speeches Response
+
+- `UsageGetAudioSpeechesResponse object { data, has_more, next_page, object }`
+
+  - `data: array of object { end_time, object, result, start_time }`
+
+    - `end_time: number`
+
+    - `object: "bucket"`
+
+      - `"bucket"`
+
+    - `result: array of object { input_tokens, num_model_requests, object, 10 more }  or object { input_tokens, num_model_requests, object, 4 more }  or object { input_tokens, num_model_requests, object, 4 more }  or 6 more`
+
+      - `UsageCompletionsResult object { input_tokens, num_model_requests, object, 10 more }`
+
+        The aggregated completions usage details of the specific time bucket.
+
+        - `input_tokens: number`
+
+          The aggregated number of text input tokens used, including cached tokens. For customers subscribe to scale tier, this includes scale tier tokens.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.completions.result"`
+
+          - `"organization.usage.completions.result"`
+
+        - `output_tokens: number`
+
+          The aggregated number of text output tokens used. For customers subscribe to scale tier, this includes scale tier tokens.
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `batch: optional boolean`
+
+          When `group_by=batch`, this field tells whether the grouped usage result is batch or not.
+
+        - `input_audio_tokens: optional number`
+
+          The aggregated number of audio input tokens used, including cached tokens.
+
+        - `input_cached_tokens: optional number`
+
+          The aggregated number of text input tokens that has been cached from previous requests. For customers subscribe to scale tier, this includes scale tier tokens.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `output_audio_tokens: optional number`
+
+          The aggregated number of audio output tokens used.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `service_tier: optional string`
+
+          When `group_by=service_tier`, this field provides the service tier of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageEmbeddingsResult object { input_tokens, num_model_requests, object, 4 more }`
+
+        The aggregated embeddings usage details of the specific time bucket.
+
+        - `input_tokens: number`
+
+          The aggregated number of input tokens used.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.embeddings.result"`
+
+          - `"organization.usage.embeddings.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageModerationsResult object { input_tokens, num_model_requests, object, 4 more }`
+
+        The aggregated moderations usage details of the specific time bucket.
+
+        - `input_tokens: number`
+
+          The aggregated number of input tokens used.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.moderations.result"`
+
+          - `"organization.usage.moderations.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageImagesResult object { images, num_model_requests, object, 6 more }`
+
+        The aggregated images usage details of the specific time bucket.
+
+        - `images: number`
+
+          The number of images processed.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.images.result"`
+
+          - `"organization.usage.images.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `size: optional string`
+
+          When `group_by=size`, this field provides the image size of the grouped usage result.
+
+        - `source: optional string`
+
+          When `group_by=source`, this field provides the source of the grouped usage result, possible values are `image.generation`, `image.edit`, `image.variation`.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageAudioSpeechesResult object { characters, num_model_requests, object, 4 more }`
+
+        The aggregated audio speeches usage details of the specific time bucket.
+
+        - `characters: number`
+
+          The number of characters processed.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.audio_speeches.result"`
+
+          - `"organization.usage.audio_speeches.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageAudioTranscriptionsResult object { num_model_requests, object, seconds, 4 more }`
+
+        The aggregated audio transcriptions usage details of the specific time bucket.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.audio_transcriptions.result"`
+
+          - `"organization.usage.audio_transcriptions.result"`
+
+        - `seconds: number`
+
+          The number of seconds processed.
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageVectorStoresResult object { object, usage_bytes, project_id }`
+
+        The aggregated vector stores usage details of the specific time bucket.
+
+        - `object: "organization.usage.vector_stores.result"`
+
+          - `"organization.usage.vector_stores.result"`
+
+        - `usage_bytes: number`
+
+          The vector stores usage in bytes.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+      - `UsageCodeInterpreterSessionsResult object { object, num_sessions, project_id }`
+
+        The aggregated code interpreter sessions usage details of the specific time bucket.
+
+        - `object: "organization.usage.code_interpreter_sessions.result"`
+
+          - `"organization.usage.code_interpreter_sessions.result"`
+
+        - `num_sessions: optional number`
+
+          The number of code interpreter sessions.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+      - `CostsResult object { object, amount, line_item, project_id }`
+
+        The aggregated costs details of the specific time bucket.
+
+        - `object: "organization.costs.result"`
+
+          - `"organization.costs.result"`
+
+        - `amount: optional object { currency, value }`
+
+          The monetary value in its associated currency.
+
+          - `currency: optional string`
+
+            Lowercase ISO-4217 currency e.g. "usd"
+
+          - `value: optional number`
+
+            The numeric value of the cost.
+
+        - `line_item: optional string`
+
+          When `group_by=line_item`, this field provides the line item of the grouped costs result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped costs result.
+
+    - `start_time: number`
+
+  - `has_more: boolean`
+
+  - `next_page: string`
+
+  - `object: "page"`
+
+    - `"page"`
+
+### Usage Get Audio Transcriptions Response
+
+- `UsageGetAudioTranscriptionsResponse object { data, has_more, next_page, object }`
+
+  - `data: array of object { end_time, object, result, start_time }`
+
+    - `end_time: number`
+
+    - `object: "bucket"`
+
+      - `"bucket"`
+
+    - `result: array of object { input_tokens, num_model_requests, object, 10 more }  or object { input_tokens, num_model_requests, object, 4 more }  or object { input_tokens, num_model_requests, object, 4 more }  or 6 more`
+
+      - `UsageCompletionsResult object { input_tokens, num_model_requests, object, 10 more }`
+
+        The aggregated completions usage details of the specific time bucket.
+
+        - `input_tokens: number`
+
+          The aggregated number of text input tokens used, including cached tokens. For customers subscribe to scale tier, this includes scale tier tokens.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.completions.result"`
+
+          - `"organization.usage.completions.result"`
+
+        - `output_tokens: number`
+
+          The aggregated number of text output tokens used. For customers subscribe to scale tier, this includes scale tier tokens.
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `batch: optional boolean`
+
+          When `group_by=batch`, this field tells whether the grouped usage result is batch or not.
+
+        - `input_audio_tokens: optional number`
+
+          The aggregated number of audio input tokens used, including cached tokens.
+
+        - `input_cached_tokens: optional number`
+
+          The aggregated number of text input tokens that has been cached from previous requests. For customers subscribe to scale tier, this includes scale tier tokens.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `output_audio_tokens: optional number`
+
+          The aggregated number of audio output tokens used.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `service_tier: optional string`
+
+          When `group_by=service_tier`, this field provides the service tier of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageEmbeddingsResult object { input_tokens, num_model_requests, object, 4 more }`
+
+        The aggregated embeddings usage details of the specific time bucket.
+
+        - `input_tokens: number`
+
+          The aggregated number of input tokens used.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.embeddings.result"`
+
+          - `"organization.usage.embeddings.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageModerationsResult object { input_tokens, num_model_requests, object, 4 more }`
+
+        The aggregated moderations usage details of the specific time bucket.
+
+        - `input_tokens: number`
+
+          The aggregated number of input tokens used.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.moderations.result"`
+
+          - `"organization.usage.moderations.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageImagesResult object { images, num_model_requests, object, 6 more }`
+
+        The aggregated images usage details of the specific time bucket.
+
+        - `images: number`
+
+          The number of images processed.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.images.result"`
+
+          - `"organization.usage.images.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `size: optional string`
+
+          When `group_by=size`, this field provides the image size of the grouped usage result.
+
+        - `source: optional string`
+
+          When `group_by=source`, this field provides the source of the grouped usage result, possible values are `image.generation`, `image.edit`, `image.variation`.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageAudioSpeechesResult object { characters, num_model_requests, object, 4 more }`
+
+        The aggregated audio speeches usage details of the specific time bucket.
+
+        - `characters: number`
+
+          The number of characters processed.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.audio_speeches.result"`
+
+          - `"organization.usage.audio_speeches.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageAudioTranscriptionsResult object { num_model_requests, object, seconds, 4 more }`
+
+        The aggregated audio transcriptions usage details of the specific time bucket.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.audio_transcriptions.result"`
+
+          - `"organization.usage.audio_transcriptions.result"`
+
+        - `seconds: number`
+
+          The number of seconds processed.
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageVectorStoresResult object { object, usage_bytes, project_id }`
+
+        The aggregated vector stores usage details of the specific time bucket.
+
+        - `object: "organization.usage.vector_stores.result"`
+
+          - `"organization.usage.vector_stores.result"`
+
+        - `usage_bytes: number`
+
+          The vector stores usage in bytes.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+      - `UsageCodeInterpreterSessionsResult object { object, num_sessions, project_id }`
+
+        The aggregated code interpreter sessions usage details of the specific time bucket.
+
+        - `object: "organization.usage.code_interpreter_sessions.result"`
+
+          - `"organization.usage.code_interpreter_sessions.result"`
+
+        - `num_sessions: optional number`
+
+          The number of code interpreter sessions.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+      - `CostsResult object { object, amount, line_item, project_id }`
+
+        The aggregated costs details of the specific time bucket.
+
+        - `object: "organization.costs.result"`
+
+          - `"organization.costs.result"`
+
+        - `amount: optional object { currency, value }`
+
+          The monetary value in its associated currency.
+
+          - `currency: optional string`
+
+            Lowercase ISO-4217 currency e.g. "usd"
+
+          - `value: optional number`
+
+            The numeric value of the cost.
+
+        - `line_item: optional string`
+
+          When `group_by=line_item`, this field provides the line item of the grouped costs result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped costs result.
+
+    - `start_time: number`
+
+  - `has_more: boolean`
+
+  - `next_page: string`
+
+  - `object: "page"`
+
+    - `"page"`
+
+### Usage Get Code Interpreter Sessions Response
+
+- `UsageGetCodeInterpreterSessionsResponse object { data, has_more, next_page, object }`
+
+  - `data: array of object { end_time, object, result, start_time }`
+
+    - `end_time: number`
+
+    - `object: "bucket"`
+
+      - `"bucket"`
+
+    - `result: array of object { input_tokens, num_model_requests, object, 10 more }  or object { input_tokens, num_model_requests, object, 4 more }  or object { input_tokens, num_model_requests, object, 4 more }  or 6 more`
+
+      - `UsageCompletionsResult object { input_tokens, num_model_requests, object, 10 more }`
+
+        The aggregated completions usage details of the specific time bucket.
+
+        - `input_tokens: number`
+
+          The aggregated number of text input tokens used, including cached tokens. For customers subscribe to scale tier, this includes scale tier tokens.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.completions.result"`
+
+          - `"organization.usage.completions.result"`
+
+        - `output_tokens: number`
+
+          The aggregated number of text output tokens used. For customers subscribe to scale tier, this includes scale tier tokens.
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `batch: optional boolean`
+
+          When `group_by=batch`, this field tells whether the grouped usage result is batch or not.
+
+        - `input_audio_tokens: optional number`
+
+          The aggregated number of audio input tokens used, including cached tokens.
+
+        - `input_cached_tokens: optional number`
+
+          The aggregated number of text input tokens that has been cached from previous requests. For customers subscribe to scale tier, this includes scale tier tokens.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `output_audio_tokens: optional number`
+
+          The aggregated number of audio output tokens used.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `service_tier: optional string`
+
+          When `group_by=service_tier`, this field provides the service tier of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageEmbeddingsResult object { input_tokens, num_model_requests, object, 4 more }`
+
+        The aggregated embeddings usage details of the specific time bucket.
+
+        - `input_tokens: number`
+
+          The aggregated number of input tokens used.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.embeddings.result"`
+
+          - `"organization.usage.embeddings.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageModerationsResult object { input_tokens, num_model_requests, object, 4 more }`
+
+        The aggregated moderations usage details of the specific time bucket.
+
+        - `input_tokens: number`
+
+          The aggregated number of input tokens used.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.moderations.result"`
+
+          - `"organization.usage.moderations.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageImagesResult object { images, num_model_requests, object, 6 more }`
+
+        The aggregated images usage details of the specific time bucket.
+
+        - `images: number`
+
+          The number of images processed.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.images.result"`
+
+          - `"organization.usage.images.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `size: optional string`
+
+          When `group_by=size`, this field provides the image size of the grouped usage result.
+
+        - `source: optional string`
+
+          When `group_by=source`, this field provides the source of the grouped usage result, possible values are `image.generation`, `image.edit`, `image.variation`.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageAudioSpeechesResult object { characters, num_model_requests, object, 4 more }`
+
+        The aggregated audio speeches usage details of the specific time bucket.
+
+        - `characters: number`
+
+          The number of characters processed.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.audio_speeches.result"`
+
+          - `"organization.usage.audio_speeches.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageAudioTranscriptionsResult object { num_model_requests, object, seconds, 4 more }`
+
+        The aggregated audio transcriptions usage details of the specific time bucket.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.audio_transcriptions.result"`
+
+          - `"organization.usage.audio_transcriptions.result"`
+
+        - `seconds: number`
+
+          The number of seconds processed.
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageVectorStoresResult object { object, usage_bytes, project_id }`
+
+        The aggregated vector stores usage details of the specific time bucket.
+
+        - `object: "organization.usage.vector_stores.result"`
+
+          - `"organization.usage.vector_stores.result"`
+
+        - `usage_bytes: number`
+
+          The vector stores usage in bytes.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+      - `UsageCodeInterpreterSessionsResult object { object, num_sessions, project_id }`
+
+        The aggregated code interpreter sessions usage details of the specific time bucket.
+
+        - `object: "organization.usage.code_interpreter_sessions.result"`
+
+          - `"organization.usage.code_interpreter_sessions.result"`
+
+        - `num_sessions: optional number`
+
+          The number of code interpreter sessions.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+      - `CostsResult object { object, amount, line_item, project_id }`
+
+        The aggregated costs details of the specific time bucket.
+
+        - `object: "organization.costs.result"`
+
+          - `"organization.costs.result"`
+
+        - `amount: optional object { currency, value }`
+
+          The monetary value in its associated currency.
+
+          - `currency: optional string`
+
+            Lowercase ISO-4217 currency e.g. "usd"
+
+          - `value: optional number`
+
+            The numeric value of the cost.
+
+        - `line_item: optional string`
+
+          When `group_by=line_item`, this field provides the line item of the grouped costs result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped costs result.
+
+    - `start_time: number`
+
+  - `has_more: boolean`
+
+  - `next_page: string`
+
+  - `object: "page"`
+
+    - `"page"`
+
+### Usage Get Completions Response
+
+- `UsageGetCompletionsResponse object { data, has_more, next_page, object }`
+
+  - `data: array of object { end_time, object, result, start_time }`
+
+    - `end_time: number`
+
+    - `object: "bucket"`
+
+      - `"bucket"`
+
+    - `result: array of object { input_tokens, num_model_requests, object, 10 more }  or object { input_tokens, num_model_requests, object, 4 more }  or object { input_tokens, num_model_requests, object, 4 more }  or 6 more`
+
+      - `UsageCompletionsResult object { input_tokens, num_model_requests, object, 10 more }`
+
+        The aggregated completions usage details of the specific time bucket.
+
+        - `input_tokens: number`
+
+          The aggregated number of text input tokens used, including cached tokens. For customers subscribe to scale tier, this includes scale tier tokens.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.completions.result"`
+
+          - `"organization.usage.completions.result"`
+
+        - `output_tokens: number`
+
+          The aggregated number of text output tokens used. For customers subscribe to scale tier, this includes scale tier tokens.
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `batch: optional boolean`
+
+          When `group_by=batch`, this field tells whether the grouped usage result is batch or not.
+
+        - `input_audio_tokens: optional number`
+
+          The aggregated number of audio input tokens used, including cached tokens.
+
+        - `input_cached_tokens: optional number`
+
+          The aggregated number of text input tokens that has been cached from previous requests. For customers subscribe to scale tier, this includes scale tier tokens.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `output_audio_tokens: optional number`
+
+          The aggregated number of audio output tokens used.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `service_tier: optional string`
+
+          When `group_by=service_tier`, this field provides the service tier of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageEmbeddingsResult object { input_tokens, num_model_requests, object, 4 more }`
+
+        The aggregated embeddings usage details of the specific time bucket.
+
+        - `input_tokens: number`
+
+          The aggregated number of input tokens used.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.embeddings.result"`
+
+          - `"organization.usage.embeddings.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageModerationsResult object { input_tokens, num_model_requests, object, 4 more }`
+
+        The aggregated moderations usage details of the specific time bucket.
+
+        - `input_tokens: number`
+
+          The aggregated number of input tokens used.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.moderations.result"`
+
+          - `"organization.usage.moderations.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageImagesResult object { images, num_model_requests, object, 6 more }`
+
+        The aggregated images usage details of the specific time bucket.
+
+        - `images: number`
+
+          The number of images processed.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.images.result"`
+
+          - `"organization.usage.images.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `size: optional string`
+
+          When `group_by=size`, this field provides the image size of the grouped usage result.
+
+        - `source: optional string`
+
+          When `group_by=source`, this field provides the source of the grouped usage result, possible values are `image.generation`, `image.edit`, `image.variation`.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageAudioSpeechesResult object { characters, num_model_requests, object, 4 more }`
+
+        The aggregated audio speeches usage details of the specific time bucket.
+
+        - `characters: number`
+
+          The number of characters processed.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.audio_speeches.result"`
+
+          - `"organization.usage.audio_speeches.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageAudioTranscriptionsResult object { num_model_requests, object, seconds, 4 more }`
+
+        The aggregated audio transcriptions usage details of the specific time bucket.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.audio_transcriptions.result"`
+
+          - `"organization.usage.audio_transcriptions.result"`
+
+        - `seconds: number`
+
+          The number of seconds processed.
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageVectorStoresResult object { object, usage_bytes, project_id }`
+
+        The aggregated vector stores usage details of the specific time bucket.
+
+        - `object: "organization.usage.vector_stores.result"`
+
+          - `"organization.usage.vector_stores.result"`
+
+        - `usage_bytes: number`
+
+          The vector stores usage in bytes.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+      - `UsageCodeInterpreterSessionsResult object { object, num_sessions, project_id }`
+
+        The aggregated code interpreter sessions usage details of the specific time bucket.
+
+        - `object: "organization.usage.code_interpreter_sessions.result"`
+
+          - `"organization.usage.code_interpreter_sessions.result"`
+
+        - `num_sessions: optional number`
+
+          The number of code interpreter sessions.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+      - `CostsResult object { object, amount, line_item, project_id }`
+
+        The aggregated costs details of the specific time bucket.
+
+        - `object: "organization.costs.result"`
+
+          - `"organization.costs.result"`
+
+        - `amount: optional object { currency, value }`
+
+          The monetary value in its associated currency.
+
+          - `currency: optional string`
+
+            Lowercase ISO-4217 currency e.g. "usd"
+
+          - `value: optional number`
+
+            The numeric value of the cost.
+
+        - `line_item: optional string`
+
+          When `group_by=line_item`, this field provides the line item of the grouped costs result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped costs result.
+
+    - `start_time: number`
+
+  - `has_more: boolean`
+
+  - `next_page: string`
+
+  - `object: "page"`
+
+    - `"page"`
+
+### Usage Get Embeddings Response
+
+- `UsageGetEmbeddingsResponse object { data, has_more, next_page, object }`
+
+  - `data: array of object { end_time, object, result, start_time }`
+
+    - `end_time: number`
+
+    - `object: "bucket"`
+
+      - `"bucket"`
+
+    - `result: array of object { input_tokens, num_model_requests, object, 10 more }  or object { input_tokens, num_model_requests, object, 4 more }  or object { input_tokens, num_model_requests, object, 4 more }  or 6 more`
+
+      - `UsageCompletionsResult object { input_tokens, num_model_requests, object, 10 more }`
+
+        The aggregated completions usage details of the specific time bucket.
+
+        - `input_tokens: number`
+
+          The aggregated number of text input tokens used, including cached tokens. For customers subscribe to scale tier, this includes scale tier tokens.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.completions.result"`
+
+          - `"organization.usage.completions.result"`
+
+        - `output_tokens: number`
+
+          The aggregated number of text output tokens used. For customers subscribe to scale tier, this includes scale tier tokens.
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `batch: optional boolean`
+
+          When `group_by=batch`, this field tells whether the grouped usage result is batch or not.
+
+        - `input_audio_tokens: optional number`
+
+          The aggregated number of audio input tokens used, including cached tokens.
+
+        - `input_cached_tokens: optional number`
+
+          The aggregated number of text input tokens that has been cached from previous requests. For customers subscribe to scale tier, this includes scale tier tokens.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `output_audio_tokens: optional number`
+
+          The aggregated number of audio output tokens used.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `service_tier: optional string`
+
+          When `group_by=service_tier`, this field provides the service tier of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageEmbeddingsResult object { input_tokens, num_model_requests, object, 4 more }`
+
+        The aggregated embeddings usage details of the specific time bucket.
+
+        - `input_tokens: number`
+
+          The aggregated number of input tokens used.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.embeddings.result"`
+
+          - `"organization.usage.embeddings.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageModerationsResult object { input_tokens, num_model_requests, object, 4 more }`
+
+        The aggregated moderations usage details of the specific time bucket.
+
+        - `input_tokens: number`
+
+          The aggregated number of input tokens used.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.moderations.result"`
+
+          - `"organization.usage.moderations.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageImagesResult object { images, num_model_requests, object, 6 more }`
+
+        The aggregated images usage details of the specific time bucket.
+
+        - `images: number`
+
+          The number of images processed.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.images.result"`
+
+          - `"organization.usage.images.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `size: optional string`
+
+          When `group_by=size`, this field provides the image size of the grouped usage result.
+
+        - `source: optional string`
+
+          When `group_by=source`, this field provides the source of the grouped usage result, possible values are `image.generation`, `image.edit`, `image.variation`.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageAudioSpeechesResult object { characters, num_model_requests, object, 4 more }`
+
+        The aggregated audio speeches usage details of the specific time bucket.
+
+        - `characters: number`
+
+          The number of characters processed.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.audio_speeches.result"`
+
+          - `"organization.usage.audio_speeches.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageAudioTranscriptionsResult object { num_model_requests, object, seconds, 4 more }`
+
+        The aggregated audio transcriptions usage details of the specific time bucket.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.audio_transcriptions.result"`
+
+          - `"organization.usage.audio_transcriptions.result"`
+
+        - `seconds: number`
+
+          The number of seconds processed.
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageVectorStoresResult object { object, usage_bytes, project_id }`
+
+        The aggregated vector stores usage details of the specific time bucket.
+
+        - `object: "organization.usage.vector_stores.result"`
+
+          - `"organization.usage.vector_stores.result"`
+
+        - `usage_bytes: number`
+
+          The vector stores usage in bytes.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+      - `UsageCodeInterpreterSessionsResult object { object, num_sessions, project_id }`
+
+        The aggregated code interpreter sessions usage details of the specific time bucket.
+
+        - `object: "organization.usage.code_interpreter_sessions.result"`
+
+          - `"organization.usage.code_interpreter_sessions.result"`
+
+        - `num_sessions: optional number`
+
+          The number of code interpreter sessions.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+      - `CostsResult object { object, amount, line_item, project_id }`
+
+        The aggregated costs details of the specific time bucket.
+
+        - `object: "organization.costs.result"`
+
+          - `"organization.costs.result"`
+
+        - `amount: optional object { currency, value }`
+
+          The monetary value in its associated currency.
+
+          - `currency: optional string`
+
+            Lowercase ISO-4217 currency e.g. "usd"
+
+          - `value: optional number`
+
+            The numeric value of the cost.
+
+        - `line_item: optional string`
+
+          When `group_by=line_item`, this field provides the line item of the grouped costs result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped costs result.
+
+    - `start_time: number`
+
+  - `has_more: boolean`
+
+  - `next_page: string`
+
+  - `object: "page"`
+
+    - `"page"`
+
+### Usage Get Images Response
+
+- `UsageGetImagesResponse object { data, has_more, next_page, object }`
+
+  - `data: array of object { end_time, object, result, start_time }`
+
+    - `end_time: number`
+
+    - `object: "bucket"`
+
+      - `"bucket"`
+
+    - `result: array of object { input_tokens, num_model_requests, object, 10 more }  or object { input_tokens, num_model_requests, object, 4 more }  or object { input_tokens, num_model_requests, object, 4 more }  or 6 more`
+
+      - `UsageCompletionsResult object { input_tokens, num_model_requests, object, 10 more }`
+
+        The aggregated completions usage details of the specific time bucket.
+
+        - `input_tokens: number`
+
+          The aggregated number of text input tokens used, including cached tokens. For customers subscribe to scale tier, this includes scale tier tokens.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.completions.result"`
+
+          - `"organization.usage.completions.result"`
+
+        - `output_tokens: number`
+
+          The aggregated number of text output tokens used. For customers subscribe to scale tier, this includes scale tier tokens.
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `batch: optional boolean`
+
+          When `group_by=batch`, this field tells whether the grouped usage result is batch or not.
+
+        - `input_audio_tokens: optional number`
+
+          The aggregated number of audio input tokens used, including cached tokens.
+
+        - `input_cached_tokens: optional number`
+
+          The aggregated number of text input tokens that has been cached from previous requests. For customers subscribe to scale tier, this includes scale tier tokens.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `output_audio_tokens: optional number`
+
+          The aggregated number of audio output tokens used.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `service_tier: optional string`
+
+          When `group_by=service_tier`, this field provides the service tier of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageEmbeddingsResult object { input_tokens, num_model_requests, object, 4 more }`
+
+        The aggregated embeddings usage details of the specific time bucket.
+
+        - `input_tokens: number`
+
+          The aggregated number of input tokens used.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.embeddings.result"`
+
+          - `"organization.usage.embeddings.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageModerationsResult object { input_tokens, num_model_requests, object, 4 more }`
+
+        The aggregated moderations usage details of the specific time bucket.
+
+        - `input_tokens: number`
+
+          The aggregated number of input tokens used.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.moderations.result"`
+
+          - `"organization.usage.moderations.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageImagesResult object { images, num_model_requests, object, 6 more }`
+
+        The aggregated images usage details of the specific time bucket.
+
+        - `images: number`
+
+          The number of images processed.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.images.result"`
+
+          - `"organization.usage.images.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `size: optional string`
+
+          When `group_by=size`, this field provides the image size of the grouped usage result.
+
+        - `source: optional string`
+
+          When `group_by=source`, this field provides the source of the grouped usage result, possible values are `image.generation`, `image.edit`, `image.variation`.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageAudioSpeechesResult object { characters, num_model_requests, object, 4 more }`
+
+        The aggregated audio speeches usage details of the specific time bucket.
+
+        - `characters: number`
+
+          The number of characters processed.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.audio_speeches.result"`
+
+          - `"organization.usage.audio_speeches.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageAudioTranscriptionsResult object { num_model_requests, object, seconds, 4 more }`
+
+        The aggregated audio transcriptions usage details of the specific time bucket.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.audio_transcriptions.result"`
+
+          - `"organization.usage.audio_transcriptions.result"`
+
+        - `seconds: number`
+
+          The number of seconds processed.
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageVectorStoresResult object { object, usage_bytes, project_id }`
+
+        The aggregated vector stores usage details of the specific time bucket.
+
+        - `object: "organization.usage.vector_stores.result"`
+
+          - `"organization.usage.vector_stores.result"`
+
+        - `usage_bytes: number`
+
+          The vector stores usage in bytes.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+      - `UsageCodeInterpreterSessionsResult object { object, num_sessions, project_id }`
+
+        The aggregated code interpreter sessions usage details of the specific time bucket.
+
+        - `object: "organization.usage.code_interpreter_sessions.result"`
+
+          - `"organization.usage.code_interpreter_sessions.result"`
+
+        - `num_sessions: optional number`
+
+          The number of code interpreter sessions.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+      - `CostsResult object { object, amount, line_item, project_id }`
+
+        The aggregated costs details of the specific time bucket.
+
+        - `object: "organization.costs.result"`
+
+          - `"organization.costs.result"`
+
+        - `amount: optional object { currency, value }`
+
+          The monetary value in its associated currency.
+
+          - `currency: optional string`
+
+            Lowercase ISO-4217 currency e.g. "usd"
+
+          - `value: optional number`
+
+            The numeric value of the cost.
+
+        - `line_item: optional string`
+
+          When `group_by=line_item`, this field provides the line item of the grouped costs result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped costs result.
+
+    - `start_time: number`
+
+  - `has_more: boolean`
+
+  - `next_page: string`
+
+  - `object: "page"`
+
+    - `"page"`
+
+### Usage Get Moderations Response
+
+- `UsageGetModerationsResponse object { data, has_more, next_page, object }`
+
+  - `data: array of object { end_time, object, result, start_time }`
+
+    - `end_time: number`
+
+    - `object: "bucket"`
+
+      - `"bucket"`
+
+    - `result: array of object { input_tokens, num_model_requests, object, 10 more }  or object { input_tokens, num_model_requests, object, 4 more }  or object { input_tokens, num_model_requests, object, 4 more }  or 6 more`
+
+      - `UsageCompletionsResult object { input_tokens, num_model_requests, object, 10 more }`
+
+        The aggregated completions usage details of the specific time bucket.
+
+        - `input_tokens: number`
+
+          The aggregated number of text input tokens used, including cached tokens. For customers subscribe to scale tier, this includes scale tier tokens.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.completions.result"`
+
+          - `"organization.usage.completions.result"`
+
+        - `output_tokens: number`
+
+          The aggregated number of text output tokens used. For customers subscribe to scale tier, this includes scale tier tokens.
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `batch: optional boolean`
+
+          When `group_by=batch`, this field tells whether the grouped usage result is batch or not.
+
+        - `input_audio_tokens: optional number`
+
+          The aggregated number of audio input tokens used, including cached tokens.
+
+        - `input_cached_tokens: optional number`
+
+          The aggregated number of text input tokens that has been cached from previous requests. For customers subscribe to scale tier, this includes scale tier tokens.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `output_audio_tokens: optional number`
+
+          The aggregated number of audio output tokens used.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `service_tier: optional string`
+
+          When `group_by=service_tier`, this field provides the service tier of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageEmbeddingsResult object { input_tokens, num_model_requests, object, 4 more }`
+
+        The aggregated embeddings usage details of the specific time bucket.
+
+        - `input_tokens: number`
+
+          The aggregated number of input tokens used.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.embeddings.result"`
+
+          - `"organization.usage.embeddings.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageModerationsResult object { input_tokens, num_model_requests, object, 4 more }`
+
+        The aggregated moderations usage details of the specific time bucket.
+
+        - `input_tokens: number`
+
+          The aggregated number of input tokens used.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.moderations.result"`
+
+          - `"organization.usage.moderations.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageImagesResult object { images, num_model_requests, object, 6 more }`
+
+        The aggregated images usage details of the specific time bucket.
+
+        - `images: number`
+
+          The number of images processed.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.images.result"`
+
+          - `"organization.usage.images.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `size: optional string`
+
+          When `group_by=size`, this field provides the image size of the grouped usage result.
+
+        - `source: optional string`
+
+          When `group_by=source`, this field provides the source of the grouped usage result, possible values are `image.generation`, `image.edit`, `image.variation`.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageAudioSpeechesResult object { characters, num_model_requests, object, 4 more }`
+
+        The aggregated audio speeches usage details of the specific time bucket.
+
+        - `characters: number`
+
+          The number of characters processed.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.audio_speeches.result"`
+
+          - `"organization.usage.audio_speeches.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageAudioTranscriptionsResult object { num_model_requests, object, seconds, 4 more }`
+
+        The aggregated audio transcriptions usage details of the specific time bucket.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.audio_transcriptions.result"`
+
+          - `"organization.usage.audio_transcriptions.result"`
+
+        - `seconds: number`
+
+          The number of seconds processed.
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageVectorStoresResult object { object, usage_bytes, project_id }`
+
+        The aggregated vector stores usage details of the specific time bucket.
+
+        - `object: "organization.usage.vector_stores.result"`
+
+          - `"organization.usage.vector_stores.result"`
+
+        - `usage_bytes: number`
+
+          The vector stores usage in bytes.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+      - `UsageCodeInterpreterSessionsResult object { object, num_sessions, project_id }`
+
+        The aggregated code interpreter sessions usage details of the specific time bucket.
+
+        - `object: "organization.usage.code_interpreter_sessions.result"`
+
+          - `"organization.usage.code_interpreter_sessions.result"`
+
+        - `num_sessions: optional number`
+
+          The number of code interpreter sessions.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+      - `CostsResult object { object, amount, line_item, project_id }`
+
+        The aggregated costs details of the specific time bucket.
+
+        - `object: "organization.costs.result"`
+
+          - `"organization.costs.result"`
+
+        - `amount: optional object { currency, value }`
+
+          The monetary value in its associated currency.
+
+          - `currency: optional string`
+
+            Lowercase ISO-4217 currency e.g. "usd"
+
+          - `value: optional number`
+
+            The numeric value of the cost.
+
+        - `line_item: optional string`
+
+          When `group_by=line_item`, this field provides the line item of the grouped costs result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped costs result.
+
+    - `start_time: number`
+
+  - `has_more: boolean`
+
+  - `next_page: string`
+
+  - `object: "page"`
+
+    - `"page"`
+
+### Usage Get Vector Stores Response
+
+- `UsageGetVectorStoresResponse object { data, has_more, next_page, object }`
+
+  - `data: array of object { end_time, object, result, start_time }`
+
+    - `end_time: number`
+
+    - `object: "bucket"`
+
+      - `"bucket"`
+
+    - `result: array of object { input_tokens, num_model_requests, object, 10 more }  or object { input_tokens, num_model_requests, object, 4 more }  or object { input_tokens, num_model_requests, object, 4 more }  or 6 more`
+
+      - `UsageCompletionsResult object { input_tokens, num_model_requests, object, 10 more }`
+
+        The aggregated completions usage details of the specific time bucket.
+
+        - `input_tokens: number`
+
+          The aggregated number of text input tokens used, including cached tokens. For customers subscribe to scale tier, this includes scale tier tokens.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.completions.result"`
+
+          - `"organization.usage.completions.result"`
+
+        - `output_tokens: number`
+
+          The aggregated number of text output tokens used. For customers subscribe to scale tier, this includes scale tier tokens.
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `batch: optional boolean`
+
+          When `group_by=batch`, this field tells whether the grouped usage result is batch or not.
+
+        - `input_audio_tokens: optional number`
+
+          The aggregated number of audio input tokens used, including cached tokens.
+
+        - `input_cached_tokens: optional number`
+
+          The aggregated number of text input tokens that has been cached from previous requests. For customers subscribe to scale tier, this includes scale tier tokens.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `output_audio_tokens: optional number`
+
+          The aggregated number of audio output tokens used.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `service_tier: optional string`
+
+          When `group_by=service_tier`, this field provides the service tier of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageEmbeddingsResult object { input_tokens, num_model_requests, object, 4 more }`
+
+        The aggregated embeddings usage details of the specific time bucket.
+
+        - `input_tokens: number`
+
+          The aggregated number of input tokens used.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.embeddings.result"`
+
+          - `"organization.usage.embeddings.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageModerationsResult object { input_tokens, num_model_requests, object, 4 more }`
+
+        The aggregated moderations usage details of the specific time bucket.
+
+        - `input_tokens: number`
+
+          The aggregated number of input tokens used.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.moderations.result"`
+
+          - `"organization.usage.moderations.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageImagesResult object { images, num_model_requests, object, 6 more }`
+
+        The aggregated images usage details of the specific time bucket.
+
+        - `images: number`
+
+          The number of images processed.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.images.result"`
+
+          - `"organization.usage.images.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `size: optional string`
+
+          When `group_by=size`, this field provides the image size of the grouped usage result.
+
+        - `source: optional string`
+
+          When `group_by=source`, this field provides the source of the grouped usage result, possible values are `image.generation`, `image.edit`, `image.variation`.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageAudioSpeechesResult object { characters, num_model_requests, object, 4 more }`
+
+        The aggregated audio speeches usage details of the specific time bucket.
+
+        - `characters: number`
+
+          The number of characters processed.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.audio_speeches.result"`
+
+          - `"organization.usage.audio_speeches.result"`
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageAudioTranscriptionsResult object { num_model_requests, object, seconds, 4 more }`
+
+        The aggregated audio transcriptions usage details of the specific time bucket.
+
+        - `num_model_requests: number`
+
+          The count of requests made to the model.
+
+        - `object: "organization.usage.audio_transcriptions.result"`
+
+          - `"organization.usage.audio_transcriptions.result"`
+
+        - `seconds: number`
+
+          The number of seconds processed.
+
+        - `api_key_id: optional string`
+
+          When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+
+        - `model: optional string`
+
+          When `group_by=model`, this field provides the model name of the grouped usage result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+        - `user_id: optional string`
+
+          When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+
+      - `UsageVectorStoresResult object { object, usage_bytes, project_id }`
+
+        The aggregated vector stores usage details of the specific time bucket.
+
+        - `object: "organization.usage.vector_stores.result"`
+
+          - `"organization.usage.vector_stores.result"`
+
+        - `usage_bytes: number`
+
+          The vector stores usage in bytes.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+      - `UsageCodeInterpreterSessionsResult object { object, num_sessions, project_id }`
+
+        The aggregated code interpreter sessions usage details of the specific time bucket.
+
+        - `object: "organization.usage.code_interpreter_sessions.result"`
+
+          - `"organization.usage.code_interpreter_sessions.result"`
+
+        - `num_sessions: optional number`
+
+          The number of code interpreter sessions.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+
+      - `CostsResult object { object, amount, line_item, project_id }`
+
+        The aggregated costs details of the specific time bucket.
+
+        - `object: "organization.costs.result"`
+
+          - `"organization.costs.result"`
+
+        - `amount: optional object { currency, value }`
+
+          The monetary value in its associated currency.
+
+          - `currency: optional string`
+
+            Lowercase ISO-4217 currency e.g. "usd"
+
+          - `value: optional number`
+
+            The numeric value of the cost.
+
+        - `line_item: optional string`
+
+          When `group_by=line_item`, this field provides the line item of the grouped costs result.
+
+        - `project_id: optional string`
+
+          When `group_by=project_id`, this field provides the project ID of the grouped costs result.
+
+    - `start_time: number`
+
+  - `has_more: boolean`
+
+  - `next_page: string`
+
+  - `object: "page"`
+
+    - `"page"`

@@ -43,9 +43,9 @@ Codex is OpenAI's coding agent for software development. ChatGPT Plus, Pro, Busi
     backgroundImage="/images/codex/codex-wallpaper-3.webp"
   />
   <LinkCard
-    title="Explore"
-    href="/codex/explore"
-    description="Get inspirations on what you can build with Codex."
+    title="Explore use cases"
+    href="/codex/use-cases"
+    description="Get inspiration on what you can build with Codex."
     variant="image"
     ctaLabel="Learn more"
     backgroundImage="/images/codex/codex-wallpaper-1.webp"

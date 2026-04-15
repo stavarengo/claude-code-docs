@@ -311,7 +311,7 @@ If you used the Codex app, CLI, or IDE Extension before you'll see past projects
    <ExampleGallery>
      </ExampleGallery>
 
-   If you need more inspiration, check out the [explore section](https://developers.openai.com/codex/explore).
+   If you need more inspiration, explore [Codex use cases](https://developers.openai.com/codex/use-cases).
    If you're new to Codex, read the [best practices guide](https://developers.openai.com/codex/learn/best-practices).
 
 
@@ -9159,22 +9159,6 @@ log_user_prompt = false            # keep prompts redacted
 
 ---
 
-# Explore
-
-## Get started
-
-
-
-## Use skills
-
-
-
-## Create automations
-
-Automate recurring tasks. Codex adds findings to the inbox and archives runs with nothing to report.
-
----
-
 # Feature Maturity
 
 Some Codex features ship behind a maturity label so you can understand how reliable each one is, what might change, and what level of support to expect.
@@ -13212,7 +13196,7 @@ The Codex app is available on macOS (Apple Silicon).
    <ExampleGallery>
      </ExampleGallery>
 
-   If you need more inspiration, check out the [explore section](https://developers.openai.com/codex/explore).
+   If you need more inspiration, explore [Codex use cases](https://developers.openai.com/codex/use-cases).
    If you're new to Codex, read the [best practices guide](https://developers.openai.com/codex/learn/best-practices).
 
     </WorkflowSteps>

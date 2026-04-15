@@ -842,7 +842,7 @@ While Claude 4 models have excellent parallel tool use capabilities by default, 
 
 <section title="System prompts for parallel tool use">
 
-For Claude 4 models (Opus 4, and Sonnet 4), add this to your system prompt:
+For Claude 4 models (Opus 4 (deprecated), and Sonnet 4 (deprecated)), add this to your system prompt:
 ```text
 For maximum efficiency, whenever you need to perform multiple independent operations, invoke all relevant tools simultaneously rather than sequentially.
 ```

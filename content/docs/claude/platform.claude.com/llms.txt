@@ -12,7 +12,7 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 1063 pages - /docs - Content included below
+- English (en) - 1064 pages - /docs - Content included below
 - German (Deutsch) (de) - 144 pages - /docs/de - Visit website for content
 - Spanish (Español) (es) - 144 pages - /docs/es - Visit website for content
 - French (Français) (fr) - 144 pages - /docs/fr - Visit website for content
@@ -1105,6 +1105,7 @@ The full documentation is available in the following languages on https://platfo
 - [Rate limits](https://platform.claude.com/docs/en/api/rate-limits.md)
 - [Service tiers](https://platform.claude.com/docs/en/api/service-tiers.md)
 - [Supported regions](https://platform.claude.com/docs/en/api/supported-regions.md)
+- [Trigger a routine](https://platform.claude.com/docs/en/api/claude-code/routines-fire.md) - Trigger a routine via API
 - [Versions](https://platform.claude.com/docs/en/api/versioning.md)
 
 ---
