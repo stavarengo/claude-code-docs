@@ -1676,7 +1676,7 @@ Rings 2 through 4 wrote the same loop by hand: call the API, check `stop_reason`
 The Python SDK uses the `@beta_tool` decorator to infer the schema from type hints and the docstring. The TypeScript SDK uses `betaZodTool` with a Zod schema.
 
 <Note>
-Tool Runner is available in the Python, TypeScript, and Ruby SDKs. The Shell and CLI tabs show a note instead of code; keep the Ring 4 loop for shell-based scripts.
+Tool Runner is available in the Python, TypeScript, and Ruby SDKs. The cURL and CLI tabs show a note instead of code; keep the Ring 4 loop for curl- or CLI-based scripts.
 </Note>
 
 <CodeGroup>

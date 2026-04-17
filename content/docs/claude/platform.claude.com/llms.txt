@@ -12,18 +12,18 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 1064 pages - /docs - Content included below
-- German (Deutsch) (de) - 144 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 144 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 144 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 144 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 144 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 144 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 144 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 144 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 144 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 144 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 144 pages - /docs/id - Visit website for content
+- English (en) - 1136 pages - /docs - Content included below
+- German (Deutsch) (de) - 122 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 122 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 122 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 122 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 122 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 122 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 122 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 122 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 122 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 122 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 122 pages - /docs/id - Visit website for content
 
 ---
 
@@ -51,6 +51,7 @@ The full documentation is available in the following languages on https://platfo
 - [Batch processing](https://platform.claude.com/docs/en/build-with-claude/batch-processing.md)
 - [Extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking.md) - Building with extended thinking
 - [Citations](https://platform.claude.com/docs/en/build-with-claude/citations.md)
+- [Claude API skill](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/claude-api-skill.md)
 - [Cloud environment setup](https://platform.claude.com/docs/en/managed-agents/environments.md)
 - [Code execution tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool.md)
 - [Compaction](https://platform.claude.com/docs/en/build-with-claude/compaction.md)
@@ -99,6 +100,7 @@ The full documentation is available in the following languages on https://platfo
 - [Streaming Messages](https://platform.claude.com/docs/en/build-with-claude/streaming.md)
 - [Streaming refusals](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/handle-streaming-refusals.md)
 - [Structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md)
+- [Task budgets (beta)](https://platform.claude.com/docs/en/build-with-claude/task-budgets.md) - Task budgets
 - [Text editor tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/text-editor-tool.md)
 - [Ticket routing](https://platform.claude.com/docs/en/about-claude/use-case-guides/ticket-routing.md)
 - [Token counting](https://platform.claude.com/docs/en/build-with-claude/token-counting.md)
@@ -137,7 +139,7 @@ The full documentation is available in the following languages on https://platfo
 - [Model deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations.md)
 - [Pricing](https://platform.claude.com/docs/en/about-claude/pricing.md)
 - [System prompts](https://platform.claude.com/docs/en/release-notes/system-prompts.md) - System Prompts
-- [What's new in Claude 4.6](https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-6.md)
+- [What's new in Claude Opus 4.7](https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-7.md)
 
 ### Client SDKs
 
@@ -178,15 +180,25 @@ The full documentation is available in the following languages on https://platfo
 - [Agents (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/agents.md)
 - [API Keys](https://platform.claude.com/docs/en/api/admin/api_keys.md)
 - [Archive Agent (Beta)](https://platform.claude.com/docs/en/api/beta/agents/archive.md)
+- [Archive Agent (Beta)](https://platform.claude.com/docs/en/api/beta/agents/delete#delete.md)
 - [Archive Agent (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/agents/archive.md)
+- [Archive Agent (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/agents/delete#delete.md)
 - [Archive Agent (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/agents/archive.md)
+- [Archive Agent (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/agents/delete#delete.md)
 - [Archive Agent (Beta) (Go)](https://platform.claude.com/docs/en/api/go/beta/agents/archive.md)
+- [Archive Agent (Beta) (Go)](https://platform.claude.com/docs/en/api/go/beta/agents/delete#delete.md)
 - [Archive Agent (Beta) (Java)](https://platform.claude.com/docs/en/api/java/beta/agents/archive.md)
+- [Archive Agent (Beta) (Java)](https://platform.claude.com/docs/en/api/java/beta/agents/delete#delete.md)
 - [Archive Agent (Beta) (php)](https://platform.claude.com/docs/en/api/php/beta/agents/archive.md)
+- [Archive Agent (Beta) (php)](https://platform.claude.com/docs/en/api/php/beta/agents/delete#delete.md)
 - [Archive Agent (Beta) (Python)](https://platform.claude.com/docs/en/api/python/beta/agents/archive.md)
+- [Archive Agent (Beta) (Python)](https://platform.claude.com/docs/en/api/python/beta/agents/delete#delete.md)
 - [Archive Agent (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/agents/archive.md)
+- [Archive Agent (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/agents/delete#delete.md)
 - [Archive Agent (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/agents/archive.md)
+- [Archive Agent (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/agents/delete#delete.md)
 - [Archive Agent (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/agents/archive.md)
+- [Archive Agent (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/agents/delete#delete.md)
 - [Archive Credential (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/credentials/archive.md)
 - [Archive Credential (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/vaults/credentials/archive.md)
 - [Archive Credential (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/vaults/credentials/archive.md)
@@ -379,6 +391,16 @@ The full documentation is available in the following languages on https://platfo
 - [Create Credential (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/vaults/credentials/create.md)
 - [Create Credential (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/vaults/credentials/create.md)
 - [Create Credential (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/vaults/credentials/create.md)
+- [Create Enrollment URL (Beta)](https://platform.claude.com/docs/en/api/beta/user_profiles/create_enrollment_url.md)
+- [Create Enrollment URL (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/user_profiles/create_enrollment_url.md)
+- [Create Enrollment URL (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/user_profiles/create_enrollment_url.md)
+- [Create Enrollment URL (Beta) (Go)](https://platform.claude.com/docs/en/api/go/beta/user_profiles/create_enrollment_url.md)
+- [Create Enrollment URL (Beta) (Java)](https://platform.claude.com/docs/en/api/java/beta/user_profiles/create_enrollment_url.md)
+- [Create Enrollment URL (Beta) (php)](https://platform.claude.com/docs/en/api/php/beta/user_profiles/create_enrollment_url.md)
+- [Create Enrollment URL (Beta) (Python)](https://platform.claude.com/docs/en/api/python/beta/user_profiles/create_enrollment_url.md)
+- [Create Enrollment URL (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/user_profiles/create_enrollment_url.md)
+- [Create Enrollment URL (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/user_profiles/create_enrollment_url.md)
+- [Create Enrollment URL (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/user_profiles/create_enrollment_url.md)
 - [Create Environment (Beta)](https://platform.claude.com/docs/en/api/beta/environments/create.md)
 - [Create Environment (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/environments/create.md)
 - [Create Environment (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/environments/create.md)
@@ -420,6 +442,16 @@ The full documentation is available in the following languages on https://platfo
 - [Create Skill Version (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/skills/versions/create.md)
 - [Create Skill Version (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/skills/versions/create.md)
 - [Create Skill Version (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/skills/versions/create.md)
+- [Create User Profile (Beta)](https://platform.claude.com/docs/en/api/beta/user_profiles/create.md)
+- [Create User Profile (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/user_profiles/create.md)
+- [Create User Profile (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/user_profiles/create.md)
+- [Create User Profile (Beta) (Go)](https://platform.claude.com/docs/en/api/go/beta/user_profiles/create.md)
+- [Create User Profile (Beta) (Java)](https://platform.claude.com/docs/en/api/java/beta/user_profiles/create.md)
+- [Create User Profile (Beta) (php)](https://platform.claude.com/docs/en/api/php/beta/user_profiles/create.md)
+- [Create User Profile (Beta) (Python)](https://platform.claude.com/docs/en/api/python/beta/user_profiles/create.md)
+- [Create User Profile (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/user_profiles/create.md)
+- [Create User Profile (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/user_profiles/create.md)
+- [Create User Profile (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/user_profiles/create.md)
 - [Create Vault (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/create.md)
 - [Create Vault (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/vaults/create.md)
 - [Create Vault (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/vaults/create.md)
@@ -691,6 +723,16 @@ The full documentation is available in the following languages on https://platfo
 - [Get Skill Version (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/skills/versions/retrieve.md)
 - [Get Skill Version (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/skills/versions/retrieve.md)
 - [Get User](https://platform.claude.com/docs/en/api/admin/users/retrieve.md)
+- [Get User Profile (Beta)](https://platform.claude.com/docs/en/api/beta/user_profiles/retrieve.md)
+- [Get User Profile (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/user_profiles/retrieve.md)
+- [Get User Profile (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/user_profiles/retrieve.md)
+- [Get User Profile (Beta) (Go)](https://platform.claude.com/docs/en/api/go/beta/user_profiles/retrieve.md)
+- [Get User Profile (Beta) (Java)](https://platform.claude.com/docs/en/api/java/beta/user_profiles/retrieve.md)
+- [Get User Profile (Beta) (php)](https://platform.claude.com/docs/en/api/php/beta/user_profiles/retrieve.md)
+- [Get User Profile (Beta) (Python)](https://platform.claude.com/docs/en/api/python/beta/user_profiles/retrieve.md)
+- [Get User Profile (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/user_profiles/retrieve.md)
+- [Get User Profile (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/user_profiles/retrieve.md)
+- [Get User Profile (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/user_profiles/retrieve.md)
 - [Get Vault (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/retrieve.md)
 - [Get Vault (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/vaults/retrieve.md)
 - [Get Vault (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/vaults/retrieve.md)
@@ -846,6 +888,16 @@ The full documentation is available in the following languages on https://platfo
 - [List Skills (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/skills/list.md)
 - [List Skills (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/skills/list.md)
 - [List Skills (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/skills/list.md)
+- [List User Profiles (Beta)](https://platform.claude.com/docs/en/api/beta/user_profiles/list.md)
+- [List User Profiles (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/user_profiles/list.md)
+- [List User Profiles (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/user_profiles/list.md)
+- [List User Profiles (Beta) (Go)](https://platform.claude.com/docs/en/api/go/beta/user_profiles/list.md)
+- [List User Profiles (Beta) (Java)](https://platform.claude.com/docs/en/api/java/beta/user_profiles/list.md)
+- [List User Profiles (Beta) (php)](https://platform.claude.com/docs/en/api/php/beta/user_profiles/list.md)
+- [List User Profiles (Beta) (Python)](https://platform.claude.com/docs/en/api/python/beta/user_profiles/list.md)
+- [List User Profiles (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/user_profiles/list.md)
+- [List User Profiles (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/user_profiles/list.md)
+- [List User Profiles (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/user_profiles/list.md)
 - [List Users](https://platform.claude.com/docs/en/api/admin/users/list.md)
 - [List Vaults (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/list.md)
 - [List Vaults (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/vaults/list.md)
@@ -1044,6 +1096,16 @@ The full documentation is available in the following languages on https://platfo
 - [Update Session Resource (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/sessions/resources/update.md)
 - [Update Session Resource (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/sessions/resources/update.md)
 - [Update User](https://platform.claude.com/docs/en/api/admin/users/update.md)
+- [Update User Profile (Beta)](https://platform.claude.com/docs/en/api/beta/user_profiles/update.md)
+- [Update User Profile (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/user_profiles/update.md)
+- [Update User Profile (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/user_profiles/update.md)
+- [Update User Profile (Beta) (Go)](https://platform.claude.com/docs/en/api/go/beta/user_profiles/update.md)
+- [Update User Profile (Beta) (Java)](https://platform.claude.com/docs/en/api/java/beta/user_profiles/update.md)
+- [Update User Profile (Beta) (php)](https://platform.claude.com/docs/en/api/php/beta/user_profiles/update.md)
+- [Update User Profile (Beta) (Python)](https://platform.claude.com/docs/en/api/python/beta/user_profiles/update.md)
+- [Update User Profile (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/user_profiles/update.md)
+- [Update User Profile (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/user_profiles/update.md)
+- [Update User Profile (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/user_profiles/update.md)
 - [Update Vault (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/update.md)
 - [Update Vault (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/vaults/update.md)
 - [Update Vault (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/vaults/update.md)
@@ -1067,6 +1129,16 @@ The full documentation is available in the following languages on https://platfo
 - [Upload File (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/files/upload.md)
 - [Upload File (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/files/upload.md)
 - [Usage Report](https://platform.claude.com/docs/en/api/admin/usage_report.md)
+- [User Profiles (Beta)](https://platform.claude.com/docs/en/api/beta/user_profiles.md)
+- [User Profiles (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/user_profiles.md)
+- [User Profiles (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/user_profiles.md)
+- [User Profiles (Beta) (Go)](https://platform.claude.com/docs/en/api/go/beta/user_profiles.md)
+- [User Profiles (Beta) (Java)](https://platform.claude.com/docs/en/api/java/beta/user_profiles.md)
+- [User Profiles (Beta) (php)](https://platform.claude.com/docs/en/api/php/beta/user_profiles.md)
+- [User Profiles (Beta) (Python)](https://platform.claude.com/docs/en/api/python/beta/user_profiles.md)
+- [User Profiles (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/user_profiles.md)
+- [User Profiles (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/user_profiles.md)
+- [User Profiles (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/user_profiles.md)
 - [Users](https://platform.claude.com/docs/en/api/admin/users.md)
 - [Vaults (Beta)](https://platform.claude.com/docs/en/api/beta/vaults.md)
 - [Vaults (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/vaults.md)

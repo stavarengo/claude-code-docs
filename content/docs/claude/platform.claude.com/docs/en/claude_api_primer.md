@@ -11,7 +11,7 @@ This guide is designed to give Claude the basics of using the Claude API. It giv
 ## Models
 
 ```text
-Smartest model: Claude Opus 4.6: claude-opus-4-6
+Smartest model: Claude Opus 4.7: claude-opus-4-7
 Smart model: Claude Sonnet 4.6: claude-sonnet-4-6
 For fast, cost-effective tasks: Claude Haiku 4.5: claude-haiku-4-5-20251001
 ```
@@ -24,7 +24,7 @@ For fast, cost-effective tasks: Claude Haiku 4.5: claude-haiku-4-5-20251001
 
 ```bash CLI
 ant messages create \
-  --model claude-opus-4-6 \
+  --model claude-opus-4-7 \
   --max-tokens 1024 \
   --message '{"role": "user", "content": "Hello, Claude"}'
 ```
@@ -36,7 +36,7 @@ import os
 message = anthropic.Anthropic(
     api_key=os.environ.get("ANTHROPIC_API_KEY")
 ).messages.create(
-    model="claude-opus-4-6",
+    model="claude-opus-4-7",
     max_tokens=1024,
     messages=[{"role": "user", "content": "Hello, Claude"}],
 )
@@ -56,7 +56,7 @@ print(message)
       "text": "Hello!"
     }
   ],
-  "model": "claude-opus-4-6",
+  "model": "claude-opus-4-7",
   "stop_reason": "end_turn",
   "stop_sequence": null,
   "usage": {
@@ -74,7 +74,7 @@ The Messages API is stateless, which means that you always send the full convers
 
 ```bash CLI
 ant messages create <<'YAML'
-model: claude-opus-4-6
+model: claude-opus-4-7
 max_tokens: 1024
 messages:
   - role: user
@@ -90,7 +90,7 @@ YAML
 import anthropic
 
 message = anthropic.Anthropic().messages.create(
-    model="claude-opus-4-6",
+    model="claude-opus-4-7",
     max_tokens=1024,
     messages=[
         {"role": "user", "content": "Hello, Claude"},
@@ -151,7 +151,7 @@ IMAGE_URL="$IMAGE_URL/Camponotus_flavomarginatus_ant.jpg"
 curl -sSo ant.jpg "$IMAGE_URL"
 
 ant messages create <<'YAML'
-model: claude-opus-4-6
+model: claude-opus-4-7
 max_tokens: 1024
 messages:
   - role: user
@@ -167,7 +167,7 @@ YAML
 
 # Option 2: URL-referenced image
 ant messages create <<YAML
-model: claude-opus-4-6
+model: claude-opus-4-7
 max_tokens: 1024
 messages:
   - role: user
@@ -192,7 +192,7 @@ image_media_type = "image/jpeg"
 image_data = base64.standard_b64encode(httpx.get(image_url).content).decode("utf-8")
 
 message = anthropic.Anthropic().messages.create(
-    model="claude-opus-4-6",
+    model="claude-opus-4-7",
     max_tokens=1024,
     messages=[
         {
@@ -214,7 +214,7 @@ message = anthropic.Anthropic().messages.create(
 
 # Option 2: URL-referenced image
 message_from_url = anthropic.Anthropic().messages.create(
-    model="claude-opus-4-6",
+    model="claude-opus-4-7",
     max_tokens=1024,
     messages=[
         {
@@ -238,7 +238,7 @@ message_from_url = anthropic.Anthropic().messages.create(
 
 ## Extended thinking
 
-Extended thinking can sometimes help Claude with very hard tasks. When it's enabled, temperature must be set to 1.
+Extended thinking can sometimes help Claude with very hard tasks. On models before Claude Opus 4.7, temperature must be set to 1 when extended thinking is enabled.
 
 Extended thinking is supported in the following models:
 
@@ -256,11 +256,11 @@ When extended thinking is turned on, Claude creates `thinking` content blocks wh
 ```bash CLI
 ant messages create \
   --transform content --format yaml <<'YAML'
-model: claude-opus-4-6
+model: claude-opus-4-7
 max_tokens: 16000
 thinking:
-  type: enabled
-  budget_tokens: 10000
+  type: adaptive
+  display: summarized
 messages:
   - role: user
     content: Are there an infinite number of prime numbers such that n mod 4 == 3?
@@ -273,9 +273,9 @@ import anthropic
 client = anthropic.Anthropic()
 
 response = client.messages.create(
-    model="claude-opus-4-6",
+    model="claude-opus-4-7",
     max_tokens=16000,
-    thinking={"type": "enabled", "budget_tokens": 10000},
+    thinking={"type": "adaptive", "display": "summarized"},
     messages=[
         {
             "role": "user",
@@ -314,11 +314,11 @@ Important limitations:
 # blocks, signatures intact) as compact JSON.
 ASSISTANT_CONTENT=$(ant messages create \
   --transform content --format jsonl <<'YAML'
-model: claude-opus-4-6
+model: claude-opus-4-7
 max_tokens: 16000
 thinking:
-  type: enabled
-  budget_tokens: 10000
+  type: adaptive
+  display: summarized
 tools:
   - name: get_weather
     description: Get the current weather for a location.
@@ -341,11 +341,11 @@ TOOL_USE_ID=$(printf '%s' "$ASSISTANT_CONTENT" \
 # Second request: pass the captured blocks back unchanged as the assistant
 # message. The thinking block must accompany the tool_use block.
 ant messages create <<YAML
-model: claude-opus-4-6
+model: claude-opus-4-7
 max_tokens: 16000
 thinking:
-  type: enabled
-  budget_tokens: 10000
+  type: adaptive
+  display: summarized
 tools:
   - name: get_weather
     description: Get the current weather for a location.
@@ -388,9 +388,9 @@ weather_data = {"temperature": 72}
 
 # First request - Claude responds with thinking and tool request
 response = client.messages.create(
-    model="claude-opus-4-6",
+    model="claude-opus-4-7",
     max_tokens=16000,
-    thinking={"type": "enabled", "budget_tokens": 10000},
+    thinking={"type": "adaptive", "display": "summarized"},
     tools=[weather_tool],
     messages=[{"role": "user", "content": "What's the weather in Paris?"}],
 )
@@ -405,9 +405,9 @@ tool_use_block = next(
 
 # Second request - Include thinking block and tool result
 continuation = client.messages.create(
-    model="claude-opus-4-6",
+    model="claude-opus-4-7",
     max_tokens=16000,
-    thinking={"type": "enabled", "budget_tokens": 10000},
+    thinking={"type": "adaptive", "display": "summarized"},
     tools=[weather_tool],
     messages=[
         {"role": "user", "content": "What's the weather in Paris?"},
@@ -440,8 +440,8 @@ ant beta:messages create --beta interleaved-thinking-2025-05-14 <<'YAML'
 model: claude-sonnet-4-6
 max_tokens: 16000
 thinking:
-  type: enabled
-  budget_tokens: 10000
+  type: adaptive
+  display: summarized
 tools:
   - name: calculator
     description: Perform arithmetic calculations.
@@ -706,7 +706,7 @@ When creating a Message, you can set `"stream": true` to incrementally stream th
 
 ```bash CLI
 ant messages create --stream --format jsonl \
-  --model claude-opus-4-6 \
+  --model claude-opus-4-7 \
   --max-tokens 1024 \
   --message '{role: user, content: "Hello"}' \
   | while IFS= read -r event; do
@@ -724,7 +724,7 @@ client = anthropic.Anthropic()
 with client.messages.stream(
     max_tokens=1024,
     messages=[{"role": "user", "content": "Hello"}],
-    model="claude-opus-4-6",
+    model="claude-opus-4-7",
 ) as stream:
     for text in stream.text_stream:
         print(text, end="", flush=True)
@@ -782,7 +782,7 @@ When using extended thinking with streaming:
 
 ```sse
 event: message_start
-data: {"type": "message_start", "message": {"id": "msg_1nZdL29xx5MUA1yADyHTEsnR8uuvGzszyY", "type": "message", "role": "assistant", "content": [], "model": "claude-opus-4-6", "stop_reason": null, "stop_sequence": null, "usage": {"input_tokens": 25, "output_tokens": 1}}}
+data: {"type": "message_start", "message": {"id": "msg_1nZdL29xx5MUA1yADyHTEsnR8uuvGzszyY", "type": "message", "role": "assistant", "content": [], "model": "claude-opus-4-7", "stop_reason": null, "stop_sequence": null, "usage": {"input_tokens": 25, "output_tokens": 1}}}
 
 event: content_block_start
 data: {"type": "content_block_start", "index": 0, "content_block": {"type": "text", "text": ""}}

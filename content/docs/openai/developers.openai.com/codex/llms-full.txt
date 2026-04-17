@@ -278,13 +278,13 @@ ChatGPT Plus, Pro, Business, Edu, and Enterprise plans include Codex. Learn more
 
 ## Getting started
 
-The Codex app is available on macOS (Apple Silicon).
+The Codex app is available on macOS and Windows.
 
 
 
 1. Download and install the Codex app
 
-    Download the Codex app for Windows or macOS.
+    Download the Codex app for Windows or macOS. Choose the Intel build if you're using an Intel-based Mac.
 
     <div class="text-sm">
       [Get notified for Linux](https://openai.com/form/codex-app/)
@@ -326,63 +326,84 @@ If you used the Codex app, CLI, or IDE Extension before you'll see past projects
 
 ### Multitask across projects
 
-Run multiple tasks in parallel and switch quickly between them.
-
-  </BentoContent>
-  <BentoContent href="/codex/app/features#built-in-git-tools">
-
-### Built-in Git tools
-
-Review diffs, comment inline, stage or revert chunks, and commit without leaving the app.
+Run project threads side by side and switch between them quickly.
 
   </BentoContent>
   <BentoContent href="/codex/app/worktrees">
 
-### Worktrees for parallel tasks
+### Worktrees
 
-Isolate changes of multiple Codex threads using built-in Git worktree support.
+Keep parallel code changes isolated with built-in Git worktree support.
 
   </BentoContent>
-  <BentoContent href="/codex/app/features#skills-support">
+  <BentoContent href="/codex/app/computer-use">
 
-### Skills support
+### Computer use
 
-Give your Codex agent additional capabilities and reuse skills across App, CLI, and IDE Extension.
+Let Codex use macOS apps for GUI tasks, browser flows, and native app testing.
+
+  </BentoContent>
+  <BentoContent href="/codex/app/review">
+
+### Review and ship changes
+
+Inspect diffs, address PR feedback, stage files, commit, and push.
+
+  </BentoContent>
+  <BentoContent href="/codex/app/features#integrated-terminal">
+
+### Terminal and actions
+
+Run commands in each thread and launch repeatable project actions.
+
+  </BentoContent>
+  <BentoContent href="/codex/app/browser">
+
+### In-app browser
+
+Open unauthenticated local or public pages and comment on rendered output.
+
+  </BentoContent>
+  <BentoContent href="/codex/app/features#image-generation">
+
+### Image generation
+
+Generate or edit images in a thread while you work on the surrounding code and assets.
 
   </BentoContent>
   <BentoContent href="/codex/app/automations">
 
 ### Automations
 
-Pair skills with automations to automate recurring tasks in the background. Codex adds findings to the inbox, or automatically archives runs if there's nothing to report.
+Schedule recurring tasks, or wake up the same thread for ongoing checks.
 
   </BentoContent>
-  <BentoContent href="/codex/app/features#integrated-terminal">
+  <BentoContent href="/codex/app/features#skills-support">
 
-### Built-in terminal
+### Skills
 
-Open a terminal per thread to test your changes, run dev servers, scripts, and custom commands.
+Reuse instructions and workflows across the app, CLI, and IDE Extension.
 
   </BentoContent>
-  <BentoContent href="/codex/app/local-environments">
+  <BentoContent href="/codex/app/features#richer-outputs-and-artifacts">
 
-### Local environments
+### Sidebar and artifacts
 
-Define worktree setup scripts and common project actions for easy access.
+Follow plans, sources, task summaries, and generated file previews.
+
+  </BentoContent>
+  <BentoContent href="/codex/plugins">
+
+### Plugins
+
+Connect apps, skills, and MCP servers to extend what Codex can do.
 
   </BentoContent>
   <BentoContent href="/codex/app/features#sync-with-the-ide-extension">
 
-### Sync with the IDE extension
+### IDE Extension sync
 
 Share Auto Context and active threads across app and IDE sessions.
-
-  </BentoContent>
-  <BentoContent href="/codex/app/features#mcp-support">
-
-### MCP support
-
-Connect your Codex agent to additional services using MCP.
 
   </BentoContent>
 
@@ -402,8 +423,8 @@ Need help? Visit the [troubleshooting guide](https://developers.openai.com/codex
 
 Automate recurring tasks in the background. Codex adds findings to the inbox, or automatically archives the task if there's nothing to report. You can combine automations with [skills](https://developers.openai.com/codex/skills) for more complex tasks.
 
-Automations run in the background in the Codex app. The app needs to be
-running, and the selected project needs to be available on disk.
+For project-scoped automations, the app needs to be running, and the selected
+project needs to be available on disk.
 
 In Git repositories, you can choose whether an automation runs in your local
 project or on a new [worktree](https://developers.openai.com/codex/app/worktrees). Both options run in the
@@ -421,23 +442,77 @@ choose them explicitly if you want more control over how the automation runs.
 
 ## Managing tasks
 
-All automations and their runs can be found in the automations pane inside your Codex app sidebar.
+Find all automations and their runs in the automations pane inside your Codex app sidebar.
 
 The "Triage" section acts as your inbox. Automation runs with findings show up there, and you can filter your inbox to show all automation runs or only unread ones.
+
+Standalone automations start fresh runs on a schedule and report results in
+Triage. Use them when each run should be independent or when one automation
+should run across one or more projects. If you need a custom cadence, choose a
+custom schedule and enter cron syntax.
 
 For Git repositories, each automation can run either in your local project or
 on a dedicated background [worktree](https://developers.openai.com/codex/app/features#worktree-support). Use
 worktrees when you want to isolate automation changes from unfinished local
 work. Use local mode when you want the automation to work directly in your main
-checkout, keeping in mind that it can modify files you are actively editing.
+checkout, keeping in mind that it can change files you are actively editing.
 In non-version-controlled projects, automations run directly in the project
-directory. You can have the same automation run on multiple projects.
+directory. You can have the same automation run on more than one project.
 
 Automations use your default sandbox settings. In read-only mode, tool calls fail if they require modifying files, network access, or working with apps on your computer. With full access enabled, background automations carry elevated risk. You can adjust sandbox settings in [Settings](https://developers.openai.com/codex/app/settings) and selectively allowlist commands with [rules](https://developers.openai.com/codex/rules).
 
-To keep automations maintainable and shareable across teams, you can use [skills](https://developers.openai.com/codex/skills) to define the action and provide tools and context to Codex. You can explicitly trigger a skill as part of an automation by using `$skill-name` inside your automation.
+Automations can use the same plugins and skills available to Codex. To keep
+automations maintainable and shareable across teams, use [skills](https://developers.openai.com/codex/skills)
+to define the action and provide tools and context. You can explicitly trigger a
+skill as part of an automation by using `$skill-name` inside your automation.
 
-## Testing automations safely
+## Ask Codex to create or update automations
+
+You can create and update automations from a regular Codex thread. Describe the
+task, the schedule, and whether the automation should stay attached to the
+current thread or start fresh runs. Codex can draft the automation prompt, choose
+the right automation type, and update it when the scope or cadence changes.
+
+For example, ask Codex to remind you in this thread while a deployment finishes,
+or ask it to create a standalone automation that checks a project on a recurring
+schedule.
+
+Skills can also create or update automations. For example, a skill for
+babysitting a pull request could set up a recurring automation that checks the
+PR status with the GitHub plugin and fixes new review feedback.
+
+## Thread automations
+
+Thread automations are heartbeat-style recurring wake-up calls attached to the
+current thread. Use them when you want Codex to keep returning to the same
+conversation on a schedule.
+
+Use a thread automation when the scheduled work should preserve the thread's
+context instead of starting from a new prompt each time.
+
+Thread automations can use minute-based intervals for active follow-up loops,
+or daily and weekly schedules when you need a check-in at a specific time.
+
+Thread automations are useful for:
+
+- checking a long-running command until it finishes
+- polling Slack, GitHub, or another connected source when the results should
+  stay in the same thread
+- reminding Codex to continue a review loop at a fixed cadence
+- running a skill-driven workflow that uses plugins, such as checking PR status
+  and addressing new feedback
+- keeping a chat focused on an ongoing research or triage task
+
+Use a standalone or project automation when each run should be independent,
+when it should run across more than one project, or when findings should appear
+as separate automation runs in Triage.
+
+When you create a thread automation, make the prompt durable. It should
+describe what Codex should do each time the thread wakes up, how to decide
+whether there is anything important to report, and when to stop or ask you for
+input.
+
+## Test automations
 
 Before you schedule an automation, test the prompt manually in a regular thread
 first. This helps you confirm:
@@ -446,8 +521,8 @@ first. This helps you confirm:
 - The selected or default model, reasoning effort, and tools behave as expected.
 - The resulting diff is reviewable.
 
-When you start scheduling runs, review the first few outputs closely and adjust
-the prompt or cadence as needed.
+When you start scheduling runs, review the first few outputs and adjust the
+prompt or cadence as needed.
 
 ## Worktree cleanup for automations
 
@@ -457,8 +532,7 @@ pinning runs unless you intend to keep their worktrees.
 
 ## Permissions and security model
 
-Automations are designed to run unattended and use your default sandbox
-settings.
+Automations run unattended and use your default sandbox settings.
 
 - If your sandbox mode is **read-only**, tool calls fail if they require
   modifying files, accessing network, or working with apps on your computer.
@@ -468,7 +542,7 @@ settings.
   on your computer. You can selectively allowlist commands to run outside the
   sandbox using [rules](https://developers.openai.com/codex/rules).
 - If your sandbox mode is **full access**, background automations carry
-  elevated risk, as Codex may modify files, run commands, and access network
+  elevated risk, as Codex may change files, run commands, and access network
   without asking. Consider updating sandbox settings to workspace write, and
   using [rules](https://developers.openai.com/codex/rules) to selectively define which commands the agent
   can run with full access.
@@ -479,7 +553,7 @@ admin-enforced requirements. For example, they can disallow `approval_policy =
 [Admin-enforced requirements (`requirements.toml`)](https://developers.openai.com/codex/enterprise/managed-configuration#admin-enforced-requirements-requirementstoml).
 
 Automations use `approval_policy = "never"` when your organization policy
-allows it. If `approval_policy = "never"` is disallowed by admin requirements,
+allows it. If admin requirements disallow `approval_policy = "never"`,
 automations fall back to the approval behavior of your selected mode.
 
 ## Examples
@@ -625,7 +699,7 @@ Slash commands let you control Codex without leaving the thread composer. Availa
 
 You can also explicitly invoke skills by typing `$` in the thread composer. See [Skills](https://developers.openai.com/codex/skills).
 
-Enabled skills also appear in the slash command list (for example, `/imagegen`).
+Enabled skills also appear in the slash command list.
 
 ### Available slash commands
 
@@ -651,7 +725,7 @@ The Codex app registers the `codex://` URL scheme so links can open specific par
 
 For new-thread deeplinks:
 
-- `prompt` prefills the composer.
+- `prompt` sets the initial composer text.
 - `path` must be an absolute path to a local directory and, when valid, makes that directory the active workspace for the new thread.
 - `originUrl` tries to match one of your current workspace roots by Git remote URL. If both `path` and `originUrl` are present, Codex resolves `path` first.
 
@@ -711,7 +785,8 @@ created across your different projects by clicking Skills in the sidebar.
 
 You can also combine skills with [automations](https://developers.openai.com/codex/app/automations) to perform routine tasks
 such as evaluating errors in your telemetry and submitting fixes or creating reports on recent
-codebase changes.
+codebase changes. For ongoing work that should stay in one thread, use a
+[thread automation](https://developers.openai.com/codex/app/automations#thread-automations).
 
 </div>
 
@@ -854,6 +929,73 @@ visible across your workflow.
 
 </section>
 
+<section class="feature-grid">
+
+<div>
+
+## In-app browser
+
+Use the [in-app browser](https://developers.openai.com/codex/app/browser) to preview, review, and comment on
+local development servers, file-backed previews, and public pages that don't
+require sign-in while you iterate on a web app.
+
+The in-app browser doesn't support authentication flows, signed-in pages, your
+regular browser profile, cookies, extensions, or existing tabs.
+
+Use browser comments to mark specific elements or areas on a page, then ask
+Codex to address that feedback.
+
+</div>
+
+</section>
+
+<section class="feature-grid inverse">
+
+<div>
+
+## Computer use
+
+[Computer use](https://developers.openai.com/codex/app/computer-use) helps Codex operate a macOS app by
+seeing, clicking, and typing. This is useful for testing desktop apps, checking
+browser or simulator flows, working with data sources that aren't available as
+plugins, changing app settings, and reproducing GUI-only bugs.
+
+Because computer use can affect app and system state outside your project
+workspace, keep tasks narrow and review permission prompts before continuing.
+
+The feature isn't available in the European Economic Area, the United Kingdom, or
+Switzerland at launch.
+
+</div>
+
+</section>
+
+<section class="feature-grid">
+
+<div>
+
+<a id="richer-outputs-and-artifacts"></a>
+<a id="task-sidebar"></a>
+<a id="artifact-viewer"></a>
+
+## Work with non-code artifacts
+
+When a task produces non-code artifacts, the sidebar can preview PDF files,
+spreadsheets, documents, and presentations. Give Codex the source data, expected
+file type, structure, and review criteria you care about.
+
+For spreadsheets and presentations, describe the sheets, columns, charts, slide
+sections, and checks that matter. Ask Codex to explain where it saved the output
+and how it checked the result.
+
+Use the task sidebar to follow what Codex is doing while a thread runs. It can
+surface the agent's plan, sources, generated artifacts, and task summary so you
+can steer the work, inspect generated files, and decide what needs another pass.
+
+</div>
+
+</section>
+
 ---
 
 ## Sync with the IDE extension
@@ -869,6 +1011,18 @@ IDE Extension, and vice versa.
 
 If you're unsure whether the app includes context, toggle it off and ask the
 same question again to compare results.
+
+## Thread automations
+
+Automations can also attach to a single thread. These thread automations are
+recurring wake-up calls that preserve the thread's context so Codex can check
+on long-running work, poll a source for new information, or continue a follow-up
+loop. Use them for heartbeat-style automations that should keep returning to the
+same conversation on a schedule.
+
+Use a thread automation when the next run depends on the current conversation.
+Use a standalone or project [automation](https://developers.openai.com/codex/app/automations) when you want
+Codex to start a fresh recurring task for one or more projects.
 
 ## Approvals and sandboxing
 
@@ -888,7 +1042,7 @@ If your task requires work across more than one repository or directory, prefer
 opening separate projects or using worktrees rather than asking Codex to roam
 outside the project root.
 
-For a high-level overview, see [Sandboxing](https://developers.openai.com/codex/concepts/sandboxing). For
+For a high-level overview, see [sandboxing](https://developers.openai.com/codex/concepts/sandboxing). For
 configuration details, see the
 [agent approvals & security documentation](https://developers.openai.com/codex/agent-approvals-security).
 
@@ -901,11 +1055,21 @@ server or add a new server to your configuration.
 
 ## Web search
 
-Codex ships with a first-party web search tool. For local tasks in the Codex IDE Extension, Codex
+Codex ships with a first-party web search tool. For local tasks in the Codex app, Codex
 enables web search by default and serves results from a web search cache. If you configure your
 sandbox for [full access](https://developers.openai.com/codex/agent-approvals-security), web search defaults to live results. See
 [Config basics](https://developers.openai.com/codex/config-basic) to disable web search or switch to live results that fetch the
 most recent data.
+
+## Image generation
+
+Ask Codex to generate or edit images directly in a thread. This is useful for UI assets, banners, backgrounds, illustrations, sprite sheets, and placeholders you want to create alongside code. Add a reference image when you want Codex to transform or extend an existing asset.
+
+You can ask in natural language or explicitly invoke the image generation skill by including `$imagegen` in your prompt.
+
+Built-in image generation uses `gpt-image-1.5`, counts toward your general Codex usage limits, and uses included limits 3-5x faster on average than similar turns without image generation, depending on image quality and size. For details, see [Pricing](https://developers.openai.com/codex/pricing#image-generation-usage-limits). For prompting tips and model details, see the [image generation guide](https://developers.openai.com/api/docs/guides/image-generation).
+
+For larger batches of image generation, set `OPENAI_API_KEY` in your environment variables and ask Codex to generate images through the API so API pricing applies instead.
 
 ## Image input
 
@@ -914,6 +1078,25 @@ while dropping an image to add the image to the context.
 
 You can also ask Codex to view images on your system. By giving Codex tools to take screenshots of
 the app you are working on, Codex can verify the work it's doing.
+
+<a id="projectless-threads"></a>
+
+## Chats
+
+Chats are threads you can start when the task doesn't need a specific project
+folder or Git repository. Use them for research, triage, planning,
+plugin-heavy workflows, and other conversations where Codex should use connected
+tools instead of editing a codebase.
+
+Chats use a Codex-managed `threads` directory under your Codex home as their
+working location. By default, that location is `~/.codex/threads`.
+
+## Memories
+
+[Memories](https://developers.openai.com/codex/memories), where available, let Codex carry useful context
+from past tasks into future threads. They're most useful for stable preferences,
+project conventions, recurring work patterns, and known pitfalls that would
+otherwise need to repeat.
 
 ## Notifications
 
@@ -932,6 +1115,9 @@ from going to sleep by enabling the "Prevent sleep while running" toggle in the 
 
 - [Settings](https://developers.openai.com/codex/app/settings)
 - [Automations](https://developers.openai.com/codex/app/automations)
+- [In-app browser](https://developers.openai.com/codex/app/browser)
+- [Computer use](https://developers.openai.com/codex/app/computer-use)
+- [Review pane](https://developers.openai.com/codex/app/review)
 - [Local environments](https://developers.openai.com/codex/app/local-environments)
 - [Worktrees](https://developers.openai.com/codex/app/worktrees)
 
@@ -980,6 +1166,14 @@ add your own. If a server requires OAuth, the app starts the auth flow. These se
 also apply to the Codex CLI and IDE extension because the MCP configuration lives in
 `config.toml`. See the [Model Context Protocol docs](https://developers.openai.com/codex/mcp) for details.
 
+## Computer Use
+
+On macOS, check your Computer Use settings to review desktop-app access and related
+preferences after setup. To revoke system-level access, update Screen Recording
+or Accessibility permissions in macOS Privacy & Security settings. The feature
+isn't available in the European Economic Area, the United Kingdom, or Switzerland
+at launch.
+
 ## Personalization
 
 Choose **Friendly**, **Pragmatic**, or **None** as your default personality. Use
@@ -988,10 +1182,225 @@ Choose **Friendly**, **Pragmatic**, or **None** as your default personality. Use
 You can also add your own custom instructions. Editing custom instructions updates your
 [personal instructions in `AGENTS.md`](https://developers.openai.com/codex/guides/agents-md).
 
+## Context-aware suggestions
+
+Use context-aware suggestions to surface follow-ups and tasks you may want to resume when you
+start or return to Codex.
+
+## Memories
+
+Enable Memories, where available, to let Codex carry useful context from past
+threads into future work. See [Memories](https://developers.openai.com/codex/memories) for setup, storage,
+and per-thread controls.
+
 ## Archived threads
 
 The **Archived threads** section lists archived chats with dates and project
 context. Use **Unarchive** to restore a thread.
+
+---
+
+# Computer Use
+
+In the Codex app, computer use is currently available on macOS, except in the
+  European Economic Area, the United Kingdom, and Switzerland at launch. Install
+  the Computer Use plugin, then grant Screen Recording and Accessibility
+  permissions when macOS prompts you.
+
+With computer use, Codex can see and operate graphical user interfaces on macOS.
+Use it for tasks where command-line tools or structured integrations aren't
+enough, such as checking a desktop app, using a browser, changing app settings,
+working with a data source that isn't available as a plugin, or reproducing a
+bug that only happens in a graphical user interface.
+
+Because computer use can affect app and system state outside your project
+workspace, use it for scoped tasks and review permission prompts before
+continuing.
+
+## Set up computer use
+
+In Codex settings, open **Computer Use** and click **Install** to install the
+Computer Use plugin before you ask Codex to operate desktop apps. When macOS
+prompts for access, grant Screen Recording and Accessibility permissions if you
+want Codex to see and interact with the target app.
+
+To use computer use, grant:
+
+- **Screen Recording** permission so Codex can see the target app.
+- **Accessibility** permission so Codex can click, type, and navigate.
+
+## When to use computer use
+
+Choose computer use when the task depends on a graphical user interface that's
+hard to verify through files or command output alone.
+
+Good fits include:
+
+- Testing a macOS app, an iOS simulator flow, or another desktop app that Codex
+  is building.
+- Performing a task that requires your web browser.
+- Reproducing a bug that only appears in a graphical interface.
+- Changing app settings that require clicking through a UI.
+- Inspecting information in an app or data source that isn't available through a
+  plugin.
+- Running a scoped task in the background while you keep working elsewhere.
+- Executing a workflow that spans more than one app.
+
+For web apps you are building locally, use the
+[in-app browser](https://developers.openai.com/codex/app/browser) first.
+
+## Start a computer use task
+
+Mention `@Computer Use` or `@AppName` in your prompt, or ask Codex to use
+computer use. Describe the exact app, window, or flow Codex should operate.
+
+```text
+Open the app with computer use, reproduce the onboarding bug, and fix the
+smallest code path that causes it. After each change, run the same UI flow
+again.
+```
+
+```text
+Open @Chrome and verify the checkout page still works after the latest changes.
+```
+
+If the target app exposes a dedicated plugin or MCP server, prefer that
+structured integration for data access and repeatable operations. Choose
+computer use when Codex needs to inspect or operate the app visually.
+
+## Permissions and approvals
+
+The macOS system permissions for computer use are separate from app approvals in
+Codex. The macOS permissions let Codex see and operate apps. App approvals
+determine which apps you allow Codex to use. File reads, file edits, and shell
+commands still follow the sandbox and approval settings for the thread.
+
+With computer use, Codex can see and take action only in the apps you allow.
+During a task, Codex asks for your permission before it can use an app on your
+computer. You can choose **Always allow** so Codex can use that app in the future
+without asking again. You can remove apps from the **Always allow** list in the
+**Computer Use** section of Codex settings.
+
+Codex may also ask for permission before taking sensitive or disruptive actions.
+
+If Codex can't see or control an app, open **System Settings > Privacy &
+Security** and check **Screen Recording** and **Accessibility** for the Codex
+app.
+
+## Safety guidance
+
+With computer use, Codex can view screen content, take screenshots, and interact
+with windows, menus, keyboard input, and clipboard state in the target app.
+Treat visible app content, browser pages, screenshots, and files opened in the
+target app as context Codex may process while the task runs.
+
+Keep tasks narrow and stay present for sensitive flows:
+
+- Give Codex one clear target app or flow at a time.
+- You can stop the task or take over your computer at any time.
+- Keep sensitive apps closed unless they're required for the task.
+- Avoid tasks that require secrets unless you're present and can approve each
+  step.
+- Review app permission prompts before allowing Codex to use an app.
+- Use **Always allow** only for apps you trust Codex to use automatically in
+  future tasks.
+- Stay present for account, security, privacy, network, payment, or
+  credential-related settings.
+- Cancel the task if Codex starts interacting with the wrong window.
+
+If Codex uses your browser, it can interact with pages where you're already
+signed in. Review website actions as if you were taking them yourself: web pages
+can contain malicious or misleading content, and sites may treat approved clicks,
+form submissions, and signed-in actions as coming from your account. To keep
+using your browser while Codex works, ask Codex to use a different browser.
+
+The feature can't automate terminal apps or Codex itself, since automating them
+could bypass Codex security policies. It also can't authenticate as an
+administrator or approve security and privacy permission prompts on your
+computer.
+
+File edits and shell commands still follow Codex approval and sandbox settings
+where applicable. Changes made through desktop apps may not appear in the review
+pane until they're saved to disk and tracked by the project. Your ChatGPT data
+controls apply to content processed through Codex, including screenshots taken
+by computer use.
+
+---
+
+# In-app browser
+
+The in-app browser gives you and Codex a shared view of rendered web pages
+inside a thread. Use it when you're building or debugging a web app and want to
+preview pages and attach visual comments.
+
+Use it for local development servers, file-backed previews, and public pages
+that don't require sign-in. For anything that depends on login state or browser
+extensions, use your regular browser.
+
+Open the in-app browser from the toolbar, by clicking a URL, by navigating
+manually in the browser, or by pressing <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd>
+(<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd> on Windows).
+
+The in-app browser does not support authentication flows, signed-in pages,
+  your regular browser profile, cookies, extensions, or existing tabs. Use it
+  for pages Codex can open without logging in.
+
+Treat page content as untrusted context. Don't paste secrets into browser flows.
+
+## Preview a page
+
+1. Start your app's development server in the [integrated terminal](https://developers.openai.com/codex/app/features#integrated-terminal) or with a [local environment action](https://developers.openai.com/codex/app/local-environments#actions).
+2. Open an unauthenticated local route, file-backed page, or public page by
+   clicking a URL or navigating manually in the browser.
+3. Review the rendered state alongside the code diff.
+4. Leave browser comments on the elements or areas that need changes.
+5. Ask Codex to address the comments and keep the scope narrow.
+
+Example feedback:
+
+```text
+I left comments on the pricing page in the in-app browser. Address the mobile
+layout issues and keep the card structure unchanged.
+```
+
+## Comment on the page
+
+When a bug is visible only in the rendered page, use browser comments to give
+Codex precise feedback on the page.
+
+- Turn on comment mode, select an element or area, and submit a comment.
+- In comment mode, hold <kbd>Shift</kbd> and click to select an area.
+- Hold <kbd>Cmd</kbd> while clicking to send a comment immediately.
+
+After you leave comments, send a message in the thread asking Codex to address
+them. Comments are most useful when Codex needs to make a precise visual change.
+
+Good feedback is specific:
+
+```text
+This button overflows on mobile. Keep the label on one line if it fits,
+otherwise wrap it without changing the card height.
+```
+
+```text
+This tooltip covers the data point under the cursor. Reposition the tooltip so
+it stays inside the chart bounds.
+```
+
+## Keep browser tasks scoped
+
+The in-app browser is for review and iteration. Keep each browser task small
+enough to review in one pass.
+
+- Name the page, route, or local URL.
+- Name the visual state you care about, such as loading, empty, error, or
+  success.
+- Leave comments on the exact elements or areas that need changes.
+- Review the updated route after Codex changes the code.
+- Ask Codex to start or check the dev server before it uses the browser.
+
+For repository changes, use the [review pane](https://developers.openai.com/codex/app/review) to inspect the
+changes and leave comments.
 
 ---
 
@@ -1088,12 +1497,12 @@ To leave an inline comment:
 2. Hover the line you want to comment on.
 3. Click the **+** button that appears.
 4. Write your feedback and submit it.
-5. Once you are done with all your feedback, send a message back to the thread.
+5. After you finish leaving feedback, send a message back to the thread.
 
-Because the comment is anchored to a line, Codex can usually respond more
-precisely than with a general instruction.
+Because comments are line-specific, Codex can respond more precisely than with a
+general instruction.
 
-Inline comments are treated as review guidance. After leaving comments, send a
+Codex treats inline comments as review guidance. After leaving comments, send a
 follow-up message that makes your intent explicit, for example “Address the
 inline comments and keep the scope minimal.”
 
@@ -1102,12 +1511,35 @@ inline comments and keep the scope minimal.”
 If you use `/review` to run a code review, comments will show up directly
 inline in the review pane.
 
+## Pull request reviews
+
+When Codex has GitHub access for your repository and the current project is on
+the pull request branch, the Codex app can help you work through pull request
+feedback without leaving the app. The sidebar shows pull request context and
+feedback from reviewers, and the review pane shows comments alongside the diff
+so you can ask Codex to address issues in the same thread.
+
+Install the GitHub CLI (`gh`) and authenticate it with `gh auth login` so Codex
+can load pull request context, review comments, and changed files. If `gh` is
+missing or unauthenticated, pull request details may not appear in the sidebar
+or review pane.
+
+Use this flow when you want to keep the full fix loop in one place:
+
+1. Open the review pane on the pull request branch.
+2. Review the pull request context, comments, and changed files.
+3. Ask Codex to fix the specific comments you want handled.
+4. Inspect the resulting diff in the review pane.
+5. Stage, commit, and push the changes to the PR branch when you are ready.
+
+For GitHub-triggered reviews, see [Use Codex in GitHub](https://developers.openai.com/codex/integrations/github).
+
 ## Staging and reverting files
 
 The review pane includes Git actions so you can shape the diff before you
 commit.
 
-You can stage, unstage, or revert changes at multiple levels:
+You can stage, unstage, or revert changes at these levels:
 
 - **Entire diff**: use the action buttons in the review header (for example,
   "Stage all" or "Revert all")
@@ -1117,7 +1549,7 @@ You can stage, unstage, or revert changes at multiple levels:
 Use staging when you want to accept part of the work, and revert when you want
 to discard it.
 
-### Partially staged states
+### Staged and unstaged states
 
 Git can represent both staged and unstaged changes in the same file. When that
 happens, it can look like the pane is showing “the same file twice” across
@@ -3381,6 +3813,13 @@ Use `/model` to switch between GPT-5.4, GPT-5.3-Codex, and other available model
 Attach screenshots or design specs so Codex reads them alongside your prompt.
 
   </BentoContent>
+  <BentoContent href="/codex/cli/features#image-generation">
+
+### Image generation
+
+Generate or edit images directly in the CLI, and attach references when you want Codex to iterate on an existing asset.
+
+  </BentoContent>
 
   <BentoContent href="/codex/cli/features#running-local-code-review">
 
@@ -3594,6 +4033,16 @@ codex --image img1.png,img2.jpg "Summarize these diagrams"
 ```
 
 Codex accepts common formats such as PNG and JPEG. Use comma-separated filenames for two or more images, and combine them with text instructions to add context.
+
+## Image generation
+
+Ask Codex to generate or edit images directly in the CLI. This works well for assets such as icons, banners, illustrations, sprite sheets, and placeholder art. If you want Codex to transform or extend an existing asset, attach a reference image with your prompt.
+
+You can ask in natural language or explicitly invoke the image generation skill by including `$imagegen` in your prompt.
+
+Built-in image generation uses `gpt-image-1.5`, counts toward your general Codex usage limits, and uses included limits 3-5x faster on average than similar turns without image generation, depending on image quality and size. For details, see [Pricing](https://developers.openai.com/codex/pricing#image-generation-usage-limits). For prompting tips and model details, see the [image generation guide](https://developers.openai.com/api/docs/guides/image-generation).
+
+For larger batches of image generation, set `OPENAI_API_KEY` in your environment variables and ask Codex to generate images through the API so API pricing applies instead.
 
 ## Syntax highlighting and themes
 
@@ -5234,11 +5683,14 @@ Customization is how you make Codex work the way your team works.
 In Codex, customization comes from a few layers that work together:
 
 - **Project guidance (`AGENTS.md`)** for persistent instructions
+- **[Memories](https://developers.openai.com/codex/memories)** for useful context learned from prior work
 - **Skills** for reusable workflows and domain expertise
 - **[MCP](https://developers.openai.com/codex/mcp)** for access to external tools and shared systems
 - **[Subagents](https://developers.openai.com/codex/concepts/subagents)** for delegating work to specialized subagents
 
-These are complementary, not competing. `AGENTS.md` shapes behavior, skills package repeatable processes, and [MCP](https://developers.openai.com/codex/mcp) connects Codex to systems outside the local workspace.
+These are complementary, not competing. `AGENTS.md` shapes behavior, memories
+carry local context forward, skills package repeatable processes, and
+[MCP](https://developers.openai.com/codex/mcp) connects Codex to systems outside the local workspace.
 
 ## AGENTS Guidance
 
@@ -6360,6 +6812,7 @@ shell_snapshot = true           # Speed up repeated commands
 | `apps`               |         false         | Experimental      | Enable ChatGPT Apps/connectors support                                  |
 | `codex_hooks`        |         false         | Under development | Enable lifecycle hooks from `hooks.json`. See [Hooks](https://developers.openai.com/codex/hooks).    |
 | `fast_mode`          |         true          | Stable            | Enable Fast mode selection and the `service_tier = "fast"` path         |
+| `memories`           |         false         | Stable            | Enable [Memories](https://developers.openai.com/codex/memories)                                      |
 | `multi_agent`        |         true          | Stable            | Enable subagent collaboration tools                                     |
 | `personality`        |         true          | Stable            | Enable personality selection controls                                   |
 | `shell_snapshot`     |         true          | Stable            | Snapshot your shell environment to speed up repeated commands           |
@@ -6709,6 +7162,11 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
         "Enable lifecycle hooks loaded from `hooks.json` (under development; off by default).",
     },
     {
+      key: "features.memories",
+      type: "boolean",
+      description: "Enable [Memories](https://developers.openai.com/codex/memories) (off by default).",
+    },
+    {
       key: "mcp_servers.<id>.command",
       type: "string",
       description: "Launcher command for an MCP stdio server.",
@@ -6842,6 +7300,64 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
       type: "array<string>",
       description:
         "Optional pool of display nicknames for spawned agents in that role.",
+    },
+    {
+      key: "memories.generate_memories",
+      type: "boolean",
+      description:
+        "When `false`, newly created threads are not stored as memory-generation inputs. Defaults to `true`.",
+    },
+    {
+      key: "memories.use_memories",
+      type: "boolean",
+      description:
+        "When `false`, Codex skips injecting existing memories into future sessions. Defaults to `true`.",
+    },
+    {
+      key: "memories.no_memories_if_mcp_or_web_search",
+      type: "boolean",
+      description:
+        "When `true`, threads that use MCP tool calls or web search are kept out of memory generation. Defaults to `false`.",
+    },
+    {
+      key: "memories.max_raw_memories_for_consolidation",
+      type: "number",
+      description:
+        "Maximum recent raw memories retained for global consolidation. Defaults to `256` and is capped at `4096`.",
+    },
+    {
+      key: "memories.max_unused_days",
+      type: "number",
+      description:
+        "Maximum days since a memory was last used before it becomes ineligible for consolidation. Defaults to `30` and is clamped to `0`-`365`.",
+    },
+    {
+      key: "memories.max_rollout_age_days",
+      type: "number",
+      description:
+        "Maximum age of threads considered for memory generation. Defaults to `30` and is clamped to `0`-`90`.",
+    },
+    {
+      key: "memories.max_rollouts_per_startup",
+      type: "number",
+      description:
+        "Maximum rollout candidates processed per startup pass. Defaults to `16` and is capped at `128`.",
+    },
+    {
+      key: "memories.min_rollout_idle_hours",
+      type: "number",
+      description:
+        "Minimum idle time before a thread is considered for memory generation. Defaults to `6` and is clamped to `1`-`48`.",
+    },
+    {
+      key: "memories.extract_model",
+      type: "string",
+      description: "Optional model override for per-thread memory extraction.",
+    },
+    {
+      key: "memories.consolidation_model",
+      type: "string",
+      description: "Optional model override for global memory consolidation.",
     },
     {
       key: "features.unified_exec",
@@ -10617,6 +11133,14 @@ Choose `low`, `medium`, or `high` to trade off speed and depth based on the task
 
   </BentoContent>
 
+  <BentoContent href="/codex/ide/features#image-generation">
+
+### Image generation
+
+Generate or edit images without leaving your editor, and use reference assets when you need iteration.
+
+  </BentoContent>
+
   <BentoContent href="/codex/ide/features#choose-an-approval-mode">
 
 ### Choose an approval mode
@@ -10781,6 +11305,16 @@ You'll see `web_search` items in the transcript or `codex exec --json` output wh
 You can drag and drop images into the prompt composer to include them as context.
 
 Hold down `Shift` while dropping an image. VS Code otherwise prevents extensions from accepting a drop.
+
+## Image generation
+
+Ask Codex to generate or edit images without leaving your editor. This is useful for UI assets, layouts, illustrations, sprite sheets, and quick placeholders while you work. Add a reference image to the prompt when you want Codex to transform or extend an existing asset.
+
+You can ask in natural language or explicitly invoke the image generation skill by including `$imagegen` in your prompt.
+
+Built-in image generation uses `gpt-image-1.5`, counts toward your general Codex usage limits, and uses included limits 3-5x faster on average than similar turns without image generation, depending on image quality and size. For details, see [Pricing](https://developers.openai.com/codex/pricing#image-generation-usage-limits). For prompting tips and model details, see the [image generation guide](https://developers.openai.com/api/docs/guides/image-generation).
+
+For larger batches of image generation, set `OPENAI_API_KEY` in your environment variables and ask Codex to generate images through the API so API pricing applies instead.
 
 ## See also
 
@@ -11463,6 +11997,96 @@ The list of MCP servers keeps growing. Here are a few common ones:
 - [Chrome Developer Tools](https://github.com/ChromeDevTools/chrome-devtools-mcp/): Control and inspect Chrome.
 - [Sentry](https://docs.sentry.io/product/sentry-mcp/#codex): Access Sentry logs.
 - [GitHub](https://github.com/github/github-mcp-server): Manage GitHub beyond what `git` supports (for example, pull requests and issues).
+
+---
+
+# Memories
+
+Memories are off by default and aren't available in the European Economic
+  Area, the United Kingdom, or Switzerland at launch. Enable them in Codex
+  settings, or set `memories = true` in the `[features]` table in
+  `~/.codex/config.toml`.
+
+Memories let Codex carry useful context from earlier threads into future work.
+After you enable memories, Codex can remember stable preferences, recurring
+workflows, tech stacks, project conventions, and known pitfalls so you don't
+need to repeat the same context in every thread.
+
+Keep required team guidance in `AGENTS.md` or checked-in documentation. Treat
+memories as a helpful local recall layer, not as the only source for rules that
+must always apply.
+
+## Enable memories
+
+In the Codex app, enable Memories in settings.
+
+For config-based setup, add the feature flag to `config.toml`:
+
+```toml
+[features]
+memories = true
+```
+
+See [Config basics](https://developers.openai.com/codex/config-basic) for where Codex stores user-level
+configuration and how Codex loads `~/.codex/config.toml`.
+
+## How memories work
+
+After you enable memories, Codex can turn useful context from eligible prior
+threads into local memory files. Codex skips active or short-lived sessions,
+redacts secrets from generated memory fields, and updates memories in the
+background instead of immediately at the end of every thread.
+
+Memories may not update right away when a thread ends. Codex waits until a
+thread has been idle long enough to avoid summarizing work that's still in
+progress.
+
+## Memory storage
+
+Codex stores memories under your Codex home directory. By default, that's
+`~/.codex`. See [Config and state locations](https://developers.openai.com/codex/config-advanced#config-and-state-locations)
+for how Codex uses `CODEX_HOME`.
+
+The main memory files live under `~/.codex/memories/` and include summaries,
+durable entries, recent inputs, and supporting evidence from prior threads.
+
+Treat these files as generated state. You can inspect them when troubleshooting
+or before sharing your Codex home directory, but don't rely on editing them by
+hand as your primary control surface.
+
+## Control memories per thread
+
+In the Codex app and Codex TUI, use `/memories` to control memory behavior for
+the current thread. Thread-level choices let you decide whether the current
+thread can use existing memories and whether Codex can use the thread to
+generate future memories.
+
+Thread-level choices don't change your global memory settings.
+
+## Configuration
+
+Enable memories in the Codex app settings, or set `memories = true` in the
+`[features]` section of `config.toml`.
+
+For config file locations and the full list of memory-related settings, see the
+[configuration reference](https://developers.openai.com/codex/config-reference).
+
+Common memory-specific settings include:
+
+- `memories.generate_memories`: controls whether newly created threads can be
+  stored as memory-generation inputs.
+- `memories.use_memories`: controls whether Codex injects existing memories into
+  future sessions.
+- `memories.extract_model`: overrides the model used for per-thread memory
+  extraction.
+- `memories.consolidation_model`: overrides the model used for global memory
+  consolidation.
+
+## Review memories
+
+Don't store secrets in memories. Codex redacts secrets from generated memory
+fields, but you should still review memory files before sharing your Codex home
+directory or generated memory artifacts.
 
 ---
 
@@ -12281,7 +12905,8 @@ on or off state in `~/.codex/config.toml`.
 
 Every plugin has a manifest at `.codex-plugin/plugin.json`. It can also include
 a `skills/` directory, an `.app.json` file that points at one or more apps or
-connectors, and assets used to present the plugin across supported surfaces.
+connectors, an `.mcp.json` file that configures MCP servers, and assets used to
+present the plugin across supported surfaces.
 
 Only `plugin.json` belongs in `.codex-plugin/`. Keep `skills/`, `assets/`,
 `.mcp.json`, and `.app.json` at the plugin root.
@@ -12410,19 +13035,21 @@ Teams can now get started with Codex with no fixed monthly costs. For a
       </PricingCard>
       <PricingCard
         name="Pro"
-        subtitle="Choose 10x or 20x higher rate limits than Plus."
+        subtitle="Choose 5x or 20x higher rate limits than Plus."
         priceEyebrow="From"
         price="$100"
         interval="/month"
         ctaLabel="Get Pro"
         ctaHref="https://chatgpt.com/explore/pro?utm_internal_source=openai_developers_codex"
         highlight="Everything in Plus and:"
-        footnoteLabel="*Current usage includes an additional boost ending May 31, 2026. Pro $100 is currently 10x Plus. Pro $200 is currently 20x Plus (equivalent to the 2x promo available since February 2026)."
+        footnoteLabel="*Learn more about limits and promos on both tiers."
+        footnoteHref="https://help.openai.com/en/articles/9793128-about-chatgpt-pro-plans"
       >
-        - Priority request processing
+        **Double your normal Codex usage $100/month tier until May 31, 2026.**
+
         - Access to GPT-5.3-Codex-Spark (research preview), a fast Codex model
           for day-to-day coding tasks
-        - 10x or 20x higher rate limits than Plus*
+        - 10x or 20x more Codex usage than Plus*
         - Other [ChatGPT features](https://chatgpt.com/pricing) as part of the
           Pro plan
       </PricingCard>
@@ -12609,21 +13236,21 @@ require Codex to hold more context will use significantly more per message.
         <tbody>
           <tr>
             <td>GPT-5.4</td>
-            <td style="text-align:center">200-1000</td>
+            <td style="text-align:center">100-500</td>
             <td style="text-align:center">Not available</td>
             <td style="text-align:center">Not available</td>
           </tr>
           <tr>
             <td>GPT-5.4-mini</td>
-            <td style="text-align:center">600-3500</td>
+            <td style="text-align:center">300-1750</td>
             <td style="text-align:center">Not available</td>
             <td style="text-align:center">Not available</td>
           </tr>
           <tr>
             <td>GPT-5.3-Codex</td>
-            <td style="text-align:center">300-1500</td>
-            <td style="text-align:center">100-600</td>
-            <td style="text-align:center">200-500</td>
+            <td style="text-align:center">150-750</td>
+            <td style="text-align:center">50-300</td>
+            <td style="text-align:center">100-250</td>
           </tr>
         </tbody>
         <tfoot>
@@ -12637,7 +13264,7 @@ require Codex to hold more context will use significantly more per message.
           </tr>
           <tr>
             <td colspan="4" style="text-align:center">
-              Pro $100 currently runs at 10x Plus limits through May 31, 2026.
+              Pro $100 gets 2x the usage shown above until May 31, 2026.
             </td>
           </tr>
           <tr>
@@ -12704,8 +13331,9 @@ require Codex to hold more context will use significantly more per message.
           </tr>
           <tr>
             <td colspan="4" style="text-align:center">
-              Pro $200 remains at 20x Plus limits. This is equivalent to the 2x
-              promo available since February 2026.
+              Pro $200 gets a boost on the usage shown above until May 31,
+              2026. [Learn
+              more](https://help.openai.com/en/articles/9793128-about-chatgpt-pro-plans).
             </td>
           </tr>
           <tr>
@@ -12858,8 +13486,7 @@ require Codex to hold more context will use significantly more per message.
 </div>
 
 Speed configurations increase credit consumption for all applicable models, so
-they also use included limits faster. Details can be found [here](https://developers.openai.com/codex/speed).
-GPT-5.3-Codex-Spark is in research preview for ChatGPT Pro users only, and isn't
+they also use included limits faster. Details can be found [here](https://developers.openai.com/codex/speed). Image generations also use included limits ~3-5x faster on average, depending on image quality and size. GPT-5.3-Codex-Spark is in research preview for ChatGPT Pro users only, and isn't
 available in the API at launch. Because it runs on specialized low-latency
 hardware, usage is governed by a separate usage limit that may adjust based on
 demand.
@@ -12878,6 +13505,28 @@ model to make your usage limits last longer.
 
 All users may also run extra local tasks using an API key, with usage charged at
 [standard API rates](https://platform.openai.com/docs/pricing).
+
+<a id="image-generation-usage-limits"></a>
+
+### How does image generation count toward usage limits?
+
+Image generation counts toward the same general Codex usage limits as local
+messages and cloud tasks. Image generations use included limits 3-5x faster on
+average than similar turns without image generation, depending on
+image quality and size. After you reach your included limits, image generation
+also draws from [credits](#credits-overview).
+
+Image generation isn't available on the Free plan. When you use Codex with an
+API key, API pricing applies to image generation instead of included ChatGPT
+usage limits.
+
+### What is the current Codex usage promo on Pro?
+
+We’re currently offering extra Codex usage on both Pro tiers.
+
+For **Pro $100**, to celebrate the launch, you’ll get **2x Codex usage through May 31, 2026**. That means 10x usage instead of the standard 5x.
+
+**For Pro $200**, as a thank you to our most loyal customers, we’re carrying forward the benefits of our earlier 2x promo, which means Pro $200 now includes 20x Plus on an ongoing basis. In addition, we’re continuing to honor the higher 5-hour Codex limits for a limited time, so those remain at 25x Plus through May 31, 2026 instead of the standard 20x Plus.
 
 ### Where can I see my current usage limits?
 
@@ -12898,7 +13547,7 @@ input tokens and output tokens your workspace consumes. Read about tokens
 [here](https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them).
 
 This format replaces average per-message estimates for your plan with a direct
-mapping between token usage and credits. This is most useful when you want a
+mapping between token usage and credits. It's most useful when you want a
 clearer view of how input, cached input, and output affect credit consumption.
 
 Under this model, actual credit usage depends on the mix of input, cached input,
@@ -12963,6 +13612,18 @@ Select your appropriate plan type in the table below to see rates.
               research preview
             </td>
           </tr>
+          <tr>
+            <td>GPT-Image-1.5 (image)</td>
+            <td style="text-align:center">200 credits</td>
+            <td style="text-align:center">50 credits</td>
+            <td style="text-align:center">800 credits</td>
+          </tr>
+          <tr>
+            <td>GPT-Image-1.5 (text)</td>
+            <td style="text-align:center">125 credits</td>
+            <td style="text-align:center">31.25 credits</td>
+            <td style="text-align:center">250 credits</td>
+          </tr>
         </tbody>
         <tfoot>
           <tr>
@@ -13023,6 +13684,20 @@ Select your appropriate plan type in the table below to see rates.
             <td style="text-align:center">\~34 credits</td>
             <td style="text-align:center">\~25 credits</td>
             <td style="text-align:center">Not available</td>
+          </tr>
+          <tr>
+            <td>Image generation</td>
+            <td style="text-align:center">1 image (1024px &times; 1024px)</td>
+            <td colspan="3" style="text-align:center">
+              \~5-6 credits
+            </td>
+          </tr>
+          <tr>
+            <td>Image generation</td>
+            <td style="text-align:center">1 image (1024px &times; 1536px)</td>
+            <td colspan="3" style="text-align:center">
+              \~7-8 credits
+            </td>
           </tr>
         </tbody>
         <tfoot>
@@ -13094,7 +13769,7 @@ Explain how the transform module works and how other modules use it.
 Add a new command-line option `--json` that outputs JSON.
 ```
 
-When you submit a prompt, Codex works in a loop: it calls the model and then performs any actions (file reads, file edits, tool calls, and so on) indicated by the model output. This process ends when the task is complete or you cancel it.
+When you submit a prompt, Codex works in a loop: it calls the model and then performs the actions indicated by the model output, such as file reads, file edits, and tool calls. This process ends when the task is complete or you cancel it.
 
 As with ChatGPT, Codex is only as effective as the instructions you give it. Here are some tips we find helpful when prompting Codex:
 
@@ -13113,6 +13788,14 @@ Threads can run either locally or in the cloud:
 
 - **Local threads** run on your machine. Codex can read and edit your files and run commands, so you can see what changes and use your existing tools. To reduce the risk of unwanted changes outside your workspace, local threads run in a [sandbox](https://developers.openai.com/codex/agent-approvals-security).
 - **Cloud threads** run in an isolated [environment](https://developers.openai.com/codex/cloud/environments). Codex clones your repository and checks out the branch it's working on. Cloud threads are useful when you want to run work in parallel or delegate tasks from another device. To use cloud threads with your repo, push your code to GitHub first. You can also [delegate tasks from your local machine](https://developers.openai.com/codex/ide/cloud-tasks), which includes your current working state.
+
+In the Codex app, you can also start a chat without choosing a project. Chats
+aren't tied to a saved repository or project folder. Use them for research,
+planning, connected-tool workflows, or other work where Codex shouldn't start
+from a codebase. Chats use a Codex-managed `threads` directory under your Codex
+home as their working location. By default, that location is `~/.codex/threads`.
+To change the base location for this state, set `CODEX_HOME`; see
+[Config and state locations](https://developers.openai.com/codex/config-advanced#config-and-state-locations).
 
 ## Context
 
@@ -13164,12 +13847,12 @@ You can also use Codex with API credits by signing in with an OpenAI API key.
 
 
 <div slot="app">
-The Codex app is available on macOS (Apple Silicon).
+The Codex app is available on macOS and Windows.
 
 <WorkflowSteps variant="headings">
 1. Download and install the Codex app
 
-    Download the Codex app for Windows or macOS.
+    Download the Codex app for Windows or macOS. Choose the Intel build if you're using an Intel-based Mac.
 
     <div class="text-sm">
       [Get notified for Linux](https://openai.com/form/codex-app/)
@@ -13310,6 +13993,77 @@ Use Codex in the cloud at [chatgpt.com/codex](https://chatgpt.com/codex).
     </WorkflowSteps>
 
   </div>
+
+---
+
+# Remote connections
+
+SSH remote connections are currently in alpha. We are gradually rolling out
+  access. Availability, setup flows, and supported environments may change as
+  the feature improves.
+
+Remote connections let Codex work with projects that live on another
+SSH-accessible machine. Use them when the codebase, credentials, services, or
+build environment you need are available on that host instead of your local
+machine.
+
+Keep the remote host configured with the same security expectations you use for
+normal SSH access: trusted keys, least-privilege accounts, and no
+unauthenticated public listeners.
+
+## Codex app
+
+In the Codex app, add remote projects from an SSH host and run threads against
+the remote filesystem and shell.
+
+
+
+1. Add the host to your SSH config so Codex can auto-discover it.
+
+   ```text
+   Host devbox
+     HostName devbox.example.com
+     User you
+     IdentityFile ~/.ssh/id_ed25519
+   ```
+
+   Codex reads concrete host aliases from `~/.ssh/config`, resolves them with
+   OpenSSH, and ignores pattern-only hosts.
+
+2. Confirm you can SSH to the host from the machine running the Codex app.
+
+   ```bash
+   ssh devbox
+   ```
+
+3. Install and authenticate Codex on the remote host.
+
+   The app starts the remote Codex app server through SSH, using the remote
+   user's login shell. Make sure the `codex` command is available on the
+   remote host's `PATH` in that shell.
+
+4. In the Codex app, open **Settings > Connections**, add or enable the SSH host,
+   then choose a remote project folder.
+
+
+
+Remote project threads run commands, read files, and write changes on the
+remote host.
+
+## Authentication and network exposure
+
+Use SSH port forwarding with local-host WebSocket listeners. Don't expose an
+unauthenticated app-server listener on a shared or public network.
+
+If you need to reach a remote machine outside your current network, use a VPN or
+mesh networking tool such as Tailscale instead of exposing the app server
+directly to the internet.
+
+## See also
+
+- [Codex app settings](https://developers.openai.com/codex/app/settings)
+- [Command line options](https://developers.openai.com/codex/cli/reference)
+- [Authentication](https://developers.openai.com/codex/auth)
 
 ---
 
