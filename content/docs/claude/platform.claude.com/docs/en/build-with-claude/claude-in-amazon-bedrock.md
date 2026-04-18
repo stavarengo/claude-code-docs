@@ -1,4 +1,4 @@
-# Claude in Amazon Bedrock (research preview)
+# Claude in Amazon Bedrock
 
 Access Claude models through Amazon Bedrock with AWS-native authentication, billing, and security boundaries.
 
@@ -7,20 +7,21 @@ Access Claude models through Amazon Bedrock with AWS-native authentication, bill
 This guide walks you through setting up and making API calls to Claude in Amazon Bedrock. Claude in Amazon Bedrock runs on AWS-managed infrastructure with zero operator access (Anthropic personnel have no access to the inference infrastructure), letting you build sensitive applications entirely inside the AWS security boundary while using the same Messages API shape you use with Anthropic's first-party API.
 
 <Note>
-This page covers the research preview of the new Claude in Amazon Bedrock offering, which exposes the Messages API at `/anthropic/v1/messages`. For the existing Bedrock integration (the `InvokeModel` and `Converse` APIs with ARN-versioned model identifiers and AWS event-stream encoding), see [Claude on Amazon Bedrock](/docs/en/build-with-claude/claude-on-amazon-bedrock).
+This page covers Claude in Amazon Bedrock, which serves Claude through the Messages API at `/anthropic/v1/messages` on AWS-managed infrastructure. The previous Amazon Bedrock integration (the `InvokeModel` and `Converse` APIs with ARN-versioned model identifiers) remains available and is documented at [Claude on Amazon Bedrock (legacy)](/docs/en/build-with-claude/claude-on-amazon-bedrock).
 </Note>
 
-## Research preview
+## Access
 
-The Claude in Amazon Bedrock endpoint is in research preview, available in the US East (N. Virginia) `us-east-1` region. Contact your Anthropic account executive to request access.
+Claude Opus 4.7 and Claude Haiku 4.5 are open to all Amazon Bedrock customers. Claude Mythos Preview requires an invitation; see [Project Glasswing](https://anthropic.com/glasswing). For region availability, see [Regions](#regions).
 
 ## Prerequisites
 
 Before you begin, ensure you have:
 
-- A **new AWS account** in `us-east-1`. The research preview requires a dedicated account for isolation. Your Anthropic account executive will submit your account ID to the Bedrock Marketplace team for allowlisting (typically processed within 24 hours).
-- The [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) installed and configured (optional, for credential management)
-- After allowlisting, AWS sends a welcome email with additional setup details.
+- An AWS account with [Amazon Bedrock model access](https://console.aws.amazon.com/bedrock/home#/modelaccess) enabled for the Claude models you intend to use.
+- The [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) installed and configured (optional, for credential management).
+
+Claude Mythos Preview additionally requires a dedicated AWS account that has been allowlisted by the Bedrock Marketplace team. Your Anthropic account executive can submit your account ID for allowlisting (typically processed within 24 hours), and AWS sends a welcome email once it's complete.
 
 ## Authentication
 
@@ -145,7 +146,7 @@ curl https://bedrock-mantle.us-east-1.api.aws/anthropic/v1/messages \
   -H "content-type: application/json" \
   -H "anthropic-version: 2023-06-01" \
   -d '{
-    "model": "anthropic.claude-mythos-preview",
+    "model": "anthropic.claude-opus-4-7",
     "max_tokens": 1024,
     "messages": [
       {"role": "user", "content": "Hello, Claude"}
@@ -166,7 +167,7 @@ from anthropic import AnthropicBedrockMantle
 client = AnthropicBedrockMantle(aws_region="us-east-1")
 
 message = client.messages.create(
-    model="anthropic.claude-mythos-preview",
+    model="anthropic.claude-opus-4-7",
     max_tokens=1024,
     messages=[{"role": "user", "content": "Hello, Claude"}],
 )
@@ -185,7 +186,7 @@ const client = new AnthropicBedrockMantle({
 });
 
 const message = await client.messages.create({
-  model: "anthropic.claude-mythos-preview",
+  model: "anthropic.claude-opus-4-7",
   max_tokens: 1024,
   messages: [{ role: "user", content: "Hello, Claude" }]
 });
@@ -207,7 +208,7 @@ var client = new AnthropicBedrockMantleClient(new() { AwsRegion = "us-east-1" })
 
 var message = await client.Messages.Create(new()
 {
-    Model = "anthropic.claude-mythos-preview",
+    Model = "anthropic.claude-opus-4-7",
     MaxTokens = 1024,
     Messages = [new() { Role = Role.User, Content = "Hello, Claude" }],
 });
@@ -239,7 +240,7 @@ func main() {
 	}
 
 	message, err := client.Messages.New(context.Background(), anthropic.MessageNewParams{
-		Model:     "anthropic.claude-mythos-preview",
+		Model:     "anthropic.claude-opus-4-7",
 		MaxTokens: 1024,
 		Messages: []anthropic.MessageParam{
 			anthropic.NewUserMessage(anthropic.NewTextBlock("Hello, Claude")),
@@ -270,7 +271,7 @@ void main() {
 
     Message message = client.messages().create(
         MessageCreateParams.builder()
-            .model("anthropic.claude-mythos-preview")
+            .model("anthropic.claude-opus-4-7")
             .maxTokens(1024)
             .addUserMessage("Hello, Claude")
             .build()
@@ -291,7 +292,7 @@ use Anthropic\Bedrock\MantleClient;
 $client = new MantleClient(awsRegion: 'us-east-1');
 
 $message = $client->messages->create(
-    model: 'anthropic.claude-mythos-preview',
+    model: 'anthropic.claude-opus-4-7',
     maxTokens: 1024,
     messages: [
         ['role' => 'user', 'content' => 'Hello, Claude'],
@@ -310,7 +311,7 @@ require "anthropic"
 client = Anthropic::BedrockMantleClient.new(aws_region: "us-east-1")
 
 message = client.messages.create(
-  model: "anthropic.claude-mythos-preview",
+  model: "anthropic.claude-opus-4-7",
   max_tokens: 1024,
   messages: [{role: "user", content: "Hello, Claude"}]
 )
@@ -328,11 +329,11 @@ You can also use the standard `Anthropic` client: set `base_url` to `https://bed
 
 Model IDs in Claude in Amazon Bedrock carry an `anthropic.` provider prefix. Model capabilities and behaviors are documented on the [Models overview](/docs/en/about-claude/models/overview) page.
 
-| Model                 | Model ID                          |
-| --------------------- | --------------------------------- |
-| Claude Opus 4.7       | `anthropic.claude-opus-4-7`       |
-| Claude Mythos Preview | `anthropic.claude-mythos-preview` |
-| Claude Haiku 4.5      | `anthropic.claude-haiku-4-5`      |
+| Model                 | Model ID                          | Access                                                                     |
+| --------------------- | --------------------------------- | -------------------------------------------------------------------------- |
+| Claude Opus 4.7       | `anthropic.claude-opus-4-7`       | Open                                                                       |
+| Claude Haiku 4.5      | `anthropic.claude-haiku-4-5`      | Open                                                                       |
+| Claude Mythos Preview | `anthropic.claude-mythos-preview` | Invitation only ([Project Glasswing](https://anthropic.com/glasswing))     |
 
 ## Feature availability
 
@@ -346,7 +347,6 @@ Claude in Amazon Bedrock supports features that run inside the model. Features t
 - Tool use (client-defined tools)
 - Citations
 - Structured outputs
-- In-region inference (requests stay in a single AWS region)
 
 **Not supported:**
 
@@ -357,7 +357,42 @@ Claude in Amazon Bedrock supports features that run inside the model. Features t
 
 ## Regions
 
-The research preview is available in `us-east-1` (IAD) only.
+Claude in Amazon Bedrock is available in the following AWS regions. Amazon Bedrock offers two endpoint types:
+
+- **Global:** dynamic routing across all available regions for maximum availability. No pricing premium.
+- **Regional:** the endpoint resolves to the single AWS region you specify, for data-residency requirements. Regional endpoints carry a 10% pricing premium over global endpoints. To route across multiple regions within a geography, use an [inference profile](https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html) (US, EU, JP, or AU). Regions marked **In-region only** in the table support direct single-region routing without an inference profile.
+
+The global endpoint is available for Claude Opus 4.7 and Claude Haiku 4.5. Claude Mythos Preview is regional only and is available in `us-east-1`.
+
+| AWS region       | Location                  | Endpoint types       |
+| ---------------- | ------------------------- | -------------------- |
+| `af-south-1`     | Africa (Cape Town)        | Global               |
+| `ap-northeast-1` | Asia Pacific (Tokyo)      | Global, JP, In-region only |
+| `ap-northeast-2` | Asia Pacific (Seoul)      | Global               |
+| `ap-northeast-3` | Asia Pacific (Osaka)      | Global, JP           |
+| `ap-south-1`     | Asia Pacific (Mumbai)     | Global               |
+| `ap-south-2`     | Asia Pacific (Hyderabad)  | Global               |
+| `ap-southeast-1` | Asia Pacific (Singapore)  | Global               |
+| `ap-southeast-2` | Asia Pacific (Sydney)     | Global, AU           |
+| `ap-southeast-3` | Asia Pacific (Jakarta)    | Global               |
+| `ap-southeast-4` | Asia Pacific (Melbourne)  | Global, AU, In-region only |
+| `ca-central-1`   | Canada (Central)          | Global, US           |
+| `ca-west-1`      | Canada West (Calgary)     | Global               |
+| `eu-central-1`   | Europe (Frankfurt)        | Global, EU           |
+| `eu-central-2`   | Europe (Zurich)           | Global, EU           |
+| `eu-north-1`     | Europe (Stockholm)        | Global, EU, In-region only |
+| `eu-south-1`     | Europe (Milan)            | Global, EU           |
+| `eu-south-2`     | Europe (Spain)            | Global, EU           |
+| `eu-west-1`      | Europe (Ireland)          | Global, EU, In-region only |
+| `eu-west-2`      | Europe (London)           | Global, EU           |
+| `eu-west-3`      | Europe (Paris)            | Global, EU           |
+| `il-central-1`   | Israel (Tel Aviv)         | Global               |
+| `me-central-1`   | Middle East (UAE)         | Global               |
+| `sa-east-1`      | South America (São Paulo) | Global               |
+| `us-east-1`      | US East (N. Virginia)     | Global, US, In-region only |
+| `us-east-2`      | US East (Ohio)            | Global, US, In-region only |
+| `us-west-1`      | US West (N. California)   | Global, US           |
+| `us-west-2`      | US West (Oregon)          | Global, US, In-region only |
 
 ## Quotas
 
@@ -375,7 +410,7 @@ Claude in Amazon Bedrock emits logs to both CloudWatch and CloudTrail. Anthropic
 
 ## Support
 
-For research preview support, contact **bedrock-ant-eap@amazon.com**. Include your AWS account ID and the `request-id` from any failed API responses.
+For support, contact **bedrock-ant-eap@amazon.com**. Include your AWS account ID and the `request-id` from any failed API responses.
 
 <Note>
 **Claude Mythos Preview** is a research preview model available to invited customers on Amazon Bedrock. For more information, see [Project Glasswing](https://anthropic.com/glasswing).

@@ -120,9 +120,9 @@ The full documentation is available in the following languages on https://platfo
 - [Admin API overview](https://platform.claude.com/docs/en/build-with-claude/administration-api.md)
 - [API and data retention](https://platform.claude.com/docs/en/build-with-claude/api-and-data-retention.md)
 - [Claude Code Analytics API](https://platform.claude.com/docs/en/build-with-claude/claude-code-analytics-api.md)
-- [Amazon Bedrock (research preview)](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock-research-preview.md) - Claude in Amazon Bedrock (research preview)
+- [Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock.md) - Claude in Amazon Bedrock
 - [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry.md) - Claude in Microsoft Foundry
-- [Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock.md) - Claude on Amazon Bedrock
+- [Amazon Bedrock (legacy)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock.md) - Claude on Amazon Bedrock (legacy)
 - [Vertex AI](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai.md) - Claude on Vertex AI
 - [Data residency](https://platform.claude.com/docs/en/build-with-claude/data-residency.md)
 - [Migration](https://platform.claude.com/docs/en/managed-agents/migration.md)
