@@ -518,5 +518,6 @@ openai/developers.openai.com/codex/guides:{agents-md.md,agents-sdk.md,build-ai-n
 openai/developers.openai.com/codex/ide:{commands.md,features.md,settings.md,slash-commands.md}
 openai/developers.openai.com/codex/integrations:{github.md,linear.md,slack.md}
 openai/developers.openai.com/codex/learn:{best-practices.md}
+openai/developers.openai.com/codex/memories:{chronicle.md}
 openai/developers.openai.com/codex/plugins:{build.md}
 openai/developers.openai.com/codex/security:{faq.md,setup.md,threat-model.md}
