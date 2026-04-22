@@ -77,6 +77,26 @@ In the default `workspace-write` sandbox policy, writable roots still include pr
 - `<writable_root>/.codex` is protected as read-only when it exists as a directory.
 - Protection is recursive, so everything under those paths is read-only.
 
+### Deny reads with filesystem profiles
+
+Named permission profiles can also deny reads for exact paths or glob patterns.
+This is useful when a workspace should stay writable but specific sensitive
+files, such as local environment files, must stay unreadable:
+
+```toml
+default_permissions = "workspace"
+
+[permissions.workspace.filesystem]
+":project_roots" = { "." = "write", "**/*.env" = "none" }
+glob_scan_max_depth = 3
+```
+
+Use `"none"` for paths or globs that Codex shouldn't read. The sandbox policy
+evaluates globs for local macOS and Linux command execution. On platforms that
+pre-expand glob matches before the sandbox starts, set `glob_scan_max_depth` for
+unbounded `**` patterns, or list explicit depths such as `*.env`, `*/*.env`, and
+`*/*/*.env`.
+
 ### Run without approval prompts
 
 You can disable approval prompts with `--ask-for-approval never` or `-a never` (shorthand).
@@ -157,7 +177,7 @@ The `sandbox` command is also available as `codex debug`, and the platform helpe
 Codex enforces the sandbox differently depending on your OS:
 
 - **macOS** uses Seatbelt policies and runs commands using `sandbox-exec` with a profile (`-p`) that corresponds to the `--sandbox` mode you selected. When restricted read access enables platform defaults, Codex appends a curated macOS platform policy (instead of broadly allowing `/System`) to preserve common tool compatibility.
-- **Linux** uses the `bwrap` pipeline plus `seccomp` by default. `use_legacy_landlock` is available when you need the older path. In managed proxy mode, the default `bwrap` pipeline routes egress through a proxy-only bridge and fails closed if it can't build valid local proxy routes.
+- **Linux** uses `bwrap` plus `seccomp` by default.
 - **Windows** uses the Linux sandbox implementation when running in [Windows Subsystem for Linux 2 (WSL2)](https://developers.openai.com/codex/windows#windows-subsystem-for-linux). WSL1 was supported through Codex `0.114`; starting in `0.115`, the Linux sandbox moved to `bwrap`, so WSL1 is no longer supported. When running natively on Windows, Codex uses a [Windows sandbox](https://developers.openai.com/codex/windows#windows-sandbox) implementation.
 
 If you use the Codex IDE extension on Windows, it supports WSL2 directly. Set the following in your VS Code settings to keep the agent inside WSL2 whenever it's available:
@@ -180,9 +200,56 @@ sandbox = "unelevated" # or "elevated"
 
 See the [Windows setup guide](https://developers.openai.com/codex/windows#windows-sandbox) for details.
 
-When you run Linux in a containerized environment such as Docker, the sandbox may not work if the host or container configuration doesn't support the required `Landlock` and `seccomp` features.
+When you run Linux in a containerized environment such as Docker, the sandbox may not work if the host or container configuration blocks the namespace, setuid `bwrap`, or `seccomp` operations that Codex needs.
 
 In that case, configure your Docker container to provide the isolation you need, then run `codex` with `--sandbox danger-full-access` (or the `--dangerously-bypass-approvals-and-sandbox` flag) inside the container.
+
+### Run Codex in Dev Containers
+
+If your host cannot run the Linux sandbox directly, or if your organization already standardizes on containerized development, run Codex with Dev Containers and let Docker provide the outer isolation boundary. This works with Visual Studio Code Dev Containers and compatible tools.
+
+Use the [Codex secure devcontainer example](https://github.com/openai/codex/tree/main/.devcontainer) as a reference implementation. The example installs Codex, common development tools, `bubblewrap`, and firewall-based outbound controls.
+
+Devcontainers provide substantial protection, but they do not prevent every
+  attack. If you run Codex with `--sandbox danger-full-access` or
+  `--dangerously-bypass-approvals-and-sandbox` inside the container, a malicious
+  project can exfiltrate anything available inside the devcontainer, including
+  Codex credentials. Use this pattern only with trusted repositories, and
+  monitor Codex activity as you would in any other elevated environment.
+
+The reference implementation includes:
+
+- an Ubuntu 24.04 base image with Codex and common development tools installed;
+- an allowlist-driven firewall profile for outbound access;
+- VS Code settings and extension recommendations for reopening the workspace in a container;
+- persistent mounts for command history and Codex configuration;
+- `bubblewrap`, so Codex can still use its Linux sandbox when the container grants the needed capabilities.
+
+To try it:
+
+1. Install Visual Studio Code and the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
+2. Copy the Codex example `.devcontainer` setup into your repository, or start from the Codex repository directly.
+3. In VS Code, run **Dev Containers: Open Folder in Container...** and select `.devcontainer/devcontainer.secure.json`.
+4. After the container starts, open a terminal and run `codex`.
+
+You can also start the container from the CLI:
+
+```bash
+devcontainer up --workspace-folder . --config .devcontainer/devcontainer.secure.json
+```
+
+The example has three main pieces:
+
+- `.devcontainer/devcontainer.secure.json` controls container settings, capabilities, mounts, environment variables, and VS Code extensions.
+- `.devcontainer/Dockerfile.secure` defines the Ubuntu-based image and installed tools.
+- `.devcontainer/init-firewall.sh` applies the outbound network policy.
+
+The reference firewall is intentionally a starting point. If you depend on domain allowlisting for isolation, implement DNS rebinding and DNS refresh protections that fit your environment, such as TTL-aware refreshes or a DNS-aware firewall.
+
+Inside the container, choose one of these modes:
+
+- Keep Codex's Linux sandbox enabled if the Dev Container profile grants the capabilities needed for `bwrap` to create the inner sandbox.
+- If the container is your intended security boundary, run Codex with `--sandbox danger-full-access` inside the container so Codex does not try to create a second sandbox layer.
 
 ## Version control
 
@@ -280,11 +347,14 @@ ChatGPT Plus, Pro, Business, Edu, and Enterprise plans include Codex. Learn more
 
 The Codex app is available on macOS and Windows.
 
+Most Codex app features are available on both platforms. Platform-specific
+exceptions are noted in the relevant docs.
+
 
 
 1. Download and install the Codex app
 
-    Download the Codex app for Windows or macOS. Choose the Intel build if you're using an Intel-based Mac.
+    Download the Codex app for macOS or Windows. Choose the Intel build if you're using an Intel-based Mac.
 
     <div class="text-sm">
       [Get notified for Linux](https://openai.com/form/codex-app/)
@@ -741,6 +811,9 @@ For new-thread deeplinks:
 The Codex app is a focused desktop experience for working on Codex threads in parallel,
 with built-in worktree support, automations, and Git functionality.
 
+Most Codex app features are available on both macOS and Windows.
+Platform-specific exceptions are noted below.
+
 ---
 
 <section class="feature-grid">
@@ -1067,7 +1140,7 @@ Ask Codex to generate or edit images directly in a thread. This is useful for UI
 
 You can ask in natural language or explicitly invoke the image generation skill by including `$imagegen` in your prompt.
 
-Built-in image generation uses `gpt-image-1.5`, counts toward your general Codex usage limits, and uses included limits 3-5x faster on average than similar turns without image generation, depending on image quality and size. For details, see [Pricing](https://developers.openai.com/codex/pricing#image-generation-usage-limits). For prompting tips and model details, see the [image generation guide](https://developers.openai.com/api/docs/guides/image-generation).
+Built-in image generation uses `gpt-image-2`, counts toward your general Codex usage limits, and uses included limits 3-5x faster on average than similar turns without image generation, depending on image quality and size. For details, see [Pricing](https://developers.openai.com/codex/pricing#image-generation-usage-limits). For prompting tips and model details, see the [image generation guide](https://developers.openai.com/api/docs/guides/image-generation).
 
 For larger batches of image generation, set `OPENAI_API_KEY` in your environment variables and ask Codex to generate images through the API so API pricing applies instead.
 
@@ -1700,6 +1773,8 @@ Codex uses the same font for the review pane, integrated terminal and any other 
 
 The [Codex app for Windows](https://get.microsoft.com/installer/download/9PLM9XGG6VKS?cid=website_cta_psi) gives you one interface for
 working across projects, running parallel agent threads, and reviewing results.
+The Windows app supports core workflows such as worktrees, automations, Git
+functionality, the in-app browser, artifact previews, plugins, and skills.
 It runs natively on Windows using PowerShell and the
 [Windows sandbox](https://developers.openai.com/codex/windows#windows-sandbox), or you can configure it to
 run in [Windows Subsystem for Linux 2 (WSL2)](#windows-subsystem-for-linux-wsl).
@@ -2115,7 +2190,26 @@ Like [MCP](https://modelcontextprotocol.io/), `codex app-server` supports bidire
 Supported transports:
 
 - `stdio` (`--listen stdio://`, default): newline-delimited JSON (JSONL).
-- `websocket` (`--listen ws://IP:PORT`, experimental): one JSON-RPC message per WebSocket text frame.
+- `websocket` (`--listen ws://IP:PORT`, experimental and unsupported): one JSON-RPC message per WebSocket text frame.
+- `off` (`--listen off`): don't expose a local transport.
+
+When you run with `--listen ws://IP:PORT`, the same listener also serves basic HTTP health probes:
+
+- `GET /readyz` returns `200 OK` once the listener accepts new connections.
+- `GET /healthz` returns `200 OK` when the request doesn't include an `Origin` header.
+- Requests with an `Origin` header are rejected with `403 Forbidden`.
+
+WebSocket transport is experimental and unsupported. Loopback listeners such as `ws://127.0.0.1:PORT` are appropriate for localhost and SSH port-forwarding workflows. Non-loopback WebSocket listeners currently allow unauthenticated connections by default during rollout, so configure WebSocket auth before exposing one remotely.
+
+Supported WebSocket auth flags:
+
+- `--ws-auth capability-token --ws-token-file /absolute/path`
+- `--ws-auth capability-token --ws-token-sha256 HEX`
+- `--ws-auth signed-bearer-token --ws-shared-secret-file /absolute/path`
+
+For signed bearer tokens, you can also set `--ws-issuer`, `--ws-audience`, and `--ws-max-clock-skew-seconds`. Clients present the credential as `Authorization: Bearer <token>` during the WebSocket handshake, and app-server enforces auth before JSON-RPC `initialize`.
+
+Prefer `--ws-token-file` over passing raw bearer tokens on the command line. Use `--ws-token-sha256` only when the client keeps the raw high-entropy token in a separate local secret store; the hash is only a verifier, and clients still need the original token.
 
 In WebSocket mode, app-server uses bounded queues. When request ingress is full, the server rejects new requests with JSON-RPC error code `-32001` and message `"Server overloaded; retry later."` Clients should retry with an exponentially increasing delay and jitter.
 
@@ -2302,11 +2396,13 @@ If a client sends an experimental method or field without opting in, app-server 
 - `thread/resume` - reopen an existing thread by id so later `turn/start` calls append to it.
 - `thread/fork` - fork a thread into a new thread id by copying stored history; emits `thread/started` for the new thread.
 - `thread/read` - read a stored thread by id without resuming it; set `includeTurns` to return full turn history. Returned `thread` objects include runtime `status`.
-- `thread/list` - page through stored thread logs; supports cursor-based pagination plus `modelProviders`, `sourceKinds`, `archived`, and `cwd` filters. Returned `thread` objects include runtime `status`.
+- `thread/list` - page through stored thread logs; supports cursor-based pagination plus `modelProviders`, `sourceKinds`, `archived`, `cwd`, and `searchTerm` filters. Returned `thread` objects include runtime `status`.
+- `thread/turns/list` - page through a stored thread's turn history without resuming it.
 - `thread/loaded/list` - list the thread ids currently loaded in memory.
 - `thread/name/set` - set or update a thread's user-facing name for a loaded thread or a persisted rollout; emits `thread/name/updated`.
+- `thread/metadata/update` - patch SQLite-backed stored thread metadata; currently supports persisted `gitInfo`.
 - `thread/archive` - move a thread's log file into the archived directory; returns `{}` on success and emits `thread/archived`.
-- `thread/unsubscribe` - unsubscribe this connection from thread turn/item events. If this was the last subscriber, the server unloads the thread and emits `thread/closed`.
+- `thread/unsubscribe` - unsubscribe this connection from thread turn/item events. If this was the last subscriber, the server unloads the thread after a no-subscriber inactivity grace period and emits `thread/closed`.
 - `thread/unarchive` - restore an archived thread rollout back into the active sessions directory; returns the restored `thread` and emits `thread/unarchived`.
 - `thread/status/changed` - notification emitted when a loaded thread's runtime `status` changes.
 - `thread/compact/start` - trigger conversation history compaction for a thread; returns `{}` immediately while progress streams via `turn/*` and `item/*` notifications.
@@ -2314,6 +2410,7 @@ If a client sends an experimental method or field without opting in, app-server 
 - `thread/backgroundTerminals/clean` - stop all running background terminals for a thread (experimental; requires `capabilities.experimentalApi`).
 - `thread/rollback` - drop the last N turns from the in-memory context and persist a rollback marker; returns the updated `thread`.
 - `turn/start` - add user input to a thread and begin Codex generation; responds with the initial `turn` and streams events. For `collaborationMode`, `settings.developer_instructions: null` means "use built-in instructions for the selected mode."
+- `thread/inject_items` - append raw Responses API items to a loaded thread's model-visible history without starting a user turn.
 - `turn/steer` - append user input to the active in-flight turn for a thread; returns the accepted `turnId`.
 - `turn/interrupt` - request cancellation of an in-flight turn; success is `{}` and the turn ends with `status: "interrupted"`.
 - `review/start` - kick off the Codex reviewer for a thread; emits `enteredReviewMode` and `exitedReviewMode` items.
@@ -2321,13 +2418,17 @@ If a client sends an experimental method or field without opting in, app-server 
 - `command/exec/write` - write `stdin` bytes to a running `command/exec` session or close `stdin`.
 - `command/exec/resize` - resize a running PTY-backed `command/exec` session.
 - `command/exec/terminate` - stop a running `command/exec` session.
+- `command/exec/outputDelta` (notify) - emitted for base64-encoded stdout/stderr chunks from a streaming `command/exec` session.
 - `model/list` - list available models (set `includeHidden: true` to include entries with `hidden: true`) with effort options, optional `upgrade`, and `inputModalities`.
 - `experimentalFeature/list` - list feature flags with lifecycle stage metadata and cursor pagination.
+- `experimentalFeature/enablement/set` - patch in-memory runtime enablement for supported feature keys such as `apps` and `plugins`.
 - `collaborationMode/list` - list collaboration mode presets (experimental, no pagination).
 - `skills/list` - list skills for one or more `cwd` values (supports `forceReload` and optional `perCwdExtraUserRoots`).
-- `plugin/list` - list discovered plugin marketplaces and plugin state, including install/auth policy metadata, marketplace errors, featured plugin ids, and the development-only `forceRemoteSync` option.
-- `plugin/read` - read one plugin by marketplace path and plugin name, including bundled skills, apps, and MCP server names.
-- `plugin/install` - install a plugin from a marketplace path.
+- `skills/changed` (notify) - emitted when watched local skill files change.
+- `marketplace/add` - add a remote plugin marketplace and persist it into the user's marketplace config.
+- `plugin/list` - list discovered plugin marketplaces and plugin state, including install/auth policy metadata, marketplace load errors, featured plugin ids, and local, Git, or remote plugin source metadata.
+- `plugin/read` - read one plugin by marketplace path or remote marketplace name and plugin name, including bundled skills, apps, and MCP server names when those details are available.
+- `plugin/install` - install a plugin from a marketplace path or remote marketplace name.
 - `plugin/uninstall` - uninstall an installed plugin.
 - `app/list` - list available apps (connectors) with pagination plus accessibility/enabled metadata.
 - `skills/config/write` - enable or disable skills by path.
@@ -2336,15 +2437,25 @@ If a client sends an experimental method or field without opting in, app-server 
 - `config/mcpServer/reload` - reload MCP server configuration from disk and queue a refresh for loaded threads.
 - `mcpServerStatus/list` - list MCP servers, tools, resources, and auth status (cursor + limit pagination). Use `detail: "full"` for full data or `detail: "toolsAndAuthOnly"` to omit resources.
 - `mcpServer/resource/read` - read a single MCP resource through an initialized MCP server.
+- `mcpServer/tool/call` - call a tool on a thread's configured MCP server.
+- `mcpServer/startupStatus/updated` (notify) - emitted when a configured MCP server's startup status changes for a loaded thread.
 - `windowsSandbox/setupStart` - start Windows sandbox setup for `elevated` or `unelevated` mode; returns quickly and later emits `windowsSandbox/setupCompleted`.
 - `feedback/upload` - submit a feedback report (classification + optional reason/logs + conversation id, plus optional `extraLogFiles` attachments).
 - `config/read` - fetch the effective configuration on disk after resolving configuration layering.
 - `externalAgentConfig/detect` - detect external-agent artifacts that can be migrated with `includeHome` and optional `cwds`; each detected item includes `cwd` (`null` for home).
-- `externalAgentConfig/import` - apply selected external-agent migration items by passing explicit `migrationItems` with `cwd` (`null` for home).
+- `externalAgentConfig/import` - apply selected external-agent migration items by passing explicit `migrationItems` with `cwd` (`null` for home); plugin imports emit `externalAgentConfig/import/completed`.
 - `config/value/write` - write a single configuration key/value to the user's `config.toml` on disk.
 - `config/batchWrite` - apply configuration edits atomically to the user's `config.toml` on disk.
 - `configRequirements/read` - fetch requirements from `requirements.toml` and/or MDM, including allow-lists, pinned `featureRequirements`, and residency/network requirements (or `null` if you haven't set any up).
-- `fs/readFile`, `fs/writeFile`, `fs/createDirectory`, `fs/getMetadata`, `fs/readDirectory`, `fs/remove`, and `fs/copy` - operate on absolute filesystem paths through the app-server v2 filesystem API.
+- `fs/readFile`, `fs/writeFile`, `fs/createDirectory`, `fs/getMetadata`, `fs/readDirectory`, `fs/remove`, `fs/copy`, `fs/watch`, `fs/unwatch`, and `fs/changed` (notify) - operate on absolute filesystem paths through the app-server v2 filesystem API.
+
+Plugin summaries include a `source` union. Local plugins return
+`{ "type": "local", "path": ... }`, Git-backed marketplace entries return
+`{ "type": "git", "url": ..., "path": ..., "refName": ..., "sha": ... }`,
+and remote catalog entries return `{ "type": "remote" }`. For remote-only
+catalog entries, `PluginMarketplaceEntry.path` can be `null`; pass
+`remoteMarketplaceName` instead of `marketplacePath` when reading or installing
+those plugins.
 
 ## Models
 
@@ -2413,13 +2524,16 @@ Use this endpoint to discover feature flags with metadata and lifecycle stage:
 ## Threads
 
 - `thread/read` reads a stored thread without subscribing to it; set `includeTurns` to include turns.
-- `thread/list` supports cursor pagination plus `modelProviders`, `sourceKinds`, `archived`, and `cwd` filtering.
+- `thread/turns/list` pages through a stored thread's turn history without resuming it.
+- `thread/list` supports cursor pagination plus `modelProviders`, `sourceKinds`, `archived`, `cwd`, and `searchTerm` filtering.
 - `thread/loaded/list` returns the thread IDs currently in memory.
 - `thread/archive` moves the thread's persisted JSONL log into the archived directory.
-- `thread/unsubscribe` unsubscribes the current connection from a loaded thread and can trigger `thread/closed`.
+- `thread/metadata/update` patches stored thread metadata, currently including persisted `gitInfo`.
+- `thread/unsubscribe` unsubscribes the current connection from a loaded thread and can trigger `thread/closed` after an inactivity grace period.
 - `thread/unarchive` restores an archived thread rollout back into the active sessions directory.
 - `thread/compact/start` triggers compaction and returns `{}` immediately.
 - `thread/rollback` drops the last N turns from the in-memory context and records a rollback marker in the thread's persisted JSONL log.
+- `thread/inject_items` appends raw Responses API items to a loaded thread's model-visible history without starting a user turn.
 
 ### Start or resume a thread
 
@@ -2490,6 +2604,23 @@ Use `thread/read` when you want stored thread data but don't want to resume the 
 
 Unlike `thread/resume`, `thread/read` doesn't load the thread into memory or emit `thread/started`.
 
+### List thread turns
+
+Use `thread/turns/list` to page a stored thread's turn history without resuming it. Results default to newest-first so clients can fetch older turns with `nextCursor`. The response also includes `backwardsCursor`; pass it as `cursor` with `sortDirection: "asc"` to fetch turns newer than the first item from the earlier page.
+
+```json
+{ "method": "thread/turns/list", "id": 20, "params": {
+  "threadId": "thr_123",
+  "limit": 50,
+  "sortDirection": "desc"
+} }
+{ "id": 20, "result": {
+  "data": [],
+  "nextCursor": "older-turns-cursor-or-null",
+  "backwardsCursor": "newer-turns-cursor-or-null"
+} }
+```
+
 ### List threads (with pagination & filters)
 
 `thread/list` lets you render a history UI. Results default to newest-first by `createdAt`. Filters apply before pagination. Pass any combination of:
@@ -2501,6 +2632,7 @@ Unlike `thread/resume`, `thread/read` doesn't load the thread into memory or emi
 - `sourceKinds` - restrict results to specific thread sources. When omitted or `[]`, the server defaults to interactive sources only: `cli` and `vscode`.
 - `archived` - when `true`, list archived threads only. When `false` or omitted, list non-archived threads (default).
 - `cwd` - restrict results to threads whose session current working directory exactly matches this path.
+- `searchTerm` - search stored thread summaries and metadata before pagination.
 
 `sourceKinds` accepts the following values:
 
@@ -2534,6 +2666,23 @@ Example:
 
 When `nextCursor` is `null`, you have reached the final page.
 
+### Update stored thread metadata
+
+Use `thread/metadata/update` to patch stored thread metadata without resuming the thread. Today this supports persisted `gitInfo`; omitted fields are left unchanged, and explicit `null` clears a stored value.
+
+```json
+{ "method": "thread/metadata/update", "id": 21, "params": {
+  "threadId": "thr_123",
+  "gitInfo": { "branch": "feature/sidebar-pr" }
+} }
+{ "id": 21, "result": {
+  "thread": {
+    "id": "thr_123",
+    "gitInfo": { "sha": null, "branch": "feature/sidebar-pr", "originUrl": null }
+  }
+} }
+```
+
 ### Track thread status changes
 
 `thread/status/changed` is emitted whenever a loaded thread's runtime status changes. The payload includes `threadId` and the new `status`.
@@ -2565,11 +2714,16 @@ When `nextCursor` is `null`, you have reached the final page.
 - `notSubscribed` when the connection wasn't subscribed to that thread.
 - `notLoaded` when the thread isn't loaded.
 
-If this was the last subscriber, the server unloads the thread and emits a `thread/status/changed` transition to `notLoaded` plus `thread/closed`.
+If this was the last subscriber, the server keeps the thread loaded until it has no subscribers and no thread activity for 30 minutes. When the grace period expires, app-server unloads the thread and emits a `thread/status/changed` transition to `notLoaded` plus `thread/closed`.
 
 ```json
 { "method": "thread/unsubscribe", "id": 22, "params": { "threadId": "thr_123" } }
 { "id": 22, "result": { "status": "unsubscribed" } }
+```
+
+If the thread later expires:
+
+```json
 { "method": "thread/status/changed", "params": {
     "threadId": "thr_123",
     "status": { "type": "notLoaded" }
@@ -2716,6 +2870,24 @@ Examples:
   }
 } }
 { "id": 30, "result": { "turn": { "id": "turn_456", "status": "inProgress", "items": [], "error": null } } }
+```
+
+### Inject items into a thread
+
+Use `thread/inject_items` to append prebuilt Responses API items to a loaded thread's prompt history without starting a user turn. These items are persisted to the rollout and included in subsequent model requests.
+
+```json
+{ "method": "thread/inject_items", "id": 31, "params": {
+  "threadId": "thr_123",
+  "items": [
+    {
+      "type": "message",
+      "role": "assistant",
+      "content": [{ "type": "output_text", "text": "Previously computed context." }]
+    }
+  ]
+} }
+{ "id": 31, "result": {} }
 ```
 
 ### Steer an active turn
@@ -2898,6 +3070,28 @@ Modes:
 
 - `elevated` - run the elevated Windows sandbox setup path.
 - `unelevated` - run the legacy setup/preflight path.
+
+## Filesystem
+
+The v2 filesystem APIs operate on absolute paths. Use `fs/watch` when a client needs to invalidate UI state after a file or directory changes.
+
+```json
+{ "method": "fs/watch", "id": 54, "params": {
+  "watchId": "0195ec6b-1d6f-7c2e-8c7a-56f2c4a8b9d1",
+  "path": "/Users/me/project/.git/HEAD"
+} }
+{ "id": 54, "result": { "path": "/Users/me/project/.git/HEAD" } }
+{ "method": "fs/changed", "params": {
+  "watchId": "0195ec6b-1d6f-7c2e-8c7a-56f2c4a8b9d1",
+  "changedPaths": ["/Users/me/project/.git/HEAD"]
+} }
+{ "method": "fs/unwatch", "id": 55, "params": {
+  "watchId": "0195ec6b-1d6f-7c2e-8c7a-56f2c4a8b9d1"
+} }
+{ "id": 55, "result": {} }
+```
+
+Watching a file emits `fs/changed` for that file path, including updates delivered by replace or rename operations.
 
 ## Events
 
@@ -3120,6 +3314,8 @@ Use `skills/list` to fetch available skills (optionally scoped by `cwds`, with `
 } }
 ```
 
+The server also emits `skills/changed` notifications when watched local skill files change. Treat this as an invalidation signal and rerun `skills/list` with your current params when needed.
+
 To enable or disable a skill by path:
 
 ```json
@@ -3326,32 +3522,46 @@ Import example:
 { "id": 64, "result": {} }
 ```
 
-Supported `itemType` values are `AGENTS_MD`, `CONFIG`, `SKILLS`, and `MCP_SERVER_CONFIG`. Detection returns only items that still have work to do. For example, AGENTS migration is skipped when `AGENTS.md` already exists and is non-empty, and skill imports don't overwrite existing skill directories.
+When a request includes plugin imports, the server emits `externalAgentConfig/import/completed` after the import finishes. This notification may arrive immediately after the response or after background remote imports complete.
+
+Supported `itemType` values are `AGENTS_MD`, `CONFIG`, `SKILLS`, `PLUGINS`,
+and `MCP_SERVER_CONFIG`. For `PLUGINS` items, `details.plugins` lists each
+`marketplaceName` and the `pluginNames` Codex can try to migrate. Detection
+returns only items that still have work to do. For example, Codex skips AGENTS
+migration when `AGENTS.md` already exists and is non-empty, and skill imports
+don't overwrite existing skill directories.
+
+When detecting plugins from `.claude/settings.json`, Codex reads configured
+marketplace sources from `extraKnownMarketplaces`. If `enabledPlugins` contains
+plugins from `claude-plugins-official` but the marketplace source is missing,
+Codex infers `anthropics/claude-plugins-official` as the source.
 
 ## Auth endpoints
 
-The JSON-RPC auth/account surface exposes request/response methods plus server-initiated notifications (no `id`). Use these to determine auth state, start or cancel logins, logout, and inspect ChatGPT rate limits.
+The JSON-RPC auth/account surface exposes request/response methods plus server-initiated notifications (no `id`). Use these to determine auth state, start or cancel logins, logout, inspect ChatGPT rate limits, and notify workspace owners about depleted credits or usage limits.
 
 ### Authentication modes
 
-Codex supports three authentication modes. `account/updated.authMode` shows the active mode, and `account/read` also reports it.
+Codex supports these authentication modes. `account/updated.authMode` shows the active mode and includes the current ChatGPT `planType` when available. `account/read` also reports account and plan details.
 
-- **API key (`apikey`)** - the caller supplies an OpenAI API key and Codex stores it for API requests.
-- **ChatGPT managed (`chatgpt`)** - Codex owns the ChatGPT OAuth flow, persists tokens, and refreshes them automatically.
-- **ChatGPT external tokens (`chatgptAuthTokens`)** - a host app supplies `idToken` and `accessToken` directly. Codex stores these tokens in memory, and the host app must refresh them when asked.
+- **API key (`apikey`)** - the caller supplies an OpenAI API key with `type: "apiKey"`, and Codex stores it for API requests.
+- **ChatGPT managed (`chatgpt`)** - Codex owns the ChatGPT OAuth flow, persists tokens, and refreshes them automatically. Start with `type: "chatgpt"` for the browser flow or `type: "chatgptDeviceCode"` for the device-code flow.
+- **ChatGPT external tokens (`chatgptAuthTokens`)** - experimental and intended for host apps that already own the user's ChatGPT auth lifecycle. The host app supplies an `accessToken`, `chatgptAccountId`, and optional `chatgptPlanType` directly, and must refresh the token when asked.
 
 ### API overview
 
 - `account/read` - fetch current account info; optionally refresh tokens.
-- `account/login/start` - begin login (`apiKey`, `chatgpt`, or `chatgptAuthTokens`).
+- `account/login/start` - begin login (`apiKey`, `chatgpt`, `chatgptDeviceCode`, or experimental `chatgptAuthTokens`).
 - `account/login/completed` (notify) - emitted when a login attempt finishes (success or error).
-- `account/login/cancel` - cancel a pending ChatGPT login by `loginId`.
+- `account/login/cancel` - cancel a pending managed ChatGPT login by `loginId`.
 - `account/logout` - sign out; triggers `account/updated`.
-- `account/updated` (notify) - emitted whenever auth mode changes (`authMode`: `apikey`, `chatgpt`, `chatgptAuthTokens`, or `null`).
+- `account/updated` (notify) - emitted whenever auth mode changes (`authMode`: `apikey`, `chatgpt`, `chatgptAuthTokens`, or `null`) and includes `planType` when available.
 - `account/chatgptAuthTokens/refresh` (server request) - request fresh externally managed ChatGPT tokens after an authorization error.
 - `account/rateLimits/read` - fetch ChatGPT rate limits.
 - `account/rateLimits/updated` (notify) - emitted whenever a user's ChatGPT rate limits change.
+- `account/sendAddCreditsNudgeEmail` - ask ChatGPT to email a workspace owner about depleted credits or a reached usage limit.
 - `mcpServer/oauthLogin/completed` (notify) - emitted after a `mcpServer/oauth/login` flow finishes; payload includes `{ name, success, error? }`.
+- `mcpServer/startupStatus/updated` (notify) - emitted when a configured MCP server's startup status changes for a loaded thread; payload includes `{ name, status, error }`.
 
 ### 1) Check auth state
 
@@ -3425,7 +3635,10 @@ Field notes:
    ```
 
    ```json
-   { "method": "account/updated", "params": { "authMode": "apikey" } }
+   {
+     "method": "account/updated",
+     "params": { "authMode": "apikey", "planType": null }
+   }
    ```
 
 ### 3) Log in with ChatGPT (browser flow)
@@ -3458,12 +3671,58 @@ Field notes:
    ```
 
    ```json
-   { "method": "account/updated", "params": { "authMode": "chatgpt" } }
+   {
+     "method": "account/updated",
+     "params": { "authMode": "chatgpt", "planType": "plus" }
+   }
    ```
 
-### 3b) Log in with externally managed ChatGPT tokens (`chatgptAuthTokens`)
+### 3b) Log in with ChatGPT (device-code flow)
 
-Use this mode when a host application owns the user's ChatGPT auth lifecycle and supplies tokens directly.
+Use this flow when your client owns the sign-in ceremony or when a browser callback is brittle.
+
+1. Start:
+
+   ```json
+   {
+     "method": "account/login/start",
+     "id": 4,
+     "params": { "type": "chatgptDeviceCode" }
+   }
+   ```
+
+   ```json
+   {
+     "id": 4,
+     "result": {
+       "type": "chatgptDeviceCode",
+       "loginId": "<uuid>",
+       "verificationUrl": "https://auth.openai.com/codex/device",
+       "userCode": "ABCD-1234"
+     }
+   }
+   ```
+
+2. Show `verificationUrl` and `userCode` to the user; the frontend owns the UX.
+3. Wait for notifications:
+
+   ```json
+   {
+     "method": "account/login/completed",
+     "params": { "loginId": "<uuid>", "success": true, "error": null }
+   }
+   ```
+
+   ```json
+   {
+     "method": "account/updated",
+     "params": { "authMode": "chatgpt", "planType": "plus" }
+   }
+   ```
+
+### 3c) Log in with externally managed ChatGPT tokens (`chatgptAuthTokens`)
+
+Use this experimental mode only when a host application owns the user's ChatGPT auth lifecycle and supplies tokens directly. Clients must set `capabilities.experimentalApi = true` during `initialize` before using this login type.
 
 1. Send:
 
@@ -3473,8 +3732,9 @@ Use this mode when a host application owns the user's ChatGPT auth lifecycle and
      "id": 7,
      "params": {
        "type": "chatgptAuthTokens",
-       "idToken": "<jwt>",
-       "accessToken": "<jwt>"
+       "accessToken": "<jwt>",
+       "chatgptAccountId": "org-123",
+       "chatgptPlanType": "business"
      }
    }
    ```
@@ -3497,7 +3757,7 @@ Use this mode when a host application owns the user's ChatGPT auth lifecycle and
    ```json
    {
      "method": "account/updated",
-     "params": { "authMode": "chatgptAuthTokens" }
+     "params": { "authMode": "chatgptAuthTokens", "planType": "business" }
    }
    ```
 
@@ -3509,7 +3769,7 @@ When the server receives a `401 Unauthorized`, it may request refreshed tokens f
   "id": 8,
   "params": { "reason": "unauthorized", "previousAccountId": "org-123" }
 }
-{ "id": 8, "result": { "idToken": "<jwt>", "accessToken": "<jwt>" } }
+{ "id": 8, "result": { "accessToken": "<jwt>", "chatgptAccountId": "org-123", "chatgptPlanType": "business" } }
 ```
 
 The server retries the original request after a successful refresh response. Requests time out after about 10 seconds.
@@ -3526,7 +3786,7 @@ The server retries the original request after a successful refresh response. Req
 ```json
 { "method": "account/logout", "id": 5 }
 { "id": 5, "result": {} }
-{ "method": "account/updated", "params": { "authMode": null } }
+{ "method": "account/updated", "params": { "authMode": null, "planType": null } }
 ```
 
 ### 6) Rate limits (ChatGPT)
@@ -3538,20 +3798,23 @@ The server retries the original request after a successful refresh response. Req
     "limitId": "codex",
     "limitName": null,
     "primary": { "usedPercent": 25, "windowDurationMins": 15, "resetsAt": 1730947200 },
-    "secondary": null
+    "secondary": null,
+    "rateLimitReachedType": null
   },
   "rateLimitsByLimitId": {
     "codex": {
       "limitId": "codex",
       "limitName": null,
       "primary": { "usedPercent": 25, "windowDurationMins": 15, "resetsAt": 1730947200 },
-      "secondary": null
+      "secondary": null,
+      "rateLimitReachedType": null
     },
     "codex_other": {
       "limitId": "codex_other",
       "limitName": "codex_other",
       "primary": { "usedPercent": 42, "windowDurationMins": 60, "resetsAt": 1730950800 },
-      "secondary": null
+      "secondary": null,
+      "rateLimitReachedType": null
     }
   }
 } }
@@ -3572,6 +3835,20 @@ Field notes:
 - `usedPercent` is current usage within the quota window.
 - `windowDurationMins` is the quota window length.
 - `resetsAt` is a Unix timestamp (seconds) for the next reset.
+- `planType` is included when the backend returns the ChatGPT plan associated with a bucket.
+- `credits` is included when the backend returns remaining workspace credit details.
+- `rateLimitReachedType` identifies the backend-classified limit state when one has been reached.
+
+### 7) Notify a workspace owner about a limit
+
+Use `account/sendAddCreditsNudgeEmail` to ask ChatGPT to email a workspace owner when credits are depleted or a usage limit has been reached.
+
+```json
+{ "method": "account/sendAddCreditsNudgeEmail", "id": 7, "params": { "creditType": "credits" } }
+{ "id": 7, "result": { "status": "sent" } }
+```
+
+Use `creditType: "credits"` when workspace credits are depleted, or `creditType: "usage_limit"` when the workspace usage limit has been reached. If the owner was already notified recently, the response status is `cooldown_active`.
 
 ---
 
@@ -3902,8 +4179,10 @@ Once the session is open, you can:
 - Watch Codex explain its plan before making a change, and approve or reject steps inline.
 - Read syntax-highlighted markdown code blocks and diffs in the TUI, then use `/theme` to preview and save a preferred theme.
 - Use `/clear` to wipe the terminal and start a fresh chat, or press <kbd>Ctrl</kbd>+<kbd>L</kbd> to clear the screen without starting a new conversation.
-- Use `/copy` to copy the latest completed Codex output. If a turn is still running, Codex copies the most recent finished output instead of in-progress text.
+- Use `/copy` or press <kbd>Ctrl</kbd>+<kbd>O</kbd> to copy the latest completed Codex output. If a turn is still running, Codex copies the most recent finished output instead of in-progress text.
+- Press <kbd>Tab</kbd> while Codex is running to queue follow-up text, slash commands, or `!` shell commands for the next turn.
 - Navigate draft history in the composer with <kbd>Up</kbd>/<kbd>Down</kbd>; Codex restores prior draft text and image placeholders.
+- Press <kbd>Ctrl</kbd>+<kbd>R</kbd> to search prompt history from the composer, then press <kbd>Enter</kbd> to accept a match or <kbd>Esc</kbd> to cancel.
 - Press <kbd>Ctrl</kbd>+<kbd>C</kbd> or use `/exit` to close the interactive session when you're done.
 
 ## Resuming conversations
@@ -4040,7 +4319,7 @@ Ask Codex to generate or edit images directly in the CLI. This works well for as
 
 You can ask in natural language or explicitly invoke the image generation skill by including `$imagegen` in your prompt.
 
-Built-in image generation uses `gpt-image-1.5`, counts toward your general Codex usage limits, and uses included limits 3-5x faster on average than similar turns without image generation, depending on image quality and size. For details, see [Pricing](https://developers.openai.com/codex/pricing#image-generation-usage-limits). For prompting tips and model details, see the [image generation guide](https://developers.openai.com/api/docs/guides/image-generation).
+Built-in image generation uses `gpt-image-2`, counts toward your general Codex usage limits, and uses included limits 3-5x faster on average than similar turns without image generation, depending on image quality and size. For details, see [Pricing](https://developers.openai.com/codex/pricing#image-generation-usage-limits). For prompting tips and model details, see the [image generation guide](https://developers.openai.com/api/docs/guides/image-generation).
 
 For larger batches of image generation, set `OPENAI_API_KEY` in your environment variables and ask Codex to generate images through the API so API pricing applies instead.
 
@@ -4151,7 +4430,7 @@ See [Model Context Protocol](https://developers.openai.com/codex/mcp) for exampl
 ## Tips and shortcuts
 
 - Type `@` in the composer to open a fuzzy file search over the workspace root; press <kbd>Tab</kbd> or <kbd>Enter</kbd> to drop the highlighted path into your message.
-- Press <kbd>Enter</kbd> while Codex is running to inject new instructions into the current turn, or press <kbd>Tab</kbd> to queue a follow-up prompt for the next turn.
+- Press <kbd>Enter</kbd> while Codex is running to inject new instructions into the current turn, or press <kbd>Tab</kbd> to queue follow-up input for the next turn. Queued input can be a normal prompt, a slash command such as `/review`, or a `!` shell command. Codex parses queued slash commands when they run.
 - Prefix a line with `!` to run a local shell command (for example, `!ls`). Codex treats the output like a user-provided command result and still applies your approval and sandbox settings.
 - Tap <kbd>Esc</kbd> twice while the composer is empty to edit your previous user message. Continue pressing <kbd>Esc</kbd> to walk further back in the transcript, then hit <kbd>Enter</kbd> to fork from that point.
 - Launch Codex from any directory using `codex --cd <path>` to set the working root without running `cd` first. The active path appears in the TUI header.
@@ -4298,7 +4577,7 @@ export const commandOverview = [
     href: "/codex/cli/reference#codex-app",
     type: "stable",
     description:
-      "Launch the Codex desktop app on macOS, optionally opening a specific workspace path.",
+      "Launch the Codex desktop app on macOS or Windows. On macOS, Codex can open a workspace path; on Windows, Codex prints the path to open.",
   },
   {
     key: "codex debug app-server send-message-v2",
@@ -4368,6 +4647,13 @@ export const commandOverview = [
     type: "experimental",
     description:
       "Manage Model Context Protocol servers (list, add, remove, authenticate).",
+  },
+  {
+    key: "codex plugin marketplace",
+    href: "/codex/cli/reference#codex-plugin-marketplace",
+    type: "experimental",
+    description:
+      "Add, upgrade, or remove plugin marketplaces from Git or local sources.",
   },
   {
     key: "codex mcp-server",
@@ -4559,13 +4845,13 @@ export const appOptions = [
     type: "path",
     defaultValue: ".",
     description:
-      "Workspace path to open in Codex Desktop (`codex app` is available on macOS only).",
+      "Workspace path for Codex Desktop. On macOS, Codex opens this path; on Windows, Codex prints the path.",
   },
   {
     key: "--download-url",
     type: "url",
     description:
-      "Advanced override for the Codex desktop DMG download URL used during install.",
+      "Advanced override for the Codex desktop installer URL used during install.",
   },
 ];
 
@@ -4893,6 +5179,24 @@ export const mcpAddOptions = [
   },
 ];
 
+export const marketplaceCommands = [
+  {
+    key: "add <source>",
+    type: "[--ref REF] [--sparse PATH]",
+    description:
+      "Install a plugin marketplace from GitHub shorthand, a Git URL, an SSH URL, or a local marketplace root directory. `--sparse` is supported only for Git sources and can be repeated.",
+  },
+  {
+    key: "upgrade [marketplace-name]",
+    description:
+      "Refresh one configured Git marketplace, or all configured Git marketplaces when no name is provided.",
+  },
+  {
+    key: "remove <marketplace-name>",
+    description: "Remove a configured plugin marketplace.",
+  },
+];
+
 ## How to read this reference
 
 This page catalogs every documented Codex CLI command and flag. Use the interactive tables to search by key or description. Each section indicates whether the option is stable or experimental and calls out risky combinations.
@@ -4929,9 +5233,11 @@ Launch the Codex app server locally. This is primarily for development and debug
 
 ### `codex app`
 
-Launch Codex Desktop from the terminal on macOS and optionally open a specific workspace path.
+Launch Codex Desktop from the terminal on macOS or Windows. On macOS, Codex can open a specific workspace path; on Windows, Codex prints the path to open.
 
-`codex app` installs/opens the desktop app on macOS, then opens the provided workspace path. This subcommand is macOS-only.
+`codex app` opens an installed Codex Desktop app, or starts the installer when
+the app is missing. On macOS, Codex opens the provided workspace path; on
+Windows, it prints the path to open after installation.
 
 ### `codex debug app-server send-message-v2`
 
@@ -4993,6 +5299,15 @@ The `add` subcommand supports both stdio and streamable HTTP transports:
 
 OAuth actions (`login`, `logout`) only work with streamable HTTP servers (and only when the server supports OAuth).
 
+### `codex plugin marketplace`
+
+Manage plugin marketplace sources that Codex can browse and install from.
+
+`codex plugin marketplace add` accepts GitHub shorthand such as `owner/repo` or
+`owner/repo@ref`, HTTP or HTTPS Git URLs, SSH Git URLs, and local marketplace
+root directories. Use `--ref` to pin a Git ref, and repeat `--sparse PATH` to
+use a sparse checkout for Git-backed marketplace repositories.
+
 ### `codex mcp-server`
 
 Run Codex as an MCP server over stdio so that other tools can connect. This command inherits global configuration overrides and exits when the downstream client closes the connection.
@@ -5046,39 +5361,44 @@ This guide shows you how to:
 Codex ships with the following commands. Open the slash popup and start typing
 the command name to filter the list.
 
-| Command                                                                         | Purpose                                                         | When to use it                                                                                            |
-| ------------------------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| [`/permissions`](#update-permissions-with-permissions)                          | Set what Codex can do without asking first.                     | Relax or tighten approval requirements mid-session, such as switching between Auto and Read Only.         |
-| [`/sandbox-add-read-dir`](#grant-sandbox-read-access-with-sandbox-add-read-dir) | Grant sandbox read access to an extra directory (Windows only). | Unblock commands that need to read an absolute directory path outside the current readable roots.         |
-| [`/agent`](#switch-agent-threads-with-agent)                                    | Switch the active agent thread.                                 | Inspect or continue work in a spawned subagent thread.                                                    |
-| [`/apps`](#browse-apps-with-apps)                                               | Browse apps (connectors) and insert them into your prompt.      | Attach an app as `$app-slug` before asking Codex to use it.                                               |
-| [`/plugins`](#browse-plugins-with-plugins)                                      | Browse installed and discoverable plugins.                      | Inspect plugin tools, install suggested plugins, or manage plugin availability.                           |
-| [`/clear`](#clear-the-terminal-and-start-a-new-chat-with-clear)                 | Clear the terminal and start a fresh chat.                      | Reset the visible UI and conversation together when you want a fresh start.                               |
-| [`/compact`](#keep-transcripts-lean-with-compact)                               | Summarize the visible conversation to free tokens.              | Use after long runs so Codex retains key points without blowing the context window.                       |
-| [`/copy`](#copy-the-latest-response-with-copy)                                  | Copy the latest completed Codex output.                         | Grab the latest finished response or plan text without manually selecting it.                             |
-| [`/diff`](#review-changes-with-diff)                                            | Show the Git diff, including files Git isn't tracking yet.      | Review Codex's edits before you commit or run tests.                                                      |
-| [`/exit`](#exit-the-cli-with-quit-or-exit)                                      | Exit the CLI (same as `/quit`).                                 | Alternative spelling; both commands exit the session.                                                     |
-| [`/experimental`](#toggle-experimental-features-with-experimental)              | Toggle experimental features.                                   | Enable optional features such as subagents from the CLI.                                                  |
-| [`/feedback`](#send-feedback-with-feedback)                                     | Send logs to the Codex maintainers.                             | Report issues or share diagnostics with support.                                                          |
-| [`/init`](#generate-agentsmd-with-init)                                         | Generate an `AGENTS.md` scaffold in the current directory.      | Capture persistent instructions for the repository or subdirectory you're working in.                     |
-| [`/logout`](#sign-out-with-logout)                                              | Sign out of Codex.                                              | Clear local credentials when using a shared machine.                                                      |
-| [`/mcp`](#list-mcp-tools-with-mcp)                                              | List configured Model Context Protocol (MCP) tools.             | Check which external tools Codex can call during the session.                                             |
-| [`/mention`](#highlight-files-with-mention)                                     | Attach a file to the conversation.                              | Point Codex at specific files or folders you want it to inspect next.                                     |
-| [`/model`](#set-the-active-model-with-model)                                    | Choose the active model (and reasoning effort, when available). | Switch between general-purpose models (`gpt-4.1-mini`) and deeper reasoning models before running a task. |
-| [`/fast`](#toggle-fast-mode-with-fast)                                          | Toggle Fast mode for GPT-5.4.                                   | Turn Fast mode on or off, or check whether the current thread is using it.                                |
-| [`/plan`](#switch-to-plan-mode-with-plan)                                       | Switch to plan mode and optionally send a prompt.               | Ask Codex to propose an execution plan before implementation work starts.                                 |
-| [`/personality`](#set-a-communication-style-with-personality)                   | Choose a communication style for responses.                     | Make Codex more concise, more explanatory, or more collaborative without changing your instructions.      |
-| [`/ps`](#check-background-terminals-with-ps)                                    | Show experimental background terminals and their recent output. | Check long-running commands without leaving the main transcript.                                          |
-| [`/stop`](#stop-background-terminals-with-stop)                                 | Stop all background terminals.                                  | Cancel background terminal work started by the current session.                                           |
-| [`/fork`](#fork-the-current-conversation-with-fork)                             | Fork the current conversation into a new thread.                | Branch the active session to explore a new approach without losing the current transcript.                |
-| [`/resume`](#resume-a-saved-conversation-with-resume)                           | Resume a saved conversation from your session list.             | Continue work from a previous CLI session without starting over.                                          |
-| [`/new`](#start-a-new-conversation-with-new)                                    | Start a new conversation inside the same CLI session.           | Reset the chat context without leaving the CLI when you want a fresh prompt in the same repo.             |
-| [`/quit`](#exit-the-cli-with-quit-or-exit)                                      | Exit the CLI.                                                   | Leave the session immediately.                                                                            |
-| [`/review`](#ask-for-a-working-tree-review-with-review)                         | Ask Codex to review your working tree.                          | Run after Codex completes work or when you want a second set of eyes on local changes.                    |
-| [`/status`](#inspect-the-session-with-status)                                   | Display session configuration and token usage.                  | Confirm the active model, approval policy, writable roots, and remaining context capacity.                |
-| [`/debug-config`](#inspect-config-layers-with-debug-config)                     | Print config layer and requirements diagnostics.                | Debug precedence and policy requirements, including experimental network constraints.                     |
-| [`/statusline`](#configure-footer-items-with-statusline)                        | Configure TUI status-line fields interactively.                 | Pick and reorder footer items (model/context/limits/git/tokens/session) and persist in config.toml.       |
-| [`/title`](#configure-terminal-title-items-with-title)                          | Configure terminal window or tab title fields interactively.    | Pick and reorder title items such as project, status, thread, branch, model, and task progress.           |
+When a task is already running, you can type a slash command and press `Tab` to
+queue it for the next turn. Codex parses queued slash commands when they run, so
+command menus and errors appear after the current turn finishes. Slash
+completion still works before you queue the command.
+
+| Command                                                                         | Purpose                                                         | When to use it                                                                                             |
+| ------------------------------------------------------------------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| [`/permissions`](#update-permissions-with-permissions)                          | Set what Codex can do without asking first.                     | Relax or tighten approval requirements mid-session, such as switching between Auto and Read Only.          |
+| [`/sandbox-add-read-dir`](#grant-sandbox-read-access-with-sandbox-add-read-dir) | Grant sandbox read access to an extra directory (Windows only). | Unblock commands that need to read an absolute directory path outside the current readable roots.          |
+| [`/agent`](#switch-agent-threads-with-agent)                                    | Switch the active agent thread.                                 | Inspect or continue work in a spawned subagent thread.                                                     |
+| [`/apps`](#browse-apps-with-apps)                                               | Browse apps (connectors) and insert them into your prompt.      | Attach an app as `$app-slug` before asking Codex to use it.                                                |
+| [`/plugins`](#browse-plugins-with-plugins)                                      | Browse installed and discoverable plugins.                      | Inspect plugin tools, install suggested plugins, or manage plugin availability.                            |
+| [`/clear`](#clear-the-terminal-and-start-a-new-chat-with-clear)                 | Clear the terminal and start a fresh chat.                      | Reset the visible UI and conversation together when you want a fresh start.                                |
+| [`/compact`](#keep-transcripts-lean-with-compact)                               | Summarize the visible conversation to free tokens.              | Use after long runs so Codex retains key points without blowing the context window.                        |
+| [`/copy`](#copy-the-latest-response-with-copy)                                  | Copy the latest completed Codex output.                         | Grab the latest finished response or plan text without manually selecting it. You can also press `Ctrl+O`. |
+| [`/diff`](#review-changes-with-diff)                                            | Show the Git diff, including files Git isn't tracking yet.      | Review Codex's edits before you commit or run tests.                                                       |
+| [`/exit`](#exit-the-cli-with-quit-or-exit)                                      | Exit the CLI (same as `/quit`).                                 | Alternative spelling; both commands exit the session.                                                      |
+| [`/experimental`](#toggle-experimental-features-with-experimental)              | Toggle experimental features.                                   | Enable optional features such as subagents from the CLI.                                                   |
+| [`/feedback`](#send-feedback-with-feedback)                                     | Send logs to the Codex maintainers.                             | Report issues or share diagnostics with support.                                                           |
+| [`/init`](#generate-agentsmd-with-init)                                         | Generate an `AGENTS.md` scaffold in the current directory.      | Capture persistent instructions for the repository or subdirectory you're working in.                      |
+| [`/logout`](#sign-out-with-logout)                                              | Sign out of Codex.                                              | Clear local credentials when using a shared machine.                                                       |
+| [`/mcp`](#list-mcp-tools-with-mcp)                                              | List configured Model Context Protocol (MCP) tools.             | Check which external tools Codex can call during the session.                                              |
+| [`/mention`](#highlight-files-with-mention)                                     | Attach a file to the conversation.                              | Point Codex at specific files or folders you want it to inspect next.                                      |
+| [`/model`](#set-the-active-model-with-model)                                    | Choose the active model (and reasoning effort, when available). | Switch between general-purpose models (`gpt-4.1-mini`) and deeper reasoning models before running a task.  |
+| [`/fast`](#toggle-fast-mode-with-fast)                                          | Toggle Fast mode for GPT-5.4.                                   | Turn Fast mode on or off, or check whether the current thread is using it.                                 |
+| [`/plan`](#switch-to-plan-mode-with-plan)                                       | Switch to plan mode and optionally send a prompt.               | Ask Codex to propose an execution plan before implementation work starts.                                  |
+| [`/personality`](#set-a-communication-style-with-personality)                   | Choose a communication style for responses.                     | Make Codex more concise, more explanatory, or more collaborative without changing your instructions.       |
+| [`/ps`](#check-background-terminals-with-ps)                                    | Show experimental background terminals and their recent output. | Check long-running commands without leaving the main transcript.                                           |
+| [`/stop`](#stop-background-terminals-with-stop)                                 | Stop all background terminals.                                  | Cancel background terminal work started by the current session.                                            |
+| [`/fork`](#fork-the-current-conversation-with-fork)                             | Fork the current conversation into a new thread.                | Branch the active session to explore a new approach without losing the current transcript.                 |
+| [`/resume`](#resume-a-saved-conversation-with-resume)                           | Resume a saved conversation from your session list.             | Continue work from a previous CLI session without starting over.                                           |
+| [`/new`](#start-a-new-conversation-with-new)                                    | Start a new conversation inside the same CLI session.           | Reset the chat context without leaving the CLI when you want a fresh prompt in the same repo.              |
+| [`/quit`](#exit-the-cli-with-quit-or-exit)                                      | Exit the CLI.                                                   | Leave the session immediately.                                                                             |
+| [`/review`](#ask-for-a-working-tree-review-with-review)                         | Ask Codex to review your working tree.                          | Run after Codex completes work or when you want a second set of eyes on local changes.                     |
+| [`/status`](#inspect-the-session-with-status)                                   | Display session configuration and token usage.                  | Confirm the active model, approval policy, writable roots, and remaining context capacity.                 |
+| [`/debug-config`](#inspect-config-layers-with-debug-config)                     | Print config layer and requirements diagnostics.                | Debug precedence and policy requirements, including experimental network constraints.                      |
+| [`/statusline`](#configure-footer-items-with-statusline)                        | Configure TUI status-line fields interactively.                 | Pick and reorder footer items (model/context/limits/git/tokens/session) and persist in config.toml.        |
+| [`/title`](#configure-terminal-title-items-with-title)                          | Configure terminal window or tab title fields interactively.    | Pick and reorder title items such as project, status, thread, branch, model, and task progress.            |
 
 `/quit` and `/exit` both exit the CLI. Use them only after you have saved or
 committed any important work.
@@ -5168,6 +5488,9 @@ Expected: Codex copies the latest completed Codex output to your clipboard.
 If a turn is still running, `/copy` uses the latest completed output instead of
 the in-progress response. The command is unavailable before the first completed
 Codex output and immediately after a rollback.
+
+You can also press <kbd>Ctrl</kbd>+<kbd>O</kbd> from the main TUI to copy the
+latest completed response without opening the slash command menu.
 
 ### Grant sandbox read access with `/sandbox-add-read-dir`
 
@@ -5326,10 +5649,11 @@ you can immediately ask Codex to use it.
 ### Browse plugins with `/plugins`
 
 1. Type `/plugins`.
-2. Pick a plugin from the list to inspect its capabilities or available actions.
+2. Choose a marketplace tab, then pick a plugin to inspect its capabilities or available actions.
 
-Expected: Codex opens the plugin browser so you can review installed plugins and
-discoverable plugins that your configuration allows.
+Expected: Codex opens the plugin browser so you can review installed plugins,
+discoverable plugins that your configuration allows, and installed plugin state.
+Press <kbd>Space</kbd> on an installed plugin to toggle its enabled state.
 
 ### Switch agent threads with `/agent`
 
@@ -6017,6 +6341,9 @@ define `[permissions.<name>.filesystem]` or `[permissions.<name>.network]`.
 Managed network profiles use map tables such as
 `[permissions.<name>.network.domains]` and
 `[permissions.<name>.network.unix_sockets]` for domain and socket rules.
+Filesystem profiles can also deny reads for exact paths or glob patterns by
+setting matching entries to `"none"`; use this to keep files such as local
+secrets unreadable without turning off workspace writes.
 
 When a workflow needs a specific exception, use [rules](https://developers.openai.com/codex/rules). Rules
 let you allow, prompt, or forbid command prefixes outside the sandbox, which is
@@ -6498,35 +6825,140 @@ Each metric includes its own fields plus the default context fields below.
 
 #### Metrics catalog
 
-Each metric includes the required fields plus the default context fields above. Every metric is prefixed by `codex.`.
+Each metric includes the required fields plus the default context fields above. Metric names below omit the `codex.` prefix.
+Most metric names are centralized in `codex-rs/otel/src/metrics/names.rs`; feature-specific metrics emitted outside that file are included here too.
 If a metric includes the `tool` field, it reflects the internal tool used (for example, `apply_patch` or `shell`) and doesn't contain the actual shell command or patch `codex` is trying to apply.
 
-| Metric                                   | Type      | Fields             | Description                                                                                                                   |
-| ---------------------------------------- | --------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| `feature.state`                          | counter   | `feature`, `value` | Feature values that differ from defaults (emit one row per non-default).                                                      |
-| `thread.started`                         | counter   | `is_git`           | New thread created.                                                                                                           |
-| `thread.fork`                            | counter   |                    | New thread created by forking an existing thread.                                                                             |
-| `thread.rename`                          | counter   |                    | Thread renamed.                                                                                                               |
-| `task.compact`                           | counter   | `type`             | Number of compactions per type (`remote` or `local`), including manual and auto.                                              |
-| `task.user_shell`                        | counter   |                    | Number of user shell actions (`!` in the TUI for example).                                                                    |
-| `task.review`                            | counter   |                    | Number of reviews triggered.                                                                                                  |
-| `task.undo`                              | counter   |                    | Number of undo actions triggered.                                                                                             |
-| `approval.requested`                     | counter   | `tool`, `approved` | Tool approval request result (`approved`, `approved_with_amendment`, `approved_for_session`, `denied`, `abort`).              |
-| `conversation.turn.count`                | counter   |                    | User/assistant turns per thread, recorded at the end of the thread.                                                           |
-| `turn.e2e_duration_ms`                   | histogram |                    | End-to-end time for a full turn.                                                                                              |
-| `mcp.call`                               | counter   | `status`           | MCP tool invocation result (`ok` or error string).                                                                            |
-| `model_warning`                          | counter   |                    | Warning sent to the model.                                                                                                    |
-| `tool.call`                              | counter   | `tool`, `success`  | Tool invocation result (`success`: `true` or `false`).                                                                        |
-| `tool.call.duration_ms`                  | histogram | `tool`, `success`  | Tool execution time.                                                                                                          |
-| `remote_models.fetch_update.duration_ms` | histogram |                    | Time to fetch remote model definitions.                                                                                       |
-| `remote_models.load_cache.duration_ms`   | histogram |                    | Time to load the remote model cache.                                                                                          |
-| `shell_snapshot`                         | counter   | `success`          | Whether taking a shell snapshot succeeded.                                                                                    |
-| `shell_snapshot.duration_ms`             | histogram | `success`          | Time to take a shell snapshot.                                                                                                |
-| `db.init`                                | counter   | `status`           | State DB initialization outcomes (`opened`, `created`, `open_error`, `init_error`).                                           |
-| `db.backfill`                            | counter   | `status`           | Initial state DB backfill results (`upserted`, `failed`).                                                                     |
-| `db.backfill.duration_ms`                | histogram | `status`           | Duration of the initial state DB backfill, tagged with `success`, `failed`, or `partial_failure`.                             |
-| `db.error`                               | counter   | `stage`            | Errors during state DB operations (for example, `extract_metadata_from_rollout`, `backfill_sessions`, `apply_rollout_items`). |
-| `db.compare_error`                       | counter   | `stage`, `reason`  | State DB discrepancies detected during reconciliation.                                                                        |
+#### Runtime and model transport
+
+| Metric                                          | Type      | Fields               | Description                                                  |
+| ----------------------------------------------- | --------- | -------------------- | ------------------------------------------------------------ |
+| `api_request`                                   | counter   | `status`, `success`  | API request count by HTTP status and success/failure.        |
+| `api_request.duration_ms`                       | histogram | `status`, `success`  | API request duration in milliseconds.                        |
+| `sse_event`                                     | counter   | `kind`, `success`    | SSE event count by event kind and success/failure.           |
+| `sse_event.duration_ms`                         | histogram | `kind`, `success`    | SSE event processing duration in milliseconds.               |
+| `websocket.request`                             | counter   | `success`            | WebSocket request count by success/failure.                  |
+| `websocket.request.duration_ms`                 | histogram | `success`            | WebSocket request duration in milliseconds.                  |
+| `websocket.event`                               | counter   | `kind`, `success`    | WebSocket message/event count by type and success/failure.   |
+| `websocket.event.duration_ms`                   | histogram | `kind`, `success`    | WebSocket message/event processing duration in milliseconds. |
+| `responses_api_overhead.duration_ms`            | histogram |                      | Responses API overhead timing from websocket responses.      |
+| `responses_api_inference_time.duration_ms`      | histogram |                      | Responses API inference timing from websocket responses.     |
+| `responses_api_engine_iapi_ttft.duration_ms`    | histogram |                      | Responses API engine IAPI time-to-first-token timing.        |
+| `responses_api_engine_service_ttft.duration_ms` | histogram |                      | Responses API engine service time-to-first-token timing.     |
+| `responses_api_engine_iapi_tbt.duration_ms`     | histogram |                      | Responses API engine IAPI time-between-token timing.         |
+| `responses_api_engine_service_tbt.duration_ms`  | histogram |                      | Responses API engine service time-between-token timing.      |
+| `transport.fallback_to_http`                    | counter   | `from_wire_api`      | WebSocket-to-HTTP fallback count.                            |
+| `remote_models.fetch_update.duration_ms`        | histogram |                      | Time to fetch remote model definitions.                      |
+| `remote_models.load_cache.duration_ms`          | histogram |                      | Time to load the remote model cache.                         |
+| `startup_prewarm.duration_ms`                   | histogram | `status`             | Startup prewarm duration by outcome.                         |
+| `startup_prewarm.age_at_first_turn_ms`          | histogram | `status`             | Startup prewarm age when the first real turn resolves it.    |
+| `cloud_requirements.fetch.duration_ms`          | histogram |                      | Workspace-managed cloud requirements fetch duration.         |
+| `cloud_requirements.fetch_attempt`              | counter   | See note             | Workspace-managed cloud requirements fetch attempts.         |
+| `cloud_requirements.fetch_final`                | counter   | See note             | Final workspace-managed cloud requirements fetch outcome.    |
+| `cloud_requirements.load`                       | counter   | `trigger`, `outcome` | Workspace-managed cloud requirements load outcome.           |
+
+The `cloud_requirements.fetch_attempt` metric includes `trigger`, `attempt`, `outcome`, and `status_code` fields. The `cloud_requirements.fetch_final` metric includes `trigger`, `outcome`, `reason`, `attempt_count`, and `status_code` fields.
+
+#### Turn and tool activity
+
+| Metric                                 | Type      | Fields                                                                    | Description                                                                                                      |
+| -------------------------------------- | --------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `turn.e2e_duration_ms`                 | histogram |                                                                           | End-to-end time for a full turn.                                                                                 |
+| `turn.ttft.duration_ms`                | histogram |                                                                           | Time to first token for a turn.                                                                                  |
+| `turn.ttfm.duration_ms`                | histogram |                                                                           | Time to first model output item for a turn.                                                                      |
+| `turn.network_proxy`                   | counter   | `active`, `tmp_mem_enabled`                                               | Whether the managed network proxy was active for the turn.                                                       |
+| `turn.memory`                          | counter   | `read_allowed`, `feature_enabled`, `config_use_memories`, `has_citations` | Per-turn memory read availability and memory citation usage.                                                     |
+| `turn.tool.call`                       | histogram | `tmp_mem_enabled`                                                         | Number of tool calls in the turn.                                                                                |
+| `turn.token_usage`                     | histogram | `token_type`, `tmp_mem_enabled`                                           | Per-turn token usage by token type (`total`, `input`, `cached_input`, `output`, or `reasoning_output`).          |
+| `tool.call`                            | counter   | `tool`, `success`                                                         | Tool invocation count by tool name and success/failure.                                                          |
+| `tool.call.duration_ms`                | histogram | `tool`, `success`                                                         | Tool execution duration in milliseconds by tool name and outcome.                                                |
+| `tool.unified_exec`                    | counter   | `tty`                                                                     | Unified exec tool calls by TTY mode.                                                                             |
+| `approval.requested`                   | counter   | `tool`, `approved`                                                        | Tool approval request result (`approved`, `approved_with_amendment`, `approved_for_session`, `denied`, `abort`). |
+| `mcp.call`                             | counter   | See note                                                                  | MCP tool invocation result.                                                                                      |
+| `mcp.call.duration_ms`                 | histogram | See note                                                                  | MCP tool invocation duration.                                                                                    |
+| `mcp.tools.list.duration_ms`           | histogram | `cache`                                                                   | MCP tool-list duration, including cache hit/miss state.                                                          |
+| `mcp.tools.fetch_uncached.duration_ms` | histogram |                                                                           | Duration of uncached MCP tool fetches.                                                                           |
+| `mcp.tools.cache_write.duration_ms`    | histogram |                                                                           | Duration of Codex Apps MCP tool-cache writes.                                                                    |
+| `hooks.run`                            | counter   | `hook_name`, `source`, `status`                                           | Hook run count by hook name, source, and status.                                                                 |
+| `hooks.run.duration_ms`                | histogram | `hook_name`, `source`, `status`                                           | Hook run duration in milliseconds.                                                                               |
+
+The `mcp.call` and `mcp.call.duration_ms` metrics include `status`; normal tool-call emissions also include `tool`, plus `connector_id` and `connector_name` when available. Blocked Codex Apps MCP calls may emit `mcp.call` with only `status`.
+
+#### Threads, tasks, and features
+
+| Metric                            | Type      | Fields                | Description                                                                      |
+| --------------------------------- | --------- | --------------------- | -------------------------------------------------------------------------------- |
+| `feature.state`                   | counter   | `feature`, `value`    | Feature values that differ from defaults (emit one row per non-default).         |
+| `status_line`                     | counter   |                       | Session started with a configured status line.                                   |
+| `model_warning`                   | counter   |                       | Warning sent to the model.                                                       |
+| `thread.started`                  | counter   | `is_git`              | New thread created, tagged by whether the working directory is in a Git repo.    |
+| `conversation.turn.count`         | counter   |                       | User/assistant turns per thread, recorded at the end of the thread.              |
+| `thread.fork`                     | counter   | `source`              | New thread created by forking an existing thread.                                |
+| `thread.rename`                   | counter   |                       | Thread renamed.                                                                  |
+| `thread.side`                     | counter   | `source`              | Side conversation created.                                                       |
+| `thread.skills.enabled_total`     | histogram |                       | Number of skills enabled for a new thread.                                       |
+| `thread.skills.kept_total`        | histogram |                       | Number of enabled skills kept after prompt rendering.                            |
+| `thread.skills.truncated`         | histogram |                       | Whether skill rendering truncated the enabled skills list (`1` or `0`).          |
+| `task.compact`                    | counter   | `type`                | Number of compactions per type (`remote` or `local`), including manual and auto. |
+| `task.review`                     | counter   |                       | Number of reviews triggered.                                                     |
+| `task.undo`                       | counter   |                       | Number of undo actions triggered.                                                |
+| `task.user_shell`                 | counter   |                       | Number of user shell actions (`!` in the TUI for example).                       |
+| `shell_snapshot`                  | counter   | See note              | Whether taking a shell snapshot succeeded.                                       |
+| `shell_snapshot.duration_ms`      | histogram | `success`             | Time to take a shell snapshot.                                                   |
+| `skill.injected`                  | counter   | `status`, `skill`     | Skill injection outcomes by skill.                                               |
+| `plugins.startup_sync`            | counter   | `transport`, `status` | Curated plugin startup sync attempts.                                            |
+| `plugins.startup_sync.final`      | counter   | `transport`, `status` | Final curated plugin startup sync outcome.                                       |
+| `multi_agent.spawn`               | counter   | `role`                | Agent spawns by role.                                                            |
+| `multi_agent.resume`              | counter   |                       | Agent resumes.                                                                   |
+| `multi_agent.nickname_pool_reset` | counter   |                       | Agent nickname pool resets.                                                      |
+
+The `shell_snapshot` metric includes `success` and, on failures, `failure_reason`.
+
+#### Memory and local state
+
+| Metric                         | Type      | Fields                    | Description                                               |
+| ------------------------------ | --------- | ------------------------- | --------------------------------------------------------- |
+| `memory.phase1`                | counter   | `status`                  | Memory phase 1 job counts by status.                      |
+| `memory.phase1.e2e_ms`         | histogram |                           | End-to-end duration for memory phase 1.                   |
+| `memory.phase1.output`         | counter   |                           | Memory phase 1 outputs written.                           |
+| `memory.phase1.token_usage`    | histogram | `token_type`              | Memory phase 1 token usage by token type.                 |
+| `memory.phase2`                | counter   | `status`                  | Memory phase 2 job counts by status.                      |
+| `memory.phase2.e2e_ms`         | histogram |                           | End-to-end duration for memory phase 2.                   |
+| `memory.phase2.input`          | counter   |                           | Memory phase 2 input count.                               |
+| `memory.phase2.token_usage`    | histogram | `token_type`              | Memory phase 2 token usage by token type.                 |
+| `memories.usage`               | counter   | `kind`, `tool`, `success` | Memory usage by kind, tool, and success/failure.          |
+| `external_agent_config.detect` | counter   | See note                  | External agent config detections by migration item type.  |
+| `external_agent_config.import` | counter   | See note                  | External agent config imports by migration item type.     |
+| `db.backfill`                  | counter   | `status`                  | Initial state DB backfill results (`upserted`, `failed`). |
+| `db.backfill.duration_ms`      | histogram | `status`                  | Duration of the initial state DB backfill.                |
+| `db.error`                     | counter   | `stage`                   | Errors during state DB operations.                        |
+
+The `external_agent_config.detect` and `external_agent_config.import` metrics include `migration_type`; skills migrations also include `skills_count`.
+
+#### Windows sandbox
+
+| Metric                                           | Type      | Fields                                    | Description                                           |
+| ------------------------------------------------ | --------- | ----------------------------------------- | ----------------------------------------------------- |
+| `windows_sandbox.setup_success`                  | counter   | `originator`, `mode`                      | Windows sandbox setup successes.                      |
+| `windows_sandbox.setup_failure`                  | counter   | `originator`, `mode`                      | Windows sandbox setup failures.                       |
+| `windows_sandbox.setup_duration_ms`              | histogram | `result`, `originator`, `mode`            | Windows sandbox setup duration.                       |
+| `windows_sandbox.elevated_setup_success`         | counter   |                                           | Elevated Windows sandbox setup successes.             |
+| `windows_sandbox.elevated_setup_failure`         | counter   | See note                                  | Elevated Windows sandbox setup failures.              |
+| `windows_sandbox.elevated_setup_canceled`        | counter   | See note                                  | Canceled elevated Windows sandbox setup attempts.     |
+| `windows_sandbox.elevated_setup_duration_ms`     | histogram | `result`                                  | Elevated Windows sandbox setup duration.              |
+| `windows_sandbox.elevated_prompt_shown`          | counter   |                                           | Elevated sandbox setup prompt shown.                  |
+| `windows_sandbox.elevated_prompt_accept`         | counter   |                                           | Elevated sandbox setup prompt accepted.               |
+| `windows_sandbox.elevated_prompt_use_legacy`     | counter   |                                           | User chose legacy sandbox from the elevated prompt.   |
+| `windows_sandbox.elevated_prompt_quit`           | counter   |                                           | User quit from the elevated prompt.                   |
+| `windows_sandbox.fallback_prompt_shown`          | counter   |                                           | Fallback sandbox prompt shown.                        |
+| `windows_sandbox.fallback_retry_elevated`        | counter   |                                           | User retried elevated setup from the fallback prompt. |
+| `windows_sandbox.fallback_use_legacy`            | counter   |                                           | User chose legacy sandbox from the fallback prompt.   |
+| `windows_sandbox.fallback_prompt_quit`           | counter   |                                           | User quit from the fallback prompt.                   |
+| `windows_sandbox.legacy_setup_preflight_failed`  | counter   | See note                                  | Legacy Windows sandbox setup preflight failure.       |
+| `windows_sandbox.setup_elevated_sandbox_command` | counter   |                                           | Elevated sandbox setup command invoked.               |
+| `windows_sandbox.createprocessasuserw_failed`    | counter   | `error_code`, `path_kind`, `exe`, `level` | Windows `CreateProcessAsUserW` failures.              |
+
+The elevated setup failure metrics include `code` and `message` when Windows setup failure details are available, and may include `originator` when emitted from the shared setup path. The `windows_sandbox.legacy_setup_preflight_failed` metric includes `originator` when emitted from the shared setup path, but fallback-prompt preflight failures may not include any fields.
 
 ### Feedback controls
 
@@ -6604,6 +7036,8 @@ Place the script somewhere on disk and point `notify` to it.
 - `notify` runs an external program (good for webhooks, desktop notifiers, CI hooks).
 - `tui.notifications` is built in to the TUI and can optionally filter by event type (for example, `agent-turn-complete` and `approval-requested`).
 - `tui.notification_method` controls how the TUI emits terminal notifications (`auto`, `osc9`, or `bel`).
+- `tui.notification_condition` controls whether TUI notifications fire only when
+  the terminal is `unfocused` or `always`.
 
 In `auto` mode, Codex prefers OSC 9 notifications (a terminal escape sequence some terminals interpret as a desktop notification) and falls back to BEL (`\x07`) otherwise.
 
@@ -6650,6 +7084,8 @@ Running `codex` with no subcommand launches the interactive terminal UI (TUI). C
 
 - `tui.notifications`: enable/disable notifications (or restrict to specific types)
 - `tui.notification_method`: choose `auto`, `osc9`, or `bel` for terminal notifications
+- `tui.notification_condition`: choose `unfocused` or `always` for when
+  notifications fire
 - `tui.animations`: enable/disable ASCII animations and shimmer effects
 - `tui.alternate_screen`: control alternate screen usage (set to `never` to keep terminal scrollback)
 - `tui.show_tooltips`: show or hide onboarding tooltips on the welcome screen
@@ -7183,9 +7619,9 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
     },
     {
       key: "mcp_servers.<id>.env_vars",
-      type: "array<string>",
+      type: 'array<string | { name = string, source = "local" | "remote" }>',
       description:
-        "Additional environment variables to whitelist for an MCP stdio server.",
+        'Additional environment variables to whitelist for an MCP stdio server. String entries default to `source = "local"`; use `source = "remote"` only with executor-backed remote stdio.',
     },
     {
       key: "mcp_servers.<id>.cwd",
@@ -7266,6 +7702,12 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
         "Optional RFC 8707 OAuth resource parameter to include during MCP login.",
     },
     {
+      key: "mcp_servers.<id>.experimental_environment",
+      type: "local | remote",
+      description:
+        "Experimental placement for an MCP server. `remote` starts stdio servers through a remote executor environment; streamable HTTP remote placement is not implemented.",
+    },
+    {
       key: "agents.max_threads",
       type: "number",
       description:
@@ -7314,10 +7756,10 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
         "When `false`, Codex skips injecting existing memories into future sessions. Defaults to `true`.",
     },
     {
-      key: "memories.no_memories_if_mcp_or_web_search",
+      key: "memories.disable_on_external_context",
       type: "boolean",
       description:
-        "When `true`, threads that use MCP tool calls or web search are kept out of memory generation. Defaults to `false`.",
+        "When `true`, threads that use external context such as MCP tool calls, web search, or tool search are kept out of memory generation. Defaults to `false`. Legacy alias: `memories.no_memories_if_mcp_or_web_search`.",
     },
     {
       key: "memories.max_raw_memories_for_consolidation",
@@ -7854,7 +8296,13 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
       key: "tui.notification_method",
       type: "auto | osc9 | bel",
       description:
-        "Notification method for unfocused terminal notifications (default: auto).",
+        "Notification method for terminal notifications (default: auto).",
+    },
+    {
+      key: "tui.notification_condition",
+      type: "unfocused | always",
+      description:
+        "Control whether TUI notifications fire only when the terminal is unfocused or regardless of focus. Defaults to `unfocused`.",
     },
     {
       key: "tui.animations",
@@ -7983,16 +8431,22 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
         "Named filesystem permission profile. Each key is an absolute path or special token such as `:minimal` or `:project_roots`.",
     },
     {
-      key: "permissions.<name>.filesystem.<path>",
-      type: '"read" | "write" | "none" | table',
+      key: "permissions.<name>.filesystem.glob_scan_max_depth",
+      type: "number",
       description:
-        "Grant direct access for a path or special token, or scope nested entries under that root.",
+        "Maximum depth for expanding deny-read glob patterns on platforms that snapshot matches before sandbox startup. Must be at least `1` when set.",
     },
     {
-      key: 'permissions.<name>.filesystem.":project_roots".<subpath>',
+      key: "permissions.<name>.filesystem.<path-or-glob>",
+      type: '"read" | "write" | "none" | table',
+      description:
+        'Grant direct access for a path, glob pattern, or special token, or scope nested entries under that root. Use `"none"` to deny reads for matching paths.',
+    },
+    {
+      key: 'permissions.<name>.filesystem.":project_roots".<subpath-or-glob>',
       type: '"read" | "write" | "none"',
       description:
-        'Scoped filesystem access relative to the detected project roots. Use `"."` for the root itself.',
+        'Scoped filesystem access relative to the detected project roots. Use `"."` for the root itself; glob subpaths such as `"**/*.env"` can deny reads with `"none"`.',
     },
     {
       key: "permissions.<name>.network.enabled",
@@ -8170,6 +8624,12 @@ canonical keys that `config.toml` uses. Omitted keys remain unconstrained.
       type: "boolean",
       description:
         "Require a specific canonical feature key to stay enabled or disabled.",
+    },
+    {
+      key: "permissions.filesystem.deny_read",
+      type: "array<string>",
+      description:
+        "Admin-enforced filesystem read denials. Entries can be paths or glob patterns, and users cannot weaken them with local config.",
     },
     {
       key: "mcp_servers",
@@ -8376,6 +8836,14 @@ sandbox_mode = "read-only"
 # Named permissions profile to apply by default. Required before using [permissions.<name>].
 # default_permissions = "workspace"
 
+# Example filesystem profile. Use `"none"` to deny reads for exact paths or
+# glob patterns. On platforms that need pre-expanded glob matches, set
+# glob_scan_max_depth when using unbounded patterns such as `**`.
+# [permissions.workspace.filesystem]
+# glob_scan_max_depth = 3
+# ":project_roots" = { "." = "write", "**/*.env" = "none" }
+# "/absolute/path/to/secrets" = "none"
+
 ################################################################################
 # Authentication & Login
 ################################################################################
@@ -8566,6 +9034,9 @@ notifications = false
 # Notification mechanism for terminal alerts: auto | osc9 | bel. Default: "auto"
 # notification_method = "auto"
 
+# When notifications fire: unfocused (default) | always
+# notification_condition = "unfocused"
+
 # Enables welcome/status/spinner animations. Default: true
 animations = true
 
@@ -8631,6 +9102,16 @@ enabled = true
 # prevent_idle_sleep = false
 
 ################################################################################
+# Memories (table)
+################################################################################
+
+# Enable memories with [features].memories, then tune memory behavior here.
+# [memories]
+# generate_memories = true
+# use_memories = true
+# disable_on_external_context = false # legacy alias: no_memories_if_mcp_or_web_search
+
+################################################################################
 # Define MCP servers under this table. Leave empty to disable.
 ################################################################################
 
@@ -8643,8 +9124,10 @@ enabled = true
 # command = "docs-server"                 # required
 # args = ["--port", "4000"]               # optional
 # env = { "API_KEY" = "value" }           # optional key/value pairs copied as-is
-# env_vars = ["ANOTHER_SECRET"]            # optional: forward these from the parent env
+# env_vars = ["ANOTHER_SECRET"]            # optional: forward local parent env vars
+# env_vars = ["LOCAL_TOKEN", { name = "REMOTE_TOKEN", source = "remote" }]
 # cwd = "/path/to/server"                 # optional working directory override
+# experimental_environment = "remote"      # experimental: run stdio via a remote executor
 # startup_timeout_sec = 10.0               # optional; default 10.0 seconds
 # # startup_timeout_ms = 10000              # optional alias for startup timeout (milliseconds)
 # tool_timeout_sec = 60.0                  # optional; default 60.0 seconds
@@ -9572,6 +10055,25 @@ unified_exec = false
 ```
 
 Use the canonical feature keys from `config.toml`'s `[features]` table. Codex normalizes the resulting feature set to meet these pins and rejects conflicting writes to `config.toml` or profile-scoped feature settings.
+
+### Enforce deny-read requirements
+
+Admins can deny reads for exact paths or glob patterns with
+`[permissions.filesystem]`. Users can't weaken these requirements with local
+configuration.
+
+```toml
+[permissions.filesystem]
+deny_read = [
+  "/Users/alice/.ssh",
+  "./private/**/*.txt",
+]
+```
+
+When deny-read requirements are present, Codex constrains local sandbox mode to
+`read-only` or `workspace-write` so the requirement can be enforced. On native
+Windows, managed `deny_read` applies to direct file tools; shell subprocess
+reads don't use this sandbox requirement.
 
 ### Enforce command rules from requirements
 
@@ -10628,7 +11130,7 @@ you to inject your own scripts into the agentic loop, enabling features such as:
 - Send the conversation to a custom logging/analytics engine
 - Scan your team's prompts to block accidentally pasting API keys
 - Summarize conversations to create persistent memories automatically
-- Run a custom validator when a conversation turn stops, enforcing standards
+- Run a custom validation check when a conversation turn stops, enforcing standards
 - Customize prompting when in a certain directory
 
 Hooks are behind a feature flag in `config.toml`:
@@ -10642,9 +11144,9 @@ Runtime behavior to keep in mind:
 
 - Matching hooks from multiple files all run.
 - Multiple matching command hooks for the same event are launched concurrently,
-  so one hook cannot prevent another matching hook from starting.
-- `PreToolUse`, `PostToolUse`, `UserPromptSubmit`, and `Stop` run at turn
-  scope.
+  so one hook can't prevent another matching hook from starting.
+- `PreToolUse`, `PermissionRequest`, `PostToolUse`, `UserPromptSubmit`, and
+  `Stop` run at turn scope.
 - Hooks are currently disabled on Windows.
 
 ## Where Codex looks for hooks
@@ -10657,7 +11159,7 @@ In practice, the two most useful locations are:
 - `<repo>/.codex/hooks.json`
 
 If more than one `hooks.json` file exists, Codex loads all matching hooks.
-Higher-precedence config layers do not replace lower-precedence hooks.
+Higher-precedence config layers don't replace lower-precedence hooks.
 
 ## Config shape
 
@@ -10690,6 +11192,18 @@ Hooks are organized in three levels:
             "type": "command",
             "command": "/usr/bin/python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/pre_tool_use_policy.py\"",
             "statusMessage": "Checking Bash command"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/permission_request.py\"",
+            "statusMessage": "Checking approval request"
           }
         ]
       }
@@ -10750,13 +11264,14 @@ event.
 
 Only some current Codex events honor `matcher`:
 
-| Event              | What `matcher` filters | Notes                                               |
-| ------------------ | ---------------------- | --------------------------------------------------- |
-| `PostToolUse`      | tool name              | Current Codex runtime only emits `Bash`.            |
-| `PreToolUse`       | tool name              | Current Codex runtime only emits `Bash`.            |
-| `SessionStart`     | start source           | Current runtime values are `startup` and `resume`.  |
-| `UserPromptSubmit` | not supported          | Any configured `matcher` is ignored for this event. |
-| `Stop`             | not supported          | Any configured `matcher` is ignored for this event. |
+| Event               | What `matcher` filters | Notes                                               |
+| ------------------- | ---------------------- | --------------------------------------------------- |
+| `PermissionRequest` | tool name              | Current Codex runtime only emits `Bash`.            |
+| `PostToolUse`       | tool name              | Current Codex runtime only emits `Bash`.            |
+| `PreToolUse`        | tool name              | Current Codex runtime only emits `Bash`.            |
+| `SessionStart`      | start source           | Current runtime values are `startup` and `resume`.  |
+| `UserPromptSubmit`  | not supported          | Any configured `matcher` is ignored for this event. |
+| `Stop`              | not supported          | Any configured `matcher` is ignored for this event. |
 
 Examples:
 
@@ -10765,7 +11280,7 @@ Examples:
 - `Edit|Write`
 
 That last example is still a valid regex, but current Codex `PreToolUse` and
-`PostToolUse` events only emit `Bash`, so it will not match anything today.
+`PostToolUse` events only emit `Bash`, so it won't match anything today.
 
 ## Common input fields
 
@@ -10808,8 +11323,8 @@ fields:
 
 Exit `0` with no output is treated as success and Codex continues.
 
-`PreToolUse` supports `systemMessage`, but `continue`, `stopReason`, and
-`suppressOutput` are not currently supported for that event.
+`PreToolUse` and `PermissionRequest` support `systemMessage`, but `continue`,
+`stopReason`, and `suppressOutput` aren't currently supported for those events.
 
 `PostToolUse` supports `systemMessage`, `continue: false`, and `stopReason`.
 `suppressOutput` is parsed but not currently supported for that event.
@@ -10895,11 +11410,66 @@ You can also use exit code `2` and write the blocking reason to `stderr`.
 `updatedInput`, `additionalContext`, `continue: false`, `stopReason`, and
 `suppressOutput` are parsed but not supported yet, so they fail open.
 
+### PermissionRequest
+
+`PermissionRequest` runs when Codex is about to ask for approval, such as a
+shell escalation or managed-network approval. It can allow the request, deny
+the request, or decline to decide and let the normal approval prompt continue.
+It doesn't run for commands that don't need approval.
+
+`matcher` is applied to `tool_name`, which currently always equals `Bash`.
+
+Fields in addition to [Common input fields](#common-input-fields):
+
+| Field                    | Type             | Meaning                                            |
+| ------------------------ | ---------------- | -------------------------------------------------- |
+| `turn_id`                | `string`         | Codex-specific extension. Active Codex turn id     |
+| `tool_name`              | `string`         | Currently always `Bash`                            |
+| `tool_input.command`     | `string`         | Shell command associated with the approval request |
+| `tool_input.description` | `string \| null` | Human-readable approval reason, when Codex has one |
+
+Plain text on `stdout` is ignored.
+
+To approve the request, return:
+
+```json
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PermissionRequest",
+    "decision": {
+      "behavior": "allow"
+    }
+  }
+}
+```
+
+To deny the request, return:
+
+```json
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PermissionRequest",
+    "decision": {
+      "behavior": "deny",
+      "message": "Blocked by repository policy."
+    }
+  }
+}
+```
+
+If multiple matching hooks return decisions, any `deny` wins. Otherwise, an
+`allow` lets the request proceed without surfacing the approval prompt. If no
+matching hook decides, Codex uses the normal approval flow.
+
+Don't return `updatedInput`, `updatedPermissions`, or `interrupt` for
+`PermissionRequest`; those fields are reserved for future behavior and fail
+closed today.
+
 ### PostToolUse
 
-Currently `PostToolUse` only supports Bash tool results. It is not limited to
+Currently `PostToolUse` only supports Bash tool results. It's not limited to
 commands that exit successfully: non-interactive `exec_command` calls can still
-trigger `PostToolUse` when Codex emits a Bash post-tool payload. It cannot undo
+trigger `PostToolUse` when Codex emits a Bash post-tool payload. It can't undo
 side effects from the command that already ran.
 
 This doesn't intercept all shell calls yet, only the simple ones. The newer
@@ -10936,7 +11506,7 @@ JSON on `stdout` can use `systemMessage` and this hook-specific shape:
 
 That `additionalContext` text is added as extra developer context.
 
-For this event, `decision: "block"` does not undo the completed Bash command.
+For this event, `decision: "block"` doesn't undo the completed Bash command.
 Instead, Codex records the feedback, replaces the tool result with that
 feedback, and continues the model from the hook-provided message.
 
@@ -10951,14 +11521,14 @@ so they fail open.
 
 ### UserPromptSubmit
 
-`matcher` is not currently used for this event.
+`matcher` isn't currently used for this event.
 
 Fields in addition to [Common input fields](#common-input-fields):
 
 | Field     | Type     | Meaning                                        |
 | --------- | -------- | ---------------------------------------------- |
 | `turn_id` | `string` | Codex-specific extension. Active Codex turn id |
-| `prompt`  | `string` | User prompt that is about to be sent           |
+| `prompt`  | `string` | User prompt that's about to be sent            |
 
 Plain text on `stdout` is added as extra developer context.
 
@@ -10989,7 +11559,7 @@ You can also use exit code `2` and write the blocking reason to `stderr`.
 
 ### Stop
 
-`matcher` is not currently used for this event.
+`matcher` isn't currently used for this event.
 
 Fields in addition to [Common input fields](#common-input-fields):
 
@@ -11014,7 +11584,7 @@ Codex going, return:
 
 You can also use exit code `2` and write the continuation reason to `stderr`.
 
-For this event, `decision: "block"` does not reject the turn. Instead, it tells
+For this event, `decision: "block"` doesn't reject the turn. Instead, it tells
 Codex to continue and automatically creates a new continuation prompt that acts
 as a new user prompt, using your `reason` as that prompt text.
 
@@ -11312,7 +11882,7 @@ Ask Codex to generate or edit images without leaving your editor. This is useful
 
 You can ask in natural language or explicitly invoke the image generation skill by including `$imagegen` in your prompt.
 
-Built-in image generation uses `gpt-image-1.5`, counts toward your general Codex usage limits, and uses included limits 3-5x faster on average than similar turns without image generation, depending on image quality and size. For details, see [Pricing](https://developers.openai.com/codex/pricing#image-generation-usage-limits). For prompting tips and model details, see the [image generation guide](https://developers.openai.com/api/docs/guides/image-generation).
+Built-in image generation uses `gpt-image-2`, counts toward your general Codex usage limits, and uses included limits 3-5x faster on average than similar turns without image generation, depending on image quality and size. For details, see [Pricing](https://developers.openai.com/codex/pricing#image-generation-usage-limits). For prompting tips and model details, see the [image generation guide](https://developers.openai.com/api/docs/guides/image-generation).
 
 For larger batches of image generation, set `OPENAI_API_KEY` in your environment variables and ask Codex to generate images through the API so API pricing applies instead.
 
@@ -11927,6 +12497,18 @@ Configure each MCP server with a `[mcp_servers.<server-name>]` table in the conf
 - `env` (optional): Environment variables to set for the server.
 - `env_vars` (optional): Environment variables to allow and forward.
 - `cwd` (optional): Working directory to start the server from.
+- `experimental_environment` (optional): Set to `remote` to start the stdio
+  server through a remote executor environment when one is available.
+
+`env_vars` can contain plain variable names or objects with a source:
+
+```toml
+env_vars = ["LOCAL_TOKEN", { name = "REMOTE_TOKEN", source = "remote" }]
+```
+
+String entries and `source = "local"` read from Codex's local environment.
+`source = "remote"` reads from the remote executor environment and requires
+remote MCP stdio.
 
 #### Streamable HTTP servers
 
@@ -11946,7 +12528,7 @@ Configure each MCP server with a `[mcp_servers.<server-name>]` table in the conf
 
 If your OAuth provider requires a fixed callback port, set the top-level `mcp_oauth_callback_port` in `config.toml`. If unset, Codex binds to an ephemeral port.
 
-If your MCP OAuth flow must use a specific callback URL (for example, a remote devbox ingress URL or a custom callback path), set `mcp_oauth_callback_url`. Codex uses this value as the OAuth `redirect_uri` while still using `mcp_oauth_callback_port` for the callback listener port. Local callback URLs (for example `localhost`) bind on loopback; non-local callback URLs bind on `0.0.0.0` so the callback can reach the host.
+If your MCP OAuth flow must use a specific callback URL (for example, a remote Devbox ingress URL or a custom callback path), set `mcp_oauth_callback_url`. Codex uses this value as the OAuth `redirect_uri` while still using `mcp_oauth_callback_port` for the callback listener port. Local callback URLs (for example `localhost`) bind on the local interface; non-local callback URLs bind on `0.0.0.0` so the callback can reach the host.
 
 If the MCP server advertises `scopes_supported`, Codex prefers those
 server-advertised scopes during OAuth login. Otherwise, Codex falls back to the
@@ -11958,6 +12540,7 @@ scopes configured in `config.toml`.
 [mcp_servers.context7]
 command = "npx"
 args = ["-y", "@upstash/context7-mcp"]
+env_vars = ["LOCAL_TOKEN"]
 
 [mcp_servers.context7.env]
 MY_ENV_VAR = "MY_ENV_VALUE"
@@ -12080,6 +12663,10 @@ Common memory-specific settings include:
   stored as memory-generation inputs.
 - `memories.use_memories`: controls whether Codex injects existing memories into
   future sessions.
+- `memories.disable_on_external_context`: when `true`, keeps threads that used
+  external context such as MCP tool calls, web search, or tool search out of
+  memory generation. The older `memories.no_memories_if_mcp_or_web_search` key
+  is still accepted as an alias.
 - `memories.extract_model`: overrides the model used for per-thread memory
   extraction.
 - `memories.consolidation_model`: overrides the model used for global memory
@@ -12751,6 +13338,10 @@ codex
 /plugins
 ```
 
+The CLI plugin browser groups plugins by marketplace. Use the marketplace tabs
+to switch sources, open a plugin to inspect details, and press <kbd>Space</kbd>
+on an installed plugin to toggle its enabled state.
+
 ### Install and use a plugin
 
 Once you open the plugin directory:
@@ -12870,6 +13461,32 @@ marketplace, and browse or install the plugins in that curated list.
 You don't need a separate marketplace per plugin. One marketplace can expose a
 single plugin while you are testing, then grow into a larger curated catalog as
 you add more plugins.
+
+### Add a marketplace from the CLI
+
+Use `codex plugin marketplace add` when you want Codex to install and track a
+marketplace source for you instead of editing `config.toml` by hand.
+
+```bash
+codex plugin marketplace add owner/repo
+codex plugin marketplace add owner/repo --ref main
+codex plugin marketplace add https://github.com/example/plugins.git --sparse .agents/plugins
+codex plugin marketplace add ./local-marketplace-root
+```
+
+Marketplace sources can be GitHub shorthand (`owner/repo` or
+`owner/repo@ref`), HTTP or HTTPS Git URLs, SSH Git URLs, or local marketplace root
+directories. Use `--ref` to pin a Git ref, and repeat `--sparse PATH` to use a
+sparse checkout for Git-backed marketplace repos. `--sparse` is valid only for
+Git marketplace sources.
+
+To refresh or remove configured marketplaces:
+
+```bash
+codex plugin marketplace upgrade
+codex plugin marketplace upgrade marketplace-name
+codex plugin marketplace remove marketplace-name
+```
 
 ### Create a plugin manually
 
@@ -13052,6 +13669,8 @@ copy are ready for other developers to see.
   personal installs, a common pattern is `./.codex/plugins/<plugin-name>`.
 - Keep `source.path` relative to the marketplace root, start it with `./`, and
   keep it inside that root.
+- For local entries, `source` can also be a plain string path such as
+  `"./plugins/my-plugin"`.
 - Always include `policy.installation`, `policy.authentication`, and
   `category` on each plugin entry.
 - Use `policy.installation` values such as `AVAILABLE`,
@@ -13059,11 +13678,36 @@ copy are ready for other developers to see.
 - Use `policy.authentication` to decide whether auth happens on install or
   first use.
 
-The marketplace controls where Codex loads the plugin from. `source.path` can
-point somewhere else if your plugin lives outside those example directories. A
-marketplace file can live in the repo where you are developing the plugin or in
-a separate marketplace repo, and one marketplace file can point to one plugin
-or many.
+The marketplace controls where Codex loads the plugin from. A local
+`source.path` can point somewhere else if your plugin lives outside those
+example directories. A marketplace file can live in the repo where you are
+developing the plugin or in a separate marketplace repo, and one marketplace
+file can point to one plugin or many.
+
+Marketplace entries can also point at Git-backed plugin sources. Use
+`"source": "url"` when the plugin lives at the repository root, or
+`"source": "git-subdir"` when the plugin lives in a subdirectory:
+
+```json
+{
+  "name": "remote-helper",
+  "source": {
+    "source": "git-subdir",
+    "url": "https://github.com/example/codex-plugins.git",
+    "path": "./plugins/remote-helper",
+    "ref": "main"
+  },
+  "policy": {
+    "installation": "AVAILABLE",
+    "authentication": "ON_INSTALL"
+  },
+  "category": "Productivity"
+}
+```
+
+Git-backed entries may use `ref` or `sha` selectors. If Codex can't resolve a
+marketplace entry's source, it skips that plugin entry instead of failing the
+whole marketplace.
 
 ### How Codex uses marketplaces
 
@@ -13074,6 +13718,7 @@ Codex can read marketplace files from:
 
 - the curated marketplace that powers the official Plugin Directory
 - a repo marketplace at `$REPO_ROOT/.agents/plugins/marketplace.json`
+- a Claude-style marketplace at `$REPO_ROOT/.claude-plugin/marketplace.json`
 - a personal marketplace at `~/.agents/plugins/marketplace.json`
 
 You can install any plugin exposed through a marketplace. Codex installs
@@ -13799,13 +14444,13 @@ Select your appropriate plan type in the table below to see rates.
             </td>
           </tr>
           <tr>
-            <td>GPT-Image-1.5 (image)</td>
+            <td>GPT-Image-2 (image)</td>
             <td style="text-align:center">200 credits</td>
             <td style="text-align:center">50 credits</td>
-            <td style="text-align:center">800 credits</td>
+            <td style="text-align:center">750 credits</td>
           </tr>
           <tr>
-            <td>GPT-Image-1.5 (text)</td>
+            <td>GPT-Image-2 (text)</td>
             <td style="text-align:center">125 credits</td>
             <td style="text-align:center">31.25 credits</td>
             <td style="text-align:center">250 credits</td>
@@ -14008,10 +14653,11 @@ You can also use Codex with API credits by signing in with an OpenAI API key.
 (() => {
   const platform =
     (navigator.userAgentData?.platform || navigator.platform || "").toLowerCase();
-  const isMac =
+  const isDesktopAppPlatform =
     platform.includes("mac") ||
-    /macintosh|mac os x/i.test(navigator.userAgent || "");
-  if (!isMac) return;
+    platform.includes("win") ||
+    /macintosh|mac os x|windows|win64|win32/i.test(navigator.userAgent || "");
+  if (!isDesktopAppPlatform) return;
 
   const shouldPreferApp = () => {
     try {
@@ -14035,10 +14681,13 @@ You can also use Codex with API credits by signing in with an OpenAI API key.
 <div slot="app">
 The Codex app is available on macOS and Windows.
 
+Most Codex app features are available on both platforms. Platform-specific
+exceptions are noted in the relevant docs.
+
 <WorkflowSteps variant="headings">
 1. Download and install the Codex app
 
-    Download the Codex app for Windows or macOS. Choose the Intel build if you're using an Intel-based Mac.
+    Download the Codex app for macOS or Windows. Choose the Intel build if you're using an Intel-based Mac.
 
     <div class="text-sm">
       [Get notified for Linux](https://openai.com/form/codex-app/)
@@ -14185,9 +14834,9 @@ Use Codex in the cloud at [chatgpt.com/codex](https://chatgpt.com/codex).
 # Remote connections
 
 SSH remote connections are currently in alpha. To enable them today, set
-  `remote_connections = true` in the `[features]` table in
-  `~/.codex/config.toml`. Availability, setup flows, and supported environments
-  may change as the feature improves.
+  `remote_control = true` in the `[features]` table in `~/.codex/config.toml`.
+  Availability, setup flows, and supported environments may change as the
+  feature improves.
 
 Remote connections let Codex work with projects that live on another
 SSH-accessible machine. Use them when the codebase, credentials, services, or
@@ -14239,7 +14888,7 @@ If remote connections don't appear yet, enable the alpha feature flag in
 
 ```toml
 [features]
-remote_connections = true
+remote_control = true
 ```
 
 Remote project threads run commands, read files, and write changes on the
@@ -15321,6 +15970,10 @@ Investigate why the settings modal fails to save. Have browser_debugger reproduc
 
 Use Codex on Windows with the native [Codex app](https://developers.openai.com/codex/app/windows), the
 [CLI](https://developers.openai.com/codex/cli), or the [IDE extension](https://developers.openai.com/codex/ide).
+
+The Codex app on Windows supports core workflows such as parallel agent threads,
+worktrees, automations, Git functionality, the in-app browser, artifact previews,
+plugins, and skills.
 
 <div class="mb-8">
   </div>
