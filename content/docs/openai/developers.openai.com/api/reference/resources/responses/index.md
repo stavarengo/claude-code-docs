@@ -3166,11 +3166,11 @@ as input for the model's response.
 
   Used by OpenAI to cache responses for similar requests to optimize your cache hit rates. Replaces the `user` field. [Learn more](/docs/guides/prompt-caching).
 
-- `prompt_cache_retention: optional "in-memory" or "24h"`
+- `prompt_cache_retention: optional "in_memory" or "24h"`
 
   The retention policy for the prompt cache. Set to `24h` to enable extended prompt caching, which keeps cached prefixes active for longer, up to a maximum of 24 hours. [Learn more](/docs/guides/prompt-caching#prompt-cache-retention).
 
-  - `"in-memory"`
+  - `"in_memory"`
 
   - `"24h"`
 
@@ -10366,11 +10366,11 @@ as input for the model's response.
 
     Used by OpenAI to cache responses for similar requests to optimize your cache hit rates. Replaces the `user` field. [Learn more](/docs/guides/prompt-caching).
 
-  - `prompt_cache_retention: optional "in-memory" or "24h"`
+  - `prompt_cache_retention: optional "in_memory" or "24h"`
 
     The retention policy for the prompt cache. Set to `24h` to enable extended prompt caching, which keeps cached prefixes active for longer, up to a maximum of 24 hours. [Learn more](/docs/guides/prompt-caching#prompt-cache-retention).
 
-    - `"in-memory"`
+    - `"in_memory"`
 
     - `"24h"`
 
@@ -10738,7 +10738,7 @@ curl https://api.openai.com/v1/responses \
     "version": "version"
   },
   "prompt_cache_key": "prompt-cache-key-1234",
-  "prompt_cache_retention": "in-memory",
+  "prompt_cache_retention": "in_memory",
   "reasoning": {
     "effort": "none",
     "generate_summary": "auto",
@@ -17628,11 +17628,11 @@ Retrieves a model response with the given ID.
 
     Used by OpenAI to cache responses for similar requests to optimize your cache hit rates. Replaces the `user` field. [Learn more](/docs/guides/prompt-caching).
 
-  - `prompt_cache_retention: optional "in-memory" or "24h"`
+  - `prompt_cache_retention: optional "in_memory" or "24h"`
 
     The retention policy for the prompt cache. Set to `24h` to enable extended prompt caching, which keeps cached prefixes active for longer, up to a maximum of 24 hours. [Learn more](/docs/guides/prompt-caching#prompt-cache-retention).
 
-    - `"in-memory"`
+    - `"in_memory"`
 
     - `"24h"`
 
@@ -17991,7 +17991,7 @@ curl https://api.openai.com/v1/responses/$RESPONSE_ID \
     "version": "version"
   },
   "prompt_cache_key": "prompt-cache-key-1234",
-  "prompt_cache_retention": "in-memory",
+  "prompt_cache_retention": "in_memory",
   "reasoning": {
     "effort": "none",
     "generate_summary": "auto",
@@ -24190,11 +24190,11 @@ the `background` parameter set to `true` can be cancelled.
 
     Used by OpenAI to cache responses for similar requests to optimize your cache hit rates. Replaces the `user` field. [Learn more](/docs/guides/prompt-caching).
 
-  - `prompt_cache_retention: optional "in-memory" or "24h"`
+  - `prompt_cache_retention: optional "in_memory" or "24h"`
 
     The retention policy for the prompt cache. Set to `24h` to enable extended prompt caching, which keeps cached prefixes active for longer, up to a maximum of 24 hours. [Learn more](/docs/guides/prompt-caching#prompt-cache-retention).
 
-    - `"in-memory"`
+    - `"in_memory"`
 
     - `"24h"`
 
@@ -24554,7 +24554,7 @@ curl https://api.openai.com/v1/responses/$RESPONSE_ID/cancel \
     "version": "version"
   },
   "prompt_cache_key": "prompt-cache-key-1234",
-  "prompt_cache_retention": "in-memory",
+  "prompt_cache_retention": "in_memory",
   "reasoning": {
     "effort": "none",
     "generate_summary": "auto",
@@ -40311,11 +40311,11 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
     Used by OpenAI to cache responses for similar requests to optimize your cache hit rates. Replaces the `user` field. [Learn more](/docs/guides/prompt-caching).
 
-  - `prompt_cache_retention: optional "in-memory" or "24h"`
+  - `prompt_cache_retention: optional "in_memory" or "24h"`
 
     The retention policy for the prompt cache. Set to `24h` to enable extended prompt caching, which keeps cached prefixes active for longer, up to a maximum of 24 hours. [Learn more](/docs/guides/prompt-caching#prompt-cache-retention).
 
-    - `"in-memory"`
+    - `"in_memory"`
 
     - `"24h"`
 
@@ -46829,11 +46829,11 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
       Used by OpenAI to cache responses for similar requests to optimize your cache hit rates. Replaces the `user` field. [Learn more](/docs/guides/prompt-caching).
 
-    - `prompt_cache_retention: optional "in-memory" or "24h"`
+    - `prompt_cache_retention: optional "in_memory" or "24h"`
 
       The retention policy for the prompt cache. Set to `24h` to enable extended prompt caching, which keeps cached prefixes active for longer, up to a maximum of 24 hours. [Learn more](/docs/guides/prompt-caching#prompt-cache-retention).
 
-      - `"in-memory"`
+      - `"in_memory"`
 
       - `"24h"`
 
@@ -53824,11 +53824,11 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
       Used by OpenAI to cache responses for similar requests to optimize your cache hit rates. Replaces the `user` field. [Learn more](/docs/guides/prompt-caching).
 
-    - `prompt_cache_retention: optional "in-memory" or "24h"`
+    - `prompt_cache_retention: optional "in_memory" or "24h"`
 
       The retention policy for the prompt cache. Set to `24h` to enable extended prompt caching, which keeps cached prefixes active for longer, up to a maximum of 24 hours. [Learn more](/docs/guides/prompt-caching#prompt-cache-retention).
 
-      - `"in-memory"`
+      - `"in_memory"`
 
       - `"24h"`
 
@@ -60286,11 +60286,11 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
       Used by OpenAI to cache responses for similar requests to optimize your cache hit rates. Replaces the `user` field. [Learn more](/docs/guides/prompt-caching).
 
-    - `prompt_cache_retention: optional "in-memory" or "24h"`
+    - `prompt_cache_retention: optional "in_memory" or "24h"`
 
       The retention policy for the prompt cache. Set to `24h` to enable extended prompt caching, which keeps cached prefixes active for longer, up to a maximum of 24 hours. [Learn more](/docs/guides/prompt-caching#prompt-cache-retention).
 
-      - `"in-memory"`
+      - `"in_memory"`
 
       - `"24h"`
 
@@ -67001,11 +67001,11 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
       Used by OpenAI to cache responses for similar requests to optimize your cache hit rates. Replaces the `user` field. [Learn more](/docs/guides/prompt-caching).
 
-    - `prompt_cache_retention: optional "in-memory" or "24h"`
+    - `prompt_cache_retention: optional "in_memory" or "24h"`
 
       The retention policy for the prompt cache. Set to `24h` to enable extended prompt caching, which keeps cached prefixes active for longer, up to a maximum of 24 hours. [Learn more](/docs/guides/prompt-caching#prompt-cache-retention).
 
-      - `"in-memory"`
+      - `"in_memory"`
 
       - `"24h"`
 
@@ -73359,11 +73359,11 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
       Used by OpenAI to cache responses for similar requests to optimize your cache hit rates. Replaces the `user` field. [Learn more](/docs/guides/prompt-caching).
 
-    - `prompt_cache_retention: optional "in-memory" or "24h"`
+    - `prompt_cache_retention: optional "in_memory" or "24h"`
 
       The retention policy for the prompt cache. Set to `24h` to enable extended prompt caching, which keeps cached prefixes active for longer, up to a maximum of 24 hours. [Learn more](/docs/guides/prompt-caching#prompt-cache-retention).
 
-      - `"in-memory"`
+      - `"in_memory"`
 
       - `"24h"`
 
@@ -88998,11 +88998,11 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
       Used by OpenAI to cache responses for similar requests to optimize your cache hit rates. Replaces the `user` field. [Learn more](/docs/guides/prompt-caching).
 
-    - `prompt_cache_retention: optional "in-memory" or "24h"`
+    - `prompt_cache_retention: optional "in_memory" or "24h"`
 
       The retention policy for the prompt cache. Set to `24h` to enable extended prompt caching, which keeps cached prefixes active for longer, up to a maximum of 24 hours. [Learn more](/docs/guides/prompt-caching#prompt-cache-retention).
 
-      - `"in-memory"`
+      - `"in_memory"`
 
       - `"24h"`
 
@@ -95807,11 +95807,11 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
         Used by OpenAI to cache responses for similar requests to optimize your cache hit rates. Replaces the `user` field. [Learn more](/docs/guides/prompt-caching).
 
-      - `prompt_cache_retention: optional "in-memory" or "24h"`
+      - `prompt_cache_retention: optional "in_memory" or "24h"`
 
         The retention policy for the prompt cache. Set to `24h` to enable extended prompt caching, which keeps cached prefixes active for longer, up to a maximum of 24 hours. [Learn more](/docs/guides/prompt-caching#prompt-cache-retention).
 
-        - `"in-memory"`
+        - `"in_memory"`
 
         - `"24h"`
 
@@ -100838,11 +100838,11 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
     Used by OpenAI to cache responses for similar requests to optimize your cache hit rates. Replaces the `user` field. [Learn more](/docs/guides/prompt-caching).
 
-  - `prompt_cache_retention: optional "in-memory" or "24h"`
+  - `prompt_cache_retention: optional "in_memory" or "24h"`
 
     The retention policy for the prompt cache. Set to `24h` to enable extended prompt caching, which keeps cached prefixes active for longer, up to a maximum of 24 hours. [Learn more](/docs/guides/prompt-caching#prompt-cache-retention).
 
-    - `"in-memory"`
+    - `"in_memory"`
 
     - `"24h"`
 
@@ -108230,11 +108230,11 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
         Used by OpenAI to cache responses for similar requests to optimize your cache hit rates. Replaces the `user` field. [Learn more](/docs/guides/prompt-caching).
 
-      - `prompt_cache_retention: optional "in-memory" or "24h"`
+      - `prompt_cache_retention: optional "in_memory" or "24h"`
 
         The retention policy for the prompt cache. Set to `24h` to enable extended prompt caching, which keeps cached prefixes active for longer, up to a maximum of 24 hours. [Learn more](/docs/guides/prompt-caching#prompt-cache-retention).
 
-        - `"in-memory"`
+        - `"in_memory"`
 
         - `"24h"`
 

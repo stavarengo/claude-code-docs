@@ -796,11 +796,11 @@ chunk objects if the request is streamed.
 
   Used by OpenAI to cache responses for similar requests to optimize your cache hit rates. Replaces the `user` field. [Learn more](/docs/guides/prompt-caching).
 
-- `prompt_cache_retention: optional "in-memory" or "24h"`
+- `prompt_cache_retention: optional "in_memory" or "24h"`
 
   The retention policy for the prompt cache. Set to `24h` to enable extended prompt caching, which keeps cached prefixes active for longer, up to a maximum of 24 hours. [Learn more](/docs/guides/prompt-caching#prompt-cache-retention).
 
-  - `"in-memory"`
+  - `"in_memory"`
 
   - `"24h"`
 
