@@ -107,7 +107,48 @@ If you need Codex to read files, make edits, and run commands with network acces
 
 For a middle ground, `approval_policy = { granular = { ... } }` lets you keep specific approval prompt categories interactive while automatically rejecting others. The granular policy covers sandbox approvals, execpolicy-rule prompts, MCP prompts, `request_permissions` prompts, and skill-script approvals.
 
-Set `approvals_reviewer = "guardian_subagent"` to route eligible approval reviews through the Guardian reviewer subagent instead of prompting the user directly. Admin requirements can constrain this with `allowed_approvals_reviewers`.
+### Automatic approval reviews
+
+By default, approval requests route to you:
+
+```toml
+approvals_reviewer = "user"
+```
+
+Automatic approval reviews apply when approvals are interactive, such as
+`approval_policy = "on-request"` or a granular approval policy. Set
+`approvals_reviewer = "auto_review"` to route eligible approval requests
+through a reviewer agent before Codex runs the request:
+
+```toml
+approval_policy = "on-request"
+approvals_reviewer = "auto_review"
+```
+
+The reviewer evaluates only actions that already need approval, such as sandbox
+escalations, network requests, `request_permissions` prompts, or side-effecting
+app and MCP tool calls. Actions that stay inside the sandbox continue without an
+extra review step.
+
+The reviewer policy checks for data exfiltration, credential probing, persistent
+security weakening, and destructive actions. Low-risk and medium-risk actions
+can proceed when policy allows them. The policy denies critical-risk actions.
+High-risk actions require enough user authorization and no matching deny rule.
+Timeouts, parse failures, and review errors fail closed.
+
+The [default reviewer policy](https://github.com/openai/codex/blob/main/codex-rs/core/src/guardian/policy.md)
+is in the open-source Codex repository. Enterprises can replace its
+tenant-specific section with `guardian_policy_config` in managed requirements.
+Local `[auto_review].policy` text is also supported, but managed requirements
+take precedence. For setup details, see
+[Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration#configure-automatic-review-policy).
+
+In the Codex app, these reviews appear as automatic review items with a status such
+as Reviewing, Approved, Denied, Stopped, or Timed out. They can also include a
+risk level for the reviewed request.
+
+Automatic review uses extra model calls, so it can add to Codex usage. Admins
+can constrain it with `allowed_approvals_reviewers`.
 
 ### Common sandbox and approval combinations
 
@@ -431,7 +472,7 @@ Run commands in each thread and launch repeatable project actions.
 
 ### In-app browser
 
-Open unauthenticated local or public pages and comment on rendered output.
+Open rendered pages, leave comments, or let Codex operate local browser flows.
 
   </BentoContent>
   <BentoContent href="/codex/app/features#image-generation">
@@ -812,7 +853,7 @@ The Codex app is a focused desktop experience for working on Codex threads in pa
 with built-in worktree support, automations, and Git functionality.
 
 Most Codex app features are available on both macOS and Windows.
-Platform-specific exceptions are noted below.
+The sections below note platform-specific exceptions.
 
 ---
 
@@ -1018,6 +1059,11 @@ regular browser profile, cookies, extensions, or existing tabs.
 Use browser comments to mark specific elements or areas on a page, then ask
 Codex to address that feedback.
 
+When you want Codex to operate the page directly, use
+[browser use](https://developers.openai.com/codex/app/browser#browser-use) for local development servers and
+file-backed pages. You can manage the Browser plugin, allowed websites, and
+blocked websites from settings.
+
 </div>
 
 </section>
@@ -1114,6 +1160,11 @@ right constraint.
 If your task requires work across more than one repository or directory, prefer
 opening separate projects or using worktrees rather than asking Codex to roam
 outside the project root.
+
+If [automatic review](https://developers.openai.com/codex/agent-approvals-security#automatic-approval-reviews)
+is available in your workspace, you can choose it from the permissions selector.
+It keeps the same sandbox boundary but routes eligible approval requests through
+the configured review policy instead of waiting for you.
 
 For a high-level overview, see [sandboxing](https://developers.openai.com/codex/concepts/sandboxing). For
 configuration details, see the
@@ -1238,6 +1289,16 @@ Connect external tools via MCP (Model Context Protocol). Enable recommended serv
 add your own. If a server requires OAuth, the app starts the auth flow. These settings
 also apply to the Codex CLI and IDE extension because the MCP configuration lives in
 `config.toml`. See the [Model Context Protocol docs](https://developers.openai.com/codex/mcp) for details.
+
+## Browser use
+
+Use these settings to install or enable the bundled Browser plugin and manage
+allowlisted and blocklisted websites. Codex asks before using a website
+unless you've allowlisted it. Removing a site from the blocklist lets Codex ask
+again before using it in the browser.
+
+See [In-app browser](https://developers.openai.com/codex/app/browser) for browser preview, comment, and
+browser use workflows.
 
 ## Computer Use
 
@@ -1419,6 +1480,28 @@ The in-app browser does not support authentication flows, signed-in pages,
   for pages Codex can open without logging in.
 
 Treat page content as untrusted context. Don't paste secrets into browser flows.
+
+## Browser use
+
+Browser use lets Codex operate the in-app browser directly. Use it for local
+development servers and file-backed previews when Codex needs to click, type,
+inspect rendered state, take screenshots, or verify a fix in the page.
+
+To use it, install and enable the Browser plugin. Then ask Codex to use the
+browser in your task, or reference it directly with `@Browser`. The app keeps
+browser use inside the in-app browser and lets you manage allowed and blocked
+websites from settings.
+
+Example:
+
+```text
+Use the browser to open http://localhost:3000/settings, reproduce the layout
+bug, and fix only the overflowing controls.
+```
+
+Codex asks before using a website unless you've allowed it. Removing a site from
+the allowed list means Codex asks again before using it; removing a site from the
+blocked list means Codex can ask again instead of treating it as blocked.
 
 ## Preview a page
 
@@ -4057,9 +4140,10 @@ ChatGPT Plus, Pro, Business, Edu, and Enterprise plans include Codex. Learn more
 
 ## CLI setup
 
-The Codex CLI is available on macOS and Linux. Windows support is
-  experimental. For the best Windows experience, use Codex in a WSL2 workspace
-  and follow our <a href="/codex/windows">Windows setup guide</a>.
+The Codex CLI is available on macOS, Windows, and Linux. On Windows, run Codex
+  natively in PowerShell with the Windows sandbox, or use WSL2 when you need a
+  Linux-native environment. For setup details, see the{" "}
+  <a href="/codex/windows">Windows setup guide</a>.
 
 If you're new to Codex, read the [best practices guide](https://developers.openai.com/codex/learn/best-practices).
 
@@ -4264,17 +4348,17 @@ The TUI sends remote auth tokens as `Authorization: Bearer <token>` during the W
 
 ## Models and reasoning
 
-For most tasks in Codex, `gpt-5.4` is the recommended model. It brings the
-industry-leading coding capabilities of `gpt-5.3-codex` to OpenAI's flagship
-frontier model, combining frontier coding performance with stronger reasoning,
-native computer use, and broader professional workflows. For extra fast tasks,
-ChatGPT Pro subscribers have access to the GPT-5.3-Codex-Spark model in
-research preview.
+For most tasks in Codex, `gpt-5.5` is the recommended model when it is
+available. It is OpenAI's newest frontier model for complex coding, computer
+use, knowledge work, and research workflows, with stronger planning, tool use,
+and follow-through on multi-step tasks. If `gpt-5.5` is not yet available,
+continue using `gpt-5.4`. For extra fast tasks, ChatGPT Pro subscribers have
+access to the GPT-5.3-Codex-Spark model in research preview.
 
 Switch models mid-session with the `/model` command, or specify one when launching the CLI.
 
 ```bash
-codex --model gpt-5.4
+codex --model gpt-5.5
 ```
 
 [Learn more about the models available in Codex](https://developers.openai.com/codex/models).
@@ -5385,7 +5469,7 @@ completion still works before you queue the command.
 | [`/mcp`](#list-mcp-tools-with-mcp)                                              | List configured Model Context Protocol (MCP) tools.             | Check which external tools Codex can call during the session.                                              |
 | [`/mention`](#highlight-files-with-mention)                                     | Attach a file to the conversation.                              | Point Codex at specific files or folders you want it to inspect next.                                      |
 | [`/model`](#set-the-active-model-with-model)                                    | Choose the active model (and reasoning effort, when available). | Switch between general-purpose models (`gpt-4.1-mini`) and deeper reasoning models before running a task.  |
-| [`/fast`](#toggle-fast-mode-with-fast)                                          | Toggle Fast mode for GPT-5.4.                                   | Turn Fast mode on or off, or check whether the current thread is using it.                                 |
+| [`/fast`](#toggle-fast-mode-with-fast)                                          | Toggle Fast mode for supported models.                          | Turn Fast mode on or off, or check whether the current thread is using it.                                 |
 | [`/plan`](#switch-to-plan-mode-with-plan)                                       | Switch to plan mode and optionally send a prompt.               | Ask Codex to propose an execution plan before implementation work starts.                                  |
 | [`/personality`](#set-a-communication-style-with-personality)                   | Choose a communication style for responses.                     | Make Codex more concise, more explanatory, or more collaborative without changing your instructions.       |
 | [`/ps`](#check-background-terminals-with-ps)                                    | Show experimental background terminals and their recent output. | Check long-running commands without leaving the main transcript.                                           |
@@ -6380,6 +6464,12 @@ of approvals and sandbox behavior in the app, see
 [Codex app features](https://developers.openai.com/codex/app/features#approvals-and-sandboxing), and for the
 IDE-specific settings entry points, see [Codex IDE extension settings](https://developers.openai.com/codex/ide/settings).
 
+Automatic review, when available, doesn't change the sandbox boundary. It
+reviews approval requests, such as sandbox escalations or network access, while
+actions already allowed inside the sandbox run without extra review. See
+[Automatic approval reviews](https://developers.openai.com/codex/agent-approvals-security#automatic-approval-reviews)
+for the policy behavior.
+
 Platform details live in the platform-specific docs. For native Windows setup,
 behavior, and troubleshooting, see [Windows](https://developers.openai.com/codex/windows). For admin
 requirements and organization-level constraints on sandboxing and approvals, see
@@ -6454,19 +6544,21 @@ Different agents need different model and reasoning settings.
 
 If you don't pin a model or `model_reasoning_effort`, Codex can choose a setup
 that balances intelligence, speed, and price for the task. It may favor
-`gpt-5.4-mini` for fast scans or a higher-effort `gpt-5.4`
-configuration for more demanding reasoning. When you want finer control, steer that
-choice in your prompt or set `model` and `model_reasoning_effort` directly in
-the agent file.
+`gpt-5.4-mini` for fast scans or a higher-effort `gpt-5.5` configuration for
+more demanding reasoning when that model is available. When you want finer
+control, steer that choice in your prompt or set `model` and
+`model_reasoning_effort` directly in the agent file.
 
-For most tasks in Codex, start with `gpt-5.4`. Use `gpt-5.4-mini` when you
-  want a faster, lower-cost option for lighter subagent work. If you have
-  ChatGPT Pro and want near-instant text-only iteration, `gpt-5.3-codex-spark`
-  remains available in research preview.
+For most tasks in Codex, start with `gpt-5.5` when it is available. Continue
+  using `gpt-5.4` during the rollout if `gpt-5.5` is not yet available. Use
+  `gpt-5.4-mini` when you want a faster, lower-cost option for lighter subagent
+  work. If you have ChatGPT Pro and want near-instant text-only iteration,
+  `gpt-5.3-codex-spark` remains available in research preview.
 
 ### Model choice
 
-- **`gpt-5.4`**: Start here for most agents. It combines strong coding, reasoning, tool use, and broader workflows. The main agent and agents that coordinate ambiguous or multi-step work fit here.
+- **`gpt-5.5`**: Start here for demanding agents when it is available. It is strongest for ambiguous, multi-step work that needs planning, tool use, validation, and follow-through across a larger context.
+- **`gpt-5.4`**: Use this when `gpt-5.5` is not yet available or when a workflow is pinned to GPT-5.4. It combines strong coding, reasoning, tool use, and broader workflows.
 - **`gpt-5.4-mini`**: Use for agents that favor speed and efficiency over depth, such as exploration, read-heavy scans, large-file review, or processing supporting documents. It works well for parallel workers that return distilled results to the main agent.
 - **`gpt-5.3-codex-spark`**: If you have ChatGPT Pro, use this research preview model for near-instant, text-only iteration when latency matters more than broader capability.
 
@@ -6712,8 +6804,16 @@ For operational details to keep in mind while editing `config.toml`, see [Common
 
 You can also use a granular approval policy (`approval_policy = { granular = { ... } }`) to allow or auto-reject individual prompt categories. This is useful when you want normal interactive approvals for some cases but want others, such as `request_permissions` or skill-script prompts, to fail closed automatically.
 
+Set `approvals_reviewer = "auto_review"` to route eligible interactive approval
+requests through automatic review. This changes the reviewer, not the sandbox
+boundary.
+
+Use `[auto_review].policy` for local reviewer policy instructions. Managed
+`guardian_policy_config` takes precedence.
+
 ```toml
 approval_policy = "untrusted"   # Other options: on-request, never, or { granular = { ... } }
+approvals_reviewer = "user"     # Or "auto_review" for automatic review
 sandbox_mode = "workspace-write"
 allow_login_shell = false       # Optional hardening: disallow login shells for shell tools
 
@@ -6731,6 +6831,11 @@ exclude_tmpdir_env_var = false  # Allow $TMPDIR
 exclude_slash_tmp = false       # Allow /tmp
 writable_roots = ["/Users/YOU/.pyenv/shims"]
 network_access = false          # Opt in to outbound network
+
+[auto_review]
+policy = """
+Use your organization's automatic review policy.
+"""
 ```
 
 Need the complete key list (including profile-scoped overrides and requirements constraints)? See [Configuration Reference](https://developers.openai.com/codex/config-reference) and [Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration).
@@ -7172,7 +7277,7 @@ Here are a few options people change most often:
 Choose the model Codex uses by default in the CLI and IDE.
 
 ```toml
-model = "gpt-5.4"
+model = "gpt-5.5"
 ```
 
 #### Approval prompts
@@ -7271,22 +7376,21 @@ shell_snapshot = true           # Speed up repeated commands
 
 ### Supported features
 
-| Key                  |        Default        | Maturity          | Description                                                                                                               |
-| -------------------- | :-------------------: | ----------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `apps`               |         false         | Experimental      | Enable ChatGPT Apps/connectors support                                                                                    |
-| `codex_hooks`        |         false         | Under development | Enable lifecycle hooks from `hooks.json`. See [Hooks](https://developers.openai.com/codex/hooks).                                                      |
-| `fast_mode`          |         true          | Stable            | Enable Fast mode selection and the `service_tier = "fast"` path                                                           |
-| `memories`           |         false         | Stable            | Enable [Memories](https://developers.openai.com/codex/memories)                                                                                        |
-| `multi_agent`        |         true          | Stable            | Enable subagent collaboration tools                                                                                       |
-| `personality`        |         true          | Stable            | Enable personality selection controls                                                                                     |
-| `shell_snapshot`     |         true          | Stable            | Snapshot your shell environment to speed up repeated commands                                                             |
-| `shell_tool`         |         true          | Stable            | Enable the default `shell` tool                                                                                           |
-| `guardian_approval`  |         false         | Experimental      | Route eligible approval requests through the guardian reviewer subagent (set `approvals_reviewer = "guardian_subagent"`). |
-| `unified_exec`       | `true` except Windows | Stable            | Use the unified PTY-backed exec tool                                                                                      |
-| `undo`               |         false         | Stable            | Enable undo via per-turn git ghost snapshots                                                                              |
-| `web_search`         |         true          | Deprecated        | Legacy toggle; prefer the top-level `web_search` setting                                                                  |
-| `web_search_cached`  |         false         | Deprecated        | Legacy toggle that maps to `web_search = "cached"` when unset                                                             |
-| `web_search_request` |         false         | Deprecated        | Legacy toggle that maps to `web_search = "live"` when unset                                                               |
+| Key                  |        Default        | Maturity          | Description                                                          |
+| -------------------- | :-------------------: | ----------------- | -------------------------------------------------------------------- |
+| `apps`               |         false         | Experimental      | Enable ChatGPT Apps/connectors support                               |
+| `codex_hooks`        |         false         | Under development | Enable lifecycle hooks from `hooks.json`. See [Hooks](https://developers.openai.com/codex/hooks). |
+| `fast_mode`          |         true          | Stable            | Enable Fast mode selection and the `service_tier = "fast"` path      |
+| `memories`           |         false         | Stable            | Enable [Memories](https://developers.openai.com/codex/memories)                                   |
+| `multi_agent`        |         true          | Stable            | Enable subagent collaboration tools                                  |
+| `personality`        |         true          | Stable            | Enable personality selection controls                                |
+| `shell_snapshot`     |         true          | Stable            | Snapshot your shell environment to speed up repeated commands        |
+| `shell_tool`         |         true          | Stable            | Enable the default `shell` tool                                      |
+| `unified_exec`       | `true` except Windows | Stable            | Use the unified PTY-backed exec tool                                 |
+| `undo`               |         false         | Stable            | Enable undo via per-turn git ghost snapshots                         |
+| `web_search`         |         true          | Deprecated        | Legacy toggle; prefer the top-level `web_search` setting             |
+| `web_search_cached`  |         false         | Deprecated        | Legacy toggle that maps to `web_search = "cached"` when unset        |
+| `web_search_request` |         false         | Deprecated        | Legacy toggle that maps to `web_search = "live"` when unset          |
 
 The Maturity column uses feature maturity labels such as Experimental, Beta,
   and Stable. See [Feature Maturity](https://developers.openai.com/codex/feature-maturity) for how to
@@ -7320,7 +7424,7 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
     {
       key: "model",
       type: "string",
-      description: "Model to use (e.g., `gpt-5.4`).",
+      description: "Model to use (e.g., `gpt-5.5`).",
     },
     {
       key: "review_model",
@@ -7400,9 +7504,15 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
     },
     {
       key: "approvals_reviewer",
-      type: "user | guardian_subagent",
+      type: "user | auto_review",
       description:
-        "Select who reviews eligible approval prompts. Defaults to `user`; `guardian_subagent` routes supported reviews through the Guardian reviewer subagent.",
+        "Who reviews eligible approval prompts under `on-request` or granular approval policies. Defaults to `user`; `auto_review` uses the reviewer subagent. This setting doesn't change sandboxing or review actions already allowed inside the sandbox.",
+    },
+    {
+      key: "auto_review.policy",
+      type: "string",
+      description:
+        "Local Markdown policy instructions for automatic review. Managed `guardian_policy_config` takes precedence. Blank values are ignored.",
     },
     {
       key: "allow_login_shell",
@@ -7887,12 +7997,6 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
       type: "boolean",
       description:
         "Compress streaming request bodies with zstd when supported (stable; on by default).",
-    },
-    {
-      key: "features.guardian_approval",
-      type: "boolean",
-      description:
-        'Route eligible approval requests through the guardian reviewer subagent (experimental; off by default). Use with `approvals_reviewer = "guardian_subagent"`.',
     },
     {
       key: "features.skill_mcp_dependency_install",
@@ -8628,7 +8732,13 @@ canonical keys that `config.toml` uses. Omitted keys remain unconstrained.
       key: "allowed_approvals_reviewers",
       type: "array<string>",
       description:
-        "Allowed values for `approvals_reviewer` (for example `user` and `guardian_subagent`).",
+        "Allowed values for `approvals_reviewer`, such as `user` and `auto_review`.",
+    },
+    {
+      key: "guardian_policy_config",
+      type: "string",
+      description:
+        "Managed Markdown policy instructions for automatic review. This takes precedence over local `[auto_review].policy`. Blank values are ignored.",
     },
     {
       key: "allowed_sandbox_modes",
@@ -8758,14 +8868,14 @@ Use the snippet below as a reference. Copy only the keys and sections you need i
 # Core Model Selection
 ################################################################################
 
-# Primary model used by Codex. Recommended example for most users: "gpt-5.4".
-model = "gpt-5.4"
+# Primary model used by Codex. Recommended example for most users: "gpt-5.5".
+model = "gpt-5.5"
 
 # Communication style for supported models. Allowed values: none | friendly | pragmatic
 # personality = "pragmatic"
 
 # Optional model override for /review. Default: unset (uses current session model).
-# review_model = "gpt-5.4"
+# review_model = "gpt-5.5"
 
 # Provider id selected from [model_providers]. Default: "openai".
 model_provider = "openai"
@@ -8840,7 +8950,7 @@ model_provider = "openai"
 # - never: never prompt (risky)
 # - { granular = { ... } }: allow or auto-reject selected prompt categories
 approval_policy = "on-request"
-# Who reviews eligible approval prompts: user (default) | guardian_subagent
+# Who reviews eligible approval prompts: user (default) | auto_review
 # approvals_reviewer = "user"
 
 # Example granular policy:
@@ -9124,7 +9234,6 @@ enabled = true
 # multi_agent = true
 # personality = true
 # fast_mode = true
-# guardian_approval = false
 # enable_request_compression = true
 # skill_mcp_dependency_install = true
 # prevent_idle_sleep = false
@@ -10000,7 +10109,7 @@ Enterprise admins can control local Codex behavior in two ways:
 
 ## Admin-enforced requirements (requirements.toml)
 
-Requirements constrain security-sensitive settings (approval policy, sandbox mode, web search mode, and optionally which MCP servers users can enable). When resolving configuration (for example from `config.toml`, profiles, or CLI config overrides), if a value conflicts with an enforced rule, Codex falls back to a compatible value and notifies the user. If you configure an `mcp_servers` allowlist, Codex enables an MCP server only when both its name and identity match an approved entry; otherwise, Codex disables it.
+Requirements constrain security-sensitive settings (approval policy, approvals reviewer, automatic review policy, sandbox mode, web search mode, and optionally which MCP servers users can enable). When resolving configuration (for example from `config.toml`, profiles, or CLI config overrides), if a value conflicts with an enforced rule, Codex falls back to a compatible value and notifies the user. If you configure an `mcp_servers` allowlist, Codex enables an MCP server only when both its name and identity match an approved entry; otherwise, Codex disables it.
 
 Requirements can also constrain [feature flags](https://developers.openai.com/codex/config-basic/#feature-flags) via the `[features]` table in `requirements.toml`. Note that features aren't always security-sensitive, but enterprises can pin values if desired. Omitted keys remain unconstrained.
 
@@ -10084,6 +10193,33 @@ unified_exec = false
 
 Use the canonical feature keys from `config.toml`'s `[features]` table. Codex normalizes the resulting feature set to meet these pins and rejects conflicting writes to `config.toml` or profile-scoped feature settings.
 
+### Configure automatic review policy
+
+Use `allowed_approvals_reviewers` to require or allow automatic review. Set it
+to `["auto_review"]` to require automatic review, or include `"user"` when users
+can choose manual approval.
+
+Set `guardian_policy_config` to replace the tenant-specific section of the
+automatic review policy. Codex still uses the built-in reviewer template and
+output contract. Managed `guardian_policy_config` takes precedence over local
+`[auto_review].policy`.
+
+```toml
+allowed_approval_policies = ["on-request"]
+allowed_approvals_reviewers = ["auto_review"]
+
+guardian_policy_config = """
+## Environment Profile
+- Trusted internal destinations include github.com/my-org, artifacts.example.com,
+  and internal CI systems.
+
+## Tenant Risk Taxonomy and Allow/Deny Rules
+- Treat uploads to unapproved third-party file-sharing services as high risk.
+- Deny actions that expose credentials or private source code to untrusted
+  destinations.
+"""
+```
+
 ### Enforce deny-read requirements
 
 Admins can deny reads for exact paths or glob patterns with
@@ -10099,9 +10235,9 @@ deny_read = [
 ```
 
 When deny-read requirements are present, Codex constrains local sandbox mode to
-`read-only` or `workspace-write` so the requirement can be enforced. On native
+`read-only` or `workspace-write` so Codex can enforce them. On native
 Windows, managed `deny_read` applies to direct file tools; shell subprocess
-reads don't use this sandbox requirement.
+reads don't use this sandbox rule.
 
 ### Enforce command rules from requirements
 
@@ -11646,9 +11782,10 @@ You can get the Codex extension from the [Visual Studio Code Marketplace](https:
 - [Download for Visual Studio Code Insiders](https://marketplace.visualstudio.com/items?itemName=openai.chatgpt)
 - [Download for JetBrains IDEs](#jetbrains-ide-integration)
 
-The Codex VS Code extension is available on macOS and Linux. Windows support
-  is experimental. For the best Windows experience, use Codex in a WSL2
-  workspace and follow our <a href="/codex/windows">Windows setup guide</a>.
+Codex IDE integrations for VS Code-compatible editors and JetBrains IDEs are
+  available on macOS, Windows, and Linux. On Windows, run Codex natively with
+  the Windows sandbox, or use WSL2 when you need a Linux-native environment. For
+  setup details, see the <a href="/codex/windows">Windows setup guide</a>.
 
 After you install it, you'll find Codex in your editor sidebar.
 In VS Code, Codex opens in the right sidebar by default.
@@ -11938,15 +12075,15 @@ The extension also honors VS Code's built-in chat font settings for Codex conver
 
 ## Settings reference
 
-| Setting                                      | Description                                                                                                                                                                                                                                                          |
-| -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `chat.fontSize`                              | Controls chat text in the Codex sidebar, including conversation content and the composer.                                                                                                                                                                            |
-| `chat.editor.fontSize`                       | Controls code-rendered content in Codex conversations, including code snippets and diffs.                                                                                                                                                                            |
-| `chatgpt.cliExecutable`                      | Development only: Path to the Codex CLI executable. You don't need to set this unless you're actively developing the Codex CLI. If you set this manually, parts of the extension might not work as expected.                                                         |
-| `chatgpt.commentCodeLensEnabled`             | Show CodeLens above to-do comments so you can complete them with Codex.                                                                                                                                                                                              |
-| `chatgpt.localeOverride`                     | Preferred language for the Codex UI. Leave empty to detect automatically.                                                                                                                                                                                            |
-| `chatgpt.openOnStartup`                      | Focus the Codex sidebar when the extension finishes starting.                                                                                                                                                                                                        |
-| `chatgpt.runCodexInWindowsSubsystemForLinux` | Windows only: Run Codex in WSL when Windows Subsystem for Linux (WSL) is available. Recommended for improved sandbox security and better performance. Codex agent mode on Windows currently requires WSL. Changing this setting reloads VS Code to apply the change. |
+| Setting                                      | Description                                                                                                                                                                                                                                                                                                           |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chat.fontSize`                              | Controls chat text in the Codex sidebar, including conversation content and the composer.                                                                                                                                                                                                                             |
+| `chat.editor.fontSize`                       | Controls code-rendered content in Codex conversations, including code snippets and diffs.                                                                                                                                                                                                                             |
+| `chatgpt.cliExecutable`                      | Development only: Path to the Codex CLI executable. You don't need to set this unless you're actively developing the Codex CLI. If you set this manually, parts of the extension might not work as expected.                                                                                                          |
+| `chatgpt.commentCodeLensEnabled`             | Show CodeLens above to-do comments so you can complete them with Codex.                                                                                                                                                                                                                                               |
+| `chatgpt.localeOverride`                     | Preferred language for the Codex UI. Leave empty to detect automatically.                                                                                                                                                                                                                                             |
+| `chatgpt.openOnStartup`                      | Focus the Codex sidebar when the extension finishes starting.                                                                                                                                                                                                                                                         |
+| `chatgpt.runCodexInWindowsSubsystemForLinux` | Windows only: Run Codex in WSL when Windows Subsystem for Linux (WSL) is available. Use this when your repositories and tooling live in WSL2 or when you need Linux-native tooling. Otherwise, Codex can run natively on Windows with the Windows sandbox. Changing this setting reloads VS Code to apply the change. |
 
 ---
 
@@ -12898,12 +13035,15 @@ consolidation_model = "gpt-5.4-mini"
 <div class="not-prose grid gap-6 md:grid-cols-2 xl:grid-cols-3">
   </div>
 
-For most tasks in Codex, start with `gpt-5.4`. It combines strong coding,
-  reasoning, native computer use, and broader professional workflows in one
-  model. Use `gpt-5.4-mini` when you want a faster, lower-cost option for
-  lighter coding tasks or subagents. The `gpt-5.3-codex-spark` model is
-  available in research preview for ChatGPT Pro subscribers and is optimized for
-  near-instant, real-time coding iteration.
+For most tasks in Codex, start with `gpt-5.5` when it appears in your model
+  picker. It is strongest for complex coding, computer use, knowledge work, and
+  research workflows. GPT-5.5 is currently available in Codex when you sign in
+  with ChatGPT; it isn't available with API-key authentication. During the
+  rollout, continue using `gpt-5.4` if `gpt-5.5` is not yet available. Use
+  `gpt-5.4-mini` when you want a faster, lower-cost option for lighter coding
+  tasks or subagents. The `gpt-5.3-codex-spark` model is available in research
+  preview for ChatGPT Pro subscribers and is optimized for near-instant,
+  real-time coding iteration.
 
 ## Alternative models
 
@@ -12926,8 +13066,10 @@ Support for the Chat Completions API is deprecated and will be removed in
 The Codex CLI and IDE extension use the same `config.toml` [configuration file](https://developers.openai.com/codex/config-basic). To specify a model, add a `model` entry to your configuration file. If you don't specify a model, the Codex app, CLI, or IDE Extension defaults to a recommended model.
 
 ```toml
-model = "gpt-5.4"
+model = "gpt-5.5"
 ```
+
+If `gpt-5.5` isn't available in your account yet, use `gpt-5.4`.
 
 ### Choosing a different local model temporarily
 
@@ -12936,7 +13078,7 @@ In the Codex CLI, you can use the `/model` command during an active thread to ch
 To start a new Codex CLI thread with a specific model or to specify the model for `codex exec` you can use the `--model`/`-m` flag:
 
 ```bash
-codex -m gpt-5.4
+codex -m gpt-5.5
 ```
 
 ### Choosing your model for cloud tasks
@@ -13886,8 +14028,8 @@ Teams can now get started with Codex with no fixed monthly costs. For a
         - Codex on the web, in the CLI, in the IDE extension, and on iOS
         - Cloud-based integrations like automatic code review and Slack
           integration
-        - The latest models, including GPT-5.4 and GPT-5.3-Codex
-        - GPT-5.4-mini for up to 3.3x higher usage limits for local messages
+        - The latest models, including GPT-5.5, GPT-5.4, and GPT-5.3-Codex
+        - GPT-5.4-mini for higher usage limits on routine local messages
         - Flexibly extend usage with [ChatGPT credits](#credits-overview)
         - Other [ChatGPT features](https://chatgpt.com/pricing) as part of the
           Plus plan
@@ -13904,7 +14046,7 @@ Teams can now get started with Codex with no fixed monthly costs. For a
         footnoteLabel="*Learn more about limits and promos on both tiers."
         footnoteHref="https://help.openai.com/en/articles/9793128-about-chatgpt-pro-plans"
       >
-        **Double your normal Codex usage $100/month tier until May 31, 2026.**
+        **Double your normal Codex usage on the $100/month tier until May 31, 2026.**
 
         - Access to GPT-5.3-Codex-Spark (research preview), a fast Codex model
           for day-to-day coding tasks
@@ -14009,6 +14151,11 @@ cloud. Small scripts or routine functions may consume only a fraction of your
 allowance, while larger codebases, long-running tasks, or extended sessions that
 require Codex to hold more context will use significantly more per message.
 
+GPT-5.5 uses significantly fewer tokens to achieve results comparable to
+GPT-5.4. Its Codex setup runs faster and delivers higher-quality results for
+most users. These efficiency gains support generous usage limits despite
+GPT-5.5 being a significantly more capable model.
+
 <div id="usage-limits">
   
 
@@ -14031,6 +14178,12 @@ require Codex to hold more context will use significantly more per message.
           </tr>
         </thead>
         <tbody>
+          <tr>
+            <td>GPT-5.5</td>
+            <td style="text-align:center">15-80</td>
+            <td style="text-align:center">Not available</td>
+            <td style="text-align:center">Not available</td>
+          </tr>
           <tr>
             <td>GPT-5.4</td>
             <td style="text-align:center">20-100</td>
@@ -14093,6 +14246,12 @@ require Codex to hold more context will use significantly more per message.
           </tr>
         </thead>
         <tbody>
+          <tr>
+            <td>GPT-5.5</td>
+            <td style="text-align:center">80-400</td>
+            <td style="text-align:center">Not available</td>
+            <td style="text-align:center">Not available</td>
+          </tr>
           <tr>
             <td>GPT-5.4</td>
             <td style="text-align:center">100-500</td>
@@ -14160,6 +14319,12 @@ require Codex to hold more context will use significantly more per message.
           </tr>
         </thead>
         <tbody>
+          <tr>
+            <td>GPT-5.5</td>
+            <td style="text-align:center">300-1600</td>
+            <td style="text-align:center">Not available</td>
+            <td style="text-align:center">Not available</td>
+          </tr>
           <tr>
             <td>GPT-5.4</td>
             <td style="text-align:center">400-2000</td>
@@ -14230,6 +14395,12 @@ require Codex to hold more context will use significantly more per message.
         </thead>
         <tbody>
           <tr>
+            <td>GPT-5.5</td>
+            <td style="text-align:center">15-80</td>
+            <td style="text-align:center">Not available</td>
+            <td style="text-align:center">Not available</td>
+          </tr>
+          <tr>
             <td>GPT-5.4</td>
             <td style="text-align:center">20-100</td>
             <td style="text-align:center">Not available</td>
@@ -14292,6 +14463,12 @@ require Codex to hold more context will use significantly more per message.
         </thead>
         <tbody>
           <tr>
+            <td>GPT-5.5</td>
+            <td style="text-align:center">Not available</td>
+            <td style="text-align:center">Not available</td>
+            <td style="text-align:center">Not available</td>
+          </tr>
+          <tr>
             <td>GPT-5.4</td>
             <td style="text-align:center">
               [Usage-based](https://platform.openai.com/docs/pricing)
@@ -14345,10 +14522,13 @@ require Codex to hold more context will use significantly more per message.
 </div>
 
 Speed configurations increase credit consumption for all applicable models, so
-they also use included limits faster. Details can be found [here](https://developers.openai.com/codex/speed). Image generations also use included limits ~3-5x faster on average, depending on image quality and size. GPT-5.3-Codex-Spark is in research preview for ChatGPT Pro users only, and isn't
-available in the API at launch. Because it runs on specialized low-latency
-hardware, usage is governed by a separate usage limit that may adjust based on
-demand.
+they also use included limits faster. Fast mode consumes credits at a higher
+rate for supported models. See [Speed](https://developers.openai.com/codex/speed) for supported models and
+rates. Image generations also use included limits ~3-5x faster on average,
+depending on image quality and size. GPT-5.3-Codex-Spark is in research preview
+for ChatGPT Pro users only, and isn't available in the API at launch. Because it
+runs on specialized low-latency hardware, usage is governed by a separate usage
+limit that may adjust based on demand.
 
 ### What happens when you hit usage limits?
 
@@ -14359,8 +14539,8 @@ Business, Edu, and Enterprise plans with [flexible
 pricing](https://help.openai.com/en/articles/11487671-flexible-pricing-for-the-enterprise-edu-and-business-plans)
 can purchase additional workspace credits to continue using Codex.
 
-If you are approaching usage limits, you can also switch to the GPT-5.4-mini
-model to make your usage limits last longer.
+If you are approaching usage limits, you can also switch to a smaller model to
+make your usage limits last longer.
 
 All users may also run extra local tasks using an API key, with usage charged at
 [standard API rates](https://platform.openai.com/docs/pricing).
@@ -14379,7 +14559,7 @@ Image generation isn't available on the Free plan. When you use Codex with an
 API key, API pricing applies to image generation instead of included ChatGPT
 usage limits.
 
-### What is the current Codex usage promo on Pro?
+### What's the current Codex usage promo on Pro?
 
 We’re currently offering extra Codex usage on both Pro tiers.
 
@@ -14442,6 +14622,12 @@ Select your appropriate plan type in the table below to see rates.
         </thead>
         <tbody>
           <tr>
+            <td>GPT-5.5</td>
+            <td style="text-align:center">125 credits</td>
+            <td style="text-align:center">12.50 credits</td>
+            <td style="text-align:center">750 credits</td>
+          </tr>
+          <tr>
             <td>GPT-5.4</td>
             <td style="text-align:center">62.50 credits</td>
             <td style="text-align:center">6.250 credits</td>
@@ -14487,12 +14673,13 @@ Select your appropriate plan type in the table below to see rates.
         <tfoot>
           <tr>
             <td colspan="4" style="text-align:center">
-              Fast mode consumes 2x as many credits.
+              Fast mode consumes credits at a higher rate for supported models.
+              See <a href="/codex/speed">Speed</a> for rates.
             </td>
           </tr>
           <tr>
             <td colspan="4" style="text-align:center">
-              Code review runs on 5.3-Codex.
+              Cloud tasks and code review run on GPT-5.3-Codex.
             </td>
           </tr>
         </tfoot>
@@ -14512,6 +14699,9 @@ Select your appropriate plan type in the table below to see rates.
               Unit
             </th>
             <th scope="col" style="text-align:center">
+              GPT-5.5
+            </th>
+            <th scope="col" style="text-align:center">
               GPT-5.4
             </th>
             <th scope="col" style="text-align:center">
@@ -14526,6 +14716,7 @@ Select your appropriate plan type in the table below to see rates.
           <tr>
             <td>Local Tasks</td>
             <td style="text-align:center">1 message</td>
+            <td style="text-align:center">\~14 credits</td>
             <td style="text-align:center">\~7 credits</td>
             <td style="text-align:center">\~5 credits</td>
             <td style="text-align:center">\~2 credits</td>
@@ -14533,40 +14724,43 @@ Select your appropriate plan type in the table below to see rates.
           <tr>
             <td>Cloud Tasks</td>
             <td style="text-align:center">1 message</td>
-            <td style="text-align:center">\~34 credits</td>
+            <td style="text-align:center">Not available</td>
+            <td style="text-align:center">Not available</td>
             <td style="text-align:center">\~25 credits</td>
             <td style="text-align:center">Not available</td>
           </tr>
           <tr>
             <td>Code Review</td>
             <td style="text-align:center">1 pull request</td>
-            <td style="text-align:center">\~34 credits</td>
+            <td style="text-align:center">Not available</td>
+            <td style="text-align:center">Not available</td>
             <td style="text-align:center">\~25 credits</td>
             <td style="text-align:center">Not available</td>
           </tr>
           <tr>
             <td>Image generation</td>
             <td style="text-align:center">1 image (1024px &times; 1024px)</td>
-            <td colspan="3" style="text-align:center">
+            <td colspan="4" style="text-align:center">
               \~5-6 credits
             </td>
           </tr>
           <tr>
             <td>Image generation</td>
             <td style="text-align:center">1 image (1024px &times; 1536px)</td>
-            <td colspan="3" style="text-align:center">
+            <td colspan="4" style="text-align:center">
               \~7-8 credits
             </td>
           </tr>
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="5" style="text-align:center">
-              Fast mode consumes 2x as many credits.
+            <td colspan="6" style="text-align:center">
+              Fast mode consumes credits at a higher rate for supported models.
+              See <a href="/codex/speed">Speed</a> for rates.
             </td>
           </tr>
           <tr>
-            <td colspan="5" style="text-align:center">
+            <td colspan="6" style="text-align:center">
               These averages also apply to GPT-5.2.
             </td>
           </tr>
@@ -14578,7 +14772,8 @@ Select your appropriate plan type in the table below to see rates.
 </div>
 
 Speed configurations will increase credit consumption for all models that apply.
-Details can be found [here](https://developers.openai.com/codex/speed).
+Fast mode consumes credits at a higher rate for supported models. See
+[Speed](https://developers.openai.com/codex/speed) for supported models and rates.
 
 [Learn more about credits in ChatGPT Plus and
 Pro.](https://help.openai.com/en/articles/12642688-using-credits-for-flexible-usage-in-chatgpt-freegopluspro-sora)
@@ -14606,9 +14801,9 @@ tips to maximize your limits:
 - **Limit the number of MCP servers you use.** Every [MCP](https://developers.openai.com/codex/mcp) you add
   to Codex adds more context to your messages and uses more of your limit.
   Disable MCP servers when you don’t need them.
-- **Switch to GPT-5.4-mini for routine tasks.** Using the mini model should
-  extend your local-message usage limits by roughly 2.5x to 3.3x, depending on
-  the model you switch from.
+- **Switch to a smaller model for routine tasks.** Using GPT-5.4 or
+  GPT-5.4-mini can extend your local-message usage limits, depending on the
+  model you switch from.
 
 ---
 
@@ -15625,8 +15820,10 @@ For more examples, see [github.com/openai/skills](https://github.com/openai/skil
 Codex offers the ability to increase the speed of the model for increased
 credit consumption.
 
-Fast mode is currently supported on GPT-5.4. When enabled, speed is increased
-by 1.5x and credits are consumed at a 2x rate.
+Fast mode increases supported model speed by 1.5x and consumes credits at a
+higher rate than Standard mode. It currently supports GPT-5.5 and GPT-5.4,
+consuming credits at 2.5x the Standard rate for GPT-5.5 and 2x the Standard
+rate for GPT-5.4.
 
 Use `/fast on`, `/fast off`, or `/fast status` in the CLI to change or inspect
 the current setting. You can also persist the default with `service_tier =
@@ -15637,8 +15834,10 @@ and you can't use Fast mode credits.
 
 ## Codex-Spark
 
-GPT-5.3-Codex-Spark is a separate fast, less-capable Codex model optimized for near-instant, real-time coding iteration. Unlike fast mode, which speeds up GPT-5.4 at a higher credit rate,
-Codex-Spark is its own model choice and has its own usage limits.
+GPT-5.3-Codex-Spark is a separate fast, less-capable Codex model optimized for
+near-instant, real-time coding iteration. Unlike fast mode, which speeds up a
+supported model at a higher credit rate, Codex-Spark is its own model choice
+and has its own usage limits.
 
 During research preview Codex-Spark is only available for ChatGPT Pro subscribers.
 
