@@ -6658,19 +6658,24 @@ openai_base_url = "https://us.api.openai.com/v1"
 
 In addition to your user config, Codex reads project-scoped overrides from `.codex/config.toml` files inside your repo. Codex walks from the project root to your current working directory and loads every `.codex/config.toml` it finds. If multiple files define the same key, the closest file to your working directory wins.
 
-For security, Codex loads project-scoped config files only when the project is trusted. If the project is untrusted, Codex ignores `.codex/config.toml` files in the project.
+For security, Codex loads project-scoped config files only when the project is trusted. If the project is untrusted, Codex ignores project `.codex/` layers, including `.codex/config.toml`, project-local hooks, and project-local rules. User and system layers remain separate and still load.
 
 Relative paths inside a project config (for example, `model_instructions_file`) are resolved relative to the `.codex/` folder that contains the `config.toml`.
 
 ## Hooks (experimental)
 
-Codex can also load lifecycle hooks from `hooks.json` files that sit next to
-active config layers.
+Codex can also load lifecycle hooks from either `hooks.json` files or inline
+`[hooks]` tables in `config.toml` files that sit next to active config layers.
 
 In practice, the two most useful locations are:
 
 - `~/.codex/hooks.json`
+- `~/.codex/config.toml`
 - `<repo>/.codex/hooks.json`
+- `<repo>/.codex/config.toml`
+
+Project-local hooks load only when the project `.codex/` layer is trusted.
+User-level hooks remain independent of project trust.
 
 Turn hooks on with:
 
@@ -6678,6 +6683,22 @@ Turn hooks on with:
 [features]
 codex_hooks = true
 ```
+
+Inline TOML hooks use the same event structure as `hooks.json`:
+
+```toml
+[[hooks.PreToolUse]]
+matcher = "^Bash$"
+
+[[hooks.PreToolUse.hooks]]
+type = "command"
+command = '/usr/bin/python3 "$(git rev-parse --show-toplevel)/.codex/hooks/pre_tool_use_policy.py"'
+timeout = 30
+statusMessage = "Checking Bash command"
+```
+
+If a single layer contains both `hooks.json` and inline `[hooks]`, Codex loads
+both and warns. Prefer one representation per layer.
 
 For the current event list, input fields, output behavior, and limitations, see
 [Hooks](https://developers.openai.com/codex/hooks).
@@ -7231,7 +7252,7 @@ See [Configuration Reference](https://developers.openai.com/codex/config-referen
 
 # Config basics
 
-Codex reads configuration details from more than one location. Your personal defaults live in `~/.codex/config.toml`, and you can add project overrides with `.codex/config.toml` files. For security, Codex loads project config files only when you trust the project.
+Codex reads configuration details from more than one location. Your personal defaults live in `~/.codex/config.toml`, and you can add project overrides with `.codex/config.toml` files. For security, Codex loads project `.codex/` layers only when you trust the project.
 
 ## Codex configuration file
 
@@ -7258,7 +7279,7 @@ Codex resolves values in this order (highest precedence first):
 
 Use that precedence to set shared defaults at the top level and keep profiles focused on the values that differ.
 
-If you mark a project as untrusted, Codex skips project-scoped `.codex/` layers (including `.codex/config.toml`) and falls back to user, system, and built-in defaults.
+If you mark a project as untrusted, Codex skips project-scoped `.codex/` layers, including project-local config, hooks, and rules. User and system config still load, including user/global hooks and rules.
 
 For one-off overrides via `-c`/`--config` (including TOML quoting rules), see [Advanced Config](https://developers.openai.com/codex/config-advanced#one-off-overrides-from-the-cli).
 
@@ -7376,21 +7397,21 @@ shell_snapshot = true           # Speed up repeated commands
 
 ### Supported features
 
-| Key                  |        Default        | Maturity          | Description                                                          |
-| -------------------- | :-------------------: | ----------------- | -------------------------------------------------------------------- |
-| `apps`               |         false         | Experimental      | Enable ChatGPT Apps/connectors support                               |
-| `codex_hooks`        |         false         | Under development | Enable lifecycle hooks from `hooks.json`. See [Hooks](https://developers.openai.com/codex/hooks). |
-| `fast_mode`          |         true          | Stable            | Enable Fast mode selection and the `service_tier = "fast"` path      |
-| `memories`           |         false         | Stable            | Enable [Memories](https://developers.openai.com/codex/memories)                                   |
-| `multi_agent`        |         true          | Stable            | Enable subagent collaboration tools                                  |
-| `personality`        |         true          | Stable            | Enable personality selection controls                                |
-| `shell_snapshot`     |         true          | Stable            | Snapshot your shell environment to speed up repeated commands        |
-| `shell_tool`         |         true          | Stable            | Enable the default `shell` tool                                      |
-| `unified_exec`       | `true` except Windows | Stable            | Use the unified PTY-backed exec tool                                 |
-| `undo`               |         false         | Stable            | Enable undo via per-turn git ghost snapshots                         |
-| `web_search`         |         true          | Deprecated        | Legacy toggle; prefer the top-level `web_search` setting             |
-| `web_search_cached`  |         false         | Deprecated        | Legacy toggle that maps to `web_search = "cached"` when unset        |
-| `web_search_request` |         false         | Deprecated        | Legacy toggle that maps to `web_search = "live"` when unset          |
+| Key                  |        Default        | Maturity     | Description                                                                              |
+| -------------------- | :-------------------: | ------------ | ---------------------------------------------------------------------------------------- |
+| `apps`               |         false         | Experimental | Enable ChatGPT Apps/connectors support                                                   |
+| `codex_hooks`        |         true          | Stable       | Enable lifecycle hooks from `hooks.json` or inline `[hooks]`. See [Hooks](https://developers.openai.com/codex/hooks). |
+| `fast_mode`          |         true          | Stable       | Enable Fast mode selection and the `service_tier = "fast"` path                          |
+| `memories`           |         false         | Stable       | Enable [Memories](https://developers.openai.com/codex/memories)                                                       |
+| `multi_agent`        |         true          | Stable       | Enable subagent collaboration tools                                                      |
+| `personality`        |         true          | Stable       | Enable personality selection controls                                                    |
+| `shell_snapshot`     |         true          | Stable       | Snapshot your shell environment to speed up repeated commands                            |
+| `shell_tool`         |         true          | Stable       | Enable the default `shell` tool                                                          |
+| `unified_exec`       | `true` except Windows | Stable       | Use the unified PTY-backed exec tool                                                     |
+| `undo`               |         false         | Stable       | Enable undo via per-turn git ghost snapshots                                             |
+| `web_search`         |         true          | Deprecated   | Legacy toggle; prefer the top-level `web_search` setting                                 |
+| `web_search_cached`  |         false         | Deprecated   | Legacy toggle that maps to `web_search = "cached"` when unset                            |
+| `web_search_request` |         false         | Deprecated   | Legacy toggle that maps to `web_search = "live"` when unset                              |
 
 The Maturity column uses feature maturity labels such as Experimental, Beta,
   and Stable. See [Feature Maturity](https://developers.openai.com/codex/feature-maturity) for how to
@@ -7733,7 +7754,13 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
       key: "features.codex_hooks",
       type: "boolean",
       description:
-        "Enable lifecycle hooks loaded from `hooks.json` (under development; off by default).",
+        "Enable lifecycle hooks loaded from `hooks.json` or inline `[hooks]` config.",
+    },
+    {
+      key: "hooks",
+      type: "table",
+      description:
+        "Lifecycle hooks configured inline in `config.toml`. Uses the same event schema as `hooks.json`; see the Hooks guide for examples and supported events.",
     },
     {
       key: "features.memories",
@@ -8652,7 +8679,7 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
       key: "projects.<path>.trust_level",
       type: "string",
       description:
-        'Mark a project or worktree as trusted or untrusted (`"trusted"` | `"untrusted"`). Untrusted projects skip project-scoped `.codex/` layers.',
+        'Mark a project or worktree as trusted or untrusted (`"trusted"` | `"untrusted"`). Untrusted projects skip project-scoped `.codex/` layers, including project-local config, hooks, and rules.',
     },
     {
       key: "notice.hide_full_access_warning",
@@ -8746,6 +8773,24 @@ canonical keys that `config.toml` uses. Omitted keys remain unconstrained.
       description: "Allowed values for `sandbox_mode`.",
     },
     {
+      key: "remote_sandbox_config",
+      type: "array<table>",
+      description:
+        "Host-specific sandbox requirements. The first entry whose `hostname_patterns` match the resolved host name overrides top-level `allowed_sandbox_modes` for that requirements source. Host-specific entries currently override sandbox modes only.",
+    },
+    {
+      key: "remote_sandbox_config[].hostname_patterns",
+      type: "array<string>",
+      description:
+        "Case-insensitive host name patterns. Supports `*` for any sequence of characters and `?` for one character.",
+    },
+    {
+      key: "remote_sandbox_config[].allowed_sandbox_modes",
+      type: "array<string>",
+      description:
+        "Allowed sandbox modes to apply when this host-specific entry matches.",
+    },
+    {
       key: "allowed_web_search_modes",
       type: "array<string>",
       description:
@@ -8758,10 +8803,64 @@ canonical keys that `config.toml` uses. Omitted keys remain unconstrained.
         "Pinned feature values keyed by the canonical names from `config.toml`'s `[features]` table.",
     },
     {
+      key: "feature_requirements",
+      type: "table",
+      description:
+        "Alias for `features` in `requirements.toml`. Use it to pin feature values by canonical feature key.",
+    },
+    {
       key: "features.<name>",
       type: "boolean",
       description:
         "Require a specific canonical feature key to stay enabled or disabled.",
+    },
+    {
+      key: "feature_requirements.in_app_browser",
+      type: "boolean",
+      description:
+        "Set to `false` in `requirements.toml` to disable the in-app browser pane. You can also set `features.in_app_browser`.",
+    },
+    {
+      key: "feature_requirements.browser_use",
+      type: "boolean",
+      description:
+        "Set to `false` in `requirements.toml` to disable Browser Use and Browser Agent availability. You can also set `features.browser_use`.",
+    },
+    {
+      key: "feature_requirements.computer_use",
+      type: "boolean",
+      description:
+        "Set to `false` in `requirements.toml` to disable Computer Use availability and related install or enablement flows. You can also set `features.computer_use`.",
+    },
+    {
+      key: "hooks",
+      type: "table",
+      description:
+        "Admin-enforced managed lifecycle hooks. Requires a managed hook directory and uses the same event schema as inline `[hooks]` in `config.toml`.",
+    },
+    {
+      key: "hooks.managed_dir",
+      type: "string (absolute path)",
+      description:
+        "Directory containing managed hook scripts on macOS and Linux. Codex validates that it is absolute and exists before loading managed hooks.",
+    },
+    {
+      key: "hooks.windows_managed_dir",
+      type: "string (absolute path)",
+      description:
+        "Directory containing managed hook scripts on Windows. Codex validates that it is absolute and exists before loading managed hooks.",
+    },
+    {
+      key: "hooks.<Event>",
+      type: "array<table>",
+      description:
+        "Matcher groups for a hook event such as `PreToolUse`, `PostToolUse`, `PermissionRequest`, `SessionStart`, `UserPromptSubmit`, or `Stop`.",
+    },
+    {
+      key: "hooks.<Event>[].hooks",
+      type: "array<table>",
+      description:
+        "Hook handlers for a matcher group. Command hooks are currently supported; prompt and agent hook handlers are parsed but skipped.",
     },
     {
       key: "permissions.filesystem.deny_read",
@@ -9249,6 +9348,20 @@ enabled = true
 # disable_on_external_context = false # legacy alias: no_memories_if_mcp_or_web_search
 
 ################################################################################
+# Lifecycle hooks can be configured here inline or in a sibling hooks.json.
+################################################################################
+
+# [hooks]
+# [[hooks.PreToolUse]]
+# matcher = "^Bash$"
+#
+# [[hooks.PreToolUse.hooks]]
+# type = "command"
+# command = 'python3 "/absolute/path/to/pre_tool_use_policy.py"'
+# timeout = 30
+# statusMessage = "Checking Bash command"
+
+################################################################################
 # Define MCP servers under this table. Leave empty to disable.
 ################################################################################
 
@@ -9682,7 +9795,7 @@ This separation makes it easier to roll out Codex while keeping analytics, envir
 
 Codex Admins can deploy admin-enforced `requirements.toml` policies from the Codex [Policies page](https://chatgpt.com/codex/settings/policies).
 
-Use this page when you want to apply different local Codex constraints to different groups without distributing device-level files first. The managed policy uses the same `requirements.toml` format described in [Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration), so you can define allowed approval policies, sandbox modes, web search behavior, MCP server allowlists, feature pins, and restrictive command rules.
+Use this page when you want to apply different local Codex constraints to different groups without distributing device-level files first. The managed policy uses the same `requirements.toml` format described in [Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration), so you can define allowed approval policies, sandbox modes, web search behavior, MCP server allowlists, feature pins, and restrictive command rules. To disable Browser Use, the in-app browser, or Computer Use, see [Disable Codex feature surfaces](https://developers.openai.com/codex/enterprise/managed-configuration#disable-codex-feature-surfaces).
 
 <div class="max-w-1xl mx-auto py-1">
   <img src="https://developers.openai.com/images/codex/enterprise/policies_and_configurations_page.png"
@@ -10109,7 +10222,7 @@ Enterprise admins can control local Codex behavior in two ways:
 
 ## Admin-enforced requirements (requirements.toml)
 
-Requirements constrain security-sensitive settings (approval policy, approvals reviewer, automatic review policy, sandbox mode, web search mode, and optionally which MCP servers users can enable). When resolving configuration (for example from `config.toml`, profiles, or CLI config overrides), if a value conflicts with an enforced rule, Codex falls back to a compatible value and notifies the user. If you configure an `mcp_servers` allowlist, Codex enables an MCP server only when both its name and identity match an approved entry; otherwise, Codex disables it.
+Requirements constrain security-sensitive settings (approval policy, approvals reviewer, automatic review policy, sandbox mode, web search mode, managed hooks, and optionally which MCP servers users can enable). When resolving configuration (for example from `config.toml`, profiles, or CLI config overrides), if a value conflicts with an enforced rule, Codex falls back to a compatible value and notifies the user. If you configure an `mcp_servers` allowlist, Codex enables an MCP server only when both its name and identity match an approved entry; otherwise, Codex disables it.
 
 Requirements can also constrain [feature flags](https://developers.openai.com/codex/config-basic/#feature-flags) via the `[features]` table in `requirements.toml`. Note that features aren't always security-sensitive, but enterprises can pin values if desired. Omitted keys remain unconstrained.
 
@@ -10174,6 +10287,31 @@ allowed_approval_policies = ["untrusted", "on-request"]
 allowed_sandbox_modes = ["read-only", "workspace-write"]
 ```
 
+### Override sandbox requirements by host
+
+Use `[[remote_sandbox_config]]` when one managed policy should apply different
+sandbox requirements on different hosts. For example, you can keep a stricter
+default for laptops while allowing workspace writes on matching devboxes or CI
+runners. Host-specific entries currently override `allowed_sandbox_modes` only:
+
+```toml
+allowed_sandbox_modes = ["read-only"]
+
+[[remote_sandbox_config]]
+hostname_patterns = ["*.devbox.example.com", "runner-??.ci.example.com"]
+allowed_sandbox_modes = ["read-only", "workspace-write"]
+```
+
+Codex compares each `hostname_patterns` entry against the best-effort resolved
+host name. It prefers the fully qualified domain name when available and falls
+back to the local host name. Matching is case-insensitive; `*` matches any
+sequence of characters, and `?` matches one character.
+
+The first matching `[[remote_sandbox_config]]` entry wins within the same
+requirements source. If no entry matches, Codex keeps the top-level
+`allowed_sandbox_modes`. Hostname matching is for policy selection only; don't
+treat it as authenticated device proof.
+
 You can also constrain web search mode:
 
 ```toml
@@ -10192,6 +10330,27 @@ unified_exec = false
 ```
 
 Use the canonical feature keys from `config.toml`'s `[features]` table. Codex normalizes the resulting feature set to meet these pins and rejects conflicting writes to `config.toml` or profile-scoped feature settings.
+
+### Disable Codex feature surfaces
+
+Admins can use `[feature_requirements]` to disable specific Codex feature
+surfaces for users receiving a managed `requirements.toml`. You can also set
+the same keys in the existing `[features]` table.
+
+```toml
+[feature_requirements]
+browser_use = false
+in_app_browser = false
+computer_use = false
+```
+
+- `in_app_browser = false` disables the in-app browser pane.
+- `browser_use = false` disables Browser Use and Browser Agent availability.
+- `computer_use = false` disables Computer Use availability and related
+  install or enablement flows.
+
+If omitted, these features are allowed by policy, subject to normal client,
+platform, and rollout availability.
 
 ### Configure automatic review policy
 
@@ -10238,6 +10397,39 @@ When deny-read requirements are present, Codex constrains local sandbox mode to
 `read-only` or `workspace-write` so Codex can enforce them. On native
 Windows, managed `deny_read` applies to direct file tools; shell subprocess
 reads don't use this sandbox rule.
+
+### Enforce managed hooks from requirements
+
+Admins can also define managed lifecycle hooks directly in `requirements.toml`.
+Use `[hooks]` for the hook configuration itself, and point `managed_dir` at the
+directory where your MDM or endpoint-management tooling installs the referenced
+scripts.
+
+```toml
+[features]
+codex_hooks = true
+
+[hooks]
+managed_dir = "/enterprise/hooks"
+windows_managed_dir = 'C:\enterprise\hooks'
+
+[[hooks.PreToolUse]]
+matcher = "^Bash$"
+
+[[hooks.PreToolUse.hooks]]
+type = "command"
+command = "python3 /enterprise/hooks/pre_tool_use_policy.py"
+timeout = 30
+statusMessage = "Checking managed Bash command"
+```
+
+Notes:
+
+- Codex enforces the hook configuration from `requirements.toml`, but it does
+  not distribute the scripts in `managed_dir`.
+- Deliver those scripts separately with your MDM or device-management solution.
+- Managed hook commands should reference absolute script paths under the
+  configured managed directory.
 
 ### Enforce command rules from requirements
 
@@ -11285,9 +11477,6 @@ These traces make it straightforward to debug workflow hiccups, audit agent beha
 
 # Hooks
 
-Experimental. Hooks are under active development. Windows support temporarily
-  disabled.
-
 Hooks are an extensibility framework for Codex. They allow
 you to inject your own scripts into the agentic loop, enabling features such as:
 
@@ -11308,22 +11497,32 @@ Runtime behavior to keep in mind:
 
 - Matching hooks from multiple files all run.
 - Multiple matching command hooks for the same event are launched concurrently,
-  so one hook can't prevent another matching hook from starting.
+  so one hook cannot prevent another matching hook from starting.
 - `PreToolUse`, `PermissionRequest`, `PostToolUse`, `UserPromptSubmit`, and
   `Stop` run at turn scope.
-- Hooks are currently disabled on Windows.
 
 ## Where Codex looks for hooks
 
-Codex discovers `hooks.json` next to active config layers.
+Codex discovers hooks next to active config layers in either of these forms:
 
-In practice, the two most useful locations are:
+- `hooks.json`
+- inline `[hooks]` tables inside `config.toml`
+
+In practice, the four most useful locations are:
 
 - `~/.codex/hooks.json`
+- `~/.codex/config.toml`
 - `<repo>/.codex/hooks.json`
+- `<repo>/.codex/config.toml`
 
-If more than one `hooks.json` file exists, Codex loads all matching hooks.
-Higher-precedence config layers don't replace lower-precedence hooks.
+If more than one hook source exists, Codex loads all matching hooks.
+Higher-precedence config layers do not replace lower-precedence hooks.
+If a single layer contains both `hooks.json` and inline `[hooks]`, Codex
+merges them and warns at startup. Prefer one representation per layer.
+
+Project-local hooks load only when the project `.codex/` layer is trusted. In
+untrusted projects, Codex still loads user and system hooks from their own
+active config layers.
 
 ## Config shape
 
@@ -11412,13 +11611,70 @@ Hooks are organized in three levels:
 Notes:
 
 - `timeout` is in seconds.
-- `timeoutSec` is also accepted as an alias.
 - If `timeout` is omitted, Codex uses `600` seconds.
 - `statusMessage` is optional.
 - Commands run with the session `cwd` as their working directory.
 - For repo-local hooks, prefer resolving from the git root instead of using a
   relative path such as `.codex/hooks/...`. Codex may be started from a
   subdirectory, and a git-root-based path keeps the hook location stable.
+
+Equivalent inline TOML in `config.toml`:
+
+```toml
+[features]
+codex_hooks = true
+
+[[hooks.PreToolUse]]
+matcher = "^Bash$"
+
+[[hooks.PreToolUse.hooks]]
+type = "command"
+command = '/usr/bin/python3 "$(git rev-parse --show-toplevel)/.codex/hooks/pre_tool_use_policy.py"'
+timeout = 30
+statusMessage = "Checking Bash command"
+
+[[hooks.PostToolUse]]
+matcher = "^Bash$"
+
+[[hooks.PostToolUse.hooks]]
+type = "command"
+command = '/usr/bin/python3 "$(git rev-parse --show-toplevel)/.codex/hooks/post_tool_use_review.py"'
+timeout = 30
+statusMessage = "Reviewing Bash output"
+```
+
+## Managed hooks from `requirements.toml`
+
+Enterprise-managed requirements can also define hooks inline under `[hooks]`.
+This is useful when admins want to enforce the hook configuration while
+delivering the actual scripts through MDM or another device-management system.
+
+```toml
+[features]
+codex_hooks = true
+
+[hooks]
+managed_dir = "/enterprise/hooks"
+windows_managed_dir = 'C:\enterprise\hooks'
+
+[[hooks.PreToolUse]]
+matcher = "^Bash$"
+
+[[hooks.PreToolUse.hooks]]
+type = "command"
+command = "python3 /enterprise/hooks/pre_tool_use_policy.py"
+timeout = 30
+statusMessage = "Checking managed Bash command"
+```
+
+Notes for managed hooks:
+
+- `managed_dir` is used on macOS and Linux.
+- `windows_managed_dir` is used on Windows.
+- Codex does not distribute the scripts in `managed_dir`; your enterprise
+  tooling must install and update them separately.
+- Managed hook commands should use absolute script paths under the configured
+  managed directory.
 
 ## Matcher patterns
 
@@ -11428,23 +11684,25 @@ event.
 
 Only some current Codex events honor `matcher`:
 
-| Event               | What `matcher` filters | Notes                                               |
-| ------------------- | ---------------------- | --------------------------------------------------- |
-| `PermissionRequest` | tool name              | Current Codex runtime only emits `Bash`.            |
-| `PostToolUse`       | tool name              | Current Codex runtime only emits `Bash`.            |
-| `PreToolUse`        | tool name              | Current Codex runtime only emits `Bash`.            |
-| `SessionStart`      | start source           | Current runtime values are `startup` and `resume`.  |
-| `UserPromptSubmit`  | not supported          | Any configured `matcher` is ignored for this event. |
-| `Stop`              | not supported          | Any configured `matcher` is ignored for this event. |
+| Event               | What `matcher` filters | Notes                                                        |
+| ------------------- | ---------------------- | ------------------------------------------------------------ |
+| `PermissionRequest` | tool name              | Support includes `Bash`, `apply_patch`\*, and MCP tool names |
+| `PostToolUse`       | tool name              | Support includes `Bash`, `apply_patch`\*, and MCP tool names |
+| `PreToolUse`        | tool name              | Support includes `Bash`, `apply_patch`\*, and MCP tool names |
+| `SessionStart`      | start source           | Current runtime values are `startup`, `resume`, and `clear`  |
+| `UserPromptSubmit`  | not supported          | Any configured `matcher` is ignored for this event           |
+| `Stop`              | not supported          | Any configured `matcher` is ignored for this event           |
+
+\*For `apply_patch`, matchers can also use `Edit` or `Write`.
 
 Examples:
 
 - `Bash`
-- `startup|resume`
+- `^apply_patch$`
 - `Edit|Write`
-
-That last example is still a valid regex, but current Codex `PreToolUse` and
-`PostToolUse` events only emit `Bash`, so it won't match anything today.
+- `mcp__filesystem__read_file`
+- `mcp__filesystem__.*`
+- `startup|resume|clear`
 
 ## Common input fields
 
@@ -11523,26 +11781,28 @@ That `additionalContext` text is added as extra developer context.
 
 ### PreToolUse
 
-Currently `PreToolUse` only supports Bash tool interception. The model can
-still work around this by writing its own script to disk and then running that
-script with Bash, so treat this as a useful guardrail rather than a complete
-enforcement boundary
+`PreToolUse` can intercept Bash, file edits performed through `apply_patch`,
+and MCP tool calls. It is still a guardrail rather than a complete enforcement
+boundary because Codex can often perform equivalent work through another
+supported tool path.
 
 This doesn't intercept all shell calls yet, only the simple ones. The newer
   `unified_exec` mechanism allows richer streaming stdin/stdout handling of
-  shell, but interception is incomplete. Similarly, this doesn't intercept MCP,
-  Write, WebSearch, or other non-shell tool calls.
+  shell, but interception is incomplete. Similarly, this doesn't intercept
+  `WebSearch` or other non-shell, non-MCP tool calls.
 
-`matcher` is applied to `tool_name`, which currently always equals `Bash`.
+`matcher` is applied to `tool_name` and matcher aliases. For file edits through
+`apply_patch`, matchers can use `apply_patch`, `Edit`, or `Write`; hook input
+still reports `tool_name: "apply_patch"`.
 
 Fields in addition to [Common input fields](#common-input-fields):
 
-| Field                | Type     | Meaning                                        |
-| -------------------- | -------- | ---------------------------------------------- |
-| `turn_id`            | `string` | Codex-specific extension. Active Codex turn id |
-| `tool_name`          | `string` | Currently always `Bash`                        |
-| `tool_use_id`        | `string` | Tool-call id for this invocation               |
-| `tool_input.command` | `string` | Shell command Codex is about to run            |
+| Field         | Type         | Meaning                                                                                                   |
+| ------------- | ------------ | --------------------------------------------------------------------------------------------------------- |
+| `turn_id`     | `string`     | Codex-specific extension. Active Codex turn id                                                            |
+| `tool_name`   | `string`     | Canonical hook tool name, such as `Bash`, `apply_patch`, or an MCP name like `mcp__fs__read`              |
+| `tool_use_id` | `string`     | Tool-call id for this invocation                                                                          |
+| `tool_input`  | `JSON value` | Tool-specific input. `Bash` and `apply_patch` use `tool_input.command` while MCP tools send all the args. |
 
 Plain text on `stdout` is ignored.
 
@@ -11581,16 +11841,18 @@ shell escalation or managed-network approval. It can allow the request, deny
 the request, or decline to decide and let the normal approval prompt continue.
 It doesn't run for commands that don't need approval.
 
-`matcher` is applied to `tool_name`, which currently always equals `Bash`.
+`matcher` is applied to `tool_name` and matcher aliases. Current canonical
+values include `Bash`, `apply_patch`, and MCP tool names such as
+`mcp__server__tool`; `apply_patch` also matches `Edit` and `Write`.
 
 Fields in addition to [Common input fields](#common-input-fields):
 
-| Field                    | Type             | Meaning                                            |
-| ------------------------ | ---------------- | -------------------------------------------------- |
-| `turn_id`                | `string`         | Codex-specific extension. Active Codex turn id     |
-| `tool_name`              | `string`         | Currently always `Bash`                            |
-| `tool_input.command`     | `string`         | Shell command associated with the approval request |
-| `tool_input.description` | `string \| null` | Human-readable approval reason, when Codex has one |
+| Field                    | Type             | Meaning                                                                                                   |
+| ------------------------ | ---------------- | --------------------------------------------------------------------------------------------------------- |
+| `turn_id`                | `string`         | Codex-specific extension. Active Codex turn id                                                            |
+| `tool_name`              | `string`         | Canonical hook tool name, such as `Bash`, `apply_patch`, or an MCP name like `mcp__fs__read`              |
+| `tool_input`             | `JSON value`     | Tool-specific input. `Bash` and `apply_patch` use `tool_input.command` while MCP tools send all the args. |
+| `tool_input.description` | `string \| null` | Human-readable approval reason, when Codex has one                                                        |
 
 Plain text on `stdout` is ignored.
 
@@ -11631,27 +11893,29 @@ closed today.
 
 ### PostToolUse
 
-Currently `PostToolUse` only supports Bash tool results. It's not limited to
-commands that exit successfully: non-interactive `exec_command` calls can still
-trigger `PostToolUse` when Codex emits a Bash post-tool payload. It can't undo
-side effects from the command that already ran.
+`PostToolUse` runs after supported tools produce output, including Bash,
+`apply_patch`, and MCP tool calls. For Bash, it also runs after commands that
+exit with a non-zero status. It can't undo side effects from the tool that
+already ran.
 
 This doesn't intercept all shell calls yet, only the simple ones. The newer
   `unified_exec` mechanism allows richer streaming stdin/stdout handling of
-  shell, but interception is incomplete. Similarly, this doesn't intercept MCP,
-  Write, WebSearch, or other non-shell tool calls.
+  shell, but interception is incomplete. Similarly, this doesn't intercept
+  `WebSearch` or other non-shell, non-MCP tool calls.
 
-`matcher` is applied to `tool_name`, which currently always equals `Bash`.
+`matcher` is applied to `tool_name` and matcher aliases. For file edits through
+`apply_patch`, matchers can use `apply_patch`, `Edit`, or `Write`; hook input
+still reports `tool_name: "apply_patch"`.
 
 Fields in addition to [Common input fields](#common-input-fields):
 
-| Field                | Type         | Meaning                                                       |
-| -------------------- | ------------ | ------------------------------------------------------------- |
-| `turn_id`            | `string`     | Codex-specific extension. Active Codex turn id                |
-| `tool_name`          | `string`     | Currently always `Bash`                                       |
-| `tool_use_id`        | `string`     | Tool-call id for this invocation                              |
-| `tool_input.command` | `string`     | Shell command Codex just ran                                  |
-| `tool_response`      | `JSON value` | Bash tool output payload. Today this is usually a JSON string |
+| Field           | Type         | Meaning                                                                                                   |
+| --------------- | ------------ | --------------------------------------------------------------------------------------------------------- |
+| `turn_id`       | `string`     | Codex-specific extension. Active Codex turn id                                                            |
+| `tool_name`     | `string`     | Canonical hook tool name, such as `Bash`, `apply_patch`, or an MCP name like `mcp__fs__read`              |
+| `tool_use_id`   | `string`     | Tool-call id for this invocation                                                                          |
+| `tool_input`    | `JSON value` | Tool-specific input. `Bash` and `apply_patch` use `tool_input.command` while MCP tools send all the args. |
+| `tool_response` | `JSON value` | Tool-specific output. For MCP tools, this is the MCP call result.                                         |
 
 Plain text on `stdout` is ignored.
 
@@ -15057,9 +15321,9 @@ Use Codex in the cloud at [chatgpt.com/codex](https://chatgpt.com/codex).
 # Remote connections
 
 SSH remote connections are currently in alpha. To enable them today, set
-  `remote_control = true` in the `[features]` table in `~/.codex/config.toml`.
-  Availability, setup flows, and supported environments may change as the
-  feature improves.
+  `remote_connections = true` in the `[features]` table in
+  `~/.codex/config.toml`. Availability, setup flows, and supported environments
+  may change as the feature improves.
 
 Remote connections let Codex work with projects that live on another
 SSH-accessible machine. Use them when the codebase, credentials, services, or
@@ -15111,7 +15375,7 @@ If remote connections don't appear yet, enable the alpha feature flag in
 
 ```toml
 [features]
-remote_control = true
+remote_connections = true
 ```
 
 Remote project threads run commands, read files, and write changes on the
@@ -15142,7 +15406,7 @@ Rules are experimental and may change.
 
 ## Create a rules file
 
-1. Create a `.rules` file under `./codex/rules/` (for example, `~/.codex/rules/default.rules`).
+1. Create a `.rules` file under a `rules/` folder next to an active config layer (for example, `~/.codex/rules/default.rules`).
 2. Add a rule. This example prompts before allowing `gh pr view` to run outside the sandbox.
 
    ```python
@@ -15173,7 +15437,9 @@ Rules are experimental and may change.
 
 3. Restart Codex.
 
-Codex scans `rules/` under every [Team Config](https://developers.openai.com/codex/enterprise/admin-setup#team-config) location at startup. When you add a command to the allow list in the TUI, Codex writes to the user layer at `~/.codex/rules/default.rules` so future runs can skip the prompt.
+Codex scans `rules/` under every active config layer at startup, including [Team Config](https://developers.openai.com/codex/enterprise/admin-setup#team-config) locations and the user layer at `~/.codex/rules/`. Project-local rules under `<repo>/.codex/rules/` load only when the project `.codex/` layer is trusted.
+
+When you add a command to the allow list in the TUI, Codex writes to the user layer at `~/.codex/rules/default.rules` so future runs can skip the prompt.
 
 When Smart approvals are enabled (the default), Codex may propose a
 `prefix_rule` for you during escalation requests. Review the suggested prefix

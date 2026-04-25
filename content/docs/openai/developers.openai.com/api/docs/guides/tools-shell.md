@@ -27,7 +27,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.4",
+  model: "gpt-5.5",
   tools: [{ type: "shell", environment: { type: "container_auto" } }],
   input: [
     {
@@ -53,7 +53,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.4",
+    model="gpt-5.5",
     tools=[{"type": "shell", "environment": {"type": "container_auto"}}],
     input=[
         {
@@ -139,7 +139,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.4",
+  model: "gpt-5.5",
   tools: [
     {
       type: "shell",
@@ -161,7 +161,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.4",
+    model="gpt-5.5",
     tools=[
         {
             "type": "shell",
@@ -236,7 +236,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.4",
+  model: "gpt-5.5",
   tool_choice: "required",
   tools: [
     {
@@ -268,7 +268,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.4",
+    model="gpt-5.5",
     tool_choice="required",
     tools=[
         {
@@ -349,7 +349,7 @@ const container = await client.containers.create({
 });
 
 const response = await client.responses.create({
-  model: "gpt-5.4",
+  model: "gpt-5.5",
   tools: [
     {
       type: "shell",
@@ -409,7 +409,7 @@ container = client.containers.create(
 )
 
 response = client.responses.create(
-    model="gpt-5.4",
+    model="gpt-5.5",
     tools=[
         {
             "type": "shell",
@@ -496,7 +496,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.4",
+  model: "gpt-5.5",
   input: [
     {
       role: "user",
@@ -535,7 +535,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.4",
+    model="gpt-5.5",
     input=[
         {
             "role": "user",
@@ -580,7 +580,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.4",
+  model: "gpt-5.5",
   previous_response_id: "resp_2a8e5c9174d63b0f18a4c572de9f64a1b3c76d508e12f9ab47",
   tools: [
     {
@@ -603,7 +603,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.4",
+    model="gpt-5.5",
     previous_response_id="resp_2a8e5c9174d63b0f18a4c572de9f64a1b3c76d508e12f9ab47",
     tools=[
         {

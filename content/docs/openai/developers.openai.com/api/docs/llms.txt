@@ -43,6 +43,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Agent Builder](https://developers.openai.com/api/docs/guides/agent-builder.md): Use the OpenAI Agent Builder to start from templates, compose nodes, preview runs, and export workflows to code.
 - [Agent definitions](https://developers.openai.com/api/docs/guides/agents/define-agents.md): Learn how to define an agent's instructions, model, tools, and local context in the OpenAI Agents SDK.
 - [Agents SDK](https://developers.openai.com/api/docs/guides/agents.md): Learn how the OpenAI Agents SDK fits together and which docs to read next.
+- [API deployment checklist](https://developers.openai.com/api/docs/guides/deployment-checklist.md): Review commonly underused Responses API design choices that improve deployment quality, speed, cost, and reliability.
 - [Apply Patch](https://developers.openai.com/api/docs/guides/tools-apply-patch.md): Allow models to propose structured diffs that your integration applies.
 - [Audio and speech](https://developers.openai.com/api/docs/guides/audio.md): Learn how to work with audio and speech in the OpenAI API.
 - [Background mode](https://developers.openai.com/api/docs/guides/background.md): Run long running tasks asynchronously in the background.
@@ -71,6 +72,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [File search](https://developers.openai.com/api/docs/guides/tools-file-search.md): Allow models to search your files for relevant information before generating a response.
 - [Fine-tuning best practices](https://developers.openai.com/api/docs/guides/fine-tuning-best-practices.md): Improve results with practical tips for fine-tuning.
 - [Flex processing](https://developers.openai.com/api/docs/guides/flex-processing.md): Learn how to optimize costs for asynchronous tasks with flex processing.
+- [Frontend prompt instructions](https://developers.openai.com/api/docs/guides/frontend-prompt.md): Example prompt instructions for frontend work, written for GPT-5.5.
 - [Function calling](https://developers.openai.com/api/docs/guides/function-calling.md): Learn how function calling enables large language models to connect to external data and systems.
 - [Getting started with datasets](https://developers.openai.com/api/docs/guides/evaluation-getting-started.md): Learn how to get started with evals using datasets.
 - [Graders](https://developers.openai.com/api/docs/guides/graders.md): Learn about graders used for evals and fine-tuning.
@@ -98,7 +100,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching.md): Learn how prompt caching reduces latency and cost for long prompts in OpenAI's API.
 - [Prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering.md): Learn strategies and tactics for better results using large language models in the OpenAI API.
 - [Prompt generation](https://developers.openai.com/api/docs/guides/prompt-generation.md): Learn how to generate prompts, functions, and schemas in the OpenAI API's Playground.
-- [Prompt guidance for GPT-5.4](https://developers.openai.com/api/docs/guides/prompt-guidance.md): Learn prompt patterns and migration guidance for GPT-5.4, including completeness checks, verification loops, tool persistence, and structured outputs.
+- [Prompt guidance](https://developers.openai.com/api/docs/guides/prompt-guidance.md)
 - [Prompt optimizer](https://developers.openai.com/api/docs/guides/prompt-optimizer.md): Learn how to use your dataset to automatically improve your prompts.
 - [Prompting](https://developers.openai.com/api/docs/guides/prompting.md): Learn how to create, optimize, save, and reuse prompts with OpenAI models.
 - [Quickstart](https://developers.openai.com/api/docs/guides/agents/quickstart.md): Build your first agent with the OpenAI Agents SDK, add tools and handoffs, and understand where to go next.
@@ -134,7 +136,8 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Trace grading](https://developers.openai.com/api/docs/guides/trace-grading.md): Use trace grading to create datasets, configure graders, and track evaluation runs for your models.
 - [Under 18 API Guidance](https://developers.openai.com/api/docs/guides/safety-checks/under-18-api-guidance.md)
 - [Upgrading to GPT-5.4](https://developers.openai.com/api/docs/guides/upgrading-to-gpt-5p4.md): Guidance for upgrading OpenAI API model strings and directly related prompts to GPT-5.4.
-- [Using GPT-5.4](https://developers.openai.com/api/docs/guides/latest-model.md): Learn about how to use and migrate to GPT-5.4 and the GPT-5 model family, the latest models in the OpenAI API.
+- [Upgrading to GPT-5.5](https://developers.openai.com/api/docs/guides/upgrading-to-gpt-5p5.md): Guidance for upgrading OpenAI API model strings and directly related prompts to GPT-5.5.
+- [Using GPT-5.5](https://developers.openai.com/api/docs/guides/latest-model.md): Learn how to use and migrate to GPT-5.5, the latest model in the OpenAI API.
 - [Using realtime models](https://developers.openai.com/api/docs/guides/realtime-models-prompting.md): Learn how to use OpenAI realtime models and prompting effectively.
 - [Using tools](https://developers.openai.com/api/docs/guides/tools.md): Use powerful tools like remote MCP servers, or built-in tools like web search and file search to extend the model's capabilities.
 - [Vector embeddings](https://developers.openai.com/api/docs/guides/embeddings.md): Learn how to turn text into numbers, unlocking use cases like search, clustering, and more with OpenAI API embeddings.

@@ -373,7 +373,7 @@ If a task asks you to transmit, copy, or share sensitive user data such as finan
 It's simple to migrate from the deprecated `computer-use-preview` tool to the new `computer` tool.
 | | Preview integration | GA integration |
 | --- | --- | --- |
-| **Model** | `model: "computer-use-preview"` | `model: "gpt-5.4"` |
+| **Model** | `model: "computer-use-preview"` | `model: "gpt-5.5"` |
 | **Tool name** | `tools: [{ type: "computer_use_preview" }]` | `tools: [{ type: "computer" }]` |
 | **Actions** | One `action` on each `computer_call` | A batched `actions[]` array on each `computer_call` |
 | **Truncation** | `truncation: "auto"` required | `truncation` not necessary |

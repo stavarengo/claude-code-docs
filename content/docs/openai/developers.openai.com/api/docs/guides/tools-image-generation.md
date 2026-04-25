@@ -18,7 +18,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-    model: "gpt-5.4",
+    model: "gpt-5.5",
     input: "Generate an image of gray tabby cat hugging an otter with an orange scarf",
     tools: [{type: "image_generation"}],
 });
@@ -42,7 +42,7 @@ import base64
 client = OpenAI() 
 
 response = client.responses.create(
-    model="gpt-5.4",
+    model="gpt-5.5",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
     tools=[{"type": "image_generation"}],
 )
@@ -86,7 +86,7 @@ When using the Responses API image generation tool, supported GPT Image models c
 
 ### Revised prompt
 
-When using the image generation tool, the mainline model, for example, `gpt-5.4`, will automatically revise your prompt for improved performance.
+When using the image generation tool, the mainline model, for example, `gpt-5.5`, will automatically revise your prompt for improved performance.
 
 You can access the revised prompt in the `revised_prompt` field of the image generation call:
 
@@ -121,7 +121,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.4",
+  model: "gpt-5.5",
   input:
     "Generate an image of gray tabby cat hugging an otter with an orange scarf",
   tools: [{ type: "image_generation" }],
@@ -140,7 +140,7 @@ if (imageData.length > 0) {
 // Follow up
 
 const response_fwup = await openai.responses.create({
-  model: "gpt-5.4",
+  model: "gpt-5.5",
   previous_response_id: response.id,
   input: "Now make it look realistic",
   tools: [{ type: "image_generation" }],
@@ -167,7 +167,7 @@ import base64
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.4",
+    model="gpt-5.5",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
     tools=[{"type": "image_generation"}],
 )
@@ -188,7 +188,7 @@ if image_data:
 # Follow up
 
 response_fwup = client.responses.create(
-    model="gpt-5.4",
+    model="gpt-5.5",
     previous_response_id=response.id,
     input="Now make it look realistic",
     tools=[{"type": "image_generation"}],
@@ -216,7 +216,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.4",
+  model: "gpt-5.5",
   input:
     "Generate an image of gray tabby cat hugging an otter with an orange scarf",
   tools: [{ type: "image_generation" }],
@@ -237,7 +237,7 @@ if (imageData.length > 0) {
 // Follow up
 
 const response_fwup = await openai.responses.create({
-  model: "gpt-5.4",
+  model: "gpt-5.5",
   input: [
     {
       role: "user",
@@ -270,7 +270,7 @@ import openai
 import base64
 
 response = openai.responses.create(
-    model="gpt-5.4",
+    model="gpt-5.5",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
     tools=[{"type": "image_generation"}],
 )
@@ -293,7 +293,7 @@ if image_data:
 # Follow up
 
 response_fwup = openai.responses.create(
-    model="gpt-5.4",
+    model="gpt-5.5",
     input=[
         {
             "role": "user",
@@ -393,7 +393,7 @@ The following models support the image generation tool:
 - `gpt-5.4-mini`
 - `gpt-5.4-nano`
 - `gpt-5-nano`
-- `gpt-5.4`
+- `gpt-5.5`
 - `gpt-5.2`
 
-The model used for the image generation process is always a GPT Image model, including `gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`, and `gpt-image-1-mini`, but these models aren't valid values for the `model` field in the Responses API. Use a text-capable mainline model (for example, `gpt-5.4` or `gpt-5`) with the hosted `image_generation` tool.
+The model used for the image generation process is always a GPT Image model, including `gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`, and `gpt-image-1-mini`, but these models aren't valid values for the `model` field in the Responses API. Use a text-capable mainline model (for example, `gpt-5.5` or `gpt-5`) with the hosted `image_generation` tool.

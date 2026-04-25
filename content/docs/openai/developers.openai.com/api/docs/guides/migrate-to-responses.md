@@ -857,7 +857,7 @@ curl https://api.example.com/search \\
 
 ```javascript
 const answer = await client.responses.create({
-    model: 'gpt-5.4',
+    model: 'gpt-5.5',
     input: 'Who is the current president of France?',
     tools: [{ type: 'web_search' }]
 });
@@ -867,7 +867,7 @@ console.log(answer.output_text);
 
 ```python
 answer = client.responses.create(
-    model="gpt-5.4",
+    model="gpt-5.5",
     input="Who is the current president of France?",
     tools=[{"type": "web_search"}]
 )
@@ -880,7 +880,7 @@ curl https://api.openai.com/v1/responses \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer $OPENAI_API_KEY" \\
   -d '{
-    "model": "gpt-5.4",
+    "model": "gpt-5.5",
     "input": "Who is the current president of France?",
     "tools": [{"type": "web_search"}]
   }'

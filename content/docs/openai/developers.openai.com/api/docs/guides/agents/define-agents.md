@@ -41,7 +41,7 @@ const getWeather = tool({
 const agent = new Agent({
   name: "Weather bot",
   instructions: "You are a helpful weather bot.",
-  model: "gpt-5.4",
+  model: "gpt-5.5",
   tools: [getWeather],
 });
 ```
@@ -59,7 +59,7 @@ def get_weather(city: str) -> str:
 agent = Agent(
     name="Weather bot",
     instructions="You are a helpful weather bot.",
-    model="gpt-5.4",
+    model="gpt-5.5",
     tools=[get_weather],
 )
 ```
