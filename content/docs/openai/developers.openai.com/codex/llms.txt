@@ -92,7 +92,7 @@ Use this as a compact map of Codex docs. Each page has a Markdown twin at `/code
 - [Codex IDE extension slash commands](https://developers.openai.com/codex/ide/slash-commands.md): Reference for slash commands in the Codex IDE extension
 
 ## Integrations
-- [Use Codex in GitHub](https://developers.openai.com/codex/integrations/github.md): Run Codex code review in pull requests
+- [Codex code review in GitHub](https://developers.openai.com/codex/integrations/github.md): Set up Codex code review for GitHub pull requests, request reviews with @codex review, enable automatic reviews, and customize review guidelines.
 - [Use Codex in Linear](https://developers.openai.com/codex/integrations/linear.md): Run Codex tasks from Linear issues
 - [Use Codex in Slack](https://developers.openai.com/codex/integrations/slack.md): Ask Codex to run tasks from channels and threads
 

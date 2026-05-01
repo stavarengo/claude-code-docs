@@ -30,7 +30,7 @@ Codex uses different sandbox modes depending on where you run it:
 - **Codex cloud**: Runs in isolated OpenAI-managed containers, preventing access to your host system or unrelated data. Uses a two-phase runtime model: setup runs before the agent phase and can access the network to install specified dependencies, then the agent phase runs offline by default unless you enable internet access for that environment. Secrets configured for cloud environments are available only during setup and are removed before the agent phase starts.
 - **Codex CLI / IDE extension**: OS-level mechanisms enforce sandbox policies. Defaults include no network access and write permissions limited to the active workspace. You can configure the sandbox, approval policy, and network settings based on your risk tolerance.
 
-In the `Auto` preset (for example, `--full-auto`), Codex can read files, make edits, and run commands in the working directory automatically.
+In the `Auto` preset (for example, `--sandbox workspace-write --ask-for-approval on-request`), Codex can read files, make edits, and run commands in the working directory automatically.
 
 Codex asks for approval to edit files outside the workspace or to run commands that require network access. If you want to chat or plan without making changes, switch to `read-only` mode with the `/permissions` command.
 
@@ -152,15 +152,15 @@ can constrain it with `allowed_approvals_reviewers`.
 
 ### Common sandbox and approval combinations
 
-| Intent                                                            | Flags                                                          | Effect                                                                                                                                           |
-| ----------------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Auto (preset)                                                     | _no flags needed_ or `--full-auto`                             | Codex can read files, make edits, and run commands in the workspace. Codex requires approval to edit outside the workspace or to access network. |
-| Safe read-only browsing                                           | `--sandbox read-only --ask-for-approval on-request`            | Codex can read files and answer questions. Codex requires approval to make edits, run commands, or access network.                               |
-| Read-only non-interactive (CI)                                    | `--sandbox read-only --ask-for-approval never`                 | Codex can only read files; never asks for approval.                                                                                              |
-| Automatically edit but ask for approval to run untrusted commands | `--sandbox workspace-write --ask-for-approval untrusted`       | Codex can read and edit files but asks for approval before running untrusted commands.                                                           |
-| Dangerous full access                                             | `--dangerously-bypass-approvals-and-sandbox` (alias: `--yolo`) | No sandbox; no approvals _(not recommended)_                                                                               |
+| Intent                                                            | Flags                                                                          | Effect                                                                                                                                           |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Auto (preset)                                                     | _no flags needed_ or `--sandbox workspace-write --ask-for-approval on-request` | Codex can read files, make edits, and run commands in the workspace. Codex requires approval to edit outside the workspace or to access network. |
+| Safe read-only browsing                                           | `--sandbox read-only --ask-for-approval on-request`                            | Codex can read files and answer questions. Codex requires approval to make edits, run commands, or access network.                               |
+| Read-only non-interactive (CI)                                    | `--sandbox read-only --ask-for-approval never`                                 | Codex can only read files; never asks for approval.                                                                                              |
+| Automatically edit but ask for approval to run untrusted commands | `--sandbox workspace-write --ask-for-approval untrusted`                       | Codex can read and edit files but asks for approval before running untrusted commands.                                                           |
+| Dangerous full access                                             | `--dangerously-bypass-approvals-and-sandbox` (alias: `--yolo`)                 | No sandbox; no approvals _(not recommended)_                                                                               |
 
-`--full-auto` is a convenience alias for `--sandbox workspace-write --ask-for-approval on-request`.
+For non-interactive runs, use `codex exec --sandbox workspace-write`; Codex keeps older `codex exec --full-auto` invocations as a deprecated compatibility path and prints a warning.
 
 With `--ask-for-approval untrusted`, Codex runs only known-safe read operations automatically. Commands that can mutate state or trigger external execution paths (for example, destructive Git operations or Git output/config-override flags) require approval.
 
@@ -206,9 +206,11 @@ To see what happens when a command runs under the Codex sandbox, use these Codex
 
 ```bash
 # macOS
-codex sandbox macos [--full-auto] [--log-denials] [COMMAND]...
+codex sandbox macos [--permissions-profile <name>] [--log-denials] [COMMAND]...
 # Linux
-codex sandbox linux [--full-auto] [COMMAND]...
+codex sandbox linux [--permissions-profile <name>] [COMMAND]...
+# Windows
+codex sandbox windows [--permissions-profile <name>] [COMMAND]...
 ```
 
 The `sandbox` command is also available as `codex debug`, and the platform helpers have aliases (for example `codex sandbox seatbelt` and `codex sandbox landlock`).
@@ -2483,6 +2485,9 @@ If a client sends an experimental method or field without opting in, app-server 
 - `thread/turns/list` - page through a stored thread's turn history without resuming it.
 - `thread/loaded/list` - list the thread ids currently loaded in memory.
 - `thread/name/set` - set or update a thread's user-facing name for a loaded thread or a persisted rollout; emits `thread/name/updated`.
+- `thread/goal/set` - set the goal for a loaded thread (experimental; requires `capabilities.experimentalApi`); emits `thread/goal/updated`.
+- `thread/goal/get` - read the current goal for a loaded thread (experimental; requires `capabilities.experimentalApi`).
+- `thread/goal/clear` - clear the goal for a loaded thread (experimental; requires `capabilities.experimentalApi`); emits `thread/goal/cleared`.
 - `thread/metadata/update` - patch SQLite-backed stored thread metadata; currently supports persisted `gitInfo`.
 - `thread/archive` - move a thread's log file into the archived directory; returns `{}` on success and emits `thread/archived`.
 - `thread/unsubscribe` - unsubscribe this connection from thread turn/item events. If this was the last subscriber, the server unloads the thread after a no-subscriber inactivity grace period and emits `thread/closed`.
@@ -2503,12 +2508,14 @@ If a client sends an experimental method or field without opting in, app-server 
 - `command/exec/terminate` - stop a running `command/exec` session.
 - `command/exec/outputDelta` (notify) - emitted for base64-encoded stdout/stderr chunks from a streaming `command/exec` session.
 - `model/list` - list available models (set `includeHidden: true` to include entries with `hidden: true`) with effort options, optional `upgrade`, and `inputModalities`.
+- `modelProvider/capabilities/read` - read provider capability bounds for model/provider combinations (experimental; requires `capabilities.experimentalApi`).
 - `experimentalFeature/list` - list feature flags with lifecycle stage metadata and cursor pagination.
 - `experimentalFeature/enablement/set` - patch in-memory runtime enablement for supported feature keys such as `apps` and `plugins`.
 - `collaborationMode/list` - list collaboration mode presets (experimental, no pagination).
 - `skills/list` - list skills for one or more `cwd` values (supports `forceReload` and optional `perCwdExtraUserRoots`).
 - `skills/changed` (notify) - emitted when watched local skill files change.
 - `marketplace/add` - add a remote plugin marketplace and persist it into the user's marketplace config.
+- `marketplace/upgrade` - refresh a configured Git marketplace, or all configured Git marketplaces when you omit the marketplace name.
 - `plugin/list` - list discovered plugin marketplaces and plugin state, including install/auth policy metadata, marketplace load errors, featured plugin ids, and local, Git, or remote plugin source metadata.
 - `plugin/read` - read one plugin by marketplace path or remote marketplace name and plugin name, including bundled skills, apps, and MCP server names when those details are available.
 - `plugin/install` - install a plugin from a marketplace path or remote marketplace name.
@@ -2526,7 +2533,7 @@ If a client sends an experimental method or field without opting in, app-server 
 - `feedback/upload` - submit a feedback report (classification + optional reason/logs + conversation id, plus optional `extraLogFiles` attachments).
 - `config/read` - fetch the effective configuration on disk after resolving configuration layering.
 - `externalAgentConfig/detect` - detect external-agent artifacts that can be migrated with `includeHome` and optional `cwds`; each detected item includes `cwd` (`null` for home).
-- `externalAgentConfig/import` - apply selected external-agent migration items by passing explicit `migrationItems` with `cwd` (`null` for home); plugin imports emit `externalAgentConfig/import/completed`.
+- `externalAgentConfig/import` - apply selected external-agent migration items by passing explicit `migrationItems` with `cwd` (`null` for home). Supported item types include config, skills, `AGENTS.md`, plugins, MCP server config, subagents, hooks, commands, and sessions; plugin imports emit `externalAgentConfig/import/completed`.
 - `config/value/write` - write a single configuration key/value to the user's `config.toml` on disk.
 - `config/batchWrite` - apply configuration edits atomically to the user's `config.toml` on disk.
 - `configRequirements/read` - fetch requirements from `requirements.toml` and/or MDM, including allow-lists, pinned `featureRequirements`, and residency/network requirements (or `null` if you haven't set any up).
@@ -4495,7 +4502,7 @@ Environment IDs come from your Codex cloud configuration—use `codex cloud` and
 
 ## Slash commands
 
-Slash commands give you quick access to specialized workflows like `/review`, `/fork`, or your own reusable prompts. Codex ships with a curated set of built-ins, and you can create custom ones for team-specific tasks or personal shortcuts.
+Slash commands give you quick access to specialized workflows like `/review`, `/fork`, `/side`, or your own reusable prompts. Codex ships with a curated set of built-ins, and you can create custom ones for team-specific tasks or personal shortcuts.
 
 See the [slash commands guide](https://developers.openai.com/codex/guides/slash-commands) to browse the catalog of built-ins, learn how to author custom commands, and understand where they live on disk.
 
@@ -4568,13 +4575,6 @@ export const globalFlagOptions = [
     type: "untrusted | on-request | never",
     description:
       "Control when Codex pauses for human approval before running a command. `on-failure` is deprecated; prefer `on-request` for interactive runs or `never` for non-interactive runs.",
-  },
-  {
-    key: "--full-auto",
-    type: "boolean",
-    defaultValue: "false",
-    description:
-      "Shortcut for low-friction local work: sets `--ask-for-approval on-request` and `--sandbox workspace-write`.",
   },
   {
     key: "--dangerously-bypass-approvals-and-sandbox, --yolo",
@@ -4671,6 +4671,13 @@ export const commandOverview = [
       "Debug app-server by sending a single V2 message through the built-in test client.",
   },
   {
+    key: "codex debug models",
+    href: "/codex/cli/reference#codex-debug-models",
+    type: "experimental",
+    description:
+      "Print the raw model catalog Codex sees, including an option to inspect only the bundled catalog.",
+  },
+  {
     key: "codex apply",
     href: "/codex/cli/reference#codex-apply",
     type: "stable",
@@ -4765,7 +4772,14 @@ export const commandOverview = [
     href: "/codex/cli/reference#codex-sandbox",
     type: "experimental",
     description:
-      "Run arbitrary commands inside Codex-provided macOS seatbelt or Linux bubblewrap sandboxes.",
+      "Run arbitrary commands inside Codex-provided macOS, Linux, or Windows sandboxes.",
+  },
+  {
+    key: "codex update",
+    href: "/codex/cli/reference#codex-update",
+    type: "stable",
+    description:
+      "Check for and apply a Codex CLI update when the installed release supports self-update.",
   },
 ];
 
@@ -4810,7 +4824,7 @@ export const execOptions = [
     type: "boolean",
     defaultValue: "false",
     description:
-      "Apply the low-friction automation preset (`workspace-write` sandbox and `on-request` approvals).",
+      "Deprecated compatibility flag. Prefer `--sandbox workspace-write`; Codex prints a warning when this flag is used.",
   },
   {
     key: "--dangerously-bypass-approvals-and-sandbox, --yolo",
@@ -4836,6 +4850,20 @@ export const execOptions = [
     type: "boolean",
     defaultValue: "false",
     description: "Run without persisting session rollout files to disk.",
+  },
+  {
+    key: "--ignore-user-config",
+    type: "boolean",
+    defaultValue: "false",
+    description:
+      "Do not load `$CODEX_HOME/config.toml`. Authentication still uses `CODEX_HOME`.",
+  },
+  {
+    key: "--ignore-rules",
+    type: "boolean",
+    defaultValue: "false",
+    description:
+      "Do not load user or project execpolicy `.rules` files for this run.",
   },
   {
     key: "--output-schema",
@@ -4945,6 +4973,16 @@ export const debugAppServerSendMessageV2Options = [
     type: "string",
     description:
       "Message text sent to app-server through the built-in V2 test-client flow.",
+  },
+];
+
+export const debugModelsOptions = [
+  {
+    key: "--bundled",
+    type: "boolean",
+    defaultValue: "false",
+    description:
+      "Skip refresh and print only the model catalog bundled with the current Codex binary.",
   },
 ];
 
@@ -5102,11 +5140,36 @@ export const applyOptions = [
 
 export const sandboxMacOptions = [
   {
-    key: "--full-auto",
+    key: "--permissions-profile",
+    type: "NAME",
+    description:
+      "Apply a named permissions profile from the active configuration stack.",
+  },
+  {
+    key: "--cd, -C",
+    type: "DIR",
+    description:
+      "Working directory used for profile resolution and command execution. Requires `--permissions-profile`.",
+  },
+  {
+    key: "--include-managed-config",
     type: "boolean",
     defaultValue: "false",
     description:
-      "Grant write access to the current workspace and `/tmp` without approvals.",
+      "Include managed requirements while resolving an explicit permissions profile. Requires `--permissions-profile`.",
+  },
+  {
+    key: "--allow-unix-socket",
+    type: "path",
+    description:
+      "Allow the sandboxed command to bind or connect Unix sockets rooted at this path. Repeat to allow multiple paths.",
+  },
+  {
+    key: "--log-denials",
+    type: "boolean",
+    defaultValue: "false",
+    description:
+      "Capture macOS sandbox denials with `log stream` while the command runs and print them after exit.",
   },
   {
     key: "--config, -c",
@@ -5124,11 +5187,23 @@ export const sandboxMacOptions = [
 
 export const sandboxLinuxOptions = [
   {
-    key: "--full-auto",
+    key: "--permissions-profile",
+    type: "NAME",
+    description:
+      "Apply a named permissions profile from the active configuration stack.",
+  },
+  {
+    key: "--cd, -C",
+    type: "DIR",
+    description:
+      "Working directory used for profile resolution and command execution. Requires `--permissions-profile`.",
+  },
+  {
+    key: "--include-managed-config",
     type: "boolean",
     defaultValue: "false",
     description:
-      "Grant write access to the current workspace and `/tmp` inside the Landlock sandbox.",
+      "Include managed requirements while resolving an explicit permissions profile. Requires `--permissions-profile`.",
   },
   {
     key: "--config, -c",
@@ -5141,6 +5216,40 @@ export const sandboxLinuxOptions = [
     type: "var-args",
     description:
       "Command to execute under Landlock + seccomp. Provide the executable after `--`.",
+  },
+];
+
+export const sandboxWindowsOptions = [
+  {
+    key: "--permissions-profile",
+    type: "NAME",
+    description:
+      "Apply a named permissions profile from the active configuration stack.",
+  },
+  {
+    key: "--cd, -C",
+    type: "DIR",
+    description:
+      "Working directory used for profile resolution and command execution. Requires `--permissions-profile`.",
+  },
+  {
+    key: "--include-managed-config",
+    type: "boolean",
+    defaultValue: "false",
+    description:
+      "Include managed requirements while resolving an explicit permissions profile. Requires `--permissions-profile`.",
+  },
+  {
+    key: "--config, -c",
+    type: "key=value",
+    description:
+      "Configuration overrides applied before launching the sandbox (repeatable).",
+  },
+  {
+    key: "COMMAND...",
+    type: "var-args",
+    description:
+      "Command to execute under the native Windows sandbox. Provide the executable after `--`.",
   },
 ];
 
@@ -5305,7 +5414,7 @@ The Maturity column uses feature maturity labels such as Experimental, Beta,
 
 ### `codex` (interactive)
 
-Running `codex` with no subcommand launches the interactive terminal UI (TUI). The agent accepts the global flags above plus image attachments. Web search defaults to cached mode; use `--search` to switch to live browsing and `--full-auto` to let Codex run most commands without prompts.
+Running `codex` with no subcommand launches the interactive terminal UI (TUI). The agent accepts the global flags above plus image attachments. Web search defaults to cached mode; use `--search` to switch to live browsing. For low-friction local work, use `--sandbox workspace-write --ask-for-approval on-request`.
 
 Use `--remote ws://host:port` or `--remote wss://host:port` to connect the TUI to an app server started with `codex app-server --listen ws://IP:PORT`. Add `--remote-auth-token-env <ENV_VAR>` when the server requires a bearer token for WebSocket authentication. See [Codex CLI features](https://developers.openai.com/codex/cli/features#connect-the-tui-to-a-remote-app-server) for setup examples and authentication guidance.
 
@@ -5328,6 +5437,12 @@ Windows, it prints the path to open after installation.
 Send one message through app-server's V2 thread/turn flow using the built-in app-server test client.
 
 This debug flow initializes with `experimentalApi: true`, starts a thread, sends a turn, and streams server notifications. Use it to reproduce and inspect app-server protocol behavior locally.
+
+### `codex debug models`
+
+Print the raw model catalog Codex sees as JSON.
+
+Use `--bundled` when you want to inspect only the catalog bundled with the current binary, without refreshing from the remote models endpoint.
 
 ### `codex apply`
 
@@ -5412,9 +5527,15 @@ Use the sandbox helper to run a command under the same policies Codex uses inter
 
 #### Linux Landlock
 
+#### Windows
+
+### `codex update`
+
+Check for and apply a Codex CLI update when the installed release supports self-update. Debug builds print a message telling you to install a release build instead.
+
 ## Flag combinations and safety tips
 
-- Set `--full-auto` for unattended local work, but avoid combining it with `--dangerously-bypass-approvals-and-sandbox` unless you are inside a dedicated sandbox VM.
+- Use `--sandbox workspace-write` for unattended local work that can stay inside the workspace, and avoid `--dangerously-bypass-approvals-and-sandbox` unless you are inside a dedicated sandbox VM.
 - When you need to grant Codex write access to more directories, prefer `--add-dir` rather than forcing `--sandbox danger-full-access`.
 - Pair `--json` with `--output-last-message` in CI to capture machine-readable progress and a final natural-language summary.
 
@@ -5466,7 +5587,7 @@ completion still works before you queue the command.
 | [`/feedback`](#send-feedback-with-feedback)                                     | Send logs to the Codex maintainers.                             | Report issues or share diagnostics with support.                                                           |
 | [`/init`](#generate-agentsmd-with-init)                                         | Generate an `AGENTS.md` scaffold in the current directory.      | Capture persistent instructions for the repository or subdirectory you're working in.                      |
 | [`/logout`](#sign-out-with-logout)                                              | Sign out of Codex.                                              | Clear local credentials when using a shared machine.                                                       |
-| [`/mcp`](#list-mcp-tools-with-mcp)                                              | List configured Model Context Protocol (MCP) tools.             | Check which external tools Codex can call during the session.                                              |
+| [`/mcp`](#list-mcp-tools-with-mcp)                                              | List configured Model Context Protocol (MCP) tools.             | Check which external tools Codex can call during the session; add `verbose` for server details.            |
 | [`/mention`](#highlight-files-with-mention)                                     | Attach a file to the conversation.                              | Point Codex at specific files or folders you want it to inspect next.                                      |
 | [`/model`](#set-the-active-model-with-model)                                    | Choose the active model (and reasoning effort, when available). | Switch between general-purpose models (`gpt-4.1-mini`) and deeper reasoning models before running a task.  |
 | [`/fast`](#toggle-fast-mode-with-fast)                                          | Toggle Fast mode for supported models.                          | Turn Fast mode on or off, or check whether the current thread is using it.                                 |
@@ -5475,6 +5596,7 @@ completion still works before you queue the command.
 | [`/ps`](#check-background-terminals-with-ps)                                    | Show experimental background terminals and their recent output. | Check long-running commands without leaving the main transcript.                                           |
 | [`/stop`](#stop-background-terminals-with-stop)                                 | Stop all background terminals.                                  | Cancel background terminal work started by the current session.                                            |
 | [`/fork`](#fork-the-current-conversation-with-fork)                             | Fork the current conversation into a new thread.                | Branch the active session to explore a new approach without losing the current transcript.                 |
+| [`/side`](#start-a-side-conversation-with-side)                                 | Start an ephemeral side conversation.                           | Ask a focused follow-up without disrupting the main thread's transcript.                                   |
 | [`/resume`](#resume-a-saved-conversation-with-resume)                           | Resume a saved conversation from your session list.             | Continue work from a previous CLI session without starting over.                                           |
 | [`/new`](#start-a-new-conversation-with-new)                                    | Start a new conversation inside the same CLI session.           | Reset the chat context without leaving the CLI when you want a fresh prompt in the same repo.              |
 | [`/quit`](#exit-the-cli-with-quit-or-exit)                                      | Exit the CLI.                                                   | Leave the session immediately.                                                                             |
@@ -5483,6 +5605,7 @@ completion still works before you queue the command.
 | [`/debug-config`](#inspect-config-layers-with-debug-config)                     | Print config layer and requirements diagnostics.                | Debug precedence and policy requirements, including experimental network constraints.                      |
 | [`/statusline`](#configure-footer-items-with-statusline)                        | Configure TUI status-line fields interactively.                 | Pick and reorder footer items (model/context/limits/git/tokens/session) and persist in config.toml.        |
 | [`/title`](#configure-terminal-title-items-with-title)                          | Configure terminal window or tab title fields interactively.    | Pick and reorder title items such as project, status, thread, branch, model, and task progress.            |
+| [`/keymap`](#remap-tui-shortcuts-with-keymap)                                   | Remap TUI keyboard shortcuts.                                   | Inspect and persist custom shortcut bindings in `config.toml`.                                             |
 
 `/quit` and `/exit` both exit the CLI. Use them only after you have saved or
 committed any important work.
@@ -5629,6 +5752,18 @@ Expected: The terminal window or tab title updates immediately and persists to
 Available title items include app name, project, spinner, status, thread, git
 branch, model, and task progress.
 
+### Remap TUI shortcuts with `/keymap`
+
+Use `/keymap` to inspect, update, and persist keyboard shortcut bindings for the TUI.
+
+1. Type `/keymap`.
+2. Pick the shortcut context and action you want to change.
+3. Enter the new binding or remove the existing one.
+
+Expected: Codex updates the active keymap and writes the custom binding to `tui.keymap` in `config.toml`.
+
+Key bindings use names such as `ctrl-a`, `shift-enter`, and `page-down`. Context-specific bindings override `tui.keymap.global`; an empty binding list unbinds the action.
+
 ### Check background terminals with `/ps`
 
 1. Type `/ps`.
@@ -5698,6 +5833,18 @@ approach in parallel.
 If you need to fork a saved session instead of the current one, run
 `codex fork` in your terminal to open the session picker.
 
+### Start a side conversation with `/side`
+
+Use `/side` to start an ephemeral fork from the current conversation without switching away from the main task.
+
+1. Type `/side` to open a side conversation.
+2. Optionally add inline text, for example `/side Check whether this plan has an obvious risk`.
+3. Return to the parent thread after the focused detour finishes.
+
+Expected: Codex opens a side conversation whose transcript is separate from the parent thread. While you are in side mode, the TUI continues to show parent-thread status so you can see whether the main task is still running.
+
+`/side` is unavailable inside another side conversation and during review mode.
+
 ### Generate `AGENTS.md` with `/init`
 
 1. Run `/init` in the directory where you want Codex to look for persistent instructions.
@@ -5721,6 +5868,8 @@ you set `review_model` in `config.toml`.
 2. Review the list to confirm which MCP servers and tools are available.
 
 Expected: You see the configured Model Context Protocol (MCP) tools Codex can call in this session.
+
+Use `/mcp verbose` to include detailed server diagnostics. If you pass anything other than `verbose`, Codex shows the command usage.
 
 ### Browse apps with `/apps`
 
@@ -6439,9 +6588,10 @@ The common approval policies are:
 - `never`: Codex doesn't stop for approval prompts.
 
 Full access means using `sandbox_mode = "danger-full-access"` together with
-`approval_policy = "never"`. By contrast, `--full-auto` is the lower-risk local
-automation preset: `sandbox_mode = "workspace-write"` and
-`approval_policy = "on-request"`.
+`approval_policy = "never"`. By contrast, the lower-risk local automation
+preset is `sandbox_mode = "workspace-write"` together with
+`approval_policy = "on-request"`, or the matching CLI flags
+`--sandbox workspace-write --ask-for-approval on-request`.
 
 If you need Codex to work across more than one directory, writable roots let
 you extend the places it can modify without removing the sandbox entirely. If
@@ -6770,6 +6920,24 @@ refresh_interval_ms = 300000
 
 The auth command receives no `stdin` and must print the token to stdout. Codex trims surrounding whitespace, treats an empty token as an error, and refreshes proactively at `refresh_interval_ms`; set `refresh_interval_ms = 0` to refresh only after an authentication retry. Don't combine `[model_providers.<id>.auth]` with `env_key`, `experimental_bearer_token`, or `requires_openai_auth`.
 
+### Amazon Bedrock provider
+
+Codex includes a built-in `amazon-bedrock` model provider. Set it directly as
+`model_provider`; unlike custom providers, this built-in provider supports only
+the nested AWS profile and region overrides.
+
+```toml
+model_provider = "amazon-bedrock"
+model = "<bedrock-model-id>"
+
+[model_providers.amazon-bedrock.aws]
+profile = "default"
+region = "eu-central-1"
+```
+
+If you omit `profile`, Codex uses the standard AWS credential chain. Set
+`region` to the supported Bedrock region that should handle requests.
+
 ## OSS mode (local providers)
 
 Codex can run against a local "open source" provider (for example, Ollama or LM Studio) when you pass `--oss`. If you pass `--oss` without specifying a provider, Codex uses `oss_provider` as the default.
@@ -6858,6 +7026,36 @@ policy = """
 Use your organization's automatic review policy.
 """
 ```
+
+### Named permission profiles
+
+Set `default_permissions` to reuse a sandbox profile by name. Codex includes
+the built-in profiles `:read-only`, `:workspace`, and `:danger-no-sandbox`:
+
+```toml
+default_permissions = ":workspace"
+```
+
+For custom profiles, point `default_permissions` at a name you define under
+`[permissions.<name>]`:
+
+```toml
+default_permissions = "workspace"
+
+[permissions.workspace.filesystem]
+":project_roots" = { "." = "write", "**/*.env" = "none" }
+glob_scan_max_depth = 3
+
+[permissions.workspace.network]
+enabled = true
+mode = "limited"
+
+[permissions.workspace.network.domains]
+"api.openai.com" = "allow"
+```
+
+Use built-in names with a leading colon. Custom names don't use a leading
+colon and must have matching `permissions` tables.
 
 Need the complete key list (including profile-scoped overrides and requirements constraints)? See [Configuration Reference](https://developers.openai.com/codex/config-reference) and [Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration).
 
@@ -7321,6 +7519,16 @@ sandbox_mode = "workspace-write"
 
 For mode-by-mode behavior (including protected `.git`/`.codex` paths and network defaults), see [Sandbox and approvals](https://developers.openai.com/codex/agent-approvals-security#sandbox-and-approvals), [Protected paths in writable roots](https://developers.openai.com/codex/agent-approvals-security#protected-paths-in-writable-roots), and [Network access](https://developers.openai.com/codex/agent-approvals-security#network-access).
 
+#### Permission profiles
+
+Use a named permission profile when you want one reusable filesystem or network policy across sessions:
+
+```toml
+default_permissions = ":workspace"
+```
+
+Built-in profiles include `:read-only`, `:workspace`, and `:danger-no-sandbox`. For custom filesystem or network rules, define `[permissions.<name>]` tables and set `default_permissions` to that name.
+
 #### Windows sandbox mode
 
 When running Codex natively on Windows, set the native sandbox mode to `elevated` in the `windows` table. Use `unelevated` only if you don't have administrator permissions or if elevated setup fails.
@@ -7362,6 +7570,18 @@ personality = "friendly" # or "pragmatic" or "none"
 ```
 
 You can override this later in an active session with `/personality` or per thread/turn when using the app-server APIs.
+
+#### TUI keymap
+
+Customize terminal shortcuts under `tui.keymap`. Context-specific bindings override `tui.keymap.global`, and an empty list unbinds the action.
+
+```toml
+[tui.keymap.global]
+open_transcript = "ctrl-t"
+
+[tui.keymap.composer]
+submit = ["enter", "ctrl-m"]
+```
 
 #### Command environment
 
@@ -7744,6 +7964,12 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
       type: "array<table>",
       description:
         'Allow tool suggestions for additional discoverable connectors or plugins. Each entry uses `type = "connector"` or `"plugin"` and an `id`.',
+    },
+    {
+      key: "tool_suggest.disabled_tools",
+      type: "array<table>",
+      description:
+        'Disable suggestions for specific discoverable connectors or plugins. Each entry uses `type = "connector"` or `"plugin"` and an `id`.',
     },
     {
       key: "features.apps",
@@ -8173,6 +8399,17 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
       description: "Working directory for the token command.",
     },
     {
+      key: "model_providers.amazon-bedrock.aws.profile",
+      type: "string",
+      description:
+        "AWS profile name used by the built-in `amazon-bedrock` provider.",
+    },
+    {
+      key: "model_providers.amazon-bedrock.aws.region",
+      type: "string",
+      description: "AWS region used by the built-in `amazon-bedrock` provider.",
+    },
+    {
       key: "model_reasoning_effort",
       type: "minimal | low | medium | high | xhigh",
       description:
@@ -8506,6 +8743,18 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
         "Syntax-highlighting theme override (kebab-case theme name).",
     },
     {
+      key: "tui.keymap.<context>.<action>",
+      type: "string | array<string>",
+      description:
+        "Keyboard shortcut binding for a TUI action. Supported contexts include `global`, `chat`, `composer`, `editor`, `pager`, `list`, and `approval`; context-specific bindings override `tui.keymap.global`.",
+    },
+    {
+      key: "tui.keymap.<context>.<action> = []",
+      type: "empty array",
+      description:
+        "Unbind the action in that keymap context. Key names use normalized strings such as `ctrl-a`, `shift-enter`, or `page-down`.",
+    },
+    {
       key: "tui.model_availability_nux.<model>",
       type: "integer",
       description: "Internal startup-tooltip state keyed by model slug.",
@@ -8587,7 +8836,7 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
       key: "default_permissions",
       type: "string",
       description:
-        "Name of the default permissions profile to apply to sandboxed tool calls.",
+        "Name of the default permissions profile to apply to sandboxed tool calls. Built-ins are `:read-only`, `:workspace`, and `:danger-no-sandbox`; custom profile names require matching `[permissions.<name>]` tables.",
     },
     {
       key: "permissions.<name>.filesystem",
@@ -9070,8 +9319,10 @@ allow_login_shell = true
 # - workspace-write
 # - danger-full-access (no sandbox; extremely risky)
 sandbox_mode = "read-only"
-# Named permissions profile to apply by default. Required before using [permissions.<name>].
-# default_permissions = "workspace"
+# Named permissions profile to apply by default. Built-ins:
+# :read-only | :workspace | :danger-no-sandbox
+# Use a custom name such as "workspace" only when you also define [permissions.workspace].
+# default_permissions = ":workspace"
 
 # Example filesystem profile. Use `"none"` to deny reads for exact paths or
 # glob patterns. On platforms that need pre-expanded glob matches, set
@@ -9298,6 +9549,15 @@ show_tooltips = true
 # You can also add custom .tmTheme files under $CODEX_HOME/themes.
 # theme = "catppuccin-mocha"
 
+# Custom key bindings. Context-specific bindings override [tui.keymap.global].
+# Use [] to unbind an action.
+# [tui.keymap.global]
+# open_transcript = "ctrl-t"
+# open_external_editor = []
+#
+# [tui.keymap.composer]
+# submit = ["enter", "ctrl-m"]
+
 # Internal tooltip state keyed by model slug. Usually managed by Codex.
 # [tui.model_availability_nux]
 # "gpt-5.4" = 1
@@ -9408,9 +9668,17 @@ enabled = true
 # - openai
 # - ollama
 # - lmstudio
+# - amazon-bedrock
 # These IDs are reserved. Use a different ID for custom providers.
 
 [model_providers]
+
+# --- Example: built-in Amazon Bedrock provider options ---
+# model_provider = "amazon-bedrock"
+# model = "<bedrock-model-id>"
+# [model_providers.amazon-bedrock.aws]
+# profile = "default"
+# region = "eu-central-1"
 
 # --- Example: OpenAI data residency with explicit base URL or headers ---
 # [model_providers.openaidr]
@@ -9481,6 +9749,10 @@ enabled = true
 # discoverables = [
 #   { type = "connector", id = "gmail" },
 #   { type = "plugin", id = "figma@openai-curated" },
+# ]
+# disabled_tools = [
+#   { type = "plugin", id = "slack@openai-curated" },
+#   { type = "connector", id = "connector_googlecalendar" },
 # ]
 
 ################################################################################
@@ -10638,7 +10910,7 @@ Replace `.github/codex/prompts/review.md` with your own prompt file or use the `
 Fine-tune how Codex runs by setting the action inputs that map to `codex exec` options:
 
 - `prompt` or `prompt-file` (choose one): Inline instructions or a repository path to Markdown or text with your task. Consider storing prompts in `.github/codex/prompts/`.
-- `codex-args`: Extra CLI flags. Provide a JSON array (for example `["--full-auto"]`) or a shell string (`--full-auto --sandbox danger-full-access`) to allow edits, streaming, or MCP configuration.
+- `codex-args`: Extra CLI flags. Provide a JSON array (for example `["--json"]`) or a shell string (`--sandbox workspace-write --json`) to allow edits, streaming, or MCP configuration.
 - `model` and `effort`: Pick the Codex agent configuration you want; leave empty for defaults.
 - `sandbox`: Match the sandbox mode (`workspace-write`, `read-only`, `danger-full-access`) to the permissions Codex needs during the run.
 - `output-file`: Save the final Codex message to disk so later steps can upload or diff it.
@@ -11514,6 +11786,11 @@ Codex discovers hooks next to active config layers in either of these forms:
 - `hooks.json`
 - inline `[hooks]` tables inside `config.toml`
 
+Installed plugins can also bundle lifecycle config through their plugin
+manifest or a default `hooks/hooks.json` file. See [Build
+plugins](https://developers.openai.com/codex/plugins/build#bundled-mcp-servers-and-lifecycle-config) for the
+plugin packaging rules.
+
 In practice, the four most useful locations are:
 
 - `~/.codex/hooks.json`
@@ -12381,16 +12658,27 @@ Slash commands let you control Codex without leaving the chat input. Use them to
 
 ---
 
-# Use Codex in GitHub
+# Codex code review in GitHub
 
-Use Codex to review pull requests without leaving GitHub. Add a pull request comment with `@codex review`, and Codex replies with a standard GitHub code review.
+Use Codex code review to get another high-signal review pass on GitHub pull
+requests. Codex reviews the pull request diff, follows your repository guidance,
+and posts a standard GitHub code review focused on serious issues.
 
 <br />
 
-## Set up code review
+## Before you start
+
+Make sure you have:
+
+- [Codex cloud](https://developers.openai.com/codex/cloud) set up for the repository you want to review.
+- Access to [Codex code review settings](https://chatgpt.com/codex/settings/code-review).
+- An `AGENTS.md` file if you want Codex to follow repository-specific review guidance.
+
+## Set up Codex code review
 
 1. Set up [Codex cloud](https://developers.openai.com/codex/cloud).
-2. Go to [Codex settings](https://chatgpt.com/codex/settings/code-review) and turn on **Code review** for your repository.
+2. Go to [Codex settings](https://chatgpt.com/codex/settings/code-review).
+3. Turn on **Code review** for your repository.
 
 <div class="not-prose max-w-3xl mr-auto">
   <img src="https://developers.openai.com/images/codex/code-review/code-review-settings.png"
@@ -12400,7 +12688,7 @@ Use Codex to review pull requests without leaving GitHub. Add a pull request com
 </div>
 <br />
 
-## Request a review
+## Request a Codex review
 
 1. In a pull request comment, mention `@codex review`.
 2. Wait for Codex to react (👀) and post a review.
@@ -12413,7 +12701,9 @@ Use Codex to review pull requests without leaving GitHub. Add a pull request com
 </div>
 <br />
 
-Codex posts a review on the pull request, just like a teammate would.
+Codex posts a review on the pull request, just like a teammate would. In
+GitHub, Codex flags only P0 and P1 issues so review comments stay focused on
+high-priority risks.
 
 <div class="not-prose max-w-3xl mr-auto">
   <img src="https://developers.openai.com/images/codex/code-review/review-example.png"
@@ -12425,7 +12715,10 @@ Codex posts a review on the pull request, just like a teammate would.
 
 ## Enable automatic reviews
 
-If you want Codex to review every pull request automatically, turn on **Automatic reviews** in [Codex settings](https://chatgpt.com/codex/settings/code-review). Codex will post a review whenever a new PR is opened for review, without needing an `@codex review` comment.
+If you want Codex to review every pull request automatically, turn on
+**Automatic reviews** in [Codex settings](https://chatgpt.com/codex/settings/code-review).
+Codex will post a review whenever someone opens a new PR for review, without
+needing an `@codex review` comment.
 
 ## Customize what Codex reviews
 
@@ -12442,11 +12735,24 @@ To set guidelines for a repository, add or update a top-level `AGENTS.md` with a
 
 Codex applies guidance from the closest `AGENTS.md` to each changed file. You can place more specific instructions deeper in the tree when particular packages need extra scrutiny.
 
-For a one-off focus, add it to your pull request comment, for example:
+For a one-off focus, add it to your pull request comment:
 
 `@codex review for security regressions`
 
-In GitHub, Codex flags only P0 and P1 issues. If you want Codex to flag typos in documentation, add guidance in `AGENTS.md` (for example, “Treat typos in docs as P1.”).
+If you want Codex to flag typos in documentation, add guidance in `AGENTS.md`
+(for example, “Treat typos in docs as P1.”).
+
+## Act on review findings
+
+After Codex posts a review, you can ask it to fix issues in the same pull
+request by leaving another comment:
+
+```md
+@codex fix the P1 issue
+```
+
+Codex starts a cloud task with the pull request as context and can push a fix
+back to the branch when it has permission to do so.
 
 ## Give Codex other tasks
 
@@ -12455,6 +12761,16 @@ If you mention `@codex` in a comment with anything other than `review`, Codex st
 ```md
 @codex fix the CI failures
 ```
+
+## Troubleshoot code review
+
+If Codex doesn't react or post a review:
+
+- Confirm you turned on **Code review** for the repository in [Codex settings](https://chatgpt.com/codex/settings/code-review).
+- Confirm the pull request belongs to a repository with [Codex cloud](https://developers.openai.com/codex/cloud) set up.
+- Use the exact trigger `@codex review` in a pull request comment.
+- For automatic reviews, check that you turned on **Automatic reviews** and that
+  the pull request event matches your review trigger settings.
 
 ---
 
@@ -13415,10 +13731,14 @@ For more advanced stdin piping patterns, see [Advanced stdin piping](#advanced-s
 
 By default, `codex exec` runs in a read-only sandbox. In automation, set the least permissions needed for the workflow:
 
-- Allow edits: `codex exec --full-auto "<task>"`
+- Allow edits: `codex exec --sandbox workspace-write "<task>"`
 - Allow broader access: `codex exec --sandbox danger-full-access "<task>"`
 
 Use `danger-full-access` only in a controlled environment (for example, an isolated CI runner or container).
+
+Codex keeps `codex exec --full-auto` as a deprecated compatibility flag and prints a warning. Prefer the explicit `--sandbox workspace-write` flag in new scripts.
+
+Use `--ignore-user-config` when you need a run that doesn't load `$CODEX_HOME/config.toml`, and `--ignore-rules` when you need to skip user and project execpolicy `.rules` files for a controlled automation environment.
 
 If you configure an enabled MCP server with `required = true` and it fails to initialize, `codex exec` exits with an error instead of continuing without that server.
 
@@ -13441,7 +13761,7 @@ Sample JSON stream (each line is a JSON object):
 {"type":"turn.started"}
 {"type":"item.started","item":{"id":"item_1","type":"command_execution","command":"bash -lc ls","status":"in_progress"}}
 {"type":"item.completed","item":{"id":"item_3","type":"agent_message","text":"Repo contains docs, sdk, and examples directories."}}
-{"type":"turn.completed","usage":{"input_tokens":24763,"cached_input_tokens":24448,"output_tokens":122}}
+{"type":"turn.completed","usage":{"input_tokens":24763,"cached_input_tokens":24448,"output_tokens":122,"reasoning_output_tokens":0}}
 ```
 
 If you only need the final message, write it to a file with `-o <path>`/`--output-last-message <path>`. This writes the final message to the file and still prints it to `stdout` (see [`codex exec`](https://developers.openai.com/codex/cli/reference#codex-exec) for details).
@@ -13597,7 +13917,7 @@ jobs:
 
       - name: Run Codex
         run: |
-          codex exec --full-auto --sandbox workspace-write \
+          codex exec --sandbox workspace-write \
             "Read the repository, run the test suite, identify the minimal change needed to make all tests pass, implement only that change, and stop. Do not refactor unrelated files."
 
       - name: Verify tests
@@ -13785,8 +14105,9 @@ codex
 ```
 
 The CLI plugin browser groups plugins by marketplace. Use the marketplace tabs
-to switch sources, open a plugin to inspect details, and press <kbd>Space</kbd>
-on an installed plugin to toggle its enabled state.
+to switch sources, open a plugin to inspect details, install or uninstall
+marketplace entries, and press <kbd>Space</kbd> on an installed plugin to toggle
+its enabled state.
 
 ### Install and use a plugin
 
@@ -14182,11 +14503,11 @@ on or off state in `~/.codex/config.toml`.
 
 Every plugin has a manifest at `.codex-plugin/plugin.json`. It can also include
 a `skills/` directory, an `.app.json` file that points at one or more apps or
-connectors, an `.mcp.json` file that configures MCP servers, and assets used to
-present the plugin across supported surfaces.
+connectors, an `.mcp.json` file that configures MCP servers, lifecycle config,
+and assets used to present the plugin across supported surfaces.
 
 Only `plugin.json` belongs in `.codex-plugin/`. Keep `skills/`, `assets/`,
-`.mcp.json`, and `.app.json` at the plugin root.
+`.mcp.json`, `.app.json`, and lifecycle config files at the plugin root.
 
 Published plugins typically use a richer manifest than the minimal example that
 appears in quick-start scaffolds. The manifest has three jobs:
@@ -14215,6 +14536,7 @@ Here's a complete manifest example:
   "skills": "./skills/",
   "mcpServers": "./.mcp.json",
   "apps": "./.app.json",
+  "hooks": "./hooks/hooks.json",
   "interface": {
     "displayName": "My Plugin",
     "shortDescription": "Reusable skills and apps",
@@ -14248,8 +14570,8 @@ components:
 - `name`, `version`, and `description` identify the plugin.
 - `author`, `homepage`, `repository`, `license`, and `keywords` provide
   publisher and discovery metadata.
-- `skills`, `mcpServers`, and `apps` point to bundled components relative to
-  the plugin root.
+- `skills`, `mcpServers`, `apps`, and `hooks` point to bundled components
+  relative to the plugin root.
 - `interface` controls how install surfaces present the plugin.
 
 Use the `interface` object for install-surface metadata:
@@ -14268,8 +14590,44 @@ Use the `interface` object for install-surface metadata:
 - Keep manifest paths relative to the plugin root and start them with `./`.
 - Store visual assets such as `composerIcon`, `logo`, and `screenshots` under
   `./assets/` when possible.
-- Use `skills` for bundled skill folders, `apps` for `.app.json`, and
-  `mcpServers` for `.mcp.json`.
+- Use `skills` for bundled skill folders, `apps` for `.app.json`,
+  `mcpServers` for `.mcp.json`, and `hooks` for lifecycle config.
+- If you omit `hooks` and the plugin includes `./hooks/hooks.json`, Codex loads
+  that default lifecycle config automatically.
+
+### Bundled MCP servers and lifecycle config
+
+`mcpServers` can point to an `.mcp.json` file that contains either a direct
+server map or a wrapped `mcp_servers` object.
+
+Direct server map:
+
+```json
+{
+  "docs": {
+    "command": "docs-mcp",
+    "args": ["--stdio"]
+  }
+}
+```
+
+Wrapped server map:
+
+```json
+{
+  "mcp_servers": {
+    "docs": {
+      "command": "docs-mcp",
+      "args": ["--stdio"]
+    }
+  }
+}
+```
+
+`hooks` can point to one lifecycle JSON file, an array of lifecycle JSON files,
+an inline lifecycle object, or an array of inline lifecycle objects. File paths
+must follow the same `./`-prefixed plugin-root path rules as other manifest
+paths. If you omit the manifest field, Codex still checks `./hooks/hooks.json`.
 
 ### Publish official public plugins
 
