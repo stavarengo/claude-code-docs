@@ -12,163 +12,121 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 1322 pages - /docs - Content included below
-- German (Deutsch) (de) - 133 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 133 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 133 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 133 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 133 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 133 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 133 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 133 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 133 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 133 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 133 pages - /docs/id - Visit website for content
+- English (en) - 1275 pages - /docs - Content included below
+- German (Deutsch) (de) - 132 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 132 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 132 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 132 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 132 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 132 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 132 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 132 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 132 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 132 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 132 pages - /docs/id - Visit website for content
 
 ---
 
 ## English
 
-### Build
+### Messages
 
 - [Overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview.md) - Agent Skills
-- [Overview](https://platform.claude.com/docs/en/managed-agents/overview.md) - Claude Managed Agents overview
-- [Claude Platform](https://platform.claude.com/docs/en/release-notes/overview.md)
 - [Features overview](https://platform.claude.com/docs/en/build-with-claude/overview.md)
 - [Quickstart](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/quickstart.md) - Get started with Agent Skills in the API
 - [Quickstart](https://platform.claude.com/docs/en/get-started.md) - Get started with Claude
-- [Quickstart](https://platform.claude.com/docs/en/managed-agents/quickstart.md) - Get started with Claude Managed Agents
-- [Overview](https://platform.claude.com/docs/en/about-claude/use-case-guides/overview.md) - Guides to common use cases
 - [Intro to Claude](https://platform.claude.com/docs/en/intro.md)
-- [Overview](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview.md) - Prompt engineering overview
 - [Overview](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview.md) - Tool use with Claude
-- [Accessing GitHub](https://platform.claude.com/docs/en/managed-agents/github.md)
 - [Adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking.md)
-- [Adding files](https://platform.claude.com/docs/en/managed-agents/files.md)
 - [Advisor tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool.md)
-- [Authenticate with vaults](https://platform.claude.com/docs/en/managed-agents/vaults.md)
 - [Bash tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/bash-tool.md)
 - [Batch processing](https://platform.claude.com/docs/en/build-with-claude/batch-processing.md)
 - [Extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking.md) - Building with extended thinking
 - [Citations](https://platform.claude.com/docs/en/build-with-claude/citations.md)
-- [Claude API skill](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/claude-api-skill.md)
-- [Cloud environment setup](https://platform.claude.com/docs/en/managed-agents/environments.md)
+- [Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock.md) - Claude in Amazon Bedrock
+- [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry.md) - Claude in Microsoft Foundry
+- [Amazon Bedrock (legacy)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy.md) - Claude on Amazon Bedrock (legacy)
+- [Vertex AI](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai.md) - Claude on Vertex AI
 - [Code execution tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool.md)
 - [Compaction](https://platform.claude.com/docs/en/build-with-claude/compaction.md)
 - [Computer use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool.md)
-- [Console prompting tools](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-tools.md)
-- [Container reference](https://platform.claude.com/docs/en/managed-agents/cloud-containers.md)
-- [Content moderation](https://platform.claude.com/docs/en/about-claude/use-case-guides/content-moderation.md)
 - [Context editing](https://platform.claude.com/docs/en/build-with-claude/context-editing.md)
 - [Context windows](https://platform.claude.com/docs/en/build-with-claude/context-windows.md)
-- [Customer support agent](https://platform.claude.com/docs/en/about-claude/use-case-guides/customer-support-chat.md)
-- [Define outcomes](https://platform.claude.com/docs/en/managed-agents/define-outcomes.md)
-- [Define success and build evaluations](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests.md) - Define success criteria and build evaluations
 - [Define tools](https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md)
-- [Agent setup](https://platform.claude.com/docs/en/managed-agents/agent-setup.md) - Define your agent
 - [Effort](https://platform.claude.com/docs/en/build-with-claude/effort.md)
 - [Embeddings](https://platform.claude.com/docs/en/build-with-claude/embeddings.md)
 - [Fast mode (beta: research preview)](https://platform.claude.com/docs/en/build-with-claude/fast-mode.md)
 - [Files API](https://platform.claude.com/docs/en/build-with-claude/files.md)
 - [Fine-grained tool streaming](https://platform.claude.com/docs/en/agents-and-tools/tool-use/fine-grained-tool-streaming.md)
-- [Glossary](https://platform.claude.com/docs/en/about-claude/glossary.md)
 - [Handle tool calls](https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md)
 - [Handling stop reasons](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons.md)
 - [How tool use works](https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works.md)
-- [Increase output consistency](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/increase-consistency.md)
-- [Legal summarization](https://platform.claude.com/docs/en/about-claude/use-case-guides/legal-summarization.md)
 - [Manage tool context](https://platform.claude.com/docs/en/agents-and-tools/tool-use/manage-tool-context.md)
 - [MCP connector](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector.md)
-- [MCP connector](https://platform.claude.com/docs/en/managed-agents/mcp-connector.md)
 - [Memory tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool.md)
-- [Mitigate jailbreaks](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks.md) - Mitigate jailbreaks and prompt injections
-- [Multiagent sessions](https://platform.claude.com/docs/en/managed-agents/multi-agent.md)
 - [Multilingual support](https://platform.claude.com/docs/en/build-with-claude/multilingual-support.md)
 - [Parallel tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use.md)
 - [PDF support](https://platform.claude.com/docs/en/build-with-claude/pdf-support.md)
-- [Permission policies](https://platform.claude.com/docs/en/managed-agents/permission-policies.md)
 - [Programmatic tool calling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling.md)
 - [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md)
-- [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md)
-- [Prototype in Console](https://platform.claude.com/docs/en/managed-agents/onboarding.md)
-- [Reduce hallucinations](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations.md)
-- [Reduce prompt leak](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-prompt-leak.md)
-- [Reducing latency](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency.md)
 - [Remote MCP servers](https://platform.claude.com/docs/en/agents-and-tools/remote-mcp-servers.md)
 - [Search results](https://platform.claude.com/docs/en/build-with-claude/search-results.md)
 - [Server tools](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools.md)
-- [Session event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming.md)
 - [Best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices.md) - Skill authoring best practices
-- [Agent Skills](https://platform.claude.com/docs/en/managed-agents/skills.md) - Skills
 - [Skills for enterprise](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/enterprise.md)
-- [Start a session](https://platform.claude.com/docs/en/managed-agents/sessions.md)
 - [Streaming Messages](https://platform.claude.com/docs/en/build-with-claude/streaming.md)
 - [Streaming refusals](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/handle-streaming-refusals.md)
 - [Strict tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use.md)
 - [Structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md)
 - [Task budgets (beta)](https://platform.claude.com/docs/en/build-with-claude/task-budgets.md) - Task budgets
 - [Text editor tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/text-editor-tool.md)
-- [Ticket routing](https://platform.claude.com/docs/en/about-claude/use-case-guides/ticket-routing.md)
 - [Token counting](https://platform.claude.com/docs/en/build-with-claude/token-counting.md)
 - [Tool combinations](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-combinations.md)
 - [Tool reference](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference.md)
 - [Tool Runner (SDK)](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-runner.md)
 - [Tool search](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool.md) - Tool search tool
 - [Tool use with prompt caching](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-use-with-prompt-caching.md)
-- [Tools](https://platform.claude.com/docs/en/managed-agents/tools.md)
 - [Troubleshooting](https://platform.claude.com/docs/en/agents-and-tools/tool-use/troubleshooting-tool-use.md) - Troubleshooting tool use
 - [Tutorial: Build a tool-using agent](https://platform.claude.com/docs/en/agents-and-tools/tool-use/build-a-tool-using-agent.md)
-- [Using memory](https://platform.claude.com/docs/en/managed-agents/memory.md) - Using agent memory
 - [Skills in the API](https://platform.claude.com/docs/en/build-with-claude/skills-guide.md) - Using Agent Skills with the API
-- [Using the Evaluation Tool in Console](https://platform.claude.com/docs/en/test-and-evaluate/eval-tool.md) - Using the Evaluation Tool
 - [Using the Messages API](https://platform.claude.com/docs/en/build-with-claude/working-with-messages.md)
 - [Images and vision](https://platform.claude.com/docs/en/build-with-claude/vision.md) - Vision
 - [Web fetch tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-fetch-tool.md)
 - [Web search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool.md)
+
+### Managed Agents
+
+- [Overview](https://platform.claude.com/docs/en/managed-agents/overview.md) - Claude Managed Agents overview
+- [Quickstart](https://platform.claude.com/docs/en/managed-agents/quickstart.md) - Get started with Claude Managed Agents
+- [Accessing GitHub](https://platform.claude.com/docs/en/managed-agents/github.md)
+- [Adding files](https://platform.claude.com/docs/en/managed-agents/files.md)
+- [Authenticate with vaults](https://platform.claude.com/docs/en/managed-agents/vaults.md)
+- [Cloud environment setup](https://platform.claude.com/docs/en/managed-agents/environments.md)
+- [Container reference](https://platform.claude.com/docs/en/managed-agents/cloud-containers.md)
+- [Define outcomes](https://platform.claude.com/docs/en/managed-agents/define-outcomes.md)
+- [Agent setup](https://platform.claude.com/docs/en/managed-agents/agent-setup.md) - Define your agent
+- [MCP connector](https://platform.claude.com/docs/en/managed-agents/mcp-connector.md)
+- [Multiagent sessions](https://platform.claude.com/docs/en/managed-agents/multi-agent.md)
+- [Permission policies](https://platform.claude.com/docs/en/managed-agents/permission-policies.md)
+- [Prototype in Console](https://platform.claude.com/docs/en/managed-agents/onboarding.md)
+- [Session event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming.md)
+- [Agent Skills](https://platform.claude.com/docs/en/managed-agents/skills.md) - Skills
+- [Start a session](https://platform.claude.com/docs/en/managed-agents/sessions.md)
+- [Tools](https://platform.claude.com/docs/en/managed-agents/tools.md)
+- [Using memory](https://platform.claude.com/docs/en/managed-agents/memory.md) - Using agent memory
 
 ### Admin
 
 - [Admin API overview](https://platform.claude.com/docs/en/build-with-claude/administration-api.md)
 - [API and data retention](https://platform.claude.com/docs/en/build-with-claude/api-and-data-retention.md)
 - [Claude Code Analytics API](https://platform.claude.com/docs/en/build-with-claude/claude-code-analytics-api.md)
-- [Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock.md) - Claude in Amazon Bedrock
-- [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry.md) - Claude in Microsoft Foundry
-- [Amazon Bedrock (legacy)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy.md) - Claude on Amazon Bedrock (legacy)
-- [Vertex AI](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai.md) - Claude on Vertex AI
 - [Data residency](https://platform.claude.com/docs/en/build-with-claude/data-residency.md)
-- [Migration](https://platform.claude.com/docs/en/managed-agents/migration.md)
 - [Rate Limits API](https://platform.claude.com/docs/en/build-with-claude/rate-limits-api.md)
-- [Session tracing](https://platform.claude.com/docs/en/managed-agents/observability.md)
 - [Usage and Cost API](https://platform.claude.com/docs/en/build-with-claude/usage-cost-api.md)
 - [Workspaces](https://platform.claude.com/docs/en/build-with-claude/workspaces.md)
 
-### Models & pricing
-
-- [Models overview](https://platform.claude.com/docs/en/about-claude/models/overview.md)
-- [Model cards](https://platform.claude.com/docs/en/resources/overview.md) - Overview
-- [Choosing a model](https://platform.claude.com/docs/en/about-claude/models/choosing-a-model.md) - Choosing the right model
-- [Migration guide](https://platform.claude.com/docs/en/about-claude/models/migration-guide.md)
-- [Model deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations.md)
-- [Pricing](https://platform.claude.com/docs/en/about-claude/pricing.md)
-- [System prompts](https://platform.claude.com/docs/en/release-notes/system-prompts.md) - System Prompts
-- [What's new in Claude Opus 4.7](https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-7.md)
-
-### Client SDKs
-
-- [C# SDK](https://platform.claude.com/docs/en/api/sdks/csharp.md)
-- [CLI](https://platform.claude.com/docs/en/api/sdks/cli.md)
-- [Overview](https://platform.claude.com/docs/en/api/client-sdks.md) - Client SDKs
-- [Go SDK](https://platform.claude.com/docs/en/api/sdks/go.md)
-- [Java SDK](https://platform.claude.com/docs/en/api/sdks/java.md)
-- [OpenAI SDK compatibility](https://platform.claude.com/docs/en/api/openai-sdk.md)
-- [PHP SDK](https://platform.claude.com/docs/en/api/sdks/php.md)
-- [Python SDK](https://platform.claude.com/docs/en/api/sdks/python.md)
-- [Ruby SDK](https://platform.claude.com/docs/en/api/sdks/ruby.md)
-- [TypeScript SDK](https://platform.claude.com/docs/en/api/sdks/typescript.md)
-
 ### API Reference
 
-- [Features overview](https://platform.claude.com/docs/en/api/overview.md) - API Overview
 - [Add Session Resource (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/resources/add.md)
 - [Add Session Resource (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/sessions/resources/add.md)
 - [Add Session Resource (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/sessions/resources/add.md)
@@ -1357,14 +1315,6 @@ The full documentation is available in the following languages on https://platfo
 - [Versions (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/agents/versions.md)
 - [Versions (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/skills/versions.md)
 - [Workspaces](https://platform.claude.com/docs/en/api/admin/workspaces.md)
-- [Beta headers](https://platform.claude.com/docs/en/api/beta-headers.md)
-- [Errors](https://platform.claude.com/docs/en/api/errors.md)
-- [IP addresses](https://platform.claude.com/docs/en/api/ip-addresses.md)
-- [Rate limits](https://platform.claude.com/docs/en/api/rate-limits.md)
-- [Service tiers](https://platform.claude.com/docs/en/api/service-tiers.md)
-- [Supported regions](https://platform.claude.com/docs/en/api/supported-regions.md)
-- [Trigger a routine](https://platform.claude.com/docs/en/api/claude-code/routines-fire.md) - Trigger a routine via API
-- [Versions](https://platform.claude.com/docs/en/api/versioning.md)
 
 ---
 

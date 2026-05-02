@@ -1279,6 +1279,39 @@ In **Settings**, you can change the Codex app appearance by choosing a base them
 adjusting accent, background, and foreground colors, and changing the UI and code
 fonts. You can also share your custom theme with friends.
 
+### Codex pets
+
+<div class="grid gap-5 md:grid-cols-[minmax(0,1fr)_minmax(15rem,50%)] md:items-start xl:grid-cols-[minmax(0,1fr)_minmax(16rem,30%)]">
+  <div>
+    Codex pets are optional animated companions for the app. In **Settings**,
+    go to **Appearance** and choose **Pets** to select a built-in pet or
+    refresh custom pets from your local Codex home. Type `/pet` in the
+    composer, use **Wake Pet** or **Tuck Away Pet** in **Settings > Appearance**, or
+    press <kbd>Cmd+K</kbd> or <kbd>Ctrl+K</kbd> and run the same commands to
+    toggle the floating overlay.
+
+    The overlay keeps active Codex work visible while you use other apps. It
+    shows the active thread, reflects whether Codex is running, waiting for
+    input, or ready for review, and pairs that state with a short progress
+    prompt so you can glance at what changed without reopening the thread.
+
+  </div>
+
+  </div>
+
+To create your own pet, install the `hatch-pet` skill:
+
+```text
+$skill-installer hatch-pet
+```
+
+Reload skills from the command menu. Press <kbd>Cmd+K</kbd> or <kbd>Ctrl+K</kbd>,
+choose **Force Reload Skills**, then ask the skill to create a pet:
+
+```text
+$hatch-pet create a new pet inspired by my recent projects
+```
+
 ## Git
 
 Use Git settings to standardize branch naming and choose whether Codex uses force
@@ -1295,8 +1328,8 @@ also apply to the Codex CLI and IDE extension because the MCP configuration live
 ## Browser use
 
 Use these settings to install or enable the bundled Browser plugin and manage
-allowlisted and blocklisted websites. Codex asks before using a website
-unless you've allowlisted it. Removing a site from the blocklist lets Codex ask
+allowed and blocked websites. Codex asks before using a website unless you've
+allowed it. Removing a site from the blocked list lets Codex ask
 again before using it in the browser.
 
 See [In-app browser](https://developers.openai.com/codex/app/browser) for browser preview, comment, and
@@ -1307,8 +1340,7 @@ browser use workflows.
 On macOS, check your Computer Use settings to review desktop-app access and related
 preferences after setup. To revoke system-level access, update Screen Recording
 or Accessibility permissions in macOS Privacy & Security settings. The feature
-isn't available in the European Economic Area, the United Kingdom, or Switzerland
-at launch.
+isn't available in the EEA, the United Kingdom, or Switzerland at launch.
 
 ## Personalization
 
@@ -13620,6 +13652,95 @@ consolidation_model = "gpt-5.4-mini"
 
 ---
 
+# Migrate to Codex
+
+Use the import flow to bring your instructions, configuration, skills, MCP
+servers, hooks, subagents, and recent sessions from another agent into Codex.
+Codex migrates the parts it can handle directly and can open a follow-up thread
+to help migrate anything that remains.
+
+<div class="not-prose my-6 max-w-4xl">
+  </div>
+
+## Start the migration
+
+
+
+1. Open **Settings** in the Codex app.
+2. On the **General** page, find **Import other agent setup**.
+3. Select **Import** or **Import again**.
+4. Review what Codex found, choose what to bring over, then select **Import**.
+5. After the import finishes, select **View imported files** if you want to inspect the result.
+
+
+
+## How migration works
+
+Codex checks both your user-level setup and the current project. User-level
+setup comes from files on your machine; project-level setup comes from files in
+the repository you have open.
+
+When you import, Codex:
+
+1. Detects the setup it can find.
+2. Imports the selected items it can migrate directly.
+3. Checks again after the import finishes.
+4. Offers to continue the migration in a new thread if anything still needs
+   follow-up work.
+
+## What Codex can import
+
+| Detected setup                        | Codex destination                      |
+| ------------------------------------- | -------------------------------------- |
+| Instruction files                     | [`AGENTS.md`](https://developers.openai.com/codex/guides/agents-md) |
+| `settings.json`                       | [`config.toml`](https://developers.openai.com/codex/config-basic)   |
+| Skills                                | [Codex skills](https://developers.openai.com/codex/skills)          |
+| Recent sessions from the last 30 days | Codex threads and projects             |
+| MCP server configuration              | [Codex MCP configuration](https://developers.openai.com/codex/mcp)  |
+| Hooks                                 | [Codex hooks](https://developers.openai.com/codex/hooks)            |
+| Slash commands                        | [Codex skills](https://developers.openai.com/codex/skills)          |
+| Subagents                             | [Codex agents](https://developers.openai.com/codex/subagents)       |
+
+## Finish remaining setup in a new thread
+
+Some detected setup does not have a clean one-to-one mapping into Codex. For
+those items, Codex can open a new thread with the
+[`migrate-to-codex`](https://github.com/openai/skills/tree/main/skills/.curated/migrate-to-codex)
+skill to help finish the migration.
+
+When that happens, Codex shows the remaining setup and offers **Continue in
+Codex**.
+
+<div class="not-prose my-6 max-w-4xl">
+  </div>
+
+If you continue, Codex opens a new thread with the remaining work already filled
+in. The thread keeps user-level setup separate from project-level setup so you
+can see where each remaining item belongs.
+
+<div class="not-prose my-6 max-w-4xl">
+  </div>
+
+## What to review after import
+
+Review any migrated setup before you rely on it, especially:
+
+- Tool restrictions or permissions in imported skills and agents.
+- MCP server settings that use custom authentication, headers, environment
+  variables, or transports.
+- Hooks whose behavior may differ in Codex.
+- Plugins, marketplaces, or other remaining setup that needs manual follow-up.
+- Prompt templates or command-style prompts that depend on arguments, shell
+  interpolation, or file-path placeholders.
+
+## After you switch
+
+Once the import finishes, open one of your migrated projects and continue from
+there. If you are new to Codex, see the [quickstart](https://developers.openai.com/codex/quickstart) for the
+rest of the setup flow.
+
+---
+
 # Codex Models
 
 ## Recommended models
@@ -15574,7 +15695,7 @@ exceptions are noted in the relevant docs.
    If you need more inspiration, explore [Codex use cases](https://developers.openai.com/codex/use-cases).
    If you're new to Codex, read the [best practices guide](https://developers.openai.com/codex/learn/best-practices).
 
-    </WorkflowSteps>
+</WorkflowSteps>
 
 
   </div>
@@ -15685,6 +15806,29 @@ Use Codex in the cloud at [chatgpt.com/codex](https://chatgpt.com/codex).
     </WorkflowSteps>
 
   </div>
+
+
+
+<div class="h-6" aria-hidden="true"></div>
+
+## Next steps
+
+[
+
+<span slot="icon">
+      </span>
+    Use the Codex app to work with your local projects.
+
+](https://developers.openai.com/codex/app)
+
+[
+
+<span slot="icon">
+      </span>
+    Move supported instruction files, MCP server configuration, skills, and
+    subagents into Codex.
+
+](https://developers.openai.com/codex/migrate)
 
 ---
 

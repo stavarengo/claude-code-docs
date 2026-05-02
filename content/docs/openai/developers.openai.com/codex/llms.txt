@@ -106,6 +106,9 @@ Use this as a compact map of Codex docs. Each page has a Markdown twin at `/code
 - [Memories](https://developers.openai.com/codex/memories.md): How Codex carries useful context forward across threads
 - [Chronicle](https://developers.openai.com/codex/memories/chronicle.md): Build Codex memories from recent screen context.
 
+## Migrate
+- [Migrate to Codex](https://developers.openai.com/codex/migrate.md): Bring your setup from another agent with you when you switch to Codex.
+
 ## Models
 - [Codex Models](https://developers.openai.com/codex/models.md): Meet the AI models that power Codex
 

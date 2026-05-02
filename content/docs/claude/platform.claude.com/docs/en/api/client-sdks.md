@@ -6,6 +6,10 @@ Official SDKs for building with the Claude API in Python, TypeScript, Java, Go, 
 
 Anthropic provides official client SDKs in multiple languages to make it easier to work with the Claude API. Each SDK provides idiomatic interfaces, type safety, and built-in support for features like streaming, retries, and error handling.
 
+<Info>
+  For the full API specification, see the [API reference](/docs/en/api/overview).
+</Info>
+
 <CardGroup cols={3}>
   <Card title="CLI" href="/docs/en/api/sdks/cli">
     Shell scripting, typed flags, response transforms
