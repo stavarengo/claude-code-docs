@@ -62,7 +62,9 @@ ant --version
 
 ## Authentication
 
-The CLI reads your API key from the `ANTHROPIC_API_KEY` environment variable.
+### API key
+
+The CLI reads your API key from the `ANTHROPIC_API_KEY` environment variable. Get a key from the [Claude Console](https://platform.claude.com/settings/keys).
 
 <Tabs>
 <Tab title="zsh">
@@ -92,7 +94,9 @@ Open a new terminal for the change to take effect.
 </Tab>
 </Tabs>
 
-Get a key from the [Claude Console](https://platform.claude.com/settings/keys). To point at a different API host, set `ANTHROPIC_BASE_URL` or pass `--base-url` on any command.
+To override the key for a single invocation, pass `--api-key`. To point at a different API host, set `ANTHROPIC_BASE_URL` or pass `--base-url`.
+
+For authentication via Workload Identity Federation or named profiles, see [Authentication](/docs/en/api/authentication/overview).
 
 ## Send your first request
 

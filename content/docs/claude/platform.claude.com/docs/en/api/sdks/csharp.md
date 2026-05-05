@@ -58,6 +58,8 @@ var message = await client.Messages.Create(parameters);
 Console.WriteLine(message);
 ```
 
+For authentication options including Workload Identity Federation, see [Authentication](/docs/en/api/authentication/overview).
+
 ## Client configuration
 
 Configure the client using environment variables:

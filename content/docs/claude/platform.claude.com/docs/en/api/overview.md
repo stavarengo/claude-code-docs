@@ -13,7 +13,7 @@ The Claude API is a RESTful API at `https://api.anthropic.com` that provides pro
 To use the Claude API, you'll need:
 
 - A [Claude Console account](https://platform.claude.com)
-- An [API key](/settings/keys)
+- An [API key](/settings/keys), or a configured [Workload Identity Federation](/docs/en/build-with-claude/workload-identity-federation) rule
 
 For step-by-step setup instructions, see [Get started](/docs/en/get-started).
 
@@ -38,11 +38,12 @@ For the complete API reference with all endpoints, parameters, and response sche
 
 ## Authentication
 
-All requests to the Claude API must include these headers:
+For details on both authentication methods and when to use each, see [Authentication](/docs/en/api/authentication/overview). All requests to the Claude API must include these headers:
 
 | Header | Value | Required |
 |--------|-------|----------|
-| `x-api-key` | Your API key from Console | Yes |
+| `x-api-key` | Your API key from Console | One of `x-api-key` or `Authorization` |
+| `Authorization` | `Bearer <token>`, where `<token>` is a short-lived access token obtained from `POST /v1/oauth/token` via [Workload Identity Federation](/docs/en/build-with-claude/workload-identity-federation) | One of `x-api-key` or `Authorization` |
 | `anthropic-version` | API version (e.g., `2023-06-01`) | Yes |
 | `content-type` | `application/json` | Yes |
 

@@ -61,6 +61,8 @@ print(message.content)
 Consider using [python-dotenv](https://pypi.org/project/python-dotenv/) to add `ANTHROPIC_API_KEY="my-anthropic-api-key"` to your `.env` file so that your API key isn't stored in source control.
 </Tip>
 
+For authentication options including Workload Identity Federation, see [Authentication](/docs/en/api/authentication/overview).
+
 ## Async usage
 
 ```python

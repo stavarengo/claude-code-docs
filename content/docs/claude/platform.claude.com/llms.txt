@@ -12,7 +12,7 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 1275 pages - /docs - Content included below
+- English (en) - 1284 pages - /docs - Content included below
 - German (Deutsch) (de) - 132 pages - /docs/de - Visit website for content
 - Spanish (Español) (es) - 132 pages - /docs/es - Visit website for content
 - French (Français) (fr) - 132 pages - /docs/fr - Visit website for content
@@ -117,12 +117,21 @@ The full documentation is available in the following languages on https://platfo
 
 ### Admin
 
+- [Overview](https://platform.claude.com/docs/en/api/authentication/overview.md) - Authentication
 - [Admin API overview](https://platform.claude.com/docs/en/build-with-claude/administration-api.md)
 - [API and data retention](https://platform.claude.com/docs/en/build-with-claude/api-and-data-retention.md)
 - [Claude Code Analytics API](https://platform.claude.com/docs/en/build-with-claude/claude-code-analytics-api.md)
 - [Data residency](https://platform.claude.com/docs/en/build-with-claude/data-residency.md)
 - [Rate Limits API](https://platform.claude.com/docs/en/build-with-claude/rate-limits-api.md)
 - [Usage and Cost API](https://platform.claude.com/docs/en/build-with-claude/usage-cost-api.md)
+- [AWS](https://platform.claude.com/docs/en/build-with-claude/wif-providers/aws.md) - Use WIF with AWS
+- [GitHub Actions](https://platform.claude.com/docs/en/build-with-claude/wif-providers/github-actions.md) - Use WIF with GitHub Actions
+- [Google Cloud](https://platform.claude.com/docs/en/build-with-claude/wif-providers/gcp.md) - Use WIF with Google Cloud
+- [Kubernetes](https://platform.claude.com/docs/en/build-with-claude/wif-providers/kubernetes.md) - Use WIF with Kubernetes
+- [Microsoft Azure](https://platform.claude.com/docs/en/build-with-claude/wif-providers/azure.md) - Use WIF with Microsoft Azure
+- [Okta](https://platform.claude.com/docs/en/build-with-claude/wif-providers/okta.md) - Use WIF with Okta
+- [WIF reference](https://platform.claude.com/docs/en/api/authentication/wif-reference.md)
+- [Workload Identity Federation](https://platform.claude.com/docs/en/build-with-claude/workload-identity-federation.md)
 - [Workspaces](https://platform.claude.com/docs/en/build-with-claude/workspaces.md)
 
 ### API Reference

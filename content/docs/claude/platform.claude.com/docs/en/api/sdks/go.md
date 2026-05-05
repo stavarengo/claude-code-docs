@@ -59,6 +59,8 @@ func main() {
 }
 ```
 
+For authentication options including Workload Identity Federation, see [Authentication](/docs/en/api/authentication/overview).
+
 <section title="Conversations">
 
 ```go

@@ -38,6 +38,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 
 ## Guides
 - [Actions in ChatKit](https://developers.openai.com/api/docs/guides/chatkit-actions.md): Embed a widget to build your own chat experiences.
+- [Admin APIs](https://developers.openai.com/api/docs/guides/admin-apis.md): Use Admin APIs and Admin API keys to automate organization management tasks such as invitations and audit log retrieval.
 - [Advanced integrations with ChatKit](https://developers.openai.com/api/docs/guides/custom-chatkit.md): Use your own server with ChatKit to integrate agent workflows into your product with more customization.
 - [Advanced usage](https://developers.openai.com/api/docs/guides/advanced-usage.md): Discover advanced usage techniques for OpenAI's API, including reproducible outputs, token management, and parameter settings.
 - [Agent Builder](https://developers.openai.com/api/docs/guides/agent-builder.md): Use the OpenAI Agent Builder to start from templates, compose nodes, preview runs, and export workflows to code.

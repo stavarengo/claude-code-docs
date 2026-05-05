@@ -98,6 +98,8 @@ AnthropicClient client = AnthropicOkHttpClient.builder()
   .build();
 ```
 
+For authentication options including Workload Identity Federation, see [Authentication](/docs/en/api/authentication/overview).
+
 ### Configuration options
 
 | Setter      | System property       | Environment variable   | Required | Default value                 |

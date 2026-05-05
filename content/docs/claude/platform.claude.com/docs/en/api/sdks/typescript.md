@@ -53,6 +53,8 @@ const message = await client.messages.create({
 console.log(message.content);
 ```
 
+For authentication options including Workload Identity Federation, see [Authentication](/docs/en/api/authentication/overview).
+
 ## Request and response types
 
 This library includes TypeScript definitions for all request params and response fields. You may import and use them like so:
