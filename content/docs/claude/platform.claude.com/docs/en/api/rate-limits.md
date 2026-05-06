@@ -167,7 +167,7 @@ With effective caching, you can dramatically increase your actual throughput wit
 OTPM rate limits are evaluated in real time as output tokens are produced, counting only the actual tokens generated. The `max_tokens` parameter does not factor into OTPM rate limit calculations, so there is no rate limit downside to setting a higher `max_tokens` value.
 
 Rate limits are applied separately for each model; therefore you can use different models up to their respective limits simultaneously.
-You can check your current rate limits and behavior in the [Claude Console](/settings/limits), or read the configured limits programmatically with the [Rate Limits API](/docs/en/build-with-claude/rate-limits-api).
+You can check your current rate limits and behavior in the [Claude Console](/settings/limits), or read the configured limits programmatically with the [Rate Limits API](/docs/en/manage-claude/rate-limits-api).
 
 <Note>
 Rate limits are currently shared across all `inference_geo` values. Requests with `inference_geo: "us"` and `inference_geo: "global"` draw from the same rate limit pool.
@@ -286,7 +286,7 @@ In addition to providing token and request charts, the Usage page provides two s
 
 ## Setting lower limits for Workspaces
 
-For more about workspaces, see [Workspaces](/docs/en/build-with-claude/workspaces).
+For more about workspaces, see [Workspaces](/docs/en/manage-claude/workspaces).
 
 In order to protect Workspaces in your Organization from potential overuse, you can set custom spend and rate limits per Workspace.
 
@@ -298,7 +298,7 @@ Note:
 - Workspace limits are set per limiter type (such as requests per minute, input tokens per minute, or output tokens per minute).
 - Organization-wide limits always apply, even if Workspace limits add up to more.
 
-To read your current organization and workspace rate limits programmatically, use the [Rate Limits API](/docs/en/build-with-claude/rate-limits-api).
+To read your current organization and workspace rate limits programmatically, use the [Rate Limits API](/docs/en/manage-claude/rate-limits-api).
 
 ## Response headers
 

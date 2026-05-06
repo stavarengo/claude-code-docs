@@ -90,7 +90,7 @@ For Claude Opus 4.7, Claude Opus 4.6, and newer models, specifying US-only infer
 
 This applies to the Claude API (1P) only. Third-party platforms have their own regional pricing. See [AWS Bedrock](https://aws.amazon.com/bedrock/pricing/) and [Google Vertex AI](https://cloud.google.com/vertex-ai/generative-ai/pricing#claude-models) for details. Earlier models retain their existing pricing regardless of `inference_geo` settings.
 
-For more information, see the [data residency documentation](/docs/en/build-with-claude/data-residency).
+For more information, see the [data residency documentation](/docs/en/manage-claude/data-residency).
 
 ### Fast mode pricing
 
@@ -102,7 +102,7 @@ For more information, see the [data residency documentation](/docs/en/build-with
 
 Fast mode pricing stacks with other pricing modifiers:
 - [Prompt caching multipliers](#model-pricing) apply on top of fast mode pricing
-- [Data residency](/docs/en/build-with-claude/data-residency) multipliers apply on top of fast mode pricing
+- [Data residency](/docs/en/manage-claude/data-residency) multipliers apply on top of fast mode pricing
 
 Fast mode is not available with the [Batch API](#batch-processing).
 

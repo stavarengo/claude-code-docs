@@ -96,7 +96,61 @@ Open a new terminal for the change to take effect.
 
 To override the key for a single invocation, pass `--api-key`. To point at a different API host, set `ANTHROPIC_BASE_URL` or pass `--base-url`.
 
-For authentication via Workload Identity Federation or named profiles, see [Authentication](/docs/en/api/authentication/overview).
+### Interactive login
+
+`ant auth login` lets you call the API without creating or managing an API key. It opens a browser-based OAuth flow against the Claude Console and stores the resulting credentials under `$ANTHROPIC_CONFIG_DIR` (see [Configuration directory](/docs/en/manage-claude/wif-reference#configuration-directory) for the OS-specific default). On a remote host or in any environment without a local browser, pass `--no-browser` to print the authorize URL and paste the returned code back into the terminal.
+
+```bash CLI nocheck
+ant auth login
+
+# On a remote host without a browser:
+ant auth login --no-browser
+
+# If the named profile you pass with --profile doesn't exist,
+# a new named profile will be created with that name.
+ant auth login --profile <profile-name>
+```
+
+Interactive login is intended for local development and scripting on your own machine. For non-interactive workloads such as CI, servers, and containers, use [Workload Identity Federation](/docs/en/manage-claude/workload-identity-federation) instead.
+
+Login writes credentials to `credentials/.json`. The first login for a profile also creates `configs/.json` and sets it as the active profile. To remove stored credentials, run `ant auth logout`, or `ant auth logout --all` to clear every profile.
+
+### Check authentication status
+
+`ant auth status` prints the credential source the CLI selected (API key environment variable, OAuth login, federation, or profile), the active profile, and the configuration directory paths. Use it to diagnose why a workload picked the wrong credential.
+
+```bash CLI nocheck
+ant auth status
+```
+
+```text
+Active profile:  default
+Config dir:      ~/.config/anthropic
+Profile config:  ~/.config/anthropic/configs/default.json
+Credentials:     ~/.config/anthropic/credentials/default.json
+
+Credentials
+  (active) * --api-key / ANTHROPIC_API_KEY                  sk-ant-api03-EXA...
+           * Federation (jwt-bearer)                        see 'Federation inputs' below
+...
+```
+
+Read the `(active)` row to see which source won. The command reports status rather than performing a health check, so don't script against the exit status. For the full ordering of credential sources, see [Credential precedence](/docs/en/manage-claude/wif-reference#credential-precedence).
+
+### Named profiles
+
+Every `ant` command accepts the global `--profile <name>` flag (or the `ANTHROPIC_PROFILE` environment variable), so `ant messages create --profile staging` works directly. The `ant profile` subcommands manage which profile is the default when you don't pass `--profile`.
+
+```bash CLI nocheck
+ant profile list
+ant profile activate <profile-name>
+ant profile set workspace_id wrkspc_... --profile <profile-name>
+ant profile get --profile <profile-name>
+```
+
+The writable keys for `ant profile set` are `workspace_id`, `base_url`, `organization_id`, `scope`, `client_id`, and `console_url`. For the profile file schema and the federation block, see [Profile configuration file](/docs/en/manage-claude/wif-reference#profile-configuration-file).
+
+For Workload Identity Federation, see the [Authentication overview](/docs/en/manage-claude/authentication) and the [WIF reference](/docs/en/manage-claude/wif-reference).
 
 ## Send your first request
 

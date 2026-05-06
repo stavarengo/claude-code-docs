@@ -31,11 +31,11 @@ Anthropic counts usage against Priority Tier capacity as follows:
 - Cache reads as 0.1 tokens per token read from the cache
 - Cache writes as 1.25 tokens per token written to the cache with a 5 minute TTL
 - Cache writes as 2.00 tokens per token written to the cache with a 1 hour TTL
-- For [US-only inference](/docs/en/build-with-claude/data-residency) (`inference_geo: "us"`) requests on Claude Opus 4.7, Claude Opus 4.6, and newer models, input tokens are 1.1 tokens per token
+- For [US-only inference](/docs/en/manage-claude/data-residency) (`inference_geo: "us"`) requests on Claude Opus 4.7, Claude Opus 4.6, and newer models, input tokens are 1.1 tokens per token
 - All other input tokens are 1 token per token
 
 **Output Tokens**
-- For [US-only inference](/docs/en/build-with-claude/data-residency) (`inference_geo: "us"`) requests on Claude Opus 4.7, Claude Opus 4.6, and newer models, output tokens are 1.1 tokens per token
+- For [US-only inference](/docs/en/manage-claude/data-residency) (`inference_geo: "us"`) requests on Claude Opus 4.7, Claude Opus 4.6, and newer models, output tokens are 1.1 tokens per token
 - All other output tokens are 1 token per token
 
 Otherwise, requests proceed at standard tier.

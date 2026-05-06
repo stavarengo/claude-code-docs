@@ -14,7 +14,7 @@ For updates to Claude Code, see the [complete CHANGELOG.md](https://github.com/a
 - We've retired the 1M token context window beta (`context-1m-2025-08-07`) for Claude Sonnet 4.5 and Claude Sonnet 4. The beta header now has no effect on these models, and requests exceeding the standard 200k-token context window return an error. To use the 1M context window, migrate to [Claude Sonnet 4.6](/docs/en/about-claude/models/overview#latest-models-comparison) or [Claude Opus 4.6](/docs/en/about-claude/models/overview#latest-models-comparison), where it's generally available at standard pricing with no beta header required.
 
 ### April 24, 2026
-- We've released the [Rate Limits API](/docs/en/build-with-claude/rate-limits-api), allowing administrators to programmatically query the rate limits configured for their organization and workspaces.
+- We've released the [Rate Limits API](/docs/en/manage-claude/rate-limits-api), allowing administrators to programmatically query the rate limits configured for their organization and workspaces.
 
 ### April 23, 2026
 - **Memory** for Claude Managed Agents is now in public beta under the standard `managed-agents-2026-04-01` header. See [Using agent memory](/docs/en/managed-agents/memory) for the full integration guide.
@@ -73,7 +73,7 @@ For updates to Claude Code, see the [complete CHANGELOG.md](https://github.com/a
 - We've launched [Claude Opus 4.6](https://www.anthropic.com/news/claude-opus-4-6), our most intelligent model for complex agentic tasks and long-horizon work. Opus 4.6 recommends [adaptive thinking](/docs/en/build-with-claude/adaptive-thinking) (`thinking: {type: "adaptive"}`); manual thinking (`type: "enabled"` with `budget_tokens`) is deprecated. Opus 4.6 does not support prefilling assistant messages. Learn more in [What's new in Claude 4.6](/docs/en/about-claude/models/whats-new-claude-4-6).
 - The [effort parameter](/docs/en/build-with-claude/effort) is now generally available (no beta header required) and supports Claude Opus 4.6. Effort replaces `budget_tokens` for controlling thinking depth on new models.
 - We've launched the [compaction API](/docs/en/build-with-claude/compaction) in beta, providing server-side context summarization for effectively infinite conversations. Available on Opus 4.6.
-- We've introduced [data residency controls](/docs/en/build-with-claude/data-residency), allowing you to specify where model inference runs with the `inference_geo` parameter. US-only inference is available at 1.1x pricing for models released after February 1, 2026.
+- We've introduced [data residency controls](/docs/en/manage-claude/data-residency), allowing you to specify where model inference runs with the `inference_geo` parameter. US-only inference is available at 1.1x pricing for models released after February 1, 2026.
 - The [1M token context window](/docs/en/build-with-claude/context-windows) is now available in beta for Claude Opus 4.6, in addition to Sonnet 4.5 and Sonnet 4. [Long context pricing](/docs/en/about-claude/pricing#long-context-pricing) applies to requests exceeding 200k input tokens.
 - [Fine-grained tool streaming](/docs/en/agents-and-tools/tool-use/fine-grained-tool-streaming) is now generally available on all models and platforms (no beta header required). The `output_format` parameter for [structured outputs](/docs/en/build-with-claude/structured-outputs) has been moved to `output_config.format`.
 
@@ -145,7 +145,7 @@ For updates to Claude Code, see the [complete CHANGELOG.md](https://github.com/a
 
 ### September 10, 2025
 - We've launched the web fetch tool in beta, allowing Claude to retrieve full content from specified web pages and PDF documents. Learn more in [Web fetch tool](/docs/en/agents-and-tools/tool-use/web-fetch-tool).
-- We've launched the [Claude Code Analytics API](/docs/en/build-with-claude/claude-code-analytics-api), enabling organizations to programmatically access daily aggregated usage metrics for Claude Code, including productivity metrics, tool usage statistics, and cost data.
+- We've launched the [Claude Code Analytics API](/docs/en/manage-claude/claude-code-analytics-api), enabling organizations to programmatically access daily aggregated usage metrics for Claude Code, including productivity metrics, tool usage statistics, and cost data.
 
 ### September 8, 2025
 - We launched a beta version of the [C# SDK](https://github.com/anthropics/anthropic-sdk-csharp).
@@ -170,7 +170,7 @@ For updates to Claude Code, see the [complete CHANGELOG.md](https://github.com/a
 - Request IDs are now included directly in error response bodies alongside the existing `request-id` header. Learn more in [Errors](/docs/en/api/errors#error-shapes).
 
 ### August 18, 2025
-- We've released the [Usage & Cost API](/docs/en/build-with-claude/usage-cost-api), allowing administrators to programmatically monitor their organization's usage and cost data.
+- We've released the [Usage & Cost API](/docs/en/manage-claude/usage-cost-api), allowing administrators to programmatically monitor their organization's usage and cost data.
 - We've added a new endpoint to the Admin API for retrieving organization information. For details, see the [Organization Info Admin API reference](/docs/en/api/admin-api/organization/get-me).
 
 ### August 13, 2025
@@ -308,7 +308,7 @@ We also released new official SDKs:
 
 ### November 21st, 2024
 
-- We've released the [Admin API](/docs/en/build-with-claude/administration-api), allowing users to programmatically manage their organization's resources.
+- We've released the [Admin API](/docs/en/manage-claude/overview), allowing users to programmatically manage their organization's resources.
 
 ### November 20th, 2024
 
