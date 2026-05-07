@@ -1760,18 +1760,23 @@ as input for the model's response.
 
             - `"auto"`
 
-          - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated image. One of `1024x1024`, `1024x1536`,
-            `1536x1024`, or `auto`. Default: `auto`.
+            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"1024x1024"`
+            - `string`
 
-            - `"1024x1536"`
+            - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            - `"1536x1024"`
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"auto"`
+              - `"1024x1024"`
+
+              - `"1024x1536"`
+
+              - `"1536x1024"`
+
+              - `"auto"`
 
         - `LocalShell object { type }`
 
@@ -4060,18 +4065,23 @@ as input for the model's response.
 
       - `"auto"`
 
-    - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+    - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-      The size of the generated image. One of `1024x1024`, `1024x1536`,
-      `1536x1024`, or `auto`. Default: `auto`.
+      The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-      - `"1024x1024"`
+      - `string`
 
-      - `"1024x1536"`
+      - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-      - `"1536x1024"`
+        The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-      - `"auto"`
+        - `"1024x1024"`
+
+        - `"1024x1536"`
+
+        - `"1536x1024"`
+
+        - `"auto"`
 
   - `LocalShell object { type }`
 
@@ -4285,8 +4295,10 @@ as input for the model's response.
 
 - `top_logprobs: optional number`
 
-  An integer between 0 and 20 specifying the number of most likely tokens to
-  return at each token position, each with an associated log probability.
+  An integer between 0 and 20 specifying the maximum number of most likely
+  tokens to return at each token position, each with an associated log
+  probability. In some cases, the number of returned tokens may be fewer than
+  requested.
 
 - `top_p: optional number`
 
@@ -6069,18 +6081,23 @@ as input for the model's response.
 
               - `"auto"`
 
-            - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated image. One of `1024x1024`, `1024x1536`,
-              `1536x1024`, or `auto`. Default: `auto`.
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-              - `"1024x1024"`
+              - `string`
 
-              - `"1024x1536"`
+              - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              - `"1536x1024"`
+                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-              - `"auto"`
+                - `"1024x1024"`
+
+                - `"1024x1536"`
+
+                - `"1536x1024"`
+
+                - `"auto"`
 
           - `LocalShell object { type }`
 
@@ -8431,18 +8448,23 @@ as input for the model's response.
 
             - `"auto"`
 
-          - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated image. One of `1024x1024`, `1024x1536`,
-            `1536x1024`, or `auto`. Default: `auto`.
+            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"1024x1024"`
+            - `string`
 
-            - `"1024x1536"`
+            - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            - `"1536x1024"`
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"auto"`
+              - `"1024x1024"`
+
+              - `"1024x1536"`
+
+              - `"1536x1024"`
+
+              - `"auto"`
 
         - `LocalShell object { type }`
 
@@ -10059,18 +10081,23 @@ as input for the model's response.
 
         - `"auto"`
 
-      - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+      - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated image. One of `1024x1024`, `1024x1536`,
-        `1536x1024`, or `auto`. Default: `auto`.
+        The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-        - `"1024x1024"`
+        - `string`
 
-        - `"1024x1536"`
+        - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        - `"1536x1024"`
+          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-        - `"auto"`
+          - `"1024x1024"`
+
+          - `"1024x1536"`
+
+          - `"1536x1024"`
+
+          - `"auto"`
 
     - `LocalShell object { type }`
 
@@ -10572,8 +10599,10 @@ as input for the model's response.
 
   - `top_logprobs: optional number`
 
-    An integer between 0 and 20 specifying the number of most likely tokens to
-    return at each token position, each with an associated log probability.
+    An integer between 0 and 20 specifying the maximum number of most likely
+    tokens to return at each token position, each with an associated log
+    probability. In some cases, the number of returned tokens may be fewer than
+    requested.
 
   - `truncation: optional "auto" or "disabled"`
 
@@ -13331,18 +13360,23 @@ Retrieves a model response with the given ID.
 
               - `"auto"`
 
-            - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated image. One of `1024x1024`, `1024x1536`,
-              `1536x1024`, or `auto`. Default: `auto`.
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-              - `"1024x1024"`
+              - `string`
 
-              - `"1024x1536"`
+              - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              - `"1536x1024"`
+                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-              - `"auto"`
+                - `"1024x1024"`
+
+                - `"1024x1536"`
+
+                - `"1536x1024"`
+
+                - `"auto"`
 
           - `LocalShell object { type }`
 
@@ -15693,18 +15727,23 @@ Retrieves a model response with the given ID.
 
             - `"auto"`
 
-          - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated image. One of `1024x1024`, `1024x1536`,
-            `1536x1024`, or `auto`. Default: `auto`.
+            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"1024x1024"`
+            - `string`
 
-            - `"1024x1536"`
+            - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            - `"1536x1024"`
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"auto"`
+              - `"1024x1024"`
+
+              - `"1024x1536"`
+
+              - `"1536x1024"`
+
+              - `"auto"`
 
         - `LocalShell object { type }`
 
@@ -17321,18 +17360,23 @@ Retrieves a model response with the given ID.
 
         - `"auto"`
 
-      - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+      - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated image. One of `1024x1024`, `1024x1536`,
-        `1536x1024`, or `auto`. Default: `auto`.
+        The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-        - `"1024x1024"`
+        - `string`
 
-        - `"1024x1536"`
+        - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        - `"1536x1024"`
+          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-        - `"auto"`
+          - `"1024x1024"`
+
+          - `"1024x1536"`
+
+          - `"1536x1024"`
+
+          - `"auto"`
 
     - `LocalShell object { type }`
 
@@ -17834,8 +17878,10 @@ Retrieves a model response with the given ID.
 
   - `top_logprobs: optional number`
 
-    An integer between 0 and 20 specifying the number of most likely tokens to
-    return at each token position, each with an associated log probability.
+    An integer between 0 and 20 specifying the maximum number of most likely
+    tokens to return at each token position, each with an associated log
+    probability. In some cases, the number of returned tokens may be fewer than
+    requested.
 
   - `truncation: optional "auto" or "disabled"`
 
@@ -19893,18 +19939,23 @@ the `background` parameter set to `true` can be cancelled.
 
               - `"auto"`
 
-            - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated image. One of `1024x1024`, `1024x1536`,
-              `1536x1024`, or `auto`. Default: `auto`.
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-              - `"1024x1024"`
+              - `string`
 
-              - `"1024x1536"`
+              - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              - `"1536x1024"`
+                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-              - `"auto"`
+                - `"1024x1024"`
+
+                - `"1024x1536"`
+
+                - `"1536x1024"`
+
+                - `"auto"`
 
           - `LocalShell object { type }`
 
@@ -22255,18 +22306,23 @@ the `background` parameter set to `true` can be cancelled.
 
             - `"auto"`
 
-          - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated image. One of `1024x1024`, `1024x1536`,
-            `1536x1024`, or `auto`. Default: `auto`.
+            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"1024x1024"`
+            - `string`
 
-            - `"1024x1536"`
+            - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            - `"1536x1024"`
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"auto"`
+              - `"1024x1024"`
+
+              - `"1024x1536"`
+
+              - `"1536x1024"`
+
+              - `"auto"`
 
         - `LocalShell object { type }`
 
@@ -23883,18 +23939,23 @@ the `background` parameter set to `true` can be cancelled.
 
         - `"auto"`
 
-      - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+      - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated image. One of `1024x1024`, `1024x1536`,
-        `1536x1024`, or `auto`. Default: `auto`.
+        The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-        - `"1024x1024"`
+        - `string`
 
-        - `"1024x1536"`
+        - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        - `"1536x1024"`
+          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-        - `"auto"`
+          - `"1024x1024"`
+
+          - `"1024x1536"`
+
+          - `"1536x1024"`
+
+          - `"auto"`
 
     - `LocalShell object { type }`
 
@@ -24396,8 +24457,10 @@ the `background` parameter set to `true` can be cancelled.
 
   - `top_logprobs: optional number`
 
-    An integer between 0 and 20 specifying the number of most likely tokens to
-    return at each token position, each with an associated log probability.
+    An integer between 0 and 20 specifying the maximum number of most likely
+    tokens to return at each token position, each with an associated log
+    probability. In some cases, the number of returned tokens may be fewer than
+    requested.
 
   - `truncation: optional "auto" or "disabled"`
 
@@ -26525,18 +26588,23 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             - `"auto"`
 
-          - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated image. One of `1024x1024`, `1024x1536`,
-            `1536x1024`, or `auto`. Default: `auto`.
+            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"1024x1024"`
+            - `string`
 
-            - `"1024x1536"`
+            - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            - `"1536x1024"`
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"auto"`
+              - `"1024x1024"`
+
+              - `"1024x1536"`
+
+              - `"1536x1024"`
+
+              - `"auto"`
 
         - `LocalShell object { type }`
 
@@ -28760,18 +28828,23 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             - `"auto"`
 
-          - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated image. One of `1024x1024`, `1024x1536`,
-            `1536x1024`, or `auto`. Default: `auto`.
+            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"1024x1024"`
+            - `string`
 
-            - `"1024x1536"`
+            - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            - `"1536x1024"`
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"auto"`
+              - `"1024x1024"`
+
+              - `"1024x1536"`
+
+              - `"1536x1024"`
+
+              - `"auto"`
 
         - `LocalShell object { type }`
 
@@ -31700,18 +31773,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
             - `"auto"`
 
-          - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated image. One of `1024x1024`, `1024x1536`,
-            `1536x1024`, or `auto`. Default: `auto`.
+            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"1024x1024"`
+            - `string`
 
-            - `"1024x1536"`
+            - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            - `"1536x1024"`
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"auto"`
+              - `"1024x1024"`
+
+              - `"1024x1536"`
+
+              - `"1536x1024"`
+
+              - `"auto"`
 
         - `LocalShell object { type }`
 
@@ -36014,18 +36092,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
               - `"auto"`
 
-            - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated image. One of `1024x1024`, `1024x1536`,
-              `1536x1024`, or `auto`. Default: `auto`.
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-              - `"1024x1024"`
+              - `string`
 
-              - `"1024x1536"`
+              - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              - `"1536x1024"`
+                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-              - `"auto"`
+                - `"1024x1024"`
+
+                - `"1024x1536"`
+
+                - `"1536x1024"`
+
+                - `"auto"`
 
           - `LocalShell object { type }`
 
@@ -38376,18 +38459,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
             - `"auto"`
 
-          - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated image. One of `1024x1024`, `1024x1536`,
-            `1536x1024`, or `auto`. Default: `auto`.
+            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"1024x1024"`
+            - `string`
 
-            - `"1024x1536"`
+            - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            - `"1536x1024"`
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"auto"`
+              - `"1024x1024"`
+
+              - `"1024x1536"`
+
+              - `"1536x1024"`
+
+              - `"auto"`
 
         - `LocalShell object { type }`
 
@@ -40004,18 +40092,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
         - `"auto"`
 
-      - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+      - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated image. One of `1024x1024`, `1024x1536`,
-        `1536x1024`, or `auto`. Default: `auto`.
+        The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-        - `"1024x1024"`
+        - `string`
 
-        - `"1024x1536"`
+        - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        - `"1536x1024"`
+          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-        - `"auto"`
+          - `"1024x1024"`
+
+          - `"1024x1536"`
+
+          - `"1536x1024"`
+
+          - `"auto"`
 
     - `LocalShell object { type }`
 
@@ -40517,8 +40610,10 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
   - `top_logprobs: optional number`
 
-    An integer between 0 and 20 specifying the number of most likely tokens to
-    return at each token position, each with an associated log probability.
+    An integer between 0 and 20 specifying the maximum number of most likely
+    tokens to return at each token position, each with an associated log
+    probability. In some cases, the number of returned tokens may be fewer than
+    requested.
 
   - `truncation: optional "auto" or "disabled"`
 
@@ -42532,18 +42627,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
                 - `"auto"`
 
-              - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+              - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated image. One of `1024x1024`, `1024x1536`,
-                `1536x1024`, or `auto`. Default: `auto`.
+                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-                - `"1024x1024"`
+                - `string`
 
-                - `"1024x1536"`
+                - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                - `"1536x1024"`
+                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-                - `"auto"`
+                  - `"1024x1024"`
+
+                  - `"1024x1536"`
+
+                  - `"1536x1024"`
+
+                  - `"auto"`
 
             - `LocalShell object { type }`
 
@@ -44894,18 +44994,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
               - `"auto"`
 
-            - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated image. One of `1024x1024`, `1024x1536`,
-              `1536x1024`, or `auto`. Default: `auto`.
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-              - `"1024x1024"`
+              - `string`
 
-              - `"1024x1536"`
+              - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              - `"1536x1024"`
+                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-              - `"auto"`
+                - `"1024x1024"`
+
+                - `"1024x1536"`
+
+                - `"1536x1024"`
+
+                - `"auto"`
 
           - `LocalShell object { type }`
 
@@ -46522,18 +46627,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
           - `"auto"`
 
-        - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated image. One of `1024x1024`, `1024x1536`,
-          `1536x1024`, or `auto`. Default: `auto`.
+          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-          - `"1024x1024"`
+          - `string`
 
-          - `"1024x1536"`
+          - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          - `"1536x1024"`
+            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-          - `"auto"`
+            - `"1024x1024"`
+
+            - `"1024x1536"`
+
+            - `"1536x1024"`
+
+            - `"auto"`
 
       - `LocalShell object { type }`
 
@@ -47035,8 +47145,10 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
     - `top_logprobs: optional number`
 
-      An integer between 0 and 20 specifying the number of most likely tokens to
-      return at each token position, each with an associated log probability.
+      An integer between 0 and 20 specifying the maximum number of most likely
+      tokens to return at each token position, each with an associated log
+      probability. In some cases, the number of returned tokens may be fewer than
+      requested.
 
     - `truncation: optional "auto" or "disabled"`
 
@@ -49527,18 +49639,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
                 - `"auto"`
 
-              - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+              - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated image. One of `1024x1024`, `1024x1536`,
-                `1536x1024`, or `auto`. Default: `auto`.
+                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-                - `"1024x1024"`
+                - `string`
 
-                - `"1024x1536"`
+                - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                - `"1536x1024"`
+                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-                - `"auto"`
+                  - `"1024x1024"`
+
+                  - `"1024x1536"`
+
+                  - `"1536x1024"`
+
+                  - `"auto"`
 
             - `LocalShell object { type }`
 
@@ -51889,18 +52006,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
               - `"auto"`
 
-            - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated image. One of `1024x1024`, `1024x1536`,
-              `1536x1024`, or `auto`. Default: `auto`.
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-              - `"1024x1024"`
+              - `string`
 
-              - `"1024x1536"`
+              - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              - `"1536x1024"`
+                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-              - `"auto"`
+                - `"1024x1024"`
+
+                - `"1024x1536"`
+
+                - `"1536x1024"`
+
+                - `"auto"`
 
           - `LocalShell object { type }`
 
@@ -53517,18 +53639,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
           - `"auto"`
 
-        - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated image. One of `1024x1024`, `1024x1536`,
-          `1536x1024`, or `auto`. Default: `auto`.
+          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-          - `"1024x1024"`
+          - `string`
 
-          - `"1024x1536"`
+          - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          - `"1536x1024"`
+            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-          - `"auto"`
+            - `"1024x1024"`
+
+            - `"1024x1536"`
+
+            - `"1536x1024"`
+
+            - `"auto"`
 
       - `LocalShell object { type }`
 
@@ -54030,8 +54157,10 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
     - `top_logprobs: optional number`
 
-      An integer between 0 and 20 specifying the number of most likely tokens to
-      return at each token position, each with an associated log probability.
+      An integer between 0 and 20 specifying the maximum number of most likely
+      tokens to return at each token position, each with an associated log
+      probability. In some cases, the number of returned tokens may be fewer than
+      requested.
 
     - `truncation: optional "auto" or "disabled"`
 
@@ -55989,18 +56118,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
                 - `"auto"`
 
-              - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+              - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated image. One of `1024x1024`, `1024x1536`,
-                `1536x1024`, or `auto`. Default: `auto`.
+                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-                - `"1024x1024"`
+                - `string`
 
-                - `"1024x1536"`
+                - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                - `"1536x1024"`
+                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-                - `"auto"`
+                  - `"1024x1024"`
+
+                  - `"1024x1536"`
+
+                  - `"1536x1024"`
+
+                  - `"auto"`
 
             - `LocalShell object { type }`
 
@@ -58351,18 +58485,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
               - `"auto"`
 
-            - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated image. One of `1024x1024`, `1024x1536`,
-              `1536x1024`, or `auto`. Default: `auto`.
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-              - `"1024x1024"`
+              - `string`
 
-              - `"1024x1536"`
+              - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              - `"1536x1024"`
+                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-              - `"auto"`
+                - `"1024x1024"`
+
+                - `"1024x1536"`
+
+                - `"1536x1024"`
+
+                - `"auto"`
 
           - `LocalShell object { type }`
 
@@ -59979,18 +60118,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
           - `"auto"`
 
-        - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated image. One of `1024x1024`, `1024x1536`,
-          `1536x1024`, or `auto`. Default: `auto`.
+          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-          - `"1024x1024"`
+          - `string`
 
-          - `"1024x1536"`
+          - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          - `"1536x1024"`
+            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-          - `"auto"`
+            - `"1024x1024"`
+
+            - `"1024x1536"`
+
+            - `"1536x1024"`
+
+            - `"auto"`
 
       - `LocalShell object { type }`
 
@@ -60492,8 +60636,10 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
     - `top_logprobs: optional number`
 
-      An integer between 0 and 20 specifying the number of most likely tokens to
-      return at each token position, each with an associated log probability.
+      An integer between 0 and 20 specifying the maximum number of most likely
+      tokens to return at each token position, each with an associated log
+      probability. In some cases, the number of returned tokens may be fewer than
+      requested.
 
     - `truncation: optional "auto" or "disabled"`
 
@@ -62704,18 +62850,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
                 - `"auto"`
 
-              - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+              - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated image. One of `1024x1024`, `1024x1536`,
-                `1536x1024`, or `auto`. Default: `auto`.
+                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-                - `"1024x1024"`
+                - `string`
 
-                - `"1024x1536"`
+                - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                - `"1536x1024"`
+                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-                - `"auto"`
+                  - `"1024x1024"`
+
+                  - `"1024x1536"`
+
+                  - `"1536x1024"`
+
+                  - `"auto"`
 
             - `LocalShell object { type }`
 
@@ -65066,18 +65217,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
               - `"auto"`
 
-            - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated image. One of `1024x1024`, `1024x1536`,
-              `1536x1024`, or `auto`. Default: `auto`.
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-              - `"1024x1024"`
+              - `string`
 
-              - `"1024x1536"`
+              - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              - `"1536x1024"`
+                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-              - `"auto"`
+                - `"1024x1024"`
+
+                - `"1024x1536"`
+
+                - `"1536x1024"`
+
+                - `"auto"`
 
           - `LocalShell object { type }`
 
@@ -66694,18 +66850,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
           - `"auto"`
 
-        - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated image. One of `1024x1024`, `1024x1536`,
-          `1536x1024`, or `auto`. Default: `auto`.
+          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-          - `"1024x1024"`
+          - `string`
 
-          - `"1024x1536"`
+          - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          - `"1536x1024"`
+            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-          - `"auto"`
+            - `"1024x1024"`
+
+            - `"1024x1536"`
+
+            - `"1536x1024"`
+
+            - `"auto"`
 
       - `LocalShell object { type }`
 
@@ -67207,8 +67368,10 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
     - `top_logprobs: optional number`
 
-      An integer between 0 and 20 specifying the number of most likely tokens to
-      return at each token position, each with an associated log probability.
+      An integer between 0 and 20 specifying the maximum number of most likely
+      tokens to return at each token position, each with an associated log
+      probability. In some cases, the number of returned tokens may be fewer than
+      requested.
 
     - `truncation: optional "auto" or "disabled"`
 
@@ -69063,18 +69226,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
                 - `"auto"`
 
-              - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+              - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated image. One of `1024x1024`, `1024x1536`,
-                `1536x1024`, or `auto`. Default: `auto`.
+                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-                - `"1024x1024"`
+                - `string`
 
-                - `"1024x1536"`
+                - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                - `"1536x1024"`
+                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-                - `"auto"`
+                  - `"1024x1024"`
+
+                  - `"1024x1536"`
+
+                  - `"1536x1024"`
+
+                  - `"auto"`
 
             - `LocalShell object { type }`
 
@@ -71425,18 +71593,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
               - `"auto"`
 
-            - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated image. One of `1024x1024`, `1024x1536`,
-              `1536x1024`, or `auto`. Default: `auto`.
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-              - `"1024x1024"`
+              - `string`
 
-              - `"1024x1536"`
+              - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              - `"1536x1024"`
+                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-              - `"auto"`
+                - `"1024x1024"`
+
+                - `"1024x1536"`
+
+                - `"1536x1024"`
+
+                - `"auto"`
 
           - `LocalShell object { type }`
 
@@ -73053,18 +73226,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
           - `"auto"`
 
-        - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated image. One of `1024x1024`, `1024x1536`,
-          `1536x1024`, or `auto`. Default: `auto`.
+          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-          - `"1024x1024"`
+          - `string`
 
-          - `"1024x1536"`
+          - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          - `"1536x1024"`
+            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-          - `"auto"`
+            - `"1024x1024"`
+
+            - `"1024x1536"`
+
+            - `"1536x1024"`
+
+            - `"auto"`
 
       - `LocalShell object { type }`
 
@@ -73566,8 +73744,10 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
     - `top_logprobs: optional number`
 
-      An integer between 0 and 20 specifying the number of most likely tokens to
-      return at each token position, each with an associated log probability.
+      An integer between 0 and 20 specifying the maximum number of most likely
+      tokens to return at each token position, each with an associated log
+      probability. In some cases, the number of returned tokens may be fewer than
+      requested.
 
     - `truncation: optional "auto" or "disabled"`
 
@@ -75949,18 +76129,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
           - `"auto"`
 
-        - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated image. One of `1024x1024`, `1024x1536`,
-          `1536x1024`, or `auto`. Default: `auto`.
+          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-          - `"1024x1024"`
+          - `string`
 
-          - `"1024x1536"`
+          - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          - `"1536x1024"`
+            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-          - `"auto"`
+            - `"1024x1024"`
+
+            - `"1024x1536"`
+
+            - `"1536x1024"`
+
+            - `"auto"`
 
       - `LocalShell object { type }`
 
@@ -78648,18 +78833,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
             - `"auto"`
 
-          - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated image. One of `1024x1024`, `1024x1536`,
-            `1536x1024`, or `auto`. Default: `auto`.
+            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"1024x1024"`
+            - `string`
 
-            - `"1024x1536"`
+            - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            - `"1536x1024"`
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"auto"`
+              - `"1024x1024"`
+
+              - `"1024x1536"`
+
+              - `"1536x1024"`
+
+              - `"auto"`
 
         - `LocalShell object { type }`
 
@@ -81361,18 +81551,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
             - `"auto"`
 
-          - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated image. One of `1024x1024`, `1024x1536`,
-            `1536x1024`, or `auto`. Default: `auto`.
+            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"1024x1024"`
+            - `string`
 
-            - `"1024x1536"`
+            - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            - `"1536x1024"`
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"auto"`
+              - `"1024x1024"`
+
+              - `"1024x1536"`
+
+              - `"1536x1024"`
+
+              - `"auto"`
 
         - `LocalShell object { type }`
 
@@ -84702,18 +84897,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
                 - `"auto"`
 
-              - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+              - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated image. One of `1024x1024`, `1024x1536`,
-                `1536x1024`, or `auto`. Default: `auto`.
+                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-                - `"1024x1024"`
+                - `string`
 
-                - `"1024x1536"`
+                - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                - `"1536x1024"`
+                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-                - `"auto"`
+                  - `"1024x1024"`
+
+                  - `"1024x1536"`
+
+                  - `"1536x1024"`
+
+                  - `"auto"`
 
             - `LocalShell object { type }`
 
@@ -87064,18 +87264,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
               - `"auto"`
 
-            - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated image. One of `1024x1024`, `1024x1536`,
-              `1536x1024`, or `auto`. Default: `auto`.
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-              - `"1024x1024"`
+              - `string`
 
-              - `"1024x1536"`
+              - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              - `"1536x1024"`
+                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-              - `"auto"`
+                - `"1024x1024"`
+
+                - `"1024x1536"`
+
+                - `"1536x1024"`
+
+                - `"auto"`
 
           - `LocalShell object { type }`
 
@@ -88692,18 +88897,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
           - `"auto"`
 
-        - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated image. One of `1024x1024`, `1024x1536`,
-          `1536x1024`, or `auto`. Default: `auto`.
+          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-          - `"1024x1024"`
+          - `string`
 
-          - `"1024x1536"`
+          - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          - `"1536x1024"`
+            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-          - `"auto"`
+            - `"1024x1024"`
+
+            - `"1024x1536"`
+
+            - `"1536x1024"`
+
+            - `"auto"`
 
       - `LocalShell object { type }`
 
@@ -89205,8 +89415,10 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
     - `top_logprobs: optional number`
 
-      An integer between 0 and 20 specifying the number of most likely tokens to
-      return at each token position, each with an associated log probability.
+      An integer between 0 and 20 specifying the maximum number of most likely
+      tokens to return at each token position, each with an associated log
+      probability. In some cases, the number of returned tokens may be fewer than
+      requested.
 
     - `truncation: optional "auto" or "disabled"`
 
@@ -91511,18 +91723,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
                   - `"auto"`
 
-                - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+                - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                  The size of the generated image. One of `1024x1024`, `1024x1536`,
-                  `1536x1024`, or `auto`. Default: `auto`.
+                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-                  - `"1024x1024"`
+                  - `string`
 
-                  - `"1024x1536"`
+                  - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                  - `"1536x1024"`
+                    The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-                  - `"auto"`
+                    - `"1024x1024"`
+
+                    - `"1024x1536"`
+
+                    - `"1536x1024"`
+
+                    - `"auto"`
 
               - `LocalShell object { type }`
 
@@ -93873,18 +94090,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
                 - `"auto"`
 
-              - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+              - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated image. One of `1024x1024`, `1024x1536`,
-                `1536x1024`, or `auto`. Default: `auto`.
+                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-                - `"1024x1024"`
+                - `string`
 
-                - `"1024x1536"`
+                - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                - `"1536x1024"`
+                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-                - `"auto"`
+                  - `"1024x1024"`
+
+                  - `"1024x1536"`
+
+                  - `"1536x1024"`
+
+                  - `"auto"`
 
             - `LocalShell object { type }`
 
@@ -95501,18 +95723,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
             - `"auto"`
 
-          - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated image. One of `1024x1024`, `1024x1536`,
-            `1536x1024`, or `auto`. Default: `auto`.
+            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"1024x1024"`
+            - `string`
 
-            - `"1024x1536"`
+            - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            - `"1536x1024"`
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"auto"`
+              - `"1024x1024"`
+
+              - `"1024x1536"`
+
+              - `"1536x1024"`
+
+              - `"auto"`
 
         - `LocalShell object { type }`
 
@@ -96014,8 +96241,10 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
       - `top_logprobs: optional number`
 
-        An integer between 0 and 20 specifying the number of most likely tokens to
-        return at each token position, each with an associated log probability.
+        An integer between 0 and 20 specifying the maximum number of most likely
+        tokens to return at each token position, each with an associated log
+        probability. In some cases, the number of returned tokens may be fewer than
+        requested.
 
       - `truncation: optional "auto" or "disabled"`
 
@@ -96834,7 +97063,7 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
       - `top_logprobs: optional array of object { token, logprob }`
 
-        The log probability of the top 20 most likely tokens.
+        The log probabilities of up to 20 of the most likely tokens.
 
         - `token: optional string`
 
@@ -96884,7 +97113,7 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
       - `top_logprobs: optional array of object { token, logprob }`
 
-        The log probability of the top 20 most likely tokens.
+        The log probabilities of up to 20 of the most likely tokens.
 
         - `token: optional string`
 
@@ -97489,7 +97718,7 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
     - `top_logprobs: optional array of object { token, logprob }`
 
-      The log probability of the top 20 most likely tokens.
+      The log probabilities of up to 20 of the most likely tokens.
 
       - `token: optional string`
 
@@ -97541,7 +97770,7 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
     - `top_logprobs: optional array of object { token, logprob }`
 
-      The log probability of the top 20 most likely tokens.
+      The log probabilities of up to 20 of the most likely tokens.
 
       - `token: optional string`
 
@@ -99433,18 +99662,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
               - `"auto"`
 
-            - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated image. One of `1024x1024`, `1024x1536`,
-              `1536x1024`, or `auto`. Default: `auto`.
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-              - `"1024x1024"`
+              - `string`
 
-              - `"1024x1536"`
+              - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              - `"1536x1024"`
+                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-              - `"auto"`
+                - `"1024x1024"`
+
+                - `"1024x1536"`
+
+                - `"1536x1024"`
+
+                - `"auto"`
 
           - `LocalShell object { type }`
 
@@ -101733,18 +101967,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
         - `"auto"`
 
-      - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+      - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated image. One of `1024x1024`, `1024x1536`,
-        `1536x1024`, or `auto`. Default: `auto`.
+        The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-        - `"1024x1024"`
+        - `string`
 
-        - `"1024x1536"`
+        - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        - `"1536x1024"`
+          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-        - `"auto"`
+          - `"1024x1024"`
+
+          - `"1024x1536"`
+
+          - `"1536x1024"`
+
+          - `"auto"`
 
     - `LocalShell object { type }`
 
@@ -101958,8 +102197,10 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
   - `top_logprobs: optional number`
 
-    An integer between 0 and 20 specifying the number of most likely tokens to
-    return at each token position, each with an associated log probability.
+    An integer between 0 and 20 specifying the maximum number of most likely
+    tokens to return at each token position, each with an associated log
+    probability. In some cases, the number of returned tokens may be fewer than
+    requested.
 
   - `top_p: optional number`
 
@@ -103934,18 +104175,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
                   - `"auto"`
 
-                - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+                - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                  The size of the generated image. One of `1024x1024`, `1024x1536`,
-                  `1536x1024`, or `auto`. Default: `auto`.
+                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-                  - `"1024x1024"`
+                  - `string`
 
-                  - `"1024x1536"`
+                  - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                  - `"1536x1024"`
+                    The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-                  - `"auto"`
+                    - `"1024x1024"`
+
+                    - `"1024x1536"`
+
+                    - `"1536x1024"`
+
+                    - `"auto"`
 
               - `LocalShell object { type }`
 
@@ -106296,18 +106542,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
                 - `"auto"`
 
-              - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+              - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated image. One of `1024x1024`, `1024x1536`,
-                `1536x1024`, or `auto`. Default: `auto`.
+                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-                - `"1024x1024"`
+                - `string`
 
-                - `"1024x1536"`
+                - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                - `"1536x1024"`
+                  The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-                - `"auto"`
+                  - `"1024x1024"`
+
+                  - `"1024x1536"`
+
+                  - `"1536x1024"`
+
+                  - `"auto"`
 
             - `LocalShell object { type }`
 
@@ -107924,18 +108175,23 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
             - `"auto"`
 
-          - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated image. One of `1024x1024`, `1024x1536`,
-            `1536x1024`, or `auto`. Default: `auto`.
+            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"1024x1024"`
+            - `string`
 
-            - `"1024x1536"`
+            - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            - `"1536x1024"`
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"auto"`
+              - `"1024x1024"`
+
+              - `"1024x1536"`
+
+              - `"1536x1024"`
+
+              - `"auto"`
 
         - `LocalShell object { type }`
 
@@ -108437,8 +108693,10 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
       - `top_logprobs: optional number`
 
-        An integer between 0 and 20 specifying the number of most likely tokens to
-        return at each token position, each with an associated log probability.
+        An integer between 0 and 20 specifying the maximum number of most likely
+        tokens to return at each token position, each with an associated log
+        probability. In some cases, the number of returned tokens may be fewer than
+        requested.
 
       - `truncation: optional "auto" or "disabled"`
 
@@ -109257,7 +109515,7 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
       - `top_logprobs: optional array of object { token, logprob }`
 
-        The log probability of the top 20 most likely tokens.
+        The log probabilities of up to 20 of the most likely tokens.
 
         - `token: optional string`
 
@@ -109307,7 +109565,7 @@ curl -X POST https://api.openai.com/v1/responses/compact \
 
       - `top_logprobs: optional array of object { token, logprob }`
 
-        The log probability of the top 20 most likely tokens.
+        The log probabilities of up to 20 of the most likely tokens.
 
         - `token: optional string`
 
@@ -111626,18 +111884,23 @@ Returns a list of input items for a given response.
 
             - `"auto"`
 
-          - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated image. One of `1024x1024`, `1024x1536`,
-            `1536x1024`, or `auto`. Default: `auto`.
+            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"1024x1024"`
+            - `string`
 
-            - `"1024x1536"`
+            - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            - `"1536x1024"`
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"auto"`
+              - `"1024x1024"`
+
+              - `"1024x1536"`
+
+              - `"1536x1024"`
+
+              - `"auto"`
 
         - `LocalShell object { type }`
 
@@ -114473,18 +114736,23 @@ curl https://api.openai.com/v1/responses/resp_abc123/input_items \
 
             - `"auto"`
 
-          - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated image. One of `1024x1024`, `1024x1536`,
-            `1536x1024`, or `auto`. Default: `auto`.
+            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"1024x1024"`
+            - `string`
 
-            - `"1024x1536"`
+            - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            - `"1536x1024"`
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"auto"`
+              - `"1024x1024"`
+
+              - `"1024x1536"`
+
+              - `"1536x1024"`
+
+              - `"auto"`
 
         - `LocalShell object { type }`
 
@@ -117361,18 +117629,23 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
             - `"auto"`
 
-          - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated image. One of `1024x1024`, `1024x1536`,
-            `1536x1024`, or `auto`. Default: `auto`.
+            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"1024x1024"`
+            - `string`
 
-            - `"1024x1536"`
+            - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            - `"1536x1024"`
+              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-            - `"auto"`
+              - `"1024x1024"`
+
+              - `"1024x1536"`
+
+              - `"1536x1024"`
+
+              - `"auto"`
 
         - `LocalShell object { type }`
 
@@ -119323,18 +119596,23 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
       - `"auto"`
 
-    - `size: optional "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+    - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-      The size of the generated image. One of `1024x1024`, `1024x1536`,
-      `1536x1024`, or `auto`. Default: `auto`.
+      The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-      - `"1024x1024"`
+      - `string`
 
-      - `"1024x1536"`
+      - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-      - `"1536x1024"`
+        The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
-      - `"auto"`
+        - `"1024x1024"`
+
+        - `"1024x1536"`
+
+        - `"1536x1024"`
+
+        - `"auto"`
 
   - `LocalShell object { type }`
 

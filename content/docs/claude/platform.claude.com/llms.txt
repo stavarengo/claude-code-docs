@@ -12,7 +12,7 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 1375 pages - /docs - Content included below
+- English (en) - 1367 pages - /docs - Content included below
 - German (Deutsch) (de) - 132 pages - /docs/de - Visit website for content
 - Spanish (Español) (es) - 132 pages - /docs/es - Visit website for content
 - French (Français) (fr) - 132 pages - /docs/fr - Visit website for content
@@ -98,13 +98,14 @@ The full documentation is available in the following languages on https://platfo
 
 - [Overview](https://platform.claude.com/docs/en/managed-agents/overview.md) - Claude Managed Agents overview
 - [Quickstart](https://platform.claude.com/docs/en/managed-agents/quickstart.md) - Get started with Claude Managed Agents
-- [Accessing GitHub](https://platform.claude.com/docs/en/managed-agents/github.md)
-- [Adding files](https://platform.claude.com/docs/en/managed-agents/files.md)
+- [Access GitHub](https://platform.claude.com/docs/en/managed-agents/github.md) - Accessing GitHub
+- [Attach and download files](https://platform.claude.com/docs/en/managed-agents/files.md) - Adding files
 - [Authenticate with vaults](https://platform.claude.com/docs/en/managed-agents/vaults.md)
 - [Cloud environment setup](https://platform.claude.com/docs/en/managed-agents/environments.md)
 - [Container reference](https://platform.claude.com/docs/en/managed-agents/cloud-containers.md)
 - [Define outcomes](https://platform.claude.com/docs/en/managed-agents/define-outcomes.md)
 - [Agent setup](https://platform.claude.com/docs/en/managed-agents/agent-setup.md) - Define your agent
+- [Dreams](https://platform.claude.com/docs/en/managed-agents/dreams.md)
 - [MCP connector](https://platform.claude.com/docs/en/managed-agents/mcp-connector.md)
 - [Multiagent sessions](https://platform.claude.com/docs/en/managed-agents/multi-agent.md)
 - [Permission policies](https://platform.claude.com/docs/en/managed-agents/permission-policies.md)
@@ -112,8 +113,9 @@ The full documentation is available in the following languages on https://platfo
 - [Session event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming.md)
 - [Agent Skills](https://platform.claude.com/docs/en/managed-agents/skills.md) - Skills
 - [Start a session](https://platform.claude.com/docs/en/managed-agents/sessions.md)
+- [Subscribe to webhooks](https://platform.claude.com/docs/en/managed-agents/webhooks.md)
 - [Tools](https://platform.claude.com/docs/en/managed-agents/tools.md)
-- [Using memory](https://platform.claude.com/docs/en/managed-agents/memory.md) - Using agent memory
+- [Memory stores](https://platform.claude.com/docs/en/managed-agents/memory.md) - Using agent memory
 
 ### Admin
 
@@ -1238,16 +1240,6 @@ The full documentation is available in the following languages on https://platfo
 - [Threads (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/sessions/threads.md)
 - [Threads (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/sessions/threads.md)
 - [Threads (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/sessions/threads.md)
-- [Unwrap (Beta)](https://platform.claude.com/docs/en/api/beta/webhooks/unwrap.md)
-- [Unwrap (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/webhooks/unwrap.md)
-- [Unwrap (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/webhooks/unwrap.md)
-- [Unwrap (Beta) (Go)](https://platform.claude.com/docs/en/api/go/beta/webhooks/unwrap.md)
-- [Unwrap (Beta) (Java)](https://platform.claude.com/docs/en/api/java/beta/webhooks/unwrap.md)
-- [Unwrap (Beta) (php)](https://platform.claude.com/docs/en/api/php/beta/webhooks/unwrap.md)
-- [Unwrap (Beta) (Python)](https://platform.claude.com/docs/en/api/python/beta/webhooks/unwrap.md)
-- [Unwrap (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/webhooks/unwrap.md)
-- [Unwrap (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/webhooks/unwrap.md)
-- [Unwrap (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/webhooks/unwrap.md)
 - [Update a memory (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memories/update.md)
 - [Update a memory (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/memory_stores/memories/update.md)
 - [Update a memory (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/memory_stores/memories/update.md)
