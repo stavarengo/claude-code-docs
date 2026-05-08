@@ -46,7 +46,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Agents SDK](https://developers.openai.com/api/docs/guides/agents.md): Learn how the OpenAI Agents SDK fits together and which docs to read next.
 - [API deployment checklist](https://developers.openai.com/api/docs/guides/deployment-checklist.md): Review commonly underused Responses API design choices that improve deployment quality, speed, cost, and reliability.
 - [Apply Patch](https://developers.openai.com/api/docs/guides/tools-apply-patch.md): Allow models to propose structured diffs that your integration applies.
-- [Audio and speech](https://developers.openai.com/api/docs/guides/audio.md): Learn how to work with audio and speech in the OpenAI API.
+- [Audio and speech](https://developers.openai.com/api/docs/guides/audio.md): Learn core audio and speech concepts for building with the OpenAI API.
 - [Background mode](https://developers.openai.com/api/docs/guides/background.md): Run long running tasks asynchronously in the background.
 - [Batch API](https://developers.openai.com/api/docs/guides/batch.md): Learn how to use OpenAI's Batch API for processing jobs with asynchronous requests, increased rate limits, and cost efficiency.
 - [ChatGPT Developer mode](https://developers.openai.com/api/docs/guides/developer-mode.md): Full MCP client access for apps and tools.
@@ -106,13 +106,14 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Prompting](https://developers.openai.com/api/docs/guides/prompting.md): Learn how to create, optimize, save, and reuse prompts with OpenAI models.
 - [Quickstart](https://developers.openai.com/api/docs/guides/agents/quickstart.md): Build your first agent with the OpenAI Agents SDK, add tools and handoffs, and understand where to go next.
 - [Rate limits](https://developers.openai.com/api/docs/guides/rate-limits.md): Rate limits are restrictions that our API imposes on the number of times a user or client can access our services within a specified period of time.
-- [Realtime API](https://developers.openai.com/api/docs/guides/realtime.md): Learn how to build low-latency, multimodal LLM applications with the Realtime API.
-- [Realtime API with MCP](https://developers.openai.com/api/docs/guides/realtime-mcp.md): Learn how to configure MCP tools in the Realtime API and handle the resulting event flow.
+- [Realtime and audio](https://developers.openai.com/api/docs/guides/realtime.md): Learn which realtime and audio guide to use for each speech application.
 - [Realtime API with SIP](https://developers.openai.com/api/docs/guides/realtime-sip.md): Learn how to connect to the Realtime API using SIP.
 - [Realtime API with WebRTC](https://developers.openai.com/api/docs/guides/realtime-webrtc.md): Learn how to connect to the Realtime API using WebRTC.
 - [Realtime API with WebSocket](https://developers.openai.com/api/docs/guides/realtime-websocket.md): Learn how to connect to the Realtime API using WebSocket in a server-to-server application.
 - [Realtime conversations](https://developers.openai.com/api/docs/guides/realtime-conversations.md): Learn how to manage Realtime speech-to-speech conversations.
-- [Realtime transcription](https://developers.openai.com/api/docs/guides/realtime-transcription.md): Learn how to transcribe audio in real-time with the Realtime API.
+- [Realtime transcription](https://developers.openai.com/api/docs/guides/realtime-transcription.md): Learn how to transcribe live audio with realtime transcription sessions.
+- [Realtime translation](https://developers.openai.com/api/docs/guides/realtime-translation.md): Learn how to build live speech translation with Realtime translation sessions.
+- [Realtime with tools](https://developers.openai.com/api/docs/guides/realtime-mcp.md): Learn how to configure function tools, MCP tools, and connectors in a Realtime session.
 - [Reasoning best practices](https://developers.openai.com/api/docs/guides/reasoning-best-practices.md): Explore best practices for using o-series reasoning models, like o1 and o3-mini, vs. GPT models—including use cases, how to choose a model, and prompting guidance.
 - [Reasoning models](https://developers.openai.com/api/docs/guides/reasoning.md): Learn how to use OpenAI reasoning models in the Responses API, choose a reasoning effort, manage reasoning tokens, and keep reasoning state across turns.
 - [Reinforcement fine-tuning](https://developers.openai.com/api/docs/guides/reinforcement-fine-tuning.md): Fine-tune models for expert-level performance within a domain.
@@ -139,7 +140,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Upgrading to GPT-5.4](https://developers.openai.com/api/docs/guides/upgrading-to-gpt-5p4.md): Guidance for upgrading OpenAI API model strings and directly related prompts to GPT-5.4.
 - [Upgrading to GPT-5.5](https://developers.openai.com/api/docs/guides/upgrading-to-gpt-5p5.md): Guidance for upgrading OpenAI API model strings and directly related prompts to GPT-5.5.
 - [Using GPT-5.5](https://developers.openai.com/api/docs/guides/latest-model.md): Learn how to use and migrate to GPT-5.5, the latest model in the OpenAI API.
-- [Using realtime models](https://developers.openai.com/api/docs/guides/realtime-models-prompting.md): Learn how to use OpenAI realtime models and prompting effectively.
+- [Using realtime models](https://developers.openai.com/api/docs/guides/realtime-models-prompting.md): Learn how to use realtime voice models, including Realtime 2 reasoning, preambles, tool use, and migration from earlier realtime models.
 - [Using tools](https://developers.openai.com/api/docs/guides/tools.md): Use powerful tools like remote MCP servers, or built-in tools like web search and file search to extend the model's capabilities.
 - [Vector embeddings](https://developers.openai.com/api/docs/guides/embeddings.md): Learn how to turn text into numbers, unlocking use cases like search, clustering, and more with OpenAI API embeddings.
 - [Video generation with Sora](https://developers.openai.com/api/docs/guides/video-generation.md): Learn how to generate, refine, and manage videos using the OpenAI Videos API.
@@ -153,7 +154,8 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Working with evals](https://developers.openai.com/api/docs/guides/evals.md): Learn how to test and improve AI model outputs through evaluations.
 
 ## Libraries
-- [Libraries](https://developers.openai.com/api/docs/libraries.md): Discover language-specific libraries for using the OpenAI API, including Python, Node.js, .NET, and more.
+- [SDKs and CLI](https://developers.openai.com/api/docs/libraries.md): Discover official OpenAI SDKs, the OpenAI CLI, and the Agents SDK.
+- [OpenAI CLI](https://developers.openai.com/api/docs/libraries/openai-cli.md): Install and use the generated openai command-line tool for Responses, structured outputs, images, speech, and shell workflows.
 
 ## Mcp
 - [Building MCP servers for ChatGPT Apps and API integrations](https://developers.openai.com/api/docs/mcp.md): Learn how to build MCP servers for use with ChatGPT Apps, deep research, or API integrations.

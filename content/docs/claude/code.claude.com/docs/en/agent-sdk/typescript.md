@@ -8,10 +8,6 @@
 
 <script src="/components/typescript-sdk-type-links.js" defer />
 
-<Note>
-  **Try the new V2 interface (preview):** A simplified interface with `send()` and `stream()` patterns is now available, making multi-turn conversations easier. [Learn more about the TypeScript V2 preview](/en/agent-sdk/typescript-v2-preview)
-</Note>
-
 ## Installation
 
 ```bash theme={null}
@@ -362,6 +358,7 @@ Configuration object for the `query()` function.
 | `sessionStore`                    | [`SessionStore`](/en/agent-sdk/session-storage#the-sessionstore-interface)                               | `undefined`                                 | Mirror session transcripts to an external backend so any host can resume them. See [Persist sessions to external storage](/en/agent-sdk/session-storage)                                                                                                                                                                                                                                                                                                                            |
 | `settings`                        | `string \| Settings`                                                                                     | `undefined`                                 | Inline [settings](/en/settings) object or path to a settings file. Populates the flag-settings layer in the [precedence order](/en/settings#settings-precedence). Change at runtime with [`applyFlagSettings()`](#applyflagsettings)                                                                                                                                                                                                                                                |
 | `settingSources`                  | [`SettingSource`](#settingsource)`[]`                                                                    | CLI defaults (all sources)                  | Control which filesystem settings to load. Pass `[]` to disable user, project, and local settings. Managed policy settings load regardless. See [Use Claude Code features](/en/agent-sdk/claude-code-features#what-settingsources-does-not-control)                                                                                                                                                                                                                                 |
+| `skills`                          | `string[] \| 'all'`                                                                                      | `undefined`                                 | Skills available to the session. Pass `'all'` to enable every discovered skill, or a list of skill names. When set, the SDK enables the Skill tool automatically without listing it in `allowedTools`. See [Skills](/en/agent-sdk/skills)                                                                                                                                                                                                                                           |
 | `spawnClaudeCodeProcess`          | `(options: SpawnOptions) => SpawnedProcess`                                                              | `undefined`                                 | Custom function to spawn the Claude Code process. Use to run Claude Code in VMs, containers, or remote environments                                                                                                                                                                                                                                                                                                                                                                 |
 | `stderr`                          | `(data: string) => void`                                                                                 | `undefined`                                 | Callback for stderr output                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `strictMcpConfig`                 | `boolean`                                                                                                | `false`                                     | Enforce strict MCP validation                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
@@ -531,22 +528,22 @@ type AgentDefinition = {
 };
 ```
 
-| Field                                 | Required | Description                                                                                                                                                              |
-| :------------------------------------ | :------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `description`                         | Yes      | Natural language description of when to use this agent                                                                                                                   |
-| `tools`                               | No       | Array of allowed tool names. If omitted, inherits all tools from parent                                                                                                  |
-| `disallowedTools`                     | No       | Array of tool names to explicitly disallow for this agent                                                                                                                |
-| `prompt`                              | Yes      | The agent's system prompt                                                                                                                                                |
-| `model`                               | No       | Model override for this agent. Accepts an alias such as `'sonnet'`, `'opus'`, `'haiku'`, `'inherit'`, or a full model ID. If omitted or `'inherit'`, uses the main model |
-| `mcpServers`                          | No       | MCP server specifications for this agent                                                                                                                                 |
-| `skills`                              | No       | Array of skill names to preload into the agent context                                                                                                                   |
-| `initialPrompt`                       | No       | Auto-submitted as the first user turn when this agent runs as the main thread agent                                                                                      |
-| `maxTurns`                            | No       | Maximum number of agentic turns (API round-trips) before stopping                                                                                                        |
-| `background`                          | No       | Run this agent as a non-blocking background task when invoked                                                                                                            |
-| `memory`                              | No       | Memory source for this agent: `'user'`, `'project'`, or `'local'`                                                                                                        |
-| `effort`                              | No       | Reasoning effort level for this agent. Accepts a named level or an integer                                                                                               |
-| `permissionMode`                      | No       | Permission mode for tool execution within this agent. See [`PermissionMode`](#permissionmode)                                                                            |
-| `criticalSystemReminder_EXPERIMENTAL` | No       | Experimental: Critical reminder added to the system prompt                                                                                                               |
+| Field                                 | Required | Description                                                                                                                                                                    |
+| :------------------------------------ | :------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `description`                         | Yes      | Natural language description of when to use this agent                                                                                                                         |
+| `tools`                               | No       | Array of allowed tool names. If omitted, inherits all tools from parent. To preload Skills into the agent's context, use the `skills` field rather than listing `'Skill'` here |
+| `disallowedTools`                     | No       | Array of tool names to explicitly disallow for this agent                                                                                                                      |
+| `prompt`                              | Yes      | The agent's system prompt                                                                                                                                                      |
+| `model`                               | No       | Model override for this agent. Accepts an alias such as `'sonnet'`, `'opus'`, `'haiku'`, `'inherit'`, or a full model ID. If omitted or `'inherit'`, uses the main model       |
+| `mcpServers`                          | No       | MCP server specifications for this agent                                                                                                                                       |
+| `skills`                              | No       | Array of skill names to preload into the agent context                                                                                                                         |
+| `initialPrompt`                       | No       | Auto-submitted as the first user turn when this agent runs as the main thread agent                                                                                            |
+| `maxTurns`                            | No       | Maximum number of agentic turns (API round-trips) before stopping                                                                                                              |
+| `background`                          | No       | Run this agent as a non-blocking background task when invoked                                                                                                                  |
+| `memory`                              | No       | Memory source for this agent: `'user'`, `'project'`, or `'local'`                                                                                                              |
+| `effort`                              | No       | Reasoning effort level for this agent. Accepts a named level or an integer                                                                                                     |
+| `permissionMode`                      | No       | Permission mode for tool execution within this agent. See [`PermissionMode`](#permissionmode)                                                                                  |
+| `criticalSystemReminder_EXPERIMENTAL` | No       | Experimental: Critical reminder added to the system prompt                                                                                                                     |
 
 ### `AgentMcpServerSpec`
 
@@ -1180,6 +1177,7 @@ type BaseHookInput = {
   transcript_path: string;
   cwd: string;
   permission_mode?: string;
+  effort?: { level: string };
   agent_id?: string;
   agent_type?: string;
 };
@@ -2495,7 +2493,7 @@ type Usage = {
 
 ### `CallToolResult`
 
-MCP tool result type (from `@modelcontextprotocol/sdk/types.js`).
+MCP tool result type (from `@modelcontextprotocol/sdk/types.js`). `structuredContent` is a JSON object that can be returned alongside `content`, including image blocks. See [Return structured data](/en/agent-sdk/custom-tools#return-structured-data).
 
 ```typescript theme={null}
 type CallToolResult = {
@@ -2503,6 +2501,7 @@ type CallToolResult = {
     type: "text" | "image" | "resource";
     // Additional fields vary by type
   }>;
+  structuredContent?: Record<string, unknown>;
   isError?: boolean;
 };
 ```

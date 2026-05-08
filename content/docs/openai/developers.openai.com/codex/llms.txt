@@ -16,6 +16,7 @@ Use this as a compact map of Codex docs. Each page has a Markdown twin at `/code
 - [Codex app commands](https://developers.openai.com/codex/app/commands.md): Reference for Codex app commands and keyboard shortcuts
 - [Codex app features](https://developers.openai.com/codex/app/features.md): What you can do with the Codex app
 - [Codex app settings](https://developers.openai.com/codex/app/settings.md): Configure Codex app behavior and preferences
+- [Codex Chrome extension](https://developers.openai.com/codex/app/chrome-extension.md): Use Chrome with Codex while managing browser permissions, website approvals, and browsing data
 - [Computer Use](https://developers.openai.com/codex/app/computer-use.md): Let Codex use desktop apps while it works
 - [In-app browser](https://developers.openai.com/codex/app/browser.md): Preview and comment on web apps from Codex
 - [Local environments](https://developers.openai.com/codex/app/local-environments.md): Configure common actions and setup scripts for worktrees

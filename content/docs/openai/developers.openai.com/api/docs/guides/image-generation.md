@@ -171,6 +171,14 @@ curl -X POST "https://api.openai.com/v1/images/generations" \\
     }' | jq -r '.data[0].b64_json' | base64 --decode > otter.png
 ```
 
+```cli
+openai images generate \\
+  --model gpt-image-2 \\
+  --prompt "A childrens book drawing of a veterinarian using a stethoscope to listen to the heartbeat of a baby otter." \\
+  --raw-output \\
+  --transform 'data.0.b64_json' | base64 --decode > otter.png
+```
+
   </div>
 
 
@@ -738,6 +746,18 @@ curl -s -D >(grep -i x-request-id >&2) \\
   -F 'prompt=Generate a photorealistic image of a gift basket on a white background labeled "Relax & Unwind" with a ribbon and handwriting-like font, containing all the items in the reference pictures'
 ```
 
+```cli
+openai images edit \\
+  --model gpt-image-2 \\
+  --image body-lotion.png \\
+  --image bath-bomb.png \\
+  --image incense-kit.png \\
+  --image soap.png \\
+  --prompt 'Generate a photorealistic image of a gift basket on a white background labeled "Relax & Unwind" with a ribbon and handwriting-like font, containing all the items in the reference pictures' \\
+  --raw-output \\
+  --transform 'data.0.b64_json' | base64 --decode > gift-basket.png
+```
+
   </div>
 
 
@@ -908,6 +928,16 @@ curl -s -D >(grep -i x-request-id >&2) \\
   -F "mask=@mask.png" \\
   -F "image[]=@sunlit_lounge.png" \\
   -F 'prompt=A sunlit indoor lounge area with a pool containing a flamingo'
+```
+
+```cli
+openai images edit \\
+  --model gpt-image-2 \\
+  --image sunlit_lounge.png \\
+  --mask mask.png \\
+  --prompt "A sunlit indoor lounge area with a pool containing a flamingo" \\
+  --raw-output \\
+  --transform 'data.0.b64_json' | base64 --decode > out.png
 ```
 
   </div>
