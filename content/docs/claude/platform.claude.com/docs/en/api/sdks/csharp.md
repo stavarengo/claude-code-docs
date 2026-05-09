@@ -50,7 +50,7 @@ MessageCreateParams parameters = new()
             Content = "Hello, Claude",
         },
     ],
-    Model = "claude-opus-4-7",
+    Model = Model.ClaudeOpus4_7,
 };
 
 var message = await client.Messages.Create(parameters);
@@ -136,7 +136,7 @@ MessageCreateParams parameters = new()
             Content = "Hello, Claude",
         },
     ],
-    Model = "claude-opus-4-7",
+    Model = Model.ClaudeOpus4_7,
 };
 
 await foreach (var message in client.Messages.CreateStreaming(parameters))

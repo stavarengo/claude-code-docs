@@ -107,7 +107,7 @@ anthropic.beta.messages.tool_runner(
   max_tokens: 1024,
   messages: [{role: "user", content: "What's 15 * 7?"}],
   tools: [Calculator.new]
-).each_message { puts _1.content }
+).each_message { |message| puts message.content }
 ```
 
 ## Structured outputs
@@ -227,9 +227,10 @@ Alternatively, you can use the `#next_page?` and `#next_page` methods for more g
 require "anthropic"
 anthropic = Anthropic::Client.new
 page = anthropic.messages.batches.list(limit: 20)
-while page.next_page?
-  page = page.next_page
+loop do
   page.data&.each { |batch| puts(batch.id) }
+  break unless page.next_page?
+  page = page.next_page
 end
 ```
 

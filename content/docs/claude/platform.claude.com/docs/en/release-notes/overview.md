@@ -314,7 +314,7 @@ We also released new official SDKs:
 
 ### November 21st, 2024
 
-- We've released the [Admin API](/docs/en/manage-claude/overview), allowing users to programmatically manage their organization's resources.
+- We've released the [Admin API](/docs/en/manage-claude/admin-api), allowing users to programmatically manage their organization's resources.
 
 ### November 20th, 2024
 

@@ -127,7 +127,7 @@ Most use cases will need multidimensional evaluation along several success crite
 
   <section title="Task fidelity (sentiment analysis) - exact match evaluation">
 
-    **What it measures**: Exact match evals measure whether the model's output exactly matches a predefined correct answer. It's a simple, unambiguous metric that's perfect for tasks with clear-cut, categorical answers like sentiment analysis (positive, negative, neutral).
+    **What it measures**: Exact match evals measure whether the model's output matches a predefined correct answer, typically after normalizing whitespace and case. It's a simple, unambiguous metric that's perfect for tasks with clear-cut, categorical answers like sentiment analysis (positive, negative, neutral).
 
     **Example eval test cases**: 1000 tweets with human-labeled sentiments.
     ```python
@@ -180,7 +180,7 @@ Most use cases will need multidimensional evaluation along several success crite
 
   <section title="Consistency (FAQ bot) - cosine similarity evaluation">
 
-    **What it measures**: Cosine similarity measures the similarity between two vectors (in this case, sentence embeddings of the model's output using SBERT) by computing the cosine of the angle between them. Values closer to 1 indicate higher similarity. It's ideal for evaluating consistency because similar questions should yield semantically similar answers, even if the wording varies.
+    **What it measures**: Cosine similarity measures the similarity between two vectors (in this case, sentence embeddings of the model's output using [Sentence-BERT (SBERT)](https://sbert.net/)) by computing the cosine of the angle between them. Values closer to 1 indicate higher similarity. It's ideal for evaluating consistency because similar questions should yield semantically similar answers, even if the wording varies.
 
     **Example eval test cases**: 50 groups with a few paraphrased versions each.
     ```python
@@ -228,11 +228,10 @@ Most use cases will need multidimensional evaluation along several success crite
 
     def evaluate_cosine_similarity(outputs):
         model = SentenceTransformer("all-MiniLM-L6-v2")
-        embeddings = [model.encode(output) for output in outputs]
+        embeddings = model.encode(outputs)
 
-        cosine_similarities = np.dot(embeddings, embeddings.T) / (
-            np.linalg.norm(embeddings, axis=1) * np.linalg.norm(embeddings, axis=1).T
-        )
+        norms = np.linalg.norm(embeddings, axis=1)
+        cosine_similarities = np.dot(embeddings, embeddings.T) / np.outer(norms, norms)
         return np.mean(cosine_similarities)
 
 
@@ -304,7 +303,7 @@ Most use cases will need multidimensional evaluation along several success crite
 
     **What it measures**: The LLM-based Likert scale is a psychometric scale that uses an LLM to judge subjective attitudes or perceptions. Here, it's used to rate the tone of responses on a scale from 1 to 5. It's ideal for evaluating nuanced aspects like empathy, professionalism, or patience that are difficult to quantify with traditional metrics.
 
-    **Example eval test cases**: 100 customer inquiries with target tone (empathetic, professional, concise).
+    **Example eval test cases**: 100 customer inquiries with target tone (empathetic, patient, professional).
     ```python
     import anthropic
 
@@ -584,7 +583,11 @@ def grade_completion(output, golden_answer):
         .text
     )
 
-    return "correct" if "correct" in grader_response.lower() else "incorrect"
+    return (
+        "correct"
+        if "<result>correct</result>" in grader_response.lower()
+        else "incorrect"
+    )
 
 
 # Example usage
@@ -609,10 +612,10 @@ def get_completion(prompt: str):
     return message.content[0].text
 
 
-outputs = [get_completion(q["question"]) for q in eval_data]
+outputs = [get_completion(item["question"]) for item in eval_data]
 grades = [
-    grade_completion(output, a["golden_answer"])
-    for output, a in zip(outputs, eval_data)
+    grade_completion(output, item["golden_answer"])
+    for output, item in zip(outputs, eval_data)
 ]
 print(f"Score: {grades.count('correct') / len(grades) * 100}%")
 ```

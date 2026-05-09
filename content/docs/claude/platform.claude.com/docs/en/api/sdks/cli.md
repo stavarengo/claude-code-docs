@@ -6,7 +6,7 @@ Interact with the Claude API directly from your terminal with the ant command-li
 
 The `ant` CLI provides access to the Claude API from your terminal. Every API resource is exposed as a subcommand, with output formatting, response filtering, and support for YAML or JSON file input that make it practical for both interactive exploration and automation.
 
-Compared to calling the API with `curl`, `ant` lets you build request bodies from typed flags or piped YAML rather than hand-written JSON, inline file contents into string fields with an `@path` reference, and extract fields from the response with a built-in `--transform` query — no separate JSON tooling required. List endpoints paginate automatically. Claude Code understands how to use `ant` natively.
+Compared to calling the API with `curl`, `ant` lets you build request bodies from typed flags or piped YAML rather than hand-written JSON, inline file contents into string fields with an `@path` reference, and extract fields from the response with a built-in `--transform` query (no separate JSON tooling required). List endpoints paginate automatically. Claude Code understands how to use `ant` natively.
 
 <Info>
 For endpoint-specific parameters and response schemas, see the [API reference](/docs/en/api/cli/messages/create). This page covers CLI-specific features and workflows that apply across all endpoints.
@@ -26,8 +26,8 @@ brew install anthropics/tap/ant
 
 For Linux environments, download the release binary directly.
 
-```bash
-VERSION=1.3.2
+```bash nocheck
+VERSION=1.7.0
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 ARCH=$(uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/')
 curl -fsSL "https://github.com/anthropics/anthropic-cli/releases/download/v${VERSION}/ant_${VERSION}_${OS}_${ARCH}.tar.gz" \
@@ -192,7 +192,7 @@ ant <resource>[:<subresource>] <action> [flags]
 
 Run `ant --help` for the full resource list, or append `--help` to any subcommand for its flags.
 
-Resources currently in beta — including agents, sessions, deployments, environments, and skills — live under the `beta:` prefix. Commands in this namespace automatically send the appropriate `anthropic-beta` header for that resource, so you don't need to pass it yourself. Use `--beta <header>` only to override the default — for example, to opt into a different schema version.
+Resources in beta (including agents, sessions, deployments, environments, and skills) live under the `beta:` prefix. Commands in this namespace automatically send the appropriate `anthropic-beta` header for that resource, so you don't need to pass it yourself. Use `--beta <header>` only to override the default (for example, to opt into a different schema version).
 
 ```bash
 ant models list
@@ -255,7 +255,7 @@ ant beta:agents list \
 
 ### Extract a scalar
 
-To capture a single field as an unquoted string — for example, the ID of a newly created resource — pair `--transform` with `--format yaml`. YAML emits scalar values without quotes, so the result is ready to assign to a shell variable:
+To capture a single field as an unquoted string (for example, the ID of a newly created resource), pair `--transform` with `--format yaml`. YAML emits scalar values without quotes, so the result is ready to assign to a shell variable:
 
 ```bash
 AGENT_ID=$(ant beta:agents create \
@@ -391,7 +391,7 @@ ant beta:agents create < summarizer.agent.yaml
 }
 ```
 
-Note the `id` from the response — you'll pass it to the session create command below.
+Note the `id` from the response. You'll pass it to the session create command below.
 
 <Tip>
 Check `summarizer.agent.yaml` into your repository and keep it in sync with the API in your CI pipeline. The update command needs the agent ID and current version as flags:
@@ -429,7 +429,7 @@ ant beta:environments create < summarizer.environment.yaml
 }
 ```
 
-Note the `id` from the response — you'll pass it to the session create command below.
+Note the `id` from the response. You'll pass it to the session create command below.
 
 <Tip>
 Check `summarizer.environment.yaml` into your repository and keep it in sync with the API in your CI pipeline. The update command needs the environment ID as a flag:
@@ -512,7 +512,7 @@ ant beta:agents:versions list \
 
 ### Inspect errors
 
-The `--transform-error` and `--format-error` flags mirror their success-path counterparts and follow the same rule — pair with `yaml`, not `raw`, to apply the transform. Extract only the error message:
+The `--transform-error` and `--format-error` flags mirror their success-path counterparts and follow the same rule: pair with `yaml`, not `raw`, to apply the transform. Extract only the error message:
 
 ```bash
 ant beta:agents retrieve --agent-id bogus \
@@ -526,13 +526,13 @@ Agent not found.
 
 ## Use the CLI from Claude Code
 
-[Claude Code](https://docs.claude.com/en/docs/claude-code/overview) knows out of the box how to use the `ant` CLI. With the CLI installed and `ANTHROPIC_API_KEY` set, you can ask Claude Code to operate on your API resources directly — for example:
+[Claude Code](https://docs.claude.com/en/docs/claude-code/overview) knows out of the box how to use the `ant` CLI. With the CLI installed and `ANTHROPIC_API_KEY` set, you can ask Claude Code to operate on your API resources directly. For example:
 
 - "List my recent agent sessions and summarize which ones errored."
 - "Upload every PDF in `./reports` to the Files API and print the resulting IDs."
 - "Pull the events for session `session_01...` and tell me where the agent got stuck."
 
-Claude Code shells out to `ant`, parses the structured output, and reasons over the results — no custom integration code required.
+Claude Code shells out to `ant`, parses the structured output, and reasons over the results (no custom integration code required).
 
 ## Debugging
 

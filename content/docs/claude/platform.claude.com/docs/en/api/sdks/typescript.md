@@ -112,32 +112,28 @@ If you need to cancel a stream, you can `break` from the loop or call `stream.co
 
 This library provides several conveniences for streaming messages, for example:
 
-```typescript hidelines={1..5,-3..-1}
+```typescript hidelines={1..2}
 import Anthropic from "@anthropic-ai/sdk";
 
 const anthropic = new Anthropic();
 
-async function main() {
-  const stream = anthropic.messages
-    .stream({
-      model: "claude-opus-4-7",
-      max_tokens: 1024,
-      messages: [
-        {
-          role: "user",
-          content: "Say hello there!"
-        }
-      ]
-    })
-    .on("text", (text) => {
-      console.log(text);
-    });
+const stream = anthropic.messages
+  .stream({
+    model: "claude-opus-4-7",
+    max_tokens: 1024,
+    messages: [
+      {
+        role: "user",
+        content: "Say hello there!"
+      }
+    ]
+  })
+  .on("text", (text) => {
+    console.log(text);
+  });
 
-  const message = await stream.finalMessage();
-  console.log(message);
-}
-
-main();
+const message = await stream.finalMessage();
+console.log(message);
 ```
 
 Streaming with `client.messages.stream(...)` exposes various helpers for your convenience including event handlers and accumulation.
@@ -175,6 +171,8 @@ const finalMessage = await anthropic.beta.messages.toolRunner({
   messages: [{ role: "user", content: "What is the weather in San Francisco?" }],
   tools: [weatherTool]
 });
+
+console.log(finalMessage.content);
 ```
 
 ### Tool errors
@@ -251,15 +249,17 @@ const response = await anthropic.beta.messages.create({
   max_tokens: 1024,
   messages: mcpMessages(messages)
 });
+console.log(response.content);
 
 // Use MCP tools with toolRunner
 const { tools } = await mcpClient.listTools();
-const runner = await anthropic.beta.messages.toolRunner({
+const finalMessage = await anthropic.beta.messages.toolRunner({
   model: "claude-opus-4-7",
   max_tokens: 1024,
   messages: [{ role: "user", content: "Use the available tools" }],
   tools: mcpTools(tools, mcpClient)
 });
+console.log(finalMessage.content);
 
 // Use MCP resources as content
 const resource = await mcpClient.readResource({ uri: "file:///path/to/doc.txt" });
@@ -284,7 +284,7 @@ await anthropic.beta.files.upload({ file: mcpResourceToFile(fileResource) });
 
 ### MCP error handling
 
-The conversion functions throw `UnsupportedMCPValueError` if an MCP value isn't supported by the Claude API (e.g., unsupported content type, unsupported MIME type, non-http/https resource link).
+The conversion functions throw `UnsupportedMCPValueError` if an MCP value isn't supported by the Claude API (for example, unsupported content type, unsupported MIME type, non-http/https resource link).
 
 ## Message batches
 
@@ -295,7 +295,7 @@ This SDK provides support for the [Message Batches API](/docs/en/build-with-clau
 Message Batches takes an array of requests, where each object has a `custom_id` identifier, and the exact same request `params` as the standard Messages API:
 
 ```typescript
-await client.messages.batches.create({
+const batch = await client.messages.batches.create({
   requests: [
     {
       custom_id: "my-first-request",
@@ -322,7 +322,7 @@ await client.messages.batches.create({
 Once a Message Batch has been processed, indicated by `.processing_status === 'ended'`, you can access the results with `.batches.results()`
 
 ```typescript nocheck
-const results = await client.messages.batches.results(batch_id);
+const results = await client.messages.batches.results(batch.id);
 for await (const entry of results) {
   if (entry.result.type === "succeeded") {
     console.log(entry.result.message.content);
@@ -347,7 +347,7 @@ import Anthropic, { toFile } from "@anthropic-ai/sdk";
 
 const client = new Anthropic();
 
-// If you have access to Node `fs` we recommend using `fs.createReadStream()`:
+// If you have access to Node `fs`, use `fs.createReadStream()`:
 await client.beta.files.upload({
   file: await toFile(fs.createReadStream("/path/to/file"), undefined, {
     type: "application/json"
@@ -376,7 +376,7 @@ await client.beta.files.upload({
 
 When the library is unable to connect to the API,
 or if the API returns a non-success status code (i.e., 4xx or 5xx response),
-a subclass of `APIError` will be thrown:
+a subclass of `APIError` is thrown:
 
 ```typescript
 const message = await client.messages
@@ -398,7 +398,7 @@ const message = await client.messages
 
 Error codes are as follows:
 
-| Status Code | Error Type                 |
+| Status code | Error type                 |
 | ----------- | -------------------------- |
 | 400         | `BadRequestError`          |
 | 401         | `AuthenticationError`      |
@@ -511,7 +511,7 @@ List methods in the Claude API are paginated.
 You can use the `for await ... of` syntax to iterate through items across all pages:
 
 ```typescript
-async function fetchAllMessageBatches(params: Record<string, unknown>) {
+async function fetchAllMessageBatches() {
   const allMessageBatches = [];
   // Automatically fetches more pages as needed.
   for await (const messageBatch of client.messages.batches.list({ limit: 20 })) {

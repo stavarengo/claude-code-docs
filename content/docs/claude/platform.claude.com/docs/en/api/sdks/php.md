@@ -43,7 +43,7 @@ $message = $client->messages->create(
   model: 'claude-opus-4-7',
 );
 
-var_dump($message->content);
+echo $message->content[0]->text;
 ```
 
 For authentication options including Workload Identity Federation, see [Authentication](/docs/en/api/authentication/overview).
@@ -100,7 +100,7 @@ try {
   );
 } catch (APIConnectionException $e) {
   echo "The server could not be reached", PHP_EOL;
-  var_dump($e->getPrevious());
+  echo $e->getPrevious()?->getMessage(), PHP_EOL;
 } catch (RateLimitException $_) {
   echo "A 429 status code was received; we should back off a bit.", PHP_EOL;
 } catch (APIStatusException $e) {
@@ -168,15 +168,13 @@ $client = new Client(
 
 $page = $client->beta->messages->batches->list(limit: 20);
 
-var_dump($page);
-
 // fetch items from the current page
 foreach ($page->getItems() as $item) {
-  var_dump($item->id);
+  echo $item->id, PHP_EOL;
 }
 // make additional network requests to fetch items from all pages, including and after the current page
 foreach ($page->pagingEachItem() as $item) {
-  var_dump($item->id);
+  echo $item->id, PHP_EOL;
 }
 ```
 

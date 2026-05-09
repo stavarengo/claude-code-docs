@@ -181,7 +181,7 @@ Rate limits are currently shared across all `inference_geo` values. Requests wit
 | Claude Sonnet 3.7 ([deprecated](/docs/en/about-claude/model-deprecations))                   | 50                                | 20,000                                 | 8,000                                   |
 | Claude Haiku 4.5                                                                             | 50                                | 50,000                                 | 10,000                                  |
 | Claude Haiku 3.5 ([deprecated](/docs/en/about-claude/model-deprecations))                    | 50                                | 50,000<sup>†</sup>                     | 10,000                                  |
-| Claude Opus 4.x<sup>*</sup>                                                                  | 50                                | 30,000                                 | 8,000                                   |
+| Claude Opus 4.x<sup>*</sup>                                                                  | 50                                | 500,000                                | 80,000                                  |
 
 </Tab>
 <Tab title="Tier 2">
@@ -191,7 +191,7 @@ Rate limits are currently shared across all `inference_geo` values. Requests wit
 | Claude Sonnet 3.7 ([deprecated](/docs/en/about-claude/model-deprecations))                   | 1,000                             | 40,000                                 | 16,000                                  |
 | Claude Haiku 4.5                                                                             | 1,000                             | 450,000                                | 90,000                                  |
 | Claude Haiku 3.5 ([deprecated](/docs/en/about-claude/model-deprecations))                    | 1,000                             | 100,000<sup>†</sup>                    | 20,000                                  |
-| Claude Opus 4.x<sup>*</sup>                                                                  | 1,000                             | 450,000                                | 90,000                                  |
+| Claude Opus 4.x<sup>*</sup>                                                                  | 1,000                             | 2,000,000                              | 200,000                                 |
 
 </Tab>
 <Tab title="Tier 3">
@@ -201,7 +201,7 @@ Rate limits are currently shared across all `inference_geo` values. Requests wit
 | Claude Sonnet 3.7 ([deprecated](/docs/en/about-claude/model-deprecations))                   | 2,000                             | 80,000                                 | 32,000                                  |
 | Claude Haiku 4.5                                                                             | 2,000                             | 1,000,000                              | 200,000                                 |
 | Claude Haiku 3.5 ([deprecated](/docs/en/about-claude/model-deprecations))                    | 2,000                             | 200,000<sup>†</sup>                    | 40,000                                  |
-| Claude Opus 4.x<sup>*</sup>                                                                  | 2,000                             | 800,000                                | 160,000                                 |
+| Claude Opus 4.x<sup>*</sup>                                                                  | 2,000                             | 5,000,000                              | 400,000                                 |
 
 </Tab>
 <Tab title="Tier 4">
@@ -211,7 +211,7 @@ Rate limits are currently shared across all `inference_geo` values. Requests wit
 | Claude Sonnet 3.7 ([deprecated](/docs/en/about-claude/model-deprecations))                   | 4,000                             | 200,000                                | 80,000                                  |
 | Claude Haiku 4.5                                                                             | 4,000                             | 4,000,000                              | 800,000                                 |
 | Claude Haiku 3.5 ([deprecated](/docs/en/about-claude/model-deprecations))                    | 4,000                             | 400,000<sup>†</sup>                    | 80,000                                  |
-| Claude Opus 4.x<sup>*</sup>                                                                  | 4,000                             | 2,000,000                              | 400,000                                 |
+| Claude Opus 4.x<sup>*</sup>                                                                  | 4,000                             | 10,000,000                             | 800,000                                 |
 
 </Tab>
 <Tab title="Custom">
@@ -261,8 +261,8 @@ If you're seeking higher limits for an Enterprise use case, contact sales throug
 
 | Operation | Limit |
 | --- | --- |
-| Create endpoints (agents, sessions, environments, etc.) | 300 requests per minute |
-| Read endpoints (retrieve, list, stream, etc.) | 600 requests per minute |
+| Create endpoints (for example, agents, sessions, and environments) | 300 requests per minute |
+| Read endpoints (for example, retrieve, list, and stream) | 600 requests per minute |
 
 ### Fast mode rate limits
 
@@ -274,12 +274,12 @@ The response includes `anthropic-fast-*` headers that indicate your fast mode ra
 
 You can monitor your rate limit usage on the [Usage](/usage) page of the [Claude Console](/).
 
-In addition to providing token and request charts, the Usage page provides two separate rate limit charts. Use these charts to see what headroom you have to grow, when you may be hitting peak use, better understand what rate limits to request, or how you can improve your caching rates. The charts visualize a number of metrics for a given rate limit (e.g. per model):
+In addition to providing token and request charts, the Usage page provides two separate rate limit charts. Use these charts to see what headroom you have to grow, when you may be hitting peak use, better understand what rate limits to request, or how you can improve your caching rates. The charts visualize a number of metrics for a given rate limit (for example, per model):
 
 - The **Rate Limit - Input Tokens** chart includes:
   - Hourly maximum uncached input tokens per minute
   - Your current input tokens per minute rate limit
-  - The cache rate for your input tokens (i.e. the percentage of input tokens read from the cache)
+  - The cache rate for your input tokens (that is, the percentage of input tokens read from the cache)
 - The **Rate Limit - Output Tokens** chart includes:
   - Hourly maximum output tokens per minute
   - Your current output tokens per minute rate limit
@@ -288,7 +288,7 @@ In addition to providing token and request charts, the Usage page provides two s
 
 For more about workspaces, see [Workspaces](/docs/en/manage-claude/workspaces).
 
-In order to protect Workspaces in your Organization from potential overuse, you can set custom spend and rate limits per Workspace.
+To protect Workspaces in your Organization from potential overuse, you can set custom spend and rate limits per Workspace.
 
 Example: If your Organization's limit is 40,000 input tokens per minute and 8,000 output tokens per minute, you might limit one Workspace to 30,000 input tokens per minute. This protects other Workspaces from potential overuse and ensures a more equitable distribution of resources across your Organization. The remaining unused tokens per minute (or more, if that Workspace doesn't use the limit) are then available for other Workspaces to use.
 

@@ -4,7 +4,7 @@ How Claude model IDs are structured and versioned, including the dateless format
 
 ---
 
-Each Claude model ID identifies a pinned version of the model. When you use a model ID in an API request, the underlying model weights remain constant for the lifetime of that ID. This guarantee covers model IDs, not the convenience aliases that the Claude API accepts for some earlier models (see [Before the 4.6 generation](#before-the-4-6-generation)).
+Each Claude model ID identifies a pinned version of the model. When you use a model ID in an API request, the underlying model remains constant for the lifetime of that ID. This guarantee covers model IDs, not the convenience aliases that the Claude API accepts for some earlier models (see [Before the 4.6 generation](#before-the-4-6-generation)).
 
 ## Model ID format
 

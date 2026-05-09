@@ -12,7 +12,7 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 1367 pages - /docs - Content included below
+- English (en) - 1413 pages - /docs - Content included below
 - German (Deutsch) (de) - 132 pages - /docs/de - Visit website for content
 - Spanish (Español) (es) - 132 pages - /docs/es - Visit website for content
 - French (Français) (fr) - 132 pages - /docs/fr - Visit website for content
@@ -74,7 +74,7 @@ The full documentation is available in the following languages on https://platfo
 - [Server tools](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools.md)
 - [Best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices.md) - Skill authoring best practices
 - [Skills for enterprise](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/enterprise.md)
-- [Streaming Messages](https://platform.claude.com/docs/en/build-with-claude/streaming.md)
+- [Streaming Messages](https://platform.claude.com/docs/en/build-with-claude/streaming.md) - Streaming messages
 - [Streaming refusals](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/handle-streaming-refusals.md)
 - [Strict tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use.md)
 - [Structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md)
@@ -119,12 +119,20 @@ The full documentation is available in the following languages on https://platfo
 
 ### Admin
 
-- [Admin API overview](https://platform.claude.com/docs/en/manage-claude/overview.md)
+- [Admin API](https://platform.claude.com/docs/en/manage-claude/admin-api.md)
 - [API and data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention.md)
 - [Overview](https://platform.claude.com/docs/en/manage-claude/authentication.md) - Authentication
 - [Claude Code Analytics API](https://platform.claude.com/docs/en/manage-claude/claude-code-analytics-api.md)
+- [Overview](https://platform.claude.com/docs/en/manage-claude/compliance-api.md) - Compliance API
+- [FAQ](https://platform.claude.com/docs/en/manage-claude/compliance-faq.md) - Compliance API FAQ
 - [Data residency](https://platform.claude.com/docs/en/manage-claude/data-residency.md)
+- [Design your integration](https://platform.claude.com/docs/en/manage-claude/compliance-integration-patterns.md) - Design your compliance integration
+- [Get access](https://platform.claude.com/docs/en/manage-claude/compliance-api-access.md) - Get access to the Compliance API
+- [Errors](https://platform.claude.com/docs/en/manage-claude/compliance-errors.md) - Handle Compliance API errors
+- [Organizations, users, roles, and groups](https://platform.claude.com/docs/en/manage-claude/compliance-org-data.md) - List organizations, users, roles, and groups
+- [Activity Feed](https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed.md) - Query the Activity Feed
 - [Rate Limits API](https://platform.claude.com/docs/en/manage-claude/rate-limits-api.md)
+- [Chats, files, and projects](https://platform.claude.com/docs/en/manage-claude/compliance-content-data.md) - Retrieve and delete chats, files, and projects
 - [Usage and Cost API](https://platform.claude.com/docs/en/manage-claude/usage-cost-api.md)
 - [AWS](https://platform.claude.com/docs/en/manage-claude/wif-providers/aws.md) - Use WIF with AWS
 - [GitHub Actions](https://platform.claude.com/docs/en/manage-claude/wif-providers/github-actions.md) - Use WIF with GitHub Actions
@@ -139,6 +147,7 @@ The full documentation is available in the following languages on https://platfo
 
 ### API Reference
 
+- [Activities](https://platform.claude.com/docs/en/api/compliance/activities.md)
 - [Add Session Resource (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/resources/add.md)
 - [Add Session Resource (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/sessions/resources/add.md)
 - [Add Session Resource (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/sessions/resources/add.md)
@@ -161,6 +170,7 @@ The full documentation is available in the following languages on https://platfo
 - [Agents (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/agents.md)
 - [Agents (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/agents.md)
 - [API Keys](https://platform.claude.com/docs/en/api/admin/api_keys.md)
+- [Apps](https://platform.claude.com/docs/en/api/compliance/apps.md)
 - [Archive a memory store (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/archive.md)
 - [Archive a memory store (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/memory_stores/archive.md)
 - [Archive a memory store (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/memory_stores/archive.md)
@@ -232,6 +242,7 @@ The full documentation is available in the following languages on https://platfo
 - [Archive Vault (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/vaults/archive.md)
 - [Archive Vault (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/vaults/archive.md)
 - [Archive Workspace](https://platform.claude.com/docs/en/api/admin/workspaces/archive.md)
+- [Artifacts](https://platform.claude.com/docs/en/api/compliance/apps/artifacts.md)
 - [Batches](https://platform.claude.com/docs/en/api/messages/batches.md)
 - [Batches (Beta)](https://platform.claude.com/docs/en/api/beta/messages/batches.md)
 - [Batches (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/messages/batches.md)
@@ -282,6 +293,7 @@ The full documentation is available in the following languages on https://platfo
 - [Cancel a Message Batch (Ruby)](https://platform.claude.com/docs/en/api/ruby/messages/batches/cancel.md)
 - [Cancel a Message Batch (terraform)](https://platform.claude.com/docs/en/api/terraform/messages/batches/cancel.md)
 - [Cancel a Message Batch (TypeScript)](https://platform.claude.com/docs/en/api/typescript/messages/batches/cancel.md)
+- [Chats](https://platform.claude.com/docs/en/api/compliance/apps/chats.md)
 - [Completions](https://platform.claude.com/docs/en/api/completions.md)
 - [Completions (cli)](https://platform.claude.com/docs/en/api/cli/completions.md)
 - [Completions (csharp)](https://platform.claude.com/docs/en/api/csharp/completions.md)
@@ -292,6 +304,7 @@ The full documentation is available in the following languages on https://platfo
 - [Completions (Ruby)](https://platform.claude.com/docs/en/api/ruby/completions.md)
 - [Completions (terraform)](https://platform.claude.com/docs/en/api/terraform/completions.md)
 - [Completions (TypeScript)](https://platform.claude.com/docs/en/api/typescript/completions.md)
+- [Compliance API](https://platform.claude.com/docs/en/api/compliance.md)
 - [Cost Report](https://platform.claude.com/docs/en/api/admin/cost_report.md)
 - [Count tokens in a Message](https://platform.claude.com/docs/en/api/messages/count_tokens.md)
 - [Count tokens in a Message (Beta)](https://platform.claude.com/docs/en/api/beta/messages/count_tokens.md)
@@ -526,6 +539,7 @@ The full documentation is available in the following languages on https://platfo
 - [Delete a Message Batch (Ruby)](https://platform.claude.com/docs/en/api/ruby/messages/batches/delete.md)
 - [Delete a Message Batch (terraform)](https://platform.claude.com/docs/en/api/terraform/messages/batches/delete.md)
 - [Delete a Message Batch (TypeScript)](https://platform.claude.com/docs/en/api/typescript/messages/batches/delete.md)
+- [Delete chat](https://platform.claude.com/docs/en/api/compliance/apps/chats/delete.md)
 - [Delete Credential (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/credentials/delete.md)
 - [Delete Credential (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/vaults/credentials/delete.md)
 - [Delete Credential (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/vaults/credentials/delete.md)
@@ -546,6 +560,7 @@ The full documentation is available in the following languages on https://platfo
 - [Delete Environment (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/environments/delete.md)
 - [Delete Environment (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/environments/delete.md)
 - [Delete Environment (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/environments/delete.md)
+- [Delete file](https://platform.claude.com/docs/en/api/compliance/apps/chats/files/delete.md)
 - [Delete File (Beta)](https://platform.claude.com/docs/en/api/beta/files/delete.md)
 - [Delete File (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/files/delete.md)
 - [Delete File (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/files/delete.md)
@@ -557,6 +572,8 @@ The full documentation is available in the following languages on https://platfo
 - [Delete File (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/files/delete.md)
 - [Delete File (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/files/delete.md)
 - [Delete Invite](https://platform.claude.com/docs/en/api/admin/invites/delete.md)
+- [Delete project](https://platform.claude.com/docs/en/api/compliance/apps/projects/delete.md)
+- [Delete project document](https://platform.claude.com/docs/en/api/compliance/apps/projects/documents/delete.md)
 - [Delete Session (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/delete.md)
 - [Delete Session (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/sessions/delete.md)
 - [Delete Session (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/sessions/delete.md)
@@ -608,6 +625,9 @@ The full documentation is available in the following languages on https://platfo
 - [Delete Vault (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/vaults/delete.md)
 - [Delete Vault (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/vaults/delete.md)
 - [Delete Workspace Member](https://platform.claude.com/docs/en/api/admin/workspaces/members/delete.md)
+- [Documents](https://platform.claude.com/docs/en/api/compliance/apps/projects/documents.md)
+- [Download a Claude-generated file](https://platform.claude.com/docs/en/api/compliance/apps/chats/generated_files/content.md)
+- [Download artifact content](https://platform.claude.com/docs/en/api/compliance/apps/artifacts/content.md)
 - [Download File (Beta)](https://platform.claude.com/docs/en/api/beta/files/download.md)
 - [Download File (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/files/download.md)
 - [Download File (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/files/download.md)
@@ -618,6 +638,7 @@ The full documentation is available in the following languages on https://platfo
 - [Download File (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/files/download.md)
 - [Download File (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/files/download.md)
 - [Download File (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/files/download.md)
+- [Download file content](https://platform.claude.com/docs/en/api/compliance/apps/chats/files/content.md)
 - [Environments (Beta)](https://platform.claude.com/docs/en/api/beta/environments.md)
 - [Environments (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/environments.md)
 - [Environments (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/environments.md)
@@ -648,6 +669,7 @@ The full documentation is available in the following languages on https://platfo
 - [Events (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/sessions/threads/events.md)
 - [Events (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/sessions/events.md)
 - [Events (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/sessions/threads/events.md)
+- [Files](https://platform.claude.com/docs/en/api/compliance/apps/chats/files.md)
 - [Files (Beta)](https://platform.claude.com/docs/en/api/beta/files.md)
 - [Files (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/files.md)
 - [Files (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/files.md)
@@ -658,6 +680,7 @@ The full documentation is available in the following languages on https://platfo
 - [Files (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/files.md)
 - [Files (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/files.md)
 - [Files (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/files.md)
+- [Generated Files](https://platform.claude.com/docs/en/api/compliance/apps/chats/generated_files.md)
 - [Get a Model](https://platform.claude.com/docs/en/api/models/retrieve.md)
 - [Get a Model (Beta)](https://platform.claude.com/docs/en/api/beta/models/retrieve.md)
 - [Get a Model (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/models/retrieve.md)
@@ -689,7 +712,10 @@ The full documentation is available in the following languages on https://platfo
 - [Get Agent (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/agents/retrieve.md)
 - [Get Agent (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/agents/retrieve.md)
 - [Get API Key](https://platform.claude.com/docs/en/api/admin/api_keys/retrieve.md)
+- [Get chat messages](https://platform.claude.com/docs/en/api/compliance/apps/chats/messages.md)
 - [Get Claude Code Usage Report](https://platform.claude.com/docs/en/api/admin/usage_report/retrieve_claude_code.md)
+- [Get Compliance Group](https://platform.claude.com/docs/en/api/compliance/groups/retrieve.md)
+- [Get Compliance Role](https://platform.claude.com/docs/en/api/compliance/organizations/roles/retrieve.md)
 - [Get Cost Report](https://platform.claude.com/docs/en/api/admin/cost_report/retrieve.md)
 - [Get Credential (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/credentials/retrieve.md)
 - [Get Credential (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/vaults/credentials/retrieve.md)
@@ -712,6 +738,7 @@ The full documentation is available in the following languages on https://platfo
 - [Get Environment (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/environments/retrieve.md)
 - [Get Environment (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/environments/retrieve.md)
 - [Get Environment (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/environments/retrieve.md)
+- [Get file metadata](https://platform.claude.com/docs/en/api/compliance/apps/chats/files/retrieve.md)
 - [Get File Metadata (Beta)](https://platform.claude.com/docs/en/api/beta/files/retrieve_metadata.md)
 - [Get File Metadata (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/files/retrieve_metadata.md)
 - [Get File Metadata (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/files/retrieve_metadata.md)
@@ -724,6 +751,8 @@ The full documentation is available in the following languages on https://platfo
 - [Get File Metadata (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/files/retrieve_metadata.md)
 - [Get Invite](https://platform.claude.com/docs/en/api/admin/invites/retrieve.md)
 - [Get Messages Usage Report](https://platform.claude.com/docs/en/api/admin/usage_report/retrieve_messages.md)
+- [Get project details](https://platform.claude.com/docs/en/api/compliance/apps/projects/retrieve.md)
+- [Get project document content](https://platform.claude.com/docs/en/api/compliance/apps/projects/documents/retrieve.md)
 - [Get Session (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/retrieve.md)
 - [Get Session (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/sessions/retrieve.md)
 - [Get Session (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/sessions/retrieve.md)
@@ -797,6 +826,7 @@ The full documentation is available in the following languages on https://platfo
 - [Get Vault (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/vaults/retrieve.md)
 - [Get Workspace](https://platform.claude.com/docs/en/api/admin/workspaces/retrieve.md)
 - [Get Workspace Member](https://platform.claude.com/docs/en/api/admin/workspaces/members/retrieve.md)
+- [Groups](https://platform.claude.com/docs/en/api/compliance/groups.md)
 - [Invites](https://platform.claude.com/docs/en/api/admin/invites.md)
 - [List Agent Versions (Beta)](https://platform.claude.com/docs/en/api/beta/agents/versions/list.md)
 - [List Agent Versions (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/agents/versions/list.md)
@@ -819,6 +849,11 @@ The full documentation is available in the following languages on https://platfo
 - [List Agents (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/agents/list.md)
 - [List Agents (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/agents/list.md)
 - [List API Keys](https://platform.claude.com/docs/en/api/admin/api_keys/list.md)
+- [List chats](https://platform.claude.com/docs/en/api/compliance/apps/chats/list.md)
+- [List Compliance Group Members](https://platform.claude.com/docs/en/api/compliance/groups/members/list.md)
+- [List Compliance Groups](https://platform.claude.com/docs/en/api/compliance/groups/list.md)
+- [List Compliance Role Permissions](https://platform.claude.com/docs/en/api/compliance/organizations/roles/permissions/list.md)
+- [List Compliance Roles](https://platform.claude.com/docs/en/api/compliance/organizations/roles/list.md)
 - [List Credentials (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/credentials/list.md)
 - [List Credentials (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/vaults/credentials/list.md)
 - [List Credentials (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/vaults/credentials/list.md)
@@ -931,6 +966,10 @@ The full documentation is available in the following languages on https://platfo
 - [List Models (terraform)](https://platform.claude.com/docs/en/api/terraform/models/list.md)
 - [List Models (TypeScript)](https://platform.claude.com/docs/en/api/typescript/models/list.md)
 - [List Organization Rate Limits](https://platform.claude.com/docs/en/api/admin/rate_limits/list.md)
+- [List organization users](https://platform.claude.com/docs/en/api/compliance/organizations/users/list.md)
+- [List organizations](https://platform.claude.com/docs/en/api/compliance/organizations/list.md)
+- [List project attachments](https://platform.claude.com/docs/en/api/compliance/apps/projects/attachments.md)
+- [List projects](https://platform.claude.com/docs/en/api/compliance/apps/projects/list.md)
 - [List Session Resources (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/resources/list.md)
 - [List Session Resources (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/sessions/resources/list.md)
 - [List Session Resources (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/sessions/resources/list.md)
@@ -1016,6 +1055,7 @@ The full documentation is available in the following languages on https://platfo
 - [List Workspace Rate Limits](https://platform.claude.com/docs/en/api/admin/workspaces/rate_limits/list.md)
 - [List Workspaces](https://platform.claude.com/docs/en/api/admin/workspaces/list.md)
 - [Members](https://platform.claude.com/docs/en/api/admin/workspaces/members.md)
+- [Members](https://platform.claude.com/docs/en/api/compliance/groups/members.md)
 - [Memories (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memories.md)
 - [Memories (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/memory_stores/memories.md)
 - [Memories (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/memory_stores/memories.md)
@@ -1087,6 +1127,10 @@ The full documentation is available in the following languages on https://platfo
 - [Models (terraform)](https://platform.claude.com/docs/en/api/terraform/models.md)
 - [Models (TypeScript)](https://platform.claude.com/docs/en/api/typescript/models.md)
 - [Organizations](https://platform.claude.com/docs/en/api/admin/organizations.md)
+- [Organizations](https://platform.claude.com/docs/en/api/compliance/organizations.md)
+- [Permissions](https://platform.claude.com/docs/en/api/compliance/organizations/roles/permissions.md)
+- [Projects](https://platform.claude.com/docs/en/api/compliance/apps/projects.md)
+- [Query compliance activities](https://platform.claude.com/docs/en/api/compliance/activities/list.md)
 - [Rate Limits](https://platform.claude.com/docs/en/api/admin/workspaces/rate_limits.md)
 - [Rate Limits](https://platform.claude.com/docs/en/api/admin/rate_limits.md)
 - [Redact a memory version (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memory_versions/redact.md)
@@ -1180,6 +1224,7 @@ The full documentation is available in the following languages on https://platfo
 - [Retrieve Message Batch results (Ruby)](https://platform.claude.com/docs/en/api/ruby/messages/batches/results.md)
 - [Retrieve Message Batch results (terraform)](https://platform.claude.com/docs/en/api/terraform/messages/batches/results.md)
 - [Retrieve Message Batch results (TypeScript)](https://platform.claude.com/docs/en/api/typescript/messages/batches/results.md)
+- [Roles](https://platform.claude.com/docs/en/api/compliance/organizations/roles.md)
 - [Send Events (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/events/send.md)
 - [Send Events (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/sessions/events/send.md)
 - [Send Events (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/sessions/events/send.md)
@@ -1356,6 +1401,7 @@ The full documentation is available in the following languages on https://platfo
 - [User Profiles (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/user_profiles.md)
 - [User Profiles (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/user_profiles.md)
 - [Users](https://platform.claude.com/docs/en/api/admin/users.md)
+- [Users](https://platform.claude.com/docs/en/api/compliance/organizations/users.md)
 - [Validate Credential (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/credentials/mcp_oauth_validate.md)
 - [Validate Credential (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/vaults/credentials/mcp_oauth_validate.md)
 - [Validate Credential (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/vaults/credentials/mcp_oauth_validate.md)

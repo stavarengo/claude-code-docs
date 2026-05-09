@@ -3,9 +3,9 @@ root: .
 IMPORTANT: Read files on demand. Use this index to locate the right file, then read only that file.
 
 claude/code.claude.com/docs:{llms.txt}
-claude/code.claude.com/docs/en:{admin-setup.md,agent-teams.md,amazon-bedrock.md,analytics.md,authentication.md,auto-mode-config.md,azure-ai-foundry.md,best-practices.md,champion-kit.md,changelog.md,channels-reference.md,channels.md,checkpointing.md,chrome.md,claude-code-on-the-web.md,claude-directory.md,cli-reference.md,code-review.md,commands.md,common-workflows.md,communications-kit.md,computer-use.md,context-window.md,costs.md,data-usage.md,debug-your-config.md,deep-links.md,desktop-quickstart.md,desktop-scheduled-tasks.md,desktop.md,devcontainer.md,discover-plugins.md,env-vars.md,errors.md,fast-mode.md,features-overview.md,fullscreen.md,github-actions.md,github-enterprise-server.md,gitlab-ci-cd.md,glossary.md,google-vertex-ai.md,headless.md,hooks-guide.md,hooks.md,how-claude-code-works.md,interactive-mode.md,jetbrains.md,keybindings.md,legal-and-compliance.md,llm-gateway.md,mcp.md,memory.md,microsoft-foundry.md,model-config.md,monitoring-usage.md,network-config.md,output-styles.md,overview.md,permission-modes.md,permissions.md,platforms.md,plugin-dependencies.md,plugin-marketplaces.md,plugins-reference.md,plugins.md,quickstart.md,remote-control.md,routines.md,sandboxing.md,scheduled-tasks.md,security.md,server-managed-settings.md,settings.md,setup.md,skills.md,slack.md,slash-commands.md,statusline.md,sub-agents.md,terminal-config.md,third-party-integrations.md,tools-reference.md,troubleshoot-install.md,troubleshooting.md,ultraplan.md,ultrareview.md,voice-dictation.md,vs-code.md,web-quickstart.md,zero-data-retention.md}
+claude/code.claude.com/docs/en:{admin-setup.md,agent-teams.md,amazon-bedrock.md,analytics.md,authentication.md,auto-mode-config.md,azure-ai-foundry.md,best-practices.md,champion-kit.md,changelog.md,channels-reference.md,channels.md,checkpointing.md,chrome.md,claude-code-on-the-web.md,claude-directory.md,cli-reference.md,code-review.md,commands.md,common-workflows.md,communications-kit.md,computer-use.md,context-window.md,costs.md,data-usage.md,debug-your-config.md,deep-links.md,desktop-quickstart.md,desktop-scheduled-tasks.md,desktop.md,devcontainer.md,discover-plugins.md,env-vars.md,errors.md,fast-mode.md,features-overview.md,fullscreen.md,github-actions.md,github-enterprise-server.md,gitlab-ci-cd.md,glossary.md,google-vertex-ai.md,headless.md,hooks-guide.md,hooks.md,how-claude-code-works.md,interactive-mode.md,jetbrains.md,keybindings.md,legal-and-compliance.md,llm-gateway.md,mcp.md,memory.md,microsoft-foundry.md,model-config.md,monitoring-usage.md,network-config.md,output-styles.md,overview.md,permission-modes.md,permissions.md,platforms.md,plugin-dependencies.md,plugin-marketplaces.md,plugins-reference.md,plugins.md,quickstart.md,remote-control.md,routines.md,sandboxing.md,scheduled-tasks.md,security.md,server-managed-settings.md,sessions.md,settings.md,setup.md,skills.md,slack.md,slash-commands.md,statusline.md,sub-agents.md,terminal-config.md,third-party-integrations.md,tools-reference.md,troubleshoot-install.md,troubleshooting.md,ultraplan.md,ultrareview.md,voice-dictation.md,vs-code.md,web-quickstart.md,zero-data-retention.md}
 claude/code.claude.com/docs/en/agent-sdk:{agent-loop.md,claude-code-features.md,cost-tracking.md,custom-tools.md,file-checkpointing.md,hooks.md,hosting.md,mcp.md,migration-guide.md,modifying-system-prompts.md,observability.md,overview.md,permissions.md,plugins.md,python.md,quickstart.md,secure-deployment.md,sessions.md,skills.md,slash-commands.md,streaming-output.md,streaming-vs-single-mode.md,structured-outputs.md,subagents.md,todo-tracking.md,tool-search.md,typescript-v2-preview.md,typescript.md,user-input.md}
-claude/code.claude.com/docs/en/whats-new:{2026-w13.md,2026-w14.md,2026-w15.md,2026-w16.md,2026-w17.md,index.md}
+claude/code.claude.com/docs/en/whats-new:{2026-w13.md,2026-w14.md,2026-w15.md,2026-w16.md,2026-w17.md,2026-w18.md,2026-w19.md,index.md}
 claude/platform.claude.com:{index.txt,llms.txt}
 claude/platform.claude.com/docs/en:{get-started.md,intro.md}
 claude/platform.claude.com/docs/en/about-claude:{model-deprecations.md,pricing.md}
@@ -14,7 +14,7 @@ claude/platform.claude.com/docs/en/about-claude/use-case-guides:{customer-suppor
 claude/platform.claude.com/docs/en/agents-and-tools:{mcp-connector.md,remote-mcp-servers.md}
 claude/platform.claude.com/docs/en/agents-and-tools/agent-skills:{best-practices.md,claude-api-skill.md,enterprise.md,overview.md,quickstart.md}
 claude/platform.claude.com/docs/en/agents-and-tools/tool-use:{advisor-tool.md,bash-tool.md,build-a-tool-using-agent.md,code-execution-tool.md,computer-use-tool.md,define-tools.md,fine-grained-tool-streaming.md,handle-tool-calls.md,how-tool-use-works.md,manage-tool-context.md,memory-tool.md,overview.md,parallel-tool-use.md,programmatic-tool-calling.md,server-tools.md,strict-tool-use.md,text-editor-tool.md,tool-combinations.md,tool-reference.md,tool-runner.md,tool-search-tool.md,tool-use-with-prompt-caching.md,troubleshooting-tool-use.md,web-fetch-tool.md,web-search-tool.md}
-claude/platform.claude.com/docs/en/api:{admin.md,beta-headers.md,beta.md,client-sdks.md,completions.md,errors.md,messages.md,models.md,openai-sdk.md,overview.md,rate-limits.md,service-tiers.md,supported-regions.md,versioning.md}
+claude/platform.claude.com/docs/en/api:{admin.md,beta-headers.md,beta.md,client-sdks.md,completions.md,compliance.md,errors.md,messages.md,models.md,openai-sdk.md,overview.md,rate-limits.md,service-tiers.md,supported-regions.md,versioning.md}
 claude/platform.claude.com/docs/en/api/admin:{api_keys.md,cost_report.md,invites.md,organizations.md,rate_limits.md,usage_report.md,users.md,workspaces.md}
 claude/platform.claude.com/docs/en/api/admin/api_keys:{list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/admin/cost_report:{retrieve.md}
@@ -74,6 +74,21 @@ claude/platform.claude.com/docs/en/api/cli/messages:{batches.md,count_tokens.md,
 claude/platform.claude.com/docs/en/api/cli/messages/batches:{cancel.md,create.md,delete.md,list.md,results.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/cli/models:{list.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/completions:{create.md}
+claude/platform.claude.com/docs/en/api/compliance:{activities.md,apps.md,groups.md,organizations.md}
+claude/platform.claude.com/docs/en/api/compliance/activities:{list.md}
+claude/platform.claude.com/docs/en/api/compliance/apps:{artifacts.md,chats.md,projects.md}
+claude/platform.claude.com/docs/en/api/compliance/apps/artifacts:{content.md}
+claude/platform.claude.com/docs/en/api/compliance/apps/chats:{delete.md,files.md,generated_files.md,list.md,messages.md}
+claude/platform.claude.com/docs/en/api/compliance/apps/chats/files:{content.md,delete.md,retrieve.md}
+claude/platform.claude.com/docs/en/api/compliance/apps/chats/generated_files:{content.md}
+claude/platform.claude.com/docs/en/api/compliance/apps/projects:{attachments.md,delete.md,documents.md,list.md,retrieve.md}
+claude/platform.claude.com/docs/en/api/compliance/apps/projects/documents:{delete.md,retrieve.md}
+claude/platform.claude.com/docs/en/api/compliance/groups:{list.md,members.md,retrieve.md}
+claude/platform.claude.com/docs/en/api/compliance/groups/members:{list.md}
+claude/platform.claude.com/docs/en/api/compliance/organizations:{list.md,roles.md,users.md}
+claude/platform.claude.com/docs/en/api/compliance/organizations/roles:{list.md,permissions.md,retrieve.md}
+claude/platform.claude.com/docs/en/api/compliance/organizations/roles/permissions:{list.md}
+claude/platform.claude.com/docs/en/api/compliance/organizations/users:{list.md}
 claude/platform.claude.com/docs/en/api/csharp:{beta.md,completions.md,messages.md,models.md}
 claude/platform.claude.com/docs/en/api/csharp/beta:{agents.md,environments.md,files.md,memory_stores.md,messages.md,models.md,sessions.md,skills.md,user_profiles.md,vaults.md,webhooks.md}
 claude/platform.claude.com/docs/en/api/csharp/beta/agents:{archive.md,create.md,list.md,retrieve.md,update.md,versions.md}
@@ -236,7 +251,7 @@ claude/platform.claude.com/docs/en/api/typescript/messages/batches:{cancel.md,cr
 claude/platform.claude.com/docs/en/api/typescript/models:{list.md,retrieve.md}
 claude/platform.claude.com/docs/en/build-with-claude:{adaptive-thinking.md,batch-processing.md,citations.md,claude-in-amazon-bedrock.md,claude-in-microsoft-foundry.md,claude-on-amazon-bedrock-legacy.md,claude-on-vertex-ai.md,compaction.md,context-editing.md,context-windows.md,effort.md,embeddings.md,extended-thinking.md,fast-mode.md,files.md,handling-stop-reasons.md,multilingual-support.md,overview.md,pdf-support.md,prompt-caching.md,search-results.md,skills-guide.md,streaming.md,structured-outputs.md,task-budgets.md,token-counting.md,vision.md,working-with-messages.md}
 claude/platform.claude.com/docs/en/build-with-claude/prompt-engineering:{claude-prompting-best-practices.md,overview.md,prompting-tools.md}
-claude/platform.claude.com/docs/en/manage-claude:{api-and-data-retention.md,authentication.md,claude-code-analytics-api.md,data-residency.md,overview.md,rate-limits-api.md,usage-cost-api.md,wif-reference.md,workload-identity-federation.md,workspaces.md}
+claude/platform.claude.com/docs/en/manage-claude:{admin-api.md,api-and-data-retention.md,authentication.md,claude-code-analytics-api.md,compliance-activity-feed.md,compliance-api-access.md,compliance-api.md,compliance-content-data.md,compliance-errors.md,compliance-faq.md,compliance-integration-patterns.md,compliance-org-data.md,data-residency.md,rate-limits-api.md,usage-cost-api.md,wif-reference.md,workload-identity-federation.md,workspaces.md}
 claude/platform.claude.com/docs/en/manage-claude/wif-providers:{aws.md,azure.md,gcp.md,github-actions.md,kubernetes.md,okta.md,spiffe.md}
 claude/platform.claude.com/docs/en/managed-agents:{agent-setup.md,cloud-containers.md,define-outcomes.md,dreams.md,environments.md,events-and-streaming.md,files.md,github.md,mcp-connector.md,memory.md,multi-agent.md,onboarding.md,overview.md,permission-policies.md,quickstart.md,sessions.md,skills.md,tools.md,vaults.md,webhooks.md}
 claude/platform.claude.com/docs/en/release-notes:{overview.md}

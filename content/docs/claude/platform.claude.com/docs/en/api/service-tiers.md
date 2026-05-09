@@ -60,6 +60,7 @@ message = client.messages.create(
     messages=[{"role": "user", "content": "Hello, Claude!"}],
     service_tier="auto",  # Automatically use Priority Tier when available, fallback to standard
 )
+print(message.usage.service_tier)
 ```
 
 The `service_tier` parameter accepts the following values:

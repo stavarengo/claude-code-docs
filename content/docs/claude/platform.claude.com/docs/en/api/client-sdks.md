@@ -68,14 +68,14 @@ go get github.com/anthropics/anthropic-sdk-go
 <Tab title="Java">
 <CodeGroup>
 ```groovy Gradle
-implementation("com.anthropic:anthropic-java:2.27.0")
+implementation("com.anthropic:anthropic-java:2.30.0")
 ```
 
 ```xml Maven
 <dependency>
     <groupId>com.anthropic</groupId>
     <artifactId>anthropic-java</artifactId>
-    <version>2.27.0</version>
+    <version>2.30.0</version>
 </dependency>
 ```
 </CodeGroup>
@@ -329,7 +329,7 @@ See [Beta headers](/docs/en/api/beta-headers) for available beta features.
 
 ## Requirements
 
-| SDK | Minimum Version |
+| SDK | Minimum version |
 |-----|-----------------|
 | Python | 3.9+ |
 | TypeScript | 4.9+ (Node.js 20+) |

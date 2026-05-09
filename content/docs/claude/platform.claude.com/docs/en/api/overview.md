@@ -1,4 +1,4 @@
-# API Overview
+# API overview
 
 ---
 
@@ -57,7 +57,7 @@ The API is made available via the web [Console](../../../index.txt). You can use
 
 Anthropic provides official SDKs that simplify API integration by handling authentication, request formatting, error handling, and more.
 
-**Benefits**:
+**Benefits:**
 - Automatic header management (x-api-key, anthropic-version, content-type)
 - Type-safe request and response handling
 - Built-in retry logic and error handling
@@ -134,7 +134,7 @@ For detailed information about limits, tiers, and the token bucket algorithm use
 
 The Claude API is available in [many countries and regions](/docs/en/api/supported-regions) worldwide. Check the supported regions page to confirm availability in your location.
 
-## Next Steps
+## Next steps
 
 <CardGroup cols={2}>
   <Card title="Messages API reference" icon="book" href="/docs/en/api/messages/create">

@@ -89,6 +89,9 @@ message, err = client.Messages.New(context.TODO(), anthropic.MessageNewParams{
 	Messages:  messages,
 	MaxTokens: 1024,
 })
+if err != nil {
+	panic(err)
+}
 
 fmt.Printf("%+v\n", message.Content)
 ```
@@ -96,7 +99,7 @@ fmt.Printf("%+v\n", message.Content)
 </section>
 <section title="System prompts">
 
-```go hidelines={1,10..11}
+```go hidelines={1}
 messages := []anthropic.MessageParam{anthropic.NewUserMessage(anthropic.NewTextBlock("Hello"))}
 message, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
 	Model:     anthropic.ModelClaudeOpus4_7,
@@ -106,8 +109,10 @@ message, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
 	},
 	Messages: messages,
 })
-_ = message
-_ = err
+if err != nil {
+	panic(err)
+}
+fmt.Printf("%+v\n", message.Content)
 ```
 
 </section>
@@ -454,7 +459,7 @@ type Animal struct {
 	Age    int    `json:"age"`
 	JSON   struct {
 		Name        respjson.Field
-		Owner       respjson.Field
+		Owners      respjson.Field
 		Age         respjson.Field
 		ExtraFields map[string]respjson.Field
 	} `json:"-"`
@@ -462,7 +467,7 @@ type Animal struct {
 ```
 
 To handle optional data, use the `.Valid()` method on the JSON field.
-`.Valid()` returns true if a field is not `null`, not present, or couldn't be marshaled.
+`.Valid()` returns true when the field is present, non-`null`, and was unmarshaled successfully.
 
 If `.Valid()` is false, the corresponding field will be its zero value.
 

@@ -294,7 +294,7 @@ If you're also using bash or text editor tools alongside computer use, those too
 
 ### Tokens
 
-All tokens consumed by a Claude Managed Agents session are billed at the rates shown in [Model pricing](#model-pricing) above. [Prompt caching](#prompt-caching) multipliers apply identically. Web search triggered inside a session incurs the standard $10 per 1,000 searches.
+All tokens consumed by a Claude Managed Agents session are billed at the rates shown in [Model pricing](#model-pricing). [Prompt caching](#prompt-caching) multipliers apply identically. Web search triggered inside a session incurs the standard $10 per 1,000 searches.
 
 The following Messages API modifiers do **not** apply to Claude Managed Agents sessions:
 
@@ -380,7 +380,7 @@ For higher rate limits or custom pricing arrangements, [contact the sales team](
 
 Volume discounts may be available for high-volume users. These are negotiated on a case-by-case basis.
 
-- Standard tiers use the pricing shown above
+- Standard tiers use the pricing shown in [Model pricing](#model-pricing)
 - Enterprise customers can [contact sales](mailto:sales@anthropic.com) for custom pricing
 - Academic and research discounts may be available
 

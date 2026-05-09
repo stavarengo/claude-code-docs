@@ -15,7 +15,7 @@ For API feature documentation with code examples, see the [API reference](/docs/
 <Tabs>
 <Tab title="Gradle">
 ```kotlin
-implementation("com.anthropic:anthropic-java:2.27.0")
+implementation("com.anthropic:anthropic-java:2.30.0")
 ```
 </Tab>
 <Tab title="Maven">
@@ -23,7 +23,7 @@ implementation("com.anthropic:anthropic-java:2.27.0")
 <dependency>
     <groupId>com.anthropic</groupId>
     <artifactId>anthropic-java</artifactId>
-    <version>2.27.0</version>
+    <version>2.30.0</version>
 </dependency>
 ```
 </Tab>
@@ -618,7 +618,7 @@ try {
 
 ## Request IDs
 
-When using raw responses, you can access the `request-id` response header using the `requestId()` method:
+When using [raw responses](#raw-response-access), you can access the `request-id` response header using the `requestId()` method:
 
 ```java nocheck
 import com.anthropic.core.http.HttpResponseFor;
