@@ -4,6 +4,10 @@ To mitigate misuse and manage capacity on the API, limits are in place on how mu
 
 ---
 
+<Note>
+**[Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws):** The rate limits on this page apply. Billing and spend limits differ: spend limits are not available, and billing is through AWS Marketplace (not Anthropic credit purchases). Organizations start at Tier 1. Rate limit increases go through your Anthropic account representative; there is no automatic tier advancement, and per-workspace rate limit configuration is not available. [Fast mode](/docs/en/build-with-claude/fast-mode) is not available on Claude Platform on AWS.
+</Note>
+
 There are two types of limits:
 
 1. **Spend limits** set a maximum monthly cost an organization can incur for API usage.
@@ -118,7 +122,7 @@ The rate limits for the Messages API are measured in requests per minute (RPM), 
 If you exceed any of the rate limits you will get a [429 error](/docs/en/api/errors) describing which rate limit was exceeded, along with a `retry-after` header indicating how long to wait.
 
 <Note>
-You might also encounter 429 errors due to acceleration limits on the API if your organization has a sharp increase in usage. To avoid hitting acceleration limits, ramp up your traffic gradually and maintain consistent usage patterns.
+You might also encounter 429 errors because of acceleration limits on the API if your organization has a sharp increase in usage. To avoid hitting acceleration limits, ramp up your traffic gradually and maintain consistent usage patterns.
 </Note>
 
 ### Cache-aware ITPM
@@ -144,10 +148,10 @@ This means when you have cached content, `input_tokens` will typically be much s
 For rate limit purposes on most models, only `input_tokens` + `cache_creation_input_tokens` count toward your ITPM limit, making [prompt caching](/docs/en/build-with-claude/prompt-caching) an effective way to increase your effective throughput.
 </Note>
 
-**Example**: With a 2,000,000 ITPM limit and an 80% cache hit rate, you could effectively process 10,000,000 total input tokens per minute (2M uncached + 8M cached), since cached tokens don't count towards your rate limit.
+**Example**: With a 2,000,000 ITPM limit and an 80% cache hit rate, you could effectively process 10,000,000 total input tokens per minute (2M uncached + 8M cached), because cached tokens don't count towards your rate limit.
 
 <Note>
-Some older models (marked with † in the rate limit tables below) also count `cache_read_input_tokens` towards ITPM rate limits.
+Some older models (marked with † in the following rate limit tables) also count `cache_read_input_tokens` toward ITPM rate limits.
 
 For all models without the † marker, cached input tokens do not count towards rate limits and are billed at a reduced rate (10% of base input token price). This means you can achieve significantly higher effective throughput by using [prompt caching](/docs/en/build-with-claude/prompt-caching).
 </Note>
@@ -268,7 +272,7 @@ If you're seeking higher limits for an Enterprise use case, contact sales throug
 
 When using [fast mode](/docs/en/build-with-claude/fast-mode) (beta: research preview) with `speed: "fast"` on Opus 4.6, dedicated rate limits apply that are separate from standard Opus rate limits. When fast mode rate limits are exceeded, the API returns a `429` error with a `retry-after` header.
 
-The response includes `anthropic-fast-*` headers that indicate your fast mode rate limit status. See the [fast mode documentation](/docs/en/build-with-claude/fast-mode#rate-limits) for details on these headers.
+The response includes `anthropic-fast-*` headers that indicate your fast mode rate limit status. See [Fast mode](/docs/en/build-with-claude/fast-mode#rate-limits) for details on these headers.
 
 ### Monitoring your rate limits in the Console
 

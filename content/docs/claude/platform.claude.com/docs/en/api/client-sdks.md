@@ -87,7 +87,7 @@ composer require anthropic-ai/sdk
 </Tab>
 <Tab title="Ruby">
 ```bash
-bundler add anthropic
+bundle add anthropic
 ```
 </Tab>
 </Tabs>
@@ -227,16 +227,17 @@ puts message.content
 
 ## Platform support
 
-All SDKs support multiple deployment options:
+SDKs support the following platforms:
 
 | Platform | Description |
 |----------|-------------|
 | Claude API | Connect directly to Claude API endpoints |
-| [Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock) | Use Claude through AWS |
-| [Google Vertex AI](/docs/en/build-with-claude/claude-on-vertex-ai) | Use Claude through Google Cloud |
-| [Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry) | Use Claude through Microsoft Azure |
+| [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws) | Use Anthropic-operated Claude on AWS infrastructure |
+| [Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry) | Use Anthropic-operated Claude on Microsoft Azure |
+| [Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock) | Use partner-operated Claude through the Bedrock API |
+| [Vertex AI](/docs/en/build-with-claude/claude-on-vertex-ai) | Use partner-operated Claude through Google Cloud |
 
-See individual SDK pages for platform-specific setup instructions.
+Platform support varies by language. See individual SDK pages for platform-specific setup instructions and availability.
 
 ## Beta features
 

@@ -207,13 +207,14 @@ ant beta:sessions:events list --session-id session_01...
 | --- | --- |
 | `--format` | Output format: `auto`, `json`, `jsonl`, `yaml`, `pretty`, `raw`, `explore` |
 | `--transform` | Filter or reshape the response with a [GJSON path](#transform-output-with-gjson) |
+| `-r`, `--raw-output` | Print string results without surrounding quotes, like `jq -r` |
 | `--base-url` | Override the API base URL |
 | `--debug` | Print full HTTP request and response to stderr |
 | `--format-error`, `--transform-error` | Same as `--format` and `--transform` but applied to [error responses](#inspect-errors) |
 
 ## Output formats
 
-The default `auto` format pretty-prints JSON when writing to a terminal and emits compact JSON when piped. Override it with `--format`:
+`auto` pretty-prints JSON and is the default for commands that create or modify resources. List and retrieve commands default to the [interactive explorer](#interactive-explorer) when writing to a terminal, and to pretty-printed JSON when piped. Override either default with `--format`:
 
 ```bash
 ant models retrieve --model-id claude-opus-4-7 --format yaml
@@ -231,7 +232,7 @@ List endpoints auto-paginate. In the default formats each item is written separa
 
 ### Interactive explorer
 
-When connected to a terminal, `--format explore` opens a fold-and-search TUI for browsing large responses. Arrow keys expand and collapse nodes, `/` searches, `q` exits.
+The explorer is a fold-and-search TUI for browsing large responses. Arrow keys expand and collapse nodes, `/` searches, `q` exits. List and retrieve commands open it by default when connected to a terminal. Pass `--format explore` to open it explicitly:
 
 ```bash
 ant models list --format explore
@@ -255,13 +256,13 @@ ant beta:agents list \
 
 ### Extract a scalar
 
-To capture a single field as an unquoted string (for example, the ID of a newly created resource), pair `--transform` with `--format yaml`. YAML emits scalar values without quotes, so the result is ready to assign to a shell variable:
+To capture a single field as an unquoted string (for example, the ID of a newly created resource), pair `--transform` with `--raw-output`. The result prints without JSON quotes and is ready to assign to a shell variable:
 
 ```bash
 AGENT_ID=$(ant beta:agents create \
   --name "My Agent" \
   --model '{id: claude-sonnet-4-6}' \
-  --transform id --format yaml)
+  --transform id --raw-output)
 
 printf '%s\n' "$AGENT_ID"
 ```
@@ -271,7 +272,7 @@ agent_011CYm1BLqPXpQRk5khsSXrs
 ```
 
 <Note>
-`--transform` is not applied when `--format raw` is set. Use `--format yaml` for unquoted scalars, or `--format jsonl` to keep the result as structured data for further processing.
+`--raw-output` is distinct from `--format raw`. `--raw-output` strips JSON quotes from string results, like `jq -r`. `--format raw` prints the response body's raw JSON bytes without auto-paginating; on list endpoints it applies `--transform` to the pagination envelope rather than to each item.
 </Note>
 
 ## Passing request bodies
@@ -347,7 +348,7 @@ ant messages create \
     {type: document, source: {type: base64, media_type: application/pdf, data: "@./scan.pdf"}},
     {type: text, text: "Extract the text from this scanned document."}
   ]}' \
-  --transform 'content.0.text' --format yaml
+  --transform 'content.0.text' --raw-output
 ```
 
 The CLI detects the file type and encodes binary files as base64 automatically. To force a specific encoding use `@file://` for plain text or `@data://` for base64. Escape a literal leading `@` with a backslash (`\@username`).
@@ -473,12 +474,12 @@ ant beta:sessions:events send \
 </Step>
 <Step title="Read the conversation">
 
-`--transform` runs against each listed event, so this prints the text of every message in order:
+`--transform` runs against each listed event, so this prints the text of every message in order. `--format auto` overrides the interactive explorer that list commands open by default in a terminal:
 
 ```bash highlight={2}
 ant beta:sessions:events list \
   --session-id session_01JZCh78XvmxJjiXVy3oSi7K \
-  --transform 'content.0.text' --format yaml
+  --transform 'content.0.text' --format auto --raw-output
 ```
 
 ```text Output
@@ -487,7 +488,7 @@ Type safety catches errors at compile time rather than runtime, reducing bugs, i
 ```
 
 <Tip>
-To watch a session as it runs, use `ant beta:sessions stream --session-id session_01JZCh78XvmxJjiXVy3oSi7K`. Events are written to stdout as they arrive.
+To watch a session as it runs, use `ant beta:sessions:events stream --session-id session_01JZCh78XvmxJjiXVy3oSi7K`. Events are written to stdout as they arrive.
 </Tip>
 
 </Step>
@@ -499,11 +500,11 @@ The CLI is designed to compose with standard shell tooling.
 
 ### Chain list output into a second command
 
-`--transform id --format yaml` on a list endpoint emits one bare ID per line, so standard tools such as `head` and `xargs` apply directly. Capture the first result, then pass it to a follow-up command:
+`--transform id --raw-output` on a list endpoint emits one bare ID per line, so standard tools such as `head` and `xargs` apply directly. Capture the first result, then pass it to a follow-up command:
 
 ```bash
 FIRST_AGENT=$(ant beta:agents list \
-  --transform id --format yaml | head -1)
+  --transform id --raw-output | head -1)
 
 ant beta:agents:versions list \
   --agent-id "$FIRST_AGENT" \
@@ -512,7 +513,7 @@ ant beta:agents:versions list \
 
 ### Inspect errors
 
-The `--transform-error` and `--format-error` flags mirror their success-path counterparts and follow the same rule: pair with `yaml`, not `raw`, to apply the transform. Extract only the error message:
+The `--transform-error` and `--format-error` flags apply the same filtering to error responses. `--raw-output` does not apply to errors, so use `--format-error yaml` for an unquoted scalar. Extract only the error message:
 
 ```bash
 ant beta:agents retrieve --agent-id bogus \

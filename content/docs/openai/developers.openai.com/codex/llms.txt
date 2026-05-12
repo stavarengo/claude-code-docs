@@ -46,6 +46,7 @@ Use this as a compact map of Codex docs. Each page has a Markdown twin at `/code
 - [Codex for Open Source](https://developers.openai.com/codex/community/codex-for-oss.md): Open-source maintainers can apply for API credits, six months of ChatGPT Pro with Codex, and Codex Security.
 
 ## Concepts
+- [Auto-review](https://developers.openai.com/codex/concepts/sandboxing/auto-review.md): How Codex routes sandbox-boundary approvals through a reviewer agent
 - [Customization](https://developers.openai.com/codex/concepts/customization.md): How to customize Codex with project guidance, skills, MCP, and subagents
 - [Cyber Safety](https://developers.openai.com/codex/concepts/cyber-safety.md): Cybersecurity safeguards and trusted access for Codex users
 - [Sandbox](https://developers.openai.com/codex/concepts/sandboxing.md): How Codex uses sandboxes across the Codex app, IDE, and CLI

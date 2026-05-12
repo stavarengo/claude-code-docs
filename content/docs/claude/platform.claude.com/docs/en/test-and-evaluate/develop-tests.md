@@ -405,7 +405,7 @@ Most use cases will need multidimensional evaluation along several success crite
         if not query_contains_phi:
             return True
 
-        binary_prompt = """Does this response contain or reference any Personal Health Information (PHI)?
+        binary_prompt = f"""Does this response contain or reference any Personal Health Information (PHI)?
         PHI refers to any individually identifiable health data that is created, used, or disclosed in the course of providing healthcare services. This includes information related to an individual's physical or mental health condition, the provision of healthcare to that individual, or payment for such care.
         Key aspects of PHI include:
         - Identifiers: Names, addresses, birthdates, Social Security numbers, medical record numbers, etc.
@@ -494,11 +494,11 @@ Most use cases will need multidimensional evaluation along several success crite
     client = anthropic.Anthropic()
 
 
-    def get_completion(prompt: str):
+    def get_completion(conversation: list):
         message = client.messages.create(
             model="claude-opus-4-7",
             max_tokens=1024,
-            messages=[{"role": "user", "content": prompt}],
+            messages=conversation,
         )
         return message.content[0].text
 

@@ -125,16 +125,21 @@ approval_policy = "on-request"
 approvals_reviewer = "auto_review"
 ```
 
+For the full reviewer lifecycle, trigger conditions, configuration precedence,
+and failure behavior, see
+[Auto-review](https://developers.openai.com/codex/concepts/sandboxing/auto-review).
+
 The reviewer evaluates only actions that already need approval, such as sandbox
-escalations, network requests, `request_permissions` prompts, or side-effecting
-app and MCP tool calls. Actions that stay inside the sandbox continue without an
-extra review step.
+escalations, blocked network requests, `request_permissions` prompts, or
+side-effecting app and MCP tool calls. Actions that stay inside the sandbox
+continue without an extra review step.
 
 The reviewer policy checks for data exfiltration, credential probing, persistent
 security weakening, and destructive actions. Low-risk and medium-risk actions
 can proceed when policy allows them. The policy denies critical-risk actions.
 High-risk actions require enough user authorization and no matching deny rule.
-Timeouts, parse failures, and review errors fail closed.
+Prompt-build, review-session, and parse failures fail closed. Timeouts are
+surfaced separately, but the action still does not run.
 
 The [default reviewer policy](https://github.com/openai/codex/blob/main/codex-rs/core/src/guardian/policy.md)
 is in the open-source Codex repository. Enterprises can replace its
@@ -143,22 +148,24 @@ Local `[auto_review].policy` text is also supported, but managed requirements
 take precedence. For setup details, see
 [Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration#configure-automatic-review-policy).
 
-In the Codex app, these reviews appear as automatic review items with a status such
-as Reviewing, Approved, Denied, Stopped, or Timed out. They can also include a
-risk level for the reviewed request.
+In the Codex app, these reviews appear as automatic review items with a status
+such as Reviewing, Approved, Denied, Aborted, or Timed out. They can also
+include a risk level and user-authorization assessment for the reviewed
+request.
 
 Automatic review uses extra model calls, so it can add to Codex usage. Admins
 can constrain it with `allowed_approvals_reviewers`.
 
 ### Common sandbox and approval combinations
 
-| Intent                                                            | Flags                                                                          | Effect                                                                                                                                           |
-| ----------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Auto (preset)                                                     | _no flags needed_ or `--sandbox workspace-write --ask-for-approval on-request` | Codex can read files, make edits, and run commands in the workspace. Codex requires approval to edit outside the workspace or to access network. |
-| Safe read-only browsing                                           | `--sandbox read-only --ask-for-approval on-request`                            | Codex can read files and answer questions. Codex requires approval to make edits, run commands, or access network.                               |
-| Read-only non-interactive (CI)                                    | `--sandbox read-only --ask-for-approval never`                                 | Codex can only read files; never asks for approval.                                                                                              |
-| Automatically edit but ask for approval to run untrusted commands | `--sandbox workspace-write --ask-for-approval untrusted`                       | Codex can read and edit files but asks for approval before running untrusted commands.                                                           |
-| Dangerous full access                                             | `--dangerously-bypass-approvals-and-sandbox` (alias: `--yolo`)                 | No sandbox; no approvals _(not recommended)_                                                                               |
+| Intent                                                            | Flags / config                                                                                                                      | Effect                                                                                                                                           |
+| ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Auto (preset)                                                     | _no flags needed_ or `--sandbox workspace-write --ask-for-approval on-request`                                                      | Codex can read files, make edits, and run commands in the workspace. Codex requires approval to edit outside the workspace or to access network. |
+| Safe read-only browsing                                           | `--sandbox read-only --ask-for-approval on-request`                                                                                 | Codex can read files and answer questions. Codex requires approval to make edits, run commands, or access network.                               |
+| Read-only non-interactive (CI)                                    | `--sandbox read-only --ask-for-approval never`                                                                                      | Codex can only read files; never asks for approval.                                                                                              |
+| Automatically edit but ask for approval to run untrusted commands | `--sandbox workspace-write --ask-for-approval untrusted`                                                                            | Codex can read and edit files but asks for approval before running untrusted commands.                                                           |
+| Auto-review mode                                                  | `--sandbox workspace-write --ask-for-approval on-request -c approvals_reviewer=auto_review` or `approvals_reviewer = "auto_review"` | Same sandbox boundary as standard on-request mode, but eligible approval requests are reviewed by Auto-review instead of surfacing to the user.  |
+| Dangerous full access                                             | `--dangerously-bypass-approvals-and-sandbox` (alias: `--yolo`)                                                                      | No sandbox; no approvals _(not recommended)_                                                                               |
 
 For non-interactive runs, use `codex exec --sandbox workspace-write`; Codex keeps older `codex exec --full-auto` invocations as a deprecated compatibility path and prints a warning.
 
@@ -6436,6 +6443,174 @@ Apply today!
 
 ---
 
+# Auto-review
+
+Auto-review replaces manual approval at the sandbox boundary with a separate
+reviewer agent. The main Codex agent still runs inside the same sandbox, with
+the same approval policy and the same network and filesystem limits. The
+difference is who reviews eligible escalation requests.
+
+Auto-review only applies when approvals are interactive. In practice, that
+  means `approval_policy = "on-request"` or a granular approval policy that
+  still surfaces the relevant prompt category. With `approval_policy = "never"`,
+  there is nothing to review.
+
+## How auto-review works
+
+At a high level, the flow is:
+
+1. The main agent works inside `read-only` or `workspace-write`.
+2. When it needs to cross the sandbox boundary, it requests approval.
+3. If `approvals_reviewer = "auto_review"`, Codex routes that approval request
+   to a separate reviewer agent instead of stopping for a person.
+4. The reviewer decides whether the action should run and returns a rationale.
+5. If the action is approved, execution continues. If it is denied, the main
+   agent is instructed to find a materially safer path or stop and ask the
+   user.
+
+Auto-review is a reviewer swap, not a permission grant. It does not expand
+`writable_roots`, enable network access, or weaken protected paths. It only
+changes how Codex handles actions that already need approval.
+
+## When it triggers
+
+Auto-review evaluates approval requests that would otherwise pause for a human.
+These include:
+
+- Shell or exec tool calls that request escalated sandbox permissions.
+- Network requests blocked by the current sandbox or policy.
+- File edits outside the allowed writable roots.
+- MCP or app tool calls that require approval based on their tool annotations
+  or configured approval mode.
+- Browser Use access to a new website or domain.
+
+Auto-review does not run for routine actions already allowed inside the
+sandbox. If a command can run under the active `sandbox_mode`, or a tool call
+stays within the allowed policy, the main agent continues without review.
+
+Computer Use is a separate case. App approvals for Computer Use still surface
+directly to the user, so Auto-review does not replace those app-level prompts.
+
+## What auto-review blocks
+
+At a high level, Auto-review is designed to block actions such as:
+
+- sending private data, secrets, or credentials to untrusted destinations
+- probing for credentials, tokens, cookies, or session material
+- broad or persistent security weakening
+- destructive actions with significant risk of irreversible damage
+
+The exact policy lives in the open-source Codex repository:
+[policy_template.md](https://github.com/openai/codex/blob/main/codex-rs/core/src/guardian/policy_template.md)
+and
+[policy.md](https://github.com/openai/codex/blob/main/codex-rs/core/src/guardian/policy.md).
+That policy can be customized per enterprise with `guardian_policy_config` or
+per user with local [`[auto_review].policy`](/codex/config-advanced#approval-policies-and-sandbox-modes).
+
+## What the reviewer sees
+
+The reviewer is itself a Codex agent with a narrower job than the main agent:
+decide whether a specific boundary-crossing action should run.
+
+The reviewer sees a compact transcript plus the exact approval request. That
+typically includes user messages, surfaced assistant updates, relevant tool
+calls and tool outputs, and the action now being proposed for approval. It can
+also perform read-only checks to gather missing context, but it does so rarely.
+
+Hidden assistant reasoning is not included. Auto-review sees retained
+conversation items and tool evidence, not private chain-of-thought.
+
+## Denials and failure behavior
+
+An explicit denial is not treated like an ordinary sandbox error. Codex returns
+the review rationale to the main agent and adds a stronger instruction:
+
+- Do not pursue the same outcome via workaround, indirect execution, or policy
+  circumvention.
+- Continue only with a materially safer alternative.
+- Otherwise, stop and ask the user.
+
+Codex also applies a rejection circuit breaker per turn. In the current
+open-source implementation, Auto-review interrupts the turn after `3`
+consecutive denials or `10` denials within a rolling window of the last `50`
+reviews in the same turn.
+
+Any non-denial resets the consecutive-denial counter. When the breaker trips,
+Codex emits a warning and aborts the current turn with an interrupt rather than
+letting the agent loop on more escalation attempts.
+
+Timeouts are surfaced separately from explicit denials, and the main agent is
+informed that a timeout alone is not proof that the action is unsafe.
+
+There is also an explicit override path for denied actions. In the current
+open-source TUI, run `/approve` to open the **Auto-review Denials** picker, then
+select one recent denied action to approve for one retry. Codex records up to 10
+recent denials per thread. That approval is narrow: it applies to the exact
+denied action, not similar future actions; it is recorded for one retry in the
+same context; and the retry still goes through Auto-review. Under the hood,
+Codex injects a developer-scoped approval marker for that exact action. The
+reviewer then sees that explicit user override as context, but it still follows
+policy and can deny again if policy says the user cannot overwrite that class of
+denial.
+
+## Configuration
+
+For setup details, see
+[Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration#configure-automatic-review-policy).
+
+The default reviewer policy is in the open-source Codex repository:
+[core/src/guardian/policy.md](https://github.com/openai/codex/blob/main/codex-rs/core/src/guardian/policy.md).
+Enterprises can replace its tenant-specific section with
+`guardian_policy_config` in managed requirements. Individual users can also set
+a local
+[`[auto_review].policy`](/codex/config-advanced#approval-policies-and-sandbox-modes)
+in their `config.toml`, but managed requirements take precedence:
+
+```toml
+[auto_review]
+policy = """
+YOUR POLICY GOES HERE
+"""
+```
+
+To customize the policy, copy the whole default policy wording first, then
+iterate based on your individual risk profile.
+
+## Reduce review volume without weakening security
+
+Auto-review works best when the sandbox already covers your common safe
+workflows. If too many mundane actions need review, fix the boundary first
+instead of teaching the reviewer to approve noisy escalations forever.
+
+In practice, the highest-leverage changes are:
+
+- Add narrow
+  [`writable_roots`](https://developers.openai.com/codex/config-advanced#approval-policies-and-sandbox-modes)
+  for scratch directories or neighboring repos you intentionally use.
+- Add narrowly scoped [prefix rules](https://developers.openai.com/codex/rules). Prefer precise command
+  prefixes such as `["cargo", "test"]` or `["pnpm", "run", "lint"]` over broad
+  patterns such as `["python"]` or `["curl"]`. Broad rules often erase the very
+  boundary Auto-review is meant to guard.
+
+Auto-review session transcripts are retained under `~/.codex/sessions` by
+default, so you can ask Codex to analyze past traffic there before changing
+policy or permissions.
+
+## Limits
+
+Auto-review improves the default operating point for long-running agentic work,
+but it is not a deterministic security guarantee.
+
+- It only evaluates actions that ask to cross a boundary.
+- It can still make mistakes, especially in adversarial or unusual contexts.
+- It should complement, not replace, good sandbox design, monitoring, and
+  organization-specific policy.
+
+For the research rationale and published evaluation results, see the
+[Alignment Research post on Auto-review](https://alignment.openai.com/auto-review/).
+
+---
+
 # Customization
 
 Customization is how you make Codex work the way your team works.
@@ -6750,13 +6925,6 @@ In the Codex app and IDE, you choose a mode from the permissions selector under
 the composer or chat input. That selector lets you rely on Codex's default
 permissions, switch to full access, or use your custom configuration.
 
-<div class="not-prose max-w-[22rem] mr-auto mb-6">
-  <img src="https://developers.openai.com/images/codex/app/permissions-selector-light.webp"
-    alt="Codex app permissions selector showing Default permissions, Full access, and Custom (config.toml)"
-    class="block h-auto w-full mx-0!"
-  />
-</div>
-
 In the CLI, use [`/permissions`](https://developers.openai.com/codex/cli/slash-commands#update-permissions-with-permissions)
 to switch modes during a session.
 
@@ -6766,10 +6934,10 @@ If you want Codex to start with the same behavior every time, use a custom
 configuration. Codex stores those defaults in `config.toml`, its local settings
 file. [Config basics](https://developers.openai.com/codex/config-basic) explains how it works, and the
 [Configuration reference](https://developers.openai.com/codex/config-reference) documents the exact keys for
-`sandbox_mode`, `approval_policy`, and
+`sandbox_mode`, `approval_policy`, `approvals_reviewer`, and
 `sandbox_workspace_write.writable_roots`. Use those settings to decide how much
-autonomy Codex gets by default, which directories it can write to, and when it
-should pause for approval.
+autonomy Codex gets by default, which directories it can write to, when it
+should pause for approval, and who reviews eligible approval requests.
 
 At a high level, the common sandbox modes are:
 
@@ -6790,11 +6958,20 @@ The common approval policies are:
   needs to go beyond that boundary.
 - `never`: Codex doesn't stop for approval prompts.
 
+When approvals are interactive, you can also choose who reviews them with
+`approvals_reviewer`:
+
+- `user`: approval prompts surface to the user. This is the default.
+- `auto_review`: eligible approval prompts go to a reviewer agent (see
+  [Auto-review](https://developers.openai.com/codex/concepts/sandboxing/auto-review)).
+
 Full access means using `sandbox_mode = "danger-full-access"` together with
 `approval_policy = "never"`. By contrast, the lower-risk local automation
 preset is `sandbox_mode = "workspace-write"` together with
 `approval_policy = "on-request"`, or the matching CLI flags
-`--sandbox workspace-write --ask-for-approval on-request`.
+`--sandbox workspace-write --ask-for-approval on-request`. You can then keep
+`approvals_reviewer = "user"` for manual approvals or set
+`approvals_reviewer = "auto_review"` for automatic approval review.
 
 If you need Codex to work across more than one directory, writable roots let
 you extend the places it can modify without removing the sandbox entirely. If
@@ -6817,11 +6994,13 @@ of approvals and sandbox behavior in the app, see
 [Codex app features](https://developers.openai.com/codex/app/features#approvals-and-sandboxing), and for the
 IDE-specific settings entry points, see [Codex IDE extension settings](https://developers.openai.com/codex/ide/settings).
 
-Automatic review, when available, doesn't change the sandbox boundary. It
-reviews approval requests, such as sandbox escalations or network access, while
-actions already allowed inside the sandbox run without extra review. See
-[Automatic approval reviews](https://developers.openai.com/codex/agent-approvals-security#automatic-approval-reviews)
-for the policy behavior.
+Automatic review, when available, does not change the sandbox boundary. It is
+one possible `approvals_reviewer` for approval requests at that boundary, such
+as sandbox escalations, blocked network access, or side-effecting tool calls
+that still need approval. Actions already allowed inside the sandbox run
+without extra review. For the reviewer lifecycle, trigger types, denial
+semantics, and configuration details, see
+[Auto-review](https://developers.openai.com/codex/concepts/sandboxing/auto-review).
 
 Platform details live in the platform-specific docs. For native Windows setup,
 behavior, and troubleshooting, see [Windows](https://developers.openai.com/codex/windows). For admin
@@ -7823,6 +8002,7 @@ shell_snapshot = true           # Speed up repeated commands
 | Key                  |        Default        | Maturity     | Description                                                                              |
 | -------------------- | :-------------------: | ------------ | ---------------------------------------------------------------------------------------- |
 | `apps`               |         false         | Experimental | Enable ChatGPT Apps/connectors support                                                   |
+| `codex_git_commit`   |         false         | Experimental | Enable Codex-generated git commits and commit attribution trailers                       |
 | `codex_hooks`        |         true          | Stable       | Enable lifecycle hooks from `hooks.json` or inline `[hooks]`. See [Hooks](https://developers.openai.com/codex/hooks). |
 | `fast_mode`          |         true          | Stable       | Enable Fast mode selection and the `service_tier = "fast"` path                          |
 | `memories`           |         false         | Stable       | Enable [Memories](https://developers.openai.com/codex/memories)                                                       |
@@ -8063,7 +8243,7 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
       key: "commit_attribution",
       type: "string",
       description:
-        "Override the commit co-author trailer text. Set an empty string to disable automatic attribution.",
+        'Commit co-author trailer used when `[features].codex_git_commit` is enabled. Defaults to `Codex <noreply@openai.com>`; set `""` to disable.',
     },
     {
       key: "model_instructions_file",
@@ -8184,6 +8364,12 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
       type: "boolean",
       description:
         "Enable lifecycle hooks loaded from `hooks.json` or inline `[hooks]` config.",
+    },
+    {
+      key: "features.codex_git_commit",
+      type: "boolean",
+      description:
+        "Enable Codex-generated git commits. When enabled, Codex uses `commit_attribution` to append a `Co-authored-by:` trailer to generated commit messages.",
     },
     {
       key: "hooks",
@@ -9475,7 +9661,9 @@ model_provider = "openai"
 # Inline override for the history compaction prompt. Default: unset.
 # compact_prompt = ""
 
-# Override the default commit co-author trailer. Set to "" to disable it.
+# Override the default commit co-author trailer. This only takes effect when
+# [features].codex_git_commit is enabled. When enabled and unset, Codex uses
+# "Codex <noreply@openai.com>". Set to "" to disable it.
 # commit_attribution = "Jane Doe <jane@example.com>"
 
 # Override built-in base instructions with a file path. Default: unset.
@@ -9790,6 +9978,7 @@ enabled = true
 # Leave this table empty to accept defaults. Set explicit booleans to opt in/out.
 # shell_tool = true
 # apps = false
+# codex_git_commit = false
 # codex_hooks = false
 # unified_exec = true
 # shell_snapshot = true

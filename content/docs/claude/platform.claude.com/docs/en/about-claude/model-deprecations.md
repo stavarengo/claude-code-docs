@@ -58,9 +58,9 @@ At some point, Anthropic hopes to make past models publicly available again. In 
 
 ## Model status
 
-All publicly released models are listed below with their status:
+Current and recently retired models are listed in the following table with their status:
 
-| API Model Name              | Current State       | Deprecated        | Tentative Retirement Date |
+| API model name              | Current state       | Deprecated        | Tentative retirement date |
 |:----------------------------|:--------------------|:------------------|:-------------------------|
 | `claude-opus-4-7`               | Active              | N/A               | Not sooner than April 16, 2027 |
 | `claude-opus-4-6`             | Active              | N/A               | Not sooner than February 5, 2027 |
