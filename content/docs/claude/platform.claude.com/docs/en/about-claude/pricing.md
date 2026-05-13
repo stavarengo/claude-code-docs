@@ -128,7 +128,7 @@ For more information, see [Data residency](/docs/en/manage-claude/data-residency
 
 ### Fast mode pricing
 
-[Fast mode](/docs/en/build-with-claude/fast-mode), in beta (research preview), provides significantly faster output for Claude Opus 4.6 at premium pricing (6x standard rates). Fast mode pricing applies across the full context window, including requests over 200k input tokens. Fast mode is not available on Claude Platform on AWS. Currently supported on Opus 4.6:
+[Fast mode](/docs/en/build-with-claude/fast-mode), in beta (research preview), provides significantly faster output for Claude Opus 4.6 and Claude Opus 4.7 at premium pricing (6x standard rates). Fast mode pricing applies across the full context window, including requests over 200k input tokens. Fast mode is not available on Claude Platform on AWS.
 
 | Input | Output |
 |:------|:-------|
