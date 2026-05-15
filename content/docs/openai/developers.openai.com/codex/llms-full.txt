@@ -456,6 +456,14 @@ Run project threads side by side and switch between them quickly.
 Keep parallel code changes isolated with built-in Git worktree support.
 
   </BentoContent>
+  <BentoContent href="/codex/remote-connections">
+
+### Remote connections
+
+Use the ChatGPT mobile app to start, steer, approve, and review Codex work on a
+connected host.
+
+  </BentoContent>
   <BentoContent href="/codex/app/computer-use">
 
 ### Computer use
@@ -4174,7 +4182,21 @@ Features that rely on ChatGPT credits, such as [fast mode](https://developers.op
 available only when you sign in with ChatGPT. If you sign in with an API key,
 Codex uses standard API pricing instead.
 
-Recommendation is to use API key authentication for programmatic Codex CLI workflows (for example CI/CD jobs). Don't expose Codex execution in untrusted or public environments.
+We recommend API key authentication for programmatic Codex CLI workflows, such
+as CI/CD jobs. Don't expose Codex execution in untrusted or public environments.
+
+### Use Codex access tokens for enterprise automation
+
+In ChatGPT Enterprise workspaces, admins can allow permitted members to create
+Codex access tokens for trusted, non-interactive Codex local workflows. Use an
+access token when automation needs ChatGPT workspace access, ChatGPT-managed
+Codex entitlements, or enterprise workspace controls without a browser sign-in.
+
+Access tokens are intended for trusted scripts, schedulers, and private CI
+runners. For general OpenAI API calls, continue to use Platform API keys.
+
+For setup steps, permissions, rotation, and revocation guidance, see
+[Access tokens](https://developers.openai.com/codex/enterprise/access-tokens).
 
 ## Secure your Codex cloud account
 
@@ -5778,6 +5800,7 @@ completion still works before you queue the command.
 | [`/agent`](#switch-agent-threads-with-agent)                                    | Switch the active agent thread.                                 | Inspect or continue work in a spawned subagent thread.                                                     |
 | [`/apps`](#browse-apps-with-apps)                                               | Browse apps (connectors) and insert them into your prompt.      | Attach an app as `$app-slug` before asking Codex to use it.                                                |
 | [`/plugins`](#browse-plugins-with-plugins)                                      | Browse installed and discoverable plugins.                      | Inspect plugin tools, install suggested plugins, or manage plugin availability.                            |
+| [`/hooks`](#review-hooks-with-hooks)                                            | Review lifecycle hooks.                                         | Inspect configured hooks, trust new or changed hooks, or disable non-managed hooks before they run.        |
 | [`/clear`](#clear-the-terminal-and-start-a-new-chat-with-clear)                 | Clear the terminal and start a fresh chat.                      | Reset the visible UI and conversation together when you want a fresh start.                                |
 | [`/compact`](#keep-transcripts-lean-with-compact)                               | Summarize the visible conversation to free tokens.              | Use after long runs so Codex retains key points without blowing the context window.                        |
 | [`/copy`](#copy-the-latest-response-with-copy)                                  | Copy the latest completed Codex output.                         | Grab the latest finished response or plan text without manually selecting it. You can also press `Ctrl+O`. |
@@ -6098,6 +6121,16 @@ you can immediately ask Codex to use it.
 Expected: Codex opens the plugin browser so you can review installed plugins,
 discoverable plugins that your configuration allows, and installed plugin state.
 Press <kbd>Space</kbd> on an installed plugin to toggle its enabled state.
+
+### Review hooks with `/hooks`
+
+1. Type `/hooks`.
+2. Choose a hook event to inspect the matching handlers.
+3. Trust, disable, or re-enable non-managed hooks as needed.
+
+Expected: Codex opens the hook browser so you can review configured lifecycle
+hooks. Managed hooks appear as managed and can't be disabled from the user hook
+browser.
 
 ### Switch agent threads with `/agent`
 
@@ -7194,12 +7227,12 @@ For security, Codex loads project-scoped config files only when the project is t
 
 Relative paths inside a project config (for example, `model_instructions_file`) are resolved relative to the `.codex/` folder that contains the `config.toml`.
 
-## Hooks (experimental)
+## Hooks
 
 Codex can also load lifecycle hooks from either `hooks.json` files or inline
 `[hooks]` tables in `config.toml` files that sit next to active config layers.
 
-In practice, the two most useful locations are:
+In practice, the four most useful locations are:
 
 - `~/.codex/hooks.json`
 - `~/.codex/config.toml`
@@ -7208,13 +7241,6 @@ In practice, the two most useful locations are:
 
 Project-local hooks load only when the project `.codex/` layer is trusted.
 User-level hooks remain independent of project trust.
-
-Turn hooks on with:
-
-```toml
-[features]
-codex_hooks = true
-```
 
 Inline TOML hooks use the same event structure as `hooks.json`:
 
@@ -7999,22 +8025,23 @@ shell_snapshot = true           # Speed up repeated commands
 
 ### Supported features
 
-| Key                  |        Default        | Maturity     | Description                                                                              |
-| -------------------- | :-------------------: | ------------ | ---------------------------------------------------------------------------------------- |
-| `apps`               |         false         | Experimental | Enable ChatGPT Apps/connectors support                                                   |
-| `codex_git_commit`   |         false         | Experimental | Enable Codex-generated git commits and commit attribution trailers                       |
-| `codex_hooks`        |         true          | Stable       | Enable lifecycle hooks from `hooks.json` or inline `[hooks]`. See [Hooks](https://developers.openai.com/codex/hooks). |
-| `fast_mode`          |         true          | Stable       | Enable Fast mode selection and the `service_tier = "fast"` path                          |
-| `memories`           |         false         | Stable       | Enable [Memories](https://developers.openai.com/codex/memories)                                                       |
-| `multi_agent`        |         true          | Stable       | Enable subagent collaboration tools                                                      |
-| `personality`        |         true          | Stable       | Enable personality selection controls                                                    |
-| `shell_snapshot`     |         true          | Stable       | Snapshot your shell environment to speed up repeated commands                            |
-| `shell_tool`         |         true          | Stable       | Enable the default `shell` tool                                                          |
-| `unified_exec`       | `true` except Windows | Stable       | Use the unified PTY-backed exec tool                                                     |
-| `undo`               |         false         | Stable       | Enable undo via per-turn git ghost snapshots                                             |
-| `web_search`         |         true          | Deprecated   | Legacy toggle; prefer the top-level `web_search` setting                                 |
-| `web_search_cached`  |         false         | Deprecated   | Legacy toggle that maps to `web_search = "cached"` when unset                            |
-| `web_search_request` |         false         | Deprecated   | Legacy toggle that maps to `web_search = "live"` when unset                              |
+| Key                  |        Default        | Maturity          | Description                                                                                    |
+| -------------------- | :-------------------: | ----------------- | ---------------------------------------------------------------------------------------------- |
+| `apps`               |         false         | Experimental      | Enable ChatGPT Apps/connectors support                                                         |
+| `codex_git_commit`   |         false         | Experimental      | Enable Codex-generated git commits and commit attribution trailers                             |
+| `hooks`              |         true          | Stable            | Enable lifecycle hooks from `hooks.json` or inline `[hooks]`. See [Hooks](https://developers.openai.com/codex/hooks).       |
+| `plugin_hooks`       |         false         | Under development | Opt into lifecycle hooks bundled with plugins. See [Hooks](https://developers.openai.com/codex/hooks#plugin-bundled-hooks). |
+| `fast_mode`          |         true          | Stable            | Enable Fast mode selection and the `service_tier = "fast"` path                                |
+| `memories`           |         false         | Stable            | Enable [Memories](https://developers.openai.com/codex/memories)                                                             |
+| `multi_agent`        |         true          | Stable            | Enable subagent collaboration tools                                                            |
+| `personality`        |         true          | Stable            | Enable personality selection controls                                                          |
+| `shell_snapshot`     |         true          | Stable            | Snapshot your shell environment to speed up repeated commands                                  |
+| `shell_tool`         |         true          | Stable            | Enable the default `shell` tool                                                                |
+| `unified_exec`       | `true` except Windows | Stable            | Use the unified PTY-backed exec tool                                                           |
+| `undo`               |         false         | Stable            | Enable undo via per-turn git ghost snapshots                                                   |
+| `web_search`         |         true          | Deprecated        | Legacy toggle; prefer the top-level `web_search` setting                                       |
+| `web_search_cached`  |         false         | Deprecated        | Legacy toggle that maps to `web_search = "cached"` when unset                                  |
+| `web_search_request` |         false         | Deprecated        | Legacy toggle that maps to `web_search = "live"` when unset                                    |
 
 The Maturity column uses feature maturity labels such as Experimental, Beta,
   and Stable. See [Feature Maturity](https://developers.openai.com/codex/feature-maturity) for how to
@@ -8022,7 +8049,7 @@ The Maturity column uses feature maturity labels such as Experimental, Beta,
 
 Omit feature keys to keep their defaults.
 
-For the current lifecycle hooks MVP, see [Hooks](https://developers.openai.com/codex/hooks).
+For lifecycle hook configuration, see [Hooks](https://developers.openai.com/codex/hooks).
 
 ### Enabling features
 
@@ -8360,10 +8387,10 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
       description: "Enable ChatGPT Apps/connectors support (experimental).",
     },
     {
-      key: "features.codex_hooks",
+      key: "features.hooks",
       type: "boolean",
       description:
-        "Enable lifecycle hooks loaded from `hooks.json` or inline `[hooks]` config.",
+        "Enable lifecycle hooks loaded from `hooks.json` or inline `[hooks]` config. `features.codex_hooks` is a deprecated alias.",
     },
     {
       key: "features.codex_git_commit",
@@ -8376,6 +8403,12 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
       type: "table",
       description:
         "Lifecycle hooks configured inline in `config.toml`. Uses the same event schema as `hooks.json`; see the Hooks guide for examples and supported events.",
+    },
+    {
+      key: "features.plugin_hooks",
+      type: "boolean",
+      description:
+        "Opt into lifecycle hooks bundled with enabled plugins. Off by default in this release; set to `true` to opt in.",
     },
     {
       key: "features.memories",
@@ -9492,7 +9525,7 @@ canonical keys that `config.toml` uses. Omitted keys remain unconstrained.
       key: "hooks.<Event>",
       type: "array<table>",
       description:
-        "Matcher groups for a hook event such as `PreToolUse`, `PostToolUse`, `PermissionRequest`, `SessionStart`, `UserPromptSubmit`, or `Stop`.",
+        "Matcher groups for a hook event such as `PreToolUse`, `PermissionRequest`, `PostToolUse`, `SessionStart`, `UserPromptSubmit`, or `Stop`.",
     },
     {
       key: "hooks.<Event>[].hooks",
@@ -9978,8 +10011,9 @@ enabled = true
 # Leave this table empty to accept defaults. Set explicit booleans to opt in/out.
 # shell_tool = true
 # apps = false
+# hooks = false
+# plugin_hooks = false  # Default off; set true to opt into plugin-bundled hooks.
 # codex_git_commit = false
-# codex_hooks = false
 # unified_exec = true
 # shell_snapshot = true
 # multi_agent = true
@@ -10296,6 +10330,129 @@ Manage prompts by editing or deleting files under `~/.codex/prompts/`. Codex sca
 
 ---
 
+# Access tokens
+
+Codex access tokens let trusted automation run Codex local with a ChatGPT workspace identity. Use them when a script, scheduled job, or CI runner needs repeatable, non-interactive Codex access.
+
+Codex access tokens are currently supported for ChatGPT Business and
+  Enterprise workspaces.
+
+Access tokens are created in the ChatGPT admin console at [Access tokens](https://chatgpt.com/admin/access-tokens). They are tied to the ChatGPT user and workspace that create them, and Codex uses them as agent identities for programmatic local workflows.
+
+If a Platform API key works for your automation, keep using API key auth. Use
+  Codex access tokens when the workflow specifically needs ChatGPT workspace
+  access, ChatGPT-managed Codex entitlements, or enterprise workspace controls.
+
+## How access tokens work
+
+Use an access token when Codex needs to run without a user completing a browser sign-in. The token represents the ChatGPT workspace user who created it, so runs can use that user's Codex access and appear in workspace governance data.
+
+Codex checks the token when a run starts and ties the run to that workspace identity. Treat the token like any other automation secret: store it in a secret manager, keep it out of logs, and rotate it regularly.
+
+Use access tokens for:
+
+- `codex exec` jobs that run from trusted automation.
+- Local scripts that need repeatable, non-interactive Codex runs.
+- Enterprise workflows where usage should be associated with a ChatGPT workspace user instead of an API organization key.
+
+Main risks to avoid:
+
+- **Leaked secrets:** anyone with the token can start Codex runs as the token creator. Store tokens in a secret manager, keep them out of logs, and rotate them regularly.
+- **Untrusted runners:** public CI, forked pull requests, or shared machines can expose tokens to people outside your workspace. Use access tokens only on trusted runners.
+- **Shared identities:** one person's token reused across unrelated teams makes ownership and audit trails harder to interpret. Create tokens for a specific workflow owner.
+- **Stale credentials:** long-lived tokens can remain active after the workflow changes. Prefer finite expirations and revoke tokens that are no longer used.
+- **Wrong credential type:** access tokens are for Codex local workflows. Use Platform API keys for general OpenAI API calls.
+
+## Enable access token creation
+
+Use the Codex Local controls in workspace settings to turn on access token creation for allowed members.
+
+1. Go to [Workspace Settings > Settings and Permissions](https://chatgpt.com/admin/settings).
+2. In the Codex Local section, make sure **Allow members to use Codex Local** is turned on.
+3. Turn on **Allow members to use Codex access tokens** if all allowed members should be able to create access tokens.
+4. If you use custom roles for a narrower rollout, assign the access token permission only to groups that need to create tokens.
+
+Keep access token creation limited to people or service owners who understand where the token will be stored, which automation will use it, and how it will be rotated.
+
+## Create an access token
+
+Use the Access tokens page to name the token and choose when it expires.
+
+1. Go to [Access tokens](https://chatgpt.com/admin/access-tokens).
+2. Select **Create**.
+
+3. Enter a descriptive name, such as `release-ci` or `nightly-docs-check`.
+
+4. Choose an expiration. Prefer a finite expiration such as 7, 30, 60, or 90 days. If you choose **No expiration**, rotate the token on a regular schedule.
+5. Select **Create**.
+6. Copy the generated access token immediately. You cannot view it again after you close the modal.
+7. Store the token in your secret manager or CI secret store.
+
+The shortest custom expiration is one day. Revoked and expired tokens cannot be used to start new Codex runs.
+
+## Use an access token with Codex CLI
+
+For ephemeral automation, store the token in `CODEX_ACCESS_TOKEN` and run Codex normally:
+
+```bash
+export CODEX_ACCESS_TOKEN="<access-token>"
+codex exec --json "review this repository and summarize the top risks"
+```
+
+For a persistent local login, pipe the token to `codex login --with-access-token`:
+
+```bash
+printf '%s' "$CODEX_ACCESS_TOKEN" | codex login --with-access-token
+codex exec "summarize the last release diff"
+```
+
+`codex login --with-access-token` stores an agent identity credential in Codex auth storage. If you prefer not to persist credentials on the machine, use the `CODEX_ACCESS_TOKEN` environment variable instead.
+
+## Rotate or revoke a token
+
+Rotate access tokens the same way you rotate other automation secrets:
+
+1. Create a replacement token.
+2. Update the secret in the runner, scheduler, or secret manager.
+3. Run a smoke test with the new token.
+4. Revoke the old token from [Access tokens](https://chatgpt.com/admin/access-tokens).
+
+From the Access tokens page, workspace owners and admins can revoke any workspace token. Members with access token permission can revoke only the tokens they created.
+
+## Permission model
+
+Access token permissions are separate from the general Codex local permission. A member can have access to the Codex app, CLI, or IDE extension without being allowed to create access tokens.
+
+| Capability                                                    | Workspace owners and admins                          | Member with access token permission           | Member without access token permission |
+| ------------------------------------------------------------- | ---------------------------------------------------- | --------------------------------------------- | -------------------------------------- |
+| Open [Access tokens](https://chatgpt.com/admin/access-tokens) | Yes                                                  | Yes                                           | No                                     |
+| Create access tokens                                          | Yes, for their own ChatGPT workspace identity        | Yes, for their own ChatGPT workspace identity | No                                     |
+| List access tokens                                            | Workspace list, including who created each token     | Only tokens they created                      | No                                     |
+| Revoke access tokens from the Access tokens page              | Any token in the workspace                           | Only tokens they created                      | No page access                         |
+| Grant or remove access token permission                       | Yes                                                  | No                                            | No                                     |
+| Manage other Codex enterprise settings                        | Yes, based on admin role and Codex admin permissions | No, unless separately granted                 | No                                     |
+
+In short: workspace owners and admins manage access at the workspace level. Members need the access token permission to create and manage their own tokens, but the permission does not grant admin rights or access to other members' tokens.
+
+## Troubleshooting
+
+### The access tokens page returns 404 or forbidden
+
+Ask a workspace owner or admin to confirm that Codex access tokens are enabled and that your role includes the access token permission.
+
+### `codex login --with-access-token` fails
+
+Confirm that you copied the generated access token, not a browser session token or Platform API key. Also confirm that the token has not expired or been revoked.
+
+## Related docs
+
+- [Authentication](https://developers.openai.com/codex/auth)
+- [Non-interactive mode](https://developers.openai.com/codex/noninteractive)
+- [Admin setup](https://developers.openai.com/codex/enterprise/admin-setup)
+- [Governance](https://developers.openai.com/codex/enterprise/governance)
+
+---
+
 # Admin Setup
 
 <div class="max-w-1xl mx-auto">
@@ -10309,7 +10466,7 @@ Manage prompts by editing or deleting files under `~/.codex/prompts/`. Codex sca
 
 This guide is for ChatGPT Enterprise admins who want to set up Codex for their workspace.
 
-Use this page as the step-by-step rollout guide. For detailed policy, configuration, and monitoring details, use the linked pages: [Authentication](https://developers.openai.com/codex/auth), [Agent approvals & security](https://developers.openai.com/codex/agent-approvals-security), [Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration), and [Governance](https://developers.openai.com/codex/enterprise/governance).
+Use this page as the step-by-step rollout guide. For detailed policy, configuration, automation, and monitoring details, use the linked pages: [Authentication](https://developers.openai.com/codex/auth), [Agent approvals & security](https://developers.openai.com/codex/agent-approvals-security), [Access tokens](https://developers.openai.com/codex/enterprise/access-tokens), [Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration), and [Governance](https://developers.openai.com/codex/enterprise/governance).
 
 ## Enterprise-grade security and privacy
 
@@ -10357,7 +10514,9 @@ Turn on **Allow members to use Codex Local**.
 
 This enables use of the Codex app, CLI, and IDE extension for allowed users.
 
-If this toggle is off, users who attempt to use the Codex app, CLI, or IDE will see the following error: “403 - Unauthorized. Contact your ChatGPT administrator for access.”
+If members need programmatic Codex local workflows, also turn on **Allow members to use Codex access tokens** or grant the access token permission through a custom role. For setup and permission details, see [Access tokens](https://developers.openai.com/codex/enterprise/access-tokens).
+
+If the Codex Local toggle is off, users who attempt to use the Codex app, CLI, or IDE will see the following error: “403 - Unauthorized. Contact your ChatGPT administrator for access.”
 
 #### Enable device code authentication for Codex CLI
 
@@ -10782,7 +10941,7 @@ Codex provides date-range controls for daily and weekly views. Key charts includ
 - Product activity for threads and turns by client
 - User ranking table, with filters for client and sort options such as credits, threads, turns, text tokens, and current streak
 - Code Review activity, including PRs reviewed, issues by priority, comments, replies, reactions, and feedback sentiment
-- Skill invocations and agent identity usage when your workspace has those features
+- Skill invocations, agent identity usage, and access token usage when your workspace has those features
 
 ### Data export
 
@@ -10865,6 +11024,7 @@ For Codex usage authenticated through ChatGPT, Compliance API exports provide au
 Use record metadata to answer questions like:
 
 - Who ran a task
+- Who created or revoked an access token
 - When it ran
 - Which model was used
 - How much content was processed
@@ -11081,9 +11241,12 @@ Use `[hooks]` for the hook configuration itself, and point `managed_dir` at the
 directory where your MDM or endpoint-management tooling installs the referenced
 scripts.
 
+To enforce managed hooks even for users who disabled hooks locally, pin
+`[features].hooks = true` alongside `[hooks]`.
+
 ```toml
 [features]
-codex_hooks = true
+hooks = true
 
 [hooks]
 managed_dir = "/enterprise/hooks"
@@ -12162,18 +12325,26 @@ you to inject your own scripts into the agentic loop, enabling features such as:
 - Run a custom validation check when a conversation turn stops, enforcing standards
 - Customize prompting when in a certain directory
 
-Hooks are behind a feature flag in `config.toml`:
+Hooks are enabled by default. If you need to turn them off in `config.toml`,
+set:
 
 ```toml
 [features]
-codex_hooks = true
+hooks = false
 ```
+
+Use `hooks` as the canonical feature key. `codex_hooks` still works as a
+deprecated alias.
+
+Admins can force hooks off the same way in `requirements.toml` with
+`[features].hooks = false`.
 
 Runtime behavior to keep in mind:
 
 - Matching hooks from multiple files all run.
 - Multiple matching command hooks for the same event are launched concurrently,
   so one hook cannot prevent another matching hook from starting.
+- Non-managed command hooks must be reviewed and trusted before they run.
 - `PreToolUse`, `PermissionRequest`, `PostToolUse`, `UserPromptSubmit`, and
   `Stop` run at turn scope.
 
@@ -12201,9 +12372,23 @@ Higher-precedence config layers do not replace lower-precedence hooks.
 If a single layer contains both `hooks.json` and inline `[hooks]`, Codex
 merges them and warns at startup. Prefer one representation per layer.
 
+Plugin hooks are off by default in this release. If
+`[features].plugin_hooks = true`, Codex can also discover hooks bundled with
+enabled plugins. Otherwise, enabled plugins won't run bundled hooks.
+
 Project-local hooks load only when the project `.codex/` layer is trusted. In
 untrusted projects, Codex still loads user and system hooks from their own
 active config layers.
+
+## Review and manage hooks
+
+Codex lists configured hooks before deciding which ones can run. Use `/hooks`
+in the CLI to inspect hook sources, review new or changed hooks, trust hooks, or
+disable individual non-managed hooks. If hooks need review at startup, Codex
+prints a warning that tells you to open `/hooks`.
+
+Managed hooks from system, MDM, cloud, or `requirements.toml` sources are marked
+as managed, trusted by policy, and can't be disabled from the user hook browser.
 
 ## Config shape
 
@@ -12294,6 +12479,10 @@ Notes:
 - `timeout` is in seconds.
 - If `timeout` is omitted, Codex uses `600` seconds.
 - `statusMessage` is optional.
+- `async` is parsed, but async command hooks aren't supported yet. Codex skips
+  handlers with `async: true`.
+- Only `type: "command"` handlers run today. `prompt` and `agent` handlers are
+  parsed but skipped.
 - Commands run with the session `cwd` as their working directory.
 - For repo-local hooks, prefer resolving from the git root instead of using a
   relative path such as `.codex/hooks/...`. Codex may be started from a
@@ -12302,9 +12491,6 @@ Notes:
 Equivalent inline TOML in `config.toml`:
 
 ```toml
-[features]
-codex_hooks = true
-
 [[hooks.PreToolUse]]
 matcher = "^Bash$"
 
@@ -12329,10 +12515,12 @@ statusMessage = "Reviewing Bash output"
 Enterprise-managed requirements can also define hooks inline under `[hooks]`.
 This is useful when admins want to enforce the hook configuration while
 delivering the actual scripts through MDM or another device-management system.
+To enforce managed hooks even for users who disabled hooks locally, pin
+`[features].hooks = true` in `requirements.toml` alongside `[hooks]`.
 
 ```toml
 [features]
-codex_hooks = true
+hooks = true
 
 [hooks]
 managed_dir = "/enterprise/hooks"
@@ -12356,6 +12544,46 @@ Notes for managed hooks:
   tooling must install and update them separately.
 - Managed hook commands should use absolute script paths under the configured
   managed directory.
+
+## Plugin-bundled hooks
+
+Plugin-bundled hooks are opt-in for this release. When
+`[features].plugin_hooks = true` and a plugin is enabled, Codex can load
+lifecycle hooks from that plugin alongside user, project, and managed hooks.
+
+```toml
+[features]
+plugin_hooks = true
+```
+
+By default, Codex looks for `hooks/hooks.json` inside the plugin root. A plugin
+manifest can override that default with a `hooks` entry in
+`.codex-plugin/plugin.json`. The manifest entry can be a `./`-prefixed path, an
+array of `./`-prefixed paths, an inline hooks object, or an array of inline
+hooks objects.
+
+```json
+{
+  "name": "repo-policy",
+  "hooks": "./hooks/hooks.json"
+}
+```
+
+Manifest hook paths are resolved relative to the plugin root and must stay
+inside that root. If a manifest defines `hooks`, Codex uses those manifest
+entries instead of the default `hooks/hooks.json`.
+
+Plugin hook commands receive these environment variables:
+
+- `PLUGIN_ROOT` is a Codex-specific extension that points to the installed
+  plugin root.
+- `PLUGIN_DATA` is a Codex-specific extension that points to the plugin's
+  writable data directory.
+- Codex also sets `CLAUDE_PLUGIN_ROOT` and `CLAUDE_PLUGIN_DATA` for
+  compatibility with existing plugin hooks.
+
+Plugin hooks use the same event schema as other hooks. They are non-managed
+hooks, so they require trust review before they run.
 
 ## Matcher patterns
 
@@ -12397,9 +12625,18 @@ These are the shared fields you will usually use:
 | `transcript_path` | `string \| null` | Path to the session transcript file, if any |
 | `cwd`             | `string`         | Working directory for the session           |
 | `hook_event_name` | `string`         | Current hook event name                     |
-| `model`           | `string`         | Active model slug                           |
+| `model`           | `string`         | Codex-specific extension. Active model slug |
 
-Turn-scoped hooks list `turn_id` in their event-specific tables.
+Turn-scoped hooks list `turn_id` as a Codex-specific extension in their
+event-specific tables.
+
+`SessionStart`, `PreToolUse`, `PermissionRequest`, `PostToolUse`,
+`UserPromptSubmit`, and `Stop` also include `permission_mode`, which describes
+the current permission mode as `default`, `acceptEdits`, `plan`, `dontAsk`, or
+`bypassPermissions`.
+
+`transcript_path` points to a conversation transcript for convenience, but the
+transcript format is not a stable interface for hooks and may change over time.
 
 If you need the full wire format, see [Schemas](#schemas).
 
@@ -12440,9 +12677,9 @@ Exit `0` with no output is treated as success and Codex continues.
 
 Fields in addition to [Common input fields](#common-input-fields):
 
-| Field    | Type     | Meaning                                        |
-| -------- | -------- | ---------------------------------------------- |
-| `source` | `string` | How the session started: `startup` or `resume` |
+| Field    | Type     | Meaning                                                  |
+| -------- | -------- | -------------------------------------------------------- |
+| `source` | `string` | How the session started: `startup`, `resume`, or `clear` |
 
 Plain text on `stdout` is added as extra developer context.
 
@@ -12487,8 +12724,8 @@ Fields in addition to [Common input fields](#common-input-fields):
 
 Plain text on `stdout` is ignored.
 
-JSON on `stdout` can use `systemMessage` and can block a Bash command with this
-hook-specific shape:
+JSON on `stdout` can use `systemMessage`. To deny a supported tool call, return
+this hook-specific shape:
 
 ```json
 {
@@ -12511,9 +12748,21 @@ Codex also accepts this older block shape:
 
 You can also use exit code `2` and write the blocking reason to `stderr`.
 
-`permissionDecision: "allow"` and `"ask"`, legacy `decision: "approve"`,
-`updatedInput`, `additionalContext`, `continue: false`, `stopReason`, and
-`suppressOutput` are parsed but not supported yet, so they fail open.
+To add model-visible context without blocking, return
+`hookSpecificOutput.additionalContext`:
+
+```json
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PreToolUse",
+    "additionalContext": "The pending command touches generated files."
+  }
+}
+```
+
+`permissionDecision: "ask"`, legacy `decision: "approve"`, `updatedInput`,
+`continue: false`, `stopReason`, and `suppressOutput` are parsed but not
+supported yet, so they fail open.
 
 ### PermissionRequest
 
@@ -12528,14 +12777,16 @@ values include `Bash`, `apply_patch`, and MCP tool names such as
 
 Fields in addition to [Common input fields](#common-input-fields):
 
-| Field                    | Type             | Meaning                                                                                                   |
-| ------------------------ | ---------------- | --------------------------------------------------------------------------------------------------------- |
-| `turn_id`                | `string`         | Codex-specific extension. Active Codex turn id                                                            |
-| `tool_name`              | `string`         | Canonical hook tool name, such as `Bash`, `apply_patch`, or an MCP name like `mcp__fs__read`              |
-| `tool_input`             | `JSON value`     | Tool-specific input. `Bash` and `apply_patch` use `tool_input.command` while MCP tools send all the args. |
-| `tool_input.description` | `string \| null` | Human-readable approval reason, when Codex has one                                                        |
+| Field        | Type         | Meaning                                                                                                   |
+| ------------ | ------------ | --------------------------------------------------------------------------------------------------------- |
+| `turn_id`    | `string`     | Codex-specific extension. Active Codex turn id                                                            |
+| `tool_name`  | `string`     | Canonical hook tool name, such as `Bash`, `apply_patch`, or an MCP name like `mcp__fs__read`              |
+| `tool_input` | `JSON value` | Tool-specific input. `Bash` and `apply_patch` use `tool_input.command` while MCP tools send all the args. |
 
 Plain text on `stdout` is ignored.
+
+Some tool inputs may include a human-readable description, but don't rely on a
+`tool_input.description` field for every tool.
 
 To approve the request, return:
 
@@ -12701,6 +12952,9 @@ If any matching `Stop` hook returns `continue: false`, that takes precedence
 over continuation decisions from other matching `Stop` hooks.
 
 ## Schemas
+
+The linked `main` branch schemas may include hook fields that are not in the
+  current release. Use this page as the release behavior reference.
 
 If you need the exact current wire format, see the generated schemas in the
 [Codex GitHub repository](https://github.com/openai/codex/tree/main/codex-rs/hooks/schema/generated).
@@ -14684,7 +14938,7 @@ This page is for plugin authors. If you want to browse, install, and use
 plugins in Codex, see [Plugins](https://developers.openai.com/codex/plugins). If you are still iterating on
 one repo or one personal workflow, start with a local skill. Build a plugin
 when you want to share that workflow across teams, bundle app integrations or
-MCP config, or publish a stable package.
+MCP config, package lifecycle hooks, or publish a stable package.
 
 ## Create a plugin with `$plugin-creator`
 
@@ -14970,7 +15224,7 @@ Codex can read marketplace files from:
 
 - the curated marketplace that powers the official Plugin Directory
 - a repo marketplace at `$REPO_ROOT/.agents/plugins/marketplace.json`
-- a Claude-style marketplace at `$REPO_ROOT/.claude-plugin/marketplace.json`
+- a legacy-compatible marketplace at `$REPO_ROOT/.claude-plugin/marketplace.json`
 - a personal marketplace at `~/.agents/plugins/marketplace.json`
 
 You can install any plugin exposed through a marketplace. Codex installs
@@ -14987,18 +15241,19 @@ on or off state in `~/.codex/config.toml`.
 ### Plugin structure
 
 Every plugin has a manifest at `.codex-plugin/plugin.json`. It can also include
-a `skills/` directory, an `.app.json` file that points at one or more apps or
-connectors, an `.mcp.json` file that configures MCP servers, lifecycle config,
-and assets used to present the plugin across supported surfaces.
+a `skills/` directory, a `hooks/` directory for lifecycle hooks, an `.app.json`
+file that points at one or more apps or connectors, an `.mcp.json` file that
+configures MCP servers, and assets used to present the plugin across supported
+surfaces.
 
-Only `plugin.json` belongs in `.codex-plugin/`. Keep `skills/`, `assets/`,
-`.mcp.json`, `.app.json`, and lifecycle config files at the plugin root.
+Only `plugin.json` belongs in `.codex-plugin/`. Keep `skills/`, `hooks/`,
+`assets/`, `.mcp.json`, and `.app.json` at the plugin root.
 
 Published plugins typically use a richer manifest than the minimal example that
 appears in quick-start scaffolds. The manifest has three jobs:
 
 - Identify the plugin.
-- Point to bundled components such as skills, apps, or MCP servers.
+- Point to bundled components such as skills, apps, MCP servers, or hooks.
 - Provide install-surface metadata such as descriptions, icons, and legal
   links.
 
@@ -15076,11 +15331,13 @@ Use the `interface` object for install-surface metadata:
 - Store visual assets such as `composerIcon`, `logo`, and `screenshots` under
   `./assets/` when possible.
 - Use `skills` for bundled skill folders, `apps` for `.app.json`,
-  `mcpServers` for `.mcp.json`, and `hooks` for lifecycle config.
-- If you omit `hooks` and the plugin includes `./hooks/hooks.json`, Codex loads
-  that default lifecycle config automatically.
+  `mcpServers` for `.mcp.json`, and `hooks` for lifecycle hooks.
+- Plugin hooks are off by default in this release; bundled hooks won't run
+  unless `[features].plugin_hooks = true`.
+- When plugin hooks are enabled, omit `hooks` to use the default
+  `./hooks/hooks.json` file when present.
 
-### Bundled MCP servers and lifecycle config
+### Bundled MCP servers and lifecycle hooks
 
 `mcpServers` can point to an `.mcp.json` file that contains either a direct
 server map or a wrapped `mcp_servers` object.
@@ -15109,10 +15366,60 @@ Wrapped server map:
 }
 ```
 
-`hooks` can point to one lifecycle JSON file, an array of lifecycle JSON files,
-an inline lifecycle object, or an array of inline lifecycle objects. File paths
-must follow the same `./`-prefixed plugin-root path rules as other manifest
-paths. If you omit the manifest field, Codex still checks `./hooks/hooks.json`.
+Plugin hooks are off by default in this release. When
+`[features].plugin_hooks = true` and your plugin is enabled, Codex can load
+lifecycle hooks from your plugin alongside user, project, and managed hooks.
+
+```toml
+[features]
+plugin_hooks = true
+```
+
+The default plugin hook file is `hooks/hooks.json`:
+
+```json
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${PLUGIN_ROOT}/hooks/session_start.py",
+            "statusMessage": "Loading plugin context"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+If you define `hooks` in `.codex-plugin/plugin.json`, Codex uses that manifest
+entry instead of the default `hooks/hooks.json`. The manifest field can be a
+single path, an array of paths, an inline hooks object, or an array of inline
+hooks objects.
+
+```json
+{
+  "name": "repo-policy",
+  "hooks": ["./hooks/session.json", "./hooks/tools.json"]
+}
+```
+
+Hook paths follow the same manifest path rules as `skills`, `apps`, and
+`mcpServers`: start with `./`, resolve relative to the plugin root, and stay
+inside the plugin root.
+
+Plugin hook commands receive the Codex-specific environment variables
+`PLUGIN_ROOT` and `PLUGIN_DATA`. `PLUGIN_ROOT` points to the installed plugin
+root, and `PLUGIN_DATA` points to the plugin's writable data directory. Codex
+also sets `CLAUDE_PLUGIN_ROOT` and `CLAUDE_PLUGIN_DATA` for compatibility with
+existing plugin hooks.
+
+Plugin hooks use the same event schema as regular hooks. See
+[Hooks](https://developers.openai.com/codex/hooks) for supported events, inputs, outputs, trust review, and
+current limitations.
 
 ### Publish official public plugins
 
@@ -16196,24 +16503,165 @@ Use Codex in the cloud at [chatgpt.com/codex](https://chatgpt.com/codex).
 
 # Remote connections
 
-SSH remote connections are currently in alpha. To enable them today, set
-  `remote_connections = true` in the `[features]` table in
-  `~/.codex/config.toml`. Availability, setup flows, and supported environments
-  may change as the feature improves.
+import {
+  Desktop,
+  Storage,
+  Terminal,
+} from "@components/react/oai/platform/ui/Icon.react";
 
-Remote connections let Codex work with projects that live on another
-SSH-accessible machine. Use them when the codebase, credentials, services, or
-build environment you need are available on that host instead of your local
-machine.
+Remote connections let you use Codex when you are away from the machine that
+runs it, or when your project lives on another machine. Connect the ChatGPT
+mobile app to a Codex App host, pick up work from another device, or configure
+Codex to work on an SSH host.
+
+Remote access uses the connected host's projects, threads, files, credentials,
+permissions, plugins, Computer Use, browser setup, and local tools.
+
+## What you can do remotely
+
+- Start new threads in projects on the host, or continue existing ones.
+- Send follow-up instructions, answer questions, and steer active work.
+- Approve commands and other actions.
+- Review outputs, diffs, test results, terminal output, and screenshots.
+- Get notified when Codex completes a task or needs your attention.
+- Switch between connected hosts and threads.
+
+The next sections cover using the ChatGPT mobile app to control a Codex App
+host. To connect Codex to a project on an SSH host, see
+[connect to an SSH host](#connect-to-an-ssh-host).
+
+<div class="not-prose my-6 max-w-4xl rounded-xl bg-[url('/images/codex/codex-wallpaper-1.webp')] bg-cover bg-center p-4 md:p-8">
+  </div>
+
+## Before you set up mobile access
+
+Make sure you have:
+
+- Codex access in the ChatGPT account and workspace you want to use.
+- The latest ChatGPT mobile app on an iOS or Android device. If you do not see
+  Codex in the app, update ChatGPT first.
+- A Mac host that is awake, online, running the Codex App, and signed in to the
+  same account and workspace. Mobile setup and device control currently require
+  the Codex App for macOS on the host; the setup flow isn't available from the
+  Codex CLI or IDE Extension.
+- Any required multi-factor authentication, SSO, or passkey configuration for
+  that account or workspace.
+
+If you use Codex through a ChatGPT workspace, your admin may need to enable
+Remote Control access before you can connect from your phone.
+
+## Set up mobile access
+
+Start in the Codex App on the host you want to connect. The setup flow enables
+remote access for that host, then shows a QR code you can scan from your phone.
+
+
+
+1. Start Codex mobile setup.
+
+   Open Codex on the host and select **Set up Codex mobile** in the
+   sidebar.
+
+2. Scan the QR code.
+
+   Use your phone to scan the QR code shown by Codex. The code opens ChatGPT so
+   you can finish connecting the mobile app to the host.
+
+3. Finish setup in ChatGPT.
+
+   ChatGPT opens the Codex mobile setup flow. Confirm the same ChatGPT account
+   and workspace, then complete any required multi-factor authentication, SSO,
+   or passkey steps. After setup succeeds, the host appears in Codex on your
+   phone.
+
+4. Review host settings.
+
+   In Codex on the host, use **Settings > Connections** to manage connected
+   devices. You can also choose whether to keep the computer awake, enable
+   Computer Use, or install the Chrome extension.
+
+
+
+<div class="not-prose my-6 max-w-4xl">
+  </div>
+
+## Choose what to connect
+
+Start with the Mac laptop or desktop where you already use Codex. Add an
+always-on Mac or SSH host when you need continuous access or a different
+environment.
+
+### <span class="not-prose inline-flex items-center gap-3 align-middle"><span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-surface-secondary text-secondary"></span><span>Your Mac laptop or desktop</span></span>
+
+Connect the Mac where you already run Codex day to day. This gives remote access
+to the same projects, threads, credentials, plugins, and local setup you already
+use.
+
+If that Mac sleeps, loses network access, or closes Codex, remote access stops
+until it is available again. If you use this computer as your host device, keep
+it plugged in and turn on **Keep this Mac awake** in the host's connection
+settings.
+
+### <span class="not-prose inline-flex items-center gap-3 align-middle"><span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-surface-secondary text-secondary"></span><span>A dedicated always-on Mac</span></span>
+
+Use a dedicated always-on Mac when you want Codex to stay reachable for
+longer-running work.
+
+Install the projects, credentials, plugins, MCP servers, and tools Codex should
+use on that machine.
+
+### <span class="not-prose inline-flex items-center gap-3 align-middle"><span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-surface-secondary text-secondary"></span><span>A remote development environment</span></span>
+
+Use an SSH host or managed devbox when the project already lives in a remote
+environment. Connect the Codex App host to that environment first; your phone
+still connects to the Codex App host, and Codex works in the remote environment
+with its dependencies, security policies, and compute resources.
+
+For SSH setup details, see [connect to an SSH host](#connect-to-an-ssh-host).
+
+## What comes from the connected host
+
+Your phone sends prompts, approvals, and follow-up messages to Codex. The
+connected host provides the environment Codex uses.
+
+That means:
+
+- Repository files and local documents come from the connected host.
+- Shell commands run on that host or remote environment.
+- Any plugin installed on that host is available when you use Codex remotely.
+- MCP servers, skills, browser access, and Computer Use come from that host's
+  configuration.
+- Signed-in websites and desktop apps are available only when the host can
+  access them.
+- Sandboxing, security controls, and action approvals still apply to the
+  connected session.
+
+Codex uses a secure relay layer to keep trusted machines reachable across your
+authorized ChatGPT devices without exposing them directly to the public
+internet.
+
+## Pick up work from another device
+
+You can also connect one Codex App host to another. For example, if your laptop
+is unavailable, you can start a thread from your phone on an always-on host,
+then later open Codex on your laptop and continue that thread from there.
+
+In Codex on the laptop, use **Settings > Connections > Control other devices**
+to add the other host. A device can allow remote access and control another
+device at the same time.
+
+<div class="not-prose my-6 max-w-4xl">
+  </div>
+
+## Connect to an SSH host
+
+In the Codex App, add remote projects from an SSH host and run threads against
+the remote filesystem and shell. Remote project threads run commands, read
+files, and write changes on the remote host.
 
 Keep the remote host configured with the same security expectations you use for
 normal SSH access: trusted keys, least-privilege accounts, and no
 unauthenticated public listeners.
-
-## Codex app
-
-In the Codex app, add remote projects from an SSH host and run threads against
-the remote filesystem and shell.
 
 
 
@@ -16229,7 +16677,7 @@ the remote filesystem and shell.
    Codex reads concrete host aliases from `~/.ssh/config`, resolves them with
    OpenSSH, and ignores pattern-only hosts.
 
-2. Confirm you can SSH to the host from the machine running the Codex app.
+2. Confirm you can SSH to the host from the machine running the Codex App.
 
    ```bash
    ssh devbox
@@ -16241,21 +16689,10 @@ the remote filesystem and shell.
    user's login shell. Make sure the `codex` command is available on the
    remote host's `PATH` in that shell.
 
-4. In the Codex app, open **Settings > Connections**, add or enable the SSH host,
-   then choose a remote project folder.
+4. In the Codex App, open **Settings > Connections**, add or enable the SSH
+   host, then choose a remote project folder.
 
 
-
-If remote connections don't appear yet, enable the alpha feature flag in
-`~/.codex/config.toml`:
-
-```toml
-[features]
-remote_connections = true
-```
-
-Remote project threads run commands, read files, and write changes on the
-remote host.
 
 ## Authentication and network exposure
 
@@ -16266,9 +16703,40 @@ If you need to reach a remote machine outside your current network, use a VPN or
 mesh networking tool such as Tailscale instead of exposing the app server
 directly to the internet.
 
+## Troubleshooting
+
+### You do not see the host on your phone
+
+Confirm that the Codex App is running on the host, **Allow other devices to
+connect** is enabled, and the same ChatGPT account and workspace are selected on
+both devices.
+
+### The approval request does not appear
+
+Open the ChatGPT mobile app and go to Codex. Confirm that the phone and host use
+the same ChatGPT account and workspace, then scan the QR code again or restart
+setup from the host. If you use a ChatGPT workspace, ask your admin to confirm
+that Remote Control access is enabled.
+
+### The remote session disconnects
+
+Check whether the host went to sleep, lost network access, or closed Codex.
+Keep the host awake and connected while Codex works.
+
+### Authentication blocks setup
+
+Complete the account or workspace authentication prompt shown during setup. If
+your organization requires SSO, multi-factor authentication, or a passkey,
+finish that flow before trying again. If setup still fails, ask your workspace
+admin to confirm that Remote Control access is enabled.
+
 ## See also
 
-- [Codex app settings](https://developers.openai.com/codex/app/settings)
+- [Codex App](https://developers.openai.com/codex/app)
+- [Codex App features](https://developers.openai.com/codex/app/features)
+- [Codex App settings](https://developers.openai.com/codex/app/settings)
+- [Computer Use](https://developers.openai.com/codex/app/computer-use)
+- [Chrome extension](https://developers.openai.com/codex/app/chrome-extension)
 - [Command line options](https://developers.openai.com/codex/cli/reference)
 - [Authentication](https://developers.openai.com/codex/auth)
 

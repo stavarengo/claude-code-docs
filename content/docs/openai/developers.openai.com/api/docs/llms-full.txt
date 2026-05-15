@@ -3242,10 +3242,10 @@ On March 24th, 2026, we notified developers using the Videos API and Sora 2 vide
 
 On November 14th, 2025, we notified developers using DALL·E model snapshots of their deprecation and removal from the API on May 12, 2026.
 
-| Shutdown date | Model / system | Recommended replacement             |
-| ------------- | -------------- | ----------------------------------- |
-| 2026-05-12    | `dall-e-2`     | `gpt-image-1` or `gpt-image-1-mini` |
-| 2026-05-12    | `dall-e-3`     | `gpt-image-1` or `gpt-image-1-mini` |
+| Shutdown date | Model / system | Recommended replacement                             |
+| ------------- | -------------- | --------------------------------------------------- |
+| 2026-05-12    | `dall-e-2`     | `gpt-image-2`, `gpt-image-1`, or `gpt-image-1-mini` |
+| 2026-05-12    | `dall-e-3`     | `gpt-image-2`, `gpt-image-1`, or `gpt-image-1-mini` |
 
 ### 2025-09-26: Legacy GPT model snapshots
 
@@ -3265,13 +3265,13 @@ To improve reliability and make it easier for developers to choose the right mod
 
 ### 2025-09-15: Realtime API Beta
 
-The Realtime API Beta will be deprecated and removed from the API on May 7, 2026.
+The Realtime API Beta was deprecated and removed from the API on May 12, 2026.
 
-There are a few key differences between the interfaces in the Realtime beta API and the released GA API. See [the migration guide](https://developers.openai.com/api/docs/guides/realtime#beta-to-ga-migration) to learn more about how to migrate your current beta integration.
+There are a few key differences between the interfaces in the Realtime beta API and the released GA API. See [the migration guide](https://developers.openai.com/api/docs/guides/realtime#beta-to-ga-migration) for the current GA interface and related Realtime docs.
 
 | Shutdown date | Model / system           | Recommended replacement |
 | ------------- | ------------------------ | ----------------------- |
-| 2026‑05‑07    | OpenAI-Beta: realtime=v1 | Realtime API            |
+| 2026‑05‑12    | OpenAI-Beta: realtime=v1 | Realtime API            |
 
 ### 2025-08-20: Assistants API
 
@@ -22315,6 +22315,18 @@ For Realtime API requests, send the identifier in the `OpenAI-Safety-Identifier`
 
 Safety identifiers do not carry over from Responses API requests or from other sessions. If you use the Responses API `safety_identifier` parameter elsewhere in your application, pass the same stable value separately when you create or connect each Realtime session.
 
+## Beta to GA migration
+
+If you still have a beta Realtime integration, migrate it to the GA interface before moving forward with new work. The most important changes are:
+
+- Remove the `OpenAI-Beta: realtime=v1` header when calling the GA interface.
+- Use [`POST /v1/realtime/client_secrets`](https://developers.openai.com/api/docs/api-reference/realtime-sessions/create-realtime-client-secret) to create ephemeral credentials for browser or mobile clients.
+- Use `/v1/realtime/calls` when establishing WebRTC sessions.
+- Update session and event shapes for the GA interface. In particular, set `session.type`, move output audio configuration under `session.audio.output`, and use the newer response event names like `response.output_text.delta`, `response.output_audio.delta`, and `response.output_audio_transcript.delta`.
+- If you are moving a speech-to-speech app forward, start from the [Voice agents](https://developers.openai.com/api/docs/guides/voice-agents) guide. If you are moving a transcription workflow forward, use [Realtime transcription](https://developers.openai.com/api/docs/guides/realtime-transcription).
+
+See the [Realtime client events reference](https://developers.openai.com/api/docs/api-reference/realtime_client_events), [Realtime sessions reference](https://developers.openai.com/api/docs/api-reference/realtime-sessions), and [Voice agents](https://developers.openai.com/api/docs/guides/voice-agents) guide for the current GA flow.
+
 ## Related guides
 
 - [Realtime prompting guide](https://developers.openai.com/api/docs/guides/realtime-models-prompting): Prompt and tune Realtime voice models.
@@ -39490,6 +39502,13 @@ Finetuning
 
 
     <small className="pricing-switcher-meta">Prices per 1M tokens.</small>
+    OpenAI is winding down the fine-tuning platform. The platform is no longer
+      accessible to new users, but existing users of the fine-tuning platform
+      will be able to create training jobs for the coming months.
+      <br />
+      All fine-tuned models will remain available for inference until their base
+      models are deprecated. The full timeline is
+      [here](https://developers.openai.com/api/docs/deprecations#update-to-openais-self-serve-fine-tuning).
   </div>
 
   

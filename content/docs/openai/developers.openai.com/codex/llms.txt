@@ -68,6 +68,7 @@ Use this as a compact map of Codex docs. Each page has a Markdown twin at `/code
 - [Custom Prompts](https://developers.openai.com/codex/custom-prompts.md): Deprecated. Use skills for reusable prompts
 
 ## Enterprise
+- [Access tokens](https://developers.openai.com/codex/enterprise/access-tokens.md): Create and manage Codex access tokens for programmatic workflows
 - [Admin Setup](https://developers.openai.com/codex/enterprise/admin-setup.md): Set up Codex for your ChatGPT Enterprise workspace
 - [Governance](https://developers.openai.com/codex/enterprise/governance.md): Governance guidance for managing Codex in your organization
 - [Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration.md): Configure managed Codex requirements and defaults
@@ -137,7 +138,7 @@ Use this as a compact map of Codex docs. Each page has a Markdown twin at `/code
 - [Quickstart](https://developers.openai.com/codex/quickstart.md): Start using Codex in your IDE, CLI, or the cloud
 
 ## Remote Connections
-- [Remote connections](https://developers.openai.com/codex/remote-connections.md): Use Codex with projects on remote machines over SSH
+- [Remote connections](https://developers.openai.com/codex/remote-connections.md): Connect your phone or another device to a Codex host, or use projects on remote machines over SSH
 
 ## Rules
 - [Rules](https://developers.openai.com/codex/rules.md): Control which commands Codex can run outside the sandbox
