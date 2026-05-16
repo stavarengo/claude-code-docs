@@ -134,10 +134,10 @@ You can view the rate and usage limits for your organization under the [limits](
 | ----------- | --------------------------------------------------------------------- | ---------------- |
 | Free        | User must be in an [allowed geography](https://developers.openai.com/api/docs/supported-countries) | $100 / month     |
 | Tier&nbsp;1 | $5 paid                                                               | $100 / month     |
-| Tier&nbsp;2 | $50 paid and 7+ days since first successful payment                   | $500 / month     |
-| Tier&nbsp;3 | $100 paid and 7+ days since first successful payment                  | $1,000 / month   |
-| Tier&nbsp;4 | $250 paid and 14+ days since first successful payment                 | $5,000 / month   |
-| Tier&nbsp;5 | $1,000 paid and 30+ days since first successful payment               | $200,000 / month |
+| Tier&nbsp;2 | $50 paid                                                              | $500 / month     |
+| Tier&nbsp;3 | $100 paid                                                             | $1,000 / month   |
+| Tier&nbsp;4 | $250 paid                                                             | $5,000 / month   |
+| Tier&nbsp;5 | $1,000 paid                                                           | $200,000 / month |
 
 To view a high-level summary of rate limits per model, visit the [models page](https://developers.openai.com/api/docs/models).
 

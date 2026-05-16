@@ -27,7 +27,7 @@ brew install anthropics/tap/ant
 For Linux environments, download the release binary directly.
 
 ```bash nocheck
-VERSION=1.7.0
+VERSION=1.8.0
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 ARCH=$(uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/')
 curl -fsSL "https://github.com/anthropics/anthropic-cli/releases/download/v${VERSION}/ant_${VERSION}_${OS}_${ARCH}.tar.gz" \
@@ -62,9 +62,28 @@ ant --version
 
 ## Authentication
 
+### Interactive login
+
+`ant auth login` lets you call the API without creating or managing an API key. It opens a browser-based OAuth flow against the Claude Console and stores the resulting credentials under `$ANTHROPIC_CONFIG_DIR` (see [Configuration directory](/docs/en/manage-claude/wif-reference#configuration-directory) for the OS-specific default). On a remote host or in any environment without a local browser, pass `--no-browser` to print the authorize URL and paste the returned code back into the terminal.
+
+```bash CLI nocheck
+ant auth login
+
+# On a remote host without a browser:
+ant auth login --no-browser
+
+# If the named profile you pass with --profile doesn't exist,
+# a new named profile will be created with that name.
+ant auth login --profile <profile-name>
+```
+
+Interactive login is intended for local development and scripting on your own machine. For non-interactive workloads such as CI, servers, and containers, use [Workload Identity Federation](/docs/en/manage-claude/workload-identity-federation) instead.
+
+Login writes credentials to `credentials/.json`. The first login for a profile also creates `configs/.json` and sets it as the active profile. To remove stored credentials, run `ant auth logout`, or `ant auth logout --all` to clear every profile.
+
 ### API key
 
-The CLI reads your API key from the `ANTHROPIC_API_KEY` environment variable. Get a key from the [Claude Console](https://platform.claude.com/settings/keys).
+The CLI also reads your API key from the `ANTHROPIC_API_KEY` environment variable. Get a key from the [Claude Console](https://platform.claude.com/settings/keys).
 
 <Tabs>
 <Tab title="zsh">
@@ -95,25 +114,6 @@ Open a new terminal for the change to take effect.
 </Tabs>
 
 To override the key for a single invocation, pass `--api-key`. To point at a different API host, set `ANTHROPIC_BASE_URL` or pass `--base-url`.
-
-### Interactive login
-
-`ant auth login` lets you call the API without creating or managing an API key. It opens a browser-based OAuth flow against the Claude Console and stores the resulting credentials under `$ANTHROPIC_CONFIG_DIR` (see [Configuration directory](/docs/en/manage-claude/wif-reference#configuration-directory) for the OS-specific default). On a remote host or in any environment without a local browser, pass `--no-browser` to print the authorize URL and paste the returned code back into the terminal.
-
-```bash CLI nocheck
-ant auth login
-
-# On a remote host without a browser:
-ant auth login --no-browser
-
-# If the named profile you pass with --profile doesn't exist,
-# a new named profile will be created with that name.
-ant auth login --profile <profile-name>
-```
-
-Interactive login is intended for local development and scripting on your own machine. For non-interactive workloads such as CI, servers, and containers, use [Workload Identity Federation](/docs/en/manage-claude/workload-identity-federation) instead.
-
-Login writes credentials to `credentials/.json`. The first login for a profile also creates `configs/.json` and sets it as the active profile. To remove stored credentials, run `ant auth logout`, or `ant auth logout --all` to clear every profile.
 
 ### Check authentication status
 
@@ -154,7 +154,7 @@ For Workload Identity Federation, see the [Authentication overview](/docs/en/man
 
 ## Send your first request
 
-With the binary installed and `ANTHROPIC_API_KEY` set, call the [Messages API](/docs/en/api/cli/messages/create):
+With the binary installed and authenticated, call the [Messages API](/docs/en/api/cli/messages/create):
 
 ```bash
 ant messages create \
@@ -527,7 +527,7 @@ Agent not found.
 
 ## Use the CLI from Claude Code
 
-[Claude Code](https://docs.claude.com/en/docs/claude-code/overview) knows out of the box how to use the `ant` CLI. With the CLI installed and `ANTHROPIC_API_KEY` set, you can ask Claude Code to operate on your API resources directly. For example:
+[Claude Code](https://docs.claude.com/en/docs/claude-code/overview) knows out of the box how to use the `ant` CLI. With the CLI installed and authenticated, you can ask Claude Code to operate on your API resources directly. For example:
 
 - "List my recent agent sessions and summarize which ones errored."
 - "Upload every PDF in `./reports` to the Files API and print the resulting IDs."
