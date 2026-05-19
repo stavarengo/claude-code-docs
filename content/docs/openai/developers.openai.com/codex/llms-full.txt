@@ -45,6 +45,113 @@ For the Codex app, CLI, or IDE Extension, the default `workspace-write` sandbox 
 network_access = true
 ```
 
+### Network isolation
+
+Network access is controlled through destination rules that apply to scripts,
+programs, and subprocesses spawned by commands. When command network access is
+already enabled, turn on the `network_proxy` feature to constrain that traffic
+to the network policy you configure.
+
+```toml
+[features.network_proxy]
+enabled = true
+domains = { "api.openai.com" = "allow", "example.com" = "deny" }
+```
+
+For a one-off CLI session, use the boolean shorthand when you only need the
+toggle, and the table form when you also set policy options:
+
+```bash
+codex \
+  -c 'features.network_proxy=true' \
+  -c 'sandbox_workspace_write.network_access=true'
+
+codex \
+  -c 'features.network_proxy.enabled=true' \
+  -c 'features.network_proxy.domains={ "api.openai.com" = "allow", "example.com" = "deny" }' \
+  -c 'sandbox_workspace_write.network_access=true'
+```
+
+The feature changes how enabled network access is enforced; it does not grant
+network access by itself. Use `sandbox_workspace_write.network_access` with
+`workspace-write` config to decide whether commands have network access at all:
+
+- Network off + `network_proxy` on: network stays off, and the feature does nothing.
+- Network on + `network_proxy` off: network stays on with unrestricted direct
+  outbound access.
+- Network on + `network_proxy` on: network stays on, and outbound traffic is
+  constrained by the configured network policy.
+
+Admin-managed `experimental_network` requirements are separate from the user
+feature toggle. They can configure and start sandboxed networking without
+`features.network_proxy`, but they do not turn on network access when the active
+sandbox keeps it off. See [Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration#configure-network-access-requirements)
+for the administrator-side `requirements.toml` shape.
+
+#### Network policy
+
+Domain rules are allowlist-first:
+
+- Exact hosts match only themselves.
+- `*.example.com` matches subdomains such as `api.example.com`, but not
+  `example.com`.
+- `**.example.com` matches both the apex and subdomains.
+- A global `*` allow rule matches any public host that is not denied. Treat `*`
+  as broad network access and prefer scoped rules when you can.
+- `deny` always wins over `allow`, and global `*` is only valid for allow rules.
+
+#### Local and private destinations
+
+By default, `allow_local_binding = false` blocks loopback, link-local, and
+private destinations:
+
+- Specific exceptions: add an exact local IP literal or `localhost` allow rule
+  when a command needs one local target.
+- Broader access: set `allow_local_binding = true` only when you intentionally
+  want wider local/private reach.
+- Wildcards: wildcard rules do not count as explicit local exceptions.
+- Resolved addresses: hostnames that resolve to local/private IPs stay blocked
+  even if they match the allowlist.
+
+#### DNS rebinding protections
+
+Before allowing a hostname, Codex performs a best-effort DNS and IP
+classification check:
+
+- Lookups that fail or time out are blocked.
+- Hostnames that resolve to non-public addresses are blocked.
+- The check reduces DNS rebinding risk, but it does not eliminate it. Preventing
+  rebinding completely would require pinning resolved IPs through the transport
+  layer.
+
+If hostile DNS is in scope, enforce egress controls at a lower layer too.
+
+#### Dangerous settings
+
+Two settings deliberately widen the trust boundary:
+
+- `dangerously_allow_non_loopback_proxy = true` can expose proxy listeners beyond
+  loopback.
+- `dangerously_allow_all_unix_sockets = true` bypasses the Unix socket allowlist.
+
+Use them only in tightly controlled environments. When Unix socket proxying is
+enabled, listeners stay loopback-only even if non-loopback binding was requested,
+so sandboxed networking does not become a remote bridge into local daemons.
+
+`network_proxy` is off by default. When you enable it:
+
+| Setting                                | Default | Behavior                                                                                                                                                                              |
+| -------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `enabled`                              | `false` | Starts sandboxed networking only when command network access is already on.                                                                                                           |
+| `domains`                              | unset   | Uses allowlist behavior, so no external destinations are allowed until you add `allow` rules. Supports exact hosts, scoped wildcards, and global `*` allow rules; `deny` always wins. |
+| `unix_sockets`                         | unset   | No Unix socket destinations are allowed until you add explicit `allow` rules.                                                                                                         |
+| `allow_local_binding`                  | `false` | Blocks local and private-network destinations unless you add an exact local IP literal or `localhost` allow rule, or explicitly opt into broader local/private access.                |
+| `enable_socks5`                        | `true`  | Exposes SOCKS5 support when policy allows it.                                                                                                                                         |
+| `enable_socks5_udp`                    | `true`  | Allows UDP over SOCKS5 when SOCKS5 is available.                                                                                                                                      |
+| `allow_upstream_proxy`                 | `true`  | Lets sandboxed networking honor an upstream proxy from the environment.                                                                                                               |
+| `dangerously_allow_non_loopback_proxy` | `false` | Keeps listener endpoints on loopback unless you deliberately expose them beyond localhost.                                                                                            |
+| `dangerously_allow_all_unix_sockets`   | `false` | Keeps Unix socket access allowlist-based unless you deliberately bypass that protection.                                                                                              |
+
 You can also control the [web search tool](https://platform.openai.com/docs/guides/tools-web-search) without granting full network access to spawned commands. Codex defaults to using a web search cache to access results. The cache is an OpenAI-maintained index of web results, so cached mode returns pre-indexed results instead of fetching live pages. This reduces exposure to prompt injection from arbitrary live content, but you should still treat web results as untrusted. If you are using `--yolo` or another [full access sandbox setting](#common-sandbox-and-approval-combinations), web search defaults to live results. Use `--search` or set `web_search = "live"` to allow live browsing, or set it to `"disabled"` to turn the tool off:
 
 ```toml
@@ -2483,16 +2590,26 @@ Like [MCP](https://modelcontextprotocol.io/), `codex app-server` supports bidire
 Supported transports:
 
 - `stdio` (`--listen stdio://`, default): newline-delimited JSON (JSONL).
-- `websocket` (`--listen ws://IP:PORT`, experimental and unsupported): one JSON-RPC message per WebSocket text frame.
+- `websocket` (`--listen ws://IP:PORT`, experimental and unsupported): one
+  JSON-RPC message per WebSocket text frame.
+- Unix socket (`--listen unix://` or `--listen unix://PATH`): WebSocket
+  connections over Codex's default app-server control socket or a custom Unix
+  socket path, using the standard HTTP Upgrade handshake.
 - `off` (`--listen off`): don't expose a local transport.
 
-When you run with `--listen ws://IP:PORT`, the same listener also serves basic HTTP health probes:
+When you run with `--listen ws://IP:PORT`, the same listener also serves basic
+HTTP health probes:
 
 - `GET /readyz` returns `200 OK` once the listener accepts new connections.
-- `GET /healthz` returns `200 OK` when the request doesn't include an `Origin` header.
+- `GET /healthz` returns `200 OK` when the request doesn't include an `Origin`
+  header.
 - Requests with an `Origin` header are rejected with `403 Forbidden`.
 
-WebSocket transport is experimental and unsupported. Loopback listeners such as `ws://127.0.0.1:PORT` are appropriate for localhost and SSH port-forwarding workflows. Non-loopback WebSocket listeners currently allow unauthenticated connections by default during rollout, so configure WebSocket auth before exposing one remotely.
+WebSocket transport is experimental and unsupported. Local listeners such as
+`ws://127.0.0.1:PORT` are appropriate for localhost and SSH port-forwarding
+workflows. Non-loopback WebSocket listeners currently allow unauthenticated
+connections by default during rollout, so configure WebSocket auth before
+exposing one remotely.
 
 Supported WebSocket auth flags:
 
@@ -2500,11 +2617,20 @@ Supported WebSocket auth flags:
 - `--ws-auth capability-token --ws-token-sha256 HEX`
 - `--ws-auth signed-bearer-token --ws-shared-secret-file /absolute/path`
 
-For signed bearer tokens, you can also set `--ws-issuer`, `--ws-audience`, and `--ws-max-clock-skew-seconds`. Clients present the credential as `Authorization: Bearer <token>` during the WebSocket handshake, and app-server enforces auth before JSON-RPC `initialize`.
+For signed bearer tokens, you can also set `--ws-issuer`, `--ws-audience`, and
+`--ws-max-clock-skew-seconds`. Clients present the credential as
+`Authorization: Bearer <token>` during the WebSocket handshake, and app-server
+enforces auth before JSON-RPC `initialize`.
 
-Prefer `--ws-token-file` over passing raw bearer tokens on the command line. Use `--ws-token-sha256` only when the client keeps the raw high-entropy token in a separate local secret store; the hash is only a verifier, and clients still need the original token.
+Prefer `--ws-token-file` over passing raw bearer tokens on the command line. Use
+`--ws-token-sha256` only when the client keeps the raw high-entropy token in a
+separate local secret store; the hash is only a verifier, and clients still need
+the original token.
 
-In WebSocket mode, app-server uses bounded queues. When request ingress is full, the server rejects new requests with JSON-RPC error code `-32001` and message `"Server overloaded; retry later."` Clients should retry with an exponentially increasing delay and jitter.
+In WebSocket mode, app-server uses bounded queues. When request ingress is full,
+the server rejects new requests with JSON-RPC error code `-32001` and message
+`"Server overloaded; retry later."` Clients should retry with an exponentially
+increasing delay and jitter.
 
 ## Message schema
 
@@ -2539,7 +2665,9 @@ codex app-server generate-json-schema --out ./schemas
 
 ## Getting started
 
-1. Start the server with `codex app-server` (default stdio transport) or `codex app-server --listen ws://127.0.0.1:4500` (experimental WebSocket transport).
+1. Start the server with `codex app-server` (default stdio transport),
+   `codex app-server --listen ws://127.0.0.1:4500` (TCP WebSocket), or
+   `codex app-server --listen unix://` (default Unix socket).
 2. Connect a client over the selected transport, then send `initialize` followed by the `initialized` notification.
 3. Start a thread and a turn, then keep reading notifications from the active transport stream.
 
@@ -2687,10 +2815,11 @@ If a client sends an experimental method or field without opting in, app-server 
 
 - `thread/start` - create a new thread; emits `thread/started` and automatically subscribes you to turn/item events for that thread.
 - `thread/resume` - reopen an existing thread by id so later `turn/start` calls append to it.
-- `thread/fork` - fork a thread into a new thread id by copying stored history; emits `thread/started` for the new thread.
+- `thread/fork` - fork a thread into a new thread id by copying stored history; emits `thread/started` for the new thread. Returned threads include `forkedFromId` when available.
 - `thread/read` - read a stored thread by id without resuming it; set `includeTurns` to return full turn history. Returned `thread` objects include runtime `status`.
 - `thread/list` - page through stored thread logs; supports cursor-based pagination plus `modelProviders`, `sourceKinds`, `archived`, `cwd`, and `searchTerm` filters. Returned `thread` objects include runtime `status`.
-- `thread/turns/list` - page through a stored thread's turn history without resuming it.
+- `thread/turns/list` - page through a stored thread's turn history without resuming it. `itemsView` controls whether turn items are omitted, summarized, or fully loaded.
+- `thread/turns/items/list` - reserved for paged turn-item loading; currently returns unsupported.
 - `thread/loaded/list` - list the thread ids currently loaded in memory.
 - `thread/name/set` - set or update a thread's user-facing name for a loaded thread or a persisted rollout; emits `thread/name/updated`.
 - `thread/goal/set` - set the goal for a loaded thread (experimental; requires `capabilities.experimentalApi`); emits `thread/goal/updated`.
@@ -2715,10 +2844,15 @@ If a client sends an experimental method or field without opting in, app-server 
 - `command/exec/resize` - resize a running PTY-backed `command/exec` session.
 - `command/exec/terminate` - stop a running `command/exec` session.
 - `command/exec/outputDelta` (notify) - emitted for base64-encoded stdout/stderr chunks from a streaming `command/exec` session.
+- `process/spawn` - start an explicit process session outside Codex's sandbox (experimental; requires `capabilities.experimentalApi`).
+- `process/writeStdin` - write stdin bytes to a running `process/spawn` session or close stdin (experimental).
+- `process/resizePty` - resize a running PTY-backed process session (experimental).
+- `process/kill` - terminate a running process session (experimental).
+- `process/outputDelta` and `process/exited` (notify) - emitted for streaming process output and process exit status (experimental).
 - `model/list` - list available models (set `includeHidden: true` to include entries with `hidden: true`) with effort options, optional `upgrade`, and `inputModalities`.
 - `modelProvider/capabilities/read` - read provider capability bounds for model/provider combinations (experimental; requires `capabilities.experimentalApi`).
 - `experimentalFeature/list` - list feature flags with lifecycle stage metadata and cursor pagination.
-- `experimentalFeature/enablement/set` - patch in-memory runtime enablement for supported feature keys such as `apps` and `plugins`.
+- `experimentalFeature/enablement/set` - patch in-memory runtime settings for supported feature keys such as `apps` and `plugins`.
 - `collaborationMode/list` - list collaboration mode presets (experimental, no pagination).
 - `skills/list` - list skills for one or more `cwd` values (supports `forceReload` and optional `perCwdExtraUserRoots`).
 - `skills/changed` (notify) - emitted when watched local skill files change.
@@ -2822,7 +2956,9 @@ Use this endpoint to discover feature flags with metadata and lifecycle stage:
 ## Threads
 
 - `thread/read` reads a stored thread without subscribing to it; set `includeTurns` to include turns.
-- `thread/turns/list` pages through a stored thread's turn history without resuming it.
+- `thread/turns/list` pages through a stored thread's turn history without
+  resuming it. Use `itemsView` to choose whether turn items are omitted,
+  summarized, or fully loaded.
 - `thread/list` supports cursor pagination plus `modelProviders`, `sourceKinds`, `archived`, `cwd`, and `searchTerm` filtering.
 - `thread/loaded/list` returns the thread IDs currently in memory.
 - `thread/archive` moves the thread's persisted JSONL log into the archived directory.
@@ -2849,6 +2985,7 @@ Start a fresh thread when you need a new Codex conversation.
 { "id": 10, "result": {
   "thread": {
     "id": "thr_123",
+    "sessionId": "thr_123",
     "preview": "",
     "ephemeral": false,
     "modelProvider": "openai",
@@ -2859,6 +2996,11 @@ Start a fresh thread when you need a new Codex conversation.
 ```
 
 `serviceName` is optional. Set it when you want app-server to tag thread-level metrics with your integration's service name.
+
+`thread.sessionId` identifies the current live session tree root. Root threads
+use their own thread id as the session id; forked threads keep the session id
+of the root they came from. Clients should read the session id from
+`thread.sessionId` instead of deriving it from the thread id.
 
 To continue a stored session, call `thread/resume` with the `thread.id` you recorded earlier. The response shape matches `thread/start`. You can also pass the same configuration overrides supported by `thread/start`, such as `personality`:
 
@@ -2878,11 +3020,50 @@ If you mark an enabled MCP server as `required` in config and that server fails 
 
 If you resume with a different model than the one recorded in the rollout, Codex emits a warning and applies a one-time model-switch instruction on the next turn.
 
+### Manage a thread goal
+
+`thread/goal/set`, `thread/goal/get`, and `thread/goal/clear` are experimental
+and require `capabilities.experimentalApi = true` plus the `goals` feature. Use
+them for the same persisted goal state surfaced by `/goal` in the TUI.
+
+```json
+{ "method": "thread/goal/set", "id": 13, "params": {
+  "threadId": "thr_123",
+  "objective": "Finish the migration and keep tests green",
+  "status": "active",
+  "tokenBudget": 40000
+} }
+{ "id": 13, "result": { "goal": {
+  "threadId": "thr_123",
+  "objective": "Finish the migration and keep tests green",
+  "status": "active",
+  "tokenBudget": 40000,
+  "tokensUsed": 0,
+  "timeUsedSeconds": 0
+} } }
+{ "method": "thread/goal/updated", "params": {
+  "threadId": "thr_123",
+  "goal": {
+    "threadId": "thr_123",
+    "objective": "Finish the migration and keep tests green",
+    "status": "active",
+    "tokenBudget": 40000,
+    "tokensUsed": 0,
+    "timeUsedSeconds": 0
+  }
+} }
+```
+
+Goal objectives must be non-empty and at most 4,000 characters. Supplying a new
+objective replaces the goal and resets usage accounting. Supplying the current
+non-terminal objective, or omitting `objective`, updates status or token budget
+while preserving usage history.
+
 To branch from a stored session, call `thread/fork` with the `thread.id`. This creates a new thread id and emits a `thread/started` notification for it:
 
 ```json
 { "method": "thread/fork", "id": 12, "params": { "threadId": "thr_123" } }
-{ "id": 12, "result": { "thread": { "id": "thr_456" } } }
+{ "id": 12, "result": { "thread": { "id": "thr_456", "sessionId": "thr_123", "forkedFromId": "thr_123" } } }
 { "method": "thread/started", "params": { "thread": { "id": "thr_456" } } }
 ```
 
@@ -2906,11 +3087,18 @@ Unlike `thread/resume`, `thread/read` doesn't load the thread into memory or emi
 
 Use `thread/turns/list` to page a stored thread's turn history without resuming it. Results default to newest-first so clients can fetch older turns with `nextCursor`. The response also includes `backwardsCursor`; pass it as `cursor` with `sortDirection: "asc"` to fetch turns newer than the first item from the earlier page.
 
+`itemsView` controls how much turn-item data the response includes:
+
+- `notLoaded` omits items.
+- `summary` returns summarized item data and is the default when omitted.
+- `full` returns full item data.
+
 ```json
 { "method": "thread/turns/list", "id": 20, "params": {
   "threadId": "thr_123",
   "limit": 50,
-  "sortDirection": "desc"
+  "sortDirection": "desc",
+  "itemsView": "summary"
 } }
 { "id": 20, "result": {
   "data": [],
@@ -2918,6 +3106,9 @@ Use `thread/turns/list` to page a stored thread's turn history without resuming 
   "backwardsCursor": "newer-turns-cursor-or-null"
 } }
 ```
+
+`thread/turns/items/list` is reserved for paged turn-item loading, but the
+current server returns an unsupported-method error.
 
 ### List threads (with pagination & filters)
 
@@ -3296,6 +3487,41 @@ When the reviewer finishes, the server emits `item/started` and `item/completed`
 
 Use this notification to render the reviewer output in your client.
 
+## Process execution
+
+`process/*` is an experimental, explicit process-control API. It requires
+`capabilities.experimentalApi = true` and runs outside Codex's sandbox. Use it
+only when your client intentionally exposes local process control without a
+sandbox.
+
+Start a process with `process/spawn` and provide a `processHandle`, then use
+that handle for stdin, resize, and kill requests. Output streams through
+`process/outputDelta` notifications and completion streams through
+`process/exited`.
+
+```json
+{ "method": "process/spawn", "id": 48, "params": {
+  "command": ["python3", "-m", "pytest", "-q"],
+  "processHandle": "pytest-1",
+  "cwd": "/Users/me/project",
+  "tty": true
+} }
+{ "id": 48, "result": {} }
+{ "method": "process/outputDelta", "params": {
+  "processHandle": "pytest-1",
+  "stream": "stdout",
+  "deltaBase64": "Li4u"
+} }
+{ "method": "process/exited", "params": {
+  "processHandle": "pytest-1",
+  "exitCode": 0
+} }
+```
+
+Use `process/writeStdin` with `deltaBase64`, `closeStdin`, or both to send
+input. Use `process/resizePty` for PTY resize events and `process/kill` to
+terminate a running process.
+
 ## Command execution
 
 `command/exec` runs a single command (`argv` array) under the server sandbox without creating a thread.
@@ -3461,7 +3687,7 @@ All items emit two shared lifecycle events:
 - `item/reasoning/summaryPartAdded` - marks a boundary between reasoning summary sections.
 - `item/reasoning/textDelta` - streams raw reasoning text (when supported by the model).
 - `item/commandExecution/outputDelta` - streams stdout/stderr for a command; append deltas in order.
-- `item/fileChange/outputDelta` - contains the tool call response of the underlying `apply_patch` tool call.
+- `item/fileChange/outputDelta` - deprecated compatibility notification for legacy `apply_patch` text output. Current app-server versions no longer emit it; use `fileChange` items and `turn/diff/updated` instead.
 
 ## Errors
 
@@ -3520,6 +3746,9 @@ When the client responds to `item/tool/requestUserInput`, app-server emits `serv
 ### Dynamic tool calls (experimental)
 
 `dynamicTools` on `thread/start` and the corresponding `item/tool/call` request or response flow are experimental APIs.
+
+Dynamic tool names and namespace names must follow Responses API naming
+constraints. Avoid reserved namespace names used by built-in Codex tools.
 
 When a dynamic tool is invoked during a turn, app-server emits:
 
@@ -4133,9 +4362,9 @@ Field notes:
 - `usedPercent` is current usage within the quota window.
 - `windowDurationMins` is the quota window length.
 - `resetsAt` is a Unix timestamp (seconds) for the next reset.
-- `planType` is included when the backend returns the ChatGPT plan associated with a bucket.
-- `credits` is included when the backend returns remaining workspace credit details.
-- `rateLimitReachedType` identifies the backend-classified limit state when one has been reached.
+- `planType` is included when the server returns the ChatGPT plan associated with a bucket.
+- `credits` is included when the server returns remaining workspace credit details.
+- `rateLimitReachedType` identifies the server-classified limit state when one has been reached.
 
 ### 7) Notify a workspace owner about a limit
 
@@ -4171,6 +4400,13 @@ For the CLI, Sign in with ChatGPT is the default authentication path when no val
 ### Sign in with ChatGPT
 
 When you sign in with ChatGPT from the Codex app, CLI, or IDE Extension, Codex opens a browser window for you to complete the login flow. After you sign in, the browser returns an access token to the CLI or IDE extension.
+
+If your environment already provides a ChatGPT access token, the CLI can read
+it from stdin:
+
+```shell
+printenv CODEX_ACCESS_TOKEN | codex login --with-access-token
+```
 
 ### Sign in with an API key
 
@@ -4268,7 +4504,7 @@ device-code failures, or when support asks for login-specific logs.
 If your network uses a corporate TLS proxy or private root CA, set
 `CODEX_CA_CERTIFICATE` to a PEM bundle before logging in. When
 `CODEX_CA_CERTIFICATE` is unset, Codex falls back to `SSL_CERT_FILE`. The same
-custom CA settings apply to login, normal HTTPS requests, and secure websocket
+custom CA settings apply to login, normal HTTPS requests, and secure WebSocket
 connections.
 
 ```shell
@@ -4518,69 +4754,63 @@ Each resumed run keeps the original transcript, plan history, and approvals, so 
 
 ## Connect the TUI to a remote app server
 
-Remote TUI mode lets you run the Codex app server on one machine and use the Codex terminal UI from another machine. This is useful when the code, credentials, or execution environment live on a remote host, but you want the local interactive TUI experience.
-
-Start the app server on the machine that should own the workspace and run commands:
+Remote TUI mode lets you run the Codex app server on one machine and use the
+Codex terminal UI from another machine. Start the app server with a WebSocket
+listener:
 
 ```bash
 codex app-server --listen ws://127.0.0.1:4500
 ```
 
-Then connect from the machine running the TUI:
+Then connect the TUI to that endpoint:
 
 ```bash
 codex --remote ws://127.0.0.1:4500
 ```
 
-For access from another machine, bind the app server to a reachable interface, for example:
+For access from another machine, bind the app server to a reachable interface
+and configure WebSocket auth before remote use:
 
 ```bash
-codex app-server --listen ws://0.0.0.0:4500
-```
-
-`--remote` accepts explicit `ws://host:port` and `wss://host:port` addresses only. For plain WebSocket connections, prefer local-host addresses or SSH port forwarding. If you expose the listener beyond the local host, configure authentication before real remote use and put authenticated non-local connections behind TLS.
-
-Codex supports these WebSocket authentication modes for remote TUI connections:
-
-- **No WebSocket auth**: Best for local-host listeners or SSH port-forwarded connections. Codex can start non-local listeners without auth, but logs a warning and the startup banner reminds you to configure auth before real remote use.
-- **Capability token**: Store a shared token in a file on the app-server host, start the server with `--ws-auth capability-token --ws-token-file /abs/path/to/token`, then set the same token in an environment variable on the TUI host and pass `--remote-auth-token-env <ENV_VAR>`.
-- **Signed bearer token**: Store an HMAC shared secret in a file on the app-server host, start the server with `--ws-auth signed-bearer-token --ws-shared-secret-file /abs/path/to/secret`, and have the TUI send a signed JWT bearer token through `--remote-auth-token-env <ENV_VAR>`. The shared secret must be at least 32 bytes. Signed tokens use HS256 and must include `exp`; Codex also validates `nbf`, `iss`, and `aud` when those claims or server options are present.
-
-To create a capability token on the app-server host, generate a random token file with permissions that only your user can read:
-
-```bash
-TOKEN_FILE="$HOME/.codex/codex-app-server-token"
-install -d -m 700 "$(dirname "$TOKEN_FILE")"
+TOKEN_FILE="$HOME/.codex/app-server-token"
 openssl rand -base64 32 > "$TOKEN_FILE"
 chmod 600 "$TOKEN_FILE"
+codex app-server --listen ws://0.0.0.0:4500 --ws-auth capability-token --ws-token-file "$TOKEN_FILE"
 ```
 
-Treat the token file like a password, and regenerate it if it leaks.
+`--remote` accepts explicit `ws://host:port` and `wss://host:port` addresses.
+Plain WebSocket connections are appropriate for localhost and SSH
+port-forwarding workflows. For non-local clients, use WebSocket auth and put the
+connection behind TLS.
 
-Then start the app server with that token file. For example, with a capability token behind a TLS proxy:
+Codex supports these WebSocket authentication modes:
+
+- Capability token: start the server with `--ws-auth capability-token` and
+  either `--ws-token-file /absolute/path` or `--ws-token-sha256 HEX`.
+- Signed bearer token: start the server with
+  `--ws-auth signed-bearer-token --ws-shared-secret-file /absolute/path`, plus
+  optional `--ws-issuer`, `--ws-audience`, and `--ws-max-clock-skew-seconds`.
+
+The TUI sends the remote auth token as an `Authorization: Bearer <token>` header
+during the WebSocket handshake. Codex only accepts remote auth tokens over
+`wss://` URLs or loopback `ws://` URLs.
 
 ```bash
-# Remote host
-TOKEN_FILE="$HOME/.codex/codex-app-server-token"
-codex app-server \
-  --listen ws://0.0.0.0:4500 \
-  --ws-auth capability-token \
-  --ws-token-file "$TOKEN_FILE"
-
-# TUI host
-export CODEX_REMOTE_AUTH_TOKEN="$(ssh devbox 'cat ~/.codex/codex-app-server-token')"
-codex --remote wss://codex-devbox.example.com:4500 \
-  --remote-auth-token-env CODEX_REMOTE_AUTH_TOKEN
+export CODEX_REMOTE_TOKEN="$(cat "$TOKEN_FILE")"
+codex --remote wss://remote-host:4500 --remote-auth-token-env CODEX_REMOTE_TOKEN
 ```
 
-The TUI sends remote auth tokens as `Authorization: Bearer <token>` during the WebSocket handshake. Codex only sends those tokens over `wss://` URLs or `ws://` URLs whose host is `localhost`, `127.0.0.1`, or `::1`, so put non-local remote listeners behind TLS if clients need to authenticate over the network.
+For SSH remote projects in the Codex app, use
+[Remote connections](https://developers.openai.com/codex/remote-connections). For managed remote-control
+clients, `codex remote-control` starts an app-server process with
+remote-control support enabled.
 
 ## Models and reasoning
 
-For most tasks in Codex, `gpt-5.5` is the recommended model when it is
-available. It is OpenAI's newest frontier model for complex coding, computer
+For most tasks in Codex, `gpt-5.5` is the recommended model when it's
+available. It's OpenAI's newest frontier model for complex coding, computer
 use, knowledge work, and research workflows, with stronger planning, tool use,
-and follow-through on multi-step tasks. If `gpt-5.5` is not yet available,
+and follow-through on multi-step tasks. If `gpt-5.5` isn't yet available,
 continue using `gpt-5.4`. For extra fast tasks, ChatGPT Pro subscribers have
 access to the GPT-5.3-Codex-Spark model in research preview.
 
@@ -4876,7 +5106,14 @@ export const commandOverview = [
     href: "/codex/cli/reference#codex-app-server",
     type: "experimental",
     description:
-      "Launch the Codex app server for local development or debugging.",
+      "Launch the Codex app server for local development or debugging over stdio, WebSocket, or a Unix socket.",
+  },
+  {
+    key: "codex remote-control",
+    href: "/codex/cli/reference#codex-remote-control",
+    type: "experimental",
+    description:
+      "Ensure the local app-server daemon is running with remote-control support enabled.",
   },
   {
     key: "codex app",
@@ -4946,7 +5183,7 @@ export const commandOverview = [
     href: "/codex/cli/reference#codex-login",
     type: "stable",
     description:
-      "Authenticate Codex using ChatGPT OAuth, device auth, or an API key piped over stdin.",
+      "Authenticate Codex using ChatGPT OAuth, device auth, an API key, or an access token piped over stdin.",
   },
   {
     key: "codex logout",
@@ -5129,10 +5366,10 @@ export const execOptions = [
 export const appServerOptions = [
   {
     key: "--listen",
-    type: "stdio:// | ws://IP:PORT",
+    type: "stdio:// | ws://IP:PORT | unix:// | unix://PATH | off",
     defaultValue: "stdio://",
     description:
-      "Transport listener URL. Use `ws://IP:PORT` to expose a WebSocket endpoint for remote clients.",
+      "Transport listener URL. Use `stdio://` for JSONL, `ws://IP:PORT` for a TCP WebSocket endpoint, `unix://` for the default Unix socket, `unix://PATH` for a custom Unix socket, or `off` to disable the local transport.",
   },
   {
     key: "--ws-auth",
@@ -5170,6 +5407,13 @@ export const appServerOptions = [
     defaultValue: "30",
     description:
       "Clock skew allowance when validating signed bearer token `exp` and `nbf` claims. Requires `--ws-auth signed-bearer-token`.",
+  },
+  {
+    key: "--analytics-default-enabled",
+    type: "boolean",
+    defaultValue: "false",
+    description:
+      "Defaults analytics to enabled for first-party app-server clients unless the user opts out in config.",
   },
 ];
 
@@ -5336,6 +5580,12 @@ export const loginOptions = [
     type: "boolean",
     description:
       "Read an API key from stdin (for example `printenv OPENAI_API_KEY | codex login --with-api-key`).",
+  },
+  {
+    key: "--with-access-token",
+    type: "boolean",
+    description:
+      "Read an access token from stdin (for example `printenv CODEX_ACCESS_TOKEN | codex login --with-access-token`).",
   },
   {
     key: "--device-auth",
@@ -5638,13 +5888,20 @@ The Maturity column uses feature maturity labels such as Experimental, Beta,
 
 Running `codex` with no subcommand launches the interactive terminal UI (TUI). The agent accepts the global flags above plus image attachments. Web search defaults to cached mode; use `--search` to switch to live browsing. For low-friction local work, use `--sandbox workspace-write --ask-for-approval on-request`.
 
-Use `--remote ws://host:port` or `--remote wss://host:port` to connect the TUI to an app server started with `codex app-server --listen ws://IP:PORT`. Add `--remote-auth-token-env <ENV_VAR>` when the server requires a bearer token for WebSocket authentication. See [Codex CLI features](https://developers.openai.com/codex/cli/features#connect-the-tui-to-a-remote-app-server) for setup examples and authentication guidance.
+Use `--remote ws://host:port` or `--remote wss://host:port` to connect the TUI to an app server started with `codex app-server --listen ws://IP:PORT`. Add `--remote-auth-token-env <ENV_VAR>` when the server requires a bearer token for WebSocket authentication.
 
 ### `codex app-server`
 
 Launch the Codex app server locally. This is primarily for development and debugging and may change without notice.
 
-`codex app-server --listen stdio://` keeps the default JSONL-over-stdio behavior. `--listen ws://IP:PORT` enables WebSocket transport for app-server clients. The server accepts `ws://` listen URLs; use TLS termination or a secure proxy when clients connect with `wss://`. If you generate schemas for client bindings, add `--experimental` to include gated fields and methods.
+`codex app-server --listen stdio://` keeps the default JSONL-over-stdio behavior. `--listen ws://IP:PORT` enables WebSocket transport for app-server clients. The server accepts `ws://` listen URLs; use TLS termination or a secure proxy when clients connect with `wss://`. Use `--listen unix://` to accept WebSocket handshakes on Codex's default Unix socket, or `--listen unix:///absolute/path.sock` to choose a socket path. If you generate schemas for client bindings, add `--experimental` to include gated fields and methods.
+
+### `codex remote-control`
+
+Ensure the app-server daemon is running with remote-control support enabled.
+Managed remote-control clients and SSH remote workflows use this command; it's
+not a replacement for `codex app-server --listen` when you are building a local
+protocol client.
 
 ### `codex app`
 
@@ -5704,7 +5961,7 @@ Check `execpolicy` rule files before you save them. `codex execpolicy check` acc
 
 ### `codex login`
 
-Authenticate the CLI with a ChatGPT account or API key. With no flags, Codex opens a browser for the ChatGPT OAuth flow.
+Authenticate the CLI with a ChatGPT account, API key, or access token. With no flags, Codex opens a browser for the ChatGPT OAuth flow.
 
 `codex login status` exits with `0` when credentials are present, which is helpful in automation scripts.
 
@@ -5781,7 +6038,7 @@ This guide shows you how to:
 
 - Find the right built-in slash command for a task
 - Steer an active session with commands like `/model`, `/fast`,
-  `/personality`, `/permissions`, `/agent`, and `/status`
+  `/personality`, `/permissions`, `/approve`, `/raw`, `/agent`, and `/status`
 
 ## Built-in slash commands
 
@@ -5796,6 +6053,9 @@ completion still works before you queue the command.
 | Command                                                                         | Purpose                                                         | When to use it                                                                                             |
 | ------------------------------------------------------------------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | [`/permissions`](#update-permissions-with-permissions)                          | Set what Codex can do without asking first.                     | Relax or tighten approval requirements mid-session, such as switching between Auto and Read Only.          |
+| [`/ide`](#include-ide-context-with-ide)                                         | Include open files, current selection, and other IDE context.   | Pull editor context into the next prompt without re-explaining what's open in your IDE.                    |
+| [`/keymap`](#remap-tui-shortcuts-with-keymap)                                   | Remap TUI keyboard shortcuts.                                   | Inspect and persist custom shortcut bindings in `config.toml`.                                             |
+| [`/vim`](#toggle-vim-mode-with-vim)                                             | Toggle Vim mode for the composer.                               | Switch between Vim normal/insert behavior and the default composer editing mode.                           |
 | [`/sandbox-add-read-dir`](#grant-sandbox-read-access-with-sandbox-add-read-dir) | Grant sandbox read access to an extra directory (Windows only). | Unblock commands that need to read an absolute directory path outside the current readable roots.          |
 | [`/agent`](#switch-agent-threads-with-agent)                                    | Switch the active agent thread.                                 | Inspect or continue work in a spawned subagent thread.                                                     |
 | [`/apps`](#browse-apps-with-apps)                                               | Browse apps (connectors) and insert them into your prompt.      | Attach an app as `$app-slug` before asking Codex to use it.                                                |
@@ -5807,20 +6067,25 @@ completion still works before you queue the command.
 | [`/diff`](#review-changes-with-diff)                                            | Show the Git diff, including files Git isn't tracking yet.      | Review Codex's edits before you commit or run tests.                                                       |
 | [`/exit`](#exit-the-cli-with-quit-or-exit)                                      | Exit the CLI (same as `/quit`).                                 | Alternative spelling; both commands exit the session.                                                      |
 | [`/experimental`](#toggle-experimental-features-with-experimental)              | Toggle experimental features.                                   | Enable optional features such as subagents from the CLI.                                                   |
+| [`/approve`](#approve-an-auto-review-denial-with-approve)                       | Approve one retry of a recent auto review denial.               | Retry a command or action that the auto reviewer denied.                                                   |
+| [`/memories`](#configure-memories-with-memories)                                | Configure memory use and generation.                            | Turn memory injection or memory generation on or off without leaving the TUI.                              |
+| [`/skills`](#use-skills-with-skills)                                            | Browse and use skills.                                          | Improve task-specific behavior by selecting a relevant local skill.                                        |
+| [`/hooks`](#view-lifecycle-hooks-with-hooks)                                    | View and manage lifecycle hooks.                                | Inspect hook configuration loaded into the current session.                                                |
 | [`/feedback`](#send-feedback-with-feedback)                                     | Send logs to the Codex maintainers.                             | Report issues or share diagnostics with support.                                                           |
 | [`/init`](#generate-agentsmd-with-init)                                         | Generate an `AGENTS.md` scaffold in the current directory.      | Capture persistent instructions for the repository or subdirectory you're working in.                      |
 | [`/logout`](#sign-out-with-logout)                                              | Sign out of Codex.                                              | Clear local credentials when using a shared machine.                                                       |
 | [`/mcp`](#list-mcp-tools-with-mcp)                                              | List configured Model Context Protocol (MCP) tools.             | Check which external tools Codex can call during the session; add `verbose` for server details.            |
 | [`/mention`](#highlight-files-with-mention)                                     | Attach a file to the conversation.                              | Point Codex at specific files or folders you want it to inspect next.                                      |
 | [`/model`](#set-the-active-model-with-model)                                    | Choose the active model (and reasoning effort, when available). | Switch between general-purpose models (`gpt-4.1-mini`) and deeper reasoning models before running a task.  |
-| [`/fast`](#toggle-fast-mode-with-fast)                                          | Toggle Fast mode for supported models.                          | Turn Fast mode on or off, or check whether the current thread is using it.                                 |
+| [`/fast`](#toggle-fast-mode-with-fast)                                          | Toggle a Fast service tier when the model catalog exposes one.  | Turn the current model's Fast tier on or off, or check whether the thread is using it.                     |
 | [`/plan`](#switch-to-plan-mode-with-plan)                                       | Switch to plan mode and optionally send a prompt.               | Ask Codex to propose an execution plan before implementation work starts.                                  |
-| [`/goal`](#set-or-view-an-experimental-task-goal-with-goal)                     | Set or view an experimental goal for a long-running task.       | Give Codex a persistent target to track while a larger task runs. Requires `features.goals`.               |
+| [`/goal`](#set-or-view-an-experimental-task-goal-with-goal)                     | Set, pause, resume, view, or clear a task goal.                 | Give Codex a persistent target to track while a larger task runs. Requires `features.goals`.               |
 | [`/personality`](#set-a-communication-style-with-personality)                   | Choose a communication style for responses.                     | Make Codex more concise, more explanatory, or more collaborative without changing your instructions.       |
 | [`/ps`](#check-background-terminals-with-ps)                                    | Show experimental background terminals and their recent output. | Check long-running commands without leaving the main transcript.                                           |
 | [`/stop`](#stop-background-terminals-with-stop)                                 | Stop all background terminals.                                  | Cancel background terminal work started by the current session.                                            |
 | [`/fork`](#fork-the-current-conversation-with-fork)                             | Fork the current conversation into a new thread.                | Branch the active session to explore a new approach without losing the current transcript.                 |
 | [`/side`](#start-a-side-conversation-with-side)                                 | Start an ephemeral side conversation.                           | Ask a focused follow-up without disrupting the main thread's transcript.                                   |
+| [`/raw`](#toggle-raw-scrollback-with-raw)                                       | Toggle raw scrollback mode.                                     | Make terminal selection and copying less formatted while reviewing long output.                            |
 | [`/resume`](#resume-a-saved-conversation-with-resume)                           | Resume a saved conversation from your session list.             | Continue work from a previous CLI session without starting over.                                           |
 | [`/new`](#start-a-new-conversation-with-new)                                    | Start a new conversation inside the same CLI session.           | Reset the chat context without leaving the CLI when you want a fresh prompt in the same repo.              |
 | [`/quit`](#exit-the-cli-with-quit-or-exit)                                      | Exit the CLI.                                                   | Leave the session immediately.                                                                             |
@@ -5829,12 +6094,14 @@ completion still works before you queue the command.
 | [`/debug-config`](#inspect-config-layers-with-debug-config)                     | Print config layer and requirements diagnostics.                | Debug precedence and policy requirements, including experimental network constraints.                      |
 | [`/statusline`](#configure-footer-items-with-statusline)                        | Configure TUI status-line fields interactively.                 | Pick and reorder footer items (model/context/limits/git/tokens/session) and persist in config.toml.        |
 | [`/title`](#configure-terminal-title-items-with-title)                          | Configure terminal window or tab title fields interactively.    | Pick and reorder title items such as project, status, thread, branch, model, and task progress.            |
-| [`/keymap`](#remap-tui-shortcuts-with-keymap)                                   | Remap TUI keyboard shortcuts.                                   | Inspect and persist custom shortcut bindings in `config.toml`.                                             |
+| [`/theme`](#choose-a-syntax-theme-with-theme)                                   | Choose a syntax-highlighting theme.                             | Preview and persist a terminal syntax-highlighting theme.                                                  |
 
 `/quit` and `/exit` both exit the CLI. Use them only after you have saved or
 committed any important work.
 
-The `/approvals` command still works as an alias, but it no longer appears in the slash popup list.
+Use `/permissions` to adjust what Codex can do without asking first. Use
+`/approve` only when you need to retry a recent action that automatic review
+denied.
 
 ## Control your session with slash commands
 
@@ -5853,7 +6120,12 @@ Expected: Codex confirms the new model in the transcript. Run `/status` to verif
 1. Type `/fast on`, `/fast off`, or `/fast status`.
 2. If you want the setting to persist, confirm the update when Codex offers to save it.
 
-Expected: Codex reports whether Fast mode is on or off for the current thread. In the TUI footer, you can also show a Fast mode status-line item with `/statusline`.
+Expected: Codex reports whether the current model's Fast service tier is on or
+off for the current thread. In the TUI footer, you can also show a Fast mode
+status-line item with `/statusline`.
+
+Fast tier commands are catalog-driven. If the current model doesn't advertise a
+Fast tier, Codex won't show `/fast`.
 
 ### Set a communication style with `/personality`
 
@@ -5892,12 +6164,49 @@ While a task is already running, `/plan` is temporarily unavailable.
 
 Expected: Codex keeps the goal attached to the active thread while work continues.
 
+Goal objectives must be non-empty and at most 4,000 characters. For longer
+instructions, put the details in a file and point the goal at that file.
+
 ### Toggle experimental features with `/experimental`
 
 1. Type `/experimental` and press Enter.
 2. Toggle the features you want (for example, Apps or Smart Approvals), then restart Codex if the prompt asks you to.
 
 Expected: Codex saves your feature choices to config and applies them on restart.
+
+### Approve an auto review denial with `/approve`
+
+Use `/approve` when the automatic reviewer denied a recent action and you want
+Codex to retry it once.
+
+1. Type `/approve`.
+2. Confirm the retry when Codex shows the relevant denied action.
+
+Expected: Codex retries that denied action once under the current session
+policy.
+
+### Configure memories with `/memories`
+
+1. Type `/memories`.
+2. Choose whether Codex should use existing memories, generate new memories, or
+   keep memory behavior disabled.
+
+Expected: Codex updates the relevant memory settings for future sessions.
+
+### Use skills with `/skills`
+
+1. Type `/skills`.
+2. Pick the skill you want Codex to apply.
+
+Expected: Codex inserts the selected skill context so the next request follows
+that skill's instructions.
+
+### View lifecycle hooks with `/hooks`
+
+1. Type `/hooks`.
+2. Review the loaded lifecycle hook configuration.
+
+Expected: Codex shows the hooks that can run in the current session.
 
 ### Clear the terminal and start a new chat with `/clear`
 
@@ -5920,6 +6229,23 @@ chat. Codex disables both actions while a task is in progress.
 Expected: Codex announces the updated policy. Future actions respect the
 updated approval mode until you change it again.
 
+### Include IDE context with `/ide`
+
+1. Type `/ide`.
+2. Add optional inline text if you want to explain what Codex should do with the
+   current IDE selection or open files.
+
+Expected: Codex includes available IDE context in the next prompt.
+
+### Toggle Vim mode with `/vim`
+
+1. Type `/vim`.
+2. Continue editing in the composer.
+
+Expected: Codex toggles composer Vim mode for the current session. To make Vim
+mode the default for new sessions, set `tui.vim_mode_default = true` in
+`config.toml`.
+
 ### Copy the latest response with `/copy`
 
 1. Type `/copy` and press Enter.
@@ -5932,6 +6258,14 @@ Codex output and immediately after a rollback.
 
 You can also press <kbd>Ctrl</kbd>+<kbd>O</kbd> from the main TUI to copy the
 latest completed response without opening the slash command menu.
+
+### Toggle raw scrollback with `/raw`
+
+1. Type `/raw`, `/raw on`, or `/raw off`.
+
+Expected: Codex toggles raw scrollback mode, which makes terminal selection and
+copying more direct. You can also use the default <kbd>Alt</kbd>+<kbd>R</kbd>
+binding or persist the default with `tui.raw_output_mode = true`.
 
 ### Grant sandbox read access with `/sandbox-add-read-dir`
 
@@ -5985,6 +6319,14 @@ Expected: The terminal window or tab title updates immediately and persists to
 
 Available title items include app name, project, spinner, status, thread, git
 branch, model, and task progress.
+
+### Choose a syntax theme with `/theme`
+
+1. Type `/theme`.
+2. Preview a theme from the picker, then confirm.
+
+Expected: Codex updates syntax highlighting and persists the choice to
+`tui.theme` in `config.toml`.
 
 ### Remap TUI shortcuts with `/keymap`
 
@@ -7227,6 +7569,14 @@ For security, Codex loads project-scoped config files only when the project is t
 
 Relative paths inside a project config (for example, `model_instructions_file`) are resolved relative to the `.codex/` folder that contains the `config.toml`.
 
+Project config files can't override settings that redirect credentials, change
+provider auth, or run machine-local notification/telemetry commands.
+Codex ignores the following keys in project-local `.codex/config.toml` and
+prints a startup warning when it sees them: `openai_base_url`,
+`chatgpt_base_url`, `model_provider`, `model_providers`, `notify`, `profile`,
+`profiles`, `experimental_realtime_ws_base_url`, and `otel`. Set those keys in
+your user-level `~/.codex/config.toml` instead.
+
 ## Hooks
 
 Codex can also load lifecycle hooks from either `hooks.json` files or inline
@@ -7601,8 +7951,8 @@ If a metric includes the `tool` field, it reflects the internal tool used (for e
 | `websocket.request.duration_ms`                 | histogram | `success`            | WebSocket request duration in milliseconds.                  |
 | `websocket.event`                               | counter   | `kind`, `success`    | WebSocket message/event count by type and success/failure.   |
 | `websocket.event.duration_ms`                   | histogram | `kind`, `success`    | WebSocket message/event processing duration in milliseconds. |
-| `responses_api_overhead.duration_ms`            | histogram |                      | Responses API overhead timing from websocket responses.      |
-| `responses_api_inference_time.duration_ms`      | histogram |                      | Responses API inference timing from websocket responses.     |
+| `responses_api_overhead.duration_ms`            | histogram |                      | Responses API overhead timing from WebSocket responses.      |
+| `responses_api_inference_time.duration_ms`      | histogram |                      | Responses API inference timing from WebSocket responses.     |
 | `responses_api_engine_iapi_ttft.duration_ms`    | histogram |                      | Responses API engine IAPI time-to-first-token timing.        |
 | `responses_api_engine_service_ttft.duration_ms` | histogram |                      | Responses API engine service time-to-first-token timing.     |
 | `responses_api_engine_iapi_tbt.duration_ms`     | histogram |                      | Responses API engine IAPI time-between-token timing.         |
@@ -7637,7 +7987,7 @@ The `cloud_requirements.fetch_attempt` metric includes `trigger`, `attempt`, `ou
 | `mcp.call`                             | counter   | See note                                                                  | MCP tool invocation result.                                                                                      |
 | `mcp.call.duration_ms`                 | histogram | See note                                                                  | MCP tool invocation duration.                                                                                    |
 | `mcp.tools.list.duration_ms`           | histogram | `cache`                                                                   | MCP tool-list duration, including cache hit/miss state.                                                          |
-| `mcp.tools.fetch_uncached.duration_ms` | histogram |                                                                           | Duration of uncached MCP tool fetches.                                                                           |
+| `mcp.tools.fetch_uncached.duration_ms` | histogram |                                                                           | Duration of MCP tool fetches that miss the cache.                                                                |
 | `mcp.tools.cache_write.duration_ms`    | histogram |                                                                           | Duration of Codex Apps MCP tool-cache writes.                                                                    |
 | `hooks.run`                            | counter   | `hook_name`, `source`, `status`                                           | Hook run count by hook name, source, and status.                                                                 |
 | `hooks.run.duration_ms`                | histogram | `hook_name`, `source`, `status`                                           | Hook run duration in milliseconds.                                                                               |
@@ -8068,6 +8418,13 @@ Use this page as a searchable reference for Codex configuration files. For conce
 
 User-level configuration lives in `~/.codex/config.toml`. You can also add project-scoped overrides in `.codex/config.toml` files. Codex loads project-scoped config files only when you trust the project.
 
+Project-scoped config can't override machine-local provider, auth,
+notification, profile, or telemetry routing keys. Codex ignores
+`openai_base_url`, `chatgpt_base_url`, `model_provider`, `model_providers`,
+`notify`, `profile`, `profiles`, `experimental_realtime_ws_base_url`, and
+`otel` when they appear in a project-local `.codex/config.toml`; put those in
+user-level config instead.
+
 For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_workspace_write.*`), pair this reference with [Sandbox and approvals](https://developers.openai.com/codex/agent-approvals-security#sandbox-and-approvals), [Protected paths in writable roots](https://developers.openai.com/codex/agent-approvals-security#protected-paths-in-writable-roots), and [Network access](https://developers.openai.com/codex/agent-approvals-security#network-access).
 
 <ConfigTable
@@ -8286,8 +8643,9 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
     },
     {
       key: "service_tier",
-      type: "flex | fast",
-      description: "Preferred service tier for new turns.",
+      type: "string",
+      description:
+        "Preferred service tier for new turns. Built-in values include `flex` and `fast`; legacy `fast` config maps to the request value `priority`, and catalog-provided tier IDs can also be stored.",
     },
     {
       key: "experimental_compact_prompt_file",
@@ -8503,6 +8861,18 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
         "Deny list applied after `enabled_tools` for the MCP server.",
     },
     {
+      key: "mcp_servers.<id>.default_tools_approval_mode",
+      type: "auto | prompt | approve",
+      description:
+        "Default approval behavior for MCP tools on this server unless a per-tool override exists.",
+    },
+    {
+      key: "mcp_servers.<id>.tools.<tool>.approval_mode",
+      type: "auto | prompt | approve",
+      description:
+        "Per-tool approval behavior override for one MCP tool on this server.",
+    },
+    {
       key: "mcp_servers.<id>.scopes",
       type: "array<string>",
       description:
@@ -8650,6 +9020,75 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
         "Enable personality selection controls (stable; on by default).",
     },
     {
+      key: "features.network_proxy",
+      type: "boolean | table",
+      description:
+        "Enable sandboxed networking. Use a table form when setting network policy options such as `domains` (experimental; off by default).",
+    },
+    {
+      key: "features.network_proxy.enabled",
+      type: "boolean",
+      description: "Enable sandboxed networking. Defaults to `false`.",
+    },
+    {
+      key: "features.network_proxy.domains",
+      type: "map<string, allow | deny>",
+      description:
+        "Domain policy for sandboxed networking. Unset by default, which means no external destinations are allowed until you add `allow` rules. Supports exact hosts, `*.example.com` for subdomains only, `**.example.com` for apex plus subdomains, and global `*` allow rules; prefer scoped rules because `*` broadly opens public outbound access. Add `deny` rules for blocked destinations; `deny` wins on conflicts.",
+    },
+    {
+      key: "features.network_proxy.unix_sockets",
+      type: "map<string, allow | none>",
+      description:
+        "Unix socket policy for sandboxed networking. Unset by default; add `allow` entries for permitted sockets.",
+    },
+    {
+      key: "features.network_proxy.allow_local_binding",
+      type: "boolean",
+      description:
+        "Allow broader local/private-network access. Defaults to `false`; exact local IP literal or `localhost` allow rules can still permit specific local targets.",
+    },
+    {
+      key: "features.network_proxy.enable_socks5",
+      type: "boolean",
+      description: "Expose SOCKS5 support. Defaults to `true`.",
+    },
+    {
+      key: "features.network_proxy.enable_socks5_udp",
+      type: "boolean",
+      description: "Allow UDP over SOCKS5. Defaults to `true`.",
+    },
+    {
+      key: "features.network_proxy.allow_upstream_proxy",
+      type: "boolean",
+      description:
+        "Allow chaining through an upstream proxy from the environment. Defaults to `true`.",
+    },
+    {
+      key: "features.network_proxy.dangerously_allow_non_loopback_proxy",
+      type: "boolean",
+      description:
+        "Permit non-loopback listener addresses. Defaults to `false`; enabling it can expose proxy listeners beyond localhost.",
+    },
+    {
+      key: "features.network_proxy.dangerously_allow_all_unix_sockets",
+      type: "boolean",
+      description:
+        "Permit arbitrary Unix socket destinations instead of allowlist-only access. Defaults to `false`; use only in tightly controlled environments.",
+    },
+    {
+      key: "features.network_proxy.proxy_url",
+      type: "string",
+      description:
+        'HTTP listener URL for sandboxed networking. Defaults to `"http://127.0.0.1:3128"`.',
+    },
+    {
+      key: "features.network_proxy.socks_url",
+      type: "string",
+      description:
+        'SOCKS5 listener URL. Defaults to `"http://127.0.0.1:8081"`.',
+    },
+    {
       key: "features.web_search",
       type: "boolean",
       description:
@@ -8689,7 +9128,7 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
       key: "features.fast_mode",
       type: "boolean",
       description:
-        'Enable Fast mode selection and the `service_tier = "fast"` path (stable; on by default).',
+        "Enable model-catalog service tier selection in the TUI, including Fast-tier commands when the active model advertises them (stable; on by default).",
     },
     {
       key: "features.prevent_idle_sleep",
@@ -8926,7 +9365,7 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
     },
     {
       key: "profiles.<name>.service_tier",
-      type: "flex | fast",
+      type: "string",
       description: "Profile-scoped service tier preference for new turns.",
     },
     {
@@ -9141,6 +9580,18 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
         "Control alternate screen usage for the TUI (default: auto; auto skips it in Zellij to preserve scrollback).",
     },
     {
+      key: "tui.vim_mode_default",
+      type: "boolean",
+      description:
+        "Start the composer in Vim normal mode instead of insert mode (default: false). You can still toggle it per session with `/vim`.",
+    },
+    {
+      key: "tui.raw_output_mode",
+      type: "boolean",
+      description:
+        "Start the TUI in raw scrollback mode for copy-friendly terminal selection (default: false). You can toggle it with `/raw` or the default `alt-r` key binding.",
+    },
+    {
       key: "tui.show_tooltips",
       type: "boolean",
       description:
@@ -9174,7 +9625,37 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
       key: "tui.keymap.<context>.<action> = []",
       type: "empty array",
       description:
-        "Unbind the action in that keymap context. Key names use normalized strings such as `ctrl-a`, `shift-enter`, or `page-down`.",
+        "Unbind the action in that keymap context. Key names use normalized strings such as `ctrl-a`, `shift-enter`, `page-down`, or `minus`.",
+    },
+    {
+      key: "plugins.<plugin>.mcp_servers.<server>.enabled",
+      type: "boolean",
+      description:
+        "Enable or disable an MCP server bundled by an installed plugin without changing the plugin manifest.",
+    },
+    {
+      key: "plugins.<plugin>.mcp_servers.<server>.default_tools_approval_mode",
+      type: "auto | prompt | approve",
+      description:
+        "Default approval behavior for tools on a plugin-provided MCP server.",
+    },
+    {
+      key: "plugins.<plugin>.mcp_servers.<server>.enabled_tools",
+      type: "array<string>",
+      description:
+        "Allow list of tools exposed from a plugin-provided MCP server.",
+    },
+    {
+      key: "plugins.<plugin>.mcp_servers.<server>.disabled_tools",
+      type: "array<string>",
+      description:
+        "Deny list applied after `enabled_tools` for a plugin-provided MCP server.",
+    },
+    {
+      key: "plugins.<plugin>.mcp_servers.<server>.tools.<tool>.approval_mode",
+      type: "auto | prompt | approve",
+      description:
+        "Per-tool approval behavior override for a plugin-provided MCP tool.",
     },
     {
       key: "tui.model_availability_nux.<model>",
@@ -9293,13 +9774,13 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
       key: "permissions.<name>.network.proxy_url",
       type: "string",
       description:
-        "HTTP proxy endpoint used when this permissions profile enables the managed network proxy.",
+        "HTTP listener URL used when this permissions profile enables sandboxed networking.",
     },
     {
       key: "permissions.<name>.network.enable_socks5",
       type: "boolean",
       description:
-        "Expose a SOCKS5 listener when this permissions profile enables the managed network proxy.",
+        "Expose SOCKS5 support when this permissions profile enables sandboxed networking.",
     },
     {
       key: "permissions.<name>.network.socks_url",
@@ -9315,42 +9796,37 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
       key: "permissions.<name>.network.allow_upstream_proxy",
       type: "boolean",
       description:
-        "Allow the managed proxy to chain to another upstream proxy.",
+        "Allow sandboxed networking to chain through another upstream proxy.",
     },
     {
       key: "permissions.<name>.network.dangerously_allow_non_loopback_proxy",
       type: "boolean",
       description:
-        "Permit non-loopback bind addresses for the managed proxy listener.",
+        "Permit non-loopback bind addresses for sandboxed networking listeners. Enabling it can expose listeners beyond localhost.",
     },
     {
       key: "permissions.<name>.network.dangerously_allow_all_unix_sockets",
       type: "boolean",
       description:
-        "Allow the proxy to use arbitrary Unix sockets instead of the default restricted set.",
-    },
-    {
-      key: "permissions.<name>.network.mode",
-      type: "limited | full",
-      description: "Network proxy mode used for subprocess traffic.",
+        "Allow arbitrary Unix socket destinations instead of the default restricted set. Use only in tightly controlled environments.",
     },
     {
       key: "permissions.<name>.network.domains",
       type: "map<string, allow | deny>",
       description:
-        "Domain rules for the managed proxy. Use domain names or wildcard patterns as keys, with `allow` or `deny` values.",
+        "Domain rules for sandboxed networking. Supports exact hosts, `*.example.com` for subdomains only, `**.example.com` for apex plus subdomains, and global `*` allow rules. `deny` wins on conflicts.",
     },
     {
       key: "permissions.<name>.network.unix_sockets",
       type: "map<string, allow | none>",
       description:
-        "Unix socket rules for the managed proxy. Use socket paths as keys, with `allow` or `none` values.",
+        "Unix socket rules for sandboxed networking. Use socket paths as keys, with `allow` or `none` values.",
     },
     {
       key: "permissions.<name>.network.allow_local_binding",
       type: "boolean",
       description:
-        "Permit local bind/listen operations through the managed proxy.",
+        "Permit broader local/private-network access through sandboxed networking. Exact local IP literal or `localhost` allow rules can still permit specific local targets when this stays `false`.",
     },
     {
       key: "projects.<path>.trust_level",
@@ -9504,6 +9980,84 @@ canonical keys that `config.toml` uses. Omitted keys remain unconstrained.
         "Set to `false` in `requirements.toml` to disable Computer Use availability and related install or enablement flows.",
     },
     {
+      key: "experimental_network",
+      type: "table",
+      description:
+        "Network access requirements enforced from `requirements.toml`. These constraints are separate from `features.network_proxy` and can configure sandboxed networking without the user feature flag.",
+    },
+    {
+      key: "experimental_network.enabled",
+      type: "boolean",
+      description:
+        "Enable sandboxed networking requirements. This does not grant network access when the active sandbox keeps command networking off.",
+    },
+    {
+      key: "experimental_network.http_port",
+      type: "integer",
+      description:
+        "Loopback HTTP listener port to use for `[experimental_network]` requirements.",
+    },
+    {
+      key: "experimental_network.socks_port",
+      type: "integer",
+      description:
+        "Loopback SOCKS5 listener port to use for `[experimental_network]` requirements.",
+    },
+    {
+      key: "experimental_network.allow_upstream_proxy",
+      type: "boolean",
+      description:
+        "Allow sandboxed networking to chain through an upstream proxy from the environment.",
+    },
+    {
+      key: "experimental_network.dangerously_allow_non_loopback_proxy",
+      type: "boolean",
+      description:
+        "Permit non-loopback listener addresses for `[experimental_network]` requirements. Enabling it can expose listeners beyond localhost.",
+    },
+    {
+      key: "experimental_network.dangerously_allow_all_unix_sockets",
+      type: "boolean",
+      description:
+        "Permit arbitrary Unix socket destinations instead of allowlist-only access. Use only in tightly controlled environments.",
+    },
+    {
+      key: "experimental_network.domains",
+      type: "map<string, allow | deny>",
+      description:
+        "Map-shaped administrator domain policy for sandboxed networking. Supports exact hosts, `*.example.com` for subdomains only, `**.example.com` for apex plus subdomains, and global `*` allow rules; prefer scoped rules because `*` broadly opens public outbound access. `deny` wins on conflicts. Do not combine this with `experimental_network.allowed_domains` or `experimental_network.denied_domains`.",
+    },
+    {
+      key: "experimental_network.allowed_domains",
+      type: "array<string>",
+      description:
+        "List-shaped administrator allow rules for sandboxed networking. Do not combine this with `experimental_network.domains`.",
+    },
+    {
+      key: "experimental_network.denied_domains",
+      type: "array<string>",
+      description:
+        "List-shaped administrator deny rules for sandboxed networking. Do not combine this with `experimental_network.domains`.",
+    },
+    {
+      key: "experimental_network.managed_allowed_domains_only",
+      type: "boolean",
+      description:
+        "When `true`, only administrator-managed allow rules remain effective while sandboxed networking requirements are active; user allowlist additions are ignored. Without managed allow rules, user-added domain allow rules do not remain effective.",
+    },
+    {
+      key: "experimental_network.unix_sockets",
+      type: "map<string, allow | none>",
+      description:
+        "Administrator-managed Unix socket policy for sandboxed networking.",
+    },
+    {
+      key: "experimental_network.allow_local_binding",
+      type: "boolean",
+      description:
+        "Permit broader local/private-network access for sandboxed networking. Exact local IP literal or `localhost` allow rules can still permit specific local targets when this stays `false`.",
+    },
+    {
       key: "hooks",
       type: "table",
       description:
@@ -9653,8 +10207,8 @@ model_provider = "openai"
 # Default OSS provider for --oss sessions. When unset, Codex prompts. Default: unset.
 # oss_provider = "ollama"
 
-# Preferred service tier. `fast` is honored only when enabled in [features].
-# service_tier = "flex"  # fast | flex
+# Preferred service tier. Built-in examples: fast | flex; model catalogs can add more.
+# service_tier = "flex"
 
 # Optional manual model metadata. When unset, Codex uses model or preset defaults.
 # model_context_window = 128000       # tokens; default: auto for model
@@ -9899,9 +10453,20 @@ include_only = []
 experimental_use_profile = false
 
 ################################################################################
-# Managed network proxy settings
+# Sandboxed networking settings
 ################################################################################
 
+# Enable the feature before configuring sandboxed networking rules.
+# [features.network_proxy]
+# enabled = true
+# domains = { "api.openai.com" = "allow", "example.com" = "deny" }
+#
+# Exact hosts match only themselves.
+# "*.example.com" matches subdomains only; "**.example.com" matches the apex plus subdomains.
+# "*" allows any public host that is not denied, so prefer scoped rules when possible.
+# `allow_local_binding = false` blocks loopback and private destinations by default.
+# Add an exact local IP literal or `localhost` allow rule for one target, or set it to true only when broader local access is required.
+#
 # Set `default_permissions = "workspace"` before enabling this profile.
 # [permissions.workspace.network]
 # enabled = true
@@ -9914,7 +10479,6 @@ experimental_use_profile = false
 # dangerously_allow_non_loopback_proxy = false
 # dangerously_allow_non_loopback_admin = false
 # dangerously_allow_all_unix_sockets = false
-# mode = "limited"                           # limited | full
 # allow_local_binding = false
 #
 # [permissions.workspace.network.domains]
@@ -10018,6 +10582,7 @@ enabled = true
 # shell_snapshot = true
 # multi_agent = true
 # personality = true
+# network_proxy = false
 # fast_mode = true
 # enable_request_compression = true
 # skill_mcp_dependency_install = true
@@ -10192,7 +10757,7 @@ enabled = true
 # model_provider = "openai"
 # approval_policy = "on-request"
 # sandbox_mode = "read-only"
-# service_tier = "flex"
+# service_tier = "flex" # or another supported service tier id
 # oss_provider = "ollama"
 # model_reasoning_effort = "medium"
 # plan_mode_reasoning_effort = "high"
@@ -10618,7 +11183,7 @@ This separation makes it easier to roll out Codex while keeping analytics, envir
 
 Codex Admins can deploy admin-enforced `requirements.toml` policies from the Codex [Policies page](https://chatgpt.com/codex/settings/policies).
 
-Use this page when you want to apply different local Codex constraints to different groups without distributing device-level files first. The managed policy uses the same `requirements.toml` format described in [Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration), so you can define allowed approval policies, sandbox modes, web search behavior, MCP server allowlists, feature pins, and restrictive command rules. To disable Browser Use, the in-app browser, or Computer Use, see [Pin feature flags](https://developers.openai.com/codex/enterprise/managed-configuration#pin-feature-flags).
+Use this page when you want to apply different local Codex constraints to different groups without distributing device-level files first. The managed policy uses the same `requirements.toml` format described in [Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration), so you can define allowed approval policies, sandbox modes, web search behavior, network access requirements, MCP server allowlists, feature pins, and restrictive command rules. To disable Browser Use, the in-app browser, or Computer Use, see [Pin feature flags](https://developers.openai.com/codex/enterprise/managed-configuration#pin-feature-flags).
 
 <div class="max-w-1xl mx-auto py-1">
   <img src="https://developers.openai.com/images/codex/enterprise/policies_and_configurations_page.png"
@@ -10664,6 +11229,22 @@ in_app_browser = false
 computer_use = false
 ```
 
+Example: define administrator-owned network requirements:
+
+```toml
+experimental_network.enabled = true
+experimental_network.dangerously_allow_all_unix_sockets = true
+experimental_network.allow_local_binding = true
+experimental_network.allowed_domains = [
+  "api.openai.com",
+  "*.example.com",
+]
+experimental_network.denied_domains = [
+  "blocked.example.com",
+  "*.exfil.example.com",
+]
+```
+
 Example: add a restrictive command rule when you want admins to block or gate specific commands:
 
 ```toml
@@ -10673,7 +11254,7 @@ prefix_rules = [
 ]
 ```
 
-You can use either example on its own or combine them in a single managed policy for a group. For exact keys, precedence, and more examples, see [Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration) and [Agent approvals & security](https://developers.openai.com/codex/agent-approvals-security).
+You can use any example on its own or combine them in a single managed policy for a group. For exact keys, precedence, and more examples, see [Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration) and [Agent approvals & security](https://developers.openai.com/codex/agent-approvals-security).
 
 ### Checking user policies
 
@@ -11130,7 +11711,7 @@ allowed_sandbox_modes = ["read-only", "workspace-write"]
 
 Use `[[remote_sandbox_config]]` when one managed policy should apply different
 sandbox requirements on different hosts. For example, you can keep a stricter
-default for laptops while allowing workspace writes on matching devboxes or CI
+default for laptops while allowing workspace writes on matching dev boxes or CI
 runners. Host-specific entries currently override `allowed_sandbox_modes` only:
 
 ```toml
@@ -11148,7 +11729,7 @@ sequence of characters, and `?` matches one character.
 
 The first matching `[[remote_sandbox_config]]` entry wins within the same
 requirements source. If no entry matches, Codex keeps the top-level
-`allowed_sandbox_modes`. Hostname matching is for policy selection only; don't
+`allowed_sandbox_modes`. Host name matching is for policy selection only; don't
 treat it as authenticated device proof.
 
 You can also constrain web search mode:
@@ -11159,6 +11740,37 @@ allowed_web_search_modes = ["cached"] # "disabled" remains implicitly allowed
 
 `allowed_web_search_modes = []` allows only `"disabled"`.
 For example, `allowed_web_search_modes = ["cached"]` prevents live web search even in `danger-full-access` sessions.
+
+### Configure network access requirements
+
+Use `[experimental_network]` in `requirements.toml` when administrators should
+define network access requirements centrally. These requirements are separate
+from the user `features.network_proxy` toggle: they can configure sandboxed
+networking without that feature flag, but they do not grant command network
+access when the active sandbox keeps networking off.
+
+```toml
+experimental_network.enabled = true
+experimental_network.dangerously_allow_all_unix_sockets = true
+experimental_network.allow_local_binding = true
+experimental_network.allowed_domains = [
+  "api.openai.com",
+  "*.example.com",
+]
+experimental_network.denied_domains = [
+  "blocked.example.com",
+  "*.exfil.example.com",
+]
+```
+
+Use `experimental_network.managed_allowed_domains_only = true` only when you
+also define administrator-owned `allowed_domains` and want that allowlist to be
+exclusive. If it is `true` without managed allow rules, user-added domain allow
+rules do not remain effective.
+
+The domain syntax, local/private destination rules, deny-over-allow behavior,
+and DNS rebinding limitations are the same as the sandboxed networking behavior
+described in [Agent approvals & security](https://developers.openai.com/codex/agent-approvals-security#network-isolation).
 
 ### Pin feature flags
 
@@ -11183,7 +11795,7 @@ Use the canonical feature keys from `config.toml`'s `[features]` table. Codex no
 - `in_app_browser = false` disables the in-app browser pane.
 - `browser_use = false` disables Browser Use and Browser Agent availability.
 - `computer_use = false` disables Computer Use availability and related
-  install or enablement flows.
+  install or setup flows.
 
 If omitted, these features are allowed by policy, subject to normal client,
 platform, and rollout availability.
@@ -12368,7 +12980,7 @@ In practice, the four most useful locations are:
 - `<repo>/.codex/config.toml`
 
 If more than one hook source exists, Codex loads all matching hooks.
-Higher-precedence config layers do not replace lower-precedence hooks.
+Higher-precedence config layers don't replace lower-precedence hooks.
 If a single layer contains both `hooks.json` and inline `[hooks]`, Codex
 merges them and warns at startup. Prefer one representation per layer.
 
@@ -12540,7 +13152,7 @@ Notes for managed hooks:
 
 - `managed_dir` is used on macOS and Linux.
 - `windows_managed_dir` is used on Windows.
-- Codex does not distribute the scripts in `managed_dir`; your enterprise
+- Codex doesn't distribute the scripts in `managed_dir`; your enterprise
   tooling must install and update them separately.
 - Managed hook commands should use absolute script paths under the configured
   managed directory.
@@ -12602,7 +13214,7 @@ Only some current Codex events honor `matcher`:
 | `UserPromptSubmit`  | not supported          | Any configured `matcher` is ignored for this event           |
 | `Stop`              | not supported          | Any configured `matcher` is ignored for this event           |
 
-\*For `apply_patch`, matchers can also use `Edit` or `Write`.
+\*For `apply_patch`, `matcher` values can also use `Edit` or `Write`.
 
 Examples:
 
@@ -12700,7 +13312,7 @@ That `additionalContext` text is added as extra developer context.
 ### PreToolUse
 
 `PreToolUse` can intercept Bash, file edits performed through `apply_patch`,
-and MCP tool calls. It is still a guardrail rather than a complete enforcement
+and MCP tool calls. It's still a guardrail rather than a complete enforcement
 boundary because Codex can often perform equivalent work through another
 supported tool path.
 
@@ -12710,17 +13322,17 @@ This doesn't intercept all shell calls yet, only the simple ones. The newer
   `WebSearch` or other non-shell, non-MCP tool calls.
 
 `matcher` is applied to `tool_name` and matcher aliases. For file edits through
-`apply_patch`, matchers can use `apply_patch`, `Edit`, or `Write`; hook input
+`apply_patch`, `matcher` values can use `apply_patch`, `Edit`, or `Write`; hook input
 still reports `tool_name: "apply_patch"`.
 
 Fields in addition to [Common input fields](#common-input-fields):
 
-| Field         | Type         | Meaning                                                                                                   |
-| ------------- | ------------ | --------------------------------------------------------------------------------------------------------- |
-| `turn_id`     | `string`     | Codex-specific extension. Active Codex turn id                                                            |
-| `tool_name`   | `string`     | Canonical hook tool name, such as `Bash`, `apply_patch`, or an MCP name like `mcp__fs__read`              |
-| `tool_use_id` | `string`     | Tool-call id for this invocation                                                                          |
-| `tool_input`  | `JSON value` | Tool-specific input. `Bash` and `apply_patch` use `tool_input.command` while MCP tools send all the args. |
+| Field         | Type         | Meaning                                                                                                    |
+| ------------- | ------------ | ---------------------------------------------------------------------------------------------------------- |
+| `turn_id`     | `string`     | Codex-specific extension. Active Codex turn id                                                             |
+| `tool_name`   | `string`     | Canonical hook tool name, such as `Bash`, `apply_patch`, or an MCP name like `mcp__fs__read`               |
+| `tool_use_id` | `string`     | Tool-call id for this invocation                                                                           |
+| `tool_input`  | `JSON value` | Tool-specific input. `Bash` and `apply_patch` use `tool_input.command` while MCP tools send all arguments. |
 
 Plain text on `stdout` is ignored.
 
@@ -12777,11 +13389,12 @@ values include `Bash`, `apply_patch`, and MCP tool names such as
 
 Fields in addition to [Common input fields](#common-input-fields):
 
-| Field        | Type         | Meaning                                                                                                   |
-| ------------ | ------------ | --------------------------------------------------------------------------------------------------------- |
-| `turn_id`    | `string`     | Codex-specific extension. Active Codex turn id                                                            |
-| `tool_name`  | `string`     | Canonical hook tool name, such as `Bash`, `apply_patch`, or an MCP name like `mcp__fs__read`              |
-| `tool_input` | `JSON value` | Tool-specific input. `Bash` and `apply_patch` use `tool_input.command` while MCP tools send all the args. |
+| Field                    | Type             | Meaning                                                                                                   |
+| ------------------------ | ---------------- | --------------------------------------------------------------------------------------------------------- |
+| `turn_id`                | `string`         | Codex-specific extension. Active Codex turn id                                                            |
+| `tool_name`              | `string`         | Canonical hook tool name, such as `Bash`, `apply_patch`, or an MCP name like `mcp__fs__read`              |
+| `tool_input`             | `JSON value`     | Tool-specific input. `Bash` and `apply_patch` use `tool_input.command` while MCP tools send all the args. |
+| `tool_input.description` | `string \| null` | Human-readable approval reason, when Codex has one                                                        |
 
 Plain text on `stdout` is ignored.
 
@@ -12836,18 +13449,18 @@ This doesn't intercept all shell calls yet, only the simple ones. The newer
   `WebSearch` or other non-shell, non-MCP tool calls.
 
 `matcher` is applied to `tool_name` and matcher aliases. For file edits through
-`apply_patch`, matchers can use `apply_patch`, `Edit`, or `Write`; hook input
+`apply_patch`, `matcher` values can use `apply_patch`, `Edit`, or `Write`; hook input
 still reports `tool_name: "apply_patch"`.
 
 Fields in addition to [Common input fields](#common-input-fields):
 
-| Field           | Type         | Meaning                                                                                                   |
-| --------------- | ------------ | --------------------------------------------------------------------------------------------------------- |
-| `turn_id`       | `string`     | Codex-specific extension. Active Codex turn id                                                            |
-| `tool_name`     | `string`     | Canonical hook tool name, such as `Bash`, `apply_patch`, or an MCP name like `mcp__fs__read`              |
-| `tool_use_id`   | `string`     | Tool-call id for this invocation                                                                          |
-| `tool_input`    | `JSON value` | Tool-specific input. `Bash` and `apply_patch` use `tool_input.command` while MCP tools send all the args. |
-| `tool_response` | `JSON value` | Tool-specific output. For MCP tools, this is the MCP call result.                                         |
+| Field           | Type         | Meaning                                                                                                    |
+| --------------- | ------------ | ---------------------------------------------------------------------------------------------------------- |
+| `turn_id`       | `string`     | Codex-specific extension. Active Codex turn id                                                             |
+| `tool_name`     | `string`     | Canonical hook tool name, such as `Bash`, `apply_patch`, or an MCP name like `mcp__fs__read`               |
+| `tool_use_id`   | `string`     | Tool-call id for this invocation                                                                           |
+| `tool_input`    | `JSON value` | Tool-specific input. `Bash` and `apply_patch` use `tool_input.command` while MCP tools send all arguments. |
+| `tool_response` | `JSON value` | Tool-specific output. For MCP tools, this is the MCP call result.                                          |
 
 Plain text on `stdout` is ignored.
 
@@ -13928,6 +14541,10 @@ remote MCP stdio.
 - `required` (optional): Set `true` to make startup fail if this enabled server can't initialize.
 - `enabled_tools` (optional): Tool allow list.
 - `disabled_tools` (optional): Tool deny list (applied after `enabled_tools`).
+- `default_tools_approval_mode` (optional): Default approval behavior for
+  tools from this server. Supported values are `auto`, `prompt`, and
+  `approve`.
+- `tools.<tool>.approval_mode` (optional): Per-tool approval behavior override.
 
 If your OAuth provider requires a fixed callback port, set the top-level `mcp_oauth_callback_port` in `config.toml`. If unset, Codex binds to an ephemeral port.
 
@@ -13967,9 +14584,30 @@ http_headers = { "X-Figma-Region" = "us-east-1" }
 url = "http://localhost:3000/mcp"
 enabled_tools = ["open", "screenshot"]
 disabled_tools = ["screenshot"] # applied after enabled_tools
+default_tools_approval_mode = "prompt"
 startup_timeout_sec = 20
 tool_timeout_sec = 45
 enabled = true
+
+[mcp_servers.chrome_devtools.tools.open]
+approval_mode = "approve"
+```
+
+### Plugin-provided MCP servers
+
+Installed plugins can bundle MCP servers in their plugin manifest. Those
+servers are launched from the plugin, so user config doesn't set their
+transport command. User config can still control on/off state and tool policy
+under `plugins.<plugin>.mcp_servers.<server>`.
+
+```toml
+[plugins."sample@test".mcp_servers.sample]
+enabled = true
+default_tools_approval_mode = "prompt"
+enabled_tools = ["read", "search"]
+
+[plugins."sample@test".mcp_servers.sample.tools.search]
+approval_mode = "approve"
 ```
 
 ## Examples of useful MCP servers
@@ -15366,6 +16004,20 @@ Wrapped server map:
 }
 ```
 
+After installation, users can enable or disable a bundled MCP server and tune
+tool approval policy from their Codex config without editing the plugin. Use
+`plugins.<plugin>.mcp_servers.<server>` for plugin-scoped MCP server policy:
+
+```toml
+[plugins."my-plugin".mcp_servers.docs]
+enabled = true
+default_tools_approval_mode = "prompt"
+enabled_tools = ["search"]
+
+[plugins."my-plugin".mcp_servers.docs.tools.search]
+approval_mode = "approve"
+```
+
 Plugin hooks are off by default in this release. When
 `[features].plugin_hooks = true` and your plugin is enabled, Codex can load
 lifecycle hooks from your plugin alongside user, project, and managed hooks.
@@ -16509,10 +17161,10 @@ import {
   Terminal,
 } from "@components/react/oai/platform/ui/Icon.react";
 
-Remote connections let you use Codex when you are away from the machine that
-runs it, or when your project lives on another machine. Connect the ChatGPT
-mobile app to a Codex App host, pick up work from another device, or configure
-Codex to work on an SSH host.
+Remote connections let you use Codex from another device or another machine.
+Use Codex in the ChatGPT mobile app to work with Codex on a connected Mac,
+continue work from another Codex App device, or connect the Codex App to
+projects on an SSH host.
 
 Remote access uses the connected host's projects, threads, files, credentials,
 permissions, plugins, Computer Use, browser setup, and local tools.
@@ -16526,8 +17178,8 @@ permissions, plugins, Computer Use, browser setup, and local tools.
 - Get notified when Codex completes a task or needs your attention.
 - Switch between connected hosts and threads.
 
-The next sections cover using the ChatGPT mobile app to control a Codex App
-host. To connect Codex to a project on an SSH host, see
+The next sections cover using Codex in the ChatGPT mobile app to control a Codex
+App host. To connect Codex to a project on an SSH host, see
 [connect to an SSH host](#connect-to-an-ssh-host).
 
 <div class="not-prose my-6 max-w-4xl rounded-xl bg-[url('/images/codex/codex-wallpaper-1.webp')] bg-cover bg-center p-4 md:p-8">
@@ -16539,11 +17191,10 @@ Make sure you have:
 
 - Codex access in the ChatGPT account and workspace you want to use.
 - The latest ChatGPT mobile app on an iOS or Android device. If you do not see
-  Codex in the app, update ChatGPT first.
-- A Mac host that is awake, online, running the Codex App, and signed in to the
-  same account and workspace. Mobile setup and device control currently require
-  the Codex App for macOS on the host; the setup flow isn't available from the
-  Codex CLI or IDE Extension.
+  Codex in the ChatGPT mobile app, update ChatGPT first.
+- The latest Codex App for macOS running on a Mac host that is awake, online,
+  and signed in to the same account and workspace. Mobile setup starts from the
+  Codex App; you cannot set it up from the Codex CLI or IDE Extension.
 - Any required multi-factor authentication, SSO, or passkey configuration for
   that account or workspace.
 
@@ -16602,6 +17253,10 @@ until it is available again. If you use this computer as your host device, keep
 it plugged in and turn on **Keep this Mac awake** in the host's connection
 settings.
 
+On a Mac laptop, remote access can stay available with the lid open while the
+computer is plugged in. With the lid closed, connect an external display as
+well. Choosing **Sleep** still stops remote access.
+
 ### <span class="not-prose inline-flex items-center gap-3 align-middle"><span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-surface-secondary text-secondary"></span><span>A dedicated always-on Mac</span></span>
 
 Use a dedicated always-on Mac when you want Codex to stay reachable for
@@ -16618,6 +17273,9 @@ still connects to the Codex App host, and Codex works in the remote environment
 with its dependencies, security policies, and compute resources.
 
 For SSH setup details, see [connect to an SSH host](#connect-to-an-ssh-host).
+
+For browser or desktop tasks on an always-on Mac or remote host, enable
+  Computer Use and install the Chrome extension on that host.
 
 ## What comes from the connected host
 
@@ -16642,9 +17300,10 @@ internet.
 
 ## Pick up work from another device
 
-You can also connect one Codex App host to another. For example, if your laptop
-is unavailable, you can start a thread from your phone on an always-on host,
-then later open Codex on your laptop and continue that thread from there.
+You can continue work from another signed-in Codex App device. For example, if
+your laptop is unavailable, you can start a thread from your phone on an
+always-on host, then later open Codex on your laptop and continue that same
+thread there.
 
 In Codex on the laptop, use **Settings > Connections > Control other devices**
 to add the other host. A device can allow remote access and control another
@@ -16696,12 +17355,12 @@ unauthenticated public listeners.
 
 ## Authentication and network exposure
 
-Use SSH port forwarding with local-host WebSocket listeners. Don't expose an
-unauthenticated app-server listener on a shared or public network.
+Remote connections use SSH to start and manage the remote Codex app server.
+Don't expose app-server transports directly on a shared or public network.
 
-If you need to reach a remote machine outside your current network, use a VPN or
-mesh networking tool such as Tailscale instead of exposing the app server
-directly to the internet.
+If you need to reach a remote machine outside your current network, use a VPN
+or mesh networking tool instead of exposing the app server directly to the
+internet.
 
 ## Troubleshooting
 
@@ -16713,10 +17372,10 @@ both devices.
 
 ### The approval request does not appear
 
-Open the ChatGPT mobile app and go to Codex. Confirm that the phone and host use
-the same ChatGPT account and workspace, then scan the QR code again or restart
-setup from the host. If you use a ChatGPT workspace, ask your admin to confirm
-that Remote Control access is enabled.
+Open Codex in the ChatGPT mobile app. Confirm that the phone and host use the
+same ChatGPT account and workspace, then scan the QR code again or restart setup
+from the host. If you use a ChatGPT workspace, ask your admin to confirm that
+Remote Control access is enabled.
 
 ### The remote session disconnects
 
@@ -17519,7 +18178,7 @@ parent workflow.
 
 Codex also reapplies the parent turn's live runtime overrides when it spawns a
 child. That includes sandbox and approval choices you set interactively during
-the session, such as `/approvals` changes or `--yolo`, even if the selected
+the session, such as `/permissions` changes or `--yolo`, even if the selected
 custom agent file sets different defaults.
 
 You can also override the sandbox configuration for individual [custom agents](#custom-agents), such as explicitly marking one to work in read-only mode.

@@ -10,6 +10,12 @@ For release notes on Claude Apps, see the [Release notes for Claude Apps in the 
 For updates to Claude Code, see the [complete CHANGELOG.md](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) in the `claude-code` repository.
 </Tip>
 
+### May 18, 2026
+- The [web search tool](/docs/en/agents-and-tools/tool-use/web-search-tool) now returns richer SEC filing data, making it easier to ground financial research agents, earnings analysis, and due-diligence workflows in primary sources with citations.
+
+### May 13, 2026
+- We've launched [cache diagnostics](/docs/en/build-with-claude/cache-diagnostics) in public beta. Pass `diagnostics.previous_message_id` on a Messages request and the API reports a `cache_miss_reason` explaining where the prompt cache prefix diverged from the previous turn. Include the `cache-diagnosis-2026-04-07` beta header in your requests.
+
 ### May 12, 2026
 - [Fast mode](/docs/en/build-with-claude/fast-mode) (research preview) now supports Claude Opus 4.7. Set `speed: "fast"` with `model: "claude-opus-4-7"` and the `fast-mode-2026-02-01` beta header for significantly faster output token generation at premium pricing. Pricing, rate limits, and access are the same as for Opus 4.6 fast mode; interested customers should join the [waitlist](https://claude.com/fast-mode).
 
