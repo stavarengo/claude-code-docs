@@ -184,26 +184,6 @@ In the default `workspace-write` sandbox policy, writable roots still include pr
 - `<writable_root>/.codex` is protected as read-only when it exists as a directory.
 - Protection is recursive, so everything under those paths is read-only.
 
-### Deny reads with filesystem profiles
-
-Named permission profiles can also deny reads for exact paths or glob patterns.
-This is useful when a workspace should stay writable but specific sensitive
-files, such as local environment files, must stay unreadable:
-
-```toml
-default_permissions = "workspace"
-
-[permissions.workspace.filesystem]
-":project_roots" = { "." = "write", "**/*.env" = "none" }
-glob_scan_max_depth = 3
-```
-
-Use `"none"` for paths or globs that Codex shouldn't read. The sandbox policy
-evaluates globs for local macOS and Linux command execution. On platforms that
-pre-expand glob matches before the sandbox starts, set `glob_scan_max_depth` for
-unbounded `**` patterns, or list explicit depths such as `*.env`, `*/*.env`, and
-`*/*/*.env`.
-
 ### Run without approval prompts
 
 You can disable approval prompts with `--ask-for-approval never` or `-a never` (shorthand).
@@ -7354,15 +7334,6 @@ you extend the places it can modify without removing the sandbox entirely. If
 you need a broader or narrower trust boundary, adjust the default sandbox mode
 and approval policy instead of relying on one-off exceptions.
 
-For reusable permission sets, set `default_permissions` to a named profile and
-define `[permissions.<name>.filesystem]` or `[permissions.<name>.network]`.
-Managed network profiles use map tables such as
-`[permissions.<name>.network.domains]` and
-`[permissions.<name>.network.unix_sockets]` for domain and socket rules.
-Filesystem profiles can also deny reads for exact paths or glob patterns by
-setting matching entries to `"none"`; use this to keep files such as local
-secrets unreadable without turning off workspace writes.
-
 When a workflow needs a specific exception, use [rules](https://developers.openai.com/codex/rules). Rules
 let you allow, prompt, or forbid command prefixes outside the sandbox, which is
 often a better fit than broadly expanding access. For a higher-level overview
@@ -7749,6 +7720,8 @@ Pick approval strictness (affects when Codex pauses) and sandbox level (affects 
 
 For operational details to keep in mind while editing `config.toml`, see [Common sandbox and approval combinations](https://developers.openai.com/codex/agent-approvals-security#common-sandbox-and-approval-combinations), [Protected paths in writable roots](https://developers.openai.com/codex/agent-approvals-security#protected-paths-in-writable-roots), and [Network access](https://developers.openai.com/codex/agent-approvals-security#network-access).
 
+For beta permission profiles that configure filesystem and network access together, see [Permissions](https://developers.openai.com/codex/permissions).
+
 You can also use a granular approval policy (`approval_policy = { granular = { ... } }`) to allow or auto-reject individual prompt categories. This is useful when you want normal interactive approvals for some cases but want others, such as `request_permissions` or skill-script prompts, to fail closed automatically.
 
 Set `approvals_reviewer = "auto_review"` to route eligible interactive approval
@@ -7787,35 +7760,12 @@ Use your organization's automatic review policy.
 
 ### Named permission profiles
 
-Set `default_permissions` to reuse a sandbox profile by name. Codex includes
-the built-in profiles `:read-only`, `:workspace`, and `:danger-no-sandbox`:
+For built-in profiles, custom profile syntax, and the full filesystem and
+network configuration model, see [Permissions](https://developers.openai.com/codex/permissions).
 
-```toml
-default_permissions = ":workspace"
-```
-
-For custom profiles, point `default_permissions` at a name you define under
-`[permissions.<name>]`:
-
-```toml
-default_permissions = "workspace"
-
-[permissions.workspace.filesystem]
-":project_roots" = { "." = "write", "**/*.env" = "none" }
-glob_scan_max_depth = 3
-
-[permissions.workspace.network]
-enabled = true
-mode = "limited"
-
-[permissions.workspace.network.domains]
-"api.openai.com" = "allow"
-```
-
-Use built-in names with a leading colon. Custom names don't use a leading
-colon and must have matching `permissions` tables.
-
-Need the complete key list (including profile-scoped overrides and requirements constraints)? See [Configuration Reference](https://developers.openai.com/codex/config-reference) and [Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration).
+For the complete key list, including profile-scoped overrides and requirements
+constraints, see [Configuration Reference](https://developers.openai.com/codex/config-reference) and
+[Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration).
 
 In workspace-write mode, some environments keep `.git/` and `.codex/`
   read-only even when the rest of the workspace is writable. This is why
@@ -8279,13 +8229,10 @@ For mode-by-mode behavior (including protected `.git`/`.codex` paths and network
 
 #### Permission profiles
 
-Use a named permission profile when you want one reusable filesystem or network policy across sessions:
-
-```toml
-default_permissions = ":workspace"
-```
-
-Built-in profiles include `:read-only`, `:workspace`, and `:danger-no-sandbox`. For custom filesystem or network rules, define `[permissions.<name>]` tables and set `default_permissions` to that name.
+Codex also supports named permission profiles for reusable filesystem and
+network policies. Built-in profiles are `:read-only`, `:workspace`, and
+`:danger-full-access`. Custom profiles use `[permissions.<name>]` tables and a
+matching `default_permissions` value. See [Permissions](https://developers.openai.com/codex/permissions).
 
 #### Windows sandbox mode
 
@@ -8425,7 +8372,7 @@ notification, profile, or telemetry routing keys. Codex ignores
 `otel` when they appear in a project-local `.codex/config.toml`; put those in
 user-level config instead.
 
-For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_workspace_write.*`), pair this reference with [Sandbox and approvals](https://developers.openai.com/codex/agent-approvals-security#sandbox-and-approvals), [Protected paths in writable roots](https://developers.openai.com/codex/agent-approvals-security#protected-paths-in-writable-roots), and [Network access](https://developers.openai.com/codex/agent-approvals-security#network-access).
+For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_workspace_write.*`), pair this reference with [Sandbox and approvals](https://developers.openai.com/codex/agent-approvals-security#sandbox-and-approvals), [Protected paths in writable roots](https://developers.openai.com/codex/agent-approvals-security#protected-paths-in-writable-roots), and [Network access](https://developers.openai.com/codex/agent-approvals-security#network-access). For beta permission profiles, see [Permissions](https://developers.openai.com/codex/permissions).
 
 <ConfigTable
   options={[
@@ -9739,13 +9686,25 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
       key: "default_permissions",
       type: "string",
       description:
-        "Name of the default permissions profile to apply to sandboxed tool calls. Built-ins are `:read-only`, `:workspace`, and `:danger-no-sandbox`; custom profile names require matching `[permissions.<name>]` tables.",
+        "Name of the default permissions profile to apply to sandboxed tool calls. Built-ins are `:read-only`, `:workspace`, and `:danger-full-access`; custom profile names require matching `[permissions.<name>]` tables.",
+    },
+    {
+      key: "permissions.<name>.workspace_roots",
+      type: "table",
+      description:
+        "Profile-defined workspace roots that receive `:workspace_roots` filesystem rules alongside the session's runtime workspace roots.",
+    },
+    {
+      key: "permissions.<name>.workspace_roots.<path>",
+      type: "boolean",
+      description:
+        "Opt a path into the profile's workspace root set when `true`. Disabled entries remain inactive.",
     },
     {
       key: "permissions.<name>.filesystem",
       type: "table",
       description:
-        "Named filesystem permission profile. Each key is an absolute path or special token such as `:minimal` or `:project_roots`.",
+        "Named filesystem permission profile. Each key is an absolute path or special token such as `:minimal` or `:workspace_roots`.",
     },
     {
       key: "permissions.<name>.filesystem.glob_scan_max_depth",
@@ -9755,20 +9714,21 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
     },
     {
       key: "permissions.<name>.filesystem.<path-or-glob>",
-      type: '"read" | "write" | "none" | table',
+      type: '"read" | "write" | "deny" | table',
       description:
-        'Grant direct access for a path, glob pattern, or special token, or scope nested entries under that root. Use `"none"` to deny reads for matching paths.',
+        'Grant direct access for a path, glob pattern, or special token, or scope nested entries under that root. Use `"deny"` to deny reads for matching paths.',
     },
     {
-      key: 'permissions.<name>.filesystem.":project_roots".<subpath-or-glob>',
-      type: '"read" | "write" | "none"',
+      key: 'permissions.<name>.filesystem.":workspace_roots".<subpath-or-glob>',
+      type: '"read" | "write" | "deny"',
       description:
-        'Scoped filesystem access relative to the detected project roots. Use `"."` for the root itself; glob subpaths such as `"**/*.env"` can deny reads with `"none"`.',
+        'Scoped filesystem access relative to each effective workspace root. Use `"."` for the root itself; glob subpaths such as `"**/*.env"` can deny reads with `"deny"`.',
     },
     {
       key: "permissions.<name>.network.enabled",
       type: "boolean",
-      description: "Enable network access for this named permissions profile.",
+      description:
+        "Enable network access for this named permissions profile. This changes the sandbox network policy; it does not start the network proxy by itself.",
     },
     {
       key: "permissions.<name>.network.proxy_url",
@@ -9811,16 +9771,33 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
         "Allow arbitrary Unix socket destinations instead of the default restricted set. Use only in tightly controlled environments.",
     },
     {
+      key: "permissions.<name>.network.mode",
+      type: "limited | full",
+      description: "Network proxy mode used for subprocess traffic.",
+    },
+    {
       key: "permissions.<name>.network.domains",
-      type: "map<string, allow | deny>",
+      type: "table",
       description:
         "Domain rules for sandboxed networking. Supports exact hosts, `*.example.com` for subdomains only, `**.example.com` for apex plus subdomains, and global `*` allow rules. `deny` wins on conflicts.",
     },
     {
-      key: "permissions.<name>.network.unix_sockets",
-      type: "map<string, allow | none>",
+      key: "permissions.<name>.network.domains.<pattern>",
+      type: "allow | deny",
       description:
-        "Unix socket rules for sandboxed networking. Use socket paths as keys, with `allow` or `none` values.",
+        "Allow or deny an exact host or scoped wildcard pattern such as `*.example.com` or `**.example.com`.",
+    },
+    {
+      key: "permissions.<name>.network.unix_sockets",
+      type: "table",
+      description:
+        "Unix socket allowlist overrides for sandboxed networking. Use socket paths as keys; `allow` adds a path, and `none` clears an inherited allow entry.",
+    },
+    {
+      key: "permissions.<name>.network.unix_sockets.<path>",
+      type: "allow | none",
+      description:
+        "Add an absolute Unix socket path to the effective allowlist with `allow`, or clear an inherited allow entry with `none`. `none` is not a separate deny-list decision.",
     },
     {
       key: "permissions.<name>.network.allow_local_binding",
@@ -10298,17 +10275,9 @@ allow_login_shell = true
 # - danger-full-access (no sandbox; extremely risky)
 sandbox_mode = "read-only"
 # Named permissions profile to apply by default. Built-ins:
-# :read-only | :workspace | :danger-no-sandbox
+# :read-only | :workspace | :danger-full-access
 # Use a custom name such as "workspace" only when you also define [permissions.workspace].
 # default_permissions = ":workspace"
-
-# Example filesystem profile. Use `"none"` to deny reads for exact paths or
-# glob patterns. On platforms that need pre-expanded glob matches, set
-# glob_scan_max_depth when using unbounded patterns such as `**`.
-# [permissions.workspace.filesystem]
-# glob_scan_max_depth = 3
-# ":project_roots" = { "." = "write", "**/*.env" = "none" }
-# "/absolute/path/to/secrets" = "none"
 
 ################################################################################
 # Authentication & Login
@@ -10468,6 +10437,20 @@ experimental_use_profile = false
 # Add an exact local IP literal or `localhost` allow rule for one target, or set it to true only when broader local access is required.
 #
 # Set `default_permissions = "workspace"` before enabling this profile.
+# Example additional workspace roots that inherit this profile's
+# `:workspace_roots` filesystem rules.
+# [permissions.workspace.workspace_roots]
+# "~/code/app" = true
+# "~/code/shared-lib" = true
+#
+# Example filesystem profile. Use `"deny"` to deny reads for exact paths or
+# glob patterns. On platforms that need pre-expanded glob matches, set
+# glob_scan_max_depth when using unbounded patterns such as `**`.
+# [permissions.workspace.filesystem]
+# glob_scan_max_depth = 3
+# ":workspace_roots" = { "." = "write", "**/*.env" = "deny" }
+# "/absolute/path/to/secrets" = "deny"
+#
 # [permissions.workspace.network]
 # enabled = true
 # proxy_url = "http://127.0.0.1:43128"
@@ -10479,6 +10462,7 @@ experimental_use_profile = false
 # dangerously_allow_non_loopback_proxy = false
 # dangerously_allow_non_loopback_admin = false
 # dangerously_allow_all_unix_sockets = false
+# mode = "limited"                           # limited | full
 # allow_local_binding = false
 #
 # [permissions.workspace.network.domains]
@@ -13277,6 +13261,8 @@ Exit `0` with no output is treated as success and Codex continues.
 
 `PreToolUse` and `PermissionRequest` support `systemMessage`, but `continue`,
 `stopReason`, and `suppressOutput` aren't currently supported for those events.
+If a `PreToolUse` hook returns one of those unsupported fields, Codex marks
+that hook run as failed, reports the error, and continues the tool call.
 
 `PostToolUse` supports `systemMessage`, `continue: false`, and `stopReason`.
 `suppressOutput` is parsed but not currently supported for that event.
@@ -13372,9 +13358,29 @@ To add model-visible context without blocking, return
 }
 ```
 
-`permissionDecision: "ask"`, legacy `decision: "approve"`, `updatedInput`,
-`continue: false`, `stopReason`, and `suppressOutput` are parsed but not
-supported yet, so they fail open.
+To rewrite a supported tool call without blocking, return
+`permissionDecision: "allow"` with `updatedInput`:
+
+```json
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PreToolUse",
+    "permissionDecision": "allow",
+    "updatedInput": {
+      "command": "echo rewritten"
+    }
+  }
+}
+```
+
+For Bash commands and `apply_patch`, `updatedInput` must include a string
+`command` field. For MCP tools, `updatedInput` is the replacement arguments
+object. Return `updatedInput` only with `permissionDecision: "allow"`; other
+`updatedInput` shapes are reported as errors.
+
+`permissionDecision: "ask"`, legacy `decision: "approve"`, `continue: false`,
+`stopReason`, and `suppressOutput` are parsed but not supported yet. Codex marks
+the hook run as failed, reports the error, and continues the tool call.
 
 ### PermissionRequest
 
@@ -13489,8 +13495,9 @@ To stop normal processing of the original tool result after the command has
 already run, return `continue: false`. Codex will replace the tool result with
 your feedback or stop text and continue from there.
 
-`updatedMCPToolOutput` and `suppressOutput` are parsed but not supported yet,
-so they fail open.
+`updatedMCPToolOutput` and `suppressOutput` are parsed but not supported yet.
+Codex marks the hook run as failed, reports the error, and continues normal
+processing of the tool result.
 
 ### UserPromptSubmit
 
@@ -15437,6 +15444,476 @@ Codex is OpenAI's coding agent for software development. ChatGPT Plus, Pro, Busi
 
 <div class="not-prose mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
   </div>
+
+---
+
+# Permissions
+
+Beta. Permission profiles are under active development and may change.
+
+Permission profiles do not compose with the older sandbox settings. Configure
+  either `default_permissions` and `[permissions]`, or `sandbox_mode` /
+  `sandbox_workspace_write`, but not both. If `sandbox_mode` appears in any
+  active config layer, you pass `--sandbox`, or a config profile sets
+  `sandbox_mode`, Codex uses those older sandbox settings instead of
+  `default_permissions`.
+
+Permission profiles let you apply least-privilege boundaries to local commands
+Codex runs on your behalf. A profile is a named policy that combines filesystem
+rules, which define what commands can read or write, with network rules, which
+define which destinations commands can reach.
+
+Use profiles to give Codex enough access for the current task without granting
+broad access to your machine or network. For example, a read-only profile can
+let Codex inspect a project without editing it, while a write-capable profile
+can limit edits to selected workspace roots.
+
+Local permission profiles are supported on macOS, Linux, WSL, and native
+Windows. Platform-specific enforcement details and caveats are covered in
+[Security limitations](#security-limitations).
+
+For Codex cloud network settings, see [Internet Access](https://developers.openai.com/codex/cloud/internet-access).
+
+## Define and select a profile
+
+Codex includes three built-in permission profiles:
+
+- `:read-only` keeps local command execution read-only.
+- `:workspace` allows writes inside the active workspace roots.
+- `:danger-full-access` removes local sandbox restrictions and should be used
+  only when that broad access is intentional.
+
+Create a named profile under `[permissions.<name>]`, then set the top-level
+`default_permissions` key to that profile name or to one of the built-ins above.
+In this example, `project-edit` is a user-defined profile name, not a built-in
+value.
+
+Custom profiles use two related concepts:
+
+- `[permissions.<name>.workspace_roots]` adds concrete directories that should
+  count as workspace roots for that profile.
+- `[permissions.<name>.filesystem.":workspace_roots"]` defines the filesystem
+  rules Codex applies inside every effective workspace root: the current
+  session's runtime workspace roots plus the profile-defined roots above.
+
+Profiles also use the normal config-layer model. Higher-precedence layers can
+add or replace entries under the same profile name without restating the whole
+profile.
+
+For example, an organization-level config and a user-level config can extend
+the same profile independently:
+
+```toml
+# /etc/codex/config.toml
+[permissions.server.workspace_roots]
+"~/code/server" = true
+```
+
+```toml
+# ~/.codex/config.toml
+[permissions.server.workspace_roots]
+"~/code/mobile-app" = true
+```
+
+When `server` is active, both workspace roots participate in the effective
+profile.
+
+```toml
+default_permissions = "project-edit"
+
+[permissions.project-edit.workspace_roots]
+"~/code/app" = true
+"~/code/shared-lib" = true
+
+[permissions.project-edit.filesystem]
+":minimal" = "read"
+
+[permissions.project-edit.filesystem.":workspace_roots"]
+"." = "write"
+".devcontainer" = "read"
+"**/*.env" = "deny"
+
+[permissions.project-edit.network]
+enabled = true
+
+[permissions.project-edit.network.domains]
+"api.openai.com" = "allow"
+"objects.githubusercontent.com" = "allow"
+"*.github.com" = "allow"
+"tracking.example.com" = "deny"
+```
+
+This profile:
+
+- Reads the minimal runtime paths common developer tools need.
+- Applies the same workspace-root rules to the current session and the
+  profile-defined roots.
+- Keeps IDE-adjacent settings such as `.devcontainer/` read-only under each
+  root.
+- Denies matching environment files with a glob rule.
+- Allows network access only through the configured domain policy.
+
+Inside an active profile, narrower deny rules stay in force even when a broader
+path is readable or writable. For example, a profile can make workspace roots
+writable while still setting a matching `.env` path to `deny`.
+
+## Configuration spec
+
+| Entry                                                             | Type / values              | Default                 | Details                                                                                                                                                                                                                                                                                        |
+| ----------------------------------------------------------------- | -------------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `default_permissions`                                             | String profile name        | None                    | Names the permissions profile Codex applies by default. The value must match a profile under `[permissions]` or a built-in profile such as `:workspace`. Required when permission profiles are active. If an older sandbox setting is active, Codex uses those older sandbox settings instead. |
+| `[permissions.<name>]`                                            | Table                      | None                    | Defines a profile and its identifier. `default_permissions` selects one profile as the default; other permission-profile selectors also use the profile name.                                                                                                                                  |
+| `[permissions.<name>.workspace_roots]`                            | Table                      | None                    | Adds profile-defined workspace roots that receive `:workspace_roots` filesystem rules alongside the current session's runtime workspace roots.                                                                                                                                                 |
+| `permissions.<name>.workspace_roots."<path>"`                     | Boolean                    | `false`                 | Adds the path to the profile's workspace root set when `true`. Entries set to `false` remain inactive.                                                                                                                                                                                         |
+| `[permissions.<name>.filesystem]`                                 | Table                      | None                    | Maps filesystem paths to access values or scoped subpath maps. Missing or empty filesystem tables keep filesystem access restricted and emit a startup warning.                                                                                                                                |
+| `permissions.<name>.filesystem.glob_scan_max_depth`               | Number                     | None                    | Limits deny-read glob expansion on Linux, WSL, and native Windows when Codex snapshots matches before sandbox startup. Larger values can increase startup scanning work. Use a value of at least `1` when an unbounded `**` pattern needs bounded pre-expansion.                               |
+| `[permissions.<name>.filesystem]."<path>"`                        | `read`, `write`, or `deny` | None                    | Grants direct access for a supported path. `deny` denies access and wins over equally specific `write` or `read` entries. Codex rejects direct write rules that the active runtime cannot enforce.                                                                                             |
+| `[permissions.<name>.filesystem."<path>"]."<subpath>"`            | `read`, `write`, or `deny` | None                    | Grants access to a descendant of `<path>`. Use `.` for the base path. Other subpaths must be relative descendants and cannot contain `.` or `..` components.                                                                                                                                   |
+| `[permissions.<name>.network]`                                    | Table                      | None                    | Configures the network sandbox proxy and the sandbox network policy for the profile.                                                                                                                                                                                                           |
+| `permissions.<name>.network.enabled`                              | Boolean                    | `false`                 | Enables network access for sandboxed commands in the profile. This changes the sandbox network policy; it does not start the network proxy by itself.                                                                                                                                          |
+| `[permissions.<name>.network.domains]`                            | Table                      | None                    | Maps host patterns to `allow` or `deny`. If there are no `allow` entries, domain requests are blocked. Deny entries override allow entries.                                                                                                                                                    |
+| `permissions.<name>.network.domains."<pattern>"`                  | `allow` or `deny`          | None                    | Supports exact hosts, `*.example.com` for subdomains, `**.example.com` for apex plus subdomains, and `*` as an allow-only global wildcard. Host patterns are normalized by trimming, lowercasing, stripping a trailing dot, and stripping simple ports or brackets.                            |
+| `[permissions.<name>.network.unix_sockets]`                       | Table                      | None                    | Maps Unix socket allowlist overrides. Use only for local integrations such as Docker.                                                                                                                                                                                                          |
+| `permissions.<name>.network.unix_sockets."<path>"`                | `allow` or `none`          | None                    | Adds an absolute Unix socket path to the effective allowlist with `allow`, or clears an inherited allow entry with `none`. `none` is not a separate deny-list decision.                                                                                                                        |
+| `permissions.<name>.network.proxy_url`                            | URL string                 | `http://127.0.0.1:3128` | HTTP proxy listener used for `HTTP_PROXY`, `HTTPS_PROXY`, websocket proxy variables, and related tool proxy environment variables.                                                                                                                                                             |
+| `permissions.<name>.network.enable_socks5`                        | Boolean                    | `true`                  | Enables the SOCKS5 listener used for `ALL_PROXY` and FTP proxy variables.                                                                                                                                                                                                                      |
+| `permissions.<name>.network.socks_url`                            | URL string                 | `http://127.0.0.1:8081` | SOCKS5 listener address.                                                                                                                                                                                                                                                                       |
+| `permissions.<name>.network.enable_socks5_udp`                    | Boolean                    | `true`                  | Enables SOCKS5 UDP support when the SOCKS5 listener is enabled.                                                                                                                                                                                                                                |
+| `permissions.<name>.network.allow_upstream_proxy`                 | Boolean                    | `true`                  | Allows the network sandbox proxy to respect upstream `HTTP(S)_PROXY` and `ALL_PROXY` settings for outbound requests.                                                                                                                                                                           |
+| `permissions.<name>.network.allow_local_binding`                  | Boolean                    | `false`                 | Disables the local/private-network guard when `true`. When `false`, exact local literals such as `localhost` or `127.0.0.1` must be explicitly allowlisted, and hostnames that resolve to local or private IPs remain blocked.                                                                 |
+| `permissions.<name>.network.dangerously_allow_non_loopback_proxy` | Boolean                    | `false`                 | Allows proxy listeners to bind non-loopback addresses. Leave unset for ordinary local development.                                                                                                                                                                                             |
+| `permissions.<name>.network.dangerously_allow_all_unix_sockets`   | Boolean                    | `false`                 | Bypasses the Unix socket allowlist where Unix socket proxying is supported. This is a broad local escape hatch.                                                                                                                                                                                |
+
+## Filesystem permissions
+
+Filesystem entries use `read`, `write`, or `deny`:
+
+| Access  | Meaning                                                                                                                           |
+| ------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `read`  | Allows commands to read files and list directories under the path. Commands cannot create, modify, rename, or delete files there. |
+| `write` | Allows commands to read and modify files under the path, including creating, renaming, and deleting files when the OS allows it.  |
+| `deny`  | Denies both reads and writes under the path. Use it to carve out a denied subpath from a broader `read` or `write` grant.         |
+
+More specific entries override broader entries. When two entries target the
+same path, `deny` takes precedence over `write`, and `write` takes precedence
+over `read`.
+
+This precedence lets a profile describe a broad working area first, then carve
+out files or directories that should stay unreadable:
+
+```toml
+[permissions.project-edit.filesystem]
+":minimal" = "read"
+
+[permissions.project-edit.filesystem.":workspace_roots"]
+"." = "write"
+".devcontainer" = "read"
+"**/*.env" = "deny"
+```
+
+In this example, the workspace root stays writable, `.devcontainer/` stays
+readable without becoming writable, and matching environment files remain
+unavailable to sandboxed commands.
+
+A more specific path can also reopen a narrower subtree inside a broader deny:
+
+```toml
+[permissions.project-edit.filesystem]
+"~/Documents" = "deny"
+"~/Documents/codex" = "write"
+```
+
+Supported path forms:
+
+| Path               | Meaning                                                                                     | Scoped subpaths |
+| ------------------ | ------------------------------------------------------------------------------------------- | --------------- |
+| `:root`            | The filesystem root                                                                         | `.` only        |
+| `:minimal`         | Platform and runtime paths needed by common tools                                           | `.` only        |
+| `:workspace_roots` | The current session's workspace roots plus any enabled profile-defined workspace roots      | Yes             |
+| `:tmpdir`          | The `$TMPDIR` location, when one is available                                               | `.` only        |
+| `/absolute/path`   | A platform absolute path, such as `/path` on macOS/Linux/WSL or `C:\path` on native Windows | Yes             |
+| `~/path`           | A path under the current user's home directory                                              | Yes             |
+
+On native Windows, home-relative paths can also use backslashes, such as
+`~\work`.
+
+Use `:root` only when a profile intentionally needs broad read coverage:
+
+```toml
+[permissions.audit.filesystem]
+":root" = "read"
+```
+
+Use nested entries under `:workspace_roots` to scope access to workspace-root
+relative subpaths:
+
+```toml
+[permissions.project-edit.filesystem.":workspace_roots"]
+"." = "write"          # each workspace root
+"docs" = "read"        # each workspace-root docs directory
+"generated" = "deny"   # each workspace-root generated directory
+```
+
+Nested subpaths must stay inside their workspace root. Parent traversal such as
+`../other-repo` is rejected.
+
+### Deny reads with exact paths or globs
+
+Use `deny` for files or subtrees that Codex should not read, even when a broader
+profile rule grants access nearby. Exact paths work well for stable locations
+such as `~/.ssh`. Glob patterns work better when a profile needs to cover a
+family of sensitive files whose exact locations vary across repositories.
+
+When a glob sits under `:workspace_roots`, Codex interprets it relative to each
+effective workspace root. For example:
+
+```toml
+[permissions.project-edit.filesystem.":workspace_roots"]
+"**/*.env" = "deny"
+```
+
+This rule denies reads for matching `.env` files found beneath each runtime or
+profile-defined workspace root. Use it when you want to preserve normal
+workspace writes while keeping environment files, generated secrets, or similar
+credential-bearing files unreadable.
+
+`deny` glob patterns are supported as deny-read rules. `read` or `write` globs
+are less portable on Linux, WSL, and native Windows sandboxing, so prefer exact
+paths or subtree rules such as `"docs/**" = "read"` when possible.
+
+On Linux, WSL, and native Windows, an unbounded `**` deny-read pattern may need
+bounded pre-expansion before the sandbox starts. Set `glob_scan_max_depth` when
+you use an unbounded pattern such as `"**/*.env" = "deny"`:
+
+```toml
+[permissions.project-edit.filesystem]
+glob_scan_max_depth = 3
+
+[permissions.project-edit.filesystem.":workspace_roots"]
+"**/*.env" = "deny"
+```
+
+`glob_scan_max_depth` must be at least `1`. Higher values scan deeper before
+sandbox startup, which can add startup work on Linux, WSL, and native Windows.
+If you prefer not to use bounded expansion, enumerate explicit depths such as
+`*.env`, `*/*.env`, and `*/*/*.env`.
+
+Add reusable workspace roots to the profile when the same rules should apply to
+more than the current session root:
+
+```toml
+[permissions.project-edit.workspace_roots]
+"~/code/app" = true
+"~/code/shared-lib" = true
+```
+
+When this profile is active, Codex applies the `:workspace_roots` rules to the
+current session's runtime workspace roots and to each enabled profile-defined
+workspace root.
+
+On native Windows, drive-letter paths such as `D:\work` and UNC paths such as
+`\\server\share` are supported as absolute paths.
+
+## Network permissions
+
+Set `enabled = true` to allow network access for the selected profile:
+
+```toml
+[permissions.project-edit.network]
+enabled = true
+```
+
+When network access is enabled, Codex uses full network behavior by default.
+Most profiles should also define domain rules:
+
+```toml
+[permissions.project-edit.network.domains]
+"example.com" = "allow"      # exact host
+"*.example.com" = "allow"    # subdomains only
+"**.example.com" = "allow"   # apex and subdomains
+"ads.example.com" = "deny"   # deny wins over allow
+```
+
+The network sandbox proxy binds to local listeners by default:
+
+```toml
+[permissions.project-edit.network]
+enabled = true
+proxy_url = "http://127.0.0.1:3128"
+enable_socks5 = true
+socks_url = "http://127.0.0.1:8081"
+enable_socks5_udp = true
+```
+
+Leave these listener settings at their defaults unless you are integrating with
+a specific runtime. The `dangerously_*` network keys are escape hatches for
+specialized environments and should not be used for ordinary local development.
+
+### Local and private networks
+
+Codex applies a local/private-network guard by default as a defense against DNS
+rebinding and accidental access to local services. To intentionally allow a
+literal local target, allowlist the exact host or IP literal:
+
+```toml
+[permissions.project-edit.network.domains]
+"localhost" = "allow"
+"127.0.0.1" = "allow"
+```
+
+Set `allow_local_binding = true` only when the profile must reach allowlisted
+hostnames that resolve to local or private addresses:
+
+```toml
+[permissions.project-edit.network]
+enabled = true
+allow_local_binding = true
+
+[permissions.project-edit.network.domains]
+"localhost" = "allow"
+```
+
+### Unix sockets
+
+Unix socket proxying is a local escape hatch for tools such as Docker. Use it
+sparingly:
+
+```toml
+[permissions.project-edit.network.unix_sockets]
+"/var/run/docker.sock" = "allow"
+"/tmp/old.sock" = "none"
+```
+
+Use `none` to clear a socket allow entry inherited from a lower-precedence
+configuration layer. It is not a domain-style deny rule.
+
+When Unix sockets are enabled, keep proxy listeners bound to loopback addresses.
+
+## Migrate from older sandbox settings
+
+Permission profiles replace the older combination of `sandbox_mode` and
+`sandbox_workspace_write` when you want one reusable profile to describe both
+filesystem and network behavior. Use one system or the other for a session, not
+both.
+
+Suggested starting points:
+
+- For a read-only workflow, use the built-in `:read-only` profile or define a
+  custom profile with read access only where needed.
+- For workspace editing, use the built-in `:workspace` profile or define a
+  custom profile that writes through `:workspace_roots` and adds only the extra
+  temp or cache paths the workflow needs.
+- For unrestricted local execution, use `:danger-full-access` only when you
+  intentionally want the broadest local access model.
+
+Profiles describe the local default posture for a session. Organization-managed
+requirements can still add restrictions that user configuration should not
+broaden. See [Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration)
+for admin-enforced filesystem and network constraints.
+
+## Scope and enforcement
+
+Permission profiles define the boundaries for local sandboxed command
+execution. Use them together with approval policies and the separate controls
+for other Codex surfaces.
+
+### What profiles control
+
+- **Local command execution:** Permission profiles govern sandboxed commands
+  that run on your machine. App connectors, MCP servers, browser or
+  computer-use surfaces, Codex cloud environment settings, and approved
+  escalations use their own controls.
+- **Filesystem writes:** A write-capable profile can create persistent changes.
+  Treat writes to scripts, build steps, package manager hooks, shell startup
+  files, and shared directories as sensitive because later tools or users can
+  execute those files outside the original sandbox context.
+- **Outbound destinations:** Network domain rules constrain where sandboxed
+  command traffic can go through the network proxy. They do not determine
+  whether an allowed destination is trustworthy, and wildcard allow rules stay
+  broad.
+- **Local services:** Local and private network targets are blocked by default.
+  Allowlisting `localhost`, private IPs, Unix sockets, or setting
+  `allow_local_binding = true` explicitly opens access to local services.
+
+### How enforcement works
+
+- On macOS, Codex uses Seatbelt sandbox profiles. If the selected policy cannot
+  be enforced by the platform sandbox, Codex refuses to run the command instead
+  of silently running it unsandboxed.
+- On Linux and WSL, Codex uses [bubblewrap](https://github.com/containers/bubblewrap)
+  and [seccomp](https://www.kernel.org/doc/html/latest/userspace-api/seccomp_filter.html),
+  with Landlock available for compatibility fallback paths. The strongest
+  enforcement path depends on user namespaces and kernel support; restricted
+  container hosts can force compatibility paths, and unsupported split policies
+  are refused.
+- On native Windows, [`elevated` sandboxing](https://developers.openai.com/codex/windows#windows-sandbox)
+  is strongest because it can use dedicated lower-privilege sandbox users,
+  filesystem permission boundaries, and firewall rules. `unelevated`
+  sandboxing is a fallback with weaker network isolation and cannot enforce
+  every split read/write carveout, so unsupported policies are refused. Use WSL
+  when you need the Linux sandbox model.
+
+### Operational guidance
+
+Choose the narrowest profile that still lets the task complete, especially when
+you grant writes or outbound network access. Keep approval policy, secret
+handling, and allow rules aligned with that access level.
+
+## Common profiles
+
+### Read-only with network allowlist
+
+```toml
+default_permissions = "readonly-net"
+
+[permissions.readonly-net.filesystem]
+":minimal" = "read"
+
+[permissions.readonly-net.filesystem.":workspace_roots"]
+"." = "read"
+
+[permissions.readonly-net.network]
+enabled = true
+
+[permissions.readonly-net.network.domains]
+"api.openai.com" = "allow"
+```
+
+### Workspace write without network
+
+```toml
+default_permissions = "project-edit"
+
+[permissions.project-edit.filesystem]
+":minimal" = "read"
+
+[permissions.project-edit.filesystem.":workspace_roots"]
+"." = "write"
+
+[permissions.project-edit.network]
+enabled = false
+```
+
+### Workspace write with public web access
+
+```toml
+default_permissions = "workspace-net"
+
+[permissions.workspace-net.filesystem]
+":minimal" = "read"
+
+[permissions.workspace-net.filesystem.":workspace_roots"]
+"." = "write"
+
+[permissions.workspace-net.network]
+enabled = true
+
+[permissions.workspace-net.network.domains]
+"*" = "allow"
+```
+
+Use the global `"*"` allow rule only when you intend to allow public network
+access. Deny rules can narrow a broad allowlist.
 
 ---
 

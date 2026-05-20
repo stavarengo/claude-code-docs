@@ -125,6 +125,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Safety checks](https://developers.openai.com/api/docs/guides/safety-checks.md): Learn how OpenAI assesses for safety, OpenAI classifiers across safety categories, and implementation tips for how to pass safety checks.
 - [Safety in building agents](https://developers.openai.com/api/docs/guides/agent-builder-safety.md): Minimize prompt injections and other risks when building agent workflows with OpenAI Agent Builder.
 - [Sandbox Agents](https://developers.openai.com/api/docs/guides/agents/sandboxes.md): Learn how sandboxes fit into Agents SDK workflows, when to use them, and how orchestration stays separate from execution.
+- [Secure MCP Tunnel](https://developers.openai.com/api/docs/guides/secure-mcp-tunnels.md): Connect private MCP servers to supported OpenAI products without exposing them to the public internet.
 - [Shell](https://developers.openai.com/api/docs/guides/tools-shell.md): Run shell commands in hosted containers or your own local runtime.
 - [Skills](https://developers.openai.com/api/docs/guides/tools-skills.md): Upload, manage, and attach reusable skills to hosted environments.
 - [Speech to text](https://developers.openai.com/api/docs/guides/speech-to-text.md): Learn how to turn audio into text with the OpenAI API.

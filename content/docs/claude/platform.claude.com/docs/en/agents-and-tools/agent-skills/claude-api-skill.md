@@ -6,10 +6,10 @@ An open-source Agent Skill that provides Claude with up-to-date API reference ma
 
 The `claude-api` skill is an open-source [Agent Skill](/docs/en/agents-and-tools/agent-skills/overview) that provides Claude with detailed, up-to-date reference material for building applications on two Anthropic surfaces:
 
-- **Messages API** — the primary surface for single requests, streaming chat, tool use, batch processing, prompt caching, structured outputs, and custom agent loops.
+- **Messages API:** The primary surface for single requests, streaming chat, tool use, batch processing, prompt caching, structured outputs, and custom agent loops.
 - **Claude Managed Agents (beta):** An Anthropic-hosted surface for server-managed stateful agents with Anthropic-hosted tool execution, persistent agent configs, and per-session containers.
 
-It covers 8 programming languages for the Messages API (Python, TypeScript, Java, Go, Ruby, C#, PHP, and cURL) and 7 languages for Managed Agents (Python, TypeScript, Java, Go, Ruby, PHP, and cURL — C# is not currently supported).
+It covers 8 programming languages for the Messages API (Python, TypeScript, Java, Go, Ruby, C#, PHP, and cURL) and 7 languages for Managed Agents (Python, TypeScript, Java, Go, Ruby, PHP, and cURL; C# is not currently supported).
 
 The skill comes bundled with [Claude Code](https://code.claude.com/docs/en/overview) and is also available in the open-source [Anthropic skills repository](https://github.com/anthropics/skills/tree/main/skills/claude-api), where you can install it in any environment that supports Agent Skills.
 
@@ -117,6 +117,7 @@ When the scope is ambiguous (for example, a bare `/claude-api migrate to claude-
 The skill handles:
 
 - **Model ID swaps**, including typed SDK constants (`Model.CLAUDE_OPUS_4_6` → `Model.CLAUDE_OPUS_4_7`) across all supported languages, and classifies each file as a caller, a model definer, or an opaque string reference before editing
+- **Cloud platform detection**, preserving platform-specific model ID formats (for example, the `anthropic.` prefix on Amazon Bedrock) and skipping changes for features that are unavailable on partner-operated platforms
 - **Breaking parameter changes**, such as removing `temperature`, `top_p`, and `top_k` for Claude Opus 4.7, and converting `thinking: {type: "enabled", budget_tokens: N}` to `thinking: {type: "adaptive"}`
 - **Prefill replacement**, converting assistant-message prefill patterns to [structured outputs](/docs/en/build-with-claude/structured-outputs) where applicable
 - **Beta header cleanup**, removing headers that are GA on the target model (for example, `effort-2025-11-24`, `fine-grained-tool-streaming-2025-05-14`, `interleaved-thinking-2025-05-14`) and switching back from `client.beta.messages.create` to `client.messages.create`
@@ -136,7 +137,7 @@ To scaffold a new Managed Agent from scratch, invoke the `managed-agents-onboard
 /claude-api managed-agents-onboard
 ```
 
-The skill runs an interview that walks you through the Managed Agents mental model (Agent configs versus Sessions), templates an agent config, configures environments and tools, sets up the session loop, and emits runnable code for your language. The skill also covers the mandatory **Agent (once) → Session (every run)** flow — `model`, `system`, and `tools` live on the agent, never on the session, and agents should be created once and referenced by ID.
+The skill runs an interview that walks you through the Managed Agents mental model (Agent configs versus Sessions), templates an agent config, configures environments and tools, sets up the session loop, and emits runnable code for your language. The skill also covers the mandatory **Agent (once) → Session (every run)** flow: `model`, `system`, and `tools` live on the agent, never on the session, and agents should be created once and referenced by ID.
 
 Managed Agents requires the `managed-agents-2026-04-01` beta header, which the SDK sets automatically for all `client.beta.agents.*`, `client.beta.environments.*`, `client.beta.sessions.*`, and `client.beta.vaults.*` calls.
 

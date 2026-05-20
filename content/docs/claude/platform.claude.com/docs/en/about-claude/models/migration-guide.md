@@ -10,7 +10,7 @@ This guide covers migrating [Messages API](/docs/en/build-with-claude/working-wi
 
 ## Migrating to Claude Opus 4.7
 
-Claude Opus 4.7 is our most capable generally available model to date. It is highly autonomous and performs exceptionally well on long-horizon agentic work, knowledge work, vision tasks, and memory tasks.
+Claude Opus 4.7 is Anthropic's most capable generally available model to date. It is highly autonomous and performs exceptionally well on long-horizon agentic work, knowledge work, vision tasks, and memory tasks.
 
 Claude Opus 4.7 should have strong out-of-the-box performance on existing Claude Opus 4.6 prompts and evals at the same `$5 / $25` per MTok pricing, but there are a handful of behavioral and API changes worth knowing about as you migrate. It supports the same set of features as Claude Opus 4.6, including:
 
@@ -31,7 +31,7 @@ Claude Opus 4.7 should have strong out-of-the-box performance on existing Claude
   /claude-api migrate this project to claude-opus-4-7
   ```
 
-  The skill applies the model ID swap, breaking parameter changes, prefill replacement, and effort calibration described below across your codebase, then produces a checklist of items to verify manually. It asks you to confirm the migration scope (entire working directory, a subdirectory, or a specific file list) before editing any files.
+  The skill applies the model ID swap, breaking parameter changes, prefill replacement, and effort calibration described below across your codebase, then produces a checklist of items to verify manually. It asks you to confirm the migration scope (entire working directory, a subdirectory, or a specific file list) before editing any files. The skill also detects Amazon Bedrock, Vertex AI, Claude Platform on AWS, and Microsoft Foundry clients and adjusts model ID formats and feature changes for each platform.
 </Tip>
 
 ### Update your model name
@@ -51,8 +51,8 @@ model = "claude-opus-4-7"  # After
     ```python
     client.messages.create(
         model="claude-opus-4-6",
-        max_tokens=64000,
-        thinking={"type": "enabled", "budget_tokens": 32000},
+        max_tokens=16000,
+        thinking={"type": "enabled", "budget_tokens": 10000},
         messages=[{"role": "user", "content": "..."}],
     )
     ```
@@ -62,7 +62,7 @@ model = "claude-opus-4-7"  # After
     ```python
     client.messages.create(
         model="claude-opus-4-7",
-        max_tokens=64000,
+        max_tokens=16000,
         thinking={"type": "adaptive"},
         output_config={"effort": "high"},  # or "max", "xhigh", "medium", "low"
         messages=[{"role": "user", "content": "..."}],
@@ -88,7 +88,7 @@ model = "claude-opus-4-7"  # After
 
     [`/v1/messages/count_tokens`](/docs/en/build-with-claude/token-counting) will return a different number of tokens for Claude Opus 4.7 than it did for Claude Opus 4.6. Token efficiency can vary by workload shape.
 
-    Prompting interventions, `task_budget`, and `effort` can help control costs and ensure appropriate token usage. These controls may trade off model intelligence. We suggest updating your `max_tokens` parameters to give additional headroom, including compaction triggers. Claude Opus 4.7 provides a 1M context window at standard API pricing with no long-context premium.
+    Prompting interventions, `task_budget`, and `effort` can help control costs and ensure appropriate token usage. These controls may trade off model intelligence. Update your `max_tokens` parameters to give additional headroom, including compaction triggers. Claude Opus 4.7 provides a 1M context window at standard API pricing with no long-context premium.
 
 5. **Prefill removal (carried over from Opus 4.6):** Prefilling assistant messages returns a 400 error on Claude Opus 4.7. Use [structured outputs](/docs/en/build-with-claude/structured-outputs), system prompt instructions, or `output_config.format` instead.
 
@@ -96,13 +96,13 @@ model = "claude-opus-4-7"  # After
 
 The [effort parameter](/docs/en/build-with-claude/effort) allows you to tune Claude's intelligence vs. token spend, trading off capability for faster speed and lower costs. Start with the new `xhigh` effort level for coding and agentic use cases, and use a minimum of `high` effort for most intelligence-sensitive use cases. Experiment with other effort levels to further tune token usage and intelligence:
 
-- **`max`:** Max effort can deliver performance gains in some use cases, but may show diminishing returns from increased token usage. This setting can also sometimes be prone to overthinking. We recommend testing max effort for intelligence-demanding tasks.
+- **`max`:** Max effort can deliver performance gains in some use cases, but may show diminishing returns from increased token usage. This setting can also sometimes be prone to overthinking. Test max effort for intelligence-demanding tasks.
 - **`xhigh` (new):** Extra high effort is the best setting for most coding and agentic use cases.
-- **`high`:** This setting balances token usage and intelligence. For most intelligence-sensitive use cases, we recommend a minimum of `high` effort.
+- **`high`:** This setting balances token usage and intelligence. For most intelligence-sensitive use cases, use a minimum of `high` effort.
 - **`medium`:** Good for cost-sensitive use cases that need to reduce token usage while trading off intelligence.
 - **`low`:** Reserve for short, scoped tasks and latency-sensitive workloads that are not intelligence-sensitive.
 
-We expect effort to be more important for this model than for any prior Opus, and recommend experimenting with it actively when you upgrade.
+Effort is more important for this model than for any prior Opus. Experiment with it actively when you upgrade.
 
 ### Behavior changes
 
@@ -147,7 +147,7 @@ Claude Opus 4.7 has several behavioral differences from Claude Opus 4.6 that are
 
 These are not required but will improve your experience:
 
-1. **Re-evaluate `max_tokens`:** Because the same text produces a higher token count on Claude Opus 4.7, we suggest updating your `max_tokens` parameters to give additional headroom, including compaction triggers. Prompting interventions, [`task_budget`](/docs/en/build-with-claude/task-budgets), and [`effort`](/docs/en/build-with-claude/effort) can help control costs and ensure appropriate token usage.
+1. **Re-evaluate `max_tokens`:** Because the same text produces a higher token count on Claude Opus 4.7, update your `max_tokens` parameters to give additional headroom, including compaction triggers. Prompting interventions, [`task_budget`](/docs/en/build-with-claude/task-budgets), and [`effort`](/docs/en/build-with-claude/effort) can help control costs and ensure appropriate token usage.
 
 2. **Audit token-count expectations:** Any code path that estimates tokens client-side or assumes a fixed token-to-character ratio should be re-tested against Claude Opus 4.7. Use the [Token counting endpoint](/docs/en/build-with-claude/token-counting) to verify.
 
@@ -171,7 +171,7 @@ These are not required but will improve your experience:
 
     Use `task_budget` when you want the model to self-moderate, and `max_tokens` as a hard ceiling to cap usage.
 
-4. **Set a large `max_tokens` at `max` or `xhigh` effort:** If you are running Claude Opus 4.7 at `max` or `xhigh` effort, set a large max output token budget so the model has room to think and act across its subagents and tool calls. We recommend starting at 64k tokens and tuning from there.
+4. **Set a large `max_tokens` at `max` or `xhigh` effort:** If you are running Claude Opus 4.7 at `max` or `xhigh` effort, set a large max output token budget so the model has room to think and act across its subagents and tool calls. Start at 64k tokens and tune from there.
 
 5. **Downsample images if high resolution is unnecessary:** Claude Opus 4.7 supports images up to 2576px / 3.75MP. High-res images use more tokens. If the additional image fidelity is unnecessary, downsample images before sending to Claude to avoid token-usage increases. See [Images and vision](/docs/en/build-with-claude/vision).
 
@@ -218,14 +218,30 @@ These changes improve your experience on Opus 4.7. Items marked **(required on O
 1. **Migrate to adaptive thinking (required on Opus 4.7):** `thinking: {type: "enabled", budget_tokens: N}` returns a 400 error on Claude Opus 4.7. Switch to `thinking: {type: "adaptive"}` and use the [effort parameter](/docs/en/build-with-claude/effort) to control thinking depth. See [Adaptive thinking](/docs/en/build-with-claude/adaptive-thinking).
 
    <CodeGroup>
-   
-   ```python Before nocheck
+   ```bash cURL
+   curl -sS https://api.anthropic.com/v1/messages \
+     -H "content-type: application/json" \
+     -H "x-api-key: $ANTHROPIC_API_KEY" \
+     -H "anthropic-version: 2023-06-01" \
+     -d '{
+       "model": "claude-opus-4-7",
+       "max_tokens": 16000,
+       "thinking": {"type": "adaptive"},
+       "output_config": {"effort": "high"},
+       "messages": [{"role": "user", "content": "Your prompt here"}]
+     }'
+   ```
+
+   ```python Before hidelines={1..3}
+   import anthropic
+
+   client = anthropic.Anthropic()
    response = client.beta.messages.create(
        model="claude-opus-4-5",
        max_tokens=16000,
        thinking={"type": "enabled", "budget_tokens": 32000},
        betas=["interleaved-thinking-2025-05-14"],
-       messages=[...],
+       messages=[{"role": "user", "content": "Your prompt here"}],
    )
    ```
 

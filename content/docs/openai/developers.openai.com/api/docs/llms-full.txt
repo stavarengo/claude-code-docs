@@ -3185,9 +3185,6 @@ To improve reliability and make it easier for developers to choose the right mod
 | Shutdown date | Model snapshot                                                         | Substitute model             |
 | ------------- | ---------------------------------------------------------------------- | ---------------------------- |
 | 2026-07-23    | `computer-use-preview-2025-03-11` \| `computer-use-preview`            | `gpt-5.4-mini`               |
-| 2026-07-23    | `gpt-4o-audio-preview-2024-12-17`                                      | `gpt-audio-1.5`              |
-| 2026-07-23    | `gpt-4o-mini-audio-preview-2024-12-17`                                 | `gpt-audio-mini`             |
-| 2026-07-23    | `gpt-4o-mini-realtime-preview-2024-12-17`                              | `gpt-realtime-mini`          |
 | 2026-07-23    | `gpt-4o-mini-search-preview-2025-03-11`                                | `gpt-5.4-mini`               |
 | 2026-07-23    | `gpt-4o-mini-tts-2025-03-20`                                           | `gpt-4o-mini-tts-2025-12-15` |
 | 2026-07-23    | `gpt-4o-search-preview-2025-03-11`                                     | `gpt-5.4-mini`               |
@@ -16268,6 +16265,10 @@ In addition to tools you make available to the model with [function calling](htt
 
 This guide will show how to use both remote MCP servers and connectors to give the model access to new capabilities.
 
+## Secure MCP Tunnel
+
+If your MCP server is private, use [Secure MCP Tunnel](https://developers.openai.com/api/docs/guides/secure-mcp-tunnels) to connect it to supported OpenAI products without exposing the server to the public internet. Download the latest public release from [openai/tunnel-client](https://github.com/openai/tunnel-client/releases/latest).
+
 ## Quickstart
 
 Check out the examples below to see how remote MCP servers and connectors work through the [Responses API](https://developers.openai.com/api/docs/api-reference/responses/create). Both connectors and remote MCP servers can be used with the `mcp` built-in tool type.
@@ -24291,12 +24292,6 @@ Realtime transcription uses a session with `type: "transcription"`. You can conn
         "transcription": {
           "model": "gpt-realtime-whisper",
           "language": "en"
-        },
-        "turn_detection": {
-          "type": "server_vad",
-          "threshold": 0.5,
-          "prefix_padding_ms": 300,
-          "silence_duration_ms": 500
         }
       }
     }
@@ -24310,7 +24305,8 @@ Realtime transcription uses a session with `type: "transcription"`. You can conn
 - `audio.input.format`: Input encoding for audio appended to the buffer. Use 24 kHz mono PCM when sending `audio/pcm`.
 - `audio.input.transcription.model`: Use `gpt-realtime-whisper` for streaming transcription.
 - `audio.input.transcription.language`: Optional language hint such as `en`.
-- `audio.input.turn_detection`: Optional voice activity detection. Set it to `null` if you want to commit audio manually.
+- `audio.input.transcription.delay`: Optional latency/accuracy tradeoff for `gpt-realtime-whisper`. Supported values are `minimal`, `low`, `medium`, `high`, and `xhigh`.
+- `audio.input.turn_detection`: Optional voice activity detection for models that support it. For `gpt-realtime-whisper`, omit this field or set it to `null`, then commit audio manually.
 
 ## Stream audio
 
@@ -24335,7 +24331,7 @@ ws.send(
 );
 ```
 
-With server VAD enabled, the session commits audio automatically when it detects a turn boundary.
+For models that support server VAD, the session commits audio automatically when it detects a turn boundary.
 
 ## Handle transcript events
 
@@ -24383,18 +24379,23 @@ Ordering between completion events from different speech turns isn't guaranteed.
 
 Streaming transcription trades latency for transcript quality. Lower delay settings can produce earlier partial text. Higher delay settings give the model more audio context before emitting text and can improve word error rate.
 
-Start by testing a few delay targets against your real audio. Useful evaluation points are:
+Start by setting `audio.input.transcription.delay` and testing against your real audio. Useful starting points are:
 
-- 0.4 seconds for the most latency-sensitive interactions;
-- 0.8 to 1.2 seconds for balanced live captions;
-- 1.5 to 2.0 seconds when accuracy matters more than immediate display;
-- 3.0 seconds for workflows that can tolerate more delay.
+- `minimal` for the most latency-sensitive interactions;
+- `low` for low-latency live captions;
+- `medium` for a balanced latency/accuracy tradeoff;
+- `high` when accuracy matters more than immediate display;
+- `xhigh` when your workflow can tolerate the most delay for additional context.
+
+The exact delay in milliseconds can vary by model configuration, so benchmark with representative audio instead of assuming a fixed timing per level.
 
 Don't choose a setting from synthetic audio alone. Test with representative microphones, telephony audio, accents, background noise, code-switching, domain vocabulary, and long sessions.
 
 ## Guide vocabulary and domain terms
 
-If your application depends on exact domain vocabulary, include a language hint and test whether your model and endpoint support prompt or keyword steering before relying on it. Where supported, use short keyword lists rather than long instructions.
+If your application depends on exact domain vocabulary, include a language hint and use prompt or keyword steering only when your selected model supports it. For `gpt-realtime-whisper` in GA Realtime sessions, `prompt` is not supported.
+
+Where prompt steering is available, use short keyword lists rather than long instructions. The model is already instructed to transcribe, so focus prompts on domain vocabulary, spelling, or style rather than re-stating the transcription task.
 
 Example keyword style:
 
@@ -28565,6 +28566,147 @@ previews, and persistence behavior.
 [sdk-js-example-resume]: https://github.com/openai/openai-agents-js/blob/main/examples/docs/sandbox-agents/resume-session-state.ts
 [sdk-js-sandbox-clients]: https://openai.github.io/openai-agents-js/guides/sandbox-agents/clients
 [sdk-js-sandbox-memory]: https://openai.github.io/openai-agents-js/guides/sandbox-agents/memory
+
+---
+
+# Secure MCP Tunnel
+
+Secure MCP Tunnel lets you connect private MCP servers to supported OpenAI products without opening inbound firewall ports or exposing those servers to the public internet. Run `tunnel-client` inside the network that can already reach your MCP server; it opens an outbound HTTPS path to OpenAI, pulls queued MCP work, forwards requests locally, and returns responses through the same tunnel.
+
+## Use Secure MCP Tunnel when
+
+- Your MCP server runs on a private network, on-premises, on a developer machine, or behind existing access controls.
+- You want ChatGPT, Codex, the Responses API, or another supported OpenAI surface to use that server without making the MCP server public.
+- Your network allows the host running `tunnel-client` to make outbound HTTPS requests to OpenAI.
+- Start with the [MCP and Connectors guide](https://developers.openai.com/api/docs/guides/tools-connectors-mcp) for general MCP concepts.
+
+## How it works
+
+1. Create or manage an OpenAI-hosted MCP tunnel endpoint in Platform tunnel settings.
+2. Run `tunnel-client` inside the network that can reach your private MCP server.
+3. Configure `tunnel-client` with the tunnel identity and the private MCP server address.
+4. OpenAI products send MCP requests to the OpenAI-hosted tunnel endpoint.
+5. `tunnel-client` long-polls for queued work, forwards each `JSON-RPC` request to the private MCP server, and posts the response back through the tunnel.
+
+The private MCP server does not need a public listener. The OpenAI-hosted endpoint gives supported products a normal MCP request path, while the network initiation point stays inside your boundary. When a connector asks for streamed results, the tunnel path can forward intermediate server-sent events.
+
+<figure className="not-prose my-8">
+  <figcaption className="mt-3 text-sm text-gray-600 dark:text-gray-400">
+    OpenAI products call the OpenAI-hosted tunnel endpoint; `tunnel-client`
+    long-polls for queued work and returns the MCP response through the same
+    tunnel.
+  </figcaption>
+</figure>
+
+## Before you start
+
+You need:
+
+- A `tunnel_id` from [Platform tunnel settings](https://platform.openai.com/settings/organization/tunnels).
+- A runtime API key for `tunnel-client`. The key principal needs Tunnels **Read** + **Use** for the target tunnel.
+- A tunnel manager with Tunnels **Read** + **Manage** if you need to create or edit tunnel metadata.
+- An MCP server that `tunnel-client` can reach over stdio or HTTP from inside your network.
+
+## Set up tunnel-client
+
+Open [Platform tunnel settings](https://platform.openai.com/settings/organization/tunnels), then download the latest public `tunnel-client` release from [openai/tunnel-client](https://github.com/openai/tunnel-client/releases/latest). Keep your runbook pointed at the latest-release URL instead of hard-coding a specific release URL.
+
+For a local stdio MCP server, the shortest profile-based flow is:
+
+```bash
+export CONTROL_PLANE_API_KEY="sk-..."
+
+tunnel-client init \
+  --sample sample_mcp_stdio_local \
+  --profile local-stdio \
+  --tunnel-id tunnel_0123456789abcdef0123456789abcdef \
+  --mcp-command "python /path/to/server.py"
+
+tunnel-client doctor --profile local-stdio --explain
+tunnel-client run --profile local-stdio
+```
+
+For an HTTP MCP server, use `--mcp-server-url https://mcp.internal.example.com/mcp` instead of `--mcp-command`.
+
+Keep `tunnel-client run ...` healthy while you create or test the connector. Connector discovery and MCP tool calls depend on the running client.
+
+## Connect from ChatGPT
+
+Open [ChatGPT connector settings](https://chatgpt.com/#settings/Connectors), create a custom connector, and choose **Tunnel** under **Connection**. Select an available tunnel when ChatGPT lists it, or paste a valid `tunnel_id` if you already have one.
+
+If the tunnel does not appear in ChatGPT, verify that the tunnel is associated with the target workspace and that the connector operator has Tunnels **Read** + **Use**.
+
+## Security and networking
+
+<figure className="not-prose my-8">
+  <figcaption className="mt-3 text-sm text-gray-600 dark:text-gray-400">
+    The private MCP server stays inside the customer-controlled environment.
+    `tunnel-client` reaches OpenAI over outbound HTTPS using the runtime API key
+    and, when required, optional control-plane mTLS.
+  </figcaption>
+</figure>
+
+- The MCP server address stays private and is used only from inside the environment where `tunnel-client` runs.
+- `tunnel-client` authenticates to the OpenAI tunnel control plane; supported OpenAI products use the OpenAI-hosted tunnel endpoint.
+- Tunnel access follows the existing organization and workspace context instead of introducing a separate public ingress path.
+- `tunnel-client` supports enterprise networking requirements such as outbound proxies, custom CA bundles, control-plane client certificates, and MCP-side `mTLS`.
+- The embedded Harpoon MCP server is limited to labeled, allowlisted HTTP callouts used by flows such as OAuth metadata handling. It is not a general-purpose outbound proxy.
+
+## Troubleshooting
+
+- **Tunnel not visible in ChatGPT:** Check the tunnel workspace scope and the connector operator's Tunnels **Use** permission.
+- **Connector discovery or tool calls fail:** Confirm that `tunnel-client run ...` is still running, then re-run `tunnel-client doctor --profile <name> --explain`.
+- **You can inspect a tunnel but cannot edit it:** The operator likely has Tunnels **Read** but not Tunnels **Manage**.
+- `tunnel-client` exposes `/healthz`, `/readyz`, `/metrics`, and a local admin UI at `/ui`.
+- Use those surfaces to confirm that the client is healthy, ready, and polling before testing from ChatGPT, Codex, or an API flow.
+- If the client is not connected, requests through the tunnel fail until `tunnel-client` reconnects.
+- Raw HTTP logging is disabled by default, and support exports are redacted.
+
+## OAuth
+
+- OAuth discovery can travel through the tunnel path so the MCP server itself can remain private.
+- The tunnel preserves the upstream authorization server metadata needed for browser-facing OAuth flows.
+- The authorization server itself is not automatically tunneled. If it is unreachable from the public internet and from the `tunnel-client` host, the OAuth flow can still fail even when the MCP server is reachable.
+
+## Where to configure it
+
+- Manage OpenAI-hosted MCP tunnel endpoints in [Platform tunnel settings](https://platform.openai.com/settings/organization/tunnels).
+- Use a tunnel when creating a connector from [ChatGPT connector settings](https://chatgpt.com/#settings/Connectors).
+- For Codex or API flows, use the tunnel-backed MCP target exposed by the supported product surface.
+
+## Next steps
+
+- Create or manage the tunnel in [Platform tunnel settings](https://platform.openai.com/settings/organization/tunnels).
+- Validate your `tunnel-client` profile with `tunnel-client doctor --profile <profile> --explain`.
+- Connect the tunnel from [ChatGPT connector settings](https://chatgpt.com/#settings/Connectors) or the supported OpenAI surface you are using.
+
+<div class="not-prose my-8 grid gap-4 lg:grid-cols-2">
+  <figure>
+    <a href="https://platform.openai.com/settings/organization/tunnels">
+      <img src="https://developers.openai.com/images/platform/guides/secure-mcp-tunnels/platform-tunnels-settings.png"
+        alt="Sanitized OpenAI Platform tunnel settings screenshot."
+        loading="lazy"
+        class="w-full rounded-md border border-gray-200 dark:border-gray-800"
+      />
+    </a>
+    <figcaption class="mt-3 text-sm text-gray-600 dark:text-gray-400">
+      Create and manage OpenAI-hosted MCP tunnel endpoints from Platform tunnel
+      settings.
+    </figcaption>
+  </figure>
+  <figure>
+    <a href="https://chatgpt.com/#settings/Connectors">
+      <img src="https://developers.openai.com/images/platform/guides/secure-mcp-tunnels/chatgpt-connectors-tunnel.png"
+        alt="Sanitized ChatGPT connector settings screenshot with Tunnel selected."
+        loading="lazy"
+        class="w-full rounded-md border border-gray-200 dark:border-gray-800"
+      />
+    </a>
+    <figcaption class="mt-3 text-sm text-gray-600 dark:text-gray-400">
+      Select Tunnel when connecting a ChatGPT connector to a private MCP server.
+    </figcaption>
+  </figure>
+</div>
 
 ---
 
@@ -36235,7 +36377,8 @@ Now that you know the basics of vision fine-tuning, explore these other methods 
 # Voice activity detection (VAD)
 
 Voice activity detection (VAD) is a feature available in the Realtime API allowing to automatically detect when the user has started or stopped speaking.
-It is enabled by default in [speech-to-speech](https://developers.openai.com/api/docs/guides/realtime-conversations) or [transcription](https://developers.openai.com/api/docs/guides/realtime-transcription) Realtime sessions, but is optional and can be turned off.
+It is enabled by default in [speech-to-speech](https://developers.openai.com/api/docs/guides/realtime-conversations) Realtime sessions, but is optional and can be turned off.
+In [transcription](https://developers.openai.com/api/docs/guides/realtime-transcription) Realtime sessions, turn detection support depends on the transcription model. Models that support VAD default to `server_vad`, while `gpt-realtime-whisper` requires turn detection to be omitted or set to `null`.
 
 ## Overview
 
@@ -36246,20 +36389,20 @@ When VAD is enabled, the audio is chunked automatically and the Realtime API sen
 
 You can use these events to handle speech turns in your application. For example, you can use them to manage conversation state or process transcripts in chunks.
 
-You can use the `turn_detection` property of the `session.update` event to configure how audio is chunked within each speech-to-text sample.
+You can configure VAD with the [`session.update`](https://developers.openai.com/api/docs/api-reference/realtime-client-events/session/update) client event by setting `session.audio.input.turn_detection`.
 
 There are two modes for VAD:
 
 - `server_vad`: Automatically chunks the audio based on periods of silence.
 - `semantic_vad`: Chunks the audio when the model believes based on the words said by the user that they have completed their utterance.
 
-The default value is `server_vad`.
+For sessions and models that support VAD, the default value is `server_vad`.
 
 Read below to learn more about the different modes.
 
 ## Server VAD
 
-Server VAD is the default mode for Realtime sessions, and uses periods of silence to automatically chunk the audio.
+Server VAD is the default mode for speech-to-speech sessions, and for transcription sessions on models that support turn detection. It uses periods of silence to automatically chunk the audio.
 
 You can adjust the following properties to fine-tune the VAD settings:
 
@@ -36273,17 +36416,26 @@ Here is an example VAD configuration:
 {
   "type": "session.update",
   "session": {
-    "turn_detection": {
-      "type": "server_vad",
-      "threshold": 0.5,
-      "prefix_padding_ms": 300,
-      "silence_duration_ms": 500,
-      "create_response": true, // only in conversation mode
-      "interrupt_response": true // only in conversation mode
+    "type": "realtime",
+    "audio": {
+      "input": {
+        "turn_detection": {
+          "type": "server_vad",
+          "threshold": 0.5,
+          "prefix_padding_ms": 300,
+          "silence_duration_ms": 500,
+          "create_response": true, // only in conversation mode
+          "interrupt_response": true // only in conversation mode
+        }
+      }
     }
   }
 }
 ```
+
+Use the same `session.audio.input.turn_detection` field in transcription sessions. For `gpt-realtime-whisper`, omit turn detection or set it to `null`.
+
+The `create_response` and `interrupt_response` fields are only used in speech-to-speech conversations. In transcription sessions, VAD only controls how audio is chunked.
 
 ## Semantic VAD
 
@@ -36293,7 +36445,7 @@ For example, user audio that trails off with an "ummm..." would result in a long
 
 With this mode, the model is less likely to interrupt the user during a speech-to-speech conversation, or chunk a transcript before the user is done speaking.
 
-Semantic VAD can be activated by setting `turn_detection.type` to `semantic_vad` in a [`session.update`](https://developers.openai.com/api/docs/api-reference/realtime-client-events/session/update) event.
+Semantic VAD can be activated by setting `session.audio.input.turn_detection.type` to `semantic_vad`.
 
 It can be configured like this:
 
@@ -36301,15 +36453,22 @@ It can be configured like this:
 {
   "type": "session.update",
   "session": {
-    "turn_detection": {
-      "type": "semantic_vad",
-      "eagerness": "low" | "medium" | "high" | "auto", // optional
-      "create_response": true, // only in conversation mode
-      "interrupt_response": true, // only in conversation mode
+    "type": "realtime",
+    "audio": {
+      "input": {
+        "turn_detection": {
+          "type": "semantic_vad",
+          "eagerness": "low" | "medium" | "high" | "auto", // optional
+          "create_response": true, // only in conversation mode
+          "interrupt_response": true, // only in conversation mode
+        }
+      }
     }
   }
 }
 ```
+
+The same `session.audio.input.turn_detection` field applies in transcription sessions. The `create_response` and `interrupt_response` fields are conversation-only.
 
 The optional `eagerness` property is a way to control how eager the model is to interrupt the user, tuning the maximum wait timeout. In transcription mode, even if the model doesn't reply, it affects how the audio is chunked.
 

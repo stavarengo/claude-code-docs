@@ -10,6 +10,12 @@ For release notes on Claude Apps, see the [Release notes for Claude Apps in the 
 For updates to Claude Code, see the [complete CHANGELOG.md](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) in the `claude-code` repository.
 </Tip>
 
+### May 19, 2026
+- [MCP tunnels](/docs/en/agents-and-tools/mcp-tunnels/overview) is now available as a Research Preview, so you can connect to MCP servers in your private network.
+- Self-hosted sandboxes are now available for Claude Managed Agents, as an alternative to running tool execution in Anthropic's infrastructure. See [Self-hosted sandboxes](/docs/en/managed-agents/self-hosted-sandboxes).
+- With Claude Managed Agents, you can now update the agent's MCP server and tool configurations associated with an active session.
+- With Claude Managed Agents, large outputs from `agent_toolset` and MCP tools exceeding 100K tokens are now automatically spilled to a file in the sandbox. The model receives a truncated preview with the file path and can read the full content from there.
+
 ### May 18, 2026
 - The [web search tool](/docs/en/agents-and-tools/tool-use/web-search-tool) now returns richer SEC filing data, making it easier to ground financial research agents, earnings analysis, and due-diligence workflows in primary sources with citations.
 
@@ -24,9 +30,9 @@ For updates to Claude Code, see the [complete CHANGELOG.md](https://github.com/a
 
 ### May 6, 2026
 - [Multiagent sessions](/docs/en/managed-agents/multi-agent) and [Outcomes](/docs/en/managed-agents/define-outcomes) are now in public beta under the standard `managed-agents-2026-04-01` beta header.
-- Vault credential background refresh is now supported for `mcp_oauth` credentials. See [Authenticate with vaults](/docs/en/managed-agents/vaults).
+- Claude Managed Agents vault credential background refresh is now supported for `mcp_oauth` credentials. See [Authenticate with vaults](/docs/en/managed-agents/vaults).
 - Webhooks for Claude Managed Agents are now supported. Webhook event types include session and vault lifecycle events. See [Subscribe to webhooks](/docs/en/managed-agents/webhooks).
-- Additional filtering and sorting options are now supported. Sessions can be filtered by status, and events can be filtered by type. Events can now be filtered by creation time.
+- Additional filtering and sorting options are now supported for Claude Managed Agents. Sessions can be filtered by status, and events can be filtered by type. Events can now be filtered by creation time.
 
 ### April 30, 2026
 - We've retired the 1M token context window beta (`context-1m-2025-08-07`) for Claude Sonnet 4.5 and Claude Sonnet 4. The beta header now has no effect on these models, and requests exceeding the standard 200k-token context window return an error. To use the 1M context window, migrate to [Claude Sonnet 4.6](/docs/en/about-claude/models/overview#latest-models-comparison) or [Claude Opus 4.6](/docs/en/about-claude/models/overview#latest-models-comparison), where it's generally available at standard pricing with no beta header required.

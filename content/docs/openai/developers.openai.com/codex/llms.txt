@@ -6,6 +6,7 @@ Use this as a compact map of Codex docs. Each page has a Markdown twin at `/code
 
 ## Documentation sets
 - [Combined Codex docs](https://developers.openai.com/codex/llms-full.txt): Single-file Markdown export of Codex guides and references.
+- [Codex manual (Markdown)](https://developers.openai.com/codex/codex-manual.md): Machine-oriented condensed manual generated from the Codex docs set.
 
 ## Agent Approvals Security
 - [Agent approvals & security](https://developers.openai.com/codex/agent-approvals-security.md): How to securely operate Codex with sandboxing, approvals, and network controls
@@ -123,6 +124,9 @@ Use this as a compact map of Codex docs. Each page has a Markdown twin at `/code
 
 ## Overview
 - [Codex](https://developers.openai.com/codex/overview.md): One agent for everywhere you code
+
+## Permissions
+- [Permissions](https://developers.openai.com/codex/permissions.md): Configure beta Codex permission profiles for filesystem and network access
 
 ## Plugins
 - [Plugins](https://developers.openai.com/codex/plugins.md): Use plugins in Codex to add reusable workflows with skills and app integrations

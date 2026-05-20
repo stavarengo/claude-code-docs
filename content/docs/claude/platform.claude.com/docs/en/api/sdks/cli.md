@@ -27,7 +27,7 @@ brew install anthropics/tap/ant
 For Linux environments, download the release binary directly.
 
 ```bash nocheck
-VERSION=1.8.0
+VERSION=1.9.1
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 ARCH=$(uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/')
 curl -fsSL "https://github.com/anthropics/anthropic-cli/releases/download/v${VERSION}/ant_${VERSION}_${OS}_${ARCH}.tar.gz" \
@@ -392,7 +392,7 @@ ant beta:agents create < summarizer.agent.yaml
 }
 ```
 
-Note the `id` from the response. You'll pass it to the session create command below.
+Note the `id` from the response. You'll pass it to the session create command in a later step.
 
 <Tip>
 Check `summarizer.agent.yaml` into your repository and keep it in sync with the API in your CI pipeline. The update command needs the agent ID and current version as flags:
@@ -430,7 +430,7 @@ ant beta:environments create < summarizer.environment.yaml
 }
 ```
 
-Note the `id` from the response. You'll pass it to the session create command below.
+Note the `id` from the response. You'll pass it to the session create command in a later step.
 
 <Tip>
 Check `summarizer.environment.yaml` into your repository and keep it in sync with the API in your CI pipeline. The update command needs the environment ID as a flag:

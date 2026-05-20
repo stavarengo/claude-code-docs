@@ -68,14 +68,14 @@ go get github.com/anthropics/anthropic-sdk-go
 <Tab title="Java">
 <CodeGroup>
 ```groovy Gradle
-implementation("com.anthropic:anthropic-java:2.32.0")
+implementation("com.anthropic:anthropic-java:2.33.0")
 ```
 
 ```xml Maven
 <dependency>
     <groupId>com.anthropic</groupId>
     <artifactId>anthropic-java</artifactId>
-    <version>2.32.0</version>
+    <version>2.33.0</version>
 </dependency>
 ```
 </CodeGroup>
@@ -337,7 +337,7 @@ See [Beta headers](/docs/en/api/beta-headers) for available beta features.
 | Java | 8+ |
 | Go | 1.23+ |
 | Ruby | 3.2.0+ |
-| C# | .NET Standard 2.0 |
+| C# | .NET Standard 2.0+ |
 | PHP | 8.1.0+ |
 
 ## GitHub repositories
