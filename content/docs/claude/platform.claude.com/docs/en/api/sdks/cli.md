@@ -72,10 +72,15 @@ ant auth login
 # On a remote host without a browser:
 ant auth login --no-browser
 
+# Bind to a specific workspace and skip the browser picker:
+ant auth login --workspace-id wrkspc_01...
+
 # If the named profile you pass with --profile doesn't exist,
 # a new named profile will be created with that name.
 ant auth login --profile <profile-name>
 ```
+
+During the browser flow, you select an organization and then a [workspace](/docs/en/manage-claude/workspaces). The issued token is [scoped to that workspace](/docs/en/manage-claude/workspaces#api-keys-and-resource-scoping), so the CLI can only see resources that belong to it. Pass `--workspace-id` to bind directly and skip the picker. To work in more than one workspace, see [Switch between workspaces](#switch-between-workspaces).
 
 Interactive login is intended for local development and scripting on your own machine. For non-interactive workloads such as CI, servers, and containers, use [Workload Identity Federation](/docs/en/manage-claude/workload-identity-federation) instead.
 
@@ -117,7 +122,7 @@ To override the key for a single invocation, pass `--api-key`. To point at a dif
 
 ### Check authentication status
 
-`ant auth status` prints the credential source the CLI selected (API key environment variable, OAuth login, federation, or profile), the active profile, and the configuration directory paths. Use it to diagnose why a workload picked the wrong credential.
+`ant auth status` prints the credential source the CLI selected (API key environment variable, OAuth login, federation, or profile), the active profile, the workspace the active token is bound to, and the configuration directory paths. Use it to diagnose why a workload picked the wrong credential or workspace.
 
 ```bash CLI nocheck
 ant auth status
@@ -130,27 +135,57 @@ Profile config:  ~/.config/anthropic/configs/default.json
 Credentials:     ~/.config/anthropic/credentials/default.json
 
 Credentials
-  (active) * --api-key / ANTHROPIC_API_KEY                  sk-ant-api03-EXA...
-           * Federation (jwt-bearer)                        see 'Federation inputs' below
+  (active) * Profile (user_oauth) [via active_config]       sk-ant-oat01-EXA...
 ...
+
+Workspace
+  (active) * Workspace                                      wrkspc_01... (Engineering)
 ```
 
-Read the `(active)` row to see which source won. The command reports status rather than performing a health check, so don't script against the exit status. For the full ordering of credential sources, see [Credential precedence](/docs/en/manage-claude/wif-reference#credential-precedence).
+Read the `(active)` rows to see which credential source and workspace won. The command reports status rather than performing a health check, so don't script against the exit status. For the full ordering of credential sources, see [Credential precedence](/docs/en/manage-claude/wif-reference#credential-precedence).
 
-### Named profiles
+### Switch between workspaces
 
-Every `ant` command accepts the global `--profile <name>` flag (or the `ANTHROPIC_PROFILE` environment variable), so `ant messages create --profile staging` works directly. The `ant profile` subcommands manage which profile is the default when you don't pass `--profile`.
+An interactive-login token is bound to a single workspace. To use the CLI against more than one workspace, log in to each under its own named profile, then switch between them:
 
-```bash CLI nocheck
+```bash CLI hidelines={1..3}
+export ANTHROPIC_CONFIG_DIR="$PWD/antconfig"
+mkdir -p "$ANTHROPIC_CONFIG_DIR/configs"
+printf '{"authentication":{"type":"user_oauth"}}' > "$ANTHROPIC_CONFIG_DIR/configs/other-ws.json"
+# 1. Create the profile (interactive; pick the other workspace in the
+#    browser, or pass --workspace-id to skip the picker):
+# ant auth login --profile other-ws
+
+# 2. Make it the default for subsequent commands:
+ant profile activate other-ws
+
+# 3. Or select it for a single command without changing the default:
+ant --profile other-ws models list
+ANTHROPIC_PROFILE=other-ws ant models list
+```
+
+Run [`ant auth status`](#check-authentication-status) to confirm which profile and workspace are active.
+
+<Note>
+Profiles are only consulted when no API key is set. If `ANTHROPIC_API_KEY` is present in your environment, it overrides every profile and these commands all use whatever workspace that key is scoped to. Unset it before switching profiles.
+</Note>
+
+### Manage profiles
+
+The `ant profile` subcommands inspect and edit profile state directly:
+
+```bash CLI hidelines={1..3}
+export ANTHROPIC_CONFIG_DIR="$PWD/antconfig"
+mkdir -p "$ANTHROPIC_CONFIG_DIR/configs"
+printf '{"authentication":{"type":"user_oauth"}}' > "$ANTHROPIC_CONFIG_DIR/configs/other-ws.json"
 ant profile list
-ant profile activate <profile-name>
-ant profile set workspace_id wrkspc_... --profile <profile-name>
-ant profile get --profile <profile-name>
+ant profile get --profile other-ws
+ant profile set workspace_id wrkspc_01... --profile other-ws
 ```
 
-The writable keys for `ant profile set` are `workspace_id`, `base_url`, `organization_id`, `scope`, `client_id`, and `console_url`. For the profile file schema and the federation block, see [Profile configuration file](/docs/en/manage-claude/wif-reference#profile-configuration-file).
+The writable keys for `ant profile set` are `workspace_id`, `base_url`, `organization_id`, `scope`, `client_id`, and `console_url`. Setting `workspace_id` records the target workspace in the profile config but does not rebind credentials that were already issued; run `ant auth login` again under that profile to mint a token for the new workspace.
 
-For Workload Identity Federation, see the [Authentication overview](/docs/en/manage-claude/authentication) and the [WIF reference](/docs/en/manage-claude/wif-reference).
+For the profile file schema and the federation block, see [Profile configuration file](/docs/en/manage-claude/wif-reference#profile-configuration-file). For Workload Identity Federation, see the [Authentication overview](/docs/en/manage-claude/authentication) and the [WIF reference](/docs/en/manage-claude/wif-reference).
 
 ## Send your first request
 
@@ -205,6 +240,7 @@ ant beta:sessions:events list --session-id session_01...
 
 | Flag | Description |
 | --- | --- |
+| `--profile` | Named profile to use for this invocation (equivalent to setting `ANTHROPIC_PROFILE`). See [Switch between workspaces](#switch-between-workspaces). |
 | `--format` | Output format: `auto`, `json`, `jsonl`, `yaml`, `pretty`, `raw`, `explore` |
 | `--transform` | Filter or reshape the response with a [GJSON path](#transform-output-with-gjson) |
 | `-r`, `--raw-output` | Print string results without surrounding quotes, like `jq -r` |

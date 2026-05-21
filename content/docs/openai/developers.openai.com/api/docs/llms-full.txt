@@ -1222,9 +1222,8 @@ There are several concepts involved in building an app with the Assistants API, 
 
 ## Creating assistants
 
-We recommend using OpenAI's{" "}
-  <a href="/api/docs/models#gpt-4-turbo-and-gpt-4">latest models</a> with the
-  Assistants API for best results and maximum compatibility with tools.
+We recommend using OpenAI's <a href="/api/docs/models">latest models</a> with
+  the Assistants API for best results and maximum compatibility with tools.
 
 To get started, creating an Assistant only requires specifying the `model` to use. But you can further customize the behavior of the Assistant:
 
@@ -3092,10 +3091,50 @@ Here’s a few simple examples of integrations using both the Assistants API and
 
 <div data-content-switcher-pane data-value="assistants">
     <div class="hidden">Assistants API</div>
-    </div>
+    ```python
+thread = openai.threads.create()
+
+    @app.post("/messages")
+    async def message(message: Message):
+    	openai.beta.threads.messages.create(
+    		role="user",
+    		content=message.content
+    	)
+
+    	run = openai.beta.threads.runs.create(
+    		assistant_id=os.getenv("ASSISTANT_ID"),
+    		thread_id=thread.id
+    	)
+    	while run.status in ("queued", "in_progress"):
+        await asyncio.sleep(1)
+        run = openai.beta.threads.runs.retrieve(thread_id=thread_id, run_id=run.id)
+
+    	messages = openai.beta.threads.messages.list(
+    		order="desc", limit=1, thread_id=thread.id
+    	)
+
+    	return { "content": messages[-1].content }
+```
+
+
+  </div>
   <div data-content-switcher-pane data-value="responses" hidden>
     <div class="hidden">Responses API</div>
-    </div>
+    ```python
+conversation = openai.conversations.create()
+
+    @app.post("/messages")
+    async def message(message: Message):
+    	response = openai.responses.create(
+    		prompt={ "id": os.getenv("PROMPT_ID") },
+    		input=[{ "role": "user", "content": message.content }]
+    	)
+
+    	return { "content": response.output_text }'
+```
+
+
+  </div>
 
 ---
 
@@ -3118,7 +3157,7 @@ OpenAI uses web crawlers (“robots”) and user agents to perform actions for i
 # Key concepts
 
 At OpenAI, protecting user data is fundamental to our mission. We do not train
-  our models on inputs and outputs through our API. Learn more on our{" "}
+  our models on inputs and outputs through our API. Learn more on our 
   <a href="https://openai.com/api-data-privacy">API data privacy page</a>.
 
 ## Text generation models
@@ -4102,14 +4141,14 @@ Language models read and write text in chunks called tokens. In English, a token
 
 As a rough rule of thumb, 1 token is approximately 4 characters or 0.75 words for English text.
 
-Check out our{" "}
+Check out our 
   <a
     href="https://platform.openai.com/tokenizer"
     target="_blank"
     rel="noreferrer"
   >
     Tokenizer tool
-  </a>{" "}
+  </a> 
   to test specific strings and see how they are translated into tokens.
 
 For example, the string `"ChatGPT is great!"` is encoded into six tokens: `["Chat", "G", "PT", " is", " great", "!"]`.
@@ -4355,7 +4394,7 @@ const getWeather = tool({
 const agent = new Agent({
   name: "Weather bot",
   instructions: "You are a helpful weather bot.",
-  model: "gpt-5.5",
+  model: "${latestMainlineModelSlug}",
   tools: [getWeather],
 });
 ```
@@ -4373,7 +4412,7 @@ def get_weather(city: str) -> str:
 agent = Agent(
     name="Weather bot",
     instructions="You are a helpful weather bot.",
-    model="gpt-5.5",
+    model="${latestMainlineModelSlug}",
     tools=[get_weather],
 )
 ```
@@ -5162,7 +5201,7 @@ For build-path guidance, see the [Realtime and audio overview](https://developer
 
 ## Add audio to your existing application
 
-Models such as `gpt-realtime` and `gpt-audio` are natively multimodal, meaning they can understand and generate audio and text as input and output.
+Models such as [`gpt-realtime-2`](https://developers.openai.com/api/docs/models/gpt-realtime-2) and [`gpt-audio-1.5`](https://developers.openai.com/api/docs/models/gpt-audio-1.5) are natively multimodal, meaning they can understand and generate audio and text as input and output.
 
 For live browser speech-to-speech interactions, start with a realtime session in the JavaScript SDK:
 
@@ -5188,7 +5227,7 @@ await session.connect({
 
 This example uses JavaScript because browser voice agents connect with WebRTC from the client. For Python voice workflows, use the [Voice agents guide](https://developers.openai.com/api/docs/guides/voice-agents), which covers chained voice pipelines.
 
-If you already have a text-based LLM application with the [Chat Completions endpoint](https://developers.openai.com/api/docs/api-reference/chat/), you may want to add audio capabilities. For example, if your chat application supports text input, you can add audio input and output: include `audio` in the `modalities` array and use an audio model, like `gpt-audio`.
+If you already have a text-based LLM application with the [Chat Completions endpoint](https://developers.openai.com/api/docs/api-reference/chat/), you may want to add audio capabilities. For example, if your chat application supports text input, you can add audio input and output: include `audio` in the `modalities` array and use an audio model, like [`gpt-audio-1.5`](https://developers.openai.com/api/docs/models/gpt-audio-1.5).
 
 The [Responses API](https://developers.openai.com/api/docs/api-reference/responses) docs currently describe
   text and image inputs with text outputs. For this audio-chat pattern, use Chat
@@ -5208,7 +5247,7 @@ const openai = new OpenAI();
 
 // Generate an audio response to the given prompt
 const response = await openai.chat.completions.create({
-  model: "gpt-audio",
+  model: "gpt-audio-1.5",
   modalities: ["text", "audio"],
   audio: { voice: "alloy", format: "wav" },
   messages: [
@@ -5238,7 +5277,7 @@ from openai import OpenAI
 client = OpenAI()
 
 completion = client.chat.completions.create(
-    model="gpt-audio",
+    model="gpt-audio-1.5",
     modalities=["text", "audio"],
     audio={"voice": "alloy", "format": "wav"},
     messages=[
@@ -5261,7 +5300,7 @@ curl "https://api.openai.com/v1/chat/completions" \\
     -H "Content-Type: application/json" \\
     -H "Authorization: Bearer $OPENAI_API_KEY" \\
     -d '{
-      "model": "gpt-audio",
+      "model": "gpt-audio-1.5",
       "modalities": ["text", "audio"],
       "audio": { "voice": "alloy", "format": "wav" },
       "messages": [
@@ -5289,7 +5328,7 @@ const buffer = await audioResponse.arrayBuffer();
 const base64str = Buffer.from(buffer).toString("base64");
 
 const response = await openai.chat.completions.create({
-  model: "gpt-audio",
+  model: "gpt-audio-1.5",
   modalities: ["text", "audio"],
   audio: { voice: "alloy", format: "wav" },
   messages: [
@@ -5322,7 +5361,7 @@ wav_data = response.content
 encoded_string = base64.b64encode(wav_data).decode('utf-8')
 
 completion = client.chat.completions.create(
-    model="gpt-audio",
+    model="gpt-audio-1.5",
     modalities=["text", "audio"],
     audio={"voice": "alloy", "format": "wav"},
     messages=[
@@ -5353,7 +5392,7 @@ curl "https://api.openai.com/v1/chat/completions" \\
     -H "Content-Type: application/json" \\
     -H "Authorization: Bearer $OPENAI_API_KEY" \\
     -d '{
-      "model": "gpt-audio",
+      "model": "gpt-audio-1.5",
       "modalities": ["text", "audio"],
       "audio": { "voice": "alloy", "format": "wav" },
       "messages": [
@@ -6954,7 +6993,7 @@ Updated: 2026-03-01
 
 <strong>Source IDs vs. locators:</strong> A source ID is a stable,
   model-generated identifier such as <code>block1</code>. A locator is the
-  precise UI-rendered highlight, such as <code>lines L8-L13</code> or{" "}
+  precise UI-rendered highlight, such as <code>lines L8-L13</code> or 
   <code>Paragraph 21</code>. In general, the model should emit the source ID,
   while your system resolves or renders the locator. Mixing the two too early
   tends to increase formatting errors.
@@ -6981,7 +7020,7 @@ our models are trained on. If you choose different marker values, keep the overa
 For tool calls, <code>turnN</code> increments once per tool invocation, not
   once per individual result. Within a single invocation, sources are
   distinguished by suffixes such as <code>file0</code>, <code>file1</code>, and
-  so on. In a single-response system, all references will be{" "}
+  so on. In a single-response system, all references will be 
   <code>turn0...</code> only if the model makes exactly one tool call before
   answering. If it makes multiple tool calls, you may instead see references
   like <code>turn0fileX</code>, <code>turn1fileX</code>, and so on.
@@ -7247,9 +7286,9 @@ The Court held that the District Court lacked personal jurisdiction over the pet
 ```
 
 <strong>Note:</strong> OpenAI-hosted tools such as web search provide
-  automatic inline citations. If you want to use hosted tools instead, see the{" "}
-  <a href="/api/docs/guides/tools">tools overview</a>,{" "}
-  <a href="/api/docs/guides/tools-web-search">web search guide</a>, and{" "}
+  automatic inline citations. If you want to use hosted tools instead, see the 
+  <a href="/api/docs/guides/tools">tools overview</a>, 
+  <a href="/api/docs/guides/tools-web-search">web search guide</a>, and 
   <a href="/api/docs/guides/tools-file-search">file search guide</a>.
 
 ---
@@ -7273,7 +7312,7 @@ See the [Codex docs](https://developers.openai.com/codex) for setup guides, refe
 
 ## Integrate with coding models
 
-For most API-based code generation, start with **`gpt-5.5`**. It handles both general-purpose work and coding, which makes it a strong default when your application needs to write code, reason about requirements, inspect docs, and handle broader workflows in one place.
+For most API-based code generation, start with <strong>`gpt-5.5`</strong>. It handles both general-purpose work and coding, which makes it a strong default when your application needs to write code, reason about requirements, inspect docs, and handle broader workflows in one place.
 
 This example shows how you can use the [Responses API](https://developers.openai.com/api/docs/api-reference/responses) for a code generation use case:
 
@@ -7284,7 +7323,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const result = await openai.responses.create({
-  model: "gpt-5.5",
+  model: "${latestMainlineModelSlug}",
   input: "Find the null pointer exception: ...your code here...",
   reasoning: { effort: "high" },
 });
@@ -7297,7 +7336,7 @@ from openai import OpenAI
 client = OpenAI()
 
 result = client.responses.create(
-    model="gpt-5.5",
+    model="${latestMainlineModelSlug}",
     input="Find the null pointer exception: ...your code here...",
     reasoning={ "effort": "high" },
 )
@@ -7310,7 +7349,7 @@ curl https://api.openai.com/v1/responses \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer $OPENAI_API_KEY" \\
   -d '{
-    "model": "gpt-5.5",
+    "model": "${latestMainlineModelSlug}",
     "input": "Find the null pointer exception: ...your code here...",
     "reasoning": { "effort": "high" }
   }'
@@ -7326,8 +7365,8 @@ The demo applications below were one shot generations, i.e. generated from a sin
 ## Next steps
 
 - Visit the [Codex docs](https://developers.openai.com/codex) to learn what you can do with Codex, set up Codex in whichever interface you choose, or find more details.
-- Read [Using GPT-5.5](https://developers.openai.com/api/docs/guides/latest-model) for model selection, features, and migration guidance.
-- See [Prompt guidance for GPT-5.5](https://developers.openai.com/api/docs/guides/prompt-guidance) for prompting patterns that work well on coding and agentic tasks.
+- Read <a href="/api/docs/guides/latest-model">Using GPT-5.5</a> for model selection, features, and migration guidance.
+- See <a href="/api/docs/guides/prompt-guidance">Prompt guidance for GPT-5.5</a> for prompting patterns that work well on coding and agentic tasks.
 - Compare [`gpt-5.5`](https://developers.openai.com/api/docs/models/gpt-5.5) and [`gpt-5.3-codex`](https://developers.openai.com/api/docs/models/gpt-5.3-codex) on the model pages.
 
 ---
@@ -13823,7 +13862,7 @@ You can configure the following output options:
       <td>
         <ul>
           <li>
-            Maximum edge length must be less than or equal to{" "}
+            Maximum edge length must be less than or equal to 
             <code>3840px</code>
           </li>
           <li>
@@ -13833,7 +13872,7 @@ You can configure the following output options:
             Long edge to short edge ratio must not exceed <code>3:1</code>
           </li>
           <li>
-            Total pixels must be at least <code>655,360</code> and no more than{" "}
+            Total pixels must be at least <code>655,360</code> and no more than 
             <code>8,294,400</code>
           </li>
         </ul>
@@ -14442,18 +14481,18 @@ for event in stream:
 
 The following models support the image generation tool:
 
-- `gpt-4o`
-- `gpt-4o-mini`
+- `gpt-5.5`
+- `gpt-5.4-mini`
+- `gpt-5.4-nano`
+- `gpt-5.2`
+- `gpt-5`
+- `gpt-5-nano`
+- `o3`
 - `gpt-4.1`
 - `gpt-4.1-mini`
 - `gpt-4.1-nano`
-- `o3`
-- `gpt-5`
-- `gpt-5.4-mini`
-- `gpt-5.4-nano`
-- `gpt-5-nano`
-- `gpt-5.5`
-- `gpt-5.2`
+- `gpt-4o`
+- `gpt-4o-mini`
 
 The model used for the image generation process is always a GPT Image model, including `gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`, and `gpt-image-1-mini`, but these models aren't valid values for the `model` field in the Responses API. Use a text-capable mainline model (for example, `gpt-5.5` or `gpt-5`) with the hosted `image_generation` tool.
 
@@ -15003,7 +15042,7 @@ Different models use different resizing rules before image tokenization:
       <code>gpt-5-mini</code>, <code>gpt-5-nano</code>, <code>gpt-5.2</code>,
       <code>gpt-5.3-codex</code>, <code>gpt-5-codex-mini</code>,
       <code>gpt-5.1-codex-mini</code>, <code>gpt-5.2-codex</code>,
-      <code>gpt-5.2-chat-latest</code>, <code>o4-mini</code>, and the{" "}
+      <code>gpt-5.2-chat-latest</code>, <code>o4-mini</code>, and the 
       <code>gpt-4.1-mini</code> and <code>gpt-4.1-nano</code> 2025-04-14
       snapshot variants
     </td>
@@ -15027,7 +15066,7 @@ Different models use different resizing rules before image tokenization:
       <code>low</code>, <code>high</code>, <code>auto</code>
     </td>
     <td>
-      Use tile-based resizing behavior. See{" "}
+      Use tile-based resizing behavior. See 
       <a href="#gpt-4o-gpt-41-gpt-4o-mini-cua-and-o-series-except-o4-mini">
         the detailed behavior below
       </a>
@@ -15418,16 +15457,16 @@ You can also employ inference optimizations like our [**Predicted outputs**](htt
 
 
 
-Other factors that affect inference speed are the amount of{" "}
-  <strong>compute</strong> you have available and any additional{" "}
+Other factors that affect inference speed are the amount of 
+  <strong>compute</strong> you have available and any additional 
   <strong>inference optimizations</strong> you employ. <br /> <br />
   Most people can't influence these factors directly, but if you're curious, and
-  have some control over your infra, <strong>faster hardware</strong> or{" "}
+  have some control over your infra, <strong>faster hardware</strong> or 
   <strong>running engines at a lower saturation</strong> may give you a modest
-  TPM boost. And if you're down in the trenches, there's a myriad of other{" "}
+  TPM boost. And if you're down in the trenches, there's a myriad of other 
   <a href="https://lilianweng.github.io/posts/2023-01-10-inference-optimization/">
     inference optimizations
-  </a>{" "}
+  </a> 
   that are a bit beyond the scope of this guide.
 
 
@@ -16267,7 +16306,7 @@ This guide will show how to use both remote MCP servers and connectors to give t
 
 ## Secure MCP Tunnel
 
-If your MCP server is private, use [Secure MCP Tunnel](https://developers.openai.com/api/docs/guides/secure-mcp-tunnels) to connect it to supported OpenAI products without exposing the server to the public internet. Download the latest public release from [openai/tunnel-client](https://github.com/openai/tunnel-client/releases/latest).
+If your MCP server is private, on-premises, or behind a firewall, use [Secure MCP Tunnel](https://developers.openai.com/api/docs/guides/secure-mcp-tunnels) to connect it to supported OpenAI products without exposing the server to the public internet. Download the latest public release from [openai/tunnel-client](https://github.com/openai/tunnel-client/releases/latest).
 
 ## Quickstart
 
@@ -16372,7 +16411,7 @@ Console.WriteLine(response.GetOutputText());
 
     It is very important that developers trust any remote MCP server they use with
         the Responses API. A malicious server can exfiltrate sensitive data from
-        anything that enters the model's context. Carefully review the{" "}
+        anything that enters the model's context. Carefully review the 
         <strong>Risks and Safety</strong> section below before using this tool.
 
   </div>
@@ -17431,6 +17470,20 @@ If you are using [tool search](https://developers.openai.com/api/docs/guides/too
 
 When you defer loading an MCP server, the model can still use the MCP server's label and description to decide when to search it, but the individual function definitions are loaded only when needed. This can help reduce overall token usage, and it is most useful for MCP servers that expose large numbers of functions.
 
+```json
+{
+    "type": "mcp",
+    "server_label": "dmcp",
+    "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
+    "server_url": "https://dmcp-server.deno.dev/sse",
+// highlight-start:subtle
+    "defer_loading": true,
+// highlight-end
+    "require_approval": "never"
+}
+```
+
+
 ## Risks and safety
 
 The MCP tool permits you to connect OpenAI models to external services. This is a powerful feature that comes with some risks.
@@ -17480,7 +17533,7 @@ In other words, if you're an organization with Data Residency in Europe, OpenAI 
 <table>
   <tbody>
 
-{" "}
+ 
 
 <tr>
   <th>API Availability</th>
@@ -17605,7 +17658,7 @@ The objects you recieve back from these APIs will differ slightly. In Chat Compl
 - Structured Outputs API shape is different. Instead of `response_format`, use `text.format` in Responses. Learn more in the [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs) guide.
 - The function-calling API shape is different, both for the function config on the request, and function calls sent back in the response. See the full difference in the [function calling guide](https://developers.openai.com/api/docs/guides/function-calling).
 - The Responses SDK has an `output_text` helper, which the Chat Completions SDK does not have.
-- In Chat Completions, conversation state must be managed manually. The Responses API has compatibility with the [Conversations API](https://developers.openai.com/api/docs/guides/docs/guides/conversation-state?api-mode=responses#using-the-conversations-api) for persistent conversations, or the ability to pass a `previous_response_id` to easily chain Responses together.
+- In Chat Completions, conversation state must be managed manually. The Responses API has compatibility with the [Conversations API](https://developers.openai.com/api/docs/guides/conversation-state?api-mode=responses#using-the-conversations-api) for persistent conversations, or the ability to pass a `previous_response_id` to easily chain Responses together.
 
 ## Migrating from Chat Completions
 
@@ -18690,7 +18743,7 @@ const generalAgent = new Agent({
 });
 
 const runner = new Runner({
-  model: "gpt-5.5",
+  model: "${latestMainlineModelSlug}",
 });
 
 await runner.run(fastAgent, "Summarize ticket 123.");
@@ -18725,7 +18778,7 @@ async def main() -> None:
     result = await Runner.run(
         general_agent,
         "Investigate the billing issue on account 456.",
-        run_config=RunConfig(model="gpt-5.5"),
+        run_config=RunConfig(model="${latestMainlineModelSlug}"),
     )
     print(result.final_output)
 
@@ -18735,7 +18788,7 @@ if __name__ == "__main__":
 ```
 
 
-For most new SDK workflows, start with [`gpt-5.5`](https://developers.openai.com/api/docs/models/gpt-5.5) and move to a smaller variant only when latency or cost matters enough to justify it. Use the platform-wide [Using GPT-5.5](https://developers.openai.com/api/docs/guides/latest-model) guide for current model-selection advice.
+For most new SDK workflows, start with [`gpt-5.5`](https://developers.openai.com/api/docs/models/gpt-5.5) and move to a smaller variant only when latency or cost matters enough to justify it. Use the platform-wide <a href="/api/docs/guides/latest-model">Using GPT-5.5</a> guide for current model-selection advice.
 
 ## Choose the simplest default strategy
 
@@ -19671,8 +19724,7 @@ Once the ownership pattern is clear, continue with the guide that covers the adj
 
 <span slot="icon">
         </span>
-      See how{" "}
-      {" "}
+      See how 
       and resumable state affect the next turn.
 
 
@@ -20237,7 +20289,7 @@ Now that we have looked at the basics of latency, let’s take a look at various
 
 #### Model
 
-Our API offers different models with varying levels of complexity and generality. The most capable models, such as `gpt-5`, can generate more complex and diverse completions, but they also take longer to process your query.
+Our API offers different models with varying levels of complexity and generality. The most capable models, such as `gpt-5.5`, can generate more complex and diverse completions, but they also take longer to process your query.
 Models such as `gpt-5.4-mini` and `gpt-5.4-nano` can generate faster and cheaper Responses, while `gpt-5.5` is a stronger default when you want more headroom on complex tasks. You can choose the model that best suits your use case and the trade-off between speed, cost, and quality.
 
 #### Number of completion tokens
@@ -20500,7 +20552,7 @@ A key choice to make when generating content through the API is which model you 
 - **GPT models** are fast, cost-efficient, and highly intelligent, but benefit from more explicit instructions around how to accomplish tasks.
 - **Large and small (mini or nano) models** offer trade-offs for speed, cost, and intelligence. Large models are more effective at understanding prompts and solving problems across domains, while small models are generally faster and cheaper to use.
 
-When in doubt, [`gpt-4.1`](https://developers.openai.com/api/docs/models/gpt-4.1) offers a solid combination of intelligence, speed, and cost effectiveness.
+When in doubt, [`gpt-5.5`](https://developers.openai.com/api/docs/models/gpt-5.5) offers a strong default for general-purpose text generation and prompt iteration.
 
 ## Prompt engineering
 
@@ -20954,35 +21006,30 @@ Models can only handle so much data within the context they consider during a ge
 
 Models have different context window sizes from the low 100k range up to one million tokens for newer GPT-4.1 models. [Refer to the model docs](https://developers.openai.com/api/docs/models) for specific context window sizes per model.
 
-## Prompting GPT-5 models
+## Prompting current GPT-5 series models
 
-GPT models like [`gpt-5`](https://developers.openai.com/api/docs/models/gpt-5) benefit from precise instructions that explicitly provide the logic and data required to complete the task in the prompt. GPT-5 in particular is highly steerable and responsive to well-specified prompts. To get the most out of GPT-5, refer to the prompting guide in the cookbook.
+GPT models like [`gpt-5.5`](https://developers.openai.com/api/docs/models/gpt-5.5) benefit from precise instructions that explicitly provide the logic and data required to complete the task in the prompt. To get the most out of the latest GPT-5 series model, start with the current prompting guide.
 
-<a
-  href="https://cookbook.openai.com/examples/gpt-5/gpt-5_prompting_guide"
-  target="_blank"
-  rel="noreferrer"
->
+<a href="/api/docs/guides/prompt-guidance">
   
 
 <span slot="icon">
       </span>
-    Get the most out of prompting GPT-5 with the tips and tricks in this
-    prompting guide, extracted from real-world use cases and practical
-    experience.
+    Get the most out of prompting the latest GPT-5 series model with current
+    guidance, practical examples, and migration notes.
 
 
 </a>
 
-### GPT-5 prompting best practices
+### Prompting best practices for the latest GPT-5 series model
 
-While the [cookbook](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_prompting_guide) has the best and most comprehensive guidance for prompting this model, here are a few best practices to keep in mind.
+For the full current treatment, use the [prompt guidance](https://developers.openai.com/api/docs/guides/prompt-guidance) guide. The practical reminders below still apply.
 
 Coding
 
 #### Coding
 
-Prompting GPT-5 for coding tasks is most effective when following a few best practices: define the agent's role, enforce structured tool use with examples, require thorough testing for correctness, and set Markdown standards for clean output.
+Prompting `gpt-5.5` for coding tasks is most effective when following a few best practices: define the agent's role, enforce structured tool use with examples, require thorough testing for correctness, and set Markdown standards for clean output.
 
 **Explicit role and workflow guidance**
 Frame the model as a software engineering agent with well-defined responsibilities. Provide clear instructions for using tools like `functions.run` for code tasks, and specify when not to use certain modes—for example, avoid interactive execution unless necessary.
@@ -20996,11 +21043,14 @@ Include concrete examples of how to invoke commands with the provided functions,
 **Markdown standards**
 Guide the model to generate clean, semantically correct markdown using inline code, code fences, lists, and tables where appropriate—and to format file paths, functions, and classes with backticks.
 
-For detailed guidance and prompt samples specific to coding, see our [GPT-5 prompting guide](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_prompting_guide).
+For detailed guidance and prompt samples specific to coding, see our [prompt guidance](https://developers.openai.com/api/docs/guides/prompt-guidance) guide.
 
 Front-end engineering
 
-[GPT-5](https://developers.openai.com/api/docs/guides/latest-model) performs well at building front ends from scratch as well as contributing to large, established codebases. To get the best results, we recommend using the following libraries:
+[GPT-5.5](https://developers.openai.com/api/docs/models/gpt-5.5)
+performs well at building front ends from scratch as well as contributing to
+large, established codebases. To get the best results, we recommend using the
+following libraries:
 
 - **Styling / UI:** Tailwind CSS, shadcn/ui, Radix Themes
 - **Icons:** Lucide, Material Symbols, Heroicons
@@ -21030,11 +21080,11 @@ For front-end engineering work in larger codebases, we've found that adding thes
 - **Pages:** Provide templates for common layouts.
 - **Agent Instructions:** Ask the model to confirm design assumptions, scaffold projects, enforce standards, integrate APIs, test states, and document code.
 
-For detailed guidance and prompt samples specific to frontend development, see our [frontend engineering cookbook.](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_frontend)
+For detailed guidance and prompt samples specific to frontend development, see our [prompt guidance](https://developers.openai.com/api/docs/guides/prompt-guidance) guide.
 
 Agentic tasks
 
-For agentic and long-running rollouts with GPT-5, focus your prompts on three core practices: plan tasks thoroughly to ensure complete resolution, provide clear preambles for major tool usage decisions, and use a TODO tool to track workflow and progress in an organized manner.
+For agentic and long-running rollouts with `gpt-5.5`, focus your prompts on three core practices: plan tasks thoroughly to ensure complete resolution, provide clear preambles for major tool usage decisions, and use a TODO tool to track workflow and progress in an organized manner.
 
 **Planning and persistence**
 Instruct the model to resolve the full query before yielding control, decomposing it into sub-tasks and reflecting after each tool call to confirm completeness.
@@ -21068,7 +21118,7 @@ Before you call a tool explain why you are calling it
 
 Use a TODO list tool or rubric to enforce structured planning and avoid missed steps.
 
-For detailed guidance and prompt samples specific to building agents with GPT-5 , see the [GPT-5 prompting guide.](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_prompting_guide)
+For detailed guidance and prompt samples specific to building agents, see the [prompt guidance](https://developers.openai.com/api/docs/guides/prompt-guidance) guide.
 
 ## Prompting reasoning models
 
@@ -21433,7 +21483,7 @@ messages=[
 
 # Prompt optimizer
 
-The [prompt optimizer](https://platform.openai.com/chat/edit?models=gpt-5&optimize=true) is a chat interface in the dashboard, where you enter a prompt, and we optimize it according to current best practices before returning it to you. Pairing the prompt optimizer with [datasets](https://developers.openai.com/api/docs/guides/evaluation-getting-started) is a powerful way to automatically improve prompts.
+The [prompt optimizer](https://platform.openai.com/chat/edit?optimize=true) is a chat interface in the dashboard, where you enter a prompt, and we optimize it according to current best practices before returning it to you. Pairing the prompt optimizer with [datasets](https://developers.openai.com/api/docs/guides/evaluation-getting-started) is a powerful way to automatically improve prompts.
 
 ## Prepare your data
 
@@ -21650,7 +21700,7 @@ const agent = new Agent({
   name: "History tutor",
   instructions:
     "You answer history questions clearly and concisely.",
-  model: "gpt-5.5",
+  model: "${latestMainlineModelSlug}",
 });
 
 const result = await run(agent, "When did the Roman Empire fall?");
@@ -21665,7 +21715,7 @@ from agents import Agent, Runner
 agent = Agent(
     name="History tutor",
     instructions="You answer history questions clearly and concisely.",
-    model="gpt-5.5",
+    model="${latestMainlineModelSlug}",
 )
 
 
@@ -22149,9 +22199,7 @@ Start with the outcome you want to build. Realtime sessions are best for live au
     <tr>
       <td>Build a low-latency voice agent</td>
       <td className="whitespace-nowrap">
-        <a href="/api/docs/models/gpt-realtime-2">
-          <code>gpt-realtime-2</code>
-        </a>
+        [`gpt-realtime-2`](https://developers.openai.com/api/docs/models/gpt-realtime-2)
       </td>
       <td>
         <a href="/api/docs/guides/voice-agents">Voice agents</a>
@@ -22160,9 +22208,7 @@ Start with the outcome you want to build. Realtime sessions are best for live au
     <tr>
       <td>Translate live speech into another language</td>
       <td className="whitespace-nowrap">
-        <a href="/api/docs/models/gpt-realtime-translate">
-          <code>gpt-realtime-translate</code>
-        </a>
+        [`gpt-realtime-translate`](https://developers.openai.com/api/docs/models/gpt-realtime-translate)
       </td>
       <td>
         <a href="/api/docs/guides/realtime-translation">Realtime translation</a>
@@ -22171,9 +22217,7 @@ Start with the outcome you want to build. Realtime sessions are best for live au
     <tr>
       <td>Transcribe live audio into streaming text</td>
       <td className="whitespace-nowrap">
-        <a href="/api/docs/models/gpt-realtime-whisper">
-          <code>gpt-realtime-whisper</code>
-        </a>
+        [`gpt-realtime-whisper`](https://developers.openai.com/api/docs/models/gpt-realtime-whisper)
       </td>
       <td>
         <a href="/api/docs/guides/realtime-transcription">
@@ -22274,7 +22318,7 @@ See [Realtime translation](https://developers.openai.com/api/docs/guides/realtim
 
 You can transcribe audio in more than one way. Use a realtime transcription session when your application needs live transcript deltas from streaming audio. Use the [Speech to text](https://developers.openai.com/api/docs/guides/speech-to-text) guide for file uploads, request-based transcription, or diarization-focused workflows.
 
-For realtime transcription, `gpt-realtime-whisper` gives you controllable latency. Lower delay settings produce earlier partial text, while higher delay settings can improve transcript quality. Test with your real audio conditions, target languages, accents, and domain vocabulary before choosing a production default.
+For realtime transcription, [`gpt-realtime-whisper`](https://developers.openai.com/api/docs/models/gpt-realtime-whisper) gives you controllable latency. Lower delay settings produce earlier partial text, while higher delay settings can improve transcript quality. Test with your real audio conditions, target languages, accents, and domain vocabulary before choosing a production default.
 
 See [Realtime transcription](https://developers.openai.com/api/docs/guides/realtime-transcription) for session configuration and event handling.
 
@@ -22414,7 +22458,7 @@ curl -X POST "https://api.openai.com/v1/realtime/calls/$CALL_ID/accept" \
   -H "Content-Type: application/json" \
   -d '{
         "type": "realtime",
-        "model": "gpt-realtime",
+        "model": "gpt-realtime-2",
         "instructions": "You are Alex, a friendly concierge for Example Corp."
       }'
 ```
@@ -22681,7 +22725,7 @@ app.use(express.text({ type: ["application/sdp", "text/plain"] }));
 
 const sessionConfig = JSON.stringify({
   type: "realtime",
-  model: "gpt-realtime",
+  model: "gpt-realtime-2",
   audio: { output: { voice: "marin" } },
 });
 
@@ -22783,7 +22827,7 @@ const app = express();
 const sessionConfig = JSON.stringify({
   session: {
     type: "realtime",
-    model: "gpt-realtime",
+    model: "gpt-realtime-2",
     audio: {
       output: {
         voice: "marin",
@@ -23055,7 +23099,7 @@ Over a WebSocket, you will both send and receive JSON-serialized events as strin
 ```javascript
 
 
-const url = "wss://api.openai.com/v1/realtime?model=gpt-realtime";
+const url = "wss://api.openai.com/v1/realtime?model=gpt-realtime-2";
 const ws = new WebSocket(url, {
   headers: {
     Authorization: "Bearer " + process.env.OPENAI_API_KEY,
@@ -23092,7 +23136,7 @@ To learn how to send and receive audio over Websockets, refer to the [Realtime c
 
 # Realtime conversations
 
-Once you have connected to the Realtime API through either [WebRTC](https://developers.openai.com/api/docs/guides/realtime-webrtc) or [WebSocket](https://developers.openai.com/api/docs/guides/realtime-websocket), you can call a Realtime model (such as [gpt-realtime-2](https://developers.openai.com/api/docs/models/gpt-realtime-2)) to have speech-to-speech conversations. Doing so will require you to **send client events** to initiate actions, and **listen for server events** to respond to actions taken by the Realtime API.
+Once you have connected to the Realtime API through either [WebRTC](https://developers.openai.com/api/docs/guides/realtime-webrtc) or [WebSocket](https://developers.openai.com/api/docs/guides/realtime-websocket), you can call a Realtime model (such as [`gpt-realtime-2`](https://developers.openai.com/api/docs/models/gpt-realtime-2)) to have speech-to-speech conversations. Doing so will require you to **send client events** to initiate actions, and **listen for server events** to respond to actions taken by the Realtime API.
 
 This guide will walk through the event flows required to use model capabilities like audio and text generation, image input, and function calling, and how to think about the state of a Realtime Session.
 
@@ -24265,7 +24309,7 @@ For the lowest-latency streaming transcription path, use [`gpt-realtime-whisper`
       </td>
       <td>Existing Whisper integrations.</td>
       <td>
-        Not natively streaming in the same way as{" "}
+        Not natively streaming in the same way as 
         <code>gpt-realtime-whisper</code>.
       </td>
     </tr>
@@ -25104,7 +25148,7 @@ ws.send(json.dumps(event))
 ```
 
 
-Remote MCP servers{" "}
+Remote MCP servers 
   <strong>don't automatically receive the full conversation context</strong>,
   but <strong>they can see any data the model sends in a tool call</strong>.
   <strong>Keep the tool surface narrow</strong> with <code>allowed_tools</code>,
@@ -25643,6 +25687,7 @@ import {
 
 
 
+
 **Reasoning models** like [GPT-5.5](https://developers.openai.com/api/docs/models/gpt-5.5) use internal reasoning tokens before producing a response. This helps the model plan, use tools effectively, inspect alternatives, recover from ambiguity, and solve harder multi-step tasks. Reasoning models work especially well for complex problem solving, coding, scientific reasoning, and multi-step agentic workflows. They're also the best models for [Codex CLI](https://github.com/openai/codex), our lightweight coding agent.
 
 Start with `gpt-5.5` for most reasoning workloads. If you need the highest-intelligence API option for more challenging problems that can tolerate more latency, use [`gpt-5.5-pro`](https://developers.openai.com/api/docs/models/gpt-5.5-pro). For lower cost, consider `gpt-5.4` and for lower cost and latency, consider `gpt-5.4-mini`.
@@ -25669,7 +25714,7 @@ format '[1,2],[3,4],[5,6]' and prints the transpose in the same format.
 \`;
 
 const response = await openai.responses.create({
-    model: "gpt-5.5",
+    model: "${latestMainlineModelSlug}",
     reasoning: { effort: "low" },
     input: [
         {
@@ -25693,7 +25738,7 @@ format '[1,2],[3,4],[5,6]' and prints the transpose in the same format.
 """
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="${latestMainlineModelSlug}",
     reasoning={"effort": "low"},
     input=[
         {
@@ -25711,7 +25756,7 @@ curl https://api.openai.com/v1/responses \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer $OPENAI_API_KEY" \\
   -d '{
-    "model": "gpt-5.5",
+    "model": "${latestMainlineModelSlug}",
     "reasoning": {"effort": "low"},
     "input": [
       {
@@ -25803,7 +25848,7 @@ format '[1,2],[3,4],[5,6]' and prints the transpose in the same format.
 \`;
 
 const response = await openai.responses.create({
-    model: "gpt-5.5",
+    model: "${latestMainlineModelSlug}",
     reasoning: { effort: "medium" },
     input: [
         {
@@ -25838,7 +25883,7 @@ format '[1,2],[3,4],[5,6]' and prints the transpose in the same format.
 """
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="${latestMainlineModelSlug}",
     reasoning={"effort": "medium"},
     input=[
         {
@@ -25904,7 +25949,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.5",
+  model: "${latestMainlineModelSlug}",
   input: "What is the capital of France?",
   reasoning: {
     effort: "low",
@@ -25920,7 +25965,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="${latestMainlineModelSlug}",
     input="What is the capital of France?",
     reasoning={
         "effort": "low",
@@ -25936,7 +25981,7 @@ curl https://api.openai.com/v1/responses \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer $OPENAI_API_KEY" \\
   -d '{
-    "model": "gpt-5.5",
+    "model": "${latestMainlineModelSlug}",
     "input": "What is the capital of France?",
     "reasoning": {
         "effort": "low",
@@ -28120,7 +28165,7 @@ const manifest = new Manifest({
 
 const agent = new SandboxAgent({
   name: "Renewal Packet Analyst",
-  model: "gpt-5.5",
+  model: "${latestMainlineModelSlug}",
   instructions:
     "Review the workspace before answering. Keep the response concise, " +
     "business-focused, and cite the file names that support each conclusion.",
@@ -28172,7 +28217,7 @@ manifest = Manifest(
 
 agent = SandboxAgent(
     name="Renewal Packet Analyst",
-    model="gpt-5.5",
+    model="${latestMainlineModelSlug}",
     instructions=(
         "Review the workspace before answering. Keep the response concise, "
         "business-focused, and cite the file names that support each conclusion."
@@ -28218,7 +28263,7 @@ import { DockerSandboxClient } from "@openai/agents/sandbox/local";
 
 const agent = new SandboxAgent({
   name: "Workspace reviewer",
-  model: "gpt-5.5",
+  model: "${latestMainlineModelSlug}",
   instructions: "Inspect the sandbox workspace before answering.",
 });
 
@@ -28313,7 +28358,7 @@ const client = new UnixLocalSandboxClient({
 });
 const agent = new SandboxAgent({
   name: "Workspace builder",
-  model: "gpt-5.5",
+  model: "${latestMainlineModelSlug}",
   instructions: "Inspect the sandbox workspace before answering.",
 });
 
@@ -28573,11 +28618,17 @@ previews, and persistence behavior.
 
 Secure MCP Tunnel lets you connect private MCP servers to supported OpenAI products without opening inbound firewall ports or exposing those servers to the public internet. Run `tunnel-client` inside the network that can already reach your MCP server; it opens an outbound HTTPS path to OpenAI, pulls queued MCP work, forwards requests locally, and returns responses through the same tunnel.
 
+## What is an MCP tunnel?
+
+An MCP tunnel is an outbound-only connection from a host inside your network to an OpenAI-hosted MCP endpoint. Use it when your MCP server is private, on-premises, or behind a firewall, but ChatGPT, Codex, the Responses API, or another supported OpenAI surface still needs to call it.
+
+Secure MCP Tunnel keeps the MCP server private while giving supported OpenAI products a normal MCP request path. `tunnel-client` polls OpenAI for work, forwards MCP requests locally, and returns responses through the same tunnel.
+
 ## Use Secure MCP Tunnel when
 
 - Your MCP server runs on a private network, on-premises, on a developer machine, or behind existing access controls.
 - You want ChatGPT, Codex, the Responses API, or another supported OpenAI surface to use that server without making the MCP server public.
-- Your network allows the host running `tunnel-client` to make outbound HTTPS requests to OpenAI.
+- Your network allows the host running `tunnel-client` to make outbound HTTPS requests to `api.openai.com:443` by default, or `mtls.api.openai.com:443` when control-plane mTLS is configured, and reach the private MCP server.
 - Start with the [MCP and Connectors guide](https://developers.openai.com/api/docs/guides/tools-connectors-mcp) for general MCP concepts.
 
 ## How it works
@@ -28607,11 +28658,21 @@ You need:
 - A tunnel manager with Tunnels **Read** + **Manage** if you need to create or edit tunnel metadata.
 - An MCP server that `tunnel-client` can reach over stdio or HTTP from inside your network.
 
+## Network requirements
+
+`tunnel-client` does not need inbound internet access. It needs outbound HTTPS to OpenAI and local reachability to the private MCP server:
+
+| From                         | To                                                     | Used for                                                            |
+| ---------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------- |
+| Host running `tunnel-client` | `api.openai.com:443` over HTTPS on `/v1/tunnel/*`      | Default polling and response posting.                               |
+| Host running `tunnel-client` | `mtls.api.openai.com:443` over HTTPS on `/v1/tunnel/*` | Polling and response posting when control-plane mTLS is configured. |
+| Host running `tunnel-client` | The configured stdio command or MCP server URL         | Forwarding MCP requests from inside your network.                   |
+
 ## Set up tunnel-client
 
-Open [Platform tunnel settings](https://platform.openai.com/settings/organization/tunnels), then download the latest public `tunnel-client` release from [openai/tunnel-client](https://github.com/openai/tunnel-client/releases/latest). Keep your runbook pointed at the latest-release URL instead of hard-coding a specific release URL.
+Open [Platform tunnel settings](https://platform.openai.com/settings/organization/tunnels), then use the download link there or the latest public `tunnel-client` release from [openai/tunnel-client](https://github.com/openai/tunnel-client/releases/latest). Keep your runbook pointed at the latest-release URL instead of hard-coding a specific release URL.
 
-For a local stdio MCP server, the shortest profile-based flow is:
+If you already have a binary, start with `tunnel-client help quickstart`. For a named local stdio profile, use:
 
 ```bash
 export CONTROL_PLANE_API_KEY="sk-..."
@@ -28629,6 +28690,14 @@ tunnel-client run --profile local-stdio
 For an HTTP MCP server, use `--mcp-server-url https://mcp.internal.example.com/mcp` instead of `--mcp-command`.
 
 Keep `tunnel-client run ...` healthy while you create or test the connector. Connector discovery and MCP tool calls depend on the running client.
+
+## Choose where to run tunnel-client
+
+Run `tunnel-client` in the same trust boundary that can already reach the private MCP server. Common deployment patterns are:
+
+- **Kubernetes sidecar:** Run `tunnel-client` beside the MCP server in one Pod and connect over `localhost`.
+- **Dedicated Kubernetes deployment:** Run `tunnel-client` separately when the MCP server is already reachable through a private Service.
+- **VM or systemd service:** Run `tunnel-client` on a host that can reach the MCP server over private networking.
 
 ## Connect from ChatGPT
 
@@ -28650,7 +28719,12 @@ If the tunnel does not appear in ChatGPT, verify that the tunnel is associated w
 - `tunnel-client` authenticates to the OpenAI tunnel control plane; supported OpenAI products use the OpenAI-hosted tunnel endpoint.
 - Tunnel access follows the existing organization and workspace context instead of introducing a separate public ingress path.
 - `tunnel-client` supports enterprise networking requirements such as outbound proxies, custom CA bundles, control-plane client certificates, and MCP-side `mTLS`.
-- The embedded Harpoon MCP server is limited to labeled, allowlisted HTTP callouts used by flows such as OAuth metadata handling. It is not a general-purpose outbound proxy.
+
+## Advanced: allowlisted HTTP callouts
+
+Secure MCP Tunnel can also support narrowly scoped HTTP callouts from supported agent or API flows into a customer network. `tunnel-client` includes an embedded MCP server, Harpoon, that exposes configured HTTP targets by label and lets callers invoke them through the tunnel with bounded request/response limits.
+
+Use this when you need to reach a small set of private REST endpoints without exposing them publicly. Harpoon is not a general-purpose proxy: callers cannot choose arbitrary hosts, and requests are limited to the targets and methods configured by the customer.
 
 ## Troubleshooting
 
@@ -28658,6 +28732,7 @@ If the tunnel does not appear in ChatGPT, verify that the tunnel is associated w
 - **Connector discovery or tool calls fail:** Confirm that `tunnel-client run ...` is still running, then re-run `tunnel-client doctor --profile <name> --explain`.
 - **You can inspect a tunnel but cannot edit it:** The operator likely has Tunnels **Read** but not Tunnels **Manage**.
 - `tunnel-client` exposes `/healthz`, `/readyz`, `/metrics`, and a local admin UI at `/ui`.
+- The admin UI is loopback-only by default. Expose it remotely only when you intentionally need an operator network to reach it.
 - Use those surfaces to confirm that the client is healthy, ready, and polling before testing from ChatGPT, Codex, or an API flow.
 - If the client is not connected, requests through the tunnel fail until `tunnel-client` reconnects.
 - Raw HTTP logging is disabled by default, and support exports are redacted.
@@ -30147,81 +30222,7 @@ Streamed transcription is not supported in `whisper-1`.
 
 ### Streaming the transcription of an ongoing audio recording
 
-In the Realtime API, you can stream the transcription of an ongoing audio recording. To start a streaming session with the Realtime API, create a WebSocket connection with the following URL:
-
-```
-wss://api.openai.com/v1/realtime?intent=transcription
-```
-
-Below is an example payload for setting up a transcription session:
-
-```json
-{
-  "type": "transcription_session.update",
-  "input_audio_format": "pcm16",
-  "input_audio_transcription": {
-    "model": "gpt-4o-transcribe",
-    "prompt": "",
-    "language": ""
-  },
-  "turn_detection": {
-    "type": "server_vad",
-    "threshold": 0.5,
-    "prefix_padding_ms": 300,
-    "silence_duration_ms": 500
-  },
-  "input_audio_noise_reduction": {
-    "type": "near_field"
-  },
-  "include": ["item.input_audio_transcription.logprobs"]
-}
-```
-
-To stream audio data to the API, append audio buffers:
-
-```json
-{
-  "type": "input_audio_buffer.append",
-  "audio": "Base64EncodedAudioData"
-}
-```
-
-When in VAD mode, the API will respond with `input_audio_buffer.committed` every time a chunk of speech has been detected. Use `input_audio_buffer.committed.item_id` and `input_audio_buffer.committed.previous_item_id` to enforce the ordering.
-
-The API responds with transcription events indicating speech start, stop, and completed transcriptions.
-
-The primary resource used by the streaming ASR API is the `TranscriptionSession`:
-
-```json
-{
-  "object": "realtime.transcription_session",
-  "id": "string",
-  "input_audio_format": "pcm16",
-  "input_audio_transcription": [{
-    "model": "whisper-1" | "gpt-4o-transcribe" | "gpt-4o-mini-transcribe",
-    "prompt": "string",
-    "language": "string"
-  }],
-  "turn_detection": {
-    "type": "server_vad",
-    "threshold": "float",
-    "prefix_padding_ms": "integer",
-    "silence_duration_ms": "integer",
-  } | null,
-  "input_audio_noise_reduction": {
-    "type": "near_field" | "far_field"
-  },
-  "include": ["string"]
-}
-```
-
-Authenticate directly through the WebSocket connection using your API key or an ephemeral token obtained from:
-
-```
-POST /v1/realtime/transcription_sessions
-```
-
-This endpoint returns an ephemeral token (`client_secret`) to securely authenticate WebSocket connections.
+For live audio from a microphone, call, or media stream, use the [Realtime transcription](https://developers.openai.com/api/docs/guides/realtime-transcription) guide instead of the file-oriented streaming path above. It covers the current transcription-session flow and the recommended realtime path with [`gpt-realtime-whisper`](https://developers.openai.com/api/docs/models/gpt-realtime-whisper).
 
 ## Improving reliability
 
@@ -30671,7 +30672,7 @@ Structured Outputs is available in our [latest large language models](https://de
 
   
 
-When to use Structured Outputs via function calling vs via{" "}
+When to use Structured Outputs via function calling vs via 
     <span className="monospace">text.format</span>
 
 
@@ -30706,8 +30707,8 @@ Put simply:
 
   The remainder of this guide will focus on non-function calling use cases in
     the Responses API. To learn more about how to use Structured Outputs with
-    function calling, check out the{" "}
-    [Function Calling](https://developers.openai.com/api/docs/guides/function-calling#function-calling-with-structured-outputs){" "}
+    function calling, check out the 
+    [Function Calling](https://developers.openai.com/api/docs/guides/function-calling#function-calling-with-structured-outputs) 
     guide.
 
 
@@ -32153,6 +32154,42 @@ For namespaces, `defer_loading` applies to the functions inside the namespace, n
 At the start of a request, the model still sees the name and description of whatever is searchable. For a namespace or MCP server, that means the model sees only the namespace or server name and description at the beginning, without showing details of the individual functions contained within it until the tool search tool loads them. For an individual deferred function, the model still sees the function name and description, so in practice tool search is mostly deferring the parameter schema.
 
 For maximum token savings, we recommend grouping deferred functions into namespaces or MCP servers with clear, high-level descriptions that give the model a strong overview of what is contained within them, so it can effectively search and load only the relevant functions. As a best practice, aim to keep each namespace to fewer than 10 functions for better token efficiency and model performance.
+
+```json
+{
+    "tools": [
+      {
+// highlight-start:subtle
+        "type": "namespace",
+// highlight-end
+        "name": "crm",
+        "description": "CRM tools for customer lookup and order management.",
+        "tools": [
+          {
+            "type": "function",
+            "name": "list_open_orders",
+            "description": "List open orders for a customer ID.",
+// highlight-start:subtle
+            "defer_loading": true,
+// highlight-end
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "customer_id": { "type": "string" }
+              },
+              "required": ["customer_id"],
+              "additionalProperties": false
+            }
+          }
+        ]
+      },
+      {
+        "type": "tool_search"
+      }
+    ]
+  }
+```
+
 
 Namespaces can have a mix of tools that are deferred and not deferred. Tools without `defer_loading: true` are callable immediately, while deferred tools in the same namespace are loaded through tool search.
 
@@ -38254,6 +38291,7 @@ openai responses create \
   --input "Say hello in one sentence."
 ```
 
+
 Output:
 
 ```json
@@ -38307,6 +38345,7 @@ $(cat ./note.md)
   --transform 'output.#(type=="message").content.0.text'
 ```
 
+
 Output:
 
 ```text
@@ -38358,6 +38397,7 @@ When the prompt itself needs shell assembly, build a YAML body and pipe it into 
   --transform 'output.#(type=="message").content.0.text'
 ```
 
+
 ### Write structured data to JSON
 
 Use structured outputs when downstream scripts need stable JSON. Save reusable schemas to disk:
@@ -38392,6 +38432,7 @@ openai responses create \
   --format yaml \
   --transform 'output.#(type=="message").content.0.text'
 ```
+
 
 Output:
 
@@ -38478,6 +38519,7 @@ input: |
   Return three concise bullets and cite sources in the text.
 YAML
 ```
+
 
 Output:
 
@@ -40276,17 +40318,17 @@ pip install python-docx
   <div className="preview-info">
     <div className="description">
       The first step in transcribing the audio from a meeting is to pass the
-      audio file of the meeting into our{" "}
+      audio file of the meeting into our 
       <a href="/api/docs/api-reference/audio">/v1/audio API</a>. Whisper, the
       model that powers the audio API, is capable of converting spoken language
-      into written text. To start, we will avoid passing a{" "}
+      into written text. To start, we will avoid passing a 
       <a href="/api/docs/api-reference/audio/createTranscription#audio/createTranscription-prompt">
         prompt
-      </a>{" "}
-      or{" "}
+      </a> 
+      or 
       <a href="/api/docs/api-reference/audio/createTranscription#audio/createTranscription-temperature-4">
         temperature
-      </a>{" "}
+      </a> 
       (optional parameters to control the model's output) and stick with the
       default values.
     </div>

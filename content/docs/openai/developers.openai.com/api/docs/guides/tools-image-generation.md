@@ -383,17 +383,17 @@ for event in stream:
 
 The following models support the image generation tool:
 
-- `gpt-4o`
-- `gpt-4o-mini`
+- `gpt-5.5`
+- `gpt-5.4-mini`
+- `gpt-5.4-nano`
+- `gpt-5.2`
+- `gpt-5`
+- `gpt-5-nano`
+- `o3`
 - `gpt-4.1`
 - `gpt-4.1-mini`
 - `gpt-4.1-nano`
-- `o3`
-- `gpt-5`
-- `gpt-5.4-mini`
-- `gpt-5.4-nano`
-- `gpt-5-nano`
-- `gpt-5.5`
-- `gpt-5.2`
+- `gpt-4o`
+- `gpt-4o-mini`
 
 The model used for the image generation process is always a GPT Image model, including `gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`, and `gpt-image-1-mini`, but these models aren't valid values for the `model` field in the Responses API. Use a text-capable mainline model (for example, `gpt-5.5` or `gpt-5`) with the hosted `image_generation` tool.
