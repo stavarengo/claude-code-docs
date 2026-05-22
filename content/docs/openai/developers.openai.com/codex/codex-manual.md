@@ -1,4 +1,7 @@
-# Codex Manual
+---
+title: "Codex Manual"
+hidden: true
+---
 
 ## Find By Topic
 
@@ -19,7 +22,7 @@ Entry points, plans, supported surfaces, maturity, and high-level product framin
 
 ### Codex
 
-Source: [Codex](./overview.md)
+Source: [Codex](/codex/overview.md)
 
 Codex is OpenAI's coding agent for software development. ChatGPT Plus, Pro, Business, Edu, and Enterprise plans include Codex. It can help you:
 
@@ -35,7 +38,7 @@ Codex is OpenAI's coding agent for software development. ChatGPT Plus, Pro, Busi
 
 ### Codex Pricing
 
-Source: [Codex Pricing](./pricing.md)
+Source: [Codex Pricing](/codex/pricing.md)
 
 Pricing options
 
@@ -95,7 +98,7 @@ Great for automation in shared environments like CI.
 - Pay only for the tokens Codex uses, based on [API
   pricing](https://platform.openai.com/docs/pricing)
 
-[Learn more](https://developers.openai.com/codex/auth)
+[Learn more](/codex/auth)
 
 **Business** (Pay as you go):
 
@@ -137,7 +140,7 @@ Everything in Business and:
 
 ### Feature Maturity
 
-Source: [Feature Maturity](./feature-maturity.md)
+Source: [Feature Maturity](/codex/feature-maturity.md)
 
 Some Codex features ship behind a maturity label so you can understand how reliable each one is, what might change, and what level of support to expect.
 
@@ -150,7 +153,7 @@ Some Codex features ship behind a maturity label so you can understand how relia
 
 ### Quickstart
 
-Source: [Quickstart](./quickstart.md)
+Source: [Quickstart](/codex/quickstart.md)
 
 Every ChatGPT plan includes Codex.
 
@@ -164,9 +167,9 @@ How Codex reasons through work, threads, prompting, speed, and multi-agent coord
 
 ### Best practices
 
-Source: [Best practices](./learn/best-practices.md)
+Source: [Best practices](/codex/learn/best-practices.md)
 
-If you’re new to Codex or coding agents in general, this guide will help you get better results faster. It covers the core habits that make Codex more effective across the [CLI](https://developers.openai.com/codex/cli), [IDE extension](https://developers.openai.com/codex/ide), and the [Codex app](https://developers.openai.com/codex/app), from prompting and planning to validation, MCP, skills, and automations.
+If you’re new to Codex or coding agents in general, this guide will help you get better results faster. It covers the core habits that make Codex more effective across the [CLI](/codex/cli), [IDE extension](/codex/ide), and the [Codex app](/codex/app), from prompting and planning to validation, MCP, skills, and automations.
 
 Codex works best when you treat it less like a one-off assistant and more like a teammate you configure and improve over time.
 
@@ -174,7 +177,7 @@ A useful way to think about this: start with the right task context, use `AGENTS
 
 #### Strong first use: Context and prompts
 
-Codex is already strong enough to be useful even when your prompt isn't perfect. You can often hand it a hard problem with minimal setup and still get a strong result. Clear [prompting](https://developers.openai.com/codex/prompting) isn't required to get value, but it does make results more reliable, especially in larger codebases or higher-stakes tasks.
+Codex is already strong enough to be useful even when your prompt isn't perfect. You can often hand it a hard problem with minimal setup and still get a strong result. Clear [prompting](/codex/prompting) isn't required to get value, but it does make results more reliable, especially in larger codebases or higher-stakes tasks.
 
 If you work in a large or complex repository, the biggest unlock is giving Codex the right task context and a clear structure for what you want done.
 
@@ -206,11 +209,11 @@ A few approaches work well:
 
 **Ask Codex to interview you:** If you have a rough idea of what you want but aren't sure how to describe it well, ask Codex to question you first. Tell it to challenge your assumptions and turn the fuzzy idea into something concrete before writing code.
 
-**Use a PLANS.md template:** For more advanced workflows, you can configure Codex to follow a `PLANS.md` or execution-plan template for longer-running or multi-step work. For more detail, see the [execution plans guide](https://developers.openai.com/cookbook/articles/codex_exec_plans).
+**Use a PLANS.md template:** For more advanced workflows, you can configure Codex to follow a `PLANS.md` or execution-plan template for longer-running or multi-step work. For more detail, see the [execution plans guide](/cookbook/articles/codex_exec_plans).
 
 #### Make guidance reusable with `AGENTS.md`
 
-Once a prompting pattern works, the next step is to stop repeating it manually. That's where [AGENTS.md](https://developers.openai.com/codex/guides/agents-md) comes in.
+Once a prompting pattern works, the next step is to stop repeating it manually. That's where [AGENTS.md](/codex/guides/agents-md) comes in.
 
 Think of `AGENTS.md` as an open-format README for agents. It loads into context automatically and is the best place to encode how you and your team want Codex to work in a repository.
 
@@ -244,13 +247,13 @@ A good starting pattern is:
 - Keep repo-specific behavior in `.codex/config.toml`
 - Use command-line overrides only for one-off situations (if you use the CLI)
 
-[`config.toml`](https://developers.openai.com/codex/config-basic) is where you define durable preferences such as MCP servers, profiles, multi-agent setup, and feature flags. You can edit it directly or ask Codex to update it for you.
+[`config.toml`](/codex/config-basic) is where you define durable preferences such as MCP servers, profiles, multi-agent setup, and feature flags. You can edit it directly or ask Codex to update it for you.
 
 Codex ships with operating level sandboxing and has two key knobs that you can control. Approval mode determines when Codex asks for your permission to run a command and sandbox mode determines if Codex can read or write in the directory and what files the agent can access.
 
 If you're new to coding agents, start with the default permissions. Keep approval and sandboxing tight by default, then loosen permissions only for trusted repos or specific workflows once the need is clear.
 
-Note that the CLI, IDE, and Codex app all share the same configuration layers. Learn more on the [sample configuration](https://developers.openai.com/codex/config-sample) page.
+Note that the CLI, IDE, and Codex app all share the same configuration layers. Learn more on the [sample configuration](/codex/config-sample) page.
 
 Configure Codex for your real environment early. Many quality issues are
 really setup issues, like the wrong working directory, missing write access,
@@ -271,7 +274,7 @@ That can include:
 - Reviewing the diff for bugs, regressions, or risky patterns
 
 Toggle the diff panel in the Codex app to directly [review
-changes](https://developers.openai.com/codex/app/review) locally. Click on a specific row to provide
+changes](/codex/app/review) locally. Click on a specific row to provide
 feedback that gets fed as context to the next Codex turn.
 
 A useful option here is the slash command `/review`, which gives you a few ways to review code:
@@ -285,16 +288,16 @@ If you and your team have a `code_review.md` file and reference it from `AGENTS.
 
 Codex shouldn't just generate code. With the right instructions, it can also help **test it, check it, and review it**.
 
-If you use GitHub Cloud, you can set up Codex to run [code reviews for your PRs](https://developers.openai.com/codex/integrations/github). At OpenAI, Codex reviews 100% of PRs. You can enable automatic reviews or have Codex reactively review when you @Codex.
+If you use GitHub Cloud, you can set up Codex to run [code reviews for your PRs](/codex/integrations/github). At OpenAI, Codex reviews 100% of PRs. You can enable automatic reviews or have Codex reactively review when you @Codex.
 
 ### Example workflows
 
-Source: [Workflows](./workflows.md)
+Source: [Workflows](/codex/workflows.md)
 
 Codex works best when you treat it like a teammate with explicit context and a clear definition of "done."
 This page gives end-to-end workflow examples for the Codex IDE extension, the Codex CLI, and Codex cloud.
 
-If you are new to Codex, read [Prompting](https://developers.openai.com/codex/prompting) first, then come back here for concrete recipes.
+If you are new to Codex, read [Prompting](/codex/prompting) first, then come back here for concrete recipes.
 
 #### How to read these examples
 
@@ -452,7 +455,7 @@ Use this when you have a design mock, screenshot, or UI reference and you want a
 
 ### Prompting
 
-Source: [Prompting](./prompting.md)
+Source: [Prompting](/codex/prompting.md)
 
 #### Prompts
 
@@ -475,7 +478,7 @@ As with ChatGPT, Codex is only as effective as the instructions you give it. Her
 - Codex produces higher-quality outputs when it can verify its work. Include steps to reproduce an issue, validate a feature, and run linting and pre-commit checks.
 - Codex handles complex work better when you break it into smaller, focused steps. Smaller tasks are easier for Codex to test and for you to review. If you're not sure how to split a task up, ask Codex to propose a plan.
 
-For more ideas about prompting Codex, refer to [workflows](https://developers.openai.com/codex/workflows).
+For more ideas about prompting Codex, refer to [workflows](/codex/workflows).
 
 #### Thread model
 
@@ -485,8 +488,8 @@ A thread is said to be "running" when Codex is actively working on it. You can r
 
 Threads can run either locally or in the cloud:
 
-- **Local threads** run on your machine. Codex can read and edit your files and run commands, so you can see what changes and use your existing tools. To reduce the risk of unwanted changes outside your workspace, local threads run in a [sandbox](https://developers.openai.com/codex/agent-approvals-security).
-- **Cloud threads** run in an isolated [environment](https://developers.openai.com/codex/cloud/environments). Codex clones your repository and checks out the branch it's working on. Cloud threads are useful when you want to run work in parallel or delegate tasks from another device. To use cloud threads with your repo, push your code to GitHub first. You can also [delegate tasks from your local machine](https://developers.openai.com/codex/ide/cloud-tasks), which includes your current working state.
+- **Local threads** run on your machine. Codex can read and edit your files and run commands, so you can see what changes and use your existing tools. To reduce the risk of unwanted changes outside your workspace, local threads run in a [sandbox](/codex/agent-approvals-security).
+- **Cloud threads** run in an isolated [environment](/codex/cloud/environments). Codex clones your repository and checks out the branch it's working on. Cloud threads are useful when you want to run work in parallel or delegate tasks from another device. To use cloud threads with your repo, push your code to GitHub first. You can also [delegate tasks from your local machine](/codex/ide/cloud-tasks), which includes your current working state.
 
 In the Codex app, you can also start a chat without choosing a project. Chats
 aren't tied to a saved repository or project folder. Use them for research,
@@ -494,7 +497,7 @@ planning, connected-tool workflows, or other work where Codex shouldn't start
 from a codebase. Chats use a Codex-managed `threads` directory under your Codex
 home as their working location. By default, that location is `~/.codex/threads`.
 To change the base location for this state, set `CODEX_HOME`; see
-[Config and state locations](https://developers.openai.com/codex/config-advanced#config-and-state-locations).
+[Config and state locations](/codex/config-advanced#config-and-state-locations).
 
 #### Context
 
@@ -504,9 +507,56 @@ As the agent works, it also gathers context from file contents, tool output, and
 
 All information in a thread must fit within the model's **context window**, which varies by model. Codex monitors and reports the remaining space. For longer tasks, Codex may automatically **compact** the context by summarizing relevant information and discarding less relevant details. With repeated compaction, Codex can continue working on complex tasks over many steps.
 
+#### Goal mode
+
+Goal mode gives Codex a persistent objective to work toward across a longer
+task. Use it when the work may take many steps, or when Codex needs a clear
+definition of done that it can keep checking as it works.
+
+When you set a goal, the goal text acts as both the starting prompt and the
+completion criteria. Codex uses it to decide what to do next and whether the
+task is complete. Start Goal mode with `/goal` in the [Codex
+app](/codex/app/commands#set-or-manage-a-goal-with-goal), [IDE
+extension](/codex/ide/slash-commands), or [CLI](/codex/cli/slash-commands#set-or-view-a-task-goal-with-goal).
+
+If `/goal` doesn't appear in the slash command list, enable `features.goals`
+in `config.toml`:
+
+```toml
+[features]
+goals = true
+```
+
+You can also run `codex features enable goals` from the CLI or ask Codex to run it.
+In the Codex app, progress appears above the composer with controls to pause,
+resume, edit, or clear the goal.
+
+Write goals so Codex can tell whether it has succeeded. Good goals include a
+specific outcome, measurable target, or test criteria. For example:
+
+```text
+Migrate this codebase from JavaScript to TypeScript. The app should compile in
+strict mode without explicit `any` type definitions.
+```
+
+```text
+Reduce the time to interactive of the home page to below 1 second.
+```
+
+If the goal is hard to define up front, start with `/plan` and ask Codex to
+shape it before implementation. You can also ask Codex to interview you and
+draft a goal with clear success criteria.
+
+You can continue steering Codex after the goal starts. Send follow-up messages
+to adjust constraints, such as asking Codex to use a particular library or
+avoid a specific approach. Use side chats when you want a status recap or
+explanation without interrupting the main task. For long-running work, pause
+the goal before you lose connectivity, then resume or edit it when you are
+ready to continue.
+
 ### Speed
 
-Source: [Speed](./speed.md)
+Source: [Speed](/codex/speed.md)
 
 #### Fast mode
 
@@ -542,7 +592,7 @@ Sandbox behavior, approvals, cyber-safety, and security-specific guidance.
 
 ### Codex Security FAQ
 
-Source: [FAQ](./security/faq.md)
+Source: [FAQ](/codex/security/faq.md)
 
 #### Security FAQ: getting started
 
@@ -599,7 +649,7 @@ No. The proposed patch is a recommended remediation. Users can review it and pus
 
 #### Does the project need to be built for scanning?
 
-No. Codex Security can produce findings from repository and commit context without a compile step. During auto-validation, it may try to build the project inside the container if that helps reproduce the issue. For environment setup details, see [Codex cloud environments](https://developers.openai.com/codex/cloud/environments).
+No. Codex Security can produce findings from repository and commit context without a compile step. During auto-validation, it may try to build the project inside the container if that helps reproduce the issue. For environment setup details, see [Codex cloud environments](/codex/cloud/environments).
 
 #### How does Codex Security reduce false positives and avoid broken patches?
 
@@ -611,7 +661,7 @@ Initial scan time depends on repository size, build time, and how many findings 
 
 #### What is a threat model?
 
-A threat model is the scan-time security context for a repository. It combines a concise project overview with attack-surface details such as entry points, trust boundaries, auth assumptions, and risky components. For more detail, see [Improving the threat model](https://developers.openai.com/codex/security/threat-model).
+A threat model is the scan-time security context for a repository. It combines a concise project overview with attack-surface details such as entry points, trust boundaries, auth assumptions, and risky components. For more detail, see [Improving the threat model](/codex/security/threat-model).
 
 #### How is a threat model generated?
 
@@ -623,20 +673,20 @@ No. Codex Security accelerates review and helps rank findings, but it does not r
 
 #### Can I edit the threat model?
 
-Yes. Codex Security creates the initial threat model, and you can update it as the architecture, risks, and business context change. For the editing workflow, see [Improving the threat model](https://developers.openai.com/codex/security/threat-model).
+Yes. Codex Security creates the initial threat model, and you can update it as the architecture, risks, and business context change. For the editing workflow, see [Improving the threat model](/codex/security/threat-model).
 
 ### Codex Security setup
 
-Source: [Codex Security setup](./security/setup.md)
+Source: [Codex Security setup](/codex/security/setup.md)
 
 This page walks you from initial access to reviewed findings and remediation pull requests in Codex Security.
 
 Confirm you've set up Codex Cloud first. If not, see [Codex
-Cloud](https://developers.openai.com/codex/cloud) to get started.
+Cloud](/codex/cloud) to get started.
 
 #### 1. Access and environment
 
-Codex Security scans GitHub repositories connected through [Codex Cloud](https://developers.openai.com/codex/cloud).
+Codex Security scans GitHub repositories connected through [Codex Cloud](/codex/cloud).
 
 - Confirm your workspace has access to Codex Security.
 - Confirm the repository you want to scan is available in Codex Cloud.
@@ -685,7 +735,7 @@ updated scope, priorities, and assumptions.
 After initial findings appear, revisit the model so scan guidance stays aligned with current priorities.
 Keeping it current helps Codex Security produce better suggestions.
 
-For a deeper explanation of threat models and how they affect criticality and triage, see [Improving the threat model](https://developers.openai.com/codex/security/threat-model).
+For a deeper explanation of threat models and how they affect criticality and triage, see [Improving the threat model](/codex/security/threat-model).
 
 #### 5. Review findings and patch
 
@@ -713,13 +763,13 @@ You can review each finding and create a PR directly from the finding detail pag
 
 #### Security setup references
 
-- [Codex Security](https://developers.openai.com/codex/security) gives the product overview.
-- [FAQ](https://developers.openai.com/codex/security/faq) covers common questions.
-- [Improving the threat model](https://developers.openai.com/codex/security/threat-model) explains how to improve scan context and finding prioritization.
+- [Codex Security](/codex/security) gives the product overview.
+- [FAQ](/codex/security/faq) covers common questions.
+- [Improving the threat model](/codex/security/threat-model) explains how to improve scan context and finding prioritization.
 
 ### Improving the threat model
 
-Source: [Improving the threat model](./security/threat-model.md)
+Source: [Improving the threat model](/codex/security/threat-model.md)
 
 Learn what a threat model is and how editing it improves Codex Security's suggestions.
 
@@ -756,24 +806,24 @@ To review or update the threat model, go to [Codex Security scans](https://chatg
 
 #### Threat model references
 
-- [Codex Security setup](https://developers.openai.com/codex/security/setup) covers repository setup and findings review.
-- [Codex Security](https://developers.openai.com/codex/security) gives the product overview.
-- [FAQ](https://developers.openai.com/codex/security/faq) covers common questions.
+- [Codex Security setup](/codex/security/setup) covers repository setup and findings review.
+- [Codex Security](/codex/security) gives the product overview.
+- [FAQ](/codex/security/faq) covers common questions.
 
 ### Agent approvals & security
 
-Source: [Agent approvals & security](./agent-approvals-security.md)
+Source: [Agent approvals & security](/codex/agent-approvals-security.md)
 
 Codex helps protect your code and data and reduces the risk of misuse.
 
 This page covers how to operate Codex safely, including sandboxing, approvals,
 and network access. If you are looking for Codex Security, the product for
-scanning connected GitHub repositories, see [Codex Security](https://developers.openai.com/codex/security).
+scanning connected GitHub repositories, see [Codex Security](/codex/security).
 
 By default, the agent runs with network access turned off. Locally, Codex uses an OS-enforced sandbox that limits what it can touch (typically to the current workspace), plus an approval policy that controls when it must stop and ask you before acting.
 
 For a high-level explanation of how sandboxing works across the Codex app, IDE
-extension, and CLI, see [sandboxing](https://developers.openai.com/codex/concepts/sandboxing).
+extension, and CLI, see [sandboxing](/codex/concepts/sandboxing).
 For a broader enterprise security overview, see the [Codex security white paper](https://trust.openai.com/?itemUid=382f924d-54f3-43a8-a9df-c39e6c959958&source=click).
 
 #### Sandbox and approvals
@@ -843,7 +893,7 @@ network access by itself. Use `sandbox_workspace_write.network_access` with
 Admin-managed `experimental_network` requirements are separate from the user
 feature toggle. They can configure and start sandboxed networking without
 `features.network_proxy`, but they do not turn on network access when the active
-sandbox keeps it off. See [Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration#configure-network-access-requirements)
+sandbox keeps it off. See [Managed configuration](/codex/enterprise/managed-configuration#configure-network-access-requirements)
 for the administrator-side `requirements.toml` shape.
 
 #### Network policy
@@ -972,7 +1022,7 @@ approvals_reviewer = "auto_review"
 
 For the full reviewer lifecycle, trigger conditions, configuration precedence,
 and failure behavior, see
-[Auto-review](https://developers.openai.com/codex/concepts/sandboxing/auto-review).
+[Auto-review](/codex/concepts/sandboxing/auto-review).
 
 The reviewer evaluates only actions that already need approval, such as sandbox
 escalations, blocked network requests, `request_permissions` prompts, or
@@ -991,7 +1041,7 @@ is in the open-source Codex repository. Enterprises can replace its
 tenant-specific section with `guardian_policy_config` in managed requirements.
 Local `[auto_review].policy` text is also supported, but managed requirements
 take precedence. For setup details, see
-[Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration#configure-automatic-review-policy).
+[Managed configuration](/codex/enterprise/managed-configuration#configure-automatic-review-policy).
 
 In the Codex app, these reviews appear as automatic review items with a status
 such as Reviewing, Approved, Denied, Aborted, or Timed out. They can also
@@ -1003,7 +1053,7 @@ can constrain it with `allowed_approvals_reviewers`.
 
 ### Cyber Safety
 
-Source: [Cyber Safety](./concepts/cyber-safety.md)
+Source: [Cyber Safety](/codex/concepts/cyber-safety.md)
 
 [GPT-5.3-Codex](https://openai.com/index/introducing-gpt-5-3-codex/) is the first model we are treating as High cybersecurity capability under our [Preparedness Framework](https://cdn.openai.com/pdf/18a02b5d-6b67-4cec-ab64-68cdfbddebcd/preparedness-framework-v2.pdf), which requires additional safeguards. These safeguards include training the model to refuse clearly malicious requests like stealing credentials.
 
@@ -1046,7 +1096,7 @@ Legitimate or non-cybersecurity activity may occasionally be flagged. When rerou
 
 ### Sandbox
 
-Source: [Sandbox](./concepts/sandboxing.md)
+Source: [Sandbox](/codex/concepts/sandboxing.md)
 
 The sandbox is the boundary that lets Codex act autonomously without giving it
 unrestricted access to your machine. When Codex runs local commands in the
@@ -1095,7 +1145,7 @@ On **macOS**, sandboxing works out of the box using the built-in Seatbelt
 framework.
 
 On **Windows**, Codex uses the native [Windows
-sandbox](https://developers.openai.com/codex/windows#windows-sandbox) when you run in PowerShell and the
+sandbox](/codex/windows#windows-sandbox) when you run in PowerShell and the
 Linux sandbox implementation when you run in WSL2.
 
 On **Linux and WSL2**, install `bubblewrap` with your package manager first:
@@ -1157,15 +1207,15 @@ In the Codex app and IDE, you choose a mode from the permissions selector under
 the composer or chat input. That selector lets you rely on Codex's default
 permissions, switch to full access, or use your custom configuration.
 
-In the CLI, use [`/permissions`](https://developers.openai.com/codex/cli/slash-commands#update-permissions-with-permissions)
+In the CLI, use [`/permissions`](/codex/cli/slash-commands#update-permissions-with-permissions)
 to switch modes during a session.
 
 #### Configure defaults
 
 If you want Codex to start with the same behavior every time, use a custom
 configuration. Codex stores those defaults in `config.toml`, its local settings
-file. [Config basics](https://developers.openai.com/codex/config-basic) explains how it works, and the
-[Configuration reference](https://developers.openai.com/codex/config-reference) documents the exact keys for
+file. [Config basics](/codex/config-basic) explains how it works, and the
+[Configuration reference](/codex/config-reference) documents the exact keys for
 `sandbox_mode`, `approval_policy`, `approvals_reviewer`, and
 `sandbox_workspace_write.writable_roots`. Use those settings to decide how much
 autonomy Codex gets by default, which directories it can write to, when it
@@ -1195,7 +1245,7 @@ When approvals are interactive, you can also choose who reviews them with
 
 - `user`: approval prompts surface to the user. This is the default.
 - `auto_review`: eligible approval prompts go to a reviewer agent (see
-  [Auto-review](https://developers.openai.com/codex/concepts/sandboxing/auto-review)).
+  [Auto-review](/codex/concepts/sandboxing/auto-review)).
 
 Full access means using `sandbox_mode = "danger-full-access"` together with
 `approval_policy = "never"`. By contrast, the lower-risk local automation
@@ -1210,12 +1260,12 @@ you extend the places it can modify without removing the sandbox entirely. If
 you need a broader or narrower trust boundary, adjust the default sandbox mode
 and approval policy instead of relying on one-off exceptions.
 
-When a workflow needs a specific exception, use [rules](https://developers.openai.com/codex/rules). Rules
+When a workflow needs a specific exception, use [rules](/codex/rules). Rules
 let you allow, prompt, or forbid command prefixes outside the sandbox, which is
 often a better fit than broadly expanding access. For a higher-level overview
 of approvals and sandbox behavior in the app, see
-[Codex app features](https://developers.openai.com/codex/app/features#approvals-and-sandboxing), and for the
-IDE-specific settings entry points, see [Codex IDE extension settings](https://developers.openai.com/codex/ide/settings).
+[Codex app features](/codex/app/features#approvals-and-sandboxing), and for the
+IDE-specific settings entry points, see [Codex IDE extension settings](/codex/ide/settings).
 
 Automatic review, when available, does not change the sandbox boundary. It is
 one possible `approvals_reviewer` for approval requests at that boundary, such
@@ -1223,12 +1273,12 @@ as sandbox escalations, blocked network access, or side-effecting tool calls
 that still need approval. Actions already allowed inside the sandbox run
 without extra review. For the reviewer lifecycle, trigger types, denial
 semantics, and configuration details, see
-[Auto-review](https://developers.openai.com/codex/concepts/sandboxing/auto-review).
+[Auto-review](/codex/concepts/sandboxing/auto-review).
 
 Platform details live in the platform-specific docs. For native Windows setup,
-behavior, and troubleshooting, see [Windows](https://developers.openai.com/codex/windows). For admin
+behavior, and troubleshooting, see [Windows](/codex/windows). For admin
 requirements and organization-level constraints on sandboxing and approvals, see
-[Agent approvals & security](https://developers.openai.com/codex/agent-approvals-security).
+[Agent approvals & security](/codex/agent-approvals-security).
 
 ## Configuration, Authentication, and Models
 
@@ -1238,17 +1288,17 @@ Config files, auth flows, model selection, and configuration reference material.
 
 ### Configuration Reference
 
-Source: [Configuration Reference](./config-reference.md)
+Source: [Configuration Reference](/codex/config-reference.md)
 
-Use this page as a searchable reference for Codex configuration files. For conceptual guidance and examples, start with [Config basics](https://developers.openai.com/codex/config-basic) and [Advanced Config](https://developers.openai.com/codex/config-advanced).
+Use this page as a searchable reference for Codex configuration files. For conceptual guidance and examples, start with [Config basics](/codex/config-basic) and [Advanced Config](/codex/config-advanced).
 
 ### Advanced Configuration
 
-Source: [Advanced Configuration](./config-advanced.md)
+Source: [Advanced Configuration](/codex/config-advanced.md)
 
-Use these options when you need more control over providers, policies, and integrations. For a quick start, see [Config basics](https://developers.openai.com/codex/config-basic).
+Use these options when you need more control over providers, policies, and integrations. For a quick start, see [Config basics](/codex/config-basic).
 
-For background on project guidance, reusable capabilities, custom slash commands, subagent workflows, and integrations, see [Customization](https://developers.openai.com/codex/concepts/customization). For configuration keys, see [Configuration Reference](https://developers.openai.com/codex/config-reference).
+For background on project guidance, reusable capabilities, custom slash commands, subagent workflows, and integrations, see [Customization](/codex/concepts/customization). For configuration keys, see [Configuration Reference](/codex/config-reference).
 
 #### Profiles
 
@@ -1316,9 +1366,9 @@ Common files you may see there:
 - `history.jsonl` (if history persistence is enabled)
 - Other per-user state such as logs and caches
 
-For authentication details (including credential storage modes), see [Authentication](https://developers.openai.com/codex/auth). For the full list of configuration keys, see [Configuration Reference](https://developers.openai.com/codex/config-reference).
+For authentication details (including credential storage modes), see [Authentication](/codex/auth). For the full list of configuration keys, see [Configuration Reference](/codex/config-reference).
 
-For shared defaults, rules, and skills checked into repos or system paths, see [Team Config](https://developers.openai.com/codex/enterprise/admin-setup#team-config).
+For shared defaults, rules, and skills checked into repos or system paths, see [Team Config](/codex/enterprise/admin-setup#team-config).
 
 If you just need to point the built-in OpenAI provider at an LLM proxy, router, or data-residency enabled project, set `openai_base_url` in `config.toml` instead of defining a new provider. This changes the base URL for the built-in `openai` provider without requiring a separate `model_providers.` entry.
 
@@ -1374,11 +1424,11 @@ If a single layer contains both `hooks.json` and inline `[hooks]`, Codex loads
 both and warns. Prefer one representation per layer.
 
 For the current event list, input fields, output behavior, and limitations, see
-[Hooks](https://developers.openai.com/codex/hooks).
+[Hooks](/codex/hooks).
 
 #### Agent roles (`[agents]` in `config.toml`)
 
-For subagent role configuration (`[agents]` in `config.toml`), see [Subagents](https://developers.openai.com/codex/subagents).
+For subagent role configuration (`[agents]` in `config.toml`), see [Subagents](/codex/subagents).
 
 #### Project root detection
 
@@ -1512,9 +1562,9 @@ model_context_window = 128000             # Context window size
 
 Pick approval strictness (affects when Codex pauses) and sandbox level (affects file/network access).
 
-For operational details to keep in mind while editing `config.toml`, see [Common sandbox and approval combinations](https://developers.openai.com/codex/agent-approvals-security#common-sandbox-and-approval-combinations), [Protected paths in writable roots](https://developers.openai.com/codex/agent-approvals-security#protected-paths-in-writable-roots), and [Network access](https://developers.openai.com/codex/agent-approvals-security#network-access).
+For operational details to keep in mind while editing `config.toml`, see [Common sandbox and approval combinations](/codex/agent-approvals-security#common-sandbox-and-approval-combinations), [Protected paths in writable roots](/codex/agent-approvals-security#protected-paths-in-writable-roots), and [Network access](/codex/agent-approvals-security#network-access).
 
-For beta permission profiles that configure filesystem and network access together, see [Permissions](https://developers.openai.com/codex/permissions).
+For beta permission profiles that configure filesystem and network access together, see [Permissions](/codex/permissions).
 
 You can also use a granular approval policy (`approval_policy = { granular = { ... } }`) to allow or auto-reject individual prompt categories. This is useful when you want normal interactive approvals for some cases but want others, such as `request_permissions` or skill-script prompts, to fail closed automatically.
 
@@ -1555,11 +1605,11 @@ Use your organization's automatic review policy.
 #### Named permission profiles
 
 For built-in profiles, custom profile syntax, and the full filesystem and
-network configuration model, see [Permissions](https://developers.openai.com/codex/permissions).
+network configuration model, see [Permissions](/codex/permissions).
 
 For the complete key list, including profile-scoped overrides and requirements
-constraints, see [Configuration Reference](https://developers.openai.com/codex/config-reference) and
-[Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration).
+constraints, see [Configuration Reference](/codex/config-reference) and
+[Managed configuration](/codex/enterprise/managed-configuration).
 
 In workspace-write mode, some environments keep `.git/` and `.codex/`
 read-only even when the rest of the workspace is writable. This is why
@@ -1591,7 +1641,7 @@ Patterns are case-insensitive globs (`*`, `?`, `[A-Z]`); `ignore_default_exclude
 
 #### MCP servers
 
-See the dedicated [MCP documentation](https://developers.openai.com/codex/mcp) for configuration details.
+See the dedicated [MCP documentation](/codex/mcp) for configuration details.
 
 #### Observability and telemetry
 
@@ -1623,7 +1673,7 @@ exporter = { otlp-grpc = {
 }}
 ```
 
-If `exporter = "none"` Codex records events but sends nothing. Exporters batch asynchronously and flush on shutdown. Event metadata includes service name, CLI version, env tag, conversation id, model, sandbox/approval settings, and per-event fields (see [Config Reference](https://developers.openai.com/codex/config-reference)).
+If `exporter = "none"` Codex records events but sends nothing. Exporters batch asynchronously and flush on shutdown. Event metadata includes service name, CLI version, env tag, conversation id, model, sandbox/approval settings, and per-event fields (see [Config Reference](/codex/config-reference)).
 
 #### What gets emitted
 
@@ -1639,7 +1689,7 @@ Codex emits structured log events for runs and tool usage. Representative event 
 
 ### Authentication and sessions
 
-Source: [Authentication](./auth.md)
+Source: [Authentication](/codex/auth.md)
 
 #### OpenAI authentication
 
@@ -1674,7 +1724,7 @@ You can also sign in to the Codex app, CLI, or IDE Extension with an API key. Ge
 
 OpenAI bills API key usage through your OpenAI Platform account at standard API rates. See the [API pricing page](https://openai.com/api/pricing/).
 
-Features that rely on ChatGPT credits, such as [fast mode](https://developers.openai.com/codex/speed), are
+Features that rely on ChatGPT credits, such as [fast mode](/codex/speed), are
 available only when you sign in with ChatGPT. If you sign in with an API key,
 Codex uses standard API pricing instead.
 
@@ -1692,7 +1742,7 @@ Access tokens are intended for trusted scripts, schedulers, and private CI
 runners. For general OpenAI API calls, continue to use Platform API keys.
 
 For setup steps, permissions, rotation, and revocation guidance, see
-[Access tokens](https://developers.openai.com/codex/enterprise/access-tokens).
+[Access tokens](/codex/enterprise/access-tokens).
 
 #### Secure your Codex cloud account
 
@@ -1751,7 +1801,7 @@ forced_chatgpt_workspace_id = "00000000-0000-0000-0000-000000000000"
 
 If the active credentials don't match the configured restrictions, Codex logs the user out and exits.
 
-These settings are commonly applied via managed configuration rather than per-user setup. See [Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration).
+These settings are commonly applied via managed configuration rather than per-user setup. See [Managed configuration](/codex/enterprise/managed-configuration).
 
 #### Login diagnostics
 
@@ -1827,7 +1877,7 @@ docker cp ~/.codex/auth.json MY_CONTAINER:"$CONTAINER_HOME/.codex/auth.json"
 ```
 
 For a more advanced version of this same pattern on trusted CI/CD runners, see
-[Maintain Codex account auth in CI/CD (advanced)](https://developers.openai.com/codex/auth/ci-cd-auth).
+[Maintain Codex account auth in CI/CD (advanced)](/codex/auth/ci-cd-auth).
 That guide explains how to let Codex refresh `auth.json` during normal runs and
 then keep the updated file for the next job. API keys are still the recommended
 default for automation.
@@ -1846,7 +1896,7 @@ ssh -L 1455:localhost:1455 user@remote
 
 #### Alternative model providers
 
-When you define a [custom model provider](https://developers.openai.com/codex/config-advanced#custom-model-providers) in your configuration file, you can choose one of these authentication methods:
+When you define a [custom model provider](/codex/config-advanced#custom-model-providers) in your configuration file, you can choose one of these authentication methods:
 
 - **OpenAI authentication**: Set `requires_openai_auth = true` to use OpenAI authentication. You can then sign in with ChatGPT or an API key. This is useful when you access OpenAI models through an LLM proxy server. When `requires_openai_auth = true`, Codex ignores `env_key`.
 - **Environment variable authentication**: Set `env_key = "<ENV_VARIABLE_NAME>"` to use a provider-specific API key from the local environment variable named `<ENV_VARIABLE_NAME>`.
@@ -1854,7 +1904,7 @@ When you define a [custom model provider](https://developers.openai.com/codex/co
 
 ### Config basics
 
-Source: [Config basics](./config-basic.md)
+Source: [Config basics](/codex/config-basic.md)
 
 Codex reads configuration details from more than one location. Your personal defaults live in `~/.codex/config.toml`, and you can add project overrides with `.codex/config.toml` files. For security, Codex loads project `.codex/` layers only when you trust the project.
 
@@ -1867,15 +1917,15 @@ To open the configuration file from the Codex IDE extension, select the gear ico
 The CLI and IDE extension share the same configuration layers. You can use them to:
 
 - Set the default model and provider.
-- Configure [approval policies and sandbox settings](https://developers.openai.com/codex/agent-approvals-security#sandbox-and-approvals).
-- Configure [MCP servers](https://developers.openai.com/codex/mcp).
+- Configure [approval policies and sandbox settings](/codex/agent-approvals-security#sandbox-and-approvals).
+- Configure [MCP servers](/codex/mcp).
 
 #### Configuration precedence
 
 Codex resolves values in this order (highest precedence first):
 
 1. CLI flags and `--config` overrides
-2. [Profile](https://developers.openai.com/codex/config-advanced#profiles) values (from `--profile `)
+2. [Profile](/codex/config-advanced#profiles) values (from `--profile `)
 3. Project config files: `.codex/config.toml`, ordered from the project root down to your current working directory (closest wins; trusted projects only)
 4. User config: `~/.codex/config.toml`
 5. System config (if present): `/etc/codex/config.toml` on Unix
@@ -1885,13 +1935,13 @@ Use that precedence to set shared defaults at the top level and keep profiles fo
 
 If you mark a project as untrusted, Codex skips project-scoped `.codex/` layers, including project-local config, hooks, and rules. User and system config still load, including user/global hooks and rules.
 
-For one-off overrides via `-c`/`--config` (including TOML quoting rules), see [Advanced Config](https://developers.openai.com/codex/config-advanced#one-off-overrides-from-the-cli).
+For one-off overrides via `-c`/`--config` (including TOML quoting rules), see [Advanced Config](/codex/config-advanced#one-off-overrides-from-the-cli).
 
 On managed machines, your organization may also enforce constraints via
 `requirements.toml` (for example, disallowing `approval_policy = "never"` or
 `sandbox_mode = "danger-full-access"`). See [Managed
-configuration](https://developers.openai.com/codex/enterprise/managed-configuration) and [Admin-enforced
-requirements](https://developers.openai.com/codex/enterprise/managed-configuration#admin-enforced-requirements-requirementstoml).
+configuration](/codex/enterprise/managed-configuration) and [Admin-enforced
+requirements](/codex/enterprise/managed-configuration#admin-enforced-requirements-requirementstoml).
 
 #### Common configuration options
 
@@ -1913,7 +1963,7 @@ Control when Codex pauses to ask before running generated commands.
 approval_policy = "on-request"
 ```
 
-For behavior differences between `untrusted`, `on-request`, and `never`, see [Run without approval prompts](https://developers.openai.com/codex/agent-approvals-security#run-without-approval-prompts) and [Common sandbox and approval combinations](https://developers.openai.com/codex/agent-approvals-security#common-sandbox-and-approval-combinations).
+For behavior differences between `untrusted`, `on-request`, and `never`, see [Run without approval prompts](/codex/agent-approvals-security#run-without-approval-prompts) and [Common sandbox and approval combinations](/codex/agent-approvals-security#common-sandbox-and-approval-combinations).
 
 #### Sandbox level
 
@@ -1923,14 +1973,14 @@ Adjust how much filesystem and network access Codex has while executing commands
 sandbox_mode = "workspace-write"
 ```
 
-For mode-by-mode behavior (including protected `.git`/`.codex` paths and network defaults), see [Sandbox and approvals](https://developers.openai.com/codex/agent-approvals-security#sandbox-and-approvals), [Protected paths in writable roots](https://developers.openai.com/codex/agent-approvals-security#protected-paths-in-writable-roots), and [Network access](https://developers.openai.com/codex/agent-approvals-security#network-access).
+For mode-by-mode behavior (including protected `.git`/`.codex` paths and network defaults), see [Sandbox and approvals](/codex/agent-approvals-security#sandbox-and-approvals), [Protected paths in writable roots](/codex/agent-approvals-security#protected-paths-in-writable-roots), and [Network access](/codex/agent-approvals-security#network-access).
 
 #### Permission profiles
 
 Codex also supports named permission profiles for reusable filesystem and
 network policies. Built-in profiles are `:read-only`, `:workspace`, and
 `:danger-full-access`. Custom profiles use `[permissions.]` tables and a
-matching `default_permissions` value. See [Permissions](https://developers.openai.com/codex/permissions).
+matching `default_permissions` value. See [Permissions](/codex/permissions).
 
 #### Windows sandbox mode
 
@@ -1944,7 +1994,7 @@ sandbox = "elevated"   # Recommended
 
 #### Web search mode
 
-Codex enables web search by default for local tasks and serves results from a web search cache. The cache is an OpenAI-maintained index of web results, so cached mode returns pre-indexed results instead of fetching live pages. This reduces exposure to prompt injection from arbitrary live content, but you should still treat web results as untrusted. If you are using `--yolo` or another [full access sandbox setting](https://developers.openai.com/codex/agent-approvals-security#common-sandbox-and-approval-combinations), web search defaults to live results. Choose a mode with `web_search`:
+Codex enables web search by default for local tasks and serves results from a web search cache. The cache is an OpenAI-maintained index of web results, so cached mode returns pre-indexed results instead of fetching live pages. This reduces exposure to prompt injection from arbitrary live content, but you should still treat web results as untrusted. If you are using `--yolo` or another [full access sandbox setting](/codex/agent-approvals-security#common-sandbox-and-approval-combinations), web search defaults to live results. Choose a mode with `web_search`:
 
 - `"cached"` (default) serves results from the web search cache.
 - `"live"` fetches the most recent data from the web (same as `--search`).
@@ -2024,10 +2074,10 @@ shell_snapshot = true           # Speed up repeated commands
 | -------------------- | :-------------------: | ----------------- | ---------------------------------------------------------------------------------------------- |
 | `apps`               |         false         | Experimental      | Enable ChatGPT Apps/connectors support                                                         |
 | `codex_git_commit`   |         false         | Experimental      | Enable Codex-generated git commits and commit attribution trailers                             |
-| `hooks`              |         true          | Stable            | Enable lifecycle hooks from `hooks.json` or inline `[hooks]`. See [Hooks](https://developers.openai.com/codex/hooks).       |
-| `plugin_hooks`       |         false         | Under development | Opt into lifecycle hooks bundled with plugins. See [Hooks](https://developers.openai.com/codex/hooks#plugin-bundled-hooks). |
+| `hooks`              |         true          | Stable            | Enable lifecycle hooks from `hooks.json` or inline `[hooks]`. See [Hooks](/codex/hooks).       |
+| `plugin_hooks`       |         false         | Under development | Opt into lifecycle hooks bundled with plugins. See [Hooks](/codex/hooks#plugin-bundled-hooks). |
 | `fast_mode`          |         true          | Stable            | Enable Fast mode selection and the `service_tier = "fast"` path                                |
-| `memories`           |         false         | Stable            | Enable [Memories](https://developers.openai.com/codex/memories)                                                             |
+| `memories`           |         false         | Stable            | Enable [Memories](/codex/memories)                                                             |
 | `multi_agent`        |         true          | Stable            | Enable subagent collaboration tools                                                            |
 | `personality`        |         true          | Stable            | Enable personality selection controls                                                          |
 | `shell_snapshot`     |         true          | Stable            | Snapshot your shell environment to speed up repeated commands                                  |
@@ -2039,12 +2089,12 @@ shell_snapshot = true           # Speed up repeated commands
 | `web_search_request` |         false         | Deprecated        | Legacy toggle that maps to `web_search = "live"` when unset                                    |
 
 The Maturity column uses feature maturity labels such as Experimental, Beta,
-and Stable. See [Feature Maturity](https://developers.openai.com/codex/feature-maturity) for how to
+and Stable. See [Feature Maturity](/codex/feature-maturity) for how to
 interpret these labels.
 
 Omit feature keys to keep their defaults.
 
-For lifecycle hook configuration, see [Hooks](https://developers.openai.com/codex/hooks).
+For lifecycle hook configuration, see [Hooks](/codex/hooks).
 
 #### Enabling features
 
@@ -2055,7 +2105,7 @@ For lifecycle hook configuration, see [Hooks](https://developers.openai.com/code
 
 ### Model selection
 
-Source: [Codex Models](./models.md)
+Source: [Codex Models](/codex/models.md)
 
 #### Recommended models
 
@@ -2085,7 +2135,7 @@ future releases of Codex.
 
 #### Configure your default local model
 
-The Codex CLI and IDE extension use the same `config.toml` [configuration file](https://developers.openai.com/codex/config-basic). To specify a model, add a `model` entry to your configuration file. If you don't specify a model, the Codex app, CLI, or IDE Extension defaults to a recommended model.
+The Codex CLI and IDE extension use the same `config.toml` [configuration file](/codex/config-basic). To specify a model, add a `model` entry to your configuration file. If you don't specify a model, the Codex app, CLI, or IDE Extension defaults to a recommended model.
 
 ```toml
 model = "gpt-5.5"
@@ -2107,17 +2157,17 @@ Currently, you can't change the default model for Codex cloud tasks.
 
 ### Sample Configuration
 
-Source: [Sample Configuration](./config-sample.md)
+Source: [Sample Configuration](/codex/config-sample.md)
 
 Use this example configuration as a starting point. It includes most keys Codex reads from `config.toml`, along with default behaviors, recommended values where helpful, and short notes.
 
 For explanations and guidance, see:
 
-- [Config basics](https://developers.openai.com/codex/config-basic)
-- [Advanced Config](https://developers.openai.com/codex/config-advanced)
-- [Config Reference](https://developers.openai.com/codex/config-reference)
-- [Sandbox and approvals](https://developers.openai.com/codex/agent-approvals-security#sandbox-and-approvals)
-- [Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration)
+- [Config basics](/codex/config-basic)
+- [Advanced Config](/codex/config-advanced)
+- [Config Reference](/codex/config-reference)
+- [Sandbox and approvals](/codex/agent-approvals-security#sandbox-and-approvals)
+- [Managed configuration](/codex/enterprise/managed-configuration)
 
 Use the snippet below as a reference. Copy only the keys and sections you need into `~/.codex/config.toml` (or into a project-scoped `.codex/config.toml`), then adjust values for your setup.
 
@@ -3207,7 +3257,7 @@ Surface-specific commands, settings, worktree behavior, internet access, and ope
 
 ### CLI command reference
 
-Source: [Command line options](./cli/reference.md)
+Source: [Command line options](/codex/cli/reference.md)
 
 #### How to read this reference
 
@@ -3216,7 +3266,7 @@ This page catalogs every documented Codex CLI command and flag. Use the interact
 The CLI inherits most defaults from ~/.codex/config.toml. Any
 -c key=value overrides you pass at the command line take
 precedence for that invocation. See [Config
-basics](https://developers.openai.com/codex/config-basic#configuration-precedence) for more information.
+basics](/codex/config-basic#configuration-precedence) for more information.
 
 #### Global flags
 
@@ -3246,32 +3296,32 @@ When you run a subcommand, place global flags after it (for example, `codex exec
 #### Command overview
 
 The Maturity column uses feature maturity labels such as Experimental, Beta,
-and Stable. See [Feature Maturity](https://developers.openai.com/codex/feature-maturity) for how to
+and Stable. See [Feature Maturity](/codex/feature-maturity) for how to
 interpret these labels.
 
 | Key                                                                                                     | Maturity       | Default | Details                                                                                                                                 |
 | ------------------------------------------------------------------------------------------------------- | -------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| [`codex`](https://developers.openai.com/codex/cli/reference#codex-interactive)                                                       | `stable`       |         | Launch the terminal UI. Accepts the global flags above plus an optional prompt or image attachments.                                    |
-| [`codex app`](https://developers.openai.com/codex/cli/reference#codex-app)                                                           | `stable`       |         | Launch the Codex desktop app on macOS or Windows. On macOS, Codex can open a workspace path; on Windows, Codex prints the path to open. |
-| [`codex app-server`](https://developers.openai.com/codex/cli/reference#codex-app-server)                                             | `experimental` |         | Launch the Codex app server for local development or debugging over stdio, WebSocket, or a Unix socket.                                 |
-| [`codex apply`](https://developers.openai.com/codex/cli/reference#codex-apply)                                                       | `stable`       |         | Apply the latest diff generated by a Codex Cloud task to your local working tree. Alias: `codex a`.                                     |
-| [`codex cloud`](https://developers.openai.com/codex/cli/reference#codex-cloud)                                                       | `experimental` |         | Browse or execute Codex Cloud tasks from the terminal without opening the TUI. Alias: `codex cloud-tasks`.                              |
-| [`codex completion`](https://developers.openai.com/codex/cli/reference#codex-completion)                                             | `stable`       |         | Generate shell completion scripts for Bash, Zsh, Fish, or PowerShell.                                                                   |
-| [`codex debug app-server send-message-v2`](https://developers.openai.com/codex/cli/reference#codex-debug-app-server-send-message-v2) | `experimental` |         | Debug app-server by sending a single V2 message through the built-in test client.                                                       |
-| [`codex debug models`](https://developers.openai.com/codex/cli/reference#codex-debug-models)                                         | `experimental` |         | Print the raw model catalog Codex sees, including an option to inspect only the bundled catalog.                                        |
-| [`codex exec`](https://developers.openai.com/codex/cli/reference#codex-exec)                                                         | `stable`       |         | Run Codex non-interactively. Alias: `codex e`. Stream results to stdout or JSONL and optionally resume previous sessions.               |
-| [`codex execpolicy`](https://developers.openai.com/codex/cli/reference#codex-execpolicy)                                             | `experimental` |         | Evaluate execpolicy rule files and see whether a command would be allowed, prompted, or blocked.                                        |
-| [`codex features`](https://developers.openai.com/codex/cli/reference#codex-features)                                                 | `stable`       |         | List feature flags and persistently enable or disable them in `config.toml`.                                                            |
-| [`codex fork`](https://developers.openai.com/codex/cli/reference#codex-fork)                                                         | `stable`       |         | Fork a previous interactive session into a new thread, preserving the original transcript.                                              |
-| [`codex login`](https://developers.openai.com/codex/cli/reference#codex-login)                                                       | `stable`       |         | Authenticate Codex using ChatGPT OAuth, device auth, an API key, or an access token piped over stdin.                                   |
-| [`codex logout`](https://developers.openai.com/codex/cli/reference#codex-logout)                                                     | `stable`       |         | Remove stored authentication credentials.                                                                                               |
-| [`codex mcp`](https://developers.openai.com/codex/cli/reference#codex-mcp)                                                           | `experimental` |         | Manage Model Context Protocol servers (list, add, remove, authenticate).                                                                |
-| [`codex mcp-server`](https://developers.openai.com/codex/cli/reference#codex-mcp-server)                                             | `experimental` |         | Run Codex itself as an MCP server over stdio. Useful when another agent consumes Codex.                                                 |
-| [`codex plugin marketplace`](https://developers.openai.com/codex/cli/reference#codex-plugin-marketplace)                             | `experimental` |         | Add, upgrade, or remove plugin marketplaces from Git or local sources.                                                                  |
-| [`codex remote-control`](https://developers.openai.com/codex/cli/reference#codex-remote-control)                                     | `experimental` |         | Ensure the local app-server daemon is running with remote-control support enabled.                                                      |
-| [`codex resume`](https://developers.openai.com/codex/cli/reference#codex-resume)                                                     | `stable`       |         | Continue a previous interactive session by ID or resume the most recent conversation.                                                   |
-| [`codex sandbox`](https://developers.openai.com/codex/cli/reference#codex-sandbox)                                                   | `experimental` |         | Run arbitrary commands inside Codex-provided macOS, Linux, or Windows sandboxes.                                                        |
-| [`codex update`](https://developers.openai.com/codex/cli/reference#codex-update)                                                     | `stable`       |         | Check for and apply a Codex CLI update when the installed release supports self-update.                                                 |
+| [`codex`](/codex/cli/reference#codex-interactive)                                                       | `stable`       |         | Launch the terminal UI. Accepts the global flags above plus an optional prompt or image attachments.                                    |
+| [`codex app`](/codex/cli/reference#codex-app)                                                           | `stable`       |         | Launch the Codex desktop app on macOS or Windows. On macOS, Codex can open a workspace path; on Windows, Codex prints the path to open. |
+| [`codex app-server`](/codex/cli/reference#codex-app-server)                                             | `experimental` |         | Launch the Codex app server for local development or debugging over stdio, WebSocket, or a Unix socket.                                 |
+| [`codex apply`](/codex/cli/reference#codex-apply)                                                       | `stable`       |         | Apply the latest diff generated by a Codex Cloud task to your local working tree. Alias: `codex a`.                                     |
+| [`codex cloud`](/codex/cli/reference#codex-cloud)                                                       | `experimental` |         | Browse or execute Codex Cloud tasks from the terminal without opening the TUI. Alias: `codex cloud-tasks`.                              |
+| [`codex completion`](/codex/cli/reference#codex-completion)                                             | `stable`       |         | Generate shell completion scripts for Bash, Zsh, Fish, or PowerShell.                                                                   |
+| [`codex debug app-server send-message-v2`](/codex/cli/reference#codex-debug-app-server-send-message-v2) | `experimental` |         | Debug app-server by sending a single V2 message through the built-in test client.                                                       |
+| [`codex debug models`](/codex/cli/reference#codex-debug-models)                                         | `experimental` |         | Print the raw model catalog Codex sees, including an option to inspect only the bundled catalog.                                        |
+| [`codex exec`](/codex/cli/reference#codex-exec)                                                         | `stable`       |         | Run Codex non-interactively. Alias: `codex e`. Stream results to stdout or JSONL and optionally resume previous sessions.               |
+| [`codex execpolicy`](/codex/cli/reference#codex-execpolicy)                                             | `experimental` |         | Evaluate execpolicy rule files and see whether a command would be allowed, prompted, or blocked.                                        |
+| [`codex features`](/codex/cli/reference#codex-features)                                                 | `stable`       |         | List feature flags and persistently enable or disable them in `config.toml`.                                                            |
+| [`codex fork`](/codex/cli/reference#codex-fork)                                                         | `stable`       |         | Fork a previous interactive session into a new thread, preserving the original transcript.                                              |
+| [`codex login`](/codex/cli/reference#codex-login)                                                       | `stable`       |         | Authenticate Codex using ChatGPT OAuth, device auth, an API key, or an access token piped over stdin.                                   |
+| [`codex logout`](/codex/cli/reference#codex-logout)                                                     | `stable`       |         | Remove stored authentication credentials.                                                                                               |
+| [`codex mcp`](/codex/cli/reference#codex-mcp)                                                           | `experimental` |         | Manage Model Context Protocol servers (list, add, remove, authenticate).                                                                |
+| [`codex mcp-server`](/codex/cli/reference#codex-mcp-server)                                             | `experimental` |         | Run Codex itself as an MCP server over stdio. Useful when another agent consumes Codex.                                                 |
+| [`codex plugin marketplace`](/codex/cli/reference#codex-plugin-marketplace)                             | `experimental` |         | Add, upgrade, or remove plugin marketplaces from Git or local sources.                                                                  |
+| [`codex remote-control`](/codex/cli/reference#codex-remote-control)                                     | `experimental` |         | Ensure the local app-server daemon is running with remote-control support enabled.                                                      |
+| [`codex resume`](/codex/cli/reference#codex-resume)                                                     | `stable`       |         | Continue a previous interactive session by ID or resume the most recent conversation.                                                   |
+| [`codex sandbox`](/codex/cli/reference#codex-sandbox)                                                   | `experimental` |         | Run arbitrary commands inside Codex-provided macOS, Linux, or Windows sandboxes.                                                        |
+| [`codex update`](/codex/cli/reference#codex-update)                                                     | `stable`       |         | Check for and apply a Codex CLI update when the installed release supports self-update.                                                 |
 
 #### Command details
 
@@ -3393,7 +3443,7 @@ Manage feature flags stored in `~/.codex/config.toml`. The `enable` and `disable
 
 ### Agent internet access
 
-Source: [Agent internet access](./cloud/internet-access.md)
+Source: [Agent internet access](/codex/cloud/internet-access.md)
 
 By default, Codex blocks internet access during the agent phase. Setup scripts still run with internet access so you can install dependencies. You can enable agent internet access per environment when you need it.
 
@@ -3535,15 +3585,15 @@ yarnpkg.com
 
 ### Automations
 
-Source: [Automations](./app/automations.md)
+Source: [Automations](/codex/app/automations.md)
 
-Automate recurring tasks in the background. Codex adds findings to the inbox, or automatically archives the task if there's nothing to report. You can combine automations with [skills](https://developers.openai.com/codex/skills) for more complex tasks.
+Automate recurring tasks in the background. Codex adds findings to the inbox, or automatically archives the task if there's nothing to report. You can combine automations with [skills](/codex/skills) for more complex tasks.
 
 For project-scoped automations, the app needs to be running, and the selected
 project needs to be available on disk.
 
 In Git repositories, you can choose whether an automation runs in your local
-project or on a new [worktree](https://developers.openai.com/codex/app/worktrees). Both options run in the
+project or on a new [worktree](/codex/app/worktrees). Both options run in the
 background. Worktrees keep automation changes separate from unfinished local
 work, while running in your local project can modify files you are still
 working on. In non-version-controlled projects, automations run directly in the
@@ -3564,17 +3614,17 @@ should run across one or more projects. If you need a custom cadence, choose a
 custom schedule and enter cron syntax.
 
 For Git repositories, each automation can run either in your local project or
-on a dedicated background [worktree](https://developers.openai.com/codex/app/features#worktree-support). Use
+on a dedicated background [worktree](/codex/app/features#worktree-support). Use
 worktrees when you want to isolate automation changes from unfinished local
 work. Use local mode when you want the automation to work directly in your main
 checkout, keeping in mind that it can change files you are actively editing.
 In non-version-controlled projects, automations run directly in the project
 directory. You can have the same automation run on more than one project.
 
-Automations use your default sandbox settings. In read-only mode, tool calls fail if they require modifying files, network access, or working with apps on your computer. With full access enabled, background automations carry elevated risk. You can adjust sandbox settings in [Settings](https://developers.openai.com/codex/app/settings) and selectively allowlist commands with [rules](https://developers.openai.com/codex/rules).
+Automations use your default sandbox settings. In read-only mode, tool calls fail if they require modifying files, network access, or working with apps on your computer. With full access enabled, background automations carry elevated risk. You can adjust sandbox settings in [Settings](/codex/app/settings) and selectively allowlist commands with [rules](/codex/rules).
 
 Automations can use the same plugins and skills available to Codex. To keep
-automations maintainable and shareable across teams, use [skills](https://developers.openai.com/codex/skills)
+automations maintainable and shareable across teams, use [skills](/codex/skills)
 to define the action and provide tools and context. You can explicitly trigger a
 skill as part of an automation by using `$skill-name` inside your automation.
 
@@ -3652,17 +3702,17 @@ Automations run unattended and use your default sandbox settings.
 - If your sandbox mode is **workspace-write**, tool calls fail if they require
   modifying files outside the workspace, accessing network, or working with apps
   on your computer. You can selectively allowlist commands to run outside the
-  sandbox using [rules](https://developers.openai.com/codex/rules).
+  sandbox using [rules](/codex/rules).
 - If your sandbox mode is **full access**, background automations carry
   elevated risk, as Codex may change files, run commands, and access network
   without asking. Consider updating sandbox settings to workspace write, and
-  using [rules](https://developers.openai.com/codex/rules) to selectively define which commands the agent
+  using [rules](/codex/rules) to selectively define which commands the agent
   can run with full access.
 
 If you are in a managed environment, admins can restrict these behaviors using
 admin-enforced requirements. For example, they can disallow `approval_policy =
 "never"` or constrain allowed sandbox modes. See
-[Admin-enforced requirements (`requirements.toml`)](https://developers.openai.com/codex/enterprise/managed-configuration#admin-enforced-requirements-requirementstoml).
+[Admin-enforced requirements (`requirements.toml`)](/codex/enterprise/managed-configuration#admin-enforced-requirements-requirementstoml).
 
 Automations use `approval_policy = "never"` when your organization policy
 allows it. If admin requirements disallow `approval_policy = "never"`,
@@ -3670,7 +3720,7 @@ automations fall back to the approval behavior of your selected mode.
 
 ### Cloud environments
 
-Source: [Cloud environments](./cloud/environments.md)
+Source: [Cloud environments](/codex/cloud/environments.md)
 
 Use environments to control what Codex installs and runs during cloud tasks. For example, you can add dependencies, install tools like linters and formatters, and set environment variables.
 
@@ -3682,7 +3732,7 @@ Here's what happens when you submit a task:
 
 1. Codex creates a container and checks out your repo at the selected branch or commit SHA.
 2. Codex runs your setup script, plus an optional maintenance script when a cached container is resumed.
-3. Codex applies your internet access settings. Setup scripts run with internet access. Agent internet access is off by default, but you can enable limited or unrestricted access if needed. See [agent internet access](https://developers.openai.com/codex/cloud/internet-access).
+3. Codex applies your internet access settings. Setup scripts run with internet access. Agent internet access is off by default, but you can enable limited or unrestricted access if needed. See [agent internet access](/codex/cloud/internet-access).
 4. The agent runs terminal commands in a loop. It edits code, runs checks, and tries to validate its work. If your repo includes `AGENTS.md`, the agent uses it to find project-specific lint and test commands.
 5. When the agent finishes, it shows its answer and a diff of any files it changed. You can open a PR or ask follow-up questions.
 
@@ -3750,13 +3800,13 @@ environment in your workspace.
 
 #### Internet access and network proxy
 
-Internet access is available during the setup script phase to install dependencies. During the agent phase, internet access is off by default, but you can configure limited or unrestricted access. See [agent internet access](https://developers.openai.com/codex/cloud/internet-access).
+Internet access is available during the setup script phase to install dependencies. During the agent phase, internet access is off by default, but you can configure limited or unrestricted access. See [agent internet access](/codex/cloud/internet-access).
 
 Environments run behind an HTTP/HTTPS network proxy for security and abuse prevention purposes. All outbound internet traffic passes through this proxy.
 
 ### Codex app commands
 
-Source: [Codex app commands](./app/commands.md)
+Source: [Codex app commands](/codex/app/commands.md)
 
 Use these commands and keyboard shortcuts to navigate the Codex app.
 
@@ -3792,7 +3842,7 @@ Slash commands let you control Codex without leaving the thread composer. Availa
 1. In the thread composer, type `/`.
 2. Select a command from the list, or keep typing to filter (for example, `/status`).
 
-You can also explicitly invoke skills by typing `$` in the thread composer. See [Skills](https://developers.openai.com/codex/skills).
+You can also explicitly invoke skills by typing `$` in the thread composer. See [Skills](/codex/skills).
 
 Enabled skills also appear in the slash command list.
 
@@ -3801,10 +3851,35 @@ Enabled skills also appear in the slash command list.
 | Slash command | Description                                                                            |
 | ------------- | -------------------------------------------------------------------------------------- |
 | `/feedback`   | Open the feedback dialog to submit feedback and optionally include logs.               |
+| `/goal`       | Set a persistent goal for Codex to work toward; use `/plan` first to shape it.         |
 | `/mcp`        | Open MCP status to view connected servers.                                             |
-| `/plan-mode`  | Toggle plan mode for multi-step planning.                                              |
+| `/plan`       | Toggle plan mode for multi-step planning.                                              |
 | `/review`     | Start code review mode to review uncommitted changes or compare against a base branch. |
 | `/status`     | Show the thread ID, context usage, and rate limits.                                    |
+
+#### Set or manage a goal with `/goal`
+
+Use `/goal` in the app composer to start Goal mode. A goal is a persistent
+objective that Codex works toward until it finishes the task, pauses, or needs
+more input. To define the goal with Codex first, start with `/plan`, then set
+the refined goal with `/goal`.
+
+If `/goal` doesn't appear in the slash command list, enable `features.goals`
+in `config.toml`:
+
+```toml
+[features]
+goals = true
+```
+
+You can also run `codex features enable goals` from the CLI or ask Codex to run it.
+
+When a goal is active, the app shows its progress above the composer. Use the
+buttons in that progress row to pause or resume the goal, edit the goal text, or
+clear the goal instead of typing another slash command. You can keep steering
+Codex with follow-up messages while the goal runs.
+
+For guidance on writing effective goals, see [Goal mode](/codex/prompting#goal-mode).
 
 #### Deeplinks
 
@@ -3826,12 +3901,12 @@ For new-thread deeplinks:
 
 #### App commands references
 
-- [Features](https://developers.openai.com/codex/app/features)
-- [Settings](https://developers.openai.com/codex/app/settings)
+- [Features](/codex/app/features)
+- [Settings](/codex/app/settings)
 
 ### Codex app features
 
-Source: [Codex app features](./app/features.md)
+Source: [Codex app features](/codex/app/features.md)
 
 The Codex app is a focused desktop experience for working on Codex threads in parallel,
 with built-in worktree support, automations, and Git functionality.
@@ -3846,37 +3921,37 @@ The sections below note platform-specific exceptions.
 Use one Codex app window to run tasks across projects. Add a project for each
 codebase and switch between them as needed.
 
-If you've used the [Codex CLI](https://developers.openai.com/codex/cli), a project is like starting a
+If you've used the [Codex CLI](/codex/cli), a project is like starting a
 session in a specific directory.
 
 If you work in a single repository with two or more apps or packages, split
-distinct projects into separate app projects so the [sandbox](https://developers.openai.com/codex/agent-approvals-security)
+distinct projects into separate app projects so the [sandbox](/codex/agent-approvals-security)
 only includes the files for that project.
 
 #### Skills support
 
-The Codex app supports the same [agent skills](https://developers.openai.com/codex/skills) as the CLI and
+The Codex app supports the same [agent skills](/codex/skills) as the CLI and
 IDE Extension. You can also view and explore new skills that your team has
 created across your different projects by clicking Skills in the sidebar.
 
 #### Automations
 
-You can also combine skills with [automations](https://developers.openai.com/codex/app/automations) to perform routine tasks
+You can also combine skills with [automations](/codex/app/automations) to perform routine tasks
 such as evaluating errors in your telemetry and submitting fixes or creating reports on recent
 codebase changes. For ongoing work that should stay in one thread, use a
-[thread automation](https://developers.openai.com/codex/app/automations#thread-automations).
+[thread automation](/codex/app/automations#thread-automations).
 
 #### Modes
 
 Each thread runs in a selected mode. When starting a thread, you can choose:
 
 - **Local**: work directly in your current project directory.
-- **Worktree**: isolate changes in a Git worktree. [Learn more](https://developers.openai.com/codex/app/worktrees).
+- **Worktree**: isolate changes in a Git worktree. [Learn more](/codex/app/worktrees).
 - **Cloud**: run remotely in a configured cloud environment.
 
 Both **Local** and **Worktree** threads will run on your computer.
 
-For the full glossary and concepts, explore the [concepts section](https://developers.openai.com/codex/prompting).
+For the full glossary and concepts, explore the [concepts section](/codex/prompting).
 
 #### Built-in Git tools
 
@@ -3901,7 +3976,7 @@ project.
 
 Automations run in dedicated background worktrees for Git repositories, and directly in the project directory for non-version-controlled projects.
 
-[Learn more about using worktrees in the Codex app.](https://developers.openai.com/codex/app/worktrees)
+[Learn more about using worktrees in the Codex app.](/codex/app/worktrees)
 
 #### Integrated terminal
 
@@ -3921,7 +3996,7 @@ Common tasks include:
 - `pnpm test` or `npm test`
 - `pnpm run lint` or similar project commands
 
-If you run a task regularly, you can define an **action** inside your [local environment](https://developers.openai.com/codex/app/local-environments) to add a shortcut button to the top of your Codex app window.
+If you run a task regularly, you can define an **action** inside your [local environment](/codex/app/local-environments) to add a shortcut button to the top of your Codex app window.
 
 Note that Cmd+K opens the command palette in the Codex
 app. It doesn't clear the terminal. To clear the terminal use Ctrl+L.
@@ -3932,7 +4007,7 @@ On Windows, Codex can run natively in PowerShell with a native Windows sandbox
 instead of requiring WSL or a virtual machine. This lets you stay in
 Windows-native workflows while keeping bounded permissions in place.
 
-[Learn more about Windows setup and sandboxing](https://developers.openai.com/codex/app/windows).
+[Learn more about Windows setup and sandboxing](/codex/app/windows).
 
 #### Voice dictation
 
@@ -3949,7 +4024,7 @@ visible across your workflow.
 
 #### In-app browser
 
-Use the [in-app browser](https://developers.openai.com/codex/app/browser) to preview, review, and comment on
+Use the [in-app browser](/codex/app/browser) to preview, review, and comment on
 local development servers, file-backed previews, and public pages that don't
 require sign-in while you iterate on a web app.
 
@@ -3960,13 +4035,13 @@ Use browser comments to mark specific elements or areas on a page, then ask
 Codex to address that feedback.
 
 When you want Codex to operate the page directly, use
-[browser use](https://developers.openai.com/codex/app/browser#browser-use) for local development servers and
+[browser use](/codex/app/browser#browser-use) for local development servers and
 file-backed pages. You can manage the Browser plugin, allowed websites, and
 blocked websites from settings.
 
 #### Computer use
 
-[Computer use](https://developers.openai.com/codex/app/computer-use) helps Codex operate a macOS app by
+[Computer use](/codex/app/computer-use) helps Codex operate a macOS app by
 seeing, clicking, and typing. This is useful for testing desktop apps, checking
 browser or simulator flows, working with data sources that aren't available as
 plugins, changing app settings, and reproducing GUI-only bugs.
@@ -3995,7 +4070,7 @@ can steer the work, inspect generated files, and decide what needs another pass.
 
 #### Sync with the IDE extension
 
-If you have the [Codex IDE Extension](https://developers.openai.com/codex/ide) installed in your editor,
+If you have the [Codex IDE Extension](/codex/ide) installed in your editor,
 your Codex app and IDE Extension automatically sync when both are in the same
 project.
 
@@ -4016,7 +4091,7 @@ loop. Use them for heartbeat-style automations that should keep returning to the
 same conversation on a schedule.
 
 Use a thread automation when the next run depends on the current conversation.
-Use a standalone or project [automation](https://developers.openai.com/codex/app/automations) when you want
+Use a standalone or project [automation](/codex/app/automations) when you want
 Codex to start a fresh recurring task for one or more projects.
 
 #### Approvals and sandboxing
@@ -4037,18 +4112,18 @@ If your task requires work across more than one repository or directory, prefer
 opening separate projects or using worktrees rather than asking Codex to roam
 outside the project root.
 
-If [automatic review](https://developers.openai.com/codex/agent-approvals-security#automatic-approval-reviews)
+If [automatic review](/codex/agent-approvals-security#automatic-approval-reviews)
 is available in your workspace, you can choose it from the permissions selector.
 It keeps the same sandbox boundary but routes eligible approval requests through
 the configured review policy instead of waiting for you.
 
-For a high-level overview, see [sandboxing](https://developers.openai.com/codex/concepts/sandboxing). For
+For a high-level overview, see [sandboxing](/codex/concepts/sandboxing). For
 configuration details, see the
-[agent approvals & security documentation](https://developers.openai.com/codex/agent-approvals-security).
+[agent approvals & security documentation](/codex/agent-approvals-security).
 
 #### MCP support
 
-The Codex app, CLI, and IDE Extension share [Model Context Protocol (MCP)](https://developers.openai.com/codex/mcp) settings.
+The Codex app, CLI, and IDE Extension share [Model Context Protocol (MCP)](/codex/mcp) settings.
 If you've already configured MCP servers in one, they're automatically adopted by the others. To
 configure new servers, open the MCP section in the app's settings and either enable a recommended
 server or add a new server to your configuration.
@@ -4057,8 +4132,8 @@ server or add a new server to your configuration.
 
 Codex ships with a first-party web search tool. For local tasks in the Codex app, Codex
 enables web search by default and serves results from a web search cache. If you configure your
-sandbox for [full access](https://developers.openai.com/codex/agent-approvals-security), web search defaults to live results. See
-[Config basics](https://developers.openai.com/codex/config-basic) to disable web search or switch to live results that fetch the
+sandbox for [full access](/codex/agent-approvals-security), web search defaults to live results. See
+[Config basics](/codex/config-basic) to disable web search or switch to live results that fetch the
 most recent data.
 
 #### Image generation
@@ -4067,13 +4142,13 @@ Ask Codex to generate or edit images directly in a thread. This is useful for UI
 
 You can ask in natural language or explicitly invoke the image generation skill by including `$imagegen` in your prompt.
 
-Built-in image generation uses `gpt-image-2`, counts toward your general Codex usage limits, and uses included limits 3-5x faster on average than similar turns without image generation, depending on image quality and size. For details, see [Pricing](https://developers.openai.com/codex/pricing#image-generation-usage-limits). For prompting tips and model details, see the [image generation guide](https://developers.openai.com/api/docs/guides/image-generation).
+Built-in image generation uses `gpt-image-2`, counts toward your general Codex usage limits, and uses included limits 3-5x faster on average than similar turns without image generation, depending on image quality and size. For details, see [Pricing](/codex/pricing#image-generation-usage-limits). For prompting tips and model details, see the [image generation guide](/api/docs/guides/image-generation).
 
 For larger batches of image generation, set `OPENAI_API_KEY` in your environment variables and ask Codex to generate images through the API so API pricing applies instead.
 
 ### Codex app settings
 
-Source: [Codex app settings](./app/settings.md)
+Source: [Codex app settings](/codex/app/settings.md)
 
 Use the settings panel to tune how the Codex app behaves, how it opens files,
 and how it connects to tools. Open [**Settings**](codex://settings) from the app menu or
@@ -4094,8 +4169,8 @@ notification permissions.
 
 Codex agents in the app inherit the same configuration as the IDE and CLI extension.
 Use the in-app controls for common settings, or edit `config.toml` for advanced
-options. See [Codex security](https://developers.openai.com/codex/agent-approvals-security) and
-[config basics](https://developers.openai.com/codex/config-basic) for more detail.
+options. See [Codex security](/codex/agent-approvals-security) and
+[config basics](/codex/config-basic) for more detail.
 
 #### Appearance
 
@@ -4141,17 +4216,17 @@ You can also set prompts that Codex uses to generate commit messages and pull re
 Connect external tools via MCP (Model Context Protocol). Enable recommended servers or
 add your own. If a server requires OAuth, the app starts the auth flow. These settings
 also apply to the Codex CLI and IDE extension because the MCP configuration lives in
-`config.toml`. See the [Model Context Protocol docs](https://developers.openai.com/codex/mcp) for details.
+`config.toml`. See the [Model Context Protocol docs](/codex/mcp) for details.
 
 #### Browser use
 
 Use these settings to install or enable the bundled Browser plugin, set up the
-[Codex Chrome extension](https://developers.openai.com/codex/app/chrome-extension), and manage allowlisted
+[Codex Chrome extension](/codex/app/chrome-extension), and manage allowlisted
 and blocklisted websites. Codex asks before using a website unless you've
 allowlisted it. Removing a site from the blocklist lets Codex ask again before
 using it in the browser.
 
-See [In-app browser](https://developers.openai.com/codex/app/browser) for browser preview, comment, and
+See [In-app browser](/codex/app/browser) for browser preview, comment, and
 browser use workflows.
 
 #### Computer Use
@@ -4167,7 +4242,7 @@ Choose **Friendly**, **Pragmatic**, or **None** as your default personality. Use
 **None** to disable personality instructions. You can update this at any time.
 
 You can also add your own custom instructions. Editing custom instructions updates your
-[personal instructions in `AGENTS.md`](https://developers.openai.com/codex/guides/agents-md).
+[personal instructions in `AGENTS.md`](/codex/guides/agents-md).
 
 #### Context-aware suggestions
 
@@ -4177,7 +4252,7 @@ start or return to Codex.
 #### Memories
 
 Enable Memories, where available, to let Codex carry useful context from past
-threads into future work. See [Memories](https://developers.openai.com/codex/memories) for setup, storage,
+threads into future work. See [Memories](/codex/memories) for setup, storage,
 and per-thread controls.
 
 #### Archived threads
@@ -4187,14 +4262,14 @@ context. Use **Unarchive** to restore a thread.
 
 ### Codex Chrome extension
 
-Source: [Codex Chrome extension](./app/chrome-extension.md)
+Source: [Codex Chrome extension](/codex/app/chrome-extension.md)
 
 The Codex Chrome extension lets Codex use Chrome for browser tasks that need
 your signed-in browser state. Use it when Codex needs to read or act on sites
 such as LinkedIn, Salesforce, Gmail, or internal tools.
 
 For local development servers, file-backed previews, and public pages that do
-not require sign-in, use the [in-app browser](https://developers.openai.com/codex/app/browser) first. The
+not require sign-in, use the [in-app browser](/codex/app/browser) first. The
 in-app browser keeps preview and verification work inside Codex without using
 your Chrome profile.
 
@@ -4335,7 +4410,7 @@ After you change the setting, start the Chrome task again.
 
 ### Codex CLI features
 
-Source: [Codex CLI features](./cli/features.md)
+Source: [Codex CLI features](/codex/cli/features.md)
 
 Codex supports workflows beyond chat. Use this guide to learn what each one unlocks and when to use it.
 
@@ -4432,7 +4507,7 @@ codex --remote wss://remote-host:4500 --remote-auth-token-env CODEX_REMOTE_TOKEN
 ```
 
 For SSH remote projects in the Codex app, use
-[Remote connections](https://developers.openai.com/codex/remote-connections). For managed remote-control
+[Remote connections](/codex/remote-connections). For managed remote-control
 clients, `codex remote-control` starts an app-server process with
 remote-control support enabled.
 
@@ -4449,7 +4524,7 @@ Switch models mid-session with the `/model` command, or specify one when launchi
 codex --model gpt-5.5
 ```
 
-[Learn more about the models available in Codex](https://developers.openai.com/codex/models).
+[Learn more about the models available in Codex](/codex/models).
 
 #### Feature flags
 
@@ -4465,7 +4540,7 @@ codex features disable shell_snapshot
 
 #### Subagents
 
-Use Codex subagent workflows to parallelize larger tasks. For setup, role configuration (`[agents]` in `config.toml`), and examples, see [Subagents](https://developers.openai.com/codex/subagents).
+Use Codex subagent workflows to parallelize larger tasks. For setup, role configuration (`[agents]` in `config.toml`), and examples, see [Subagents](/codex/subagents).
 
 Codex only spawns subagents when you explicitly ask it to. Because each
 subagent does its own model and tool work, subagent workflows consume more
@@ -4491,7 +4566,7 @@ Ask Codex to generate or edit images directly in the CLI. This works well for as
 
 You can ask in natural language or explicitly invoke the image generation skill by including `$imagegen` in your prompt.
 
-Built-in image generation uses `gpt-image-2`, counts toward your general Codex usage limits, and uses included limits 3-5x faster on average than similar turns without image generation, depending on image quality and size. For details, see [Pricing](https://developers.openai.com/codex/pricing#image-generation-usage-limits). For prompting tips and model details, see the [image generation guide](https://developers.openai.com/api/docs/guides/image-generation).
+Built-in image generation uses `gpt-image-2`, counts toward your general Codex usage limits, and uses included limits 3-5x faster on average than similar turns without image generation, depending on image quality and size. For details, see [Pricing](/codex/pricing#image-generation-usage-limits). For prompting tips and model details, see the [image generation guide](/api/docs/guides/image-generation).
 
 For larger batches of image generation, set `OPENAI_API_KEY` in your environment variables and ask Codex to generate images through the API so API pricing applies instead.
 
@@ -4514,7 +4589,7 @@ Each run shows up as its own turn in the transcript, so you can rerun reviews as
 
 #### Web search
 
-Codex ships with a first-party web search tool. For local tasks in the Codex CLI, Codex enables web search by default and serves results from a web search cache. The cache is an OpenAI-maintained index of web results, so cached mode returns pre-indexed results instead of fetching live pages. This reduces exposure to prompt injection from arbitrary live content, but you should still treat web results as untrusted. If you are using `--yolo` or another [full access sandbox setting](https://developers.openai.com/codex/agent-approvals-security), web search defaults to live results. To fetch the most recent data, pass `--search` for a single run or set `web_search = "live"` in [Config basics](https://developers.openai.com/codex/config-basic). You can also set `web_search = "disabled"` to turn the tool off.
+Codex ships with a first-party web search tool. For local tasks in the Codex CLI, Codex enables web search by default and serves results from a web search cache. The cache is an OpenAI-maintained index of web results, so cached mode returns pre-indexed results instead of fetching live pages. This reduces exposure to prompt injection from arbitrary live content, but you should still treat web results as untrusted. If you are using `--yolo` or another [full access sandbox setting](/codex/agent-approvals-security), web search defaults to live results. To fetch the most recent data, pass `--search` for a single run or set `web_search = "live"` in [Config basics](/codex/config-basic). You can also set `web_search = "disabled"` to turn the tool off.
 
 You'll see `web_search` items in the transcript or `codex exec --json` output whenever Codex looks something up.
 
@@ -4569,7 +4644,7 @@ Combine `exec` with shell scripting to build custom workflows, such as automatic
 
 #### Working with Codex cloud
 
-The `codex cloud` command lets you triage and launch [Codex cloud tasks](https://developers.openai.com/codex/cloud) without leaving the terminal. Run it with no arguments to open an interactive picker, browse active or finished tasks, and apply the changes to your local project.
+The `codex cloud` command lets you triage and launch [Codex cloud tasks](/codex/cloud) without leaving the terminal. Run it with no arguments to open an interactive picker, browse active or finished tasks, and apply the changes to your local project.
 
 You can also start a task directly from the terminal:
 
@@ -4585,7 +4660,7 @@ Environment IDs come from your Codex cloud configuration—use `codex cloud` and
 
 Slash commands give you quick access to specialized workflows like `/review`, `/fork`, `/side`, or your own reusable prompts. Codex ships with a curated set of built-ins, and you can create custom ones for team-specific tasks or personal shortcuts.
 
-See the [slash commands guide](https://developers.openai.com/codex/guides/slash-commands) to browse the catalog of built-ins, learn how to author custom commands, and understand where they live on disk.
+See the [slash commands guide](/codex/guides/slash-commands) to browse the catalog of built-ins, learn how to author custom commands, and understand where they live on disk.
 
 #### Prompt editor
 
@@ -4597,11 +4672,11 @@ In the prompt input, press Ctrl+G to open the editor defined by the `VISUAL` env
 
 Connect Codex to more tools by configuring Model Context Protocol servers. Add STDIO or streaming HTTP servers in `~/.codex/config.toml`, or manage them with the `codex mcp` CLI commands—Codex launches them automatically when a session starts and exposes their tools next to the built-ins. You can even run Codex itself as an MCP server when you need it inside another agent.
 
-See [Model Context Protocol](https://developers.openai.com/codex/mcp) for example configurations, supported auth flows, and a more detailed guide.
+See [Model Context Protocol](/codex/mcp) for example configurations, supported auth flows, and a more detailed guide.
 
 ### Codex IDE extension commands
 
-Source: [Codex IDE extension commands](./ide/commands.md)
+Source: [Codex IDE extension commands](/codex/ide/commands.md)
 
 Use these commands to control Codex from the VS Code Command Palette. You can also bind them to keyboard shortcuts.
 
@@ -4628,7 +4703,7 @@ To assign or change a key binding for a Codex command:
 
 ### Codex IDE extension features
 
-Source: [Codex IDE extension features](./ide/features.md)
+Source: [Codex IDE extension features](/codex/ide/features.md)
 
 The Codex IDE extension gives you access to Codex directly in VS Code, Cursor, Windsurf, and other VS Code-compatible editors. It uses the same agent as the Codex CLI and shares the same configuration.
 
@@ -4679,7 +4754,7 @@ You can also view the cloud tasks in the [Codex cloud interface](https://chatgpt
 
 #### Web search
 
-Codex ships with a first-party web search tool. For local tasks in the Codex IDE Extension, Codex enables web search by default and serves results from a web search cache. The cache is an OpenAI-maintained index of web results, so cached mode returns pre-indexed results instead of fetching live pages. This reduces exposure to prompt injection from arbitrary live content, but you should still treat web results as untrusted. If you configure your sandbox for [full access](https://developers.openai.com/codex/agent-approvals-security), web search defaults to live results. See [Config basics](https://developers.openai.com/codex/config-basic) to disable web search or switch to live results that fetch the most recent data.
+Codex ships with a first-party web search tool. For local tasks in the Codex IDE Extension, Codex enables web search by default and serves results from a web search cache. The cache is an OpenAI-maintained index of web results, so cached mode returns pre-indexed results instead of fetching live pages. This reduces exposure to prompt injection from arbitrary live content, but you should still treat web results as untrusted. If you configure your sandbox for [full access](/codex/agent-approvals-security), web search defaults to live results. See [Config basics](/codex/config-basic) to disable web search or switch to live results that fetch the most recent data.
 
 You'll see `web_search` items in the transcript or `codex exec --json` output whenever Codex looks something up.
 
@@ -4695,17 +4770,17 @@ Ask Codex to generate or edit images without leaving your editor. This is useful
 
 You can ask in natural language or explicitly invoke the image generation skill by including `$imagegen` in your prompt.
 
-Built-in image generation uses `gpt-image-2`, counts toward your general Codex usage limits, and uses included limits 3-5x faster on average than similar turns without image generation, depending on image quality and size. For details, see [Pricing](https://developers.openai.com/codex/pricing#image-generation-usage-limits). For prompting tips and model details, see the [image generation guide](https://developers.openai.com/api/docs/guides/image-generation).
+Built-in image generation uses `gpt-image-2`, counts toward your general Codex usage limits, and uses included limits 3-5x faster on average than similar turns without image generation, depending on image quality and size. For details, see [Pricing](/codex/pricing#image-generation-usage-limits). For prompting tips and model details, see the [image generation guide](/api/docs/guides/image-generation).
 
 For larger batches of image generation, set `OPENAI_API_KEY` in your environment variables and ask Codex to generate images through the API so API pricing applies instead.
 
 #### IDE feature references
 
-- [Codex IDE extension settings](https://developers.openai.com/codex/ide/settings)
+- [Codex IDE extension settings](/codex/ide/settings)
 
 ### Codex IDE extension settings
 
-Source: [Codex IDE extension settings](./ide/settings.md)
+Source: [Codex IDE extension settings](/codex/ide/settings.md)
 
 Use these settings to customize the Codex IDE extension.
 
@@ -4717,7 +4792,7 @@ To change a setting, follow these steps:
 2. Search for `Codex` or the setting name.
 3. Update the value.
 
-The Codex IDE extension uses the Codex CLI. Configure some behavior, such as the default model, approvals, and sandbox settings, in the shared `~/.codex/config.toml` file instead of in editor settings. See [Config basics](https://developers.openai.com/codex/config-basic).
+The Codex IDE extension uses the Codex CLI. Configure some behavior, such as the default model, approvals, and sandbox settings, in the shared `~/.codex/config.toml` file instead of in editor settings. See [Config basics](/codex/config-basic).
 
 The extension also honors VS Code's built-in chat font settings for Codex conversation surfaces.
 
@@ -4735,7 +4810,7 @@ The extension also honors VS Code's built-in chat font settings for Codex conver
 
 ### Codex IDE extension slash commands
 
-Source: [Codex IDE extension slash commands](./ide/slash-commands.md)
+Source: [Codex IDE extension slash commands](/codex/ide/slash-commands.md)
 
 Slash commands let you control Codex without leaving the chat input. Use them to check status, switch between local and cloud mode, or send feedback.
 
@@ -4753,13 +4828,24 @@ Slash commands let you control Codex without leaving the chat input. Use them to
 | `/cloud`             | Switch to cloud mode to run the task remotely (requires cloud access).                 |
 | `/cloud-environment` | Choose the cloud environment to use (available only in cloud mode).                    |
 | `/feedback`          | Open the feedback dialog to submit feedback and optionally include logs.               |
+| `/goal`              | Set a persistent goal for Codex to work toward.                                        |
 | `/local`             | Switch to local mode to run the task in your workspace.                                |
 | `/review`            | Start code review mode to review uncommitted changes or compare against a base branch. |
 | `/status`            | Show the thread ID, context usage, and rate limits.                                    |
 
+If `/goal` doesn't appear in the slash command list, enable `features.goals`
+in `config.toml`:
+
+```toml
+[features]
+goals = true
+```
+
+You can also run `codex features enable goals` from the CLI or ask Codex to run it.
+
 ### Computer Use
 
-Source: [Computer Use](./app/computer-use.md)
+Source: [Computer Use](/codex/app/computer-use.md)
 
 In the Codex app, computer use is currently available on macOS, except in the
 European Economic Area, the United Kingdom, and Switzerland at launch. Install
@@ -4806,7 +4892,7 @@ Good fits include:
 - Executing a workflow that spans more than one app.
 
 For web apps you are building locally, use the
-[in-app browser](https://developers.openai.com/codex/app/browser) first.
+[in-app browser](/codex/app/browser) first.
 
 #### Start a computer use task
 
@@ -4845,6 +4931,42 @@ Codex may also ask for permission before taking sensitive or disruptive actions.
 If Codex can't see or control an app, open **System Settings > Privacy &
 Security** and check **Screen Recording** and **Accessibility** for the Codex
 app.
+
+#### Locked use
+
+Locked computer use lets Codex use Computer Use after your Mac locks, but only
+after you enable it. Use it when a Codex task needs to use desktop apps from a
+connected device after the Mac locks.
+
+When you enable locked computer use, Codex installs an Apple
+[authorization plug-in](https://developer.apple.com/documentation/security/authorization-plug-ins)
+that participates in the macOS unlock flow.
+
+Locked use is intentionally narrow. It's not a general-purpose remote-unlock
+path for your Mac, and it doesn't let other apps or local processes unlock the
+computer.
+
+To use locked computer use:
+
+1. Open **Codex settings > Computer Use**.
+2. Enable locked computer use.
+3. Start a task that uses computer use from a connected device after your Mac's
+   screen has locked.
+
+When a Codex task accesses an app via Computer Use after your Mac locks, Codex
+temporarily unlocks the Mac while blocking local use and preserving the locked
+screen protections. Before unlocking, Codex checks whether the unlock attempt is
+for an active, trusted computer use turn. Outside that short-lived window, Codex
+denies the unlock and asks you to unlock manually if needed.
+
+Locked use includes safeguards:
+
+- The authorization window is short-lived and scoped to the current unlock
+  attempt.
+- Automatic unlock is available only to Codex during active computer use turns.
+- Codex covers every display while the desktop is temporarily unlocked.
+- If Codex detects local keyboard or pointer input, it relocks the Mac and
+  pauses automatic unlock until you unlock it manually.
 
 #### Safety guidance
 
@@ -4886,7 +5008,7 @@ by computer use.
 
 ### In-app browser
 
-Source: [In-app browser](./app/browser.md)
+Source: [In-app browser](/codex/app/browser.md)
 
 The in-app browser gives you and Codex a shared view of rendered web pages
 inside a thread. Use it when you're building or debugging a web app and want to
@@ -4895,7 +5017,7 @@ preview pages and attach visual comments.
 Use it for local development servers, file-backed previews, and public pages
 that don't require sign-in. For anything that depends on login state or browser
 extensions, use your regular browser or the
-[Codex Chrome extension](https://developers.openai.com/codex/app/chrome-extension).
+[Codex Chrome extension](/codex/app/chrome-extension).
 
 Open the in-app browser from the toolbar, by clicking a URL, by navigating
 manually in the browser, or by pressing Cmd+Shift+B
@@ -4911,7 +5033,8 @@ Treat page content as untrusted context. Don't paste secrets into browser flows.
 
 Browser use lets Codex operate the in-app browser directly. Use it for local
 development servers and file-backed previews when Codex needs to click, type,
-inspect rendered state, take screenshots, or verify a fix in the page.
+inspect rendered state, take screenshots, download page assets, run read-only
+page inspection JavaScript, or verify a fix in the page.
 
 To use it, install and enable the Browser plugin. Then ask Codex to use the
 browser in your task, or reference it directly with `@Browser`. The app keeps
@@ -4930,11 +5053,11 @@ the allowed list means Codex asks again before using it; removing a site from th
 blocked list means Codex can ask again instead of treating it as blocked.
 
 For signed-in websites in Chrome, see
-[Codex Chrome extension](https://developers.openai.com/codex/app/chrome-extension).
+[Codex Chrome extension](/codex/app/chrome-extension).
 
 #### Preview a page
 
-1. Start your app's development server in the [integrated terminal](https://developers.openai.com/codex/app/features#integrated-terminal) or with a [local environment action](https://developers.openai.com/codex/app/local-environments#actions).
+1. Start your app's development server in the [integrated terminal](/codex/app/features#integrated-terminal) or with a [local environment action](/codex/app/local-environments#actions).
 2. Open an unauthenticated local route, file-backed page, or public page by
    clicking a URL or navigating manually in the browser.
 3. Review the rendered state alongside the code diff.
@@ -4953,8 +5076,8 @@ layout issues and keep the card structure unchanged.
 When a bug is visible only in the rendered page, use browser comments to give
 Codex precise feedback on the page.
 
-- Turn on comment mode, select an element or area, and submit a comment.
-- In comment mode, hold Shift and click to select an area.
+- Turn on Annotation mode, select an element or area, and submit a comment.
+- In Annotation mode, hold Shift and click to select an area.
 - Hold Cmd while clicking to send a comment immediately.
 
 After you leave comments, send a message in the thread asking Codex to address
@@ -4972,6 +5095,13 @@ This tooltip covers the data point under the cursor. Reposition the tooltip so
 it stays inside the chart bounds.
 ```
 
+#### Styling feedback
+
+When you add an annotation to a section on the page, press the config icon next
+to the text input to give Codex more granular style feedback. You can change
+values like font, text, spacing, and color, preview the result directly on the
+page, and then send the annotation so Codex has a clearer target for the change.
+
 #### Keep browser tasks scoped
 
 The in-app browser is for review and iteration. Keep each browser task small
@@ -4984,12 +5114,12 @@ enough to review in one pass.
 - Review the updated route after Codex changes the code.
 - Ask Codex to start or check the dev server before it uses the browser.
 
-For repository changes, use the [review pane](https://developers.openai.com/codex/app/review) to inspect the
+For repository changes, use the [review pane](/codex/app/review) to inspect the
 changes and leave comments.
 
 ### Local environments
 
-Source: [Local environments](./app/local-environments.md)
+Source: [Local environments](/codex/app/local-environments.md)
 
 Local environments let you configure setup steps for worktrees as well as common actions for a project.
 
@@ -5016,7 +5146,7 @@ If your setup is platform-specific, define setup scripts for macOS, Windows, or 
 
 #### Actions
 
-Use actions to define common tasks like starting your app's development server or running your test suite. These actions appear in the Codex app top bar for quick access. The actions will be run within the app's [integrated terminal](https://developers.openai.com/codex/app/features#integrated-terminal).
+Use actions to define common tasks like starting your app's development server or running your test suite. These actions appear in the Codex app top bar for quick access. The actions will be run within the app's [integrated terminal](/codex/app/features#integrated-terminal).
 
 Actions are helpful to keep you from typing common actions like triggering a build for your project or starting a development server. For one-off quick debugging you can use the integrated terminal directly.
 
@@ -5032,7 +5162,7 @@ To identify your actions, choose an icon associated with each action.
 
 ### Review
 
-Source: [Review](./app/review.md)
+Source: [Review](/codex/app/review.md)
 
 The review pane helps you understand what Codex changed, give targeted feedback, and decide what to keep.
 
@@ -5059,7 +5189,7 @@ changes.
 
 #### Navigating the review pane
 
-- Clicking a file name typically opens that file in your chosen editor. You can choose the default editor in [settings](https://developers.openai.com/codex/app/settings).
+- Clicking a file name typically opens that file in your chosen editor. You can choose the default editor in [settings](/codex/app/settings).
 - Clicking the file name background expands or collapses the diff.
 - Clicking a single line while holding Cmd pressed will open the line in your chosen editor.
 - If you are happy with a change you can [stage the changes or revert changes](#staging-and-reverting-files) you don't like.
@@ -5110,7 +5240,7 @@ Use this flow when you want to keep the full fix loop in one place:
 4. Inspect the resulting diff in the review pane.
 5. Stage, commit, and push the changes to the PR branch when you are ready.
 
-For GitHub-triggered reviews, see [Use Codex in GitHub](https://developers.openai.com/codex/integrations/github).
+For GitHub-triggered reviews, see [Use Codex in GitHub](/codex/integrations/github).
 
 #### Staging and reverting files
 
@@ -5135,7 +5265,7 @@ staged and unstaged views. That's normal Git behavior.
 
 ### Slash commands in Codex CLI
 
-Source: [Slash commands in Codex CLI](./cli/slash-commands.md)
+Source: [Slash commands in Codex CLI](/codex/cli/slash-commands.md)
 
 Slash commands give you fast, keyboard-first control over Codex. Type `/` in
 the composer to open the slash popup, choose a command, and Codex will perform
@@ -5187,7 +5317,7 @@ completion still works before you queue the command.
 | [`/model`](#set-the-active-model-with-model)                                    | Choose the active model (and reasoning effort, when available). | Switch between general-purpose models (`gpt-4.1-mini`) and deeper reasoning models before running a task.  |
 | [`/fast`](#toggle-fast-mode-with-fast)                                          | Toggle a Fast service tier when the model catalog exposes one.  | Turn the current model's Fast tier on or off, or check whether the thread is using it.                     |
 | [`/plan`](#switch-to-plan-mode-with-plan)                                       | Switch to plan mode and optionally send a prompt.               | Ask Codex to propose an execution plan before implementation work starts.                                  |
-| [`/goal`](#set-or-view-an-experimental-task-goal-with-goal)                     | Set, pause, resume, view, or clear a task goal.                 | Give Codex a persistent target to track while a larger task runs. Requires `features.goals`.               |
+| [`/goal`](#set-or-view-a-task-goal-with-goal)                                   | Set, pause, resume, view, or clear a task goal.                 | Give Codex a persistent target to track while a larger task runs.                                          |
 | [`/personality`](#set-a-communication-style-with-personality)                   | Choose a communication style for responses.                     | Make Codex more concise, more explanatory, or more collaborative without changing your instructions.       |
 | [`/ps`](#check-background-terminals-with-ps)                                    | Show experimental background terminals and their recent output. | Check long-running commands without leaving the main transcript.                                           |
 | [`/stop`](#stop-background-terminals-with-stop)                                 | Stop all background terminals.                                  | Cancel background terminal work started by the current session.                                            |
@@ -5262,9 +5392,7 @@ Expected: Codex enters plan mode and uses your optional inline prompt as the fir
 
 While a task is already running, `/plan` is temporarily unavailable.
 
-#### Set an experimental goal with `/goal`
-
-`/goal` is experimental and only available when `features.goals` is enabled. To enable it, open `/experimental` or add `goals = true` under `[features]` in `config.toml`.
+#### Set or view a task goal with `/goal`
 
 1. Type `/goal ` to set the goal, for example `/goal Finish the migration and keep tests green`.
 2. Type `/goal` to view the current goal.
@@ -5356,7 +5484,7 @@ mode the default for new sessions, set `tui.vim_mode_default = true` in
 
 ### Troubleshooting
 
-Source: [Troubleshooting](./app/troubleshooting.md)
+Source: [Troubleshooting](/codex/app/troubleshooting.md)
 
 #### Frequently Asked Questions
 
@@ -5372,7 +5500,7 @@ staged, and compare your branch with main.
 If you want to see only the changes of your last Codex turn, switch the diff
 pane to the "Last turn changes" view.
 
-[Learn more about how to use the review pane](https://developers.openai.com/codex/app/review).
+[Learn more about how to use the review pane](/codex/app/review).
 
 #### Remove a project from the sidebar
 
@@ -5400,9 +5528,9 @@ section.
 Worktrees are created in a different directory and only inherit the files that
 are checked into Git. Depending on how you manage dependencies and tooling
 for your project you might have to run some setup scripts on your worktree using a
-[local environment](https://developers.openai.com/codex/app/local-environments). Alternatively you can check out
+[local environment](/codex/app/local-environments). Alternatively you can check out
 the changes in your regular local project. Check out the
-[worktrees documentation](https://developers.openai.com/codex/app/worktrees) to learn more.
+[worktrees documentation](/codex/app/worktrees) to learn more.
 
 #### App doesn't pick up a teammate's shared local environment
 
@@ -5495,14 +5623,14 @@ Codex uses the same font for the review pane, integrated terminal and any other 
 
 ### Windows app
 
-Source: [Windows](./app/windows.md)
+Source: [Windows](/codex/app/windows.md)
 
 The [Codex app for Windows](https://get.microsoft.com/installer/download/9PLM9XGG6VKS?cid=website_cta_psi) gives you one interface for
 working across projects, running parallel agent threads, and reviewing results.
 The Windows app supports core workflows such as worktrees, automations, Git
 functionality, the in-app browser, artifact previews, plugins, and skills.
 It runs natively on Windows using PowerShell and the
-[Windows sandbox](https://developers.openai.com/codex/windows#windows-sandbox), or you can configure it to
+[Windows sandbox](/codex/windows#windows-sandbox), or you can configure it to
 run in [Windows Subsystem for Linux 2 (WSL2)](#windows-subsystem-for-linux-wsl).
 
 #### Download and update the Codex app
@@ -5510,7 +5638,7 @@ run in [Windows Subsystem for Linux 2 (WSL2)](#windows-subsystem-for-linux-wsl).
 Download the Codex app from the
 [Microsoft Store](https://get.microsoft.com/installer/download/9PLM9XGG6VKS?cid=website_cta_psi).
 
-Then follow the [quickstart](https://developers.openai.com/codex/quickstart?setup=app) to get started.
+Then follow the [quickstart](/codex/quickstart?setup=app) to get started.
 
 To update the app, open the Microsoft Store, go to **Downloads**, and click
 **Check for updates**. The Store installs the latest version afterward.
@@ -5527,15 +5655,15 @@ winget install Codex -s msstore
 
 #### Native sandbox
 
-The Codex app on Windows supports a native [Windows sandbox](https://developers.openai.com/codex/windows#windows-sandbox) when the agent runs in PowerShell, and uses Linux sandboxing when you run the agent in [Windows Subsystem for Linux 2 (WSL2)](#windows-subsystem-for-linux-wsl). To apply sandbox protections in either mode, set sandbox permissions to **Default permissions** in the Composer before sending messages to Codex.
+The Codex app on Windows supports a native [Windows sandbox](/codex/windows#windows-sandbox) when the agent runs in PowerShell, and uses Linux sandboxing when you run the agent in [Windows Subsystem for Linux 2 (WSL2)](#windows-subsystem-for-linux-wsl). To apply sandbox protections in either mode, set sandbox permissions to **Default permissions** in the Composer before sending messages to Codex.
 
 Running Codex in full access mode means Codex is not limited to your project
 directory and might perform unintentional destructive actions that can lead to
-data loss. Keep sandbox boundaries in place and use [rules](https://developers.openai.com/codex/rules) for
+data loss. Keep sandbox boundaries in place and use [rules](/codex/rules) for
 targeted exceptions, or set your [approval policy to
-never](https://developers.openai.com/codex/agent-approvals-security#run-without-approval-prompts) to have
+never](/codex/agent-approvals-security#run-without-approval-prompts) to have
 Codex attempt to solve problems without asking for escalated permissions,
-based on your [approval and security setup](https://developers.openai.com/codex/agent-approvals-security).
+based on your [approval and security setup](/codex/agent-approvals-security).
 
 #### Customize for your dev setup
 
@@ -5603,7 +5731,7 @@ Codex works best when a few common developer tools are already installed:
 - **GitHub CLI**: Powers GitHub-specific functionality in the Codex app.
 
 Install them with the default Windows package manager `winget` by pasting this
-into the [integrated terminal](https://developers.openai.com/codex/app/features#integrated-terminal) or
+into the [integrated terminal](/codex/app/features#integrated-terminal) or
 asking Codex to install them:
 
 ```powershell
@@ -5656,7 +5784,7 @@ before changing the policy.
 
 #### Local environment scripts on Windows
 
-If your [local environment](https://developers.openai.com/codex/app/local-environments) uses cross-platform
+If your [local environment](/codex/app/local-environments) uses cross-platform
 commands such as `npm` scripts, you can keep one shared setup script or
 set of actions for every platform.
 
@@ -5709,9 +5837,9 @@ restart Codex or reboot.
 
 ### Worktrees
 
-Source: [Worktrees](./app/worktrees.md)
+Source: [Worktrees](/codex/app/worktrees.md)
 
-In the Codex app, worktrees let Codex run multiple independent tasks in the same project without interfering with each other. For Git repositories, [automations](https://developers.openai.com/codex/app/automations) run on dedicated background worktrees so they don't conflict with your ongoing work. In non-version-controlled projects, automations run directly in the project directory. You can also start threads on a worktree manually, and use Handoff to move a thread between Local and Worktree.
+In the Codex app, worktrees let Codex run multiple independent tasks in the same project without interfering with each other. For Git repositories, [automations](/codex/app/automations) run on dedicated background worktrees so they don't conflict with your ongoing work. In non-version-controlled projects, automations run directly in the project directory. You can also start threads on a worktree manually, and use Handoff to move a thread between Local and Worktree.
 
 #### What's a worktree
 
@@ -5736,7 +5864,7 @@ Worktrees require a Git repository. Make sure the project you selected lives in 
 1.  Select "Worktree"
 
     In the new thread view, select **Worktree** under the composer.
-    Optionally, choose a [local environment](https://developers.openai.com/codex/app/local-environments) to run setup scripts for the worktree.
+    Optionally, choose a [local environment](/codex/app/local-environments) to run setup scripts for the worktree.
 
 2.  Select the starting branch
 
@@ -5758,7 +5886,7 @@ Under the hood, Handoff handles the Git operations required to move work between
 
 In practice, there are two common paths:
 
-1. [Work exclusively on the worktree](#option-1-working-on-the-worktree). This path works best when you can verify changes directly on the worktree, for example because you have dependencies and tools installed using a [local environment setup script](https://developers.openai.com/codex/app/local-environments).
+1. [Work exclusively on the worktree](#option-1-working-on-the-worktree). This path works best when you can verify changes directly on the worktree, for example because you have dependencies and tools installed using a [local environment setup script](/codex/app/local-environments).
 2. [Hand the thread off to Local](#option-2-handing-a-thread-off-to-local). Use this when you want to bring the thread into the foreground, for example because you want to inspect changes in your usual IDE or can run only one instance of your app.
 
 #### Option 1: Working on the worktree
@@ -5856,13 +5984,98 @@ deleting the worktree and offers to restore it if you reopen the associated
 thread. Permanent worktrees are not automatically deleted when you archive
 their threads.
 
+### Appshots
+
+Source: [Appshots](/codex/appshots.md)
+
+Appshots let you send the frontmost app window to a Codex thread. Use them when
+you're actively working in another app on your computer and want to provide
+Codex with your current context so it can help you with the task.
+
+Appshots are available in the Codex app on macOS. Press both Command keys, or
+your custom Appshots hotkey, to take one.
+
+#### What appshots capture
+
+An appshot captures the frontmost window only. It can include:
+
+- An image of the visible window.
+- Available text from that window, including visible text and text the app makes
+  available outside the visible scroll area.
+
+After you add an appshot to a thread, it behaves like a Codex attachment. Codex
+stores appshots locally in the session file, like files or images you attach
+manually.
+
+#### When to use appshots
+
+Use appshots when Codex needs context from a Mac app before it can act.
+
+Examples:
+
+- Share an API reference page and ask Codex to write a script that uses it.
+- Share an email or calendar view and ask Codex to draft the next step.
+- Share an image editor, design, or preview window and ask Codex to revise the
+  related assets or code.
+- Share an error, settings panel, or app state that's easier to show than
+  describe.
+
+#### Take an appshot
+
+1. Open the Codex app on your Mac.
+2. Open the app and window you want to share.
+3. Press both Command keys, or the custom hotkey you configured in Codex
+   settings.
+4. Allow macOS permissions if Codex asks.
+5. Ask Codex to perform a task with the appshot.
+
+By default, Codex starts a new thread for the appshot. If you interacted with a
+Codex thread in the last 60 seconds, Codex adds the appshot to that recent
+thread instead. Taking consecutive appshots adds them to the same thread.
+
+You can change the Appshots hotkey in Codex settings.
+
+#### Permissions and safety
+
+Codex may ask for permissions before it can take appshots:
+
+- **Screen & System Audio Recording** lets Codex capture an image of the
+  frontmost window.
+- **Accessibility** lets Codex read available text from the frontmost window.
+
+Taking an appshot shares the captured image and available text with Codex.
+Avoid taking appshots of sensitive content unless the task requires that
+content.
+
+Review appshots the same way you would review sharing screenshots and documents
+with Codex.
+
+#### Limits and troubleshooting
+
+Appshots are a Codex app feature. Create them from the Codex app on macOS. If
+you resume a thread in the CLI that already contains an appshot, the attachment
+is part of the thread history, but the CLI can't create a new appshot.
+
+For some apps and websites, including Google Docs, Gmail, Google Sheets, and
+Google Slides, Codex may receive only the visible screenshot and may not receive
+the full document or off-screen text. If you have the matching plugin installed,
+Codex can use that plugin to access the relevant app content and help with your
+request.
+
+If appshots don't work:
+
+1. Open **System Settings > Privacy & Security**.
+2. Check **Screen & System Audio Recording** and **Accessibility** for Codex
+   Computer Use.
+3. Restart Codex and try again.
+
 ### Codex app
 
-Source: [Codex app](./app.md)
+Source: [Codex app](/codex/app.md)
 
 The Codex app is a focused desktop experience for working on Codex threads in parallel, with built-in worktree support, automations, and Git functionality.
 
-ChatGPT Plus, Pro, Business, Edu, and Enterprise plans include Codex. Learn more about [what's included](https://developers.openai.com/codex/pricing).
+ChatGPT Plus, Pro, Business, Edu, and Enterprise plans include Codex. Learn more about [what's included](/codex/pricing).
 
 #### Getting started
 
@@ -5879,7 +6092,7 @@ exceptions are noted in the relevant docs.
 
    Once you downloaded and installed the Codex app, open it and sign in with your ChatGPT account or an OpenAI API key.
 
-   If you sign in with an OpenAI API key, some functionality such as [cloud threads](https://developers.openai.com/codex/prompting#threads) might not be available.
+   If you sign in with an OpenAI API key, some functionality such as [cloud threads](/codex/prompting#threads) might not be available.
 
 3. Select a project
 
@@ -5903,12 +6116,12 @@ Keep parallel code changes isolated with built-in Git worktree support.
 
 ### Codex CLI
 
-Source: [Codex CLI](./cli.md)
+Source: [Codex CLI](/codex/cli.md)
 
 Codex CLI is OpenAI's coding agent that you can run locally from your terminal. It can read, change, and run code on your machine in the selected directory.
 It's [open source](https://github.com/openai/codex) and built in Rust for speed and efficiency.
 
-ChatGPT Plus, Pro, Business, Edu, and Enterprise plans include Codex. Learn more about [what's included](https://developers.openai.com/codex/pricing).
+ChatGPT Plus, Pro, Business, Edu, and Enterprise plans include Codex. Learn more about [what's included](/codex/pricing).
 
 #### CLI setup
 
@@ -5927,11 +6140,11 @@ Get your code reviewed by a separate Codex agent before you commit or push your 
 
 ### Codex IDE extension
 
-Source: [Codex IDE extension](./ide.md)
+Source: [Codex IDE extension](/codex/ide.md)
 
 Codex is OpenAI's coding agent that can read, edit, and run code. It helps you build faster, squash bugs, and understand unfamiliar code. With the Codex VS Code extension, you can use Codex side by side in your IDE or delegate tasks to Codex Cloud.
 
-ChatGPT Plus, Pro, Business, Edu, and Enterprise plans include Codex. Learn more about [what's included](https://developers.openai.com/codex/pricing).
+ChatGPT Plus, Pro, Business, Edu, and Enterprise plans include Codex. Learn more about [what's included](/codex/pricing).
 
 #### JetBrains IDE integration
 
@@ -5958,17 +6171,17 @@ If you change your mind later, you can drag Codex back to the primary (left) sid
 
 #### Sign in
 
-After you install the extension, it prompts you to sign in with your ChatGPT account or API key. Your ChatGPT plan includes usage credits, so you can use Codex without extra setup. Learn more on the [pricing page](https://developers.openai.com/codex/pricing).
+After you install the extension, it prompts you to sign in with your ChatGPT account or API key. Your ChatGPT plan includes usage credits, so you can use Codex without extra setup. Learn more on the [pricing page](/codex/pricing).
 
 ### Codex web
 
-Source: [Codex web](./cloud.md)
+Source: [Codex web](/codex/cloud.md)
 
 #### Codex web setup
 
 Go to [Codex](https://chatgpt.com/codex) and connect your GitHub account. This lets Codex work with the code in your repositories and create pull requests from its work.
 
-Your Plus, Pro, Business, Edu, or Enterprise plan includes Codex. Learn more about [what's included](https://developers.openai.com/codex/pricing). Some Enterprise workspaces may require [admin setup](https://developers.openai.com/codex/enterprise/admin-setup) before you can access Codex.
+Your Plus, Pro, Business, Edu, or Enterprise plan includes Codex. Learn more about [what's included](/codex/pricing). Some Enterprise workspaces may require [admin setup](/codex/enterprise/admin-setup) before you can access Codex.
 
 ---
 
@@ -5990,11 +6203,11 @@ How to shape Codex behavior with instructions, skills, prompts, MCP, and externa
 
 ### Agent Skills
 
-Source: [Agent Skills](./skills.md)
+Source: [Agent Skills](/codex/skills.md)
 
 Use agent skills to extend Codex with task-specific capabilities. A skill packages instructions, resources, and optional scripts so Codex can follow a workflow reliably. Skills build on the [open agent skills standard](https://agentskills.io).
 
-Skills are the authoring format for reusable workflows. Plugins are the installable distribution unit for reusable skills and apps in Codex. Use skills to design the workflow itself, then package it as a [plugin](https://developers.openai.com/codex/plugins/build) when you want other developers to install it.
+Skills are the authoring format for reusable workflows. Plugins are the installable distribution unit for reusable skills and apps in Codex. Use skills to design the workflow itself, then package it as a [plugin](/codex/plugins/build) when you want other developers to install it.
 
 Skills are available in the Codex CLI, IDE extension, and Codex app.
 
@@ -6060,14 +6273,14 @@ Codex supports symlinked skill folders and follows the symlink target when scann
 
 These locations are for authoring and local discovery. When you want to
 distribute reusable skills beyond a single repo, or optionally bundle them with
-app integrations, use [plugins](https://developers.openai.com/codex/plugins/build).
+app integrations, use [plugins](/codex/plugins/build).
 
 #### Distribute skills with plugins
 
 Direct skill folders are best for local authoring and repo-scoped workflows. If
 you want to distribute a reusable skill, bundle two or more skills together, or
 ship a skill alongside an app integration, package them as a
-[plugin](https://developers.openai.com/codex/plugins/build).
+[plugin](/codex/plugins/build).
 
 Plugins can include one or more skills. They can also optionally bundle app
 mappings, MCP server configuration, and presentation assets in a single
@@ -6102,7 +6315,7 @@ Restart Codex after changing `~/.codex/config.toml`.
 
 #### Optional metadata
 
-Add `agents/openai.yaml` to configure UI metadata in the [Codex app](https://developers.openai.com/codex/app), to set invocation policy, and to declare tool dependencies for a more seamless experience with using the skill.
+Add `agents/openai.yaml` to configure UI metadata in the [Codex app](/codex/app), to set invocation policy, and to declare tool dependencies for a more seamless experience with using the skill.
 
 ```yaml
 interface:
@@ -6138,7 +6351,7 @@ For more examples, see [github.com/openai/skills](https://github.com/openai/skil
 
 ### Codex code review in GitHub
 
-Source: [Codex code review in GitHub](./integrations/github.md)
+Source: [Codex code review in GitHub](/codex/integrations/github.md)
 
 Use Codex code review to get another high-signal review pass on GitHub pull
 requests. Codex reviews the pull request diff, follows your repository guidance,
@@ -6148,13 +6361,13 @@ and posts a standard GitHub code review focused on serious issues.
 
 Make sure you have:
 
-- [Codex cloud](https://developers.openai.com/codex/cloud) set up for the repository you want to review.
+- [Codex cloud](/codex/cloud) set up for the repository you want to review.
 - Access to [Codex code review settings](https://chatgpt.com/codex/settings/code-review).
 - An `AGENTS.md` file if you want Codex to follow repository-specific review guidance.
 
 #### Set up Codex code review
 
-1. Set up [Codex cloud](https://developers.openai.com/codex/cloud).
+1. Set up [Codex cloud](/codex/cloud).
 2. Go to [Codex settings](https://chatgpt.com/codex/settings/code-review).
 3. Turn on **Code review** for your repository.
 
@@ -6210,7 +6423,7 @@ back to the branch when it has permission to do so.
 
 #### Give Codex other tasks
 
-If you mention `@codex` in a comment with anything other than `review`, Codex starts a [cloud task](https://developers.openai.com/codex/cloud) using your pull request as context.
+If you mention `@codex` in a comment with anything other than `review`, Codex starts a [cloud task](/codex/cloud) using your pull request as context.
 
 ```md
 @codex fix the CI failures
@@ -6221,14 +6434,14 @@ If you mention `@codex` in a comment with anything other than `review`, Codex st
 If Codex doesn't react or post a review:
 
 - Confirm you turned on **Code review** for the repository in [Codex settings](https://chatgpt.com/codex/settings/code-review).
-- Confirm the pull request belongs to a repository with [Codex cloud](https://developers.openai.com/codex/cloud) set up.
+- Confirm the pull request belongs to a repository with [Codex cloud](/codex/cloud) set up.
 - Use the exact trigger `@codex review` in a pull request comment.
 - For automatic reviews, check that you turned on **Automatic reviews** and that
   the pull request event matches your review trigger settings.
 
 ### Custom instructions with AGENTS.md
 
-Source: [Custom instructions with AGENTS.md](./guides/agents-md.md)
+Source: [Custom instructions with AGENTS.md](/codex/guides/agents-md.md)
 
 Codex reads `AGENTS.md` files before doing any work. By layering global guidance with project-specific overrides, you can start each task with consistent expectations, no matter which repository you open.
 
@@ -6240,7 +6453,7 @@ Codex builds an instruction chain when it starts (once per run; in the TUI this 
 2. **Project scope:** Starting at the project root (typically the Git root), Codex walks down to your current working directory. If Codex cannot find a project root, it only checks the current directory. In each directory along the path, it checks for `AGENTS.override.md`, then `AGENTS.md`, then any fallback names in `project_doc_fallback_filenames`. Codex includes at most one file per directory.
 3. **Merge order:** Codex concatenates files from the root down, joining them with blank lines. Files closer to your current directory override earlier guidance because they appear later in the combined prompt.
 
-Codex skips empty files and stops adding files once the combined size reaches the limit defined by `project_doc_max_bytes` (32 KiB by default). For details on these knobs, see [Project instructions discovery](https://developers.openai.com/codex/config-advanced#project-instructions-discovery). Raise the limit or split instructions across nested directories when you hit the cap.
+Codex skips empty files and stops adding files once the combined size reaches the limit defined by `project_doc_max_bytes` (32 KiB by default). For details on these knobs, see [Project instructions discovery](/codex/config-advanced#project-instructions-discovery). Raise the limit or split instructions across nested directories when you hit the cap.
 
 #### Create global guidance
 
@@ -6356,18 +6569,18 @@ Expected: The output lists files relative to the custom `.codex` directory.
 #### Next steps
 
 - Visit the official [AGENTS.md](https://agents.md) website for more information.
-- Review [Prompting Codex](https://developers.openai.com/codex/prompting) for conversational patterns that pair well with persistent guidance.
+- Review [Prompting Codex](/codex/prompting) for conversational patterns that pair well with persistent guidance.
 
 ### Custom Prompts
 
-Source: [Custom Prompts](./custom-prompts.md)
+Source: [Custom Prompts](/codex/custom-prompts.md)
 
-Custom prompts are deprecated. Use [skills](https://developers.openai.com/codex/skills) for reusable
+Custom prompts are deprecated. Use [skills](/codex/skills) for reusable
 instructions that Codex can invoke explicitly or implicitly.
 
 Custom prompts (deprecated) let you turn Markdown files into reusable prompts that you can invoke as slash commands in both the Codex CLI and the Codex IDE extension.
 
-Custom prompts require explicit invocation and live in your local Codex home directory (for example, `~/.codex`), so they're not shared through your repository. If you want to share a prompt (or want Codex to implicitly invoke it), [use skills](https://developers.openai.com/codex/skills).
+Custom prompts require explicit invocation and live in your local Codex home directory (for example, `~/.codex`), so they're not shared through your repository. If you want to share a prompt (or want Codex to implicitly invoke it), [use skills](/codex/skills).
 
 1. Create the prompts directory:
 
@@ -6423,21 +6636,21 @@ Manage prompts by editing or deleting files under `~/.codex/prompts/`. Codex sca
 
 ### Customization
 
-Source: [Customization](./concepts/customization.md)
+Source: [Customization](/codex/concepts/customization.md)
 
 Customization is how you make Codex work the way your team works.
 
 In Codex, customization comes from a few layers that work together:
 
 - **Project guidance (`AGENTS.md`)** for persistent instructions
-- **[Memories](https://developers.openai.com/codex/memories)** for useful context learned from prior work
+- **[Memories](/codex/memories)** for useful context learned from prior work
 - **Skills** for reusable workflows and domain expertise
-- **[MCP](https://developers.openai.com/codex/mcp)** for access to external tools and shared systems
-- **[Subagents](https://developers.openai.com/codex/concepts/subagents)** for delegating work to specialized subagents
+- **[MCP](/codex/mcp)** for access to external tools and shared systems
+- **[Subagents](/codex/concepts/subagents)** for delegating work to specialized subagents
 
 These are complementary, not competing. `AGENTS.md` shapes behavior, memories
 carry local context forward, skills package repeatable processes, and
-[MCP](https://developers.openai.com/codex/mcp) connects Codex to systems outside the local workspace.
+[MCP](/codex/mcp) connects Codex to systems outside the local workspace.
 
 #### AGENTS Guidance
 
@@ -6460,14 +6673,14 @@ When the agent makes incorrect assumptions about your codebase, correct them in 
 - **Too much reading**: If it finds the right files but reads too many documents, add routing guidance (which directories/files to prioritize).
 - **Recurring PR feedback**: If you leave the same feedback more than once, codify it.
 - **In GitHub**: In a pull request comment, tag `@codex` with a request (for example, `@codex add this to AGENTS.md`) to delegate the update to a cloud task.
-- **Automate drift checks**: Use [automations](https://developers.openai.com/codex/app/automations) to run recurring checks (for example, daily) that look for guidance gaps and suggest what to add to `AGENTS.md`.
+- **Automate drift checks**: Use [automations](/codex/app/automations) to run recurring checks (for example, daily) that look for guidance gaps and suggest what to add to `AGENTS.md`.
 
 Pair `AGENTS.md` with infrastructure that enforces those rules: pre-commit hooks, linters, and type checkers catch issues before you see them, so the system gets smarter about preventing recurring mistakes.
 
 Codex can load guidance from multiple locations: a global file in your Codex home directory (for you as a developer) and repo-specific files that teams can check in. Files closer to the working directory take precedence.
 Use the global file to shape how Codex communicates with you (for example, review style, verbosity, and defaults), and keep repo files focused on team and codebase rules.
 
-[Custom instructions with AGENTS.md](https://developers.openai.com/codex/guides/agents-md)
+[Custom instructions with AGENTS.md](/codex/guides/agents-md)
 
 #### Skills
 
@@ -6478,12 +6691,12 @@ Skills are loaded and visible to the agent (at least their metadata), so Codex c
 Use skill folders to author and iterate on workflows locally. If a plugin
 already exists for the workflow, install it first to reuse a proven setup. When
 you want to distribute your own workflow across teams or bundle it with app
-integrations, package it as a [plugin](https://developers.openai.com/codex/plugins/build). Skills remain the
+integrations, package it as a [plugin](/codex/plugins/build). Skills remain the
 authoring format; plugins are the installable distribution unit.
 
 A skill is typically a `SKILL.md` file plus optional scripts, references, and assets.
 
-The skill directory can include a `scripts/` folder with CLI scripts that Codex invokes as part of the workflow (for example, seed data or run validations). When the workflow needs external systems (issue trackers, design tools, docs servers), pair the skill with [MCP](https://developers.openai.com/codex/mcp).
+The skill directory can include a `scripts/` folder with CLI scripts that Codex invokes as part of the workflow (for example, seed data or run validations). When the workflow needs external systems (issue trackers, design tools, docs servers), pair the skill with [MCP](/codex/mcp).
 
 Example `SKILL.md`:
 
@@ -6520,7 +6733,7 @@ Codex uses progressive disclosure for skills:
 
 Skills can be invoked explicitly, and Codex can also choose them implicitly when the task matches the skill description. Clear skill descriptions improve triggering reliability.
 
-[Agent Skills](https://developers.openai.com/codex/skills)
+[Agent Skills](/codex/skills)
 
 #### MCP
 
@@ -6547,31 +6760,31 @@ In practice, MCP is often most useful when paired with skills:
 
 - A skill defines the workflow and names the MCP tools to use
 
-[Model Context Protocol](https://developers.openai.com/codex/mcp)
+[Model Context Protocol](/codex/mcp)
 
 #### Subagents
 
 You can create different agents with different roles and prompt them to use tools differently. For example, one agent might run specific testing commands and configurations, while another has MCP servers that fetch production logs for debugging. Each subagent stays focused and uses the right tools for its job.
 
-[Subagent concepts](https://developers.openai.com/codex/concepts/subagents)
+[Subagent concepts](/codex/concepts/subagents)
 
 #### Skills + MCP together
 
 Skills plus MCP is where it all comes together: skills define repeatable workflows, and MCP connects them to external tools and systems.
-If a skill depends on MCP, declare that dependency in `agents/openai.yaml` so Codex can install and wire it automatically (see [Agent Skills](https://developers.openai.com/codex/skills)).
+If a skill depends on MCP, declare that dependency in `agents/openai.yaml` so Codex can install and wire it automatically (see [Agent Skills](/codex/skills)).
 
 #### Next step
 
 Build in this order:
 
-1. [Custom instructions with AGENTS.md](https://developers.openai.com/codex/guides/agents-md) so Codex follows your repo conventions. Add pre-commit hooks and linters to enforce those rules.
-2. Install a [plugin](https://developers.openai.com/codex/plugins) when a reusable workflow already exists. Otherwise, create a [skill](https://developers.openai.com/codex/skills) and package it as a plugin when you want to share it.
-3. [MCP](https://developers.openai.com/codex/mcp) when workflows need external systems (Linear, GitHub, docs servers, design tools).
-4. [Subagents](https://developers.openai.com/codex/subagents) when you're ready to delegate noisy or specialized tasks to subagents.
+1. [Custom instructions with AGENTS.md](/codex/guides/agents-md) so Codex follows your repo conventions. Add pre-commit hooks and linters to enforce those rules.
+2. Install a [plugin](/codex/plugins) when a reusable workflow already exists. Otherwise, create a [skill](/codex/skills) and package it as a plugin when you want to share it.
+3. [MCP](/codex/mcp) when workflows need external systems (Linear, GitHub, docs servers, design tools).
+4. [Subagents](/codex/subagents) when you're ready to delegate noisy or specialized tasks to subagents.
 
 ### Model Context Protocol
 
-Source: [Model Context Protocol](./mcp.md)
+Source: [Model Context Protocol](/codex/mcp.md)
 
 Model Context Protocol (MCP) connects models to tools and context. Use it to give Codex access to third-party documentation, or to let it interact with developer tools like your browser or Figma.
 
@@ -6732,7 +6945,7 @@ approval_mode = "approve"
 
 The list of MCP servers keeps growing. Here are a few common ones:
 
-- [OpenAI Docs MCP](https://developers.openai.com/learn/docs-mcp): Search and read OpenAI developer docs.
+- [OpenAI Docs MCP](/learn/docs-mcp): Search and read OpenAI developer docs.
 - [Context7](https://github.com/upstash/context7): Connect to up-to-date developer documentation.
 - Figma [Local](https://developers.figma.com/docs/figma-mcp-server/local-server-installation/) and [Remote](https://developers.figma.com/docs/figma-mcp-server/remote-server-installation/): Access your Figma designs.
 - [Playwright](https://www.npmjs.com/package/@playwright/mcp): Control and inspect a browser using Playwright.
@@ -6742,7 +6955,7 @@ The list of MCP servers keeps growing. Here are a few common ones:
 
 ### Rules
 
-Source: [Rules](./rules.md)
+Source: [Rules](/codex/rules.md)
 
 Use rules to control which commands Codex can run outside the sandbox.
 
@@ -6781,7 +6994,7 @@ Rules are experimental and may change.
 
 3. Restart Codex.
 
-Codex scans `rules/` under every active config layer at startup, including [Team Config](https://developers.openai.com/codex/enterprise/admin-setup#team-config) locations and the user layer at `~/.codex/rules/`. Project-local rules under `/.codex/rules/` load only when the project `.codex/` layer is trusted.
+Codex scans `rules/` under every active config layer at startup, including [Team Config](/codex/enterprise/admin-setup#team-config) locations and the user layer at `~/.codex/rules/`. Project-local rules under `/.codex/rules/` load only when the project `.codex/` layer is trusted.
 
 When you add a command to the allow list in the TUI, Codex writes to the user layer at `~/.codex/rules/default.rules` so future runs can skip the prompt.
 
@@ -6790,7 +7003,7 @@ When Smart approvals are enabled (the default), Codex may propose a
 carefully before accepting it.
 
 Admins can also enforce restrictive `prefix_rule` entries from
-[`requirements.toml`](https://developers.openai.com/codex/enterprise/managed-configuration#admin-enforced-requirements-requirementstoml).
+[`requirements.toml`](/codex/enterprise/managed-configuration#admin-enforced-requirements-requirementstoml).
 
 #### Understand rule fields
 
@@ -6878,17 +7091,17 @@ The `.rules` file format uses `Starlark` (see the [language spec](https://github
 
 ### Use Codex in Linear
 
-Source: [Use Codex in Linear](./integrations/linear.md)
+Source: [Use Codex in Linear](/codex/integrations/linear.md)
 
 Use Codex in Linear to delegate work from issues. Assign an issue to Codex or mention `@Codex` in a comment, and Codex creates a cloud task and replies with progress and results.
 
-Codex in Linear is available on paid plans (see [Pricing](https://developers.openai.com/codex/pricing)).
+Codex in Linear is available on paid plans (see [Pricing](/codex/pricing)).
 
 If you're on an Enterprise plan, ask your ChatGPT workspace admin to turn on Codex cloud tasks in [workspace settings](https://chatgpt.com/admin/settings) and enable **Codex for Linear** in [connector settings](https://chatgpt.com/admin/ca).
 
 #### Set up the Linear integration
 
-1. Set up [Codex cloud tasks](https://developers.openai.com/codex/cloud) by connecting GitHub in [Codex](https://chatgpt.com/codex) and creating an [environment](https://developers.openai.com/codex/cloud/environments) for the repository you want Codex to work in.
+1. Set up [Codex cloud tasks](/codex/cloud) by connecting GitHub in [Codex](https://chatgpt.com/codex) and creating an [environment](/codex/cloud/environments) for the repository you want Codex to work in.
 2. Go to [Codex settings](https://chatgpt.com/codex/settings/connectors) and install **Codex for Linear** for your workspace.
 3. Link your Linear account by mentioning `@Codex` in a comment thread on a Linear issue.
 
@@ -6936,7 +7149,7 @@ When you use triage rules, Codex runs tasks using the account of the issue creat
 
 When you mention `@Codex` or assign an issue to it, Codex receives your issue content to understand your request and create a task.
 Data handling follows OpenAI's [Privacy Policy](https://openai.com/privacy), [Terms of Use](https://openai.com/terms/), and other applicable [policies](https://openai.com/policies).
-For more on security, see the [Codex security documentation](https://developers.openai.com/codex/agent-approvals-security).
+For more on security, see the [Codex security documentation](/codex/agent-approvals-security).
 
 Codex uses large language models that can make mistakes. Always review answers and diffs.
 
@@ -6979,13 +7192,13 @@ url = "https://mcp.linear.app/mcp"
 
 ### Use Codex in Slack
 
-Source: [Use Codex in Slack](./integrations/slack.md)
+Source: [Use Codex in Slack](/codex/integrations/slack.md)
 
 Use Codex in Slack to kick off coding tasks from channels and threads. Mention `@Codex` with a prompt, and Codex creates a cloud task and replies with the results.
 
 #### Set up the Slack app
 
-1. Set up [Codex cloud tasks](https://developers.openai.com/codex/cloud). You need a Plus, Pro, Business, Enterprise, or Edu plan (see [ChatGPT pricing](https://chatgpt.com/pricing)), a connected GitHub account, and at least one [environment](https://developers.openai.com/codex/cloud/environments).
+1. Set up [Codex cloud tasks](/codex/cloud). You need a Plus, Pro, Business, Enterprise, or Edu plan (see [ChatGPT pricing](https://chatgpt.com/pricing)), a connected GitHub account, and at least one [environment](/codex/cloud/environments).
 2. Go to [Codex settings](https://chatgpt.com/codex/settings/connectors) and install the Slack app for your workspace. Depending on your Slack workspace policies, an admin may need to approve the install.
 3. Add `@Codex` to a channel. If you haven't added it yet, Slack prompts you when you mention it.
 
@@ -7010,7 +7223,7 @@ To prevent this, an Enterprise admin can clear **Allow Codex Slack app to post a
 
 When you mention `@Codex`, Codex receives your message and thread history to understand your request and create a task.
 Data handling follows OpenAI's [Privacy Policy](https://openai.com/privacy), [Terms of Use](https://openai.com/terms/), and other applicable [policies](https://openai.com/policies).
-For more on security, see the Codex [security documentation](https://developers.openai.com/codex/agent-approvals-security).
+For more on security, see the Codex [security documentation](/codex/agent-approvals-security).
 
 Codex uses large language models that can make mistakes. Always review answers and diffs.
 
@@ -7030,9 +7243,9 @@ Automation paths for CI, SDK usage, app-server, GitHub Actions, and related agen
 
 ### Codex App Server
 
-Source: [Codex App Server](./app-server.md)
+Source: [Codex App Server](/codex/app-server.md)
 
-Codex app-server is the interface Codex uses to power rich clients (for example, the Codex VS Code extension). Use it when you want a deep integration inside your own product: authentication, conversation history, approvals, and streamed agent events. The app-server implementation is open source in the Codex GitHub repository ([openai/codex/codex-rs/app-server](https://github.com/openai/codex/tree/main/codex-rs/app-server)). See the [Open Source](https://developers.openai.com/codex/open-source) page for the full list of open-source Codex components.
+Codex app-server is the interface Codex uses to power rich clients (for example, the Codex VS Code extension). Use it when you want a deep integration inside your own product: authentication, conversation history, approvals, and streamed agent events. The app-server implementation is open source in the Codex GitHub repository ([openai/codex/codex-rs/app-server](https://github.com/openai/codex/tree/main/codex-rs/app-server)). See the [Open Source](/codex/open-source) page for the full list of open-source Codex components.
 
 If you are automating jobs or running Codex in CI, use the
 Codex SDK instead.
@@ -7264,7 +7477,7 @@ If a client sends an experimental method or field without opting in, app-server 
 
 ### Codex GitHub Action
 
-Source: [Codex GitHub Action](./github-action.md)
+Source: [Codex GitHub Action](/codex/github-action.md)
 
 Use the Codex GitHub Action (`openai/codex-action@v1`) to run Codex in CI/CD jobs, apply patches, or post reviews from a GitHub Actions workflow.
 The action installs the Codex CLI, starts the Responses API proxy when you provide an API key, and runs `codex exec` under the permissions you specify.
@@ -7275,7 +7488,7 @@ Reach for the action when you want to:
 - Gate changes on Codex-driven quality checks as part of your CI pipeline.
 - Run repeatable Codex tasks (code review, release prep, migrations) from a workflow file.
 
-For a CI example, see [Non-interactive mode](https://developers.openai.com/codex/noninteractive) and explore the source in the [openai/codex-action repository](https://github.com/openai/codex-action).
+For a CI example, see [Non-interactive mode](/codex/noninteractive) and explore the source in the [openai/codex-action repository](https://github.com/openai/codex-action).
 
 #### Prerequisites
 
@@ -7389,7 +7602,7 @@ The action emits the last Codex message through the `final-message` output. Map 
 
 ### Codex SDK
 
-Source: [Codex SDK](./sdk.md)
+Source: [Codex SDK](/codex/sdk.md)
 
 If you use Codex through the Codex CLI, the IDE extension, or Codex Web, you can also control it programmatically.
 
@@ -7495,12 +7708,12 @@ For more details, check out the [Python repo](https://github.com/openai/codex/tr
 
 ### Non-interactive mode
 
-Source: [Non-interactive mode](./noninteractive.md)
+Source: [Non-interactive mode](/codex/noninteractive.md)
 
 Non-interactive mode lets you run Codex from scripts (for example, continuous integration (CI) jobs) without opening the interactive TUI.
 You invoke it with `codex exec`.
 
-For flag-level details, see [`codex exec`](https://developers.openai.com/codex/cli/reference#codex-exec).
+For flag-level details, see [`codex exec`](/codex/cli/reference#codex-exec).
 
 #### When to use `codex exec`
 
@@ -7580,7 +7793,7 @@ Sample JSON stream (each line is a JSON object):
 {"type":"turn.completed","usage":{"input_tokens":24763,"cached_input_tokens":24448,"output_tokens":122,"reasoning_output_tokens":0}}
 ```
 
-If you only need the final message, write it to a file with `-o `/`--output-last-message `. This writes the final message to the file and still prints it to `stdout` (see [`codex exec`](https://developers.openai.com/codex/cli/reference#codex-exec) for details).
+If you only need the final message, write it to a file with `-o `/`--output-last-message `. This writes the final message to the file and still prints it to `stdout` (see [`codex exec`](/codex/cli/reference#codex-exec) for details).
 
 #### Create structured outputs with a schema
 
@@ -7656,7 +7869,7 @@ is not an option on the runner, seed `auth.json` through secure storage, run
 Codex on the runner so Codex refreshes it in place, and persist the updated file
 between runs.
 
-See [Maintain Codex account auth in CI/CD (advanced)](https://developers.openai.com/codex/auth/ci-cd-auth).
+See [Maintain Codex account auth in CI/CD (advanced)](/codex/auth/ci-cd-auth).
 
 #### Resume a non-interactive session
 
@@ -7748,7 +7961,7 @@ jobs:
 
 #### Alternative: Use the Codex GitHub Action
 
-If you want to avoid installing the CLI yourself, you can run `codex exec` through the [Codex GitHub Action](https://developers.openai.com/codex/github-action) and pass the prompt as an input.
+If you want to avoid installing the CLI yourself, you can run `codex exec` through the [Codex GitHub Action](/codex/github-action) and pass the prompt as an input.
 
 #### Advanced stdin piping
 
@@ -7784,9 +7997,9 @@ curl -vv https://api.example.com/health 2>&1 \
 
 ### Use Codex with the Agents SDK
 
-Source: [Use Codex with the Agents SDK](./guides/agents-sdk.md)
+Source: [Use Codex with the Agents SDK](/codex/guides/agents-sdk.md)
 
-You can run Codex as an MCP server and connect it from other MCP clients (for example, an agent built with the [OpenAI Agents SDK MCP integration](https://developers.openai.com/api/docs/guides/agents/integrations-observability#mcp)).
+You can run Codex as an MCP server and connect it from other MCP clients (for example, an agent built with the [OpenAI Agents SDK MCP integration](/api/docs/guides/agents/integrations-observability#mcp)).
 
 To start Codex as an MCP server, you can use the following command:
 
@@ -7855,7 +8068,7 @@ This guide walks through the same workflow showcased in the [OpenAI Cookbook](ht
 
 Before starting, make sure you have:
 
-- [Codex CLI](https://developers.openai.com/codex/cli) installed locally so `npx codex` can run.
+- [Codex CLI](/codex/cli) installed locally so `npx codex` can run.
 - Python 3.10+ with `pip`.
 - Node.js 18+ (required for `npx`).
 - An OpenAI API key stored locally. You can create or manage keys in the [OpenAI dashboard](https://platform.openai.com/account/api-keys).
@@ -7990,7 +8203,7 @@ Windows, enterprise controls, OSS notes, and product or policy caveats that shap
 
 ### Access tokens
 
-Source: [Access tokens](./enterprise/access-tokens.md)
+Source: [Access tokens](/codex/enterprise/access-tokens.md)
 
 Codex access tokens let trusted automation run Codex local with a ChatGPT workspace identity. Use them when a script, scheduled job, or CI runner needs repeatable, non-interactive Codex access.
 
@@ -8106,18 +8319,18 @@ Confirm that you copied the generated access token, not a browser session token 
 
 #### Related docs
 
-- [Authentication](https://developers.openai.com/codex/auth)
-- [Non-interactive mode](https://developers.openai.com/codex/noninteractive)
-- [Admin setup](https://developers.openai.com/codex/enterprise/admin-setup)
-- [Governance](https://developers.openai.com/codex/enterprise/governance)
+- [Authentication](/codex/auth)
+- [Non-interactive mode](/codex/noninteractive)
+- [Admin setup](/codex/enterprise/admin-setup)
+- [Governance](/codex/enterprise/governance)
 
 ### Admin Setup
 
-Source: [Admin Setup](./enterprise/admin-setup.md)
+Source: [Admin Setup](/codex/enterprise/admin-setup.md)
 
 This guide is for ChatGPT Enterprise admins who want to set up Codex for their workspace.
 
-Use this page as the step-by-step rollout guide. For detailed policy, configuration, automation, and monitoring details, use the linked pages: [Authentication](https://developers.openai.com/codex/auth), [Agent approvals & security](https://developers.openai.com/codex/agent-approvals-security), [Access tokens](https://developers.openai.com/codex/enterprise/access-tokens), [Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration), and [Governance](https://developers.openai.com/codex/enterprise/governance).
+Use this page as the step-by-step rollout guide. For detailed policy, configuration, automation, and monitoring details, use the linked pages: [Authentication](/codex/auth), [Agent approvals & security](/codex/agent-approvals-security), [Access tokens](/codex/enterprise/access-tokens), [Managed configuration](/codex/enterprise/managed-configuration), and [Governance](/codex/enterprise/governance).
 
 #### Enterprise-grade security and privacy
 
@@ -8130,7 +8343,7 @@ Codex supports ChatGPT Enterprise security features, including:
 - Data encryption at rest (AES-256) and in transit (TLS 1.2+)
 - Audit logging via the ChatGPT Compliance API
 
-For security controls and runtime protections, see [Agent approvals & security](https://developers.openai.com/codex/agent-approvals-security). Refer to [Zero Data Retention (ZDR)](https://platform.openai.com/docs/guides/your-data#zero-data-retention) for more details.
+For security controls and runtime protections, see [Agent approvals & security](/codex/agent-approvals-security). Refer to [Zero Data Retention (ZDR)](https://platform.openai.com/docs/guides/your-data#zero-data-retention) for more details.
 For a broader enterprise security overview, see the [Codex security white paper](https://trust.openai.com/?itemUid=382f924d-54f3-43a8-a9df-c39e6c959958&source=click).
 
 #### Pre-requisites: Determine owners and rollout strategy
@@ -8144,7 +8357,7 @@ During your rollout, team members may support different aspects of integrating C
 Decide which Codex surfaces you will use:
 
 - **Codex local:** includes the Codex app, CLI, and IDE extension. The agent runs on the developer's computer in a sandbox.
-- **Codex cloud:** includes hosted Codex features (including Codex cloud, iOS, Code Review, and tasks created by the [Slack integration](https://developers.openai.com/codex/integrations/slack) or [Linear integration](https://developers.openai.com/codex/integrations/linear)). The agent runs remotely in a hosted container with your codebase.
+- **Codex cloud:** includes hosted Codex features (including Codex cloud, iOS, Code Review, and tasks created by the [Slack integration](/codex/integrations/slack) or [Linear integration](/codex/integrations/linear)). The agent runs remotely in a hosted container with your codebase.
 - **Both:** use local + cloud together.
 
 You can enable local, cloud, or both, and control access with workspace settings and role-based access control (RBAC).
@@ -8159,13 +8372,13 @@ Go to [Workspace Settings > Settings and Permissions](https://chatgpt.com/admin/
 
 Codex local is enabled by default for new ChatGPT Enterprise workspaces. If
 you are not a ChatGPT workspace owner, you can test whether you have access by
-[installing Codex](https://developers.openai.com/codex/quickstart) and logging in with your work email.
+[installing Codex](/codex/quickstart) and logging in with your work email.
 
 Turn on **Allow members to use Codex Local**.
 
 This enables use of the Codex app, CLI, and IDE extension for allowed users.
 
-If members need programmatic Codex local workflows, also turn on **Allow members to use Codex access tokens** or grant the access token permission through a custom role. For setup and permission details, see [Access tokens](https://developers.openai.com/codex/enterprise/access-tokens).
+If members need programmatic Codex local workflows, also turn on **Allow members to use Codex access tokens** or grant the access token permission through a custom role. For setup and permission details, see [Access tokens](/codex/enterprise/access-tokens).
 
 If the Codex Local toggle is off, users who attempt to use the Codex app, CLI, or IDE will see the following error: “403 - Unauthorized. Contact your ChatGPT administrator for access.”
 
@@ -8195,7 +8408,7 @@ Note that it may take up to 10 minutes for Codex to appear in ChatGPT.
 
 Codex posts its full answer back to Slack when the task completes. Otherwise, Codex posts only a link to the task.
 
-To learn more, see [Codex in Slack](https://developers.openai.com/codex/integrations/slack).
+To learn more, see [Codex in Slack](/codex/integrations/slack).
 
 #### Enable Codex agent to access the internet
 
@@ -8203,7 +8416,7 @@ By default, Codex cloud agents have no internet access during runtime to help pr
 
 This setting lets users use an allowlist for common software dependency domains, add domains and trusted sites, and specify allowed HTTP methods.
 
-For security implications of internet access and runtime controls, see [Agent approvals & security](https://developers.openai.com/codex/agent-approvals-security).
+For security implications of internet access and runtime controls, see [Agent approvals & security](/codex/agent-approvals-security).
 
 #### Step 2: Set up custom roles (RBAC)
 
@@ -8248,7 +8461,7 @@ This separation makes it easier to roll out Codex while keeping analytics, envir
 
 Codex Admins can deploy admin-enforced `requirements.toml` policies from the Codex [Policies page](https://chatgpt.com/codex/settings/policies).
 
-Use this page when you want to apply different local Codex constraints to different groups without distributing device-level files first. The managed policy uses the same `requirements.toml` format described in [Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration), so you can define allowed approval policies, sandbox modes, web search behavior, network access requirements, MCP server allowlists, feature pins, and restrictive command rules. To disable Browser Use, the in-app browser, or Computer Use, see [Pin feature flags](https://developers.openai.com/codex/enterprise/managed-configuration#pin-feature-flags).
+Use this page when you want to apply different local Codex constraints to different groups without distributing device-level files first. The managed policy uses the same `requirements.toml` format described in [Managed configuration](/codex/enterprise/managed-configuration), so you can define allowed approval policies, sandbox modes, web search behavior, network access requirements, MCP server allowlists, feature pins, and restrictive command rules. To disable Browser Use, the in-app browser, or Computer Use, see [Pin feature flags](/codex/enterprise/managed-configuration#pin-feature-flags).
 
 Recommended setup:
 
@@ -8305,7 +8518,7 @@ prefix_rules = [
 ]
 ```
 
-You can use any example on its own or combine them in a single managed policy for a group. For exact keys, precedence, and more examples, see [Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration) and [Agent approvals & security](https://developers.openai.com/codex/agent-approvals-security).
+You can use any example on its own or combine them in a single managed policy for a group. For exact keys, precedence, and more examples, see [Managed configuration](/codex/enterprise/managed-configuration) and [Agent approvals & security](/codex/agent-approvals-security).
 
 #### Checking user policies
 
@@ -8323,11 +8536,11 @@ Start with Team Config for your highest-traffic repositories so teams get consis
 
 | Type                                 | Path          | Use it to                                                                    |
 | ------------------------------------ | ------------- | ---------------------------------------------------------------------------- |
-| [Config basics](https://developers.openai.com/codex/config-basic) | `config.toml` | Set defaults for sandbox mode, approvals, model, reasoning effort, and more. |
-| [Rules](https://developers.openai.com/codex/rules)                | `rules/`      | Control which commands Codex can run outside the sandbox.                    |
-| [Skills](https://developers.openai.com/codex/skills)              | `skills/`     | Make shared skills available to your team.                                   |
+| [Config basics](/codex/config-basic) | `config.toml` | Set defaults for sandbox mode, approvals, model, reasoning effort, and more. |
+| [Rules](/codex/rules)                | `rules/`      | Control which commands Codex can run outside the sandbox.                    |
+| [Skills](/codex/skills)              | `skills/`     | Make shared skills available to your team.                                   |
 
-For locations and precedence, see [Config basics](https://developers.openai.com/codex/config-basic#configuration-precedence).
+For locations and precedence, see [Config basics](/codex/config-basic#configuration-precedence).
 
 #### Step 5: Configure Codex cloud usage (if enabled)
 
@@ -8351,7 +8564,7 @@ Codex uses short-lived, least-privilege GitHub App installation tokens for each 
 
 ### Auto-review
 
-Source: [Auto-review](./concepts/sandboxing/auto-review.md)
+Source: [Auto-review](/codex/concepts/sandboxing/auto-review.md)
 
 Auto-review replaces manual approval at the sandbox boundary with a separate
 reviewer agent. The main Codex agent still runs inside the same sandbox, with
@@ -8464,7 +8677,7 @@ denial.
 #### Configuration
 
 For setup details, see
-[Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration#configure-automatic-review-policy).
+[Managed configuration](/codex/enterprise/managed-configuration#configure-automatic-review-policy).
 
 The default reviewer policy is in the open-source Codex repository:
 [core/src/guardian/policy.md](https://github.com/openai/codex/blob/main/codex-rs/core/src/guardian/policy.md).
@@ -8493,9 +8706,9 @@ instead of teaching the reviewer to approve noisy escalations forever.
 In practice, the highest-leverage changes are:
 
 - Add narrow
-  [`writable_roots`](https://developers.openai.com/codex/config-advanced#approval-policies-and-sandbox-modes)
+  [`writable_roots`](/codex/config-advanced#approval-policies-and-sandbox-modes)
   for scratch directories or neighboring repos you intentionally use.
-- Add narrowly scoped [prefix rules](https://developers.openai.com/codex/rules). Prefer precise command
+- Add narrowly scoped [prefix rules](/codex/rules). Prefer precise command
   prefixes such as `["cargo", "test"]` or `["pnpm", "run", "lint"]` over broad
   patterns such as `["python"]` or `["curl"]`. Broad rules often erase the very
   boundary Auto-review is meant to guard.
@@ -8519,7 +8732,7 @@ For the research rationale and published evaluation results, see the
 
 ### Governance
 
-Source: [Governance](./enterprise/governance.md)
+Source: [Governance](/codex/enterprise/governance.md)
 
 Codex gives enterprise teams visibility into adoption and impact, plus the auditability needed for security and compliance programs. Use the self-serve dashboard for day-to-day tracking, the Analytics API for programmatic reporting, and the Compliance API to export detailed logs into your governance stack.
 
@@ -8641,7 +8854,7 @@ Use record metadata to answer questions like:
 
 ### Managed configuration
 
-Source: [Managed configuration](./enterprise/managed-configuration.md)
+Source: [Managed configuration](/codex/enterprise/managed-configuration.md)
 
 Enterprise admins can control local Codex behavior in two ways:
 
@@ -8652,9 +8865,9 @@ Enterprise admins can control local Codex behavior in two ways:
 
 Requirements constrain security-sensitive settings (approval policy, approvals reviewer, automatic review policy, sandbox mode, web search mode, managed hooks, and optionally which MCP servers users can enable). When resolving configuration (for example from `config.toml`, profiles, or CLI config overrides), if a value conflicts with an enforced rule, Codex falls back to a compatible value and notifies the user. If you configure an `mcp_servers` allowlist, Codex enables an MCP server only when both its name and identity match an approved entry; otherwise, Codex disables it.
 
-Requirements can also constrain [feature flags](https://developers.openai.com/codex/config-basic/#feature-flags) via the `[features]` table in `requirements.toml`. Note that features aren't always security-sensitive, but enterprises can pin values if desired. Omitted keys remain unconstrained.
+Requirements can also constrain [feature flags](/codex/config-basic/#feature-flags) via the `[features]` table in `requirements.toml`. Note that features aren't always security-sensitive, but enterprises can pin values if desired. Omitted keys remain unconstrained.
 
-For the exact key list, see the [`requirements.toml` section in Configuration Reference](https://developers.openai.com/codex/config-reference#requirementstoml).
+For the exact key list, see the [`requirements.toml` section in Configuration Reference](/codex/config-reference#requirementstoml).
 
 #### Locations and precedence
 
@@ -8778,11 +8991,11 @@ rules do not remain effective.
 
 The domain syntax, local/private destination rules, deny-over-allow behavior,
 and DNS rebinding limitations are the same as the sandboxed networking behavior
-described in [Agent approvals & security](https://developers.openai.com/codex/agent-approvals-security#network-isolation).
+described in [Agent approvals & security](/codex/agent-approvals-security#network-isolation).
 
 #### Pin feature flags
 
-You can also pin [feature flags](https://developers.openai.com/codex/config-basic/#feature-flags) for users
+You can also pin [feature flags](/codex/config-basic/#feature-flags) for users
 receiving a managed `requirements.toml`:
 
 ```toml
@@ -8969,12 +9182,12 @@ Avoid embedding secrets or high-churn dynamic values in the payload. Treat the m
 
 ### Subagents
 
-Source: [Subagents](./concepts/subagents.md)
+Source: [Subagents](/codex/concepts/subagents.md)
 
 Codex can run subagent workflows by spawning specialized agents in parallel so
 they can explore, tackle, or analyze work concurrently.
 
-This page explains the core concepts and tradeoffs. For setup, agent configuration, and examples, see [Subagents](https://developers.openai.com/codex/subagents).
+This page explains the core concepts and tradeoffs. For setup, agent configuration, and examples, see [Subagents](/codex/subagents).
 
 #### Why subagent workflows help
 
@@ -9057,30 +9270,30 @@ available in research preview.
 - **`medium`**: A balanced default for most agents.
 - **`low`**: Use when the task is straightforward and speed matters most.
 
-Higher reasoning effort increases response time and token usage, but it can improve quality for complex work. For details, see [Models](https://developers.openai.com/codex/models), [Config basics](https://developers.openai.com/codex/config-basic), and [Configuration Reference](https://developers.openai.com/codex/config-reference).
+Higher reasoning effort increases response time and token usage, but it can improve quality for complex work. For details, see [Models](/codex/models), [Config basics](/codex/config-basic), and [Configuration Reference](/codex/config-reference).
 
 ### Build plugins
 
-Source: [Build plugins](./plugins/build.md)
+Source: [Build plugins](/codex/plugins/build.md)
 
 This page is for plugin authors. If you want to browse, install, and use
-plugins in Codex, see [Plugins](https://developers.openai.com/codex/plugins). If you are still iterating on
+plugins in Codex, see [Plugins](/codex/plugins). If you are still iterating on
 one repo or one personal workflow, start with a local skill. Build a plugin
 when you want to share that workflow across teams, bundle app integrations or
 MCP config, package lifecycle hooks, or publish a stable package.
 
-#### Create a plugin with `$plugin-creator`
+#### Create a plugin with `@plugin-creator`
 
-For the fastest setup, use the built-in `$plugin-creator` skill.
+For the fastest setup, use the built-in `@plugin-creator` skill.
 
 It scaffolds the required `.codex-plugin/plugin.json` manifest and can also
 generate a local marketplace entry for testing. If you already have a plugin
-folder, you can still use `$plugin-creator` to wire it into a local
+folder, you can still use `@plugin-creator` to wire it into a local
 marketplace.
 
 #### Build your own curated plugin list
 
-A marketplace is a JSON catalog of plugins. `$plugin-creator` can generate one
+A marketplace is a JSON catalog of plugins. `@plugin-creator` can generate one
 for a single plugin, and you can keep adding entries to that same marketplace
 to build your own curated list for a repo, team, or personal workflow.
 
@@ -9164,7 +9377,7 @@ description: Greet the user with a friendly message.
 Greet the user warmly and ask how you can help.
 ```
 
-3. Add the plugin to a marketplace. Use `$plugin-creator` to generate one, or
+3. Add the plugin to a marketplace. Use `@plugin-creator` to generate one, or
    follow [Build your own curated plugin list](#build-your-own-curated-plugin-list)
    to wire the plugin into Codex manually.
 
@@ -9239,9 +9452,35 @@ to the marketplace root, not relative to the `.agents/plugins/` folder. See
 After you change the plugin, update the plugin directory that your marketplace
 entry points to and restart Codex so the local install picks up the new files.
 
+#### Share a local plugin with your workspace
+
+After you create a plugin and add it to Codex, you can share it with other
+members of your ChatGPT workspace from the Codex app.
+
+1. Open **Plugins** in the Codex app.
+2. Go to **Created by you** and open the plugin details page.
+3. Select **Share**.
+4. Add workspace members or copy a share link.
+5. Choose who has access, then send the invitation or link.
+
+People you share with can find the plugin under **Shared with you** in the
+plugin directory. Sharing a local plugin with your workspace doesn't publish
+it to the public Plugin Directory. Shared plugins stay within your workspace
+and organization boundary; accounts that aren't signed in to that workspace
+can't access them. Use a marketplace when you want repo or CLI distribution,
+and use workspace sharing when you want selected teammates to install a plugin
+from the Codex app.
+
+Workspace admins can disable plugin sharing from cloud-managed requirements by
+adding `plugin_sharing = false` to `requirements.toml`:
+
+```toml
+plugin_sharing = false
+```
+
 ### Chronicle
 
-Source: [Chronicle](./memories/chronicle.md)
+Source: [Chronicle](/codex/memories/chronicle.md)
 
 Chronicle is in an **opt-in research preview**. It is only available for
 ChatGPT Pro subscribers on macOS, and is not yet available in the EU, UK and
@@ -9308,7 +9547,7 @@ Codex to use as context. To disable Chronicle, return to **Settings &gt;
 Personalization &gt; Memories** and turn off **Chronicle**.
 
 You can also control whether memories are used in a given thread. [Learn
-more](https://developers.openai.com/codex/memories#control-memories-per-thread).
+more](/codex/memories#control-memories-per-thread).
 
 #### Rate limits
 
@@ -9368,14 +9607,14 @@ follow those instructions.
 
 ### Codex Security
 
-Source: [Codex Security](https://developers.openai.com/codex/security/index.md)
+Source: [Codex Security](/codex/security/index.md)
 
 Codex Security helps engineering and security teams find, validate, and remediate likely vulnerabilities in connected GitHub repositories.
 
 This page covers Codex Security, the product that scans connected GitHub
 repositories for likely security issues. For Codex sandboxing, approvals,
 network controls, and admin settings, see [Agent approvals &
-security](https://developers.openai.com/codex/agent-approvals-security).
+security](/codex/agent-approvals-security).
 
 It helps teams:
 
@@ -9400,13 +9639,13 @@ Codex Security works with connected GitHub repositories through Codex Web. OpenA
 
 #### Security overview references
 
-- [Codex Security setup](https://developers.openai.com/codex/security/setup) covers setup, scanning, and findings review.
-- [FAQ](https://developers.openai.com/codex/security/faq) covers common product questions.
-- [Improving the threat model](https://developers.openai.com/codex/security/threat-model) explains how to tune scope, attack surface, and criticality assumptions.
+- [Codex Security setup](/codex/security/setup) covers setup, scanning, and findings review.
+- [FAQ](/codex/security/faq) covers common product questions.
+- [Improving the threat model](/codex/security/threat-model) explains how to tune scope, attack surface, and criticality assumptions.
 
 ### Hooks
 
-Source: [Hooks](./hooks.md)
+Source: [Hooks](/codex/hooks.md)
 
 Hooks are an extensibility framework for Codex. They allow
 you to inject your own scripts into the agentic loop, enabling features such as:
@@ -9449,7 +9688,7 @@ Codex discovers hooks next to active config layers in either of these forms:
 
 Installed plugins can also bundle lifecycle config through their plugin
 manifest or a default `hooks/hooks.json` file. See [Build
-plugins](https://developers.openai.com/codex/plugins/build#bundled-mcp-servers-and-lifecycle-config) for the
+plugins](/codex/plugins/build#bundled-mcp-servers-and-lifecycle-config) for the
 plugin packaging rules.
 
 In practice, the four most useful locations are:
@@ -9659,7 +9898,7 @@ If you need the full wire format, see [Schemas](#schemas).
 
 ### Memories
 
-Source: [Memories](./memories.md)
+Source: [Memories](/codex/memories.md)
 
 Memories are off by default and aren't available in the European Economic
 Area, the United Kingdom, or Switzerland at launch. Enable them in Codex
@@ -9675,7 +9914,7 @@ Keep required team guidance in `AGENTS.md` or checked-in documentation. Treat
 memories as a helpful local recall layer, not as the only source for rules that
 must always apply.
 
-[Chronicle](https://developers.openai.com/codex/memories/chronicle) helps Codex recover recent working
+[Chronicle](/codex/memories/chronicle) helps Codex recover recent working
 context from your screen to build up memory.
 
 #### Enable memories
@@ -9689,7 +9928,7 @@ For config-based setup, add the feature flag to `config.toml`:
 memories = true
 ```
 
-See [Config basics](https://developers.openai.com/codex/config-basic) for where Codex stores user-level
+See [Config basics](/codex/config-basic) for where Codex stores user-level
 configuration and how Codex loads `~/.codex/config.toml`.
 
 #### How memories work
@@ -9710,7 +9949,7 @@ quota when you're near a limit.
 #### Memory storage
 
 Codex stores memories under your Codex home directory. By default, that's
-`~/.codex`. See [Config and state locations](https://developers.openai.com/codex/config-advanced#config-and-state-locations)
+`~/.codex`. See [Config and state locations](/codex/config-advanced#config-and-state-locations)
 for how Codex uses `CODEX_HOME`.
 
 The main memory files live under `~/.codex/memories/` and include summaries,
@@ -9735,7 +9974,7 @@ Enable memories in the Codex app settings, or set `memories = true` in the
 `[features]` section of `config.toml`.
 
 For config file locations and the full list of memory-related settings, see the
-[configuration reference](https://developers.openai.com/codex/config-reference).
+[configuration reference](/codex/config-reference).
 
 Common memory-specific settings include:
 
@@ -9762,7 +10001,7 @@ directory or generated memory artifacts.
 
 ### Migrate to Codex
 
-Source: [Migrate to Codex](./migrate.md)
+Source: [Migrate to Codex](/codex/migrate.md)
 
 Use the import flow to bring your instructions, configuration, skills, MCP
 servers, hooks, subagents, and recent sessions from another agent into Codex.
@@ -9795,14 +10034,14 @@ When you import, Codex:
 
 | Detected setup                        | Codex destination                      |
 | ------------------------------------- | -------------------------------------- |
-| Instruction files                     | [`AGENTS.md`](https://developers.openai.com/codex/guides/agents-md) |
-| `settings.json`                       | [`config.toml`](https://developers.openai.com/codex/config-basic)   |
-| Skills                                | [Codex skills](https://developers.openai.com/codex/skills)          |
+| Instruction files                     | [`AGENTS.md`](/codex/guides/agents-md) |
+| `settings.json`                       | [`config.toml`](/codex/config-basic)   |
+| Skills                                | [Codex skills](/codex/skills)          |
 | Recent sessions from the last 30 days | Codex threads and projects             |
-| MCP server configuration              | [Codex MCP configuration](https://developers.openai.com/codex/mcp)  |
-| Hooks                                 | [Codex hooks](https://developers.openai.com/codex/hooks)            |
-| Slash commands                        | [Codex skills](https://developers.openai.com/codex/skills)          |
-| Subagents                             | [Codex agents](https://developers.openai.com/codex/subagents)       |
+| MCP server configuration              | [Codex MCP configuration](/codex/mcp)  |
+| Hooks                                 | [Codex hooks](/codex/hooks)            |
+| Slash commands                        | [Codex skills](/codex/skills)          |
+| Subagents                             | [Codex agents](/codex/subagents)       |
 
 #### Finish remaining setup in a new thread
 
@@ -9833,16 +10072,16 @@ Review any migrated setup before you rely on it, especially:
 #### After you switch
 
 Once the import finishes, open one of your migrated projects and continue from
-there. If you are new to Codex, see the [quickstart](https://developers.openai.com/codex/quickstart) for the
+there. If you are new to Codex, see the [quickstart](/codex/quickstart) for the
 rest of the setup flow.
 
 ### Open Source
 
-Source: [Open Source](./open-source.md)
+Source: [Open Source](/codex/open-source.md)
 
 OpenAI develops key parts of Codex in the open. That work lives on GitHub so you can follow progress, report issues, and contribute improvements.
 
-If you maintain a widely used open-source project or want to nominate maintainers stewarding important projects, you can also [apply to the Codex for OSS program](https://developers.openai.com/community/codex-for-oss) for API credits, ChatGPT Pro with Codex, and selective access to Codex Security.
+If you maintain a widely used open-source project or want to nominate maintainers stewarding important projects, you can also [apply to the Codex for OSS program](/community/codex-for-oss) for API credits, ChatGPT Pro with Codex, and selective access to Codex Security.
 
 #### Open-source components
 
@@ -9867,7 +10106,7 @@ When you file an issue, include which component you are using (CLI, SDK, IDE ext
 
 ### Permissions
 
-Source: [Permissions](./permissions.md)
+Source: [Permissions](/codex/permissions.md)
 
 #### Define and select a profile
 
@@ -9954,7 +10193,7 @@ writable while still setting a matching `.env` path to `deny`.
 
 ### Plugins
 
-Source: [Plugins](./plugins.md)
+Source: [Plugins](/codex/plugins.md)
 
 #### Overview
 
@@ -9975,12 +10214,25 @@ A plugin can contain:
   or helper scripts for a task.
 - **Apps:** connections to tools like GitHub, Slack, or Google Drive, so
   Codex can read information from those tools and take actions in them.
-- **MCP servers:** services that give Codex access to additional tools or
-  shared information, often from systems outside your local project.
+- **MCP servers:** services that give Codex access to more tools or shared
+  information, often from systems outside your local project.
 
-More plugin capabilities are coming soon.
+You can share plugins by publishing them through a marketplace source, such as a
+repo marketplace for a project or team. See [Build plugins](/codex/plugins/build)
+for marketplace setup, packaging, and distribution guidance.
 
 #### Use and install plugins
+
+#### Plugin Directory in the Codex app
+
+Open **Plugins** in the Codex app to browse and install curated plugins.
+
+The plugin directory groups plugins into categories:
+
+- **Curated by OpenAI:** highlighted plugins available to all Codex users.
+- **Shared with you:** plugins shared by other members of your ChatGPT
+  workspace.
+- **Created by you:** plugins you created or added to your own workspace.
 
 #### Plugin directory in the CLI
 
@@ -10030,14 +10282,14 @@ After you install a plugin, you can use it directly in the prompt window:
 #### How permissions and data sharing work
 
 Installing a plugin makes its workflows available in Codex, but your existing
-[approval settings](https://developers.openai.com/codex/agent-approvals-security) still apply. Any
+[approval settings](/codex/agent-approvals-security) still apply. Any
 connected external services remain subject to their own authentication,
 privacy, and data-sharing policies.
 
 - Bundled skills are available as soon as you install the plugin.
 - If a plugin includes apps, Codex may prompt you to install or sign in to
   those apps in ChatGPT during setup or the first time you use them.
-- If a plugin includes MCP servers, they may require additional setup or
+- If a plugin includes MCP servers, they may require extra setup or
   authentication before you can use them.
 - When Codex sends data through a bundled app, that app's terms and privacy
   policy apply.
@@ -10061,12 +10313,13 @@ enabled = false
 #### Build your own plugin
 
 If you want to create, test, or distribute your own plugin, see
-[Build plugins](https://developers.openai.com/codex/plugins/build). That page covers local scaffolding,
-manual marketplace setup, plugin manifests, and packaging guidance.
+[Build plugins](/codex/plugins/build). That page covers local scaffolding,
+manual marketplace setup, workspace sharing, plugin manifests, and packaging
+guidance.
 
 ### Remote connections
 
-Source: [Remote connections](./remote-connections.md)
+Source: [Remote connections](/codex/remote-connections.md)
 
 import {
 Desktop,
@@ -10260,13 +10513,13 @@ internet.
 
 ### Subagents
 
-Source: [Subagents](./subagents.md)
+Source: [Subagents](/codex/subagents.md)
 
 Codex can run subagent workflows by spawning specialized agents in parallel and then collecting their results in one response. This can be particularly helpful for complex tasks that are highly parallel, such as codebase exploration or implementing a multi-step feature plan.
 
 With subagent workflows, you can also define your own custom agents with different model configurations and instructions depending on the task.
 
-For the concepts and tradeoffs behind subagent workflows, including context pollution, context rot, and model-selection guidance, see [Subagent concepts](https://developers.openai.com/codex/concepts/subagents).
+For the concepts and tradeoffs behind subagent workflows, including context pollution, context rot, and model-selection guidance, see [Subagent concepts](/codex/concepts/subagents).
 
 #### Availability
 
@@ -10356,7 +10609,7 @@ inherit from the parent session when you omit them.
 
 #### Global settings
 
-Global subagent settings still live under `[agents]` in your [configuration](https://developers.openai.com/codex/config-basic#configuration-precedence).
+Global subagent settings still live under `[agents]` in your [configuration](/codex/config-basic#configuration-precedence).
 
 | Field                            | Type   | Required | Purpose                                                    |
 | -------------------------------- | ------ | :------: | ---------------------------------------------------------- |
@@ -10423,10 +10676,10 @@ drifting into adjacent work.
 
 ### Windows platform
 
-Source: [Windows](./windows.md)
+Source: [Windows](/codex/windows.md)
 
-Use Codex on Windows with the native [Codex app](https://developers.openai.com/codex/app/windows), the
-[CLI](https://developers.openai.com/codex/cli), or the [IDE extension](https://developers.openai.com/codex/ide).
+Use Codex on Windows with the native [Codex app](/codex/app/windows), the
+[CLI](/codex/cli), or the [IDE extension](/codex/ide).
 
 The Codex app on Windows supports core workflows such as parallel agent threads,
 worktrees, automations, Git functionality, the in-app browser, artifact previews,
@@ -10477,10 +10730,10 @@ older `Winsta0\\Default` behavior for compatibility.
 Running Codex in full access mode means Codex is not limited to your project
 directory and might perform unintentional destructive actions that can lead to
 data loss. For safer automation, keep sandbox boundaries in place and use
-[rules](https://developers.openai.com/codex/rules) for specific exceptions, or set your [approval policy to
-never](https://developers.openai.com/codex/agent-approvals-security#run-without-approval-prompts) to have
+[rules](/codex/rules) for specific exceptions, or set your [approval policy to
+never](/codex/agent-approvals-security#run-without-approval-prompts) to have
 Codex attempt to solve problems without asking for escalated permissions,
-based on your [approval and security setup](https://developers.openai.com/codex/agent-approvals-security).
+based on your [approval and security setup](/codex/agent-approvals-security).
 
 #### Windows version matrix
 

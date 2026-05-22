@@ -29,6 +29,9 @@ Use this as a compact map of Codex docs. Each page has a Markdown twin at `/code
 ## App Server
 - [Codex App Server](https://developers.openai.com/codex/app-server.md): Embed Codex into your product with the app-server protocol
 
+## Appshots
+- [Appshots](https://developers.openai.com/codex/appshots.md): Give Codex context from any Mac app
+
 ## Auth
 - [Authentication](https://developers.openai.com/codex/auth.md): Sign-in methods for Codex
 

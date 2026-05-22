@@ -558,6 +558,13 @@ connected host.
 Let Codex use macOS apps for GUI tasks, browser flows, and native app testing.
 
   </BentoContent>
+  <BentoContent href="/codex/appshots">
+
+### Appshots
+
+Send the frontmost Mac app window to Codex with a screenshot and available text.
+
+  </BentoContent>
   <BentoContent href="/codex/app/review">
 
 ### Review and ship changes
@@ -928,10 +935,35 @@ Enabled skills also appear in the slash command list.
 | Slash command | Description                                                                            |
 | ------------- | -------------------------------------------------------------------------------------- |
 | `/feedback`   | Open the feedback dialog to submit feedback and optionally include logs.               |
+| `/goal`       | Set a persistent goal for Codex to work toward; use `/plan` first to shape it.         |
 | `/mcp`        | Open MCP status to view connected servers.                                             |
-| `/plan-mode`  | Toggle plan mode for multi-step planning.                                              |
+| `/plan`       | Toggle plan mode for multi-step planning.                                              |
 | `/review`     | Start code review mode to review uncommitted changes or compare against a base branch. |
 | `/status`     | Show the thread ID, context usage, and rate limits.                                    |
+
+### Set or manage a goal with `/goal`
+
+Use `/goal` in the app composer to start Goal mode. A goal is a persistent
+objective that Codex works toward until it finishes the task, pauses, or needs
+more input. To define the goal with Codex first, start with `/plan`, then set
+the refined goal with `/goal`.
+
+If `/goal` doesn't appear in the slash command list, enable `features.goals`
+in `config.toml`:
+
+```toml
+[features]
+goals = true
+```
+
+You can also run `codex features enable goals` from the CLI or ask Codex to run it.
+
+When a goal is active, the app shows its progress above the composer. Use the
+buttons in that progress row to pause or resume the goal, edit the goal text, or
+clear the goal instead of typing another slash command. You can keep steering
+Codex with follow-up messages while the goal runs.
+
+For guidance on writing effective goals, see [Goal mode](https://developers.openai.com/codex/prompting#goal-mode).
 
 ## Deeplinks
 
@@ -1714,6 +1746,42 @@ If Codex can't see or control an app, open **System Settings > Privacy &
 Security** and check **Screen Recording** and **Accessibility** for the Codex
 app.
 
+## Locked use
+
+Locked computer use lets Codex use Computer Use after your Mac locks, but only
+after you enable it. Use it when a Codex task needs to use desktop apps from a
+connected device after the Mac locks.
+
+When you enable locked computer use, Codex installs an Apple
+[authorization plug-in](https://developer.apple.com/documentation/security/authorization-plug-ins)
+that participates in the macOS unlock flow.
+
+Locked use is intentionally narrow. It's not a general-purpose remote-unlock
+path for your Mac, and it doesn't let other apps or local processes unlock the
+computer.
+
+To use locked computer use:
+
+1. Open **Codex settings > Computer Use**.
+2. Enable locked computer use.
+3. Start a task that uses computer use from a connected device after your Mac's
+   screen has locked.
+
+When a Codex task accesses an app via Computer Use after your Mac locks, Codex
+temporarily unlocks the Mac while blocking local use and preserving the locked
+screen protections. Before unlocking, Codex checks whether the unlock attempt is
+for an active, trusted computer use turn. Outside that short-lived window, Codex
+denies the unlock and asks you to unlock manually if needed.
+
+Locked use includes safeguards:
+
+- The authorization window is short-lived and scoped to the current unlock
+  attempt.
+- Automatic unlock is available only to Codex during active computer use turns.
+- Codex covers every display while the desktop is temporarily unlocked.
+- If Codex detects local keyboard or pointer input, it relocks the Mac and
+  pauses automatic unlock until you unlock it manually.
+
 ## Safety guidance
 
 With computer use, Codex can view screen content, take screenshots, and interact
@@ -1779,7 +1847,8 @@ Treat page content as untrusted context. Don't paste secrets into browser flows.
 
 Browser use lets Codex operate the in-app browser directly. Use it for local
 development servers and file-backed previews when Codex needs to click, type,
-inspect rendered state, take screenshots, or verify a fix in the page.
+inspect rendered state, take screenshots, download page assets, run read-only
+page inspection JavaScript, or verify a fix in the page.
 
 To use it, install and enable the Browser plugin. Then ask Codex to use the
 browser in your task, or reference it directly with `@Browser`. The app keeps
@@ -1821,8 +1890,8 @@ layout issues and keep the card structure unchanged.
 When a bug is visible only in the rendered page, use browser comments to give
 Codex precise feedback on the page.
 
-- Turn on comment mode, select an element or area, and submit a comment.
-- In comment mode, hold <kbd>Shift</kbd> and click to select an area.
+- Turn on Annotation mode, select an element or area, and submit a comment.
+- In Annotation mode, hold <kbd>Shift</kbd> and click to select an area.
 - Hold <kbd>Cmd</kbd> while clicking to send a comment immediately.
 
 After you leave comments, send a message in the thread asking Codex to address
@@ -1839,6 +1908,21 @@ otherwise wrap it without changing the card height.
 This tooltip covers the data point under the cursor. Reposition the tooltip so
 it stays inside the chart bounds.
 ```
+
+<section class="feature-grid">
+
+<div>
+
+### Styling feedback
+
+When you add an annotation to a section on the page, press the config icon next
+to the text input to give Codex more granular style feedback. You can change
+values like font, text, spacing, and color, preview the result directly on the
+page, and then send the annotation so Codex has a clearer target for the change.
+
+</div>
+
+</section>
 
 ## Keep browser tasks scoped
 
@@ -2802,9 +2886,9 @@ If a client sends an experimental method or field without opting in, app-server 
 - `thread/turns/items/list` - reserved for paged turn-item loading; currently returns unsupported.
 - `thread/loaded/list` - list the thread ids currently loaded in memory.
 - `thread/name/set` - set or update a thread's user-facing name for a loaded thread or a persisted rollout; emits `thread/name/updated`.
-- `thread/goal/set` - set the goal for a loaded thread (experimental; requires `capabilities.experimentalApi`); emits `thread/goal/updated`.
-- `thread/goal/get` - read the current goal for a loaded thread (experimental; requires `capabilities.experimentalApi`).
-- `thread/goal/clear` - clear the goal for a loaded thread (experimental; requires `capabilities.experimentalApi`); emits `thread/goal/cleared`.
+- `thread/goal/set` - set the goal for a thread; emits `thread/goal/updated`.
+- `thread/goal/get` - read the current goal for a thread.
+- `thread/goal/clear` - clear the goal for a thread; emits `thread/goal/cleared`.
 - `thread/metadata/update` - patch SQLite-backed stored thread metadata; currently supports persisted `gitInfo`.
 - `thread/archive` - move a thread's log file into the archived directory; returns `{}` on success and emits `thread/archived`.
 - `thread/unsubscribe` - unsubscribe this connection from thread turn/item events. If this was the last subscriber, the server unloads the thread after a no-subscriber inactivity grace period and emits `thread/closed`.
@@ -3002,9 +3086,8 @@ If you resume with a different model than the one recorded in the rollout, Codex
 
 ### Manage a thread goal
 
-`thread/goal/set`, `thread/goal/get`, and `thread/goal/clear` are experimental
-and require `capabilities.experimentalApi = true` plus the `goals` feature. Use
-them for the same persisted goal state surfaced by `/goal` in the TUI.
+Use `thread/goal/set`, `thread/goal/get`, and `thread/goal/clear` to manage the
+same persisted goal state surfaced by `/goal` in the TUI.
 
 ```json
 { "method": "thread/goal/set", "id": 13, "params": {
@@ -4356,6 +4439,91 @@ Use `account/sendAddCreditsNudgeEmail` to ask ChatGPT to email a workspace owner
 ```
 
 Use `creditType: "credits"` when workspace credits are depleted, or `creditType: "usage_limit"` when the workspace usage limit has been reached. If the owner was already notified recently, the response status is `cooldown_active`.
+
+---
+
+# Appshots
+
+Appshots let you send the frontmost app window to a Codex thread. Use them when
+you're actively working in another app on your computer and want to provide
+Codex with your current context so it can help you with the task.
+
+Appshots are available in the Codex app on macOS. Press both Command keys, or
+  your custom Appshots hotkey, to take one.
+
+## What appshots capture
+
+An appshot captures the frontmost window only. It can include:
+
+- An image of the visible window.
+- Available text from that window, including visible text and text the app makes
+  available outside the visible scroll area.
+
+After you add an appshot to a thread, it behaves like a Codex attachment. Codex
+stores appshots locally in the session file, like files or images you attach
+manually.
+
+## When to use appshots
+
+Use appshots when Codex needs context from a Mac app before it can act.
+
+Examples:
+
+- Share an API reference page and ask Codex to write a script that uses it.
+- Share an email or calendar view and ask Codex to draft the next step.
+- Share an image editor, design, or preview window and ask Codex to revise the
+  related assets or code.
+- Share an error, settings panel, or app state that's easier to show than
+  describe.
+
+## Take an appshot
+
+1. Open the Codex app on your Mac.
+2. Open the app and window you want to share.
+3. Press both Command keys, or the custom hotkey you configured in Codex
+   settings.
+4. Allow macOS permissions if Codex asks.
+5. Ask Codex to perform a task with the appshot.
+
+By default, Codex starts a new thread for the appshot. If you interacted with a
+Codex thread in the last 60 seconds, Codex adds the appshot to that recent
+thread instead. Taking consecutive appshots adds them to the same thread.
+
+You can change the Appshots hotkey in Codex settings.
+
+## Permissions and safety
+
+Codex may ask for permissions before it can take appshots:
+
+- **Screen & System Audio Recording** lets Codex capture an image of the
+  frontmost window.
+- **Accessibility** lets Codex read available text from the frontmost window.
+
+Taking an appshot shares the captured image and available text with Codex.
+Avoid taking appshots of sensitive content unless the task requires that
+content.
+
+Review appshots the same way you would review sharing screenshots and documents
+with Codex.
+
+## Limits and troubleshooting
+
+Appshots are a Codex app feature. Create them from the Codex app on macOS. If
+you resume a thread in the CLI that already contains an appshot, the attachment
+is part of the thread history, but the CLI can't create a new appshot.
+
+For some apps and websites, including Google Docs, Gmail, Google Sheets, and
+Google Slides, Codex may receive only the visible screenshot and may not receive
+the full document or off-screen text. If you have the matching plugin installed,
+Codex can use that plugin to access the relevant app content and help with your
+request.
+
+If appshots don't work:
+
+1. Open **System Settings > Privacy & Security**.
+2. Check **Screen & System Audio Recording** and **Accessibility** for Codex
+   Computer Use.
+3. Restart Codex and try again.
 
 ---
 
@@ -6058,7 +6226,7 @@ completion still works before you queue the command.
 | [`/model`](#set-the-active-model-with-model)                                    | Choose the active model (and reasoning effort, when available). | Switch between general-purpose models (`gpt-4.1-mini`) and deeper reasoning models before running a task.  |
 | [`/fast`](#toggle-fast-mode-with-fast)                                          | Toggle a Fast service tier when the model catalog exposes one.  | Turn the current model's Fast tier on or off, or check whether the thread is using it.                     |
 | [`/plan`](#switch-to-plan-mode-with-plan)                                       | Switch to plan mode and optionally send a prompt.               | Ask Codex to propose an execution plan before implementation work starts.                                  |
-| [`/goal`](#set-or-view-an-experimental-task-goal-with-goal)                     | Set, pause, resume, view, or clear a task goal.                 | Give Codex a persistent target to track while a larger task runs. Requires `features.goals`.               |
+| [`/goal`](#set-or-view-a-task-goal-with-goal)                                   | Set, pause, resume, view, or clear a task goal.                 | Give Codex a persistent target to track while a larger task runs.                                          |
 | [`/personality`](#set-a-communication-style-with-personality)                   | Choose a communication style for responses.                     | Make Codex more concise, more explanatory, or more collaborative without changing your instructions.       |
 | [`/ps`](#check-background-terminals-with-ps)                                    | Show experimental background terminals and their recent output. | Check long-running commands without leaving the main transcript.                                           |
 | [`/stop`](#stop-background-terminals-with-stop)                                 | Stop all background terminals.                                  | Cancel background terminal work started by the current session.                                            |
@@ -6133,9 +6301,7 @@ Expected: Codex enters plan mode and uses your optional inline prompt as the fir
 
 While a task is already running, `/plan` is temporarily unavailable.
 
-### Set an experimental goal with `/goal`
-
-`/goal` is experimental and only available when `features.goals` is enabled. To enable it, open `/experimental` or add `goals = true` under `[features]` in `config.toml`.
+### Set or view a task goal with `/goal`
 
 1. Type `/goal <objective>` to set the goal, for example `/goal Finish the migration and keep tests green`.
 2. Type `/goal` to view the current goal.
@@ -9923,6 +10089,12 @@ canonical keys that `config.toml` uses. Omitted keys remain unconstrained.
       type: "array<string>",
       description:
         "Allowed values for `web_search` (`disabled`, `cached`, `live`). `disabled` is always allowed; an empty list effectively allows only `disabled`.",
+    },
+    {
+      key: "plugin_sharing",
+      type: "boolean",
+      description:
+        "Set to `false` in cloud-managed `requirements.toml` to disable workspace sharing for locally built plugins.",
     },
     {
       key: "features",
@@ -14343,9 +14515,20 @@ Slash commands let you control Codex without leaving the chat input. Use them to
 | `/cloud`             | Switch to cloud mode to run the task remotely (requires cloud access).                 |
 | `/cloud-environment` | Choose the cloud environment to use (available only in cloud mode).                    |
 | `/feedback`          | Open the feedback dialog to submit feedback and optionally include logs.               |
+| `/goal`              | Set a persistent goal for Codex to work toward.                                        |
 | `/local`             | Switch to local mode to run the task in your workspace.                                |
 | `/review`            | Start code review mode to review uncommitted changes or compare against a base branch. |
 | `/status`            | Show the thread ID, context usage, and rate limits.                                    |
+
+If `/goal` doesn't appear in the slash command list, enable `features.goals`
+in `config.toml`:
+
+```toml
+[features]
+goals = true
+```
+
+You can also run `codex features enable goals` from the CLI or ask Codex to run it.
 
 ---
 
@@ -16360,16 +16543,25 @@ A plugin can contain:
   or helper scripts for a task.
 - **Apps:** connections to tools like GitHub, Slack, or Google Drive, so
   Codex can read information from those tools and take actions in them.
-- **MCP servers:** services that give Codex access to additional tools or
-  shared information, often from systems outside your local project.
+- **MCP servers:** services that give Codex access to more tools or shared
+  information, often from systems outside your local project.
 
-More plugin capabilities are coming soon.
+You can share plugins by publishing them through a marketplace source, such as a
+repo marketplace for a project or team. See [Build plugins](https://developers.openai.com/codex/plugins/build)
+for marketplace setup, packaging, and distribution guidance.
 
 ## Use and install plugins
 
 ### Plugin Directory in the Codex app
 
 Open **Plugins** in the Codex app to browse and install curated plugins.
+
+The plugin directory groups plugins into categories:
+
+- **Curated by OpenAI:** highlighted plugins available to all Codex users.
+- **Shared with you:** plugins shared by other members of your ChatGPT
+  workspace.
+- **Created by you:** plugins you created or added to your own workspace.
 
 ### Plugin directory in the CLI
 
@@ -16440,7 +16632,7 @@ privacy, and data-sharing policies.
 - Bundled skills are available as soon as you install the plugin.
 - If a plugin includes apps, Codex may prompt you to install or sign in to
   those apps in ChatGPT during setup or the first time you use them.
-- If a plugin includes MCP servers, they may require additional setup or
+- If a plugin includes MCP servers, they may require extra setup or
   authentication before you can use them.
 - When Codex sends data through a bundled app, that app's terms and privacy
   policy apply.
@@ -16465,7 +16657,8 @@ enabled = false
 
 If you want to create, test, or distribute your own plugin, see
 [Build plugins](https://developers.openai.com/codex/plugins/build). That page covers local scaffolding,
-manual marketplace setup, plugin manifests, and packaging guidance.
+manual marketplace setup, workspace sharing, plugin manifests, and packaging
+guidance.
 
 ---
 
@@ -16477,18 +16670,18 @@ one repo or one personal workflow, start with a local skill. Build a plugin
 when you want to share that workflow across teams, bundle app integrations or
 MCP config, package lifecycle hooks, or publish a stable package.
 
-## Create a plugin with `$plugin-creator`
+## Create a plugin with `@plugin-creator`
 
-For the fastest setup, use the built-in `$plugin-creator` skill.
+For the fastest setup, use the built-in `@plugin-creator` skill.
 
 It scaffolds the required `.codex-plugin/plugin.json` manifest and can also
 generate a local marketplace entry for testing. If you already have a plugin
-folder, you can still use `$plugin-creator` to wire it into a local
+folder, you can still use `@plugin-creator` to wire it into a local
 marketplace.
 
 ### Build your own curated plugin list
 
-A marketplace is a JSON catalog of plugins. `$plugin-creator` can generate one
+A marketplace is a JSON catalog of plugins. `@plugin-creator` can generate one
 for a single plugin, and you can keep adding entries to that same marketplace
 to build your own curated list for a repo, team, or personal workflow.
 
@@ -16572,7 +16765,7 @@ description: Greet the user with a friendly message.
 Greet the user warmly and ask how you can help.
 ```
 
-3. Add the plugin to a marketplace. Use `$plugin-creator` to generate one, or
+3. Add the plugin to a marketplace. Use `@plugin-creator` to generate one, or
    follow [Build your own curated plugin list](#build-your-own-curated-plugin-list)
    to wire the plugin into Codex manually.
 
@@ -16656,6 +16849,32 @@ to the marketplace root, not relative to the `.agents/plugins/` folder. See
 
 After you change the plugin, update the plugin directory that your marketplace
 entry points to and restart Codex so the local install picks up the new files.
+
+### Share a local plugin with your workspace
+
+After you create a plugin and add it to Codex, you can share it with other
+members of your ChatGPT workspace from the Codex app.
+
+1. Open **Plugins** in the Codex app.
+2. Go to **Created by you** and open the plugin details page.
+3. Select **Share**.
+4. Add workspace members or copy a share link.
+5. Choose who has access, then send the invitation or link.
+
+People you share with can find the plugin under **Shared with you** in the
+plugin directory. Sharing a local plugin with your workspace doesn't publish
+it to the public Plugin Directory. Shared plugins stay within your workspace
+and organization boundary; accounts that aren't signed in to that workspace
+can't access them. Use a marketplace when you want repo or CLI distribution,
+and use workspace sharing when you want selected teammates to install a plugin
+from the Codex app.
+
+Workspace admins can disable plugin sharing from cloud-managed requirements by
+adding `plugin_sharing = false` to `requirements.toml`:
+
+```toml
+plugin_sharing = false
+```
 
 ### Marketplace metadata
 
@@ -17833,6 +18052,53 @@ When you submit a prompt, include context that Codex can use, such as references
 As the agent works, it also gathers context from file contents, tool output, and an ongoing record of what it has done and what it still needs to do.
 
 All information in a thread must fit within the model's **context window**, which varies by model. Codex monitors and reports the remaining space. For longer tasks, Codex may automatically **compact** the context by summarizing relevant information and discarding less relevant details. With repeated compaction, Codex can continue working on complex tasks over many steps.
+
+## Goal mode
+
+Goal mode gives Codex a persistent objective to work toward across a longer
+task. Use it when the work may take many steps, or when Codex needs a clear
+definition of done that it can keep checking as it works.
+
+When you set a goal, the goal text acts as both the starting prompt and the
+completion criteria. Codex uses it to decide what to do next and whether the
+task is complete. Start Goal mode with `/goal` in the [Codex
+app](https://developers.openai.com/codex/app/commands#set-or-manage-a-goal-with-goal), [IDE
+extension](https://developers.openai.com/codex/ide/slash-commands), or [CLI](https://developers.openai.com/codex/cli/slash-commands#set-or-view-a-task-goal-with-goal).
+
+If `/goal` doesn't appear in the slash command list, enable `features.goals`
+in `config.toml`:
+
+```toml
+[features]
+goals = true
+```
+
+You can also run `codex features enable goals` from the CLI or ask Codex to run it.
+In the Codex app, progress appears above the composer with controls to pause,
+resume, edit, or clear the goal.
+
+Write goals so Codex can tell whether it has succeeded. Good goals include a
+specific outcome, measurable target, or test criteria. For example:
+
+```text
+Migrate this codebase from JavaScript to TypeScript. The app should compile in
+strict mode without explicit `any` type definitions.
+```
+
+```text
+Reduce the time to interactive of the home page to below 1 second.
+```
+
+If the goal is hard to define up front, start with `/plan` and ask Codex to
+shape it before implementation. You can also ask Codex to interview you and
+draft a goal with clear success criteria.
+
+You can continue steering Codex after the goal starts. Send follow-up messages
+to adjust constraints, such as asking Codex to use a particular library or
+avoid a specific approach. Use side chats when you want a status recap or
+explanation without interrupting the main task. For long-running work, pause
+the goal before you lose connectivity, then resume or edit it when you are
+ready to continue.
 
 ---
 
