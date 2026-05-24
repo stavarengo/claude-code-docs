@@ -27905,7 +27905,9 @@ If you notice any safety or security issues while developing with the API or any
 
 ### Implement safety identifiers
 
-Sending safety identifiers in your requests can be a useful tool to help OpenAI monitor and detect abuse. This allows OpenAI to provide your team with more actionable feedback in the event that we detect any policy violations in your application.
+Sending safety identifiers in your requests can help OpenAI monitor and detect abuse. This allows OpenAI to provide your team with more actionable feedback in the event that we detect any policy violations in your application.
+
+Safety identifiers can also help your team respond to abuse faster. They create a stable way to trace activity back to an individual end user and reduce the chance that one user's misuse disrupts access for your broader organization.
 
 A safety identifier should be a string that uniquely identifies each user. Hash the username or email address in order to avoid sending us any identifying information. If you offer a preview of your product to non-logged in users, you can send a session ID instead.
 
@@ -28012,10 +28014,6 @@ If your org engages in suspicious activity that violates our safety policies, we
 
 - [Implement safety identifiers](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers) for products where individual users interact with a model. Safety identifiers are recommended but not required.
 - If your use case depends on accessing a less restricted version of our services in order to engage in beneficial applications across the life sciences, read about our [special access program](https://help.openai.com/en/articles/11826767-life-science-research-special-access-program) to see if you meet criteria.
-
-You likely don't need to provide a safety identifier if access to your product
-  is tightly controlled (for example, enterprise customers) or in cases where
-  users don't directly provide prompts, or are limited to use in narrow areas.
 
 ### Implementing safety identifiers for individual users
 
