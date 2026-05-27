@@ -8,14 +8,14 @@ This API reference describes the RESTful, streaming, and realtime APIs you can u
 
 ## Authentication
 
-The OpenAI API uses API keys for authentication. Create, manage, and learn more about API keys in your [organization settings](https://developers.openai.com/settings/organization/api-keys).
+The OpenAI API accepts bearer credentials from API keys or from short-lived access tokens created with [workload identity federation](https://developers.openai.com/api/docs/guides/workload-identity-federation). Create, manage, and learn more about API keys in your [organization settings](https://developers.openai.com/settings/organization/api-keys).
 
 **Remember that your API key is a secret!** Do not share it with others or expose it in any client-side code (browsers, apps). API keys should be securely loaded from an environment variable or key management service on the server.
 
-API keys should be provided via [HTTP Bearer authentication](https://swagger.io/docs/specification/v3_0/authentication/bearer-authentication/).
+Provide API credentials via [HTTP Bearer authentication](https://swagger.io/docs/specification/v3_0/authentication/bearer-authentication/).
 
 ```bash
-Authorization: Bearer OPENAI_API_KEY
+Authorization: Bearer OPENAI_API_KEY_OR_ACCESS_TOKEN
 ```
 
 If you belong to multiple organizations or access projects through a legacy user API key, pass a header to specify which organization and project to use for an API request:
@@ -27,7 +27,7 @@ curl https://api.openai.com/v1/models \
   -H "OpenAI-Project: $PROJECT_ID"
 ```
 
-Usage from these API requests counts as usage for the specified organization and project.Organization IDs can be found on your [organization settings](https://developers.openai.com/settings/organization/general) page.
+Usage from these API requests counts as usage for the specified organization and project. Organization IDs can be found on your [organization settings](https://developers.openai.com/settings/organization/general) page.
 Project IDs can be found on your [general settings](https://developers.openai.com/settings) page by selecting the specific project.
 
 ## Debugging requests

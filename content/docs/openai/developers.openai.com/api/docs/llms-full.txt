@@ -6106,7 +6106,7 @@ ChatGPT developer mode provides full Model Context Protocol (MCP) client support
       - For OAuth, if static credentials are provided, then they will be used. Otherwise, ChatGPT can use Client ID Metadata Documents when the authorization server advertises support and the connector creator chooses CIMD. CIMD supports public-client token exchange (`none`) and signed client assertion token exchange (`private_key_jwt`). ChatGPT can also use DCR when configured.
       - Mixed authentication supports OAuth and No Authentication. This means the initialize and list tools APIs use no auth, and tools use OAuth or no auth based on the security schemes set on their tool metadata.
   - Created apps will show under "Drafts" in the app settings.
-- **Manage tools:** In app settings there is a details page per app. Use that to toggle tools on or off and refresh apps to pull new tools and descriptions from the MCP server.
+- **Manage tools:** In app settings there is a details page per app. Use that to toggle tools on or off and refresh apps to pull new tools, descriptions, and server instructions from the MCP server.
 - **Use apps in conversations:** Choose **Developer mode** from the Plus menu and select the apps for the conversation. You may need to explore different prompting techniques to call the correct tools. For example:
   - Be explicit: "Use the \"Acme CRM\" app's \"update_record\" tool to …". When needed, include the server label and tool name.
   - Disallow alternatives to avoid ambiguity: "Do not use built-in browsing or other tools; only use the Acme CRM connector."
@@ -6116,6 +6116,7 @@ ChatGPT developer mode provides full Model Context Protocol (MCP) client support
   - Developer mode does not require `search`/`fetch` tools. Any tools your connector exposes (including write actions) are available, subject to confirmation settings.
   - See more guidance in [Using tools](https://developers.openai.com/api/docs/guides/tools) and [Prompting](https://developers.openai.com/api/docs/guides/prompting).
   - Improve tool selection with better tool descriptions: In your MCP server, write action-oriented tool names and descriptions that include "Use this when…" guidance, note disallowed/edge cases, and add parameter descriptions (and enums) to help the model choose the right tool among similar ones and avoid built-in tools when inappropriate.
+  - Add server instructions for cross-tool guidance: Use the MCP [`instructions` field](https://modelcontextprotocol.io/specification/2025-06-18/basic/lifecycle#initialization) for server-wide guidance such as required tool sequences, shared rate limits, or relationships between tools. Keep the first 512 characters self-contained.
 
   Examples:
 
@@ -8389,6 +8390,1217 @@ To see end-to-end examples in many environments, use the sample app:
 
 
 </a>
+
+---
+
+# Configuring workload identity federation for AWS
+
+import {
+  awsOutboundWorkloadIdentitySdk,
+  awsWorkloadIdentitySdk,
+} from "./examples";
+
+Use AWS as a Workload Identity Provider in either of these scenarios:
+
+- **AWS outbound identity federation:** Exchange an AWS STS-issued OIDC JWT from `GetWebIdentityToken` for a short-lived OpenAI access token.
+- **Amazon EKS:** Exchange a projected Amazon EKS service account token for a short-lived OpenAI access token.
+
+OpenAI supports AWS-issued OIDC JWTs from outbound identity federation and
+  Kubernetes projected service account tokens issued by Amazon EKS. OpenAI does
+  not support SigV4-signed requests or AWS STS temporary access key credentials
+  as workload identity federation subject tokens.
+
+
+
+<div data-content-switcher-pane data-value="outbound">
+
+## AWS outbound identity federation
+
+AWS outbound identity federation lets an AWS principal request a signed OIDC JWT from AWS STS and present that token to an external service. In OpenAI workload identity federation, the AWS-issued JWT is the subject token that OpenAI validates before issuing an OpenAI access token.
+
+### Setting up AWS outbound identity federation
+
+Enable outbound identity federation for the AWS account that will issue tokens. For setup details, see the AWS guide to [getting started with outbound identity federation](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_outbound_getting_started.html).
+
+```bash
+aws iam enable-outbound-web-identity-federation
+```
+
+Record the account-specific issuer URL returned by AWS. You will configure this value as the OpenAI Workload Identity Provider issuer, and it must match the `iss` claim in AWS-issued tokens.
+
+The AWS STS `GetWebIdentityToken` API is not available on the STS global
+  endpoint. Configure the AWS CLI or SDK to use a regional STS endpoint.
+
+Grant the workload permission to call `sts:GetWebIdentityToken`. Restrict the audience and maximum token lifetime in IAM so the AWS principal can mint only tokens intended for OpenAI. This example allows tokens for the audience `https://api.openai.com/v1` with a maximum lifetime of 300 seconds:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "sts:GetWebIdentityToken",
+      "Resource": "*",
+      "Condition": {
+        "ForAllValues:StringEquals": {
+          "sts:IdentityTokenAudience": "https://api.openai.com/v1"
+        },
+        "NumericLessThanEquals": {
+          "sts:DurationSeconds": 300
+        }
+      }
+    }
+  ]
+}
+```
+
+Request an AWS-issued OIDC token with the same audience you will configure on the OpenAI Workload Identity Provider. Use `ES384` unless your environment requires `RS256` compatibility.
+
+```bash
+TOKEN=$(aws sts get-web-identity-token \
+  --audience "https://api.openai.com/v1" \
+  --signing-algorithm ES384 \
+  --duration-seconds 300 \
+  --tags Key=environment,Value=production \
+         Key=workload,Value=batch-ingest \
+  --query "WebIdentityToken" \
+  --output text)
+```
+
+### Verify the AWS-issued token
+
+Before configuring workload identity federation, decode a sample AWS-issued token locally and inspect its claims:
+
+```bash
+TOKEN="$TOKEN" python3 - <<'PY'
+import base64
+import json
+import os
+
+payload = os.environ["TOKEN"].split(".")[1]
+payload += "=" * (-len(payload) % 4)
+print(json.dumps(json.loads(base64.urlsafe_b64decode(payload)), indent=2))
+PY
+```
+
+This command decodes the JWT payload without verifying the token signature. Use a local decoder for production tokens, and avoid pasting production tokens into third-party tools.
+
+A decoded AWS-issued OIDC token will look similar to:
+
+```json
+{
+  "iss": "https://abc123-def456-ghi789-jkl012.tokens.sts.global.api.aws",
+  "aud": "https://api.openai.com/v1",
+  "sub": "arn:aws:iam::123456789012:role/OpenAIWifRole",
+  "iat": 1716235422,
+  "exp": 1716235722,
+  "jti": "jwt-id-example",
+  "https://sts.amazonaws.com/": {
+    "aws_account": "123456789012",
+    "source_region": "us-west-2",
+    "org_id": "o-exampleorgid",
+    "principal_tags": {
+      "environment": "production"
+    },
+    "request_tags": {
+      "environment": "production",
+      "workload": "batch-ingest"
+    }
+  }
+}
+```
+
+Not every AWS-issued token contains every AWS-specific claim. The claims under `https://sts.amazonaws.com/` depend on the calling principal, session context, and request tags.
+
+Verify the claims you plan to configure in OpenAI:
+
+- `iss`: Must match the AWS account-specific issuer URL configured in the OpenAI Workload Identity Provider.
+- `aud`: Must match the `GetWebIdentityToken` audience and the OpenAI Workload Identity Provider audience.
+- `sub`: Identifies the IAM principal ARN that requested the token. Prefer matching the exact role ARN.
+- AWS-specific claims: Use the decoded token as the source of truth before matching account, organization, principal tag, or request tag values.
+
+Use the decoded payload to compare the token you received with the issuer, audience, and mapping values configured in OpenAI. Most configuration issues are visible in the `iss`, `aud`, and `sub` claims before you exchange the token.
+
+### Setting up workload identity federation
+
+Create a Workload Identity Provider in OpenAI for the AWS account issuer, then add a service account mapping that matches stable claims from the AWS-issued token.
+
+Configure the Workload Identity Provider first, then create the service account mapping.
+
+#### Set up the Workload Identity Provider
+
+1. **Create the Workload Identity Provider.** Set **Name** to a unique value, such as `aws-outbound-prod`. Use **Description**, such as `Production AWS outbound identity federation workloads`, to help admins identify the provider.
+
+2. **Set the issuer and audience.** Set **OIDC Issuer URL** to the AWS account-specific issuer URL returned when outbound identity federation was enabled. This value must match the token's `iss` claim. Set **Audience** to the same audience passed to `GetWebIdentityToken`. In this example, that value is `https://api.openai.com/v1`.
+
+3. **Use AWS OIDC discovery.** Leave **Use uploaded JWKS for token verification** disabled. OpenAI uses the AWS issuer's OIDC discovery metadata and JWKS to verify the AWS-issued token.
+
+4. **Add attribute transformations only if you need derived mapping attributes.** Raw token matching supports top-level scalar claims such as `sub`, `aud`, and `iss`. AWS-specific namespaced claims are nested under `https://sts.amazonaws.com/`, so create derived attributes with CEL bracket notation before using them in mappings. For example, enter `aws_environment` with expression `assertion["https://sts.amazonaws.com/"]["principal_tags"]["environment"]` to create `openai.aws_environment` from the decoded token example above. Verify the nested claim path in a sample token before using it; if a transformation cannot be evaluated, mapping resolution fails. Raw token claims that already start with `openai.` are ignored for `openai.` mapping keys unless a matching transformation is configured.
+
+#### Set up the service account mapping
+
+1. **Create a service account mapping.** Set **Name** to a value that is unique within the Workload Identity Provider, such as `aws-role-openai-wif`. Use **Description**, such as `Production AWS role for OpenAI API workload`, to explain which workload can use the mapping.
+
+2. **Match the AWS principal.** Set **Key** to `sub` and **Value** to the IAM principal ARN from the decoded token, such as `arn:aws:iam::123456789012:role/OpenAIWifRole`. Matching on the exact `sub` claim provides the strongest isolation for AWS outbound identity federation.
+
+3. **Add additional claim matches if needed.** You can match on any available scalar claim or transformed attribute. For example, use transformed attributes derived from AWS account, organization, principal tag, or request tag claims if you need additional trust boundaries.
+
+4. **Choose the OpenAI target.** Set **Project** to the OpenAI project that owns the target service account. Set **Service account** to the OpenAI service account the AWS workload can use, such as `aws-outbound-prod-openai-wif`.
+
+5. **Narrow API permissions if needed.** Select appropriate **Permissions** such as `api.model.request` and `api.vector_store.read` to further narrow access tokens minted from this mapping. Leave permissions blank to avoid adding a WIF-specific scope restriction; the token still authorizes as the mapped service account.
+
+### Using the token in code
+
+Configure your OpenAI SDK client to request an AWS-issued OIDC token from AWS STS and exchange it for an OpenAI-issued access token.
+
+Set `OPENAI_WIF_AUDIENCE` to the same audience configured on the OpenAI Workload Identity Provider. The subject token provider calls AWS STS `GetWebIdentityToken` with that audience, returns the AWS-issued JWT as the subject token, and the OpenAI SDK exchanges it for an OpenAI-issued access token.
+
+</div>
+
+  <div data-content-switcher-pane data-value="eks" hidden>
+
+## Amazon EKS projected service account tokens
+
+Use Amazon EKS as a Workload Identity Provider by exchanging an EKS-issued projected service account token for a short-lived OpenAI access token.
+
+### Setting up EKS
+
+Use a Kubernetes `ServiceAccount` for the EKS workload that needs to call the OpenAI API. If you do not already have one, create it:
+
+```bash
+kubectl create serviceaccount openai-wif --namespace default
+```
+
+EKS projected service account tokens use a `sub` claim in the format `system:serviceaccount:<namespace>:<service-account-name>`. For the service account above, the `sub` claim is `system:serviceaccount:default:openai-wif`.
+
+Retrieve the OIDC issuer URL associated with the EKS cluster:
+
+```bash
+aws eks describe-cluster \
+  --name <cluster-name> \
+  --region <region> \
+  --query "cluster.identity.oidc.issuer" \
+  --output text
+```
+
+Example output:
+
+```text
+https://oidc.eks.us-west-2.amazonaws.com/id/EXAMPLED539D4633E53DE1B716D3
+```
+
+The issuer you configure in the OpenAI Workload Identity Provider must match this issuer URL and the `iss` claim in the projected EKS service account token.
+
+Configure the projected service account token with the audience OpenAI expects and an expiration suitable for your workload. OpenAI validates the token's issuer, signature, audience, and expiration. In this example, the token file is mounted at `/var/run/secrets/tokens/token`, uses the audience `https://api.openai.com/v1`, and expires after 3600 seconds. You may use a different audience if the projected token audience and OpenAI Workload Identity Provider audience match:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: openai-wif-app
+  namespace: default
+spec:
+  serviceAccountName: openai-wif
+  containers:
+    - name: app
+      image: my-image
+      volumeMounts:
+        - name: eks-sa-token
+          mountPath: /var/run/secrets/tokens
+          readOnly: true
+  volumes:
+    - name: eks-sa-token
+      projected:
+        sources:
+          - serviceAccountToken:
+              path: token
+              audience: "https://api.openai.com/v1"
+              expirationSeconds: 3600
+```
+
+### Verify the EKS token
+
+Before configuring workload identity federation, decode a sample projected service account token locally and inspect its claims. From a running pod with the projected token mounted:
+
+```bash
+TOKEN=$(kubectl exec -n default openai-wif-app -- cat /var/run/secrets/tokens/token)
+
+TOKEN="$TOKEN" python3 - <<'PY'
+import base64
+import json
+import os
+
+payload = os.environ["TOKEN"].split(".")[1]
+payload += "=" * (-len(payload) % 4)
+print(json.dumps(json.loads(base64.urlsafe_b64decode(payload)), indent=2))
+PY
+```
+
+This command decodes the JWT payload without verifying the token signature. Use a local decoder for production tokens, and avoid pasting production tokens into third-party tools.
+
+A decoded EKS projected service account token will look similar to:
+
+```json
+{
+  "iss": "https://oidc.eks.us-west-2.amazonaws.com/id/EXAMPLED539D4633E53DE1B716D3",
+  "aud": ["https://api.openai.com/v1"],
+  "sub": "system:serviceaccount:default:openai-wif",
+  "iat": 1716235422,
+  "exp": 1716239022,
+  "kubernetes.io": {
+    "namespace": "default",
+    "serviceaccount": {
+      "name": "openai-wif",
+      "uid": "11111111-2222-3333-4444-555555555555"
+    }
+  }
+}
+```
+
+Use the decoded payload to compare the token you received with the issuer, audience, and mapping values configured in OpenAI. Most configuration issues are visible in the `iss`, `aud`, and `sub` claims before you exchange the token.
+
+### Setting up workload identity federation
+
+Create a Workload Identity Provider in OpenAI for the EKS issuer, then add a service account mapping that matches attributes from the projected token.
+
+Configure the Workload Identity Provider first, then create the service account mapping.
+
+#### Set up the Workload Identity Provider
+
+1. **Create the Workload Identity Provider.** Set **Name** to a unique value, such as `aws-eks-prod`. Use **Description**, such as `Production EKS cluster`, to help admins identify the cluster.
+
+2. **Set the issuer and audience.** Set **OIDC Issuer URL** to the issuer returned by `aws eks describe-cluster --query "cluster.identity.oidc.issuer"`. This value must match the `iss` claim in the projected EKS service account token. Set **Audience** to the same audience configured on the projected service account token volume. In this example, that value is `https://api.openai.com/v1`.
+
+3. **Use EKS OIDC discovery.** Leave **Use uploaded JWKS for token verification** disabled. OpenAI uses the EKS issuer's OIDC discovery metadata and JWKS to verify the projected service account token.
+
+4. **Add attribute transformations only if you need derived mapping attributes.** Raw token claims such as `sub`, `aud`, and `iss` can be used directly in mapping assertions. For example, create a transformed attribute named `subject` with expression `assertion.sub`. In the dashboard, enter `subject` as the attribute name; OpenAI stores it as `openai.subject`, which you can reference in mappings.
+
+   > **Note:** Raw token claims that already start with `openai.` are ignored for `openai.` mapping keys unless a matching transformation is configured.
+
+#### Set up the service account mapping
+
+1. **Create a service account mapping.** Set **Name** to a unique value within the Workload Identity Provider, such as `openai-mapping-eks`. Use **Description**, such as `Workload Identity Provider Mapping for EKS Workloads`, to explain which workload can use the mapping.
+
+2. **Match the EKS service account subject.** Set **Key** to `sub` and **Value** to `system:serviceaccount:default:openai-wif`. You can match on any available claim or transformed attribute. Matching on `sub` is the most restrictive option because it uniquely identifies a Kubernetes service account.
+
+3. **Choose the OpenAI target.** Set **Project** to the OpenAI project that owns the target service account. Set **Service account** to the OpenAI service account the EKS workload can use, such as `aws-eks-prod-openai-wif`. Check `Create a new service account in this project` if you wish to create a new service account for this mapping rather than reuse an existing one.
+
+4. **Narrow API permissions if needed.** Select appropriate **Permissions** such as `api.model.request` and `api.vector_store.read` to further narrow access tokens minted from this mapping. Leave permissions blank to avoid adding a WIF-specific scope restriction; the token still authorizes as the mapped service account.
+
+### Using the token in code
+
+Configure your OpenAI SDK client to read the projected EKS service account token and exchange it for an OpenAI-issued access token.
+
+Use the mounted token path, such as `/var/run/secrets/tokens/token`, as the subject token source for the SDK workload identity federation provider. The SDK exchanges that EKS token for an OpenAI-issued access token and uses the OpenAI token to authenticate API requests.
+
+The following examples initialize an OpenAI client with a custom subject token provider. The provider reads the projected EKS service account token from the mounted file path and uses it as the subject token for workload identity federation.
+
+</div>
+
+
+
+## AWS best practices
+
+- Use a dedicated AWS identity per workload. Use separate IAM roles for AWS outbound identity federation and separate Kubernetes service accounts for EKS workloads.
+- Configure a dedicated audience for OpenAI access. Use the same audience value in the AWS-issued or EKS projected token and in the OpenAI Workload Identity Provider configuration.
+- Keep token lifetimes reasonably short. For AWS outbound identity federation, use IAM conditions such as `sts:DurationSeconds`; for EKS, set an appropriate projected token expiration.
+- Prefer exact subject matching. Match on the full IAM principal ARN for AWS outbound tokens or the full Kubernetes service account subject for EKS tokens.
+- Scope mappings to stable boundaries. Use account, organization, namespace, or transformed attributes when they reduce access without creating broad trust rules.
+- Reload tokens when exchanging them. Request AWS outbound tokens when needed, and read EKS projected tokens from the mounted file path so rotated tokens are picked up automatically.
+- Grant only the permissions required by the workload. Use mapping-level permissions to further narrow access granted by the target OpenAI service account.
+
+---
+
+# Configuring workload identity federation for GitHub Actions
+
+Use GitHub Actions as a Workload Identity Provider by exchanging a GitHub-issued OIDC token for a short-lived OpenAI access token. This lets workflows authenticate to the OpenAI API without storing a long-lived API key in GitHub secrets.
+
+GitHub can mint a signed OIDC JWT for a workflow job that has `id-token: write` permission and requests an identity token. OpenAI validates the token issuer, audience, signature, and mapping attributes before issuing an OpenAI access token.
+
+## Setting up GitHub Actions
+
+Grant the workflow or job permission to request a GitHub OIDC token:
+
+```yaml
+permissions:
+  id-token: write
+  contents: read
+```
+
+The `id-token: write` permission lets the job request an OIDC JWT. It does not grant write access to repository contents. The `contents: read` permission is needed by `actions/checkout`.
+
+Request the token with the exact audience configured in your OpenAI Workload Identity Provider. Custom JavaScript actions can call `core.getIDToken("your-wif-audience")`; shell steps can call GitHub's OIDC request URL directly. Audience values containing reserved URL characters, such as `https://api.openai.com/v1`, should be URL encoded before being appended to the request URL:
+
+```bash
+AUDIENCE="https://api.openai.com/v1"
+ENCODED_AUDIENCE=$(jq -rn --arg audience "$AUDIENCE" '$audience | @uri')
+
+TOKEN=$(curl -sSf -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+  "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=${ENCODED_AUDIENCE}" | jq -r .value)
+```
+
+Important GitHub OIDC claims include:
+
+- `iss`: The token issuer. For GitHub Actions, this is `https://token.actions.githubusercontent.com`.
+- `aud`: The audience value requested by the workflow. Configure OpenAI to require the exact value you request, such as `your-wif-audience` or `https://api.openai.com/v1`.
+- `sub`: The main subject string. GitHub builds it from workflow metadata such as repository, branch, tag, pull request, or environment.
+- `repository`: The repository running the workflow, such as `my-org/my-repo`.
+- `repository_owner`: The organization or user that owns the repository, such as `my-org`.
+- `ref`: The Git ref that triggered the workflow, such as `refs/heads/main` or `refs/tags/v1.0.0`.
+- `workflow`: The workflow claim. Use the actual claim value emitted by GitHub, such as `deploy` if that is the workflow claim in your job.
+- `workflow_ref`: The workflow file path and ref, such as `my-org/my-repo/.github/workflows/deploy.yml@refs/heads/main`.
+- `environment`: The GitHub environment name, such as `production`, when the job uses an environment.
+- `run_id`, `run_number`, `run_attempt`, and `job_workflow_ref`: Run and job identifiers that can help with auditing or more advanced trust rules.
+
+For the full claim list and subject formats, see GitHub's [OpenID Connect reference](https://docs.github.com/en/actions/reference/security/oidc).
+
+## Verify the token
+
+Before configuring workload identity federation, decode a sample GitHub OIDC token in the workflow runner and inspect its claims. After requesting the token in a workflow step:
+
+```bash
+TOKEN="$TOKEN" python3 - <<'PY'
+import base64
+import json
+import os
+
+payload = os.environ["TOKEN"].split(".")[1]
+payload += "=" * (-len(payload) % 4)
+print(json.dumps(json.loads(base64.urlsafe_b64decode(payload)), indent=2))
+PY
+```
+
+This command decodes the JWT payload without verifying the token signature. Use a local decoder for production tokens, and avoid pasting production tokens into third-party tools. Never log the raw GitHub OIDC token or the exchanged OpenAI access token.
+
+A decoded GitHub Actions OIDC token will look similar to:
+
+```json
+{
+  "iss": "https://token.actions.githubusercontent.com",
+  "aud": "https://api.openai.com/v1",
+  "sub": "repo:my-org/my-repo:environment:production",
+  "repository": "my-org/my-repo",
+  "repository_owner": "my-org",
+  "ref": "refs/heads/main",
+  "workflow": "deploy",
+  "workflow_ref": "my-org/my-repo/.github/workflows/deploy.yml@refs/heads/main",
+  "environment": "production",
+  "run_id": "1234567890",
+  "run_attempt": "1"
+}
+```
+
+Use the decoded payload to compare the token you received with the issuer, audience, and mapping values configured in OpenAI. Most configuration issues are visible in the `iss`, `aud`, `repository`, `ref`, and `workflow_ref` claims before you exchange the token.
+
+## Setting up workload identity federation
+
+Create a Workload Identity Provider in OpenAI for GitHub Actions, then add a service account mapping that matches the GitHub workflow claims you trust.
+
+Configure the Workload Identity Provider first, then create the service account mapping.
+
+### Set up the Workload Identity Provider
+
+1. **Create the Workload Identity Provider.** Set **Name** to a unique value, such as `github-actions-prod`. Use **Description**, such as `Production GitHub Actions workflows`, to help admins identify the provider.
+
+2. **Set the issuer and audience.** Set **OIDC Issuer URL** to `https://token.actions.githubusercontent.com`. Set **Audience** to the exact audience your workflow requests, such as `your-wif-audience` or `https://api.openai.com/v1`.
+
+3. **Use GitHub OIDC discovery.** Leave **Use uploaded JWKS for token verification** disabled. OpenAI uses GitHub's OIDC discovery metadata and JWKS to verify the GitHub-signed token.
+
+4. **Add attribute transformations only if you need derived mapping attributes.** Raw GitHub claims such as `repository`, `ref`, and `workflow` can be used directly in mapping assertions. If you create derived attributes, the dashboard applies the `openai.` prefix automatically; for example, enter `github_repository` with expression `assertion.repository` to create `openai.github_repository`. Raw token claims that already start with `openai.` are ignored for `openai.` mapping keys unless a matching transformation is configured.
+
+### Set up the service account mapping
+
+1. **Create a service account mapping.** Set **Name** to a unique value within the Workload Identity Provider, such as `github-actions-main-deploy`. Use **Description**, such as `Production deploy workflow on main`, to explain which workflow can use the mapping.
+
+2. **Add exact claim assertions.** Add one **Key** and **Value** row for each GitHub claim that must match. OpenAI requires every configured row to match before it issues an access token. For a production deploy workflow, use assertions like:
+
+   ```text
+   iss == "https://token.actions.githubusercontent.com"
+   aud == "https://api.openai.com/v1"
+   repository == "my-org/my-repo"
+   ref == "refs/heads/main"
+   workflow_ref == "my-org/my-repo/.github/workflows/deploy.yml@refs/heads/main"
+   ```
+
+   Prefer `workflow_ref` over `workflow` for privileged mappings because admins usually intend to trust a specific workflow file path and ref. Workflow names can be renamed, and multiple workflow files can share the same name.
+
+   In the mapping UI, enter these as key/value rows, such as **Key** `repository` with **Value** `my-org/my-repo`, **Key** `ref` with **Value** `refs/heads/main`, and **Key** `workflow_ref` with **Value** `my-org/my-repo/.github/workflows/deploy.yml@refs/heads/main`. If the job uses a GitHub environment, also add **Key** `environment` with **Value** `production`.
+
+   > **Caution:** Avoid overly broad mappings, such as trusting only `repository_owner == "my-org"`, unless every repository in that owner namespace should be able to mint OpenAI access tokens.
+
+3. **Choose the OpenAI target.** Set **Project** to the OpenAI project that owns the target service account. Set **Service account** to the OpenAI service account the GitHub workflow can use, such as `github-actions-prod-deploy`.
+
+4. **Narrow API permissions if needed.** Select appropriate **Permissions** such as `api.model.request` and `api.vector_store.read` to further narrow access tokens minted from this mapping. Leave permissions blank to avoid adding a WIF-specific scope restriction; the token still authorizes as the mapped service account.
+
+## Using the token in a workflow
+
+Configure your OpenAI SDK client to request a GitHub OIDC token and exchange it for an OpenAI-issued access token.
+
+The workflow must grant `id-token: write` permission and pass the workload identity federation settings to the SDK code. The SDK requests the GitHub OIDC token from the `ACTIONS_ID_TOKEN_REQUEST_URL` and `ACTIONS_ID_TOKEN_REQUEST_TOKEN` environment variables that GitHub exposes to the job, then uses the exchanged OpenAI access token to authenticate API requests.
+
+For example, run your application code from a workflow like this:
+
+```yaml
+name: deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run OpenAI SDK code
+        env:
+          OPENAI_WIF_AUDIENCE: ${{ vars.OPENAI_WIF_AUDIENCE }}
+          OPENAI_IDENTITY_PROVIDER_ID: ${{ vars.OPENAI_IDENTITY_PROVIDER_ID }}
+          OPENAI_SERVICE_ACCOUNT_ID: ${{ vars.OPENAI_SERVICE_ACCOUNT_ID }}
+        run: node ./scripts/call-openai.js
+```
+
+Store `OPENAI_WIF_AUDIENCE`, `OPENAI_IDENTITY_PROVIDER_ID`, and `OPENAI_SERVICE_ACCOUNT_ID` as GitHub Actions variables. They identify the provider and service account but are not bearer credentials.
+
+The following examples initialize an OpenAI client with a custom subject token provider. The provider requests a GitHub OIDC token for the configured audience and uses it as the subject token for workload identity federation.
+
+## GitHub Actions best practices
+
+- Use environment protections for production deployments. Require approvals or branch restrictions before workflows can access production OpenAI resources.
+- Restrict mappings by repository. Match on repository-specific claims whenever possible instead of allowing access from all repositories within an organization.
+- Restrict mappings by branch or workflow. Consider matching claims such as `repository`, `ref`, `environment`, or `workflow_ref` to limit token issuance.
+- Use separate OpenAI service accounts for CI/CD and production workloads. Build pipelines often require different permissions than deployed applications.
+- Avoid granting access to pull requests from untrusted forks. Forked pull requests may execute attacker-controlled code and should not receive production credentials.
+- Use short-lived exchanges. GitHub OIDC tokens are intended for ephemeral authentication and should be exchanged only when needed.
+- Audit repository ownership changes. Repository transfers, renames, and permission changes can affect the security assumptions behind existing mappings.
+- Prefer exact claim matching. Match on claims such as `repository`, `ref`, and `environment` instead of relying on organization-wide trust relationships.
+
+---
+
+# Configuring workload identity federation for Google Cloud
+
+import {
+  googleGkeWorkloadIdentitySdk,
+  googleWorkloadIdentitySdk,
+} from "./examples";
+
+Use Google Cloud as a Workload Identity Provider in either of these scenarios:
+
+- **Google workload identity:** Exchange a Google-signed OIDC token issued to an attached Google service account for a short-lived OpenAI access token.
+- **Google Kubernetes Engine:** Exchange a projected GKE service account token for a short-lived OpenAI access token.
+
+
+
+<div data-content-switcher-pane data-value="workload-identity">
+
+## Google workload identity
+
+Google Cloud workloads can request signed OIDC identity tokens from the Google metadata server without storing long-lived service account keys. In OpenAI workload identity federation, the Google identity token is the subject token that OpenAI validates before issuing an OpenAI access token. This flow works on Compute Engine, Cloud Run, GKE workloads using attached Google service accounts, and other Google-managed runtimes that expose the metadata server identity endpoint.
+
+### Setting up Google workload identity
+
+Create a Google service account for the workload that needs to call the OpenAI API. For the full setup flow, see Google's guide to [create service accounts](https://docs.cloud.google.com/iam/docs/service-accounts-create).
+
+For example, create a service account with the Google Cloud CLI:
+
+```bash
+gcloud iam service-accounts create openai-wif \
+  --description="Service account for OpenAI workload identity federation" \
+  --display-name="OpenAI workload identity federation"
+```
+
+Create the Compute Engine VM with the service account attached, or attach the service account to the Google Cloud resource running your application. The resource must be able to call the Google metadata server at runtime. For VM setup details, see Google's guide to [create a VM that uses a user-managed service account](https://docs.cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances).
+
+Do not create or download service account keys for this flow. The workload uses the attached service account and the metadata server to request a short-lived OIDC token.
+
+### Getting a Google identity token
+
+From the Google Cloud resource with the service account attached, request an OIDC identity token from the metadata server with the configured audience. This token is the subject token that OpenAI exchanges for an OpenAI-issued access token.
+
+```bash
+AUDIENCE="https://api.openai.com/v1"
+
+TOKEN=$(curl -sS -G -H "Metadata-Flavor: Google" \
+  "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity" \
+  --data-urlencode "audience=${AUDIENCE}")
+```
+
+The metadata server returns a Google-signed JWT. For more information about the metadata server identity endpoint, see Google's guide to [verify VM identity](https://docs.cloud.google.com/compute/docs/instances/verifying-instance-identity).
+
+### Verify the token
+
+Before configuring workload identity federation, decode a sample Google identity token locally and inspect its claims:
+
+```bash
+TOKEN="$TOKEN" python3 - <<'PY'
+import base64
+import json
+import os
+
+payload = os.environ["TOKEN"].split(".")[1]
+payload += "=" * (-len(payload) % 4)
+print(json.dumps(json.loads(base64.urlsafe_b64decode(payload)), indent=2))
+PY
+```
+
+This command decodes the JWT payload without verifying the token signature. Use a local decoder for production tokens, and avoid pasting production tokens into third-party tools.
+
+A decoded Google metadata server identity token will look similar to:
+
+```json
+{
+  "iss": "https://accounts.google.com",
+  "aud": "https://api.openai.com/v1",
+  "azp": "110123456789012345678",
+  "sub": "110123456789012345678",
+  "email": "openai-wif@my-project.iam.gserviceaccount.com",
+  "email_verified": true,
+  "iat": 1716235422,
+  "exp": 1716239022
+}
+```
+
+Use the decoded payload to compare the token you received with the issuer, audience, and mapping values configured in OpenAI. Most configuration issues are visible in the `iss`, `aud`, `email`, and `sub` claims before you exchange the token.
+
+### Setting up workload identity federation
+
+Create a Workload Identity Provider in OpenAI for Google-issued identity tokens, then add a service account mapping that matches stable claims from the token.
+
+Configure the Workload Identity Provider first, then create the service account mapping.
+
+#### Set up the Workload Identity Provider
+
+1. **Create the Workload Identity Provider.** Set **Name** to a unique value, such as `google-workload-identity-prod`. Use **Description**, such as `Production Google Cloud workloads`, to help admins identify the provider.
+
+2. **Set the issuer and audience.** Set **OIDC Issuer URL** to `https://accounts.google.com`. Set **Audience** to the custom audience your workload requests from the Google metadata server, such as `https://api.openai.com/v1`. This value must match the token's `aud` claim.
+
+3. **Use Google OIDC discovery.** Leave **Use uploaded JWKS for token verification** disabled. OpenAI uses Google's OIDC discovery metadata and JWKS to verify the Google-signed identity token.
+
+4. **Add attribute transformations if you need derived mapping attributes.** For example, enter `subject` with expression `assertion.sub` to create `openai.subject` from the subject claim. The dashboard applies the `openai.` prefix automatically. Raw token claims that already start with `openai.` are ignored for `openai.` mapping keys unless a matching transformation is configured.
+
+#### Set up the service account mapping
+
+1. **Create a service account mapping.** Set **Name** to a unique value within the Workload Identity Provider, such as `compute-openai-wif`. Use **Description**, such as `Production Compute Engine OpenAI API workload`, to explain which workload can use the mapping.
+
+2. **Match stable Google service account claims.** Add one **Key** and **Value** row for each claim that must match. Use `sub` as the primary identity binding because it is stable and unique. You may additionally match `email` for readability.
+
+3. **Choose the OpenAI target.** Set **Project** to the OpenAI project that owns the target service account. Set **Service account** to the OpenAI service account the Google Cloud workload can use, such as `google-workload-identity-prod-openai-wif`.
+
+4. **Narrow API permissions if needed.** Select appropriate **Permissions** such as `api.model.request` and `api.vector_store.read` to further narrow access tokens minted from this mapping. Leave permissions blank to avoid adding a WIF-specific scope restriction; the token still authorizes as the mapped service account.
+
+### Using the token in code
+
+Configure your OpenAI SDK client to request a Google identity token from the metadata server and exchange it for an OpenAI-issued access token.
+
+Set `OPENAI_WIF_AUDIENCE` to the custom audience configured as the Workload Identity Provider audience. The SDK requests a Google identity token for that audience, exchanges it for an OpenAI-issued access token, and uses the OpenAI token to authenticate API requests.
+
+</div>
+
+  <div data-content-switcher-pane data-value="gke" hidden>
+
+## Google Kubernetes Engine
+
+Use Google Kubernetes Engine as a Workload Identity Provider by exchanging a GKE-issued projected service account token for a short-lived OpenAI access token.
+
+GKE workloads can authenticate using either:
+
+- A projected Kubernetes service account token issued by the cluster OIDC issuer.
+- A Google service account identity token obtained through GKE Workload Identity, where a Kubernetes service account is bound to a Google service account.
+
+Use projected Kubernetes service account tokens when you want OpenAI to trust the cluster's OIDC issuer directly. Use GKE Workload Identity when your workload already relies on a Google service account identity and you want OpenAI to trust Google-issued identity tokens instead.
+
+If your GKE workload is configured with GKE Workload Identity and can request
+  Google identity tokens from the metadata server, follow the [Google workload
+  identity](#google-workload-identity) instructions above instead of the GKE
+  projected token flow.
+
+### Setting up GKE
+
+These instructions assume a managed GKE cluster. For a self-managed Kubernetes cluster, use the [Kubernetes guide](https://developers.openai.com/api/docs/guides/workload-identity-federation/kubernetes).
+
+Use a Kubernetes `ServiceAccount` for the GKE workload that needs to call the OpenAI API. If you do not already have one, create it:
+
+```bash
+kubectl create serviceaccount openai-wif --namespace default
+```
+
+Retrieve the issuer URL associated with the GKE cluster:
+
+```bash
+kubectl get --raw /.well-known/openid-configuration | jq -r .issuer
+```
+
+Example output:
+
+```text
+https://container.googleapis.com/v1/projects/my-project/locations/us-central1/clusters/openai-wif
+```
+
+The issuer you configure in the OpenAI Workload Identity Provider must match this issuer URL and the `iss` claim in the projected GKE service account token.
+
+Configure the projected service account token with the audience OpenAI expects and an expiration suitable for your workload. OpenAI validates the token's issuer, signature, audience, and expiration. In this example, the token file is mounted at `/var/run/secrets/tokens/token`, uses the audience `https://api.openai.com/v1`, and expires after 3600 seconds. You may use a different audience if the projected token audience and OpenAI Workload Identity Provider audience match:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: openai-wif-app
+  namespace: default
+spec:
+  serviceAccountName: openai-wif
+  containers:
+    - name: app
+      image: my-image
+      volumeMounts:
+        - name: gke-sa-token
+          mountPath: /var/run/secrets/tokens
+          readOnly: true
+  volumes:
+    - name: gke-sa-token
+      projected:
+        sources:
+          - serviceAccountToken:
+              path: token
+              audience: "https://api.openai.com/v1"
+              expirationSeconds: 3600
+```
+
+### Verify the token
+
+Before configuring workload identity federation, decode a sample projected service account token locally and inspect its claims. From a running pod with the projected token mounted:
+
+```bash
+TOKEN=$(kubectl exec -n default openai-wif-app -- cat /var/run/secrets/tokens/token)
+
+TOKEN="$TOKEN" python3 - <<'PY'
+import base64
+import json
+import os
+
+payload = os.environ["TOKEN"].split(".")[1]
+payload += "=" * (-len(payload) % 4)
+print(json.dumps(json.loads(base64.urlsafe_b64decode(payload)), indent=2))
+PY
+```
+
+This command decodes the JWT payload without verifying the token signature. Use a local decoder for production tokens, and avoid pasting production tokens into third-party tools.
+
+A decoded GKE projected service account token will look similar to:
+
+```json
+{
+  "iss": "https://container.googleapis.com/v1/projects/my-project/locations/us-central1/clusters/openai-wif",
+  "aud": ["https://api.openai.com/v1"],
+  "sub": "system:serviceaccount:default:openai-wif",
+  "iat": 1716235422,
+  "exp": 1716239022,
+  "kubernetes.io": {
+    "namespace": "default",
+    "serviceaccount": {
+      "name": "openai-wif",
+      "uid": "11111111-2222-3333-4444-555555555555"
+    }
+  }
+}
+```
+
+Use the decoded payload to compare the token you received with the issuer, audience, and mapping values configured in OpenAI. Most configuration issues are visible in the `iss`, `aud`, and `sub` claims before you exchange the token.
+
+### Setting up workload identity federation
+
+Create a Workload Identity Provider in OpenAI for the GKE issuer, then add a service account mapping that matches attributes from the projected token.
+
+Configure the Workload Identity Provider first, then create the service account mapping.
+
+#### Set up the Workload Identity Provider
+
+1. **Create the Workload Identity Provider.** Set **Name** to a unique value, such as `google-gke-prod`. Use **Description**, such as `Production GKE cluster`, to help admins identify the cluster.
+
+2. **Set the issuer and audience.** Set **OIDC Issuer URL** to the issuer returned by `kubectl get --raw /.well-known/openid-configuration | jq -r .issuer`. This value must match the `iss` claim in the projected GKE service account token. Set **Audience** to the same audience configured on the projected service account token volume. In this example, that value is `https://api.openai.com/v1`.
+
+3. **Use GKE OIDC discovery.** Leave **Use uploaded JWKS for token verification** disabled. OpenAI uses the GKE issuer's OIDC discovery metadata and JWKS to verify the projected service account token.
+
+4. **Add attribute transformations if you need derived mapping attributes.** For example, enter `gke_subject` with expression `assertion.sub` to create `openai.gke_subject`. The dashboard applies the `openai.` prefix automatically. Raw token claims that already start with `openai.` are ignored for `openai.` mapping keys unless a matching transformation is configured.
+
+#### Set up the service account mapping
+
+1. **Create a service account mapping.** Set **Name** to a unique value within the Workload Identity Provider, such as `default-openai-wif`. Use **Description**, such as `Default namespace GKE OpenAI API workload`, to explain which workload can use the mapping.
+
+2. **Match the GKE service account subject.** Set **Key** to `sub` and **Value** to `system:serviceaccount:default:openai-wif`. For GKE service accounts, the subject format is `system:serviceaccount:<namespace>:<service-account-name>`.
+
+3. **Choose the OpenAI target.** Set **Project** to the OpenAI project that owns the target service account. Set **Service account** to the OpenAI service account the GKE workload can use, such as `google-gke-prod-openai-wif`.
+
+4. **Narrow API permissions if needed.** Select appropriate **Permissions** such as `api.model.request` and `api.vector_store.read` to further narrow access tokens minted from this mapping. Leave permissions blank to avoid adding a WIF-specific scope restriction; the token still authorizes as the mapped service account.
+
+### Using the token in code
+
+Configure your OpenAI SDK client to read the projected GKE service account token and exchange it for an OpenAI-issued access token.
+
+Use the mounted token path, such as `/var/run/secrets/tokens/token`, as the subject token source for the SDK workload identity federation provider. The SDK exchanges that GKE token for an OpenAI-issued access token and uses the OpenAI token to authenticate API requests.
+
+The following examples initialize an OpenAI client with a custom subject token provider. The provider reads the projected GKE service account token from the mounted file path and uses it as the subject token for workload identity federation.
+
+</div>
+
+
+
+## Google Cloud best practices
+
+- Use dedicated Google service accounts for each workload. Avoid sharing service accounts across unrelated services or environments.
+- Use workload identity flows instead of long-lived service account keys. Avoid distributing and rotating JSON key files for workloads that can use metadata-server identity tokens or GKE Workload Identity.
+- Scope identities to the smallest practical workload boundary. Separate service accounts for individual applications provide clearer auditing and least-privilege access.
+- Use attribute-based mappings carefully. Prefer stable identifiers such as service account subject claims over mutable metadata where possible.
+- Separate production and non-production projects. Distinct projects reduce the risk of accidental privilege sharing and simplify auditing.
+- Grant only required IAM permissions. Restrict the Google identity to only the permissions required for the workload.
+- Monitor service account usage. Unexpected token exchanges may indicate configuration drift or compromised workloads.
+
+---
+
+# Configuring workload identity federation for Kubernetes
+
+Use Kubernetes as a Workload Identity Provider by exchanging a projected Kubernetes service account token for a short-lived OpenAI access token.
+
+## Setting up Kubernetes
+
+This guide assumes Kubernetes service account token projection is enabled, which is available by default in modern Kubernetes releases. OpenAI workload identity federation requires OIDC-compatible projected service account tokens. Legacy Kubernetes service account tokens stored in Secrets are not supported.
+
+Use a Kubernetes `ServiceAccount` for the workload that needs to call the OpenAI API. If you do not already have one, create it:
+
+```bash
+kubectl create serviceaccount openai-wif --namespace default
+```
+
+Get the OIDC issuer for your Kubernetes cluster:
+
+```bash
+kubectl get --raw /.well-known/openid-configuration | jq -r .issuer
+```
+
+Even if you upload the JWKS and OpenAI does not perform JWKS discovery against the OIDC issuer, this issuer must match the issuer configured in the Workload Identity Provider.
+
+Get the cluster JWKS and save the returned key set. You will need it when configuring the Workload Identity Provider:
+
+```bash
+kubectl get --raw /openid/v1/jwks
+```
+
+Configure the projected service account token with the audience OpenAI expects and an expiration suitable for your workload. OpenAI validates the token's issuer, signature, audience, and expiration. In this example, the token file is mounted at `/var/run/secrets/tokens/token`, uses the audience `https://api.openai.com/v1`, and expires after 3600 seconds. You may use a different audience if the projected token audience and OpenAI Workload Identity Provider audience match:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: openai-wif-app
+  namespace: default
+spec:
+  serviceAccountName: openai-wif
+  containers:
+    - name: app
+      image: my-image
+      volumeMounts:
+        - name: ksa-token
+          mountPath: /var/run/secrets/tokens
+          readOnly: true
+  volumes:
+    - name: ksa-token
+      projected:
+        sources:
+          - serviceAccountToken:
+              path: token
+              audience: "https://api.openai.com/v1"
+              expirationSeconds: 3600
+```
+
+## Verify the token
+
+Before configuring workload identity federation, decode a sample projected service account token locally and inspect its claims. From a running pod with the projected token mounted:
+
+```bash
+TOKEN=$(kubectl exec -n default openai-wif-app -- cat /var/run/secrets/tokens/token)
+
+TOKEN="$TOKEN" python3 - <<'PY'
+import base64
+import json
+import os
+
+payload = os.environ["TOKEN"].split(".")[1]
+payload += "=" * (-len(payload) % 4)
+print(json.dumps(json.loads(base64.urlsafe_b64decode(payload)), indent=2))
+PY
+```
+
+This command decodes the JWT payload without verifying the token signature. Use a local decoder for production tokens, and avoid pasting production tokens into third-party tools.
+
+A decoded Kubernetes projected service account token will look similar to:
+
+```json
+{
+  "iss": "https://kubernetes.example.com",
+  "aud": ["https://api.openai.com/v1"],
+  "sub": "system:serviceaccount:default:openai-wif",
+  "iat": 1716235422,
+  "exp": 1716239022,
+  "kubernetes.io": {
+    "namespace": "default",
+    "serviceaccount": {
+      "name": "openai-wif",
+      "uid": "11111111-2222-3333-4444-555555555555"
+    }
+  }
+}
+```
+
+Use the decoded payload to compare the token you received with the issuer, audience, and mapping values configured in OpenAI. Most configuration issues are visible in the `iss`, `aud`, and `sub` claims before you exchange the token.
+
+## Setting up workload identity federation
+
+Create a Workload Identity Provider in OpenAI for the Kubernetes issuer, then add a service account mapping that matches attributes from the projected token.
+
+Configure the Workload Identity Provider first, then create the service account mapping.
+
+### Set up the Workload Identity Provider
+
+1. **Create the Workload Identity Provider.** Set **Name** to a unique value, such as `kubernetes-prod`. Use **Description**, such as `Production Kubernetes cluster`, to help admins identify the cluster.
+
+2. **Set the issuer and audience.** Set **OIDC Issuer URL** to the issuer returned by `kubectl get --raw /.well-known/openid-configuration | jq -r .issuer`. This value must match the `iss` claim in the projected token. Set **Audience** to the same opaque audience string configured on the projected service account token volume. In this example, that value is `https://api.openai.com/v1`.
+
+3. **Upload the Kubernetes JWKS.** Enable **Use uploaded JWKS for token verification**, then set **JWKS JSON** to the output from `kubectl get --raw /openid/v1/jwks`. OpenAI uses this public key set to verify projected Kubernetes service account tokens. Upload the full key set including the surrounding `keys`.
+
+   > **Note:** For self-hosted Kubernetes clusters, OpenAI supports only local JWKS mode. Upload the JWKS returned by your cluster; OpenAI does not perform OIDC discovery against the configured issuer. OpenAI still compares the configured issuer with the `iss` field in the token.
+
+   If your cluster rotates service account signing keys, update the uploaded JWKS in the Workload Identity Provider configuration. Tokens signed by keys that are not present in the configured JWKS are rejected. If the JWKS contains multiple active public keys, include the full `keys` array.
+
+4. **Add attribute transformations only if you need derived mapping attributes.** Raw token claims such as `sub`, `aud`, and `iss` can be used directly in mapping assertions. If you plan to match on transformed attributes rather than raw token claims, the dashboard applies the `openai.` prefix automatically; for example, enter `workload_subject` with expression `assertion.sub` to create `openai.workload_subject`. Raw token claims that already start with `openai.` are ignored for `openai.` mapping keys unless a matching transformation is configured.
+
+### Set up the service account mapping
+
+1. **Create a service account mapping.** Set **Name** to a unique value within the Workload Identity Provider, such as `openai-mapping-kubernetes`. Use **Description**, such as `Workload Identity Provider Mapping for Kubernetes Workloads`, to explain which workload can use the mapping.
+
+2. **Match the Kubernetes service account subject.** Set **Key** to `sub` and **Value** to `system:serviceaccount:default:openai-wif`. For Kubernetes service accounts, the subject format is `system:serviceaccount:<namespace>:<service-account-name>`.
+
+3. **Choose the OpenAI target.** Set **Project** to the OpenAI project that owns the target service account. Set **Service account** to the OpenAI service account the Kubernetes workload can use, such as `kubernetes-prod-openai-wif`. Check `Create a new service account in this project` if you wish to create a new service account for this mapping rather than reuse an existing one.
+
+4. **Narrow API permissions if needed.** Select appropriate **Permissions** such as `api.model.request` and `api.vector_store.read` to further narrow access tokens minted from this mapping. Leave permissions blank to avoid adding a WIF-specific scope restriction; the token still authorizes as the mapped service account.
+
+## Using the token in code
+
+Configure your OpenAI SDK client to read the projected Kubernetes token and exchange it for an OpenAI-issued access token.
+
+Use the mounted token path, such as `/var/run/secrets/tokens/token`, as the subject token source for the SDK workload identity federation provider. The SDK exchanges that Kubernetes token for an OpenAI-issued access token and uses the OpenAI token to authenticate API requests.
+
+The following examples initialize an OpenAI client with a custom subject token provider. The provider reads the projected Kubernetes service account token from the mounted file path and uses it as the subject token for workload identity federation.
+
+## Kubernetes best practices
+
+- Use a stable OIDC issuer. The issuer URL must match the projected service account token `iss` claim and should remain stable across cluster upgrades and maintenance operations.
+- Protect signing keys carefully. Anyone with access to the cluster's service account signing keys can mint tokens that may be accepted by OpenAI.
+- Use dedicated service accounts for OpenAI integrations. Avoid reusing service accounts that are also used for unrelated infrastructure or application access.
+- Keep the uploaded JWKS current. OpenAI uses the configured JWKS to validate workload identity tokens in local JWKS mode, so update the Workload Identity Provider before rotating to new signing keys.
+- Minimize custom claim complexity. Prefer matching on standard claims such as `sub` and `aud`, or transformed attributes derived directly from those claims.
+- Treat namespace ownership as part of your security model. If namespace administrators can create service accounts, ensure mappings are scoped appropriately to prevent unintended privilege escalation.
+- Monitor issuer and signing key changes. Rotating signing keys without updating the Workload Identity Provider JWKS can cause token exchange failures.
+
+---
+
+# Configuring workload identity federation for Microsoft Azure
+
+import {
+  azureAksWorkloadIdentitySdk,
+  azureManagedIdentityWorkloadIdentitySdk,
+} from "./examples";
+
+Use Microsoft Azure as a Workload Identity Provider in either of these scenarios:
+
+- **Azure managed identity:** Exchange a Microsoft Entra ID access token issued for a managed identity for a short-lived OpenAI access token.
+- **AKS:** Exchange a projected Azure Kubernetes Service (AKS) service account token for a short-lived OpenAI access token.
+
+
+
+<div data-content-switcher-pane data-value="managed-identity">
+
+## Azure managed identity
+
+Azure managed identities let Azure-hosted workloads request Microsoft Entra tokens without storing long-lived secrets. In OpenAI workload identity federation, the managed identity token is the subject token that OpenAI validates before issuing an OpenAI access token.
+
+### Setting up Azure managed identity
+
+Create or use a Microsoft Entra application registration that represents the token audience OpenAI should trust. Configure its **Application ID URI**; this URI is the `resource` value your workload requests from Azure Instance Metadata Service (IMDS), and it appears as the `aud` claim in the issued token. For the Microsoft setup steps, see the Microsoft Entra guide to [create a new Entra ID application and service principal](https://learn.microsoft.com/en-au/entra/identity-platform/howto-create-service-principal-portal#register-an-application-with-azure-ad-and-create-a-service-principal).
+
+The Application ID URI configured in Microsoft Entra ID, the IMDS `resource`
+  parameter, the resulting token's `aud` claim, and the OpenAI Workload Identity
+  Provider audience must all match.
+
+[Create](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/manage-user-assigned-managed-identities-azure-portal?pivots=identity-mi-methods-azp) a managed identity, then [assign](https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/qs-configure-portal-windows-vm#user-assigned-managed-identity) that managed identity to the Azure resource running your application, such as a virtual machine. The resource must be able to call IMDS at runtime. For Azure setup details, see Microsoft's [managed identities overview](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview) and the relevant Azure resource documentation for assigning the identity.
+
+### Getting an Azure managed identity token
+
+From the Azure resource with the managed identity assigned, request a token from IMDS with the Application ID URI as the `resource` parameter. This token is the subject token that OpenAI exchanges for an OpenAI-issued access token.
+
+```bash
+APPLICATION_ID_URI="api://<application-client-id>"
+
+TOKEN=$(curl -sS -G -H "Metadata: true" \
+  "http://169.254.169.254/metadata/identity/oauth2/token" \
+  --data-urlencode "api-version=2018-02-01" \
+  --data-urlencode "resource=${APPLICATION_ID_URI}" \
+  | jq -r .access_token)
+```
+
+If the resource has multiple user-assigned managed identities, add the `client_id`, `object_id`, or `msi_res_id` query parameter for the managed identity you want to use. Microsoft documents the IMDS token request parameters in [Use managed identities on a virtual machine to acquire access token](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-to-use-vm-token).
+
+### Verify the token
+
+Before configuring workload identity federation, decode a sample token locally and inspect its claims:
+
+```bash
+TOKEN="$TOKEN" python3 - <<'PY'
+import base64
+import json
+import os
+
+payload = os.environ["TOKEN"].split(".")[1]
+payload += "=" * (-len(payload) % 4)
+print(json.dumps(json.loads(base64.urlsafe_b64decode(payload)), indent=2))
+PY
+```
+
+This command decodes the JWT payload without verifying the token signature. Use a local decoder for production tokens, and avoid pasting production tokens into third-party tools.
+
+A decoded Microsoft Entra ID managed identity token will look similar to:
+
+```json
+{
+  "iss": "https://login.microsoftonline.com/11111111-2222-3333-4444-555555555555/v2.0",
+  "aud": "api://00000000-1111-2222-3333-444444444444",
+  "tid": "11111111-2222-3333-4444-555555555555",
+  "appid": "22222222-3333-4444-5555-666666666666",
+  "oid": "33333333-4444-5555-6666-777777777777",
+  "sub": "33333333-4444-5555-6666-777777777777",
+  "xms_mirid": "/subscriptions/<subscription-id>/resourcegroups/my-resource-group/providers/Microsoft.Compute/virtualMachines/openai-wif-vm",
+  "iat": 1716235422,
+  "exp": 1716239022
+}
+```
+
+Verify the claims you plan to configure in OpenAI:
+
+- `iss`: Use the exact issuer value from the token. The issuer may be `https://login.microsoftonline.com/<tenant-id>/v2.0`, but do not assume that suffix.
+- `aud`: Must match the Application ID URI, the IMDS `resource` parameter, and the OpenAI Workload Identity Provider audience.
+- `tid`: The Microsoft Entra tenant ID.
+- `appid`: The managed identity's application/client ID, when present.
+
+Managed identity tokens can also contain claims such as `azp`, `oid`, `sub`, or `xms_mirid`. Use the decoded token as the source of truth, and choose claims that identify the exact managed identity and resource boundary you trust.
+
+Use the decoded payload to compare the token you received with the issuer, audience, and mapping values configured in OpenAI. Most configuration issues are visible in the `iss`, `aud`, `tid`, and managed identity claims before you exchange the token.
+
+### Setting up workload identity federation
+
+Create a Workload Identity Provider in OpenAI for the Microsoft Entra ID issuer, then add a service account mapping that matches stable claims from the managed identity token.
+
+Configure the Workload Identity Provider first, then create the service account mapping.
+
+#### Set up the Workload Identity Provider
+
+1. **Create the Workload Identity Provider.** Set **Name** to a unique value, such as `azure-managed-identity-prod`. Use **Description**, such as `Production Azure managed identity workloads`, to help admins identify the provider.
+
+2. **Set the issuer and audience.** Set **OIDC Issuer URL** to the exact value of the token's `iss` claim. Obtain a sample managed identity token and inspect its claims first. For example, the issuer may be `https://login.microsoftonline.com/<tenant-id>/v2.0`. Set **Audience** to the Microsoft Entra Application ID URI you configured, such as `api://<application-client-id>`. This value must match the token's `aud` claim.
+
+3. **Use Microsoft Entra token verification.** Leave **Use uploaded JWKS for token verification** disabled. OpenAI uses Microsoft Entra issuer metadata and JWKS to verify the managed identity token.
+
+4. **Add attribute transformations if you need derived mapping attributes.** For example, enter `managed_identity_client_id` with expression `assertion.appid` to create `openai.managed_identity_client_id` from the managed identity application/client ID claim. The dashboard applies the `openai.` prefix automatically. Raw token claims that already start with `openai.` are ignored for `openai.` mapping keys unless a matching transformation is configured.
+
+#### Set up the service account mapping
+
+1. **Create a service account mapping.** Set **Name** to a value that is unique within that Workload Identity Provider, such as `vm-openai-wif`. Use **Description**, such as `Production VM Azure managed identity workload`, to explain which workload can use the mapping.
+
+2. **Match stable managed identity claims.** Add one **Key** and **Value** row for each claim that must match. If the token contains `appid`, set **Key** to `appid` and **Value** to the managed identity client ID. The `appid` claim identifies the managed identity's application/client ID and is generally the most stable claim for binding a mapping to a specific managed identity. If your token does not contain `appid`, use another stable claim from the decoded token, such as `azp`, `oid`, `sub`, or `xms_mirid`. To bind the mapping to one tenant, also set **Key** to `tid` and **Value** to the Microsoft Entra tenant ID. Decode a sample token from IMDS and use claims that are stable for the managed identity and resource you trust.
+
+3. **Choose the OpenAI target.** Set **Project** to the OpenAI project that owns the target service account. Set **Service account** to the OpenAI service account the Azure workload can use, such as `azure-managed-identity-prod-openai-wif`.
+
+4. **Narrow API permissions if needed.** Select appropriate **Permissions** such as `api.model.request` and `api.vector_store.read` to further narrow access tokens minted from this mapping. Leave permissions blank to avoid adding a WIF-specific scope restriction; the token still authorizes as the mapped service account.
+
+### Using the token in code
+
+Configure your OpenAI SDK client to request an Azure managed identity token from IMDS and exchange it for an OpenAI-issued access token.
+
+Set `OPENAI_WIF_AUDIENCE` to the Microsoft Entra Application ID URI configured as the Workload Identity Provider audience. The SDK requests a managed identity token for that audience, exchanges it for an OpenAI-issued access token, and uses the OpenAI token to authenticate API requests.
+
+</div>
+
+  <div data-content-switcher-pane data-value="aks" hidden>
+
+## Azure Kubernetes Service (AKS)
+
+Use AKS as a Workload Identity Provider by exchanging an AKS-issued projected service account token for a short-lived OpenAI access token.
+
+AKS workloads can also use Azure Workload Identity to obtain a Microsoft Entra
+  ID access token for a managed identity attached to the workload. In that
+  configuration, OpenAI validates the Microsoft Entra token rather than the
+  projected Kubernetes service account token. Configure OpenAI workload identity
+  federation using the steps in [Azure managed
+  identity](#azure-managed-identity), and configure Azure Workload Identity
+  according to Microsoft's documentation.
+
+### Setting up AKS
+
+Retrieve the OIDC issuer URL associated with the AKS cluster:
+
+```bash
+az aks show \
+  --name <cluster-name> \
+  --resource-group <resource-group> \
+  --query "oidcIssuerProfile.issuerUrl" \
+  --output tsv
+```
+
+If the issuer URL is empty, enable the AKS OIDC issuer for the cluster. Use the following command:
+
+```bash
+az aks update \
+    --resource-group <resource-group> \
+    --name <cluster-name> \
+    --enable-oidc-issuer
+```
+
+The issuer you configure in the OpenAI Workload Identity Provider must match this issuer URL and the `iss` claim in the projected AKS service account token.
+
+Use a Kubernetes `ServiceAccount` for the AKS workload that needs to call the OpenAI API. If you do not already have one, create it:
+
+```bash
+kubectl create serviceaccount openai-wif --namespace default
+```
+
+Configure the projected service account token with the audience OpenAI expects and an expiration suitable for your workload. OpenAI validates the token's issuer, signature, audience, and expiration. In this example, the token file is mounted at `/var/run/secrets/tokens/token`, uses the audience `https://api.openai.com/v1`, and expires after 3600 seconds. You may use a different audience if the projected token audience and OpenAI Workload Identity Provider audience match.
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: openai-wif-app
+  namespace: default
+spec:
+  serviceAccountName: openai-wif
+  containers:
+    - name: app
+      image: my-image
+      volumeMounts:
+        - name: aks-sa-token
+          mountPath: /var/run/secrets/tokens
+          readOnly: true
+  volumes:
+    - name: aks-sa-token
+      projected:
+        sources:
+          - serviceAccountToken:
+              path: token
+              audience: "https://api.openai.com/v1"
+              expirationSeconds: 3600
+```
+
+### Verify the token
+
+Before configuring workload identity federation, decode a sample projected service account token locally and inspect its claims. From a running pod with the projected token mounted:
+
+```bash
+TOKEN=$(kubectl exec -n default openai-wif-app -- cat /var/run/secrets/tokens/token)
+
+TOKEN="$TOKEN" python3 - <<'PY'
+import base64
+import json
+import os
+
+payload = os.environ["TOKEN"].split(".")[1]
+payload += "=" * (-len(payload) % 4)
+print(json.dumps(json.loads(base64.urlsafe_b64decode(payload)), indent=2))
+PY
+```
+
+This command decodes the JWT payload without verifying the token signature. Use a local decoder for production tokens, and avoid pasting production tokens into third-party tools.
+
+A decoded AKS projected service account token will look similar to:
+
+```json
+{
+  "iss": "https://eastus.oic.prod-aks.azure.com/11111111-2222-3333-4444-555555555555/22222222-3333-4444-5555-666666666666/",
+  "aud": ["https://api.openai.com/v1"],
+  "sub": "system:serviceaccount:default:openai-wif",
+  "iat": 1716235422,
+  "exp": 1716239022,
+  "kubernetes.io": {
+    "namespace": "default",
+    "serviceaccount": {
+      "name": "openai-wif",
+      "uid": "11111111-2222-3333-4444-555555555555"
+    }
+  }
+}
+```
+
+Verify the claims you plan to configure in OpenAI:
+
+- `iss`: Must match the AKS issuer URL configured in the OpenAI Workload Identity Provider.
+- `aud`: Must match the projected service account token audience and the OpenAI Workload Identity Provider audience.
+- `sub`: Must match the Kubernetes service account subject you configure in the service account mapping.
+
+Use the decoded payload to compare the token you received with the issuer, audience, and mapping values configured in OpenAI. Most configuration issues are visible in the `iss`, `aud`, and `sub` claims before you exchange the token.
+
+### Setting up workload identity federation
+
+Create a Workload Identity Provider in OpenAI for the AKS issuer, then add a service account mapping that matches attributes from the projected token.
+
+Configure the Workload Identity Provider first, then create the service account mapping.
+
+#### Set up the Workload Identity Provider
+
+1. **Create the Workload Identity Provider.** Set **Name** to a unique value, such as `azure-aks-prod`. Use **Description**, such as `Production AKS cluster`, to help admins identify the cluster.
+
+2. **Set the issuer and audience.** Set **OIDC Issuer URL** to the issuer returned by `az aks show --query "oidcIssuerProfile.issuerUrl"`. This value must match the `iss` claim in the projected AKS service account token. Set **Audience** to the same audience configured on the projected service account token volume. In this example, that value is `https://api.openai.com/v1`.
+
+3. **Use AKS OIDC discovery.** Leave **Use uploaded JWKS for token verification** disabled. OpenAI uses the AKS issuer's OIDC discovery metadata and JWKS to verify the projected service account token.
+
+4. **Add attribute transformations if you need derived mapping attributes.** For example, enter `aks_subject` with expression `assertion.sub` to create `openai.aks_subject`. The dashboard applies the `openai.` prefix automatically. Raw token claims that already start with `openai.` are ignored for `openai.` mapping keys unless a matching transformation is configured.
+
+#### Set up the service account mapping
+
+1. **Create a service account mapping.** Set **Name** to a value that is unique within that Workload Identity Provider, such as `default-openai-wif`. Use **Description**, such as `Default namespace AKS OpenAI API workload`, to explain which workload can use the mapping.
+
+2. **Match the AKS service account subject.** Set **Key** to `sub` and **Value** to `system:serviceaccount:default:openai-wif`. For AKS service accounts, the subject format is `system:serviceaccount:<namespace>:<service-account-name>`.
+
+   The Workload Identity Provider restricts tokens to the configured AKS issuer. The service account mapping further restricts access to the specified Kubernetes service account subject.
+
+3. **Choose the OpenAI target.** Set **Project** to the OpenAI project that owns the target service account. Set **Service account** to the OpenAI service account the AKS workload can use, such as `azure-aks-prod-openai-wif`.
+
+4. **Narrow API permissions if needed.** Select appropriate **Permissions** such as `api.model.request` and `api.vector_store.read` to further narrow access tokens minted from this mapping. Leave permissions blank to avoid adding a WIF-specific scope restriction; the token still authorizes as the mapped service account.
+
+### Using the token in code
+
+Configure your OpenAI SDK client to read the projected AKS service account token and exchange it for an OpenAI-issued access token.
+
+Use the mounted token path, such as `/var/run/secrets/tokens/token`, as the subject token source for the SDK workload identity federation provider. The SDK exchanges that AKS token for an OpenAI-issued access token and uses the OpenAI token to authenticate API requests.
+
+The following examples initialize an OpenAI client with a custom subject token provider. The provider reads the projected AKS service account token from the mounted file path and uses it as the subject token for workload identity federation.
+
+</div>
+
+
+
+## Microsoft Azure best practices
+
+- Use managed identities whenever possible. Managed identities provide a simpler and more secure authentication model than distributing credentials manually.
+- Use separate managed identities, Microsoft Entra applications, and OpenAI mappings for different applications and environments. Avoid sharing one identity across development, staging, and production workloads.
+- Restrict accepted audiences. Configure only the audiences required for OpenAI workload identity federation.
+- Use dedicated Microsoft Entra ID applications for security boundaries. Separate applications provide clearer ownership, auditing, and access management.
+- Prefer workload-specific mappings. Match on workload-specific claims rather than broad tenant-wide attributes.
+- Review federated credential configurations regularly. Stale federated credentials can unintentionally continue granting access long after workloads are retired.
+- Separate production and non-production identities. Production workloads should authenticate through distinct federated identities and OpenAI service accounts.
 
 ---
 
@@ -26352,6 +27564,31 @@ Some examples of using reasoning models for real-world use cases can be found in
 
 ---
 
+# Red teaming
+
+Red teaming uses adversarial test cases to help uncover unsafe, insecure, or policy-violating behavior before deployment. It complements evals by focusing on misuse cases, failure modes, and high-risk interactions that ordinary quality testing may not expose.
+
+<strong>Important:</strong> Only submit to OpenAI Red Teaming code or other
+  assets that you own or are expressly authorized to test. Do not use OpenAI Red
+  Teaming to analyze or report vulnerabilities in open-source or any third-party
+  code without OpenAI's express written permission.
+
+## Use Promptfoo for open-source red teaming
+
+[Promptfoo](https://github.com/promptfoo/promptfoo) is an open-source framework for evaluating prompts, agents, and AI applications. Its red teaming workflows help you generate adversarial test cases, inspect target behavior, and use the results to improve your system.
+
+For the broader open-source methodology, see Promptfoo’s [LLM red teaming guide](https://www.promptfoo.dev/docs/red-team/).
+
+## Enterprise availability
+
+OpenAI Red Teaming is available for enterprise customers that need a managed offering for red teaming AI applications and agents. Enterprise workflows can support broader coordination, review, and reporting needs than a standalone local workflow.
+
+## Red teaming and evals
+
+Use [evals](https://developers.openai.com/api/docs/guides/evals) to measure whether an AI system behaves as intended. Use red teaming to probe how that system behaves under adversarial, abusive, or unexpected inputs. Mature evaluation programs often use both.
+
+---
+
 # Reinforcement fine-tuning
 
 Reinforcement fine-tuning (RFT) adapts an OpenAI reasoning model with a feedback signal you define. Like [supervised fine-tuning](https://developers.openai.com/api/docs/guides/supervised-fine-tuning), it tailors the model to your task. The difference is that instead of training on fixed “correct” answers, it relies on a programmable grader that scores every candidate response. The training algorithm then shifts the model’s weights, so high-scoring outputs become more likely and low-scoring ones fade.
@@ -38316,6 +39553,183 @@ Now you know how to create and run evals via API, and using the dashboard! Here 
     models.
 
 ](https://developers.openai.com/api/docs/guides/distillation)
+
+---
+
+# Workload identity federation
+
+Workload identity federation lets trusted workloads exchange externally issued identity tokens for short-lived OpenAI access tokens. Use these guides to configure your external identity provider, create OpenAI service account mappings, and authenticate workloads without storing long-lived API keys.
+
+For token exchange request and response details, authorization behavior, and current limitations, see the [workload identity token exchange reference](https://developers.openai.com/api/reference/workload-identity-federation).
+
+## How it works
+
+Workload identity federation has four parts:
+
+1. A **workload identity provider** describes the trusted issuer. It stores the expected OIDC issuer, audience, and key source used to verify external subject tokens.
+2. A **service account mapping** authorizes specific external token attributes to mint tokens for a particular OpenAI service account within a project.
+3. A **token exchange** request sends the external subject token to OpenAI and returns a short-lived OpenAI access token.
+4. The workload uses the OpenAI-issued access token as a bearer credential to authenticate requests to the OpenAI API.
+
+You must be an organization owner to configure this feature. To access it, go to [Organization Settings > Security > Workload Identity Provider](https://platform.openai.com/settings/organization/security/workload-identity-provider). Configure service account mappings from the workload identity provider details page.
+
+## Choose a setup guide
+
+Start with the guide that matches where your workload runs:
+
+<div className="my-4 w-full max-w-full overflow-hidden">
+  </div>
+
+OpenAI supports OIDC-compatible JWT subject tokens in the documented configurations. If you need an OIDC provider that isn't listed, contact us.
+
+Each provider guide shows how to issue and inspect a subject token on that platform, and how to configure the OpenAI SDK to exchange it for a short-lived OpenAI access token.
+
+## Configure a Workload Identity Provider
+
+Create a Workload Identity Provider for each external issuer you trust. Workload identity federation supports OIDC JWT subject tokens.
+
+Workload Identity Provider configuration includes these dashboard options:
+
+| Option                                   | Description                                                                                                                                                  |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Name                                     | A unique name for the Workload Identity Provider in your organization.                                                                                       |
+| OIDC Issuer URL                          | The expected OIDC issuer URL. Issuer comparisons ignore a trailing slash.                                                                                    |
+| Audience                                 | The expected `aud` claim on the external subject token.                                                                                                      |
+| Description                              | Optional description for the Workload Identity Provider.                                                                                                     |
+| Use uploaded JWKS for token verification | When enabled, OpenAI verifies tokens against an uploaded JWKS instead of fetching keys from OIDC discovery.                                                  |
+| JWKS JSON                                | The uploaded public JWKS object used when uploaded JWKS verification is enabled. The JWKS must contain a non-empty `keys` array and no private key material. |
+| Attribute transformations                | Optional CEL expressions that derive custom `openai.*` attributes from token claims for mapping decisions.                                                   |
+
+### Transform token claims with CEL
+
+Attribute transformations use Common Expression Language (CEL). OpenAI supports the standard CEL operators specified in [langdef.md](https://github.com/google/cel-spec/blob/master/doc/langdef.md) and doesn't add custom workload identity federation-specific functions. Each expression receives one root object:
+
+- `assertion`: The verified JWT claim set.
+
+In the dashboard, the `openai.` prefix is applied automatically. Enter the suffix, such as `subject`, and an expression, such as `assertion.sub`. The API stores the derived attribute as `openai.subject`.
+
+```json
+[
+  {
+    "attribute": "openai.subject",
+    "expression": "assertion.sub"
+  },
+  {
+    "attribute": "openai.repository",
+    "expression": "assertion.repository"
+  }
+]
+```
+
+Use CEL syntax defined by the CEL language specification. For example, you can read claim values with expressions such as `assertion.sub` or `assertion.repository`. Unsupported syntax or functions fail mapping resolution.
+
+```json
+[
+  {
+    "attribute": "openai.repository_ref",
+    "expression": "assertion.repository + \"@\" + assertion.ref"
+  },
+  {
+    "attribute": "openai.production",
+    "expression": "assertion.ref == \"refs/heads/main\""
+  }
+]
+```
+
+Transformation results must be scalar values: strings, booleans, integers, or finite numbers. Arrays, objects, null values, and evaluation errors fail mapping resolution. OpenAI converts scalar transformation results to strings before comparing them to mapping values. For example, `true` becomes `"true"` and `7` becomes `"7"`.
+
+Mapping keys that start with `openai.` resolve only from attribute transformations. Raw subject token claims that already use an `openai.` prefix don't affect mapping decisions unless you configure a matching transformation.
+
+### Manage JWKS and key rotation
+
+OpenAI verifies OIDC subject tokens with the key source configured on the Workload Identity Provider.
+
+- **OIDC discovery:** OpenAI fetches the issuer's `/.well-known/openid-configuration`, then fetches the discovered `jwks_uri`. Discovery documents and remote JWKS payloads are cached for 600 seconds.
+- **Key refresh on miss:** If a token `kid` isn't found in the cached JWKS, OpenAI refreshes the JWKS and tries the lookup again before rejecting the token.
+- **Uploaded JWKS:** When **Use uploaded JWKS for token verification** is enabled, OpenAI uses the uploaded JWKS stored on the Workload Identity Provider and doesn't perform OIDC discovery or remote JWKS fetching. After a provider update is saved and available to token exchange, new exchanges use the saved JWKS.
+- **Multiple keys:** A JWKS can contain multiple public keys, and each key must have a unique non-empty `kid`.
+
+During signing-key rotation, publish both old and new public keys in the issuer JWKS during the rotation window. This lets tokens signed by the old key continue working while OpenAI accepts tokens signed by the new key. For uploaded JWKS mode, update the Workload Identity Provider JWKS before issuing tokens with the new `kid`; OpenAI rejects tokens signed by a key absent from the configured JWKS.
+
+## Configure service account mappings
+
+A service account mapping defines which external identities can mint access tokens for an OpenAI service account.
+
+Mapping configuration includes these dashboard options:
+
+| Option          | Description                                                                                                                                                  |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Name            | A unique name for the mapping within the Workload Identity Provider.                                                                                         |
+| Key             | The attribute key to match. Use a raw token claim, such as `sub`, `aud`, or `iss`, or a derived attribute like `openai.subject`.                             |
+| Value           | The attribute value that must match before OpenAI issues a token.                                                                                            |
+| Description     | Optional description for the mapping.                                                                                                                        |
+| Project         | The project that owns the target service account.                                                                                                            |
+| Service account | The service account the workload can use. You can create a new service account in the selected project or select an existing service account.                |
+| Permissions     | Optional API permissions that further narrow access tokens minted from this mapping. These permissions can't grant access beyond the mapped service account. |
+
+Attribute assertion values must be scalar JSON values. String values may use one trailing wildcard, such as `repo:example/*`. The wildcard must have a non-empty prefix; `*` by itself isn't supported.
+
+Valid wildcard values:
+
+- `repo:openai/*`
+- `repository:my-org/*`
+
+Invalid wildcard values:
+
+- `*`
+- `repo:*:prod`
+- `repo/*/main`
+
+The dashboard shows mapping-level restrictions as **Permissions**. Token exchange responses expose the same restrictions as OAuth scopes in the `scope` property. Admin API scopes can't be assigned to Workload Identity Provider mappings, and downstream API authorization still applies after OpenAI mints a token.
+
+### Mapping resolution example
+
+Mapping resolution starts after OpenAI verifies the external subject token. OpenAI looks up mappings for the requested `identity_provider_id` and `service_account_id`, skips disabled mappings, evaluates only the attributes needed by each mapping, and issues a token only if exactly one enabled mapping matches all configured attributes.
+
+For example, a GitHub Actions token might contain these claims:
+
+```json
+{
+  "iss": "https://token.actions.githubusercontent.com",
+  "aud": "https://api.openai.com/v1",
+  "sub": "repo:my-org/my-repo:ref:refs/heads/main",
+  "repository": "my-org/my-repo",
+  "ref": "refs/heads/main"
+}
+```
+
+The Workload Identity Provider can define a derived attribute:
+
+```json
+[
+  {
+    "attribute": "openai.repository_ref",
+    "expression": "assertion.repository + \"@\" + assertion.ref"
+  }
+]
+```
+
+Then a service account mapping can require both raw and derived attributes:
+
+| Key                     | Value                                         |
+| ----------------------- | --------------------------------------------- |
+| `iss`                   | `https://token.actions.githubusercontent.com` |
+| `sub`                   | `repo:my-org/my-repo:*`                       |
+| `openai.repository_ref` | `my-org/my-repo@refs/heads/main`              |
+
+This mapping matches only when all three attributes match. The `sub` value uses a trailing wildcard, so it matches any value with the prefix `repo:my-org/my-repo:`. The `openai.repository_ref` key resolves from the attribute transformation; OpenAI doesn't use a raw token claim named `openai.repository_ref`.
+
+If multiple enabled mappings match the same token exchange, OpenAI rejects the exchange. OpenAI enforces a unique mapping for each `(provider, service account)` pair and doesn't combine permissions across multiple mappings.
+
+## Security recommendations
+
+- Use a dedicated OpenAI service account for each application or workload.
+- Separate production and non-production environments.
+- Prefer exact claim matching over broad attribute patterns.
+- Grant only the minimum OpenAI permissions required.
+- Review and remove unused mappings regularly.
+- Monitor token exchange failures and unexpected access patterns.
+- Avoid sharing identities across unrelated workloads.
 
 ---
 

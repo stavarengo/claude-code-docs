@@ -247,7 +247,7 @@ A good starting pattern is:
 - Keep repo-specific behavior in `.codex/config.toml`
 - Use command-line overrides only for one-off situations (if you use the CLI)
 
-[`config.toml`](/codex/config-basic) is where you define durable preferences such as MCP servers, profiles, multi-agent setup, and feature flags. You can edit it directly or ask Codex to update it for you.
+[`config.toml`](/codex/config-basic) is where you define durable preferences such as MCP servers, multi-agent setup, and feature flags. Profile-specific overrides live in separate `$CODEX_HOME/profile-name.config.toml` files.
 
 Codex ships with operating level sandboxing and has two key knobs that you can control. Approval mode determines when Codex asks for your permission to run a command and sandbox mode determines if Codex can read or write in the directory and what files the agent can access.
 
@@ -1302,33 +1302,38 @@ For background on project guidance, reusable capabilities, custom slash commands
 
 #### Profiles
 
-Profiles let you save named sets of configuration values and switch between them from the CLI.
+Profiles let you save named configuration layers and switch between them from
+the CLI. When you pass `--profile profile-name`, Codex loads
+`~/.codex/config.toml`, then overlays `~/.codex/profile-name.config.toml`.
+Profile names can contain letters, numbers, hyphens, and underscores.
 
-Profiles are experimental and may change or be removed in future releases.
-
-Profiles are not currently supported in the Codex IDE extension.
-
-Define profiles under `[profiles.]` in `config.toml`, then run `codex --profile `:
+Create a separate TOML file for each profile. Use top-level config keys in the
+profile file; don't nest them under `[profiles.profile-name]`.
 
 ```toml
-model = "gpt-5.4"
+# ~/.codex/deep-review.config.toml
+model = "gpt-5.5"
+model_reasoning_effort = "xhigh"
 approval_policy = "on-request"
-model_catalog_json = "/Users/me/.codex/model-catalogs/default.json"
-
-[profiles.deep-review]
-model = "gpt-5-pro"
-model_reasoning_effort = "high"
-approval_policy = "never"
 model_catalog_json = "/Users/me/.codex/model-catalogs/deep-review.json"
-
-[profiles.lightweight]
-model = "gpt-4.1"
-approval_policy = "untrusted"
 ```
 
-To make a profile the default, add `profile = "deep-review"` at the top level of `config.toml`. Codex loads that profile unless you override it on the command line.
+```shell
+codex --profile deep-review
+codex exec --profile deep-review "review this change"
+```
 
-Profiles can also override `model_catalog_json`. When both the top level and the selected profile set `model_catalog_json`, Codex prefers the profile value.
+Because the profile file is a layer above your base user config and below
+project and CLI config, it only needs the values that differ from your base
+config. Profile files can also override `model_catalog_json`; Codex uses the
+profile value when both files set it.
+
+In Codex 0.134.0 and later, `--profile` no longer reads `[profiles.profile-name]`
+from `config.toml`, and the top-level `profile = "profile-name"` selector is no
+longer supported. Move legacy profile settings into
+`~/.codex/profile-name.config.toml`, then remove the matching
+`[profiles.profile-name]` table and `profile = "profile-name"` selector from
+`config.toml`.
 
 #### One-off overrides from the CLI
 
@@ -1384,13 +1389,16 @@ For security, Codex loads project-scoped config files only when the project is t
 
 Relative paths inside a project config (for example, `model_instructions_file`) are resolved relative to the `.codex/` folder that contains the `config.toml`.
 
-Project config files can't override settings that redirect credentials, change
-provider auth, or run machine-local notification/telemetry commands.
-Codex ignores the following keys in project-local `.codex/config.toml` and
-prints a startup warning when it sees them: `openai_base_url`,
-`chatgpt_base_url`, `model_provider`, `model_providers`, `notify`, `profile`,
-`profiles`, `experimental_realtime_ws_base_url`, and `otel`. Set those keys in
-your user-level `~/.codex/config.toml` instead.
+Project config files can't override settings that redirect credentials, alter
+host-owned app request metadata, change provider auth, select config profiles,
+or run machine-local notification/telemetry commands. Codex ignores the
+following keys in project-local `.codex/config.toml` and prints a startup
+warning when it sees them: `openai_base_url`, `chatgpt_base_url`,
+`apps_mcp_product_sku`, `model_provider`, `model_providers`, `notify`,
+`profile`, `profiles`, `experimental_realtime_ws_base_url`, and `otel`. Set
+provider, notification, and telemetry keys in your user-level
+`~/.codex/config.toml`; select config profiles with `--profile profile-name`
+and `~/.codex/profile-name.config.toml`.
 
 #### Hooks
 
@@ -1607,8 +1615,8 @@ Use your organization's automatic review policy.
 For built-in profiles, custom profile syntax, and the full filesystem and
 network configuration model, see [Permissions](/codex/permissions).
 
-For the complete key list, including profile-scoped overrides and requirements
-constraints, see [Configuration Reference](/codex/config-reference) and
+For the complete key list and requirements constraints, see
+[Configuration Reference](/codex/config-reference) and
 [Managed configuration](/codex/enterprise/managed-configuration).
 
 In workspace-write mode, some environments keep `.git/` and `.codex/`
@@ -1925,13 +1933,13 @@ The CLI and IDE extension share the same configuration layers. You can use them 
 Codex resolves values in this order (highest precedence first):
 
 1. CLI flags and `--config` overrides
-2. [Profile](/codex/config-advanced#profiles) values (from `--profile `)
-3. Project config files: `.codex/config.toml`, ordered from the project root down to your current working directory (closest wins; trusted projects only)
+2. Project config files: `.codex/config.toml`, ordered from the project root down to your current working directory (closest wins; trusted projects only)
+3. [Profile](/codex/config-advanced#profiles) files selected with `--profile profile-name` (`~/.codex/profile-name.config.toml`)
 4. User config: `~/.codex/config.toml`
 5. System config (if present): `/etc/codex/config.toml` on Unix
 6. Built-in defaults
 
-Use that precedence to set shared defaults at the top level and keep profiles focused on the values that differ.
+Use that precedence to set shared defaults in `config.toml` and keep [profile files](/codex/config-advanced#profiles) focused on the values that differ.
 
 If you mark a project as untrusted, Codex skips project-scoped `.codex/` layers, including project-local config, hooks, and rules. User and system config still load, including user/global hooks and rules.
 
@@ -2179,7 +2187,7 @@ Use the snippet below as a reference. Copy only the keys and sections you need i
 # Notes
 # - Root keys must appear before tables in TOML.
 # - Optional keys that default to "unset" are shown commented out with notes.
-# - MCP servers, profiles, and model providers are examples; remove or edit.
+# - MCP servers, profile files, and model providers are examples; remove or edit.
 
 ################################################################################
 
@@ -2467,9 +2475,9 @@ check_for_update_on_startup = true
 
 web_search = "cached"
 
-# Active profile name. When unset, no profile is applied.
+# Config profiles are separate files under CODEX_HOME.
 
-# profile = "default"
+# Example: ~/.codex/ci.config.toml, selected with codex --profile ci.
 
 # Suppress the warning shown when under-development feature flags are enabled.
 
@@ -3111,17 +3119,17 @@ enabled = true
 
 ################################################################################
 
-# Profiles (named presets)
+# Config Profiles (separate files)
 
 ################################################################################
 
-[profiles]
+# To create a config profile, put overrides in a separate profile file under $CODEX_HOME.
 
-# [profiles.default]
+# Select it with codex --profile ci.
+
+# For example, a CI profile could live at $CODEX_HOME/ci.config.toml:
 
 # model = "gpt-5.4"
-
-# model_provider = "openai"
 
 # approval_policy = "on-request"
 
@@ -3281,7 +3289,7 @@ basics](/codex/config-basic#configuration-precedence) for more information.
 | `--model, -m`                                        | `string`                                             |         | Override the model set in configuration (for example `gpt-5.4`).                                                                                                                                                               |
 | `--no-alt-screen`                                    | `boolean`                                            | `false` | Disable alternate screen mode for the TUI (overrides `tui.alternate_screen` for this run).                                                                                                                                     |
 | `--oss`                                              | `boolean`                                            | `false` | Use the local open source model provider (equivalent to `-c model_provider="oss"`). Validates that Ollama is running.                                                                                                          |
-| `--profile, -p`                                      | `string`                                             |         | Configuration profile name to load from `~/.codex/config.toml`.                                                                                                                                                                |
+| `--profile, -p`                                      | `string`                                             |         | Layer `$CODEX_HOME/profile-name.config.toml` on top of the base user config.                                                                                                                                                   |
 | `--remote`                                           | `ws://host:port \| wss://host:port`                  |         | Connect the interactive TUI to a remote app-server WebSocket endpoint. Supported for `codex`, `codex resume`, and `codex fork`; other subcommands reject remote mode.                                                          |
 | `--remote-auth-token-env`                            | `ENV_VAR`                                            |         | Read a bearer token from this environment variable and send it when connecting with `--remote`. Requires `--remote`; tokens are only sent over `wss://` URLs or `ws://` URLs whose host is `localhost`, `127.0.0.1`, or `::1`. |
 | `--sandbox, -s`                                      | `read-only \| workspace-write \| danger-full-access` |         | Select the sandbox policy for model-generated shell commands.                                                                                                                                                                  |
@@ -3431,13 +3439,13 @@ Generate shell completion scripts and redirect the output to the appropriate loc
 
 #### `codex features`
 
-Manage feature flags stored in `~/.codex/config.toml`. The `enable` and `disable` commands persist changes so they apply to future sessions. When you launch with `--profile`, Codex writes to that profile instead of the root configuration.
+Manage feature flags stored in `~/.codex/config.toml` or the selected profile file. The `enable` and `disable` commands persist changes so they apply to future sessions. When you launch with `--profile profile-name`, Codex writes to `$CODEX_HOME/profile-name.config.toml` instead of the base user config.
 
-| Key                  | Type / Values             | Default | Details                                                                                              |
-| -------------------- | ------------------------- | ------- | ---------------------------------------------------------------------------------------------------- |
-| `Disable subcommand` | `codex features disable ` |         | Persistently disable a feature flag in `config.toml`. Respects the active `--profile` when provided. |
-| `Enable subcommand`  | `codex features enable `  |         | Persistently enable a feature flag in `config.toml`. Respects the active `--profile` when provided.  |
-| `List subcommand`    | `codex features list`     |         | Show known feature flags, their maturity stage, and their effective state.                           |
+| Key                  | Type / Values             | Default | Details                                                                                                                                         |
+| -------------------- | ------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Disable subcommand` | `codex features disable ` |         | Persistently disable a feature flag in the active config file. With `--profile profile-name`, writes to `$CODEX_HOME/profile-name.config.toml`. |
+| `Enable subcommand`  | `codex features enable `  |         | Persistently enable a feature flag in the active config file. With `--profile profile-name`, writes to `$CODEX_HOME/profile-name.config.toml`.  |
+| `List subcommand`    | `codex features list`     |         | Show known feature flags, their maturity stage, and their effective state.                                                                      |
 
 ### Agent internet access
 
@@ -3815,6 +3823,7 @@ Use these commands and keyboard shortcuts to navigate the Codex app.
 | **General** |                    |                            |
 |             | Command menu       | Cmd + Shift + P or Cmd + K |
 |             | Settings           | Cmd + ,                    |
+|             | Keyboard shortcuts | Cmd + /                    |
 |             | Open folder        | Cmd + O                    |
 |             | Navigate back      | Cmd + [                    |
 |             | Navigate forward   | Cmd + ]                    |
@@ -3830,6 +3839,10 @@ Use these commands and keyboard shortcuts to navigate the Codex app.
 |             | Previous thread    | Cmd + Shift + [            |
 |             | Next thread        | Cmd + Shift + ]            |
 |             | Dictation          | Ctrl + M                   |
+
+To find, customize, or reset shortcuts, open **Settings > Keyboard Shortcuts**.
+You can search by command name or switch the search field into keystroke mode
+and press the shortcut you want to find.
 
 #### Slash commands
 
@@ -4250,6 +4263,13 @@ Choose where files open and how much command output appears in threads. You can 
 require Cmd+Enter for multiline prompts or prevent sleep while a
 thread runs.
 
+#### Keyboard shortcuts
+
+Open **Keyboard Shortcuts** to review commands, change bindings, or reset custom
+shortcuts to their defaults. Use the search field to find shortcuts by command
+name, or switch to keystroke search and press a key combination to find the
+command that uses it.
+
 #### Notifications
 
 Choose when turn completion notifications appear, and whether the app should prompt for
@@ -4626,7 +4646,7 @@ codex features enable unified_exec
 codex features disable shell_snapshot
 ```
 
-`codex features enable ` and `codex features disable ` write to `~/.codex/config.toml`. If you launch Codex with `--profile`, Codex stores the change in that profile rather than the root configuration.
+`codex features enable ` and `codex features disable ` write to `~/.codex/config.toml`. If you launch Codex with `--profile profile-name`, Codex writes to `$CODEX_HOME/profile-name.config.toml` instead.
 
 #### Subagents
 
@@ -6887,6 +6907,9 @@ Codex supports MCP servers in both the CLI and the IDE extension.
 - **Streamable HTTP servers**: Servers that you access at an address.
   - Bearer token authentication
   - OAuth authentication (run `codex mcp login ` for servers that support OAuth)
+- **Server instructions**: Codex reads the MCP `instructions` field returned during initialization and uses it as server-wide guidance alongside the server's tools.
+
+If you build or maintain an MCP server for Codex, use `instructions` for cross-tool workflows, constraints, and rate limits that apply across the server. Keep the first 512 characters self-contained so the most important guidance is available when Codex is deciding how to use the server.
 
 #### Connect Codex to an MCP server
 
@@ -7602,19 +7625,22 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: write
     outputs:
       final_message: ${{ steps.run_codex.outputs.final-message }}
     steps:
       - uses: actions/checkout@v5
         with:
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
+          persist-credentials: false
 
       - name: Pre-fetch base and head refs
+        env:
+          PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           git fetch --no-tags origin \
-            ${{ github.event.pull_request.base.ref }} \
-            +refs/pull/${{ github.event.pull_request.number }}/head
+            "$PR_BASE_REF" \
+            "+refs/pull/$PR_NUMBER/head"
 
       - name: Run Codex
         id: run_codex
@@ -7623,13 +7649,14 @@ jobs:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           prompt-file: .github/codex/prompts/review.md
           output-file: codex-output.md
-          safety-strategy: drop-sudo
-          sandbox: workspace-write
 
   post_feedback:
     runs-on: ubuntu-latest
     needs: codex
     if: needs.codex.outputs.final_message != ''
+    permissions:
+      issues: write
+      pull-requests: write
     steps:
       - name: Post Codex feedback
         uses: actions/github-script@v7
@@ -7653,7 +7680,7 @@ Replace `.github/codex/prompts/review.md` with your own prompt file or use the `
 Fine-tune how Codex runs by setting the action inputs that map to `codex exec` options:
 
 - `prompt` or `prompt-file` (choose one): Inline instructions or a repository path to Markdown or text with your task. Consider storing prompts in `.github/codex/prompts/`.
-- `codex-args`: Extra CLI flags. Provide a JSON array (for example `["--json"]`) or a shell string (`--sandbox workspace-write --json`) to allow edits, streaming, or MCP configuration.
+- `codex-args`: Extra CLI flags. Provide a JSON array (for example `["--ephemeral"]`) or a shell string (`--profile ci`) to configure sessions, profiles, or MCP settings.
 - `model` and `effort`: Pick the Codex agent configuration you want; leave empty for defaults.
 - `sandbox`: Match the sandbox mode (`workspace-write`, `read-only`, `danger-full-access`) to the permissions Codex needs during the run.
 - `output-file`: Save the final Codex message to disk so later steps can upload or diff it.
@@ -7665,7 +7692,7 @@ Fine-tune how Codex runs by setting the action inputs that map to `codex exec` o
 Codex has broad access on GitHub-hosted runners unless you restrict it. Use these inputs to control exposure:
 
 - `safety-strategy` (default `drop-sudo`) removes `sudo` before running Codex. This is irreversible for the job and protects secrets in memory. On Windows you must set `safety-strategy: unsafe`.
-- `unprivileged-user` pairs `safety-strategy: unprivileged-user` with `codex-user` to run Codex as a specific account. Ensure the user can read and write the repository checkout (see `.cache/codex-action/examples/unprivileged-user.yml` for an ownership fix).
+- `unprivileged-user` pairs `safety-strategy: unprivileged-user` with `codex-user` to run Codex as a specific account. Ensure the user can read and write the repository checkout (see the [`unprivileged-user` example](https://github.com/openai/codex-action/blob/main/examples/unprivileged-user.yml) for an ownership fix).
 - `read-only` keeps Codex from changing files or using the network, but it still runs with elevated privileges. Don't rely on `read-only` alone to protect secrets.
 - `sandbox` limits filesystem and network access within Codex itself. Choose the narrowest option that still lets the task complete.
 - `allow-users` and `allow-bots` restrict who can trigger the workflow. By default only users with write access can run the action; list extra trusted accounts explicitly or leave the field empty for the default behavior.
@@ -7924,14 +7951,17 @@ Example final output (stdout):
 }
 ```
 
-#### Authenticate in CI
+#### Authenticate in automation
 
 `codex exec` reuses saved CLI authentication by default. In CI, it's common to provide credentials explicitly:
 
-#### Use API key auth (recommended)
+#### Use API key auth
 
-- Set `CODEX_API_KEY` as a secret environment variable for the job.
-- Keep prompts and tool output in mind: they can include sensitive code or data.
+For GitHub Actions, use the [Codex GitHub Action](/codex/github-action) instead of installing and authenticating the CLI yourself. The action is designed to reduce API key exposure by installing Codex, starting a Responses API proxy, and running Codex with a configurable safety strategy.
+
+Do not set `OPENAI_API_KEY` or `CODEX_API_KEY` as a job-level environment variable in workflows that check out or run repository-controlled code. Build scripts, tests, dependency lifecycle hooks, or a compromised action in the same job can read those environment variables.
+
+For other automation environments, set `CODEX_API_KEY` only for the single `codex exec` invocation and make sure no untrusted code runs in the same process environment.
 
 To use a different API key for a single run, set `CODEX_API_KEY` inline:
 
@@ -7980,17 +8010,22 @@ Codex requires commands to run inside a Git repository to prevent destructive ch
 
 #### Example: Autofix CI failures in GitHub Actions
 
-You can use `codex exec` to automatically propose fixes when a CI workflow fails. The typical pattern is:
+For GitHub Actions workflows, use [`openai/codex-action`](https://github.com/openai/codex-action) instead of installing Codex and passing the API key to a shell step. The action starts a secure proxy for the OpenAI API key.
+
+You can use Codex to automatically propose fixes when a CI workflow fails. The pattern is:
 
 1. Trigger a follow-up workflow when your main CI workflow completes with an error.
-2. Check out the failing commit SHA.
-3. Install dependencies and run Codex with a narrow prompt and minimal permissions.
-4. Re-run the test command.
-5. Open a pull request with the resulting patch.
+2. Check out the failing commit with repository read permissions only.
+3. Run setup commands before Codex, without exposing your OpenAI API key to those steps.
+4. Run the Codex GitHub Action.
+5. Save Codex's local changes as a patch artifact.
+6. In a separate job, apply the patch and open a pull request.
 
-#### Minimal workflow using the Codex CLI
+The Codex job below has only `contents: read`. After Codex runs, it only serializes the diff as an artifact. The `open_pr` job receives repository write permissions, but it does not receive `OPENAI_API_KEY`.
 
-The example below shows the core steps. Adjust the install and test commands to match your stack.
+The example assumes a Node.js project. Adjust the setup and test commands to match your stack.
+
+For a deeper security checklist, see the [Codex GitHub Action security guidance](https://github.com/openai/codex-action/blob/main/docs/security.md).
 
 ```yaml
 name: Codex auto-fix on CI failure
@@ -8000,23 +8035,20 @@ on:
     workflows: ["CI"]
     types: [completed]
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
-  auto-fix:
+  generate_fix:
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     runs-on: ubuntu-latest
-    env:
-      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      FAILED_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
-      FAILED_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+    permissions:
+      contents: read
+    outputs:
+      has_patch: ${{ steps.diff.outputs.has_patch }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
-          ref: ${{ env.FAILED_HEAD_SHA }}
+          ref: ${{ github.event.workflow_run.head_sha }}
           fetch-depth: 0
+          persist-credentials: false
 
       - uses: actions/setup-node@v4
         with:
@@ -8024,34 +8056,88 @@ jobs:
 
       - name: Install dependencies
         run: |
-          if [ -f package-lock.json ]; then npm ci; else npm i; fi
-
-      - name: Install Codex
-        run: npm i -g @openai/codex
-
-      - name: Authenticate Codex
-        run: codex login --api-key "$OPENAI_API_KEY"
+          if [ -f package-lock.json ]; then npm ci; fi
 
       - name: Run Codex
-        run: |
-          codex exec --sandbox workspace-write \
-            "Read the repository, run the test suite, identify the minimal change needed to make all tests pass, implement only that change, and stop. Do not refactor unrelated files."
-
-      - name: Verify tests
-        run: npm test --silent
-
-      - name: Create pull request
-        if: success()
-        uses: peter-evans/create-pull-request@v6
+        uses: openai/codex-action@v1
         with:
-          branch: codex/auto-fix-${{ github.event.workflow_run.run_id }}
-          base: ${{ env.FAILED_HEAD_BRANCH }}
-          title: "Auto-fix failing CI via Codex"
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt: |
+            The CI workflow "${{ github.event.workflow_run.name }}" failed for commit
+            ${{ github.event.workflow_run.head_sha }}.
+
+            Run `npm test --silent` to reproduce the failure. Identify the minimal
+            change needed to make the tests pass, implement only that change, and
+            run `npm test --silent` again.
+
+            Do not refactor unrelated files.
+
+      - name: Create patch artifact
+        id: diff
+        run: |
+          git add -N .
+          git diff --binary HEAD > codex.patch
+          if [ -s codex.patch ]; then
+            echo "has_patch=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_patch=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload patch artifact
+        if: steps.diff.outputs.has_patch == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: codex-fix-patch
+          path: codex.patch
+          if-no-files-found: error
+
+  open_pr:
+    runs-on: ubuntu-latest
+    needs: generate_fix
+    if: needs.generate_fix.outputs.has_patch == 'true'
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: codex-fix-patch
+
+      - name: Apply Codex patch
+        run: git apply --index codex.patch
+
+      - name: Open pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FAILED_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          FAILED_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          RUN_ID: ${{ github.event.workflow_run.run_id }}
+        run: |
+          branch="codex/auto-fix-$RUN_ID"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git commit -m "Auto-fix failing CI via Codex"
+          git push origin "$branch"
+
+          {
+            echo "Codex generated this patch after CI failed for \`$FAILED_HEAD_SHA\`."
+            echo
+            echo "Review the changes before merging."
+          } > pr-body.md
+
+          gh pr create \
+            --base "$FAILED_HEAD_BRANCH" \
+            --head "$branch" \
+            --title "Auto-fix failing CI via Codex" \
+            --body-file pr-body.md
 ```
-
-#### Alternative: Use the Codex GitHub Action
-
-If you want to avoid installing the CLI yourself, you can run `codex exec` through the [Codex GitHub Action](/codex/github-action) and pass the prompt as an input.
 
 #### Advanced stdin piping
 
@@ -8085,6 +8171,22 @@ curl -vv https://api.example.com/health 2>&1 \
   > tls-debug.md
 ```
 
+#### Prepare a Slack-ready update
+
+```bash
+gh run view 123456 --log \
+  | codex exec "write a concise Slack-ready update on the CI failure, including the likely cause and next step" \
+  | pbcopy
+```
+
+#### Draft a pull request comment from CI logs
+
+```bash
+gh run view 123456 --log \
+  | codex exec "summarize the failure in 5 bullets for the pull request thread" \
+  | gh pr comment 789 --body-file -
+```
+
 ### Use Codex with the Agents SDK
 
 Source: [Use Codex with the Agents SDK](/codex/guides/agents-sdk.md)
@@ -8107,17 +8209,17 @@ Send a `tools/list` request to see two tools:
 
 **`codex`**: Run a Codex session. Accepts configuration parameters that match the Codex `Config` struct. The `codex` tool takes these properties:
 
-| Property                | Type      | Description                                                                                              |
-| ----------------------- | --------- | -------------------------------------------------------------------------------------------------------- |
-| **`prompt`** (required) | `string`  | The initial user prompt to start the Codex conversation.                                                 |
-| `approval-policy`       | `string`  | Approval policy for shell commands generated by the model: `untrusted`, `on-request`, and `never`.       |
-| `base-instructions`     | `string`  | The set of instructions to use instead of the default ones.                                              |
-| `config`                | `object`  | Individual configuration settings that override what's in `$CODEX_HOME/config.toml`.                     |
-| `cwd`                   | `string`  | Working directory for the session. If relative, resolved against the server process's current directory. |
-| `include-plan-tool`     | `boolean` | Whether to include the plan tool in the conversation.                                                    |
-| `model`                 | `string`  | Optional override for the model name (for example, `o3`, `o4-mini`).                                     |
-| `profile`               | `string`  | Configuration profile from `config.toml` to specify default options.                                     |
-| `sandbox`               | `string`  | Sandbox mode: `read-only`, `workspace-write`, or `danger-full-access`.                                   |
+| Property                | Type      | Description                                                                                                |
+| ----------------------- | --------- | ---------------------------------------------------------------------------------------------------------- |
+| **`prompt`** (required) | `string`  | The initial user prompt to start the Codex conversation.                                                   |
+| `approval-policy`       | `string`  | Approval policy for shell commands generated by the model: `untrusted`, `on-request`, and `never`.         |
+| `base-instructions`     | `string`  | The set of instructions to use instead of the default ones.                                                |
+| `config`                | `object`  | Individual configuration settings that override what's in `$CODEX_HOME/config.toml`.                       |
+| `cwd`                   | `string`  | Working directory for the session. If relative, resolved against the server process's current directory.   |
+| `include-plan-tool`     | `boolean` | Whether to include the plan tool in the conversation.                                                      |
+| `model`                 | `string`  | Optional override for the model name (for example, `o3`, `o4-mini`).                                       |
+| `profile`               | `string`  | Configuration profile name; Codex loads `$CODEX_HOME/profile-name.config.toml` to specify default options. |
+| `sandbox`               | `string`  | Sandbox mode: `read-only`, `workspace-write`, or `danger-full-access`.                                     |
 
 **`codex-reply`**: Continue a Codex session by providing the thread ID and prompt. The `codex-reply` tool takes these properties:
 
@@ -8158,9 +8260,9 @@ This guide walks through the same workflow showcased in the [OpenAI Cookbook](ht
 
 Before starting, make sure you have:
 
-- [Codex CLI](/codex/cli) installed locally so `npx codex` can run.
+- [Codex CLI](/codex/cli) installed locally so the `codex` command is available.
 - Python 3.10+ with `pip`.
-- Node.js 18+ (required for `npx`).
+- Node.js 18+ if you want to run the MCP Inspector example above.
 - An OpenAI API key stored locally. You can create or manage keys in the [OpenAI dashboard](https://platform.openai.com/account/api-keys).
 
 Create a working directory for the guide and add your API key to a `.env` file:
@@ -8200,8 +8302,8 @@ async def main() -> None:
     async with MCPServerStdio(
         name="Codex CLI",
         params={
-            "command": "npx",
-            "args": ["-y", "codex", "mcp-server"],
+            "command": "codex",
+            "args": ["mcp-server"],
         },
         client_session_timeout_seconds=360000,
     ) as codex_mcp_server:
@@ -8246,8 +8348,8 @@ async def main() -> None:
     async with MCPServerStdio(
         name="Codex CLI",
         params={
-            "command": "npx",
-            "args": ["-y", "codex", "mcp-server"],
+            "command": "codex",
+            "args": ["mcp-server"],
         },
         client_session_timeout_seconds=360000,
     ) as codex_mcp_server:
@@ -8953,7 +9055,7 @@ Enterprise admins can control local Codex behavior in two ways:
 
 #### Admin-enforced requirements (requirements.toml)
 
-Requirements constrain security-sensitive settings (approval policy, approvals reviewer, automatic review policy, sandbox mode, web search mode, managed hooks, and optionally which MCP servers users can enable). When resolving configuration (for example from `config.toml`, profiles, or CLI config overrides), if a value conflicts with an enforced rule, Codex falls back to a compatible value and notifies the user. If you configure an `mcp_servers` allowlist, Codex enables an MCP server only when both its name and identity match an approved entry; otherwise, Codex disables it.
+Requirements constrain security-sensitive settings (approval policy, approvals reviewer, automatic review policy, sandbox mode, web search mode, managed hooks, and optionally which MCP servers users can enable). When resolving configuration (for example from `config.toml`, [profile files](/codex/config-advanced#profiles), or CLI config overrides), if a value conflicts with an enforced rule, Codex falls back to a compatible value and notifies the user. If you configure an `mcp_servers` allowlist, Codex enables an MCP server only when both its name and identity match an approved entry; otherwise, Codex disables it.
 
 Requirements can also constrain [feature flags](/codex/config-basic/#feature-flags) via the `[features]` table in `requirements.toml`. Note that features aren't always security-sensitive, but enterprises can pin values if desired. Omitted keys remain unconstrained.
 
@@ -9099,7 +9201,7 @@ in_app_browser = false
 computer_use = false
 ```
 
-Use the canonical feature keys from `config.toml`'s `[features]` table. Codex normalizes the resulting feature set to meet these pins and rejects conflicting writes to `config.toml` or profile-scoped feature settings.
+Use the canonical feature keys from `config.toml`'s `[features]` table. Codex normalizes the resulting feature set to meet these pins and rejects conflicting writes to `config.toml` or profile file feature settings.
 
 - `in_app_browser = false` disables the in-app browser pane.
 - `browser_use = false` disables Browser Use and Browser Agent availability.
@@ -10926,15 +11028,8 @@ wsl
 Then run these commands from your WSL shell:
 
 ```bash
-# https://learn.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-wsl
-# Install Node.js in WSL (via nvm)
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
-
-# In a new tab or after exiting and running `wsl` again to install Node.js
-nvm install 22
-
 # Install and run Codex in WSL
-npm i -g @openai/codex
+curl -fsSL https://chatgpt.com/codex/install.sh | sh
 codex
 ```
 

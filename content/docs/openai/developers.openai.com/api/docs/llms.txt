@@ -58,6 +58,11 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Compaction](https://developers.openai.com/api/docs/guides/compaction.md): Manage long-running conversations with server-side and standalone compaction.
 - [Completions API](https://developers.openai.com/api/docs/guides/completions.md)
 - [Computer use](https://developers.openai.com/api/docs/guides/tools-computer-use.md): Use the Responses API computer tool to click, type, scroll, and inspect screenshots.
+- [Configuring workload identity federation for AWS](https://developers.openai.com/api/docs/guides/workload-identity-federation/aws.md): Configure AWS outbound identity federation or Amazon EKS as a workload identity federation token provider.
+- [Configuring workload identity federation for GitHub Actions](https://developers.openai.com/api/docs/guides/workload-identity-federation/github-actions.md): Configure GitHub Actions as a workload identity federation token provider.
+- [Configuring workload identity federation for Google Cloud](https://developers.openai.com/api/docs/guides/workload-identity-federation/google-cloud.md): Configure Google workload identity or GKE as a workload identity federation token provider.
+- [Configuring workload identity federation for Kubernetes](https://developers.openai.com/api/docs/guides/workload-identity-federation/kubernetes.md): Configure Kubernetes as a workload identity federation token provider.
+- [Configuring workload identity federation for Microsoft Azure](https://developers.openai.com/api/docs/guides/workload-identity-federation/microsoft-azure.md): Configure Azure managed identity or AKS as a workload identity federation token provider.
 - [Conversation state](https://developers.openai.com/api/docs/guides/conversation-state.md): Learn how to manage conversation state during a model interaction with the OpenAI API.
 - [Cost optimization](https://developers.openai.com/api/docs/guides/cost-optimization.md): Lower your OpenAI model costs by trying our tools and strategies.
 - [Counting tokens](https://developers.openai.com/api/docs/guides/token-counting.md): Use the Responses API to count input tokens for text, images, files, tools, and more—without estimation or tiktoken.
@@ -117,6 +122,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Realtime with tools](https://developers.openai.com/api/docs/guides/realtime-mcp.md): Learn how to configure function tools, MCP tools, and connectors in a Realtime session.
 - [Reasoning best practices](https://developers.openai.com/api/docs/guides/reasoning-best-practices.md): Explore best practices for using o-series reasoning models, like o1 and o3-mini, vs. GPT models—including use cases, how to choose a model, and prompting guidance.
 - [Reasoning models](https://developers.openai.com/api/docs/guides/reasoning.md): Learn how to use OpenAI reasoning models in the Responses API, choose a reasoning effort, manage reasoning tokens, and keep reasoning state across turns.
+- [Red teaming](https://developers.openai.com/api/docs/guides/red-teaming.md): Learn how red teaming fits into AI evaluation, including Promptfoo open source and OpenAI Red Teaming for enterprise teams.
 - [Reinforcement fine-tuning](https://developers.openai.com/api/docs/guides/reinforcement-fine-tuning.md): Fine-tune models for expert-level performance within a domain.
 - [Reinforcement fine-tuning use cases](https://developers.openai.com/api/docs/guides/rft-use-cases.md): Explore best practices and practical use cases for reinforcement fine-tuning (RFT) with OpenAI models.
 - [Results and state](https://developers.openai.com/api/docs/guides/agents/results.md): Learn which result surfaces matter most in the OpenAI Agents SDK and how they connect to resumable workflow state.
@@ -154,6 +160,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Webhooks and server-side controls](https://developers.openai.com/api/docs/guides/realtime-server-controls.md): Learn how to use webhooks and server-side controls with the Realtime API.
 - [WebSocket Mode](https://developers.openai.com/api/docs/guides/websocket-mode.md): Learn how to use Responses API WebSocket mode with response.create and previous_response_id.
 - [Working with evals](https://developers.openai.com/api/docs/guides/evals.md): Learn how to test and improve AI model outputs through evaluations.
+- [Workload identity federation](https://developers.openai.com/api/docs/guides/workload-identity-federation.md): Authenticate to OpenAI APIs with short-lived credentials through workload identity federation instead of storing static long-lived API keys.
 
 ## Libraries
 - [SDKs and CLI](https://developers.openai.com/api/docs/libraries.md): Discover official OpenAI SDKs, the OpenAI CLI, and the Agents SDK.
