@@ -27,7 +27,7 @@ brew install anthropics/tap/ant
 For Linux environments, download the release binary directly.
 
 ```bash nocheck
-VERSION=1.9.1
+VERSION=1.10.0
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 ARCH=$(uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/')
 curl -fsSL "https://github.com/anthropics/anthropic-cli/releases/download/v${VERSION}/ant_${VERSION}_${OS}_${ARCH}.tar.gz" \
@@ -193,14 +193,14 @@ With the binary installed and authenticated, call the [Messages API](/docs/en/ap
 
 ```bash
 ant messages create \
-  --model claude-opus-4-7 \
+  --model claude-opus-4-8 \
   --max-tokens 1024 \
   --message '{role: user, content: "Hello, Claude"}'
 ```
 
 ```json Output
 {
-  "model": "claude-opus-4-7",
+  "model": "claude-opus-4-8",
   "id": "msg_01YMmR5XodC5nTqMxLZMKaq6",
   "type": "message",
   "role": "assistant",
@@ -231,7 +231,7 @@ Resources in beta (including agents, sessions, deployments, environments, and sk
 
 ```bash
 ant models list
-ant messages create --model claude-opus-4-7 --max-tokens 1024 ...
+ant messages create --model claude-opus-4-8 --max-tokens 1024 ...
 ant beta:agents retrieve --agent-id agent_01...
 ant beta:sessions:events list --session-id session_01...
 ```
@@ -253,13 +253,13 @@ ant beta:sessions:events list --session-id session_01...
 `auto` pretty-prints JSON and is the default for commands that create or modify resources. List and retrieve commands default to the [interactive explorer](#interactive-explorer) when writing to a terminal, and to pretty-printed JSON when piped. Override either default with `--format`:
 
 ```bash
-ant models retrieve --model-id claude-opus-4-7 --format yaml
+ant models retrieve --model-id claude-opus-4-8 --format yaml
 ```
 
 ```yaml Output
 type: model
-id: claude-opus-4-7
-display_name: Claude Opus 4.7
+id: claude-opus-4-8
+display_name: Claude Opus 4.8
 created_at: "2026-02-04T00:00:00Z"
 ...
 ```
@@ -331,7 +331,7 @@ Repeatable flags build arrays. Each `--tool` or `--event` appends one element:
 ```bash
 ant beta:agents create \
   --name "Research Agent" \
-  --model '{id: claude-opus-4-7}' \
+  --model '{id: claude-opus-4-8}' \
   --tool '{type: agent_toolset_20260401}' \
   --tool '{type: custom, name: search_docs, input_schema: {type: object, properties: {query: {type: string}}}}'
 ```
@@ -350,7 +350,7 @@ Heredocs work the same way and are convenient for multi-line YAML. Quote the del
 ```bash
 ant beta:agents create <<'YAML'
 name: Research Agent
-model: claude-opus-4-7
+model: claude-opus-4-8
 system: |
   You are a research assistant. Cite sources for every claim.
 tools:
@@ -378,7 +378,7 @@ Inside structured flag values, wrap the path in quotes. To send a PDF to the Mes
 
 ```bash
 ant messages create \
-  --model claude-opus-4-7 \
+  --model claude-opus-4-8 \
   --max-tokens 1024 \
   --message '{role: user, content: [
     {type: document, source: {type: base64, media_type: application/pdf, data: "@./scan.pdf"}},

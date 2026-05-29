@@ -55,7 +55,7 @@ You can control which service tiers can be used for a request by setting the `se
 
 ```python Python
 message = client.messages.create(
-    model="claude-opus-4-7",
+    model="claude-opus-4-8",
     max_tokens=1024,
     messages=[{"role": "user", "content": "Hello, Claude!"}],
     service_tier="auto",  # Automatically use Priority Tier when available, fallback to standard
@@ -113,7 +113,7 @@ The ratio of input to output tokens you purchase matters. Sizing your Priority T
 
 ### Supported models
 
-Priority Tier is supported on all available Claude models (including Claude Opus 4.7) except [Claude Mythos Preview](https://anthropic.com/glasswing).
+Priority Tier is supported on all available Claude models (including Claude Opus 4.8) except [Claude Mythos Preview](https://anthropic.com/glasswing).
 
 Check the [Models overview](/docs/en/about-claude/models/overview) for more details on available models.
 

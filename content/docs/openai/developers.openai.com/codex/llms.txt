@@ -154,7 +154,8 @@ Use this as a compact map of Codex docs. Each page has a Markdown twin at `/code
 - [Codex SDK](https://developers.openai.com/codex/sdk.md): Programmatically control local Codex agents
 
 ## Security
-- [Codex Security](https://developers.openai.com/codex/security.md): Find, validate, and remediate security issues with Codex
+- [Codex Security](https://developers.openai.com/codex/security.md): Find and remediate vulnerabilities with the Codex Security plugin or Codex Security cloud.
+- [Codex Security plugin](https://developers.openai.com/codex/security/plugin.md): Install the Codex Security plugin to scan code, confirm findings, and prepare reviewed fixes from Codex.
 - [Codex Security setup](https://developers.openai.com/codex/security/setup.md): Set up Codex Security, wait for initial findings, and improve results with threat model edits
 - [FAQ](https://developers.openai.com/codex/security/faq.md): Common questions about Codex Security
 - [Improving the threat model](https://developers.openai.com/codex/security/threat-model.md): Refine the Codex Security context that ranks findings and helps you review faster

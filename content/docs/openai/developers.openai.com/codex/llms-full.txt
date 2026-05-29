@@ -9302,7 +9302,7 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
     },
     {
       key: "features.network_proxy.unix_sockets",
-      type: "map<string, allow | none>",
+      type: "map<string, allow | deny>",
       description:
         "Unix socket policy for sandboxed networking. Unset by default; add `allow` entries for permitted sockets.",
     },
@@ -10048,13 +10048,13 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
       key: "permissions.<name>.network.unix_sockets",
       type: "table",
       description:
-        "Unix socket allowlist overrides for sandboxed networking. Use socket paths as keys; `allow` adds a path, and `none` clears an inherited allow entry.",
+        "Unix socket allowlist overrides for sandboxed networking. Use socket paths as keys; `allow` adds a path, and `deny` rejects it.",
     },
     {
       key: "permissions.<name>.network.unix_sockets.<path>",
-      type: "allow | none",
+      type: "allow | deny",
       description:
-        "Add an absolute Unix socket path to the effective allowlist with `allow`, or clear an inherited allow entry with `none`. `none` is not a separate deny-list decision.",
+        "Add an absolute Unix socket path to the effective allowlist with `allow`, or reject it with `deny`. Denied entries are omitted from the effective allowlist.",
     },
     {
       key: "permissions.<name>.network.allow_local_binding",
@@ -10293,7 +10293,7 @@ canonical keys that `config.toml` uses. Omitted keys remain unconstrained.
     },
     {
       key: "experimental_network.unix_sockets",
-      type: "map<string, allow | none>",
+      type: "map<string, allow | deny>",
       description:
         "Administrator-managed Unix socket policy for sandboxed networking.",
     },
@@ -16513,7 +16513,7 @@ cycles.
 | `[permissions.<name>.network.domains]`                            | Table                      | None                    | Maps host patterns to `allow` or `deny`. If there are no `allow` entries, domain requests are blocked. Deny entries override allow entries.                                                                                                                                                    |
 | `permissions.<name>.network.domains."<pattern>"`                  | `allow` or `deny`          | None                    | Supports exact hosts, `*.example.com` for subdomains, `**.example.com` for apex plus subdomains, and `*` as an allow-only global wildcard. Host patterns are normalized by trimming, lowercasing, stripping a trailing dot, and stripping simple ports or brackets.                            |
 | `[permissions.<name>.network.unix_sockets]`                       | Table                      | None                    | Maps Unix socket allowlist overrides. Use only for local integrations such as Docker.                                                                                                                                                                                                          |
-| `permissions.<name>.network.unix_sockets."<path>"`                | `allow` or `none`          | None                    | Adds an absolute Unix socket path to the effective allowlist with `allow`, or clears an inherited allow entry with `none`. `none` is not a separate deny-list decision.                                                                                                                        |
+| `permissions.<name>.network.unix_sockets."<path>"`                | `allow` or `deny`          | None                    | Adds an absolute Unix socket path to the effective allowlist with `allow`, or rejects it with `deny`. Denied entries are omitted from the effective allowlist.                                                                                                                                 |
 | `permissions.<name>.network.proxy_url`                            | URL string                 | `http://127.0.0.1:3128` | HTTP proxy listener used for `HTTP_PROXY`, `HTTPS_PROXY`, websocket proxy variables, and related tool proxy environment variables.                                                                                                                                                             |
 | `permissions.<name>.network.enable_socks5`                        | Boolean                    | `true`                  | Enables the SOCKS5 listener used for `ALL_PROXY` and FTP proxy variables.                                                                                                                                                                                                                      |
 | `permissions.<name>.network.socks_url`                            | URL string                 | `http://127.0.0.1:8081` | SOCKS5 listener address.                                                                                                                                                                                                                                                                       |
@@ -16720,11 +16720,11 @@ sparingly:
 ```toml
 [permissions.project-edit.network.unix_sockets]
 "/var/run/docker.sock" = "allow"
-"/tmp/old.sock" = "none"
+"/tmp/old.sock" = "deny"
 ```
 
-Use `none` to clear a socket allow entry inherited from a lower-precedence
-configuration layer. It is not a domain-style deny rule.
+Use `deny` to reject a socket path, including an inherited allow entry. Denied
+socket paths are omitted from the effective allowlist.
 
 When Unix sockets are enabled, keep proxy listeners bound to loopback addresses.
 
@@ -16865,6 +16865,8 @@ workflows for Codex.
 
 Extend what Codex can do, for example:
 
+- Install the Codex Security plugin to scan authorized code and confirm
+  plausible vulnerability findings.
 - Install the Gmail plugin to let Codex read and manage Gmail.
 - Install the Google Drive plugin to work across Drive, Docs, Sheets, and
   Slides.
@@ -16993,6 +16995,11 @@ If you want to create, test, or distribute your own plugin, see
 [Build plugins](https://developers.openai.com/codex/plugins/build). That page covers local scaffolding,
 manual marketplace setup, workspace sharing, plugin manifests, and packaging
 guidance.
+
+## Plugin guides
+
+- [Codex Security plugin](https://developers.openai.com/codex/security/plugin): Scan authorized code,
+  confirm findings, and prepare reviewed fixes.
 
 ---
 
@@ -19165,12 +19172,24 @@ For more details, check out the [Python repo](https://github.com/openai/codex/tr
 
 # Codex Security
 
-Codex Security helps engineering and security teams find, validate, and remediate likely vulnerabilities in connected GitHub repositories.
+For installation steps, supported skills, and review boundaries, see the
+[Codex Security plugin guide](https://developers.openai.com/codex/security/plugin).
 
-This page covers Codex Security, the product that scans connected GitHub
-  repositories for likely security issues. For Codex sandboxing, approvals,
+### Explore plugin use cases
+
+- [Run a deep security scan](https://developers.openai.com/codex/use-cases/deep-security-scan) to perform a higher-recall repository-wide audit.
+- [Scan code changes for security](https://developers.openai.com/codex/use-cases/scan-code-changes-for-security) before you merge a pull request or branch.
+- [Remediate a vulnerability backlog](https://developers.openai.com/codex/use-cases/remediate-vulnerability-backlog) with bounded fixes for approved findings.
+
+The plugin runs in your Codex thread. Codex Security cloud scans connected
+  GitHub repositories through Codex Web. For Codex sandboxing, approvals,
   network controls, and admin settings, see [Agent approvals &
   security](https://developers.openai.com/codex/agent-approvals-security).
+
+## Codex Security cloud
+
+Codex Security cloud is currently in research preview. It scans connected
+GitHub repositories for likely security issues.
 
 It helps teams:
 
@@ -19178,7 +19197,7 @@ It helps teams:
 2. **Reduce noise** by validating findings before you review them.
 3. **Move findings toward fixes** with ranked results, evidence, and suggested patch options.
 
-## How it works
+## How Codex Security cloud works
 
 Codex Security scans connected repositories commit by commit.
 It builds scan context from your repo, checks likely vulnerabilities against that context, and validates high-signal issues in an isolated environment before surfacing them.
@@ -19189,15 +19208,161 @@ You get a workflow focused on:
 - validation evidence that helps reduce false positives
 - suggested fixes you can review in GitHub
 
-## Access and prerequisites
+## Codex Security cloud access and prerequisites
 
-Codex Security works with connected GitHub repositories through Codex Web. OpenAI manages access. If you need access or a repository isn't visible, contact your OpenAI account team and confirm the repository is available through your Codex Web workspace.
+Codex Security is available for ChatGPT Enterprise, Edu, Business, and Pro users. It works with connected GitHub repositories through Codex Web. If you need access or a repository isn't visible, confirm the repository is available through your Codex Web workspace or contact your OpenAI account team.
 
 ## Related docs
 
-- [Codex Security setup](https://developers.openai.com/codex/security/setup) covers setup, scanning, and findings review.
-- [FAQ](https://developers.openai.com/codex/security/faq) covers common product questions.
+- [Codex Security plugin guide](https://developers.openai.com/codex/security/plugin) covers local repository and diff-review workflows in Codex.
+- [Codex Security cloud setup](https://developers.openai.com/codex/security/setup) covers setup, scanning, and findings review.
 - [Improving the threat model](https://developers.openai.com/codex/security/threat-model) explains how to tune scope, attack surface, and criticality assumptions.
+- [FAQ](https://developers.openai.com/codex/security/faq) covers common product questions.
+
+---
+
+# Codex Security plugin
+
+The Codex Security plugin adds security-review workflows to Codex for code that
+you have authorization to assess. Use it from an open repository to investigate
+a codebase, review a change set for security regressions, confirm plausible
+findings, and prepare minimal fixes for review.
+
+This page covers the installable plugin that runs in your Codex thread. For
+  the research-preview product that scans connected GitHub repositories through
+  Codex Web, see [Codex Security](https://developers.openai.com/codex/security).
+
+## Install the plugin
+
+
+
+<div slot="app">
+    <ButtonLink
+      href="codex://plugins/install/codex-security?marketplace=openai-curated"
+      color="primary"
+      variant="solid"
+      size="lg"
+      pill
+      className="mt-2"
+    >
+      Install the Codex Security plugin
+    </ButtonLink>
+
+    <br />
+
+    After installation, start a new thread in the repository you want to
+    assess.
+
+  </div>
+
+  <div slot="cli">
+    <WorkflowSteps variant="headings">
+    1. Open Codex
+
+       Start Codex from your repository:
+
+       ```bash
+       codex
+       ```
+
+    2. Open the plugin browser
+
+       Enter:
+
+       ```text
+       /plugins
+       ```
+
+    3. Install Codex Security
+
+       Search for **Codex Security**, open it, and select `Install plugin`.
+
+    4. Start a new thread
+
+       Start a new thread in the repository you are authorized to review.
+    </WorkflowSteps>
+
+  </div>
+
+
+
+## Choose a security workflow
+
+Choose the narrowest workflow that answers your question. A diff-focused scan
+is faster to review than a repository-wide scan; a deep scan intentionally uses
+more time and tokens to search for more candidate findings.
+
+| Goal                                   | Skill                                | Scope and output                                                                                                                              |
+| -------------------------------------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Review a repository or one scoped path | `$codex-security:security-scan`      | Runs threat modeling, finding discovery, validation, attack-path analysis, and produces Markdown and HTML reports.                            |
+| Run a higher-recall audit              | `$codex-security:deep-security-scan` | Repeats repository-wide discovery with delegated workers before validation and reporting. Use it only for an entire repository.               |
+| Review a change before merge           | `$codex-security:security-diff-scan` | Reviews a pull request, commit, branch diff, or working-tree patch and produces a Markdown report grounded in changed code.                   |
+| Fix one finding                        | `$codex-security:fix-finding`        | Reproduces or validates one plausible finding, makes a minimal fix when needed, and checks that the vulnerable behavior no longer reproduces. |
+
+For example, to scan a repository:
+
+```text
+Use $codex-security:security-scan to scan this repository for security
+vulnerabilities. Keep the scan grounded in code evidence, validate plausible
+findings where feasible, and return the final report paths. Do not modify code.
+```
+
+To review the current change instead:
+
+```text
+Use $codex-security:security-diff-scan to review the current branch diff for
+security regressions. Keep the review scoped to changed code and directly
+supporting files. Do not modify code.
+```
+
+## Review the result and fix findings
+
+Repository scans use a staged workflow:
+
+1. **Threat modeling** identifies entry points, trust boundaries, sensitive
+   actions, and risky components.
+2. **Finding discovery** looks for concrete source-to-sink paths or broken
+   controls in the requested scope.
+3. **Validation** tests or otherwise verifies plausible findings and records
+   evidence or proof gaps.
+4. **Attack-path analysis** traces exploitable paths and rates severity for
+   findings that survive validation.
+5. **Reporting** writes findings, affected locations, validation evidence,
+   remediation guidance, and review directives to artifacts.
+
+An ordinary repository scan or a deep scan writes `report.md` and a readable
+`report.html` within its scan directory. A diff scan writes a focused Markdown
+report. Review affected files, evidence, assumptions, and severity before
+starting remediation.
+
+When a finding is actionable, ask for a bounded fix:
+
+```text
+Use $codex-security:fix-finding to fix finding [finding ID or report
+reference]. Add focused regression coverage, verify legitimate behavior still
+works, and show that the original issue no longer reproduces. Do not broaden
+the change beyond this finding.
+```
+
+## Keep security work authorized and reviewable
+
+Run scans only against repositories, diffs, and systems that you own or that
+your organization authorizes you to assess. A finding is an input to review,
+not an instruction to merge code or test unrelated targets.
+
+- Keep the first scan read-only unless you explicitly ask Codex to prepare a
+  fix.
+- Review commands that build, run, or reproduce behavior before approving
+  them, especially in unfamiliar repositories.
+- Review every proposed patch and validation result before merging it.
+- Keep repository instructions and approval policies in place while using the
+  plugin. For details, see [Agent approvals and security](https://developers.openai.com/codex/agent-approvals-security).
+
+## Explore security use cases
+
+- [Run a deep security scan](https://developers.openai.com/codex/use-cases/deep-security-scan)
+- [Scan code changes for security](https://developers.openai.com/codex/use-cases/scan-code-changes-for-security)
+- [Remediate a vulnerability backlog](https://developers.openai.com/codex/use-cases/remediate-vulnerability-backlog)
 
 ---
 

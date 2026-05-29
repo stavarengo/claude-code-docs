@@ -64,18 +64,19 @@ Current and recently retired models are listed in the following table with their
 
 | API model name              | Current state       | Deprecated        | Tentative retirement date |
 |:----------------------------|:--------------------|:------------------|:-------------------------|
-| `claude-opus-4-7`               | Active              | N/A               | Not sooner than April 16, 2027 |
-| `claude-opus-4-6`             | Active              | N/A               | Not sooner than February 5, 2027 |
-| `claude-opus-4-5-20251101`  | Active              | N/A               | Not sooner than November 24, 2026 |
-| `claude-opus-4-1-20250805`  | Active              | N/A               | Not sooner than August 5, 2026 |
-| `claude-opus-4-20250514`    | Deprecated          | April 14, 2026    | June 15, 2026            |
-| `claude-sonnet-4-6`         | Active              | N/A               | Not sooner than February 17, 2027 |
-| `claude-sonnet-4-5-20250929`| Active              | N/A               | Not sooner than September 29, 2026 |
-| `claude-sonnet-4-20250514`  | Deprecated          | April 14, 2026    | June 15, 2026            |
-| `claude-3-7-sonnet-20250219`| Retired             | October 28, 2025  | February 19, 2026          |
-| `claude-haiku-4-5-20251001` | Active              | N/A               | Not sooner than October 15, 2026 |
-| `claude-3-5-haiku-20241022` | Retired             | December 19, 2025 | February 19, 2026          |
-| `claude-3-haiku-20240307`   | Retired             | February 19, 2026 | April 20, 2026             |
+| <NextOpusId />               | Active              | N/A               | Not sooner than May 28, 2027 |
+| claude-opus-4-7               | Active              | N/A               | Not sooner than April 16, 2027 |
+| claude-opus-4-6             | Active              | N/A               | Not sooner than February 5, 2027 |
+| claude-opus-4-5-20251101  | Active              | N/A               | Not sooner than November 24, 2026 |
+| claude-opus-4-1-20250805  | Active              | N/A               | Not sooner than August 5, 2026 |
+| claude-opus-4-20250514    | Deprecated          | April 14, 2026    | June 15, 2026            |
+| claude-sonnet-4-6         | Active              | N/A               | Not sooner than February 17, 2027 |
+| claude-sonnet-4-5-20250929| Active              | N/A               | Not sooner than September 29, 2026 |
+| claude-sonnet-4-20250514  | Deprecated          | April 14, 2026    | June 15, 2026            |
+| claude-3-7-sonnet-20250219| Retired             | October 28, 2025  | February 19, 2026          |
+| claude-haiku-4-5-20251001 | Active              | N/A               | Not sooner than October 15, 2026 |
+| claude-3-5-haiku-20241022 | Retired             | December 19, 2025 | February 19, 2026          |
+| claude-3-haiku-20240307   | Retired             | February 19, 2026 | April 20, 2026             |
 
 ## Deprecation history
 
@@ -88,7 +89,7 @@ On April 14, 2026, Anthropic notified developers using Claude Sonnet 4 and Claud
 | Retirement date             | Deprecated model            | Recommended replacement         |
 |:----------------------------|:----------------------------|:--------------------------------|
 | June 15, 2026               | `claude-sonnet-4-20250514`  | `claude-sonnet-4-6`             |
-| June 15, 2026               | `claude-opus-4-20250514`    | `claude-opus-4-7`               |
+| June 15, 2026               | `claude-opus-4-20250514`    | `claude-opus-4-8`               |
 
 ### 2026-02-19: Claude Haiku 3 model
 
@@ -149,7 +150,7 @@ On June 30, 2025, Anthropic notified developers using Claude Opus 3 model of its
 
 | Retirement date             | Deprecated model            | Recommended replacement         |
 |:----------------------------|:----------------------------|:--------------------------------|
-| January 5, 2026             | `claude-3-opus-20240229`    | `claude-opus-4-7`      |
+| January 5, 2026             | `claude-3-opus-20240229`    | `claude-opus-4-8`      |
 
 ### 2025-01-21: Claude 2, Claude 2.1, and Claude Sonnet 3 models
 
@@ -161,8 +162,8 @@ On January 21, 2025, Anthropic notified developers using Claude 2, Claude 2.1, a
 
 | Retirement date             | Deprecated model            | Recommended replacement         |
 |:----------------------------|:----------------------------|:--------------------------------|
-| July 21, 2025               | `claude-2.0`                | `claude-opus-4-7`                  |
-| July 21, 2025               | `claude-2.1`                | `claude-opus-4-7`                  |
+| July 21, 2025               | `claude-2.0`                | `claude-opus-4-8`                  |
+| July 21, 2025               | `claude-2.1`                | `claude-opus-4-8`                  |
 | July 21, 2025               | `claude-3-sonnet-20240229`  | `claude-sonnet-4-6`                |
 
 ### 2024-09-04: Claude 1 and Instant models
@@ -182,3 +183,13 @@ On September 4, 2024, Anthropic notified developers using Claude 1 and Instant m
 | November 6, 2024            | `claude-instant-1.0`      | `claude-haiku-4-5-20251001`|
 | November 6, 2024            | `claude-instant-1.1`      | `claude-haiku-4-5-20251001`|
 | November 6, 2024            | `claude-instant-1.2`      | `claude-haiku-4-5-20251001`|
+
+## API parameter deprecations
+
+Anthropic occasionally deprecates request parameters that no longer apply to current models. Deprecated parameters remain in the SDK request types so existing code continues to type-check, but their behavior changes per model.
+
+| Parameter | Status | Behavior | Recommended replacement |
+| --- | --- | --- | --- |
+| `temperature`, `top_p`, `top_k` | Deprecated (Claude Opus 4.7 and later) | Returns a 400 error when set to a non-default value on Claude Opus 4.7 and later, including <NextOpus />. | Omit and use [prompting](/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices) to guide model behavior. |
+
+For migration steps, see the [migration guide](/docs/en/about-claude/models/migration-guide).

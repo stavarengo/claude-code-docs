@@ -675,6 +675,128 @@ No. Codex Security accelerates review and helps rank findings, but it does not r
 
 Yes. Codex Security creates the initial threat model, and you can update it as the architecture, risks, and business context change. For the editing workflow, see [Improving the threat model](/codex/security/threat-model).
 
+### Codex Security plugin
+
+Source: [Codex Security plugin](/codex/security/plugin.md)
+
+The Codex Security plugin adds security-review workflows to Codex for code that
+you have authorization to assess. Use it from an open repository to investigate
+a codebase, review a change set for security regressions, confirm plausible
+findings, and prepare minimal fixes for review.
+
+This page covers the installable plugin that runs in your Codex thread. For
+the research-preview product that scans connected GitHub repositories through
+Codex Web, see [Codex Security](/codex/security).
+
+#### Install the plugin
+
+Install the Codex Security plugin
+
+    After installation, start a new thread in the repository you want to
+    assess.
+
+1. Open Codex
+
+   Start Codex from your repository:
+
+   ```bash
+   codex
+   ```
+
+   2. Open the plugin browser
+
+      Enter:
+
+      ```text
+      /plugins
+      ```
+
+   3. Install Codex Security
+
+      Search for **Codex Security**, open it, and select `Install plugin`.
+
+   4. Start a new thread
+
+      Start a new thread in the repository you are authorized to review.
+
+#### Choose a security workflow
+
+Choose the narrowest workflow that answers your question. A diff-focused scan
+is faster to review than a repository-wide scan; a deep scan intentionally uses
+more time and tokens to search for more candidate findings.
+
+| Goal                                   | Skill                                | Scope and output                                                                                                                              |
+| -------------------------------------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Review a repository or one scoped path | `$codex-security:security-scan`      | Runs threat modeling, finding discovery, validation, attack-path analysis, and produces Markdown and HTML reports.                            |
+| Run a higher-recall audit              | `$codex-security:deep-security-scan` | Repeats repository-wide discovery with delegated workers before validation and reporting. Use it only for an entire repository.               |
+| Review a change before merge           | `$codex-security:security-diff-scan` | Reviews a pull request, commit, branch diff, or working-tree patch and produces a Markdown report grounded in changed code.                   |
+| Fix one finding                        | `$codex-security:fix-finding`        | Reproduces or validates one plausible finding, makes a minimal fix when needed, and checks that the vulnerable behavior no longer reproduces. |
+
+For example, to scan a repository:
+
+```text
+Use $codex-security:security-scan to scan this repository for security
+vulnerabilities. Keep the scan grounded in code evidence, validate plausible
+findings where feasible, and return the final report paths. Do not modify code.
+```
+
+To review the current change instead:
+
+```text
+Use $codex-security:security-diff-scan to review the current branch diff for
+security regressions. Keep the review scoped to changed code and directly
+supporting files. Do not modify code.
+```
+
+#### Review the result and fix findings
+
+Repository scans use a staged workflow:
+
+1. **Threat modeling** identifies entry points, trust boundaries, sensitive
+   actions, and risky components.
+2. **Finding discovery** looks for concrete source-to-sink paths or broken
+   controls in the requested scope.
+3. **Validation** tests or otherwise verifies plausible findings and records
+   evidence or proof gaps.
+4. **Attack-path analysis** traces exploitable paths and rates severity for
+   findings that survive validation.
+5. **Reporting** writes findings, affected locations, validation evidence,
+   remediation guidance, and review directives to artifacts.
+
+An ordinary repository scan or a deep scan writes `report.md` and a readable
+`report.html` within its scan directory. A diff scan writes a focused Markdown
+report. Review affected files, evidence, assumptions, and severity before
+starting remediation.
+
+When a finding is actionable, ask for a bounded fix:
+
+```text
+Use $codex-security:fix-finding to fix finding [finding ID or report
+reference]. Add focused regression coverage, verify legitimate behavior still
+works, and show that the original issue no longer reproduces. Do not broaden
+the change beyond this finding.
+```
+
+#### Keep security work authorized and reviewable
+
+Run scans only against repositories, diffs, and systems that you own or that
+your organization authorizes you to assess. A finding is an input to review,
+not an instruction to merge code or test unrelated targets.
+
+- Keep the first scan read-only unless you explicitly ask Codex to prepare a
+  fix.
+- Review commands that build, run, or reproduce behavior before approving
+  them, especially in unfamiliar repositories.
+- Review every proposed patch and validation result before merging it.
+- Keep repository instructions and approval policies in place while using the
+  plugin. For details, see [Agent approvals and security](/codex/agent-approvals-security).
+
+#### Explore security use cases
+
+- [Run a deep security scan](/codex/use-cases/deep-security-scan)
+- [Scan code changes for security](/codex/use-cases/scan-code-changes-for-security)
+- [Remediate a vulnerability backlog](/codex/use-cases/remediate-vulnerability-backlog)
+
 ### Codex Security setup
 
 Source: [Codex Security setup](/codex/security/setup.md)
@@ -9814,12 +9936,26 @@ follow those instructions.
 
 Source: [Codex Security](/codex/security/index.md)
 
-Codex Security helps engineering and security teams find, validate, and remediate likely vulnerabilities in connected GitHub repositories.
+[Install plugin in Codex App](https://chatgpt.com/plugins/share/676aca3811d54fa7bcdef5255236b3c4)
 
-This page covers Codex Security, the product that scans connected GitHub
-repositories for likely security issues. For Codex sandboxing, approvals,
+For installation steps, supported skills, and review boundaries, see the
+[Codex Security plugin guide](/codex/security/plugin).
+
+#### Explore plugin use cases
+
+- [Run a deep security scan](/codex/use-cases/deep-security-scan) to perform a higher-recall repository-wide audit.
+- [Scan code changes for security](/codex/use-cases/scan-code-changes-for-security) before you merge a pull request or branch.
+- [Remediate a vulnerability backlog](/codex/use-cases/remediate-vulnerability-backlog) with bounded fixes for approved findings.
+
+The plugin runs in your Codex thread. Codex Security cloud scans connected
+GitHub repositories through Codex Web. For Codex sandboxing, approvals,
 network controls, and admin settings, see [Agent approvals &
 security](/codex/agent-approvals-security).
+
+#### Codex Security cloud
+
+Codex Security cloud is currently in research preview. It scans connected
+GitHub repositories for likely security issues.
 
 It helps teams:
 
@@ -9827,7 +9963,7 @@ It helps teams:
 2. **Reduce noise** by validating findings before you review them.
 3. **Move findings toward fixes** with ranked results, evidence, and suggested patch options.
 
-#### How it works
+#### How Codex Security cloud works
 
 Codex Security scans connected repositories commit by commit.
 It builds scan context from your repo, checks likely vulnerabilities against that context, and validates high-signal issues in an isolated environment before surfacing them.
@@ -9838,15 +9974,16 @@ You get a workflow focused on:
 - validation evidence that helps reduce false positives
 - suggested fixes you can review in GitHub
 
-#### Access and prerequisites
+#### Codex Security cloud access and prerequisites
 
-Codex Security works with connected GitHub repositories through Codex Web. OpenAI manages access. If you need access or a repository isn't visible, contact your OpenAI account team and confirm the repository is available through your Codex Web workspace.
+Codex Security is available for ChatGPT Enterprise, Edu, Business, and Pro users. It works with connected GitHub repositories through Codex Web. If you need access or a repository isn't visible, confirm the repository is available through your Codex Web workspace or contact your OpenAI account team.
 
 #### Security overview references
 
-- [Codex Security setup](/codex/security/setup) covers setup, scanning, and findings review.
-- [FAQ](/codex/security/faq) covers common product questions.
+- [Codex Security plugin guide](/codex/security/plugin) covers local repository and diff-review workflows in Codex.
+- [Codex Security cloud setup](/codex/security/setup) covers setup, scanning, and findings review.
 - [Improving the threat model](/codex/security/threat-model) explains how to tune scope, attack surface, and criticality assumptions.
+- [FAQ](/codex/security/faq) covers common product questions.
 
 ### Hooks
 
@@ -10430,6 +10567,8 @@ workflows for Codex.
 
 Extend what Codex can do, for example:
 
+- Install the Codex Security plugin to scan authorized code and confirm
+  plausible vulnerability findings.
 - Install the Gmail plugin to let Codex read and manage Gmail.
 - Install the Google Drive plugin to work across Drive, Docs, Sheets, and
   Slides.
@@ -10544,6 +10683,11 @@ If you want to create, test, or distribute your own plugin, see
 [Build plugins](/codex/plugins/build). That page covers local scaffolding,
 manual marketplace setup, workspace sharing, plugin manifests, and packaging
 guidance.
+
+#### Plugin guides
+
+- [Codex Security plugin](/codex/security/plugin): Scan authorized code,
+  confirm findings, and prepare reviewed fixes.
 
 ### Remote connections
 

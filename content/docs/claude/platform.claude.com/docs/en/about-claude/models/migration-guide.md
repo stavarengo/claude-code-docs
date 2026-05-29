@@ -1,16 +1,66 @@
 # Migration guide
 
-Guide for migrating to Claude Opus 4.7 and Claude 4.6 models from previous Claude versions
+Guide for migrating to the latest Claude models from previous Claude versions
 
 ---
 
 <Note>
-This guide covers migrating [Messages API](/docs/en/build-with-claude/working-with-messages) code. If you use [Claude Managed Agents](/docs/en/managed-agents/overview), no changes beyond updating model name are required.
+This guide covers migrating [Messages API](/docs/en/build-with-claude/working-with-messages) code. If you use [Claude Managed Agents](/docs/en/managed-agents/overview), no changes beyond updating the model name are required.
 </Note>
+
+## Migrating from Claude Opus 4.7 to <NextOpus /> \{#migrating-from-claude-opus-47}
+
+<NextOpus /> is Anthropic's most capable generally available model. It builds on Claude Opus 4.7.
+
+<NextOpus /> should have strong out-of-the-box performance on existing Claude Opus 4.7 prompts and evals. There are no breaking API changes for code already running on Claude Opus 4.7. It supports the same set of features as Claude Opus 4.7, including the [1M token context window](/docs/en/build-with-claude/context-windows), [128k max output tokens](/docs/en/about-claude/models/overview), [adaptive thinking](/docs/en/build-with-claude/adaptive-thinking), [prompt caching](/docs/en/build-with-claude/prompt-caching), [batch processing](/docs/en/build-with-claude/batch-processing), the [Files API](/docs/en/build-with-claude/files), [PDF support](/docs/en/build-with-claude/pdf-support), [vision](/docs/en/build-with-claude/vision), and the full set of server-side and client-side [tools](/docs/en/agents-and-tools/tool-use/overview). It also adds [mid-conversation system messages](/docs/en/about-claude/models/whats-new-claude-4-8#mid-conversation-system-messages) and publicly documents [refusal stop details](/docs/en/about-claude/models/whats-new-claude-4-8#refusal-stop-details).
+
+<Note>
+If your code is on Claude Opus 4.6 or earlier, also apply the [Claude Opus 4.7 migration steps](#migrating-to-claude-opus-4-7) below before upgrading to <NextOpus />. Those steps include breaking changes (sampling parameters rejected, manual extended thinking rejected, new tokenizer) that the 4.8 upgrade alone does not cover.
+</Note>
+
+<Note>
+On Microsoft Foundry, <NextOpus /> has a 200k-token context window at launch. The 1M context window applies on the Claude API, Amazon Bedrock, and Vertex AI. See [Claude in Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry).
+</Note>
+
+### Update your model name
+
+```python
+# Opus migration
+model = "claude-opus-4-7"  # Before
+model = "claude-opus-4-8"  # After
+```
+
+### What changed
+
+These are not breaking changes. Code that runs on Claude Opus 4.7 continues to work unchanged on <NextOpus />. The items below describe behavior differences worth checking after you swap the model ID.
+
+1. **Sampling parameters (unchanged):** Setting `temperature`, `top_p`, or `top_k` to a non-default value returns a 400 error on <NextOpus />, the same as on Claude Opus 4.7. The SDK request types still define these fields for compatibility with earlier models, so code that sets them type-checks, but the API rejects the request server-side. If you removed these parameters when migrating to Opus 4.7, no further changes are needed.
+
+2. **Effort default is `high`:** The [effort parameter](/docs/en/build-with-claude/effort) default on <NextOpus /> is `high` across all surfaces, including Claude Code and the Messages API. If you already set effort explicitly, your setting is unchanged. For coding and high-autonomy work, set `xhigh` explicitly. Re-evaluate your effort setting against your latency and cost budget.
+
+3. **1M context window is the default:** <NextOpus /> serves the full 1M token [context window](/docs/en/build-with-claude/context-windows) by default with no beta header and no long-context premium. If your client passes a context-window beta header for compatibility with older models, you can remove it on <NextOpus />.
+
+4. **Mid-conversation system messages:** <NextOpus /> accepts `role: "system"` messages immediately after a user turn in the `messages` array (subject to [placement rules](/docs/en/build-with-claude/mid-conversation-system-messages#limitations)). Use the top-level `system` field for instructions that apply from the start. Earlier models, including Claude Opus 4.7, reject `role: "system"` in `messages` with a 400 error. If you maintain code paths that rebuild the full message history to update instructions, you can simplify them and preserve [prompt cache](/docs/en/build-with-claude/prompt-caching) hits on earlier turns.
+
+5. **Refusal stop details:** The `stop_details` object on refusal responses (available since Claude Opus 4.7) is now publicly documented. When the model declines a request, it identifies the category of refusal, in addition to the existing `refusal` stop reason. No beta header is required, and there is no opt-out. See [Handling stop reasons](/docs/en/build-with-claude/handling-stop-reasons).
+
+6. **Lower prompt caching minimum:** The minimum cacheable prompt length on <NextOpus /> is 1,024 tokens, lower than on Claude Opus 4.7. Prompts that were too short to cache on Claude Opus 4.7 can now create cache entries, with no code changes required. See [Prompt caching](/docs/en/build-with-claude/prompt-caching#cache-limitations) for per-model minimums.
+
+7. **Effort levels recalibrated:** The token allocation behind each effort level changes on <NextOpus /> compared to Claude Opus 4.7: `medium` allows somewhat more thinking, `high` somewhat less, and `xhigh` substantially more. If you tuned an effort level against Claude Opus 4.7 cost or latency, re-baseline at the same level before adjusting it. See [Effort](/docs/en/build-with-claude/effort).
+
+### Migration checklist
+
+- [ ] Update model name from `claude-opus-4-7` to `claude-opus-4-8` (or update aliases).
+- [ ] If you removed sampling parameters during the Opus 4.7 migration, no action is needed. If you re-added them with a 400-retry path, remove that retry path.
+- [ ] Re-evaluate your `effort` setting. The default is `high` across all surfaces; for coding and high-autonomy work, set `xhigh` explicitly.
+- [ ] Remove any context-window beta header. The 1M context window is the default on the Claude API, Amazon Bedrock, and Vertex AI (200k on Microsoft Foundry).
+- [ ] If you rebuild conversation history to update instructions, consider switching to a mid-conversation system message to preserve prompt cache hits.
+- [ ] Verify your stop-reason handling reads `stop_details` on refusals (available since Claude Opus 4.7; now publicly documented).
+- [ ] Re-baseline cost and latency at your chosen effort level.
 
 ## Migrating to Claude Opus 4.7
 
-Claude Opus 4.7 is Anthropic's most capable generally available model to date. It is highly autonomous and performs exceptionally well on long-horizon agentic work, knowledge work, vision tasks, and memory tasks.
+Claude Opus 4.7 is highly autonomous and performs exceptionally well on long-horizon agentic work, knowledge work, vision tasks, and memory tasks.
 
 Claude Opus 4.7 should have strong out-of-the-box performance on existing Claude Opus 4.6 prompts and evals at the same `$5 / $25` per MTok pricing, but there are a handful of behavioral and API changes worth knowing about as you migrate. It supports the same set of features as Claude Opus 4.6, including:
 

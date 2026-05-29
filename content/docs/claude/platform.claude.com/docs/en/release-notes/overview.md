@@ -10,6 +10,25 @@ For release notes on Claude Apps, see the [Release notes for Claude Apps in the 
 For updates to Claude Code, see the [complete CHANGELOG.md](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) in the `claude-code` repository.
 </Tip>
 
+### May 28, 2026
+- We've launched **<NextOpus />** (<NextOpusId />), our most capable generally available model. <NextOpus /> supports a [1M token context window](/docs/en/build-with-claude/context-windows) by default, 128k max output tokens, and the same set of tools and platform features as Claude Opus 4.7. See [What's new in <NextOpus />](/docs/en/about-claude/models/whats-new-claude-4-8) for capability improvements, new features, and migration guidance.
+- We've launched [mid-conversation system messages](/docs/en/build-with-claude/mid-conversation-system-messages). On <NextOpus />, you can send `role: "system"` messages at non-first positions in the `messages` array, preserving prompt cache hits when instructions change during a long-running session. No beta header is required.
+- The Messages API now returns refusal categories in `stop_details` when <NextOpus /> declines a request, so your application can route different classes of refusal to the right next step. No beta header is required. See [Refusal categories](/docs/en/build-with-claude/handling-stop-reasons#refusal-categories).
+- On <NextOpus />, the [effort parameter](/docs/en/build-with-claude/effort) defaults to `high` across all surfaces, including Claude Code and the Messages API.
+- On <NextOpus />, the minimum cacheable prompt length for [prompt caching](/docs/en/build-with-claude/prompt-caching) is 1,024 tokens, lower than on Claude Opus 4.7.
+- <NextOpus /> uses [adaptive thinking](/docs/en/build-with-claude/adaptive-thinking) to trigger reasoning only when a turn needs it, reducing wasted thinking tokens compared to Claude Opus 4.7 at the same effort level.
+- <NextOpus /> supports [high-resolution image input](/docs/en/build-with-claude/vision#high-resolution-image-support-on-claude-opus-4-7) (up to 2576 pixels on the long edge), same as Claude Opus 4.7.
+- [Task budgets](/docs/en/build-with-claude/task-budgets) now support <NextOpus />.
+- The [advisor tool](/docs/en/agents-and-tools/tool-use/advisor-tool) now supports <NextOpus />.
+- [Computer use](/docs/en/agents-and-tools/tool-use/computer-use-tool) now supports <NextOpus />.
+- [Fast mode](/docs/en/build-with-claude/fast-mode) for <NextOpus /> is available as a research preview on the Claude API only.
+- Setting the sampling parameters `temperature`, `top_p`, or `top_k` to a non-default value returns a 400 error on <NextOpus />, same as on Claude Opus 4.7. See the [migration guide](/docs/en/about-claude/models/migration-guide) for details.
+- In Claude Code, we've expanded Auto mode to more users for long-running tasks. See the [Claude Code documentation](https://code.claude.com/docs).
+- In Claude Code, Max plan users now default to [fast mode](/docs/en/build-with-claude/fast-mode) on <NextOpus />. See the [Claude Code documentation](https://code.claude.com/docs).
+- In Claude Code, Workflows are available as a research preview, letting you define and run multi-step agentic plans. See the [Claude Code documentation](https://code.claude.com/docs).
+- We've deprecated [fast mode](/docs/en/build-with-claude/fast-mode) for Claude Opus 4.6, with removal approximately 30 days after launch. Migrate to fast mode for <NextOpus /> or Claude Opus 4.7. Read more in [Fast mode](/docs/en/build-with-claude/fast-mode#supported-models).
+- For updates to claude.ai, Cowork, Claude for Microsoft 365, and other Claude apps in this release, see the [release notes for Claude Apps](https://support.claude.com/en/articles/12138966-release-notes).
+
 ### May 19, 2026
 - [MCP tunnels](/docs/en/agents-and-tools/mcp-tunnels/overview) is now available as a Research Preview, so you can connect to MCP servers in your private network.
 - Self-hosted sandboxes are now available for Claude Managed Agents, as an alternative to running tool execution in Anthropic's infrastructure. See [Self-hosted sandboxes](/docs/en/managed-agents/self-hosted-sandboxes).
@@ -51,7 +70,7 @@ For updates to Claude Code, see the [complete CHANGELOG.md](https://github.com/a
 - [Claude in Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock) is now open to all Amazon Bedrock customers. Claude Opus 4.7 and Claude Haiku 4.5 are available self-serve from the Bedrock console through the Messages API endpoint at `/anthropic/v1/messages`, in 27 AWS regions with global and regional endpoints.
 
 ### April 14, 2026
-- We announced the deprecation of the Claude Sonnet 4 model (`claude-sonnet-4-20250514`) and the Claude Opus 4 model (`claude-opus-4-20250514`), with retirement on the Claude API scheduled for June 15, 2026. We recommend migrating to [Claude Sonnet 4.6](/docs/en/about-claude/models/overview#latest-models-comparison) and [Claude Opus 4.7](/docs/en/about-claude/models/overview#latest-models-comparison) respectively. Read more in [model deprecations](/docs/en/about-claude/model-deprecations).
+- We announced the deprecation of the Claude Sonnet 4 model (`claude-sonnet-4-20250514`) and the Claude Opus 4 model (`claude-opus-4-20250514`), with retirement on the Claude API scheduled for June 15, 2026. We recommend migrating to [Claude Sonnet 4.6](/docs/en/about-claude/models/overview#latest-models-comparison) and [Claude Opus 4.7](/docs/en/about-claude/models/whats-new-claude-4-7) respectively. Read more in [model deprecations](/docs/en/about-claude/model-deprecations).
 
 ### April 9, 2026
 - We've launched the [advisor tool](/docs/en/agents-and-tools/tool-use/advisor-tool) in public beta. Pair a faster executor model with a higher-intelligence advisor model that provides strategic guidance mid-generation, so long-horizon agentic workloads get close to advisor-solo quality while the bulk of token generation happens at executor-model rates. Include the beta header `advisor-tool-2026-03-01` in your requests.
