@@ -2177,7 +2177,8 @@ include_only = ["PATH", "HOME"]
 
 #### Log directory
 
-Override where Codex writes local log files such as `codex-tui.log`.
+Override where Codex writes local log files. Setting `log_dir` explicitly also
+enables the opt-in plaintext TUI log, `codex-tui.log`, in that directory.
 
 ```toml
 log_dir = "/absolute/path/to/codex-logs"
@@ -2353,7 +2354,7 @@ model_provider = "openai"
 
 # background_terminal_max_timeout = 300000 # ms; max empty write_stdin poll window (default 5m)
 
-# log_dir = "/absolute/path/to/codex-logs" # directory for Codex logs; default: "$CODEX_HOME/log"
+# log_dir = "/absolute/path/to/codex-logs" # log directory; setting explicitly enables codex-tui.log; default: "$CODEX_HOME/log"
 
 # sqlite_home = "/absolute/path/to/codex-state" # optional SQLite-backed runtime state directory
 
@@ -3957,6 +3958,7 @@ Use these commands and keyboard shortcuts to navigate the Codex app.
 |             | Clear the terminal | Ctrl + L                   |
 | **Thread**  |                    |                            |
 |             | New thread         | Cmd + N or Cmd + Shift + O |
+|             | Search threads     | Cmd + G                    |
 |             | Find in thread     | Cmd + F                    |
 |             | Previous thread    | Cmd + Shift + [            |
 |             | Next thread        | Cmd + Shift + ]            |
@@ -3965,6 +3967,17 @@ Use these commands and keyboard shortcuts to navigate the Codex app.
 To find, customize, or reset shortcuts, open **Settings > Keyboard Shortcuts**.
 You can search by command name or switch the search field into keystroke mode
 and press the shortcut you want to find.
+
+#### Search past threads and find in a thread
+
+Use thread search (Cmd/Ctrl + G) to reopen a
+past conversation. When expanded matching is available in your Codex desktop
+app, it can also match conversation content and Git branch names, so you can
+search for a phrase from the thread or a branch such as `fix/login-redirect`.
+
+Use **Find in thread** (Cmd + F) after opening a thread
+to find text within that current conversation. It does not search across other
+threads.
 
 #### Slash commands
 
@@ -4146,6 +4159,12 @@ The sections below note platform-specific exceptions.
 Use one Codex app window to run tasks across projects. Add a project for each
 codebase and switch between them as needed.
 
+When available in your Codex desktop app, you can ask Codex to manage threads
+in your local projects or worktrees. For example, ask it to find a related
+thread, continue an existing thread, or pin or archive a thread. To create a
+separate background thread, make that request explicit: `Create a separate
+background thread in a worktree for this project to update the tests.`
+
 If you've used the [Codex CLI](/codex/cli), a project is like starting a
 session in a specific directory.
 
@@ -4266,10 +4285,10 @@ blocked websites from settings.
 
 #### Computer use
 
-[Computer use](/codex/app/computer-use) helps Codex operate a macOS app by
-seeing, clicking, and typing. This is useful for testing desktop apps, checking
-browser or simulator flows, working with data sources that aren't available as
-plugins, changing app settings, and reproducing GUI-only bugs.
+[Computer use](/codex/app/computer-use) helps Codex operate a macOS or Windows
+app by seeing, clicking, and typing. This is useful for testing desktop apps,
+checking browser or simulator flows, working with data sources that aren't
+available as plugins, changing app settings, and reproducing GUI-only bugs.
 
 Because computer use can affect app and system state outside your project
 workspace, keep tasks narrow and review permission prompts before continuing.
@@ -4385,6 +4404,12 @@ Choose where files open and how much command output appears in threads. You can 
 require Cmd+Enter for multiline prompts or prevent sleep while a
 thread runs.
 
+#### Profile
+
+Use **Profile** to review stats such as lifetime tokens, peak tokens, streaks,
+your longest task, and token activity. You can also update your profile details,
+such as your picture, display name, and username.
+
 #### Keyboard shortcuts
 
 Open **Keyboard Shortcuts** to review commands, change bindings, or reset custom
@@ -4453,20 +4478,19 @@ also apply to the Codex CLI and IDE extension because the MCP configuration live
 #### Browser use
 
 Use these settings to install or enable the bundled Browser plugin, set up the
-[Codex Chrome extension](/codex/app/chrome-extension), and manage allowlisted
-and blocklisted websites. Codex asks before using a website unless you've
-allowlisted it. Removing a site from the blocklist lets Codex ask again before
-using it in the browser.
+[Codex Chrome extension](/codex/app/chrome-extension), and manage allowed and
+blocked websites. Codex asks before using a website unless you've allowed it.
+Removing a blocked site lets Codex ask again before using it in the browser.
 
 See [In-app browser](/codex/app/browser) for browser preview, comment, and
 browser use workflows.
 
 #### Computer Use
 
-On macOS, check your Computer Use settings to review desktop-app access and related
-preferences after setup. To revoke system-level access, update Screen Recording
-or Accessibility permissions in macOS Privacy & Security settings. The feature
-isn't available in the EEA, the United Kingdom, or Switzerland at launch.
+Check your Computer Use settings to review desktop-app access and related
+preferences after setup. On macOS, revoke system-level access by updating Screen
+Recording or Accessibility permissions in macOS Privacy & Security settings. The
+feature isn't available in the EEA, the United Kingdom, or Switzerland at launch.
 
 #### Personalization
 
@@ -5079,16 +5103,16 @@ You can also run `codex features enable goals` from the CLI or ask Codex to run 
 
 Source: [Computer Use](/codex/app/computer-use.md)
 
-In the Codex app, computer use is currently available on macOS, except in the
-European Economic Area, the United Kingdom, and Switzerland at launch. Install
-the Computer Use plugin, then grant Screen Recording and Accessibility
-permissions when macOS prompts you.
+In the Codex app, computer use is available on macOS and Windows, except in
+the European Economic Area, the United Kingdom, and Switzerland at launch.
+Install the Computer Use plugin. On macOS, grant Screen Recording and
+Accessibility permissions when prompted.
 
-With computer use, Codex can see and operate graphical user interfaces on macOS.
-Use it for tasks where command-line tools or structured integrations aren't
-enough, such as checking a desktop app, using a browser, changing app settings,
-working with a data source that isn't available as a plugin, or reproducing a
-bug that only happens in a graphical user interface.
+With computer use, Codex can see and operate graphical user interfaces on macOS
+or Windows. Use it for tasks where command-line tools or structured integrations
+aren't enough, such as checking a desktop app, using a browser, changing app
+settings, working with a data source that isn't available as a plugin, or
+reproducing a bug that only happens in a graphical user interface.
 
 Because computer use can affect app and system state outside your project
 workspace, use it for scoped tasks and review permission prompts before
@@ -5097,11 +5121,12 @@ continuing.
 #### Set up computer use
 
 In Codex settings, open **Computer Use** and click **Install** to install the
-Computer Use plugin before you ask Codex to operate desktop apps. When macOS
-prompts for access, grant Screen Recording and Accessibility permissions if you
-want Codex to see and interact with the target app.
+Computer Use plugin before you ask Codex to operate desktop apps. On Windows,
+keep the target app visible on the active desktop while the task runs. On
+macOS, grant Screen Recording and Accessibility permissions when prompted so
+Codex can see and interact with the target app.
 
-To use computer use, grant:
+On macOS, grant:
 
 - **Screen Recording** permission so Codex can see the target app.
 - **Accessibility** permission so Codex can click, type, and navigate.
@@ -5113,18 +5138,31 @@ hard to verify through files or command output alone.
 
 Good fits include:
 
-- Testing a macOS app, an iOS simulator flow, or another desktop app that Codex
-  is building.
+- Testing a macOS app, Windows app, iOS simulator flow, or another desktop app
+  that Codex is building.
 - Performing a task that requires your web browser.
 - Reproducing a bug that only appears in a graphical interface.
 - Changing app settings that require clicking through a UI.
 - Inspecting information in an app or data source that isn't available through a
   plugin.
-- Running a scoped task in the background while you keep working elsewhere.
+- On macOS, running a scoped task in the background while you keep working
+  elsewhere.
 - Executing a workflow that spans more than one app.
 
 For web apps you are building locally, use the
 [in-app browser](/codex/app/browser) first.
+
+#### Windows foreground use
+
+On Windows, computer use runs on the active desktop. It can't operate in the
+background while you keep using the same Windows session, so expect Codex to
+move the pointer, type, and take over the foreground while the task runs.
+
+For Windows tasks that should continue while you step away, keep the Windows
+device unlocked and connected to the internet. Use
+[remote control](/codex/remote-connections) from your phone to check progress
+or send follow-up instructions, or run the Codex app inside a Windows virtual
+machine so computer use takes over the VM instead of your main desktop.
 
 #### Start a computer use task
 
@@ -5147,10 +5185,11 @@ computer use when Codex needs to inspect or operate the app visually.
 
 #### Permissions and approvals
 
-The macOS system permissions for computer use are separate from app approvals in
-Codex. The macOS permissions let Codex see and operate apps. App approvals
-determine which apps you allow Codex to use. File reads, file edits, and shell
-commands still follow the sandbox and approval settings for the thread.
+System permissions for computer use are separate from app approvals in Codex.
+On macOS, Screen Recording and Accessibility permissions let Codex see and
+operate apps. App approvals determine which apps you allow Codex to use. File
+reads, file edits, and shell commands still follow the sandbox and approval
+settings for the thread.
 
 With computer use, Codex can see and take action only in the apps you allow.
 During a task, Codex asks for your permission before it can use an app on your
@@ -5162,9 +5201,12 @@ Codex may also ask for permission before taking sensitive or disruptive actions.
 
 If Codex can't see or control an app, open **System Settings > Privacy &
 Security** and check **Screen Recording** and **Accessibility** for the Codex
-app.
+app on macOS. On Windows, make sure the target app is visible in the active
+desktop session.
 
 #### Locked use
+
+Locked use is for macOS. On Windows, computer use works in the foreground.
 
 Locked computer use lets Codex use Computer Use after your Mac locks, but only
 after you enable it. Use it when a Codex task needs to use desktop apps from a
@@ -5212,6 +5254,8 @@ Keep tasks narrow and stay present for sensitive flows:
 - Give Codex one clear target app or flow at a time.
 - You can stop the task or take over your computer at any time.
 - Keep sensitive apps closed unless they're required for the task.
+- On Windows, expect Codex to take over foreground input while it works; use a
+  secondary device, a VM, or stop the task before using that desktop yourself.
 - Avoid tasks that require secrets unless you're present and can approve each
   step.
 - Review app permission prompts before allowing Codex to use an app.
@@ -6787,7 +6831,7 @@ Expected: The output lists files relative to the custom `.codex` directory.
 
 - Run `codex --ask-for-approval never "Summarize the current instructions."` from a repository root. Codex should echo guidance from global and project files in precedence order.
 - Use `codex --cd subdir --ask-for-approval never "Show which instruction files are active."` to confirm nested overrides replace broader rules.
-- Check `~/.codex/log/codex-tui.log` (or the most recent `session-*.jsonl` file if you enabled session logging) after a session if you need to audit which instruction files Codex loaded.
+- To audit which instruction files Codex loaded, opt into a plaintext TUI log with `codex -c log_dir=./.codex-log` and check `./.codex-log/codex-tui.log`, or inspect the most recent `session-*.jsonl` file if you enabled session logging.
 - If instructions look stale, restart Codex in the target directory. Codex rebuilds the instruction chain on every run (and at the start of each TUI session), so there is no cache to clear manually.
 
 #### Troubleshoot discovery issues
@@ -8514,6 +8558,90 @@ Codex will read the designer's brief, create an `index.html` file, and write the
 <a id="platform-enterprise-and-caveats"></a>
 
 Windows, enterprise controls, OSS notes, and product or policy caveats that shape deployment choices.
+
+### Environment variables
+
+Source: [Environment variables](/codex/environment-variables.md)
+
+Codex uses `config.toml` for durable settings. Use environment variables for
+shell-scoped overrides, automation secrets, installer behavior, or diagnostics.
+
+This page lists stable public environment variables that Codex reads directly.
+It does not list internal development variables, test variables, or
+provider-specific secret names you choose yourself with
+[`env_key`](/codex/config-advanced#custom-model-providers).
+
+#### Core locations
+
+| Variable            | Used by                                    | Default      | Description                                                                                                                                                      |
+| ------------------- | ------------------------------------------ | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CODEX_HOME`        | CLI, IDE extension, app-server, installers | `~/.codex`   | Sets the root for Codex state, including config, auth, logs, sessions, skills, and standalone package metadata. If you set it, the directory must already exist. |
+| `CODEX_SQLITE_HOME` | CLI and app-server state                   | `CODEX_HOME` | Sets where SQLite-backed state is stored. The `sqlite_home` config option takes precedence. Relative paths resolve from the current working directory.           |
+
+For more about the files stored under `CODEX_HOME`, see
+[Config and state locations](/codex/config-advanced#config-and-state-locations).
+
+#### Installer variables
+
+These variables apply to the standalone install scripts served from
+`https://chatgpt.com/codex/install.sh` and
+`https://chatgpt.com/codex/install.ps1`.
+
+| Variable                | Default                                                                              | Description                                                                                                                                                     |
+| ----------------------- | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CODEX_NON_INTERACTIVE` | `false`                                                                              | Set to `1`, `true`, or `yes` to skip installer prompts. Prompts use their default response, so use this for scripted installs and updates, not first-run setup. |
+| `CODEX_INSTALL_DIR`     | `~/.local/bin` on macOS/Linux; `%LOCALAPPDATA%\Programs\OpenAI\Codex\bin` on Windows | Changes where the visible `codex` command is installed. The standalone package cache still lives under `CODEX_HOME/packages/standalone`.                        |
+
+For unattended installs, set `CODEX_NON_INTERACTIVE=1` on the shell that runs
+the downloaded installer:
+
+```bash
+curl -fsSL https://chatgpt.com/codex/install.sh | CODEX_NON_INTERACTIVE=1 sh
+```
+
+```powershell
+$env:CODEX_NON_INTERACTIVE=1; irm https://chatgpt.com/codex/install.ps1 | iex
+```
+
+#### Authentication and network
+
+| Variable               | Used by                             | Description                                                                                                                                                               |
+| ---------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CODEX_API_KEY`        | `codex exec`                        | Provides an API key for a single non-interactive run. This is only supported in `codex exec`; set it inline rather than job-wide when running repository-controlled code. |
+| `CODEX_ACCESS_TOKEN`   | CLI, app-server, trusted automation | Provides a ChatGPT or Codex access token for trusted automation. For persisted login, pipe it to `codex login --with-access-token`.                                       |
+| `CODEX_CA_CERTIFICATE` | HTTPS, login, and WebSocket clients | Points to a PEM CA bundle for environments with corporate TLS interception or private root CAs. Takes precedence over `SSL_CERT_FILE`.                                    |
+| `SSL_CERT_FILE`        | HTTPS, login, and WebSocket clients | Fallback PEM CA bundle path when `CODEX_CA_CERTIFICATE` is unset.                                                                                                         |
+
+For provider API keys, set
+[`env_key`](/codex/config-advanced#custom-model-providers) in the model provider
+configuration. Codex reads the variable named by that config, so the variable
+name itself is not a fixed Codex environment variable.
+
+For automation secret handling, see
+[Use API key auth](/codex/noninteractive#use-api-key-auth).
+For access token setup, see [Access tokens](/codex/enterprise/access-tokens).
+
+#### Diagnostics
+
+| Variable   | Used by            | Description                                                                                                             |
+| ---------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| `RUST_LOG` | CLI and app-server | Controls Rust log filtering and verbosity. `codex exec` defaults to `error` output unless you set a more verbose value. |
+
+`RUST_LOG` accepts values such as `error`, `warn`, `info`, `debug`, and
+`trace`. It also accepts more targeted Rust logging filters, such as
+`codex_core=debug,codex_tui=debug`.
+
+The interactive CLI records diagnostics in bounded local stores by default, but
+the plaintext `codex-tui.log` file is opt-in. Set `log_dir` explicitly when you
+need a plaintext log for troubleshooting:
+
+```bash
+RUST_LOG=debug codex -c log_dir=./.codex-log
+tail -F ./.codex-log/codex-tui.log
+```
+
+In non-interactive mode, `codex exec` prints messages inline instead of writing
+to a separate TUI log file.
 
 ### Access tokens
 
@@ -10700,9 +10828,9 @@ Terminal,
 } from "@components/react/oai/platform/ui/Icon.react";
 
 Remote connections let you use Codex from another device or another machine.
-Use Codex in the ChatGPT mobile app to work with Codex on a connected Mac,
-continue work from another Codex App device, or connect the Codex App to
-projects on an SSH host.
+Use Codex in the ChatGPT mobile app to work with Codex on a connected Mac or
+Windows device, continue work from another supported Codex App device, or connect
+the Codex App to projects on an SSH host.
 
 Remote access uses the connected host's projects, threads, files, credentials,
 permissions, plugins, Computer Use, browser setup, and local tools.
@@ -10722,17 +10850,18 @@ App host. To connect Codex to a project on an SSH host, see
 
 #### Before you set up mobile access
 
-Codex mobile setup currently requires the Codex App for macOS. The Codex App
-for Windows does not support mobile setup yet.
+Codex mobile setup supports Codex App hosts on macOS and Windows. You can
+control a Windows host from ChatGPT on iOS or Android, or from a Mac running
+Codex. Windows can't currently control another computer from the Codex App.
 
 Make sure you have:
 
 - Codex access in the ChatGPT account and workspace you want to use.
-- The latest ChatGPT mobile app on an iOS or Android device. If you do not see
+- The latest ChatGPT mobile app on an iOS or Android device. If you don't see
   Codex in the ChatGPT mobile app, update ChatGPT first.
-- The latest Codex App for macOS running on a Mac host that is awake, online,
-  and signed in to the same account and workspace. Mobile setup starts from the
-  Codex App; you cannot set it up from the Codex CLI or IDE Extension.
+- The latest Codex App for macOS or Windows running on a host that's awake,
+  online, and signed in to the same account and workspace. Mobile setup starts
+  from the Codex App; you can't set it up from the Codex CLI or IDE Extension.
 - Any required multi-factor authentication, SSO, or passkey configuration for
   that account or workspace.
 
@@ -10769,43 +10898,48 @@ remote access for that host, then shows a QR code you can scan from your phone.
 
 #### Choose what to connect
 
-Start with the Mac laptop or desktop where you already use Codex. Add an
-always-on Mac or SSH host when you need continuous access or a different
-environment.
+Start with the laptop or desktop where you already use Codex. Add an always-on
+computer or SSH host when you need continuous access or a different environment.
 
-#### Your Mac laptop or desktop
+#### Your laptop or desktop
 
-Connect the Mac where you already run Codex day to day. This gives remote access
-to the same projects, threads, credentials, plugins, and local setup you already
-use.
+Connect the Mac or Windows PC where you already run Codex day to day. This gives
+remote access to the same projects, threads, credentials, plugins, and local
+setup you already use.
 
-If that Mac sleeps, loses network access, or closes Codex, remote access stops
-until it is available again. If you use this computer as your host device, keep
-it plugged in and turn on **Keep this Mac awake** in the host's connection
-settings.
+If that computer sleeps, loses network access, or closes Codex, remote access
+stops until it's available again. If you use this computer as your host device,
+keep it plugged in and use the host's connection settings to keep it awake where
+available.
 
-On a Mac laptop, remote access can stay available with the lid open while the
-computer is plugged in. With the lid closed, connect an external display as
-well. Choosing **Sleep** still stops remote access.
+On a Mac laptop, remote access can stay available with the lid open and power
+connected. With the lid closed, connect an external display as well. Choosing
+**Sleep** still stops remote access.
 
-#### A dedicated always-on Mac
+On a Windows host, keep the session unlocked and available for tasks that use
+[Computer Use](/codex/app/computer-use). Computer use on Windows runs in the
+foreground, so remote control is best for starting or checking work while you
+dedicate the host desktop to the task.
 
-Use a dedicated always-on Mac when you want Codex to stay reachable for
-longer-running work.
+#### A dedicated always-on computer
+
+Use a dedicated always-on Mac or Windows PC when you want Codex to stay
+reachable for longer-running work.
 
 Install the projects, credentials, plugins, MCP servers, and tools Codex should
 use on that machine.
 
 #### A remote development environment
 
-Use an SSH host or managed devbox when the project already lives in a remote
-environment. Connect the Codex App host to that environment first; your phone
-still connects to the Codex App host, and Codex works in the remote environment
-with its dependencies, security policies, and compute resources.
+Use an SSH host or managed remote development environment when the project
+already lives in a remote environment. Connect the Codex App host to that
+environment first; your phone still connects to the Codex App host, and Codex
+works in the remote environment with its dependencies, security policies, and
+compute resources.
 
 For SSH setup details, see [connect to an SSH host](#connect-to-an-ssh-host).
 
-For browser or desktop tasks on an always-on Mac or remote host, enable
+For browser or desktop tasks on an always-on computer or remote host, enable
 Computer Use and install the Chrome extension on that host.
 
 #### What comes from the connected host
@@ -10822,8 +10956,8 @@ That means:
   configuration.
 - Signed-in websites and desktop apps are available only when the host can
   access them.
-- Sandboxing, security controls, and action approvals still apply to the
-  connected session.
+- The sandboxing settings, security controls, and action approvals still apply
+  to the connected session.
 
 Codex uses a secure relay layer to keep trusted machines reachable across your
 authorized ChatGPT devices without exposing them directly to the public
@@ -10831,14 +10965,17 @@ internet.
 
 #### Pick up work from another device
 
-You can continue work from another signed-in Codex App device. For example, if
-your laptop is unavailable, you can start a thread from your phone on an
-always-on host, then later open Codex on your laptop and continue that same
-thread there.
+You can continue work from another signed-in Codex App device that supports
+remote control. For example, if your laptop is unavailable, you can start
+a thread from your phone on an always-on host, then later open Codex on your
+laptop and continue that same thread there.
 
-In Codex on the laptop, use **Settings > Connections > Control other devices**
-to add the other host. A device can allow remote access and control another
-device at the same time.
+In Codex on a Mac, use **Settings > Connections > Control other devices** to add
+the other host. A device can allow remote access and control another device at
+the same time. You can control Windows hosts from a Mac or from ChatGPT on iOS
+or Android, but you can't use Windows to control another computer. For example,
+you can control a Windows device from your Mac or phone, but you can't use a
+Windows device to control another Windows device.
 
 #### Connect to an SSH host
 

@@ -23,7 +23,7 @@ The ARN region is always populated and matches the region the workspace is bound
 
 ## Actions
 
-The service defines 58 actions. Actions follow the AWS `VerbNoun` convention and use verb discipline so that `Get*` and `List*` wildcards produce a clean read-only boundary.
+The service defines 65 actions. Actions follow the AWS `VerbNoun` convention and use verb discipline so that `Get*` and `List*` wildcards produce a clean read-only boundary.
 
 ### Inference
 
@@ -71,10 +71,14 @@ The service defines 58 actions. Actions follow the AWS `VerbNoun` convention and
 | Action | Routes authorized |
 | :--- | :--- |
 | `CreateSkill` | `POST /v1/skills` |
-| `GetSkill` | `GET /v1/skills/{id}`<br />`GET /v1/skills/{id}/versions`<br />`GET /v1/skills/{id}/versions/{version}` |
+| `GetSkill` | `GET /v1/skills/{id}`<br />`GET /v1/skills/{id}/versions`<br />`GET /v1/skills/{id}/versions/{version}`<br />`GET /v1/skills/{id}/versions/{version}/content` |
 | `ListSkills` | `GET /v1/skills` |
 | `UpdateSkill` | `POST /v1/skills/{id}/versions`<br />`DELETE /v1/skills/{id}/versions/{version}` |
 | `DeleteSkill` | `DELETE /v1/skills/{id}` |
+
+<Note>
+`GetSkill` authorizes both skill metadata and skill-content download. A principal with read-only access can download skill bytes, not just list skills.
+</Note>
 
 <Note>
 Creating or deleting an individual skill version maps to `UpdateSkill`, not `CreateSkill` or `DeleteSkill`. A policy that denies `aws-external-anthropic:Delete*` still allows version deletion, and a policy that denies `aws-external-anthropic:Create*` still allows version creation. Deny `UpdateSkill` and `CreateSkill` as well if you need to prevent any skill mutation.
@@ -118,14 +122,19 @@ Creating, updating, or deleting an individual session sub-resource (events or se
 | Action | Routes authorized |
 | :--- | :--- |
 | `CreateEnvironment` | `POST /v1/environments` |
-| `GetEnvironment` | `GET /v1/environments/{id}` |
+| `GetEnvironment` | `GET /v1/environments/{id}`<br />`GET /v1/environments/{id}/work/{work_id}`<br />`GET /v1/environments/{id}/work/stats` |
 | `ListEnvironments` | `GET /v1/environments` |
 | `UpdateEnvironment` | `POST /v1/environments/{id}` |
 | `ArchiveEnvironment` | `POST /v1/environments/{id}/archive` |
 | `DeleteEnvironment` | `DELETE /v1/environments/{id}` |
+| `ProcessEnvironmentWork` | `GET /v1/environments/{id}/work/poll`<br />`POST /v1/environments/{id}/work/{work_id}`<br />`POST /v1/environments/{id}/work/{work_id}/ack`<br />`POST /v1/environments/{id}/work/{work_id}/heartbeat`<br />`POST /v1/environments/{id}/work/{work_id}/stop` |
 
 <Note>
-A policy that denies `aws-external-anthropic:Delete*` does not block `ArchiveEnvironment`. Deny `ArchiveEnvironment`, `UpdateEnvironment`, and `CreateEnvironment` as well if you need to prevent any environment mutation.
+A policy that denies `aws-external-anthropic:Delete*` does not block `ArchiveEnvironment`. `ProcessEnvironmentWork` is not matched by `Create*`, `Update*`, `Delete*`, or `Archive*` wildcards. Deny `ArchiveEnvironment`, `UpdateEnvironment`, `CreateEnvironment`, and `ProcessEnvironmentWork` as well if you need to prevent any environment mutation.
+</Note>
+
+<Note>
+`ProcessEnvironmentWork` authorizes a [self-hosted sandbox](/docs/en/managed-agents/self-hosted-sandboxes) worker to poll for, acknowledge, heartbeat, stop, and post results on environment work items. Grant it only to principals that run self-hosted environment workers. The `AnthropicSelfHostedEnvironmentAccess` managed policy includes this action.
 </Note>
 
 ### Vaults
@@ -160,6 +169,25 @@ Creating, updating, archiving, or deleting an individual vault credential maps t
 
 <Note>
 Creating, updating, or deleting an individual memory and redacting a memory version both map to `UpdateMemoryStore`, not `CreateMemoryStore` or `DeleteMemoryStore`. A policy that denies `aws-external-anthropic:Delete*` still allows individual-memory deletion and memory-version redaction, and a policy that denies `aws-external-anthropic:Create*` still allows individual-memory creation. Deny `UpdateMemoryStore`, `CreateMemoryStore`, and `ArchiveMemoryStore` as well if you need to prevent any memory-store mutation.
+</Note>
+
+### Webhooks
+
+| Action | Routes authorized |
+| :--- | :--- |
+| `CreateWebhook` | `POST /v1/webhooks` |
+| `GetWebhook` | `GET /v1/webhooks/{id}` |
+| `ListWebhooks` | `GET /v1/webhooks` |
+| `UpdateWebhook` | `POST /v1/webhooks/{id}` |
+| `DeleteWebhook` | `DELETE /v1/webhooks/{id}` |
+| `RotateWebhookSecret` | `POST /v1/webhooks/{id}/regenerate_signing_secret` |
+
+<Note>
+Webhook signing secrets are write-only. `GetWebhook` returns webhook metadata only; it does not return the signing secret.
+</Note>
+
+<Note>
+`RotateWebhookSecret` is not matched by `aws-external-anthropic:Create*`, `Update*`, or `Delete*` wildcards. A policy that denies those patterns still allows secret rotation. Deny `RotateWebhookSecret`, `UpdateWebhook`, `CreateWebhook`, and `DeleteWebhook` if you need to prevent any webhook mutation.
 </Note>
 
 ### User profiles
@@ -207,7 +235,7 @@ Workspaces support only archive, not hard delete. A policy that denies `aws-exte
 
 ## Route-to-action mapping
 
-The following table lists every route on Claude Platform on AWS and the IAM action required to call it. Each IAM action also authorizes requests that use the `anthropic-beta` header; beta variants of a route do not require a separate IAM action. CloudTrail classifies each action as either a Data event (high-volume, data-plane operations) or a Management event (control-plane operations). Vault actions are classified as Management events because vaults hold credentials and benefit from default-on audit logging. Workspace actions are also classified as Management events because they are organization-scoped control-plane operations. All other actions, including inference, batch, model, file, skill, user profile, and the remaining Claude Managed Agents actions, are classified as Data events.
+The following table lists every route on Claude Platform on AWS and the IAM action required to call it. Each IAM action also authorizes requests that use the `anthropic-beta` header; beta variants of a route do not require a separate IAM action. CloudTrail classifies each action as either a Data event (high-volume, data-plane operations) or a Management event (control-plane operations). Vault and webhook actions are classified as Management events because they hold secrets (vault credentials and webhook signing secrets) and benefit from default-on audit logging. Workspace actions are also classified as Management events because they are organization-scoped control-plane operations. All other actions, including inference, batch, model, file, skill, user profile, and the remaining Claude Managed Agents actions, are classified as Data events.
 
 | Method | Route | IAM action | CloudTrail event type |
 | :--- | :--- | :--- | :--- |
@@ -233,6 +261,7 @@ The following table lists every route on Claude Platform on AWS and the IAM acti
 | `POST` | `/v1/skills/{id}/versions` | `UpdateSkill` | Data |
 | `GET` | `/v1/skills/{id}/versions` | `GetSkill` | Data |
 | `GET` | `/v1/skills/{id}/versions/{version}` | `GetSkill` | Data |
+| `GET` | `/v1/skills/{id}/versions/{version}/content` | `GetSkill` | Data |
 | `DELETE` | `/v1/skills/{id}/versions/{version}` | `UpdateSkill` | Data |
 | `POST` | `/v1/user_profiles` | `CreateUserProfile` | Data |
 | `GET` | `/v1/user_profiles` | `ListUserProfiles` | Data |
@@ -269,6 +298,13 @@ The following table lists every route on Claude Platform on AWS and the IAM acti
 | `POST` | `/v1/environments/{id}` | `UpdateEnvironment` | Data |
 | `POST` | `/v1/environments/{id}/archive` | `ArchiveEnvironment` | Data |
 | `DELETE` | `/v1/environments/{id}` | `DeleteEnvironment` | Data |
+| `GET` | `/v1/environments/{id}/work/poll` | `ProcessEnvironmentWork` | Data |
+| `GET` | `/v1/environments/{id}/work/{work_id}` | `GetEnvironment` | Data |
+| `GET` | `/v1/environments/{id}/work/stats` | `GetEnvironment` | Data |
+| `POST` | `/v1/environments/{id}/work/{work_id}` | `ProcessEnvironmentWork` | Data |
+| `POST` | `/v1/environments/{id}/work/{work_id}/ack` | `ProcessEnvironmentWork` | Data |
+| `POST` | `/v1/environments/{id}/work/{work_id}/heartbeat` | `ProcessEnvironmentWork` | Data |
+| `POST` | `/v1/environments/{id}/work/{work_id}/stop` | `ProcessEnvironmentWork` | Data |
 | `POST` | `/v1/vaults` | `CreateVault` | Management |
 | `GET` | `/v1/vaults` | `ListVaults` | Management |
 | `GET` | `/v1/vaults/{id}` | `GetVault` | Management |
@@ -295,6 +331,12 @@ The following table lists every route on Claude Platform on AWS and the IAM acti
 | `GET` | `/v1/memory_stores/{id}/memory_versions` | `GetMemoryStore` | Data |
 | `GET` | `/v1/memory_stores/{id}/memory_versions/{id}` | `GetMemoryStore` | Data |
 | `POST` | `/v1/memory_stores/{id}/memory_versions/{id}/redact` | `UpdateMemoryStore` | Data |
+| `GET` | `/v1/webhooks` | `ListWebhooks` | Management |
+| `GET` | `/v1/webhooks/{id}` | `GetWebhook` | Management |
+| `POST` | `/v1/webhooks` | `CreateWebhook` | Management |
+| `POST` | `/v1/webhooks/{id}` | `UpdateWebhook` | Management |
+| `DELETE` | `/v1/webhooks/{id}` | `DeleteWebhook` | Management |
+| `POST` | `/v1/webhooks/{id}/regenerate_signing_secret` | `RotateWebhookSecret` | Management |
 
 Routes not in this table are not available on Claude Platform on AWS. The gateway denies any route not listed here by default.
 
@@ -304,24 +346,27 @@ Workspace routes are the only Admin API routes available on Claude Platform on A
 
 ## Managed policies
 
-AWS provides four managed policies for Claude Platform on AWS. All managed policies apply to `Resource: "*"`.
+AWS provides five managed policies for Claude Platform on AWS. All managed policies apply to `Resource: "*"`.
 
 | Policy | Grants |
 | :--- | :--- |
 | `AnthropicFullAccess` | `aws-external-anthropic:*` |
 | `AnthropicReadOnlyAccess` | `Get*`, `List*`, `CallWithBearerToken` |
 | `AnthropicInferenceAccess` | `Get*`, `List*`, `CreateInference`, `CreateBatchInference`, `CancelBatchInference`, `DeleteBatchInference`, `CountTokens`, `CallWithBearerToken` |
-| `AnthropicLimitedAccess` | All `AnthropicInferenceAccess` actions, plus all Claude Managed Agents actions (agents, sessions, environments, vaults, and memory stores) |
+| `AnthropicLimitedAccess` | All `AnthropicInferenceAccess` actions, plus all Claude Managed Agents actions (agents, sessions, environments, vaults, memory stores, webhooks, and self-hosted environment work) |
+| `AnthropicSelfHostedEnvironmentAccess` | `GetEnvironment`, `ProcessEnvironmentWork`, `GetSession`, `UpdateSession`, `GetSkill`, `CallWithBearerToken` |
 
-`AnthropicInferenceAccess` is the narrowest managed policy sufficient to run inference. It covers both synchronous and batch inference and, through the `Get*` and `List*` wildcards, grants read access to every API resource in the namespace, including Claude Managed Agents (CMA) resources (agents, sessions, environments, vaults, and memory stores). This includes file content download through `GetFile` (see the [Files](#files) note) and memory contents through `GetMemoryStore`. Vault credential secrets are not exposed: secret fields are write-only and are never returned by `GetVault` (see [Authenticate with vaults](/docs/en/managed-agents/vaults)). `AnthropicInferenceAccess` does not grant file creation or deletion, skill management, user profile management, workspace mutation, or any Claude Managed Agents write action (create, update, archive, delete). To exclude CMA reads, replace `AnthropicInferenceAccess` with a custom policy that enumerates only the specific non-CMA actions you need.
+`AnthropicInferenceAccess` is the narrowest managed policy sufficient to run inference. It covers both synchronous and batch inference and, through the `Get*` and `List*` wildcards, grants read access to every API resource in the namespace, including Claude Managed Agents (CMA) resources (agents, sessions, environments, vaults, memory stores, and webhooks). This includes file content download through `GetFile` (see the [Files](#files) note), skill content download through `GetSkill` (see the [Skills](#skills) note), and memory contents through `GetMemoryStore`. Vault credential secrets and webhook signing secrets are not exposed: those fields are write-only and are never returned by `GetVault` or `GetWebhook` (see [Authenticate with vaults](/docs/en/managed-agents/vaults)). `AnthropicInferenceAccess` does not grant file creation or deletion, skill management, user profile management, workspace mutation, or any Claude Managed Agents write action (create, update, archive, delete, process, or rotate). To exclude CMA reads, replace `AnthropicInferenceAccess` with a custom policy that enumerates only the specific non-CMA actions you need.
 
 <Note>
-`AnthropicReadOnlyAccess`, `AnthropicInferenceAccess`, and `AnthropicLimitedAccess` all carry the `Get*` and `List*` wildcards, which grant read access to all content in the workspace: file bytes, batch results, session conversation history, and memory contents. Vault credential secrets are not exposed; secret fields are write-only and are never returned by `GetVault`. If your principal should not read existing content, use a custom policy that enumerates only the actions you need.
+`AnthropicReadOnlyAccess`, `AnthropicInferenceAccess`, and `AnthropicLimitedAccess` all carry the `Get*` and `List*` wildcards, which grant read access to all content in the workspace: file bytes, skill content, batch results, session conversation history, and memory contents. Vault credential secrets and webhook signing secrets are not exposed; those fields are write-only and are never returned by `GetVault` or `GetWebhook`. If your principal should not read existing content, use a custom policy that enumerates only the actions you need.
 </Note>
 
 `AnthropicLimitedAccess` includes all Claude Managed Agents actions in addition to inference actions.
 
-`AssumeConsole` is not included in `AnthropicReadOnlyAccess`, `AnthropicInferenceAccess`, or `AnthropicLimitedAccess`. Principals who need Claude Console access require either `AnthropicFullAccess` or a custom policy that grants `aws-external-anthropic:AssumeConsole`. See [Console access](#console-access).
+`AnthropicSelfHostedEnvironmentAccess` is the narrowest managed policy sufficient to run a [self-hosted sandbox](/docs/en/managed-agents/self-hosted-sandboxes) worker. Attach it to the principal your environment worker authenticates as.
+
+`AssumeConsole` is not included in `AnthropicReadOnlyAccess`, `AnthropicInferenceAccess`, `AnthropicLimitedAccess`, or `AnthropicSelfHostedEnvironmentAccess`. Principals who need Claude Console access require either `AnthropicFullAccess` or a custom policy that grants `aws-external-anthropic:AssumeConsole`. See [Console access](#console-access).
 
 <Note>
 `CreateInference` and `CreateBatchInference` are separate actions. Denying one does not block the other. If you intend to prevent all model calls, deny both.

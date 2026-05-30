@@ -113,8 +113,8 @@ The full documentation is available in the following languages on https://platfo
 - [Access GitHub](https://platform.claude.com/docs/en/managed-agents/github.md) - Accessing GitHub
 - [Attach and download files](https://platform.claude.com/docs/en/managed-agents/files.md) - Adding files
 - [Authenticate with vaults](https://platform.claude.com/docs/en/managed-agents/vaults.md)
-- [Cloud container reference](https://platform.claude.com/docs/en/managed-agents/cloud-containers.md)
 - [Cloud environment setup](https://platform.claude.com/docs/en/managed-agents/environments.md)
+- [Cloud sandbox reference](https://platform.claude.com/docs/en/managed-agents/cloud-sandboxes-reference.md)
 - [Define outcomes](https://platform.claude.com/docs/en/managed-agents/define-outcomes.md)
 - [Agent setup](https://platform.claude.com/docs/en/managed-agents/agent-setup.md) - Define your agent
 - [Dreams](https://platform.claude.com/docs/en/managed-agents/dreams.md)

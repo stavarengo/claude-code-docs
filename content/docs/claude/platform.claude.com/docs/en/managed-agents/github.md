@@ -4,7 +4,7 @@ Connect your agent to GitHub repositories for cloning, reading, and creating pul
 
 ---
 
-You can mount a GitHub repository to your session container and connect to the GitHub MCP for making pull requests.
+You can mount a GitHub repository to your session sandbox and connect to the GitHub MCP for making pull requests.
 
 GitHub repositories are cached, so future sessions that use the same repository start faster.
 
@@ -661,12 +661,7 @@ await client.beta.sessions.resources.update(repoResourceId, {
 ````csharp
 // List resources on the session
 var listed = await client.Beta.Sessions.Resources.List(session.ID);
-string repoResourceId = null!;
-await foreach (var entry in listed.Paginate())
-{
-    repoResourceId = entry.ID;
-    break;
-}
+var repoResourceId = (await listed.Paginate().FirstAsync()).ID;
 Console.WriteLine(repoResourceId); // "sesrsc_01ABC..."
 
 // Rotate the authorization token

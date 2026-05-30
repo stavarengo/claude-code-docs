@@ -7,7 +7,7 @@ An open-source Agent Skill that provides Claude with up-to-date API reference ma
 The `claude-api` skill is an open-source [Agent Skill](/docs/en/agents-and-tools/agent-skills/overview) that provides Claude with detailed, up-to-date reference material for building applications on two Anthropic surfaces:
 
 - **Messages API:** The primary surface for single requests, streaming chat, tool use, batch processing, prompt caching, structured outputs, and custom agent loops.
-- **Claude Managed Agents (beta):** An Anthropic-hosted surface for server-managed stateful agents with Anthropic-hosted tool execution, persistent agent configs, and per-session containers.
+- **Claude Managed Agents (beta):** An Anthropic-hosted surface for server-managed stateful agents with Anthropic-hosted tool execution, persistent agent configs, and per-session sandboxes.
 
 It covers 8 programming languages for the Messages API (Python, TypeScript, Java, Go, Ruby, C#, PHP, and cURL) and 7 languages for Managed Agents (Python, TypeScript, Java, Go, Ruby, PHP, and cURL; C# is not currently supported).
 

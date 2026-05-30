@@ -1185,6 +1185,32 @@ To set undocumented request parameters, use the `putAdditionalHeader`, `putAddit
 
 To access undocumented response properties, use the `_additionalProperties()` method as described in [Response properties](#response-properties).
 
+#### New or unreleased enum values
+
+Enum-like classes in the SDK, such as `Model` and `AnthropicBeta`, are not closed Java `enum` types. Each one provides an `of(String)` factory method that accepts any string, so you can use values that have not been added to the SDK yet, such as a model or beta header released after your SDK version:
+
+```java
+import com.anthropic.models.beta.AnthropicBeta;
+import com.anthropic.models.messages.Model;
+
+Model model = Model.of("some-new-model");
+AnthropicBeta beta = AnthropicBeta.of("some-new-beta-2026-01-01");
+```
+
+Builder methods that take these types often also provide a `String` overload that calls `of(...)` for you:
+
+```java
+import com.anthropic.models.messages.MessageCreateParams;
+
+MessageCreateParams params = MessageCreateParams.builder()
+  .model("some-new-model") // same as .model(Model.of("some-new-model"))
+  .maxTokens(1024L)
+  .addUserMessage("Hello, Claude")
+  .build();
+```
+
+Prefer the well-typed constants (for example, `Model.CLAUDE_OPUS_4_7`) so you get autocomplete and deprecation warnings. The `String` overloads and `of(...)` are primarily for setting the field to an undocumented or not yet supported value while waiting for an SDK release that includes it.
+
 ## Beta features
 
 Beta features are available before general release to get early feedback and test new functionality. You can check the availability of all of Claude's capabilities and tools in the [build with Claude overview](/docs/en/build-with-claude/overview).
@@ -1230,6 +1256,8 @@ void main() {
 <section title="Why doesn't the SDK use plain enum classes?">
 
 Java `enum` classes are not trivially forwards compatible. Using them in the SDK could cause runtime exceptions if the API is updated to respond with a new enum value.
+
+Because these classes are open, you can also construct them with any string value via their `of(String)` factory method. See [New or unreleased enum values](#new-or-unreleased-enum-values) if you need to use a value that isn't in your SDK version yet.
 
 </section>
 

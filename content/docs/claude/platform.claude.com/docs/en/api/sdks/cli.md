@@ -441,7 +441,7 @@ ant beta:agents update --agent-id agent_011CYm1BLqPXpQRk5khsSXrs --version 1 < s
 </Step>
 <Step title="Define the environment">
 
-A session runs in an [environment](/docs/en/api/cli/beta/environments), which defines the container it executes in. Write the environment definition to `summarizer.environment.yaml`:
+A session runs in an [environment](/docs/en/api/cli/beta/environments), which defines the sandbox it executes in. Write the environment definition to `summarizer.environment.yaml`:
 
 ```yaml summarizer.environment.yaml
 name: summarizer-env

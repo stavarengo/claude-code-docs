@@ -23,6 +23,12 @@ The sections below note platform-specific exceptions.
 Use one Codex app window to run tasks across projects. Add a project for each
 codebase and switch between them as needed.
 
+When available in your Codex desktop app, you can ask Codex to manage threads
+in your local projects or worktrees. For example, ask it to find a related
+thread, continue an existing thread, or pin or archive a thread. To create a
+separate background thread, make that request explicit: `Create a separate
+background thread in a worktree for this project to update the tests.`
+
 If you've used the [Codex CLI](https://developers.openai.com/codex/cli), a project is like starting a
 session in a specific directory.
 
@@ -309,10 +315,10 @@ blocked websites from settings.
 
 ## Computer use
 
-[Computer use](https://developers.openai.com/codex/app/computer-use) helps Codex operate a macOS app by
-seeing, clicking, and typing. This is useful for testing desktop apps, checking
-browser or simulator flows, working with data sources that aren't available as
-plugins, changing app settings, and reproducing GUI-only bugs.
+[Computer use](https://developers.openai.com/codex/app/computer-use) helps Codex operate a macOS or Windows
+app by seeing, clicking, and typing. This is useful for testing desktop apps,
+checking browser or simulator flows, working with data sources that aren't
+available as plugins, changing app settings, and reproducing GUI-only bugs.
 
 Because computer use can affect app and system state outside your project
 workspace, keep tasks narrow and review permission prompts before continuing.

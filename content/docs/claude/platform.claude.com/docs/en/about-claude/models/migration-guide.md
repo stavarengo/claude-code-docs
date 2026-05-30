@@ -8,6 +8,16 @@ Guide for migrating to the latest Claude models from previous Claude versions
 This guide covers migrating [Messages API](/docs/en/build-with-claude/working-with-messages) code. If you use [Claude Managed Agents](/docs/en/managed-agents/overview), no changes beyond updating the model name are required.
 </Note>
 
+<Tip>
+  **Automate your migration with the Claude API skill.** In Claude Code, run `/claude-api migrate` to invoke the bundled [Claude API skill](/docs/en/agents-and-tools/agent-skills/claude-api-skill#migrating-to-a-newer-claude-model). It works for any target model on this page:
+
+  ```text
+  /claude-api migrate this project to claude-opus-4-8
+  ```
+
+  The skill applies the model ID swap and, as needed, breaking parameter changes, prefill replacement, and effort calibration for your target model across your codebase, then produces a checklist of items to verify manually. It asks you to confirm the migration scope (entire working directory, a subdirectory, or a specific file list) before editing any files. The skill also detects Amazon Bedrock, Vertex AI, Claude Platform on AWS, and Microsoft Foundry clients and adjusts model ID formats and feature changes for each platform.
+</Tip>
+
 ## Migrating from Claude Opus 4.7 to <NextOpus /> \{#migrating-from-claude-opus-47}
 
 <NextOpus /> is Anthropic's most capable generally available model. It builds on Claude Opus 4.7.
@@ -73,16 +83,6 @@ Claude Opus 4.7 should have strong out-of-the-box performance on existing Claude
 - [PDF support](/docs/en/build-with-claude/pdf-support)
 - [Vision](/docs/en/build-with-claude/vision)
 - The full set of server-side and client-side [tools](/docs/en/agents-and-tools/tool-use/overview) ([bash](/docs/en/agents-and-tools/tool-use/bash-tool), [code execution](/docs/en/agents-and-tools/tool-use/code-execution-tool), [computer use](/docs/en/agents-and-tools/tool-use/computer-use-tool), [text editor](/docs/en/agents-and-tools/tool-use/text-editor-tool), [web search](/docs/en/agents-and-tools/tool-use/web-search-tool), [web fetch](/docs/en/agents-and-tools/tool-use/web-fetch-tool), [MCP connector](/docs/en/agents-and-tools/mcp-connector), [memory](/docs/en/agents-and-tools/tool-use/memory-tool))
-
-<Tip>
-  **Automate this migration with the Claude API skill.** In Claude Code, run `/claude-api migrate` to invoke the bundled [Claude API skill](/docs/en/agents-and-tools/agent-skills/claude-api-skill#migrating-to-a-newer-claude-model):
-
-  ```text
-  /claude-api migrate this project to claude-opus-4-7
-  ```
-
-  The skill applies the model ID swap, breaking parameter changes, prefill replacement, and effort calibration described below across your codebase, then produces a checklist of items to verify manually. It asks you to confirm the migration scope (entire working directory, a subdirectory, or a specific file list) before editing any files. The skill also detects Amazon Bedrock, Vertex AI, Claude Platform on AWS, and Microsoft Foundry clients and adjusts model ID formats and feature changes for each platform.
-</Tip>
 
 ### Update your model name
 
