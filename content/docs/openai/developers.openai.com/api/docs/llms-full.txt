@@ -10163,6 +10163,7 @@ The table below indicates when application state is stored for each endpoint. Ze
 - MCP servers (used with the [remote MCP server tool](https://developers.openai.com/api/docs/guides/tools-remote-mcp)) are third-party services, and data sent to an MCP server is subject to their data retention policies.
 - Hosted containers used by [Hosted Shell](https://developers.openai.com/api/docs/guides/tools-shell#hosted-shell-quickstart) and [Code Interpreter](https://developers.openai.com/api/docs/guides/tools-code-interpreter) may write temporary application state to the container filesystem (backed by ephemeral block storage) while the container is active. Container data is deleted when the container expires or is explicitly deleted.
 - Extended prompt caching requires storing encrypted key/value tensors to GPU-local storage as application state. This data is stored on the local GPU machines and is not retained after the 24 hour data expiration. Requests to gpt-5.5, gpt-5.5-pro, and all future models require extended prompt caching, and setting a prompt_cache_retention value to in_memory will cause a request error. To learn more, see the [prompt caching guide](https://developers.openai.com/api/docs/guides/prompt-caching#prompt-cache-retention).
+- When Zero Data Retention is not enabled for an organization, all queries use extended prompt caching for all supported models.
 - For server-side compaction, no data is retained when `store="false"`.
 - We support [Skills](https://developers.openai.com/api/docs/guides/tools-skills) in two form factors, both local execution and hosted container-based execution. Hosted skills follow the same container lifecycle as hosted shell: mounted skills and container files remain available while the container is active and are discarded when the container expires or is deleted.
 - Data transmitted to third-party services over network connections is subject to their data retention policies.
@@ -21891,7 +21892,12 @@ key/value tensors are the intermediate representation from the model's attention
 
 ### Configure per request
 
-If you don’t specify a retention policy, for most models the default is `in_memory`. For `gpt-5.5`, `gpt-5.5-pro`, and all future models, the default is `24h` and `in_memory` is not supported. Allowed values are `in_memory` and `24h`.
+For `gpt-5.5`, `gpt-5.5-pro`, and future models, only `24h` is supported.
+
+For older models that support both `in_memory` and `24h`, the default depends on your organization's data retention policy:
+
+- Organizations without ZDR enabled default to `24h`.
+- Organizations with ZDR enabled default to `in_memory` when `prompt_cache_retention` is not specified.
 
 ```json
 {
@@ -31945,143 +31951,10 @@ Note that streaming the model's output in a production application makes it more
 
 # Structured model outputs
 
-export const snippetRefusalsChatCompletionsApi = {
-  python: `
-class Step(BaseModel):
-    explanation: str
-    output: str
-
-class MathReasoning(BaseModel):
-steps: list[Step]
-final_answer: str
-
-completion = client.chat.completions.parse(
-model="gpt-4o-2024-08-06",
-messages=[
-{"role": "system", "content": "You are a helpful math tutor. Guide the user through the solution step by step."},
-{"role": "user", "content": "how can I solve 8x + 7 = -23"},
-],
-response_format=MathReasoning,
-)
-
-math_reasoning = completion.choices[0].message
-
-# If the model refuses to respond, you will get a refusal message
-
-if math_reasoning.refusal:
-print(math_reasoning.refusal)
-else:
-print(math_reasoning.parsed)
-`.trim(),
-  "javascript": `
-const Step = z.object({
-explanation: z.string(),
-output: z.string(),
-});
-
-const MathReasoning = z.object({
-steps: z.array(Step),
-final_answer: z.string(),
-});
-
-const completion = await openai.chat.completions.parse({
-model: "gpt-4o-2024-08-06",
-messages: [
-{ role: "system", content: "You are a helpful math tutor. Guide the user through the solution step by step." },
-{ role: "user", content: "how can I solve 8x + 7 = -23" },
-],
-response_format: zodResponseFormat(MathReasoning, "math_reasoning"),
-});
-
-const math_reasoning = completion.choices[0].message
-
-// If the model refuses to respond, you will get a refusal message
-if (math_reasoning.refusal) {
-console.log(math_reasoning.refusal);
-} else {
-console.log(math_reasoning.parsed);
-}
-`.trim(),
-};
-export const snippetRefusalsResponsesApi = {
-  python: `
-class Step(BaseModel):
-explanation: str
-output: str
-
-class MathReasoning(BaseModel):
-steps: list[Step]
-final_answer: str
-
-response = client.responses.parse(
-model="gpt-4o-2024-08-06",
-input=[
-{"role": "system", "content": "You are a helpful math tutor. Guide the user through the solution step by step."},
-{"role": "user", "content": "how can I solve 8x + 7 = -23"},
-],
-text_format=MathReasoning,
-)
-
-for output in response.output:
-if output.type != "message":
-raise Exception("Unexpected non message")
-
-    for item in output.content:
-        if item.type == "refusal":
-            # If the model refuses to respond, you will get a refusal message
-            print(item.refusal)
-            continue
-
-        if not item.parsed:
-            raise Exception("Could not parse response")
-
-        print(item.parsed)
-
-`.trim(),
-  "javascript": `
-const Step = z.object({
-explanation: z.string(),
-output: z.string(),
-});
-
-const MathReasoning = z.object({
-steps: z.array(Step),
-final_answer: z.string(),
-});
-
-const response = await openai.responses.parse({
-model: "gpt-4o-2024-08-06",
-input: [
-{ role: "system", content: "You are a helpful math tutor. Guide the user through the solution step by step." },
-{ role: "user", content: "how can I solve 8x + 7 = -23" }
-],
-text: {
-format: zodTextFormat(MathReasoning, "math_response"),
-},
-});
-
-for (const output of response.output) {
-if (output.type != "message") {
-throw new Error("Unexpected non message");
-}
-
-    for (const item of output.content) {
-        if (item.type == "refusal") {
-            // If the model refuses to respond, you will get a refusal message
-            console.log(item.refusal);
-            continue;
-        }
-
-        if (!item.parsed) {
-            throw new Error("Could not parse response");
-        }
-
-        console.log(item.parsed);
-    }
-
-}
-`.trim(),
-};
+import {
+  snippetRefusalsChatCompletionsApi,
+  snippetRefusalsResponsesApi,
+} from "./inline-examples";
 
 export const snippetRefusalApiResponseChatCompletionsApi = {
   json: `
@@ -32271,7 +32144,10 @@ When using Structured Outputs with user-generated input, OpenAI models may occas
 
 When the `refusal` property appears in your output object, you might present the refusal in your UI, or include conditional logic in code that consumes the response to handle the case of a refused request.
 
-The API response from a refusal will look something like this:
+
+
+
+  The API response from a refusal will look something like this:
 
 
 
