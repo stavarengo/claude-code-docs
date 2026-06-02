@@ -75,17 +75,15 @@ Choose 5x or 20x higher rate limits than Plus.
 
 Everything in Plus and:
 
-**Double your normal Codex usage on the $100/month tier until May 31, 2026.**
-
 - Access to GPT-5.3-Codex-Spark (research preview), a fast Codex model
   for day-to-day coding tasks
-- ~~5x~~ 10x or 20x more Codex usage than Plus\*
+- 5x or 20x more Codex usage than Plus\*
 - Other [ChatGPT features](https://chatgpt.com/pricing) as part of the
   Pro plan
 
 [Get Pro](https://chatgpt.com/explore/pro?utm_internal_source=openai_developers_codex)
 
-[\*Learn more about limits and promos on both tiers.](https://help.openai.com/en/articles/9793128-about-chatgpt-pro-plans)
+[\*Learn more about limits on both tiers.](https://help.openai.com/en/articles/9793128-about-chatgpt-pro-plans)
 
 **API Key**:
 
@@ -1641,6 +1639,9 @@ region = "eu-central-1"
 If you omit `profile`, Codex uses the standard AWS credential chain. Set
 `region` to the supported Bedrock region that should handle requests.
 
+For the full setup flow, authentication options, supported models, and feature
+availability, see [Use Codex with Amazon Bedrock](/codex/amazon-bedrock).
+
 #### OSS mode (local providers)
 
 Codex can run against a local "open source" provider (for example, Ollama or LM Studio) when you pass `--oss`. If you pass `--oss` without specifying a provider, Codex uses `oss_provider` as the default.
@@ -2156,7 +2157,7 @@ You can override this later in an active session with `/personality` or per thre
 
 #### TUI keymap
 
-Customize terminal shortcuts under `tui.keymap`. Context-specific bindings override `tui.keymap.global`, and an empty list unbinds the action.
+Customize terminal shortcuts under `tui.keymap`. Selected composer actions fall back to matching `tui.keymap.global` bindings; context-specific bindings take precedence when supported. An empty list unbinds the action.
 
 ```toml
 [tui.keymap.global]
@@ -2164,6 +2165,9 @@ open_transcript = "ctrl-t"
 
 [tui.keymap.composer]
 submit = ["enter", "ctrl-m"]
+
+[tui.keymap.chat]
+interrupt_turn = "f12"
 ```
 
 #### Command environment
@@ -2878,7 +2882,7 @@ show_tooltips = true
 
 # theme = "catppuccin-mocha"
 
-# Custom key bindings. Context-specific bindings override [tui.keymap.global].
+# Custom key bindings. Selected composer actions fall back to matching [tui.keymap.global] bindings.
 
 # Use [] to unbind an action.
 
@@ -2893,6 +2897,10 @@ show_tooltips = true
 # [tui.keymap.composer]
 
 # submit = ["enter", "ctrl-m"]
+
+# [tui.keymap.chat]
+
+# interrupt_turn = "f12"
 
 # Internal tooltip state keyed by model slug. Usually managed by Codex.
 
@@ -3398,29 +3406,32 @@ basics](/codex/config-basic#configuration-precedence) for more information.
 
 #### Global flags
 
-| Key                                                  | Type / Values                                        | Default | Details                                                                                                                                                                                                                        |
-| ---------------------------------------------------- | ---------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `--add-dir`                                          | `path`                                               |         | Grant additional directories write access alongside the main workspace. Repeat for multiple paths.                                                                                                                             |
-| `--ask-for-approval, -a`                             | `untrusted \| on-request \| never`                   |         | Control when Codex pauses for human approval before running a command. `on-failure` is deprecated; prefer `on-request` for interactive runs or `never` for non-interactive runs.                                               |
-| `--cd, -C`                                           | `path`                                               |         | Set the working directory for the agent before it starts processing your request.                                                                                                                                              |
-| `--config, -c`                                       | `key=value`                                          |         | Override configuration values. Values parse as JSON if possible; otherwise the literal string is used.                                                                                                                         |
-| `--dangerously-bypass-approvals-and-sandbox, --yolo` | `boolean`                                            | `false` | Run every command without approvals or sandboxing. Only use inside an externally hardened environment.                                                                                                                         |
-| `--dangerously-bypass-hook-trust`                    | `boolean`                                            | `false` | Run enabled hooks without requiring persisted hook trust for this invocation. Intended only for automation that already vets hook sources.                                                                                     |
-| `--disable`                                          | `feature`                                            |         | Force-disable a feature flag (translates to `-c features.=false`). Repeatable.                                                                                                                                                 |
-| `--enable`                                           | `feature`                                            |         | Force-enable a feature flag (translates to `-c features.=true`). Repeatable.                                                                                                                                                   |
-| `--image, -i`                                        | `path[,path...]`                                     |         | Attach one or more image files to the initial prompt. Separate multiple paths with commas or repeat the flag.                                                                                                                  |
-| `--model, -m`                                        | `string`                                             |         | Override the model set in configuration (for example `gpt-5.4`).                                                                                                                                                               |
-| `--no-alt-screen`                                    | `boolean`                                            | `false` | Disable alternate screen mode for the TUI (overrides `tui.alternate_screen` for this run).                                                                                                                                     |
-| `--oss`                                              | `boolean`                                            | `false` | Use the local open source model provider (equivalent to `-c model_provider="oss"`). Validates that Ollama is running.                                                                                                          |
-| `--profile, -p`                                      | `string`                                             |         | Layer `$CODEX_HOME/profile-name.config.toml` on top of the base user config.                                                                                                                                                   |
-| `--remote`                                           | `ws://host:port \| wss://host:port`                  |         | Connect the interactive TUI to a remote app-server WebSocket endpoint. Supported for `codex`, `codex resume`, and `codex fork`; other subcommands reject remote mode.                                                          |
-| `--remote-auth-token-env`                            | `ENV_VAR`                                            |         | Read a bearer token from this environment variable and send it when connecting with `--remote`. Requires `--remote`; tokens are only sent over `wss://` URLs or `ws://` URLs whose host is `localhost`, `127.0.0.1`, or `::1`. |
-| `--sandbox, -s`                                      | `read-only \| workspace-write \| danger-full-access` |         | Select the sandbox policy for model-generated shell commands.                                                                                                                                                                  |
-| `--search`                                           | `boolean`                                            | `false` | Enable live web search (sets `web_search = "live"` instead of the default `"cached"`).                                                                                                                                         |
-| `PROMPT`                                             | `string`                                             |         | Optional text instruction to start the session. Omit to launch the TUI without a pre-filled message.                                                                                                                           |
+| Key                                                  | Type / Values                                                 | Default | Details                                                                                                                                                                                                           |
+| ---------------------------------------------------- | ------------------------------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--add-dir`                                          | `path`                                                        |         | Grant additional directories write access alongside the main workspace. Repeat for multiple paths.                                                                                                                |
+| `--ask-for-approval, -a`                             | `untrusted \| on-request \| never`                            |         | Control when Codex pauses for human approval before running a command. `on-failure` is deprecated; prefer `on-request` for interactive runs or `never` for non-interactive runs.                                  |
+| `--cd, -C`                                           | `path`                                                        |         | Set the working directory for the agent before it starts processing your request.                                                                                                                                 |
+| `--config, -c`                                       | `key=value`                                                   |         | Override configuration values. Values parse as TOML if possible; otherwise the literal string is used.                                                                                                            |
+| `--dangerously-bypass-approvals-and-sandbox, --yolo` | `boolean`                                                     | `false` | Run every command without approvals or sandboxing. Only use inside an externally hardened environment.                                                                                                            |
+| `--dangerously-bypass-hook-trust`                    | `boolean`                                                     | `false` | Run enabled hooks without requiring persisted hook trust for this invocation. Intended only for automation that already vets hook sources.                                                                        |
+| `--disable`                                          | `feature`                                                     |         | Force-disable a feature flag (translates to `-c features.=false`). Repeatable.                                                                                                                                    |
+| `--enable`                                           | `feature`                                                     |         | Force-enable a feature flag (translates to `-c features.=true`). Repeatable.                                                                                                                                      |
+| `--image, -i`                                        | `path[,path...]`                                              |         | Attach one or more image files to the initial prompt. Separate multiple paths with commas or repeat the flag.                                                                                                     |
+| `--model, -m`                                        | `string`                                                      |         | Override the model set in configuration (for example `gpt-5.4`).                                                                                                                                                  |
+| `--no-alt-screen`                                    | `boolean`                                                     | `false` | Disable alternate screen mode for the TUI (overrides `tui.alternate_screen` for this run).                                                                                                                        |
+| `--oss`                                              | `boolean`                                                     | `false` | Use the local open source model provider (equivalent to `-c model_provider="oss"`). Validates that Ollama is running.                                                                                             |
+| `--profile, -p`                                      | `string`                                                      |         | Layer `$CODEX_HOME/profile-name.config.toml` on top of the base user config.                                                                                                                                      |
+| `--remote`                                           | `ws://host:port \| wss://host:port \| unix:// \| unix://PATH` |         | Connect the interactive TUI to a remote app-server endpoint over WebSocket or a Unix socket. Supported for `codex`, `codex resume`, and `codex fork`; other subcommands reject remote mode.                       |
+| `--remote-auth-token-env`                            | `ENV_VAR`                                                     |         | Read a bearer token from this environment variable and send it when connecting with `--remote`. Requires `--remote`; tokens are only sent over `wss://` URLs or local-only `ws://` URLs.                          |
+| `--sandbox, -s`                                      | `read-only \| workspace-write \| danger-full-access`          |         | Select the sandbox policy for model-generated shell commands.                                                                                                                                                     |
+| `--search`                                           | `boolean`                                                     | `false` | Enable live web search (sets `web_search = "live"` instead of the default `"cached"`).                                                                                                                            |
+| `--strict-config`                                    | `boolean`                                                     | `false` | Error when `config.toml` contains fields this Codex version does not recognize. Supported by runtime commands such as `codex`, `exec`, `review`, `resume`, `fork`, `app-server`, `mcp-server`, and `exec-server`. |
+| `PROMPT`                                             | `string`                                                      |         | Optional text instruction to start the session. Omit to launch the TUI without a pre-filled message.                                                                                                              |
 
-These options apply to the base `codex` command and propagate to each subcommand unless a section below specifies otherwise.
-When you run a subcommand, place global flags after it (for example, `codex exec --oss ...`) so Codex applies them as intended.
+These options apply to the base `codex` command. Most propagate to commands;
+see the notes above or the relevant command help for exceptions. For propagated
+flags, follow the relevant command help. For example, `codex exec --oss ...`
+applies `--oss` to `exec`.
 
 #### Command overview
 
@@ -3438,6 +3449,7 @@ interpret these labels.
 | [`codex completion`](/codex/cli/reference#codex-completion)                                             | `stable`       |         | Generate shell completion scripts for Bash, Zsh, Fish, or PowerShell.                                                                   |
 | [`codex debug app-server send-message-v2`](/codex/cli/reference#codex-debug-app-server-send-message-v2) | `experimental` |         | Debug app-server by sending a single V2 message through the built-in test client.                                                       |
 | [`codex debug models`](/codex/cli/reference#codex-debug-models)                                         | `experimental` |         | Print the raw model catalog Codex sees, including an option to inspect only the bundled catalog.                                        |
+| [`codex doctor`](/codex/cli/reference#codex-doctor)                                                     | `stable`       |         | Generate a diagnostic report for local installation, config, auth, runtime, Git, terminal, app-server, and thread inventory issues.     |
 | [`codex exec`](/codex/cli/reference#codex-exec)                                                         | `stable`       |         | Run Codex non-interactively. Alias: `codex e`. Stream results to stdout or JSONL and optionally resume previous sessions.               |
 | [`codex execpolicy`](/codex/cli/reference#codex-execpolicy)                                             | `experimental` |         | Evaluate execpolicy rule files and see whether a command would be allowed, prompted, or blocked.                                        |
 | [`codex features`](/codex/cli/reference#codex-features)                                                 | `stable`       |         | List feature flags and persistently enable or disable them in `config.toml`.                                                            |
@@ -3458,7 +3470,7 @@ interpret these labels.
 
 Running `codex` with no subcommand launches the interactive terminal UI (TUI). The agent accepts the global flags above plus image attachments. Web search defaults to cached mode; use `--search` to switch to live browsing. For low-friction local work, use `--sandbox workspace-write --ask-for-approval on-request`.
 
-Use `--remote ws://host:port` or `--remote wss://host:port` to connect the TUI to an app server started with `codex app-server --listen ws://IP:PORT`. Add `--remote-auth-token-env <ENV_VAR>` when the server requires a bearer token for WebSocket authentication.
+Use `--remote ws://host:port` or `--remote wss://host:port` to connect the TUI to an app server started with `codex app-server --listen ws://IP:PORT`. For a local Unix socket, use `--remote unix://` for the default socket or `--remote unix://PATH` for an explicit path. Add `--remote-auth-token-env <ENV_VAR>` when the server requires a bearer token for WebSocket authentication.
 
 #### `codex app-server`
 
@@ -3473,7 +3485,8 @@ Launch the Codex app server locally. This is primarily for development and debug
 | `--ws-issuer`                 | `string`                                                    |            | Expected `iss` claim for signed bearer tokens. Requires `--ws-auth signed-bearer-token`.                                                                                                                               |
 | `--ws-max-clock-skew-seconds` | `number`                                                    | `30`       | Clock skew allowance when validating signed bearer token `exp` and `nbf` claims. Requires `--ws-auth signed-bearer-token`.                                                                                             |
 | `--ws-shared-secret-file`     | `absolute path`                                             |            | File containing the HMAC shared secret used to validate signed JWT bearer tokens. Required with `--ws-auth signed-bearer-token`.                                                                                       |
-| `--ws-token-file`             | `absolute path`                                             |            | File containing the shared capability token. Required with `--ws-auth capability-token`.                                                                                                                               |
+| `--ws-token-file`             | `absolute path`                                             |            | File containing the shared capability token. Use with `--ws-auth capability-token` unless you provide `--ws-token-sha256` instead.                                                                                     |
+| `--ws-token-sha256`           | `hexadecimal SHA-256 digest`                                |            | Expected SHA-256 digest for capability-token authentication. Use instead of `--ws-token-file` when the client token comes from another source.                                                                         |
 
 `codex app-server --listen stdio://` keeps the default JSONL-over-stdio behavior. `--listen ws://IP:PORT` enables WebSocket transport for app-server clients. The server accepts `ws://` listen URLs; use TLS termination or a secure proxy when clients connect with `wss://`. Use `--listen unix://` to accept WebSocket handshakes on Codex's default Unix socket, or `--listen unix:///absolute/path.sock` to choose a socket path. If you generate schemas for client bindings, add `--experimental` to include gated fields and methods.
 
@@ -3560,15 +3573,32 @@ Generate shell completion scripts and redirect the output to the appropriate loc
 | ------- | ---------------------------------------------- | ------- | ----------------------------------------------------------- |
 | `SHELL` | `bash \| zsh \| fish \| power-shell \| elvish` | `bash`  | Shell to generate completions for. Output prints to stdout. |
 
+#### `codex doctor`
+
+Generate a local diagnostic report before filing a support issue or
+while investigating a broken Codex installation. The report checks installation,
+configuration, authentication, runtime, Git, terminal, app-server, and thread
+inventory health.
+
+| Key          | Type / Values | Default | Details                                                          |
+| ------------ | ------------- | ------- | ---------------------------------------------------------------- |
+| `--all`      | `boolean`     | `false` | Expand long lists in the detailed human-readable report.         |
+| `--ascii`    | `boolean`     | `false` | Use ASCII status labels and separators in human-readable output. |
+| `--json`     | `boolean`     | `false` | Emit a redacted machine-readable support report.                 |
+| `--no-color` | `boolean`     | `false` | Disable ANSI color in human-readable output.                     |
+| `--summary`  | `boolean`     | `false` | Show grouped check rows and the final count summary only.        |
+
 #### `codex features`
 
-Manage feature flags stored in `~/.codex/config.toml` or the selected profile file. The `enable` and `disable` commands persist changes so they apply to future sessions. When you launch with `--profile profile-name`, Codex writes to `$CODEX_HOME/profile-name.config.toml` instead of the base user config.
+Manage feature flags stored in `$CODEX_HOME/config.toml`. The `enable` and
+`disable` commands persist changes so they apply to future sessions. The
+`features` subcommand doesn't accept `--profile`.
 
-| Key                  | Type / Values             | Default | Details                                                                                                                                         |
-| -------------------- | ------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Disable subcommand` | `codex features disable ` |         | Persistently disable a feature flag in the active config file. With `--profile profile-name`, writes to `$CODEX_HOME/profile-name.config.toml`. |
-| `Enable subcommand`  | `codex features enable `  |         | Persistently enable a feature flag in the active config file. With `--profile profile-name`, writes to `$CODEX_HOME/profile-name.config.toml`.  |
-| `List subcommand`    | `codex features list`     |         | Show known feature flags, their maturity stage, and their effective state.                                                                      |
+| Key                  | Type / Values             | Default | Details                                                                    |
+| -------------------- | ------------------------- | ------- | -------------------------------------------------------------------------- |
+| `Disable subcommand` | `codex features disable ` |         | Persistently disable a feature flag in `$CODEX_HOME/config.toml`.          |
+| `Enable subcommand`  | `codex features enable `  |         | Persistently enable a feature flag in `$CODEX_HOME/config.toml`.           |
+| `List subcommand`    | `codex features list`     |         | Show known feature flags, their maturity stage, and their effective state. |
 
 ### Agent internet access
 
@@ -4740,10 +4770,11 @@ chmod 600 "$TOKEN_FILE"
 codex app-server --listen ws://0.0.0.0:4500 --ws-auth capability-token --ws-token-file "$TOKEN_FILE"
 ```
 
-`--remote` accepts explicit `ws://host:port` and `wss://host:port` addresses.
-Plain WebSocket connections are appropriate for localhost and SSH
-port-forwarding workflows. For non-local clients, use WebSocket auth and put the
-connection behind TLS.
+`--remote` accepts explicit `ws://host:port`, `wss://host:port`, `unix://`, and
+`unix://PATH` addresses. Use `unix://` for Codex's default local Unix socket or
+`unix://PATH` for an explicit local socket path. Plain WebSocket connections are
+appropriate for localhost and SSH port-forwarding workflows. For non-local
+clients, use WebSocket auth and put the connection behind TLS.
 
 Codex supports these WebSocket authentication modes:
 
@@ -4755,7 +4786,7 @@ Codex supports these WebSocket authentication modes:
 
 The TUI sends the remote auth token as an `Authorization: Bearer ` header
 during the WebSocket handshake. Codex only accepts remote auth tokens over
-`wss://` URLs or loopback `ws://` URLs.
+`wss://` URLs or local-only `ws://` URLs.
 
 ```bash
 export CODEX_REMOTE_TOKEN="$(cat "$TOKEN_FILE")"
@@ -4769,7 +4800,7 @@ remote-control support enabled.
 
 #### Models and reasoning
 
-For most tasks in Codex, `gpt-5.5` is the recommended model. It is OpenAI's newest frontier model for complex coding, computer
+For most tasks in Codex, `gpt-5.5` is the recommended model. It's OpenAI's newest frontier model for complex coding, computer
 use, knowledge work, and research workflows, with stronger planning, tool use,
 and follow-through on multi-step tasks. For extra fast tasks, ChatGPT Pro subscribers have
 access to the GPT-5.3-Codex-Spark model in research preview.
@@ -4792,7 +4823,9 @@ codex features enable unified_exec
 codex features disable shell_snapshot
 ```
 
-`codex features enable ` and `codex features disable ` write to `~/.codex/config.toml`. If you launch Codex with `--profile profile-name`, Codex writes to `$CODEX_HOME/profile-name.config.toml` instead.
+`codex features enable ` and `codex features disable ` write
+to `$CODEX_HOME/config.toml`. The `features` subcommand doesn't accept
+`--profile`.
 
 #### Subagents
 
@@ -5598,7 +5631,7 @@ completion still works before you queue the command.
 | [`/ps`](#check-background-terminals-with-ps)                                    | Show experimental background terminals and their recent output. | Check long-running commands without leaving the main transcript.                                           |
 | [`/stop`](#stop-background-terminals-with-stop)                                 | Stop all background terminals.                                  | Cancel background terminal work started by the current session.                                            |
 | [`/fork`](#fork-the-current-conversation-with-fork)                             | Fork the current conversation into a new thread.                | Branch the active session to explore a new approach without losing the current transcript.                 |
-| [`/side`](#start-a-side-conversation-with-side)                                 | Start an ephemeral side conversation.                           | Ask a focused follow-up without disrupting the main thread's transcript.                                   |
+| [`/side`, `/btw`](#start-a-side-conversation-with-side)                         | Start an ephemeral side conversation.                           | Ask a focused follow-up without disrupting the main thread's transcript.                                   |
 | [`/raw`](#toggle-raw-scrollback-with-raw)                                       | Toggle raw scrollback mode.                                     | Make terminal selection and copying less formatted while reviewing long output.                            |
 | [`/resume`](#resume-a-saved-conversation-with-resume)                           | Resume a saved conversation from your session list.             | Continue work from a previous CLI session without starting over.                                           |
 | [`/new`](#start-a-new-conversation-with-new)                                    | Start a new conversation inside the same CLI session.           | Reset the chat context without leaving the CLI when you want a fresh prompt in the same repo.              |
@@ -5736,7 +5769,9 @@ chat. Codex disables both actions while a task is in progress.
 
 1. Type `/permissions` and press Enter.
 2. Select the approval preset that matches your comfort level, for example
-   `Auto` for hands-off runs or `Read Only` to review edits.
+   `Auto` for hands-off runs or `Read Only` to review edits. When named
+   permission profiles are active, the picker also shows configured custom
+   profiles and their descriptions.
 
 Expected: Codex announces the updated policy. Future actions respect the
 updated approval mode until you change it again.
@@ -7945,28 +7980,30 @@ For more details, check out the [TypeScript repo](https://github.com/openai/code
 
 #### Python library
 
-The Python SDK is experimental and controls the local Codex app-server over JSON-RPC. It requires Python 3.10 or later and a local checkout of the open-source Codex repo.
+The Python SDK controls the local Codex app-server over JSON-RPC. It requires Python 3.10 or later. Published SDK builds include a pinned Codex CLI runtime dependency.
 
 #### Installation
 
-From the Codex repo root, install the SDK in editable mode:
+To install the SDK run:
 
 ```bash
-cd sdk/python
-python -m pip install -e .
+pip install openai-codex
 ```
 
-For manual local SDK usage, pass `AppServerConfig(codex_bin=...)` to point at a local `codex` binary, or use the repo examples and notebook bootstrap.
+Published SDK builds automatically use their pinned runtime. Pass `AppServerConfig(codex_bin=...)` only when you intentionally want to run against a specific local app-server binary.
 
 #### Usage
 
 Start Codex, create a thread, and run a prompt:
 
 ```python
-from codex_app_server import Codex
+from openai_codex import Codex, Sandbox
 
 with Codex() as codex:
-    thread = codex.thread_start(model="gpt-5.4")
+    thread = codex.thread_start(
+        model="gpt-5.4",
+        sandbox=Sandbox.workspace_write,
+    )
     result = thread.run("Make a plan to diagnose and fix the CI failures")
     print(result.final_response)
 ```
@@ -7976,7 +8013,7 @@ Use `AsyncCodex` when your application is already asynchronous:
 ```python
 import asyncio
 
-from codex_app_server import AsyncCodex
+from openai_codex import AsyncCodex
 
 async def main() -> None:
     async with AsyncCodex() as codex:
@@ -7986,6 +8023,30 @@ async def main() -> None:
 
 asyncio.run(main())
 ```
+
+#### Sandbox presets
+
+Use the same `Sandbox` presets when creating a thread or changing its filesystem
+access for a later turn:
+
+```python
+from openai_codex import Codex, Sandbox
+
+with Codex() as codex:
+    thread = codex.thread_start(sandbox=Sandbox.workspace_write)
+    thread.run("Make the requested change.")
+    review = thread.run("Review the diff only.", sandbox=Sandbox.read_only)
+```
+
+Available presets:
+
+- `Sandbox.read_only`: Read files without allowing writes.
+- `Sandbox.workspace_write`: Read files and write inside the workspace and configured writable roots.
+- `Sandbox.full_access`: Run without filesystem access restrictions.
+
+When you omit `sandbox=`, app-server uses its configured default. A sandbox
+passed to `run(...)` or `turn(...)` applies to that turn and later turns
+on the thread.
 
 For more details, check out the [Python repo](https://github.com/openai/codex/tree/main/sdk/python).
 
@@ -8682,12 +8743,18 @@ Main risks to avoid:
 
 Use the Codex Local controls in workspace settings to turn on access token creation for allowed members.
 
-1. Go to [Workspace Settings > Settings and Permissions](https://chatgpt.com/admin/settings).
+1. Go to [Workspace Settings > Permissions & roles](https://chatgpt.com/admin/settings).
 2. In the Codex Local section, make sure **Allow members to use Codex Local** is turned on.
 3. Turn on **Allow members to use Codex access tokens** if all allowed members should be able to create access tokens.
 4. If you use custom roles for a narrower rollout, assign the access token permission only to groups that need to create tokens.
 
 Keep access token creation limited to people or service owners who understand where the token will be stored, which automation will use it, and how it will be rotated.
+
+#### Set an access token expiration limit
+
+Workspace owners and admins can set the longest expiration that members can choose when they create a Codex access token. Go to [Workspace Settings > Permissions & roles](https://chatgpt.com/admin/settings), then set **Access token expiration limit** in the Codex Local section.
+
+The limit applies to new access tokens. Existing tokens keep their current expiration.
 
 #### Create an access token
 
@@ -8820,7 +8887,7 @@ Turn on **Allow members to use Codex Local**.
 
 This enables use of the Codex app, CLI, and IDE extension for allowed users.
 
-If members need programmatic Codex local workflows, also turn on **Allow members to use Codex access tokens** or grant the access token permission through a custom role. For setup and permission details, see [Access tokens](/codex/enterprise/access-tokens).
+If members need programmatic Codex local workflows, also turn on **Allow members to use Codex access tokens** or grant the access token permission through a custom role. Workspace owners and admins can use **Access token expiration limit** to set the longest expiration members can choose for new tokens. For setup and permission details, see [Access tokens](/codex/enterprise/access-tokens).
 
 If the Codex Local toggle is off, users who attempt to use the Codex app, CLI, or IDE will see the following error: “403 - Unauthorized. Contact your ChatGPT administrator for access.”
 
@@ -11185,6 +11252,168 @@ appears, while the underlying agent type stays
 The best custom agents are narrow and opinionated. Give each one clear job, a
 tool surface that matches that job, and instructions that keep it from
 drifting into adjacent work.
+
+### Use Codex with Amazon Bedrock
+
+Source: [Use Codex with Amazon Bedrock](/codex/amazon-bedrock.md)
+
+Configure Codex to use OpenAI models available through Amazon Bedrock. In this
+setup, Codex runs locally and sends model requests to Bedrock using
+AWS-managed authentication and access controls.
+
+#### How it works
+
+When you configure Codex with Amazon Bedrock as the model provider, the
+OpenAI-hosted Responses API isn't in the request path. Codex sends model
+requests to Amazon Bedrock, and Bedrock provides an OpenAI-compatible Responses
+API implementation for supported OpenAI models.
+
+Authentication is AWS-native. Users authenticate with a Bedrock API key or AWS
+IAM credentials. They do not use ChatGPT sign-in or `OPENAI_API_KEY` for this
+provider.
+
+#### Before you start
+
+Make sure you have:
+
+- Access to supported OpenAI models in Amazon Bedrock.
+- An AWS Region where the selected model is available.
+- Authentication for the Amazon Bedrock Mantle path configured for the AWS
+  account.
+
+#### Configure Codex
+
+Add the `amazon-bedrock` model provider for the Amazon Bedrock Mantle path to
+`~/.codex/config.toml`. Supplying a model is optional. Select a supported model
+explicitly when needed.
+
+```toml
+model_provider = "amazon-bedrock"
+```
+
+This guide covers the Amazon Bedrock Mantle path in supported commercial AWS
+Regions. Codex doesn't support Bedrock Mantle endpoints in AWS GovCloud
+Regions.
+
+#### Authentication options
+
+Codex supports two Bedrock authentication paths. It checks them in this order:
+
+1. Bedrock API key.
+2. AWS SDK credential chain.
+
+#### Option 1: Bedrock API key
+
+Set the Bedrock API key in the environment Codex reads. You must specify a
+Region when using API-key authentication.
+
+```shell
+export AWS_BEARER_TOKEN_BEDROCK=
+export AWS_REGION=us-east-2
+```
+
+#### Option 2: AWS SDK credentials
+
+Use this path when your organization manages Bedrock access through the AWS SDK
+credential chain. Codex can use these standard AWS SDK credential sources:
+
+1. Shared AWS `config` and `credentials` files.
+
+   ```shell
+   aws configure
+   ```
+
+2. Environment variables.
+
+   ```shell
+   export AWS_ACCESS_KEY_ID=
+   export AWS_SECRET_ACCESS_KEY=
+   export AWS_SESSION_TOKEN=
+   ```
+
+3. AWS Management Console credentials.
+
+   ```shell
+   aws login
+   ```
+
+4. AWS SSO or a named profile.
+
+   ```shell
+   aws sso login --profile codex-bedrock
+   export AWS_PROFILE=codex-bedrock
+   ```
+
+5. Federated identity configured with `credential_process`. For corporate SSO or
+   OIDC federation, configure the AWS profile outside Codex and let the AWS SDK
+   resolve credentials. Put browser login, token exchange, caching, and refresh
+   in your AWS profile's `credential_process` helper.
+
+#### Desktop app and VS Code extension
+
+Desktop apps and IDE extensions may not inherit environment variables from the
+shell. Put required values in `~/.codex/.env`, then restart the app or
+extension.
+
+```shell
+export AWS_BEARER_TOKEN_BEDROCK=
+export AWS_REGION=us-east-2
+```
+
+#### Verify setup
+
+- In Codex CLI, open `/status` and confirm Codex is using the
+  `amazon-bedrock` model provider.
+- In the desktop app or VS Code extension, start a new session after restarting
+  the app.
+- Confirm the selected model is available in the configured AWS Region and that
+  the AWS identity has permission to access it.
+
+#### Supported models
+
+Use exact model IDs:
+
+```text
+openai.gpt-5.5
+openai.gpt-5.4
+```
+
+Model availability varies by AWS Region. Before selecting a model, see [model
+support by AWS
+Region](https://docs.aws.amazon.com/bedrock/latest/userguide/models-region-compatibility.html).
+
+#### Feature availability
+
+This configuration supports local Codex workflows. Some features that depend on
+OpenAI-hosted cloud services, hosted tools, or cloud-managed discovery aren't
+currently available.
+
+Fast Mode isn't available with Amazon Bedrock. Fast Mode uses priority
+processing, and the initial Amazon Bedrock offering supports on-demand
+inference only.
+
+| Capability                                                     | State         |
+| -------------------------------------------------------------- | ------------- |
+| Codex CLI local workflows                                      | Supported     |
+| Codex desktop app local workflows                              | Supported     |
+| Codex IDE extension local workflows                            | Supported     |
+| Bedrock-backed inference with supported OpenAI models          | Supported     |
+| Locally configured MCP servers and connectors                  | Supported     |
+| Hosted first-party plugin directory                            | Not available |
+| Codex cloud agents, including review, security, and web agents | Not available |
+| Image generation and voice transcription                       | Not available |
+
+#### Troubleshooting
+
+If setup fails, check the following:
+
+- The model ID exactly matches a supported model.
+- You specify an AWS Region where the model is available.
+- The Bedrock API key or AWS credentials are valid and not expired.
+- The AWS identity has permission to access the selected Bedrock model.
+- `AWS_BEARER_TOKEN_BEDROCK` isn't set to an expired or unintended key.
+- For desktop app or VS Code extension usage, required environment variables
+  are present in `~/.codex/.env`.
 
 ### Windows platform
 

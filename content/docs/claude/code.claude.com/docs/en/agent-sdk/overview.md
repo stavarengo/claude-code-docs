@@ -79,7 +79,7 @@ The Agent SDK includes built-in tools for reading files, running commands, and e
   </Step>
 
   <Step title="Set your API key">
-    Get an API key from the [Console](../../../../platform.claude.com/index.txt), then set it as an environment variable:
+    Get an API key from the [Console](https://platform.claude.com/), then set it as an environment variable:
 
     ```bash theme={null}
     export ANTHROPIC_API_KEY=your-api-key

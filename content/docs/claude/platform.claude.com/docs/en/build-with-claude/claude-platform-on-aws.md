@@ -172,7 +172,7 @@ For simpler integration paths (local development and scripts), you can authentic
 Generate API keys in the **AWS Console** under **Claude Platform on AWS → API keys**. Choose **Generate a key**, then copy the key value. Grant the `aws-external-anthropic:CallWithBearerToken` IAM action to the principals that should be allowed to use API key authentication.
 
 <Note>
-API keys for Claude Platform on AWS are managed in the AWS Console, not the Claude Console. Keys created in the standard [Claude Console](../../../index.txt) (for first-party API access) don't work with the Claude Platform on AWS endpoint.
+API keys for Claude Platform on AWS are managed in the AWS Console, not the Claude Console. Keys created in the standard [Claude Console](https://platform.claude.com/) (for first-party API access) don't work with the Claude Platform on AWS endpoint.
 </Note>
 
 #### Short-term API keys
@@ -517,7 +517,7 @@ See the [comparison table](#claude-platform-on-aws-vs-amazon-bedrock) for featur
 
 Session behavior on Claude Platform on AWS differs from first-party Claude Managed Agents in one way:
 
-- **Autonomous-session reauthentication:** A session can run autonomously, without any [user events](/docs/en/managed-agents/events-and-streaming#event-types), for up to 6 hours. After 6 hours, the session requires reauthentication before it continues. To reauthenticate, send any user-role event to the session (see [Events and streaming](/docs/en/managed-agents/events-and-streaming)). First-party Claude Managed Agents has no autonomous-session runtime limit.
+- **Autonomous-session reauthentication:** A session can run autonomously, without any [user events](/docs/en/managed-agents/reference#event-types), for up to 6 hours. After 6 hours, the session requires reauthentication before it continues. To reauthenticate, send any user-role event to the session (see [Events and streaming](/docs/en/managed-agents/events-and-streaming)). First-party Claude Managed Agents has no autonomous-session runtime limit.
 
 ### Features not supported
 

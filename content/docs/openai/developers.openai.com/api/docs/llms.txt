@@ -99,6 +99,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Models and providers](https://developers.openai.com/api/docs/guides/agents/models.md): Learn how to choose models, set defaults, and think about providers and transport in the OpenAI Agents SDK.
 - [Moderation](https://developers.openai.com/api/docs/guides/moderation.md): Learn how to use OpenAI's moderation endpoint to identify harmful content in text and images.
 - [Node reference](https://developers.openai.com/api/docs/guides/node-reference.md): Explore all available nodes for composing workflows in Agent Builder.
+- [OpenAI models in Amazon Bedrock](https://developers.openai.com/api/docs/guides/amazon-bedrock.md): Learn how Amazon Bedrock availability differs from the OpenAI API, including supported capabilities, AWS-managed controls, and pricing considerations.
 - [Optimizing LLM Accuracy](https://developers.openai.com/api/docs/guides/optimizing-llm-accuracy.md): Learn strategies to enhance the accuracy of large language models using techniques like prompt engineering, retrieval-augmented generation, and fine-tuning.
 - [Orchestration and handoffs](https://developers.openai.com/api/docs/guides/agents/orchestration.md): Learn how to orchestrate multiple agents with handoffs and agents-as-tools in the OpenAI Agents SDK.
 - [Predicted Outputs](https://developers.openai.com/api/docs/guides/predicted-outputs.md): Understand how to reduce latency for model responses where much of the response is known ahead of time.

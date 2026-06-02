@@ -11,6 +11,9 @@ Use this as a compact map of Codex docs. Each page has a Markdown twin at `/code
 ## Agent Approvals Security
 - [Agent approvals & security](https://developers.openai.com/codex/agent-approvals-security.md): How to securely operate Codex with sandboxing, approvals, and network controls
 
+## Amazon Bedrock
+- [Use Codex with Amazon Bedrock](https://developers.openai.com/codex/amazon-bedrock.md): Configure Codex to use OpenAI models available through Amazon Bedrock.
+
 ## App
 - [Codex app](https://developers.openai.com/codex/app.md): Your Codex command center
 - [Automations](https://developers.openai.com/codex/app/automations.md): Schedule recurring Codex tasks

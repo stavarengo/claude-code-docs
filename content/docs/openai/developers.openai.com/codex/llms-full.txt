@@ -474,6 +474,178 @@ Enterprise admins can configure Codex security settings for their workspace in [
 
 ---
 
+# Use Codex with Amazon Bedrock
+
+Configure Codex to use OpenAI models available through Amazon Bedrock. In this
+setup, Codex runs locally and sends model requests to Bedrock using
+AWS-managed authentication and access controls.
+
+## How it works
+
+When you configure Codex with Amazon Bedrock as the model provider, the
+OpenAI-hosted Responses API isn't in the request path. Codex sends model
+requests to Amazon Bedrock, and Bedrock provides an OpenAI-compatible Responses
+API implementation for supported OpenAI models.
+
+Authentication is AWS-native. Users authenticate with a Bedrock API key or AWS
+  IAM credentials. They do not use ChatGPT sign-in or `OPENAI_API_KEY` for this
+  provider.
+
+## Before you start
+
+Make sure you have:
+
+- Access to supported OpenAI models in Amazon Bedrock.
+- An AWS Region where the selected model is available.
+- Authentication for the Amazon Bedrock Mantle path configured for the AWS
+  account.
+
+## Configure Codex
+
+Add the `amazon-bedrock` model provider for the Amazon Bedrock Mantle path to
+`~/.codex/config.toml`. Supplying a model is optional. Select a supported model
+explicitly when needed.
+
+```toml
+model_provider = "amazon-bedrock"
+```
+
+This guide covers the Amazon Bedrock Mantle path in supported commercial AWS
+  Regions. Codex doesn't support Bedrock Mantle endpoints in AWS GovCloud
+  Regions.
+
+## Authentication options
+
+Codex supports two Bedrock authentication paths. It checks them in this order:
+
+1. Bedrock API key.
+2. AWS SDK credential chain.
+
+### Option 1: Bedrock API key
+
+Set the Bedrock API key in the environment Codex reads. You must specify a
+Region when using API-key authentication.
+
+```shell
+export AWS_BEARER_TOKEN_BEDROCK=<your-bedrock-api-key>
+export AWS_REGION=us-east-2
+```
+
+### Option 2: AWS SDK credentials
+
+Use this path when your organization manages Bedrock access through the AWS SDK
+credential chain. Codex can use these standard AWS SDK credential sources:
+
+1. Shared AWS `config` and `credentials` files.
+
+   ```shell
+   aws configure
+   ```
+
+2. Environment variables.
+
+   ```shell
+   export AWS_ACCESS_KEY_ID=<your-access-key-id>
+   export AWS_SECRET_ACCESS_KEY=<your-secret-access-key>
+   export AWS_SESSION_TOKEN=<your-session-token>
+   ```
+
+3. AWS Management Console credentials.
+
+   ```shell
+   aws login
+   ```
+
+4. AWS SSO or a named profile.
+
+   ```shell
+   aws sso login --profile codex-bedrock
+   export AWS_PROFILE=codex-bedrock
+   ```
+
+5. Federated identity configured with `credential_process`. For corporate SSO or
+   OIDC federation, configure the AWS profile outside Codex and let the AWS SDK
+   resolve credentials. Put browser login, token exchange, caching, and refresh
+   in your AWS profile's `credential_process` helper.
+
+## Desktop app and VS Code extension
+
+Desktop apps and IDE extensions may not inherit environment variables from the
+shell. Put required values in `~/.codex/.env`, then restart the app or
+extension.
+
+```shell
+export AWS_BEARER_TOKEN_BEDROCK=<your-bedrock-api-key>
+export AWS_REGION=us-east-2
+```
+
+## Verify setup
+
+- In Codex CLI, open `/status` and confirm Codex is using the
+  `amazon-bedrock` model provider.
+- In the desktop app or VS Code extension, start a new session after restarting
+  the app.
+- Confirm the selected model is available in the configured AWS Region and that
+  the AWS identity has permission to access it.
+
+## Supported models
+
+Use exact model IDs:
+
+```text
+openai.gpt-5.5
+openai.gpt-5.4
+```
+
+Model availability varies by AWS Region. Before selecting a model, see [model
+support by AWS
+Region](https://docs.aws.amazon.com/bedrock/latest/userguide/models-region-compatibility.html).
+
+## Feature availability
+
+This configuration supports local Codex workflows. Some features that depend on
+OpenAI-hosted cloud services, hosted tools, or cloud-managed discovery aren't
+currently available.
+
+Fast Mode isn't available with Amazon Bedrock. Fast Mode uses priority
+  processing, and the initial Amazon Bedrock offering supports on-demand
+  inference only.
+
+| Capability                                                     | State         |
+| -------------------------------------------------------------- | ------------- |
+| Codex CLI local workflows                                      | Supported     |
+| Codex desktop app local workflows                              | Supported     |
+| Codex IDE extension local workflows                            | Supported     |
+| Bedrock-backed inference with supported OpenAI models          | Supported     |
+| Locally configured MCP servers and connectors                  | Supported     |
+| Hosted first-party plugin directory                            | Not available |
+| Codex cloud agents, including review, security, and web agents | Not available |
+| Image generation and voice transcription                       | Not available |
+
+## Troubleshooting
+
+If setup fails, check the following:
+
+- The model ID exactly matches a supported model.
+- You specify an AWS Region where the model is available.
+- The Bedrock API key or AWS credentials are valid and not expired.
+- The AWS identity has permission to access the selected Bedrock model.
+- `AWS_BEARER_TOKEN_BEDROCK` isn't set to an expired or unintended key.
+- For desktop app or VS Code extension usage, required environment variables
+  are present in `~/.codex/.env`.
+
+## Support boundaries
+
+OpenAI Support can help with Codex client setup, configuration, local CLI
+behavior, desktop app behavior, IDE extension behavior, and the local Codex
+product experience.
+
+For AWS credentials, IAM permissions, Bedrock model access, quotas, billing,
+regional availability, Bedrock request failures, AWS service logs, or Bedrock
+service behavior, contact the customer's AWS administrator or AWS Support.
+
+---
+
 # Codex app
 
 The Codex app is a focused desktop experience for working on Codex threads in parallel, with built-in worktree support, automations, and Git functionality.
@@ -5075,10 +5247,11 @@ chmod 600 "$TOKEN_FILE"
 codex app-server --listen ws://0.0.0.0:4500 --ws-auth capability-token --ws-token-file "$TOKEN_FILE"
 ```
 
-`--remote` accepts explicit `ws://host:port` and `wss://host:port` addresses.
-Plain WebSocket connections are appropriate for localhost and SSH
-port-forwarding workflows. For non-local clients, use WebSocket auth and put the
-connection behind TLS.
+`--remote` accepts explicit `ws://host:port`, `wss://host:port`, `unix://`, and
+`unix://PATH` addresses. Use `unix://` for Codex's default local Unix socket or
+`unix://PATH` for an explicit local socket path. Plain WebSocket connections are
+appropriate for localhost and SSH port-forwarding workflows. For non-local
+clients, use WebSocket auth and put the connection behind TLS.
 
 Codex supports these WebSocket authentication modes:
 
@@ -5090,7 +5263,7 @@ Codex supports these WebSocket authentication modes:
 
 The TUI sends the remote auth token as an `Authorization: Bearer <token>` header
 during the WebSocket handshake. Codex only accepts remote auth tokens over
-`wss://` URLs or loopback `ws://` URLs.
+`wss://` URLs or local-only `ws://` URLs.
 
 ```bash
 export CODEX_REMOTE_TOKEN="$(cat "$TOKEN_FILE")"
@@ -5104,7 +5277,7 @@ remote-control support enabled.
 
 ## Models and reasoning
 
-For most tasks in Codex, `gpt-5.5` is the recommended model. It is OpenAI's newest frontier model for complex coding, computer
+For most tasks in Codex, `gpt-5.5` is the recommended model. It's OpenAI's newest frontier model for complex coding, computer
 use, knowledge work, and research workflows, with stronger planning, tool use,
 and follow-through on multi-step tasks. For extra fast tasks, ChatGPT Pro subscribers have
 access to the GPT-5.3-Codex-Spark model in research preview.
@@ -5128,7 +5301,9 @@ codex features enable unified_exec
 codex features disable shell_snapshot
 ```
 
-`codex features enable <feature>` and `codex features disable <feature>` write to `~/.codex/config.toml`. If you launch Codex with `--profile profile-name`, Codex writes to `$CODEX_HOME/profile-name.config.toml` instead.
+`codex features enable <feature>` and `codex features disable <feature>` write
+to `$CODEX_HOME/config.toml`. The `features` subcommand doesn't accept
+`--profile`.
 
 ## Subagents
 
@@ -5366,15 +5541,22 @@ export const globalFlagOptions = [
   },
   {
     key: "--remote",
-    type: "ws://host:port | wss://host:port",
+    type: "ws://host:port | wss://host:port | unix:// | unix://PATH",
     description:
-      "Connect the interactive TUI to a remote app-server WebSocket endpoint. Supported for `codex`, `codex resume`, and `codex fork`; other subcommands reject remote mode.",
+      "Connect the interactive TUI to a remote app-server endpoint over WebSocket or a Unix socket. Supported for `codex`, `codex resume`, and `codex fork`; other subcommands reject remote mode.",
   },
   {
     key: "--remote-auth-token-env",
     type: "ENV_VAR",
     description:
-      "Read a bearer token from this environment variable and send it when connecting with `--remote`. Requires `--remote`; tokens are only sent over `wss://` URLs or `ws://` URLs whose host is `localhost`, `127.0.0.1`, or `::1`.",
+      "Read a bearer token from this environment variable and send it when connecting with `--remote`. Requires `--remote`; tokens are only sent over `wss://` URLs or local-only `ws://` URLs.",
+  },
+  {
+    key: "--strict-config",
+    type: "boolean",
+    defaultValue: "false",
+    description:
+      "Error when `config.toml` contains fields this Codex version does not recognize. Supported by runtime commands such as `codex`, `exec`, `review`, `resume`, `fork`, `app-server`, `mcp-server`, and `exec-server`.",
   },
   {
     key: "--enable",
@@ -5392,7 +5574,7 @@ export const globalFlagOptions = [
     key: "--config, -c",
     type: "key=value",
     description:
-      "Override configuration values. Values parse as JSON if possible; otherwise the literal string is used.",
+      "Override configuration values. Values parse as TOML if possible; otherwise the literal string is used.",
   },
 ];
 
@@ -5459,6 +5641,13 @@ export const commandOverview = [
     type: "stable",
     description:
       "Generate shell completion scripts for Bash, Zsh, Fish, or PowerShell.",
+  },
+  {
+    key: "codex doctor",
+    href: "/codex/cli/reference#codex-doctor",
+    type: "stable",
+    description:
+      "Generate a diagnostic report for local installation, config, auth, runtime, Git, terminal, app-server, and thread inventory issues.",
   },
   {
     key: "codex features",
@@ -5692,7 +5881,13 @@ export const appServerOptions = [
     key: "--ws-token-file",
     type: "absolute path",
     description:
-      "File containing the shared capability token. Required with `--ws-auth capability-token`.",
+      "File containing the shared capability token. Use with `--ws-auth capability-token` unless you provide `--ws-token-sha256` instead.",
+  },
+  {
+    key: "--ws-token-sha256",
+    type: "hexadecimal SHA-256 digest",
+    description:
+      "Expected SHA-256 digest for capability-token authentication. Use instead of `--ws-token-file` when the client token comes from another source.",
   },
   {
     key: "--ws-shared-secret-file",
@@ -5763,6 +5958,40 @@ export const debugModelsOptions = [
   },
 ];
 
+export const doctorOptions = [
+  {
+    key: "--json",
+    type: "boolean",
+    defaultValue: "false",
+    description: "Emit a redacted machine-readable support report.",
+  },
+  {
+    key: "--summary",
+    type: "boolean",
+    defaultValue: "false",
+    description: "Show grouped check rows and the final count summary only.",
+  },
+  {
+    key: "--all",
+    type: "boolean",
+    defaultValue: "false",
+    description: "Expand long lists in the detailed human-readable report.",
+  },
+  {
+    key: "--no-color",
+    type: "boolean",
+    defaultValue: "false",
+    description: "Disable ANSI color in human-readable output.",
+  },
+  {
+    key: "--ascii",
+    type: "boolean",
+    defaultValue: "false",
+    description:
+      "Use ASCII status labels and separators in human-readable output.",
+  },
+];
+
 export const resumeOptions = [
   {
     key: "SESSION_ID",
@@ -5797,13 +6026,13 @@ export const featuresOptions = [
     key: "Enable subcommand",
     type: "codex features enable <feature>",
     description:
-      "Persistently enable a feature flag in the active config file. With `--profile profile-name`, writes to `$CODEX_HOME/profile-name.config.toml`.",
+      "Persistently enable a feature flag in `$CODEX_HOME/config.toml`.",
   },
   {
     key: "Disable subcommand",
     type: "codex features disable <feature>",
     description:
-      "Persistently disable a feature flag in the active config file. With `--profile profile-name`, writes to `$CODEX_HOME/profile-name.config.toml`.",
+      "Persistently disable a feature flag in `$CODEX_HOME/config.toml`.",
   },
 ];
 
@@ -5923,6 +6152,12 @@ export const applyOptions = [
 
 export const sandboxMacOptions = [
   {
+    key: "--profile, -p",
+    type: "NAME",
+    description:
+      "Layer `$CODEX_HOME/NAME.config.toml` on top of the base user config.",
+  },
+  {
     key: "--permissions-profile",
     type: "NAME",
     description:
@@ -5970,6 +6205,12 @@ export const sandboxMacOptions = [
 
 export const sandboxLinuxOptions = [
   {
+    key: "--profile, -p",
+    type: "NAME",
+    description:
+      "Layer `$CODEX_HOME/NAME.config.toml` on top of the base user config.",
+  },
+  {
     key: "--permissions-profile",
     type: "NAME",
     description:
@@ -6003,6 +6244,12 @@ export const sandboxLinuxOptions = [
 ];
 
 export const sandboxWindowsOptions = [
+  {
+    key: "--profile, -p",
+    type: "NAME",
+    description:
+      "Layer `$CODEX_HOME/NAME.config.toml` on top of the base user config.",
+  },
   {
     key: "--permissions-profile",
     type: "NAME",
@@ -6153,6 +6400,18 @@ export const mcpAddOptions = [
     description:
       "Environment variable whose value is sent as a bearer token when connecting to a streamable HTTP server.",
   },
+  {
+    key: "--oauth-client-id",
+    type: "CLIENT_ID",
+    description:
+      "OAuth client identifier for a streamable HTTP MCP server. Requires `--url`.",
+  },
+  {
+    key: "--oauth-resource",
+    type: "RESOURCE",
+    description:
+      "OAuth resource parameter to include during login for a streamable HTTP MCP server. Requires `--url`.",
+  },
 ];
 
 export const marketplaceCommands = [
@@ -6189,8 +6448,10 @@ The CLI inherits most defaults from <code>~/.codex/config.toml</code>. Any
 
 ## Global flags
 
-These options apply to the base `codex` command and propagate to each subcommand unless a section below specifies otherwise.
-When you run a subcommand, place global flags after it (for example, `codex exec --oss ...`) so Codex applies them as intended.
+These options apply to the base `codex` command. Most propagate to commands;
+see the notes above or the relevant command help for exceptions. For propagated
+flags, follow the relevant command help. For example, `codex exec --oss ...`
+applies `--oss` to `exec`.
 
 ## Command overview
 
@@ -6204,7 +6465,7 @@ The Maturity column uses feature maturity labels such as Experimental, Beta,
 
 Running `codex` with no subcommand launches the interactive terminal UI (TUI). The agent accepts the global flags above plus image attachments. Web search defaults to cached mode; use `--search` to switch to live browsing. For low-friction local work, use `--sandbox workspace-write --ask-for-approval on-request`.
 
-Use `--remote ws://host:port` or `--remote wss://host:port` to connect the TUI to an app server started with `codex app-server --listen ws://IP:PORT`. Add `--remote-auth-token-env <ENV_VAR>` when the server requires a bearer token for WebSocket authentication.
+Use `--remote ws://host:port` or `--remote wss://host:port` to connect the TUI to an app server started with `codex app-server --listen ws://IP:PORT`. For a local Unix socket, use `--remote unix://` for the default socket or `--remote unix://PATH` for an explicit path. Add `--remote-auth-token-env <ENV_VAR>` when the server requires a bearer token for WebSocket authentication.
 
 ### `codex app-server`
 
@@ -6261,9 +6522,18 @@ Plain-text output prints a task URL followed by status details. Use `--json` for
 
 Generate shell completion scripts and redirect the output to the appropriate location, for example `codex completion zsh > "${fpath[1]}/_codex"`.
 
+### `codex doctor`
+
+Generate a local diagnostic report before filing a support issue or
+while investigating a broken Codex installation. The report checks installation,
+configuration, authentication, runtime, Git, terminal, app-server, and thread
+inventory health.
+
 ### `codex features`
 
-Manage feature flags stored in `~/.codex/config.toml` or the selected profile file. The `enable` and `disable` commands persist changes so they apply to future sessions. When you launch with `--profile profile-name`, Codex writes to `$CODEX_HOME/profile-name.config.toml` instead of the base user config.
+Manage feature flags stored in `$CODEX_HOME/config.toml`. The `enable` and
+`disable` commands persist changes so they apply to future sessions. The
+`features` subcommand doesn't accept `--profile`.
 
 ### `codex exec`
 
@@ -6404,7 +6674,7 @@ completion still works before you queue the command.
 | [`/ps`](#check-background-terminals-with-ps)                                    | Show experimental background terminals and their recent output. | Check long-running commands without leaving the main transcript.                                           |
 | [`/stop`](#stop-background-terminals-with-stop)                                 | Stop all background terminals.                                  | Cancel background terminal work started by the current session.                                            |
 | [`/fork`](#fork-the-current-conversation-with-fork)                             | Fork the current conversation into a new thread.                | Branch the active session to explore a new approach without losing the current transcript.                 |
-| [`/side`](#start-a-side-conversation-with-side)                                 | Start an ephemeral side conversation.                           | Ask a focused follow-up without disrupting the main thread's transcript.                                   |
+| [`/side`, `/btw`](#start-a-side-conversation-with-side)                         | Start an ephemeral side conversation.                           | Ask a focused follow-up without disrupting the main thread's transcript.                                   |
 | [`/raw`](#toggle-raw-scrollback-with-raw)                                       | Toggle raw scrollback mode.                                     | Make terminal selection and copying less formatted while reviewing long output.                            |
 | [`/resume`](#resume-a-saved-conversation-with-resume)                           | Resume a saved conversation from your session list.             | Continue work from a previous CLI session without starting over.                                           |
 | [`/new`](#start-a-new-conversation-with-new)                                    | Start a new conversation inside the same CLI session.           | Reset the chat context without leaving the CLI when you want a fresh prompt in the same repo.              |
@@ -6542,7 +6812,9 @@ chat. Codex disables both actions while a task is in progress.
 
 1. Type `/permissions` and press Enter.
 2. Select the approval preset that matches your comfort level, for example
-   `Auto` for hands-off runs or `Read Only` to review edits.
+   `Auto` for hands-off runs or `Read Only` to review edits. When named
+   permission profiles are active, the picker also shows configured custom
+   profiles and their descriptions.
 
 Expected: Codex announces the updated policy. Future actions respect the
 updated approval mode until you change it again.
@@ -6598,10 +6870,12 @@ that directory for later commands that run in the sandbox.
 ### Inspect the session with `/status`
 
 1. In any conversation, type `/status`.
-2. Review the output for the active model, approval policy, writable roots, and current token usage.
+2. Review the output for the active model, approval policy, writable roots, and
+   current token usage. When the TUI connects remotely, the output also
+   shows the remote address and the server version.
 
-Expected: You see a summary like what `codex status` prints in the shell,
-confirming Codex is operating where you expect.
+Expected: Codex prints a summary confirming that it's operating where you
+expect.
 
 ### Inspect config layers with `/debug-config`
 
@@ -8011,6 +8285,9 @@ region = "eu-central-1"
 If you omit `profile`, Codex uses the standard AWS credential chain. Set
 `region` to the supported Bedrock region that should handle requests.
 
+For the full setup flow, authentication options, supported models, and feature
+availability, see [Use Codex with Amazon Bedrock](https://developers.openai.com/codex/amazon-bedrock).
+
 ## OSS mode (local providers)
 
 Codex can run against a local "open source" provider (for example, Ollama or LM Studio) when you pass `--oss`. If you pass `--oss` without specifying a provider, Codex uses `oss_provider` as the default.
@@ -8623,7 +8900,7 @@ You can override this later in an active session with `/personality` or per thre
 
 #### TUI keymap
 
-Customize terminal shortcuts under `tui.keymap`. Context-specific bindings override `tui.keymap.global`, and an empty list unbinds the action.
+Customize terminal shortcuts under `tui.keymap`. Selected composer actions fall back to matching `tui.keymap.global` bindings; context-specific bindings take precedence when supported. An empty list unbinds the action.
 
 ```toml
 [tui.keymap.global]
@@ -8631,6 +8908,9 @@ open_transcript = "ctrl-t"
 
 [tui.keymap.composer]
 submit = ["enter", "ctrl-m"]
+
+[tui.keymap.chat]
+interrupt_turn = "f12"
 ```
 
 #### Command environment
@@ -9855,7 +10135,7 @@ For sandbox and approval keys (`approval_policy`, `sandbox_mode`, and `sandbox_w
       key: "tui.keymap.<context>.<action>",
       type: "string | array<string>",
       description:
-        "Keyboard shortcut binding for a TUI action. Supported contexts include `global`, `chat`, `composer`, `editor`, `pager`, `list`, and `approval`; context-specific bindings override `tui.keymap.global`.",
+        "Keyboard shortcut binding for a TUI action. Supported contexts include `global`, `chat`, `composer`, `editor`, `vim_normal`, `vim_operator`, `vim_text_object`, `pager`, `list`, and `approval`. Selected composer actions fall back to matching `tui.keymap.global` bindings; context-specific bindings take precedence when supported.",
     },
     {
       key: "tui.keymap.<context>.<action> = []",
@@ -11050,7 +11330,7 @@ show_tooltips = true
 
 # theme = "catppuccin-mocha"
 
-# Custom key bindings. Context-specific bindings override [tui.keymap.global].
+# Custom key bindings. Selected composer actions fall back to matching [tui.keymap.global] bindings.
 
 # Use [] to unbind an action.
 
@@ -11065,6 +11345,10 @@ show_tooltips = true
 # [tui.keymap.composer]
 
 # submit = ["enter", "ctrl-m"]
+
+# [tui.keymap.chat]
+
+# interrupt_turn = "f12"
 
 # Internal tooltip state keyed by model slug. Usually managed by Codex.
 
@@ -11651,12 +11935,18 @@ Main risks to avoid:
 
 Use the Codex Local controls in workspace settings to turn on access token creation for allowed members.
 
-1. Go to [Workspace Settings > Settings and Permissions](https://chatgpt.com/admin/settings).
+1. Go to [Workspace Settings > Permissions & roles](https://chatgpt.com/admin/settings).
 2. In the Codex Local section, make sure **Allow members to use Codex Local** is turned on.
 3. Turn on **Allow members to use Codex access tokens** if all allowed members should be able to create access tokens.
 4. If you use custom roles for a narrower rollout, assign the access token permission only to groups that need to create tokens.
 
 Keep access token creation limited to people or service owners who understand where the token will be stored, which automation will use it, and how it will be rotated.
+
+## Set an access token expiration limit
+
+Workspace owners and admins can set the longest expiration that members can choose when they create a Codex access token. Go to [Workspace Settings > Permissions & roles](https://chatgpt.com/admin/settings), then set **Access token expiration limit** in the Codex Local section.
+
+The limit applies to new access tokens. Existing tokens keep their current expiration.
 
 ## Create an access token
 
@@ -11798,7 +12088,7 @@ Turn on **Allow members to use Codex Local**.
 
 This enables use of the Codex app, CLI, and IDE extension for allowed users.
 
-If members need programmatic Codex local workflows, also turn on **Allow members to use Codex access tokens** or grant the access token permission through a custom role. For setup and permission details, see [Access tokens](https://developers.openai.com/codex/enterprise/access-tokens).
+If members need programmatic Codex local workflows, also turn on **Allow members to use Codex access tokens** or grant the access token permission through a custom role. Workspace owners and admins can use **Access token expiration limit** to set the longest expiration members can choose for new tokens. For setup and permission details, see [Access tokens](https://developers.openai.com/codex/enterprise/access-tokens).
 
 If the Codex Local toggle is off, users who attempt to use the Codex app, CLI, or IDE will see the following error: “403 - Unauthorized. Contact your ChatGPT administrator for access.”
 
@@ -17706,14 +17996,12 @@ Self-serve plugin publishing and management are coming soon.
         ctaLabel="Get Pro"
         ctaHref="https://chatgpt.com/explore/pro?utm_internal_source=openai_developers_codex"
         highlight="Everything in Plus and:"
-        footnoteLabel="*Learn more about limits and promos on both tiers."
+        footnoteLabel="*Learn more about limits on both tiers."
         footnoteHref="https://help.openai.com/en/articles/9793128-about-chatgpt-pro-plans"
       >
-        **Double your normal Codex usage on the $100/month tier until May 31, 2026.**
-
         - Access to GPT-5.3-Codex-Spark (research preview), a fast Codex model
           for day-to-day coding tasks
-        - ~~5x~~ 10x or 20x more Codex usage than Plus*
+        - 5x or 20x more Codex usage than Plus*
         - Other [ChatGPT features](https://chatgpt.com/pricing) as part of the
           Pro plan
       </PricingCard>
@@ -17945,11 +18233,6 @@ GPT-5.5 being a significantly more capable model.
           </tr>
           <tr>
             <td colspan="4" style="text-align:center">
-              Pro $100 gets 2x the usage shown above until May 31, 2026.
-            </td>
-          </tr>
-          <tr>
-            <td colspan="4" style="text-align:center">
               For Enterprise/Edu users, there are no fixed rate limits - usage
               scales with [credits](#credits-overview)
             </td>
@@ -18014,13 +18297,6 @@ GPT-5.5 being a significantly more capable model.
                 *The usage limits for local messages and cloud tasks share a
                 **five-hour window**. Additional weekly limits may apply.
               </a>
-            </td>
-          </tr>
-          <tr>
-            <td colspan="4" style="text-align:center">
-              Pro $200 gets a boost on the usage shown above until May 31,
-              2026. [Learn
-              more](https://help.openai.com/en/articles/9793128-about-chatgpt-pro-plans).
             </td>
           </tr>
           <tr>
@@ -18225,14 +18501,6 @@ also draws from [credits](#credits-overview).
 Image generation isn't available on the Free plan. When you use Codex with an
 API key, API pricing applies to image generation instead of included ChatGPT
 usage limits.
-
-### What's the current Codex usage promo on Pro?
-
-We’re currently offering extra Codex usage on both Pro tiers.
-
-For **Pro $100**, to celebrate the launch, you’ll get **2x Codex usage through May 31, 2026**. That means 10x usage instead of the standard 5x.
-
-**For Pro $200**, as a thank you to our most loyal customers, we’re carrying forward the benefits of our earlier 2x promo, which means Pro $200 now includes 20x Plus on an ongoing basis. In addition, we’re continuing to honor the higher 5-hour Codex limits for a limited time, so those remain at 25x Plus through May 31, 2026 instead of the standard 20x Plus.
 
 ### Where can I see my current usage limits?
 
@@ -19272,28 +19540,30 @@ For more details, check out the [TypeScript repo](https://github.com/openai/code
 
 ## Python library
 
-The Python SDK is experimental and controls the local Codex app-server over JSON-RPC. It requires Python 3.10 or later and a local checkout of the open-source Codex repo.
+The Python SDK controls the local Codex app-server over JSON-RPC. It requires Python 3.10 or later. Published SDK builds include a pinned Codex CLI runtime dependency.
 
 ### Installation
 
-From the Codex repo root, install the SDK in editable mode:
+To install the SDK run:
 
 ```bash
-cd sdk/python
-python -m pip install -e .
+pip install openai-codex
 ```
 
-For manual local SDK usage, pass `AppServerConfig(codex_bin=...)` to point at a local `codex` binary, or use the repo examples and notebook bootstrap.
+Published SDK builds automatically use their pinned runtime. Pass `AppServerConfig(codex_bin=...)` only when you intentionally want to run against a specific local app-server binary.
 
 ### Usage
 
 Start Codex, create a thread, and run a prompt:
 
 ```python
-from codex_app_server import Codex
+from openai_codex import Codex, Sandbox
 
 with Codex() as codex:
-    thread = codex.thread_start(model="gpt-5.4")
+    thread = codex.thread_start(
+        model="gpt-5.4",
+        sandbox=Sandbox.workspace_write,
+    )
     result = thread.run("Make a plan to diagnose and fix the CI failures")
     print(result.final_response)
 ```
@@ -19303,7 +19573,7 @@ Use `AsyncCodex` when your application is already asynchronous:
 ```python
 import asyncio
 
-from codex_app_server import AsyncCodex
+from openai_codex import AsyncCodex
 
 
 async def main() -> None:
@@ -19315,6 +19585,30 @@ async def main() -> None:
 
 asyncio.run(main())
 ```
+
+### Sandbox presets
+
+Use the same `Sandbox` presets when creating a thread or changing its filesystem
+access for a later turn:
+
+```python
+from openai_codex import Codex, Sandbox
+
+with Codex() as codex:
+    thread = codex.thread_start(sandbox=Sandbox.workspace_write)
+    thread.run("Make the requested change.")
+    review = thread.run("Review the diff only.", sandbox=Sandbox.read_only)
+```
+
+Available presets:
+
+- `Sandbox.read_only`: Read files without allowing writes.
+- `Sandbox.workspace_write`: Read files and write inside the workspace and configured writable roots.
+- `Sandbox.full_access`: Run without filesystem access restrictions.
+
+When you omit `sandbox=`, app-server uses its configured default. A sandbox
+passed to `run(...)` or `turn(...)` applies to that turn and later turns
+on the thread.
 
 For more details, check out the [Python repo](https://github.com/openai/codex/tree/main/sdk/python).
 
