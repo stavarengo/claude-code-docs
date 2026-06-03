@@ -64,7 +64,7 @@ Current and recently retired models are listed in the following table with their
 
 | API model name              | Current state       | Deprecated        | Tentative retirement date |
 |:----------------------------|:--------------------|:------------------|:-------------------------|
-| <NextOpusId />               | Active              | N/A               | Not sooner than May 28, 2027 |
+| claude-opus-4-8               | Active              | N/A               | Not sooner than May 28, 2027 |
 | claude-opus-4-7               | Active              | N/A               | Not sooner than April 16, 2027 |
 | claude-opus-4-6             | Active              | N/A               | Not sooner than February 5, 2027 |
 | claude-opus-4-5-20251101  | Active              | N/A               | Not sooner than November 24, 2026 |
@@ -190,6 +190,6 @@ Anthropic occasionally deprecates request parameters that no longer apply to cur
 
 | Parameter | Status | Behavior | Recommended replacement |
 | --- | --- | --- | --- |
-| `temperature`, `top_p`, `top_k` | Deprecated (Claude Opus 4.7 and later) | Returns a 400 error when set to a non-default value on Claude Opus 4.7 and later, including <NextOpus />. | Omit and use [prompting](/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices) to guide model behavior. |
+| `temperature`, `top_p`, `top_k` | Deprecated (Claude Opus 4.7 and later) | Returns a 400 error when set to a non-default value on Claude Opus 4.7 and later, including Claude Opus 4.8. | Omit and use [prompting](/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices) to guide model behavior. |
 
 For migration steps, see the [migration guide](/docs/en/about-claude/models/migration-guide).

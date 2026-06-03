@@ -14,7 +14,7 @@ The following table shows pricing for all Claude models:
 
 | Model             | Base Input Tokens | 5m Cache Writes | 1h Cache Writes | Cache Hits & Refreshes | Output Tokens |
 |-------------------|-------------------|-----------------|-----------------|----------------------|---------------|
-| <NextOpus />      | $5 / MTok         | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok | $25 / MTok    |
+| Claude Opus 4.8     | $5 / MTok         | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok | $25 / MTok    |
 | Claude Opus 4.7     | $5 / MTok         | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok | $25 / MTok    |
 | Claude Opus 4.6     | $5 / MTok         | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok | $25 / MTok    |
 | Claude Opus 4.5   | $5 / MTok         | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok | $25 / MTok    |
@@ -126,12 +126,12 @@ For more information, see [Data residency](/docs/en/manage-claude/data-residency
 
 ### Fast mode pricing
 
-[Fast mode](/docs/en/build-with-claude/fast-mode), in research preview, provides significantly faster output for <NextOpus />, Claude Opus 4.7, and Claude Opus 4.6 at premium pricing. Fast mode pricing applies across the full context window, including requests over 200k input tokens. Fast mode is not available on Claude Platform on AWS.
+[Fast mode](/docs/en/build-with-claude/fast-mode), in research preview, provides significantly faster output for Claude Opus 4.8, Claude Opus 4.7, and Claude Opus 4.6 at premium pricing. Fast mode pricing applies across the full context window, including requests over 200k input tokens. Fast mode is not available on Claude Platform on AWS.
 
 | Model | Input | Output |
 |:------|:------|:-------|
 | Claude Opus 4.6 / Claude Opus 4.7 | $30 / MTok | $150 / MTok |
-| <NextOpus /> | $10 / MTok | $50 / MTok |
+| Claude Opus 4.8 | $10 / MTok | $50 / MTok |
 
 Fast mode pricing stacks with other pricing modifiers:
 - [Prompt caching multipliers](#prompt-caching) apply on top of fast mode pricing
@@ -147,7 +147,7 @@ The Batch API allows asynchronous processing of large volumes of requests with a
 
 | Model             | Batch input      | Batch output    |
 |-------------------|------------------|-----------------|
-| <NextOpus />          | $2.50 / MTok     | $12.50 / MTok   |
+| Claude Opus 4.8       | $2.50 / MTok     | $12.50 / MTok   |
 | Claude Opus 4.7       | $2.50 / MTok     | $12.50 / MTok   |
 | Claude Opus 4.6       | $2.50 / MTok     | $12.50 / MTok   |
 | Claude Opus 4.5     | $2.50 / MTok     | $12.50 / MTok   |
@@ -163,7 +163,7 @@ For more information about batch processing, see [Batch processing](/docs/en/bui
 
 ### Long context pricing
 
-[Claude Mythos Preview](https://anthropic.com/glasswing), <NextOpus />, Opus 4.7, Opus 4.6, and Sonnet 4.6 include the full [1M token context window](/docs/en/build-with-claude/context-windows) at standard pricing. (A 900k-token request is billed at the same per-token rate as a 9k-token request.) Prompt caching and batch processing discounts apply at standard rates across the full context window.
+[Claude Mythos Preview](https://anthropic.com/glasswing), Claude Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6 include the full [1M token context window](/docs/en/build-with-claude/context-windows) at standard pricing. (A 900k-token request is billed at the same per-token rate as a 9k-token request.) Prompt caching and batch processing discounts apply at standard rates across the full context window.
 
 ### Tool use pricing
 
@@ -184,7 +184,7 @@ When you use `tools`, the API also automatically includes a special system promp
 
 | Model                    | Tool choice                                          | Tool use system prompt token count          |
 |--------------------------|------------------------------------------------------|---------------------------------------------|
-| <NextOpus />                   | `auto`, `none`<hr />`any`, `tool`   | 290 tokens<hr />410 tokens |
+| Claude Opus 4.8                | `auto`, `none`<hr />`any`, `tool`   | 290 tokens<hr />410 tokens |
 | Claude Opus 4.7                | `auto`, `none`<hr />`any`, `tool`   | 675 tokens<hr />804 tokens |
 | Claude Opus 4.6              | `auto`, `none`<hr />`any`, `tool`   | 497 tokens<hr />589 tokens |
 | Claude Opus 4.5            | `auto`, `none`<hr />`any`, `tool`   | 496 tokens<hr />588 tokens |

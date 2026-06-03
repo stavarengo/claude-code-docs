@@ -166,6 +166,9 @@ Use this as a compact map of Codex docs. Each page has a Markdown twin at `/code
 - [FAQ](https://developers.openai.com/codex/security/faq.md): Common questions about Codex Security
 - [Improving the threat model](https://developers.openai.com/codex/security/threat-model.md): Refine the Codex Security context that ranks findings and helps you review faster
 
+## Sites
+- [Sites](https://developers.openai.com/codex/sites.md): Build and deploy hosted sites from Codex with the Sites plugin
+
 ## Skills
 - [Agent Skills](https://developers.openai.com/codex/skills.md): Give Codex new capabilities and expertise
 

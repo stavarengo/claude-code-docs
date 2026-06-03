@@ -199,7 +199,7 @@ public class Main {
 <?php
 use Anthropic\Client;
 
-$client = new Client(apiKey: getenv('ANTHROPIC_API_KEY'));
+$client = new Client();
 
 $message = $client->messages->create(
     model: 'claude-opus-4-8',

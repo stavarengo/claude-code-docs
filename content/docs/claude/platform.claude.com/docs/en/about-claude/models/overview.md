@@ -6,7 +6,7 @@ Claude is a family of state-of-the-art large language models developed by Anthro
 
 ## Choosing a model
 
-If you're unsure which model to use, consider starting with **<NextOpus />** for the most complex tasks. It is Anthropic's most capable model for complex reasoning, long-horizon agentic coding, and high-autonomy work.
+If you're unsure which model to use, consider starting with **Claude Opus 4.8** for the most complex tasks. It is Anthropic's most capable model for complex reasoning, long-horizon agentic coding, and high-autonomy work.
 
 All current Claude models support text and image input, text output, multilingual capabilities, and vision. Models are available through the Claude API, [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws), [Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock), [Vertex AI](/docs/en/build-with-claude/claude-on-vertex-ai), and [Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry).
 
@@ -14,13 +14,13 @@ Once you've picked a model, [learn how to make your first API call](/docs/en/get
 
 ### Latest models comparison
 
-| Feature | <NextOpus /> | Claude Sonnet 4.6 | Claude Haiku 4.5 |
+| Feature | Claude Opus 4.8 | Claude Sonnet 4.6 | Claude Haiku 4.5 |
 |:--------|:-------------|:------------------|:-----------------|
 | **Description** | Anthropic's most capable model for complex reasoning and agentic coding | The best combination of speed and intelligence | The fastest model with near-frontier intelligence |
-| **Claude API ID** | <NextOpusId /> | claude-sonnet-4-6 | claude-haiku-4-5-20251001 |
-| **Claude API alias** | <NextOpusId /> | claude-sonnet-4-6 | claude-haiku-4-5 |
-| **AWS Bedrock ID** | <NextOpusId platform="bedrock" /><sup>3</sup> | anthropic.claude-sonnet-4-6 | anthropic.claude-haiku-4-5-20251001-v1:0 |
-| **Vertex AI ID** | <NextOpusId platform="vertex" /> | claude-sonnet-4-6 | claude-haiku-4-5@20251001 |
+| **Claude API ID** | claude-opus-4-8 | claude-sonnet-4-6 | claude-haiku-4-5-20251001 |
+| **Claude API alias** | claude-opus-4-8 | claude-sonnet-4-6 | claude-haiku-4-5 |
+| **AWS Bedrock ID** | anthropic.claude-opus-4-8<sup>3</sup> | anthropic.claude-sonnet-4-6 | anthropic.claude-haiku-4-5-20251001-v1:0 |
+| **Vertex AI ID** | claude-opus-4-8 | claude-sonnet-4-6 | claude-haiku-4-5@20251001 |
 | **Pricing**<sup>1</sup> | \$5 / input MTok<br/>\$25 / output MTok | \$3 / input MTok<br/>\$15 / output MTok | \$1 / input MTok<br/>\$5 / output MTok |
 | **[Extended thinking](/docs/en/build-with-claude/extended-thinking)** | No | Yes | Yes |
 | **[Adaptive thinking](/docs/en/build-with-claude/adaptive-thinking)** | Yes | Yes | No |
@@ -35,9 +35,9 @@ _<sup>1 - See [Pricing](/docs/en/about-claude/pricing) for complete pricing info
 
 _<sup>2 - **Reliable knowledge cutoff** indicates the date through which a model's knowledge is most extensive and reliable. **Training data cutoff** is the broader date range of training data used. For more information, see [Anthropic's Transparency Hub](https://www.anthropic.com/transparency).</sup>_
 
-_<sup>3 - <NextOpus /> is available on Bedrock through [Claude in Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock) (the Messages-API Bedrock endpoint).</sup>_
+_<sup>3 - Claude Opus 4.8 is available on Bedrock through [Claude in Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock) (the Messages-API Bedrock endpoint).</sup>_
 
-_<sup>4 - On Microsoft Foundry, <NextOpus /> has a 200k-token context window. See [Claude in Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry).</sup>_
+_<sup>4 - On Microsoft Foundry, Claude Opus 4.8 has a 200k-token context window. See [Claude in Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry).</sup>_
 
 <Info>
 [Claude Mythos Preview](https://anthropic.com/glasswing) is offered separately as a research preview model for defensive cybersecurity workflows as part of [Project Glasswing](https://anthropic.com/glasswing). Access is invitation-only and there is no self-serve sign-up.
@@ -54,11 +54,11 @@ You can query model capabilities and token limits programmatically with the [Mod
 </Tip>
 
 <Note>
-On <NextOpus />, the `effort` parameter defaults to `high` on all surfaces, including the Claude API and Claude Code. Set `effort` explicitly to use a different level. See [Effort](/docs/en/build-with-claude/effort) for guidance on choosing a level.
+On Claude Opus 4.8, the `effort` parameter defaults to `high` on all surfaces, including the Claude API and Claude Code. Set `effort` explicitly to use a different level. See [Effort](/docs/en/build-with-claude/effort) for guidance on choosing a level.
 </Note>
 
 <Note>
-The Max output values above apply to the synchronous Messages API. On the [Message Batches API](/docs/en/build-with-claude/batch-processing#extended-output-beta), <NextOpus />, Opus 4.7, Opus 4.6, and Sonnet 4.6 support up to 300k output tokens by using the `output-300k-2026-03-24` beta header.
+The Max output values above apply to the synchronous Messages API. On the [Message Batches API](/docs/en/build-with-claude/batch-processing#extended-output-beta), Claude Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6 support up to 300k output tokens by using the `output-300k-2026-03-24` beta header.
 </Note>
 
 <section title="Legacy models">
@@ -82,7 +82,7 @@ The following models are still available. Consider migrating to current models f
 | **Training data cutoff** | Jan 2026 | Aug 2025 | Jul 2025 | Aug 2025 | Mar 2025 | Mar 2025 | Mar 2025 |
 
 <Warning>
-Claude Sonnet 4 (`claude-sonnet-4-20250514`) and Claude Opus 4 (`claude-opus-4-20250514`) are deprecated and will be retired on June 15, 2026. Migrate to [Claude Sonnet 4.6](/docs/en/about-claude/models/overview#latest-models-comparison) and [<NextOpus />](/docs/en/about-claude/models/migration-guide#migrating-from-claude-opus-47) respectively before the retirement date.
+Claude Sonnet 4 (`claude-sonnet-4-20250514`) and Claude Opus 4 (`claude-opus-4-20250514`) are deprecated and will be retired on June 15, 2026. Migrate to [Claude Sonnet 4.6](/docs/en/about-claude/models/overview#latest-models-comparison) and [Claude Opus 4.8](/docs/en/about-claude/models/migration-guide#migrating-from-claude-opus-47) respectively before the retirement date.
 
 See [model deprecations](/docs/en/about-claude/model-deprecations) for details.
 </Warning>
@@ -103,9 +103,9 @@ Claude 4 models excel in:
     - For prompting best practices, see [Prompting best practices](/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices).
 - **Output quality**: When migrating from previous model generations to Claude 4, you may notice larger improvements in overall performance.
 
-## Migrating to <NextOpus /> \{#migrating-to-claude-opus-4-8}
+## Migrating to Claude Opus 4.8
 
-If you're currently using Claude Opus 4.7 or earlier Claude models, see [Migrating to <NextOpus />](/docs/en/about-claude/models/migration-guide#migrating-from-claude-opus-47).
+If you're currently using Claude Opus 4.7 or earlier Claude models, see [Migrating to Claude Opus 4.8](/docs/en/about-claude/models/migration-guide#migrating-from-claude-opus-47).
 
 ## Migrating to Claude Opus 4.7
 
