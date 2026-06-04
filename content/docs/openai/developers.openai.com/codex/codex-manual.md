@@ -3752,8 +3752,9 @@ Source: [Automations](/codex/app/automations.md)
 
 Automate recurring tasks in the background. Codex adds findings to the inbox, or automatically archives the task if there's nothing to report. You can combine automations with [skills](/codex/skills) for more complex tasks.
 
-For project-scoped automations, the app needs to be running, and the selected
-project needs to be available on disk.
+For project-scoped automations, the machine running the local Codex app must be
+powered on, Codex must be running, and the selected project must still be
+available on disk when the automation is scheduled to run.
 
 In Git repositories, you can choose whether an automation runs in your local
 project or on a new [worktree](/codex/app/worktrees). Both options run in the
@@ -4434,9 +4435,9 @@ press Cmd+,.
 
 #### General
 
-Choose where files open and how much command output appears in threads. You can also
-require Cmd+Enter for multiline prompts or prevent sleep while a
-thread runs.
+Choose where files open, how much command output appears in threads, and where
+terminal tabs open by default. You can also require Cmd+Enter
+for multiline prompts or prevent sleep while a thread runs.
 
 #### Profile
 
@@ -9986,16 +9987,17 @@ members of your ChatGPT workspace from the Codex app.
 1. Open **Plugins** in the Codex app.
 2. Go to **Created by you** and open the plugin details page.
 3. Select **Share**.
-4. Add workspace members or copy a share link.
+4. Add workspace members or workspace groups, or copy a share link.
 5. Choose who has access, then send the invitation or link.
 
 People you share with can find the plugin under **Shared with you** in the
 plugin directory. Sharing a local plugin with your workspace doesn't publish
 it to the public Plugin Directory. Shared plugins stay within your workspace
 and organization boundary; accounts that aren't signed in to that workspace
-can't access them. Use a marketplace when you want repo or CLI distribution,
-and use workspace sharing when you want selected teammates to install a plugin
-from the Codex app.
+can't access them. Use groups when a team or role should share the same plugin
+access. Use a marketplace when you want repo or CLI distribution, and use
+workspace sharing when you want selected teammates to install a plugin from the
+Codex app.
 
 Workspace admins can disable plugin sharing from cloud-managed requirements by
 adding `plugin_sharing = false` to `requirements.toml`:

@@ -552,9 +552,7 @@ All traffic to your action must use TLS 1.2 or later on port 443 with a valid pu
 
 ## IP egress ranges
 
-ChatGPT will call your action from an IP address from one of the [CIDR blocks](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing) listed in [chatgpt-connectors.json](https://openai.com/chatgpt-connectors.json)
-
-You may wish to explicitly allowlist these IP addresses. This list is updated automatically periodically.
+ChatGPT will call your action from one of the [published IP ranges](https://developers.openai.com/api/docs/guides/ip-addresses). You may wish to explicitly allowlist these IP addresses.
 
 ## Multiple authentication schemas
 
@@ -2969,7 +2967,7 @@ Responses are designed to be used alone, but you can also use them with prompt a
   "incomplete_details": null,
   "instructions": null,
   "metadata": {},
-  "model": "gpt-4.1-2025-04-14",
+  "model": "gpt-5.5",
   "object": "response",
   "output": [
     {
@@ -3042,6 +3040,11 @@ Follow the migration steps below to move from the Assistants API to the Response
 1. Find these in the dashboard and click `Create prompt`.
 
 This will create a prompt object out of each existing assistant object.
+
+Reusable prompt objects are also being deprecated. If you use this migration
+  path, review the [prompts deprecation
+  timeline](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) before adopting
+  prompt objects in a long-lived integration.
 
 ### 2. Move new user chats over to conversations and responses
 
@@ -3162,7 +3165,7 @@ At OpenAI, protecting user data is fundamental to our mission. We do not train
 
 ## Text generation models
 
-OpenAI's text generation models (often referred to as generative pre-trained transformers or "GPT" models for short), like GPT-4 and GPT-3.5, have been trained to understand natural and formal language. Models like GPT-4 allows text outputs in response to their inputs. The inputs to these models are also referred to as "prompts". Designing a prompt is essentially how you "program" a model like GPT-4, usually by providing instructions or some examples of how to successfully complete a task. Models like GPT-4 can be used across a great variety of tasks including content or code generation, summarization, conversation, creative writing, and more. Read more in our introductory [text generation guide](https://developers.openai.com/api/docs/guides/text-generation) and in our [prompt engineering guide](https://developers.openai.com/api/docs/guides/prompt-engineering).
+OpenAI's text generation models (often referred to as generative pre-trained transformers or "GPT" models for short), like [`gpt-5.5`](https://developers.openai.com/api/docs/models/gpt-5.5) and [`gpt-5.4-mini`](https://developers.openai.com/api/docs/models/gpt-5.4-mini), have been trained to understand natural and formal language. These models allow text outputs in response to their inputs. The inputs to these models are also referred to as "prompts." Designing a prompt is essentially how you "program" a model, usually by providing instructions or some examples of how to successfully complete a task. GPT models can be used across a great variety of tasks including content or code generation, summarization, conversation, creative writing, and more. Read more in our introductory [text generation guide](https://developers.openai.com/api/docs/guides/text-generation) and in our [prompt engineering guide](https://developers.openai.com/api/docs/guides/prompt-engineering).
 
 ## Embeddings
 
@@ -3209,6 +3212,42 @@ We use the term "legacy" to refer to models and endpoints that no longer receive
 ## Upcoming deprecations
 
 Upcoming deprecations are listed below, with the most recent announcements at the top.
+
+### 2026-06-03: Reusable prompts
+
+On June 3, 2026, we notified developers using reusable prompts in the dashboard and API that reusable prompt objects are being deprecated.
+
+| Date         | Update                                                                       |
+| ------------ | ---------------------------------------------------------------------------- |
+| June 3, 2026 | Deprecation announced and prompt creation de-emphasized in the platform.     |
+| Nov 30, 2026 | The `v1/prompts` API and reusable prompt objects are scheduled to shut down. |
+
+To migrate, move reusable prompt content into your application code. See [Migrate from prompt objects](https://developers.openai.com/api/docs/guides/prompting/migrate-from-prompt-object).
+
+### 2026-06-03: Evals platform
+
+On June 3, 2026, we notified developers using the Evals platform that the product is being deprecated.
+
+| Date         | Update                                                  |
+| ------------ | ------------------------------------------------------- |
+| June 3, 2026 | Deprecation announced for the Evals platform.           |
+| Oct 31, 2026 | Existing evals become read-only.                        |
+| Nov 30, 2026 | The Evals dashboard and API are scheduled to shut down. |
+
+Graders documented for eval workflows are part of this transition. Fine-tuning-related timelines remain covered in the self-serve fine-tuning section below.
+
+See [Moving from OpenAI Evals to Promptfoo](https://developers.openai.com/cookbook/examples/evaluation/moving-from-openai-evals-to-promptfoo) for a migration path.
+
+### 2026-06-03: Agent Builder
+
+On June 3, 2026, we notified developers using Agent Builder that the product is being deprecated. ChatKit remains available.
+
+| Date         | Update                                   |
+| ------------ | ---------------------------------------- |
+| June 3, 2026 | Deprecation announced for Agent Builder. |
+| Nov 30, 2026 | Agent Builder is scheduled to shut down. |
+
+See [Migrate from Agent Builder](https://developers.openai.com/api/docs/guides/agent-builder/migrate-from-agent-builder) to continue with the Agents SDK or ChatGPT Workspace Agents.
 
 ### 2026-06-02: GPT Image model deprecations
 
@@ -3956,7 +3995,7 @@ class MyChatKitServer(ChatKitServer):
         super().__init__(data_store, file_store)
 
     assistant_agent = Agent[AgentContext](
-        model="gpt-4.1",
+        model="gpt-5.5",
         name="Assistant",
         instructions="You are a helpful assistant",
     )
@@ -4033,7 +4072,7 @@ async def add_to_todo_list(ctx: RunContextWrapper[AgentContext], item: str) -> N
     )
 
 assistant_agent = Agent[AgentContext](
-    model="gpt-4.1",
+    model="gpt-5.5",
     name="Assistant",
     instructions="You are a helpful assistant",
     tools=[add_to_todo_list],
@@ -4318,6 +4357,12 @@ See the full [API reference documentation](https://platform.openai.com/docs/api-
 **Agent Builder** is a visual canvas for building multi-step agent workflows.
 
 You can start from templates, drag and drop nodes for each step in your workflow, provide typed inputs and outputs, and preview runs using live data. When you're ready to deploy, embed the workflow into your site with ChatKit, or download the SDK code to run it yourself.
+
+OpenAI is deprecating Agent Builder. Existing users can continue using it
+  during the transition window, and the product is scheduled to shut down on
+  November 30, 2026. ChatKit remains available. See the [deprecations
+  page](https://developers.openai.com/api/docs/deprecations#2026-06-03-agent-builder) for the current
+  timeline.
 
 Use this guide to learn the process and parts of building agents.
 
@@ -4679,13 +4724,16 @@ Once one specialist is defined cleanly, move to the guide that matches the next 
 
 Agents are applications that plan, call tools, collaborate across specialists, and keep enough state to complete multi-step work.
 
-- Use the **OpenAI client libraries** when you want direct API clients for model requests.
+- Use the [**Responses API**](https://developers.openai.com/api/reference/responses/overview) when one model call plus tools and application-owned logic is enough.
 - Use the **Agents SDK** pages when your application owns orchestration, tool execution, approvals, and state.
-- Use **Agent Builder** only when you specifically want the hosted workflow editor and ChatKit path.
+
+## Get your first agent running
+
+Start with the [Agents SDK quickstart](https://developers.openai.com/api/docs/guides/agents/quickstart) to install the SDK, define one agent, and run it. Once that works, return here to choose the next capability your application needs.
 
 ## Get the Agents SDK
 
-Use the GitHub repositories for installation, issues, examples, and language-specific reference details.
+Use the GitHub repositories for more examples, issues, and language-specific reference details.
 
 <div class="not-prose mt-4 grid gap-3">
   <a
@@ -4732,7 +4780,7 @@ Use the GitHub repositories for installation, issues, examples, and language-spe
 | Understand what a run returns            | [Results and state](https://developers.openai.com/api/docs/guides/agents/results)                                                                                                   | This page explains final output, resumable state, and next-turn surfaces.                      |
 | Add hosted tools, function tools, or MCP | [Using tools](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk) and [Integrations and observability](https://developers.openai.com/api/docs/guides/agents/integrations-observability) | Tool semantics live in the platform tools docs; SDK-specific MCP and tracing live here.        |
 | Inspect and improve runs                 | [Integrations and observability](https://developers.openai.com/api/docs/guides/agents/integrations-observability) and [evaluate agent workflows](https://developers.openai.com/api/docs/guides/agent-evals)      | Use traces for debugging first, then move into evaluation loops.                               |
-| Build a voice-first workflow             | [Voice agents](https://developers.openai.com/api/docs/guides/voice-agents)                                                                                                          | Voice is still an SDK-first path because Agent Builder doesn't support it.                     |
+| Build a voice-first workflow             | [Voice agents](https://developers.openai.com/api/docs/guides/voice-agents)                                                                                                          | Use the SDK's voice pipeline and realtime agent patterns.                                      |
 
 ## Build with the SDK
 
@@ -4749,12 +4797,6 @@ A typical SDK reading order is:
 - Use [Agent definitions](https://developers.openai.com/api/docs/guides/agents/define-agents) and [Models and providers](https://developers.openai.com/api/docs/guides/agents/models) to shape one specialist cleanly.
 - Continue to [Running agents](https://developers.openai.com/api/docs/guides/agents/running-agents), [Orchestration and handoffs](https://developers.openai.com/api/docs/guides/agents/orchestration), and [Guardrails and human review](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals) as the workflow grows more complex.
 - Use [Results and state](https://developers.openai.com/api/docs/guides/agents/results) and [Integrations and observability](https://developers.openai.com/api/docs/guides/agents/integrations-observability) when application logic depends on the run object or deeper visibility into behavior.
-
-## Use Agent Builder for the hosted workflow path
-
-Use Agent Builder when you want OpenAI-hosted workflow creation, publishing, and ChatKit deployment. Those pages stay grouped together because they describe one product surface: building a workflow in the visual editor, publishing versions, embedding them, customizing the UI, and evaluating the results.
-
-Voice agents are an exception: they live in the SDK track because Agent Builder doesn't currently support voice workflows. Use [Voice agents](https://developers.openai.com/api/docs/guides/voice-agents) when you need speech-to-speech or chained voice pipelines.
 
 ---
 
@@ -7335,7 +7377,7 @@ The Court held that the District Court lacked personal jurisdiction over the pet
 
 # Code generation
 
-Writing, reviewing, editing, and answering questions about code is one of the primary use cases for OpenAI models today. This guide walks through your options for code generation with GPT-5.4 and Codex.
+Writing, reviewing, editing, and answering questions about code is one of the primary use cases for OpenAI models today. This guide walks through your options for code generation with [`gpt-5.5`](https://developers.openai.com/api/docs/models/gpt-5.5) and Codex.
 
 ## Get started
 
@@ -7437,7 +7479,7 @@ curl https://api.openai.com/v1/responses \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer $OPENAI_API_KEY" \\
   -d '{
-    "model": "gpt-4.1",
+    "model": "gpt-5.5",
     "tools": [{
       "type": "code_interpreter",
       "container": { "type": "auto", "memory_limit": "4g" }
@@ -7457,7 +7499,7 @@ write and run code using the python tool to answer the question.
 \`;
 
 const resp = await client.responses.create({
-  model: "gpt-4.1",
+  model: "gpt-5.5",
   tools: [
     {
       type: "code_interpreter",
@@ -7482,7 +7524,7 @@ write and run code using the python tool to answer the question.
 """
 
 resp = client.responses.create(
-    model="gpt-4.1",
+    model="gpt-5.5",
     tools=[
         {
             "type": "code_interpreter",
@@ -7527,7 +7569,7 @@ curl https://api.openai.com/v1/responses \\
   -H "Authorization: Bearer $OPENAI_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
-    "model": "gpt-4.1",
+    "model": "gpt-5.5",
     "tools": [{
       "type": "code_interpreter",
       "container": "cntr_abc123"
@@ -7544,7 +7586,7 @@ client = OpenAI()
 container = client.containers.create(name="test-container", memory_limit="4g")
 
 response = client.responses.create(
-    model="gpt-4.1",
+    model="gpt-5.5",
     tools=[{
         "type": "code_interpreter",
         "container": container.id
@@ -7563,7 +7605,7 @@ const client = new OpenAI();
 const container = await client.containers.create({ name: "test-container", memory_limit: "4g" });
 
 const resp = await client.responses.create({
-    model: "gpt-4.1",
+    model: "gpt-5.5",
     tools: [
       {
         type: "code_interpreter",
@@ -8002,7 +8044,7 @@ And an equivalent chat prompt would be:
 
 Likewise, the completions API can be used to simulate a chat between a user and an assistant by formatting the input [accordingly](https://platform.openai.com/playground/p/default-chat?model=gpt-3.5-turbo-instruct).
 
-The difference between these APIs is the underlying models that are available in each. The Chat Completions API is the interface to our most capable model (`gpt-4o`), and our most cost effective model (`gpt-4o-mini`).
+The difference between these APIs is the underlying models that are available in each. The Chat Completions API supports current GPT models like [`gpt-5.5`](https://developers.openai.com/api/docs/models/gpt-5.5) and lower-cost options like [`gpt-5.4-mini`](https://developers.openai.com/api/docs/models/gpt-5.4-mini).
 
 ---
 
@@ -9633,7 +9675,7 @@ The following examples initialize an OpenAI client with a custom subject token p
 OpenAI provides a few ways to manage conversation state, which is important for preserving information across multiple messages or turns in a conversation.
 
 
-  When troubleshooting cases where GPT-5.4 treats an intermediate update as
+  When troubleshooting cases where GPT-5.5 treats an intermediate update as
     the final answer, verify your integration preserves the assistant message
     `phase` field correctly. See [Phase
     parameter](https://developers.openai.com/api/docs/guides/reasoning#phase-parameter) for details.
@@ -9653,7 +9695,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-    model: "gpt-4o-mini",
+    model: "gpt-5.5",
     input: [
         { role: "user", content: "knock knock." },
         { role: "assistant", content: "Who's there?" },
@@ -9670,7 +9712,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-4o-mini",
+    model="gpt-5.5",
     input=[
         {"role": "user", "content": "knock knock."},
         {"role": "assistant", "content": "Who's there?"},
@@ -9707,22 +9749,15 @@ let history = [
 ];
 
 const response = await openai.responses.create({
-    model: "gpt-4o-mini",
+    model: "gpt-5.5",
     input: history,
     store: true,
 });
 
 console.log(response.output_text);
 
-// Add the response to the history
-history = [
-    ...history,
-    ...response.output.map((el) => {
-        // TODO: Remove this step
-        delete el.id;
-        return el;
-    }),
-];
+// Add all response output items, including reasoning items, to the history
+history = [...history, ...response.output];
 
 history.push({
     role: "user",
@@ -9730,7 +9765,7 @@ history.push({
 });
 
 const secondResponse = await openai.responses.create({
-    model: "gpt-4o-mini",
+    model: "gpt-5.5",
     input: history,
     store: true,
 });
@@ -9751,22 +9786,24 @@ history = [
 ]
 
 response = client.responses.create(
-    model="gpt-4o-mini",
+    model="gpt-5.5",
     input=history,
-    store=False
+    store=False,
+    include=["reasoning.encrypted_content"],
 )
 
 print(response.output_text)
 
-# Add the response to the conversation
-history += [{"role": el.role, "content": el.content} for el in response.output]
+# Add all response output items, including encrypted reasoning items, to the conversation
+history += response.output
 
 history.append({ "role": "user", "content": "tell me another" })
 
 second_response = client.responses.create(
-    model="gpt-4o-mini",
+    model="gpt-5.5",
     input=history,
-    store=False
+    store=False,
+    include=["reasoning.encrypted_content"],
 )
 
 print(second_response.output_text)
@@ -9801,7 +9838,7 @@ In a multi-turn interaction, you can pass the `conversation` into subsequent res
 
 ```python
 response = openai.responses.create(
-  model="gpt-4.1",
+  model="gpt-5.5",
   input=[{"role": "user", "content": "What are the 5 Ds of dodgeball?"}],
   conversation="conv_689667905b048191b4740501625afd940c7533ace33a2dab"
 )
@@ -9820,7 +9857,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-    model: "gpt-4o-mini",
+    model: "gpt-5.5",
     input: "tell me a joke",
     store: true,
 });
@@ -9828,7 +9865,7 @@ const response = await openai.responses.create({
 console.log(response.output_text);
 
 const secondResponse = await openai.responses.create({
-    model: "gpt-4o-mini",
+    model: "gpt-5.5",
     previous_response_id: response.id,
     input: [{"role": "user", "content": "explain why this is funny."}],
     store: true,
@@ -9842,13 +9879,13 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-4o-mini",
+    model="gpt-5.5",
     input="tell me a joke",
 )
 print(response.output_text)
 
 second_response = client.responses.create(
-    model="gpt-4o-mini",
+    model="gpt-5.5",
     previous_response_id=response.id,
     input=[{"role": "user", "content": "explain why this is funny."}],
 )
@@ -9867,7 +9904,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-    model: "gpt-4o-mini",
+    model: "gpt-5.5",
     input: "tell me a joke",
     store: true,
 });
@@ -9875,7 +9912,7 @@ const response = await openai.responses.create({
 console.log(response.output_text);
 
 const secondResponse = await openai.responses.create({
-    model: "gpt-4o-mini",
+    model: "gpt-5.5",
     previous_response_id: response.id,
     input: [{"role": "user", "content": "explain why this is funny."}],
     store: true,
@@ -9889,13 +9926,13 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-4o-mini",
+    model="gpt-5.5",
     input="tell me a joke",
 )
 print(response.output_text)
 
 second_response = client.responses.create(
-    model="gpt-4o-mini",
+    model="gpt-5.5",
     previous_response_id=response.id,
     input=[{"role": "user", "content": "explain why this is funny."}],
 )
@@ -10592,6 +10629,14 @@ Learn more about deep research from these examples in the [OpenAI Cookbook](http
 
 [Direct Preference Optimization](https://arxiv.org/abs/2305.18290) (DPO) fine-tuning allows you to fine-tune models based on prompts and pairs of responses. This approach enables the model to learn from more subjective human preferences, optimizing for outputs that are more likely to be favored. DPO is currently only supported for text inputs and outputs.
 
+OpenAI is winding down the fine-tuning platform. The platform is no longer
+  accessible to new users, but existing users of the fine-tuning platform will
+  be able to create training jobs for the coming months.
+  <br />
+  All fine-tuned models will remain available for inference until their base
+  models are [deprecated](https://developers.openai.com/api/docs/deprecations). The full timeline is
+  [here](https://developers.openai.com/api/docs/deprecations).
+
 <br />
 
 <table>
@@ -11013,9 +11058,9 @@ client = OpenAI()
 
 try:
   #Make your OpenAI API request here
-  response = client.chat.completions.create(
-    prompt="Hello world",
-    model="gpt-4o-mini"
+  response = client.responses.create(
+    model="gpt-5.5",
+    input="Hello world"
   )
 except openai.APIError as e:
   #Handle API error here, e.g. retry or log
@@ -11123,6 +11168,13 @@ Model selection is an important lever that enables builders to improve their AI 
 
 We support accessing **third-party models** (no API key required) and accessing **custom endpoints** (API key required).
 
+OpenAI is deprecating the Evals platform. Existing evals content remains
+  available during the transition window. Evals will become read-only for
+  existing users on October 31, 2026, and the platform is scheduled to shut down
+  on November 30, 2026. See the [deprecations
+  page](https://developers.openai.com/api/docs/deprecations#2026-06-03-evals-platform) for the current
+  timeline.
+
 ## Third-party models
 
 In order to use third-party models, the following must be true:
@@ -11191,7 +11243,7 @@ For more inspiration, visit the [OpenAI Cookbook](https://developers.openai.com/
 
 <span slot="icon">
       </span>
-    Uses Datasets to quickly build evals and interate on prompts.
+    Uses Datasets to quickly build evals and iterate on prompts.
 
 
 </a>
@@ -11213,6 +11265,13 @@ For more inspiration, visit the [OpenAI Cookbook](https://developers.openai.com/
 Generative AI is variable. Models sometimes produce different output from the same input, which makes traditional software testing methods insufficient for AI architectures. Evaluations (**evals**) are a way to test your AI system despite this variability.
 
 This guide provides high-level guidance on designing evals. To get started with the [Evals API](https://developers.openai.com/api/docs/api-reference/evals), see [evaluating model performance](https://developers.openai.com/api/docs/guides/evals).
+
+OpenAI is deprecating the Evals platform. Existing evals content remains
+  available during the transition window. Evals will become read-only for
+  existing users on October 31, 2026, and the platform is scheduled to shut down
+  on November 30, 2026. See the [deprecations
+  page](https://developers.openai.com/api/docs/deprecations#2026-06-03-evals-platform) for the current
+  timeline.
 
 ## What are evals?
 
@@ -11297,10 +11356,12 @@ To test your LLM-based application's ability to do Q&A over docs, your eval desi
 1. **Continuously evaluate**<br/>
    Set up continuous evaluation (CE) to run evals on every change, monitor your app to identify new cases of nondeterminism, and grow the eval set over time.
 
-When creating an eval dataset, o3 and GPT-4.1 are useful for collecting eval
-  examples and edge cases. Consider using o3 to help you generate a diverse set
-  of test data across various scenarios. Ensure your test data includes typical
-  cases, edge cases, and adversarial cases. Use human expert labellers.
+When creating an eval dataset, 
+  [`gpt-5.5`](https://developers.openai.com/api/docs/models/gpt-5.5) 
+  is useful for collecting eval examples and edge cases. Consider using it to
+  help you generate a diverse set of test data across various scenarios. Ensure
+  your test data includes typical cases, edge cases, and adversarial cases. Use
+  human expert labellers.
 
 ## Identify where you need evals
 
@@ -11572,7 +11633,7 @@ Human judgment evals provide the highest quality but are slow and expensive.
 
 ### LLM-as-a-judge and model graders
 
-Using models to judge output is cheaper to run and more scalable than human evaluation. Strong LLM judges like GPT-4.1 can match both controlled and crowdsourced human preferences, achieving over 80% agreement (the same level of agreement between humans).
+Using models to judge output is cheaper to run and more scalable than human evaluation. Start with [`gpt-5.5`](https://developers.openai.com/api/docs/models/gpt-5.5) when you need a strong LLM judge, then validate agreement against your human labels before optimizing for cost or latency.
 
 - **Examples**:
   - Pairwise comparison: Present the judge model with two responses and ask it to determine which one is better based on specific criteria
@@ -11581,7 +11642,7 @@ Using models to judge output is cheaper to run and more scalable than human eval
 - **Challenges**: Position bias (response order), verbosity bias (preferring longer responses)
 - **Recommendations**:
   - Use pairwise comparison or pass/fail for more reliability
-  - Use the most capable model to grade if you can (e.g., o3)—o-series models excel at auto-grading from rubics or from a collection of reference expert answers
+  - Use the most capable model to grade if you can. Start with [`gpt-5.5`](https://developers.openai.com/api/docs/models/gpt-5.5), then validate whether a specialized reasoning model performs better for your rubric or reference-answer set
   - Control for response lengths as LLMs bias towards longer responses in general
   - Add reasoning and chain-of-thought as reasoning before scoring improves eval performance
   - Once the LLM judge reaches a point where it's faster, cheaper, and consistently agrees with human annotations, scale up
@@ -11942,7 +12003,7 @@ curl "https://api.openai.com/v1/responses" \\
     -H "Content-Type: application/json" \\
     -H "Authorization: Bearer $OPENAI_API_KEY" \\
     -d '{
-        "model": "gpt-5",
+        "model": "gpt-5.5",
         "input": [
             {
                 "role": "user",
@@ -11971,7 +12032,7 @@ const data = fs.readFileSync("draconomicon.pdf");
 const base64String = data.toString("base64");
 
 const response = await client.responses.create({
-    model: "gpt-5",
+    model: "gpt-5.5",
     input: [
         {
             role: "user",
@@ -12004,7 +12065,7 @@ with open("draconomicon.pdf", "rb") as f:
 base64_string = base64.b64encode(data).decode("utf-8")
 
 response = client.responses.create(
-    model="gpt-5",
+    model="gpt-5.5",
     input=[
         {
             "role": "user",
@@ -13068,6 +13129,13 @@ Don't enclose the pattern in `//`.
 
 Evaluations (often called **evals**) test model outputs to ensure they meet your specified style and content criteria. Writing evals is an essential part of building reliable applications. [Datasets](https://platform.openai.com/evaluation/datasets), a feature of the OpenAI platform, provide a quick way to get started with evals and test prompts.
 
+OpenAI is deprecating the Evals platform. Existing evals content remains
+  available during the transition window. Evals will become read-only for
+  existing users on October 31, 2026, and the platform is scheduled to shut down
+  on November 30, 2026. See the [deprecations
+  page](https://developers.openai.com/api/docs/deprecations#2026-06-03-evals-platform) for the current
+  timeline.
+
 If you need advanced features such as evaluation against external models, want
   to interact with your eval runs via API, or want to run evaluations on a
   larger scale, consider using [Evals](https://developers.openai.com/api/docs/guides/evals) instead.
@@ -13258,6 +13326,10 @@ For more inspiration, visit the [OpenAI Cookbook](https://developers.openai.com/
 # Graders
 
 Graders are a way to evaluate your model's performance against reference answers. Our [graders API](https://developers.openai.com/api/docs/api-reference/graders) is a way to test your graders, experiment with results, and improve your fine-tuning or evaluation framework to get the results you want.
+
+OpenAI is deprecating graders as part of the evals and fine-tuning workflows
+  they support. See the [deprecations page](https://developers.openai.com/api/docs/deprecations) for the
+  current transition timelines.
 
 ## Overview
 
@@ -14085,6 +14157,8 @@ The Responses API image generation tool uses its own GPT Image model selection. 
 - If you only need to generate or edit a single image from one prompt, the Image API is your best choice.
 - If you want to build conversational, editable image experiences with GPT Image, go with the Responses API.
 
+With the Image API, you choose a GPT Image model directly. With the Responses API, you choose a mainline model that supports the image generation tool; the tool handles GPT Image model selection. Responses API requests include the mainline model's token usage in addition to image generation costs.
+
 Both APIs let you [customize output](#customize-image-output) by adjusting quality, size, format, and compression. Transparent backgrounds depend on model support.
 
 This guide focuses on GPT Image.
@@ -14117,59 +14191,7 @@ You can set the `n` parameter to generate multiple images at once in a single re
 
 
 
-<div data-content-switcher-pane data-value="responses">
-    <div class="hidden">Responses API</div>
-    Generate an image
-
-```javascript
-import OpenAI from "openai";
-const openai = new OpenAI();
-
-const response = await openai.responses.create({
-    model: "gpt-5.5",
-    input: "Generate an image of gray tabby cat hugging an otter with an orange scarf",
-    tools: [{type: "image_generation"}],
-});
-
-// Save the image to a file
-const imageData = response.output
-  .filter((output) => output.type === "image_generation_call")
-  .map((output) => output.result);
-
-if (imageData.length > 0) {
-  const imageBase64 = imageData[0];
-  const fs = await import("fs");
-  fs.writeFileSync("otter.png", Buffer.from(imageBase64, "base64"));
-}
-```
-
-```python
-from openai import OpenAI
-import base64
-
-client = OpenAI() 
-
-response = client.responses.create(
-    model="gpt-5.5",
-    input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
-    tools=[{"type": "image_generation"}],
-)
-
-# Save the image to a file
-image_data = [
-    output.result
-    for output in response.output
-    if output.type == "image_generation_call"
-]
-    
-if image_data:
-    image_base64 = image_data[0]
-    with open("otter.png", "wb") as f:
-        f.write(base64.b64decode(image_base64))
-```
-
-  </div>
-  <div data-content-switcher-pane data-value="image" hidden>
+<div data-content-switcher-pane data-value="image">
     <div class="hidden">Image API</div>
     Generate an image
 
@@ -14233,6 +14255,58 @@ openai images generate \\
   --prompt "A childrens book drawing of a veterinarian using a stethoscope to listen to the heartbeat of a baby otter." \\
   --raw-output \\
   --transform 'data.0.b64_json' | base64 --decode > otter.png
+```
+
+  </div>
+  <div data-content-switcher-pane data-value="responses" hidden>
+    <div class="hidden">Responses API</div>
+    Generate an image
+
+```javascript
+import OpenAI from "openai";
+const openai = new OpenAI();
+
+const response = await openai.responses.create({
+    model: "gpt-5.5",
+    input: "Generate an image of gray tabby cat hugging an otter with an orange scarf",
+    tools: [{type: "image_generation"}],
+});
+
+// Save the image to a file
+const imageData = response.output
+  .filter((output) => output.type === "image_generation_call")
+  .map((output) => output.result);
+
+if (imageData.length > 0) {
+  const imageBase64 = imageData[0];
+  const fs = await import("fs");
+  fs.writeFileSync("otter.png", Buffer.from(imageBase64, "base64"));
+}
+```
+
+```python
+from openai import OpenAI
+import base64
+
+client = OpenAI() 
+
+response = client.responses.create(
+    model="gpt-5.5",
+    input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
+    tools=[{"type": "image_generation"}],
+)
+
+# Save the image to a file
+image_data = [
+    output.result
+    for output in response.output
+    if output.type == "image_generation_call"
+]
+    
+if image_data:
+    image_base64 = image_data[0]
+    with open("otter.png", "wb") as f:
+        f.write(base64.b64decode(image_base64))
 ```
 
   </div>
@@ -14837,7 +14911,14 @@ If you provide multiple input images, the mask will be applied to the first imag
 
 ```python
 from openai import OpenAI
+import base64
+
 client = OpenAI()
+
+def create_file(file_path):
+    with open(file_path, "rb") as file_content:
+        result = client.files.create(file=file_content, purpose="vision")
+    return result.id
 
 fileId = create_file("sunlit_lounge.png")
 maskId = create_file("mask.png")
@@ -14883,8 +14964,18 @@ if image_data:
 ```
 
 ```javascript
+import fs from "fs";
 import OpenAI from "openai";
+
 const openai = new OpenAI();
+
+async function createFile(filePath) {
+  const result = await openai.files.create({
+    file: fs.createReadStream(filePath),
+    purpose: "vision",
+  });
+  return result.id;
+}
 
 const fileId = await createFile("sunlit_lounge.png");
 const maskId = await createFile("mask.png");
@@ -14923,7 +15014,6 @@ const imageData = response.output
 
 if (imageData.length > 0) {
   const imageBase64 = imageData[0];
-  const fs = await import("fs");
   fs.writeFileSync("lounge.png", Buffer.from(imageBase64, "base64"));
 }
 ```
@@ -14935,6 +15025,8 @@ if (imageData.length > 0) {
 
 ```python
 from openai import OpenAI
+import base64
+
 client = OpenAI()
 
 result = client.images.edit(
@@ -15027,7 +15119,7 @@ from PIL import Image
 from io import BytesIO
 
 # 1. Load your black & white mask as a grayscale image
-mask = Image.open(img_path_mask).convert("L")
+mask = Image.open("mask.png").convert("L")
 
 # 2. Convert it to RGBA so it has space for an alpha channel
 mask_rgba = mask.convert("RGBA")
@@ -15789,7 +15881,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-    model: "gpt-4.1-mini",
+    model: "gpt-5.5",
     input: "Generate an image of gray tabby cat hugging an otter with an orange scarf",
     tools: [{type: "image_generation"}],
 });
@@ -15813,7 +15905,7 @@ import base64
 client = OpenAI() 
 
 response = client.responses.create(
-    model="gpt-4.1-mini",
+    model="gpt-5.5",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
     tools=[{"type": "image_generation"}],
 )
@@ -15884,7 +15976,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-    model: "gpt-4.1-mini",
+    model: "gpt-5.5",
     input: [{
         role: "user",
         content: [
@@ -15906,7 +15998,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-4.1-mini",
+    model="gpt-5.5",
     input=[{
         "role": "user",
         "content": [
@@ -15926,7 +16018,7 @@ print(response.output_text)
 using OpenAI.Responses;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-5", apiKey: key);
+OpenAIResponseClient client = new(model: "gpt-5.5", apiKey: key);
 
 Uri imageUrl = new("https://api.nga.gov/iiif/a2e6da57-3cd1-4235-b20e-95dcaefed6c8/full/!800,800/0/default.jpg");
 
@@ -15945,7 +16037,7 @@ curl https://api.openai.com/v1/responses \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer $OPENAI_API_KEY" \\
   -d '{
-    "model": "gpt-4.1-mini",
+    "model": "gpt-5.5",
     "input": [
       {
         "role": "user",
@@ -15991,7 +16083,7 @@ const imagePath = "path_to_your_image.jpg";
 const base64Image = fs.readFileSync(imagePath, "base64");
 
 const response = await openai.responses.create({
-    model: "gpt-4.1-mini",
+    model: "gpt-5.5",
     input: [
         {
             role: "user",
@@ -16029,7 +16121,7 @@ base64_image = encode_image(image_path)
 
 
 response = client.responses.create(
-    model="gpt-4.1",
+    model="gpt-5.5",
     input=[
         {
             "role": "user",
@@ -16051,7 +16143,7 @@ print(response.output_text)
 using OpenAI.Responses;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-5", apiKey: key);
+OpenAIResponseClient client = new(model: "gpt-5.5", apiKey: key);
 
 Uri imageUrl = new("https://openai-documentation.vercel.app/images/cat_and_otter.png");
 using HttpClient http = new();
@@ -16106,7 +16198,7 @@ async function createFile(filePath) {
 const fileId = await createFile("path_to_your_image.jpg");
 
 const response = await openai.responses.create({
-  model: "gpt-4.1-mini",
+  model: "gpt-5.5",
   input: [
     {
       role: "user",
@@ -16142,7 +16234,7 @@ def create_file(file_path):
 file_id = create_file("path_to_your_image.jpg")
 
 response = client.responses.create(
-    model="gpt-4.1-mini",
+    model="gpt-5.5",
     input=[{
         "role": "user",
         "content": [
@@ -16163,7 +16255,7 @@ using OpenAI.Files;
 using OpenAI.Responses;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-5", apiKey: key);
+OpenAIResponseClient client = new(model: "gpt-5.5", apiKey: key);
 
 string filename = "cat_and_otter.png";
 Uri imageUrl = new($"https://openai-documentation.vercel.app/images/{filename}");
@@ -16674,6 +16766,23 @@ Once the external surfaces are wired in, continue with the guide that covers cap
 
   </a>
 </div>
+
+---
+
+# IP egress ranges
+
+Some OpenAI products make outbound requests to services you control. If your network requires an IP allowlist, use the published ranges for the product making the request.
+
+IP allowlisting identifies traffic from an OpenAI-operated network, not a specific user or workspace, and does not replace request authentication or authorization when your integration requires them. For ChatGPT apps, use [mutual TLS](https://developers.openai.com/apps-sdk/build/auth#mutual-tls-mtls) to authenticate ChatGPT as the MCP client. When your app requires user authentication, use OAuth 2.1 to authenticate and authorize the user.
+
+## Outbound IP addresses
+
+| Product              | Used for                                                                    | Published ranges                                                      |
+| -------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| ChatGPT integrations | Apps built with the Apps SDK, connectors, GPT Actions, and Agentic Commerce | [chatgpt-connectors.json](https://openai.com/chatgpt-connectors.json) |
+| Codex cloud          | Connections from Codex cloud to services such as GitHub                     | [chatgpt-agents.json](https://openai.com/chatgpt-agents.json)         |
+
+Each JSON file includes a `creationTime` and a `prefixes` array. The ranges can change as OpenAI infrastructure changes. Fetch the relevant file regularly and update your allowlist automatically.
 
 ---
 
@@ -17681,7 +17790,7 @@ curl https://api.openai.com/v1/responses \\
 -H "Content-Type: application/json" \\
 -H "Authorization: Bearer $OPENAI_API_KEY" \\
 -d '{
-    "model": "gpt-5",
+    "model": "gpt-5.5",
     "tools": [
       {
         "type": "mcp",
@@ -17700,7 +17809,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5",
+  model: "gpt-5.5",
   tools: [
     {
       type: "mcp",
@@ -17722,7 +17831,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5",
+    model="gpt-5.5",
     tools=[
         {
             "type": "mcp",
@@ -17743,7 +17852,7 @@ using OpenAI.Responses;
 
 string dropboxToken = Environment.GetEnvironmentVariable("DROPBOX_OAUTH_ACCESS_TOKEN")!;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-5", apiKey: key);
+OpenAIResponseClient client = new(model: "gpt-5.5", apiKey: key);
 
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateMcpTool(
@@ -17867,7 +17976,7 @@ curl https://api.openai.com/v1/responses \\
 -H "Content-Type: application/json" \\
 -H "Authorization: Bearer $OPENAI_API_KEY" \\
 -d '{
-    "model": "gpt-5",
+    "model": "gpt-5.5",
     "tools": [
       {
         "type": "mcp",
@@ -17887,7 +17996,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5",
+  model: "gpt-5.5",
   tools: [{
     type: "mcp",
     server_label: "dmcp",
@@ -17908,7 +18017,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5",
+    model="gpt-5.5",
     tools=[{
         "type": "mcp",
         "server_label": "dmcp",
@@ -17927,7 +18036,7 @@ print(resp.output_text)
 using OpenAI.Responses;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-5", apiKey: key);
+OpenAIResponseClient client = new(model: "gpt-5.5", apiKey: key);
 
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateMcpTool(
@@ -17991,7 +18100,7 @@ curl https://api.openai.com/v1/responses \\
 -H "Content-Type: application/json" \\
 -H "Authorization: Bearer $OPENAI_API_KEY" \\
 -d '{
-    "model": "gpt-5",
+    "model": "gpt-5.5",
     "tools": [
       {
         "type": "mcp",
@@ -18015,7 +18124,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5",
+  model: "gpt-5.5",
   tools: [{
     type: "mcp",
     server_label: "dmcp",
@@ -18040,7 +18149,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5",
+    model="gpt-5.5",
     tools=[{
         "type": "mcp",
         "server_label": "dmcp",
@@ -18063,7 +18172,7 @@ print(resp.output_text)
 using OpenAI.Responses;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-5", apiKey: key);
+OpenAIResponseClient client = new(model: "gpt-5.5", apiKey: key);
 
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateMcpTool(
@@ -18102,7 +18211,7 @@ curl https://api.openai.com/v1/responses \\
 -H "Content-Type: application/json" \\
 -H "Authorization: Bearer $OPENAI_API_KEY" \\
 -d '{
-    "model": "gpt-5",
+    "model": "gpt-5.5",
     "tools": [
       {
         "type": "mcp",
@@ -18124,7 +18233,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5",
+  model: "gpt-5.5",
   tools: [
     {
       type: "mcp",
@@ -18149,7 +18258,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5",
+    model="gpt-5.5",
     tools=[
         {
             "type": "mcp",
@@ -18172,7 +18281,7 @@ print(resp.output_text)
 using OpenAI.Responses;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-5", apiKey: key);
+OpenAIResponseClient client = new(model: "gpt-5.5", apiKey: key);
 
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateMcpTool(
@@ -18203,7 +18312,7 @@ curl https://api.openai.com/v1/responses \\
 -H "Content-Type: application/json" \\
 -H "Authorization: Bearer $OPENAI_API_KEY" \\
 -d '{
-    "model": "gpt-5",
+    "model": "gpt-5.5",
     "input": "Create a payment link for $20",
     "tools": [
       {
@@ -18221,7 +18330,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5",
+  model: "gpt-5.5",
   input: "Create a payment link for $20",
   tools: [
     {
@@ -18242,7 +18351,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5",
+    model="gpt-5.5",
     input="Create a payment link for $20",
     tools=[
         {
@@ -18262,7 +18371,7 @@ using OpenAI.Responses;
 
 string authToken = Environment.GetEnvironmentVariable("STRIPE_OAUTH_ACCESS_TOKEN")!;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-5", apiKey: key);
+OpenAIResponseClient client = new(model: "gpt-5.5", apiKey: key);
 
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateMcpTool(
@@ -18325,7 +18434,7 @@ curl https://api.openai.com/v1/responses \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer $OPENAI_API_KEY" \\
   -d '{
-    "model": "gpt-5",
+    "model": "gpt-5.5",
     "tools": [
       {
         "type": "mcp",
@@ -18344,7 +18453,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5",
+  model: "gpt-5.5",
   tools: [
     {
       type: "mcp",
@@ -18366,7 +18475,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5",
+    model="gpt-5.5",
     tools=[
         {
             "type": "mcp",
@@ -18387,7 +18496,7 @@ using OpenAI.Responses;
 
 string authToken = Environment.GetEnvironmentVariable("GOOGLE_CALENDAR_OAUTH_ACCESS_TOKEN")!;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-5", apiKey: key);
+OpenAIResponseClient client = new(model: "gpt-5.5", apiKey: key);
 
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateMcpTool(
@@ -18827,7 +18936,110 @@ In other words, if you're an organization with Data Residency in Europe, OpenAI 
 
 ---
 
+# Migrate from Agent Builder
+
+Use this guide to export an existing Agent Builder workflow as Agents SDK code.
+You can use the export to recreate the workflow as a ChatGPT Workspace Agent or
+continue with the Agents SDK in your application.
+
+This process does not convert your workflow graph or guarantee that every
+behavior transfers unchanged.
+
+## Choose a migration path
+
+- **Agents SDK**: Best for building agents through code.
+- **ChatGPT Workspace Agents**: Best for building agents through natural
+  language and sharing them with teams.
+
+## Before you migrate
+
+You need access to the workflow in
+[Agent Builder](https://developers.openai.com/api/docs/guides/agent-builder).
+
+## Export your workflow
+
+1. Open your workflow in Agent Builder.
+1. Select **Code** in the top navigation.
+1. Select **Agents SDK** in the code dialog.
+1. Select **TypeScript** or **Python**, then copy the complete export.
+
+![Agent Builder Code dialog with Agents SDK selected](https://developers.openai.com/images/platform/guides/agent-builder/agents-sdk-export.png)
+
+## Option 1: Continue with the Agents SDK
+
+Use this option when you want to run the exported workflow in an application
+you build and deploy.
+
+Copy the TypeScript or Python export into your application, install and
+configure the matching Agents SDK, and test the workflow in your runtime. For
+guidance on configuring and running the export, see the
+[Agents SDK overview](https://developers.openai.com/api/docs/guides/agents) and
+[quickstart](https://developers.openai.com/api/docs/guides/agents/quickstart).
+Validate your application's configuration and behavior before deploying it.
+
+## Option 2: Create a workspace agent from the export
+
+To use this option, you need a ChatGPT Business, Enterprise, or Edu workspace
+with access to [workspace agents](https://chatgpt.com/agents) and permission to
+create agents.
+
+In ChatGPT, [create a workspace agent](https://chatgpt.com/agents/studio/new).
+Paste your exported code into the chat with this prompt:
+
+```text
+Please help me convert this workflow into an agent:
+
+<paste your exported code here>
+```
+
+Review any behavior that the builder identifies as requiring changes before you
+continue.
+
+## Review and test the agent
+
+Some workflow behavior may need manual recreation. Review control flow,
+triggers, tools, and permissions as you test the migrated agent.
+
+Before creating the agent:
+
+1. Review the generated instructions and configured capabilities.
+1. Configure any required apps, tools, skills, authentication, and connection
+   permissions.
+1. Select **Preview** and test representative inputs from the original
+   workflow.
+1. Compare the previewed behavior with the original workflow's expected
+   behavior.
+1. Select **Create** only after you have validated the migrated agent.
+
+Follow the same safety practices you used for your workflow, especially when
+the agent can access private data or take actions through connected tools.
+
+## Limitations
+
+- Workflows with strong determinism at their core may not migrate faithfully to
+  a workspace agent.
+- Connected apps, authentication, publishing, and permission configuration
+  require separate review in ChatGPT.
+- An Agents SDK implementation requires you to validate your application's
+  runtime configuration, tools, authentication, permissions, and deployment.
+
+## Related resources
+
+- [Agent Builder](https://developers.openai.com/api/docs/guides/agent-builder)
+- [Safety in building agents](https://developers.openai.com/api/docs/guides/agent-builder-safety)
+- [Agents SDK overview](https://developers.openai.com/api/docs/guides/agents)
+- [Agents SDK quickstart](https://developers.openai.com/api/docs/guides/agents/quickstart)
+- [Build workspace agents in ChatGPT for repeatable work](https://developers.openai.com/cookbook/articles/chatgpt-agents-sales-meeting-prep)
+
+---
+
 # Migrate from prompt objects
+
+OpenAI is deprecating reusable prompt objects in the API. Prompt creation will
+  be de-emphasized beginning June 3, 2026, and `v1/prompts` is scheduled to shut
+  down on November 30, 2026. See the [deprecations
+  page](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) for the current
+  timeline.
 
 To migrate away from **Prompts** in the OpenAI API platform, move the prompt content out of the managed `prompt` object and into your application code. This gives you more control over review, testing, deployment, and versioning.
 
@@ -18905,12 +19117,8 @@ const response = await client.responses.create({
     },
     {
       role: "user",
-      content: \`
-Customer name: Acme
-Issue: billing question
-
-Write a response to the customer.
-      \`.trim(),
+      content:
+        "Customer name: Acme. Issue: billing question. Write a response to the customer.",
     },
   ],
 });
@@ -18932,12 +19140,7 @@ response = client.responses.create(
         },
         {
             "role": "user",
-            "content": """
-Customer name: Acme
-Issue: billing question
-
-Write a response to the customer.
-            """.strip(),
+            "content": "Customer name: Acme. Issue: billing question. Write a response to the customer.",
         },
     ],
 )
@@ -18958,7 +19161,7 @@ curl https://api.openai.com/v1/responses \\
       },
       {
         "role": "user",
-        "content": "Customer name: Acme\\nIssue: billing question\\n\\nWrite a response to the customer."
+        "content": "Customer name: Acme. Issue: billing question. Write a response to the customer."
       }
     ]
   }'
@@ -18996,20 +19199,12 @@ function buildSupportPrompt({ customerName, issue }) {
   return [
     {
       role: "system",
-      content: \`
-You are a helpful support assistant.
-Be concise, accurate, and friendly.
-Do not invent policy details.
-      \`.trim(),
+      content:
+        "You are a helpful support assistant. Be concise, accurate, and friendly. Do not invent policy details.",
     },
     {
       role: "user",
-      content: \`
-Customer name: \${customerName}
-Issue: \${issue}
-
-Write a response to the customer.
-      \`.trim(),
+      content: \`Customer name: \${customerName}. Issue: \${issue}. Write a response to the customer.\`,
     },
   ];
 }
@@ -19032,20 +19227,11 @@ def build_support_prompt(customer_name, issue):
     return [
         {
             "role": "system",
-            "content": """
-You are a helpful support assistant.
-Be concise, accurate, and friendly.
-Do not invent policy details.
-            """.strip(),
+            "content": "You are a helpful support assistant. Be concise, accurate, and friendly. Do not invent policy details.",
         },
         {
             "role": "user",
-            "content": f"""
-Customer name: {customer_name}
-Issue: {issue}
-
-Write a response to the customer.
-            """.strip(),
+            "content": f"Customer name: {customer_name}. Issue: {issue}. Write a response to the customer.",
         },
     ]
 
@@ -19140,8 +19326,8 @@ Instead of a `message`, you receive a typed `response` object with its own `id`.
 Responses are stored by default. Chat completions are stored by default for new accounts.
 To disable storage when using either API, set `store: false`.
 
-The objects you recieve back from these APIs will differ slightly. In Chat Completions, you receive an array of
-`choices`, each containing a `message`. In Responses, you receive an array of Items labled `output`.
+The objects you receive back from these APIs will differ slightly. In Chat Completions, you receive an array of
+`choices`, each containing a `message`. In Responses, you receive an array of Items labeled `output`.
 
 ### Additional differences
 
@@ -19172,7 +19358,7 @@ curl -s https://api.openai.com/v1/chat/completions \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer $OPENAI_API_KEY" \\
   -d "{
-    \\"model\\": \\"gpt-5\\",
+    \\"model\\": \\"gpt-5.5\\",
     \\"messages\\": $INPUT
   }"
 
@@ -19180,7 +19366,7 @@ curl -s https://api.openai.com/v1/responses \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer $OPENAI_API_KEY" \\
   -d "{
-    \\"model\\": \\"gpt-5\\",
+    \\"model\\": \\"gpt-5.5\\",
     \\"input\\": $INPUT
   }"
 ```
@@ -19192,12 +19378,12 @@ const context = [
 ];
 
 const completion = await client.chat.completions.create({
-  model: 'gpt-5',
-  messages: messages
+  model: 'gpt-5.5',
+  messages: context
 });
 
 const response = await client.responses.create({
-  model: "gpt-5",
+  model: "gpt-5.5",
   input: context
 });
 ```
@@ -19209,12 +19395,12 @@ context = [
 ]
 
 completion = client.chat.completions.create(
-  model="gpt-5",
-  messages=messages
+  model="gpt-5.5",
+  messages=context
 )
 
 response = client.responses.create(
-  model="gpt-5",
+  model="gpt-5.5",
   input=context
 )
 ```
@@ -19234,7 +19420,7 @@ import OpenAI from 'openai';
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const completion = await client.chat.completions.create({
-  model: 'gpt-5',
+  model: 'gpt-5.5',
   messages: [
     { 'role': 'system', 'content': 'You are a helpful assistant.' },
     { 'role': 'user', 'content': 'Hello!' }
@@ -19248,7 +19434,7 @@ from openai import OpenAI
 client = OpenAI()
 
 completion = client.chat.completions.create(
-    model="gpt-5",
+    model="gpt-5.5",
     messages=[
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": "Hello!"}
@@ -19262,7 +19448,7 @@ curl https://api.openai.com/v1/chat/completions \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer $OPENAI_API_KEY" \\
   -d '{
-      "model": "gpt-5",
+      "model": "gpt-5.5",
       "messages": [
           {"role": "system", "content": "You are a helpful assistant."},
           {"role": "user", "content": "Hello!"}
@@ -19285,7 +19471,7 @@ import OpenAI from 'openai';
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const response = await client.responses.create({
-  model: 'gpt-5',
+  model: 'gpt-5.5',
   instructions: 'You are a helpful assistant.',
   input: 'Hello!'
 });
@@ -19298,7 +19484,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5",
+    model="gpt-5.5",
     instructions="You are a helpful assistant.",
     input="Hello!"
 )
@@ -19310,7 +19496,7 @@ curl https://api.openai.com/v1/responses \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer $OPENAI_API_KEY" \\
   -d '{
-      "model": "gpt-5",
+      "model": "gpt-5.5",
       "instructions": "You are a helpful assistant.",
       "input": "Hello!"
   }'
@@ -19338,7 +19524,7 @@ import OpenAI from 'openai';
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const completion = await client.chat.completions.create({
-  model: 'gpt-5',
+  model: 'gpt-5.5',
   messages: [
     { 'role': 'system', 'content': 'You are a helpful assistant.' },
     { 'role': 'user', 'content': 'Hello!' }
@@ -19352,7 +19538,7 @@ from openai import OpenAI
 client = OpenAI()
 
 completion = client.chat.completions.create(
-    model="gpt-5",
+    model="gpt-5.5",
     messages=[
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": "Hello!"}
@@ -19366,7 +19552,7 @@ curl https://api.openai.com/v1/chat/completions \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer $OPENAI_API_KEY" \\
   -d '{
-      "model": "gpt-5",
+      "model": "gpt-5.5",
       "messages": [
           {"role": "system", "content": "You are a helpful assistant."},
           {"role": "user", "content": "Hello!"}
@@ -19389,7 +19575,7 @@ import OpenAI from 'openai';
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const response = await client.responses.create({
-  model: 'gpt-5',
+  model: 'gpt-5.5',
   instructions: 'You are a helpful assistant.',
   input: 'Hello!'
 });
@@ -19402,7 +19588,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5",
+    model="gpt-5.5",
     instructions="You are a helpful assistant.",
     input="Hello!"
 )
@@ -19414,7 +19600,7 @@ curl https://api.openai.com/v1/responses \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer $OPENAI_API_KEY" \\
   -d '{
-      "model": "gpt-5",
+      "model": "gpt-5.5",
       "instructions": "You are a helpful assistant.",
       "input": "Hello!"
   }'
@@ -19445,7 +19631,7 @@ let messages = [
     { 'role': 'user', 'content': 'What is the capital of France?' }
   ];
 const res1 = await client.chat.completions.create({
-  model: 'gpt-5',
+  model: 'gpt-5.5',
   messages
 });
 
@@ -19453,7 +19639,7 @@ messages = messages.concat([res1.choices[0].message]);
 messages.push({ 'role': 'user', 'content': 'And its population?' });
 
 const res2 = await client.chat.completions.create({
-  model: 'gpt-5',
+  model: 'gpt-5.5',
   messages
 });
 ```
@@ -19463,12 +19649,12 @@ messages = [
     {"role": "system", "content": "You are a helpful assistant."},
     {"role": "user", "content": "What is the capital of France?"}
 ]
-res1 = client.chat.completions.create(model="gpt-5", messages=messages)
+res1 = client.chat.completions.create(model="gpt-5.5", messages=messages)
 
 messages += [res1.choices[0].message]
 messages += [{"role": "user", "content": "And its population?"}]
 
-res2 = client.chat.completions.create(model="gpt-5", messages=messages)
+res2 = client.chat.completions.create(model="gpt-5.5", messages=messages)
 ```
 
                     </>
@@ -19483,34 +19669,34 @@ res2 = client.chat.completions.create(model="gpt-5", messages=messages)
 
 ```python
 context = [
-    { "role": "role", "content": "What is the capital of France?" }
+    { "role": "user", "content": "What is the capital of France?" }
 ]
 res1 = client.responses.create(
-    model="gpt-5",
+    model="gpt-5.5",
     input=context,
 )
 
-// Append the first response’s output to context
+# Append the first response's output to context
 context += res1.output
 
-// Add the next user message
+# Add the next user message
 context += [
-    { "role": "role", "content": "And it's population?" }
+    { "role": "user", "content": "And its population?" }
 ]
 
 res2 = client.responses.create(
-    model="gpt-5",
+    model="gpt-5.5",
     input=context,
 )
 ```
 
 ```javascript
 let context = [
-  { role: "role", content: "What is the capital of France?" }
+  { role: "user", content: "What is the capital of France?" }
 ];
 
 const res1 = await client.responses.create({
-  model: "gpt-5",
+  model: "gpt-5.5",
   input: context,
 });
 
@@ -19518,10 +19704,10 @@ const res1 = await client.responses.create({
 context = context.concat(res1.output);
 
 // Add the next user message
-context.push({ role: "role", content: "And its population?" });
+context.push({ role: "user", content: "And its population?" });
 
 const res2 = await client.responses.create({
-  model: "gpt-5",
+  model: "gpt-5.5",
   input: context,
 });
 ```
@@ -19534,13 +19720,13 @@ const res2 = await client.responses.create({
 
 ```javascript
 const res1 = await client.responses.create({
-  model: 'gpt-5',
+  model: 'gpt-5.5',
   input: 'What is the capital of France?',
   store: true
 });
 
 const res2 = await client.responses.create({
-  model: 'gpt-5',
+  model: 'gpt-5.5',
   input: 'And its population?',
   previous_response_id: res1.id,
   store: true
@@ -19549,13 +19735,13 @@ const res2 = await client.responses.create({
 
 ```python
 res1 = client.responses.create(
-    model="gpt-5",
+    model="gpt-5.5",
     input="What is the capital of France?",
     store=True
 )
 
 res2 = client.responses.create(
-    model="gpt-5",
+    model="gpt-5.5",
     input="And its population?",
     previous_response_id=res1.id,
     store=True
@@ -19609,11 +19795,11 @@ curl https://api.openai.com/v1/chat/completions \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer $OPENAI_API_KEY" \\
   -d '{
-  "model": "gpt-5",
+  "model": "gpt-5.5",
   "messages": [
     {
       "role": "user",
-      "content": "Jane, 54 years old",
+      "content": "Jane, 54 years old"
     }
   ],
   "response_format": {
@@ -19642,7 +19828,6 @@ curl https://api.openai.com/v1/chat/completions \\
       }
     }
   },
-  "verbosity": "medium",
   "reasoning_effort": "medium"
 }'
 ```
@@ -19652,7 +19837,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.chat.completions.create(
-  model="gpt-5",
+  model="gpt-5.5",
   messages=[
     {
       "role": "user",
@@ -19685,14 +19870,13 @@ response = client.chat.completions.create(
       }
     }
   },
-  verbosity="medium",
   reasoning_effort="medium"
 )
 ```
 
 ```javascript
 const completion = await openai.chat.completions.create({
-  model: "gpt-5",
+  model: "gpt-5.5",
   messages: [
     {
       "role": "user",
@@ -19718,14 +19902,13 @@ const completion = await openai.chat.completions.create({
           }
         },
         required: [
-          name,
-          age
+          "name",
+          "age"
         ],
         additionalProperties: false
       }
     }
   },
-  verbosity: "medium",
   reasoning_effort: "medium"
 });
 ```
@@ -19740,7 +19923,7 @@ curl https://api.openai.com/v1/responses \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer $OPENAI_API_KEY" \\
   -d '{
-  "model": "gpt-5",
+  "model": "gpt-5.5",
   "input": "Jane, 54 years old",
   "text": {
     "format": {
@@ -19773,7 +19956,7 @@ curl https://api.openai.com/v1/responses \\
 
 ```python
 response = client.responses.create(
-  model="gpt-5",
+  model="gpt-5.5",
   input="Jane, 54 years old", 
   text={
     "format": {
@@ -19806,7 +19989,7 @@ response = client.responses.create(
 
 ```javascript
 const response = await openai.responses.create({
-  model: "gpt-5",
+  model: "gpt-5.5",
   input: "Jane, 54 years old",
   text: {
     format: {
@@ -19827,8 +20010,8 @@ const response = await openai.responses.create({
           }
         },
         required: [
-          name,
-          age
+          "name",
+          "age"
         ],
         additionalProperties: false
       }
@@ -19862,7 +20045,7 @@ async function web_search(query) {
 }
 
 const completion = await client.chat.completions.create({
-  model: 'gpt-5',
+  model: 'gpt-5.5',
   messages: [
     { role: 'system', content: 'You are a helpful assistant.' },
     { role: 'user', content: 'Who is the current president of France?' }
@@ -19889,7 +20072,7 @@ def web_search(query):
     return r.json().get("results", [])
 
 completion = client.chat.completions.create(
-    model="gpt-5",
+    model="gpt-5.5",
     messages=[
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": "Who is the current president of France?"}
@@ -19963,9 +20146,14 @@ curl https://api.openai.com/v1/responses \\
 
 ## Incremental migration
 
-The Responses API is a superset of the Chat Completions API. The Chat Completions API will also continue to be supported. As such, you can incrementally adopt the Responses API if desired. You can migrate user flows who would benefit from improved reasoning models to the Responses API while keeping other flows on the Chat Completions API until you're ready for a full migration.
+The Responses API is a superset of the Chat Completions API, and Chat Completions remains supported. You can migrate one user flow at a time:
 
-As a best practice, we encourage all users to migrate to the Responses API to take advantage of the latest features and improvements from OpenAI.
+1. Start with a simple text-generation flow and update the endpoint, input, and output handling.
+2. Update multi-turn state management, then migrate function calling and Structured Outputs.
+3. For streaming flows, update consumers to handle typed Responses events such as `response.output_text.delta`. See the [streaming Responses guide](https://developers.openai.com/api/docs/guides/streaming-responses?api-mode=responses).
+4. Compare behavior, latency, and errors before routing more traffic to Responses.
+
+We recommend migrating all flows to the Responses API over time to take advantage of the latest OpenAI features and improvements.
 
 ## Assistants API
 
@@ -19992,7 +20180,12 @@ import {
 
 
 
+
 LLM output is non-deterministic, and model behavior changes between model snapshots and families. Developers must constantly measure and tune the performance of LLM applications to ensure they're getting the best results. In this guide, we explore the techniques and OpenAI platform tools you can use to ensure high quality outputs from the model.
+
+This guide covers evals and fine-tuning workflows that are being moved into
+  legacy documentation. See the [deprecations page](https://developers.openai.com/api/docs/deprecations) for
+  the current timelines for the affected platform surfaces.
 
 <div className="my-4 w-full max-w-full overflow-hidden">
   </div>
@@ -20029,7 +20222,7 @@ Run your evals against test inputs like you expect to see in production. Using o
 With evals in place, you can effectively iterate on [prompts](https://developers.openai.com/api/docs/guides/text). The prompt engineering process may be all you need in order to get great results for your use case. Different models may require different prompting techniques, but there are several best practices you can apply across the board to get better results.
 
 - **Include relevant context** - in your instructions, include text or image content that the model will need to generate a response from outside its training data. This could include data from private databases or current, up-to-the-minute information.
-- **Provide clear instructions** - your prompt should contain clear goals about what kind of output you want. GPT models like `gpt-4.1` are great at following very explicit instructions, while [reasoning models](https://developers.openai.com/api/docs/guides/reasoning) like `o4-mini` tend to do better with high level guidance on outcomes.
+- **Provide clear instructions** - your prompt should contain clear goals about what kind of output you want. Start with [`gpt-5.5`](https://developers.openai.com/api/docs/models/gpt-5.5) for new work, and use [reasoning model guidance](https://developers.openai.com/api/docs/guides/reasoning) to tune outcome-level instructions, reasoning effort, and verbosity.
 - **Provide example outputs** - give the model a few examples of correct output for a given prompt (a process called few-shot learning). The model can extrapolate from these examples how it should respond for other prompts.
 
 [
@@ -20121,7 +20314,7 @@ Model optimization is a complex topic, and sometimes more art than science. Chec
 
 # Model selection
 
-Choosing the right model, whether GPT-4o or a smaller option like GPT-4o-mini, requires balancing **accuracy**, **latency**, and **cost**. This guide explains key principles to help you make informed decisions, along with a practical example.
+Choosing the right model, whether [`gpt-5.5`](https://developers.openai.com/api/docs/models/gpt-5.5) or a smaller option like [`gpt-5.4-mini`](https://developers.openai.com/api/docs/models/gpt-5.4-mini), requires balancing **accuracy**, **latency**, and **cost**. This guide explains key principles to help you make informed decisions, along with a practical example.
 
 ## Core principles
 
@@ -20178,7 +20371,7 @@ Clear exceptions exist for these principles. If your use case is extremely cost 
 
 ## Practical example
 
-To demonstrate these principles, we'll develop a fake news classifier with the following target metrics:
+To demonstrate these principles, we'll develop a fake news classifier with the following target metrics. The experiment below uses historical GPT-4o-family results to show the workflow; for current evaluations, start with [`gpt-5.5`](https://developers.openai.com/api/docs/models/gpt-5.5) and compare against smaller or fine-tuned models.
 
 - **Accuracy:** Achieve 90% correct classification
 - **Cost:** Spend less than $5 per 1,000 articles
@@ -20202,7 +20395,7 @@ We ran three experiments to reach our goal:
 
 By switching from `gpt-4o` to `gpt-4o-mini` with fine-tuning, we achieved **equivalent performance for less than 2%** of the cost, using only 1,000 labeled examples.
 
-This process is important - you often can’t jump right to fine-tuning because you don’t know whether fine-tuning is the right tool for the optimization you need, or you don’t have enough labeled examples. Use `gpt-4o` to achieve your accuracy targets, and curate a good training set - then go for a smaller, more efficient model with fine-tuning.
+This process is important - you often can’t jump right to fine-tuning because you don’t know whether fine-tuning is the right tool for the optimization you need, or you don’t have enough labeled examples. Start with [`gpt-5.5`](https://developers.openai.com/api/docs/models/gpt-5.5) to establish your accuracy target, then test smaller or fine-tuned models when cost and latency matter.
 
 ---
 
@@ -20642,7 +20835,13 @@ Categories marked as "Text only" do not support image inputs. If you send only
 
 # Node reference
 
-[Agent Builder](https://platform.openai.com/agent-builder) is a visual canvas for composing agentic worfklows. Workflows are made up of nodes and connections that control the sequence and flow. Insert nodes, then configure and connect them to define the process you want your agents to follow.
+[Agent Builder](https://platform.openai.com/agent-builder) is a visual canvas for composing agentic workflows. Workflows are made up of nodes and connections that control the sequence and flow. Insert nodes, then configure and connect them to define the process you want your agents to follow.
+
+OpenAI is deprecating Agent Builder. Existing users can continue using it
+  during the transition window, and the product is scheduled to shut down on
+  November 30, 2026. ChatKit remains available. See the [deprecations
+  page](https://developers.openai.com/api/docs/deprecations#2026-06-03-agent-builder) for the current
+  timeline.
 
 Explore all available nodes below. To learn more, read the [Agent Builder guide](https://developers.openai.com/api/docs/guides/agent-builder).
 
@@ -21863,7 +22062,7 @@ curl https://api.openai.com/v1/responses \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-5",
+    "model": "gpt-5.5",
     "input": "What does 'fit check for my napalm era' mean?",
     "service_tier": "priority"
   }'
@@ -21875,7 +22074,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5",
+  model: "gpt-5.5",
   input: "What does 'fit check for my napalm era' mean?",
   service_tier: "priority"
 });
@@ -21889,7 +22088,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5",
+    model="gpt-5.5",
     input="What does 'fit check for my napalm era' mean?",
     service_tier="priority"
 )
@@ -22314,7 +22513,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-    model: "gpt-5",
+    model: "gpt-5.5",
     reasoning: { effort: "low" },
     instructions: "${semicolonsDevMsg}",
     input: "${semicolonsPrompt}",
@@ -22328,7 +22527,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5",
+    model="gpt-5.5",
     reasoning={"effort": "low"},
     instructions="${semicolonsDevMsg}",
     input="${semicolonsPrompt}",
@@ -22342,7 +22541,7 @@ curl "https://api.openai.com/v1/responses" \\
     -H "Content-Type: application/json" \\
     -H "Authorization: Bearer $OPENAI_API_KEY" \\
     -d '{
-        "model": "gpt-5",
+        "model": "gpt-5.5",
         "reasoning": {"effort": "low"},
         "instructions": "${semicolonsDevMsg}",
         "input": "${semicolonsPrompt}"
@@ -22359,7 +22558,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-    model: "gpt-5",
+    model: "gpt-5.5",
     reasoning: { effort: "low" },
     input: [
         {
@@ -22381,7 +22580,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5",
+    model="gpt-5.5",
     reasoning={"effort": "low"},
     input=[
         {
@@ -22403,7 +22602,7 @@ curl "https://api.openai.com/v1/responses" \\
     -H "Content-Type: application/json" \\
     -H "Authorization: Bearer $OPENAI_API_KEY" \\
     -d '{
-        "model": "gpt-5",
+        "model": "gpt-5.5",
         "reasoning": {"effort": "low"},
         "input": [
             {
@@ -22442,6 +22641,12 @@ You could think about `developer` and `user` messages like a function and its ar
 
 In the OpenAI dashboard, you can develop reusable [prompts](https://platform.openai.com/chat/edit) that you can use in API requests, rather than specifying the content of prompts in code. This way, you can more easily build and evaluate your prompts, and deploy improved versions of your prompts without changing your integration code.
 
+OpenAI is deprecating reusable prompt objects in the API. Prompt creation will
+  be de-emphasized beginning June 3, 2026, and `v1/prompts` is scheduled to shut
+  down on November 30, 2026. See the [deprecations
+  page](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) for the current
+  timeline.
+
 
 
 
@@ -22465,7 +22670,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-    model: "gpt-5",
+    model: "gpt-5.5",
     prompt: {
         id: "pmpt_abc123",
         version: "2",
@@ -22484,7 +22689,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5",
+    model="gpt-5.5",
     prompt={
         "id": "pmpt_abc123",
         "version": "2",
@@ -22503,7 +22708,7 @@ curl https://api.openai.com/v1/responses \\
   -H "Authorization: Bearer $OPENAI_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
-    "model": "gpt-5",
+    "model": "gpt-5.5",
     "prompt": {
       "id": "pmpt_abc123",
       "version": "2",
@@ -22532,7 +22737,7 @@ const file = await client.files.create({
 });
 
 const response = await client.responses.create({
-    model: "gpt-5",
+    model: "gpt-5.5",
     prompt: {
         id: "pmpt_abc123",
         variables: {
@@ -22560,7 +22765,7 @@ file = client.files.create(
 )
 
 response = client.responses.create(
-    model="gpt-5",
+    model="gpt-5.5",
     prompt={
         "id": "pmpt_abc123",
         "variables": {
@@ -22582,7 +22787,7 @@ curl https://api.openai.com/v1/responses \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-5",
+    "model": "gpt-5.5",
     "prompt": {
       "id": "pmpt_abc123",
       "variables": {
@@ -22634,7 +22839,7 @@ const client = new OpenAI();
 const instructions = await fs.readFile("prompt.txt", "utf-8");
 
 const response = await client.responses.create({
-    model: "gpt-5",
+    model: "gpt-5.5",
     instructions,
     input: "How would I declare a variable for a last name?",
 });
@@ -22650,7 +22855,7 @@ with open("prompt.txt", "r", encoding="utf-8") as f:
     instructions = f.read()
 
 response = client.responses.create(
-    model="gpt-5",
+    model="gpt-5.5",
     instructions=instructions,
     input="How would I declare a variable for a last name?",
 )
@@ -22663,7 +22868,7 @@ curl https://api.openai.com/v1/responses \\
   -H "Authorization: Bearer $OPENAI_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
-    "model": "gpt-5",
+    "model": "gpt-5.5",
     "instructions": "'"$(< prompt.txt)"'",
     "input": "How would I declare a variable for a last name?"
   }'
@@ -23126,7 +23331,7 @@ The Realtime API
 
 ### Meta-schemas
 
-Each meta-schema has a corresponding prompt which includes few-shot examples. When combined with the reliability of Structured Outputs — even without strict mode — we were able to use `gpt-4o-mini` for schema generation.
+Each meta-schema has a corresponding prompt which includes few-shot examples. When combined with the reliability of Structured Outputs — even without strict mode — we were able to generate schemas.
 
 export const soMetaSchema = {
         python:`
@@ -23144,7 +23349,7 @@ META_SCHEMA_PROMPT + "\n" + `""".strip()
 
 def generate_schema(description: str):
 completion = client.chat.completions.create(
-model="gpt-4o-mini",
+model="gpt-5.4-mini",
 response_format={"type": "json_schema", "json_schema": META_SCHEMA},
 messages=[
 {
@@ -23179,7 +23384,7 @@ FUNCTION_META_SCHEMA_PROMPT + "\n" + `""".strip()
 
 def generate_function_schema(description: str):
 completion = client.chat.completions.create(
-model="gpt-4o-mini",
+model="gpt-5.4-mini",
 response_format={"type": "json_schema", "json_schema": META_SCHEMA},
 messages=[
 {
@@ -23216,6 +23421,12 @@ messages=[
 # Prompt optimizer
 
 The [prompt optimizer](https://platform.openai.com/chat/edit?optimize=true) is a chat interface in the dashboard, where you enter a prompt, and we optimize it according to current best practices before returning it to you. Pairing the prompt optimizer with [datasets](https://developers.openai.com/api/docs/guides/evaluation-getting-started) is a powerful way to automatically improve prompts.
+
+OpenAI is deprecating the dataset-backed prompt optimizer as part of the Evals
+  platform. Evals will become read-only for existing users on October 31, 2026,
+  and the platform is scheduled to shut down on November 30, 2026. See the
+  [deprecations page](https://developers.openai.com/api/docs/deprecations#2026-06-03-evals-platform) for the
+  current timeline.
 
 ## Prepare your data
 
@@ -23299,18 +23510,31 @@ For more inspiration, visit the [OpenAI Cookbook](https://developers.openai.com/
 
 Prompting is both an art and a science. OpenAI has some strategies and API design decisions to help you construct strong prompts and get consistently good results from a model. We encourage you to experiment.
 
-### Prompts in the API
-
-OpenAI provides a long-lived prompt object, with versioning and templating shared by all users in a project. This design lets you manage, test, and reuse prompts across your team, with one central definition across APIs, SDKs, and dashboard.
-
-Universal prompt IDs give you flexibility to test and build. Variables and prompts share a base prompt, so when you create a new version, you can use that for [evals](https://developers.openai.com/api/docs/guides/evals) and determine whether a prompt performs better or worse.
-
-### Prompting tools and techniques
+## Prompting tools and techniques
 
 - **[Prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching)**: Reduce latency by up to 80% and cost by up to 75%
 - **[Prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering)**: Learn strategies, techniques, and tools to construct prompts
 
-## Create a prompt
+## Refine your prompt
+
+- Put overall tone or role guidance in the system message; keep task-specific details and examples in user messages.
+- Combine few-shot examples into a concise YAML-style or bulleted block so they’re easy to scan and update.
+- Mirror your project structure with clear folder names so teammates can locate prompts quickly.
+- Rerun your linked eval every time you publish—catching issues early is cheaper than fixing them in production.
+
+## Prompts in the API
+
+OpenAI provides a long-lived prompt object, with versioning and templating shared by all users in a project. This design lets you manage, test, and reuse prompts across your team, with one central definition across APIs, SDKs, and dashboard.
+
+OpenAI is deprecating reusable prompt objects in the API. Prompt creation will
+  be de-emphasized beginning June 3, 2026, and `v1/prompts` is scheduled to shut
+  down on November 30, 2026. See the [deprecations
+  page](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) for the current
+  timeline.
+
+Universal prompt IDs give you flexibility to test and build. Variables and prompts share a base prompt, so when you create a new version, you can use that for [evals](https://developers.openai.com/api/docs/guides/evals) and determine whether a prompt performs better or worse.
+
+### Create a prompt
 
 Log in and use the OpenAI [dashboard](https://platform.openai.com/chat) to create, save, version, and share your prompts.
 
@@ -23357,24 +23581,9 @@ Log in and use the OpenAI [dashboard](https://platform.openai.com/chat) to creat
 
    In the [prompts dashboard](https://platform.openai.com/chat), select the prompt you want to roll back. On the right, click **History**. Find the version you want to restore, and click **Restore**.
 
-## Refine your prompt
-
-- Put overall tone or role guidance in the system message; keep task-specific details and examples in user messages.
-- Combine few-shot examples into a concise YAML-style or bulleted block so they’re easy to scan and update.
-- Mirror your project structure with clear folder names so teammates can locate prompts quickly.
-- Rerun your linked eval every time you publish—catching issues early is cheaper than fixing them in production.
-
 ## Next steps
 
 When you feel confident in your prompts, you might want to check out the following guides and resources.
-
-[
-
-<span slot="icon">
-      </span>
-    Use the Playground to develop and iterate on prompts.
-
-](https://platform.openai.com/chat/edit)
 
 [
 
@@ -23694,7 +23903,7 @@ wait_random_exponential,
 def completion_with_backoff(**kwargs):
 return client.completions.create(**kwargs)
 
-completion_with_backoff(model="gpt-4o-mini", prompt="Once upon a time,")
+completion_with_backoff(model="gpt-3.5-turbo-instruct", prompt="Once upon a time,")
 `.trim(),
 };
 
@@ -23709,7 +23918,7 @@ client = OpenAI()
 def completions_with_backoff(**kwargs):
 return client.completions.create(**kwargs)
 
-completions_with_backoff(model="gpt-4o-mini", prompt="Once upon a time,")
+completions_with_backoff(model="gpt-3.5-turbo-instruct", prompt="Once upon a time,")
 `.trim(),
 };
 
@@ -23800,7 +24009,7 @@ Other important things worth noting:
 
 - Rate limits are defined at the [organization level](https://developers.openai.com/api/docs/guides/production-best-practices) and at the project level, not user level.
 - Rate limits vary by the [model](https://developers.openai.com/api/docs/models) being used.
-- For long context models like GPT-4.1, there is a separate rate limit for long context requests. You can view these rate limits in [developer console](https://platform.openai.com/settings/organization/limits).
+- For long context models like GPT-5.5, there is a separate rate limit for long context requests. You can view these rate limits in [developer console](https://platform.openai.com/settings/organization/limits).
 - Limits are also placed on the total amount an organization can spend on the API each month. These are also known as "usage limits".
 - Some model families have shared rate limits. Any models listed under a "shared limit" in your [organizations limit page](https://platform.openai.com/settings/organization/limits) share a rate limit between them. For example, if the listed shared TPM is 3.5M, all calls to any model in the given "shared limit" list will count towards that 3.5M.
 - Vector store ingestion is also rate limited per vector store ID. `/vector_stores/{vector_store_id}/files` and `/vector_stores/{vector_store_id}/file_batches` share a limit of 300 requests per minute for each vector store. For larger ingests, prefer `/vector_stores/{vector_store_id}/file_batches`.
@@ -29340,11 +29549,11 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.chat.completions.create(
-model="gpt-4o-mini",
+model="gpt-5.5",
 messages=[
 {"role": "user", "content": "This is a test"}
 ],
-max_tokens=5,
+max_completion_tokens=5,
 safety_identifier="user_123456"
 )
 `.trim(),
@@ -29353,11 +29562,11 @@ curl https://api.openai.com/v1/chat/completions \\
 -H "Content-Type: application/json" \\
 -H "Authorization: Bearer $OPENAI_API_KEY" \\
 -d '{
-"model": "gpt-4o-mini",
+"model": "gpt-5.5",
 "messages": [
 {"role": "user", "content": "This is a test"}
 ],
-"max_tokens": 5,
+"max_completion_tokens": 5,
 "safety_identifier": "user123456"
 }'
 `.trim(),
@@ -29578,6 +29787,12 @@ Learn more:
 # Safety in building agents
 
 As you build and deploy agents with [Agent Builder](https://developers.openai.com/api/docs/guides/agent-builder), it's important to understand the risks. Learn about risk types and how to mitigate them when building multi-agent workflows.
+
+OpenAI is deprecating Agent Builder. Existing users can continue using it
+  during the transition window, and the product is scheduled to shut down on
+  November 30, 2026. ChatKit remains available. See the [deprecations
+  page](https://developers.openai.com/api/docs/deprecations#2026-06-03-agent-builder) for the current
+  timeline.
 
 ## Types of risk
 
@@ -32364,7 +32579,7 @@ However, Structured Outputs with `response_format: {type: "json_schema", ...}` i
 |--------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------|
 | **Outputs valid JSON**                     | Yes                                                                                                                            | Yes                                        |
 | **Adheres to schema**                      | Yes (see [supported schemas](#supported-schemas))                                               | No                                         |
-| **Compatible models**                      | `gpt-4o-mini`, `gpt-4o-2024-08-06`, and later                                                                                  | `gpt-3.5-turbo`, `gpt-4-*` and `gpt-4o-*` models |
+| **Compatible models**                      | `gpt-4o-mini`, `gpt-4o-2024-08-06`, and later                                                                                  | `gpt-3.5-turbo`, `gpt-4-*`, `gpt-4o-*`, and compatible GPT-5 models |
 | **Enabling**                               | `text: { format: { type: "json_schema", "strict": true, "schema": ... } }`                                       | `text: { format: { type: "json_object" } }` |
 
 
@@ -32769,14 +32984,14 @@ Because the content generated from a model is non-deterministic, prompting to ge
 
 Some prompt engineering techniques work with every model, like using message roles. But different models might need to be prompted differently to produce the best results. Even different snapshots of models within the same family could produce different results. So as you build more complex applications, we strongly recommend:
 
-- Pinning your production applications to specific [model snapshots](https://developers.openai.com/api/docs/models) (like `gpt-5-2025-08-07` for example) to ensure consistent behavior
+- Pinning your production applications to specific [model snapshots](https://developers.openai.com/api/docs/models) (like `gpt-5.5-2026-04-23` for example) to ensure consistent behavior
 - Building [evals](https://developers.openai.com/api/docs/guides/evals) that measure the behavior of your prompts so you can monitor prompt performance as you iterate, or when you change and upgrade model versions
 
 Now, let's examine some tools and techniques available to you to construct prompts.
 
 ## Choosing models and APIs
 
-OpenAI has many different [models](https://developers.openai.com/api/docs/models) and several APIs to choose from. [Reasoning models](https://developers.openai.com/api/docs/guides/reasoning), like o3 and GPT-5, behave differently from chat models and respond better to different prompts. One important note is that reasoning models perform better and demonstrate higher intelligence when used with the Responses API.
+OpenAI has many different [models](https://developers.openai.com/api/docs/models) and several APIs to choose from. [Reasoning models](https://developers.openai.com/api/docs/guides/reasoning), like [`gpt-5.5`](https://developers.openai.com/api/docs/models/gpt-5.5), behave differently from chat models and respond better to different prompts. One important note is that reasoning models perform better and demonstrate higher intelligence when used with the Responses API.
 
 If you're building any text generation app, we recommend using the Responses API over the older Chat Completions API. And if you're using a reasoning model, it's especially useful to [migrate to Responses](https://developers.openai.com/api/docs/guides/migrate-to-responses).
 
@@ -32793,7 +33008,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-    model: "gpt-5",
+    model: "gpt-5.5",
     reasoning: { effort: "low" },
     instructions: "${semicolonsDevMsg}",
     input: "${semicolonsPrompt}",
@@ -32807,7 +33022,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5",
+    model="gpt-5.5",
     reasoning={"effort": "low"},
     instructions="${semicolonsDevMsg}",
     input="${semicolonsPrompt}",
@@ -32821,7 +33036,7 @@ curl "https://api.openai.com/v1/responses" \\
     -H "Content-Type: application/json" \\
     -H "Authorization: Bearer $OPENAI_API_KEY" \\
     -d '{
-        "model": "gpt-5",
+        "model": "gpt-5.5",
         "reasoning": {"effort": "low"},
         "instructions": "${semicolonsDevMsg}",
         "input": "${semicolonsPrompt}"
@@ -32838,7 +33053,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-    model: "gpt-5",
+    model: "gpt-5.5",
     reasoning: { effort: "low" },
     input: [
         {
@@ -32860,7 +33075,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5",
+    model="gpt-5.5",
     reasoning={"effort": "low"},
     input=[
         {
@@ -32882,7 +33097,7 @@ curl "https://api.openai.com/v1/responses" \\
     -H "Content-Type: application/json" \\
     -H "Authorization: Bearer $OPENAI_API_KEY" \\
     -d '{
-        "model": "gpt-5",
+        "model": "gpt-5.5",
         "reasoning": {"effort": "low"},
         "input": [
             {
@@ -32938,6 +33153,12 @@ You could think about `developer` and `user` messages like a function and its ar
 
 In the OpenAI dashboard, you can develop reusable [prompts](https://platform.openai.com/chat/edit) that you can use in API requests, rather than specifying the content of prompts in code. This way, you can more easily build and evaluate your prompts, and deploy improved versions of your prompts without changing your integration code.
 
+OpenAI is deprecating reusable prompt objects in the API. Prompt creation will
+  be de-emphasized beginning June 3, 2026, and `v1/prompts` is scheduled to shut
+  down on November 30, 2026. See the [deprecations
+  page](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) for the current
+  timeline.
+
 Here's how it works:
 
 1. **Create a reusable prompt** in the [dashboard](https://platform.openai.com/chat/edit) with placeholders like `{{customer_name}}`.
@@ -32957,7 +33178,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-    model: "gpt-5",
+    model: "gpt-5.5",
     prompt: {
         id: "pmpt_abc123",
         version: "2",
@@ -32976,7 +33197,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5",
+    model="gpt-5.5",
     prompt={
         "id": "pmpt_abc123",
         "version": "2",
@@ -32995,7 +33216,7 @@ curl https://api.openai.com/v1/responses \\
   -H "Authorization: Bearer $OPENAI_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
-    "model": "gpt-5",
+    "model": "gpt-5.5",
     "prompt": {
       "id": "pmpt_abc123",
       "version": "2",
@@ -33024,7 +33245,7 @@ const file = await client.files.create({
 });
 
 const response = await client.responses.create({
-    model: "gpt-5",
+    model: "gpt-5.5",
     prompt: {
         id: "pmpt_abc123",
         variables: {
@@ -33052,7 +33273,7 @@ file = client.files.create(
 )
 
 response = client.responses.create(
-    model="gpt-5",
+    model="gpt-5.5",
     prompt={
         "id": "pmpt_abc123",
         "variables": {
@@ -33074,7 +33295,7 @@ curl https://api.openai.com/v1/responses \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-5",
+    "model": "gpt-5.5",
     "prompt": {
       "id": "pmpt_abc123",
       "variables": {
@@ -39082,6 +39303,13 @@ Evaluations (often called **evals**) test model outputs to ensure they meet styl
 
 In this guide, we will focus on **configuring evals programmatically using the [Evals API](https://developers.openai.com/api/docs/api-reference/evals)**. If you prefer, you can also configure evals [in the OpenAI dashboard](https://platform.openai.com/evaluations).
 
+OpenAI is deprecating the Evals platform. Existing evals content remains
+  available during the transition window. Evals will become read-only for
+  existing users on October 31, 2026, and the platform is scheduled to shut down
+  on November 30, 2026. See the [deprecations
+  page](https://developers.openai.com/api/docs/deprecations#2026-06-03-evals-platform) for the current
+  timeline.
+
 If you're new to evaluations, or want a more iterative environment to
   experiment in as you build your eval, consider trying
   [Datasets](https://developers.openai.com/api/docs/guides/evaluation-getting-started) instead.
@@ -39108,7 +39336,7 @@ curl https://api.openai.com/v1/responses \\
     -H "Authorization: Bearer $OPENAI_API_KEY" \\
     -H "Content-Type: application/json" \\
     -d '{
-        "model": "gpt-4.1",
+        "model": "gpt-5.5",
         "input": [
             {
                 "role": "developer",
@@ -39135,7 +39363,7 @@ or "Other". Respond with only one of those words.
 const ticket = "My monitor won't turn on - help!";
 
 const response = await client.responses.create({
-    model: "gpt-4.1",
+    model: "gpt-5.5",
     input: [
         { role: "developer", content: instructions },
         { role: "user", content: ticket },
@@ -39158,7 +39386,7 @@ or "Other". Respond with only one of those words.
 ticket = "My monitor won't turn on - help!"
 
 response = client.responses.create(
-    model="gpt-4.1",
+    model="gpt-5.5",
     input=[
         {"role": "developer", "content": instructions},
         {"role": "user", "content": ticket},
@@ -41541,7 +41769,7 @@ Tools
           pricingHtml(
             '<span id="container-usage-pricing"></span>Hosted Shell and Code Interpreter'
           ),
-          "1 GB $0.03, 4 GB $0.12, 16 GB $0.48, 64 GB $1.92 - container sessions will be billed by the minute, with a 5-minute minimum per session.",
+          "1 GB $0.03, 4 GB $0.12, 16 GB $0.48, 64 GB $1.92 per 20-minute session per container.",
         ],
       ],
     },
@@ -42145,7 +42373,7 @@ Accessing or offering access to our services outside of the countries and territ
 
 # Meeting minutes
 
-In this tutorial, we'll harness the power of OpenAI's Whisper and GPT-4 models to develop an automated meeting minutes generator. The application transcribes audio from a meeting, provides a summary of the discussion, extracts key points and action items, and performs a sentiment analysis.
+In this tutorial, we'll harness the power of OpenAI's Whisper and GPT models to develop an automated meeting minutes generator. The application transcribes audio from a meeting, provides a summary of the discussion, extracts key points and action items, and performs a sentiment analysis.
 
 ## Getting started
 
@@ -42216,11 +42444,11 @@ def transcribe_audio(audio_file_path):
 
 In this function, `audio_file_path` is the path to the audio file you want to transcribe. The function opens this file and passes it to the Whisper ASR model (`whisper-1`) for transcription. The result is returned as raw text. It’s important to note that the `openai.Audio.transcribe` function requires the actual audio file to be passed in, not just the path to the file locally or on a remote server. This means that if you are running this code on a server where you might not also be storing your audio files, you will need to have a preprocessing step that first downloads the audio files onto that device.
 
-## Summarizing and analyzing the transcript with GPT-4
+## Summarizing and analyzing the transcript with a GPT model
 
-Having obtained the transcript, we now pass it to GPT-4 via the [Chat Completions API](https://developers.openai.com/api/docs/api-reference/chat/create). GPT-4 is OpenAI's state-of-the-art large language model which we'll use to generate a summary, extract key points, action items, and perform sentiment analysis.
+Having obtained the transcript, we now pass it to a GPT model via the [Chat Completions API](https://developers.openai.com/api/docs/api-reference/chat/create). The snippets below use a tested model to generate a summary, extract key points, action items, and perform sentiment analysis. For new projects, start with [`gpt-5.5`](https://developers.openai.com/api/docs/models/gpt-5.5).
 
-This tutorial uses distinct functions for each task we want GPT-4 to perform. This is not the most efficient way to do this task - you can put these instructions into one function, however, splitting them up can lead to higher quality summarization.
+This tutorial uses distinct functions for each task we want the model to perform. This is not the most efficient way to do this task - you can put these instructions into one function, however, splitting them up can lead to higher quality summarization.
 
 To split the tasks up, we define the `meeting_minutes` function which will serve as the main function of this application:
 
@@ -42249,8 +42477,7 @@ The `abstract_summary_extraction` function takes the transcription and summarize
 ```python
 def abstract_summary_extraction(transcription):
     response = client.chat.completions.create(
-        model="gpt-4",
-        temperature=0,
+        model="gpt-5.5",
         messages=[
             {
                 "role": "system",
@@ -42273,8 +42500,7 @@ The `key_points_extraction` function identifies and lists the main points discus
 
 def key_points_extraction(transcription):
     response = client.chat.completions.create(
-        model="gpt-4",
-        temperature=0,
+        model="gpt-5.5",
         messages=[
             {
                 "role": "system",
@@ -42297,8 +42523,7 @@ The `action_item_extraction` function identifies tasks, assignments, or actions 
 
 def action_item_extraction(transcription):
     response = client.chat.completions.create(
-        model="gpt-4",
-        temperature=0,
+        model="gpt-5.5",
         messages=[
             {
                 "role": "system",
@@ -42315,13 +42540,12 @@ def action_item_extraction(transcription):
 
 ### Sentiment analysis
 
-The `sentiment_analysis` function analyzes the overall sentiment of the discussion. It considers the tone, the emotions conveyed by the language used, and the context in which words and phrases are used. For tasks which are less complicated, it may also be worthwhile to try out `gpt-3.5-turbo` in addition to `gpt-4` to see if you can get a similar level of performance. It might also be useful to experiment with taking the results of the `sentiment_analysis` function and passing it to the other functions to see how having the sentiment of the conversation impacts the other attributes.
+The `sentiment_analysis` function analyzes the overall sentiment of the discussion. It considers the tone, the emotions conveyed by the language used, and the context in which words and phrases are used. For less complicated tasks, it may also be worthwhile to try [`gpt-5.4-mini`](https://developers.openai.com/api/docs/models/gpt-5.4-mini) to see if you can get a similar level of performance at lower cost and latency. It might also be useful to experiment with taking the results of the `sentiment_analysis` function and passing it to the other functions to see how having the sentiment of the conversation impacts the other attributes.
 
 ```python
 def sentiment_analysis(transcription):
     response = client.chat.completions.create(
-        model="gpt-4",
-        temperature=0,
+        model="gpt-5.5",
         messages=[
             {
                 "role": "system",
@@ -42855,7 +43079,7 @@ A realistic sounding answer to the question can be created with the completion e
 ```python
 def answer_question(
     df,
-    model="gpt-3.5-turbo",
+    model="gpt-3.5-turbo-instruct",
     question="Am I allowed to publish model outputs to Twitter, without a human review?",
     max_len=1800,
     size="ada",
@@ -42878,13 +43102,10 @@ def answer_question(
         print("\n\n")
 
     try:
-        # Create a chat completion using the question and context
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "Answer the question based on the context below, and if the question can't be answered based on the context, say \"I don't know\"\n\n"},
-                {"role": "user", f"content": "Context: {context}\n\n---\n\nQuestion: {question}\nAnswer:"}
-            ],
+        # Create a completion using the question and context
+        response = client.completions.create(
+            model=model,
+            prompt=f"Answer the question based on the context below, and if the question can't be answered based on the context, say \"I don't know\"\n\nContext: {context}\n\n---\n\nQuestion: {question}\nAnswer:",
             temperature=0,
             max_tokens=max_tokens,
             top_p=1,
@@ -42892,7 +43113,7 @@ def answer_question(
             presence_penalty=0,
             stop=stop_sequence,
         )
-        return response.choices[0].message.strip()
+        return response.choices[0].text.strip()
     except Exception as e:
         print(e)
         return ""
