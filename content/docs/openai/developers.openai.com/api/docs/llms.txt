@@ -99,7 +99,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Model optimization](https://developers.openai.com/api/docs/guides/model-optimization.md): Ensure quality model outputs with evals and fine-tuning in the OpenAI platform.
 - [Model selection](https://developers.openai.com/api/docs/guides/model-selection.md): Learn how to choose the right model by balancing accuracy, latency, and cost for optimal performance.
 - [Models and providers](https://developers.openai.com/api/docs/guides/agents/models.md): Learn how to choose models, set defaults, and think about providers and transport in the OpenAI Agents SDK.
-- [Moderation](https://developers.openai.com/api/docs/guides/moderation.md): Learn how to use OpenAI's moderation endpoint to identify harmful content in text and images.
+- [Moderation](https://developers.openai.com/api/docs/guides/moderation.md): Learn how to identify harmful content in text and images with OpenAI moderation models.
 - [Node reference](https://developers.openai.com/api/docs/guides/node-reference.md): Explore all available nodes for composing workflows in Agent Builder.
 - [OpenAI models in Amazon Bedrock](https://developers.openai.com/api/docs/guides/amazon-bedrock.md): Learn how Amazon Bedrock availability differs from the OpenAI API, including supported capabilities, AWS-managed controls, and pricing considerations.
 - [Optimizing LLM Accuracy](https://developers.openai.com/api/docs/guides/optimizing-llm-accuracy.md): Learn strategies to enhance the accuracy of large language models using techniques like prompt engineering, retrieval-augmented generation, and fine-tuning.
@@ -112,7 +112,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Prompt generation](https://developers.openai.com/api/docs/guides/prompt-generation.md): Learn how to generate prompts, functions, and schemas in the OpenAI API's Playground.
 - [Prompt guidance](https://developers.openai.com/api/docs/guides/prompt-guidance.md)
 - [Prompt optimizer](https://developers.openai.com/api/docs/guides/prompt-optimizer.md): Learn how to use your dataset to automatically improve your prompts.
-- [Prompting](https://developers.openai.com/api/docs/guides/prompting.md): Learn how to create, optimize, save, and reuse prompts with OpenAI models.
+- [Prompting](https://developers.openai.com/api/docs/guides/prompting.md): Learn how to create, optimize, and maintain prompts with OpenAI models.
 - [Quickstart](https://developers.openai.com/api/docs/guides/agents/quickstart.md): Build your first agent with the OpenAI Agents SDK, add tools and handoffs, and understand where to go next.
 - [Rate limits](https://developers.openai.com/api/docs/guides/rate-limits.md): Rate limits are restrictions that our API imposes on the number of times a user or client can access our services within a specified period of time.
 - [Realtime and audio](https://developers.openai.com/api/docs/guides/realtime.md): Learn which realtime and audio guide to use for each speech application.

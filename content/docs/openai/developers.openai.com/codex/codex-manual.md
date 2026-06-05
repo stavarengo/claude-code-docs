@@ -2258,16 +2258,20 @@ subagents. The `gpt-5.3-codex-spark` model is available in research preview
 for ChatGPT Pro subscribers and is optimized for near-instant, real-time
 coding iteration.
 
-#### Alternative models
-
 #### Other models
 
-When you sign in with ChatGPT, Codex works best with the models listed above.
+When you sign in with ChatGPT, Codex works best with the recommended models listed above.
 
 You can also point Codex at any model and provider that supports either the [Chat Completions](https://platform.openai.com/docs/api-reference/chat) or [Responses APIs](https://platform.openai.com/docs/api-reference/responses) to fit your specific use case.
 
 Support for the Chat Completions API is deprecated and will be removed in
 future releases of Codex.
+
+#### Deprecated Codex models
+
+The `gpt-5.2` and `gpt-5.3-codex` models are deprecated in Codex when you sign in with ChatGPT. If your scripts, configuration files, or `codex exec --model` commands still reference deprecated models, update them to the latest model listed above.
+
+Some models that are deprecated for ChatGPT sign-in may still be available in the API. If your workflow depends on one of those models, use API-key authentication and check the [API models page](/api/docs/models) for current availability.
 
 #### Configuring models
 
@@ -4441,9 +4445,11 @@ for multiline prompts or prevent sleep while a thread runs.
 
 #### Profile
 
-Use **Profile** to review stats such as lifetime tokens, peak tokens, streaks,
-your longest task, and token activity. You can also update your profile details,
-such as your picture, display name, and username.
+Use **Profile** to review activity insights, lifetime tokens, peak tokens,
+streaks, your longest task, and token activity. You can also update your profile
+details, such as your picture, display name, and username, and save a profile
+card with usage highlights. Sharing profile cards is available on consumer
+ChatGPT plans.
 
 #### Keyboard shortcuts
 
@@ -10647,7 +10653,7 @@ Source: [Permissions](/codex/permissions.md)
 Codex includes three built-in permission profiles:
 
 - `:read-only` keeps local command execution read-only.
-- `:workspace` allows writes inside the active workspace roots.
+- `:workspace` allows writes inside the active workspace roots and system temp directories.
 - `:danger-full-access` removes local sandbox restrictions and should be used
   only when that broad access is intentional.
 

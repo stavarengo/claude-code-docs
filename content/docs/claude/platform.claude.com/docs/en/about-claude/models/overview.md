@@ -96,7 +96,7 @@ _<sup>6 - Claude Opus 4.7 is available on Bedrock through [Claude in Amazon Bedr
 ## Prompt and output performance
 
 Claude 4 models excel in:
-- **Performance**: Top-tier results in reasoning, coding, multilingual tasks, long-context handling, honesty, and image processing. See the [Claude 4 blog post](http://www.anthropic.com/news/claude-4) for more information.
+- **Performance**: Top-tier results in reasoning, coding, multilingual tasks, long-context handling, honesty, and image processing. See the [Claude 4 blog post](https://www.anthropic.com/news/claude-4) for more information.
 - **Engaging responses**: Claude models are ideal for applications that require rich, human-like interactions.
 
     - If you prefer more concise responses, you can adjust your prompts to guide the model toward the desired output length. Refer to the [prompt engineering guides](/docs/en/build-with-claude/prompt-engineering) for details.
@@ -115,7 +115,7 @@ If you're currently using Claude Opus 4.6 or older Claude models, see [Migrating
 
 If you're ready to start exploring what Claude can do for you, dive in! Whether you're a developer looking to integrate Claude into your applications or a user wanting to experience the power of AI firsthand, the following resources can help.
 
-<Note>Looking to chat with Claude? Visit [claude.ai](http://www.claude.ai)!</Note>
+<Note>Looking to chat with Claude? Visit [claude.ai](https://claude.ai)!</Note>
 
 <CardGroup cols={3}>
   <Card title="Intro to Claude" icon="check" href="/docs/en/intro">

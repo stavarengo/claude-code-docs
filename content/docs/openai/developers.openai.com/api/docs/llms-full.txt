@@ -3962,9 +3962,10 @@ Use the Audit Logs endpoint to list recent user actions and configuration change
 
 When you need full control—custom authentication, data residency, on‑prem deployment, or bespoke agent orchestration—you can run ChatKit on your own infrastructure. Use OpenAI's advanced self‑hosted option to use your own server and customized ChatKit.
 
-Our recommended ChatKit integration helps you get started quickly: embed a
-  chat widget, customize its look and feel, let OpenAI host and scale the
-  backend. [Use simpler integration →](https://developers.openai.com/api/docs/guides/chatkit)
+Agent Builder-hosted ChatKit workflows are in a transition window. For new
+  ChatKit apps, build on your own server-side agent implementation with the
+  ChatKit SDKs and the Agents SDK. See [ChatKit transition guidance
+  →](https://developers.openai.com/api/docs/guides/chatkit)
 
 ## Run ChatKit on your own infrastructure
 
@@ -5765,7 +5766,7 @@ For video generation in Batch:
 - Multipart `input_reference` uploads, including video reference inputs, aren't supported in Batch.
 - Batch-generated videos are available for download for up to `24` hours after the batch completes.
 
-When targeting `/v1/moderations`, include an `input` field in every request body. Batch accepts both plain-text inputs (for `omni-moderation-latest` and `text-moderation-latest`) and multimodal content arrays (for `omni-moderation-latest`). The Batch worker enforces the same non-streaming requirement as the synchronous Moderations API and rejects requests that set `stream=true`.
+When targeting `/v1/moderations`, include an `input` field in every request body. Batch accepts plain-text inputs and content arrays with text or image inputs using `omni-moderation-latest`. The Batch worker rejects requests that set `stream=true`, matching the synchronous moderation endpoint.
 
 ```jsonl
 {"custom_id": "request-1", "method": "POST", "url": "/v1/chat/completions", "body": {"model": "gpt-3.5-turbo-0125", "messages": [{"role": "system", "content": "You are a helpful assistant."},{"role": "user", "content": "Hello world!"}],"max_tokens": 1000}}
@@ -6226,26 +6227,36 @@ Use ChatKit's embeddable UI widgets, customizable prompts, tool‑invocation sup
 
 ## Overview
 
-There are two ways to implement ChatKit:
+Choose between two ChatKit paths:
 
-- **Recommended integration**. Embed ChatKit in your frontend, customize its look and feel, let OpenAI host and scale the backend from [Agent Builder](https://developers.openai.com/api/docs/guides/agent-builder). Requires a development server.
-- **Advanced integration**. Run ChatKit on your own infrastructure. Use the ChatKit Python SDK and connect to any agentic backend. Use widgets to build the frontend.
+- **Custom server integration**. Run ChatKit on your own infrastructure. Use the ChatKit Python SDK and connect to any agentic service, including one built with the [Agents SDK](https://developers.openai.com/api/docs/guides/agents). Use widgets to build the frontend.
+- **Existing Agent Builder-hosted integration**. If you already use ChatKit with an Agent Builder workflow, you can keep using that hosted workflow during the Agent Builder transition window.
+
+OpenAI is deprecating Agent Builder. Existing users can continue using it
+  during the transition window, and the product is scheduled to shut down on
+  November 30, 2026. ChatKit is still available. For new work or migration
+  planning, use [advanced ChatKit integrations](https://developers.openai.com/api/docs/guides/custom-chatkit)
+  with your own server-side agent implementation, and see [Migrate from Agent
+  Builder](https://developers.openai.com/api/docs/guides/agent-builder/migrate-from-agent-builder) for Agent
+  Builder transition guidance.
 
 ## Get started with ChatKit
 
 ## Embed ChatKit in your frontend
 
-At a high level, setting up ChatKit is a three-step process. Create an agent workflow, hosted on OpenAI servers. Then set up ChatKit and add features to build your chat experience.
+Use this path only if you already have an Agent Builder workflow that backs your ChatKit implementation. For new ChatKit apps, or when migrating before Agent Builder shuts down, use the [advanced integration](https://developers.openai.com/api/docs/guides/custom-chatkit) to connect ChatKit to your own server-side agent implementation.
+
+At a high level, setting up ChatKit with an existing hosted workflow is a three-step process. Open your existing workflow while Agent Builder remains available. Then set up ChatKit and add features to build your chat experience.
 
 <br />
 ![OpenAI-hosted
 ChatKit](https://cdn.openai.com/API/docs/images/openai-hosted.png)
 
-### 1. Create an agent workflow
+### 1. Use an existing hosted workflow
 
-Create an agent workflow with [Agent Builder](https://developers.openai.com/api/docs/guides/agent-builder). Agent Builder is a visual canvas for designing multi-step agent workflows. You'll get a workflow ID.
+Open your existing workflow in [Agent Builder](https://developers.openai.com/api/docs/guides/agent-builder). You'll get a workflow ID. For transition planning, see [Migrate from Agent Builder](https://developers.openai.com/api/docs/guides/agent-builder/migrate-from-agent-builder).
 
-The chat embedded in your frontend will point to the workflow you created as the backend.
+The chat embedded in your frontend will point to the workflow you select.
 
 ### 2. Set up ChatKit in your product
 
@@ -6280,7 +6291,7 @@ def create_chatkit_session():
 
 2. In your server-side code, pass in your workflow ID and secret key to the session endpoint.
 
-   The client secret is the credential that your ChatKit frontend uses to open or refresh the chat session. You don’t store it; you immediately hand it off to the ChatKit client library.
+   The client secret is the credential that your ChatKit frontend uses to open or refresh the chat session. You don't store it; you immediately hand it off to the ChatKit client library.
 
    See the [chatkit-js repo](https://github.com/openai/chatkit-js) on GitHub.
 
@@ -6328,7 +6339,7 @@ async
 ```
 
 
-5. Render ChatKit in your UI. This code fetches the client secret from your server and mounts a live chat widget, connected to your workflow as the backend.
+5. Render ChatKit in your UI. This code fetches the client secret from your server and mounts a live chat widget connected to your workflow.
 
    Your frontend code
 
@@ -6477,7 +6488,7 @@ See the [custom theming](https://developers.openai.com/api/docs/guides/chatkit-t
 
 ## Next steps
 
-When you're happy with your ChatKit implementation, learn how to optimize it with [evals](https://developers.openai.com/api/docs/guides/agent-evals). To run ChatKit on your own infrastructure, see the [advanced integration docs](https://developers.openai.com/api/docs/guides/custom-chatkit).
+When you're happy with your ChatKit implementation, learn how to optimize it with [evals](https://developers.openai.com/api/docs/guides/agent-evals). For new ChatKit apps, or to move an existing ChatKit app off an Agent Builder-hosted workflow, see the [advanced integration docs](https://developers.openai.com/api/docs/guides/custom-chatkit).
 
 ---
 
@@ -9813,7 +9824,7 @@ print(second_response.output_text)
 
 ## OpenAI APIs for conversation state
 
-Our APIs make it easier to manage conversation state automatically, so you don't have to do pass inputs manually with each turn of a conversation.
+Our APIs make it easier to manage conversation state automatically, so you don't have to pass inputs manually with each turn of a conversation.
 
 
 
@@ -10017,7 +10028,7 @@ For more specific examples and use cases, visit the [OpenAI Cookbook](https://de
 -   [Receive JSON responses with Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs)
 -   [Extend the models with function calling](https://developers.openai.com/api/docs/guides/function-calling)
 -   [Enable streaming for real-time responses](https://developers.openai.com/api/docs/guides/streaming-responses)
--   [Build a computer using agent](https://developers.openai.com/api/docs/guides/tools-computer-use)
+-   [Build a computer-using agent](https://developers.openai.com/api/docs/guides/tools-computer-use)
 
 ---
 
@@ -10321,7 +10332,7 @@ The following models and API services are eligible for data residency today for 
 | /v1/fine_tuning/jobs                                             | gpt-4o-2024-08-06<br />gpt-4o-mini-2024-07-18<br />gpt-4.1-2025-04-14<br />gpt-4.1-mini-2025-04-14                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | All                                                                                                                        |
 | /v1/images/edits                                                 | gpt-image-1<br />gpt-image-1.5<br />gpt-image-1-mini                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | All                                                                                                                        |
 | /v1/images/generations                                           | dall-e-3<br />gpt-image-1<br />gpt-image-1.5<br />gpt-image-1-mini                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | All                                                                                                                        |
-| /v1/moderations                                                  | text-moderation-latest\*<br />omni-moderation-latest                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | All                                                                                                                        |
+| /v1/moderations                                                  | omni-moderation-latest                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | All                                                                                                                        |
 | /v1/realtime                                                     | gpt-4o-realtime-preview-2025-06-03<br />gpt-realtime<br />gpt-realtime-1.5<br />gpt-realtime-mini<br />gpt-realtime-2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | US and EU                                                                                                                  |
 | /v1/realtime/transcription_sessions                              | gpt-realtime-whisper                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | US and EU                                                                                                                  |
 | /v1/realtime/translations                                        | gpt-realtime-translate                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | US and EU                                                                                                                  |
@@ -10354,10 +10365,6 @@ The following models and API services are eligible for data residency today for 
 #### /v1/realtime
 
 Tracing is not currently EU data residency compliant for `/v1/realtime`.
-
-#### /v1/moderations
-
-text-moderation-latest is only supported for US/EU.
 
 ## Enterprise Key Management (EKM)
 
@@ -11098,7 +11105,7 @@ Use trace grading when you want to answer questions like:
 ### Trace-grading workflow
 
 1. Open **Logs** > **Traces** in the dashboard.
-2. Inspect a representative workflow trace from Agent Builder or an SDK-based app with tracing enabled.
+2. Inspect a representative workflow trace from an SDK-based app, or from an existing Agent Builder workflow during the transition window.
 3. Create a grader and run it against the selected traces.
 4. Use the results to refine prompts, tool surfaces, routing logic, or guardrails.
 
@@ -14245,14 +14252,14 @@ curl -X POST "https://api.openai.com/v1/images/generations" \\
     -H "Content-type: application/json" \\
     -d '{
         "model": "gpt-image-2",
-        "prompt": "A childrens book drawing of a veterinarian using a stethoscope to listen to the heartbeat of a baby otter."
+        "prompt": "A children'\\''s book drawing of a veterinarian using a stethoscope to listen to the heartbeat of a baby otter."
     }' | jq -r '.data[0].b64_json' | base64 --decode > otter.png
 ```
 
 ```cli
 openai images generate \\
   --model gpt-image-2 \\
-  --prompt "A childrens book drawing of a veterinarian using a stethoscope to listen to the heartbeat of a baby otter." \\
+  --prompt "A children's book drawing of a veterinarian using a stethoscope to listen to the heartbeat of a baby otter." \\
   --raw-output \\
   --transform 'data.0.b64_json' | base64 --decode > otter.png
 ```
@@ -14643,6 +14650,11 @@ import OpenAI from "openai";
 import fs from "fs";
 const openai = new OpenAI();
 
+function saveBase64Image(filename, imageBase64) {
+  const imageBuffer = Buffer.from(imageBase64, "base64");
+  fs.writeFileSync(filename, imageBuffer);
+}
+
 const stream = await openai.responses.create({
   model: "gpt-5.5",
   input:
@@ -14654,9 +14666,15 @@ const stream = await openai.responses.create({
 for await (const event of stream) {
   if (event.type === "response.image_generation_call.partial_image") {
     const idx = event.partial_image_index;
-    const imageBase64 = event.partial_image_b64;
-    const imageBuffer = Buffer.from(imageBase64, "base64");
-    fs.writeFileSync(\`river\${idx}.png\`, imageBuffer);
+    saveBase64Image(\`river-partial-\${idx}.png\`, event.partial_image_b64);
+  } else if (event.type === "response.completed") {
+    const imageData = event.response.output
+      .filter((output) => output.type === "image_generation_call")
+      .map((output) => output.result);
+
+    if (imageData.length > 0) {
+      saveBase64Image("river-final.png", imageData[0]);
+    }
   }
 }
 ```
@@ -14666,6 +14684,11 @@ from openai import OpenAI
 import base64
 
 client = OpenAI()
+
+def save_base64_image(filename, image_base64):
+    image_bytes = base64.b64decode(image_base64)
+    with open(filename, "wb") as f:
+        f.write(image_bytes)
 
 stream = client.responses.create(
     model="gpt-5.5",
@@ -14677,10 +14700,16 @@ stream = client.responses.create(
 for event in stream:
     if event.type == "response.image_generation_call.partial_image":
         idx = event.partial_image_index
-        image_base64 = event.partial_image_b64
-        image_bytes = base64.b64decode(image_base64)
-        with open(f"river{idx}.png", "wb") as f:
-            f.write(image_bytes)
+        save_base64_image(f"river-partial-{idx}.png", event.partial_image_b64)
+    elif event.type == "response.completed":
+        image_data = [
+            output.result
+            for output in event.response.output
+            if output.type == "image_generation_call"
+        ]
+
+        if image_data:
+            save_base64_image("river-final.png", image_data[0])
 ```
 
   </div>
@@ -15094,9 +15123,9 @@ openai images edit \\
 
 <div className="images-examples">
 
-| Image                                                                                                                                 | Mask                                                                                                                            | Output                                                                                                                                                                               |
-| ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| <img className="images-example-image" src="https://cdn.openai.com/API/docs/images/sunlit_lounge.png" alt="A pink room with a pool" /> | <img className="images-example-image" src="https://cdn.openai.com/API/docs/images/mask.png" alt="A mask in part of the pool" /> | <img className="images-example-image" src="https://cdn.openai.com/API/docs/images/sunlit_lounge_result.png" alt="The original pool with an inflatable flamigo replacing the mask" /> |
+| Image                                                                                                                                 | Mask                                                                                                                            | Output                                                                                                                                                                                |
+| ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <img className="images-example-image" src="https://cdn.openai.com/API/docs/images/sunlit_lounge.png" alt="A pink room with a pool" /> | <img className="images-example-image" src="https://cdn.openai.com/API/docs/images/mask.png" alt="A mask in part of the pool" /> | <img className="images-example-image" src="https://cdn.openai.com/API/docs/images/sunlit_lounge_result.png" alt="The original pool with an inflatable flamingo replacing the mask" /> |
 
 </div>
 
@@ -15278,6 +15307,130 @@ For image generation using GPT Image models (`gpt-image-2`, `gpt-image-1.5`, `gp
 
 - `auto` (default): Standard filtering that seeks to limit creating certain categories of potentially age-inappropriate content.
 - `low`: Less restrictive filtering.
+
+### Handling blocked requests and other errors
+
+Handle image generation failures the same way you handle other API errors: check the HTTP status or SDK exception type, log the request ID, and refer to the [error codes guide](https://developers.openai.com/api/docs/guides/error-codes) for authentication, quota, rate-limit, and server failures. Retries are appropriate for transient failures like `429` and `5xx`, but not for image generation user errors that require changing the request.
+
+Some image generation failures are user-correctable and may return `error.type = "image_generation_user_error"`. Don't automatically retry these errors without modifying the prompt or input images. For programmatic handling, use `error.code` as the stable discriminator.
+
+When `error.code = "moderation_blocked"`, the error may also include an optional `error.moderation_details` object:
+
+```json
+{
+  "error": {
+    "type": "image_generation_user_error",
+    "code": "moderation_blocked",
+    "moderation_details": {
+      "moderation_stage": "input",
+      "categories": ["harassment"]
+    }
+  }
+}
+```
+
+The `moderation_details` object provides coarse debugging context without exposing internal classifier labels or scores.
+
+`moderation_stage` can be:
+
+- `input`: The block came from the prompt or request inputs.
+- `output`: The block came from a generated image or downstream output moderation stage.
+- `unknown`: A rare fallback when provenance is hard to determine.
+
+`categories` contains coarse public labels. For example, you might see values like `harassment`, `self-harm`, `sexual`, or `violence`.
+
+For most apps, keep the primary end-user message generic. Use `moderation_details` for developer logs, support workflows, analytics, and light remediation hints.
+
+For example, if `harassment` appears, suggest removing abusive or targeting language. If the block happened at the `input` stage, guide the user to revise the prompt. If it happened at the `output` stage, treat it as a generated result safety block and distinguish it in your logs. Always branch on `error.code = "moderation_blocked"` first, and treat `moderation_details` as optional extra context.
+
+Handle moderation-blocked image generation errors
+
+```javascript
+import OpenAI from "openai";
+
+const openai = new OpenAI();
+
+try {
+  // The same error handling pattern applies to image generation requests,
+  // image edits, and Responses API tool calls that generate images.
+  await openai.images.generate({
+    model: "gpt-image-2",
+    prompt: "Create a poster humiliating my coworker with insulting captions",
+  });
+} catch (error) {
+  if (error?.code !== "moderation_blocked") {
+    throw error;
+  }
+
+  const moderationDetails = error?.moderation_details;
+  const categories = moderationDetails?.categories ?? [];
+  const stage = moderationDetails?.moderation_stage;
+
+  let hint =
+    "This request could not be completed because it did not meet safety requirements.";
+
+  if (categories.includes("harassment")) {
+    hint =
+      "Try removing abusive or targeting language and focus on neutral visual details instead.";
+  } else if (stage === "input") {
+    hint = "Try revising the prompt or input images and submit the request again.";
+  } else if (stage === "output") {
+    hint = "The generated result was blocked by a safety check. Try changing the prompt and generating again.";
+  }
+
+  console.error("Image generation blocked", {
+    request_id: error?.request_id,
+    code: error?.code,
+    moderation_details: moderationDetails,
+  });
+
+  console.log(hint);
+}
+```
+
+```python
+import openai
+from openai import OpenAI
+
+client = OpenAI()
+
+try:
+    # The same error handling pattern applies to image generation requests,
+    # image edits, and Responses API tool calls that generate images.
+    client.images.generate(
+        model="gpt-image-2",
+        prompt="Create a poster humiliating my coworker with insulting captions",
+    )
+except openai.BadRequestError as error:
+    if error.code != "moderation_blocked":
+        raise
+
+    error_body = error.body if isinstance(error.body, dict) else {}
+    moderation_details = error_body.get("moderation_details") or {}
+    categories = moderation_details.get("categories") or []
+    stage = moderation_details.get("moderation_stage")
+
+    hint = "This request could not be completed because it did not meet safety requirements."
+
+    if "harassment" in categories:
+        hint = "Try removing abusive or targeting language and focus on neutral visual details instead."
+    elif stage == "input":
+        hint = "Try revising the prompt or input images and submit the request again."
+    elif stage == "output":
+        hint = "The generated result was blocked by a safety check. Try changing the prompt and generating again."
+
+    print(
+        "Image generation blocked",
+        {
+            "request_id": error.request_id,
+            "code": error.code,
+            "moderation_details": moderation_details,
+        },
+    )
+
+    print(hint)
+```
+
 
 ### Supported models
 
@@ -15774,26 +15927,35 @@ You can set the number of partial images (1-3) with the `partial_images` paramet
 Stream an image
 
 ```javascript
-import fs from "fs";
 import OpenAI from "openai";
-
+import fs from "fs";
 const openai = new OpenAI();
 
-const prompt =
-  "Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape";
-const stream = await openai.images.generate({
-  prompt: prompt,
-  model: "gpt-image-2",
+function saveBase64Image(filename, imageBase64) {
+  const imageBuffer = Buffer.from(imageBase64, "base64");
+  fs.writeFileSync(filename, imageBuffer);
+}
+
+const stream = await openai.responses.create({
+  model: "gpt-5.5",
+  input:
+    "Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape",
   stream: true,
-  partial_images: 2,
+  tools: [{ type: "image_generation", partial_images: 2 }],
 });
 
 for await (const event of stream) {
-  if (event.type === "image_generation.partial_image") {
+  if (event.type === "response.image_generation_call.partial_image") {
     const idx = event.partial_image_index;
-    const imageBase64 = event.b64_json;
-    const imageBuffer = Buffer.from(imageBase64, "base64");
-    fs.writeFileSync(\`river\${idx}.png\`, imageBuffer);
+    saveBase64Image(\`river-partial-\${idx}.png\`, event.partial_image_b64);
+  } else if (event.type === "response.completed") {
+    const imageData = event.response.output
+      .filter((output) => output.type === "image_generation_call")
+      .map((output) => output.result);
+
+    if (imageData.length > 0) {
+      saveBase64Image("river-final.png", imageData[0]);
+    }
   }
 }
 ```
@@ -15804,20 +15966,31 @@ import base64
 
 client = OpenAI()
 
-stream = client.images.generate(
-    prompt="Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape",
-    model="gpt-image-2",
+def save_base64_image(filename, image_base64):
+    image_bytes = base64.b64decode(image_base64)
+    with open(filename, "wb") as f:
+        f.write(image_bytes)
+
+stream = client.responses.create(
+    model="gpt-5.5",
+    input="Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape",
     stream=True,
-    partial_images=2,
+    tools=[{"type": "image_generation", "partial_images": 2}],
 )
 
 for event in stream:
-    if event.type == "image_generation.partial_image":
+    if event.type == "response.image_generation_call.partial_image":
         idx = event.partial_image_index
-        image_base64 = event.b64_json
-        image_bytes = base64.b64decode(image_base64)
-        with open(f"river{idx}.png", "wb") as f:
-            f.write(image_bytes)
+        save_base64_image(f"river-partial-{idx}.png", event.partial_image_b64)
+    elif event.type == "response.completed":
+        image_data = [
+            output.result
+            for output in event.response.output
+            if output.type == "image_generation_call"
+        ]
+
+        if image_data:
+            save_base64_image("river-final.png", image_data[0])
 ```
 
 
@@ -19272,8 +19445,7 @@ The [Responses API](https://developers.openai.com/api/docs/api-reference/respons
 
 The Responses API is a unified interface for building powerful, agent-like applications. It contains:
 
-- Built-in tools like [web search](https://developers.openai.com/api/docs/guides/tools-web-search), [file search](https://developers.openai.com/api/docs/guides/tools-file-search)
-  , [computer use](https://developers.openai.com/api/docs/guides/tools-computer-use), [code interpreter](https://developers.openai.com/api/docs/guides/tools-code-interpreter), and [remote MCPs](https://developers.openai.com/api/docs/guides/tools-remote-mcp).
+- Built-in tools like [web search](https://developers.openai.com/api/docs/guides/tools-web-search), [file search](https://developers.openai.com/api/docs/guides/tools-file-search), [computer use](https://developers.openai.com/api/docs/guides/tools-computer-use), [code interpreter](https://developers.openai.com/api/docs/guides/tools-code-interpreter), and [remote MCPs](https://developers.openai.com/api/docs/guides/tools-remote-mcp).
 - Seamless multi-turn interactions that allow you to pass previous responses for higher accuracy reasoning results.
 - Native multimodal support for text and images.
 
@@ -19340,13 +19512,15 @@ The objects you receive back from these APIs will differ slightly. In Chat Compl
 
 ## Migrating from Chat Completions
 
+Treat migration as three related changes: send requests to `/v1/responses`, read output from a typed `output` array, and choose how your application will carry state between turns.
+
 ### 1. Update generation endpoints
 
 Start by updating your generation endpoints from `post /v1/chat/completions` to `post /v1/responses`.
 
-If you are not using functions or multimodal inputs, then you're done! Simple message inputs are compatible from one API to the other:
+If you are not using functions or multimodal inputs, simple message inputs are compatible from one API to the other:
 
-Web search tool
+Reuse simple message input
 
 ```bash
 INPUT='[
@@ -19410,114 +19584,9 @@ response = client.responses.create(
 
 <div data-content-switcher-pane data-value="chat-completions">
     <div class="hidden">Chat Completions</div>
-    <>
-                        With Chat Completions, you need to create an array of messages that specify different roles and content for each role.
-
-                        Generate text from a model
-
-```javascript
-import OpenAI from 'openai';
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-const completion = await client.chat.completions.create({
-  model: 'gpt-5.5',
-  messages: [
-    { 'role': 'system', 'content': 'You are a helpful assistant.' },
-    { 'role': 'user', 'content': 'Hello!' }
-  ]
-});
-console.log(completion.choices[0].message.content);
-```
-
-```python
-from openai import OpenAI
-client = OpenAI()
-
-completion = client.chat.completions.create(
-    model="gpt-5.5",
-    messages=[
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": "Hello!"}
-    ]
-)
-print(completion.choices[0].message.content)
-```
-
-```bash
-curl https://api.openai.com/v1/chat/completions \\
-  -H "Content-Type: application/json" \\
-  -H "Authorization: Bearer $OPENAI_API_KEY" \\
-  -d '{
-      "model": "gpt-5.5",
-      "messages": [
-          {"role": "system", "content": "You are a helpful assistant."},
-          {"role": "user", "content": "Hello!"}
-      ]
-  }'
-```
-
-                    </>
-
-  </div>
-  <div data-content-switcher-pane data-value="responses" hidden>
-    <div class="hidden">Responses</div>
-    <>
-                        With Responses, you can separate instructions and input at the top-level. The API shape is similar to Chat Completions but has cleaner semantics.
-
-                        Generate text from a model
-
-```javascript
-import OpenAI from 'openai';
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-const response = await client.responses.create({
-  model: 'gpt-5.5',
-  instructions: 'You are a helpful assistant.',
-  input: 'Hello!'
-});
-
-console.log(response.output_text);
-```
-
-```python
-from openai import OpenAI
-client = OpenAI()
-
-response = client.responses.create(
-    model="gpt-5.5",
-    instructions="You are a helpful assistant.",
-    input="Hello!"
-)
-print(response.output_text)
-```
-
-```bash
-curl https://api.openai.com/v1/responses \\
-  -H "Content-Type: application/json" \\
-  -H "Authorization: Bearer $OPENAI_API_KEY" \\
-  -d '{
-      "model": "gpt-5.5",
-      "instructions": "You are a helpful assistant.",
-      "input": "Hello!"
-  }'
-```
-
-                    </>
-
-  </div>
-
-
-
-### 2. Update item definitions
-
-
-
-<div data-content-switcher-pane data-value="chat-completions">
-    <div class="hidden">Chat Completions</div>
-    <>
-                        With Chat Completions, you need to create an array of messages that specify different roles and content for each role.
-
-                        Generate text from a model
+    With Chat Completions, you create a `messages` array and read the model text
+    from `completion.choices[0].message.content`.
+    Generate text from a model
 
 ```javascript
 import OpenAI from 'openai';
@@ -19560,15 +19629,13 @@ curl https://api.openai.com/v1/chat/completions \\
   }'
 ```
 
-                    </>
 
   </div>
   <div data-content-switcher-pane data-value="responses" hidden>
     <div class="hidden">Responses</div>
-    <>
-                        With Responses, you can separate instructions and input at the top-level. The API shape is similar to Chat Completions but has cleaner semantics.
-
-                        Generate text from a model
+    With Responses, you can separate `instructions` and `input` at the top level
+    and read generated text from `response.output_text`.
+    Generate text from a model
 
 ```javascript
 import OpenAI from 'openai';
@@ -19606,24 +19673,42 @@ curl https://api.openai.com/v1/responses \\
   }'
 ```
 
-                    </>
 
   </div>
 
 
+
+### 2. Map Messages to Items
+
+Chat Completions uses `messages` as both input and output. Responses uses `input` and `output` arrays of typed Items. A `message` is one Item type, alongside Items such as `reasoning`, `function_call`, and `function_call_output`.
+
+| Chat Completions concept      | Responses mapping                                                                                      |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `messages[]`                  | `input`, as a string or an array of input Items                                                        |
+| System or developer guidance  | Top-level `instructions`, or compatible message Items when you need to preserve an existing transcript |
+| User message                  | An input message Item with `role: "user"`                                                              |
+| Assistant message             | An output message Item in `response.output`; pass it back in `input` if you manually manage state      |
+| Tool or function call         | A `function_call` output Item                                                                          |
+| Tool or function result       | A `function_call_output` input Item linked to the call with `call_id`                                  |
+| Multiple generations with `n` | Not available in Responses; make separate requests if you need multiple candidate outputs              |
+
+When you only need the final text, use the SDK `output_text` helper. When your flow uses reasoning, tools, or multimodal output, iterate over `response.output` and handle each Item by its `type`.
 
 ### 3. Update multi-turn conversations
 
-If you have multi-turn conversations in your application, update your context logic.
+If you have multi-turn conversations in your application, update your context logic. Responses gives you three common state-management options:
+
+- Use `previous_response_id` when you want OpenAI to manage prior response context. Resend stable `instructions` on each request, because `previous_response_id` does not carry over the previous response's top-level `instructions`.
+- Pass prior `output` Items back into the next request when you need to manage or trim context yourself.
+- Use the [Conversations API](https://developers.openai.com/api/docs/guides/conversation-state?api-mode=responses#using-the-conversations-api) when you need a persistent conversation object.
 
 
 
 <div data-content-switcher-pane data-value="chat-completions">
     <div class="hidden">Chat Completions</div>
-    <>
-                        In Chat Completions, you have to store and manage context yourself.
-
-                        Multi-turn conversation
+    In Chat Completions, you store the transcript and send the accumulated
+    `messages` array on each request.
+    Multi-turn conversation
 
 ```javascript
 let messages = [
@@ -19657,15 +19742,13 @@ messages += [{"role": "user", "content": "And its population?"}]
 res2 = client.chat.completions.create(model="gpt-5.5", messages=messages)
 ```
 
-                    </>
 
   </div>
   <div data-content-switcher-pane data-value="responses" hidden>
     <div class="hidden">Responses</div>
-    <>
-                        With responses, the pattern is similar, you can pass outputs from one response to the input of another.
-
-                        Multi-turn conversation
+    With Responses, you can manually pass outputs from one response into the
+    input of another.
+    Multi-turn conversation
 
 ```python
 context = [
@@ -19712,11 +19795,9 @@ const res2 = await client.responses.create({
 });
 ```
 
-
-                        As a simplification, we've also built a way to simply reference inputs and outputs from a previous response by passing its id.
-                        You can use `previous_response_id` to form chains of responses that build upon one other or create forks in a history.
-
-                        Multi-turn conversation
+    You can also use `previous_response_id` to reference the previous response
+    and create response chains or forks.
+    Multi-turn conversation
 
 ```javascript
 const res1 = await client.responses.create({
@@ -19748,41 +19829,44 @@ res2 = client.responses.create(
 )
 ```
 
-                    </>
 
   </div>
 
 
 
-    ### 4. Decide when to use statefulness
+Even when using `previous_response_id`, all previous input tokens for responses in the chain are billed as input tokens in the API.
 
-    Some organizations—such as those with Zero Data Retention (ZDR) requirements—cannot use the Responses API in a stateful way due to compliance or data retention policies. To support these cases, OpenAI offers encrypted reasoning items, allowing you to keep your workflow stateless while still benefiting from reasoning items.
+### 4. Decide when to use statefulness
 
-    To disable statefulness, but still take advantage of reasoning:
-    - set `store: false` in the [store field](https://developers.openai.com/api/docs/api-reference/responses/create#responses_create-store)
-    - add `["reasoning.encrypted_content"]` to the [include field](https://developers.openai.com/api/docs/api-reference/responses/create#responses_create-include)
+Responses are stored by default. Chat Completions are stored by default for new accounts. To disable storage in either API, set `store: false`.
 
-    The API will then return an encrypted version of the reasoning tokens, which you can pass back in future requests just like regular reasoning items.
-    For ZDR organizations, OpenAI enforces store=false automatically. When a request includes encrypted_content, it is decrypted in-memory (never written to disk), used for generating the next response, and then securely discarded. Any new reasoning tokens are immediately encrypted and returned to you, ensuring no intermediate state is ever persisted.
+Some organizations, such as those with Zero Data Retention (ZDR) requirements, cannot use the Responses API in a stateful way due to compliance or data retention policies. To support these cases, OpenAI offers encrypted reasoning items, allowing you to keep your workflow stateless while still benefiting from reasoning items.
 
+To disable statefulness but still take advantage of reasoning:
 
-    ### 5. Update function definitions
+- Set `store: false` in the [store field](https://developers.openai.com/api/docs/api-reference/responses/create#responses_create-store).
+- Add `["reasoning.encrypted_content"]` to the [include field](https://developers.openai.com/api/docs/api-reference/responses/create#responses_create-include).
 
-    There are two minor, but notable, differences in how functions are defined between Chat Completions and Responses.
+The API will then return an encrypted version of the reasoning tokens, which you can pass back in future requests just like regular reasoning items.
+For ZDR organizations, OpenAI enforces `store: false` automatically. When a request includes `encrypted_content`, it is decrypted in memory, used for generating the next response, and then securely discarded. Any new reasoning tokens are immediately encrypted and returned to you, ensuring no intermediate state is persisted.
 
-    1. In Chat Completions, functions are defined using externally tagged polymorphism, whereas in Responses, they are internally-tagged.
-    2. In Chat Completions, functions are non-strict by default, whereas in the Responses API, functions _are_ strict by default.
+### 5. Update function definitions and outputs
 
-    The Responses API function example on the right is functionally equivalent to the Chat Completions example on the left.
+There are two minor, but notable, differences in how functions are defined between Chat Completions and Responses.
 
-    #### Follow function-calling best practices
+1. In Chat Completions, function definitions are externally tagged. In Responses, they are internally tagged.
+2. In Chat Completions, functions are non-strict by default. In Responses, function schemas are normalized into strict mode by default. To keep non-strict, best-effort function calling in Responses, explicitly set `strict: false`.
 
-    In Responses, tool calls and their outputs are two distinct types of Items that are correlated using a `call_id`. See
-    the [tool calling docs](https://developers.openai.com/api/docs/guides/function-calling#function-tool-example) for more detail on how function calling works in Responses.
+The Responses API function example on the right is functionally equivalent to the Chat Completions example on the left.
 
-    ### 6. Update Structured Outputs definition
+#### Follow function-calling best practices
 
-    In the Responses API, defining structured outputs have moved from `response_format` to `text.format`:
+In Responses, tool calls and their outputs are two distinct types of Items that are correlated using a `call_id`. See
+the [function calling docs](https://developers.openai.com/api/docs/guides/function-calling#function-tool-example) for more detail on how function calling works in Responses.
+
+### 6. Update Structured Outputs definitions
+
+In the Responses API, Structured Outputs definitions have moved from `response_format` to `text.format`:
 
 
 
@@ -20024,24 +20108,37 @@ const response = await openai.responses.create({
 
 
 
-    ### 7. Upgrade to native tools
+### 7. Update streaming consumers
 
-    If your application has use cases that would benefit from OpenAI's native [tools](https://developers.openai.com/api/docs/guides/tools), you can update your tool calls to use OpenAI's tools out of the box.
+Chat Completions streaming returns incremental chunks with a `delta` field. Responses streaming uses typed server-sent events. Update stream consumers to branch on each event's `type` and handle the events your UI or orchestration layer needs.
+
+For text streaming, listen for events such as:
+
+- `response.created`
+- `response.output_text.delta`
+- `response.completed`
+- `error`
+
+Function-calling streams can also emit events such as `response.function_call_arguments.delta` and `response.function_call_arguments.done`. See the [streaming Responses guide](https://developers.openai.com/api/docs/guides/streaming-responses?api-mode=responses) and [Responses streaming events reference](https://developers.openai.com/api/docs/api-reference/responses-streaming).
+
+### 8. Upgrade to native tools
+
+If your application has use cases that would benefit from OpenAI's native [tools](https://developers.openai.com/api/docs/guides/tools), you can update your tool calls to use OpenAI's tools out of the box.
 
 
 
 <div data-content-switcher-pane data-value="chat-completions">
     <div class="hidden">Chat Completions</div>
-    <>
-                        With Chat Completions, you cannot use OpenAI's tools natively and have to write your own.
-                        Web search tool
+    With Chat Completions, you cannot use OpenAI-hosted tools natively and have
+    to write your own tool integration.
+    Web search tool
 
 ```javascript
 async function web_search(query) {
-    const fetch = (await import('node-fetch')).default;
-    const res = await fetch(\`https://api.example.com/search?q=\${query}\`);
-    const data = await res.json();
-    return data.results;
+  const fetch = (await import('node-fetch')).default;
+  const res = await fetch(\`https://api.example.com/search?q=\${query}\`);
+  const data = await res.json();
+  return data.results;
 }
 
 const completion = await client.chat.completions.create({
@@ -20098,20 +20195,17 @@ curl https://api.example.com/search \\
   --data-urlencode "key=$SEARCH_API_KEY"\
 ```
 
-                    </>
   </div>
   <div data-content-switcher-pane data-value="responses" hidden>
     <div class="hidden">Responses</div>
-    <>
-                        With Responses, you can simply specify the tools that you are interested in.
-
-                        Web search tool
+    With Responses, you can specify the tools that you want the model to use.
+    Web search tool
 
 ```javascript
 const answer = await client.responses.create({
-    model: 'gpt-5.5',
-    input: 'Who is the current president of France?',
-    tools: [{ type: 'web_search' }]
+  model: 'gpt-5.5',
+  input: 'Who is the current president of France?',
+  tools: [{ type: 'web_search' }]
 });
 
 console.log(answer.output_text);
@@ -20138,20 +20232,36 @@ curl https://api.openai.com/v1/responses \\
   }'
 ```
 
-                    </>
 
   </div>
 
 
 
-## Incremental migration
+### 9. Check common migration errors
 
-The Responses API is a superset of the Chat Completions API, and Chat Completions remains supported. You can migrate one user flow at a time:
+Watch for these issues when moving code from Chat Completions to Responses:
 
-1. Start with a simple text-generation flow and update the endpoint, input, and output handling.
-2. Update multi-turn state management, then migrate function calling and Structured Outputs.
-3. For streaming flows, update consumers to handle typed Responses events such as `response.output_text.delta`. See the [streaming Responses guide](https://developers.openai.com/api/docs/guides/streaming-responses?api-mode=responses).
-4. Compare behavior, latency, and errors before routing more traffic to Responses.
+- Reading `choices[0].message.content` instead of `response.output_text` or `response.output`.
+- Treating every `output` entry as a message. Reasoning, tool, and function calls are separate Item types.
+- Dropping reasoning, function call, or function call output Items when manually carrying context into the next response.
+- Sending a function result without the matching `call_id`.
+- Using `response_format` in a Responses request instead of `text.format`.
+- Reusing Chat Completions streaming chunk handlers without handling typed Responses events.
+- Assuming `previous_response_id` removes billing for prior context. Previous input tokens in the response chain are still billed as input tokens.
+
+## Incremental rollout checklist
+
+Chat Completions remains supported, so you can migrate one user flow at a time.
+
+- [ ] Start with a simple text-generation flow.
+- [ ] Update the endpoint, request body, and output handling.
+- [ ] Decide whether the flow uses `previous_response_id`, manual Item replay, or the Conversations API.
+- [ ] If the flow is stateless or ZDR, add `store: false` and include encrypted reasoning items when reasoning context must continue across turns.
+- [ ] Migrate function definitions and verify function call outputs include the correct `call_id`.
+- [ ] Move Structured Outputs schemas from `response_format` to `text.format`.
+- [ ] Update streaming consumers to handle typed Responses events.
+- [ ] Replace custom orchestration with OpenAI-hosted tools where they fit the workflow.
+- [ ] Compare behavior, latency, token usage, and errors before routing more traffic to Responses.
 
 We recommend migrating all flows to the Responses API over time to take advantage of the latest OpenAI features and improvements.
 
@@ -20159,7 +20269,7 @@ We recommend migrating all flows to the Responses API over time to take advantag
 
 Based on developer feedback from the [Assistants API](https://developers.openai.com/api/docs/api-reference/assistants) beta, we've incorporated key improvements into the Responses API to make it more flexible, faster, and easier to use. The Responses API represents the future direction for building agents on OpenAI.
 
-We now have Assistant-like and Thread-like objects in the Responses API. Learn more in the [migration guide](https://developers.openai.com/api/docs/guides/assistants/migration). As of August 26th, 2025, we're deprecating the Assistants API, with a sunset date of August 26, 2026.
+We now have Assistant-like and Thread-like objects in the Responses API. Learn more in the [migration guide](https://developers.openai.com/api/docs/guides/assistants/migration). As of August 26, 2025, we're deprecating the Assistants API, with a sunset date of August 26, 2026.
 
 ---
 
@@ -20558,16 +20668,46 @@ Once the runtime contract is clear, continue with the guide that matches the res
 
 # Moderation
 
-Use the [moderations](https://developers.openai.com/api/docs/api-reference/moderations) endpoint to check whether text or images are potentially harmful. If harmful content is identified, you can take corrective action, like filtering content or intervening with user accounts creating offending content. The moderation endpoint is free to use. Image files are limited to 20 MB.
+Use OpenAI moderation models to detect harmful content in text and images. You can classify standalone inputs with the [moderation endpoint](https://developers.openai.com/api/docs/api-reference/moderations) or request moderation scores alongside a generated response. Use the results to enforce your application's policy, such as filtering content, routing a request for review, or intervening with accounts that submit flagged content.
 
-You can use two models for this endpoint:
+The `omni-moderation-latest` model accepts text and image inputs. It doesn't classify audio. The moderation endpoint is free to use, and image files can be up to 20 MB.
 
-- `omni-moderation-latest`: This model and all snapshots support more categorization options and multi-modal inputs.
-- `text-moderation-latest` **(Legacy)**: Older model that supports only text inputs and fewer input categorizations. The newer omni-moderation models will be the best choice for new applications.
+## Choose a moderation workflow
 
-## Quickstart
+| Workflow                                                        | Use when                                                                                                     |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| [Moderate generated content](#moderate-generated-content)       | Your application generates text with the Responses API or Chat Completions API and needs moderation signals. |
+| [Classify standalone inputs](#classify-standalone-inputs)       | Your application needs to classify text or images without generating a model response.                       |
+| [Understand moderation results](#understand-moderation-results) | Your application needs to interpret flags, categories, scores, or applied input types.                       |
+| [Review supported categories](#review-supported-categories)     | Your application needs to know which harm categories apply to text, images, or both.                         |
 
-Use the tabs below to see how you can moderate text inputs or image inputs, using our [official SDKs](https://developers.openai.com/api/docs/libraries) and the [omni-moderation-latest model](https://developers.openai.com/api/docs/models#moderation):
+## Moderate generated content
+
+When your application needs generated text and moderation scores together, pass a top-level `moderation` object in the generation request. The API returns moderation scores for the model input and generated output without a separate moderation request.
+
+The model still generates normally. Review the moderation results before you show the output to a user or take downstream actions.
+
+
+
+Set `moderation.model` when you create a response:
+
+The Responses API returns an input `moderation_result` object at `response.moderation.input` and an output `moderation_result` object at `response.moderation.output`.
+
+
+
+
+
+Inline moderation results use the same category fields as a standalone moderation result. Start with `flagged` for a first-pass decision, then inspect `categories` and `category_scores` for logging, routing, audit trails, or human-review queues. A refusal or other safety-aware response can still trigger a flag if it discusses harmful content. Treat moderation scores as signals for your application's policy, not as an automatic blocking decision.
+
+Check the moderation result type before you read scores if your application needs to handle moderation failures. If a moderation step can't complete, the corresponding input or output moderation field can contain an error instead of moderation scores.
+
+For tool-calling requests, moderation covers tool-call arguments and tool outputs when they appear in conversation content. It doesn't cover tool names, tool descriptions, tool schemas, or response-format schemas.
+
+If you stream a generated response, moderation scores arrive after the full generated output is available. They aren't included with partial output deltas.
+
+## Classify standalone inputs
+
+Use the [moderation endpoint](https://developers.openai.com/api/docs/api-reference/moderations) to classify text or image inputs without generating a model response. The tabs below show how to use the [OpenAI libraries](https://developers.openai.com/api/docs/libraries) and the [`omni-moderation-latest` model](https://developers.openai.com/api/docs/models#moderation):
 
 
 
@@ -20580,7 +20720,9 @@ Use the tabs below to see how you can moderate text inputs or image inputs, usin
 
 
 
-Here's a full example output, where the input is an image from a single frame of a war movie. The model correctly predicts indicators of violence in the image, with a `violence` category score of greater than 0.8.
+## Understand moderation results
+
+Here's a full example output for an image from a single frame of a war movie. The model identifies indicators of violence in the image, with a `violence` category score greater than 0.8.
 
 ```json
 {
@@ -20639,7 +20781,7 @@ Here's a full example output, where the input is an image from a single frame of
 }
 ```
 
-The output has several categories in the JSON response, which tell you which (if any) categories of content are present in the inputs, and to what degree the model believes them to be present.
+The JSON response includes fields that describe which categories are present in the input and the model's confidence in each category.
 
 <table>
   <tr>
@@ -20664,20 +20806,17 @@ The output has several categories in the JSON response, which tell you which (if
   <tr>
     <td>`category_scores`</td>
     <td>
-      Contains a dictionary of per-category scores output by the model, denoting
-      the model's confidence that the input violates the OpenAI's policy for the
-      category. The value is between 0 and 1, where higher values denote higher
-      confidence.
+      Contains a dictionary of per-category scores. Each score represents the
+      model's confidence that the input contains content in the category. The
+      value is between 0 and 1, where higher values denote higher confidence.
     </td>
   </tr>
   <tr>
     <td>`category_applied_input_types`</td>
     <td>
-      This property contains information on which input types were flagged in
-      the response, for each category. For example, if the both the image and
-      text inputs to the model are flagged for "violence/graphic", the
-      `violence/graphic` property will be set to `["image", "text"]`. This is
-      only available on omni models.
+      Contains the input types that the category score applies to. For example,
+      if the `violence/graphic` category applies to both image and text inputs,
+      the `violence/graphic` property is set to `["image", "text"]`.
     </td>
   </tr>
 </table>
@@ -20686,9 +20825,9 @@ We plan to continuously upgrade the moderation endpoint's underlying model.
   Therefore, custom policies that rely on `category_scores` may need
   recalibration over time.
 
-## Content classifications
+## Review supported categories
 
-The table below describes the types of content that can be detected in the moderation API, along with which models and input types are supported for each category.
+The table below describes the content categories that the moderation endpoint can detect and the input types that each category supports.
 
 Categories marked as "Text only" do not support image inputs. If you send only
   images (without accompanying text) to the `omni-moderation-latest` model, it
@@ -20704,9 +20843,6 @@ Categories marked as "Text only" do not support image inputs. If you send only
       <strong>Description</strong>
     </th>
     <th>
-      <strong>Models</strong>
-    </th>
-    <th>
       <strong>Inputs</strong>
     </th>
   </tr>
@@ -20716,7 +20852,6 @@ Categories marked as "Text only" do not support image inputs. If you send only
       Content that expresses, incites, or promotes harassing language towards
       any target.
     </td>
-    <td>All</td>
     <td>Text only</td>
   </tr>
   <tr>
@@ -20725,7 +20860,6 @@ Categories marked as "Text only" do not support image inputs. If you send only
       Harassment content that also includes violence or serious harm towards any
       target.
     </td>
-    <td>All</td>
     <td>Text only</td>
   </tr>
   <tr>
@@ -20736,7 +20870,6 @@ Categories marked as "Text only" do not support image inputs. If you send only
       or caste. Hateful content aimed at non-protected groups (e.g., chess
       players) is harassment.
     </td>
-    <td>All</td>
     <td>Text only</td>
   </tr>
   <tr>
@@ -20746,7 +20879,6 @@ Categories marked as "Text only" do not support image inputs. If you send only
       targeted group based on race, gender, ethnicity, religion, nationality,
       sexual orientation, disability status, or caste.
     </td>
-    <td>All</td>
     <td>Text only</td>
   </tr>
   <tr>
@@ -20755,7 +20887,6 @@ Categories marked as "Text only" do not support image inputs. If you send only
       Content that gives advice or instruction on how to commit illicit acts. A
       phrase like "how to shoplift" would fit this category.
     </td>
-    <td>Omni only</td>
     <td>Text only</td>
   </tr>
   <tr>
@@ -20764,7 +20895,6 @@ Categories marked as "Text only" do not support image inputs. If you send only
       The same types of content flagged by the `illicit` category, but also
       includes references to violence or procuring a weapon.
     </td>
-    <td>Omni only</td>
     <td>Text only</td>
   </tr>
   <tr>
@@ -20773,7 +20903,6 @@ Categories marked as "Text only" do not support image inputs. If you send only
       Content that promotes, encourages, or depicts acts of self-harm, such as
       suicide, cutting, and eating disorders.
     </td>
-    <td>All</td>
     <td>Text and images</td>
   </tr>
   <tr>
@@ -20783,7 +20912,6 @@ Categories marked as "Text only" do not support image inputs. If you send only
       engage in acts of self-harm, such as suicide, cutting, and eating
       disorders.
     </td>
-    <td>All</td>
     <td>Text and images</td>
   </tr>
   <tr>
@@ -20793,7 +20921,6 @@ Categories marked as "Text only" do not support image inputs. If you send only
       cutting, and eating disorders, or that gives instructions or advice on how
       to commit such acts.
     </td>
-    <td>All</td>
     <td>Text and images</td>
   </tr>
   <tr>
@@ -20803,7 +20930,6 @@ Categories marked as "Text only" do not support image inputs. If you send only
       sexual activity, or that promotes sexual services (excluding sex education
       and wellness).
     </td>
-    <td>All</td>
     <td>Text and images</td>
   </tr>
   <tr>
@@ -20811,13 +20937,11 @@ Categories marked as "Text only" do not support image inputs. If you send only
     <td>
       Sexual content that includes an individual who is under 18 years old.
     </td>
-    <td>All</td>
     <td>Text only</td>
   </tr>
   <tr>
     <td>`violence`</td>
     <td>Content that depicts death, violence, or physical injury.</td>
-    <td>All</td>
     <td>Text and images</td>
   </tr>
   <tr>
@@ -20826,7 +20950,6 @@ Categories marked as "Text only" do not support image inputs. If you send only
       Content that depicts death, violence, or physical injury in graphic
       detail.
     </td>
-    <td>All</td>
     <td>Text and images</td>
   </tr>
 </table>
@@ -22494,7 +22617,7 @@ Because the content generated from a model is non-deterministic, prompting to ge
 Some prompt engineering techniques work with every model, like using message roles. But different model types (like reasoning versus GPT models) might need to be prompted differently to produce the best results. Even different snapshots of models within the same family could produce different results. So as you build more complex applications, we strongly recommend:
 
 - Pinning your production applications to specific [model snapshots](https://developers.openai.com/api/docs/models) (like `gpt-4.1-2025-04-14` for example) to ensure consistent behavior
-- Building [evals](https://developers.openai.com/api/docs/guides/evals) that measure the behavior of your prompts so you can monitor prompt performance as you iterate, or when you change and upgrade model versions
+- Building tests and evaluation suites that measure prompt behavior so you can monitor performance as you iterate, or when you change and upgrade model versions
 
 Now, let's examine some tools and techniques available to you to construct prompts.
 
@@ -22637,9 +22760,9 @@ You could think about `developer` and `user` messages like a function and its ar
 - `developer` messages provide the system's rules and business logic, like a function definition.
 - `user` messages provide inputs and configuration to which the `developer` message instructions are applied, like arguments to a function.
 
-## Reusable prompts
+## Version prompts in code
 
-In the OpenAI dashboard, you can develop reusable [prompts](https://platform.openai.com/chat/edit) that you can use in API requests, rather than specifying the content of prompts in code. This way, you can more easily build and evaluate your prompts, and deploy improved versions of your prompts without changing your integration code.
+Store production prompts in your application code instead of creating reusable prompt objects. Code-managed prompts let you use typed inputs, code review, tests, and your normal deployment process to change model behavior.
 
 OpenAI is deprecating reusable prompt objects in the API. Prompt creation will
   be de-emphasized beginning June 3, 2026, and `v1/prompts` is scheduled to shut
@@ -22647,165 +22770,15 @@ OpenAI is deprecating reusable prompt objects in the API. Prompt creation will
   page](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) for the current
   timeline.
 
+For new prompt-engineering work:
 
+- Keep prompt builders in a small module near the feature they support.
+- Use typed function arguments or schemas for dynamic values such as customer data, files, or task options.
+- Pass the generated `instructions` and `input` directly to the [Responses API](https://developers.openai.com/api/docs/api-reference/responses/create).
+- Add representative fixtures, tests, and evaluation checks before changing production prompts.
+- Roll out prompt changes through your deployment system, using feature flags or configuration when you need staged releases.
 
-
-
-Here's how it works:
-
-1. **Create a reusable prompt** in the [dashboard](https://platform.openai.com/chat/edit) with placeholders like `{{customer_name}}`.
-2. **Use the prompt** in your API request with the `prompt` parameter. The prompt parameter object has three properties you can configure:
-   - `id` — Unique identifier of your prompt, found in the dashboard
-   - `version` — A specific version of your prompt (defaults to the "current" version as specified in the dashboard)
-   - `variables` — A map of values to substitute in for variables in your prompt. The substitution values can either be strings, or other Response input message types like `input_image` or `input_file`. [See the full API reference](https://developers.openai.com/api/docs/api-reference/responses/create).
-
-
-
-<div data-content-switcher-pane data-value="simple">
-    <div class="hidden">String variables</div>
-    Generate text with a prompt template
-
-```javascript
-import OpenAI from "openai";
-const client = new OpenAI();
-
-const response = await client.responses.create({
-    model: "gpt-5.5",
-    prompt: {
-        id: "pmpt_abc123",
-        version: "2",
-        variables: {
-            customer_name: "Jane Doe",
-            product: "40oz juice box"
-        }
-    }
-});
-
-console.log(response.output_text);
-```
-
-```python
-from openai import OpenAI
-client = OpenAI()
-
-response = client.responses.create(
-    model="gpt-5.5",
-    prompt={
-        "id": "pmpt_abc123",
-        "version": "2",
-        "variables": {
-            "customer_name": "Jane Doe",
-            "product": "40oz juice box"
-        }
-    }
-)
-
-print(response.output_text)
-```
-
-```bash
-curl https://api.openai.com/v1/responses \\
-  -H "Authorization: Bearer $OPENAI_API_KEY" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "model": "gpt-5.5",
-    "prompt": {
-      "id": "pmpt_abc123",
-      "version": "2",
-      "variables": {
-        "customer_name": "Jane Doe",
-        "product": "40oz juice box"
-      }
-    }
-  }'
-```
-
-  </div>
-  <div data-content-switcher-pane data-value="filevar" hidden>
-    <div class="hidden">Variables with file input</div>
-    Prompt template with file input variable
-
-```javascript
-import fs from "fs";
-import OpenAI from "openai";
-const client = new OpenAI();
-
-// Upload a PDF we will reference in the prompt variables
-const file = await client.files.create({
-    file: fs.createReadStream("draconomicon.pdf"),
-    purpose: "user_data",
-});
-
-const response = await client.responses.create({
-    model: "gpt-5.5",
-    prompt: {
-        id: "pmpt_abc123",
-        variables: {
-            topic: "Dragons",
-            reference_pdf: {
-                type: "input_file",
-                file_id: file.id,
-            },
-        },
-    },
-});
-
-console.log(response.output_text);
-```
-
-```python
-import openai, pathlib
-
-client = openai.OpenAI()
-
-# Upload a PDF we will reference in the variables
-file = client.files.create(
-    file=open("draconomicon.pdf", "rb"),
-    purpose="user_data",
-)
-
-response = client.responses.create(
-    model="gpt-5.5",
-    prompt={
-        "id": "pmpt_abc123",
-        "variables": {
-            "topic": "Dragons",
-            "reference_pdf": {
-                "type": "input_file",
-                "file_id": file.id,
-            },
-        },
-    },
-)
-
-print(response.output_text)
-```
-
-```bash
-# Assume you have already uploaded the PDF and obtained FILE_ID
-curl https://api.openai.com/v1/responses \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "gpt-5.5",
-    "prompt": {
-      "id": "pmpt_abc123",
-      "variables": {
-        "topic": "Dragons",
-        "reference_pdf": {
-          "type": "input_file",
-          "file_id": "file-abc123"
-        }
-      }
-    }
-  }'
-```
-
-  </div>
-
-
-
-
+If your integration already calls a saved prompt with a prompt ID or version, use the [prompt object migration guide](https://developers.openai.com/api/docs/guides/prompting/migrate-from-prompt-object) to move that prompt into code.
 
 ## Message formatting with Markdown and XML
 
@@ -23070,7 +23043,7 @@ For more information on best practices when using reasoning models, [refer to th
 
 ## Next steps
 
-Now that you known the basics of text inputs and outputs, you might want to check out one of these resources next.
+Now that you know the basics of text inputs and outputs, you might want to check out one of these resources next.
 
 [
 
@@ -23520,11 +23493,11 @@ Prompting is both an art and a science. OpenAI has some strategies and API desig
 - Put overall tone or role guidance in the system message; keep task-specific details and examples in user messages.
 - Combine few-shot examples into a concise YAML-style or bulleted block so they’re easy to scan and update.
 - Mirror your project structure with clear folder names so teammates can locate prompts quickly.
-- Rerun your linked eval every time you publish—catching issues early is cheaper than fixing them in production.
+- Run your prompt tests and evaluation cases every time you publish; catching issues early is cheaper than fixing them in production.
 
-## Prompts in the API
+## Prompts in your application
 
-OpenAI provides a long-lived prompt object, with versioning and templating shared by all users in a project. This design lets you manage, test, and reuse prompts across your team, with one central definition across APIs, SDKs, and dashboard.
+Treat prompts as application code. Store prompt content in named modules, build dynamic sections with typed function arguments, and review prompt changes in the same pull requests as the product behavior they support.
 
 OpenAI is deprecating reusable prompt objects in the API. Prompt creation will
   be de-emphasized beginning June 3, 2026, and `v1/prompts` is scheduled to shut
@@ -23532,54 +23505,15 @@ OpenAI is deprecating reusable prompt objects in the API. Prompt creation will
   page](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) for the current
   timeline.
 
-Universal prompt IDs give you flexibility to test and build. Variables and prompts share a base prompt, so when you create a new version, you can use that for [evals](https://developers.openai.com/api/docs/guides/evals) and determine whether a prompt performs better or worse.
+For new work, don't create reusable prompt objects. Instead:
 
-### Create a prompt
+- Keep each production prompt in a code-managed, versioned helper such as `prompts/supportReply.ts`.
+- Replace prompt variables with typed function parameters or validated input objects.
+- Pass generated messages directly to the [Responses API](https://developers.openai.com/api/docs/guides/text?api-mode=responses) through `input` and `instructions`.
+- Cover prompt changes with tests, representative fixtures, and evaluation checks that run with your deployment process.
+- Use git history, PR review, release tags, and feature flags to review, ship, compare, and roll back prompt changes.
 
-Log in and use the OpenAI [dashboard](https://platform.openai.com/chat) to create, save, version, and share your prompts.
-
-1. **Start a prompt**
-
-   In the [Playground](https://platform.openai.com/playground), fill out the fields to create your desired prompt.
-
-   <br />
-
-1. **Add prompt variables**
-
-   Variables let you inject dynamic values without changing your prompt. Use them in any message role using `{{variable}}`. For example, when creating a local weather prompt, you might add a `city` variable with the value `San Francisco`.
-
-   <br />
-
-1. **Use the prompt in your [Responses API](https://developers.openai.com/api/docs/guides/text?api-mode=responses) call**
-
-   Find your prompt ID and version number in the URL, and pass it as `prompt_id`:
-
-   ```curl
-   curl -s -X POST "https://api.openai.com/v1/responses" \
-   -H "Content-Type: application/json" \
-   -H "Authorization: Bearer $OPENAI_API_KEY" \
-   -d '{
-       "prompt": {
-       "prompt_id": "pmpt_123",
-       "variables": {
-           "city": "San Francisco"
-       }
-       }
-   }'
-
-   ```
-
-1. **Create a new prompt version**
-
-   Versions let you iterate on your prompts without overwriting existing details. You can use all versions in the API and evaluate their performance against each other. The prompt ID points to the latest published version unless you specify a version.
-
-   To create a new version, edit the prompt and click **Update**. You'll receive a new prompt ID to copy and use in your Responses API calls.
-
-   <br />
-
-1. **Roll back if needed**
-
-   In the [prompts dashboard](https://platform.openai.com/chat), select the prompt you want to roll back. On the right, click **History**. Find the version you want to restore, and click **Restore**.
+If you already use prompt IDs or prompt versions in API requests, follow the [migration guide](https://developers.openai.com/api/docs/guides/prompting/migrate-from-prompt-object) to move those prompts into code.
 
 ## Next steps
 
@@ -29576,6 +29510,10 @@ curl https://api.openai.com/v1/chat/completions \\
 
 OpenAI's [Moderation API](https://developers.openai.com/api/docs/guides/moderation) is free-to-use and can help reduce the frequency of unsafe content in your completions. Alternatively, you may wish to develop your own content filtration system tailored to your use case.
 
+If your application generates text with the Responses API or Chat Completions,
+you can also [request moderation scores in the generation
+request](https://developers.openai.com/api/docs/guides/moderation#moderate-generated-content).
+
 ### Adversarial testing
 
 We recommend “red-teaming” your application to ensure it's robust to adversarial input. Test your product over a wide range of inputs and user behaviors, both a representative set and those reflective of someone trying to ‘break' your application. Does it wander off topic? Can someone easily redirect the feature via prompt injections, e.g. “ignore the previous instructions and do this instead”?
@@ -32421,6 +32359,8 @@ For more advanced use cases, like streaming tool calls, check out the following 
 
 Note that streaming the model's output in a production application makes it more difficult to moderate the content of the completions, as partial completions may be more difficult to evaluate. This may have implications for approved usage.
 
+If you request [moderation scores with a generation request](https://developers.openai.com/api/docs/guides/moderation#moderate-generated-content), the scores arrive after the full generated output is available. They aren't included with partial output deltas.
+
 ---
 
 # Structured model outputs
@@ -32985,7 +32925,7 @@ Because the content generated from a model is non-deterministic, prompting to ge
 Some prompt engineering techniques work with every model, like using message roles. But different models might need to be prompted differently to produce the best results. Even different snapshots of models within the same family could produce different results. So as you build more complex applications, we strongly recommend:
 
 - Pinning your production applications to specific [model snapshots](https://developers.openai.com/api/docs/models) (like `gpt-5.5-2026-04-23` for example) to ensure consistent behavior
-- Building [evals](https://developers.openai.com/api/docs/guides/evals) that measure the behavior of your prompts so you can monitor prompt performance as you iterate, or when you change and upgrade model versions
+- Building tests and evaluation suites that measure prompt behavior so you can monitor performance as you iterate, or when you change and upgrade model versions
 
 Now, let's examine some tools and techniques available to you to construct prompts.
 
@@ -33149,9 +33089,9 @@ You could think about `developer` and `user` messages like a function and its ar
 - `developer` messages provide the system's rules and business logic, like a function definition.
 - `user` messages provide inputs and configuration to which the `developer` message instructions are applied, like arguments to a function.
 
-## Reusable prompts
+## Version prompts in code
 
-In the OpenAI dashboard, you can develop reusable [prompts](https://platform.openai.com/chat/edit) that you can use in API requests, rather than specifying the content of prompts in code. This way, you can more easily build and evaluate your prompts, and deploy improved versions of your prompts without changing your integration code.
+Store production prompts in your application code instead of creating reusable prompt objects. Code-managed prompts let you use typed inputs, code review, tests, and your normal deployment process to change model behavior.
 
 OpenAI is deprecating reusable prompt objects in the API. Prompt creation will
   be de-emphasized beginning June 3, 2026, and `v1/prompts` is scheduled to shut
@@ -33159,163 +33099,19 @@ OpenAI is deprecating reusable prompt objects in the API. Prompt creation will
   page](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) for the current
   timeline.
 
-Here's how it works:
+For new text-generation work:
 
-1. **Create a reusable prompt** in the [dashboard](https://platform.openai.com/chat/edit) with placeholders like `{{customer_name}}`.
-2. **Use the prompt** in your API request with the `prompt` parameter. The prompt parameter object has three properties you can configure:
-   - `id` — Unique identifier of your prompt, found in the dashboard
-   - `version` — A specific version of your prompt (defaults to the "current" version as specified in the dashboard)
-   - `variables` — A map of values to substitute in for variables in your prompt. The substitution values can either be strings, or other Response input message types like `input_image` or `input_file`. [See the full API reference](https://developers.openai.com/api/docs/api-reference/responses/create).
+- Keep prompt builders in a small module near the feature they support.
+- Use typed function arguments or schemas for dynamic values such as customer data, files, or task options.
+- Pass the generated `instructions` and `input` directly to the [Responses API](https://developers.openai.com/api/docs/api-reference/responses/create).
+- Add representative fixtures, tests, and evaluation checks before changing production prompts.
+- Roll out prompt changes through your deployment system, using feature flags or configuration when you need staged releases.
 
-
-
-<div data-content-switcher-pane data-value="simple">
-    <div class="hidden">String variables</div>
-    Generate text with a prompt template
-
-```javascript
-import OpenAI from "openai";
-const client = new OpenAI();
-
-const response = await client.responses.create({
-    model: "gpt-5.5",
-    prompt: {
-        id: "pmpt_abc123",
-        version: "2",
-        variables: {
-            customer_name: "Jane Doe",
-            product: "40oz juice box"
-        }
-    }
-});
-
-console.log(response.output_text);
-```
-
-```python
-from openai import OpenAI
-client = OpenAI()
-
-response = client.responses.create(
-    model="gpt-5.5",
-    prompt={
-        "id": "pmpt_abc123",
-        "version": "2",
-        "variables": {
-            "customer_name": "Jane Doe",
-            "product": "40oz juice box"
-        }
-    }
-)
-
-print(response.output_text)
-```
-
-```bash
-curl https://api.openai.com/v1/responses \\
-  -H "Authorization: Bearer $OPENAI_API_KEY" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "model": "gpt-5.5",
-    "prompt": {
-      "id": "pmpt_abc123",
-      "version": "2",
-      "variables": {
-        "customer_name": "Jane Doe",
-        "product": "40oz juice box"
-      }
-    }
-  }'
-```
-
-  </div>
-  <div data-content-switcher-pane data-value="filevar" hidden>
-    <div class="hidden">Variables with file input</div>
-    Prompt template with file input variable
-
-```javascript
-import fs from "fs";
-import OpenAI from "openai";
-const client = new OpenAI();
-
-// Upload a PDF we will reference in the prompt variables
-const file = await client.files.create({
-    file: fs.createReadStream("draconomicon.pdf"),
-    purpose: "user_data",
-});
-
-const response = await client.responses.create({
-    model: "gpt-5.5",
-    prompt: {
-        id: "pmpt_abc123",
-        variables: {
-            topic: "Dragons",
-            reference_pdf: {
-                type: "input_file",
-                file_id: file.id,
-            },
-        },
-    },
-});
-
-console.log(response.output_text);
-```
-
-```python
-import openai, pathlib
-
-client = openai.OpenAI()
-
-# Upload a PDF we will reference in the variables
-file = client.files.create(
-    file=open("draconomicon.pdf", "rb"),
-    purpose="user_data",
-)
-
-response = client.responses.create(
-    model="gpt-5.5",
-    prompt={
-        "id": "pmpt_abc123",
-        "variables": {
-            "topic": "Dragons",
-            "reference_pdf": {
-                "type": "input_file",
-                "file_id": file.id,
-            },
-        },
-    },
-)
-
-print(response.output_text)
-```
-
-```bash
-# Assume you have already uploaded the PDF and obtained FILE_ID
-curl https://api.openai.com/v1/responses \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "gpt-5.5",
-    "prompt": {
-      "id": "pmpt_abc123",
-      "variables": {
-        "topic": "Dragons",
-        "reference_pdf": {
-          "type": "input_file",
-          "file_id": "file-abc123"
-        }
-      }
-    }
-  }'
-```
-
-  </div>
-
-
+If your integration already calls a saved prompt with a prompt ID or version, use the [prompt object migration guide](https://developers.openai.com/api/docs/guides/prompting/migrate-from-prompt-object) to move that prompt into code.
 
 ## Next steps
 
-Now that you known the basics of text inputs and outputs, you might want to check out one of these resources next.
+Now that you know the basics of text inputs and outputs, you might want to check out one of these resources next.
 
 [
 
@@ -34160,7 +33956,7 @@ Use both features to track, analyze, and optimize the performance of groups of a
 ## Get started with traces
 
 1. In the dashboard, navigate to Logs > [Traces](https://platform.openai.com/logs?api=traces).
-1. Select a worfklow. You'll see logs from any workflows you created in [Agent Builder](https://developers.openai.com/api/docs/guides/agent-builder).
+1. Select a workflow. You'll see traces from SDK-based apps, and from existing [Agent Builder](https://developers.openai.com/api/docs/guides/agent-builder) workflows during the transition window.
 1. Select a trace to inspect your workflow.
 1. Create a grader, and run it to grade your agents' performance against grader criteria.
 
@@ -38430,7 +38226,7 @@ Voice agents turn the same agent concepts into spoken, low-latency interactions.
 | Speech-to-speech with live audio sessions | Natural, low-latency conversations                        | The model handles live audio input and output directly                                |
 | Chained voice pipeline                    | Predictable workflows or extending an existing text agent | Your app keeps explicit control over transcription, text reasoning, and speech output |
 
-Agent Builder doesn't currently support voice workflows, so voice stays an SDK-first surface.
+Voice workflows are an SDK-first surface. If you're migrating a related Agent Builder project, see [Migrate from Agent Builder](https://developers.openai.com/api/docs/guides/agent-builder/migrate-from-agent-builder) for the current transition path.
 
 ## Recommended starting points
 
@@ -41837,10 +41633,7 @@ Specialized models
           },
           {
             model: "Moderation",
-            rows: [
-              ["omni-moderation-latest", "Free", "-", "-"],
-              ["text-moderation-latest", "Free", "-", "-"],
-            ],
+            rows: [["omni-moderation-latest", "Free", "-", "-"]],
           },
         ]}
       />
@@ -42028,7 +41821,7 @@ StatsigClient.logEvent("quickstart_add_credits_billing_click", null, null)
 <div className="mt-2">Congrats on running a free test API request! Start building real applications with higher limits and use <a href="/api/docs/models" target="_blank">our models</a> to generate text, audio, images, videos and more.</div>
 
 <div className="mt-2">
-  Access dashboard features designed to help you ship faster:
+  Explore tools and docs designed to help you ship faster:
 </div>
 <a
   href="https://platform.openai.com/chat"
@@ -42050,26 +41843,13 @@ StatsigClient.logEvent("quickstart_add_credits_billing_click", null, null)
 
 
 </a>
-<a
-  href="https://platform.openai.com/agent-builder"
-  target="_blank"
-  rel="noreferrer"
-  onClick={() =>
-    StatsigClient.logEvent(
-      "quickstart_add_credits_agent_builder_click",
-      null,
-      null
-    )
-  }
->
-  
+[
 
 <span slot="icon">
       </span>
-    Build, deploy, and optimize agent workflows.
+    Use the Agents SDK to build, run, and observe agent workflows.
 
-
-</a>
+](https://developers.openai.com/api/docs/guides/agents)
 
 ## Analyze images and files
 
@@ -42116,6 +41896,9 @@ Give the model access to external data and functions by attaching [tools](https:
     </div>
   <div data-content-switcher-pane data-value="file-search" hidden>
     <div class="hidden">File search</div>
+    </div>
+  <div data-content-switcher-pane data-value="code-interpreter" hidden>
+    <div class="hidden">Code Interpreter</div>
     </div>
   <div data-content-switcher-pane data-value="function-calling" hidden>
     <div class="hidden">Function calling</div>

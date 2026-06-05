@@ -332,26 +332,35 @@ You can set the number of partial images (1-3) with the `partial_images` paramet
 Stream an image
 
 ```javascript
-import fs from "fs";
 import OpenAI from "openai";
-
+import fs from "fs";
 const openai = new OpenAI();
 
-const prompt =
-  "Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape";
-const stream = await openai.images.generate({
-  prompt: prompt,
-  model: "gpt-image-2",
+function saveBase64Image(filename, imageBase64) {
+  const imageBuffer = Buffer.from(imageBase64, "base64");
+  fs.writeFileSync(filename, imageBuffer);
+}
+
+const stream = await openai.responses.create({
+  model: "gpt-5.5",
+  input:
+    "Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape",
   stream: true,
-  partial_images: 2,
+  tools: [{ type: "image_generation", partial_images: 2 }],
 });
 
 for await (const event of stream) {
-  if (event.type === "image_generation.partial_image") {
+  if (event.type === "response.image_generation_call.partial_image") {
     const idx = event.partial_image_index;
-    const imageBase64 = event.b64_json;
-    const imageBuffer = Buffer.from(imageBase64, "base64");
-    fs.writeFileSync(\`river\${idx}.png\`, imageBuffer);
+    saveBase64Image(\`river-partial-\${idx}.png\`, event.partial_image_b64);
+  } else if (event.type === "response.completed") {
+    const imageData = event.response.output
+      .filter((output) => output.type === "image_generation_call")
+      .map((output) => output.result);
+
+    if (imageData.length > 0) {
+      saveBase64Image("river-final.png", imageData[0]);
+    }
   }
 }
 ```
@@ -362,20 +371,31 @@ import base64
 
 client = OpenAI()
 
-stream = client.images.generate(
-    prompt="Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape",
-    model="gpt-image-2",
+def save_base64_image(filename, image_base64):
+    image_bytes = base64.b64decode(image_base64)
+    with open(filename, "wb") as f:
+        f.write(image_bytes)
+
+stream = client.responses.create(
+    model="gpt-5.5",
+    input="Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape",
     stream=True,
-    partial_images=2,
+    tools=[{"type": "image_generation", "partial_images": 2}],
 )
 
 for event in stream:
-    if event.type == "image_generation.partial_image":
+    if event.type == "response.image_generation_call.partial_image":
         idx = event.partial_image_index
-        image_base64 = event.b64_json
-        image_bytes = base64.b64decode(image_base64)
-        with open(f"river{idx}.png", "wb") as f:
-            f.write(image_bytes)
+        save_base64_image(f"river-partial-{idx}.png", event.partial_image_b64)
+    elif event.type == "response.completed":
+        image_data = [
+            output.result
+            for output in event.response.output
+            if output.type == "image_generation_call"
+        ]
+
+        if image_data:
+            save_base64_image("river-final.png", image_data[0])
 ```
 
 
