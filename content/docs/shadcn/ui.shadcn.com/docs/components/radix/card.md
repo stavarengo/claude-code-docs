@@ -195,6 +195,186 @@ export function CardSmall() {
 
 ```
 
+### Spacing
+
+In addition to the `size` prop, you can use the `--card-spacing` CSS variable to control the spacing between sections and the inset of card parts.
+
+```tsx
+"use client"
+
+import * as React from "react"
+
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/components/ui/toggle-group"
+
+const spacingOptions = [
+  {
+    className: "[--card-spacing:--spacing(4)]",
+    label: "16px",
+    value: "4",
+  },
+  {
+    className: "[--card-spacing:--spacing(5)]",
+    label: "20px",
+    value: "5",
+  },
+  {
+    className: "[--card-spacing:--spacing(6)]",
+    label: "24px",
+    value: "6",
+  },
+  {
+    className: "[--card-spacing:--spacing(8)]",
+    label: "32px",
+    value: "8",
+  },
+]
+
+export function CardSpacing() {
+  const [spacing, setSpacing] = React.useState("4")
+  const selectedSpacing = spacingOptions.find(
+    (option) => option.value === spacing
+  )
+
+  return (
+    <div className="mx-auto grid w-full max-w-sm gap-4">
+      <ToggleGroup
+        type="single"
+        value={spacing}
+        onValueChange={(value) => {
+          if (value) {
+            setSpacing(value)
+          }
+        }}
+        variant="outline"
+        size="sm"
+        className="justify-center"
+      >
+        {spacingOptions.map((option) => (
+          <ToggleGroupItem key={option.value} value={option.value}>
+            {option.label}
+          </ToggleGroupItem>
+        ))}
+      </ToggleGroup>
+      <Card className={selectedSpacing?.className}>
+        <CardHeader>
+          <CardTitle>Login to your account</CardTitle>
+          <CardDescription>
+            Enter your email below to login to your account
+          </CardDescription>
+          <CardAction>
+            <Button variant="link">Sign Up</Button>
+          </CardAction>
+        </CardHeader>
+        <CardContent>
+          <form>
+            <div className="flex flex-col gap-6">
+              <div className="grid gap-2">
+                <Label htmlFor="email-spacing">Email</Label>
+                <Input
+                  id="email-spacing"
+                  type="email"
+                  placeholder="m@example.com"
+                  required
+                />
+              </div>
+              <div className="grid gap-2">
+                <div className="flex items-center">
+                  <Label htmlFor="password-spacing">Password</Label>
+                  <a
+                    href="#"
+                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                  >
+                    Forgot your password?
+                  </a>
+                </div>
+                <Input id="password-spacing" type="password" required />
+              </div>
+            </div>
+          </form>
+        </CardContent>
+        <CardFooter className="flex-col gap-2">
+          <Button type="submit" className="w-full">
+            Login
+          </Button>
+          <Button variant="outline" className="w-full">
+            Login with Google
+          </Button>
+        </CardFooter>
+      </Card>
+    </div>
+  )
+}
+
+```
+
+Use negative margins with `-mx-(--card-spacing)` to make content go edge to edge while keeping it aligned with the card inset. When the edge-to-edge content sits above a footer, use `-mb-(--card-spacing)` on `CardContent` to remove the section gap.
+
+```tsx
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+
+export function CardEdgeToEdge() {
+  return (
+    <Card className="mx-auto w-full max-w-sm">
+      <CardHeader>
+        <CardTitle>Terms of Service</CardTitle>
+        <CardDescription>
+          Review the terms before accepting the agreement.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="-mb-(--card-spacing)">
+        <div className="-mx-(--card-spacing) max-h-48 space-y-4 overflow-y-scroll border-t bg-muted/50 px-(--card-spacing) py-4 text-sm leading-relaxed">
+          <p>
+            These terms govern your use of the workspace, including access to
+            shared documents, project files, and collaboration tools.
+          </p>
+          <p>
+            You are responsible for the content you upload and for ensuring that
+            your team has the appropriate permissions to view or edit it.
+          </p>
+          <p>
+            We may update features or limits as the service evolves. When those
+            changes materially affect your workflow, we will notify your
+            workspace administrators.
+          </p>
+          <p>
+            By continuing, you agree to keep your account credentials secure and
+            to follow your organization&apos;s acceptable use policies.
+          </p>
+        </div>
+      </CardContent>
+      <CardFooter className="justify-end gap-2">
+        <Button variant="outline">Decline</Button>
+        <Button>Accept</Button>
+      </CardFooter>
+    </Card>
+  )
+}
+
+```
+
 ### Image
 
 Add an image before the card header to create a card with an image.
@@ -421,3 +601,70 @@ The `CardFooter` component is used for actions and secondary content at the bott
 | Prop        | Type     | Default |
 | ----------- | -------- | ------- |
 | `className` | `string` | -       |
+
+## Changelog
+
+### Spacing Variable
+
+If you're upgrading from a previous version of the `Card` component, you'll need to apply the following updates to use the `--card-spacing` variable:
+
+<Steps>
+
+<Step>Update the Card root spacing classes.</Step>
+
+Replace the hard-coded gap and vertical padding with `--card-spacing`, and set the default and small size values on the root:
+
+```diff
+  className={cn(
+-   "group/card flex flex-col gap-4 overflow-hidden rounded-xl bg-card py-4 text-sm text-card-foreground ring-1 ring-foreground/10 has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:gap-3 data-[size=sm]:py-3 data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
++   "group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-xl bg-card py-(--card-spacing) text-sm text-card-foreground ring-1 ring-foreground/10 [--card-spacing:--spacing(4)] has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
+    className
+  )}
+```
+
+<Step>Update CardHeader spacing classes.</Step>
+
+Replace the horizontal padding and border spacing with the shared variable:
+
+```diff
+  className={cn(
+-   "group/card-header @container/card-header grid auto-rows-min items-start gap-1 rounded-t-xl px-4 group-data-[size=sm]/card:px-3 has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto] [.border-b]:pb-4 group-data-[size=sm]/card:[.border-b]:pb-3",
++   "group/card-header @container/card-header grid auto-rows-min items-start gap-1 rounded-t-xl px-(--card-spacing) has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto] [.border-b]:pb-(--card-spacing)",
+    className
+  )}
+```
+
+<Step>Update CardContent and CardFooter spacing classes.</Step>
+
+Use `--card-spacing` for the content inset and footer padding:
+
+```diff
+  function CardContent({ className, ...props }: React.ComponentProps<"div">) {
+    return (
+      <div
+        data-slot="card-content"
+-       className={cn("px-4 group-data-[size=sm]/card:px-3", className)}
++       className={cn("px-(--card-spacing)", className)}
+        {...props}
+      />
+    )
+  }
+```
+
+```diff
+  className={cn(
+-   "flex items-center rounded-b-xl border-t bg-muted/50 p-4 group-data-[size=sm]/card:p-3",
++   "flex items-center rounded-b-xl border-t bg-muted/50 p-(--card-spacing)",
+    className
+  )}
+```
+
+</Steps>
+
+After applying these changes, you can customize card spacing by setting `--card-spacing` on the `Card` with an arbitrary property class:
+
+```tsx
+function Example() {
+  return <Card className="[--card-spacing:--spacing(6)]">...</Card>
+}
+```

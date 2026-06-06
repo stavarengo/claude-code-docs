@@ -68,7 +68,7 @@ Current and recently retired models are listed in the following table with their
 | claude-opus-4-7               | Active              | N/A               | Not sooner than April 16, 2027 |
 | claude-opus-4-6             | Active              | N/A               | Not sooner than February 5, 2027 |
 | claude-opus-4-5-20251101  | Active              | N/A               | Not sooner than November 24, 2026 |
-| claude-opus-4-1-20250805  | Active              | N/A               | Not sooner than August 5, 2026 |
+| claude-opus-4-1-20250805  | Deprecated          | June 5, 2026      | August 5, 2026           |
 | claude-opus-4-20250514    | Deprecated          | April 14, 2026    | June 15, 2026            |
 | claude-sonnet-4-6         | Active              | N/A               | Not sooner than February 17, 2027 |
 | claude-sonnet-4-5-20250929| Active              | N/A               | Not sooner than September 29, 2026 |
@@ -81,6 +81,14 @@ Current and recently retired models are listed in the following table with their
 ## Deprecation history
 
 All deprecations are listed below, with the most recent announcements at the top.
+
+### 2026-06-05: Claude Opus 4.1 model
+
+On June 5, 2026, Anthropic notified developers using Claude Opus 4.1 of its upcoming retirement on the Claude API.
+
+| Retirement date             | Deprecated model            | Recommended replacement         |
+|:----------------------------|:----------------------------|:--------------------------------|
+| August 5, 2026              | `claude-opus-4-1-20250805`  | `claude-opus-4-8`               |
 
 ### 2026-04-14: Claude Sonnet 4 and Claude Opus 4 models
 

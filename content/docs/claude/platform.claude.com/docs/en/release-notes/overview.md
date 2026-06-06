@@ -10,6 +10,9 @@ For release notes on Claude Apps, see the [Release notes for Claude Apps in the 
 For updates to Claude Code, see the [complete CHANGELOG.md](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) in the `claude-code` repository.
 </Tip>
 
+### June 5, 2026
+- We announced the deprecation of the Claude Opus 4.1 model (`claude-opus-4-1-20250805`), with retirement on the Claude API scheduled for August 5, 2026. We recommend migrating to [Claude Opus 4.8](/docs/en/about-claude/models/migration-guide#migrating-from-claude-opus-47). Read more in [model deprecations](/docs/en/about-claude/model-deprecations).
+
 ### June 2, 2026
 - The [advisor tool](/docs/en/agents-and-tools/tool-use/advisor-tool) now supports a `max_tokens` parameter to cap the advisor model's output per call, reducing latency and output token cost for workloads that don't need full-length advisor responses. Set `tools[].max_tokens` on the advisor tool definition; see [Capping advisor output](/docs/en/agents-and-tools/tool-use/advisor-tool#capping-advisor-output).
 - On the Claude API, you are no longer billed for a request when it returns `stop_reason: "refusal"` without Claude having generated any output. See [Streaming refusals](/docs/en/test-and-evaluate/strengthen-guardrails/handle-streaming-refusals) for detecting and handling refusals.

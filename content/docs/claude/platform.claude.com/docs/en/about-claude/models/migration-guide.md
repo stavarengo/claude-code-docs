@@ -245,7 +245,7 @@ These are not required but will improve your experience:
 
 ## Migrating to Claude Opus 4.7 from Opus 4.5 or earlier
 
-If you are migrating from Claude Opus 4.5, Opus 4.1, or an earlier model directly to Claude Opus 4.7, apply **all of the [Opus 4.7 changes above](#migrating-to-claude-opus-4-7)** plus the cumulative changes in this section that took effect between Opus 4.5 and Opus 4.7. If you are migrating from Opus 4.6, you only need the [Opus 4.7 section above](#migrating-to-claude-opus-4-7).
+If you are migrating from Claude Opus 4.5, Opus 4.1 (deprecated), or an earlier model directly to Claude Opus 4.7, apply **all of the [Opus 4.7 changes above](#migrating-to-claude-opus-4-7)** plus the cumulative changes in this section that took effect between Opus 4.5 and Opus 4.7. If you are migrating from Opus 4.6, you only need the [Opus 4.7 section above](#migrating-to-claude-opus-4-7).
 
 ### Update your model name
 
@@ -458,7 +458,7 @@ These changes improve your experience on Opus 4.7. Items marked **(required on O
 
 ### Migrating from Claude 4.1 or earlier
 
-If you're migrating from Opus 4.1, Sonnet 4 (deprecated), or earlier models directly to Claude Opus 4.7, apply the Claude Opus 4.7 changes at the top of this guide and the cumulative changes above plus the additional changes in this section.
+If you're migrating from Opus 4.1 (deprecated), Sonnet 4 (deprecated), or earlier models directly to Claude Opus 4.7, apply the Claude Opus 4.7 changes at the top of this guide and the cumulative changes above plus the additional changes in this section.
 
 ```python
 # From Opus 4.1

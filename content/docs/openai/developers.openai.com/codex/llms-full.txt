@@ -10505,6 +10505,12 @@ canonical keys that `config.toml` uses. Omitted keys remain unconstrained.
       description: "Allowed values for `sandbox_mode`.",
     },
     {
+      key: "windows.allowed_sandbox_implementations",
+      type: "array<string>",
+      description:
+        "Allowed native Windows sandbox implementations for `windows.sandbox` (`elevated` and `unelevated`). The list must not be empty. When both are allowed and no mode is selected, Codex prefers `elevated`.",
+    },
+    {
       key: "remote_sandbox_config",
       type: "array<table>",
       description:
@@ -13248,6 +13254,12 @@ The action emits the last Codex message through the `final-message` output. Map 
 - **Expected `sudo` removal, but `sudo` succeeded**: Ensure no earlier step restored `sudo` and that the runner OS is Linux or macOS. Re-run with a fresh job.
 - **Permission errors after `drop-sudo`**: Grant write access before the action runs (for example with `chmod -R g+rwX "$GITHUB_WORKSPACE"` or by using the unprivileged-user pattern).
 - **Unauthorized trigger blocked**: Adjust `allow-users` or `allow-bots` inputs if you need to permit service accounts beyond the default write collaborators.
+
+---
+
+# Glossary
+
+Use this glossary as a quick reference for Codex terms across the app, CLI, IDE extension, cloud, SDK, and related integrations.
 
 ---
 
@@ -20817,6 +20829,20 @@ enterprise policy.
 If both modes are available, use `elevated`. If the default native sandbox
 doesn't work in your environment, use `unelevated` as a fallback while you
 troubleshoot the setup.
+
+Enterprise administrators can constrain which native sandbox implementations
+Codex can use through [`requirements.toml`](https://developers.openai.com/codex/enterprise/managed-configuration#admin-enforced-requirements-requirementstoml):
+
+```toml
+[windows]
+allowed_sandbox_implementations = ["elevated"]
+```
+
+This example requires the `elevated` sandbox and prevents users from falling
+back to `unelevated`. To permit either implementation, include both values;
+Codex prefers `elevated` when no mode is selected. See the
+[`requirements.toml` reference](https://developers.openai.com/codex/config-reference#requirementstoml) for
+the supported values.
 
 By default, both sandbox modes also use a private desktop for stronger UI
 isolation. Set `windows.sandbox_private_desktop = false` only if you need the

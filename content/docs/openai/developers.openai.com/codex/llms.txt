@@ -89,6 +89,9 @@ Use this as a compact map of Codex docs. Each page has a Markdown twin at `/code
 ## Github Action
 - [Codex GitHub Action](https://developers.openai.com/codex/github-action.md): Trigger Codex actions from GitHub Events
 
+## Glossary
+- [Glossary](https://developers.openai.com/codex/glossary.md): Definitions for common Codex terms and concepts
+
 ## Guides
 - [Building an AI-Native Engineering Team](https://developers.openai.com/codex/guides/build-ai-native-engineering-team.md): How coding agents speed up the software development lifecycle
 - [Custom instructions with AGENTS.md](https://developers.openai.com/codex/guides/agents-md.md): Give Codex extra instructions and context for your project
