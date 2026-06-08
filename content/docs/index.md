@@ -298,7 +298,6 @@ claude/platform.claude.com/docs/en/managed-agents:{agent-setup.md,cloud-sandboxe
 claude/platform.claude.com/docs/en/release-notes:{overview.md}
 claude/platform.claude.com/docs/en/test-and-evaluate:{develop-tests.md,eval-tool.md}
 claude/platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails:{handle-streaming-refusals.md,increase-consistency.md,mitigate-jailbreaks.md,reduce-hallucinations.md}
-claude/raw.githubusercontent.com/aws-solutions-library-samples/guidance-for-claude-code-with-amazon-bedrock/refs/heads/main/assets/docs:{MONITORING.md}
 openai/developers.openai.com/api/docs:{bots.md,concepts.md,deprecations.md,libraries.md,llms-full.txt,llms.txt,mcp.md,pricing.md,quickstart.md,supported-countries.md,ui-kit-demo.md}
 openai/developers.openai.com/api/docs/actions:{actions-library.md,authentication.md,data-retrieval.md,getting-started.md,introduction.md,production.md,sending-files.md}
 openai/developers.openai.com/api/docs/assistants:{deep-dive.md,migration.md,tools.md}
