@@ -2403,7 +2403,7 @@ curl https://auth.openai.com/oauth/token \
 | ---------------------- | -------- | ------------------------------------------------------------------------------------------------ |
 | `grant_type`           | Yes      | Must be `urn:ietf:params:oauth:grant-type:token-exchange`.                                       |
 | `subject_token_type`   | Yes      | Supports `urn:ietf:params:oauth:token-type:jwt` and `urn:ietf:params:oauth:token-type:id_token`. |
-| `subject_token`        | Yes      | The externally issued OIDC JWT from your Workload Identity Provider.                             |
+| `subject_token`        | Yes      | The externally issued OIDC JWT or SPIFFE JWT-SVID from your Workload Identity Provider.          |
 | `identity_provider_id` | Yes      | The OpenAI Workload Identity Provider ID configured for the external issuer.                     |
 | `service_account_id`   | Yes      | The OpenAI service account ID to resolve against the matching service account mapping.           |
 
@@ -2470,3 +2470,4 @@ Workload identity federation currently has the following limitations:
 - Each organization can create at most 50 Workload Identity Providers. Each Workload Identity Provider can have at most 50 service account mappings.
 - Workload identity access tokens aren't accepted by these endpoints: `DELETE /v1/models/{id}` and `POST /v1/images/request_audit`.
 - Arbitrary OIDC issuer endpoints other than the providers documented in the [setup guides](https://developers.openai.com/api/docs/guides/workload-identity-federation) aren't supported yet.
+- SPIFFE support is limited to JWT-SVID subject tokens. X.509-SVIDs aren't supported by this token exchange endpoint.

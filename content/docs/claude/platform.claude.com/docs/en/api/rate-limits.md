@@ -35,55 +35,21 @@ Each usage tier has a limit on how much you can spend on the API each calendar m
 To qualify for the next tier, you must meet a deposit requirement. To minimize the risk of overfunding your account, you cannot deposit more than your monthly spend limit.
 
 ### Requirements to advance tier
-<table>
-  <thead>
-    <tr>
-      <th>Usage Tier</th>
-      <th>Credit Purchase</th>
-      <th>Max Credit Purchase</th>
-      <th>Monthly Spend Limit</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Tier 1</td>
-      <td>\$5</td>
-      <td>\$500</td>
-      <td>\$500</td>
-    </tr>
-    <tr>
-      <td>Tier 2</td>
-      <td>\$40</td>
-      <td>\$500</td>
-      <td>\$500</td>
-    </tr>
-    <tr>
-      <td>Tier 3</td>
-      <td>\$200</td>
-      <td>\$1,000</td>
-      <td>\$1,000</td>
-    </tr>
-    <tr>
-      <td>Tier 4</td>
-      <td>\$400</td>
-      <td>\$200,000</td>
-      <td>\$200,000</td>
-    </tr>
-    <tr>
-      <td>Monthly Invoicing</td>
-      <td>N/A</td>
-      <td>N/A</td>
-      <td>No limit</td>
-    </tr>
-  </tbody>
-</table>
+
+| Usage tier        | Credit purchase | Max credit purchase | Monthly spend limit |
+| ----------------- | --------------- | ------------------- | ------------------- |
+| Tier 1            | \$5             | \$500               | \$500               |
+| Tier 2            | \$40            | \$500               | \$500               |
+| Tier 3            | \$200           | \$1,000             | \$1,000             |
+| Tier 4            | \$400           | \$200,000           | \$200,000           |
+| Monthly Invoicing | N/A             | N/A                 | No limit            |
 
 <Note>
-**Credit Purchase** shows the cumulative credit purchases (excluding tax) required to advance to that tier. You advance immediately upon reaching the threshold.
+**Credit purchase** shows the cumulative credit purchases (excluding tax) required to advance to that tier. You advance immediately upon reaching the threshold.
 
-**Max Credit Purchase** limits the maximum amount you can add to your account in a single transaction to prevent account overfunding.
+**Max credit purchase** limits the maximum amount you can add to your account in a single transaction to prevent account overfunding.
 
-**Monthly Spend Limit** is the maximum you can spend on the API each calendar month at that tier.
+**Monthly spend limit** is the maximum you can spend on the API each calendar month at that tier.
 </Note>
 
 ## Increasing your spend limits

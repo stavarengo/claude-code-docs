@@ -44,7 +44,7 @@ For details on both authentication methods and when to use each, see [Authentica
 |--------|-------|----------|
 | `x-api-key` | Your API key from Console | One of `x-api-key` or `Authorization` |
 | `Authorization` | `Bearer <token>`, where `<token>` is a short-lived access token obtained from `POST /v1/oauth/token` via [Workload Identity Federation](/docs/en/manage-claude/workload-identity-federation) | One of `x-api-key` or `Authorization` |
-| `anthropic-version` | API version (e.g., `2023-06-01`) | Yes |
+| `anthropic-version` | API version (for example, `2023-06-01`) | Yes |
 | `content-type` | `application/json` | Yes |
 
 If you are using the [Client SDKs](#client-sdks), the SDK will send these headers automatically. For API versioning details, see [API versions](/docs/en/api/versioning).
@@ -66,7 +66,7 @@ Anthropic provides official SDKs that simplify API integration by handling authe
 - Streaming support
 - Request timeouts and connection management
 
-For a list of client SDKs and their respective installation instructions, see [Client SDKs](/docs/en/api/client-sdks).
+For a list of client SDKs, see [Client SDKs](/docs/en/cli-sdks-libraries/overview).
 
 ## Claude API vs cloud platforms
 
@@ -150,8 +150,8 @@ The Claude API is available in [many countries and regions](/docs/en/api/support
   <Card title="Claude Managed Agents reference" icon="brain" href="/docs/en/managed-agents/sessions">
     Agents, Sessions, and Environments endpoints
   </Card>
-  <Card title="Client SDKs" icon="code" href="/docs/en/api/client-sdks">
-    Python, TypeScript, Java, Go, C#, Ruby, and PHP
+  <Card title="Client SDKs" icon="code" href="/docs/en/cli-sdks-libraries/overview">
+    Python, TypeScript, C#, Go, Java, PHP, and Ruby
   </Card>
   <Card title="Rate limits" icon="gauge" href="/docs/en/api/rate-limits">
     Usage tiers, spend limits, and token bucket algorithm

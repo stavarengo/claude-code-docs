@@ -15,7 +15,7 @@ claude/platform.claude.com/docs/en/agents-and-tools:{mcp-connector.md,remote-mcp
 claude/platform.claude.com/docs/en/agents-and-tools/agent-skills:{best-practices.md,claude-api-skill.md,enterprise.md,overview.md,quickstart.md}
 claude/platform.claude.com/docs/en/agents-and-tools/mcp-tunnels:{concepts.md,console.md,deploy-compose.md,deploy-helm.md,overview.md,quickstart.md,reference.md,security.md,troubleshooting.md}
 claude/platform.claude.com/docs/en/agents-and-tools/tool-use:{advisor-tool.md,bash-tool.md,build-a-tool-using-agent.md,code-execution-tool.md,computer-use-tool.md,define-tools.md,fine-grained-tool-streaming.md,handle-tool-calls.md,how-tool-use-works.md,manage-tool-context.md,memory-tool.md,overview.md,parallel-tool-use.md,programmatic-tool-calling.md,server-tools.md,strict-tool-use.md,text-editor-tool.md,tool-combinations.md,tool-reference.md,tool-runner.md,tool-search-tool.md,tool-use-with-prompt-caching.md,troubleshooting-tool-use.md,web-fetch-tool.md,web-search-tool.md}
-claude/platform.claude.com/docs/en/api:{admin.md,beta-headers.md,beta.md,claude-platform-on-aws-iam-actions.md,client-sdks.md,completions.md,compliance.md,errors.md,messages.md,models.md,openai-sdk.md,overview.md,rate-limits.md,service-tiers.md,supported-regions.md,versioning.md}
+claude/platform.claude.com/docs/en/api:{admin.md,beta-headers.md,beta.md,claude-platform-on-aws-iam-actions.md,completions.md,compliance.md,errors.md,messages.md,models.md,overview.md,rate-limits.md,service-tiers.md,supported-regions.md,versioning.md}
 claude/platform.claude.com/docs/en/api/admin:{api_keys.md,cost_report.md,external_keys.md,invites.md,mcp_tunnels.md,organizations.md,rate_limits.md,usage_report.md,users.md,workspaces.md}
 claude/platform.claude.com/docs/en/api/admin/api_keys:{list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/admin/cost_report:{retrieve.md}
@@ -262,7 +262,6 @@ claude/platform.claude.com/docs/en/api/ruby/completions:{create.md}
 claude/platform.claude.com/docs/en/api/ruby/messages:{batches.md,count_tokens.md,create.md}
 claude/platform.claude.com/docs/en/api/ruby/messages/batches:{cancel.md,create.md,delete.md,list.md,results.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/ruby/models:{list.md,retrieve.md}
-claude/platform.claude.com/docs/en/api/sdks:{cli.md,csharp.md,go.md,java.md,php.md,python.md,ruby.md,typescript.md}
 claude/platform.claude.com/docs/en/api/typescript:{beta.md,completions.md,messages.md,models.md}
 claude/platform.claude.com/docs/en/api/typescript/beta:{agents.md,environments.md,files.md,memory_stores.md,messages.md,models.md,sessions.md,skills.md,user_profiles.md,vaults.md,webhooks.md}
 claude/platform.claude.com/docs/en/api/typescript/beta/agents:{archive.md,create.md,list.md,retrieve.md,update.md,versions.md}
@@ -292,12 +291,17 @@ claude/platform.claude.com/docs/en/api/typescript/messages/batches:{cancel.md,cr
 claude/platform.claude.com/docs/en/api/typescript/models:{list.md,retrieve.md}
 claude/platform.claude.com/docs/en/build-with-claude:{adaptive-thinking.md,batch-processing.md,cache-diagnostics.md,citations.md,claude-in-amazon-bedrock.md,claude-in-microsoft-foundry.md,claude-on-amazon-bedrock-legacy.md,claude-on-vertex-ai.md,claude-platform-on-aws.md,compaction.md,context-editing.md,context-windows.md,effort.md,embeddings.md,extended-thinking.md,fast-mode.md,files.md,handling-stop-reasons.md,mid-conversation-effort-example.md,mid-conversation-system-messages.md,multilingual-support.md,overview.md,pdf-support.md,prompt-caching.md,search-results.md,skills-guide.md,streaming.md,structured-outputs.md,task-budgets.md,token-counting.md,vision.md,working-with-messages.md}
 claude/platform.claude.com/docs/en/build-with-claude/prompt-engineering:{claude-prompting-best-practices.md,overview.md,prompting-tools.md}
+claude/platform.claude.com/docs/en/cli-sdks-libraries:{overview.md}
+claude/platform.claude.com/docs/en/cli-sdks-libraries/cli:{authentication.md,quickstart.md,scripting.md,using.md}
+claude/platform.claude.com/docs/en/cli-sdks-libraries/libraries:{openai-sdk.md}
+claude/platform.claude.com/docs/en/cli-sdks-libraries/sdks:{csharp.md,go.md,java.md,php.md,python.md,ruby.md,typescript.md}
 claude/platform.claude.com/docs/en/manage-claude:{admin-api.md,api-and-data-retention.md,authentication.md,claude-code-analytics-api.md,cmek-aws-kms.md,cmek-azure-key-vault.md,cmek-google-cloud-kms.md,cmek.md,compliance-activity-feed.md,compliance-api-access.md,compliance-api.md,compliance-content-data.md,compliance-errors.md,compliance-faq.md,compliance-integration-patterns.md,compliance-org-data.md,data-residency.md,rate-limits-api.md,usage-cost-api.md,wif-reference.md,workload-identity-federation.md,workspaces.md}
 claude/platform.claude.com/docs/en/manage-claude/wif-providers:{aws.md,azure.md,gcp.md,github-actions.md,kubernetes.md,okta.md,spiffe.md}
 claude/platform.claude.com/docs/en/managed-agents:{agent-setup.md,cloud-sandboxes-reference.md,define-outcomes.md,dreams.md,environments.md,events-and-streaming.md,files.md,github.md,mcp-connector.md,memory.md,multi-agent.md,onboarding.md,overview.md,permission-policies.md,quickstart.md,reference.md,self-hosted-sandboxes-security.md,self-hosted-sandboxes.md,session-operations.md,sessions.md,skills.md,tools.md,vaults.md,webhooks.md}
 claude/platform.claude.com/docs/en/release-notes:{overview.md}
 claude/platform.claude.com/docs/en/test-and-evaluate:{develop-tests.md,eval-tool.md}
 claude/platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails:{handle-streaming-refusals.md,increase-consistency.md,mitigate-jailbreaks.md,reduce-hallucinations.md}
+claude/raw.githubusercontent.com/aws-solutions-library-samples/guidance-for-claude-code-with-amazon-bedrock/refs/heads/main/assets/docs:{MONITORING.md}
 openai/developers.openai.com/api/docs:{bots.md,concepts.md,deprecations.md,libraries.md,llms-full.txt,llms.txt,mcp.md,pricing.md,quickstart.md,supported-countries.md,ui-kit-demo.md}
 openai/developers.openai.com/api/docs/actions:{actions-library.md,authentication.md,data-retrieval.md,getting-started.md,introduction.md,production.md,sending-files.md}
 openai/developers.openai.com/api/docs/assistants:{deep-dive.md,migration.md,tools.md}
@@ -308,7 +312,7 @@ openai/developers.openai.com/api/docs/guides/agent-builder:{migrate-from-agent-b
 openai/developers.openai.com/api/docs/guides/agents:{define-agents.md,guardrails-approvals.md,integrations-observability.md,models.md,orchestration.md,quickstart.md,results.md,running-agents.md,sandboxes.md}
 openai/developers.openai.com/api/docs/guides/prompting:{migrate-from-prompt-object.md}
 openai/developers.openai.com/api/docs/guides/safety-checks:{cybersecurity.md,under-18-api-guidance.md}
-openai/developers.openai.com/api/docs/guides/workload-identity-federation:{aws.md,github-actions.md,google-cloud.md,kubernetes.md,microsoft-azure.md}
+openai/developers.openai.com/api/docs/guides/workload-identity-federation:{aws.md,github-actions.md,google-cloud.md,kubernetes.md,microsoft-azure.md,spiffe.md}
 openai/developers.openai.com/api/docs/libraries:{openai-cli.md}
 openai/developers.openai.com/api/docs/tutorials:{meeting-minutes.md,web-qa-embeddings.md}
 openai/developers.openai.com/api/reference:{llms-full.txt,llms.txt,overview.md,workload-identity-federation.md}

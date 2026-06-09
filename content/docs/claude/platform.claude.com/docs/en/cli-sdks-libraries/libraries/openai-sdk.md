@@ -79,7 +79,7 @@ Here are the most substantial differences from using OpenAI:
 
 * The `strict` parameter for function calling is ignored, which means the tool use JSON is not guaranteed to follow the supplied schema. For guaranteed schema conformance, use the native [Claude API with Structured Outputs](/docs/en/build-with-claude/structured-outputs).
 * Audio input is not supported; it will simply be ignored and stripped from input
-* Prompt caching is not supported, but it is supported in [the Anthropic SDK](/docs/en/api/client-sdks)
+* Prompt caching is not supported, but it is supported in the [Anthropic SDKs](/docs/en/cli-sdks-libraries/overview)
 * System/developer messages are hoisted and concatenated to the beginning of the conversation, as Anthropic only supports a single initial system message.
 
 Most unsupported fields are silently ignored rather than producing errors. These are all documented below.

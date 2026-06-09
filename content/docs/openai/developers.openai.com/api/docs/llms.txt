@@ -63,6 +63,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Configuring workload identity federation for Google Cloud](https://developers.openai.com/api/docs/guides/workload-identity-federation/google-cloud.md): Configure Google workload identity or GKE as a workload identity federation token provider.
 - [Configuring workload identity federation for Kubernetes](https://developers.openai.com/api/docs/guides/workload-identity-federation/kubernetes.md): Configure Kubernetes as a workload identity federation token provider.
 - [Configuring workload identity federation for Microsoft Azure](https://developers.openai.com/api/docs/guides/workload-identity-federation/microsoft-azure.md): Configure Azure managed identity or AKS as a workload identity federation token provider.
+- [Configuring workload identity federation for SPIFFE](https://developers.openai.com/api/docs/guides/workload-identity-federation/spiffe.md): Configure SPIFFE JWT-SVIDs as workload identity federation subject tokens.
 - [Conversation state](https://developers.openai.com/api/docs/guides/conversation-state.md): Learn how to manage conversation state during a model interaction with the OpenAI API.
 - [Cost optimization](https://developers.openai.com/api/docs/guides/cost-optimization.md): Lower your OpenAI model costs by trying our tools and strategies.
 - [Counting tokens](https://developers.openai.com/api/docs/guides/token-counting.md): Use the Responses API to count input tokens for text, images, files, tools, and more—without estimation or tiktoken.

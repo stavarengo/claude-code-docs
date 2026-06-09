@@ -9,7 +9,7 @@ The `claude-api` skill is an open-source [Agent Skill](/docs/en/agents-and-tools
 - **Messages API:** The primary surface for single requests, streaming chat, tool use, batch processing, prompt caching, structured outputs, and custom agent loops.
 - **Claude Managed Agents (beta):** An Anthropic-hosted surface for server-managed stateful agents with Anthropic-hosted tool execution, persistent agent configs, and per-session sandboxes.
 
-It covers 8 programming languages for the Messages API (Python, TypeScript, Java, Go, Ruby, C#, PHP, and cURL) and 7 languages for Managed Agents (Python, TypeScript, Java, Go, Ruby, PHP, and cURL; C# is not currently supported).
+It covers 8 programming languages for the Messages API (Python, TypeScript, C#, Go, Java, PHP, Ruby, and cURL) and 7 languages for Managed Agents (Python, TypeScript, Go, Java, PHP, Ruby, and cURL; C# is not currently supported).
 
 The skill comes bundled with [Claude Code](https://code.claude.com/docs/en/overview) and is also available in the open-source [Anthropic skills repository](https://github.com/anthropics/skills/tree/main/skills/claude-api), where you can install it in any environment that supports Agent Skills.
 
@@ -33,7 +33,7 @@ When triggered, the skill equips Claude with:
 **For Managed Agents (beta):**
 
 - **Onboarding flow:** An interview-driven walkthrough for setting up a new Managed Agent from scratch, available via the `/claude-api managed-agents-onboard` subcommand
-- **Language-specific Managed Agents docs:** Creating persistent agents, starting sessions, streaming events, and handling tool confirmations for Python, TypeScript, Java, Go, Ruby, PHP, and cURL
+- **Language-specific Managed Agents docs:** Creating persistent agents, starting sessions, streaming events, and handling tool confirmations for Python, TypeScript, Go, Java, PHP, Ruby, and cURL
 - **Client patterns:** Lossless stream reconnect, `processed_at` queued/processed gate, interrupt handling, file-mount gotchas, and credential handling
 - **Deployment constraints:** Managed Agents is available on the Claude API and [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws) only (not on Amazon Bedrock, Vertex AI, or Microsoft Foundry). The skill routes other deployments to the Messages API and tool use instead.
 
@@ -59,11 +59,11 @@ The skill detects your project's language automatically by examining project fil
 |------------|------------------|-------------|----------------|
 | Python     | Yes              | Yes (beta)  | Yes (beta)     |
 | TypeScript | Yes              | Yes (beta)  | Yes (beta)     |
-| Java       | Yes              | No          | Yes (beta)     |
-| Go         | Yes              | No          | Yes (beta)     |
-| Ruby       | Yes              | Yes (beta)  | Yes (beta)     |
 | C#         | Yes              | No          | No             |
+| Go         | Yes              | No          | Yes (beta)     |
+| Java       | Yes              | No          | Yes (beta)     |
 | PHP        | Yes              | No          | Yes (beta)     |
+| Ruby       | Yes              | Yes (beta)  | Yes (beta)     |
 | cURL       | Yes              | N/A         | Yes (beta)     |
 
 If your project uses multiple languages, Claude asks which one applies. For unsupported languages (Rust, Swift, C++), the skill provides cURL/raw HTTP examples.
@@ -175,7 +175,7 @@ In each case, the skill loads the relevant language-specific documentation and g
   <Card
     title="Client SDKs"
     icon="code"
-    href="/docs/en/api/client-sdks"
+    href="/docs/en/cli-sdks-libraries/overview"
   >
     Browse the official Anthropic SDKs for all supported languages
   </Card>

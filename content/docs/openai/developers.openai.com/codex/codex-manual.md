@@ -8996,12 +8996,29 @@ These cloud-managed policies apply across Codex local surfaces when users sign i
 
 Use cloud-managed `requirements.toml` policies to enforce the guardrails you want for each group. The snippets below are examples you can adapt, not required settings.
 
+For Codex 0.138.0 or later, prefer `allowed_permission_profiles` with managed
+`default_permissions`. Use `allowed_sandbox_modes` only for legacy deployments
+that still configure `sandbox_mode`.
+
 Example: limit web search, sandbox mode, and approvals for a standard local rollout:
 
 ```toml
 allowed_web_search_modes = ["disabled", "cached"]
 allowed_sandbox_modes = ["workspace-write"]
 allowed_approval_policies = ["on-request"]
+```
+
+Example: allow the standard permission profiles for an upgraded fleet:
+
+Permission-profile allowlists require Codex 0.138.0 or later. Use this example
+only after every managed client runs a supporting release.
+
+```toml
+default_permissions = ":workspace"
+
+[allowed_permission_profiles]
+":read-only" = true
+":workspace" = true
 ```
 
 Example: disable Browser Use, the in-app browser, and Computer Use:
@@ -9383,21 +9400,33 @@ Enterprise admins can control local Codex behavior in two ways:
 
 #### Admin-enforced requirements (requirements.toml)
 
-Requirements constrain security-sensitive settings (approval policy, approvals reviewer, automatic review policy, sandbox mode, web search mode, managed hooks, and optionally which MCP servers users can enable). When resolving configuration (for example from `config.toml`, [profile files](/codex/config-advanced#profiles), or CLI config overrides), if a value conflicts with an enforced rule, Codex falls back to a compatible value and notifies the user. If you configure an `mcp_servers` allowlist, Codex enables an MCP server only when both its name and identity match an approved entry; otherwise, Codex disables it.
+Requirements constrain security-sensitive settings (approval policy, approvals reviewer, automatic review policy, sandbox mode, permission profiles, web search mode, managed hooks, and optionally which MCP servers users can enable). When resolving configuration (for example from `config.toml`, [profile files](/codex/config-advanced#profiles), or CLI config overrides), if a value conflicts with an enforced rule, Codex falls back to a compatible value and notifies the user. If you configure an `mcp_servers` allowlist, Codex enables an MCP server only when both its name and identity match an approved entry; otherwise, Codex disables it.
 
 Requirements can also constrain [feature flags](/codex/config-basic/#feature-flags) via the `[features]` table in `requirements.toml`. Note that features aren't always security-sensitive, but enterprises can pin values if desired. Omitted keys remain unconstrained.
+
+For Codex 0.138.0 or later, prefer [permission profiles](/codex/permissions)
+with `allowed_permission_profiles` and managed `default_permissions`. Use
+`allowed_sandbox_modes` only for legacy deployments that still configure
+`sandbox_mode`.
 
 For the exact key list, see the [`requirements.toml` section in Configuration Reference](/codex/config-reference#requirementstoml).
 
 #### Locations and precedence
 
-Codex applies requirements layers in this order (earlier wins per field):
+Codex checks requirement sources in this order. If the same setting appears more
+than once, the first value wins:
 
 1. Cloud-managed requirements (ChatGPT Business or Enterprise)
 2. macOS managed preferences (MDM) via `com.openai.codex:requirements_toml_base64`
 3. System `requirements.toml` (`/etc/codex/requirements.toml` on Unix systems, including Linux/macOS, or `%ProgramData%\OpenAI\Codex\requirements.toml` on Windows)
 
-Across layers, Codex merges requirements per field: if an earlier layer sets a field (including an empty list), later layers don't override that field, but lower layers can still fill fields that remain unset.
+Codex checks these sources from top to bottom. For ordinary settings and lists,
+it uses the first value it finds. A later source can still provide a setting
+that earlier sources leave unset.
+
+Tables combine one entry at a time. For `allowed_permission_profiles`, a later
+source can add profile names that earlier sources don't mention. If two sources
+set the same profile name, the earlier source wins.
 
 For backwards compatibility, Codex also interprets legacy `managed_config.toml` fields `approval_policy` and `sandbox_mode` as requirements (allowing only that single value).
 
@@ -9447,6 +9476,121 @@ This example blocks `--ask-for-approval never` and `--sandbox danger-full-access
 allowed_approval_policies = ["untrusted", "on-request"]
 allowed_sandbox_modes = ["read-only", "workspace-write"]
 ```
+
+#### Control available permission profiles
+
+Use `allowed_permission_profiles` to control which built-in and custom
+[permission profiles](/codex/permissions) users can select. This is the
+permission-profile equivalent of `allowed_sandbox_modes`; use the allowlist that
+matches how your users select permissions.
+
+Permission-profile allowlists require Codex 0.138.0 or later. Codex 0.137.0 and
+earlier ignore `allowed_permission_profiles` and managed
+`default_permissions`.
+
+Use the permission-profile examples below only after every managed client runs a
+supporting release. Don't deploy managed custom profiles until the fleet upgrade
+is complete.
+
+When the table is present, it is the complete list of allowed profiles. Profiles
+set to `true` are allowed. Profiles that are omitted or set to `false` are
+denied, including built-ins added in future Codex versions.
+
+#### Allow the standard profiles
+
+This policy allows read-only and workspace access, but not full access:
+
+```toml
+default_permissions = ":workspace"
+
+[allowed_permission_profiles]
+":read-only" = true
+":workspace" = true
+# ":danger-full-access" is omitted, so it is denied.
+```
+
+#### Add a managed least-privilege default
+
+Admins can define a custom profile in the same requirements source. Use
+organization-specific profile names that won't collide with names in users'
+loaded config. Custom names can't start with `:` or use the reserved `filesystem`
+name.
+
+Don't deploy managed custom profiles to clients running Codex 0.137.0 or
+earlier. Those clients recognize the profile table but not the managed default
+that selects it.
+
+For example:
+
+```toml
+default_permissions = "acme_review_only"
+
+[allowed_permission_profiles]
+":read-only" = true
+":workspace" = true
+acme_review_only = true
+# ":danger-full-access" is intentionally omitted, so it is denied.
+
+[permissions.acme_review_only]
+description = "Review code without modifying the workspace."
+extends = ":read-only"
+```
+
+#### Allow only enterprise-defined profiles
+
+Omit all built-ins when users should select only admin-defined profiles:
+
+```toml
+default_permissions = "acme_workspace"
+
+[allowed_permission_profiles]
+acme_workspace = true
+
+[permissions.acme_workspace]
+description = "Workspace access with sensitive files denied."
+extends = ":workspace"
+
+[permissions.acme_workspace.filesystem]
+glob_scan_max_depth = 3
+
+[permissions.acme_workspace.filesystem.":workspace_roots"]
+"**/*.env" = "deny"
+```
+
+The custom profile can extend `:workspace` even though users can't select the
+built-in `:workspace` profile directly.
+
+#### Turn off a profile allowed by another source
+
+Permission allowlists combine by profile name. Because Codex checks cloud
+requirements before system requirements, cloud requirements can use `false` to
+turn off a profile allowed by the system file.
+
+Cloud requirements:
+
+```toml
+default_permissions = ":read-only"
+
+[allowed_permission_profiles]
+":read-only" = true
+":workspace" = false
+```
+
+System requirements:
+
+```toml
+[allowed_permission_profiles]
+":read-only" = true
+":workspace" = true  # Not honored because cloud requirements set this to false.
+```
+
+Set `default_permissions` explicitly to an allowed profile. If it is omitted,
+Codex defaults to `:workspace` only when both `:workspace` and `:read-only` are
+explicitly allowed. When `allowed_permission_profiles` is absent, managed
+requirements don't restrict which profile names users can select. Every entry
+must name a built-in profile or a custom profile defined in a loaded config or
+requirements source. Define custom profiles in managed requirements when their
+behavior should be controlled centrally.
 
 #### Override sandbox requirements by host
 
@@ -9583,10 +9727,10 @@ deny_read = [
 ]
 ```
 
-When deny-read requirements are present, Codex constrains local sandbox mode to
-`read-only` or `workspace-write` so Codex can enforce them. On native
-Windows, managed `deny_read` applies to direct file tools; shell subprocess
-reads don't use this sandbox rule.
+When deny-read requirements are present, Codex rejects full-access permissions
+and keeps local execution in a read-only or workspace sandbox so it can enforce
+them. On native Windows, managed `deny_read` applies to direct file tools; shell
+subprocess reads don't use this sandbox rule.
 
 #### Enforce managed hooks from requirements
 
@@ -9660,53 +9804,6 @@ identity = { url = "https://example.com/mcp" }
 ```
 
 If `mcp_servers` is present but empty, Codex disables all MCP servers.
-
-#### Managed defaults (`managed_config.toml`)
-
-Managed defaults merge on top of a user's local `config.toml` and take precedence over any CLI `--config` overrides, setting the starting values when Codex launches. Users can still change those settings during a session; Codex reapplies managed defaults the next time it starts.
-
-Make sure your managed defaults meet your requirements; Codex rejects disallowed values.
-
-#### Precedence and layering
-
-Codex assembles the effective configuration in this order (top overrides bottom):
-
-- Managed preferences (macOS MDM; highest precedence)
-- `managed_config.toml` (system/managed file)
-- `config.toml` (user's base configuration)
-
-CLI `--config key=value` overrides apply to the base, but managed layers override them. This means each run starts from the managed defaults even if you provide local flags.
-
-Cloud-managed requirements affect the requirements layer (not managed defaults). See the Admin-enforced requirements section above for precedence.
-
-#### Locations
-
-- Linux/macOS (Unix): `/etc/codex/managed_config.toml`
-- Windows/non-Unix: `~/.codex/managed_config.toml`
-
-If the file is missing, Codex skips the managed layer.
-
-#### macOS managed preferences (MDM)
-
-On macOS, admins can push a device profile that provides base64-encoded TOML payloads at:
-
-- Preference domain: `com.openai.codex`
-- Keys:
-  - `config_toml_base64` (managed defaults)
-  - `requirements_toml_base64` (requirements)
-
-Codex parses these "managed preferences" payloads as TOML. For managed defaults (`config_toml_base64`), managed preferences have the highest precedence. For requirements (`requirements_toml_base64`), precedence follows the cloud-managed requirements order described above. The same requirements-side `[features]` table works in `requirements_toml_base64`; use canonical feature keys there as well.
-
-#### MDM setup workflow
-
-Codex honors standard macOS MDM payloads, so you can distribute settings with tooling like `Jamf Pro`, `Fleet`, or `Kandji`. A lightweight deployment looks like:
-
-1. Build the managed payload TOML and encode it with `base64` (no wrapping).
-2. Drop the string into your MDM profile under the `com.openai.codex` domain at `config_toml_base64` (managed defaults) or `requirements_toml_base64` (requirements).
-3. Push the profile, then ask users to restart Codex and confirm the startup config summary reflects the managed values.
-4. When revoking or changing policy, update the managed payload; the CLI reads the refreshed preference the next time it launches.
-
-Avoid embedding secrets or high-churn dynamic values in the payload. Treat the managed TOML like any other MDM setting under change control.
 
 ### Subagents
 
@@ -10654,57 +10751,24 @@ When you file an issue, include which component you are using (CLI, SDK, IDE ext
 
 Source: [Permissions](/codex/permissions.md)
 
-#### Define and select a profile
+#### Filesystem permissions
 
-Codex includes three built-in permission profiles:
+Filesystem entries use `read`, `write`, or `deny`:
 
-- `:read-only` keeps local command execution read-only.
-- `:workspace` allows writes inside the active workspace roots and system temp directories.
-- `:danger-full-access` removes local sandbox restrictions and should be used
-  only when that broad access is intentional.
+| Access  | Meaning                                                                                                                           |
+| ------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `read`  | Allows commands to read files and list directories under the path. Commands cannot create, modify, rename, or delete files there. |
+| `write` | Allows commands to read and modify files under the path, including creating, renaming, and deleting files when the OS allows it.  |
+| `deny`  | Denies both reads and writes under the path. Use it to carve out a denied subpath from a broader `read` or `write` grant.         |
 
-Create a named profile under `[permissions.]`, then set the top-level
-`default_permissions` key to that profile name or to one of the built-ins above.
-In this example, `project-edit` is a user-defined profile name, not a built-in
-value.
+More specific entries override broader entries. When two entries target the
+same path, `deny` takes precedence over `write`, and `write` takes precedence
+over `read`.
 
-Custom profiles use two related concepts:
-
-- `[permissions..workspace_roots]` adds concrete directories that should
-  count as workspace roots for that profile.
-- `[permissions..filesystem.":workspace_roots"]` defines the filesystem
-  rules Codex applies inside every effective workspace root: the current
-  session's runtime workspace roots plus the profile-defined roots above.
-
-Profiles also use the normal config-layer model. Higher-precedence layers can
-add or replace entries under the same profile name without restating the whole
-profile.
-
-For example, an organization-level config and a user-level config can extend
-the same profile independently:
+This precedence lets a profile describe a broad working area first, then carve
+out files or directories that should stay unreadable:
 
 ```toml
-# /etc/codex/config.toml
-[permissions.server.workspace_roots]
-"~/code/server" = true
-```
-
-```toml
-# ~/.codex/config.toml
-[permissions.server.workspace_roots]
-"~/code/mobile-app" = true
-```
-
-When `server` is active, both workspace roots participate in the effective
-profile.
-
-```toml
-default_permissions = "project-edit"
-
-[permissions.project-edit.workspace_roots]
-"~/code/app" = true
-"~/code/shared-lib" = true
-
 [permissions.project-edit.filesystem]
 ":minimal" = "read"
 
@@ -10712,62 +10776,208 @@ default_permissions = "project-edit"
 "." = "write"
 ".devcontainer" = "read"
 "**/*.env" = "deny"
-
-[permissions.project-edit.network]
-enabled = true
-
-[permissions.project-edit.network.domains]
-"api.openai.com" = "allow"
-"objects.githubusercontent.com" = "allow"
-"*.github.com" = "allow"
-"tracking.example.com" = "deny"
 ```
 
-This profile:
+In this example, the workspace root stays writable, `.devcontainer/` stays
+readable without becoming writable, and matching environment files remain
+unavailable to sandboxed commands.
 
-- Reads the minimal runtime paths common developer tools need.
-- Applies the same workspace-root rules to the current session and the
-  profile-defined roots.
-- Keeps IDE-adjacent settings such as `.devcontainer/` read-only under each
-  root.
-- Denies matching environment files with a glob rule.
-- Allows network access only through the configured domain policy.
-
-Inside an active profile, narrower deny rules stay in force even when a broader
-path is readable or writable. For example, a profile can make workspace roots
-writable while still setting a matching `.env` path to `deny`.
-
-#### Extend a profile
-
-Use `extends` when a profile is mostly the same as a built-in or another named
-profile. Prefer extending a built-in profile over starting from scratch so
-baseline protections carry forward. Extending `:workspace`, for example, keeps
-the workspace root's `.codex` directory read-only unless you explicitly
-override it. Set the parent once, then add or override only the rules that
-differ.
+A more specific path can also reopen a narrower subtree inside a broader deny:
 
 ```toml
-default_permissions = "project-edit"
+[permissions.project-edit.filesystem]
+"~/Documents" = "deny"
+"~/Documents/codex" = "write"
+```
 
-[permissions.project-edit]
-description = "Project editing with OpenAI API access."
-extends = ":workspace"
+Supported path forms:
+
+| Path               | Meaning                                                                                     | Scoped subpaths |
+| ------------------ | ------------------------------------------------------------------------------------------- | --------------- |
+| `:root`            | The filesystem root                                                                         | `.` only        |
+| `:minimal`         | Platform and runtime paths needed by common tools                                           | `.` only        |
+| `:workspace_roots` | The current session's workspace roots plus any enabled profile-defined workspace roots      | Yes             |
+| `:tmpdir`          | The `$TMPDIR` location, when one is available                                               | `.` only        |
+| `:slash_tmp`       | The `/tmp` folder, if it exists                                                             | `.` only        |
+| `/absolute/path`   | A platform absolute path, such as `/path` on macOS/Linux/WSL or `C:\path` on native Windows | Yes             |
+| `~/path`           | A path under the current user's home directory                                              | Yes             |
+
+On native Windows, home-relative paths can also use backslashes, such as
+`~\work`.
+
+Use `:root` only when a profile intentionally needs broad read coverage:
+
+```toml
+[permissions.audit.filesystem]
+":root" = "read"
+```
+
+Use nested entries under `:workspace_roots` to scope access to workspace-root
+relative subpaths:
+
+```toml
+[permissions.project-edit.filesystem.":workspace_roots"]
+"." = "write"          # each workspace root
+"docs" = "read"        # each workspace-root docs directory
+"generated" = "deny"   # each workspace-root generated directory
+```
+
+Nested subpaths must stay inside their workspace root. Parent traversal such as
+`../other-repo` is rejected.
+
+#### Deny reads with exact paths or globs
+
+Use `deny` for files or subtrees that Codex should not read, even when a broader
+profile rule grants access nearby. Exact paths work well for stable locations
+such as `~/.ssh`. Glob patterns work better when a profile needs to cover a
+family of sensitive files whose exact locations vary across repositories.
+
+When a glob sits under `:workspace_roots`, Codex interprets it relative to each
+effective workspace root. For example:
+
+```toml
+[permissions.project-edit.filesystem.":workspace_roots"]
+"**/*.env" = "deny"
+```
+
+This rule denies reads for matching `.env` files found beneath each runtime or
+profile-defined workspace root. Use it when you want to preserve normal
+workspace writes while keeping environment files, generated secrets, or similar
+credential-bearing files unreadable.
+
+`deny` glob patterns are supported as deny-read rules. `read` or `write` globs
+are less portable on Linux, WSL, and native Windows sandboxing, so prefer exact
+paths or subtree rules such as `"docs/**" = "read"` when possible.
+
+On Linux, WSL, and native Windows, an unbounded `**` deny-read pattern may need
+bounded pre-expansion before the sandbox starts. Set `glob_scan_max_depth` when
+you use an unbounded pattern such as `"**/*.env" = "deny"`:
+
+```toml
+[permissions.project-edit.filesystem]
+glob_scan_max_depth = 3
 
 [permissions.project-edit.filesystem.":workspace_roots"]
 "**/*.env" = "deny"
-
-[permissions.project-edit.network]
-enabled = true
-
-[permissions.project-edit.network.domains]
-"api.openai.com" = "allow"
 ```
 
-This profile starts with `:workspace`, keeps matching `.env` files denied, and
-allows requests to `api.openai.com`. A profile can extend `:read-only`,
-`:workspace`, or another named profile. It cannot extend
-`:danger-full-access`; Codex also rejects unknown parents and inheritance
-cycles.
+`glob_scan_max_depth` must be at least `1`. Higher values scan deeper before
+sandbox startup, which can add startup work on Linux, WSL, and native Windows.
+If you prefer not to use bounded expansion, enumerate explicit depths such as
+`*.env`, `*/*.env`, and `*/*/*.env`.
+
+Add reusable workspace roots to the profile when the same rules should apply to
+more than the current session root:
+
+```toml
+[permissions.project-edit.workspace_roots]
+"~/code/app" = true
+"~/code/shared-lib" = true
+```
+
+When this profile is active, Codex applies the `:workspace_roots` rules to the
+current session's runtime workspace roots and to each enabled profile-defined
+workspace root.
+
+On native Windows, drive-letter paths such as `D:\work` and UNC paths such as
+`\\server\share` are supported as absolute paths.
+
+#### Network permissions
+
+Set `enabled = true` to allow network access for the selected profile:
+
+```toml
+[permissions.project-edit.network]
+enabled = true
+```
+
+When network access is enabled, Codex uses full network behavior by default.
+Most profiles should also define domain rules:
+
+```toml
+[permissions.project-edit.network.domains]
+"example.com" = "allow"      # exact host
+"*.example.com" = "allow"    # subdomains only
+"**.example.com" = "allow"   # apex and subdomains
+"ads.example.com" = "deny"   # deny wins over allow
+```
+
+The network sandbox proxy binds to local listeners by default:
+
+```toml
+[permissions.project-edit.network]
+enabled = true
+proxy_url = "http://127.0.0.1:3128"
+enable_socks5 = true
+socks_url = "http://127.0.0.1:8081"
+enable_socks5_udp = true
+```
+
+Leave these listener settings at their defaults unless you are integrating with
+a specific runtime. The `dangerously_*` network keys are escape hatches for
+specialized environments and should not be used for ordinary local development.
+
+#### Local and private networks
+
+Codex applies a local/private-network guard by default as a defense against DNS
+rebinding and accidental access to local services. To intentionally allow a
+literal local target, allowlist the exact host or IP literal:
+
+```toml
+[permissions.project-edit.network.domains]
+"localhost" = "allow"
+"127.0.0.1" = "allow"
+```
+
+Set `allow_local_binding = true` only when the profile must reach allowlisted
+hostnames that resolve to local or private addresses:
+
+```toml
+[permissions.project-edit.network]
+enabled = true
+allow_local_binding = true
+
+[permissions.project-edit.network.domains]
+"localhost" = "allow"
+```
+
+#### Unix sockets
+
+Unix socket proxying is a local escape hatch for tools such as Docker. Use it
+sparingly:
+
+```toml
+[permissions.project-edit.network.unix_sockets]
+"/var/run/docker.sock" = "allow"
+"/tmp/old.sock" = "deny"
+```
+
+Use `deny` to reject a socket path, including an inherited allow entry. Denied
+socket paths are omitted from the effective allowlist.
+
+When Unix sockets are enabled, keep proxy listeners bound to loopback addresses.
+
+#### Migrate from older sandbox settings
+
+Permission profiles replace the older combination of `sandbox_mode` and
+`sandbox_workspace_write` when you want one reusable profile to describe both
+filesystem and network behavior. Use one system or the other for a session, not
+both.
+
+Suggested starting points:
+
+- For a read-only workflow, use the built-in `:read-only` profile or define a
+  custom profile with read access only where needed.
+- For workspace editing, use the built-in `:workspace` profile or define a
+  custom profile that writes through `:workspace_roots` and adds only the extra
+  temp or cache paths the workflow needs.
+- For unrestricted local execution, use `:danger-full-access` only when you
+  intentionally want the broadest local access model.
+
+Profiles describe the local default posture for a session. Organization-managed
+requirements can still add restrictions that user configuration should not
+broaden. See [Managed configuration](/codex/enterprise/managed-configuration)
+for admin-enforced filesystem and network constraints.
 
 ### Plugins
 

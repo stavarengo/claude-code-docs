@@ -9,7 +9,7 @@ Beta headers allow you to access experimental features and new model capabilitie
 These features are subject to change and may be modified or removed in future releases.
 
 <Info>
-Beta headers are often used in conjunction with the [beta namespace in the client SDKs](/docs/en/api/client-sdks#beta-namespace-in-client-sdks)
+Beta headers are often used in conjunction with the `beta` namespace exposed by each [client SDK](/docs/en/cli-sdks-libraries/overview).
 </Info>
 
 ## How to use beta headers
