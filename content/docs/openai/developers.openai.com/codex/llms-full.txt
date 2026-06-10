@@ -1173,30 +1173,37 @@ For guidance on writing effective goals, see [Goal mode](https://developers.open
 
 ## Deep links
 
-The Codex app registers the `codex://` URL scheme so links can open specific parts of the app directly.
+The Codex app registers the `codex://` URL scheme so links can open specific parts of the app directly. Encode query string values before adding them to a URL.
 
-### Common links
+### Supported links
 
-Use these links when you just need to open a common app destination. The sections below list the full reference by link type.
+Use these canonical forms when you create links. The sections below list the full reference by link type.
 
-| Deep link                     | Opens                                                            |
-| ----------------------------- | ---------------------------------------------------------------- |
-| `codex://threads/new`         | A new local thread.                                              |
-| `codex://threads/<thread-id>` | A local thread. `<thread-id>` must be the thread's session UUID. |
-| `codex://settings`            | Settings.                                                        |
-| `codex://skills`              | Skills.                                                          |
-| `codex://automations`         | Automations with the create flow open.                           |
+| Deep link                                                                   | Opens                                                            |
+| --------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `codex://threads/new`                                                       | A new local thread.                                              |
+| `codex://new?<query>`                                                       | A new local thread with at least one new-thread query parameter. |
+| `codex://threads/<thread-id>`                                               | A local thread. `<thread-id>` must be the thread's session UUID. |
+| `codex://settings`                                                          | Settings.                                                        |
+| `codex://skills`                                                            | Skills.                                                          |
+| `codex://automations`                                                       | Automations with the create flow open.                           |
+| `codex://plugins/install/<plugin-name>?marketplace=<marketplace-name>`      | The install flow for a plugin from a known marketplace.          |
+| `codex://plugins/<plugin-id>`                                               | A plugin detail page.                                            |
+| `codex://plugins/<plugin-name>?marketplacePath=<absolute-marketplace-path>` | A local plugin detail page from a local marketplace.             |
+| `codex://pets/install?name=<pet-name>&imageUrl=<https-image-url>`           | The pet install flow.                                            |
 
 ### Threads
 
 Use these links when you need to open an existing local thread or start a new one.
 
-| Deep link                     | Opens                                                            |
-| ----------------------------- | ---------------------------------------------------------------- |
-| `codex://threads/<thread-id>` | A local thread. `<thread-id>` must be the thread's session UUID. |
-| `codex://threads/new`         | A new local thread.                                              |
+| Deep link                     | Opens                                                                                                          |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `codex://threads/<thread-id>` | A local thread. `<thread-id>` must be the thread's session UUID.                                               |
+| `codex://threads/new`         | A new local thread.                                                                                            |
+| `codex://threads/new?<query>` | A new local thread with optional query parameters.                                                             |
+| `codex://new?<query>`         | A new local thread. Include at least one of `prompt`, `path`, or `originUrl`; otherwise the link does nothing. |
 
-For `codex://threads/new`, add any of these query parameters as needed; you can combine them in the same URL.
+For `codex://threads/new` or `codex://new`, add any of these query parameters as needed; you can combine them in the same URL.
 
 | Query parameter              | Required | What it does                                                                                                                                                    |
 | ---------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -1217,6 +1224,8 @@ Use these links when you need to open Settings or a specific settings page.
 | `codex://settings/computer-use/google-chrome` | Google Chrome settings for computer use. |
 | `codex://settings/connections`                | Remote connections settings.             |
 
+Unsupported `codex://settings/...` paths open the main Settings page.
+
 ### Skills
 
 Use these links when you need to open Skills.
@@ -1235,7 +1244,21 @@ Use these links when you need to open Automations.
 
 ### Plugins
 
-Plugin links use different forms depending on whether you are opening a plugin, installing from a marketplace, or working from a local `marketplace.json`. For plugin basics, see [Plugins](https://developers.openai.com/codex/plugins). For local or repo marketplace setup, see [Build plugins](https://developers.openai.com/codex/plugins/build#build-your-own-curated-plugin-list).
+Plugin links use different forms depending on whether you are installing from a marketplace, opening a plugin, or working from a local `marketplace.json`. For plugin basics, see [Plugins](https://developers.openai.com/codex/plugins). For local or repo marketplace setup, see [Build plugins](https://developers.openai.com/codex/plugins/build#build-your-own-curated-plugin-list).
+
+#### Plugin install
+
+Use this form to open the install flow for a plugin from a marketplace that Codex already knows about.
+
+| Deep link                                                              | Opens                                           |
+| ---------------------------------------------------------------------- | ----------------------------------------------- |
+| `codex://plugins/install/<plugin-name>?marketplace=<marketplace-name>` | The plugin detail or install flow for a plugin. |
+
+| Query parameter                  | Required | What it does                                                                    |
+| -------------------------------- | -------- | ------------------------------------------------------------------------------- |
+| `marketplace=<marketplace-name>` | Yes      | Identifies the marketplace. For an OpenAI-curated plugin, use `openai-curated`. |
+
+The install link accepts only the `marketplace` query parameter. If Codex cannot find the requested marketplace or plugin, it opens the Plugins page instead.
 
 #### Plugin detail
 
@@ -5650,6 +5673,13 @@ export const commandOverview = [
       "Apply the latest diff generated by a Codex Cloud task to your local working tree. Alias: `codex a`.",
   },
   {
+    key: "codex archive",
+    href: "/codex/cli/reference#codex-archive-and-codex-unarchive",
+    type: "stable",
+    description:
+      "Archive a saved interactive session by session ID or session name.",
+  },
+  {
     key: "codex cloud",
     href: "/codex/cli/reference#codex-cloud",
     type: "experimental",
@@ -5719,6 +5749,13 @@ export const commandOverview = [
       "Add, list, upgrade, or remove plugin marketplaces from Git or local sources.",
   },
   {
+    key: "codex plugin",
+    href: "/codex/cli/reference#codex-plugin",
+    type: "experimental",
+    description:
+      "Install, list, and remove plugins from configured marketplace sources.",
+  },
+  {
     key: "codex mcp-server",
     href: "/codex/cli/reference#codex-mcp-server",
     type: "experimental",
@@ -5752,6 +5789,13 @@ export const commandOverview = [
     type: "stable",
     description:
       "Check for and apply a Codex CLI update when the installed release supports self-update.",
+  },
+  {
+    key: "codex unarchive",
+    href: "/codex/cli/reference#codex-archive-and-codex-unarchive",
+    type: "stable",
+    description:
+      "Restore an archived interactive session by session ID or session name.",
   },
 ];
 
@@ -5885,6 +5929,13 @@ export const execOptions = [
 ];
 
 export const appServerOptions = [
+  {
+    key: "--stdio",
+    type: "boolean",
+    defaultValue: "false",
+    description:
+      "Use stdio transport. Equivalent to `--listen stdio://` and mutually exclusive with `--listen`.",
+  },
   {
     key: "--listen",
     type: "stdio:// | ws://IP:PORT | unix:// | unix://PATH | off",
@@ -6179,7 +6230,7 @@ export const sandboxMacOptions = [
       "Layer `$CODEX_HOME/NAME.config.toml` on top of the base user config.",
   },
   {
-    key: "--permissions-profile",
+    key: "--permissions-profile, -P",
     type: "NAME",
     description:
       "Apply a named permissions profile from the active configuration stack.",
@@ -6232,7 +6283,7 @@ export const sandboxLinuxOptions = [
       "Layer `$CODEX_HOME/NAME.config.toml` on top of the base user config.",
   },
   {
-    key: "--permissions-profile",
+    key: "--permissions-profile, -P",
     type: "NAME",
     description:
       "Apply a named permissions profile from the active configuration stack.",
@@ -6272,7 +6323,7 @@ export const sandboxWindowsOptions = [
       "Layer `$CODEX_HOME/NAME.config.toml` on top of the base user config.",
   },
   {
-    key: "--permissions-profile",
+    key: "--permissions-profile, -P",
     type: "NAME",
     description:
       "Apply a named permissions profile from the active configuration stack.",
@@ -6438,23 +6489,73 @@ export const mcpAddOptions = [
 export const marketplaceCommands = [
   {
     key: "add <source>",
-    type: "[--ref REF] [--sparse PATH]",
+    type: "[--ref REF] [--sparse PATH] [--json]",
     description:
       "Install a plugin marketplace from GitHub shorthand, a Git URL, an SSH URL, or a local marketplace root directory. `--sparse` is supported only for Git sources and can be repeated.",
   },
   {
     key: "list",
+    type: "[--json]",
     description:
       "Show plugin marketplaces Codex is currently considering and the root path for each marketplace.",
   },
   {
     key: "upgrade [marketplace-name]",
+    type: "[--json]",
     description:
       "Refresh one configured Git marketplace, or all configured Git marketplaces when no name is provided.",
   },
   {
     key: "remove <marketplace-name>",
+    type: "[--json]",
     description: "Remove a configured plugin marketplace.",
+  },
+];
+
+export const pluginCommands = [
+  {
+    key: "add <plugin[@marketplace]>",
+    type: "[--marketplace, -m NAME] [--json]",
+    description:
+      "Install a plugin from a configured marketplace. Use `--marketplace` or `-m` when the plugin argument omits `@marketplace`.",
+  },
+  {
+    key: "list",
+    type: "[--marketplace, -m NAME] [--available --json] [--json]",
+    description:
+      "List installed plugins. With `--json`, output has `installed` and `available` arrays; `--available` includes uninstalled marketplace plugins and requires `--json`.",
+  },
+  {
+    key: "remove <plugin[@marketplace]>",
+    type: "[--marketplace, -m NAME] [--json]",
+    description:
+      "Remove an installed plugin from local config and cache. Use `--json` for automation-friendly output.",
+  },
+  {
+    key: "marketplace",
+    description:
+      "Manage configured marketplace sources. See `codex plugin marketplace` below.",
+  },
+];
+
+export const archiveOptions = [
+  {
+    key: "SESSION",
+    type: "session ID | session name",
+    description:
+      "Saved session to archive or restore. Session IDs take precedence over session names.",
+  },
+  {
+    key: "--remote",
+    type: "ws://host:port | wss://host:port | unix:// | unix://PATH",
+    description:
+      "Connect to a remote app-server endpoint before changing archive state.",
+  },
+  {
+    key: "--remote-auth-token-env",
+    type: "ENV_VAR",
+    description:
+      "Read a bearer token from this environment variable when `--remote` requires authentication.",
   },
 ];
 
@@ -6492,7 +6593,7 @@ Use `--remote ws://host:port` or `--remote wss://host:port` to connect the TUI t
 
 Launch the Codex app server locally. This is primarily for development and debugging and may change without notice.
 
-`codex app-server --listen stdio://` keeps the default JSONL-over-stdio behavior. `--listen ws://IP:PORT` enables WebSocket transport for app-server clients. The server accepts `ws://` listen URLs; use TLS termination or a secure proxy when clients connect with `wss://`. Use `--listen unix://` to accept WebSocket handshakes on Codex's default Unix socket, or `--listen unix:///absolute/path.sock` to choose a socket path. If you generate schemas for client bindings, add `--experimental` to include gated fields and methods.
+`codex app-server --listen stdio://` keeps the default JSONL-over-stdio behavior, and `codex app-server --stdio` is an alias for that transport. `--listen ws://IP:PORT` enables WebSocket transport for app-server clients. The server accepts `ws://` listen URLs; use TLS termination or a secure proxy when clients connect with `wss://`. Use `--listen unix://` to accept WebSocket handshakes on Codex's default Unix socket, or `--listen unix:///absolute/path.sock` to choose a socket path. If you generate schemas for client bindings, add `--experimental` to include gated fields and methods.
 
 ### `codex remote-control`
 
@@ -6526,6 +6627,17 @@ Use `--bundled` when you want to inspect only the catalog bundled with the curre
 Apply the most recent diff from a Codex cloud task to your local repository. You must authenticate and have access to the task.
 
 Codex prints the patched files and exits non-zero if `git apply` fails (for example, due to conflicts).
+
+### `codex archive` and `codex unarchive`
+
+Archive or restore a saved interactive session by session ID or session name.
+Use these commands when you want to clean up the session picker without deleting
+the transcript. Session IDs take precedence over session names.
+
+```bash
+codex archive <SESSION>
+codex unarchive <SESSION>
+```
 
 ### `codex cloud`
 
@@ -6584,6 +6696,18 @@ The `add` subcommand supports both stdio and streamable HTTP transports:
 
 OAuth actions (`login`, `logout`) only work with streamable HTTP servers (and only when the server supports OAuth).
 
+### `codex plugin`
+
+Install, list, and remove plugins from configured marketplaces.
+
+`codex plugin add --json` prints `pluginId`, `name`, `marketplaceName`,
+`version`, `installedPath`, and `authPolicy`. `codex plugin list --json` prints
+`installed` and `available` arrays. Entries include `pluginId`, `name`,
+`marketplaceName`, `version`, `installed`, `enabled`, `source`, `installPolicy`,
+`authPolicy`, and, when available, `marketplaceSource` with the configured
+marketplace source type and value. `codex plugin remove --json` prints
+`pluginId`, `name`, and `marketplaceName`.
+
 ### `codex plugin marketplace`
 
 Manage plugin marketplace sources that Codex can browse and install from.
@@ -6596,6 +6720,13 @@ use a sparse checkout for Git-backed marketplace repositories.
 `codex plugin marketplace list` prints in-scope marketplace names and roots,
 including implicitly discovered default marketplaces and configured marketplace
 snapshots.
+
+Add `--json` to marketplace add, list, upgrade, or remove commands for
+automation-friendly output. Marketplace add JSON includes `marketplaceName`,
+`installedRoot`, and `alreadyAdded`; list JSON includes a `marketplaces` array
+with `name`, `root`, and optional `marketplaceSource`; upgrade JSON includes
+`selectedMarketplaces`, `upgradedRoots`, and `errors`; remove JSON includes
+`marketplaceName` and `installedRoot`.
 
 ### `codex mcp-server`
 
@@ -6673,6 +6804,7 @@ completion still works before you queue the command.
 | [`/plugins`](#browse-plugins-with-plugins)                                      | Browse installed and discoverable plugins.                      | Inspect plugin tools, install suggested plugins, or manage plugin availability.                            |
 | [`/hooks`](#review-hooks-with-hooks)                                            | Review lifecycle hooks.                                         | Inspect configured hooks, trust new or changed hooks, or disable non-managed hooks before they run.        |
 | [`/clear`](#clear-the-terminal-and-start-a-new-chat-with-clear)                 | Clear the terminal and start a fresh chat.                      | Reset the visible UI and conversation together when you want a fresh start.                                |
+| [`/archive`](#archive-the-current-session-with-archive)                         | Archive the current session and exit Codex.                     | Remove the current session from active session lists without deleting its transcript.                      |
 | [`/compact`](#keep-transcripts-lean-with-compact)                               | Summarize the visible conversation to free tokens.              | Use after long runs so Codex retains key points without blowing the context window.                        |
 | [`/copy`](#copy-the-latest-response-with-copy)                                  | Copy the latest completed Codex output.                         | Grab the latest finished response or plan text without manually selecting it. You can also press `Ctrl+O`. |
 | [`/diff`](#review-changes-with-diff)                                            | Show the Git diff, including files Git isn't tracking yet.      | Review Codex's edits before you commit or run tests.                                                       |
@@ -6828,6 +6960,17 @@ Unlike <kbd>Ctrl</kbd>+<kbd>L</kbd>, `/clear` starts a new conversation.
 
 <kbd>Ctrl</kbd>+<kbd>L</kbd> only clears the terminal view and keeps the current
 chat. Codex disables both actions while a task is in progress.
+
+### Archive the current session with `/archive`
+
+1. Type `/archive` and press Enter.
+2. Confirm that you want to archive the current session and exit Codex.
+
+Expected: Codex archives the current session and closes the interactive TUI.
+Codex keeps the session transcript stored locally; restore it later with
+`codex unarchive <SESSION>`.
+
+`/archive` is unavailable while a task is running.
 
 ### Update permissions with `/permissions`
 
@@ -12803,6 +12946,16 @@ This example blocks `--ask-for-approval never` and `--sandbox danger-full-access
 allowed_approval_policies = ["untrusted", "on-request"]
 allowed_sandbox_modes = ["read-only", "workspace-write"]
 ```
+
+### Disable AppShots
+
+To disable AppShots for managed users, set the top-level `allow_appshots` requirement:
+
+```toml
+allow_appshots = false
+```
+
+Codex treats only `allow_appshots = false` as disabling AppShots. If the key is omitted, AppShots remains unconstrained by requirements and uses normal product availability checks. App-server clients that read effective requirements through `configRequirements/read` receive the same restriction as `allowAppshots`; an omitted or `null` `allowAppshots` value does not disable AppShots.
 
 ### Control available permission profiles
 
@@ -19741,7 +19894,11 @@ To install the SDK run:
 pip install openai-codex
 ```
 
-Published SDK builds automatically use their pinned runtime. Pass `AppServerConfig(codex_bin=...)` only when you intentionally want to run against a specific local app-server binary.
+Published SDK builds automatically use their pinned runtime. Pass `CodexConfig(codex_bin=...)` only when you intentionally want to run against a specific local Codex executable.
+
+While the Python SDK is in beta, `pip install openai-codex` selects the latest
+published beta build. After a stable SDK release exists, use
+`pip install --pre openai-codex` to opt in to newer prerelease builds.
 
 ### Usage
 

@@ -60,6 +60,10 @@ At some point, Anthropic hopes to make past models publicly available again. In 
 
 ## Model status
 
+<Note>
+[Claude Mythos Preview](https://anthropic.com/glasswing) (`claude-mythos-preview`) will be retired after [Claude Mythos 5](https://anthropic.com/glasswing) (`claude-mythos-5`) becomes available. To migrate, see the [migration guide](/docs/en/about-claude/models/migration-guide#migrating-from-claude-mythos-preview).
+</Note>
+
 Current and recently retired models are listed in the following table with their status:
 
 | API model name              | Current state       | Deprecated        | Tentative retirement date |

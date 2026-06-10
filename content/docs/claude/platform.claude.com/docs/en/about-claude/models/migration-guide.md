@@ -18,9 +18,139 @@ This guide covers migrating [Messages API](/docs/en/build-with-claude/working-wi
   The skill applies the model ID swap and, as needed, breaking parameter changes, prefill replacement, and effort calibration for your target model across your codebase, then produces a checklist of items to verify manually. It asks you to confirm the migration scope (entire working directory, a subdirectory, or a specific file list) before editing any files. The skill also detects Amazon Bedrock, Vertex AI, Claude Platform on AWS, and Microsoft Foundry clients and adjusts model ID formats and feature changes for each platform.
 </Tip>
 
+## Migrating from Claude Mythos Preview to Claude Mythos 5 \{#migrating-from-claude-mythos-preview}
+
+[Claude Mythos 5](https://anthropic.com/glasswing) is the access-gated successor to [Claude Mythos Preview](https://anthropic.com/glasswing), the invitation-only research preview. For general availability, see Claude Fable 5. Migration is mostly drop-in: Claude Mythos 5 uses the same [Messages API](/docs/en/build-with-claude/working-with-messages) and the same [tool use](/docs/en/agents-and-tools/tool-use/overview) patterns as Claude Mythos Preview. The key changes are the features that are no longer available (listed in the next section) and thinking output. Token counts are roughly unchanged: Claude Mythos 5 uses the same tokenizer as Claude Mythos Preview. For the Claude Mythos Preview retirement timeline, see [Model deprecations](/docs/en/about-claude/model-deprecations).
+
+### Update your model name
+
+```python
+model = "claude-mythos-preview"  # Before
+model = "claude-mythos-5"  # After
+```
+
+### Features not available on Claude Mythos 5
+
+1. **Extended thinking and thinking token budgets:** Manual extended thinking (`thinking: {type: "enabled", budget_tokens: N}`) is not supported on `claude-mythos-5` and returns a 400 error. [Adaptive thinking](/docs/en/build-with-claude/adaptive-thinking) is always on: the model determines when and how much to think on each request, and no `thinking` configuration is required. `thinking: {type: "disabled"}` returns an error. `budget_tokens` has no direct replacement: thinking is adaptive, and the [effort parameter](/docs/en/build-with-claude/effort) is a separate output-level control, not a thinking budget.
+
+    Before (Claude Mythos Preview):
+
+    ```python
+    client.messages.create(
+        model="claude-mythos-preview",
+        max_tokens=16000,
+        thinking={"type": "enabled", "budget_tokens": 10000},
+        messages=[{"role": "user", "content": "..."}],
+    )
+    ```
+
+    After (Claude Mythos 5):
+
+    
+    ```python nocheck
+    client.messages.create(
+        model="claude-mythos-5",
+        max_tokens=16000,
+        messages=[{"role": "user", "content": "..."}],
+    )
+    ```
+
+2. **Assistant prefill:** Prefilling the assistant message is not supported on `claude-mythos-5` and returns a 400 error, the same as on Claude Mythos Preview. Use system prompt instructions instead.
+
+3. **Thinking output:** On `claude-mythos-5`, the raw chain of thought is never returned, but thinking blocks still carry readable summarized text when `thinking.display` is set to `summarized`. Pass thinking blocks back unchanged when continuing a conversation on the same model. See [Thinking output on Claude Fable 5 and Claude Mythos 5](/docs/en/build-with-claude/adaptive-thinking#thinking-output-on-claude-fable-5-and-claude-mythos-5).
+
+### Token counting and billing
+
+`claude-mythos-5` uses the same tokenizer as `claude-mythos-preview` (the tokenizer introduced with Claude Opus 4.7). Token counts are roughly unchanged when migrating from `claude-mythos-preview`. The same content can tokenize to roughly 30% more tokens compared with models before Claude Opus 4.7, varying by content and workload shape.
+
+[`/v1/messages/count_tokens`](/docs/en/build-with-claude/token-counting) returns roughly unchanged values for `claude-mythos-5` compared with `claude-mythos-preview`. Re-baseline cost and latency on your own workloads.
+
+### Migration checklist
+
+- [ ] Update the model name from `claude-mythos-preview` to `claude-mythos-5`.
+- [ ] Remove manual extended thinking configuration (`thinking: {type: "enabled", budget_tokens: N}`). Adaptive thinking is always on, and no `thinking` field is required.
+- [ ] Remove any `thinking: {type: "disabled"}` configuration. Disabling thinking returns an error on `claude-mythos-5`.
+- [ ] Remove `budget_tokens`. It has no direct replacement: thinking is adaptive, and the `effort` parameter is a separate output-level control, not a thinking budget.
+- [ ] Verify any code that parses the `thinking` field treats it as display text only and passes thinking blocks back unchanged when continuing on the same model. `thinking.display` defaults to `"omitted"` on `claude-mythos-5`, the same as on Claude Mythos Preview; set `display: "summarized"` to receive readable summaries. See [Thinking output on Claude Fable 5 and Claude Mythos 5](/docs/en/build-with-claude/adaptive-thinking#thinking-output-on-claude-fable-5-and-claude-mythos-5).
+- [ ] If you replay conversation history on another model, strip `thinking` and `redacted_thinking` blocks from prior assistant turns first. Thinking blocks from `claude-mythos-5` are tied to the model that produced them; models other than Claude Fable 5 and Claude Mythos 5 silently ignore them; stripping keeps cross-model requests minimal and uniform.
+- [ ] Re-baseline token counts and costs on your own workloads. Token counts are roughly unchanged when migrating from `claude-mythos-preview`.
+
+## Migrating from Claude Opus 4.8 to Claude Fable 5 \{#migrating-from-claude-opus-48}
+
+[Claude Fable 5](/docs/en/about-claude/models/introducing-claude-fable-5-and-claude-mythos-5) is Anthropic's most capable widely released model, generally available on the Claude API, [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws), [Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock), [Vertex AI](/docs/en/build-with-claude/claude-on-vertex-ai), and [Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry).
+
+Migration is mostly drop-in: Claude Fable 5 uses the same [Messages API](/docs/en/build-with-claude/working-with-messages) and the same [tool use](/docs/en/agents-and-tools/tool-use/overview) patterns as Claude Opus 4.8, and supports the same [1M token context window](/docs/en/build-with-claude/context-windows) by default and [128k max output tokens](/docs/en/about-claude/models/overview). The key changes are always-on [adaptive thinking](/docs/en/build-with-claude/adaptive-thinking), thinking output, safety classifier refusals, and pricing. Token counts are roughly unchanged: Claude Fable 5 uses the same tokenizer as Claude Opus 4.8.
+
+<Note>
+Claude Fable 5 is priced at $10 per million input tokens and $50 per million output tokens, compared with $5 and $25 for Claude Opus 4.8. See [Claude pricing](/docs/en/about-claude/pricing) for details.
+</Note>
+
+<Note>
+If your code is on Claude Opus 4.7 or earlier, first apply [Migrating from Claude Opus 4.7 to Claude Opus 4.8](#migrating-from-claude-opus-47) and, for models earlier than Claude Opus 4.7, the [Claude Opus 4.7 migration steps](#migrating-to-claude-opus-4-7). Those sections cover breaking changes (sampling parameters rejected, manual extended thinking rejected, prefill removed, new tokenizer) that this section does not repeat.
+</Note>
+
+### Update your model name
+
+```python
+model = "claude-opus-4-8"  # Before
+model = "claude-fable-5"  # After
+```
+
+### What changed
+
+The items in this section describe the API and behavior differences worth checking after you swap the model ID.
+
+1. **Adaptive thinking is always on:** [Adaptive thinking](/docs/en/build-with-claude/adaptive-thinking) is the only thinking mode on `claude-fable-5`: the model determines when and how much to think on each request, and no `thinking` configuration is required. `thinking: {type: "disabled"}` returns an error. On Claude Opus 4.8, requests without a `thinking` field run without thinking; on `claude-fable-5`, those requests run with adaptive thinking. `max_tokens` remains a hard limit on total output, thinking plus response text, so revisit it for workloads that ran without thinking on Claude Opus 4.8. See [Cost control](/docs/en/build-with-claude/adaptive-thinking#cost-control). Use the [effort parameter](/docs/en/build-with-claude/effort) to control thinking depth.
+
+    Before (Claude Opus 4.8):
+
+    ```python
+    client.messages.create(
+        model="claude-opus-4-8",
+        max_tokens=16000,
+        thinking={"type": "adaptive"},
+        output_config={"effort": "high"},
+        messages=[{"role": "user", "content": "..."}],
+    )
+    ```
+
+    After (Claude Fable 5):
+
+    ```python
+    client.messages.create(
+        model="claude-fable-5",
+        max_tokens=16000,
+        output_config={"effort": "high"},
+        messages=[{"role": "user", "content": "..."}],
+    )
+    ```
+
+2. **Extended thinking and thinking budgets (unchanged):** Manual extended thinking (`thinking: {type: "enabled", budget_tokens: N}`) is not supported on `claude-fable-5` and returns a 400 error, the same as on Claude Opus 4.8. `budget_tokens` has no direct replacement: thinking is adaptive, and the [effort parameter](/docs/en/build-with-claude/effort) is a separate output-level control, not a thinking budget.
+
+3. **Assistant prefill (unchanged):** Prefilling the assistant message is not supported on `claude-fable-5` and returns a 400 error, the same as on Claude Opus 4.8. Use system prompt instructions instead.
+
+4. **Thinking output:** On `claude-fable-5`, the raw chain of thought is never returned, but thinking blocks still carry readable summarized text when `thinking.display` is set to `summarized`. Pass thinking blocks back unchanged when continuing a conversation on the same model. See [Thinking output on Claude Fable 5 and Claude Mythos 5](/docs/en/build-with-claude/adaptive-thinking#thinking-output-on-claude-fable-5-and-claude-mythos-5).
+
+5. **Safety classifiers and the `refusal` stop reason:** `claude-fable-5` runs safety classifiers on requests and during response generation. When a classifier declines a request, the Messages API returns `stop_reason: "refusal"`, and the `stop_details.category` field reports which classifier fired (`"cyber"`, `"bio"`, `"reasoning_extraction"`, or `null` when the refusal maps to no named category). A refused response is a successful HTTP 200 response, not an error, and you are not billed for the input tokens of a request refused before any output is generated. When a classifier fires mid-stream, the input and already-streamed output are billed; discard the partial output. To re-run refused requests on another model automatically, pass the opt-in `fallbacks` parameter (in beta on the Claude API and Claude Platform on AWS; not available on the Message Batches API or on Amazon Bedrock, Vertex AI, and Microsoft Foundry; on those three platforms run the retry client-side or use the SDK refusal-fallback middleware). See [Handling stop reasons](/docs/en/build-with-claude/refusals-and-fallback).
+
+6. **Start at `high` effort:** The [effort parameter](/docs/en/build-with-claude/effort) default remains `high`. On Claude Opus 4.8, the recommendation for coding and high-autonomy work is to set `xhigh` explicitly. On `claude-fable-5`, use `high` as the default for most tasks and reserve `xhigh` for the most capability-sensitive workloads: lower effort settings on `claude-fable-5` still perform well and often exceed `xhigh` performance on prior models. Reduce effort if a task completes but takes longer than necessary. See [Prompting Claude Fable 5](/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5#consider-all-effort-levels).
+
+7. **Lower prompt caching minimum:** The minimum cacheable prompt length on `claude-fable-5` is 512 tokens, lower than the 1,024 tokens on Claude Opus 4.8. Prompts that were too short to cache on Claude Opus 4.8 can now create cache entries, with no code changes required. On Amazon Bedrock, the minimum for `claude-fable-5` is 1,024 tokens. See [Prompt caching](/docs/en/build-with-claude/prompt-caching#cache-limitations) for per-model minimums.
+
+### Migration checklist
+
+- [ ] Update the model name from `claude-opus-4-8` to `claude-fable-5`.
+- [ ] Remove any `thinking: {type: "disabled"}` configuration. Disabling thinking returns an error on `claude-fable-5`, and requests without a `thinking` field run with adaptive thinking.
+- [ ] If you removed manual extended thinking and assistant prefills during earlier migrations, no action is needed: both remain unsupported on `claude-fable-5`.
+- [ ] Verify any code that parses the `thinking` field treats it as display text only and passes thinking blocks back unchanged when continuing on the same model. `thinking.display` defaults to `"omitted"` on `claude-fable-5`, the same as on Claude Opus 4.8; set `display: "summarized"` to receive readable summaries. See [Thinking output on Claude Fable 5 and Claude Mythos 5](/docs/en/build-with-claude/adaptive-thinking#thinking-output-on-claude-fable-5-and-claude-mythos-5).
+- [ ] If you replay conversation history on another model, strip `thinking` and `redacted_thinking` blocks from prior assistant turns first. Thinking blocks from `claude-fable-5` are tied to the model that produced them; models other than Claude Fable 5 and Claude Mythos 5 silently ignore them; stripping keeps cross-model requests minimal and uniform. The exception is redeeming a [fallback credit](/docs/en/build-with-claude/fallback-credit), which requires the request body echoed under that feature's exact rules.
+- [ ] Handle `stop_reason: "refusal"` and read the `stop_details.category` field. To re-run refused requests on another model automatically, consider the opt-in `fallbacks` parameter (beta). See [Handling stop reasons](/docs/en/build-with-claude/refusals-and-fallback).
+- [ ] Re-evaluate your `effort` setting. Start at `high` for most tasks, including workloads that ran at `xhigh` on Claude Opus 4.8.
+- [ ] Re-baseline cost and latency on your own workloads. Token counts are roughly unchanged when migrating from `claude-opus-4-8`; per-token pricing differs.
+
 ## Migrating from Claude Opus 4.7 to Claude Opus 4.8 \{#migrating-from-claude-opus-47}
 
-Claude Opus 4.8 is Anthropic's most capable generally available model. It builds on Claude Opus 4.7.
+Claude Opus 4.8 is Anthropic's most capable Opus-tier model. It builds on Claude Opus 4.7.
 
 Claude Opus 4.8 should have strong out-of-the-box performance on existing Claude Opus 4.7 prompts and evals. There are no breaking API changes for code already running on Claude Opus 4.7. It supports the same set of features as Claude Opus 4.7, including the [1M token context window](/docs/en/build-with-claude/context-windows), [128k max output tokens](/docs/en/about-claude/models/overview), [adaptive thinking](/docs/en/build-with-claude/adaptive-thinking), [prompt caching](/docs/en/build-with-claude/prompt-caching), [batch processing](/docs/en/build-with-claude/batch-processing), the [Files API](/docs/en/build-with-claude/files), [PDF support](/docs/en/build-with-claude/pdf-support), [vision](/docs/en/build-with-claude/vision), and the full set of server-side and client-side [tools](/docs/en/agents-and-tools/tool-use/overview). It also adds [mid-conversation system messages](/docs/en/about-claude/models/whats-new-claude-4-8#mid-conversation-system-messages) and publicly documents [refusal stop details](/docs/en/about-claude/models/whats-new-claude-4-8#refusal-stop-details).
 
@@ -119,7 +249,7 @@ model = "claude-opus-4-7"  # After
     )
     ```
 
-    Adaptive thinking is steerable through prompting. For guidance on tuning when the model over- or under-thinks, see [Calibrating effort and thinking depth](/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#calibrating-effort-and-thinking-depth).
+    Adaptive thinking is steerable through prompting. For guidance on tuning when the model over- or under-thinks, see [Calibrating effort and thinking depth](/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-4-8#calibrating-effort-and-thinking-depth).
 
 2. **Sampling parameters removed:** Setting `temperature`, `top_p`, or `top_k` to any non-default value on Claude Opus 4.7 returns a 400 error. The safest migration path is to omit these parameters entirely from request payloads. Prompting is the recommended way to guide model behavior on Claude Opus 4.7. If you were using `temperature = 0` for determinism, note that it never guaranteed identical outputs on prior models.
 

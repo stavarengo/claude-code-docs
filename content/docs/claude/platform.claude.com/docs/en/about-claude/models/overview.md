@@ -6,17 +6,35 @@ Claude is a family of state-of-the-art large language models developed by Anthro
 
 ## Choosing a model
 
-If you're unsure which model to use, consider starting with **Claude Opus 4.8** for the most complex tasks. It is Anthropic's most capable model for complex reasoning, long-horizon agentic coding, and high-autonomy work.
+If you're unsure which model to use, consider starting with **Claude Opus 4.8** for the most complex tasks. It is Anthropic's most capable Opus-tier model for complex reasoning, long-horizon agentic coding, and high-autonomy work. For workloads that need the highest available capability, see [Claude Fable 5](#claude-fable-5-and-claude-mythos-5).
 
 All current Claude models support text and image input, text output, multilingual capabilities, and vision. Models are available through the Claude API, [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws), [Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock), [Vertex AI](/docs/en/build-with-claude/claude-on-vertex-ai), and [Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry).
 
 Once you've picked a model, [learn how to make your first API call](/docs/en/get-started).
 
+### Claude Fable 5 and Claude Mythos 5
+
+Claude Fable 5 (`claude-fable-5`) is Anthropic's most capable widely released model. Claude Mythos 5 (`claude-mythos-5`) joins the invitation-only Claude Mythos Preview (`claude-mythos-preview`) within [Project Glasswing](https://anthropic.com/glasswing). See [Introducing Claude Fable 5 and Claude Mythos 5](/docs/en/about-claude/models/introducing-claude-fable-5-and-claude-mythos-5) for launch details and API changes.
+
+| Feature | Claude Fable 5 | Claude Mythos 5 |
+|:--------|:-------------|:-------------|
+| **Description** | Anthropic's most capable widely released model, for the most demanding reasoning and long-horizon agentic work | Available through Project Glasswing. Successor to Claude Mythos Preview. |
+| **Claude API ID** | `claude-fable-5` | `claude-mythos-5` |
+| **AWS Bedrock ID** | anthropic.claude-fable-5 | Limited availability |
+| **Vertex AI ID** | claude-fable-5 | Limited availability |
+| **[Extended thinking](/docs/en/build-with-claude/extended-thinking)** | No | No |
+| **[Adaptive thinking](/docs/en/build-with-claude/adaptive-thinking)** | Yes (always on) | Yes (always on) |
+| **Context window** | <Tooltip tooltipContent="Claude Fable 5 and Claude Mythos 5 use the tokenizer introduced with Claude Opus 4.7. Compared to models before Claude Opus 4.7, the same text produces roughly 30% more tokens.">1M tokens</Tooltip> | <Tooltip tooltipContent="Claude Fable 5 and Claude Mythos 5 use the tokenizer introduced with Claude Opus 4.7. Compared to models before Claude Opus 4.7, the same text produces roughly 30% more tokens.">1M tokens</Tooltip> |
+| **Max output** | 128k tokens | 128k tokens |
+| **Pricing** | $10 / $50 per MTok (input / output) | $10 / $50 per MTok (input / output) |
+
+Claude Fable 5 is generally available on the Claude API, Claude Platform on AWS, Amazon Bedrock, Vertex AI, and Microsoft Foundry beginning June 9, 2026. Claude Mythos 5 is not generally available: it is offered in limited availability to approved customers in [Project Glasswing](https://anthropic.com/glasswing), beginning the same day. For access, contact your Anthropic, AWS, or Google Cloud account team.
+
 ### Latest models comparison
 
 | Feature | Claude Opus 4.8 | Claude Sonnet 4.6 | Claude Haiku 4.5 |
 |:--------|:-------------|:------------------|:-----------------|
-| **Description** | Anthropic's most capable model for complex reasoning and agentic coding | The best combination of speed and intelligence | The fastest model with near-frontier intelligence |
+| **Description** | Anthropic's most capable Opus-tier model for complex reasoning and agentic coding | The best combination of speed and intelligence | The fastest model with near-frontier intelligence |
 | **Claude API ID** | claude-opus-4-8 | claude-sonnet-4-6 | claude-haiku-4-5-20251001 |
 | **Claude API alias** | claude-opus-4-8 | claude-sonnet-4-6 | claude-haiku-4-5 |
 | **AWS Bedrock ID** | anthropic.claude-opus-4-8<sup>3</sup> | anthropic.claude-sonnet-4-6 | anthropic.claude-haiku-4-5-20251001-v1:0 |

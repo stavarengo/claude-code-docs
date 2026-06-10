@@ -785,57 +785,7 @@ See the [full list of request options](https://pkg.go.dev/github.com/anthropics/
 
 ## HTTP client customization
 
-### Middleware
-
-The SDK provides `option.WithMiddleware`, which applies the given
-middleware to requests.
-
-```go hidelines={1..16,32..33}
-package main
-
-import (
-	"net/http"
-	"time"
-
-	"github.com/anthropics/anthropic-sdk-go"
-	"github.com/anthropics/anthropic-sdk-go/option"
-)
-
-var _ = anthropic.ModelClaudeOpus4_8
-
-func LogReq(req *http.Request)                              {}
-func LogRes(res *http.Response, err error, d time.Duration) {}
-
-func main() {
-	client := anthropic.NewClient(
-		option.WithMiddleware(func(req *http.Request, next option.MiddlewareNext) (res *http.Response, err error) {
-			// Before the request
-			start := time.Now()
-			LogReq(req)
-
-			// Forward the request to the next handler
-			res, err = next(req)
-
-			// Handle stuff after the request
-			LogRes(res, err, time.Since(start))
-
-			return res, err
-		}),
-	)
-	_ = client
-}
-```
-
-When multiple middlewares are provided as variadic arguments, the middlewares
-are applied left to right. If `option.WithMiddleware` is given
-multiple times, for example first in the client then the method, the
-middleware in the client will run first and the middleware given in the method
-will run next.
-
-You may also replace the default `http.Client` with
-`option.WithHTTPClient(client)`. Only one http client is
-accepted (this overwrites any previous client) and receives requests after any
-middleware has been applied.
+For request middleware (`option.WithMiddleware`) and replacing the default `http.Client` (`option.WithHTTPClient`), see [SDK middleware](/docs/en/cli-sdks-libraries/middleware).
 
 ## Platform integrations
 

@@ -18,7 +18,7 @@ Get Session
 
 ### Returns
 
-- `beta_managed_agents_session: object { id, agent, archived_at, 12 more }`
+- `beta_managed_agents_session: object { id, agent, archived_at, 13 more }`
 
   A Managed Agents `session`.
 
@@ -46,11 +46,15 @@ Get Session
 
       Model identifier and configuration.
 
-      - `id: "claude-opus-4-8" or "claude-opus-4-7" or "claude-opus-4-6" or 7 more or string`
+      - `id: "claude-fable-5" or "claude-opus-4-8" or "claude-opus-4-7" or 8 more or string`
 
         The model that will power your agent.
 
         See [models](https://docs.anthropic.com/en/docs/models-overview) for additional details and options.
+
+        - `"claude-fable-5"`
+
+          Next generation of intelligence for the hardest knowledge work and coding problems
 
         - `"claude-opus-4-8"`
 
@@ -124,7 +128,7 @@ Get Session
 
           Model identifier and configuration.
 
-          - `id: "claude-opus-4-8" or "claude-opus-4-7" or "claude-opus-4-6" or 7 more or string`
+          - `id: "claude-fable-5" or "claude-opus-4-8" or "claude-opus-4-7" or 8 more or string`
 
             The model that will power your agent.
 
@@ -284,23 +288,15 @@ Get Session
 
             - `description: string`
 
-            - `input_schema: object { properties, required, type }`
+            - `input_schema: object { type, properties, required }`
 
               JSON Schema for custom tool input parameters.
 
+              - `type: "object"`
+
               - `properties: optional map[unknown]`
 
-                JSON Schema properties defining the tool's input parameters.
-
               - `required: optional array of string`
-
-                List of required property names.
-
-              - `type: optional "object"`
-
-                Must be 'object' for tool input schemas.
-
-                - `"object"`
 
             - `name: string`
 
@@ -558,6 +554,10 @@ Get Session
 
     Vault IDs attached to the session at creation. Empty when no vaults were supplied.
 
+  - `deployment_id: optional string`
+
+    Deployment ID when the session was created from a deployment reference. Null otherwise.
+
 ### Example
 
 ```cli
@@ -729,6 +729,7 @@ ant beta:sessions retrieve \
   },
   "vault_ids": [
     "vlt_011CZkZDLs7fYzm1hXNPeRjv"
-  ]
+  ],
+  "deployment_id": "deployment_id"
 }
 ```

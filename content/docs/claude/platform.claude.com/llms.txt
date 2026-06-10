@@ -12,18 +12,18 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 1557 pages - /docs - Content included below
-- German (Deutsch) (de) - 132 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 132 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 132 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 132 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 132 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 132 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 132 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 132 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 132 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 132 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 132 pages - /docs/id - Visit website for content
+- English (en) - 1680 pages - /docs - Content included below
+- German (Deutsch) (de) - 131 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 131 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 131 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 131 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 131 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 131 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 131 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 131 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 131 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 131 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 131 pages - /docs/id - Visit website for content
 
 ---
 
@@ -63,11 +63,11 @@ The full documentation is available in the following languages on https://platfo
 - [Deploy with Helm](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/deploy-helm.md) - Deploy MCP tunnels with Helm
 - [Effort](https://platform.claude.com/docs/en/build-with-claude/effort.md)
 - [Embeddings](https://platform.claude.com/docs/en/build-with-claude/embeddings.md)
+- [Fallback credit](https://platform.claude.com/docs/en/build-with-claude/fallback-credit.md)
 - [Fast mode (research preview)](https://platform.claude.com/docs/en/build-with-claude/fast-mode.md)
 - [Files API](https://platform.claude.com/docs/en/build-with-claude/files.md)
 - [Fine-grained tool streaming](https://platform.claude.com/docs/en/agents-and-tools/tool-use/fine-grained-tool-streaming.md)
 - [Handle tool calls](https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md)
-- [Handling stop reasons](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons.md)
 - [How tool use works](https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works.md)
 - [Manage tool context](https://platform.claude.com/docs/en/agents-and-tools/tool-use/manage-tool-context.md)
 - [Manage in the Console](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/console.md) - Manage tunnels in the Console
@@ -81,11 +81,13 @@ The full documentation is available in the following languages on https://platfo
 - [PDF support](https://platform.claude.com/docs/en/build-with-claude/pdf-support.md)
 - [Programmatic tool calling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling.md)
 - [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md)
+- [Refusals and fallback](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback.md)
 - [Remote MCP servers](https://platform.claude.com/docs/en/agents-and-tools/remote-mcp-servers.md)
 - [Search results](https://platform.claude.com/docs/en/build-with-claude/search-results.md)
 - [Server tools](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools.md)
 - [Best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices.md) - Skill authoring best practices
 - [Skills for enterprise](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/enterprise.md)
+- [Stop reasons and fallback](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons.md)
 - [Streaming Messages](https://platform.claude.com/docs/en/build-with-claude/streaming.md) - Streaming messages
 - [Streaming refusals](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/handle-streaming-refusals.md)
 - [Strict tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use.md)
@@ -124,6 +126,7 @@ The full documentation is available in the following languages on https://platfo
 - [Permission policies](https://platform.claude.com/docs/en/managed-agents/permission-policies.md)
 - [Prototype in Console](https://platform.claude.com/docs/en/managed-agents/onboarding.md)
 - [Managed Agents reference](https://platform.claude.com/docs/en/managed-agents/reference.md) - Reference
+- [Scheduled deployments](https://platform.claude.com/docs/en/managed-agents/scheduled-deployments.md)
 - [Security model](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-security.md)
 - [Integration guide](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes.md) - Self-hosted sandboxes
 - [Session event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming.md)
@@ -232,6 +235,16 @@ The full documentation is available in the following languages on https://platfo
 - [Archive Credential (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/vaults/credentials/archive.md)
 - [Archive Credential (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/vaults/credentials/archive.md)
 - [Archive Credential (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/vaults/credentials/archive.md)
+- [Archive Deployment (Beta)](https://platform.claude.com/docs/en/api/beta/deployments/archive.md)
+- [Archive Deployment (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/deployments/archive.md)
+- [Archive Deployment (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/deployments/archive.md)
+- [Archive Deployment (Beta) (Go)](https://platform.claude.com/docs/en/api/go/beta/deployments/archive.md)
+- [Archive Deployment (Beta) (Java)](https://platform.claude.com/docs/en/api/java/beta/deployments/archive.md)
+- [Archive Deployment (Beta) (php)](https://platform.claude.com/docs/en/api/php/beta/deployments/archive.md)
+- [Archive Deployment (Beta) (Python)](https://platform.claude.com/docs/en/api/python/beta/deployments/archive.md)
+- [Archive Deployment (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/deployments/archive.md)
+- [Archive Deployment (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/deployments/archive.md)
+- [Archive Deployment (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/deployments/archive.md)
 - [Archive Environment (Beta)](https://platform.claude.com/docs/en/api/beta/environments/archive.md)
 - [Archive Environment (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/environments/archive.md)
 - [Archive Environment (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/environments/archive.md)
@@ -450,6 +463,16 @@ The full documentation is available in the following languages on https://platfo
 - [Create Credential (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/vaults/credentials/create.md)
 - [Create Credential (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/vaults/credentials/create.md)
 - [Create Credential (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/vaults/credentials/create.md)
+- [Create Deployment (Beta)](https://platform.claude.com/docs/en/api/beta/deployments/create.md)
+- [Create Deployment (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/deployments/create.md)
+- [Create Deployment (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/deployments/create.md)
+- [Create Deployment (Beta) (Go)](https://platform.claude.com/docs/en/api/go/beta/deployments/create.md)
+- [Create Deployment (Beta) (Java)](https://platform.claude.com/docs/en/api/java/beta/deployments/create.md)
+- [Create Deployment (Beta) (php)](https://platform.claude.com/docs/en/api/php/beta/deployments/create.md)
+- [Create Deployment (Beta) (Python)](https://platform.claude.com/docs/en/api/python/beta/deployments/create.md)
+- [Create Deployment (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/deployments/create.md)
+- [Create Deployment (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/deployments/create.md)
+- [Create Deployment (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/deployments/create.md)
 - [Create Enrollment URL (Beta)](https://platform.claude.com/docs/en/api/beta/user_profiles/create_enrollment_url.md)
 - [Create Enrollment URL (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/user_profiles/create_enrollment_url.md)
 - [Create Enrollment URL (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/user_profiles/create_enrollment_url.md)
@@ -662,6 +685,26 @@ The full documentation is available in the following languages on https://platfo
 - [Delete Vault (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/vaults/delete.md)
 - [Delete Vault (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/vaults/delete.md)
 - [Delete Workspace Member](https://platform.claude.com/docs/en/api/admin/workspaces/members/delete.md)
+- [Deployment Runs (Beta)](https://platform.claude.com/docs/en/api/beta/deployment_runs.md)
+- [Deployment Runs (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/deployment_runs.md)
+- [Deployment Runs (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/deployment_runs.md)
+- [Deployment Runs (Beta) (Go)](https://platform.claude.com/docs/en/api/go/beta/deployment_runs.md)
+- [Deployment Runs (Beta) (Java)](https://platform.claude.com/docs/en/api/java/beta/deployment_runs.md)
+- [Deployment Runs (Beta) (php)](https://platform.claude.com/docs/en/api/php/beta/deployment_runs.md)
+- [Deployment Runs (Beta) (Python)](https://platform.claude.com/docs/en/api/python/beta/deployment_runs.md)
+- [Deployment Runs (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/deployment_runs.md)
+- [Deployment Runs (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/deployment_runs.md)
+- [Deployment Runs (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/deployment_runs.md)
+- [Deployments (Beta)](https://platform.claude.com/docs/en/api/beta/deployments.md)
+- [Deployments (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/deployments.md)
+- [Deployments (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/deployments.md)
+- [Deployments (Beta) (Go)](https://platform.claude.com/docs/en/api/go/beta/deployments.md)
+- [Deployments (Beta) (Java)](https://platform.claude.com/docs/en/api/java/beta/deployments.md)
+- [Deployments (Beta) (php)](https://platform.claude.com/docs/en/api/php/beta/deployments.md)
+- [Deployments (Beta) (Python)](https://platform.claude.com/docs/en/api/python/beta/deployments.md)
+- [Deployments (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/deployments.md)
+- [Deployments (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/deployments.md)
+- [Deployments (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/deployments.md)
 - [Documents](https://platform.claude.com/docs/en/api/compliance/apps/projects/documents.md)
 - [Download a Claude-generated file](https://platform.claude.com/docs/en/api/compliance/apps/chats/generated_files/download.md)
 - [Download artifact content](https://platform.claude.com/docs/en/api/compliance/apps/artifacts/download.md)
@@ -778,6 +821,26 @@ The full documentation is available in the following languages on https://platfo
 - [Get Credential (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/vaults/credentials/retrieve.md)
 - [Get Credential (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/vaults/credentials/retrieve.md)
 - [Get Current Organization](https://platform.claude.com/docs/en/api/admin/organizations/me.md)
+- [Get Deployment (Beta)](https://platform.claude.com/docs/en/api/beta/deployments/retrieve.md)
+- [Get Deployment (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/deployments/retrieve.md)
+- [Get Deployment (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/deployments/retrieve.md)
+- [Get Deployment (Beta) (Go)](https://platform.claude.com/docs/en/api/go/beta/deployments/retrieve.md)
+- [Get Deployment (Beta) (Java)](https://platform.claude.com/docs/en/api/java/beta/deployments/retrieve.md)
+- [Get Deployment (Beta) (php)](https://platform.claude.com/docs/en/api/php/beta/deployments/retrieve.md)
+- [Get Deployment (Beta) (Python)](https://platform.claude.com/docs/en/api/python/beta/deployments/retrieve.md)
+- [Get Deployment (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/deployments/retrieve.md)
+- [Get Deployment (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/deployments/retrieve.md)
+- [Get Deployment (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/deployments/retrieve.md)
+- [Get Deployment Run (Beta)](https://platform.claude.com/docs/en/api/beta/deployment_runs/retrieve.md)
+- [Get Deployment Run (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/deployment_runs/retrieve.md)
+- [Get Deployment Run (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/deployment_runs/retrieve.md)
+- [Get Deployment Run (Beta) (Go)](https://platform.claude.com/docs/en/api/go/beta/deployment_runs/retrieve.md)
+- [Get Deployment Run (Beta) (Java)](https://platform.claude.com/docs/en/api/java/beta/deployment_runs/retrieve.md)
+- [Get Deployment Run (Beta) (php)](https://platform.claude.com/docs/en/api/php/beta/deployment_runs/retrieve.md)
+- [Get Deployment Run (Beta) (Python)](https://platform.claude.com/docs/en/api/python/beta/deployment_runs/retrieve.md)
+- [Get Deployment Run (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/deployment_runs/retrieve.md)
+- [Get Deployment Run (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/deployment_runs/retrieve.md)
+- [Get Deployment Run (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/deployment_runs/retrieve.md)
 - [Get Environment (Beta)](https://platform.claude.com/docs/en/api/beta/environments/retrieve.md)
 - [Get Environment (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/environments/retrieve.md)
 - [Get Environment (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/environments/retrieve.md)
@@ -938,6 +1001,26 @@ The full documentation is available in the following languages on https://platfo
 - [List Credentials (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/vaults/credentials/list.md)
 - [List Credentials (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/vaults/credentials/list.md)
 - [List Credentials (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/vaults/credentials/list.md)
+- [List Deployment Runs (Beta)](https://platform.claude.com/docs/en/api/beta/deployment_runs/list.md)
+- [List Deployment Runs (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/deployment_runs/list.md)
+- [List Deployment Runs (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/deployment_runs/list.md)
+- [List Deployment Runs (Beta) (Go)](https://platform.claude.com/docs/en/api/go/beta/deployment_runs/list.md)
+- [List Deployment Runs (Beta) (Java)](https://platform.claude.com/docs/en/api/java/beta/deployment_runs/list.md)
+- [List Deployment Runs (Beta) (php)](https://platform.claude.com/docs/en/api/php/beta/deployment_runs/list.md)
+- [List Deployment Runs (Beta) (Python)](https://platform.claude.com/docs/en/api/python/beta/deployment_runs/list.md)
+- [List Deployment Runs (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/deployment_runs/list.md)
+- [List Deployment Runs (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/deployment_runs/list.md)
+- [List Deployment Runs (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/deployment_runs/list.md)
+- [List Deployments (Beta)](https://platform.claude.com/docs/en/api/beta/deployments/list.md)
+- [List Deployments (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/deployments/list.md)
+- [List Deployments (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/deployments/list.md)
+- [List Deployments (Beta) (Go)](https://platform.claude.com/docs/en/api/go/beta/deployments/list.md)
+- [List Deployments (Beta) (Java)](https://platform.claude.com/docs/en/api/java/beta/deployments/list.md)
+- [List Deployments (Beta) (php)](https://platform.claude.com/docs/en/api/php/beta/deployments/list.md)
+- [List Deployments (Beta) (Python)](https://platform.claude.com/docs/en/api/python/beta/deployments/list.md)
+- [List Deployments (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/deployments/list.md)
+- [List Deployments (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/deployments/list.md)
+- [List Deployments (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/deployments/list.md)
 - [List Environments (Beta)](https://platform.claude.com/docs/en/api/beta/environments/list.md)
 - [List Environments (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/environments/list.md)
 - [List Environments (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/environments/list.md)
@@ -1217,6 +1300,16 @@ The full documentation is available in the following languages on https://platfo
 - [Models (TypeScript)](https://platform.claude.com/docs/en/api/typescript/models.md)
 - [Organizations](https://platform.claude.com/docs/en/api/admin/organizations.md)
 - [Organizations](https://platform.claude.com/docs/en/api/compliance/organizations.md)
+- [Pause Deployment (Beta)](https://platform.claude.com/docs/en/api/beta/deployments/pause.md)
+- [Pause Deployment (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/deployments/pause.md)
+- [Pause Deployment (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/deployments/pause.md)
+- [Pause Deployment (Beta) (Go)](https://platform.claude.com/docs/en/api/go/beta/deployments/pause.md)
+- [Pause Deployment (Beta) (Java)](https://platform.claude.com/docs/en/api/java/beta/deployments/pause.md)
+- [Pause Deployment (Beta) (php)](https://platform.claude.com/docs/en/api/php/beta/deployments/pause.md)
+- [Pause Deployment (Beta) (Python)](https://platform.claude.com/docs/en/api/python/beta/deployments/pause.md)
+- [Pause Deployment (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/deployments/pause.md)
+- [Pause Deployment (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/deployments/pause.md)
+- [Pause Deployment (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/deployments/pause.md)
 - [Permissions](https://platform.claude.com/docs/en/api/compliance/organizations/roles/permissions.md)
 - [Poll for Work (Beta)](https://platform.claude.com/docs/en/api/beta/environments/work/poll.md)
 - [Poll for Work (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/environments/work/poll.md)
@@ -1336,6 +1429,16 @@ The full documentation is available in the following languages on https://platfo
 - [Reveal Tunnel Token](https://platform.claude.com/docs/en/api/admin/mcp_tunnels/reveal_token.md)
 - [Roles](https://platform.claude.com/docs/en/api/compliance/organizations/roles.md)
 - [Rotate Tunnel Token](https://platform.claude.com/docs/en/api/admin/mcp_tunnels/rotate_token.md)
+- [Run Deployment Now (Beta)](https://platform.claude.com/docs/en/api/beta/deployments/run.md)
+- [Run Deployment Now (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/deployments/run.md)
+- [Run Deployment Now (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/deployments/run.md)
+- [Run Deployment Now (Beta) (Go)](https://platform.claude.com/docs/en/api/go/beta/deployments/run.md)
+- [Run Deployment Now (Beta) (Java)](https://platform.claude.com/docs/en/api/java/beta/deployments/run.md)
+- [Run Deployment Now (Beta) (php)](https://platform.claude.com/docs/en/api/php/beta/deployments/run.md)
+- [Run Deployment Now (Beta) (Python)](https://platform.claude.com/docs/en/api/python/beta/deployments/run.md)
+- [Run Deployment Now (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/deployments/run.md)
+- [Run Deployment Now (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/deployments/run.md)
+- [Run Deployment Now (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/deployments/run.md)
 - [Send Events (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/events/send.md)
 - [Send Events (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/sessions/events/send.md)
 - [Send Events (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/sessions/events/send.md)
@@ -1407,6 +1510,16 @@ The full documentation is available in the following languages on https://platfo
 - [Threads (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/sessions/threads.md)
 - [Threads (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/sessions/threads.md)
 - [Tunnel Certificates](https://platform.claude.com/docs/en/api/admin/mcp_tunnels/tunnel_certificates.md)
+- [Unpause Deployment (Beta)](https://platform.claude.com/docs/en/api/beta/deployments/unpause.md)
+- [Unpause Deployment (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/deployments/unpause.md)
+- [Unpause Deployment (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/deployments/unpause.md)
+- [Unpause Deployment (Beta) (Go)](https://platform.claude.com/docs/en/api/go/beta/deployments/unpause.md)
+- [Unpause Deployment (Beta) (Java)](https://platform.claude.com/docs/en/api/java/beta/deployments/unpause.md)
+- [Unpause Deployment (Beta) (php)](https://platform.claude.com/docs/en/api/php/beta/deployments/unpause.md)
+- [Unpause Deployment (Beta) (Python)](https://platform.claude.com/docs/en/api/python/beta/deployments/unpause.md)
+- [Unpause Deployment (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/deployments/unpause.md)
+- [Unpause Deployment (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/deployments/unpause.md)
+- [Unpause Deployment (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/deployments/unpause.md)
 - [Update a memory (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memories/update.md)
 - [Update a memory (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/memory_stores/memories/update.md)
 - [Update a memory (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/memory_stores/memories/update.md)
@@ -1448,6 +1561,16 @@ The full documentation is available in the following languages on https://platfo
 - [Update Credential (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/vaults/credentials/update.md)
 - [Update Credential (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/vaults/credentials/update.md)
 - [Update Credential (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/vaults/credentials/update.md)
+- [Update Deployment (Beta)](https://platform.claude.com/docs/en/api/beta/deployments/update.md)
+- [Update Deployment (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/deployments/update.md)
+- [Update Deployment (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/deployments/update.md)
+- [Update Deployment (Beta) (Go)](https://platform.claude.com/docs/en/api/go/beta/deployments/update.md)
+- [Update Deployment (Beta) (Java)](https://platform.claude.com/docs/en/api/java/beta/deployments/update.md)
+- [Update Deployment (Beta) (php)](https://platform.claude.com/docs/en/api/php/beta/deployments/update.md)
+- [Update Deployment (Beta) (Python)](https://platform.claude.com/docs/en/api/python/beta/deployments/update.md)
+- [Update Deployment (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/deployments/update.md)
+- [Update Deployment (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/deployments/update.md)
+- [Update Deployment (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/deployments/update.md)
 - [Update Environment (Beta)](https://platform.claude.com/docs/en/api/beta/environments/update.md)
 - [Update Environment (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/environments/update.md)
 - [Update Environment (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/environments/update.md)

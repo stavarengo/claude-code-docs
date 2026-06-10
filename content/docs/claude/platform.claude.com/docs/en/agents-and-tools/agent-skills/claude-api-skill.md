@@ -124,6 +124,7 @@ The skill handles:
 - **Effort calibration**, recommending an `output_config.effort` starting point for the target model (for example, `xhigh` for coding and agentic use cases on Claude Opus 4.8 and Claude Opus 4.7)
 - **Prompt-behavior tuning**, flagging length-control, tool-triggering, subagent, and instruction-following prompts that may behave differently on the target model
 - **Silent default handling**, opting back into thinking summarization (`thinking.display: "summarized"`) when reasoning is surfaced to users on Claude Opus 4.8 and Claude Opus 4.7
+- **Refusal fallback configuration**, adding `stop_reason: "refusal"` handling before reading response content and setting up a [fallback retry path](/docs/en/build-with-claude/refusals-and-fallback) when the target is Claude Fable 5 (the server-side `fallbacks` parameter, the SDK refusal-fallback middleware, or a fallback-credit retry), and updating fallback code written against earlier preview shapes
 
 As it edits, the skill explains each change and its motivation inline. On completion, it produces a checklist of items that require manual verification (typically integration tests, length-control prompt tuning, and cost/rate-limit re-baselining).
 

@@ -189,7 +189,7 @@ See [Streaming Messages](/docs/en/build-with-claude/streaming#get-the-final-mess
 
 ### Prefill not supported
 
-Claude Opus 4.8, [Claude Mythos Preview](https://anthropic.com/glasswing), Claude Opus 4.7, Claude Opus 4.6, and Claude Sonnet 4.6 do not support prefilling assistant messages. Sending a request with a prefilled last assistant message to any of these models returns a 400 `invalid_request_error`:
+Claude Fable 5, [Claude Mythos 5](https://anthropic.com/glasswing), [Claude Mythos Preview](https://anthropic.com/glasswing), Claude Opus 4.8, Claude Opus 4.7, Claude Opus 4.6, and Claude Sonnet 4.6 do not support prefilling assistant messages. Sending a request with a prefilled last assistant message to any of these models returns a 400 `invalid_request_error`:
 
 ```json
 {
@@ -201,7 +201,7 @@ Claude Opus 4.8, [Claude Mythos Preview](https://anthropic.com/glasswing), Claud
 }
 ```
 
-Use [structured outputs](/docs/en/build-with-claude/structured-outputs), system prompt instructions, or [`output_config.format`](/docs/en/build-with-claude/structured-outputs#json-outputs) instead.
+Use [structured outputs](/docs/en/build-with-claude/structured-outputs) on models that support it, system prompt instructions, or [`output_config.format`](/docs/en/build-with-claude/structured-outputs#json-outputs) instead.
 
 ### Outbound web identity federation disabled (Claude Platform on AWS)
 
