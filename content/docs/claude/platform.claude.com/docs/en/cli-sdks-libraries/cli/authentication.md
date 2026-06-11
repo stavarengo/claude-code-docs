@@ -72,7 +72,7 @@ To override the key for a single invocation, pass `--api-key`. To point at a dif
 ant auth status
 ```
 
-```text
+```text nowrap
 Active profile:  default
 Config dir:      ~/.config/anthropic
 Profile config:  ~/.config/anthropic/configs/default.json

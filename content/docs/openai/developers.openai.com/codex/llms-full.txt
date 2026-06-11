@@ -2604,15 +2604,11 @@ It runs natively on Windows using PowerShell and the
 [Windows sandbox](https://developers.openai.com/codex/windows#windows-sandbox), or you can configure it to
 run in [Windows Subsystem for Linux 2 (WSL2)](#windows-subsystem-for-linux-wsl).
 
-## Download and update the Codex app
+## Download the Codex app
 
-Download the Codex app from the
-[Microsoft Store](https://get.microsoft.com/installer/download/9PLM9XGG6VKS?cid=website_cta_psi).
+Download the [Codex app](https://get.microsoft.com/installer/download/9PLM9XGG6VKS?cid=website_cta_psi) for Windows.
 
 Then follow the [quickstart](https://developers.openai.com/codex/quickstart?setup=app) to get started.
-
-To update the app, open the Microsoft Store, go to **Downloads**, and click
-**Check for updates**. The Store installs the latest version afterward.
 
 For enterprises, administrators can deploy the app with Microsoft Store app
 distribution through enterprise management tools.
@@ -5138,7 +5134,7 @@ If you're new to Codex, read the [best practices guide](https://developers.opena
 Run `codex` to start an interactive terminal UI (TUI) session.
 
   </BentoContent>
-  <BentoContent href="/codex/cli/features#models-reasoning">
+  <BentoContent href="/codex/cli/features#models-and-reasoning">
 
 ### Control model and reasoning
 
@@ -10716,7 +10712,7 @@ deployments, use `allowed_permission_profiles` with managed
         "When `true`, Codex skips user, project, session, and plugin hooks while still allowing managed hooks from `requirements.toml` and other managed config layers.",
     },
     {
-      key: "plugin_sharing",
+      key: "features.plugin_sharing",
       type: "boolean",
       description:
         "Set to `false` in cloud-managed `requirements.toml` to disable workspace sharing for locally built plugins.",
@@ -14441,7 +14437,7 @@ Codex discovers hooks next to active config layers in either of these forms:
 
 Installed plugins can also bundle lifecycle config through their plugin
 manifest or a default `hooks/hooks.json` file. See [Build
-plugins](https://developers.openai.com/codex/plugins/build#bundled-mcp-servers-and-lifecycle-config) for the
+plugins](https://developers.openai.com/codex/plugins/build#bundled-mcp-servers-and-lifecycle-hooks) for the
 plugin packaging rules.
 
 In practice, the four most useful locations are:
@@ -17162,8 +17158,8 @@ let Codex inspect a project without editing it, while a write-capable profile
 can limit edits to selected workspace roots.
 
 Local permission profiles are supported on macOS, Linux, WSL, and native
-Windows. Platform-specific enforcement details and caveats are covered in
-[Security limitations](#security-limitations).
+Windows. See [Scope and enforcement](#scope-and-enforcement) for platform-specific
+details and caveats.
 
 For Codex cloud network settings, see [Internet Access](https://developers.openai.com/codex/cloud/internet-access).
 
@@ -18043,10 +18039,10 @@ workspace sharing when you want selected teammates to install a plugin from the
 Codex app.
 
 Workspace admins can disable plugin sharing from cloud-managed requirements by
-adding `plugin_sharing = false` to `requirements.toml`:
+adding `features.plugin_sharing = false` to `requirements.toml`:
 
 ```toml
-plugin_sharing = false
+features.plugin_sharing = false
 ```
 
 ### Marketplace metadata
@@ -18561,12 +18557,6 @@ GPT-5.5 being a significantly more capable model.
             <td style="text-align:center">Not available</td>
             <td style="text-align:center">Not available</td>
           </tr>
-          <tr>
-            <td>GPT-5.3-Codex</td>
-            <td style="text-align:center">30-150</td>
-            <td style="text-align:center">10-60</td>
-            <td style="text-align:center">20-50</td>
-          </tr>
         </tbody>
         <tfoot>
           <tr>
@@ -18629,12 +18619,6 @@ GPT-5.5 being a significantly more capable model.
             <td style="text-align:center">300-1750</td>
             <td style="text-align:center">Not available</td>
             <td style="text-align:center">Not available</td>
-          </tr>
-          <tr>
-            <td>GPT-5.3-Codex</td>
-            <td style="text-align:center">150-750</td>
-            <td style="text-align:center">50-300</td>
-            <td style="text-align:center">100-250</td>
           </tr>
         </tbody>
         <tfoot>
@@ -18699,12 +18683,6 @@ GPT-5.5 being a significantly more capable model.
             <td style="text-align:center">Not available</td>
             <td style="text-align:center">Not available</td>
           </tr>
-          <tr>
-            <td>GPT-5.3-Codex</td>
-            <td style="text-align:center">600-3000</td>
-            <td style="text-align:center">200-1200</td>
-            <td style="text-align:center">400-1000</td>
-          </tr>
         </tbody>
         <tfoot>
           <tr>
@@ -18768,12 +18746,6 @@ GPT-5.5 being a significantly more capable model.
             <td style="text-align:center">Not available</td>
             <td style="text-align:center">Not available</td>
           </tr>
-          <tr>
-            <td>GPT-5.3-Codex</td>
-            <td style="text-align:center">30-150</td>
-            <td style="text-align:center">10-60</td>
-            <td style="text-align:center">20-50</td>
-          </tr>
         </tbody>
         <tfoot>
           <tr>
@@ -18835,14 +18807,6 @@ GPT-5.5 being a significantly more capable model.
           </tr>
           <tr>
             <td>GPT-5.4-mini</td>
-            <td style="text-align:center">
-              [Usage-based](https://platform.openai.com/docs/pricing)
-            </td>
-            <td style="text-align:center">Not available</td>
-            <td style="text-align:center">Not available</td>
-          </tr>
-          <tr>
-            <td>GPT-5.3-Codex</td>
             <td style="text-align:center">
               [Usage-based](https://platform.openai.com/docs/pricing)
             </td>
@@ -18983,18 +18947,6 @@ sales](https://chatgpt.com/contact-sales?utm_internal_source=openai_developers_c
         <td style="text-align:center">113 credits</td>
       </tr>
       <tr>
-        <td>GPT-5.3-Codex</td>
-        <td style="text-align:center">43.75 credits</td>
-        <td style="text-align:center">4.375 credits</td>
-        <td style="text-align:center">350 credits</td>
-      </tr>
-      <tr>
-        <td>GPT-5.2</td>
-        <td style="text-align:center">43.75 credits</td>
-        <td style="text-align:center">4.375 credits</td>
-        <td style="text-align:center">350 credits</td>
-      </tr>
-      <tr>
         <td>GPT-5.3-Codex-Spark</td>
         <td colspan="3" style="text-align:center">
           research preview
@@ -19023,11 +18975,6 @@ sales](https://chatgpt.com/contact-sales?utm_internal_source=openai_developers_c
         <td colspan="4" style="text-align:center">
           Fast mode consumes credits at a higher rate for supported models. See
           <a href="/codex/speed">Speed</a> for rates.
-        </td>
-      </tr>
-      <tr>
-        <td colspan="4" style="text-align:center">
-          Cloud tasks and code review run on GPT-5.3-Codex.
         </td>
       </tr>
     </tfoot>
