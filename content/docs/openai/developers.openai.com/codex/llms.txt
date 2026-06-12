@@ -75,7 +75,7 @@ Use this as a compact map of Codex docs. Each page has a Markdown twin at `/code
 - [Custom Prompts](https://developers.openai.com/codex/custom-prompts.md): Deprecated. Use skills for reusable prompts
 
 ## Enterprise
-- [Access tokens](https://developers.openai.com/codex/enterprise/access-tokens.md): Create and manage Codex access tokens for programmatic workflows
+- [Access tokens](https://developers.openai.com/codex/enterprise/access-tokens.md): Create and manage access tokens for Codex programmatic workflows
 - [Admin Setup](https://developers.openai.com/codex/enterprise/admin-setup.md): Set up Codex for your ChatGPT Enterprise workspace
 - [Governance](https://developers.openai.com/codex/enterprise/governance.md): Governance guidance for managing Codex in your organization
 - [Managed configuration](https://developers.openai.com/codex/enterprise/managed-configuration.md): Configure managed Codex requirements and defaults

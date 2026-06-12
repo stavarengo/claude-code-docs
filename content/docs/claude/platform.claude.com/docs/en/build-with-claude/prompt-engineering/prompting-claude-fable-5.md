@@ -213,7 +213,16 @@ When running long, asynchronous agents, give the agent a way to surface a messag
 }
 ```
 
-Add this tool whenever your UX depends on delivering content or direct user interactions verbatim mid-task. For agents that only narrate routine progress, the model's own summaries are typically adequate.
+Add this tool whenever your UX depends on delivering content or direct user interactions verbatim mid-task. For agents that only narrate routine progress, the model's own summaries are typically adequate. Defining the tool is not sufficient on its own; without an instruction in the system prompt, Claude Fable 5 rarely calls it. Pair the tool with elicitation language such as:
+
+```text
+Between tool calls, when you have content the user must read verbatim
+(a partial deliverable, a direct answer to their question), call the
+send_to_user tool with that content. Use send_to_user only for
+user-facing content, not for narration or reasoning.
+```
+
+Do not route narration or internal reasoning through `send_to_user`; over-calling it for non-user-facing content defeats the purpose.
 
 ## Recommended scaffolding changes
 

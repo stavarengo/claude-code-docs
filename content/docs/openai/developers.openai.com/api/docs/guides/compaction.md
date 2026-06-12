@@ -78,6 +78,7 @@ while keep_going:
     )
 ```
 
+
 ## Standalone compact endpoint
 
 For explicit control, use the

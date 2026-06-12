@@ -1868,10 +1868,11 @@ as CI/CD jobs. Don't expose Codex execution in untrusted or public environments.
 
 #### Use Codex access tokens for enterprise automation
 
-In ChatGPT Enterprise workspaces, admins can allow permitted members to create
-Codex access tokens for trusted, non-interactive Codex local workflows. Use an
-access token when automation needs ChatGPT workspace access, ChatGPT-managed
-Codex entitlements, or enterprise workspace controls without a browser sign-in.
+In ChatGPT Enterprise workspaces, admins can grant the access token
+permission so permitted members can create Codex access tokens for trusted,
+non-interactive Codex local workflows. Use an access token when automation
+needs ChatGPT workspace access, ChatGPT-managed Codex entitlements, or
+enterprise workspace controls without a browser sign-in.
 
 Access tokens are intended for trusted scripts, schedulers, and private CI
 runners. For general OpenAI API calls, continue to use Platform API keys.
@@ -4046,6 +4047,7 @@ Enabled skills also appear in the slash command list.
 | ------------- | -------------------------------------------------------------------------------------- |
 | `/feedback`   | Open the feedback dialog to submit feedback and optionally include logs.               |
 | `/goal`       | Set a persistent goal for Codex to work toward; use `/plan` first to shape it.         |
+| `/init`       | Generate an `AGENTS.md` scaffold for the current project.                              |
 | `/mcp`        | Open MCP status to view connected servers.                                             |
 | `/plan`       | Toggle plan mode for multi-step planning.                                              |
 | `/review`     | Start code review mode to review uncommitted changes or compare against a base branch. |
@@ -4124,7 +4126,7 @@ Use these links when you need to open Settings or a specific settings page.
 | Deep link                                     | Opens                                    |
 | --------------------------------------------- | ---------------------------------------- |
 | `codex://settings`                            | Settings.                                |
-| `codex://settings/browser-use`                | Browser use settings.                    |
+| `codex://settings/browser-use`                | Browser settings.                        |
 | `codex://settings/computer-use/google-chrome` | Google Chrome settings for computer use. |
 | `codex://settings/connections`                | Remote connections settings.             |
 
@@ -4483,6 +4485,12 @@ details, such as your picture, display name, and username, and save a profile
 card with usage highlights. Sharing profile cards is available on consumer
 ChatGPT plans.
 
+Eligible users can also send Codex invitations from the profile menu. Choose
+**Invite a friend** on an eligible personal plan or **Invite a coworker** in an
+eligible Business workspace. See
+[Invite friends and coworkers](/codex/pricing#invite-friends-and-coworkers) for
+current rewards, limits, and eligibility.
+
 #### Keyboard shortcuts
 
 Open **Keyboard Shortcuts** to review commands, change bindings, or reset custom
@@ -4548,12 +4556,18 @@ add your own. If a server requires OAuth, the app starts the auth flow. These se
 also apply to the Codex CLI and IDE extension because the MCP configuration lives in
 `config.toml`. See the [Model Context Protocol docs](/codex/mcp) for details.
 
-#### Browser use
+#### Browser
 
 Use these settings to install or enable the bundled Browser plugin, set up the
 [Codex Chrome extension](/codex/app/chrome-extension), and manage allowed and
 blocked websites. Codex asks before using a website unless you've allowed it.
 Removing a blocked site lets Codex ask again before using it in the browser.
+
+Under **Developer mode**, turn on **Enable full CDP access** to let Codex use
+the Chrome DevTools Protocol for performance profiling and deeper browser
+debugging. If your organization has disabled full CDP access, you can't enable
+it locally. See [Developer mode](/codex/app/browser#developer-mode) for setup,
+risk, and approval details.
 
 See [In-app browser](/codex/app/browser) for browser preview, comment, and
 browser use workflows.
@@ -5280,6 +5294,27 @@ Security** and check **Screen Recording** and **Accessibility** for the Codex
 app on macOS. On Windows, make sure the target app is visible in the active
 desktop session.
 
+#### Configure Windows app policy
+
+On Windows, Computer Use stores persistent app decisions in
+`$CODEX_HOME/computer-use/config.toml`. List apps that Computer Use can open
+without prompting and apps that it must decline:
+
+```toml
+[apps]
+allowed = ["mspaint.exe"]
+denied = ["calc.exe"]
+```
+
+Use the app identifier that Windows Computer Use reports, such as an executable
+name for a desktop app or an app user model ID for a packaged app. Denied apps
+take precedence over allowed apps. Codex prompts for apps that don't appear in
+either list.
+
+This file stores local Computer Use decisions. It's separate from the
+admin-enforced `requirements.toml`, where administrators can disable Computer
+Use with `[features].computer_use = false`.
+
 #### Locked use
 
 Locked use is for macOS. On Windows, computer use works in the foreground.
@@ -5468,6 +5503,34 @@ enough to review in one pass.
 
 For repository changes, use the [review pane](/codex/app/review) to inspect the
 changes and leave comments.
+
+#### Developer mode
+
+Developer mode works with Browser use in Chrome and the Codex in-app browser.
+It gives Codex controlled access to the Chrome DevTools Protocol (CDP). Use it
+when you want Codex to profile JavaScript, inspect console output and network
+traffic, examine page state such as the DOM and applied styles, or diagnose an
+issue directly in the live browser.
+
+To enable it, open [**Settings > Browser**](codex://settings/browser-use) and,
+under **Developer mode**, turn on **Enable full CDP access**. If your
+organization has disabled this setting, you can't enable it locally.
+
+Full CDP access lets Codex inspect and control sensitive browser internals that
+may put your data at risk. Codex asks for explicit approval before it uses full
+CDP to inspect a website. Review the site, task, and requested access before you
+approve it.
+
+Use `@Browser` for the in-app browser. To use Developer mode in Chrome,
+[set up the Codex Chrome extension](/codex/app/chrome-extension) and invoke
+`@Chrome`.
+
+For example:
+
+```text
+This app is slow. Use @Browser to capture a performance trace and inspect
+network traffic, then identify the bottleneck.
+```
 
 ### Local environments
 
@@ -8746,7 +8809,7 @@ to a separate TUI log file.
 
 Source: [Access tokens](/codex/enterprise/access-tokens.md)
 
-Codex access tokens let trusted automation run Codex local with a ChatGPT workspace identity. Use them when a script, scheduled job, or CI runner needs repeatable, non-interactive Codex access.
+Codex access tokens are ChatGPT access tokens scoped to Codex permissions that let trusted automation run Codex local with a ChatGPT workspace identity. Use them when a script, scheduled job, or CI runner needs repeatable, non-interactive Codex access.
 
 Codex access tokens are currently supported for ChatGPT Business and
 Enterprise workspaces.
@@ -8756,6 +8819,12 @@ Access tokens are created in the ChatGPT admin console at [Access tokens](https:
 If a Platform API key works for your automation, keep using API key auth. Use
 Codex access tokens when the workflow specifically needs ChatGPT workspace
 access, ChatGPT-managed Codex entitlements, or enterprise workspace controls.
+
+Need to trigger a published ChatGPT workspace agent from your own system? Use
+a Workspace Agent access token for the Workspace Agents API instead. Codex
+access tokens authenticate Codex local workflows; they do not authenticate
+workspace agent trigger calls. See [Authenticate with Workspace Agent access
+tokens](/workspace-agents/authentication).
 
 #### How access tokens work
 
@@ -8775,16 +8844,15 @@ Main risks to avoid:
 - **Untrusted runners:** public CI, forked pull requests, or shared machines can expose tokens to people outside your workspace. Use access tokens only on trusted runners.
 - **Shared identities:** one person's token reused across unrelated teams makes ownership and audit trails harder to interpret. Create tokens for a specific workflow owner.
 - **Stale credentials:** long-lived tokens can remain active after the workflow changes. Prefer finite expirations and revoke tokens that are no longer used.
-- **Wrong credential type:** access tokens are for Codex local workflows. Use Platform API keys for general OpenAI API calls.
+- **Wrong credential type:** Codex access tokens are for Codex local workflows. Use Workspace Agent access tokens to trigger published ChatGPT workspace agents, and use Platform API keys for general OpenAI API calls.
 
 #### Enable access token creation
 
-Use the Codex Local controls in workspace settings to turn on access token creation for allowed members.
+Use the access token permission in workspace settings to turn on access token creation for allowed members.
 
 1. Go to [Workspace Settings > Permissions & roles](https://chatgpt.com/admin/settings).
-2. In the Codex Local section, make sure **Allow members to use Codex Local** is turned on.
-3. Turn on **Allow members to use Codex access tokens** if all allowed members should be able to create access tokens.
-4. If you use custom roles for a narrower rollout, assign the access token permission only to groups that need to create tokens.
+2. In the **Access tokens** section, turn on **Allow users to create access tokens** if all allowed members should be able to create access tokens.
+3. If members need to use those tokens with the Codex app, CLI, or IDE extension, make sure **Allow members to use Codex Local** is also turned on in the **Codex Local** section.
 
 Keep access token creation limited to people or service owners who understand where the token will be stored, which automation will use it, and how it will be rotated.
 
@@ -8841,7 +8909,7 @@ From the Access tokens page, workspace owners and admins can revoke any workspac
 
 #### Permission model
 
-Access token permissions are separate from the general Codex local permission. A member can have access to the Codex app, CLI, or IDE extension without being allowed to create access tokens.
+Access token creation is controlled by the workspace's access token permission, which is separate from the general Codex local permission. A member can have access to the Codex app, CLI, or IDE extension without being allowed to create access tokens.
 
 | Capability                                                    | Workspace owners and admins                          | Member with access token permission           | Member without access token permission |
 | ------------------------------------------------------------- | ---------------------------------------------------- | --------------------------------------------- | -------------------------------------- |
@@ -8858,7 +8926,7 @@ In short: workspace owners and admins manage access at the workspace level. Memb
 
 #### The access tokens page returns 404 or forbidden
 
-Ask a workspace owner or admin to confirm that Codex access tokens are enabled and that your role includes the access token permission.
+Ask a workspace owner or admin to confirm that your role includes **Allow users to create access tokens** and that **Allow members to use Codex Local** is enabled if you plan to use the token with Codex.
 
 #### `codex login --with-access-token` fails
 
@@ -8925,7 +8993,7 @@ Turn on **Allow members to use Codex Local**.
 
 This enables use of the Codex app, CLI, and IDE extension for allowed users.
 
-If members need programmatic Codex local workflows, also turn on **Allow members to use Codex access tokens** or grant the access token permission through a custom role. Workspace owners and admins can use **Access token expiration limit** to set the longest expiration members can choose for new tokens. For setup and permission details, see [Access tokens](/codex/enterprise/access-tokens).
+If members need programmatic Codex local workflows, grant **Allow users to create access tokens** in the **Access tokens** section or through a custom role. Workspace owners and admins can use **Access token expiration limit** in the **Codex Local** section to set the longest expiration members can choose for new tokens. For setup and permission details, see [Access tokens](/codex/enterprise/access-tokens).
 
 If the Codex Local toggle is off, users who attempt to use the Codex app, CLI, or IDE will see the following error: “403 - Unauthorized. Contact your ChatGPT administrator for access.”
 
@@ -9720,6 +9788,20 @@ Use the canonical feature keys from `config.toml`'s `[features]` table. Codex no
 If omitted, these features are allowed by policy, subject to normal client,
 platform, and rollout availability.
 
+#### Restrict locked computer use
+
+To prevent [Computer Use](/codex/app/computer-use#locked-use) from operating
+after a managed Mac locks, add this requirement:
+
+```toml
+[computer_use]
+allow_locked_computer_use = false
+```
+
+This requirement doesn't enable Computer Use. It only prevents locked use on
+macOS. If you omit it, locked use remains unconstrained by requirements and is
+still subject to normal product availability and the user's local setting.
+
 #### Configure automatic review policy
 
 Use `allowed_approvals_reviewers` to require or allow automatic review. Set it
@@ -9768,50 +9850,6 @@ When deny-read requirements are present, Codex rejects full-access permissions
 and keeps local execution in a read-only or workspace sandbox so it can enforce
 them. On native Windows, managed `deny_read` applies to direct file tools; shell
 subprocess reads don't use this sandbox rule.
-
-#### Enforce managed hooks from requirements
-
-Admins can also define managed lifecycle hooks directly in `requirements.toml`.
-Use `[hooks]` for the hook configuration itself, and point `managed_dir` at the
-directory where your MDM or endpoint-management tooling installs the referenced
-scripts.
-
-To enforce managed hooks even for users who disabled hooks locally, pin
-`[features].hooks = true` alongside `[hooks]`. To skip user, project, session,
-and plugin hooks while still allowing managed hooks, set
-`allow_managed_hooks_only = true`.
-
-```toml
-allow_managed_hooks_only = true
-
-[features]
-hooks = true
-
-[hooks]
-managed_dir = "/enterprise/hooks"
-windows_managed_dir = 'C:\enterprise\hooks'
-
-[[hooks.PreToolUse]]
-matcher = "^Bash$"
-
-[[hooks.PreToolUse.hooks]]
-type = "command"
-command = "python3 /enterprise/hooks/pre_tool_use_policy.py"
-command_windows = 'py -3 C:\enterprise\hooks\pre_tool_use_policy.py'
-timeout = 30
-statusMessage = "Checking managed Bash command"
-```
-
-Notes:
-
-- Codex enforces the hook configuration from `requirements.toml`, but it does
-  not distribute the scripts in `managed_dir`.
-- Deliver those scripts separately with your MDM or device-management solution.
-- Managed hook commands should reference absolute script paths under the
-  configured managed directory.
-- `allow_managed_hooks_only = true` skips hooks from user, project, session, and
-  plugin sources, but still loads hooks from `requirements.toml` and other
-  managed config layers.
 
 ### Subagents
 

@@ -49,9 +49,9 @@ print(response.output_text)
 ```
 
 ```bash
-curl https://api.openai.com/v1/responses \\
-  -H "Authorization: Bearer $OPENAI_API_KEY" \\
-  -H "Content-Type: application/json" \\
+curl https://api.openai.com/v1/responses \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -H "Content-Type: application/json" \
   -d '{
     "model": "gpt-5.5",
     "instructions": "List and describe all the metaphors used in this book.",

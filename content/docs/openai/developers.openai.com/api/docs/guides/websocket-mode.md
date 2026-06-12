@@ -45,6 +45,7 @@ ws.send(
 )
 ```
 
+
 Clients can optionally warm up request state by sending `response.create` with `generate: false`. This is useful when you already know the tools, instructions, and/or custom messages you plan to send with an upcoming turn. `generate: false` does not return a model output, but prepares request state so the next generated turn can start faster. The warmup request returns a response ID that you can chain from with `previous_response_id`, including on later turns in a response chain. The next section explains how to continue a session using `previous_response_id` and incremental inputs.
 
 ## Continue with incremental inputs
@@ -79,6 +80,7 @@ ws.send(
     )
 )
 ```
+
 
 ## How continuation works
 
@@ -134,6 +136,7 @@ ws.send(
     )
 )
 ```
+
 
 ## Connection behavior and limits
 

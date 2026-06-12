@@ -122,7 +122,7 @@ Creating, updating, or deleting an individual session sub-resource (events or se
 | Action | Routes authorized |
 | :--- | :--- |
 | `CreateEnvironment` | `POST /v1/environments` |
-| `GetEnvironment` | `GET /v1/environments/{id}`<br />`GET /v1/environments/{id}/work/{work_id}`<br />`GET /v1/environments/{id}/work/stats` |
+| `GetEnvironment` | `GET /v1/environments/{id}`<br />`GET /v1/environments/{id}/work`<br />`GET /v1/environments/{id}/work/{work_id}`<br />`GET /v1/environments/{id}/work/stats` |
 | `ListEnvironments` | `GET /v1/environments` |
 | `UpdateEnvironment` | `POST /v1/environments/{id}` |
 | `ArchiveEnvironment` | `POST /v1/environments/{id}/archive` |
@@ -298,6 +298,7 @@ The following table lists every route on Claude Platform on AWS and the IAM acti
 | `POST` | `/v1/environments/{id}` | `UpdateEnvironment` | Data |
 | `POST` | `/v1/environments/{id}/archive` | `ArchiveEnvironment` | Data |
 | `DELETE` | `/v1/environments/{id}` | `DeleteEnvironment` | Data |
+| `GET` | `/v1/environments/{id}/work` | `GetEnvironment` | Data |
 | `GET` | `/v1/environments/{id}/work/poll` | `ProcessEnvironmentWork` | Data |
 | `GET` | `/v1/environments/{id}/work/{work_id}` | `GetEnvironment` | Data |
 | `GET` | `/v1/environments/{id}/work/stats` | `GetEnvironment` | Data |

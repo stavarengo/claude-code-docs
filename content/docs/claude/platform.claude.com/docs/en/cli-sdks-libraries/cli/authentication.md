@@ -30,6 +30,19 @@ Interactive login is intended for local development and scripting on your own ma
 
 Login writes credentials to `credentials/.json`. The first login for a profile also creates `configs/.json` and sets it as the active profile. To remove stored credentials, run `ant auth logout`, or `ant auth logout --all` to clear every profile.
 
+## Admin access
+
+By default, `ant auth login` requests a workspace-scoped token. To manage the resources documented on the [Admin API](/docs/en/manage-claude/admin-api) page, request the `org:admin` scope under a dedicated profile:
+
+```bash CLI nocheck
+ant auth login --profile admin --scope "org:admin"
+
+# Print a bearer token for Authorization headers:
+ant auth print-credentials --profile admin --access-token
+```
+
+The `org:admin` scope is granted only to organization members with the admin, owner, or primary owner role. The issued token has organization-wide access, and any workspace binding on the profile does not constrain it. Keep the admin profile separate from your day-to-day profile so routine commands never run with elevated access.
+
 ## API key
 
 The CLI also reads your API key from the `ANTHROPIC_API_KEY` environment variable. Get a key from the [Claude Console](https://platform.claude.com/settings/keys).

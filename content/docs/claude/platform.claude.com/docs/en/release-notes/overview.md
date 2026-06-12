@@ -10,6 +10,9 @@ For release notes on Claude Apps, see the [Release notes for Claude Apps in the 
 For updates to Claude Code, see the [complete CHANGELOG.md](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) in the `claude-code` repository.
 </Tip>
 
+### June 10, 2026
+- The `GET /v1/environments/{id}/work` endpoint, which lists pending work for a [self-hosted sandbox](/docs/en/managed-agents/self-hosted-sandboxes), is now available on [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws). See [IAM actions for Claude Platform on AWS](/docs/en/api/claude-platform-on-aws-iam-actions) for the `GetEnvironment` action that authorizes it.
+
 ### June 9, 2026
 - We've launched **Claude Fable 5** (`claude-fable-5`), our most capable widely released model, alongside **Claude Mythos 5** (`claude-mythos-5`) for Project Glasswing participants. Both models support a [1M token context window](/docs/en/build-with-claude/context-windows) by default, 128k max output tokens, and always-on [adaptive thinking](/docs/en/build-with-claude/adaptive-thinking). See [Introducing Claude Fable 5 and Claude Mythos 5](/docs/en/about-claude/models/introducing-claude-fable-5-and-claude-mythos-5) for capabilities, API changes, and availability.
 - Claude Fable 5 and Claude Mythos 5 use the tokenizer introduced with Claude Opus 4.7. Compared to models before Claude Opus 4.7, the same text produces roughly 30% more tokens. Use the [token counting API](/docs/en/build-with-claude/token-counting#token-counts-on-claude-fable-5) with `model: "claude-fable-5"` to measure your prompts under the new tokenizer.

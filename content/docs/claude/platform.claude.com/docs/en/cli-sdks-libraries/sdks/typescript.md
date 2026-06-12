@@ -53,7 +53,7 @@ const message = await client.messages.create({
 console.log(message.content);
 ```
 
-For authentication options including Workload Identity Federation, see [Authentication](/docs/en/api/authentication/overview).
+For authentication options including Workload Identity Federation, see [Authentication](/docs/en/manage-claude/authentication).
 
 ## Request and response types
 

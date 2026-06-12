@@ -13,9 +13,9 @@ Because background mode stores response data for roughly 10 minutes to enable
 Generate a response in the background
 
 ```bash
-curl https://api.openai.com/v1/responses \\
--H "Content-Type: application/json" \\
--H "Authorization: Bearer $OPENAI_API_KEY" \\
+curl https://api.openai.com/v1/responses \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer $OPENAI_API_KEY" \
 -d '{
   "model": "gpt-5.5",
   "input": "Write a very long novel about otters in space.",
@@ -58,8 +58,8 @@ To check the status of background requests, use the GET endpoint for Responses. 
 Retrieve a response executing in the background
 
 ```bash
-curl https://api.openai.com/v1/responses/resp_123 \\
-  -H "Content-Type: application/json" \\
+curl https://api.openai.com/v1/responses/resp_123 \
+  -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
@@ -79,7 +79,7 @@ await new Promise(resolve => setTimeout(resolve, 2000)); // wait 2 seconds
 resp = await client.responses.retrieve(resp.id);
 }
 
-console.log("Final status: " + resp.status + "\\nOutput:\\n" + resp.output_text);
+console.log("Final status: " + resp.status + "\nOutput:\n" + resp.output_text);
 ```
 
 ```python
@@ -99,7 +99,7 @@ while resp.status in {"queued", "in_progress"}:
   sleep(2)
   resp = client.responses.retrieve(resp.id)
 
-print(f"Final status: {resp.status}\\nOutput:\\n{resp.output_text}")
+print(f"Final status: {resp.status}\nOutput:\n{resp.output_text}")
 ```
 
 
@@ -110,8 +110,8 @@ You can also cancel an in-flight response like this:
 Cancel an ongoing response
 
 ```bash
-curl -X POST https://api.openai.com/v1/responses/resp_123/cancel \\
-  -H "Content-Type: application/json" \\
+curl -X POST https://api.openai.com/v1/responses/resp_123/cancel \
+  -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
@@ -147,9 +147,9 @@ Currently, the time to first token you receive from a background response is
 Generate and stream a background response
 
 ```bash
-curl https://api.openai.com/v1/responses \\
--H "Content-Type: application/json" \\
--H "Authorization: Bearer $OPENAI_API_KEY" \\
+curl https://api.openai.com/v1/responses \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer $OPENAI_API_KEY" \
 -d '{
   "model": "gpt-5.5",
   "input": "Write a very long novel about otters in space.",
@@ -158,8 +158,8 @@ curl https://api.openai.com/v1/responses \\
 }'
 
 // To resume:
-curl "https://api.openai.com/v1/responses/resp_123?stream=true&starting_after=42" \\
--H "Content-Type: application/json" \\
+curl "https://api.openai.com/v1/responses/resp_123?stream=true&starting_after=42" \
+-H "Content-Type: application/json" \
 -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
