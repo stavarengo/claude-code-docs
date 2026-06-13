@@ -624,7 +624,10 @@ Fast Mode isn't available with Amazon Bedrock. Fast Mode uses priority
     id="codex-plan-plugin-limits"
     className="not-prose mt-1 text-sm text-secondary"
   >
-    <sup>†</sup> Some first party plugins are not available.
+    <sup>†</sup> Local plugin bundles are supported when their capabilities do
+    not require ChatGPT authentication. OpenAI-curated plugin discovery and
+    features that depend on app connectors or cloud-hosted sharing aren't
+    available.
   </div>
 
 
@@ -1828,7 +1831,7 @@ Under **Developer mode**, turn on **Enable full CDP access** to let Codex use
 the Chrome DevTools Protocol for performance profiling and deeper browser
 debugging. If your organization has disabled full CDP access, you can't enable
 it locally. See [Developer mode](https://developers.openai.com/codex/app/browser#developer-mode) for setup,
-risk, and approval details.
+risk, approval details, and the administrator requirement.
 
 See [In-app browser](https://developers.openai.com/codex/app/browser) for browser preview, comment, and
 browser use workflows.
@@ -2352,7 +2355,9 @@ issue directly in the live browser.
 
 To enable it, open [**Settings > Browser**](codex://settings/browser-use) and,
 under **Developer mode**, turn on **Enable full CDP access**. If your
-organization has disabled this setting, you can't enable it locally.
+organization has disabled this setting, you can't enable it locally. Admins can
+set `browser_use_full_cdp_access = false` under `[features]` in
+[`requirements.toml`](https://developers.openai.com/codex/enterprise/managed-configuration#pin-feature-flags).
 
 Full CDP access lets Codex inspect and control sensitive browser internals that
 may put your data at risk. Codex asks for explicit approval before it uses full
@@ -5213,7 +5218,7 @@ Run `codex` to start an interactive terminal UI (TUI) session.
 
 ### Control model and reasoning
 
-Use `/model` to switch between GPT-5.4, GPT-5.3-Codex, and other available models, or adjust reasoning levels.
+Use `/model` to switch between available models or adjust reasoning levels.
 
   </BentoContent>
   <BentoContent href="/codex/cli/features#image-inputs">
@@ -10740,6 +10745,18 @@ deployments, use `allowed_permission_profiles` with managed
         "Managed default permission profile. The profile must be allowed by `allowed_permission_profiles`. Set this explicitly for predictable behavior; if omitted, Codex defaults to `:workspace` only when both `:workspace` and `:read-only` are explicitly allowed.",
     },
     {
+      key: "enforce_residency",
+      type: "string",
+      description:
+        "Require Codex service traffic to use a supported data residency. Currently accepts `us`.",
+    },
+    {
+      key: "permissions",
+      type: "table",
+      description:
+        "Admin-defined permission profiles keyed by profile name. Uses the same profile fields as `config.toml`.",
+    },
+    {
       key: "permissions.<name>",
       type: "table",
       description:
@@ -10749,6 +10766,11 @@ deployments, use `allowed_permission_profiles` with managed
       key: "allowed_sandbox_modes",
       type: "array<string>",
       description: "Allowed values for `sandbox_mode`.",
+    },
+    {
+      key: "windows",
+      type: "table",
+      description: "Native Windows sandbox requirements.",
     },
     {
       key: "windows.allowed_sandbox_implementations",
@@ -10787,6 +10809,12 @@ deployments, use `allowed_permission_profiles` with managed
         "When `true`, Codex skips user, project, session, and plugin hooks while still allowing managed hooks from `requirements.toml` and other managed config layers.",
     },
     {
+      key: "allow_appshots",
+      type: "boolean",
+      description:
+        "Set to `false` to disable Appshots for managed users. If omitted, Appshots remain unconstrained by requirements and follow normal product availability.",
+    },
+    {
       key: "features.plugin_sharing",
       type: "boolean",
       description:
@@ -10805,6 +10833,12 @@ deployments, use `allowed_permission_profiles` with managed
         "Require a specific canonical feature key to stay enabled or disabled.",
     },
     {
+      key: "features.apps",
+      type: "boolean",
+      description:
+        "Pin Apps integration availability on or off for managed users.",
+    },
+    {
       key: "features.in_app_browser",
       type: "boolean",
       description:
@@ -10817,10 +10851,55 @@ deployments, use `allowed_permission_profiles` with managed
         "Set to `false` in `requirements.toml` to disable Browser Use and Browser Agent availability.",
     },
     {
+      key: "features.browser_use_external",
+      type: "boolean",
+      description:
+        "Set to `false` in `requirements.toml` to disable external-browser Browser Use availability.",
+    },
+    {
+      key: "features.browser_use_full_cdp_access",
+      type: "boolean",
+      description:
+        "Set to `false` in `requirements.toml` to prevent users from enabling full Chrome DevTools Protocol access in Browser Developer mode. If omitted, normal product availability applies.",
+    },
+    {
+      key: "features.fast_mode",
+      type: "boolean",
+      description:
+        "Pin the canonical `fast_mode` feature on or off for managed users.",
+    },
+    {
+      key: "features.guardian_approval",
+      type: "boolean",
+      description:
+        "Pin Guardian approval availability on or off for managed users.",
+    },
+    {
+      key: "features.memories",
+      type: "boolean",
+      description: "Pin Memories availability on or off for managed users.",
+    },
+    {
+      key: "features.multi_agent",
+      type: "boolean",
+      description: "Pin multi-agent availability on or off for managed users.",
+    },
+    {
+      key: "features.plugins",
+      type: "boolean",
+      description: "Pin plugin availability on or off for managed users.",
+    },
+    {
       key: "features.computer_use",
       type: "boolean",
       description:
         "Set to `false` in `requirements.toml` to disable Computer Use availability and related install or enablement flows.",
+    },
+    {
+      key: "features.workspace_dependencies",
+      type: "boolean",
+      description:
+        "Pin bundled workspace-dependency runtime availability on or off for managed users.",
     },
     {
       key: "computer_use",
@@ -10977,6 +11056,41 @@ deployments, use `allowed_permission_profiles` with managed
       type: "string",
       description:
         "Allow an MCP streamable HTTP server when its `mcp_servers.<id>.url` matches this URL.",
+    },
+    {
+      key: "plugins",
+      type: "table",
+      description:
+        "Plugin-specific MCP server allowlists keyed by plugin identifier.",
+    },
+    {
+      key: "plugins.<plugin>.mcp_servers.<server>.identity.command",
+      type: "string",
+      description:
+        "Allow a plugin's stdio MCP server when its configured command matches this value.",
+    },
+    {
+      key: "plugins.<plugin>.mcp_servers.<server>.identity.url",
+      type: "string",
+      description:
+        "Allow a plugin's streamable HTTP MCP server when its configured URL matches this value.",
+    },
+    {
+      key: "apps",
+      type: "table",
+      description:
+        "Managed app requirements keyed by app identifier. Requirements can disable an app or constrain approval behavior for individual tools.",
+    },
+    {
+      key: "apps.<id>.enabled",
+      type: "boolean",
+      description:
+        "Set to `false` to disable an app. A disabled requirement remains restrictive when multiple requirements sources are merged.",
+    },
+    {
+      key: "apps.<id>.tools.<tool>.approval_mode",
+      type: "auto | prompt | approve",
+      description: "Set the managed approval mode for one app tool.",
     },
     {
       key: "rules",
@@ -12536,11 +12650,12 @@ default_permissions = ":workspace"
 ":workspace" = true
 ```
 
-Example: disable Browser Use, the in-app browser, and Computer Use:
+Example: constrain Browser Use, the in-app browser, and Computer Use:
 
 ```toml
 [features]
 browser_use = false
+browser_use_full_cdp_access = false
 in_app_browser = false
 computer_use = false
 ```
@@ -13035,15 +13150,15 @@ allowed_approval_policies = ["untrusted", "on-request"]
 allowed_sandbox_modes = ["read-only", "workspace-write"]
 ```
 
-### Disable AppShots
+### Disable Appshots
 
-To disable AppShots for managed users, set the top-level `allow_appshots` requirement:
+To disable Appshots for managed users, set the top-level `allow_appshots` requirement:
 
 ```toml
 allow_appshots = false
 ```
 
-Codex treats only `allow_appshots = false` as disabling AppShots. If the key is omitted, AppShots remains unconstrained by requirements and uses normal product availability checks. App-server clients that read effective requirements through `configRequirements/read` receive the same restriction as `allowAppshots`; an omitted or `null` `allowAppshots` value does not disable AppShots.
+Codex treats only `allow_appshots = false` as disabling Appshots. If the key is omitted, Appshots remain unconstrained by requirements and use normal product availability checks. App-server clients that read effective requirements through `configRequirements/read` receive the same restriction as `allowAppshots`; an omitted or `null` `allowAppshots` value doesn't disable Appshots.
 
 ### Control available permission profiles
 
@@ -13060,7 +13175,7 @@ Use the permission-profile examples below only after every managed client runs a
 supporting release. Don't deploy managed custom profiles until the fleet upgrade
 is complete.
 
-When the table is present, it is the complete list of allowed profiles. Profiles
+When the table is present, it's the complete list of allowed profiles. Profiles
 set to `true` are allowed. Profiles that are omitted or set to `false` are
 denied, including built-ins added in future Codex versions.
 
@@ -13152,7 +13267,7 @@ System requirements:
 ":workspace" = true  # Not honored because cloud requirements set this to false.
 ```
 
-Set `default_permissions` explicitly to an allowed profile. If it is omitted,
+Set `default_permissions` explicitly to an allowed profile. If it's omitted,
 Codex defaults to `:workspace` only when both `:workspace` and `:read-only` are
 explicitly allowed. When `allowed_permission_profiles` is absent, managed
 requirements don't restrict which profile names users can select. Every entry
@@ -13199,7 +13314,7 @@ For example, `allowed_web_search_modes = ["cached"]` prevents live web search ev
 Use `[experimental_network]` in `requirements.toml` when administrators should
 define network access requirements centrally. These requirements are separate
 from the user `features.network_proxy` toggle: they can configure sandboxed
-networking without that feature flag, but they do not grant command network
+networking without that feature flag, but they don't grant command network
 access when the active sandbox keeps networking off.
 
 ```toml
@@ -13218,8 +13333,8 @@ experimental_network.denied_domains = [
 
 Use `experimental_network.managed_allowed_domains_only = true` only when you
 also define administrator-owned `allowed_domains` and want that allowlist to be
-exclusive. If it is `true` without managed allow rules, user-added domain allow
-rules do not remain effective.
+exclusive. If it's `true` without managed allow rules, user-added domain allow
+rules don't remain effective.
 
 The domain syntax, local/private destination rules, deny-over-allow behavior,
 and DNS rebinding limitations are the same as the sandboxed networking behavior
@@ -13237,6 +13352,7 @@ unified_exec = false
 
 # Disable specific Codex feature surfaces when needed.
 browser_use = false
+browser_use_full_cdp_access = false
 in_app_browser = false
 computer_use = false
 ```
@@ -13247,6 +13363,8 @@ Use the canonical feature keys from `config.toml`'s `[features]` table. Codex no
 
 - `in_app_browser = false` disables the in-app browser pane.
 - `browser_use = false` disables Browser Use and Browser Agent availability.
+- `browser_use_full_cdp_access = false` prevents users from enabling full CDP
+  access in Browser Developer mode.
 - `computer_use = false` disables Computer Use availability and related
   install or setup flows.
 
@@ -18492,8 +18610,8 @@ Self-serve plugin publishing and management are coming soon.
         - Codex on the web, in the CLI, in the IDE extension, and on iOS
         - Cloud-based integrations like automatic code review and Slack
           integration
-        - The latest models, including GPT-5.5, GPT-5.4, and GPT-5.3-Codex
-        - GPT-5.4-mini for higher usage limits on routine local messages
+        - The latest models, including GPT-5.5, GPT-5.4, and GPT-5.4 mini
+        - GPT-5.4 mini for higher usage limits on routine local messages
         - Flexibly extend usage with [ChatGPT credits](#credits-overview)
         - Other [ChatGPT features](https://chatgpt.com/pricing) as part of the
           Plus plan
@@ -18527,8 +18645,7 @@ Self-serve plugin publishing and management are coming soon.
       >
         - Codex in the CLI, SDK, or IDE extension
         - No cloud-based features (GitHub code review, Slack, etc.)
-        - Delayed access to new models like GPT-5.3-Codex and
-          GPT-5.3-Codex-Spark
+        - Model availability follows the API models available to your key
         - Pay only for the tokens Codex uses, based on [API
           pricing](https://platform.openai.com/docs/pricing)
       </PricingCard>
@@ -18592,8 +18709,7 @@ Self-serve plugin publishing and management are coming soon.
       >
         - Codex in the CLI, SDK, or IDE extension
         - No cloud-based features (GitHub code review, Slack, etc.)
-        - Delayed access to new models like GPT-5.3-Codex and
-          GPT-5.3-Codex-Spark
+        - Model availability follows the API models available to your key
         - Pay only for the tokens Codex uses, based on [API
           pricing](https://platform.openai.com/docs/pricing)
       </PricingCard>
@@ -18618,7 +18734,7 @@ Referrals aren't currently available for ChatGPT Enterprise.
 From June 11 through June 24, 2026, eligible Plus and Pro users can invite up to
 three friends. When an eligible recipient sends their first Codex message, both
 people receive a banked rate-limit reset. Banked rate-limit resets are usable for
-30 days after they are granted. Business referrals use separate shared-workspace
+30 days after they're granted. Business referrals use separate shared-workspace
 credit rewards; review the
 [current terms](https://help.openai.com/en/articles/20001271) before you send an
 invitation.
@@ -18678,7 +18794,7 @@ GPT-5.5 being a significantly more capable model.
             <td style="text-align:center">Not available</td>
           </tr>
           <tr>
-            <td>GPT-5.4-mini</td>
+            <td>GPT-5.4 mini</td>
             <td style="text-align:center">60-350</td>
             <td style="text-align:center">Not available</td>
             <td style="text-align:center">Not available</td>
@@ -18741,7 +18857,7 @@ GPT-5.5 being a significantly more capable model.
             <td style="text-align:center">Not available</td>
           </tr>
           <tr>
-            <td>GPT-5.4-mini</td>
+            <td>GPT-5.4 mini</td>
             <td style="text-align:center">300-1750</td>
             <td style="text-align:center">Not available</td>
             <td style="text-align:center">Not available</td>
@@ -18804,7 +18920,7 @@ GPT-5.5 being a significantly more capable model.
             <td style="text-align:center">Not available</td>
           </tr>
           <tr>
-            <td>GPT-5.4-mini</td>
+            <td>GPT-5.4 mini</td>
             <td style="text-align:center">1200-7000</td>
             <td style="text-align:center">Not available</td>
             <td style="text-align:center">Not available</td>
@@ -18867,7 +18983,7 @@ GPT-5.5 being a significantly more capable model.
             <td style="text-align:center">Not available</td>
           </tr>
           <tr>
-            <td>GPT-5.4-mini</td>
+            <td>GPT-5.4 mini</td>
             <td style="text-align:center">60-350</td>
             <td style="text-align:center">Not available</td>
             <td style="text-align:center">Not available</td>
@@ -18919,7 +19035,9 @@ GPT-5.5 being a significantly more capable model.
         <tbody>
           <tr>
             <td>GPT-5.5</td>
-            <td style="text-align:center">Not available</td>
+            <td style="text-align:center">
+              [Usage-based](https://platform.openai.com/docs/pricing)
+            </td>
             <td style="text-align:center">Not available</td>
             <td style="text-align:center">Not available</td>
           </tr>
@@ -18932,7 +19050,7 @@ GPT-5.5 being a significantly more capable model.
             <td style="text-align:center">Not available</td>
           </tr>
           <tr>
-            <td>GPT-5.4-mini</td>
+            <td>GPT-5.4 mini</td>
             <td style="text-align:center">
               [Usage-based](https://platform.openai.com/docs/pricing)
             </td>
@@ -19071,7 +19189,7 @@ sales](https://chatgpt.com/contact-sales?utm_internal_source=openai_developers_c
         <td style="text-align:center">375 credits</td>
       </tr>
       <tr>
-        <td>GPT-5.4-mini</td>
+        <td>GPT-5.4 mini</td>
         <td style="text-align:center">18.75 credits</td>
         <td style="text-align:center">1.875 credits</td>
         <td style="text-align:center">113 credits</td>
@@ -19142,7 +19260,7 @@ tips to maximize your limits:
   to Codex adds more context to your messages and uses more of your limit.
   Disable MCP servers when you don’t need them.
 - **Switch to a smaller model for routine tasks.** Using GPT-5.4 or
-  GPT-5.4-mini can extend your local-message usage limits, depending on the
+  GPT-5.4 mini can extend your local-message usage limits, depending on the
   model you switch from.
 
 ## Feature availability

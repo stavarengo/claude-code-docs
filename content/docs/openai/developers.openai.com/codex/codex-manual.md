@@ -61,8 +61,8 @@ Power a few focused coding sessions each week.
 - Codex on the web, in the CLI, in the IDE extension, and on iOS
 - Cloud-based integrations like automatic code review and Slack
   integration
-- The latest models, including GPT-5.5, GPT-5.4, and GPT-5.3-Codex
-- GPT-5.4-mini for higher usage limits on routine local messages
+- The latest models, including GPT-5.5, GPT-5.4, and GPT-5.4 mini
+- GPT-5.4 mini for higher usage limits on routine local messages
 - Flexibly extend usage with [ChatGPT credits](#credits-overview)
 - Other [ChatGPT features](https://chatgpt.com/pricing) as part of the
   Plus plan
@@ -91,8 +91,7 @@ Great for automation in shared environments like CI.
 
 - Codex in the CLI, SDK, or IDE extension
 - No cloud-based features (GitHub code review, Slack, etc.)
-- Delayed access to new models like GPT-5.3-Codex and
-  GPT-5.3-Codex-Spark
+- Model availability follows the API models available to your key
 - Pay only for the tokens Codex uses, based on [API
   pricing](https://platform.openai.com/docs/pricing)
 
@@ -4567,7 +4566,7 @@ Under **Developer mode**, turn on **Enable full CDP access** to let Codex use
 the Chrome DevTools Protocol for performance profiling and deeper browser
 debugging. If your organization has disabled full CDP access, you can't enable
 it locally. See [Developer mode](/codex/app/browser#developer-mode) for setup,
-risk, and approval details.
+risk, approval details, and the administrator requirement.
 
 See [In-app browser](/codex/app/browser) for browser preview, comment, and
 browser use workflows.
@@ -5514,7 +5513,9 @@ issue directly in the live browser.
 
 To enable it, open [**Settings > Browser**](codex://settings/browser-use) and,
 under **Developer mode**, turn on **Enable full CDP access**. If your
-organization has disabled this setting, you can't enable it locally.
+organization has disabled this setting, you can't enable it locally. Admins can
+set `browser_use_full_cdp_access = false` under `[features]` in
+[`requirements.toml`](/codex/enterprise/managed-configuration#pin-feature-flags).
 
 Full CDP access lets Codex inspect and control sensitive browser internals that
 may put your data at risk. Codex asks for explicit approval before it uses full
@@ -9116,11 +9117,12 @@ default_permissions = ":workspace"
 ":workspace" = true
 ```
 
-Example: disable Browser Use, the in-app browser, and Computer Use:
+Example: constrain Browser Use, the in-app browser, and Computer Use:
 
 ```toml
 [features]
 browser_use = false
+browser_use_full_cdp_access = false
 in_app_browser = false
 computer_use = false
 ```
@@ -9572,15 +9574,15 @@ allowed_approval_policies = ["untrusted", "on-request"]
 allowed_sandbox_modes = ["read-only", "workspace-write"]
 ```
 
-#### Disable AppShots
+#### Disable Appshots
 
-To disable AppShots for managed users, set the top-level `allow_appshots` requirement:
+To disable Appshots for managed users, set the top-level `allow_appshots` requirement:
 
 ```toml
 allow_appshots = false
 ```
 
-Codex treats only `allow_appshots = false` as disabling AppShots. If the key is omitted, AppShots remains unconstrained by requirements and uses normal product availability checks. App-server clients that read effective requirements through `configRequirements/read` receive the same restriction as `allowAppshots`; an omitted or `null` `allowAppshots` value does not disable AppShots.
+Codex treats only `allow_appshots = false` as disabling Appshots. If the key is omitted, Appshots remain unconstrained by requirements and use normal product availability checks. App-server clients that read effective requirements through `configRequirements/read` receive the same restriction as `allowAppshots`; an omitted or `null` `allowAppshots` value doesn't disable Appshots.
 
 #### Control available permission profiles
 
@@ -9597,7 +9599,7 @@ Use the permission-profile examples below only after every managed client runs a
 supporting release. Don't deploy managed custom profiles until the fleet upgrade
 is complete.
 
-When the table is present, it is the complete list of allowed profiles. Profiles
+When the table is present, it's the complete list of allowed profiles. Profiles
 set to `true` are allowed. Profiles that are omitted or set to `false` are
 denied, including built-ins added in future Codex versions.
 
@@ -9689,7 +9691,7 @@ System requirements:
 ":workspace" = true  # Not honored because cloud requirements set this to false.
 ```
 
-Set `default_permissions` explicitly to an allowed profile. If it is omitted,
+Set `default_permissions` explicitly to an allowed profile. If it's omitted,
 Codex defaults to `:workspace` only when both `:workspace` and `:read-only` are
 explicitly allowed. When `allowed_permission_profiles` is absent, managed
 requirements don't restrict which profile names users can select. Every entry
@@ -9736,7 +9738,7 @@ For example, `allowed_web_search_modes = ["cached"]` prevents live web search ev
 Use `[experimental_network]` in `requirements.toml` when administrators should
 define network access requirements centrally. These requirements are separate
 from the user `features.network_proxy` toggle: they can configure sandboxed
-networking without that feature flag, but they do not grant command network
+networking without that feature flag, but they don't grant command network
 access when the active sandbox keeps networking off.
 
 ```toml
@@ -9755,8 +9757,8 @@ experimental_network.denied_domains = [
 
 Use `experimental_network.managed_allowed_domains_only = true` only when you
 also define administrator-owned `allowed_domains` and want that allowlist to be
-exclusive. If it is `true` without managed allow rules, user-added domain allow
-rules do not remain effective.
+exclusive. If it's `true` without managed allow rules, user-added domain allow
+rules don't remain effective.
 
 The domain syntax, local/private destination rules, deny-over-allow behavior,
 and DNS rebinding limitations are the same as the sandboxed networking behavior
@@ -9774,6 +9776,7 @@ unified_exec = false
 
 # Disable specific Codex feature surfaces when needed.
 browser_use = false
+browser_use_full_cdp_access = false
 in_app_browser = false
 computer_use = false
 ```
@@ -9782,6 +9785,8 @@ Use the canonical feature keys from `config.toml`'s `[features]` table. Codex no
 
 - `in_app_browser = false` disables the in-app browser pane.
 - `browser_use = false` disables Browser Use and Browser Agent availability.
+- `browser_use_full_cdp_access = false` prevents users from enabling full CDP
+  access in Browser Developer mode.
 - `computer_use = false` disables Computer Use availability and related
   install or setup flows.
 
@@ -11794,7 +11799,10 @@ inference only.
 - Feature is currently limited to only specific regions. Check
   the individual feature documentation to learn more about geo restrictions.
 
-  † Some first party plugins are not available.
+  † Local plugin bundles are supported when their capabilities do
+  not require ChatGPT authentication. OpenAI-curated plugin discovery and
+  features that depend on app connectors or cloud-hosted sharing aren't
+  available.
 
 ### Windows platform
 

@@ -12,18 +12,18 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 1697 pages - /docs - Content included below
-- German (Deutsch) (de) - 131 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 131 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 131 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 131 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 131 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 131 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 131 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 131 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 131 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 131 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 131 pages - /docs/id - Visit website for content
+- English (en) - 1698 pages - /docs - Content included below
+- German (Deutsch) (de) - 133 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 133 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 133 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 133 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 133 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 133 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 133 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 133 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 133 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 133 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 133 pages - /docs/id - Visit website for content
 
 ---
 
@@ -141,6 +141,7 @@ The full documentation is available in the following languages on https://platfo
 
 - [Access Transparency](https://platform.claude.com/docs/en/manage-claude/access-transparency.md)
 - [Admin API](https://platform.claude.com/docs/en/manage-claude/admin-api.md)
+- [Analytics APIs](https://platform.claude.com/docs/en/manage-claude/analytics-api.md)
 - [API and data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention.md)
 - [Overview](https://platform.claude.com/docs/en/manage-claude/authentication.md) - Authentication
 - [Claude Code Analytics API](https://platform.claude.com/docs/en/manage-claude/claude-code-analytics-api.md)

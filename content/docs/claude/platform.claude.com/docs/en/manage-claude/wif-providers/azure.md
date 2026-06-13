@@ -52,7 +52,7 @@ The webhook injects `AZURE_FEDERATED_TOKEN_FILE`, `AZURE_CLIENT_ID`, and `AZURE_
 
 ### Token claims
 
-An Entra-issued token for a managed identity carries these claims:
+An Entra-issued token for a managed identity carries these claims (v2 token shown; see the Note under [Configure Anthropic](#configure-anthropic) for how `iss` and `aud` differ in v1 tokens):
 
 ```json
 {
@@ -66,7 +66,7 @@ An Entra-issued token for a managed identity carries these claims:
 }
 ```
 
-`sub` and `oid` are identical (the managed identity's object ID). `azp` is the application or client ID. The `aud` claim carries your Entra application's client ID (a GUID), not a URL. Match on `oid` to authorize one specific identity, or on `azp` to authorize any identity associated with an application registration. The `tid` claim repeats your tenant ID; matching on it is defense in depth, because the issuer URL already pins the tenant.
+`sub` and `oid` are identical (the managed identity's object ID). `azp` is the application or client ID. The `aud` claim depends on the token version: v2 tokens carry your Entra application's client ID (a GUID); v1 tokens carry the requested resource identifier, which is whatever value you passed as `resource` when fetching the token (for example, `https://api.anthropic.com`). Match on `oid` to authorize one specific identity, or on `azp` to authorize any identity associated with an application registration. The `tid` claim repeats your tenant ID; matching on it is defense in depth, because the issuer URL already pins the tenant.
 
 ## Configure Anthropic
 
@@ -85,7 +85,7 @@ The wizard creates these resources for you. Use the following values whether you
 ```
 
 <Note>
-Depending on the token version, the `iss` claim may be `https://sts.windows.net/<TENANT_ID>/` instead, and the `aud` claim may carry the requested resource URL (`https://api.anthropic.com`) rather than a GUID. Decode your managed-identity token (the Verify section later in this guide shows how), register whichever `iss` value it contains, and set the federation rule's `audience` to whichever `aud` value it contains. The two issuer URLs share the same JWKS, so discovery mode works for either.
+The access-token `iss` might be `https://sts.windows.net/<TENANT_ID>/` (v1.0) instead, and the `aud` claim might carry the requested resource URL (`https://api.anthropic.com`) rather than a GUID. Which form a workload gets is set by the **resource** app registration's `api.requestedAccessTokenVersion`: the default (`null`) emits v1.0 tokens, so managed-identity tokens for a custom audience are v1.0 unless that registration sets `requestedAccessTokenVersion: 2`. Decode your managed-identity token (the Verify section later in this guide shows how), register whichever `iss` value it contains, and set the federation rule's `audience` to whichever `aud` value it contains. The two issuer URLs share the same JWKS, so discovery mode works for either.
 </Note>
 
 **Federation rule:** Match on the managed identity's object ID and your tenant ID. For v2 tokens the `audience` value is your Entra application's client ID (a GUID); use the exact `aud` value from your decoded token.
@@ -461,7 +461,7 @@ curl -sS -H "Metadata: true" \
   | jq -r .access_token > "$ANTHROPIC_IDENTITY_TOKEN_FILE"
 export ANTHROPIC_IDENTITY_TOKEN_FILE
 
-# ANTHROPIC_FEDERATION_RULE_ID, ANTHROPIC_ORGANIZATION_ID, and
+# ANTHROPIC_FEDERATION_RULE_ID, ANTHROPIC_ORGANIZATION_ID,
 # ANTHROPIC_SERVICE_ACCOUNT_ID, and ANTHROPIC_WORKSPACE_ID are read from the environment.
 ant messages create \
   --model claude-sonnet-4-6 \
