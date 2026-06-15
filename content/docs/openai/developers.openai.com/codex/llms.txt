@@ -107,6 +107,9 @@ Use this as a compact map of Codex docs. Each page has a Markdown twin at `/code
 - [Codex IDE extension settings](https://developers.openai.com/codex/ide/settings.md): Reference for Codex IDE extension settings
 - [Codex IDE extension slash commands](https://developers.openai.com/codex/ide/slash-commands.md): Reference for slash commands in the Codex IDE extension
 
+## Import
+- [Import to Codex](https://developers.openai.com/codex/import.md): Bring your setup and recent work from other agents into Codex.
+
 ## Integrations
 - [Codex code review in GitHub](https://developers.openai.com/codex/integrations/github.md): Set up Codex code review for GitHub pull requests, request reviews with @codex review, enable automatic reviews, and customize review guidelines.
 - [Use Codex in Linear](https://developers.openai.com/codex/integrations/linear.md): Run Codex tasks from Linear issues
@@ -121,9 +124,6 @@ Use this as a compact map of Codex docs. Each page has a Markdown twin at `/code
 ## Memories
 - [Memories](https://developers.openai.com/codex/memories.md): How Codex carries useful context forward across threads
 - [Chronicle](https://developers.openai.com/codex/memories/chronicle.md): Build Codex memories from recent screen context.
-
-## Migrate
-- [Migrate to Codex](https://developers.openai.com/codex/migrate.md): Bring your setup from another agent with you when you switch to Codex.
 
 ## Models
 - [Codex Models](https://developers.openai.com/codex/models.md): Meet the AI models that power Codex
