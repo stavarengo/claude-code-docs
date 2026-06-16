@@ -143,3 +143,17 @@ ant profile set workspace_id wrkspc_01... --profile other-ws
 The writable keys for `ant profile set` are `workspace_id`, `base_url`, `organization_id`, `scope`, `client_id`, and `console_url`. Setting `workspace_id` records the target workspace in the profile config but does not rebind credentials that were already issued; run `ant auth login` again under that profile to mint a token for the new workspace.
 
 For the profile file schema and the federation block, see [Profile configuration file](/docs/en/manage-claude/wif-reference#profile-configuration-file). For Workload Identity Federation, see the [Authentication overview](/docs/en/manage-claude/authentication) and the [WIF reference](/docs/en/manage-claude/wif-reference).
+
+## Next steps
+
+<CardGroup cols={3}>
+  <Card title="Using the CLI" icon="terminal" href="/docs/en/cli-sdks-libraries/cli/using">
+    Command structure, output formats, GJSON transforms, and request bodies
+  </Card>
+  <Card title="CLI scripting and automation" icon="code" href="/docs/en/cli-sdks-libraries/cli/scripting">
+    Version-control API resources, scripting patterns, and use from Claude Code
+  </Card>
+  <Card title="Workload Identity Federation" icon="cloud" href="/docs/en/manage-claude/workload-identity-federation">
+    Non-interactive authentication for CI, servers, and containers
+  </Card>
+</CardGroup>

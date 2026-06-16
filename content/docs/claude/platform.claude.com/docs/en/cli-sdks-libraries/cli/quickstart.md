@@ -4,9 +4,24 @@ Install the ant command-line tool, authenticate, and send your first request to 
 
 ---
 
-The `ant` CLI provides access to the Claude API from your terminal. Every API resource is exposed as a subcommand, with output formatting, response filtering, and support for YAML or JSON file input that make it practical for both interactive exploration and automation.
+The `ant` CLI provides access to the Claude API from your terminal. Every API resource is exposed as a subcommand, with output formatting, response filtering, and YAML or JSON file input.
 
-Compared to calling the API with `curl`, `ant` lets you build request bodies from typed flags or piped YAML rather than hand-written JSON, inline file contents into string fields with an `@path` reference, and extract fields from the response with a built-in `--transform` query (no separate JSON tooling required). List endpoints paginate automatically. Claude Code has native support for `ant`.
+<Frame caption="The ant CLI in action.">
+  <video
+   
+    autoPlay
+    loop
+    muted
+    playsInline
+    controls
+    aria-label="Screen recording of the ant CLI running in a terminal."
+  >
+    <source src="/docs/videos/ant-cli-demo.webm" type="video/webm" />
+    <source src="/docs/videos/ant-cli-demo.mp4" type="video/mp4" />
+  </video>
+</Frame>
+
+Compared to `curl`, `ant` builds request bodies from typed flags or piped YAML instead of hand-written JSON, and inlines file contents into string fields with an `@path` reference. It extracts response fields with a built-in `--transform` query, so you don't need a separate tool like `jq`, and it paginates list endpoints automatically.
 
 <Info>
 For endpoint-specific parameters and response schemas, see the [API reference](/docs/en/api/cli/messages/create). This page gets you to a working command. For everything else the CLI does, see [Using the CLI](/docs/en/cli-sdks-libraries/cli/using) and [CLI scripting and automation](/docs/en/cli-sdks-libraries/cli/scripting).
@@ -142,6 +157,14 @@ ant @completion powershell | Out-String | Invoke-Expression
 
 ## Next steps
 
-- [CLI authentication options](/docs/en/cli-sdks-libraries/cli/authentication): API keys, headless hosts, multiple workspaces, and named profiles
-- [Using the CLI](/docs/en/cli-sdks-libraries/cli/using): command structure, output formats, GJSON transforms, and request bodies
-- [CLI scripting and automation](/docs/en/cli-sdks-libraries/cli/scripting): version-control API resources, scripting patterns, and use from Claude Code
+<CardGroup cols={3}>
+  <Card title="CLI authentication options" icon="lock" href="/docs/en/cli-sdks-libraries/cli/authentication">
+    API keys, headless hosts, multiple workspaces, and named profiles
+  </Card>
+  <Card title="Using the CLI" icon="terminal" href="/docs/en/cli-sdks-libraries/cli/using">
+    Command structure, output formats, GJSON transforms, and request bodies
+  </Card>
+  <Card title="CLI scripting and automation" icon="code" href="/docs/en/cli-sdks-libraries/cli/scripting">
+    Version-control API resources, scripting patterns, and use from Claude Code
+  </Card>
+</CardGroup>

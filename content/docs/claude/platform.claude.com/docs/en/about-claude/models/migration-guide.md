@@ -603,15 +603,11 @@ These changes improve your experience on Opus 4.7. Items marked **(required on O
 
 ### Migrating from Claude 4.1 or earlier
 
-If you're migrating from Opus 4.1 (deprecated), Sonnet 4 (deprecated), or earlier models directly to Claude Opus 4.7, apply the Claude Opus 4.7 changes at the top of this guide and the cumulative changes above plus the additional changes in this section.
+If you're migrating from Opus 4.1 (deprecated) or earlier models directly to Claude Opus 4.7, apply the Claude Opus 4.7 changes at the top of this guide and the cumulative changes above plus the additional changes in this section.
 
 ```python
 # From Opus 4.1
 model = "claude-opus-4-1-20250805"  # Before
-model = "claude-opus-4-7"  # After
-
-# From Sonnet 4
-model = "claude-sonnet-4-20250514"  # Before
 model = "claude-opus-4-7"  # After
 
 # From Sonnet 3.7
@@ -740,10 +736,6 @@ Sonnet 4.6 pricing is $3 per million input tokens, $15 per million output tokens
 ```python
 # From Sonnet 4.5
 model = "claude-sonnet-4-5"  # Before
-model = "claude-sonnet-4-6"  # After
-
-# From Sonnet 4
-model = "claude-sonnet-4-20250514"  # Before
 model = "claude-sonnet-4-6"  # After
 ```
 
@@ -1624,10 +1616,6 @@ Sonnet 4.5 pricing is $3 per million input tokens, $15 per million output tokens
 **Update your model name:**
 
 ```python
-# From Sonnet 4
-model = "claude-sonnet-4-20250514"  # Before
-model = "claude-sonnet-4-5-20250929"  # After
-
 # From Sonnet 3.7
 model = "claude-3-7-sonnet-20250219"  # Before
 model = "claude-sonnet-4-5-20250929"  # After

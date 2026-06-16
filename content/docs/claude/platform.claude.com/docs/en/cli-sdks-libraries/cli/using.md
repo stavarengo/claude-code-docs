@@ -198,3 +198,17 @@ X-Api-Key: <REDACTED>
 ## Available resources
 
 Every API resource the CLI exposes is documented in the [API reference](/docs/en/api/cli/messages/create). For a local listing, run `ant --help`, and append `--help` to any subcommand for its flags and parameters.
+
+## Next steps
+
+<CardGroup cols={3}>
+  <Card title="CLI scripting and automation" icon="code" href="/docs/en/cli-sdks-libraries/cli/scripting">
+    Version-control API resources, scripting patterns, and use from Claude Code
+  </Card>
+  <Card title="API reference" icon="book" href="/docs/en/api/cli/messages/create">
+    Endpoint-specific parameters, request fields, and response schemas
+  </Card>
+  <Card title="CLI authentication options" icon="lock" href="/docs/en/cli-sdks-libraries/cli/authentication">
+    API keys, headless hosts, multiple workspaces, and named profiles
+  </Card>
+</CardGroup>

@@ -83,26 +83,24 @@ The Max output values above apply to the synchronous Messages API. On the [Messa
 
 The following models are still available. Consider migrating to current models for improved performance:
 
-| Feature | Claude Opus 4.7 | Claude Opus 4.6 | Claude Sonnet 4.5 | Claude Opus 4.5 | Claude Opus 4.1 (deprecated) | Claude Sonnet 4 (deprecated) | Claude Opus 4 (deprecated) |
-|:--------|:----------------|:----------------|:------------------|:----------------|:----------------|:----------------|:--------------|
-| **Claude API ID** | claude-opus-4-7 | claude-opus-4-6 | claude-sonnet-4-5-20250929 | claude-opus-4-5-20251101 | claude-opus-4-1-20250805 | claude-sonnet-4-20250514 | claude-opus-4-20250514 |
-| **Claude API alias** | claude-opus-4-7 | claude-opus-4-6 | claude-sonnet-4-5 | claude-opus-4-5 | claude-opus-4-1 | claude-sonnet-4-0 | claude-opus-4-0 |
-| **AWS Bedrock ID** | anthropic.claude-opus-4-7<sup>6</sup> | anthropic.claude-opus-4-6-v1 | anthropic.claude-sonnet-4-5-20250929-v1:0 | anthropic.claude-opus-4-5-20251101-v1:0 | anthropic.claude-opus-4-1-20250805-v1:0 | anthropic.claude-sonnet-4-20250514-v1:0 | anthropic.claude-opus-4-20250514-v1:0 |
-| **Vertex AI ID** | claude-opus-4-7 | claude-opus-4-6 | claude-sonnet-4-5@20250929 | claude-opus-4-5@20251101 | claude-opus-4-1@20250805 | claude-sonnet-4@20250514 | claude-opus-4@20250514 |
-| **Pricing** | \$5 / input MTok<br/>\$25 / output MTok | \$5 / input MTok<br/>\$25 / output MTok | \$3 / input MTok<br/>\$15 / output MTok | \$5 / input MTok<br/>\$25 / output MTok | \$15 / input MTok<br/>\$75 / output MTok | \$3 / input MTok<br/>\$15 / output MTok | \$15 / input MTok<br/>\$75 / output MTok |
-| **[Extended thinking](/docs/en/build-with-claude/extended-thinking)** | No | Yes | Yes | Yes | Yes | Yes | Yes |
-| **[Adaptive thinking](/docs/en/build-with-claude/adaptive-thinking)** | Yes | Yes | No | No | No | No | No |
-| **[Priority Tier](/docs/en/api/service-tiers)** | Yes | Yes | Yes | Yes | Yes | Yes | Yes |
-| **Comparative latency** | Moderate | Moderate | Fast | Moderate | Moderate | Fast | Moderate |
-| **Context window** | <Tooltip tooltipContent="~555k words \ ~2.5M unicode characters (Opus 4.7 uses a new tokenizer)">1M tokens</Tooltip> | <Tooltip tooltipContent="~750k words \ ~3.4M unicode characters">1M tokens</Tooltip> | <Tooltip tooltipContent="~150k words \ ~680k unicode characters">200k tokens</Tooltip> | <Tooltip tooltipContent="~150k words \ ~680k unicode characters">200k tokens</Tooltip> | <Tooltip tooltipContent="~150k words \ ~680k unicode characters">200k tokens</Tooltip> | <Tooltip tooltipContent="~150k words \ ~680k unicode characters">200k tokens</Tooltip> | <Tooltip tooltipContent="~150k words \ ~680k unicode characters">200k tokens</Tooltip> |
-| **Max output** | 128k tokens | 128k tokens | 64k tokens | 64k tokens | 32k tokens | 64k tokens | 32k tokens |
-| **Reliable knowledge cutoff** | Jan 2026<sup>5</sup> | May 2025<sup>5</sup> | Jan 2025<sup>5</sup> | May 2025<sup>5</sup> | Jan 2025<sup>5</sup> | Jan 2025<sup>5</sup> | Jan 2025<sup>5</sup> |
-| **Training data cutoff** | Jan 2026 | Aug 2025 | Jul 2025 | Aug 2025 | Mar 2025 | Mar 2025 | Mar 2025 |
+| Feature | Claude Opus 4.7 | Claude Opus 4.6 | Claude Sonnet 4.5 | Claude Opus 4.5 | Claude Opus 4.1 (deprecated) |
+|:--------|:----------------|:----------------|:------------------|:----------------|:----------------|
+| **Claude API ID** | claude-opus-4-7 | claude-opus-4-6 | claude-sonnet-4-5-20250929 | claude-opus-4-5-20251101 | claude-opus-4-1-20250805 |
+| **Claude API alias** | claude-opus-4-7 | claude-opus-4-6 | claude-sonnet-4-5 | claude-opus-4-5 | claude-opus-4-1 |
+| **AWS Bedrock ID** | anthropic.claude-opus-4-7<sup>6</sup> | anthropic.claude-opus-4-6-v1 | anthropic.claude-sonnet-4-5-20250929-v1:0 | anthropic.claude-opus-4-5-20251101-v1:0 | anthropic.claude-opus-4-1-20250805-v1:0 |
+| **Vertex AI ID** | claude-opus-4-7 | claude-opus-4-6 | claude-sonnet-4-5@20250929 | claude-opus-4-5@20251101 | claude-opus-4-1@20250805 |
+| **Pricing** | \$5 / input MTok<br/>\$25 / output MTok | \$5 / input MTok<br/>\$25 / output MTok | \$3 / input MTok<br/>\$15 / output MTok | \$5 / input MTok<br/>\$25 / output MTok | \$15 / input MTok<br/>\$75 / output MTok |
+| **[Extended thinking](/docs/en/build-with-claude/extended-thinking)** | No | Yes | Yes | Yes | Yes |
+| **[Adaptive thinking](/docs/en/build-with-claude/adaptive-thinking)** | Yes | Yes | No | No | No |
+| **[Priority Tier](/docs/en/api/service-tiers)** | Yes | Yes | Yes | Yes | Yes |
+| **Comparative latency** | Moderate | Moderate | Fast | Moderate | Moderate |
+| **Context window** | <Tooltip tooltipContent="~555k words \ ~2.5M unicode characters (Opus 4.7 uses a new tokenizer)">1M tokens</Tooltip> | <Tooltip tooltipContent="~750k words \ ~3.4M unicode characters">1M tokens</Tooltip> | <Tooltip tooltipContent="~150k words \ ~680k unicode characters">200k tokens</Tooltip> | <Tooltip tooltipContent="~150k words \ ~680k unicode characters">200k tokens</Tooltip> | <Tooltip tooltipContent="~150k words \ ~680k unicode characters">200k tokens</Tooltip> |
+| **Max output** | 128k tokens | 128k tokens | 64k tokens | 64k tokens | 32k tokens |
+| **Reliable knowledge cutoff** | Jan 2026<sup>5</sup> | May 2025<sup>5</sup> | Jan 2025<sup>5</sup> | May 2025<sup>5</sup> | Jan 2025<sup>5</sup> |
+| **Training data cutoff** | Jan 2026 | Aug 2025 | Jul 2025 | Aug 2025 | Mar 2025 |
 
 <Warning>
 Claude Opus 4.1 (`claude-opus-4-1-20250805`) is deprecated and will be retired on August 5, 2026. Migrate to [Claude Opus 4.8](/docs/en/about-claude/models/migration-guide#migrating-from-claude-opus-47) before the retirement date.
-
-Claude Sonnet 4 (`claude-sonnet-4-20250514`) and Claude Opus 4 (`claude-opus-4-20250514`) are deprecated and will be retired on June 15, 2026. Migrate to [Claude Sonnet 4.6](/docs/en/about-claude/models/overview#latest-models-comparison) and [Claude Opus 4.8](/docs/en/about-claude/models/migration-guide#migrating-from-claude-opus-47) respectively before the retirement date.
 
 See [model deprecations](/docs/en/about-claude/model-deprecations) for details.
 </Warning>
