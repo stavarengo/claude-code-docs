@@ -47,9 +47,7 @@ Effort is likely to be more important for this model than for any prior Opus, so
 On Claude Opus 4.8, thinking is off unless you explicitly set `thinking: {type: "adaptive"}`. The triggering behavior for adaptive thinking is steerable. If you find the model thinking more often than you'd like, which can happen with large or complex system prompts, add guidance to steer it. As always, measure the effect of any prompting changes on performance. Example:
 
 ```text
-Thinking adds latency and should only be used when it will meaningfully improve answer
-quality — typically for problems that require multi-step reasoning. When in doubt,
-respond directly.
+Thinking adds latency and should only be used when it will meaningfully improve answer quality — typically for problems that require multi-step reasoning. When in doubt, respond directly.
 ```
 
 Conversely, if you're running hard workloads at `medium` and seeing under-thinking, the first lever is to raise effort. If you need finer control, prompt for it directly.
@@ -85,8 +83,7 @@ Use a warm, collaborative tone. Acknowledge the user's framing before answering.
 Claude Opus 4.8 tends to spawn fewer subagents by default. However, this behavior is steerable through prompting; give Claude Opus 4.8 explicit guidance around when subagents are desirable. A toy example for a coding use case:
 
 ```text
-Do not spawn a subagent for work you can complete directly in a single response (e.g.
-refactoring a function you can already see).
+Do not spawn a subagent for work you can complete directly in a single response (e.g. refactoring a function you can already see).
 
 Spawn multiple subagents in the same turn when fanning out across items or reading multiple files.
 ```
@@ -102,9 +99,7 @@ This default is persistent. Generic instructions ("don't use cream," "make it cl
 ```text
 Design a desktop landing page for a supplement brand called AEFRM.
 
-The visual direction should come from a cold monochrome atmosphere using pale
-silver-gray tones that gradually deepen into blue-gray and near-black, similar to a
-misted metallic surface.
+The visual direction should come from a cold monochrome atmosphere using pale silver-gray tones that gradually deepen into blue-gray and near-black, similar to a misted metallic surface.
 
 The page should feel sharp and controlled, with a strong sense of structure and restraint.
 
@@ -112,25 +107,13 @@ Use this tonal system across the full page instead of introducing bright accent 
 
 Use the uploaded image on the hero design in black and white.
 
-The layout should be built with clear horizontal sections and a centered max-width
-container. Use 4px corner radius consistently across cards, buttons, inputs, and media
-frames. Margins should feel generous, with enough empty space around each section so the
-page breathes.
+The layout should be built with clear horizontal sections and a centered max-width container. Use 4px corner radius consistently across cards, buttons, inputs, and media frames. Margins should feel generous, with enough empty space around each section so the page breathes.
 
-Typography should use a square, angular sans-serif with wider letter spacing than usual,
-especially in headings and navigation, so the text feels more engineered and less
-compressed. Headline text can be large and uppercase, while supporting copy remains
-short and sparse. The sub texts should be written with Alumni Sans SC in 4-6px like tiny
-little texts on corners bottom centre like that.
+Typography should use a square, angular sans-serif with wider letter spacing than usual, especially in headings and navigation, so the text feels more engineered and less compressed. Headline text can be large and uppercase, while supporting copy remains short and sparse. The sub texts should be written with Alumni Sans SC in 4-6px like tiny little texts on corners bottom centre like that.
 
-For the structure, start with a hero section containing a strong product statement, one
-short supporting paragraph, and a clean product placeholder or packshot frame. Below
-that, add a benefit grid with three or four blocks, then a formulation or ingredients
-section, and finally a cta.
+For the structure, start with a hero section containing a strong product statement, one short supporting paragraph, and a clean product placeholder or packshot frame. Below that, add a benefit grid with three or four blocks, then a formulation or ingredients section, and finally a cta.
 
-Buttons should be flat and precise, with subtle hover changes using transition: all
-160ms ease out where brightness and border contrast shift slightly rather than using
-dramatic motion.
+Buttons should be flat and precise, with subtle hover changes using transition: all 160ms ease out where brightness and border contrast shift slightly rather than using dramatic motion.
 
 Color palette should stay within this range:
 #E9ECEC, #C9D2D4, #8C9A9E, #44545B, #11171B.
@@ -139,20 +122,14 @@ Color palette should stay within this range:
 **2. Have the model propose options before building.** This breaks the default and gives users control. If you previously relied on `temperature` for design variety, use this approach; it produces meaningfully different directions across runs. Example prompt:
 
 ```text
-Before building, propose 4 distinct visual directions tailored to this brief (each as:
-bg hex / accent hex / typeface — one-line rationale). Ask the user to pick one, then
-implement only that direction.
+Before building, propose 4 distinct visual directions tailored to this brief (each as: bg hex / accent hex / typeface — one-line rationale). Ask the user to pick one, then implement only that direction.
 ```
 
 Additionally, Claude Opus 4.8 requires less frontend design prompting than previous models to avoid generic patterns that users call the "AI slop" aesthetic. With earlier models, Anthropic recommended a lengthier prompt snippet in the [frontend-design skill](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md). However, Claude Opus 4.8 generates distinctive, creative frontends with more minimal prompting guidance. This prompt snippet works well with the above prompting advice for variety:
 
 ```text
 <frontend_aesthetics>
-NEVER use generic AI-generated aesthetics like overused font families (Inter, Roboto,
-Arial, system fonts), cliched color schemes (particularly purple gradients on white or
-dark backgrounds), predictable layouts and component patterns, and cookie-cutter design
-that lacks context-specific character. Use unique fonts, cohesive colors and themes, and
-animations for effects and micro-interactions.
+NEVER use generic AI-generated aesthetics like overused font families (Inter, Roboto, Arial, system fonts), cliched color schemes (particularly purple gradients on white or dark backgrounds), predictable layouts and component patterns, and cookie-cutter design that lacks context-specific character. Use unique fonts, cohesive colors and themes, and animations for effects and micro-interactions.
 </frontend_aesthetics>
 ```
 
@@ -169,12 +146,7 @@ Claude Opus 4.8 is meaningfully better at finding bugs than prior models, and ha
 Some recommended prompt language:
 
 ```text
-Report every issue you find, including ones you are uncertain about or consider
-low-severity. Do not filter for importance or confidence at this stage - a separate
-verification step will do that. Your goal here is coverage: it is better to surface a
-finding that later gets filtered out than to silently drop a real bug. For each finding,
-include your confidence level and an estimated severity so a downstream filter can rank
-them.
+Report every issue you find, including ones you are uncertain about or consider low-severity. Do not filter for importance or confidence at this stage - a separate verification step will do that. Your goal here is coverage: it is better to surface a finding that later gets filtered out than to silently drop a real bug. For each finding, include your confidence level and an estimated severity so a downstream filter can rank them.
 ```
 
 This prompt can be used without having an actual second step, but moving confidence filtering out of the finding step often helps. If your harness has a separate verification, deduplication, or ranking stage, tell the model explicitly that its job at the finding stage is coverage rather than filtering.

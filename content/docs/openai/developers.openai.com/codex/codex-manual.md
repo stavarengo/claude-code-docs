@@ -4365,9 +4365,6 @@ available as plugins, changing app settings, and reproducing GUI-only bugs.
 Because computer use can affect app and system state outside your project
 workspace, keep tasks narrow and review permission prompts before continuing.
 
-The feature isn't available in the European Economic Area, the United Kingdom, or
-Switzerland at launch.
-
 #### Work with non-code artifacts
 
 When a task produces non-code artifacts, the sidebar can preview PDF files,
@@ -4575,8 +4572,7 @@ browser use workflows.
 
 Check your Computer Use settings to review desktop-app access and related
 preferences after setup. On macOS, revoke system-level access by updating Screen
-Recording or Accessibility permissions in macOS Privacy & Security settings. The
-feature isn't available in the EEA, the United Kingdom, or Switzerland at launch.
+Recording or Accessibility permissions in macOS Privacy & Security settings.
 
 #### Personalization
 
@@ -5192,9 +5188,8 @@ You can also run `codex features enable goals` from the CLI or ask Codex to run 
 
 Source: [Computer Use](/codex/app/computer-use.md)
 
-In the Codex app, computer use is available on macOS and Windows, except in
-the European Economic Area, the United Kingdom, and Switzerland at launch.
-Install the Computer Use plugin. On macOS, grant Screen Recording and
+In supported regions, computer use in the Codex app is available on macOS and
+Windows. Install the Computer Use plugin. On macOS, grant Screen Recording and
 Accessibility permissions when prompted.
 
 With computer use, Codex can see and operate graphical user interfaces on macOS
@@ -5938,12 +5933,13 @@ section.
 
 #### Code doesn't run on a worktree
 
-Worktrees are created in a different directory and only inherit the files that
-are checked into Git. Depending on how you manage dependencies and tooling
-for your project you might have to run some setup scripts on your worktree using a
-[local environment](/codex/app/local-environments). Alternatively you can check out
-the changes in your regular local project. Check out the
-[worktrees documentation](/codex/app/worktrees) to learn more.
+Worktrees are created in a different directory and inherit files checked into
+Git by default. Depending on how you manage dependencies and tooling for your
+project, you might have to run setup scripts on your worktree using a
+[local environment](/codex/app/local-environments) or copy ignored setup files
+with [`.worktreeinclude`](/codex/app/worktrees#copy-ignored-local-files-into-managed-worktrees).
+Alternatively, you can check out the changes in your regular local project. See
+the [worktrees documentation](/codex/app/worktrees) to learn more.
 
 #### App doesn't pick up a teammate's shared local environment
 
@@ -6320,7 +6316,7 @@ Each thread keeps the same associated worktree over time. If you hand the thread
 
 You can also go the other direction. If you're already working in Local and want to free up the foreground, use **Hand off** to move the thread to a worktree. This is useful when you want Codex to keep working in the background while you switch your attention back to something else locally.
 
-Since Handoff uses Git operations, any files that are part of your `.gitignore` file won't move with the thread.
+Since Handoff uses Git operations, any files that are part of your `.gitignore` file won't move with the thread unless Codex copies them into a local managed worktree with `.worktreeinclude`.
 
 #### Advanced details
 
@@ -6328,11 +6324,28 @@ Since Handoff uses Git operations, any files that are part of your `.gitignore` 
 
 By default, threads use a Codex-managed worktree. These are meant to feel lightweight and disposable. A Codex-managed worktree is typically dedicated to one thread, and Codex returns that thread to the same worktree if you hand it back there later.
 
-If you want a long-lived environment, create a permanent worktree from the three-dot menu on a project in the sidebar. This creates a new permanent worktree as its own project. Permanent worktrees are not automatically deleted, and you can start multiple threads from the same worktree.
+If you want a long-lived environment, create a permanent worktree from the three-dot menu on a project in the sidebar. This creates a new permanent worktree as its own project. Permanent worktrees aren't automatically deleted, and you can start multiple threads from the same worktree.
 
 #### How Codex manages worktrees for you
 
 Codex creates worktrees in `$CODEX_HOME/worktrees`. The starting commit will be the `HEAD` commit of the branch selected when you start your thread. If you chose a branch with local changes, the uncommitted changes will be applied to the worktree as well. The worktree will _not_ be checked out as a branch. It will be in a [detached HEAD](https://git-scm.com/docs/git-checkout#_detached_head) state. This lets Codex create several worktrees without polluting your branches.
+
+#### Copy ignored local files into managed worktrees
+
+Local Codex-managed worktrees start from a Git checkout, so tracked files are already present. If your repository ignores local setup files that a new worktree needs, add a `.worktreeinclude` file to the repository root and list the ignored paths or `.gitignore`-style patterns to copy when Codex creates a managed worktree.
+
+Use this for files Git intentionally ignores, such as `.env`, `.env.local`, or `config/secrets.json`. Codex only copies ignored files that match `.worktreeinclude`; it doesn't copy other local files that Git doesn't track. Don't list tracked files.
+
+Codex automatically copies an ignored `AGENTS.override.md` into local managed worktrees, so you don't need to list it in `.worktreeinclude`.
+
+```text
+# .worktreeinclude
+.env
+.env.local
+config/secrets.json
+```
+
+Codex skips source symlinks and won't overwrite files that already exist in the new checkout. This behavior applies to local Codex app managed worktrees, not remote worktrees or Git worktrees you create yourself from the command line.
 
 #### Branch limitations
 
@@ -9583,6 +9596,20 @@ allow_appshots = false
 
 Codex treats only `allow_appshots = false` as disabling Appshots. If the key is omitted, Appshots remain unconstrained by requirements and use normal product availability checks. App-server clients that read effective requirements through `configRequirements/read` receive the same restriction as `allowAppshots`; an omitted or `null` `allowAppshots` value doesn't disable Appshots.
 
+#### Disable device remote control
+
+To disable [device remote control](/codex/remote-connections#pick-up-work-from-another-device)
+for managed users, set the top-level `allow_remote_control` requirement:
+
+```toml
+allow_remote_control = false
+```
+
+Codex treats only `allow_remote_control = false` as disabling device remote
+control. If the key is omitted, device remote control remains unconstrained by
+requirements and uses normal product availability checks. This requirement does
+not disable SSH remote connections.
+
 #### Control available permission profiles
 
 Use `allowed_permission_profiles` to control which built-in and custom
@@ -9832,28 +9859,6 @@ guardian_policy_config = """
   destinations.
 """
 ```
-
-#### Enforce deny-read requirements
-
-Admins can deny reads for exact paths or glob patterns with
-`[permissions.filesystem]`. Users can't weaken these requirements with local
-configuration.
-
-```toml
-[permissions.filesystem]
-deny_read = [
-  # values can be absolute paths...
-  "/**/*.env",
-  # ...or relative to $HOME/%USERPROFILE% using `~`.
-  "~/.ssh",
-  # But relative paths starting with `./` are not allowed.
-]
-```
-
-When deny-read requirements are present, Codex rejects full-access permissions
-and keeps local execution in a read-only or workspace sandbox so it can enforce
-them. On native Windows, managed `deny_read` applies to direct file tools; shell
-subprocess reads don't use this sandbox rule.
 
 ### Subagents
 
@@ -10164,9 +10169,9 @@ features.plugin_sharing = false
 Source: [Chronicle](/codex/memories/chronicle.md)
 
 Chronicle is in an **opt-in research preview**. It is only available for
-ChatGPT Pro subscribers on macOS, and is not yet available in the EU, UK and
-Switzerland. Please review the [Privacy and Security](#privacy-and-security)
-section for details and to understand the current risks before enabling.
+ChatGPT Pro subscribers on macOS. Please review the [Privacy and
+Security](#privacy-and-security) section for details and to understand the
+current risks before enabling.
 
 Chronicle augments Codex memories with context from your screen. When you prompt
 Codex, those memories can help it understand what you’ve been working on with
@@ -10669,10 +10674,10 @@ rest of the setup flow.
 
 Source: [Memories](/codex/memories.md)
 
-Memories are off by default and aren't available in the European Economic
-Area, the United Kingdom, or Switzerland at launch. Enable them in Codex
-settings, or set `memories = true` in the `[features]` table in
-`~/.codex/config.toml`.
+Memories are off by default. In the European Economic Area, the United
+Kingdom, and Switzerland, Codex uses or generates memories only after you
+enable them in Codex settings, or set `memories = true` in the `[features]`
+table in `~/.codex/config.toml`.
 
 Memories let Codex carry useful context from earlier threads into future work.
 After you enable memories, Codex can remember stable preferences, recurring
