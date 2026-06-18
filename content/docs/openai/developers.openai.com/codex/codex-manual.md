@@ -9089,7 +9089,7 @@ This separation makes it easier to roll out Codex while keeping analytics, envir
 
 Codex Admins can deploy admin-enforced `requirements.toml` policies from the Codex [Policies page](https://chatgpt.com/codex/settings/policies).
 
-Use this page when you want to apply different local Codex constraints to different groups without distributing device-level files first. The managed policy uses the same `requirements.toml` format described in [Managed configuration](/codex/enterprise/managed-configuration), so you can define allowed approval policies, sandbox modes, web search behavior, network access requirements, MCP server allowlists, feature pins, and restrictive command rules. To disable Browser Use, the in-app browser, or Computer Use, see [Pin feature flags](/codex/enterprise/managed-configuration#pin-feature-flags).
+Use this page when you want to apply different local Codex constraints to different groups without distributing device-level files first. The managed policy uses the same `requirements.toml` format described in [Managed configuration](/codex/enterprise/managed-configuration), so you can define allowed approval policies, sandbox modes, web search behavior, MCP server allowlists, feature pins, and restrictive command rules. To disable Browser Use, the in-app browser, or Computer Use, see [Pin feature flags](/codex/enterprise/managed-configuration#pin-feature-flags).
 
 Recommended setup:
 
@@ -9137,22 +9137,6 @@ browser_use = false
 browser_use_full_cdp_access = false
 in_app_browser = false
 computer_use = false
-```
-
-Example: define administrator-owned network requirements:
-
-```toml
-experimental_network.enabled = true
-experimental_network.dangerously_allow_all_unix_sockets = true
-experimental_network.allow_local_binding = true
-experimental_network.allowed_domains = [
-  "api.openai.com",
-  "*.example.com",
-]
-experimental_network.denied_domains = [
-  "blocked.example.com",
-  "*.exfil.example.com",
-]
 ```
 
 Example: add a restrictive command rule when you want admins to block or gate specific commands:
@@ -9761,6 +9745,12 @@ For example, `allowed_web_search_modes = ["cached"]` prevents live web search ev
 
 #### Configure network access requirements
 
+`[experimental_network]` is experimental and may change. Do not enable these
+requirements broadly across an enterprise deployment without validating them
+on the Codex client versions and operating systems your users run. Windows
+support is still limited; avoid applying this policy to Windows users unless
+you have tested it in your environment.
+
 Use `[experimental_network]` in `requirements.toml` when administrators should
 define network access requirements centrally. These requirements are separate
 from the user `features.network_proxy` toggle: they can configure sandboxed
@@ -9769,8 +9759,6 @@ access when the active sandbox keeps networking off.
 
 ```toml
 experimental_network.enabled = true
-experimental_network.dangerously_allow_all_unix_sockets = true
-experimental_network.allow_local_binding = true
 experimental_network.allowed_domains = [
   "api.openai.com",
   "*.example.com",
