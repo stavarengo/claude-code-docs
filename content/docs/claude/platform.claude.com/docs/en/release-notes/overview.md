@@ -13,6 +13,10 @@ For updates to Claude Code, see the [complete CHANGELOG.md](https://github.com/a
 ### June 15, 2026
 - We've retired the Claude Sonnet 4 model (`claude-sonnet-4-20250514`) and the Claude Opus 4 model (`claude-opus-4-20250514`). All requests to these models will now return an error. We recommend upgrading to [Claude Sonnet 4.6](/docs/en/about-claude/models/overview#latest-models-comparison) and [Claude Opus 4.8](/docs/en/about-claude/models/overview#latest-models-comparison) respectively. Researchers can request ongoing access through the [External Researcher Access Program](https://support.claude.com/en/articles/9125743-what-is-the-external-researcher-access-program).
 
+### June 11, 2026
+- The [code execution tool](/docs/en/agents-and-tools/tool-use/code-execution-tool) now supports `code_execution_20260521`, which discloses the 90-second per-cell execution time limit in the tool description so Claude can budget long-running cells. No beta header is required.
+- The [web search tool](/docs/en/agents-and-tools/tool-use/web-search-tool) and [web fetch tool](/docs/en/agents-and-tools/tool-use/web-fetch-tool) now support `web_search_20260318` and `web_fetch_20260318`, adding a `response_inclusion` parameter to drop consumed result blocks from the API response for agentic workflows. No beta header is required.
+
 ### June 10, 2026
 - The `GET /v1/environments/{id}/work` endpoint, which lists pending work for a [self-hosted sandbox](/docs/en/managed-agents/self-hosted-sandboxes), is now available on [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws). See [IAM actions for Claude Platform on AWS](/docs/en/api/claude-platform-on-aws-iam-actions) for the `GetEnvironment` action that authorizes it.
 

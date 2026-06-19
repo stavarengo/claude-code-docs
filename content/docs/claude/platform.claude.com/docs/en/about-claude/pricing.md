@@ -221,7 +221,7 @@ See [tool use pricing](#tool-use-pricing) for complete pricing details.
 
 #### Code execution tool
 
-**Code execution is free when used with web search or web fetch.** When `web_search_20260209` or `web_fetch_20260209` is included in your API request, there are no additional charges for code execution tool calls beyond the standard input and output token costs.
+**Code execution is free when used with web search or web fetch.** When `web_search_20260209` (or later) or `web_fetch_20260209` (or later) is included in your API request, there are no additional charges for code execution tool calls beyond the standard input and output token costs.
 
 When used without these tools, code execution is billed by execution time, tracked separately from token usage:
 

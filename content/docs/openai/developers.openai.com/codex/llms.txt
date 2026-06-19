@@ -153,6 +153,9 @@ Use this as a compact map of Codex docs. Each page has a Markdown twin at `/code
 ## Quickstart
 - [Quickstart](https://developers.openai.com/codex/quickstart.md): Start using Codex in your IDE, CLI, or the cloud
 
+## Record And Replay
+- [Record & Replay](https://developers.openai.com/codex/record-and-replay.md): Show Codex a workflow once and turn it into a reusable skill
+
 ## Remote Connections
 - [Remote connections](https://developers.openai.com/codex/remote-connections.md): Connect your phone or another device to a Codex host, or use projects on remote machines over SSH
 
@@ -164,10 +167,17 @@ Use this as a compact map of Codex docs. Each page has a Markdown twin at `/code
 
 ## Security
 - [Codex Security](https://developers.openai.com/codex/security.md): Find and remediate vulnerabilities with the Codex Security plugin or Codex Security cloud.
-- [Codex Security plugin](https://developers.openai.com/codex/security/plugin.md): Install the Codex Security plugin to scan code, confirm findings, and prepare reviewed fixes from Codex.
+- [Codex Security plugin changelog](https://developers.openai.com/codex/security/plugin/changelog.md): Notable user-facing changes to the Codex Security plugin.
+- [Codex Security plugin quickstart](https://developers.openai.com/codex/security/plugin.md): Install the Codex Security plugin, run your first read-only scan, and review the result in Codex.
 - [Codex Security setup](https://developers.openai.com/codex/security/setup.md): Set up Codex Security, wait for initial findings, and improve results with threat model edits
+- [Export and track security findings](https://developers.openai.com/codex/security/plugin/export-findings.md): Create portable findings artifacts or prepare approval-gated issues and draft advisories from a completed scan.
 - [FAQ](https://developers.openai.com/codex/security/faq.md): Common questions about Codex Security
+- [Fix and verify security findings](https://developers.openai.com/codex/security/plugin/fix-findings.md): Turn accepted findings into minimal patches with focused regression evidence.
 - [Improving the threat model](https://developers.openai.com/codex/security/threat-model.md): Refine the Codex Security context that ranks findings and helps you review faster
+- [Review code changes for security](https://developers.openai.com/codex/security/plugin/code-changes.md): Review pull requests and local changes for security regressions manually or in CI/CD.
+- [Run a Codex Security scan](https://developers.openai.com/codex/security/plugin/scans.md): Scan an authorized repository or one scoped folder and review findings, coverage, and artifacts.
+- [Run a deep security scan](https://developers.openai.com/codex/security/plugin/deep-scans.md): Run a slower, more thorough review of a repository or scoped folder.
+- [Triage a backlog](https://developers.openai.com/codex/security/plugin/triage-backlog.md): Review existing security findings against a repository and order follow-up work.
 
 ## Sites
 - [Sites](https://developers.openai.com/codex/sites.md): Build and deploy hosted sites from Codex with the Sites plugin

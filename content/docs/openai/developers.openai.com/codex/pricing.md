@@ -1024,6 +1024,19 @@ tips to maximize your limits:
             },
           },
           {
+            name: "Record & Replay (macOS)",
+            shortName: "Record & Replay",
+            href: "/codex/record-and-replay",
+            limitedFootnote: "region",
+            availability: {
+              plus: "limited",
+              pro: "limited",
+              business: "limited",
+              enterprise: "limited",
+              api: "limited",
+            },
+          },
+          {
             name: "SSH remote connections",
             shortName: "SSH remote",
             href: "/codex/remote-connections#connect-to-an-ssh-host",
