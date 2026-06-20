@@ -3269,6 +3269,9 @@ mcp_oauth_credentials_store = "auto"
 
 # Optional redirect URI override for MCP OAuth login (for example, remote devbox ingress).
 
+# Codex appends a server-specific callback ID before OAuth login, so register the
+# full derived URI with your provider, not just the base host or unsuffixed path.
+
 # Custom callback paths are supported. `mcp_oauth_callback_port` still controls the listener port.
 
 # mcp_oauth_callback_url = "https://devbox.example.internal/callback"
@@ -8078,7 +8081,7 @@ remote MCP stdio.
 
 If your OAuth provider requires a fixed callback port, set the top-level `mcp_oauth_callback_port` in `config.toml`. If unset, Codex binds to an ephemeral port.
 
-If your MCP OAuth flow must use a specific callback URL (for example, a remote Devbox ingress URL or a custom callback path), set `mcp_oauth_callback_url`. Codex uses this value as the OAuth `redirect_uri` while still using `mcp_oauth_callback_port` for the callback listener port. Local callback URLs (for example `localhost`) bind on the local interface; non-local callback URLs bind on `0.0.0.0` so the callback can reach the host.
+If your MCP OAuth flow must use a specific callback URL (for example, a remote Devbox ingress URL or a custom callback path), set `mcp_oauth_callback_url`. Codex uses this value as the base callback URL, then appends a server-specific callback ID to produce the OAuth `redirect_uri` it sends during login. Register the full derived `redirect_uri` with your OAuth provider, including the appended callback ID and any configured path, query, or port, rather than registering only the base host or unsuffixed path. Local callback URLs (for example `localhost`) bind on the local interface; non-local callback URLs bind on `0.0.0.0` so the callback can reach the host.
 
 If the MCP server advertises `scopes_supported`, Codex prefers those
 server-advertised scopes during OAuth login. Otherwise, Codex falls back to the
@@ -12212,14 +12215,32 @@ unauthenticated public listeners.
 4. In the Codex App, open **Settings > Connections**, add or enable the SSH
    host, then choose a remote project folder.
 
-#### Authentication and network exposure
+#### Hand off a thread between hosts
 
-Remote connections use SSH to start and manage the remote Codex app server.
-Don't expose app-server transports directly on a shared or public network.
+Handoff moves an existing thread and its Git state between your local computer
+and a connected remote host. Use it to start work locally, continue in a
+worktree on a remote computer, and bring the thread back later.
 
-If you need to reach a remote machine outside your current network, use a VPN
-or mesh networking tool instead of exposing the app server directly to the
-internet.
+Before you hand off a thread, connect the destination host and save a project
+for the same Git repository on that host. If the project is a subdirectory of
+the repository, save the same subdirectory on both hosts. Codex only shows
+destinations with a matching saved project.
+
+To hand off a thread:
+
+1. Open the thread in the Codex App.
+2. In the thread footer, select the current run location, then select the
+   destination host. Select **This computer** when handing a remote thread back
+   to your local computer.
+3. Review the destination and branch, then select **Hand off**.
+
+Codex creates or reuses a worktree on the destination host, transfers the
+thread and Git state, and switches the thread to that host. If the thread is
+running, handoff interrupts the current response before transferring it.
+
+You can also ask Codex in another thread to hand off a named thread to a
+connected host. Codex can't hand off the thread making the request, and handoff
+to a Codex cloud environment isn't supported.
 
 ### Sites
 
