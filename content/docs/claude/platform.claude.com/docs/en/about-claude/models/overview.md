@@ -45,7 +45,7 @@ Claude Fable 5 is generally available on the Claude API, Claude Platform on AWS,
 | **[Priority Tier](/docs/en/api/service-tiers)** | Yes | Yes | Yes |
 | **Comparative latency** | Moderate | Fast | Fastest |
 | **Context window** | <Tooltip tooltipContent="~555k words \ ~2.5M unicode characters">1M tokens</Tooltip><sup>4</sup> | <Tooltip tooltipContent="~750k words \ ~3.4M unicode characters">1M tokens</Tooltip> | <Tooltip tooltipContent="~150k words \ ~680k unicode characters">200k tokens</Tooltip> |
-| **Max output** | 128k tokens | 64k tokens | 64k tokens |
+| **Max output** | 128k tokens | 128k tokens | 64k tokens |
 | **Reliable knowledge cutoff** | Jan 2026<sup>2</sup> | Aug 2025<sup>2</sup> | Feb 2025 |
 | **Training data cutoff** | Jan 2026 | Jan 2026 | Jul 2025 |
 
