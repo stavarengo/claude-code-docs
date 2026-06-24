@@ -39,7 +39,43 @@ model = "claude-mythos-5"  # After
 
     Before (Claude Mythos Preview):
 
-    ```python
+    <CodeGroup>
+    ```bash cURL
+    curl https://api.anthropic.com/v1/messages \
+         --header "x-api-key: $ANTHROPIC_API_KEY" \
+         --header "anthropic-version: 2023-06-01" \
+         --header "content-type: application/json" \
+         --data \
+    '{
+        "model": "claude-mythos-preview",
+        "max_tokens": 16000,
+        "thinking": {
+            "type": "enabled",
+            "budget_tokens": 10000
+        },
+        "messages": [
+            {
+                "role": "user",
+                "content": "..."
+            }
+        ]
+    }'
+    ```
+
+    ```bash CLI
+    ant messages create <<'YAML'
+    model: claude-mythos-preview
+    max_tokens: 16000
+    thinking:
+      type: enabled
+      budget_tokens: 10000
+    messages:
+      - role: user
+        content: "..."
+    YAML
+    ```
+
+    ```python Python
     client.messages.create(
         model="claude-mythos-preview",
         max_tokens=16000,
@@ -48,16 +84,266 @@ model = "claude-mythos-5"  # After
     )
     ```
 
+    ```typescript TypeScript
+    await client.messages.create({
+      model: "claude-mythos-preview",
+      max_tokens: 16000,
+      thinking: { type: "enabled", budget_tokens: 10000 },
+      messages: [{ role: "user", content: "..." }]
+    });
+    ```
+
+    ```csharp C#
+    using Anthropic;
+    using Anthropic.Models.Messages;
+
+    AnthropicClient client = new();
+
+    var parameters = new MessageCreateParams
+    {
+        Model = "claude-mythos-preview",
+        MaxTokens = 16000,
+        Thinking = new ThinkingConfigEnabled(budgetTokens: 10000),
+        Messages = [new() { Role = Role.User, Content = "..." }]
+    };
+
+    var response = await client.Messages.Create(parameters);
+    Console.WriteLine(response);
+    ```
+
+    ```go Go hidelines={1..11,-1}
+    package main
+
+    import (
+    	"context"
+    	"fmt"
+    	"log"
+
+    	"github.com/anthropics/anthropic-sdk-go"
+    )
+
+    func main() {
+    	client := anthropic.NewClient()
+
+    	response, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
+    		Model:     "claude-mythos-preview",
+    		MaxTokens: 16000,
+    		Thinking:  anthropic.ThinkingConfigParamOfEnabled(10000),
+    		Messages: []anthropic.MessageParam{
+    			anthropic.NewUserMessage(anthropic.NewTextBlock("...")),
+    		},
+    	})
+    	if err != nil {
+    		log.Fatal(err)
+    	}
+    	fmt.Println(response)
+    }
+    ```
+
+    ```java Java hidelines={1..6,-1}
+    import com.anthropic.client.AnthropicClient;
+    import com.anthropic.client.okhttp.AnthropicOkHttpClient;
+    import com.anthropic.models.messages.Message;
+    import com.anthropic.models.messages.MessageCreateParams;
+
+    void main() {
+        AnthropicClient client = AnthropicOkHttpClient.fromEnv();
+
+        MessageCreateParams params = MessageCreateParams.builder()
+            .model("claude-mythos-preview")
+            .maxTokens(16000L)
+            .enabledThinking(10000L)
+            .addUserMessage("...")
+            .build();
+
+        Message response = client.messages().create(params);
+        IO.println(response);
+    }
+    ```
+
+    ```php PHP hidelines={1..4}
+    <?php
+
+    use Anthropic\Client;
+
+    $client = new Client();
+
+    $message = $client->messages->create(
+        maxTokens: 16000,
+        messages: [['role' => 'user', 'content' => '...']],
+        model: 'claude-mythos-preview',
+        thinking: ['type' => 'enabled', 'budget_tokens' => 10000],
+    );
+    ```
+
+    ```ruby Ruby hidelines={1..2}
+    require "anthropic"
+
+    client = Anthropic::Client.new
+
+    message = client.messages.create(
+      model: "claude-mythos-preview",
+      max_tokens: 16000,
+      thinking: {
+        type: "enabled",
+        budget_tokens: 10000
+      },
+      messages: [
+        { role: "user", content: "..." }
+      ]
+    )
+    ```
+    </CodeGroup>
+
     After (Claude Mythos 5):
 
+    <CodeGroup>
     
-    ```python nocheck
+    ```bash cURL nocheck
+    curl https://api.anthropic.com/v1/messages \
+         --header "x-api-key: $ANTHROPIC_API_KEY" \
+         --header "anthropic-version: 2023-06-01" \
+         --header "content-type: application/json" \
+         --data \
+    '{
+        "model": "claude-mythos-5",
+        "max_tokens": 16000,
+        "messages": [
+            {
+                "role": "user",
+                "content": "..."
+            }
+        ]
+    }'
+    ```
+
+    
+    ```bash CLI nocheck
+    ant messages create <<'YAML'
+    model: claude-mythos-5
+    max_tokens: 16000
+    messages:
+      - role: user
+        content: "..."
+    YAML
+    ```
+
+    
+    ```python Python nocheck
     client.messages.create(
         model="claude-mythos-5",
         max_tokens=16000,
         messages=[{"role": "user", "content": "..."}],
     )
     ```
+
+    
+    ```typescript TypeScript nocheck
+    await client.messages.create({
+      model: "claude-mythos-5",
+      max_tokens: 16000,
+      messages: [{ role: "user", content: "..." }]
+    });
+    ```
+
+    
+    ```csharp C# nocheck
+    using Anthropic;
+    using Anthropic.Models.Messages;
+
+    AnthropicClient client = new();
+
+    var parameters = new MessageCreateParams
+    {
+        Model = "claude-mythos-5",
+        MaxTokens = 16000,
+        Messages = [new() { Role = Role.User, Content = "..." }]
+    };
+
+    var response = await client.Messages.Create(parameters);
+    Console.WriteLine(response);
+    ```
+
+    
+    ```go Go nocheck hidelines={1..11,-1}
+    package main
+
+    import (
+    	"context"
+    	"fmt"
+    	"log"
+
+    	"github.com/anthropics/anthropic-sdk-go"
+    )
+
+    func main() {
+    	client := anthropic.NewClient()
+
+    	response, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
+    		Model:     "claude-mythos-5",
+    		MaxTokens: 16000,
+    		Messages: []anthropic.MessageParam{
+    			anthropic.NewUserMessage(anthropic.NewTextBlock("...")),
+    		},
+    	})
+    	if err != nil {
+    		log.Fatal(err)
+    	}
+    	fmt.Println(response)
+    }
+    ```
+
+    
+    ```java Java nocheck hidelines={1..6,-1}
+    import com.anthropic.client.AnthropicClient;
+    import com.anthropic.client.okhttp.AnthropicOkHttpClient;
+    import com.anthropic.models.messages.Message;
+    import com.anthropic.models.messages.MessageCreateParams;
+
+    void main() {
+        AnthropicClient client = AnthropicOkHttpClient.fromEnv();
+
+        MessageCreateParams params = MessageCreateParams.builder()
+            .model("claude-mythos-5")
+            .maxTokens(16000L)
+            .addUserMessage("...")
+            .build();
+
+        Message response = client.messages().create(params);
+        IO.println(response);
+    }
+    ```
+
+    
+    ```php PHP nocheck hidelines={1..4}
+    <?php
+
+    use Anthropic\Client;
+
+    $client = new Client();
+
+    $message = $client->messages->create(
+        maxTokens: 16000,
+        messages: [['role' => 'user', 'content' => '...']],
+        model: 'claude-mythos-5',
+    );
+    ```
+
+    
+    ```ruby Ruby nocheck hidelines={1..2}
+    require "anthropic"
+
+    client = Anthropic::Client.new
+
+    message = client.messages.create(
+      model: "claude-mythos-5",
+      max_tokens: 16000,
+      messages: [
+        { role: "user", content: "..." }
+      ]
+    )
+    ```
+    </CodeGroup>
 
 2. **Assistant prefill:** Prefilling the assistant message is not supported on `claude-mythos-5` and returns a 400 error, the same as on Claude Mythos Preview. Use system prompt instructions instead.
 
@@ -71,13 +357,13 @@ model = "claude-mythos-5"  # After
 
 ### Migration checklist
 
-- [ ] Update the model name from `claude-mythos-preview` to `claude-mythos-5`.
-- [ ] Remove manual extended thinking configuration (`thinking: {type: "enabled", budget_tokens: N}`). Adaptive thinking is always on, and no `thinking` field is required.
-- [ ] Remove any `thinking: {type: "disabled"}` configuration. Disabling thinking returns an error on `claude-mythos-5`.
-- [ ] Remove `budget_tokens`. It has no direct replacement: thinking is adaptive, and the `effort` parameter is a separate output-level control, not a thinking budget.
-- [ ] Verify any code that parses the `thinking` field treats it as display text only and passes thinking blocks back unchanged when continuing on the same model. `thinking.display` defaults to `"omitted"` on `claude-mythos-5`, the same as on Claude Mythos Preview; set `display: "summarized"` to receive readable summaries. See [Thinking output on Claude Fable 5 and Claude Mythos 5](/docs/en/build-with-claude/adaptive-thinking#thinking-output-on-claude-fable-5-and-claude-mythos-5).
-- [ ] If you replay conversation history on another model, strip `thinking` and `redacted_thinking` blocks from prior assistant turns first. Thinking blocks from `claude-mythos-5` are tied to the model that produced them, and models other than Claude Fable 5 and Claude Mythos 5 silently ignore them. Stripping keeps cross-model requests minimal and uniform.
-- [ ] Re-baseline token counts and costs on your own workloads. Token counts are roughly unchanged when migrating from `claude-mythos-preview`.
+- Update the model name from `claude-mythos-preview` to `claude-mythos-5`.
+- Remove manual extended thinking configuration (`thinking: {type: "enabled", budget_tokens: N}`). Adaptive thinking is always on, and no `thinking` field is required.
+- Remove any `thinking: {type: "disabled"}` configuration. Disabling thinking returns an error on `claude-mythos-5`.
+- Remove `budget_tokens`. It has no direct replacement: thinking is adaptive, and the `effort` parameter is a separate output-level control, not a thinking budget.
+- Verify any code that parses the `thinking` field treats it as display text only and passes thinking blocks back unchanged when continuing on the same model. `thinking.display` defaults to `"omitted"` on `claude-mythos-5`, the same as on Claude Mythos Preview; set `display: "summarized"` to receive readable summaries. See [Thinking output on Claude Fable 5 and Claude Mythos 5](/docs/en/build-with-claude/adaptive-thinking#thinking-output-on-claude-fable-5-and-claude-mythos-5).
+- If you replay conversation history on another model, strip `thinking` and `redacted_thinking` blocks from prior assistant turns first. Thinking blocks from `claude-mythos-5` are tied to the model that produced them, and models other than Claude Fable 5 and Claude Mythos 5 silently ignore them. Stripping keeps cross-model requests minimal and uniform.
+- Re-baseline token counts and costs on your own workloads. Token counts are roughly unchanged when migrating from `claude-mythos-preview`.
 
 ## Migrating from Claude Opus 4.8 to Claude Fable 5 \{#migrating-from-claude-opus-48}
 
@@ -114,7 +400,46 @@ The items in this section describe the API and behavior differences worth checki
 
     Before (Claude Opus 4.8):
 
-    ```python
+    <CodeGroup>
+    ```bash cURL
+    curl https://api.anthropic.com/v1/messages \
+         --header "x-api-key: $ANTHROPIC_API_KEY" \
+         --header "anthropic-version: 2023-06-01" \
+         --header "content-type: application/json" \
+         --data \
+    '{
+        "model": "claude-opus-4-8",
+        "max_tokens": 16000,
+        "thinking": {
+            "type": "adaptive"
+        },
+        "output_config": {
+            "effort": "high"
+        },
+        "messages": [
+            {
+                "role": "user",
+                "content": "..."
+            }
+        ]
+    }'
+    ```
+
+    ```bash CLI
+    ant messages create <<'YAML'
+    model: claude-opus-4-8
+    max_tokens: 16000
+    thinking:
+      type: adaptive
+    output_config:
+      effort: high
+    messages:
+      - role: user
+        content: "..."
+    YAML
+    ```
+
+    ```python Python
     client.messages.create(
         model="claude-opus-4-8",
         max_tokens=16000,
@@ -124,9 +449,169 @@ The items in this section describe the API and behavior differences worth checki
     )
     ```
 
+    ```typescript TypeScript
+    await client.messages.create({
+      model: "claude-opus-4-8",
+      max_tokens: 16000,
+      thinking: { type: "adaptive" },
+      output_config: { effort: "high" },
+      messages: [{ role: "user", content: "..." }]
+    });
+    ```
+
+    ```csharp C#
+    using Anthropic;
+    using Anthropic.Models.Messages;
+
+    AnthropicClient client = new();
+
+    var parameters = new MessageCreateParams
+    {
+        Model = "claude-opus-4-8",
+        MaxTokens = 16000,
+        Thinking = new ThinkingConfigAdaptive(),
+        OutputConfig = new OutputConfig { Effort = Effort.High },
+        Messages = [new() { Role = Role.User, Content = "..." }]
+    };
+
+    var response = await client.Messages.Create(parameters);
+    Console.WriteLine(response);
+    ```
+
+    ```go Go hidelines={1..11,-1}
+    package main
+
+    import (
+    	"context"
+    	"fmt"
+    	"log"
+
+    	"github.com/anthropics/anthropic-sdk-go"
+    )
+
+    func main() {
+    	client := anthropic.NewClient()
+
+    	response, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
+    		Model:     "claude-opus-4-8",
+    		MaxTokens: 16000,
+    		Thinking: anthropic.ThinkingConfigParamUnion{
+    			OfAdaptive: &anthropic.ThinkingConfigAdaptiveParam{},
+    		},
+    		OutputConfig: anthropic.OutputConfigParam{
+    			Effort: anthropic.OutputConfigEffortHigh,
+    		},
+    		Messages: []anthropic.MessageParam{
+    			anthropic.NewUserMessage(anthropic.NewTextBlock("...")),
+    		},
+    	})
+    	if err != nil {
+    		log.Fatal(err)
+    	}
+    	fmt.Println(response)
+    }
+    ```
+
+    ```java Java hidelines={1..8,-1}
+    import com.anthropic.client.AnthropicClient;
+    import com.anthropic.client.okhttp.AnthropicOkHttpClient;
+    import com.anthropic.models.messages.Message;
+    import com.anthropic.models.messages.MessageCreateParams;
+    import com.anthropic.models.messages.OutputConfig;
+    import com.anthropic.models.messages.ThinkingConfigAdaptive;
+
+    void main() {
+        AnthropicClient client = AnthropicOkHttpClient.fromEnv();
+
+        MessageCreateParams params = MessageCreateParams.builder()
+            .model("claude-opus-4-8")
+            .maxTokens(16000L)
+            .thinking(ThinkingConfigAdaptive.builder().build())
+            .outputConfig(OutputConfig.builder()
+                .effort(OutputConfig.Effort.HIGH)
+                .build())
+            .addUserMessage("...")
+            .build();
+
+        Message response = client.messages().create(params);
+        IO.println(response);
+    }
+    ```
+
+    ```php PHP hidelines={1..4}
+    <?php
+
+    use Anthropic\Client;
+
+    $client = new Client();
+
+    $message = $client->messages->create(
+        maxTokens: 16000,
+        messages: [['role' => 'user', 'content' => '...']],
+        model: 'claude-opus-4-8',
+        thinking: ['type' => 'adaptive'],
+        outputConfig: ['effort' => 'high'],
+    );
+    ```
+
+    ```ruby Ruby hidelines={1..2}
+    require "anthropic"
+
+    client = Anthropic::Client.new
+
+    message = client.messages.create(
+      model: "claude-opus-4-8",
+      max_tokens: 16000,
+      thinking: {
+        type: "adaptive"
+      },
+      output_config: {
+        effort: "high"
+      },
+      messages: [
+        { role: "user", content: "..." }
+      ]
+    )
+    ```
+    </CodeGroup>
+
     After (Claude Fable 5):
 
-    ```python
+    <CodeGroup>
+    ```bash cURL
+    curl https://api.anthropic.com/v1/messages \
+         --header "x-api-key: $ANTHROPIC_API_KEY" \
+         --header "anthropic-version: 2023-06-01" \
+         --header "content-type: application/json" \
+         --data \
+    '{
+        "model": "claude-fable-5",
+        "max_tokens": 16000,
+        "output_config": {
+            "effort": "high"
+        },
+        "messages": [
+            {
+                "role": "user",
+                "content": "..."
+            }
+        ]
+    }'
+    ```
+
+    ```bash CLI
+    ant messages create <<'YAML'
+    model: claude-fable-5
+    max_tokens: 16000
+    output_config:
+      effort: high
+    messages:
+      - role: user
+        content: "..."
+    YAML
+    ```
+
+    ```python Python
     client.messages.create(
         model="claude-fable-5",
         max_tokens=16000,
@@ -134,6 +619,121 @@ The items in this section describe the API and behavior differences worth checki
         messages=[{"role": "user", "content": "..."}],
     )
     ```
+
+    ```typescript TypeScript
+    await client.messages.create({
+      model: "claude-fable-5",
+      max_tokens: 16000,
+      output_config: { effort: "high" },
+      messages: [{ role: "user", content: "..." }]
+    });
+    ```
+
+    ```csharp C#
+    using Anthropic;
+    using Anthropic.Models.Messages;
+
+    AnthropicClient client = new();
+
+    var parameters = new MessageCreateParams
+    {
+        Model = "claude-fable-5",
+        MaxTokens = 16000,
+        OutputConfig = new OutputConfig { Effort = Effort.High },
+        Messages = [new() { Role = Role.User, Content = "..." }]
+    };
+
+    var response = await client.Messages.Create(parameters);
+    Console.WriteLine(response);
+    ```
+
+    ```go Go hidelines={1..11,-1}
+    package main
+
+    import (
+    	"context"
+    	"fmt"
+    	"log"
+
+    	"github.com/anthropics/anthropic-sdk-go"
+    )
+
+    func main() {
+    	client := anthropic.NewClient()
+
+    	response, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
+    		Model:     "claude-fable-5",
+    		MaxTokens: 16000,
+    		OutputConfig: anthropic.OutputConfigParam{
+    			Effort: anthropic.OutputConfigEffortHigh,
+    		},
+    		Messages: []anthropic.MessageParam{
+    			anthropic.NewUserMessage(anthropic.NewTextBlock("...")),
+    		},
+    	})
+    	if err != nil {
+    		log.Fatal(err)
+    	}
+    	fmt.Println(response)
+    }
+    ```
+
+    ```java Java hidelines={1..7,-1}
+    import com.anthropic.client.AnthropicClient;
+    import com.anthropic.client.okhttp.AnthropicOkHttpClient;
+    import com.anthropic.models.messages.Message;
+    import com.anthropic.models.messages.MessageCreateParams;
+    import com.anthropic.models.messages.OutputConfig;
+
+    void main() {
+        AnthropicClient client = AnthropicOkHttpClient.fromEnv();
+
+        MessageCreateParams params = MessageCreateParams.builder()
+            .model("claude-fable-5")
+            .maxTokens(16000L)
+            .outputConfig(OutputConfig.builder()
+                .effort(OutputConfig.Effort.HIGH)
+                .build())
+            .addUserMessage("...")
+            .build();
+
+        Message response = client.messages().create(params);
+        IO.println(response);
+    }
+    ```
+
+    ```php PHP hidelines={1..4}
+    <?php
+
+    use Anthropic\Client;
+
+    $client = new Client();
+
+    $message = $client->messages->create(
+        maxTokens: 16000,
+        messages: [['role' => 'user', 'content' => '...']],
+        model: 'claude-fable-5',
+        outputConfig: ['effort' => 'high'],
+    );
+    ```
+
+    ```ruby Ruby hidelines={1..2}
+    require "anthropic"
+
+    client = Anthropic::Client.new
+
+    message = client.messages.create(
+      model: "claude-fable-5",
+      max_tokens: 16000,
+      output_config: {
+        effort: "high"
+      },
+      messages: [
+        { role: "user", content: "..." }
+      ]
+    )
+    ```
+    </CodeGroup>
 
 2. **Extended thinking and thinking budgets (unchanged):** Manual extended thinking (`thinking: {type: "enabled", budget_tokens: N}`) is not supported on `claude-fable-5` and returns a 400 error, the same as on Claude Opus 4.8. `budget_tokens` has no direct replacement: thinking is adaptive, and the [effort parameter](/docs/en/build-with-claude/effort) is a separate output-level control, not a thinking budget.
 
@@ -153,15 +753,15 @@ The items in this section describe the API and behavior differences worth checki
 
 ### Migration checklist
 
-- [ ] If your organization has a zero data retention (ZDR) arrangement, confirm eligibility before migrating. `claude-fable-5` requires 30-day data retention and returns a 400 `invalid_request_error` otherwise. See [Model-specific data retention requirements](/docs/en/manage-claude/api-and-data-retention#model-specific-data-retention-requirements).
-- [ ] Update the model name from `claude-opus-4-8` to `claude-fable-5`.
-- [ ] Remove any `thinking: {type: "disabled"}` configuration. Disabling thinking returns an error on `claude-fable-5`, and requests without a `thinking` field run with adaptive thinking.
-- [ ] If you removed manual extended thinking and assistant prefills during earlier migrations, no action is needed: both remain unsupported on `claude-fable-5`.
-- [ ] Verify any code that parses the `thinking` field treats it as display text only and passes thinking blocks back unchanged when continuing on the same model. `thinking.display` defaults to `"omitted"` on `claude-fable-5`, the same as on Claude Opus 4.8; set `display: "summarized"` to receive readable summaries. See [Thinking output on Claude Fable 5 and Claude Mythos 5](/docs/en/build-with-claude/adaptive-thinking#thinking-output-on-claude-fable-5-and-claude-mythos-5).
-- [ ] If you replay conversation history on another model, strip `thinking` and `redacted_thinking` blocks from prior assistant turns first. Thinking blocks from `claude-fable-5` are tied to the model that produced them, and models other than Claude Fable 5 and Claude Mythos 5 silently ignore them. Stripping keeps cross-model requests minimal and uniform. The exception is redeeming a [fallback credit](/docs/en/build-with-claude/fallback-credit), which requires the request body echoed under that feature's exact rules.
-- [ ] Handle `stop_reason: "refusal"` and read the `stop_details.category` field. To re-run refused requests on another model automatically, consider the opt-in `fallbacks` parameter (beta). See [Handling stop reasons](/docs/en/build-with-claude/refusals-and-fallback).
-- [ ] Re-evaluate your `effort` setting. Start at `high` for most tasks, including workloads that ran at `xhigh` on Claude Opus 4.8.
-- [ ] Re-baseline cost and latency on your own workloads. Token counts are roughly unchanged when migrating from `claude-opus-4-8`; per-token pricing differs.
+- If your organization has a zero data retention (ZDR) arrangement, confirm eligibility before migrating. `claude-fable-5` requires 30-day data retention and returns a 400 `invalid_request_error` otherwise. See [Model-specific data retention requirements](/docs/en/manage-claude/api-and-data-retention#model-specific-data-retention-requirements).
+- Update the model name from `claude-opus-4-8` to `claude-fable-5`.
+- Remove any `thinking: {type: "disabled"}` configuration. Disabling thinking returns an error on `claude-fable-5`, and requests without a `thinking` field run with adaptive thinking.
+- If you removed manual extended thinking and assistant prefills during earlier migrations, no action is needed: both remain unsupported on `claude-fable-5`.
+- Verify any code that parses the `thinking` field treats it as display text only and passes thinking blocks back unchanged when continuing on the same model. `thinking.display` defaults to `"omitted"` on `claude-fable-5`, the same as on Claude Opus 4.8; set `display: "summarized"` to receive readable summaries. See [Thinking output on Claude Fable 5 and Claude Mythos 5](/docs/en/build-with-claude/adaptive-thinking#thinking-output-on-claude-fable-5-and-claude-mythos-5).
+- If you replay conversation history on another model, strip `thinking` and `redacted_thinking` blocks from prior assistant turns first. Thinking blocks from `claude-fable-5` are tied to the model that produced them, and models other than Claude Fable 5 and Claude Mythos 5 silently ignore them. Stripping keeps cross-model requests minimal and uniform. The exception is redeeming a [fallback credit](/docs/en/build-with-claude/fallback-credit), which requires the request body echoed under that feature's exact rules.
+- Handle `stop_reason: "refusal"` and read the `stop_details.category` field. To re-run refused requests on another model automatically, consider the opt-in `fallbacks` parameter (beta). See [Handling stop reasons](/docs/en/build-with-claude/refusals-and-fallback).
+- Re-evaluate your `effort` setting. Start at `high` for most tasks, including workloads that ran at `xhigh` on Claude Opus 4.8.
+- Re-baseline cost and latency on your own workloads. Token counts are roughly unchanged when migrating from `claude-opus-4-8`; per-token pricing differs.
 
 ## Migrating from Claude Opus 4.7 to Claude Opus 4.8 \{#migrating-from-claude-opus-47}
 
@@ -205,13 +805,13 @@ These are not breaking changes. Code that runs on Claude Opus 4.7 continues to w
 
 ### Migration checklist
 
-- [ ] Update model name from `claude-opus-4-7` to `claude-opus-4-8` (or update aliases).
-- [ ] If you removed sampling parameters during the Opus 4.7 migration, no action is needed. If you re-added them with a 400-retry path, remove that retry path.
-- [ ] Re-evaluate your `effort` setting. The default is `high` across all surfaces; for coding and high-autonomy work, set `xhigh` explicitly.
-- [ ] Remove any context-window beta header. The 1M context window is the default on the Claude API, Amazon Bedrock, and Vertex AI (200k on Microsoft Foundry).
-- [ ] If you rebuild conversation history to update instructions, consider switching to a mid-conversation system message to preserve prompt cache hits.
-- [ ] Verify your stop-reason handling reads `stop_details` on refusals (available since Claude Opus 4.7; now publicly documented).
-- [ ] Re-baseline cost and latency at your chosen effort level.
+- Update model name from `claude-opus-4-7` to `claude-opus-4-8` (or update aliases).
+- If you removed sampling parameters during the Opus 4.7 migration, no action is needed. If you re-added them with a 400-retry path, remove that retry path.
+- Re-evaluate your `effort` setting. The default is `high` across all surfaces; for coding and high-autonomy work, set `xhigh` explicitly.
+- Remove any context-window beta header. The 1M context window is the default on the Claude API, Amazon Bedrock, and Vertex AI (200k on Microsoft Foundry).
+- If you rebuild conversation history to update instructions, consider switching to a mid-conversation system message to preserve prompt cache hits.
+- Verify your stop-reason handling reads `stop_details` on refusals (available since Claude Opus 4.7; now publicly documented).
+- Re-baseline cost and latency at your chosen effort level.
 
 ## Migrating to Claude Opus 4.7
 
@@ -243,7 +843,43 @@ model = "claude-opus-4-7"  # After
 
     Before (Claude Opus 4.6):
 
-    ```python
+    <CodeGroup>
+    ```bash cURL
+    curl https://api.anthropic.com/v1/messages \
+         --header "x-api-key: $ANTHROPIC_API_KEY" \
+         --header "anthropic-version: 2023-06-01" \
+         --header "content-type: application/json" \
+         --data \
+    '{
+        "model": "claude-opus-4-6",
+        "max_tokens": 16000,
+        "thinking": {
+            "type": "enabled",
+            "budget_tokens": 10000
+        },
+        "messages": [
+            {
+                "role": "user",
+                "content": "..."
+            }
+        ]
+    }'
+    ```
+
+    ```bash CLI
+    ant messages create <<'YAML'
+    model: claude-opus-4-6
+    max_tokens: 16000
+    thinking:
+      type: enabled
+      budget_tokens: 10000
+    messages:
+      - role: user
+        content: "..."
+    YAML
+    ```
+
+    ```python Python
     client.messages.create(
         model="claude-opus-4-6",
         max_tokens=16000,
@@ -252,9 +888,159 @@ model = "claude-opus-4-7"  # After
     )
     ```
 
+    ```typescript TypeScript
+    await client.messages.create({
+      model: "claude-opus-4-6",
+      max_tokens: 16000,
+      thinking: { type: "enabled", budget_tokens: 10000 },
+      messages: [{ role: "user", content: "..." }]
+    });
+    ```
+
+    ```csharp C#
+    using Anthropic;
+    using Anthropic.Models.Messages;
+
+    AnthropicClient client = new();
+
+    var parameters = new MessageCreateParams
+    {
+        Model = "claude-opus-4-6",
+        MaxTokens = 16000,
+        Thinking = new ThinkingConfigEnabled(budgetTokens: 10000),
+        Messages = [new() { Role = Role.User, Content = "..." }]
+    };
+
+    var response = await client.Messages.Create(parameters);
+    Console.WriteLine(response);
+    ```
+
+    ```go Go hidelines={1..11,-1}
+    package main
+
+    import (
+    	"context"
+    	"fmt"
+    	"log"
+
+    	"github.com/anthropics/anthropic-sdk-go"
+    )
+
+    func main() {
+    	client := anthropic.NewClient()
+
+    	response, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
+    		Model:     "claude-opus-4-6",
+    		MaxTokens: 16000,
+    		Thinking:  anthropic.ThinkingConfigParamOfEnabled(10000),
+    		Messages: []anthropic.MessageParam{
+    			anthropic.NewUserMessage(anthropic.NewTextBlock("...")),
+    		},
+    	})
+    	if err != nil {
+    		log.Fatal(err)
+    	}
+    	fmt.Println(response)
+    }
+    ```
+
+    ```java Java hidelines={1..6,-1}
+    import com.anthropic.client.AnthropicClient;
+    import com.anthropic.client.okhttp.AnthropicOkHttpClient;
+    import com.anthropic.models.messages.Message;
+    import com.anthropic.models.messages.MessageCreateParams;
+
+    void main() {
+        AnthropicClient client = AnthropicOkHttpClient.fromEnv();
+
+        MessageCreateParams params = MessageCreateParams.builder()
+            .model("claude-opus-4-6")
+            .maxTokens(16000L)
+            .enabledThinking(10000L)
+            .addUserMessage("...")
+            .build();
+
+        Message response = client.messages().create(params);
+        IO.println(response);
+    }
+    ```
+
+    ```php PHP hidelines={1..4}
+    <?php
+
+    use Anthropic\Client;
+
+    $client = new Client();
+
+    $message = $client->messages->create(
+        maxTokens: 16000,
+        messages: [['role' => 'user', 'content' => '...']],
+        model: 'claude-opus-4-6',
+        thinking: ['type' => 'enabled', 'budget_tokens' => 10000],
+    );
+    ```
+
+    ```ruby Ruby hidelines={1..2}
+    require "anthropic"
+
+    client = Anthropic::Client.new
+
+    message = client.messages.create(
+      model: "claude-opus-4-6",
+      max_tokens: 16000,
+      thinking: {
+        type: "enabled",
+        budget_tokens: 10000
+      },
+      messages: [
+        { role: "user", content: "..." }
+      ]
+    )
+    ```
+    </CodeGroup>
+
     After (Claude Opus 4.7):
 
-    ```python
+    <CodeGroup>
+    ```bash cURL
+    curl https://api.anthropic.com/v1/messages \
+         --header "x-api-key: $ANTHROPIC_API_KEY" \
+         --header "anthropic-version: 2023-06-01" \
+         --header "content-type: application/json" \
+         --data \
+    '{
+        "model": "claude-opus-4-7",
+        "max_tokens": 16000,
+        "thinking": {
+            "type": "adaptive"
+        },
+        "output_config": {
+            "effort": "high"
+        },
+        "messages": [
+            {
+                "role": "user",
+                "content": "..."
+            }
+        ]
+    }'
+    ```
+
+    ```bash CLI
+    ant messages create <<'YAML'
+    model: claude-opus-4-7
+    max_tokens: 16000
+    thinking:
+      type: adaptive
+    output_config:
+      effort: high
+    messages:
+      - role: user
+        content: "..."
+    YAML
+    ```
+
+    ```python Python
     client.messages.create(
         model="claude-opus-4-7",
         max_tokens=16000,
@@ -264,18 +1050,185 @@ model = "claude-opus-4-7"  # After
     )
     ```
 
+    ```typescript TypeScript
+    await client.messages.create({
+      model: "claude-opus-4-7",
+      max_tokens: 16000,
+      thinking: { type: "adaptive" },
+      output_config: { effort: "high" }, // or "max", "xhigh", "medium", "low"
+      messages: [{ role: "user", content: "..." }]
+    });
+    ```
+
+    ```csharp C#
+    using Anthropic;
+    using Anthropic.Models.Messages;
+
+    AnthropicClient client = new();
+
+    var parameters = new MessageCreateParams
+    {
+        Model = "claude-opus-4-7",
+        MaxTokens = 16000,
+        Thinking = new ThinkingConfigAdaptive(),
+        OutputConfig = new OutputConfig { Effort = Effort.High }, // or Max, Xhigh, Medium, Low
+        Messages = [new() { Role = Role.User, Content = "..." }]
+    };
+
+    var response = await client.Messages.Create(parameters);
+    Console.WriteLine(response);
+    ```
+
+    ```go Go hidelines={1..11,-1}
+    package main
+
+    import (
+    	"context"
+    	"fmt"
+    	"log"
+
+    	"github.com/anthropics/anthropic-sdk-go"
+    )
+
+    func main() {
+    	client := anthropic.NewClient()
+
+    	response, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
+    		Model:     "claude-opus-4-7",
+    		MaxTokens: 16000,
+    		Thinking: anthropic.ThinkingConfigParamUnion{
+    			OfAdaptive: &anthropic.ThinkingConfigAdaptiveParam{},
+    		},
+    		OutputConfig: anthropic.OutputConfigParam{
+    			Effort: anthropic.OutputConfigEffortHigh, // or Max, Xhigh, Medium, Low
+    		},
+    		Messages: []anthropic.MessageParam{
+    			anthropic.NewUserMessage(anthropic.NewTextBlock("...")),
+    		},
+    	})
+    	if err != nil {
+    		log.Fatal(err)
+    	}
+    	fmt.Println(response)
+    }
+    ```
+
+    ```java Java hidelines={1..8,-1}
+    import com.anthropic.client.AnthropicClient;
+    import com.anthropic.client.okhttp.AnthropicOkHttpClient;
+    import com.anthropic.models.messages.Message;
+    import com.anthropic.models.messages.MessageCreateParams;
+    import com.anthropic.models.messages.OutputConfig;
+    import com.anthropic.models.messages.ThinkingConfigAdaptive;
+
+    void main() {
+        AnthropicClient client = AnthropicOkHttpClient.fromEnv();
+
+        MessageCreateParams params = MessageCreateParams.builder()
+            .model("claude-opus-4-7")
+            .maxTokens(16000L)
+            .thinking(ThinkingConfigAdaptive.builder().build())
+            .outputConfig(OutputConfig.builder()
+                .effort(OutputConfig.Effort.HIGH) // or MAX, XHIGH, MEDIUM, LOW
+                .build())
+            .addUserMessage("...")
+            .build();
+
+        Message response = client.messages().create(params);
+        IO.println(response);
+    }
+    ```
+
+    ```php PHP hidelines={1..4}
+    <?php
+
+    use Anthropic\Client;
+
+    $client = new Client();
+
+    $message = $client->messages->create(
+        maxTokens: 16000,
+        messages: [['role' => 'user', 'content' => '...']],
+        model: 'claude-opus-4-7',
+        thinking: ['type' => 'adaptive'],
+        outputConfig: ['effort' => 'high'], // or 'max', 'xhigh', 'medium', 'low'
+    );
+    ```
+
+    ```ruby Ruby hidelines={1..2}
+    require "anthropic"
+
+    client = Anthropic::Client.new
+
+    message = client.messages.create(
+      model: "claude-opus-4-7",
+      max_tokens: 16000,
+      thinking: {
+        type: "adaptive"
+      },
+      output_config: {
+        effort: "high" # or "max", "xhigh", "medium", "low"
+      },
+      messages: [
+        { role: "user", content: "..." }
+      ]
+    )
+    ```
+    </CodeGroup>
+
     Adaptive thinking is steerable through prompting. For guidance on tuning when the model over- or under-thinks, see [Calibrating effort and thinking depth](/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-4-8#calibrating-effort-and-thinking-depth).
 
 2. **Sampling parameters removed:** Setting `temperature`, `top_p`, or `top_k` to any non-default value on Claude Opus 4.7 returns a 400 error. The safest migration path is to omit these parameters entirely from request payloads. Prompting is the recommended way to guide model behavior on Claude Opus 4.7. If you were using `temperature = 0` for determinism, note that it never guaranteed identical outputs on prior models.
 
 3. **Thinking content omitted by default:** Thinking blocks still appear in the response stream on Claude Opus 4.7, but their `thinking` field is empty unless you explicitly opt in. This is a silent change from Claude Opus 4.6, where the default was to return summarized thinking text. To restore summarized thinking content on Claude Opus 4.7, set `thinking.display` to `"summarized"`:
 
-    ```python
+    
+    <CodeGroup>
+    ```python Python
     thinking = {
         "type": "adaptive",
         "display": "summarized",
     }
     ```
+
+    ```typescript TypeScript
+    const thinking = {
+      type: "adaptive",
+      display: "summarized"
+    };
+    ```
+
+    ```csharp C#
+    var thinking = new ThinkingConfigAdaptive { Display = Display.Summarized };
+    ```
+
+    ```go Go hidelines={-2..}
+    thinking := anthropic.ThinkingConfigParamUnion{
+    	OfAdaptive: &anthropic.ThinkingConfigAdaptiveParam{
+    		Display: anthropic.ThinkingConfigAdaptiveDisplaySummarized,
+    	},
+    }
+
+    _ = thinking
+    ```
+
+    ```java Java
+    ThinkingConfigAdaptive thinking = ThinkingConfigAdaptive.builder()
+        .display(ThinkingConfigAdaptive.Display.SUMMARIZED)
+        .build();
+    ```
+
+    ```php PHP
+    $thinking = ['type' => 'adaptive', 'display' => 'summarized'];
+    ```
+
+    ```ruby Ruby
+    thinking = {
+      type: "adaptive",
+      display: "summarized"
+    }
+    ```
+    </CodeGroup>
 
     The default is `"omitted"` on Claude Opus 4.7. If your product streams reasoning to users, the new default appears as a long pause before output begins; set `display: "summarized"` to restore visible progress during thinking. See [Extended thinking](/docs/en/build-with-claude/extended-thinking#controlling-thinking-display) for details.
 
@@ -348,12 +1301,73 @@ These are not required but will improve your experience:
 
 3. **Adopt [task budgets](/docs/en/build-with-claude/task-budgets) (beta):** Claude Opus 4.7 introduces task budgets. These budgets let you inform Claude how many tokens it has for a full agentic loop, including thinking, tool calls, tool results, and final output. The model sees a running countdown and uses it to prioritize work and finish the task gracefully as the budget is consumed. To use, set the beta header `task-budgets-2026-03-13` and add the following to your output config:
 
-    ```python
+    
+    <CodeGroup>
+    ```python Python
     output_config = {
         "effort": "high",
         "task_budget": {"type": "tokens", "total": 128000},
     }
     ```
+
+    ```typescript TypeScript
+    const output_config = {
+      effort: "high",
+      task_budget: { type: "tokens", total: 128000 }
+    };
+    ```
+
+    ```csharp C#
+    var outputConfig = new BetaOutputConfig
+    {
+        Effort = Effort.High,
+        TaskBudget = new BetaTokenTaskBudget
+        {
+            Total = 128000,
+        },
+    };
+    ```
+
+    ```go Go hidelines={-2..}
+    outputConfig := anthropic.BetaOutputConfigParam{
+    	Effort: anthropic.BetaOutputConfigEffortHigh,
+    	TaskBudget: anthropic.BetaTokenTaskBudgetParam{
+    		Total: 128000,
+    	},
+    }
+
+    _ = outputConfig
+    ```
+
+    ```java Java
+    BetaOutputConfig outputConfig = BetaOutputConfig.builder()
+        .effort(BetaOutputConfig.Effort.HIGH)
+        .taskBudget(BetaTokenTaskBudget.builder()
+            .total(128000L)
+            .build())
+        .build();
+    ```
+
+    ```php PHP
+    $outputConfig = [
+        'effort' => 'high',
+        'taskBudget' => [
+            'type' => 'tokens',
+            'total' => 128000,
+        ],
+    ];
+    ```
+
+    ```ruby Ruby
+    output_config = {
+      effort: :high,
+      task_budget: {
+        type: :tokens,
+        total: 128_000
+      }
+    }
+    ```
+    </CodeGroup>
 
     You may need to experiment with different task budgets for your use case. If the model is given a task budget that is too restrictive, it may complete the task less thoroughly, referencing its budget as the constraint.
 
@@ -372,21 +1386,21 @@ These are not required but will improve your experience:
 
 ### Migration checklist
 
-- [ ] Update model name from `claude-opus-4-6` to `claude-opus-4-7` (or update aliases).
-- [ ] Remove `temperature`, `top_p`, and `top_k` from request payloads.
-- [ ] Replace `thinking: {type: "enabled", budget_tokens: N}` with `thinking: {type: "adaptive"}` plus the [effort parameter](/docs/en/build-with-claude/effort).
-- [ ] Remove any assistant-message prefills.
-- [ ] If your UI displays thinking content, explicitly opt in to thinking summarization.
-- [ ] Re-benchmark end-to-end cost and latency under the updated tokenization.
-- [ ] Re-tune `max_tokens` to account for the updated tokenization.
-- [ ] Re-test any client-side token-count estimations.
-- [ ] If your application sends images, re-budget for [high-resolution image support](/docs/en/build-with-claude/vision#high-resolution-image-support-on-claude-opus-4-7) (up to approximately 3x more image tokens per full-resolution image). Downsample before sending if you do not need the additional fidelity.
-- [ ] If you consume pointing or bounding-box coordinates from the model, remove any scale-factor conversion; coordinates are 1\:1 with actual image pixels on Claude Opus 4.7.
-- [ ] Review prompts for the behavior changes above (response length, literalism, tone, progress updates, subagents, effort calibration, tool triggering, cyber safeguards, high-resolution image handling).
-- [ ] Re-baseline response length with existing length-control prompts removed, then tune explicitly.
-- [ ] If using `xhigh` or `max` effort, raise `max_tokens` to at least 64k as a starting point.
-- [ ] Consider adopting task budgets (beta) for agentic workflows.
-- [ ] If your product does legitimate security work, apply to the [Cyber Verification Program](https://claude.com/form/cyber-use-case) for access to lower restrictions on cyber content.
+- Update model name from `claude-opus-4-6` to `claude-opus-4-7` (or update aliases).
+- Remove `temperature`, `top_p`, and `top_k` from request payloads.
+- Replace `thinking: {type: "enabled", budget_tokens: N}` with `thinking: {type: "adaptive"}` plus the [effort parameter](/docs/en/build-with-claude/effort).
+- Remove any assistant-message prefills.
+- If your UI displays thinking content, explicitly opt in to thinking summarization.
+- Re-benchmark end-to-end cost and latency under the updated tokenization.
+- Re-tune `max_tokens` to account for the updated tokenization.
+- Re-test any client-side token-count estimations.
+- If your application sends images, re-budget for [high-resolution image support](/docs/en/build-with-claude/vision#high-resolution-image-support-on-claude-opus-4-7) (up to approximately 3x more image tokens per full-resolution image). Downsample before sending if you do not need the additional fidelity.
+- If you consume pointing or bounding-box coordinates from the model, remove any scale-factor conversion; coordinates are 1\:1 with actual image pixels on Claude Opus 4.7.
+- Review prompts for the behavior changes above (response length, literalism, tone, progress updates, subagents, effort calibration, tool triggering, cyber safeguards, high-resolution image handling).
+- Re-baseline response length with existing length-control prompts removed, then tune explicitly.
+- If using `xhigh` or `max` effort, raise `max_tokens` to at least 64k as a starting point.
+- Consider adopting task budgets (beta) for agentic workflows.
+- If your product does legitimate security work, apply to the [Cyber Verification Program](https://claude.com/form/cyber-use-case) for access to lower restrictions on cyber content.
 
 ## Migrating to Claude Opus 4.7 from Opus 4.5 or earlier
 
@@ -626,6 +1640,8 @@ model = "claude-opus-4-7"  # After
    Starting with Claude Opus 4.7, setting `temperature`, `top_p`, or `top_k` to any non-default value will return a 400 error. The safest migration path is to omit these parameters entirely from requests, and to use prompting to guide the model's behavior. If you were using `temperature = 0` for determinism, note that it never guaranteed identical outputs.
 
    
+   <CodeGroup>
+   
    ```python Python nocheck
    # Before - This will error in Claude 4+ models
    response = client.messages.create(
@@ -642,6 +1658,111 @@ model = "claude-opus-4-7"  # After
    )
    ```
 
+   
+   ```typescript TypeScript nocheck
+   // Before - This will error in Claude 4+ models
+   await client.messages.create({
+     model: "claude-3-7-sonnet-20250219",
+     temperature: 0.7,
+     top_p: 0.9 // Non-default sampling params return 400 on Opus 4.7
+     // ...
+   });
+
+   // After
+   await client.messages.create({
+     model: "claude-opus-4-7"
+     // ...
+   });
+   ```
+
+   
+   ```csharp C# nocheck
+   // Before - This will error in Claude 4+ models
+   await client.Messages.Create(new MessageCreateParams
+   {
+       Model = "claude-3-7-sonnet-20250219",
+       Temperature = 0.7,
+       TopP = 0.9, // Non-default sampling params return 400 on Opus 4.7
+       // ...
+   });
+
+   // After
+   await client.Messages.Create(new MessageCreateParams
+   {
+       Model = "claude-opus-4-7",
+       // ...
+   });
+   ```
+
+   
+   ```go Go nocheck
+   // Before - This will error in Claude 4+ models
+   client.Messages.New(ctx, anthropic.MessageNewParams{
+   	Model:       "claude-3-7-sonnet-20250219",
+   	Temperature: anthropic.Float(0.7),
+   	TopP:        anthropic.Float(0.9), // Non-default sampling params return 400 on Opus 4.7
+   	// ...
+   })
+
+   // After
+   client.Messages.New(ctx, anthropic.MessageNewParams{
+   	Model: "claude-opus-4-7",
+   	// ...
+   })
+   ```
+
+   
+   ```java Java nocheck
+   // Before - This will error in Claude 4+ models
+   client.messages().create(MessageCreateParams.builder()
+       .model("claude-3-7-sonnet-20250219")
+       .temperature(0.7)
+       .topP(0.9) // Non-default sampling params return 400 on Opus 4.7
+       // ...
+       .build());
+
+   // After
+   client.messages().create(MessageCreateParams.builder()
+       .model("claude-opus-4-7")
+       // ...
+       .build());
+   ```
+
+   
+   ```php PHP nocheck
+   // Before - This will error in Claude 4+ models
+   $client->messages->create(
+       model: 'claude-3-7-sonnet-20250219',
+       temperature: 0.7,
+       topP: 0.9, // Non-default sampling params return 400 on Opus 4.7
+       // ...
+   );
+
+   // After
+   $client->messages->create(
+       model: 'claude-opus-4-7',
+       // ...
+   );
+   ```
+
+   
+   ```ruby Ruby nocheck
+   # Before - This will error in Claude 4+ models
+   client.messages.create(
+     model: "claude-3-7-sonnet-20250219",
+     temperature: 0.7,
+     top_p: 0.9, # Non-default sampling params return 400 on Opus 4.7
+     # ...
+   )
+
+   # After
+   client.messages.create(
+     model: "claude-opus-4-7",
+     # ...
+   )
+   ```
+   </CodeGroup>
+
 2. **Update tool versions**
 
    <Warning>
@@ -650,13 +1771,75 @@ model = "claude-opus-4-7"  # After
 
    Update to the latest tool versions. Remove any code using the `undo_edit` command.
 
-   ```python
+   
+   <CodeGroup>
+   ```python Python
    # Before
    tools = [{"type": "text_editor_20250124", "name": "str_replace_editor"}]
 
    # After
    tools = [{"type": "text_editor_20250728", "name": "str_replace_based_edit_tool"}]
    ```
+
+   ```typescript TypeScript
+   // Before
+   const legacyTools = [{ type: "text_editor_20250124", name: "str_replace_editor" }];
+
+   // After
+   const tools = [{ type: "text_editor_20250728", name: "str_replace_based_edit_tool" }];
+   ```
+
+   
+   ```csharp C# nocheck
+   var parameters = new MessageCreateParams
+   {
+       // Before: {"type": "text_editor_20250124", "name": "str_replace_editor"}
+       // After:
+       Tools = [new ToolTextEditor20250728()],
+       // ...
+   };
+   ```
+
+   
+   ```go Go nocheck
+   params := anthropic.MessageNewParams{
+   	// Before: {"type": "text_editor_20250124", "name": "str_replace_editor"}
+   	// After:
+   	Tools: []anthropic.ToolUnionParam{
+   		{OfTextEditor20250728: &anthropic.ToolTextEditor20250728Param{}},
+   	},
+   	// ...
+   }
+   ```
+
+   
+   ```java Java nocheck
+   MessageCreateParams params = MessageCreateParams.builder()
+       // Before: {"type": "text_editor_20250124", "name": "str_replace_editor"}
+       // After:
+       .addTool(ToolTextEditor20250728.builder().build())
+       // ...
+       .build();
+   ```
+
+   
+   ```php PHP nocheck
+   $message = $client->messages->create(
+       // Before: ['type' => 'text_editor_20250124', 'name' => 'str_replace_editor']
+       // After:
+       tools: [new ToolTextEditor20250728()],
+       // ...
+   );
+   ```
+
+   ```ruby Ruby
+   # Before
+   legacy_tools = [{type: "text_editor_20250124", name: "str_replace_editor"}]
+
+   # After
+   tools = [{type: "text_editor_20250728", name: "str_replace_based_edit_tool"}]
+   ```
+   </CodeGroup>
 
    - **Text editor:** Use `text_editor_20250728` and `str_replace_based_edit_tool`. See [Text editor tool documentation](/docs/en/agents-and-tools/tool-use/text-editor-tool) for details.
    - **Code execution:** Upgrade to `code_execution_20250825`. See [Code execution tool documentation](/docs/en/agents-and-tools/tool-use/code-execution-tool#upgrade-to-latest-tool-version) for migration instructions.
@@ -666,6 +1849,8 @@ model = "claude-opus-4-7"  # After
    Update your application to [handle `refusal` stop reasons](/docs/en/test-and-evaluate/strengthen-guardrails/handle-streaming-refusals):
 
    
+   <CodeGroup>
+   
    ```python Python nocheck
    response = client.messages.create(...)
 
@@ -674,10 +1859,69 @@ model = "claude-opus-4-7"  # After
        pass
    ```
 
+   
+   ```typescript TypeScript nocheck
+   const response = await client.messages.create(/* ... */);
+
+   if (response.stop_reason === "refusal") {
+     // Handle refusal appropriately
+   }
+   ```
+
+   
+   ```csharp C# nocheck
+   var response = await client.Messages.Create(...);
+
+   if (response.StopReason?.Value() == StopReason.Refusal)
+   {
+       // Handle refusal appropriately
+   }
+   ```
+
+   
+   ```go Go nocheck
+   response, _ := client.Messages.New(ctx, params) // your existing request
+
+   if response.StopReason == anthropic.StopReasonRefusal {
+   	// Handle refusal appropriately
+   }
+   ```
+
+   
+   ```java Java nocheck
+   Message response = client.messages().create(...);
+
+   StopReason reason = response.stopReason().orElse(StopReason.END_TURN);
+   if (reason.equals(StopReason.REFUSAL)) {
+       // Handle refusal appropriately
+   }
+   ```
+
+   
+   ```php PHP nocheck
+   $response = $client->messages->create(...);
+
+   if ($response->stopReason === 'refusal') {
+       // Handle refusal appropriately
+   }
+   ```
+
+   
+   ```ruby Ruby nocheck
+   response = client.messages.create(...)
+
+   if response.stop_reason == :refusal
+     # Handle refusal appropriately
+   end
+   ```
+   </CodeGroup>
+
 4. **Handle the `model_context_window_exceeded` stop reason**
 
    Claude 4.5+ models return a `model_context_window_exceeded` stop reason when generation stops due to hitting the context window limit, rather than the requested `max_tokens` limit. Update your application to handle this new stop reason:
 
+   
+   <CodeGroup>
    
    ```python Python nocheck
    response = client.messages.create(...)
@@ -686,6 +1930,63 @@ model = "claude-opus-4-7"  # After
        # Handle context window limit appropriately
        pass
    ```
+
+   
+   ```typescript TypeScript nocheck
+   const response = await client.messages.create(/* ... */);
+
+   if (response.stop_reason === "model_context_window_exceeded") {
+     // Handle context window limit appropriately
+   }
+   ```
+
+   
+   ```csharp C# nocheck
+   var response = await client.Messages.Create(...);
+
+   if (response.StopReason?.Raw() == "model_context_window_exceeded")
+   {
+       // Handle context window limit appropriately
+   }
+   ```
+
+   
+   ```go Go nocheck
+   response, _ := client.Messages.New(ctx, params) // your existing request
+
+   if response.StopReason == "model_context_window_exceeded" {
+   	// Handle context window limit appropriately
+   }
+   ```
+
+   
+   ```java Java nocheck
+   Message response = client.messages().create(...);
+
+   StopReason reason = response.stopReason().orElse(StopReason.END_TURN);
+   if (reason.equals(StopReason.of("model_context_window_exceeded"))) {
+       // Handle context window limit appropriately
+   }
+   ```
+
+   
+   ```php PHP nocheck
+   $response = $client->messages->create(...);
+
+   if ($response->stopReason === 'model_context_window_exceeded') {
+       // Handle context window limit appropriately
+   }
+   ```
+
+   
+   ```ruby Ruby nocheck
+   response = client.messages.create(...)
+
+   if response.stop_reason == :model_context_window_exceeded
+     # Handle context window limit appropriately
+   end
+   ```
+   </CodeGroup>
 
 5. **Verify tool parameter handling (trailing newlines)**
 
@@ -701,23 +2002,23 @@ model = "claude-opus-4-7"  # After
 
 ### Migration checklist (from Opus 4.5 or earlier)
 
-- [ ] Update model ID to `claude-opus-4-7`
-- [ ] Apply all [Opus 4.7 breaking changes](#migrating-to-claude-opus-4-7) (extended thinking removed, sampling parameters removed, thinking display omitted by default, updated tokenization)
-- [ ] **BREAKING:** Remove assistant message prefills (returns 400 error); use structured outputs or `output_config.format` instead
-- [ ] **BREAKING on Opus 4.7:** Replace `thinking: {type: "enabled", budget_tokens: N}` with `thinking: {type: "adaptive"}` plus the [effort parameter](/docs/en/build-with-claude/effort) (returns 400 on Opus 4.7)
-- [ ] Verify tool call JSON parsing uses a standard JSON parser
-- [ ] Remove `effort-2025-11-24` beta header (effort is now GA)
-- [ ] Remove `fine-grained-tool-streaming-2025-05-14` beta header
-- [ ] Remove `interleaved-thinking-2025-05-14` beta header (adaptive thinking enables interleaved thinking automatically)
-- [ ] Migrate `output_format` to `output_config.format` (if applicable)
-- [ ] If migrating from Claude 4.1 or earlier: remove `temperature`, `top_p`, and `top_k` (non-default values return 400 on Opus 4.7)
-- [ ] If migrating from Claude 4.1 or earlier: update tool versions (`text_editor_20250728`, `code_execution_20250825`)
-- [ ] If migrating from Claude 4.1 or earlier: handle `refusal` stop reason
-- [ ] If migrating from Claude 4.1 or earlier: handle `model_context_window_exceeded` stop reason
-- [ ] If migrating from Claude 4.1 or earlier: verify tool string parameter handling for trailing newlines
-- [ ] If migrating from Claude 4.1 or earlier: remove legacy beta headers (`token-efficient-tools-2025-02-19`, `output-128k-2025-02-19`)
-- [ ] Review and update prompts following [prompting best practices](/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)
-- [ ] Test in development environment before production deployment
+- Update model ID to `claude-opus-4-7`
+- Apply all [Opus 4.7 breaking changes](#migrating-to-claude-opus-4-7) (extended thinking removed, sampling parameters removed, thinking display omitted by default, updated tokenization)
+- **BREAKING:** Remove assistant message prefills (returns 400 error); use structured outputs or `output_config.format` instead
+- **BREAKING on Opus 4.7:** Replace `thinking: {type: "enabled", budget_tokens: N}` with `thinking: {type: "adaptive"}` plus the [effort parameter](/docs/en/build-with-claude/effort) (returns 400 on Opus 4.7)
+- Verify tool call JSON parsing uses a standard JSON parser
+- Remove `effort-2025-11-24` beta header (effort is now GA)
+- Remove `fine-grained-tool-streaming-2025-05-14` beta header
+- Remove `interleaved-thinking-2025-05-14` beta header (adaptive thinking enables interleaved thinking automatically)
+- Migrate `output_format` to `output_config.format` (if applicable)
+- If migrating from Claude 4.1 or earlier: remove `temperature`, `top_p`, and `top_k` (non-default values return 400 on Opus 4.7)
+- If migrating from Claude 4.1 or earlier: update tool versions (`text_editor_20250728`, `code_execution_20250825`)
+- If migrating from Claude 4.1 or earlier: handle `refusal` stop reason
+- If migrating from Claude 4.1 or earlier: handle `model_context_window_exceeded` stop reason
+- If migrating from Claude 4.1 or earlier: verify tool string parameter handling for trailing newlines
+- If migrating from Claude 4.1 or earlier: remove legacy beta headers (`token-efficient-tools-2025-02-19`, `output-128k-2025-02-19`)
+- Review and update prompts following [prompting best practices](/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)
+- Test in development environment before production deployment
 
 ---
 
@@ -1588,18 +2889,18 @@ puts message.content.find { |block| block.type == :text }.text
 
 ### Sonnet 4.6 migration checklist
 
-- [ ] Update model ID to `claude-sonnet-4-6`
-- [ ] **BREAKING:** Remove assistant message prefilling; use structured outputs or `output_config.format` instead
-- [ ] **BREAKING:** Verify tool parameter JSON parsing handles escaping differences
-- [ ] **BREAKING:** Update tool versions to latest (`text_editor_20250728`, `code_execution_20250825`); legacy versions are not supported (if migrating from 3.x)
-- [ ] **BREAKING:** Remove any code using the `undo_edit` command (if applicable)
-- [ ] **BREAKING:** Update sampling parameters to use only `temperature` OR `top_p`, not both (if migrating from 3.x)
-- [ ] Handle new `refusal` stop reason in your application
-- [ ] Remove `fine-grained-tool-streaming-2025-05-14` beta header (now GA)
-- [ ] Migrate `output_format` to `output_config.format`
-- [ ] Review and update prompts following [prompting best practices](/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)
-- [ ] **Recommended:** Migrate from `thinking: {type: "enabled", budget_tokens: N}` to `thinking: {type: "adaptive"}` with the [effort parameter](/docs/en/build-with-claude/effort) (`budget_tokens` is deprecated and will be removed in a future release)
-- [ ] Test in development environment before production deployment
+- Update model ID to `claude-sonnet-4-6`
+- **BREAKING:** Remove assistant message prefilling; use structured outputs or `output_config.format` instead
+- **BREAKING:** Verify tool parameter JSON parsing handles escaping differences
+- **BREAKING:** Update tool versions to latest (`text_editor_20250728`, `code_execution_20250825`); legacy versions are not supported (if migrating from 3.x)
+- **BREAKING:** Remove any code using the `undo_edit` command (if applicable)
+- **BREAKING:** Update sampling parameters to use only `temperature` OR `top_p`, not both (if migrating from 3.x)
+- Handle new `refusal` stop reason in your application
+- Remove `fine-grained-tool-streaming-2025-05-14` beta header (now GA)
+- Migrate `output_format` to `output_config.format`
+- Review and update prompts following [prompting best practices](/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)
+- **Recommended:** Migrate from `thinking: {type: "enabled", budget_tokens: N}` to `thinking: {type: "adaptive"}` with the [effort parameter](/docs/en/build-with-claude/effort) (`budget_tokens` is deprecated and will be removed in a future release)
+- Test in development environment before production deployment
 
 ---
 
@@ -1651,14 +2952,14 @@ These breaking changes apply when migrating from Claude 3.x Sonnet models.
 
 ### Sonnet 4.5 migration checklist
 
-- [ ] Update model ID to `claude-sonnet-4-5-20250929`
-- [ ] **BREAKING:** Update tool versions to latest (`text_editor_20250728`, `code_execution_20250825`); legacy versions are not supported (if migrating from 3.x)
-- [ ] **BREAKING:** Remove any code using the `undo_edit` command (if applicable)
-- [ ] **BREAKING:** Update sampling parameters to use only `temperature` OR `top_p`, not both (if migrating from 3.x)
-- [ ] Handle new `refusal` stop reason in your application
-- [ ] Review and update prompts following [prompting best practices](/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)
-- [ ] Consider enabling extended thinking for complex reasoning tasks
-- [ ] Test in development environment before production deployment
+- Update model ID to `claude-sonnet-4-5-20250929`
+- **BREAKING:** Update tool versions to latest (`text_editor_20250728`, `code_execution_20250825`); legacy versions are not supported (if migrating from 3.x)
+- **BREAKING:** Remove any code using the `undo_edit` command (if applicable)
+- **BREAKING:** Update sampling parameters to use only `temperature` OR `top_p`, not both (if migrating from 3.x)
+- Handle new `refusal` stop reason in your application
+- Review and update prompts following [prompting best practices](/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)
+- Consider enabling extended thinking for complex reasoning tasks
+- Test in development environment before production deployment
 
 ---
 
@@ -1724,15 +3025,15 @@ These breaking changes apply when migrating from Claude 3.x Haiku models.
 
 ### Haiku 4.5 migration checklist
 
-- [ ] Update model ID to `claude-haiku-4-5-20251001`
-- [ ] **BREAKING:** Update tool versions to latest (`text_editor_20250728`, `code_execution_20250825`); legacy versions are not supported
-- [ ] **BREAKING:** Remove any code using the `undo_edit` command (if applicable)
-- [ ] **BREAKING:** Update sampling parameters to use only `temperature` OR `top_p`, not both
-- [ ] Handle new `refusal` stop reason in your application
-- [ ] Review and adjust for new rate limits (separate from Haiku 3.5)
-- [ ] Review and update prompts following [prompting best practices](/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)
-- [ ] Consider enabling extended thinking for complex reasoning tasks
-- [ ] Test in development environment before production deployment
+- Update model ID to `claude-haiku-4-5-20251001`
+- **BREAKING:** Update tool versions to latest (`text_editor_20250728`, `code_execution_20250825`); legacy versions are not supported
+- **BREAKING:** Remove any code using the `undo_edit` command (if applicable)
+- **BREAKING:** Update sampling parameters to use only `temperature` OR `top_p`, not both
+- Handle new `refusal` stop reason in your application
+- Review and adjust for new rate limits (separate from Haiku 3.5)
+- Review and update prompts following [prompting best practices](/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)
+- Consider enabling extended thinking for complex reasoning tasks
+- Test in development environment before production deployment
 
 ---
 
