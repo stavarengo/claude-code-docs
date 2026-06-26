@@ -35,7 +35,7 @@ When triggered, the skill equips Claude with:
 - **Onboarding flow:** An interview-driven walkthrough for setting up a new Managed Agent from scratch, available via the `/claude-api managed-agents-onboard` subcommand
 - **Language-specific Managed Agents docs:** Creating persistent agents, starting sessions, streaming events, and handling tool confirmations for Python, TypeScript, C#, Go, Java, PHP, Ruby, and cURL
 - **Client patterns:** Lossless stream reconnect, `processed_at` queued/processed gate, interrupt handling, file-mount gotchas, and credential handling
-- **Deployment constraints:** Managed Agents is available on the Claude API and [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws) only (not on Amazon Bedrock, Vertex AI, or Microsoft Foundry). The skill routes other deployments to the Messages API and tool use instead.
+- **Deployment constraints:** Managed Agents is available on the Claude API and [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws) only (not on Amazon Bedrock, Google Cloud, or Microsoft Foundry). The skill routes other deployments to the Messages API and tool use instead.
 
 ## When the skill activates
 

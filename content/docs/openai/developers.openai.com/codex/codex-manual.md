@@ -12001,6 +12001,12 @@ Remote Control access before you can connect from your phone.
 
 Start in the Codex App on the host you want to connect. The setup flow enables
 remote access for that host, then shows a QR code you can scan from your phone.
+The QR code pairs that phone with that host. Pair every phone or supported Codex
+App device with every host you want it to control.
+
+Existing connections used since June 8, 2026, remain paired. If you haven't
+used an existing connection since June 8, 2026, update both apps and pair the
+devices again.
 
 1. Start Codex mobile setup.
 
@@ -12142,33 +12148,6 @@ unauthenticated public listeners.
 
 4. In the Codex App, open **Settings > Connections**, add or enable the SSH
    host, then choose a remote project folder.
-
-#### Hand off a thread between hosts
-
-Handoff moves an existing thread and its Git state between your local computer
-and a connected remote host. Use it to start work locally, continue in a
-worktree on a remote computer, and bring the thread back later.
-
-Before you hand off a thread, connect the destination host and save a project
-for the same Git repository on that host. If the project is a subdirectory of
-the repository, save the same subdirectory on both hosts. Codex only shows
-destinations with a matching saved project.
-
-To hand off a thread:
-
-1. Open the thread in the Codex App.
-2. In the thread footer, select the current run location, then select the
-   destination host. Select **This computer** when handing a remote thread back
-   to your local computer.
-3. Review the destination and branch, then select **Hand off**.
-
-Codex creates or reuses a worktree on the destination host, transfers the
-thread and Git state, and switches the thread to that host. If the thread is
-running, handoff interrupts the current response before transferring it.
-
-You can also ask Codex in another thread to hand off a named thread to a
-connected host. Codex can't hand off the thread making the request, and handoff
-to a Codex cloud environment isn't supported.
 
 ### Sites
 

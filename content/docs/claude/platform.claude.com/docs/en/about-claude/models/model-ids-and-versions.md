@@ -30,7 +30,7 @@ For example: `anthropic.claude-sonnet-4-6`, `anthropic.claude-opus-4-7`, `anthro
 
 Claude Opus 4.6 is the last Bedrock model ID to include the `-v1` suffix (`anthropic.claude-opus-4-6-v1`). Anthropic dropped the suffix starting with Claude Sonnet 4.6.
 
-On Google Cloud Vertex AI, the format matches the Claude API.
+On Google Cloud, the format matches the Claude API.
 
 ### Before the 4.6 generation
 
@@ -50,7 +50,7 @@ anthropic.claude-{name}-{major}-{minor}-{YYYYMMDD}-v1:0
 
 For example: `anthropic.claude-sonnet-4-5-20250929-v1:0`
 
-On Google Cloud Vertex AI, the date is separated with `@`:
+On Google Cloud, the date is separated with `@`:
 
 ```text
 claude-{name}-{major}-{minor}@{YYYYMMDD}
@@ -78,4 +78,4 @@ Occasionally, infrastructure updates produce minor differences in observable beh
 
 ## Current model IDs
 
-For the full list of current model IDs and their Amazon Bedrock and Google Cloud Vertex AI equivalents, see [Models overview](/docs/en/about-claude/models/overview).
+For the full list of current model IDs and their Amazon Bedrock and Google Cloud equivalents, see [Models overview](/docs/en/about-claude/models/overview).

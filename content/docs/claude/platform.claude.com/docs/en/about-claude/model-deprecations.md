@@ -18,7 +18,7 @@ Anthropic uses the following terms to describe the model lifecycle:
 Deprecated models are likely to be less reliable than active models. Move workloads to active models to maintain the highest level of support and reliability.
 </Warning>
 
-The dates on this page apply to Anthropic-operated platforms: the Claude API, [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws), and [Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry). Partner-operated platforms (Amazon Bedrock and Vertex AI) set their own retirement schedules, so a model's lifecycle status and dates can differ. See the [Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock#supported-models), [Amazon Bedrock (legacy)](/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy#api-model-ids), and [Vertex AI](/docs/en/build-with-claude/claude-on-vertex-ai#api-model-ids) model tables.
+The dates on this page apply to Anthropic-operated platforms: the Claude API, [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws), and [Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry). Partner-operated platforms (Amazon Bedrock and Google Cloud) set their own retirement schedules, so a model's lifecycle status and dates can differ. See the [Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock#supported-models), [Amazon Bedrock (legacy)](/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy#api-model-ids), and [Google Cloud](/docs/en/build-with-claude/claude-on-vertex-ai#api-model-ids) model tables.
 
 ## Migrating to replacements
 

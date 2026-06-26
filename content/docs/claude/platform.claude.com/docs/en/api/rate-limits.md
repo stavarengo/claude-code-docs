@@ -15,7 +15,7 @@ There are two types of limits:
 
 The API enforces service-configured limits at the organization level, but you may also set user-configurable limits for your organization's workspaces.
 
-These limits apply to both Standard and Priority Tier usage. For more information about Priority Tier, which offers enhanced service levels in exchange for committed spend, see [Service Tiers](/docs/en/api/service-tiers).
+These limits apply to both Standard and Priority Tier usage. For more information about Priority Tier, see [Service Tiers](/docs/en/api/service-tiers).
 
 ## About rate limits
 
@@ -24,7 +24,7 @@ These limits apply to both Standard and Priority Tier usage. For more informatio
 * Your organization will increase tiers automatically as you reach certain thresholds while using the API.
   Limits are set at the organization level. You can see your organization's limits on the [Limits](/settings/limits) page in the [Claude Console](/).
 * You might hit rate limits over shorter time intervals. For instance, a rate of 60 requests per minute (RPM) might be enforced as 1 request per second. Short bursts of requests can exceed the limit and trigger rate limit errors.
-* The limits outlined below are the standard tier limits. If you're seeking higher, custom limits or Priority Tier for enhanced service levels, contact sales on the [Limits](/settings/limits) page.
+* The limits outlined below are the standard tier limits. If you're seeking higher, custom limits, contact sales on the [Limits](/settings/limits) page.
 * The API uses the [token bucket algorithm](https://en.wikipedia.org/wiki/Token_bucket) to do rate limiting. This means that your capacity is continuously replenished up to your maximum limit, rather than being reset at fixed intervals.
 * All limits described here represent maximum allowed usage, not guaranteed minimums. These limits are intended to reduce unintentional overspend and ensure fair distribution of resources among users.
 
@@ -150,7 +150,7 @@ Rate limits are currently shared across all `inference_geo` values. Requests wit
 | Claude Fable 5                                                                               | 50                                | 100,000                                | 20,000                                  |
 | Claude Sonnet 4.x<sup>**</sup>                                                               | 50                                | 30,000                                 | 8,000                                   |
 | Claude Haiku 4.5                                                                             | 50                                | 50,000                                 | 10,000                                  |
-| Claude Haiku 3.5 ([retired, except on Bedrock and Vertex AI](/docs/en/about-claude/model-deprecations)) | 50                                | 50,000<sup>†</sup>                     | 10,000                                  |
+| Claude Haiku 3.5 ([retired, except on Bedrock and Google Cloud](/docs/en/about-claude/model-deprecations)) | 50                                | 50,000<sup>†</sup>                     | 10,000                                  |
 | Claude Opus 4.x<sup>*</sup>                                                                  | 50                                | 500,000                                | 80,000                                  |
 
 </Tab>
@@ -160,7 +160,7 @@ Rate limits are currently shared across all `inference_geo` values. Requests wit
 | Claude Fable 5                                                                               | 1,000                             | 500,000                                | 100,000                                 |
 | Claude Sonnet 4.x<sup>**</sup>                                                               | 1,000                             | 450,000                                | 90,000                                  |
 | Claude Haiku 4.5                                                                             | 1,000                             | 450,000                                | 90,000                                  |
-| Claude Haiku 3.5 ([retired, except on Bedrock and Vertex AI](/docs/en/about-claude/model-deprecations)) | 1,000                             | 100,000<sup>†</sup>                    | 20,000                                  |
+| Claude Haiku 3.5 ([retired, except on Bedrock and Google Cloud](/docs/en/about-claude/model-deprecations)) | 1,000                             | 100,000<sup>†</sup>                    | 20,000                                  |
 | Claude Opus 4.x<sup>*</sup>                                                                  | 1,000                             | 2,000,000                              | 200,000                                 |
 
 </Tab>
@@ -170,7 +170,7 @@ Rate limits are currently shared across all `inference_geo` values. Requests wit
 | Claude Fable 5                                                                               | 2,000                             | 1,500,000                              | 300,000                                 |
 | Claude Sonnet 4.x<sup>**</sup>                                                               | 2,000                             | 800,000                                | 160,000                                 |
 | Claude Haiku 4.5                                                                             | 2,000                             | 1,000,000                              | 200,000                                 |
-| Claude Haiku 3.5 ([retired, except on Bedrock and Vertex AI](/docs/en/about-claude/model-deprecations)) | 2,000                             | 200,000<sup>†</sup>                    | 40,000                                  |
+| Claude Haiku 3.5 ([retired, except on Bedrock and Google Cloud](/docs/en/about-claude/model-deprecations)) | 2,000                             | 200,000<sup>†</sup>                    | 40,000                                  |
 | Claude Opus 4.x<sup>*</sup>                                                                  | 2,000                             | 5,000,000                              | 400,000                                 |
 
 </Tab>
@@ -180,7 +180,7 @@ Rate limits are currently shared across all `inference_geo` values. Requests wit
 | Claude Fable 5                                                                               | 4,000                             | 4,000,000                              | 800,000                                 |
 | Claude Sonnet 4.x<sup>**</sup>                                                               | 4,000                             | 2,000,000                              | 400,000                                 |
 | Claude Haiku 4.5                                                                             | 4,000                             | 4,000,000                              | 800,000                                 |
-| Claude Haiku 3.5 ([retired, except on Bedrock and Vertex AI](/docs/en/about-claude/model-deprecations)) | 4,000                             | 400,000<sup>†</sup>                    | 80,000                                  |
+| Claude Haiku 3.5 ([retired, except on Bedrock and Google Cloud](/docs/en/about-claude/model-deprecations)) | 4,000                             | 400,000<sup>†</sup>                    | 80,000                                  |
 | Claude Opus 4.x<sup>*</sup>                                                                  | 4,000                             | 10,000,000                             | 800,000                                 |
 
 </Tab>

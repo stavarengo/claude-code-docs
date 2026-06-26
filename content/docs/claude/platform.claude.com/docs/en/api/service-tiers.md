@@ -4,8 +4,12 @@ Different tiers of service allow you to balance availability, performance, and p
 
 ---
 
+<Warning>
+Priority Tier capacity commitments are no longer available for purchase. Organizations with an existing commitment can continue to use Priority Tier through their contract end date, and this page remains available as a reference for them. If you need guaranteed capacity, contact your account team.
+</Warning>
+
 Anthropic offers three service tiers:
-- **Priority Tier:** Best for workflows deployed in production where time, availability, and predictable pricing are important
+- **Priority Tier:** Available only to organizations with an existing capacity commitment
 - **Standard:** Default tier for both piloting and scaling everyday use cases
 - **Batch:** Best for asynchronous workflows that can wait or benefit from being outside your normal capacity
 
@@ -17,7 +21,7 @@ The standard tier is the default service tier for all API requests. The API prio
 
 The API prioritizes requests in this tier over all other requests. This prioritization helps minimize ["server overloaded" errors](/docs/en/api/errors#http-errors), even during peak times.
 
-For more information, see [Get started with Priority Tier](#get-started-with-priority-tier)
+For more information, see [Existing Priority Tier commitments](#existing-priority-tier-commitments).
 
 ## How requests get assigned tiers
 
@@ -94,33 +98,18 @@ anthropic-priority-output-tokens-reset: 2025-01-12T23:12:21Z
 ```
 You can use the presence of these headers to detect if your request was eligible for Priority Tier, even if it was over the limit.
 
-## Get started with Priority Tier
+## Existing Priority Tier commitments
 
-You may want to commit to Priority Tier capacity if you are interested in:
-- **Higher availability:** Target 99.5% uptime with prioritized computational resources
-- **Cost control:** Predictable spend and discounts for longer commitments
-- **Flexible overflow:** Automatically falls back to standard tier when you exceed your committed capacity
-
-Committing to Priority Tier involves deciding:
+A Priority Tier commitment consists of:
 - A number of input tokens per minute
 - A number of output tokens per minute
 - A commitment duration (1, 3, 6, or 12 months)
 - A specific model version
 
-<Note>
-The ratio of input to output tokens you purchase matters. Sizing your Priority Tier capacity to align with your actual traffic patterns helps you maximize utilization of your purchased tokens.
-</Note>
+Priority Tier targets 99.5% uptime with prioritized computational resources. Requests beyond your committed capacity automatically fall back to standard tier.
 
 ### Supported models
 
 Priority Tier is supported on all available Claude models (including Claude Fable 5 and Claude Opus 4.8) except [Claude Mythos Preview](https://anthropic.com/glasswing) and Claude Mythos 5.
 
 Check the [Models overview](/docs/en/about-claude/models/overview) for more details on available models.
-
-### How to access Priority Tier
-
-To begin using Priority Tier:
-
-1. [Contact sales](https://claude.com/contact-sales/priority-tier) to complete provisioning.
-2. (Optional) Update your API requests to set the `service_tier` parameter to `auto`.
-3. Monitor your usage through response headers and the Claude Console.

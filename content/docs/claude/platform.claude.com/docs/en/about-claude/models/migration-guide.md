@@ -15,7 +15,7 @@ This guide covers migrating [Messages API](/docs/en/build-with-claude/working-wi
   /claude-api migrate this project to claude-opus-4-8
   ```
 
-  The skill applies the model ID swap and, as needed, breaking parameter changes, prefill replacement, and effort calibration for your target model across your codebase, then produces a checklist of items to verify manually. It asks you to confirm the migration scope (entire working directory, a subdirectory, or a specific file list) before editing any files. The skill also detects Amazon Bedrock, Vertex AI, Claude Platform on AWS, and Microsoft Foundry clients and adjusts model ID formats and feature changes for each platform.
+  The skill applies the model ID swap and, as needed, breaking parameter changes, prefill replacement, and effort calibration for your target model across your codebase, then produces a checklist of items to verify manually. It asks you to confirm the migration scope (entire working directory, a subdirectory, or a specific file list) before editing any files. The skill also detects Amazon Bedrock, Google Cloud, Claude Platform on AWS, and Microsoft Foundry clients and adjusts model ID formats and feature changes for each platform.
 </Tip>
 
 ## Migrating from Claude Mythos Preview to Claude Mythos 5 \{#migrating-from-claude-mythos-preview}
@@ -367,7 +367,7 @@ model = "claude-mythos-5"  # After
 
 ## Migrating from Claude Opus 4.8 to Claude Fable 5 \{#migrating-from-claude-opus-48}
 
-[Claude Fable 5](/docs/en/about-claude/models/introducing-claude-fable-5-and-claude-mythos-5) is Anthropic's most capable widely released model, generally available on the Claude API, [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws), [Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock), [Vertex AI](/docs/en/build-with-claude/claude-on-vertex-ai), and [Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry).
+[Claude Fable 5](/docs/en/about-claude/models/introducing-claude-fable-5-and-claude-mythos-5) is Anthropic's most capable widely released model, generally available on the Claude API, [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws), [Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock), [Google Cloud](/docs/en/build-with-claude/claude-on-vertex-ai), and [Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry).
 
 Migration is mostly drop-in. Claude Fable 5 uses the same [Messages API](/docs/en/build-with-claude/working-with-messages) and the same [tool use](/docs/en/agents-and-tools/tool-use/overview) patterns as Claude Opus 4.8. It supports the same [1M token context window](/docs/en/build-with-claude/context-windows) by default and the same [128k max output tokens](/docs/en/about-claude/models/overview). Token counts are roughly unchanged because both models use the same tokenizer.
 
@@ -377,7 +377,7 @@ The key changes to check are always-on [adaptive thinking](/docs/en/build-with-c
 
 Claude Fable 5 is priced at $10 per million input tokens and $50 per million output tokens, compared with $5 and $25 for Claude Opus 4.8. See [Claude pricing](/docs/en/about-claude/pricing) for details.
 
-Claude Fable 5 requires 30-day data retention and is not available under zero data retention (ZDR) arrangements; it is designated a Covered Model. A request from an organization whose data retention configuration does not meet this requirement returns a 400 `invalid_request_error`. Organizations with a ZDR arrangement should contact their Anthropic account team to discuss data retention configuration; Claude Opus 4.8 remains available under ZDR. Alternatively, you can configure data retention per workspace; see [Model-specific data retention requirements](/docs/en/manage-claude/api-and-data-retention#model-specific-data-retention-requirements). On Amazon Bedrock, Vertex AI, and Microsoft Foundry, data retention is governed by each platform.
+Claude Fable 5 requires 30-day data retention and is not available under zero data retention (ZDR) arrangements; it is designated a Covered Model. A request from an organization whose data retention configuration does not meet this requirement returns a 400 `invalid_request_error`. Organizations with a ZDR arrangement should contact their Anthropic account team to discuss data retention configuration; Claude Opus 4.8 remains available under ZDR. Alternatively, you can configure data retention per workspace; see [Model-specific data retention requirements](/docs/en/manage-claude/api-and-data-retention#model-specific-data-retention-requirements). On Amazon Bedrock, Google Cloud, and Microsoft Foundry, data retention is governed by each platform.
 
 <Note>
 If your code is on Claude Opus 4.7 or earlier, first apply [Migrating from Claude Opus 4.7 to Claude Opus 4.8](#migrating-from-claude-opus-47) and, for models earlier than Claude Opus 4.7, the [Claude Opus 4.7 migration steps](#migrating-to-claude-opus-4-7). Those sections cover breaking changes (sampling parameters rejected, manual extended thinking rejected, prefill removed, new tokenizer) that this section does not repeat.
@@ -745,7 +745,7 @@ The items in this section describe the API and behavior differences worth checki
 
     You are not billed for the input tokens of a request refused before any output is generated. When a classifier fires mid-stream, the input and already-streamed output are billed; discard the partial output.
 
-    To re-run refused requests on another model automatically, pass the opt-in `fallbacks` parameter, which is in beta on the Claude API and Claude Platform on AWS. The parameter is not available on the Message Batches API or on Amazon Bedrock, Vertex AI, and Microsoft Foundry; on those three platforms, run the retry client-side or use the SDK refusal-fallback middleware. See [Handling stop reasons](/docs/en/build-with-claude/refusals-and-fallback).
+    To re-run refused requests on another model automatically, pass the opt-in `fallbacks` parameter, which is in beta on the Claude API and Claude Platform on AWS. The parameter is not available on the Message Batches API or on Amazon Bedrock, Google Cloud, and Microsoft Foundry; on those three platforms, run the retry client-side or use the SDK refusal-fallback middleware. See [Handling stop reasons](/docs/en/build-with-claude/refusals-and-fallback).
 
 6. **Start at `high` effort:** The [effort parameter](/docs/en/build-with-claude/effort) default remains `high`. On Claude Opus 4.8, the recommendation for coding and high-autonomy work is to set `xhigh` explicitly. On `claude-fable-5`, use `high` as the default for most tasks and reserve `xhigh` for the most capability-sensitive workloads. Lower effort settings on `claude-fable-5` still perform well and often exceed `xhigh` performance on prior models. Reduce effort if a task completes but takes longer than necessary. See [Prompting Claude Fable 5](/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5#consider-all-effort-levels).
 
@@ -774,7 +774,7 @@ If your code is on Claude Opus 4.6 or earlier, also apply the [Claude Opus 4.7 m
 </Note>
 
 <Note>
-On Microsoft Foundry, Claude Opus 4.8 has a 200k-token context window at launch. The 1M context window applies on the Claude API, Amazon Bedrock, and Vertex AI. See [Claude in Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry).
+On Microsoft Foundry, Claude Opus 4.8 has a 200k-token context window at launch. The 1M context window applies on the Claude API, Amazon Bedrock, and Google Cloud. See [Claude in Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry).
 </Note>
 
 ### Update your model name
@@ -808,7 +808,7 @@ These are not breaking changes. Code that runs on Claude Opus 4.7 continues to w
 - Update model name from `claude-opus-4-7` to `claude-opus-4-8` (or update aliases).
 - If you removed sampling parameters during the Opus 4.7 migration, no action is needed. If you re-added them with a 400-retry path, remove that retry path.
 - Re-evaluate your `effort` setting. The default is `high` across all surfaces; for coding and high-autonomy work, set `xhigh` explicitly.
-- Remove any context-window beta header. The 1M context window is the default on the Claude API, Amazon Bedrock, and Vertex AI (200k on Microsoft Foundry).
+- Remove any context-window beta header. The 1M context window is the default on the Claude API, Amazon Bedrock, and Google Cloud (200k on Microsoft Foundry).
 - If you rebuild conversation history to update instructions, consider switching to a mid-conversation system message to preserve prompt cache hits.
 - Verify your stop-reason handling reads `stop_details` on refusals (available since Claude Opus 4.7; now publicly documented).
 - Re-baseline cost and latency at your chosen effort level.

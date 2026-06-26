@@ -4,7 +4,7 @@ Install and configure the Anthropic Python SDK with sync and async client suppor
 
 ---
 
-The Anthropic Python SDK provides convenient access to the Anthropic REST API from Python applications. It supports both synchronous and asynchronous operations, streaming, and integrations with Amazon Bedrock, Vertex AI, Microsoft Foundry, and Claude Platform on AWS.
+The Anthropic Python SDK provides convenient access to the Anthropic REST API from Python applications. It supports both synchronous and asynchronous operations, streaming, and integrations with Amazon Bedrock, Google Cloud, Microsoft Foundry, and Claude Platform on AWS.
 
 <Info>
 For API feature documentation with code examples, see the [API reference](/docs/en/api/overview). This page covers Python-specific SDK features and configuration.
@@ -22,7 +22,7 @@ For platform-specific integrations or improved async performance, install with e
 # For Amazon Bedrock support
 pip install "anthropic[bedrock]"
 
-# For Vertex AI support
+# For Google Cloud support
 pip install "anthropic[vertex]"
 
 # For Claude Platform on AWS support
@@ -776,7 +776,7 @@ response = client.beta.messages.create(
 For detailed platform setup guides with code examples, see:
 - [Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock)
 - [Amazon Bedrock (legacy)](/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy)
-- [Vertex AI](/docs/en/build-with-claude/claude-on-vertex-ai)
+- [Google Cloud](/docs/en/build-with-claude/claude-on-vertex-ai)
 - [Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry)
 - [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws)
 </Note>
@@ -787,7 +787,7 @@ All five client classes are included in the base `anthropic` package:
 |-----------|--------|-------------------|
 | Bedrock | `from anthropic import AnthropicBedrockMantle` | `pip install "anthropic[bedrock]"` |
 | Bedrock (`bedrock-runtime` path) | `from anthropic import AnthropicBedrock` | `pip install "anthropic[bedrock]"` |
-| Vertex AI | `from anthropic import AnthropicVertex` | `pip install "anthropic[vertex]"` |
+| Agent Platform | `from anthropic import AnthropicVertex` | `pip install "anthropic[vertex]"` |
 | Foundry | `from anthropic import AnthropicFoundry` | None |
 | Claude Platform on AWS | `from anthropic import AnthropicAWS` | `pip install "anthropic[aws]"` |
 
