@@ -3,13 +3,25 @@ title: Components
 description: Here you can find all the components available in the library. We are working on adding more components.
 ---
 
+## New Components
+
+- [Attachment](https://ui.shadcn.com/docs/components/attachment): Displays a file or image attachment with media, metadata, upload state, and actions.
+- [Bubble](https://ui.shadcn.com/docs/components/bubble): Displays conversational content in a message bubble. Supports variants, alignment, grouping, reactions, and collapsible content.
+- [Marker](https://ui.shadcn.com/docs/components/marker): Displays an inline status, system note, bordered row, or labeled separator in a conversation.
+- [Message](https://ui.shadcn.com/docs/components/message): Displays a message in a conversation, with optional avatar, header, footer, and alignment.
+- [Message Scroller](https://ui.shadcn.com/docs/components/message-scroller): A chat scroll container that anchors turns, opens saved transcripts, follows streamed responses, loads history without jumping, and jumps to any message.
+
+## All Components
+
 - [Accordion](https://ui.shadcn.com/docs/components/accordion): A vertically stacked set of interactive headings that each reveal a section of content.
 - [Alert](https://ui.shadcn.com/docs/components/alert): Displays a callout for user attention.
 - [Alert Dialog](https://ui.shadcn.com/docs/components/alert-dialog): A modal dialog that interrupts the user with important content and expects a response.
 - [Aspect Ratio](https://ui.shadcn.com/docs/components/aspect-ratio): Displays content within a desired ratio.
+- [Attachment](https://ui.shadcn.com/docs/components/attachment): Displays a file or image attachment with media, metadata, upload state, and actions.
 - [Avatar](https://ui.shadcn.com/docs/components/avatar): An image element with a fallback for representing the user.
 - [Badge](https://ui.shadcn.com/docs/components/badge): Displays a badge or a component that looks like a badge.
 - [Breadcrumb](https://ui.shadcn.com/docs/components/breadcrumb): Displays the path to the current resource using a hierarchy of links.
+- [Bubble](https://ui.shadcn.com/docs/components/bubble): Displays conversational content in a message bubble. Supports variants, alignment, grouping, reactions, and collapsible content.
 - [Button](https://ui.shadcn.com/docs/components/button): Displays a button or a component that looks like a button.
 - [Button Group](https://ui.shadcn.com/docs/components/button-group): A container that groups related buttons together with consistent styling.
 - [Calendar](https://ui.shadcn.com/docs/components/calendar): A calendar component that allows users to select a date or a range of dates.
@@ -36,7 +48,10 @@ description: Here you can find all the components available in the library. We a
 - [Item](https://ui.shadcn.com/docs/components/item): A versatile component for displaying content with media, title, description, and actions.
 - [Kbd](https://ui.shadcn.com/docs/components/kbd): Used to display textual user input from keyboard.
 - [Label](https://ui.shadcn.com/docs/components/label): Renders an accessible label associated with controls.
+- [Marker](https://ui.shadcn.com/docs/components/marker): Displays an inline status, system note, bordered row, or labeled separator in a conversation.
 - [Menubar](https://ui.shadcn.com/docs/components/menubar): A visually persistent menu common in desktop applications that provides quick access to a consistent set of commands.
+- [Message](https://ui.shadcn.com/docs/components/message): Displays a message in a conversation, with optional avatar, header, footer, and alignment.
+- [Message Scroller](https://ui.shadcn.com/docs/components/message-scroller): A chat scroll container that anchors turns, opens saved transcripts, follows streamed responses, loads history without jumping, and jumps to any message.
 - [Native Select](https://ui.shadcn.com/docs/components/native-select): A styled native HTML select element with consistent design system integration.
 - [Navigation Menu](https://ui.shadcn.com/docs/components/navigation-menu): A collection of links for navigating websites.
 - [Pagination](https://ui.shadcn.com/docs/components/pagination): Pagination with page navigation, next and previous links.

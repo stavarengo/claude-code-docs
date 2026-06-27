@@ -9,7 +9,7 @@ Beta headers allow you to access experimental features and new model capabilitie
 These features are subject to change and may be modified or removed in future releases.
 
 <Info>
-Beta headers are often used in conjunction with the `beta` namespace exposed by each [client SDK](/docs/en/cli-sdks-libraries/overview).
+  Beta headers are often used in conjunction with the `beta` namespace exposed by each [client SDK](/docs/en/cli-sdks-libraries/overview).
 </Info>
 
 ## How to use beta headers
@@ -26,64 +26,59 @@ anthropic-beta: BETA_FEATURE_NAME
 When using the SDK, you can specify beta headers in the request options:
 
 <CodeGroup>
+  ```bash cURL
+  curl https://api.anthropic.com/v1/messages \
+    -H "x-api-key: $ANTHROPIC_API_KEY" \
+    -H "anthropic-version: 2023-06-01" \
+    -H "anthropic-beta: files-api-2025-04-14" \
+    -H "content-type: application/json" \
+    -d '{
+      "model": "claude-opus-4-8",
+      "max_tokens": 1024,
+      "messages": [
+        {"role": "user", "content": "Hello, Claude"}
+      ]
+    }'
+  ```
 
-```bash cURL
-curl https://api.anthropic.com/v1/messages \
-  -H "x-api-key: $ANTHROPIC_API_KEY" \
-  -H "anthropic-version: 2023-06-01" \
-  -H "anthropic-beta: files-api-2025-04-14" \
-  -H "content-type: application/json" \
-  -d '{
-    "model": "claude-opus-4-8",
-    "max_tokens": 1024,
-    "messages": [
-      {"role": "user", "content": "Hello, Claude"}
-    ]
-  }'
-```
+  ```bash CLI
+  ant beta:messages create \
+    --beta files-api-2025-04-14 \
+    --model claude-opus-4-8 \
+    --max-tokens 1024 \
+    --message '{role: user, content: "Hello, Claude"}'
+  ```
 
-```bash CLI
-ant beta:messages create \
-  --beta files-api-2025-04-14 \
-  --model claude-opus-4-8 \
-  --max-tokens 1024 \
-  --message '{role: user, content: "Hello, Claude"}'
-```
+  ```python Python
+  client = Anthropic()
 
-```python Python hidelines={1..2}
-from anthropic import Anthropic
+  response = client.beta.messages.create(
+      model="claude-opus-4-8",
+      max_tokens=1024,
+      messages=[{"role": "user", "content": "Hello, Claude"}],
+      betas=["files-api-2025-04-14"],
+  )
+  ```
 
-client = Anthropic()
+  ```typescript TypeScript
+  const anthropic = new Anthropic();
 
-response = client.beta.messages.create(
-    model="claude-opus-4-8",
-    max_tokens=1024,
-    messages=[{"role": "user", "content": "Hello, Claude"}],
-    betas=["files-api-2025-04-14"],
-)
-```
-
-```typescript TypeScript hidelines={1..2}
-import Anthropic from "@anthropic-ai/sdk";
-
-const anthropic = new Anthropic();
-
-const msg = await anthropic.beta.messages.create({
-  model: "claude-opus-4-8",
-  max_tokens: 1024,
-  messages: [{ role: "user", content: "Hello, Claude" }],
-  betas: ["files-api-2025-04-14"]
-});
-```
-
+  const msg = await anthropic.beta.messages.create({
+    model: "claude-opus-4-8",
+    max_tokens: 1024,
+    messages: [{ role: "user", content: "Hello, Claude" }],
+    betas: ["files-api-2025-04-14"]
+  });
+  ```
 </CodeGroup>
 
 <Warning>
-Beta features are experimental and may:
-- Have breaking changes with notice
-- Be deprecated or removed
-- Have different rate limits or pricing
-- Not be available in all regions
+  Beta features are experimental and may:
+
+  * Have breaking changes with notice
+  * Be deprecated or removed
+  * Have different rate limits or pricing
+  * Not be available in all regions
 </Warning>
 
 ### Multiple beta features
@@ -98,8 +93,8 @@ anthropic-beta: feature1,feature2,feature3
 
 Some beta features are scoped to specific endpoints rather than individual request parameters and require a feature-specific beta header on every request:
 
-| Endpoints | Beta header |
-| --- | --- |
+| Endpoints                                        | Beta header                 |
+| ------------------------------------------------ | --------------------------- |
 | `/v1/agents`, `/v1/sessions`, `/v1/environments` | `managed-agents-2026-04-01` |
 
 See the [Managed Agents overview](/docs/en/managed-agents/overview) for details.

@@ -7,7 +7,7 @@ Install and configure the Anthropic Python SDK with sync and async client suppor
 The Anthropic Python SDK provides convenient access to the Anthropic REST API from Python applications. It supports both synchronous and asynchronous operations, streaming, and integrations with Amazon Bedrock, Google Cloud, Microsoft Foundry, and Claude Platform on AWS.
 
 <Info>
-For API feature documentation with code examples, see the [API reference](/docs/en/api/overview). This page covers Python-specific SDK features and configuration.
+  For API feature documentation with code examples, see the [API reference](/docs/en/api/overview). This page covers Python-specific SDK features and configuration.
 </Info>
 
 ## Installation
@@ -63,7 +63,7 @@ print(message.content)
 ```
 
 <Tip>
-Consider using [python-dotenv](https://pypi.org/project/python-dotenv/) to add `ANTHROPIC_API_KEY="my-anthropic-api-key"` to your `.env` file so that your API key isn't stored in source control.
+  Consider using [python-dotenv](https://pypi.org/project/python-dotenv/) to add `ANTHROPIC_API_KEY="my-anthropic-api-key"` to your `.env` file so that your API key isn't stored in source control.
 </Tip>
 
 For authentication options including Workload Identity Federation, see [Authentication](/docs/en/manage-claude/authentication).
@@ -101,7 +101,7 @@ asyncio.run(main())
 
 For improved async performance, you can use the `aiohttp` HTTP backend instead of the default `httpx`:
 
-```python nocheck
+```python
 import os
 import asyncio
 from anthropic import AsyncAnthropic, DefaultAioHttpClient
@@ -132,9 +132,7 @@ asyncio.run(main())
 
 The SDK provides support for streaming responses using Server-Sent Events (SSE).
 
-```python hidelines={1..2}
-from anthropic import Anthropic
-
+```python
 client = Anthropic()
 
 stream = client.messages.create(
@@ -154,9 +152,7 @@ for event in stream:
 
 The async client uses the exact same interface:
 
-```python hidelines={1..2}
-from anthropic import AsyncAnthropic
-
+```python
 client = AsyncAnthropic()
 
 stream = await client.messages.create(
@@ -178,13 +174,7 @@ async for event in stream:
 
 The SDK also provides streaming helpers that use context managers and provide access to the accumulated text and the final message:
 
-```python hidelines={1..6}
-import asyncio
-from anthropic import AsyncAnthropic
-
-client = AsyncAnthropic()
-
-
+```python
 async def main() -> None:
     async with client.messages.stream(
         max_tokens=1024,
@@ -215,7 +205,7 @@ Alternatively, you can use `client.messages.create(..., stream=True)` which only
 
 You can see the exact usage for a given request through the `usage` response property:
 
-```python nocheck
+```python
 message = client.messages.create(...)
 print(message.usage)
 # Usage(input_tokens=25, output_tokens=13)
@@ -313,9 +303,7 @@ client.messages.batches.create(
 
 Once a Message Batch has been processed, indicated by `.processing_status == 'ended'`, you can access the results with `.batches.results()`:
 
-```python nocheck hidelines={1..2}
-import anthropic
-
+```python
 client = anthropic.Anthropic()
 batch_id = "batch_abc123"
 result_stream = client.messages.batches.results(batch_id)
@@ -328,11 +316,11 @@ for entry in result_stream:
 
 Request parameters that correspond to file uploads can be passed in many different forms:
 
-- A `PathLike` object (for example, `pathlib.Path`)
-- A tuple of `(filename, content, content_type)`
-- A `BinaryIO` file-like object
+* A `PathLike` object (for example, `pathlib.Path`)
+* A tuple of `(filename, content, content_type)`
+* A `BinaryIO` file-like object
 
-```python nocheck
+```python
 from pathlib import Path
 from anthropic import Anthropic
 
@@ -355,12 +343,9 @@ The async client uses the exact same interface. If you pass a `PathLike` instanc
 
 When the library is unable to connect to the API, or if the API returns a non-success status code (i.e., 4xx or 5xx response), a subclass of `APIError` is raised:
 
-```python hidelines={2..5}
+```python
 import anthropic
-from anthropic import Anthropic
-
-client = Anthropic()
-
+# ...
 try:
     message = client.messages.create(
         max_tokens=1024,
@@ -385,17 +370,17 @@ except anthropic.APIStatusError as e:
 
 Error codes are as follows:
 
-| Status Code | Error Type |
-|-------------|-----------|
-| 400 | `BadRequestError` |
-| 401 | `AuthenticationError` |
-| 403 | `PermissionDeniedError` |
-| 404 | `NotFoundError` |
-| 409 | `ConflictError` |
-| 422 | `UnprocessableEntityError` |
-| 429 | `RateLimitError` |
-| >=500 | `InternalServerError` |
-| N/A | `APIConnectionError` |
+| Status Code | Error Type                 |
+| ----------- | -------------------------- |
+| 400         | `BadRequestError`          |
+| 401         | `AuthenticationError`      |
+| 403         | `PermissionDeniedError`    |
+| 404         | `NotFoundError`            |
+| 409         | `ConflictError`            |
+| 422         | `UnprocessableEntityError` |
+| 429         | `RateLimitError`           |
+| >=500       | `InternalServerError`      |
+| N/A         | `APIConnectionError`       |
 
 ## Request IDs
 
@@ -413,7 +398,7 @@ print(message._request_id)  # e.g., req_018EeWyXxfu5pfWkrYcMdjWG
 ```
 
 <Note>
-Unlike other properties that use an `_` prefix, the `_request_id` property is public. Unless documented otherwise, all other `_` prefix properties, methods, and modules are private.
+  Unlike other properties that use an `_` prefix, the `_request_id` property is public. Unless documented otherwise, all other `_` prefix properties, methods, and modules are private.
 </Note>
 
 ## Retries
@@ -422,9 +407,7 @@ Certain errors are automatically retried 2 times by default, with a short expone
 
 You can use the `max_retries` option to configure or disable this:
 
-```python hidelines={1..2}
-from anthropic import Anthropic
-
+```python
 # Configure the default for all requests:
 client = Anthropic(
     max_retries=0,  # default is 2
@@ -471,7 +454,7 @@ Note that requests which time out will be [retried twice by default](#retries).
 ## Long requests
 
 <Warning>
-Consider using the streaming [Messages API](#streaming-responses) for longer running requests.
+  Consider using the streaming [Messages API](#streaming-responses) for longer running requests.
 </Warning>
 
 Avoid setting a large `max_tokens` value without using streaming. Some networks may drop idle connections after a certain period of time, which can cause the request to fail or [timeout](#timeouts) without receiving a response from Anthropic.
@@ -486,9 +469,7 @@ The SDK sets a [TCP socket keep-alive](https://tldp.org/HOWTO/TCP-Keepalive-HOWT
 
 List methods in the Claude API are paginated. You can use the `for` syntax to iterate through items across all pages:
 
-```python hidelines={1..2}
-from anthropic import Anthropic
-
+```python
 client = Anthropic()
 
 all_batches = []
@@ -500,13 +481,7 @@ print(all_batches)
 
 For async iteration:
 
-```python hidelines={1..6}
-import asyncio
-from anthropic import AsyncAnthropic
-
-client = AsyncAnthropic()
-
-
+```python
 async def main() -> None:
     all_batches = []
     async for batch in client.messages.batches.list(limit=20):
@@ -519,7 +494,7 @@ asyncio.run(main())
 
 Alternatively, you can use the `.has_next_page()`, `.next_page_info()`, or `.get_next_page()` methods for more granular control working with pages:
 
-```python nocheck
+```python
 first_page = await client.messages.batches.list(limit=20)
 
 if first_page.has_next_page():
@@ -532,7 +507,7 @@ if first_page.has_next_page():
 
 Or work directly with the returned data:
 
-```python nocheck
+```python
 first_page = await client.messages.batches.list(limit=20)
 
 print(f"next page cursor: {first_page.last_id}")
@@ -549,12 +524,10 @@ The SDK automatically sends the `anthropic-version` header set to `2023-06-01`.
 If you need to, you can override it by setting default headers on the client object or per-request.
 
 <Warning>
-Overriding default headers may result in incorrect types and other unexpected or undefined behavior in the SDK.
+  Overriding default headers may result in incorrect types and other unexpected or undefined behavior in the SDK.
 </Warning>
 
-```python nocheck hidelines={1..2}
-from anthropic import Anthropic
-
+```python
 # Set default headers for all requests on the client
 client = Anthropic(
     default_headers={"anthropic-version": "My-Custom-Value"},
@@ -581,7 +554,7 @@ Typed requests and responses provide autocomplete and documentation within your 
 
 To convert a Pydantic model to a dictionary, use the helper methods:
 
-```python nocheck
+```python
 message = client.messages.create(...)
 
 # Convert to JSON string
@@ -595,7 +568,7 @@ data = message.to_dict()
 
 In responses, you can distinguish between fields that are explicitly `null` versus fields that were not returned (missing):
 
-```python nocheck
+```python
 response = client.messages.create(
     model="claude-opus-4-8",
     max_tokens=1024,
@@ -614,9 +587,7 @@ if response.my_field is None:
 
 The "raw" `Response` returned by `httpx` can be accessed through the `.with_raw_response` property on the client. This is useful for accessing response headers or other metadata:
 
-```python hidelines={1..2}
-from anthropic import Anthropic
-
+```python
 client = Anthropic()
 
 response = client.messages.with_raw_response.create(
@@ -670,7 +641,7 @@ This library is typed for convenient access to the documented API. If you need t
 
 To make requests to undocumented endpoints, you can use `client.get`, `client.post`, and other HTTP verbs. Options on the client, such as retries, will be respected when making these requests.
 
-```python nocheck
+```python
 import httpx
 
 response = client.post(
@@ -687,7 +658,7 @@ print(response.json())
 If you want to explicitly send an extra param, you can do so with the `extra_query`, `extra_body`, and `extra_headers` request options.
 
 <Warning>
-The `extra_` parameters override documented parameters of the same name. For security reasons, ensure these methods are only used with trusted input data.
+  The `extra_` parameters override documented parameters of the same name. For security reasons, ensure these methods are only used with trusted input data.
 </Warning>
 
 #### Undocumented response properties
@@ -719,16 +690,14 @@ client.with_options(http_client=DefaultHttpxClient(...))
 ```
 
 <Note>
-Use `DefaultHttpxClient` and `DefaultAsyncHttpxClient` instead of raw `httpx.Client` and `httpx.AsyncClient` to ensure the SDK's default configuration (timeouts, connection limits, etc.) is preserved.
+  Use `DefaultHttpxClient` and `DefaultAsyncHttpxClient` instead of raw `httpx.Client` and `httpx.AsyncClient` to ensure the SDK's default configuration (timeouts, connection limits, etc.) is preserved.
 </Note>
 
 ### Managing HTTP resources
 
 By default the library closes underlying HTTP connections whenever the client is [garbage collected](https://docs.python.org/3/reference/datamodel.html#object.__del__). You can manually close the client using the `.close()` method if desired, or with a context manager that closes when exiting.
 
-```python nocheck hidelines={1..2}
-from anthropic import Anthropic
-
+```python
 with Anthropic() as client:
     message = client.messages.create(...)
 
@@ -743,9 +712,7 @@ You can access most beta API features through the `beta` property of the client.
 
 For example, to use the [Files API](/docs/en/build-with-claude/files):
 
-```python nocheck hidelines={1..2}
-from anthropic import Anthropic
-
+```python
 client = Anthropic()
 
 response = client.beta.messages.create(
@@ -773,23 +740,24 @@ response = client.beta.messages.create(
 ## Platform integrations
 
 <Note>
-For detailed platform setup guides with code examples, see:
-- [Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock)
-- [Amazon Bedrock (legacy)](/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy)
-- [Google Cloud](/docs/en/build-with-claude/claude-on-vertex-ai)
-- [Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry)
-- [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws)
+  For detailed platform setup guides with code examples, see:
+
+  * [Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock)
+  * [Amazon Bedrock (legacy)](/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy)
+  * [Google Cloud](/docs/en/build-with-claude/claude-on-vertex-ai)
+  * [Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry)
+  * [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws)
 </Note>
 
 All five client classes are included in the base `anthropic` package:
 
-| Provider | Client | Extra dependencies |
-|-----------|--------|-------------------|
-| Bedrock | `from anthropic import AnthropicBedrockMantle` | `pip install "anthropic[bedrock]"` |
-| Bedrock (`bedrock-runtime` path) | `from anthropic import AnthropicBedrock` | `pip install "anthropic[bedrock]"` |
-| Agent Platform | `from anthropic import AnthropicVertex` | `pip install "anthropic[vertex]"` |
-| Foundry | `from anthropic import AnthropicFoundry` | None |
-| Claude Platform on AWS | `from anthropic import AnthropicAWS` | `pip install "anthropic[aws]"` |
+| Provider                         | Client                                         | Extra dependencies                 |
+| -------------------------------- | ---------------------------------------------- | ---------------------------------- |
+| Bedrock                          | `from anthropic import AnthropicBedrockMantle` | `pip install "anthropic[bedrock]"` |
+| Bedrock (`bedrock-runtime` path) | `from anthropic import AnthropicBedrock`       | `pip install "anthropic[bedrock]"` |
+| Agent Platform                   | `from anthropic import AnthropicVertex`        | `pip install "anthropic[vertex]"`  |
+| Foundry                          | `from anthropic import AnthropicFoundry`       | None                               |
+| Claude Platform on AWS           | `from anthropic import AnthropicAWS`           | `pip install "anthropic[aws]"`     |
 
 The `AnthropicAWS` client is in beta. Pass `workspace_id` to the constructor or set the `ANTHROPIC_AWS_WORKSPACE_ID` environment variable.
 
@@ -807,15 +775,13 @@ This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) con
 
 If you've upgraded to the latest version but aren't seeing new features you were expecting, your Python environment is likely still using an older version. You can determine the version being used at runtime with:
 
-```python hidelines={1..2}
-import anthropic
-
+```python
 print(anthropic.__version__)
 ```
 
 ## Additional resources
 
-- [GitHub repository](https://github.com/anthropics/anthropic-sdk-python)
-- [API reference](/docs/en/api/overview)
-- [Streaming Messages](/docs/en/build-with-claude/streaming)
-- [Tool use with Claude](/docs/en/agents-and-tools/tool-use/overview)
+* [GitHub repository](https://github.com/anthropics/anthropic-sdk-python)
+* [API reference](/docs/en/api/overview)
+* [Streaming Messages](/docs/en/build-with-claude/streaming)
+* [Tool use with Claude](/docs/en/agents-and-tools/tool-use/overview)

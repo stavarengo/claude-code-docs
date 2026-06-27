@@ -8,8 +8,8 @@ Claude Opus 4.8 is Anthropic's most capable Opus-tier model. It builds on Claude
 
 ## New model
 
-| Model | API model ID | Description |
-|:------|:-------------|:------------|
+| Model           | API model ID    | Description                                                                                                         |
+| --------------- | --------------- | ------------------------------------------------------------------------------------------------------------------- |
 | Claude Opus 4.8 | claude-opus-4-8 | Anthropic's most capable Opus-tier model for complex reasoning, long-horizon agentic coding, and high-autonomy work |
 
 Claude Opus 4.8 supports the [1M token context window](/docs/en/build-with-claude/context-windows) by default on the Claude API, Amazon Bedrock, and Google Cloud (200k on Microsoft Foundry), 128k max output tokens, [adaptive thinking](/docs/en/build-with-claude/adaptive-thinking), and the same set of tools and platform features as Claude Opus 4.7.
@@ -41,7 +41,7 @@ The minimum cacheable prompt length on Claude Opus 4.8 is 1,024 tokens, down fro
 ## API constraints inherited from Claude Opus 4.7
 
 <Note>
-These constraints are unchanged from Claude Opus 4.7, so code that already runs on Claude Opus 4.7 needs no changes. They apply to the Messages API only. Claude Managed Agents are unaffected.
+  These constraints are unchanged from Claude Opus 4.7, so code that already runs on Claude Opus 4.7 needs no changes. They apply to the Messages API only. Claude Managed Agents are unaffected.
 </Note>
 
 ### Sampling parameters not supported
@@ -55,213 +55,213 @@ Like Claude Opus 4.7, Claude Opus 4.8 does not support extended thinking budgets
 The following diff updates a request written for Claude Opus 4.6 or earlier to run on Claude Opus 4.8. The removed lines (`-`) set the old model ID and the manual thinking budget that Claude Opus 4.8 rejects. The added lines (`+`) set the new model ID, switch to [adaptive thinking](/docs/en/build-with-claude/adaptive-thinking), and control thinking depth with the [effort parameter](/docs/en/build-with-claude/effort), passed in the top-level `output_config` field. The model determines when and how much to think on each turn. If you remove the `thinking` field entirely, requests run without thinking:
 
 <CodeGroup>
-```diff cURL
- curl https://api.anthropic.com/v1/messages \
-      --header "x-api-key: $ANTHROPIC_API_KEY" \
-      --header "anthropic-version: 2023-06-01" \
-      --header "content-type: application/json" \
-      --data \
- '{
--    "model": "claude-opus-4-6",
-+    "model": "claude-opus-4-8",
-     "max_tokens": 16000,
-     "thinking": {
--        "type": "enabled",
--        "budget_tokens": 10000
-+        "type": "adaptive"
-     },
-+    "output_config": {
-+        "effort": "high"
-+    },
-     "messages": [
-         {
-             "role": "user",
-             "content": "Explain why the sum of two even numbers is always even."
-         }
+  ```diff cURL
+   curl https://api.anthropic.com/v1/messages \
+        --header "x-api-key: $ANTHROPIC_API_KEY" \
+        --header "anthropic-version: 2023-06-01" \
+        --header "content-type: application/json" \
+        --data \
+   '{
+  -    "model": "claude-opus-4-6",
+  +    "model": "claude-opus-4-8",
+       "max_tokens": 16000,
+       "thinking": {
+  -        "type": "enabled",
+  -        "budget_tokens": 10000
+  +        "type": "adaptive"
+       },
+  +    "output_config": {
+  +        "effort": "high"
+  +    },
+       "messages": [
+           {
+               "role": "user",
+               "content": "Explain why the sum of two even numbers is always even."
+           }
+       ]
+   }'
+  ```
+
+  ```diff CLI
+   ant messages create <<'YAML'
+  -model: claude-opus-4-6
+  +model: claude-opus-4-8
+   max_tokens: 16000
+   thinking:
+  -  type: enabled
+  -  budget_tokens: 10000
+  +  type: adaptive
+  +output_config:
+  +  effort: high
+   messages:
+     - role: user
+       content: Explain why the sum of two even numbers is always even.
+   YAML
+  ```
+
+  ```diff Python
+   import anthropic
+
+   client = anthropic.Anthropic()
+
+   response = client.messages.create(
+  -    model="claude-opus-4-6",
+  +    model="claude-opus-4-8",
+       max_tokens=16000,
+  -    thinking={"type": "enabled", "budget_tokens": 10000},
+  +    thinking={"type": "adaptive"},
+  +    output_config={"effort": "high"},
+       messages=[
+           {
+               "role": "user",
+               "content": "Explain why the sum of two even numbers is always even.",
+           }
+       ],
+   )
+  ```
+
+  ```diff TypeScript
+   import Anthropic from "@anthropic-ai/sdk";
+
+   const client = new Anthropic();
+
+   const response = await client.messages.create({
+  -  model: "claude-opus-4-6",
+  +  model: "claude-opus-4-8",
+     max_tokens: 16000,
+  -  thinking: { type: "enabled", budget_tokens: 10000 },
+  +  thinking: { type: "adaptive" },
+  +  output_config: { effort: "high" },
+     messages: [
+       {
+         role: "user",
+         content: "Explain why the sum of two even numbers is always even."
+       }
      ]
- }'
-```
+   });
+  ```
 
-```diff CLI
- ant messages create <<'YAML'
--model: claude-opus-4-6
-+model: claude-opus-4-8
- max_tokens: 16000
- thinking:
--  type: enabled
--  budget_tokens: 10000
-+  type: adaptive
-+output_config:
-+  effort: high
- messages:
-   - role: user
-     content: Explain why the sum of two even numbers is always even.
- YAML
-```
+  ```diff C#
+   using Anthropic;
+   using Anthropic.Models.Messages;
 
-```diff Python
- import anthropic
+   AnthropicClient client = new();
 
- client = anthropic.Anthropic()
+   var parameters = new MessageCreateParams
+   {
+  -    Model = "claude-opus-4-6",
+  +    Model = Model.ClaudeOpus4_8,
+       MaxTokens = 16000,
+  -    Thinking = new ThinkingConfigEnabled(budgetTokens: 10000),
+  +    Thinking = new ThinkingConfigAdaptive(),
+  +    OutputConfig = new OutputConfig { Effort = Effort.High },
+       Messages = [new() { Role = Role.User, Content = "Explain why the sum of two even numbers is always even." }]
+   };
 
- response = client.messages.create(
--    model="claude-opus-4-6",
-+    model="claude-opus-4-8",
-     max_tokens=16000,
--    thinking={"type": "enabled", "budget_tokens": 10000},
-+    thinking={"type": "adaptive"},
-+    output_config={"effort": "high"},
-     messages=[
-         {
-             "role": "user",
-             "content": "Explain why the sum of two even numbers is always even.",
-         }
-     ],
- )
-```
+   var response = await client.Messages.Create(parameters);
+   Console.WriteLine(response);
+  ```
 
-```diff TypeScript
- import Anthropic from "@anthropic-ai/sdk";
+  ```diff Go
+   package main
 
- const client = new Anthropic();
+   import (
+   	"context"
+   	"fmt"
+   	"log"
 
- const response = await client.messages.create({
--  model: "claude-opus-4-6",
-+  model: "claude-opus-4-8",
-   max_tokens: 16000,
--  thinking: { type: "enabled", budget_tokens: 10000 },
-+  thinking: { type: "adaptive" },
-+  output_config: { effort: "high" },
-   messages: [
-     {
-       role: "user",
-       content: "Explain why the sum of two even numbers is always even."
-     }
-   ]
- });
-```
+   	"github.com/anthropics/anthropic-sdk-go"
+   )
 
-```diff C#
- using Anthropic;
- using Anthropic.Models.Messages;
+   func main() {
+   	client := anthropic.NewClient()
 
- AnthropicClient client = new();
+   	response, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
+  -		Model:     "claude-opus-4-6",
+  +		Model:     anthropic.ModelClaudeOpus4_8,
+   		MaxTokens: 16000,
+  -		Thinking:  anthropic.ThinkingConfigParamOfEnabled(10000),
+  +		Thinking: anthropic.ThinkingConfigParamUnion{
+  +			OfAdaptive: &anthropic.ThinkingConfigAdaptiveParam{},
+  +		},
+  +		OutputConfig: anthropic.OutputConfigParam{
+  +			Effort: anthropic.OutputConfigEffortHigh,
+  +		},
+   		Messages: []anthropic.MessageParam{
+   			anthropic.NewUserMessage(anthropic.NewTextBlock("Explain why the sum of two even numbers is always even.")),
+   		},
+   	})
+   	if err != nil {
+   		log.Fatal(err)
+   	}
+   	fmt.Println(response)
+   }
+  ```
 
- var parameters = new MessageCreateParams
- {
--    Model = "claude-opus-4-6",
-+    Model = Model.ClaudeOpus4_8,
-     MaxTokens = 16000,
--    Thinking = new ThinkingConfigEnabled(budgetTokens: 10000),
-+    Thinking = new ThinkingConfigAdaptive(),
-+    OutputConfig = new OutputConfig { Effort = Effort.High },
-     Messages = [new() { Role = Role.User, Content = "Explain why the sum of two even numbers is always even." }]
- };
+  ```diff Java
+   import com.anthropic.client.AnthropicClient;
+   import com.anthropic.client.okhttp.AnthropicOkHttpClient;
+   import com.anthropic.models.messages.Message;
+   import com.anthropic.models.messages.MessageCreateParams;
+  +import com.anthropic.models.messages.Model;
+  +import com.anthropic.models.messages.OutputConfig;
+  +import com.anthropic.models.messages.ThinkingConfigAdaptive;
 
- var response = await client.Messages.Create(parameters);
- Console.WriteLine(response);
-```
+   void main() {
+       AnthropicClient client = AnthropicOkHttpClient.fromEnv();
 
-```diff Go
- package main
+       MessageCreateParams params = MessageCreateParams.builder()
+  -        .model("claude-opus-4-6")
+  +        .model(Model.CLAUDE_OPUS_4_8)
+           .maxTokens(16000L)
+  -        .enabledThinking(10000L)
+  +        .thinking(ThinkingConfigAdaptive.builder().build())
+  +        .outputConfig(OutputConfig.builder()
+  +            .effort(OutputConfig.Effort.HIGH)
+  +            .build())
+           .addUserMessage("Explain why the sum of two even numbers is always even.")
+           .build();
 
- import (
- 	"context"
- 	"fmt"
- 	"log"
+       Message response = client.messages().create(params);
+       IO.println(response);
+   }
+  ```
 
- 	"github.com/anthropics/anthropic-sdk-go"
- )
+  ```diff PHP
+   <?php
 
- func main() {
- 	client := anthropic.NewClient()
+   use Anthropic\Client;
 
- 	response, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
--		Model:     "claude-opus-4-6",
-+		Model:     anthropic.ModelClaudeOpus4_8,
- 		MaxTokens: 16000,
--		Thinking:  anthropic.ThinkingConfigParamOfEnabled(10000),
-+		Thinking: anthropic.ThinkingConfigParamUnion{
-+			OfAdaptive: &anthropic.ThinkingConfigAdaptiveParam{},
-+		},
-+		OutputConfig: anthropic.OutputConfigParam{
-+			Effort: anthropic.OutputConfigEffortHigh,
-+		},
- 		Messages: []anthropic.MessageParam{
- 			anthropic.NewUserMessage(anthropic.NewTextBlock("Explain why the sum of two even numbers is always even.")),
- 		},
- 	})
- 	if err != nil {
- 		log.Fatal(err)
- 	}
- 	fmt.Println(response)
- }
-```
+   $client = new Client();
 
-```diff Java
- import com.anthropic.client.AnthropicClient;
- import com.anthropic.client.okhttp.AnthropicOkHttpClient;
- import com.anthropic.models.messages.Message;
- import com.anthropic.models.messages.MessageCreateParams;
-+import com.anthropic.models.messages.Model;
-+import com.anthropic.models.messages.OutputConfig;
-+import com.anthropic.models.messages.ThinkingConfigAdaptive;
+   $response = $client->messages->create(
+       maxTokens: 16000,
+       messages: [['role' => 'user', 'content' => 'Explain why the sum of two even numbers is always even.']],
+  -    model: 'claude-opus-4-6',
+  -    thinking: ['type' => 'enabled', 'budget_tokens' => 10000],
+  +    model: 'claude-opus-4-8',
+  +    thinking: ['type' => 'adaptive'],
+  +    outputConfig: ['effort' => 'high'],
+   );
+  ```
 
- void main() {
-     AnthropicClient client = AnthropicOkHttpClient.fromEnv();
+  ```diff Ruby
+   require "anthropic"
 
-     MessageCreateParams params = MessageCreateParams.builder()
--        .model("claude-opus-4-6")
-+        .model(Model.CLAUDE_OPUS_4_8)
-         .maxTokens(16000L)
--        .enabledThinking(10000L)
-+        .thinking(ThinkingConfigAdaptive.builder().build())
-+        .outputConfig(OutputConfig.builder()
-+            .effort(OutputConfig.Effort.HIGH)
-+            .build())
-         .addUserMessage("Explain why the sum of two even numbers is always even.")
-         .build();
+   client = Anthropic::Client.new
 
-     Message response = client.messages().create(params);
-     IO.println(response);
- }
-```
-
-```diff PHP
- <?php
-
- use Anthropic\Client;
-
- $client = new Client();
-
- $response = $client->messages->create(
-     maxTokens: 16000,
-     messages: [['role' => 'user', 'content' => 'Explain why the sum of two even numbers is always even.']],
--    model: 'claude-opus-4-6',
--    thinking: ['type' => 'enabled', 'budget_tokens' => 10000],
-+    model: 'claude-opus-4-8',
-+    thinking: ['type' => 'adaptive'],
-+    outputConfig: ['effort' => 'high'],
- );
-```
-
-```diff Ruby
- require "anthropic"
-
- client = Anthropic::Client.new
-
- response = client.messages.create(
--  model: "claude-opus-4-6",
-+  model: "claude-opus-4-8",
-   max_tokens: 16000,
--  thinking: { type: "enabled", budget_tokens: 10000 },
-+  thinking: { type: "adaptive" },
-+  output_config: { effort: "high" },
-   messages: [
-     { role: "user", content: "Explain why the sum of two even numbers is always even." }
-   ]
- )
-```
+   response = client.messages.create(
+  -  model: "claude-opus-4-6",
+  +  model: "claude-opus-4-8",
+     max_tokens: 16000,
+  -  thinking: { type: "enabled", budget_tokens: 10000 },
+  +  thinking: { type: "adaptive" },
+  +  output_config: { effort: "high" },
+     messages: [
+       { role: "user", content: "Explain why the sum of two even numbers is always even." }
+     ]
+   )
+  ```
 </CodeGroup>
 
 ## Capability improvements
@@ -270,9 +270,9 @@ The following diff updates a request written for Claude Opus 4.6 or earlier to r
 
 Compared with Claude Opus 4.7, Claude Opus 4.8 targets behavioral improvements in:
 
-- **Long-horizon agentic coding**, including better long-context handling, fewer compactions, and better [compaction](/docs/en/build-with-claude/compaction) recovery.
-- **Reasoning effort calibration**, with more reliable behavior at each effort level across a range of domains.
-- **Tool triggering**, with fewer cases of skipping a tool call that the task required.
+* **Long-horizon agentic coding**, including better long-context handling, fewer compactions, and better [compaction](/docs/en/build-with-claude/compaction) recovery.
+* **Reasoning effort calibration**, with more reliable behavior at each effort level across a range of domains.
+* **Tool triggering**, with fewer cases of skipping a tool call that the task required.
 
 ### Adaptive thinking
 
@@ -282,10 +282,10 @@ With [adaptive thinking](/docs/en/build-with-claude/adaptive-thinking) enabled, 
 
 These are not API breaking changes but might require prompt updates. See [Migrating to Claude Opus 4.8](/docs/en/about-claude/models/migration-guide#migrating-from-claude-opus-47) for full guidance.
 
-- **Fewer wasted thinking tokens** at the same effort level when adaptive thinking is enabled, because the model determines per turn whether to think.
-- **Better tool triggering.** The model is less likely to skip a tool call the task required, an issue some users reported on Claude Opus 4.7.
-- **Better compaction handling and long-context quality.** Long agentic traces stay on task with fewer derailments after compaction.
-- **Effort levels recalibrated.** The token allocation behind each effort level changes compared to Claude Opus 4.7: `medium` allows somewhat more thinking, `high` somewhat less, and `xhigh` substantially more. If you tuned an effort level against Claude Opus 4.7, re-baseline cost and latency at that level before adjusting it.
+* **Fewer wasted thinking tokens** at the same effort level when adaptive thinking is enabled, because the model determines per turn whether to think.
+* **Better tool triggering.** The model is less likely to skip a tool call the task required, an issue some users reported on Claude Opus 4.7.
+* **Better compaction handling and long-context quality.** Long agentic traces stay on task with fewer derailments after compaction.
+* **Effort levels recalibrated.** The token allocation behind each effort level changes compared to Claude Opus 4.7: `medium` allows somewhat more thinking, `high` somewhat less, and `xhigh` substantially more. If you tuned an effort level against Claude Opus 4.7, re-baseline cost and latency at that level before adjusting it.
 
 ## Migration guide
 
@@ -297,18 +297,23 @@ For step-by-step migration instructions and the full migration checklist, see [M
   <Card title="Migration guide" icon="arrow-right" href="/docs/en/about-claude/models/migration-guide#migrating-from-claude-opus-47">
     Guide for migrating to the latest Claude models from previous Claude versions.
   </Card>
+
   <Card title="Effort" icon="gauge" href="/docs/en/build-with-claude/effort">
     Control how many tokens Claude uses when responding with the effort parameter, trading off between response thoroughness and token efficiency.
   </Card>
+
   <Card title="Adaptive thinking" icon="brain" href="/docs/en/build-with-claude/adaptive-thinking">
     Let Claude dynamically determine when and how much to use extended thinking with adaptive thinking mode.
   </Card>
+
   <Card title="Prompt caching" icon="database" href="/docs/en/build-with-claude/prompt-caching">
     How mid-conversation system messages preserve cache hits.
   </Card>
+
   <Card title="Stop reasons and fallback" icon="code" href="/docs/en/build-with-claude/handling-stop-reasons">
-    Learn what each stop_reason value means and how to handle truncation, tool use, paused turns, and refusals in your application.
+    Learn what each stop\_reason value means and how to handle truncation, tool use, paused turns, and refusals in your application.
   </Card>
+
   <Card title="Fast mode (research preview)" icon="bolt" href="/docs/en/build-with-claude/fast-mode">
     Get up to 2.5x higher output tokens per second from Claude Opus models.
   </Card>

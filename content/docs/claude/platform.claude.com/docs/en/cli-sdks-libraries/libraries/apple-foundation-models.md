@@ -18,9 +18,9 @@ Requests go directly from your app to the Claude API; Apple is not in the reques
 
 ## Requirements
 
-- iOS 27, macOS 27, visionOS 27, or watchOS 27 (all in beta): the OS releases whose Foundation Models framework supports server-side language models
-- Xcode 27 (beta)
-- A Claude API key from the [Claude Console](https://platform.claude.com/) for development. See [Authentication](#authentication) for production options.
+* iOS 27, macOS 27, visionOS 27, or watchOS 27 (all in beta): the OS releases whose Foundation Models framework supports server-side language models
+* Xcode 27 (beta)
+* A Claude API key from the [Claude Console](https://platform.claude.com/) for development. See [Authentication](#authentication) for production options.
 
 ## Install the package
 
@@ -215,19 +215,19 @@ A common pattern is to catch `.rateLimited` and fall back to `SystemLanguageMode
 
 The package surfaces the Messages API capabilities that the Foundation Models provider protocol can express. Features with no representation in Apple's protocol are not available through it, including:
 
-- Prompt caching controls (the package applies prompt caching automatically; cache TTL and breakpoint placement are not configurable)
-- Stop sequences
-- Batch processing
-- Files API
-- Token counting
-- Beta headers
+* Prompt caching controls (the package applies prompt caching automatically; cache TTL and breakpoint placement are not configurable)
+* Stop sequences
+* Batch processing
+* Files API
+* Token counting
+* Beta headers
 
 ## Additional resources
 
-| Reference | Covers |
-| --- | --- |
+| Reference                                                                                           | Covers                                                                                            |
+| --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | [Apple Foundation Models documentation](https://developer.apple.com/documentation/foundationmodels) | `LanguageModelSession`, `@Generable`, `Transcript`, `Tool`, and the rest of the framework surface |
-| [`ClaudeForFoundationModels` on GitHub](https://github.com/anthropics/ClaudeForFoundationModels) | Source, the runnable example, and the issue tracker |
-| [Claude API reference](/docs/en/api/overview) | The underlying Messages API |
+| [`ClaudeForFoundationModels` on GitHub](https://github.com/anthropics/ClaudeForFoundationModels)    | Source, the runnable example, and the issue tracker                                               |
+| [Claude API reference](/docs/en/api/overview)                                                       | The underlying Messages API                                                                       |
 
 The package is licensed under Apache 2.0. Bug reports are welcome through GitHub issues. External pull requests are not being accepted during the beta period.

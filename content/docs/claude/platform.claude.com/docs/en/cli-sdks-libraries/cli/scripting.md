@@ -11,140 +11,132 @@ This page covers task-oriented workflows built on the `ant` CLI. For the underly
 You can use the CLI to version control API resources such as skills, agents, environments, or deployments as YAML files in your repository and keep them in sync with the Claude API.
 
 <Note>
-For more information on these resources, see [Managed Agents](/docs/en/managed-agents/overview).
+  For more information on these resources, see [Managed Agents](/docs/en/managed-agents/overview).
 </Note>
 
 <Steps>
-<Step title="Define your agent">
+  <Step title="Define your agent">
+    Write the agent definition to `summarizer.agent.yaml`:
 
-Write the agent definition to `summarizer.agent.yaml`:
+    ```yaml summarizer.agent.yaml
+    name: Summarizer
+    model: claude-sonnet-4-6
+    system: |
+      You are a helpful assistant that writes concise summaries.
+    tools:
+      - type: agent_toolset_20260401
+    ```
+  </Step>
 
-```yaml summarizer.agent.yaml
-name: Summarizer
-model: claude-sonnet-4-6
-system: |
-  You are a helpful assistant that writes concise summaries.
-tools:
-  - type: agent_toolset_20260401
-```
+  <Step title="Create the agent">
+    ```bash
+    ant beta:agents create < summarizer.agent.yaml
+    ```
 
-</Step>
-<Step title="Create the agent">
+    ```json Output
+    {
+      "id": "agent_011CYm1BLqPXpQRk5khsSXrs",
+      "version": 1,
+      "name": "Summarizer",
+      "model": "claude-sonnet-4-6"
+      /* ... */
+    }
+    ```
 
-```bash
-ant beta:agents create < summarizer.agent.yaml
-```
+    Note the `id` from the response. You'll pass it to the session create command in a later step.
 
-```json Output
-{
-  "id": "agent_011CYm1BLqPXpQRk5khsSXrs",
-  "version": 1,
-  "name": "Summarizer",
-  "model": "claude-sonnet-4-6"
-  /* ... */
-}
-```
+    <Tip>
+      Check `summarizer.agent.yaml` into your repository and keep it in sync with the API in your CI pipeline. The update command needs the agent ID and current version as flags:
 
-Note the `id` from the response. You'll pass it to the session create command in a later step.
+      ```bash CLI
+      ant beta:agents update --agent-id agent_011CYm1BLqPXpQRk5khsSXrs --version 1 < summarizer.agent.yaml
+      ```
+    </Tip>
+  </Step>
 
-<Tip>
-Check `summarizer.agent.yaml` into your repository and keep it in sync with the API in your CI pipeline. The update command needs the agent ID and current version as flags:
+  <Step title="Define the environment">
+    A session runs in an [environment](/docs/en/api/cli/beta/environments), which defines the sandbox it executes in. Write the environment definition to `summarizer.environment.yaml`:
 
-```bash CLI nocheck
-ant beta:agents update --agent-id agent_011CYm1BLqPXpQRk5khsSXrs --version 1 < summarizer.agent.yaml
-```
-</Tip>
+    ```yaml summarizer.environment.yaml
+    name: summarizer-env
+    config:
+      type: cloud
+      networking:
+        type: unrestricted
+    ```
+  </Step>
 
-</Step>
-<Step title="Define the environment">
+  <Step title="Create the environment">
+    ```bash
+    ant beta:environments create < summarizer.environment.yaml
+    ```
 
-A session runs in an [environment](/docs/en/api/cli/beta/environments), which defines the sandbox it executes in. Write the environment definition to `summarizer.environment.yaml`:
+    ```json Output
+    {
+      "id": "env_01595EKxaaTTGwwY3kyXdtbs",
+      "name": "summarizer-env"
+      /* ... */
+    }
+    ```
 
-```yaml summarizer.environment.yaml
-name: summarizer-env
-config:
-  type: cloud
-  networking:
-    type: unrestricted
-```
+    Note the `id` from the response. You'll pass it to the session create command in a later step.
 
-</Step>
-<Step title="Create the environment">
+    <Tip>
+      Check `summarizer.environment.yaml` into your repository and keep it in sync with the API in your CI pipeline. The update command needs the environment ID as a flag:
 
-```bash
-ant beta:environments create < summarizer.environment.yaml
-```
+      ```bash CLI
+      ant beta:environments update --environment-id env_01595EKxaaTTGwwY3kyXdtbs < summarizer.environment.yaml
+      ```
+    </Tip>
+  </Step>
 
-```json Output
-{
-  "id": "env_01595EKxaaTTGwwY3kyXdtbs",
-  "name": "summarizer-env"
-  /* ... */
-}
-```
+  <Step title="Start a session">
+    Paste the agent `id` and environment `id` from the previous outputs into the session create command:
 
-Note the `id` from the response. You'll pass it to the session create command in a later step.
+    ```bash
+    ant beta:sessions create \
+      --agent agent_011CYm1BLqPXpQRk5khsSXrs \
+      --environment-id env_01595EKxaaTTGwwY3kyXdtbs \
+      --title "Summarization task"
+    ```
 
-<Tip>
-Check `summarizer.environment.yaml` into your repository and keep it in sync with the API in your CI pipeline. The update command needs the environment ID as a flag:
+    ```json Output
+    {
+      "id": "session_01JZCh78XvmxJjiXVy3oSi7K",
+      "status": "running"
+      /* ... */
+    }
+    ```
+  </Step>
 
-```bash CLI nocheck
-ant beta:environments update --environment-id env_01595EKxaaTTGwwY3kyXdtbs < summarizer.environment.yaml
-```
-</Tip>
+  <Step title="Send a user message">
+    Copy the session `id` from the previous output into `--session-id`:
 
-</Step>
-<Step title="Start a session">
+    ```bash
+    ant beta:sessions:events send \
+      --session-id session_01JZCh78XvmxJjiXVy3oSi7K \
+      --event '{type: user.message, content: [{type: text, text: "Summarize the benefits of type safety in one sentence."}]}'
+    ```
+  </Step>
 
-Paste the agent `id` and environment `id` from the previous outputs into the session create command:
+  <Step title="Read the conversation">
+    `--transform` runs against each listed event, so this prints the text of every message in order. `--format auto` overrides the interactive explorer that list commands open by default in a terminal:
 
-```bash highlight={2..3}
-ant beta:sessions create \
-  --agent agent_011CYm1BLqPXpQRk5khsSXrs \
-  --environment-id env_01595EKxaaTTGwwY3kyXdtbs \
-  --title "Summarization task"
-```
+    ```bash
+    ant beta:sessions:events list \
+      --session-id session_01JZCh78XvmxJjiXVy3oSi7K \
+      --transform 'content.0.text' --format auto --raw-output
+    ```
 
-```json Output
-{
-  "id": "session_01JZCh78XvmxJjiXVy3oSi7K",
-  "status": "running"
-  /* ... */
-}
-```
+    ```text Output wrap
+    Summarize the benefits of type safety in one sentence.
+    Type safety catches errors at compile time rather than runtime, reducing bugs, improving code clarity, enabling better tooling support, and making codebases easier to maintain and refactor with confidence.
+    ```
 
-</Step>
-<Step title="Send a user message">
-
-Copy the session `id` from the previous output into `--session-id`:
-
-```bash highlight={2}
-ant beta:sessions:events send \
-  --session-id session_01JZCh78XvmxJjiXVy3oSi7K \
-  --event '{type: user.message, content: [{type: text, text: "Summarize the benefits of type safety in one sentence."}]}'
-```
-
-</Step>
-<Step title="Read the conversation">
-
-`--transform` runs against each listed event, so this prints the text of every message in order. `--format auto` overrides the interactive explorer that list commands open by default in a terminal:
-
-```bash highlight={2}
-ant beta:sessions:events list \
-  --session-id session_01JZCh78XvmxJjiXVy3oSi7K \
-  --transform 'content.0.text' --format auto --raw-output
-```
-
-```text Output
-Summarize the benefits of type safety in one sentence.
-Type safety catches errors at compile time rather than runtime, reducing bugs, improving code clarity, enabling better tooling support, and making codebases easier to maintain and refactor with confidence.
-```
-
-<Tip>
-To watch a session as it runs, use `ant beta:sessions:events stream --session-id session_01JZCh78XvmxJjiXVy3oSi7K`. Events are written to stdout as they arrive.
-</Tip>
-
-</Step>
+    <Tip>
+      To watch a session as it runs, use `ant beta:sessions:events stream --session-id session_01JZCh78XvmxJjiXVy3oSi7K`. Events are written to stdout as they arrive.
+    </Tip>
+  </Step>
 </Steps>
 
 ## Scripting patterns
@@ -173,7 +165,7 @@ ant beta:agents retrieve --agent-id bogus \
   --transform-error error.message --format-error yaml 2>&1
 ```
 
-```text Output
+```text Output wrap
 GET "https://api.anthropic.com/v1/agents/bogus?beta=true": 404 Not Found
 Agent not found.
 ```
@@ -182,8 +174,8 @@ Agent not found.
 
 [Claude Code](https://docs.claude.com/en/docs/claude-code/overview) can use the `ant` CLI out of the box. With the CLI installed and authenticated, you can ask Claude Code to operate on your API resources directly. For example:
 
-- "List my recent agent sessions and summarize which ones errored."
-- "Upload every PDF in `./reports` to the Files API and print the resulting IDs."
-- "Pull the events for session `session_01...` and tell me where the agent got stuck."
+* "List my recent agent sessions and summarize which ones errored."
+* "Upload every PDF in `./reports` to the Files API and print the resulting IDs."
+* "Pull the events for session `session_01...` and tell me where the agent got stuck."
 
 Claude Code shells out to `ant`, parses the structured output, and reasons over the results (no custom integration code required).

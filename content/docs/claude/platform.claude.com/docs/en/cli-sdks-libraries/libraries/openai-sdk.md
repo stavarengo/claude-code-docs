@@ -5,15 +5,15 @@ Anthropic provides a compatibility layer that enables you to use the OpenAI SDK 
 ---
 
 <Note>
-This compatibility layer is primarily intended to test and compare model capabilities, and is not considered a long-term or production-ready solution for most use cases. While it is intended to remain fully functional and not have breaking changes, the priority is the reliability and effectiveness of the [Claude API](/docs/en/api/overview).
+  This compatibility layer is primarily intended to test and compare model capabilities, and is not considered a long-term or production-ready solution for most use cases. While it is intended to remain fully functional and not have breaking changes, the priority is the reliability and effectiveness of the [Claude API](/docs/en/api/overview).
 
-For more information on known compatibility limitations, see [Important OpenAI compatibility limitations](#important-openai-compatibility-limitations).
+  For more information on known compatibility limitations, see [Important OpenAI compatibility limitations](#important-openai-compatibility-limitations).
 
-If you encounter any issues with the OpenAI SDK compatibility feature, please share your feedback via this [compatibility feedback form](https://forms.gle/oQV4McQNiuuNbz9n8).
+  If you encounter any issues with the OpenAI SDK compatibility feature, please share your feedback via this [compatibility feedback form](https://forms.gle/oQV4McQNiuuNbz9n8).
 </Note>
 
 <Tip>
-For the best experience and access to Claude API full feature set ([PDF processing](/docs/en/build-with-claude/pdf-support), [citations](/docs/en/build-with-claude/citations), [extended thinking](/docs/en/build-with-claude/extended-thinking), and [prompt caching](/docs/en/build-with-claude/prompt-caching)), use the native [Claude API](/docs/en/api/overview).
+  For the best experience and access to Claude API full feature set ([PDF processing](/docs/en/build-with-claude/pdf-support), [citations](/docs/en/build-with-claude/citations), [extended thinking](/docs/en/build-with-claude/extended-thinking), and [prompt caching](/docs/en/build-with-claude/prompt-caching)), use the native [Claude API](/docs/en/api/overview).
 </Tip>
 
 ## Getting started with the OpenAI SDK
@@ -21,54 +21,54 @@ For the best experience and access to Claude API full feature set ([PDF processi
 To use the OpenAI SDK compatibility feature, you'll need to:
 
 1. Use an official OpenAI SDK
+
 2. Change the following
+
    * Update your base URL to point to the Claude API
    * Replace your API key with a [Claude API key](/settings/keys)
    * Update your model name to use a [Claude model](/docs/en/about-claude/models/overview)
+
 3. Review the documentation below for what features are supported
 
 ### Quick start example
 
 <CodeGroup>
-    
-    ```python Python nocheck
-    import os
+  ```python Python
+  import os
 
-    from openai import OpenAI
+  from openai import OpenAI
 
-    client = OpenAI(
-        api_key=os.environ.get("ANTHROPIC_API_KEY"),  # Your Claude API key
-        base_url="https://api.anthropic.com/v1/",  # the Claude API endpoint
-    )
+  client = OpenAI(
+      api_key=os.environ.get("ANTHROPIC_API_KEY"),  # Your Claude API key
+      base_url="https://api.anthropic.com/v1/",  # the Claude API endpoint
+  )
 
-    response = client.chat.completions.create(
-        model="claude-opus-4-8",  # Claude model name
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": "Who are you?"},
-        ],
-    )
+  response = client.chat.completions.create(
+      model="claude-opus-4-8",  # Claude model name
+      messages=[
+          {"role": "system", "content": "You are a helpful assistant."},
+          {"role": "user", "content": "Who are you?"},
+      ],
+  )
 
-    print(response.choices[0].message.content)
-    ```
+  print(response.choices[0].message.content)
+  ```
 
-    
-    ```typescript TypeScript nocheck
-    import OpenAI from "openai";
+  ```typescript TypeScript
+  import OpenAI from "openai";
 
-    const openai = new OpenAI({
-      apiKey: "ANTHROPIC_API_KEY", // Your Claude API key
-      baseURL: "https://api.anthropic.com/v1/" // Claude API endpoint
-    });
+  const openai = new OpenAI({
+    apiKey: "ANTHROPIC_API_KEY", // Your Claude API key
+    baseURL: "https://api.anthropic.com/v1/" // Claude API endpoint
+  });
 
-    const response = await openai.chat.completions.create({
-      messages: [{ role: "user", content: "Who are you?" }],
-      model: "claude-opus-4-8" // Claude model name
-    });
+  const response = await openai.chat.completions.create({
+    messages: [{ role: "user", content: "Who are you?" }],
+    model: "claude-opus-4-8" // Claude model name
+  });
 
-    console.log(response.choices[0].message.content);
-    ```
-
+  console.log(response.choices[0].message.content);
+  ```
 </CodeGroup>
 
 ## Important OpenAI compatibility limitations
@@ -97,34 +97,22 @@ Most of the inputs to the OpenAI SDK clearly map directly to Anthropic’s API p
 You can enable [extended thinking](/docs/en/build-with-claude/extended-thinking) capabilities by adding the `thinking` parameter. While this improves Claude's reasoning for complex tasks, the OpenAI SDK doesn't return Claude's detailed thought process. For full extended thinking features, including access to Claude's step-by-step reasoning output, use the native Claude API.
 
 <CodeGroup>
-    
-    ```python Python nocheck hidelines={1..9}
-    import os
+  ```python Python
+  response = client.chat.completions.create(
+      model="claude-sonnet-4-6",
+      messages=[{"role": "user", "content": "Who are you?"}],
+      extra_body={"thinking": {"type": "enabled", "budget_tokens": 2000}},
+  )
+  ```
 
-    from openai import OpenAI
-
-    client = OpenAI(
-        api_key=os.environ.get("ANTHROPIC_API_KEY"),
-        base_url="https://api.anthropic.com/v1/",
-    )
-
-    response = client.chat.completions.create(
-        model="claude-sonnet-4-6",
-        messages=[{"role": "user", "content": "Who are you?"}],
-        extra_body={"thinking": {"type": "enabled", "budget_tokens": 2000}},
-    )
-    ```
-
-    
-    ```typescript TypeScript nocheck
-    const response = await openai.chat.completions.create({
-      messages: [{ role: "user", content: "Who are you?" }],
-      model: "claude-sonnet-4-6",
-      // @ts-expect-error
-      thinking: { type: "enabled", budget_tokens: 2000 }
-    });
-    ```
-
+  ```typescript TypeScript
+  const response = await openai.chat.completions.create({
+    messages: [{ role: "user", content: "Who are you?" }],
+    model: "claude-sonnet-4-6",
+    // @ts-expect-error
+    thinking: { type: "enabled", budget_tokens: 2000 }
+  });
+  ```
 </CodeGroup>
 
 ## Rate limits
@@ -132,172 +120,180 @@ You can enable [extended thinking](/docs/en/build-with-claude/extended-thinking)
 Rate limits follow Anthropic's [standard limits](/docs/en/api/rate-limits) for the `/v1/messages` endpoint.
 
 ## Detailed OpenAI compatible API support
+
 ### Request fields
+
 #### Simple fields
-| Field | Support status |
-|--------|----------------|
-| `model` | Use Claude model names |
-| `max_tokens` | Fully supported |
-| `max_completion_tokens` | Fully supported |
-| `stream` | Fully supported |
-| `stream_options` | Fully supported |
-| `top_p` | Fully supported |
-| `parallel_tool_calls` | Fully supported |
-| `stop` | All non-whitespace stop sequences work |
-| `temperature` | Between 0 and 1 (inclusive). Values greater than 1 are capped at 1. |
-| `n` | Must be exactly 1 |
-| `logprobs` | Ignored |
-| `metadata` | Ignored |
-| `response_format` | Ignored. For JSON output, use [Structured Outputs](/docs/en/build-with-claude/structured-outputs) with the native Claude API |
-| `prediction` | Ignored |
-| `presence_penalty` | Ignored |
-| `frequency_penalty` | Ignored |
-| `seed` | Ignored |
-| `service_tier` | Ignored |
-| `audio` | Ignored |
-| `logit_bias` | Ignored |
-| `store` | Ignored |
-| `user` | Ignored |
-| `modalities` | Ignored |
-| `top_logprobs` | Ignored |
-| `reasoning_effort` | Ignored |
+
+| Field                   | Support status                                                                                                               |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `model`                 | Use Claude model names                                                                                                       |
+| `max_tokens`            | Fully supported                                                                                                              |
+| `max_completion_tokens` | Fully supported                                                                                                              |
+| `stream`                | Fully supported                                                                                                              |
+| `stream_options`        | Fully supported                                                                                                              |
+| `top_p`                 | Fully supported                                                                                                              |
+| `parallel_tool_calls`   | Fully supported                                                                                                              |
+| `stop`                  | All non-whitespace stop sequences work                                                                                       |
+| `temperature`           | Between 0 and 1 (inclusive). Values greater than 1 are capped at 1.                                                          |
+| `n`                     | Must be exactly 1                                                                                                            |
+| `logprobs`              | Ignored                                                                                                                      |
+| `metadata`              | Ignored                                                                                                                      |
+| `response_format`       | Ignored. For JSON output, use [Structured Outputs](/docs/en/build-with-claude/structured-outputs) with the native Claude API |
+| `prediction`            | Ignored                                                                                                                      |
+| `presence_penalty`      | Ignored                                                                                                                      |
+| `frequency_penalty`     | Ignored                                                                                                                      |
+| `seed`                  | Ignored                                                                                                                      |
+| `service_tier`          | Ignored                                                                                                                      |
+| `audio`                 | Ignored                                                                                                                      |
+| `logit_bias`            | Ignored                                                                                                                      |
+| `store`                 | Ignored                                                                                                                      |
+| `user`                  | Ignored                                                                                                                      |
+| `modalities`            | Ignored                                                                                                                      |
+| `top_logprobs`          | Ignored                                                                                                                      |
+| `reasoning_effort`      | Ignored                                                                                                                      |
 
 #### `tools` / `functions` fields
-<section title="Show fields">
 
-<Tabs>
-<Tab title="Tools">
-`tools[n].function` fields
-| Field        | Support status         |
-|--------------|-----------------|
-| `name`       | Fully supported |
-| `description`| Fully supported |
-| `parameters` | Fully supported |
-| `strict`     | Ignored. Use [Structured Outputs](/docs/en/build-with-claude/structured-outputs) with native Claude API for strict schema validation |
-</Tab>
-<Tab title="Functions">
+<Accordion title="Show fields">
+  <Tabs>
+    <Tab title="Tools">
+      `tools[n].function` fields
 
-`functions[n]` fields
-<Info>
-OpenAI has deprecated the `functions` field and suggests using `tools` instead.
-</Info>
-| Field        | Support status         |
-|--------------|-----------------|
-| `name`       | Fully supported |
-| `description`| Fully supported |
-| `parameters` | Fully supported |
-| `strict`     | Ignored. Use [Structured Outputs](/docs/en/build-with-claude/structured-outputs) with native Claude API for strict schema validation |
-</Tab>
-</Tabs>
+      | Field         | Support status                                                                                                                       |
+      | ------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+      | `name`        | Fully supported                                                                                                                      |
+      | `description` | Fully supported                                                                                                                      |
+      | `parameters`  | Fully supported                                                                                                                      |
+      | `strict`      | Ignored. Use [Structured Outputs](/docs/en/build-with-claude/structured-outputs) with native Claude API for strict schema validation |
+    </Tab>
 
-</section>
+    <Tab title="Functions">
+      `functions[n]` fields
+
+      <Info>
+        OpenAI has deprecated the `functions` field and suggests using `tools` instead.
+      </Info>
+
+      | Field         | Support status                                                                                                                       |
+      | ------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+      | `name`        | Fully supported                                                                                                                      |
+      | `description` | Fully supported                                                                                                                      |
+      | `parameters`  | Fully supported                                                                                                                      |
+      | `strict`      | Ignored. Use [Structured Outputs](/docs/en/build-with-claude/structured-outputs) with native Claude API for strict schema validation |
+    </Tab>
+  </Tabs>
+</Accordion>
 
 #### `messages` array fields
-<section title="Show fields">
 
-<Tabs>
-<Tab title="Developer role">
-Fields for `messages[n].role == "developer"`
-<Info>
-Developer messages are hoisted to beginning of conversation as part of the initial system message
-</Info>
-| Field | Support status |
-|-------|---------|
-| `content` | Fully supported, but hoisted |
-| `name` | Ignored |
+<Accordion title="Show fields">
+  <Tabs>
+    <Tab title="Developer role">
+      Fields for `messages[n].role == "developer"`
 
-</Tab>
-<Tab title="System role">
-Fields for `messages[n].role == "system"`
+      <Info>
+        Developer messages are hoisted to beginning of conversation as part of the initial system message
+      </Info>
 
-<Info>
-System messages are hoisted to beginning of conversation as part of the initial system message
-</Info>
-| Field | Support status |
-|-------|---------|
-| `content` | Fully supported, but hoisted |
-| `name` | Ignored |
+      | Field     | Support status               |
+      | --------- | ---------------------------- |
+      | `content` | Fully supported, but hoisted |
+      | `name`    | Ignored                      |
+    </Tab>
 
-</Tab>
-<Tab title="User role">
-Fields for `messages[n].role == "user"`
+    <Tab title="System role">
+      Fields for `messages[n].role == "system"`
 
-| Field | Variant | Sub-field | Support status |
-|-------|---------|-----------|----------------|
-| `content` | `string` | | Fully supported |
-| | `array`, `type == "text"` | | Fully supported |
-| | `array`, `type == "image_url"` | `url` | Fully supported |
-| | | `detail` | Ignored |
-| | `array`, `type == "input_audio"` | | Ignored |
-| | `array`, `type == "file"` | | Ignored |
-| `name` | | | Ignored |
+      <Info>
+        System messages are hoisted to beginning of conversation as part of the initial system message
+      </Info>
 
-</Tab>
+      | Field     | Support status               |
+      | --------- | ---------------------------- |
+      | `content` | Fully supported, but hoisted |
+      | `name`    | Ignored                      |
+    </Tab>
 
-<Tab title="Assistant role">
-Fields for `messages[n].role == "assistant"`
-| Field | Variant | Support status |
-|-------|---------|----------------|
-| `content` | `string` | Fully supported |
-| | `array`, `type == "text"` | Fully supported |
-| | `array`, `type == "refusal"` | Ignored |
-| `tool_calls` | | Fully supported |
-| `function_call` | | Fully supported |
-| `audio` | | Ignored |
-| `refusal` | | Ignored |
+    <Tab title="User role">
+      Fields for `messages[n].role == "user"`
 
-</Tab>
+      | Field     | Variant                          | Sub-field | Support status  |
+      | --------- | -------------------------------- | --------- | --------------- |
+      | `content` | `string`                         |           | Fully supported |
+      |           | `array`, `type == "text"`        |           | Fully supported |
+      |           | `array`, `type == "image_url"`   | `url`     | Fully supported |
+      |           |                                  | `detail`  | Ignored         |
+      |           | `array`, `type == "input_audio"` |           | Ignored         |
+      |           | `array`, `type == "file"`        |           | Ignored         |
+      | `name`    |                                  |           | Ignored         |
+    </Tab>
 
-<Tab title="Tool role">
-Fields for `messages[n].role == "tool"`
-| Field | Variant | Support status |
-|-------|---------|----------------|
-| `content` | `string` | Fully supported |
-| | `array`, `type == "text"` | Fully supported |
-| `tool_call_id` | | Fully supported |
-| `tool_choice` | | Fully supported |
-| `name` | | Ignored |
-</Tab>
+    <Tab title="Assistant role">
+      Fields for `messages[n].role == "assistant"`
 
-<Tab title="Function role">
-Fields for `messages[n].role == "function"`
-| Field | Variant | Support status |
-|-------|---------|----------------|
-| `content` | `string` | Fully supported |
-| | `array`, `type == "text"` | Fully supported |
-| `tool_choice` | | Fully supported |
-| `name` | | Ignored |
-</Tab>
-</Tabs>
+      | Field           | Variant                      | Support status  |
+      | --------------- | ---------------------------- | --------------- |
+      | `content`       | `string`                     | Fully supported |
+      |                 | `array`, `type == "text"`    | Fully supported |
+      |                 | `array`, `type == "refusal"` | Ignored         |
+      | `tool_calls`    |                              | Fully supported |
+      | `function_call` |                              | Fully supported |
+      | `audio`         |                              | Ignored         |
+      | `refusal`       |                              | Ignored         |
+    </Tab>
 
-</section>
+    <Tab title="Tool role">
+      Fields for `messages[n].role == "tool"`
+
+      | Field          | Variant                   | Support status  |
+      | -------------- | ------------------------- | --------------- |
+      | `content`      | `string`                  | Fully supported |
+      |                | `array`, `type == "text"` | Fully supported |
+      | `tool_call_id` |                           | Fully supported |
+      | `tool_choice`  |                           | Fully supported |
+      | `name`         |                           | Ignored         |
+    </Tab>
+
+    <Tab title="Function role">
+      Fields for `messages[n].role == "function"`
+
+      | Field         | Variant                   | Support status  |
+      | ------------- | ------------------------- | --------------- |
+      | `content`     | `string`                  | Fully supported |
+      |               | `array`, `type == "text"` | Fully supported |
+      | `tool_choice` |                           | Fully supported |
+      | `name`        |                           | Ignored         |
+    </Tab>
+  </Tabs>
+</Accordion>
 
 ### Response fields
 
-| Field | Support status |
-|---------------------------|----------------|
-| `id` | Fully supported |
-| `choices[]` | Will always have a length of 1 |
-| `choices[].finish_reason` | Fully supported |
-| `choices[].index` | Fully supported |
-| `choices[].message.role` | Fully supported |
-| `choices[].message.content` | Fully supported |
-| `choices[].message.tool_calls` | Fully supported |
-| `object` | Fully supported |
-| `created` | Fully supported |
-| `model` | Fully supported |
-| `finish_reason` | Fully supported |
-| `content` | Fully supported |
-| `usage.completion_tokens` | Fully supported |
-| `usage.prompt_tokens` | Fully supported |
-| `usage.total_tokens` | Fully supported |
-| `usage.completion_tokens_details` | Always empty |
-| `usage.prompt_tokens_details` | Always empty |
-| `choices[].message.refusal` | Always empty |
-| `choices[].message.audio` | Always empty |
-| `logprobs` | Always empty |
-| `service_tier` | Always empty |
-| `system_fingerprint` | Always empty |
+| Field                             | Support status                 |
+| --------------------------------- | ------------------------------ |
+| `id`                              | Fully supported                |
+| `choices[]`                       | Will always have a length of 1 |
+| `choices[].finish_reason`         | Fully supported                |
+| `choices[].index`                 | Fully supported                |
+| `choices[].message.role`          | Fully supported                |
+| `choices[].message.content`       | Fully supported                |
+| `choices[].message.tool_calls`    | Fully supported                |
+| `object`                          | Fully supported                |
+| `created`                         | Fully supported                |
+| `model`                           | Fully supported                |
+| `finish_reason`                   | Fully supported                |
+| `content`                         | Fully supported                |
+| `usage.completion_tokens`         | Fully supported                |
+| `usage.prompt_tokens`             | Fully supported                |
+| `usage.total_tokens`              | Fully supported                |
+| `usage.completion_tokens_details` | Always empty                   |
+| `usage.prompt_tokens_details`     | Always empty                   |
+| `choices[].message.refusal`       | Always empty                   |
+| `choices[].message.audio`         | Always empty                   |
+| `logprobs`                        | Always empty                   |
+| `service_tier`                    | Always empty                   |
+| `system_fingerprint`              | Always empty                   |
 
 ### Error message compatibility
 
@@ -307,16 +303,16 @@ The compatibility layer maintains consistent error formats with the OpenAI API. 
 
 While the OpenAI SDK automatically manages headers, here is the complete list of headers supported by the Claude API for developers who need to work with them directly.
 
-| Header | Support Status |
-|---------|----------------|
-| `x-ratelimit-limit-requests` | Fully supported |
-| `x-ratelimit-limit-tokens` | Fully supported |
-| `x-ratelimit-remaining-requests` | Fully supported |
-| `x-ratelimit-remaining-tokens` | Fully supported |
-| `x-ratelimit-reset-requests` | Fully supported |
-| `x-ratelimit-reset-tokens` | Fully supported |
-| `retry-after` | Fully supported |
-| `request-id` | Fully supported |
-| `openai-version` | Always `2020-10-01` |
-| `authorization` | Fully supported |
-| `openai-processing-ms` | Always empty |
+| Header                           | Support Status      |
+| -------------------------------- | ------------------- |
+| `x-ratelimit-limit-requests`     | Fully supported     |
+| `x-ratelimit-limit-tokens`       | Fully supported     |
+| `x-ratelimit-remaining-requests` | Fully supported     |
+| `x-ratelimit-remaining-tokens`   | Fully supported     |
+| `x-ratelimit-reset-requests`     | Fully supported     |
+| `x-ratelimit-reset-tokens`       | Fully supported     |
+| `retry-after`                    | Fully supported     |
+| `request-id`                     | Fully supported     |
+| `openai-version`                 | Always `2020-10-01` |
+| `authorization`                  | Fully supported     |
+| `openai-processing-ms`           | Always empty        |

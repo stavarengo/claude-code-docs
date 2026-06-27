@@ -7,7 +7,7 @@ Install and configure the Anthropic Ruby SDK with Sorbet types, streaming helper
 The Anthropic Ruby library provides convenient access to the Anthropic REST API from any Ruby 3.2.0+ application. It ships with comprehensive types and docstrings in Yard, RBS, and RBI. The standard library's `net/http` is used as the HTTP transport, with connection pooling through the `connection_pool` gem.
 
 <Info>
-For API feature documentation with code examples, see the [API reference](/docs/en/api/overview). This page covers Ruby-specific SDK features and configuration.
+  For API feature documentation with code examples, see the [API reference](/docs/en/api/overview). This page covers Ruby-specific SDK features and configuration.
 </Info>
 
 ## Installation
@@ -24,9 +24,7 @@ Ruby 3.2.0 or higher.
 
 ## Usage
 
-```ruby hidelines={1..2}
-require "anthropic"
-
+```ruby
 anthropic = Anthropic::Client.new(
   api_key: ENV["ANTHROPIC_API_KEY"] # This is the default and can be omitted
 )
@@ -46,8 +44,7 @@ For authentication options including Workload Identity Federation, see [Authenti
 
 The SDK provides support for streaming responses using Server-Sent Events (SSE).
 
-```ruby hidelines={1}
-require "anthropic"
+```ruby
 anthropic = Anthropic::Client.new
 stream = anthropic.messages.stream(
   max_tokens: 1024,
@@ -64,8 +61,7 @@ end
 
 This library provides several conveniences for streaming messages, for example:
 
-```ruby hidelines={1}
-require "anthropic"
+```ruby
 anthropic = Anthropic::Client.new
 stream = anthropic.messages.stream(
   max_tokens: 1024,
@@ -84,8 +80,7 @@ Streaming with `anthropic.messages.stream(...)` exposes various helpers includin
 
 The SDK provides helper mechanisms to define structured data classes for tools and let Claude automatically execute them. For detailed documentation on tool use patterns including the tool runner, see [Tool Runner (SDK)](/docs/en/agents-and-tools/tool-use/tool-runner).
 
-```ruby hidelines={1}
-require "anthropic"
+```ruby
 anthropic = Anthropic::Client.new
 class CalculatorInput < Anthropic::BaseModel
   required :lhs, Float
@@ -118,8 +113,7 @@ For complete structured outputs documentation including Ruby examples, see [Stru
 
 When the library is unable to connect to the API, or if the API returns a non-success status code (that is, 4xx or 5xx response), a subclass of `Anthropic::Errors::APIError` is raised:
 
-```ruby hidelines={1}
-require "anthropic"
+```ruby
 anthropic = Anthropic::Client.new
 begin
   message = anthropic.messages.create(
@@ -206,8 +200,7 @@ List methods in the Claude API are paginated.
 
 This library provides auto-paginating iterators with each list response, so you do not have to request successive pages manually:
 
-```ruby hidelines={1}
-require "anthropic"
+```ruby
 anthropic = Anthropic::Client.new
 page = anthropic.messages.batches.list(limit: 20)
 
@@ -223,8 +216,7 @@ end
 
 Alternatively, you can use the `#next_page?` and `#next_page` methods for more granular control working with pages.
 
-```ruby hidelines={1}
-require "anthropic"
+```ruby
 anthropic = Anthropic::Client.new
 page = anthropic.messages.batches.list(limit: 20)
 loop do
@@ -238,8 +230,7 @@ end
 
 Request parameters that correspond to file uploads can be passed as raw contents, a [`Pathname`](https://rubyapi.org/3.2/o/pathname) instance, [`StringIO`](https://rubyapi.org/3.2/o/stringio), or more.
 
-```ruby hidelines={1} nocheck
-require "anthropic"
+```ruby
 anthropic = Anthropic::Client.new
 require "pathname"
 
@@ -264,8 +255,7 @@ This library provides comprehensive [RBI](https://sorbet.org/docs/rbi) definitio
 
 You can provide typesafe request parameters like so:
 
-```ruby hidelines={1}
-require "anthropic"
+```ruby
 anthropic = Anthropic::Client.new
 anthropic.messages.create(
   max_tokens: 1024,
@@ -276,8 +266,7 @@ anthropic.messages.create(
 
 Or, equivalently:
 
-```ruby hidelines={1}
-require "anthropic"
+```ruby
 anthropic = Anthropic::Client.new
 # Hashes work, but are not typesafe:
 anthropic.messages.create(
@@ -299,7 +288,7 @@ anthropic.messages.create(**params)
 
 Since this library does not depend on `sorbet-runtime`, it cannot provide [`T::Enum`](https://sorbet.org/docs/tenum) instances. Instead, the SDK provides "tagged symbols", which is always a primitive at runtime:
 
-```ruby nocheck
+```ruby
 # :auto
 puts(Anthropic::MessageCreateParams::ServiceTier::AUTO)
 
@@ -352,11 +341,10 @@ Unless otherwise specified, other classes in the SDK do not have locks protectin
 You can send undocumented parameters to any endpoint, and read undocumented response properties, like so:
 
 <Warning>
-The `extra_` parameters of the same name override the documented parameters. For security reasons, ensure these methods are only used with trusted input data.
+  The `extra_` parameters of the same name override the documented parameters. For security reasons, ensure these methods are only used with trusted input data.
 </Warning>
 
-```ruby hidelines={1} nocheck
-require "anthropic"
+```ruby
 anthropic = Anthropic::Client.new
 value = "example"
 message =
@@ -382,7 +370,7 @@ If you want to explicitly send an extra param, you can do so with the `extra_que
 
 To make requests to undocumented endpoints while retaining the benefit of auth, retries, and so on, you can make requests using `anthropic.request`, like so:
 
-```ruby nocheck
+```ruby
 response = anthropic.request(
   method: :post,
   path: '/undocumented/endpoint',
@@ -395,19 +383,20 @@ response = anthropic.request(
 ## Platform integrations
 
 <Note>
-For detailed platform setup guides with code examples, see:
-- [Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock)
-- [Amazon Bedrock (legacy)](/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy)
-- [Google Cloud](/docs/en/build-with-claude/claude-on-vertex-ai)
-- [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws)
+  For detailed platform setup guides with code examples, see:
+
+  * [Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock)
+  * [Amazon Bedrock (legacy)](/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy)
+  * [Google Cloud](/docs/en/build-with-claude/claude-on-vertex-ai)
+  * [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws)
 </Note>
 
 The Ruby SDK supports the following platforms:
 
-- **Bedrock:** `Anthropic::BedrockMantleClient`, or `Anthropic::BedrockClient` for the `bedrock-runtime` path. `Anthropic::BedrockMantleClient` requires the `aws-sdk-core` gem; `Anthropic::BedrockClient` requires the `aws-sdk-bedrockruntime` gem.
-- **Agent Platform:** `Anthropic::VertexClient`. Requires the `googleauth` gem.
-- **Foundry:** Not currently supported in the Ruby SDK. See [Claude in Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry) for supported SDKs.
-- **Claude Platform on AWS:** Part of the main `anthropic` gem (requires the `aws-sdk-core` gem). Provides `Anthropic::AWSClient`. Pass `workspace_id:` to the constructor or set the `ANTHROPIC_AWS_WORKSPACE_ID` environment variable (see [Workspaces](/docs/en/build-with-claude/claude-platform-on-aws#workspaces)). Available in beta.
+* **Bedrock:** `Anthropic::BedrockMantleClient`, or `Anthropic::BedrockClient` for the `bedrock-runtime` path. `Anthropic::BedrockMantleClient` requires the `aws-sdk-core` gem; `Anthropic::BedrockClient` requires the `aws-sdk-bedrockruntime` gem.
+* **Agent Platform:** `Anthropic::VertexClient`. Requires the `googleauth` gem.
+* **Foundry:** Not currently supported in the Ruby SDK. See [Claude in Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry) for supported SDKs.
+* **Claude Platform on AWS:** Part of the main `anthropic` gem (requires the `aws-sdk-core` gem). Provides `Anthropic::AWSClient`. Pass `workspace_id:` to the constructor or set the `ANTHROPIC_AWS_WORKSPACE_ID` environment variable (see [Workspaces](/docs/en/build-with-claude/claude-platform-on-aws#workspaces)). Available in beta.
 
 Use `Anthropic::BedrockMantleClient` for new projects; `Anthropic::BedrockClient` remains for existing applications using the Bedrock `InvokeModel` API.
 
@@ -419,7 +408,7 @@ This package considers improvements to the (non-runtime) `*.rbi` and `*.rbs` typ
 
 ## Additional resources
 
-- [GitHub repository](https://github.com/anthropics/anthropic-sdk-ruby)
-- [YARD documentation](https://gemdocs.org/gems/anthropic)
-- [API reference](/docs/en/api/overview)
-- [Streaming Messages](/docs/en/build-with-claude/streaming)
+* [GitHub repository](https://github.com/anthropics/anthropic-sdk-ruby)
+* [YARD documentation](https://gemdocs.org/gems/anthropic)
+* [API reference](/docs/en/api/overview)
+* [Streaming Messages](/docs/en/build-with-claude/streaming)

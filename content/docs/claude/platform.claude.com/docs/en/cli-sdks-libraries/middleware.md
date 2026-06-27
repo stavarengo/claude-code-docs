@@ -31,103 +31,69 @@ Each middleware can inspect or replace the request before calling `next()`, and 
 Each middleware is a function that receives the outgoing request and a `next` callable. Call `next` to forward the request to the rest of the chain (or directly to the SDK core if this is the last middleware), and return its response. Anything before the `next` call runs on the way out; anything after runs on the way back.
 
 <Tabs>
+  <Tab title="Python">
+    ```python
 
-<Tab title="Python">
+    def logging_middleware(request: APIRequest, call_next: CallNext):
+        # Before the request
+        print(f"-> {request.method} {request.url}")
 
-```python hidelines={1..2}
-from anthropic import Anthropic, APIRequest, CallNext
+        # Forward the request to the rest of the chain
+        response = call_next(request)
 
+        # After the request
+        print(f"<- {response.status_code}")
 
-def logging_middleware(request: APIRequest, call_next: CallNext):
-    # Before the request
-    print(f"-> {request.method} {request.url}")
-
-    # Forward the request to the rest of the chain
-    response = call_next(request)
-
-    # After the request
-    print(f"<- {response.status_code}")
-
-    return response
+        return response
 
 
-client = Anthropic(middleware=[logging_middleware])
-```
+    client = Anthropic(middleware=[logging_middleware])
+    ```
+  </Tab>
 
-</Tab>
+  <Tab title="TypeScript">
+    ```typescript
+    import Anthropic, { type Middleware } from "@anthropic-ai/sdk";
 
-<Tab title="TypeScript">
+    const loggingMiddleware: Middleware = async (request, next, ctx) => {
+      // Before the request
+      ctx.logger.debug("->", request.method, request.url);
 
-```typescript
-import Anthropic, { type Middleware } from "@anthropic-ai/sdk";
+      // Forward the request to the rest of the chain
+      const response = await next(request);
 
-const loggingMiddleware: Middleware = async (request, next, ctx) => {
-  // Before the request
-  ctx.logger.debug("->", request.method, request.url);
+      // After the request
+      ctx.logger.debug("<-", response.status, request.url);
 
-  // Forward the request to the rest of the chain
-  const response = await next(request);
+      return response;
+    };
 
-  // After the request
-  ctx.logger.debug("<-", response.status, request.url);
+    const client = new Anthropic({ middleware: [loggingMiddleware] });
+    ```
+  </Tab>
 
-  return response;
-};
+  <Tab title="Go">
+    ```go
+    client := anthropic.NewClient(
+    	option.WithMiddleware(func(req *http.Request, next option.MiddlewareNext) (res *http.Response, err error) {
+    		// Before the request
+    		start := time.Now()
+    		LogReq(req)
 
-const client = new Anthropic({ middleware: [loggingMiddleware] });
-```
+    		// Forward the request to the next handler
+    		res, err = next(req)
 
-</Tab>
+    		// Handle stuff after the request
+    		LogRes(res, err, time.Since(start))
 
-<Tab title="Go">
+    		return res, err
+    	}),
+    )
+    ```
+  </Tab>
 
-```go hidelines={1..16,32..33}
-package main
-
-import (
-	"net/http"
-	"time"
-
-	"github.com/anthropics/anthropic-sdk-go"
-	"github.com/anthropics/anthropic-sdk-go/option"
-)
-
-var _ = anthropic.ModelClaudeOpus4_8
-
-func LogReq(req *http.Request)                              {}
-func LogRes(res *http.Response, err error, d time.Duration) {}
-
-func main() {
-	client := anthropic.NewClient(
-		option.WithMiddleware(func(req *http.Request, next option.MiddlewareNext) (res *http.Response, err error) {
-			// Before the request
-			start := time.Now()
-			LogReq(req)
-
-			// Forward the request to the next handler
-			res, err = next(req)
-
-			// Handle stuff after the request
-			LogRes(res, err, time.Since(start))
-
-			return res, err
-		}),
-	)
-	_ = client
-}
-```
-
-</Tab>
-
-<Tab title="Java">
-
-```java hidelines={1..6,22}
-import com.anthropic.client.AnthropicClient;
-import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-import com.anthropic.core.http.HttpResponse;
-import com.anthropic.core.http.Interceptor;
-
-void main() {
+  <Tab title="Java">
+    ```java
     AnthropicClient client = AnthropicOkHttpClient.builder()
         .fromEnv()
         .addInterceptor(Interceptor.syncOnly((nextClient, request, requestOptions) -> {
@@ -143,57 +109,46 @@ void main() {
             return response;
         }))
         .build();
-}
-```
+    ```
+  </Tab>
 
-</Tab>
+  <Tab title="C#">
+    ```csharp
+    using Anthropic.Core;
 
-<Tab title="C#">
+    AnthropicClient client = new()
+    {
+        Handlers =
+        [
+            Handler.Create(async (request, next, cancellationToken) =>
+            {
+                // Before the request
+                Console.WriteLine($"Sending {request.Method} {request.RequestUri}");
 
-```csharp hidelines={1..2}
-using System;
-using Anthropic;
-using Anthropic.Core;
+                // Forward the request to the next handler
+                var response = await next(request, cancellationToken);
 
-AnthropicClient client = new()
-{
-    Handlers =
-    [
-        Handler.Create(async (request, next, cancellationToken) =>
-        {
-            // Before the request
-            Console.WriteLine($"Sending {request.Method} {request.RequestUri}");
+                // Handle stuff after the request
+                Console.WriteLine($"Received {(int)response.StatusCode}");
 
-            // Forward the request to the next handler
-            var response = await next(request, cancellationToken);
+                return response;
+            }),
+        ],
+    };
+    ```
+  </Tab>
 
-            // Handle stuff after the request
-            Console.WriteLine($"Received {(int)response.StatusCode}");
+  <Tab title="Ruby">
+    <Note>
+      Middleware is not currently available in the Ruby SDK.
+    </Note>
+  </Tab>
 
-            return response;
-        }),
-    ],
-};
-```
-
-</Tab>
-
-<Tab title="Ruby">
-
-<Note>
-Middleware is not currently available in the Ruby SDK.
-</Note>
-
-</Tab>
-
-<Tab title="PHP">
-
-<Note>
-Middleware is not currently available in the PHP SDK.
-</Note>
-
-</Tab>
-
+  <Tab title="PHP">
+    <Note>
+      Middleware is not currently available in the PHP SDK.
+    </Note>
+  </Tab>
 </Tabs>
 
 ## Middleware ordering

@@ -10,7 +10,7 @@ This page covers the `ant` CLI's input and output mechanics that apply across ev
 
 Commands follow a `resource action` pattern. Nested resources use colons:
 
-```text
+```text wrap
 ant <resource>[:<subresource>] <action> [flags]
 ```
 
@@ -27,15 +27,15 @@ ant beta:sessions:events list --session-id session_01...
 
 ### Global flags
 
-| Flag | Description |
-| --- | --- |
-| `--profile` | Named profile to use for this invocation (equivalent to setting `ANTHROPIC_PROFILE`). See [Switch between workspaces](/docs/en/cli-sdks-libraries/cli/authentication#switch-between-workspaces). |
-| `--format` | Output format: `auto`, `json`, `jsonl`, `yaml`, `pretty`, `raw`, `explore` |
-| `--transform` | Filter or reshape the response with a [GJSON path](#transform-output-with-gjson) |
-| `-r`, `--raw-output` | Print string results without surrounding quotes, like `jq -r` |
-| `--base-url` | Override the API base URL |
-| `--debug` | Print full HTTP request and response to stderr |
-| `--format-error`, `--transform-error` | Same as `--format` and `--transform` but applied to [error responses](/docs/en/cli-sdks-libraries/cli/scripting#inspect-errors) |
+| Flag                                  | Description                                                                                                                                                                                      |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `--profile`                           | Named profile to use for this invocation (equivalent to setting `ANTHROPIC_PROFILE`). See [Switch between workspaces](/docs/en/cli-sdks-libraries/cli/authentication#switch-between-workspaces). |
+| `--format`                            | Output format: `auto`, `json`, `jsonl`, `yaml`, `pretty`, `raw`, `explore`                                                                                                                       |
+| `--transform`                         | Filter or reshape the response with a [GJSON path](#transform-output-with-gjson)                                                                                                                 |
+| `-r`, `--raw-output`                  | Print string results without surrounding quotes, like `jq -r`                                                                                                                                    |
+| `--base-url`                          | Override the API base URL                                                                                                                                                                        |
+| `--debug`                             | Print full HTTP request and response to stderr                                                                                                                                                   |
+| `--format-error`, `--transform-error` | Same as `--format` and `--transform` but applied to [error responses](/docs/en/cli-sdks-libraries/cli/scripting#inspect-errors)                                                                  |
 
 ## Output formats
 
@@ -92,12 +92,12 @@ AGENT_ID=$(ant beta:agents create \
 printf '%s\n' "$AGENT_ID"
 ```
 
-```text Output
+```text Output wrap
 agent_011CYm1BLqPXpQRk5khsSXrs
 ```
 
 <Note>
-`--raw-output` is distinct from `--format raw`. `--raw-output` strips JSON quotes from string results, like `jq -r`. `--format raw` prints the response body's raw JSON bytes without auto-paginating; on list endpoints it applies `--transform` to the pagination envelope rather than to each item.
+  `--raw-output` is distinct from `--format raw`. `--raw-output` strips JSON quotes from string results, like `jq -r`. `--format raw` prints the response body's raw JSON bytes without auto-paginating; on list endpoints it applies `--transform` to the pagination envelope rather than to each item.
 </Note>
 
 ## Passing request bodies
@@ -186,7 +186,7 @@ Add `--debug` to any command to print the exact HTTP request and response (heade
 ant --debug beta:agents list
 ```
 
-```text Output
+```text Output wrap
 GET /v1/agents?beta=true HTTP/1.1
 Host: api.anthropic.com
 Anthropic-Beta: managed-agents-2026-04-01
@@ -205,9 +205,11 @@ Every API resource the CLI exposes is documented in the [API reference](/docs/en
   <Card title="CLI scripting and automation" icon="code" href="/docs/en/cli-sdks-libraries/cli/scripting">
     Version-control API resources, scripting patterns, and use from Claude Code
   </Card>
+
   <Card title="API reference" icon="book" href="/docs/en/api/cli/messages/create">
     Endpoint-specific parameters, request fields, and response schemas
   </Card>
+
   <Card title="CLI authentication options" icon="lock" href="/docs/en/cli-sdks-libraries/cli/authentication">
     API keys, headless hosts, multiple workspaces, and named profiles
   </Card>

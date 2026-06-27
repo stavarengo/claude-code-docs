@@ -14,7 +14,7 @@ Claude model IDs follow a versioned naming scheme.
 
 Starting with the Claude 4.6 generation, model IDs use a dateless format:
 
-```text
+```text wrap
 claude-{name}-{major}-{minor}
 ```
 
@@ -22,7 +22,7 @@ For example: `claude-sonnet-4-6`, `claude-opus-4-6`, `claude-opus-4-7`, and `cla
 
 On Amazon Bedrock, the corresponding format is:
 
-```text
+```text wrap
 anthropic.claude-{name}-{major}-{minor}
 ```
 
@@ -36,7 +36,7 @@ On Google Cloud, the format matches the Claude API.
 
 Models before the 4.6 generation include a snapshot date in the ID:
 
-```text
+```text wrap
 claude-{name}-{major}-{minor}-{YYYYMMDD}
 ```
 
@@ -44,7 +44,7 @@ For example: `claude-sonnet-4-5-20250929`, `claude-haiku-4-5-20251001`
 
 On Amazon Bedrock, these use the format:
 
-```text
+```text wrap
 anthropic.claude-{name}-{major}-{minor}-{YYYYMMDD}-v1:0
 ```
 
@@ -52,7 +52,7 @@ For example: `anthropic.claude-sonnet-4-5-20250929-v1:0`
 
 On Google Cloud, the date is separated with `@`:
 
-```text
+```text wrap
 claude-{name}-{major}-{minor}@{YYYYMMDD}
 ```
 

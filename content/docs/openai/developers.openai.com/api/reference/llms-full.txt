@@ -96,6 +96,11 @@ Usage from these API requests counts as usage for the specified organization and
 - `x-ratelimit-remaining-tokens`
 - `x-ratelimit-reset-requests`
 - `x-ratelimit-reset-tokens`
+- `x-ratelimit-limit-project-tokens`
+- `x-ratelimit-remaining-project-tokens`
+- `x-ratelimit-reset-project-tokens`
+
+Project-token headers may be present when a project-scoped token limit applies.
 
 **OpenAI recommends logging request IDs in production deployments** for more efficient troubleshooting with the [support team](https://help.openai.com/en/), should the need arise. Official [client libraries](https://developers.openai.com/api/docs/libraries) provide a property on top-level response objects containing the value of the `x-request-id` header.
 
