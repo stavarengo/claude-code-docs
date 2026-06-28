@@ -5,7 +5,7 @@ Different tiers of service allow you to balance availability, performance, and p
 ---
 
 <Warning>
-  Priority Tier capacity commitments are no longer available for purchase. Organizations with an existing commitment can continue to use Priority Tier through their contract end date, and this page remains available as a reference for them. If you need guaranteed capacity, contact your account team.
+  Priority Tier capacity commitments are no longer available for purchase. Organizations with an existing commitment can continue to use Priority Tier through their contract end date, and this page remains available as a reference for them. If you need guaranteed capacity, [contact sales](https://claude.com/contact-sales).
 </Warning>
 
 Anthropic offers three service tiers:
