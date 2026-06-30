@@ -12,7 +12,7 @@ Claude Opus 4.8 is Anthropic's most capable Opus-tier model. It builds on Claude
 | --------------- | --------------- | ------------------------------------------------------------------------------------------------------------------- |
 | Claude Opus 4.8 | claude-opus-4-8 | Anthropic's most capable Opus-tier model for complex reasoning, long-horizon agentic coding, and high-autonomy work |
 
-Claude Opus 4.8 supports the [1M token context window](/docs/en/build-with-claude/context-windows) by default on the Claude API, Amazon Bedrock, and Google Cloud (200k on Microsoft Foundry), 128k max output tokens, [adaptive thinking](/docs/en/build-with-claude/adaptive-thinking), and the same set of tools and platform features as Claude Opus 4.7.
+Claude Opus 4.8 supports the [1M token context window](/docs/en/build-with-claude/context-windows) by default on the Claude API, Amazon Bedrock, Google Cloud, and Microsoft Foundry, 128k max output tokens, [adaptive thinking](/docs/en/build-with-claude/adaptive-thinking), and the same set of tools and platform features as Claude Opus 4.7.
 
 For complete pricing and specs, see the [models overview](/docs/en/about-claude/models/overview).
 

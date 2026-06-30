@@ -197,7 +197,7 @@ The Message Batches API has its own set of rate limits which are shared across a
 
 ### Fast mode rate limits
 
-When using [fast mode](/docs/en/build-with-claude/fast-mode) (research preview) with `speed: "fast"` on Claude Opus 4.8, Opus 4.7, or Opus 4.6, dedicated rate limits apply that are separate from standard Opus rate limits. When fast mode rate limits are exceeded, the API returns a `429` error with a `retry-after` header.
+When using [fast mode](/docs/en/build-with-claude/fast-mode) (research preview) with `speed: "fast"` on Claude Opus 4.8 or Opus 4.7, dedicated rate limits apply that are separate from standard Opus rate limits. When fast mode rate limits are exceeded, the API returns a `429` error with a `retry-after` header. Fast mode is not available on Claude Opus 4.6: requests to `claude-opus-4-6` with `speed: "fast"` run at standard speed. See [Fast mode](/docs/en/build-with-claude/fast-mode#supported-models).
 
 The response includes `anthropic-fast-*` headers that indicate your fast mode rate limit status. See [Fast mode](/docs/en/build-with-claude/fast-mode#rate-limits) for details on these headers.
 

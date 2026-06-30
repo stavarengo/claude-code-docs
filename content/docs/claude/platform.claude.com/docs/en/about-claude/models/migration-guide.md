@@ -661,10 +661,6 @@ Claude Opus 4.8 should have strong out-of-the-box performance on existing Claude
   If your code is on Claude Opus 4.6 or earlier, also apply the [Claude Opus 4.7 migration steps](#migrating-to-claude-opus-4-7) below before upgrading to Claude Opus 4.8. Those steps include breaking changes (sampling parameters rejected, manual extended thinking rejected, new tokenizer) that the 4.8 upgrade alone does not cover.
 </Note>
 
-<Note>
-  On Microsoft Foundry, Claude Opus 4.8 has a 200k-token context window at launch. The 1M context window applies on the Claude API, Amazon Bedrock, and Google Cloud. See [Claude in Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry).
-</Note>
-
 ### Update your model name
 
 ```python
@@ -696,7 +692,7 @@ These are not breaking changes. Code that runs on Claude Opus 4.7 continues to w
 * Update model name from `claude-opus-4-7` to `claude-opus-4-8` (or update aliases).
 * If you removed sampling parameters during the Opus 4.7 migration, no action is needed. If you re-added them with a 400-retry path, remove that retry path.
 * Re-evaluate your `effort` setting. The default is `high` across all surfaces; for coding and high-autonomy work, set `xhigh` explicitly.
-* Remove any context-window beta header. The 1M context window is the default on the Claude API, Amazon Bedrock, and Google Cloud (200k on Microsoft Foundry).
+* Remove any context-window beta header. The 1M context window is the default on the Claude API, Amazon Bedrock, Google Cloud, and Microsoft Foundry.
 * If you rebuild conversation history to update instructions, consider switching to a mid-conversation system message to preserve prompt cache hits.
 * Verify your stop-reason handling reads `stop_details` on refusals (available since Claude Opus 4.7; now publicly documented).
 * Re-baseline cost and latency at your chosen effort level.

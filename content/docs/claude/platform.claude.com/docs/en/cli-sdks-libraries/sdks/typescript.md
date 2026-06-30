@@ -329,7 +329,7 @@ Request parameters that correspond to file uploads can be passed in many differe
 Set the content-type explicitly as the files API will not infer it for you:
 
 ```typescript
-import fs from "fs";
+import fs from "node:fs";
 import Anthropic, { toFile } from "@anthropic-ai/sdk";
 
 const client = new Anthropic();

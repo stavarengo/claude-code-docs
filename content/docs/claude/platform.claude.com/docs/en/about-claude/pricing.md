@@ -40,7 +40,7 @@ For Claude Platform on AWS pricing, see [Claude Platform on AWS pricing](#claude
 
 ## Cloud platform pricing
 
-This section covers partner-operated cloud platforms, where the cloud provider invoices you. For Anthropic-operated cloud platforms billed through a marketplace, see [Claude Platform on AWS pricing](#claude-platform-on-aws-pricing) and [Claude in Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry).
+This section covers partner-operated cloud platforms, where the cloud provider invoices you. For Anthropic-operated cloud platforms billed through a marketplace, see [Claude Platform on AWS pricing](#claude-platform-on-aws-pricing) and [Claude in Microsoft Foundry pricing](#claude-in-microsoft-foundry-pricing).
 
 Claude models are available on [Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock) and [Google Cloud](/docs/en/build-with-claude/claude-on-vertex-ai). For official pricing, visit:
 
@@ -96,6 +96,29 @@ When you sign up on the AWS Console **Claude Platform on AWS** service page, the
   If you have an existing Amazon Bedrock private offer, contact your Anthropic or AWS account representative before getting started with Claude Platform on AWS to ensure your discounts are applied correctly. Discounts cannot be applied retroactively to usage incurred before your private offer is accepted.
 </Note>
 
+## Claude in Microsoft Foundry pricing
+
+[Claude in Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry) bills through the Azure Marketplace using Claude Consumption Units (CCUs). Anthropic rates your token usage in USD at standard per-model, per-feature rates, applies any negotiated discount, converts the result to CCUs at $0.01 per CCU, and reports the CCU quantity to the Azure Marketplace hourly. Your Azure bill shows a single CCU line item.
+
+| Concept             | Details                                                                                                                                                   |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Billing unit**    | Claude Consumption Unit (CCU)                                                                                                                             |
+| **CCU price**       | $0.01 per CCU (fixed; discounts apply at token-to-CCU conversion, not to the CCU price)                                                                   |
+| **Conversion**      | Token usage rated in USD at standard per-model, per-feature rates (same as [Claude API pricing](#model-pricing)), then converted to CCUs at $0.01 per CCU |
+| **Billing cadence** | Hourly metering to the Azure Marketplace; monthly invoices                                                                                                |
+| **Payment model**   | Arrears only (postpaid); no prepaid credits                                                                                                               |
+| **Discounts**       | Applied as fewer CCUs metered                                                                                                                             |
+| **Tax**             | Pre-tax metering; Azure Marketplace handles tax                                                                                                           |
+| **Cost visibility** | Azure Cost Management shows aggregated CCU                                                                                                                |
+
+<Note>
+  **Claude Consumption Units.** If Customer accesses the Services through certain Marketplace Platforms (e.g., Claude Platform on AWS, Claude in Microsoft Foundry), usage will be invoiced in Claude Consumption Units ("CCU") rather than per MTok. A CCU is a unit of measure used solely for Marketplace Platform invoicing. One hundred (100) CCU represents $1.00 USD of fees owed for the Services, calculated at the applicable prices on [claude.com/pricing#api](https://claude.com/pricing#api), after application of any discounts.
+</Note>
+
+### Inference geography
+
+Deployments hosted on Azure can use the US Data Zone Standard deployment type, which keeps inference within the United States. This is equivalent to `inference_geo: "us"` on the Claude API and applies the same 1.1x pricing multiplier. See [Data residency](/docs/en/manage-claude/data-residency) for details.
+
 ## Feature-specific pricing
 
 ### Prompt caching
@@ -125,18 +148,20 @@ For implementation details, supported models, and code examples, see [Prompt cac
 
 For Claude Opus 4.6, Claude Sonnet 4.6, and later models, specifying US-only inference through the `inference_geo` parameter incurs a 1.1x multiplier on all token pricing categories, including input tokens, output tokens, cache writes, and cache reads. Global routing (the default) uses standard pricing.
 
-This applies to the Claude API (first-party) and Claude Platform on AWS. Partner-operated platforms (Bedrock and Google Cloud) have independent regional pricing. See [Bedrock](https://aws.amazon.com/bedrock/pricing/) and [Google Cloud](https://cloud.google.com/vertex-ai/generative-ai/pricing#claude-models) for details. Earlier models do not support the `inference_geo` parameter and always use standard pricing; requests that include the parameter on these models return a 400 error.
+This applies to the Claude API (first-party) and Claude Platform on AWS. On Claude in Microsoft Foundry, the same 1.1x multiplier applies to deployments that use the US Data Zone Standard deployment type (see [Inference geography](#foundry-inference-geography)). Partner-operated platforms (Bedrock and Google Cloud) have independent regional pricing. See [Bedrock](https://aws.amazon.com/bedrock/pricing/) and [Google Cloud](https://cloud.google.com/vertex-ai/generative-ai/pricing#claude-models) for details. Earlier models do not support the `inference_geo` parameter and always use standard pricing; requests that include the parameter on these models return a 400 error.
 
 For more information, see [Data residency](/docs/en/manage-claude/data-residency).
 
 ### Fast mode pricing
 
-[Fast mode](/docs/en/build-with-claude/fast-mode), in research preview, provides significantly faster output for Claude Opus 4.8, Claude Opus 4.7, and Claude Opus 4.6 at premium pricing. Fast mode pricing applies across the full context window, including requests over 200k input tokens. Fast mode is not available on Claude Platform on AWS.
+[Fast mode](/docs/en/build-with-claude/fast-mode), in research preview, provides significantly faster output for Claude Opus 4.8 and Claude Opus 4.7 at premium pricing. Fast mode pricing applies across the full context window, including requests over 200k input tokens. Fast mode is not available on Claude Platform on AWS.
 
-| Model                             | Input      | Output      |
-| --------------------------------- | ---------- | ----------- |
-| Claude Opus 4.6 / Claude Opus 4.7 | $30 / MTok | $150 / MTok |
-| Claude Opus 4.8                   | $10 / MTok | $50 / MTok  |
+| Model           | Input      | Output      |
+| --------------- | ---------- | ----------- |
+| Claude Opus 4.8 | $10 / MTok | $50 / MTok  |
+| Claude Opus 4.7 | $30 / MTok | $150 / MTok |
+
+Fast mode for Claude Opus 4.7 is deprecated and will be removed on July 24, 2026. As of June 29, 2026, fast mode is not available on Claude Opus 4.6: requests to `claude-opus-4-6` with `speed: "fast"` run at standard speed and are billed at standard rates. See [Fast mode](/docs/en/build-with-claude/fast-mode#supported-models).
 
 Fast mode pricing stacks with other pricing modifiers:
 
