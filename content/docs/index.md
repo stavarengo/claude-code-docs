@@ -3,13 +3,13 @@ root: .
 IMPORTANT: Read files on demand. Use this index to locate the right file, then read only that file.
 
 claude/code.claude.com/docs:{llms.txt}
-claude/code.claude.com/docs/en:{admin-setup.md,advisor.md,agent-teams.md,agent-view.md,agents.md,amazon-bedrock.md,analytics.md,artifacts.md,authentication.md,auto-mode-config.md,azure-ai-foundry.md,best-practices.md,champion-kit.md,changelog.md,channels-reference.md,channels.md,checkpointing.md,chrome.md,claude-apps-gateway-config.md,claude-apps-gateway-deploy.md,claude-apps-gateway-on-gcp.md,claude-apps-gateway-spend-limits.md,claude-apps-gateway.md,claude-code-on-the-web.md,claude-directory.md,claude-platform-on-aws.md,cli-reference.md,code-review.md,commands.md,common-workflows.md,communications-kit.md,computer-use.md,context-window.md,costs.md,data-usage.md,debug-your-config.md,deep-links.md,desktop-quickstart.md,desktop-scheduled-tasks.md,desktop.md,devcontainer.md,discover-plugins.md,env-vars.md,errors.md,fast-mode.md,feature-availability.md,features-overview.md,fullscreen.md,gateways.md,github-actions.md,github-enterprise-server.md,gitlab-ci-cd.md,glossary.md,goal.md,google-vertex-ai.md,headless.md,hooks-guide.md,hooks.md,how-claude-code-works.md,interactive-mode.md,jetbrains.md,keybindings.md,large-codebases.md,legal-and-compliance.md,llm-gateway-connect.md,llm-gateway-protocol.md,llm-gateway-rollout.md,llm-gateway.md,managed-mcp.md,mcp-quickstart.md,mcp.md,memory.md,microsoft-foundry.md,model-config.md,monitoring-usage.md,network-config.md,output-styles.md,overview.md,permission-modes.md,permissions.md,platforms.md,plugin-dependencies.md,plugin-hints.md,plugin-marketplaces.md,plugin-relevance.md,plugins-reference.md,plugins.md,prompt-caching.md,prompt-library.md,quickstart.md,remote-control.md,routines.md,sandbox-environments.md,sandboxing.md,scheduled-tasks.md,security-guidance.md,security.md,server-managed-settings.md,sessions.md,settings.md,setup.md,skills.md,slack.md,slash-commands.md,statusline.md,sub-agents.md,terminal-config.md,third-party-integrations.md,tools-reference.md,troubleshoot-install.md,troubleshooting.md,ultraplan.md,ultrareview.md,voice-dictation.md,vs-code.md,web-quickstart.md,workflows.md,worktrees.md,zero-data-retention.md}
+claude/code.claude.com/docs/en:{admin-setup.md,advisor.md,agent-teams.md,agent-view.md,agents.md,amazon-bedrock.md,analytics.md,artifacts.md,authentication.md,auto-mode-config.md,azure-ai-foundry.md,best-practices.md,champion-kit.md,changelog.md,channels-reference.md,channels.md,checkpointing.md,chrome.md,claude-apps-gateway-config.md,claude-apps-gateway-deploy.md,claude-apps-gateway-on-gcp.md,claude-apps-gateway-spend-limits.md,claude-apps-gateway.md,claude-code-on-the-web.md,claude-directory.md,claude-platform-on-aws.md,cli-reference.md,code-review.md,commands.md,common-workflows.md,communications-kit.md,computer-use.md,context-window.md,costs.md,data-usage.md,debug-your-config.md,deep-links.md,desktop-linux.md,desktop-quickstart.md,desktop-scheduled-tasks.md,desktop.md,devcontainer.md,discover-plugins.md,env-vars.md,errors.md,fast-mode.md,feature-availability.md,features-overview.md,fullscreen.md,gateways.md,github-actions.md,github-enterprise-server.md,gitlab-ci-cd.md,glossary.md,goal.md,google-vertex-ai.md,headless.md,hooks-guide.md,hooks.md,how-claude-code-works.md,interactive-mode.md,jetbrains.md,keybindings.md,large-codebases.md,legal-and-compliance.md,llm-gateway-connect.md,llm-gateway-protocol.md,llm-gateway-rollout.md,llm-gateway.md,managed-mcp.md,mcp-quickstart.md,mcp.md,memory.md,microsoft-foundry.md,model-config.md,monitoring-usage.md,network-config.md,output-styles.md,overview.md,permission-modes.md,permissions.md,platforms.md,plugin-dependencies.md,plugin-hints.md,plugin-marketplaces.md,plugin-relevance.md,plugins-reference.md,plugins.md,prompt-caching.md,prompt-library.md,quickstart.md,remote-control.md,routines.md,sandbox-environments.md,sandboxing.md,scheduled-tasks.md,security-guidance.md,security.md,server-managed-settings.md,sessions.md,settings.md,setup.md,skills.md,slack.md,slash-commands.md,statusline.md,sub-agents.md,terminal-config.md,third-party-integrations.md,tools-reference.md,troubleshoot-install.md,troubleshooting.md,ultraplan.md,ultrareview.md,voice-dictation.md,vs-code.md,web-quickstart.md,workflows.md,worktrees.md,zero-data-retention.md}
 claude/code.claude.com/docs/en/agent-sdk:{agent-loop.md,claude-code-features.md,cost-tracking.md,custom-tools.md,file-checkpointing.md,hooks.md,hosting.md,mcp.md,migration-guide.md,modifying-system-prompts.md,observability.md,overview.md,permissions.md,plugins.md,python.md,quickstart.md,secure-deployment.md,session-storage.md,sessions.md,skills.md,slash-commands.md,streaming-output.md,streaming-vs-single-mode.md,structured-outputs.md,subagents.md,todo-tracking.md,tool-search.md,typescript-v2-preview.md,typescript.md,user-input.md}
 claude/code.claude.com/docs/en/whats-new:{2026-w13.md,2026-w14.md,2026-w15.md,2026-w16.md,2026-w17.md,2026-w18.md,2026-w19.md,2026-w20.md,2026-w21.md,2026-w22.md,2026-w23.md,2026-w24.md,2026-w25.md,2026-w26.md,index.md}
 claude/platform.claude.com:{llms.txt}
 claude/platform.claude.com/docs/en:{get-started.md,intro.md}
 claude/platform.claude.com/docs/en/about-claude:{model-deprecations.md,pricing.md}
-claude/platform.claude.com/docs/en/about-claude/models:{introducing-claude-fable-5-and-claude-mythos-5.md,migration-guide.md,model-ids-and-versions.md,overview.md,whats-new-claude-4-8.md}
+claude/platform.claude.com/docs/en/about-claude/models:{introducing-claude-fable-5-and-claude-mythos-5.md,migration-guide.md,model-ids-and-versions.md,overview.md,whats-new-claude-4-8.md,whats-new-sonnet-5.md}
 claude/platform.claude.com/docs/en/about-claude/use-case-guides:{customer-support-chat.md}
 claude/platform.claude.com/docs/en/agents-and-tools:{mcp-connector.md,remote-mcp-servers.md}
 claude/platform.claude.com/docs/en/agents-and-tools/agent-skills:{best-practices.md,claude-api-skill.md,enterprise.md,overview.md,quickstart.md}
@@ -45,7 +45,7 @@ claude/platform.claude.com/docs/en/api/admin/workspaces:{archive.md,create.md,li
 claude/platform.claude.com/docs/en/api/admin/workspaces/members:{create.md,delete.md,list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/admin/workspaces/rate_limits:{list.md}
 claude/platform.claude.com/docs/en/api/admin/workspaces/service_accounts:{create.md,delete.md,list.md,retrieve.md,update.md}
-claude/platform.claude.com/docs/en/api/beta:{agents.md,deployment_runs.md,deployments.md,environments.md,files.md,memory_stores.md,messages.md,models.md,sessions.md,skills.md,user_profiles.md,vaults.md,webhooks.md}
+claude/platform.claude.com/docs/en/api/beta:{agents.md,deployment_runs.md,deployments.md,environments.md,files.md,memory_stores.md,messages.md,models.md,sessions.md,skills.md,tunnels.md,user_profiles.md,vaults.md,webhooks.md}
 claude/platform.claude.com/docs/en/api/beta/agents:{archive.md,create.md,list.md,retrieve.md,update.md,versions.md}
 claude/platform.claude.com/docs/en/api/beta/agents/versions:{list.md}
 claude/platform.claude.com/docs/en/api/beta/deployment_runs:{list.md,retrieve.md}
@@ -66,11 +66,13 @@ claude/platform.claude.com/docs/en/api/beta/sessions/threads:{archive.md,events.
 claude/platform.claude.com/docs/en/api/beta/sessions/threads/events:{list.md,stream.md}
 claude/platform.claude.com/docs/en/api/beta/skills:{create.md,delete.md,list.md,retrieve.md,versions.md}
 claude/platform.claude.com/docs/en/api/beta/skills/versions:{create.md,delete.md,download.md,list.md,retrieve.md}
+claude/platform.claude.com/docs/en/api/beta/tunnels:{archive.md,certificates.md,create.md,list.md,retrieve.md,reveal_token.md,rotate_token.md}
+claude/platform.claude.com/docs/en/api/beta/tunnels/certificates:{archive.md,create.md,list.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/beta/user_profiles:{create.md,create_enrollment_url.md,list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/beta/vaults:{archive.md,create.md,credentials.md,delete.md,list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/beta/vaults/credentials:{archive.md,create.md,delete.md,list.md,mcp_oauth_validate.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/cli:{beta.md,completions.md,messages.md,models.md}
-claude/platform.claude.com/docs/en/api/cli/beta:{agents.md,deployment_runs.md,deployments.md,environments.md,files.md,memory_stores.md,messages.md,models.md,sessions.md,skills.md,user_profiles.md,vaults.md,webhooks.md}
+claude/platform.claude.com/docs/en/api/cli/beta:{agents.md,deployment_runs.md,deployments.md,environments.md,files.md,memory_stores.md,messages.md,models.md,sessions.md,skills.md,tunnels.md,user_profiles.md,vaults.md,webhooks.md}
 claude/platform.claude.com/docs/en/api/cli/beta/agents:{archive.md,create.md,list.md,retrieve.md,update.md,versions.md}
 claude/platform.claude.com/docs/en/api/cli/beta/agents/versions:{list.md}
 claude/platform.claude.com/docs/en/api/cli/beta/deployment_runs:{list.md,retrieve.md}
@@ -91,6 +93,8 @@ claude/platform.claude.com/docs/en/api/cli/beta/sessions/threads:{archive.md,eve
 claude/platform.claude.com/docs/en/api/cli/beta/sessions/threads/events:{list.md,stream.md}
 claude/platform.claude.com/docs/en/api/cli/beta/skills:{create.md,delete.md,list.md,retrieve.md,versions.md}
 claude/platform.claude.com/docs/en/api/cli/beta/skills/versions:{create.md,delete.md,download.md,list.md,retrieve.md}
+claude/platform.claude.com/docs/en/api/cli/beta/tunnels:{archive.md,certificates.md,create.md,list.md,retrieve.md,reveal_token.md,rotate_token.md}
+claude/platform.claude.com/docs/en/api/cli/beta/tunnels/certificates:{archive.md,create.md,list.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/cli/beta/user_profiles:{create.md,create_enrollment_url.md,list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/cli/beta/vaults:{archive.md,create.md,credentials.md,delete.md,list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/cli/beta/vaults/credentials:{archive.md,create.md,delete.md,list.md,mcp_oauth_validate.md,retrieve.md,update.md}
@@ -121,7 +125,7 @@ claude/platform.claude.com/docs/en/api/compliance/organizations/roles/permission
 claude/platform.claude.com/docs/en/api/compliance/organizations/settings:{retrieve.md}
 claude/platform.claude.com/docs/en/api/compliance/organizations/users:{list.md}
 claude/platform.claude.com/docs/en/api/csharp:{beta.md,completions.md,messages.md,models.md}
-claude/platform.claude.com/docs/en/api/csharp/beta:{agents.md,deployment_runs.md,deployments.md,environments.md,files.md,memory_stores.md,messages.md,models.md,sessions.md,skills.md,user_profiles.md,vaults.md,webhooks.md}
+claude/platform.claude.com/docs/en/api/csharp/beta:{agents.md,deployment_runs.md,deployments.md,environments.md,files.md,memory_stores.md,messages.md,models.md,sessions.md,skills.md,tunnels.md,user_profiles.md,vaults.md,webhooks.md}
 claude/platform.claude.com/docs/en/api/csharp/beta/agents:{archive.md,create.md,list.md,retrieve.md,update.md,versions.md}
 claude/platform.claude.com/docs/en/api/csharp/beta/agents/versions:{list.md}
 claude/platform.claude.com/docs/en/api/csharp/beta/deployment_runs:{list.md,retrieve.md}
@@ -142,6 +146,8 @@ claude/platform.claude.com/docs/en/api/csharp/beta/sessions/threads:{archive.md,
 claude/platform.claude.com/docs/en/api/csharp/beta/sessions/threads/events:{list.md,stream.md}
 claude/platform.claude.com/docs/en/api/csharp/beta/skills:{create.md,delete.md,list.md,retrieve.md,versions.md}
 claude/platform.claude.com/docs/en/api/csharp/beta/skills/versions:{create.md,delete.md,download.md,list.md,retrieve.md}
+claude/platform.claude.com/docs/en/api/csharp/beta/tunnels:{archive.md,certificates.md,create.md,list.md,retrieve.md,reveal_token.md,rotate_token.md}
+claude/platform.claude.com/docs/en/api/csharp/beta/tunnels/certificates:{archive.md,create.md,list.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/csharp/beta/user_profiles:{create.md,create_enrollment_url.md,list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/csharp/beta/vaults:{archive.md,create.md,credentials.md,delete.md,list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/csharp/beta/vaults/credentials:{archive.md,create.md,delete.md,list.md,mcp_oauth_validate.md,retrieve.md,update.md}
@@ -150,7 +156,7 @@ claude/platform.claude.com/docs/en/api/csharp/messages:{batches.md,count_tokens.
 claude/platform.claude.com/docs/en/api/csharp/messages/batches:{cancel.md,create.md,delete.md,list.md,results.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/csharp/models:{list.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/go:{beta.md,completions.md,messages.md,models.md}
-claude/platform.claude.com/docs/en/api/go/beta:{agents.md,deployment_runs.md,deployments.md,environments.md,files.md,memory_stores.md,messages.md,models.md,sessions.md,skills.md,user_profiles.md,vaults.md,webhooks.md}
+claude/platform.claude.com/docs/en/api/go/beta:{agents.md,deployment_runs.md,deployments.md,environments.md,files.md,memory_stores.md,messages.md,models.md,sessions.md,skills.md,tunnels.md,user_profiles.md,vaults.md,webhooks.md}
 claude/platform.claude.com/docs/en/api/go/beta/agents:{archive.md,create.md,list.md,retrieve.md,update.md,versions.md}
 claude/platform.claude.com/docs/en/api/go/beta/agents/versions:{list.md}
 claude/platform.claude.com/docs/en/api/go/beta/deployment_runs:{list.md,retrieve.md}
@@ -171,6 +177,8 @@ claude/platform.claude.com/docs/en/api/go/beta/sessions/threads:{archive.md,even
 claude/platform.claude.com/docs/en/api/go/beta/sessions/threads/events:{list.md,stream.md}
 claude/platform.claude.com/docs/en/api/go/beta/skills:{create.md,delete.md,list.md,retrieve.md,versions.md}
 claude/platform.claude.com/docs/en/api/go/beta/skills/versions:{create.md,delete.md,download.md,list.md,retrieve.md}
+claude/platform.claude.com/docs/en/api/go/beta/tunnels:{archive.md,certificates.md,create.md,list.md,retrieve.md,reveal_token.md,rotate_token.md}
+claude/platform.claude.com/docs/en/api/go/beta/tunnels/certificates:{archive.md,create.md,list.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/go/beta/user_profiles:{create.md,create_enrollment_url.md,list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/go/beta/vaults:{archive.md,create.md,credentials.md,delete.md,list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/go/beta/vaults/credentials:{archive.md,create.md,delete.md,list.md,mcp_oauth_validate.md,retrieve.md,update.md}
@@ -179,7 +187,7 @@ claude/platform.claude.com/docs/en/api/go/messages:{batches.md,count_tokens.md,c
 claude/platform.claude.com/docs/en/api/go/messages/batches:{cancel.md,create.md,delete.md,list.md,results.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/go/models:{list.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/java:{beta.md,completions.md,messages.md,models.md}
-claude/platform.claude.com/docs/en/api/java/beta:{agents.md,deployment_runs.md,deployments.md,environments.md,files.md,memory_stores.md,messages.md,models.md,sessions.md,skills.md,user_profiles.md,vaults.md,webhooks.md}
+claude/platform.claude.com/docs/en/api/java/beta:{agents.md,deployment_runs.md,deployments.md,environments.md,files.md,memory_stores.md,messages.md,models.md,sessions.md,skills.md,tunnels.md,user_profiles.md,vaults.md,webhooks.md}
 claude/platform.claude.com/docs/en/api/java/beta/agents:{archive.md,create.md,list.md,retrieve.md,update.md,versions.md}
 claude/platform.claude.com/docs/en/api/java/beta/agents/versions:{list.md}
 claude/platform.claude.com/docs/en/api/java/beta/deployment_runs:{list.md,retrieve.md}
@@ -200,6 +208,8 @@ claude/platform.claude.com/docs/en/api/java/beta/sessions/threads:{archive.md,ev
 claude/platform.claude.com/docs/en/api/java/beta/sessions/threads/events:{list.md,stream.md}
 claude/platform.claude.com/docs/en/api/java/beta/skills:{create.md,delete.md,list.md,retrieve.md,versions.md}
 claude/platform.claude.com/docs/en/api/java/beta/skills/versions:{create.md,delete.md,download.md,list.md,retrieve.md}
+claude/platform.claude.com/docs/en/api/java/beta/tunnels:{archive.md,certificates.md,create.md,list.md,retrieve.md,reveal_token.md,rotate_token.md}
+claude/platform.claude.com/docs/en/api/java/beta/tunnels/certificates:{archive.md,create.md,list.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/java/beta/user_profiles:{create.md,create_enrollment_url.md,list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/java/beta/vaults:{archive.md,create.md,credentials.md,delete.md,list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/java/beta/vaults/credentials:{archive.md,create.md,delete.md,list.md,mcp_oauth_validate.md,retrieve.md,update.md}
@@ -211,7 +221,7 @@ claude/platform.claude.com/docs/en/api/messages:{batches.md,count_tokens.md,crea
 claude/platform.claude.com/docs/en/api/messages/batches:{cancel.md,create.md,delete.md,list.md,results.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/models:{list.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/php:{beta.md,completions.md,messages.md,models.md}
-claude/platform.claude.com/docs/en/api/php/beta:{agents.md,deployment_runs.md,deployments.md,environments.md,files.md,memory_stores.md,messages.md,models.md,sessions.md,skills.md,user_profiles.md,vaults.md,webhooks.md}
+claude/platform.claude.com/docs/en/api/php/beta:{agents.md,deployment_runs.md,deployments.md,environments.md,files.md,memory_stores.md,messages.md,models.md,sessions.md,skills.md,tunnels.md,user_profiles.md,vaults.md,webhooks.md}
 claude/platform.claude.com/docs/en/api/php/beta/agents:{archive.md,create.md,list.md,retrieve.md,update.md,versions.md}
 claude/platform.claude.com/docs/en/api/php/beta/agents/versions:{list.md}
 claude/platform.claude.com/docs/en/api/php/beta/deployment_runs:{list.md,retrieve.md}
@@ -232,6 +242,8 @@ claude/platform.claude.com/docs/en/api/php/beta/sessions/threads:{archive.md,eve
 claude/platform.claude.com/docs/en/api/php/beta/sessions/threads/events:{list.md,stream.md}
 claude/platform.claude.com/docs/en/api/php/beta/skills:{create.md,delete.md,list.md,retrieve.md,versions.md}
 claude/platform.claude.com/docs/en/api/php/beta/skills/versions:{create.md,delete.md,download.md,list.md,retrieve.md}
+claude/platform.claude.com/docs/en/api/php/beta/tunnels:{archive.md,certificates.md,create.md,list.md,retrieve.md,reveal_token.md,rotate_token.md}
+claude/platform.claude.com/docs/en/api/php/beta/tunnels/certificates:{archive.md,create.md,list.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/php/beta/user_profiles:{create.md,create_enrollment_url.md,list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/php/beta/vaults:{archive.md,create.md,credentials.md,delete.md,list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/php/beta/vaults/credentials:{archive.md,create.md,delete.md,list.md,mcp_oauth_validate.md,retrieve.md,update.md}
@@ -240,7 +252,7 @@ claude/platform.claude.com/docs/en/api/php/messages:{batches.md,count_tokens.md,
 claude/platform.claude.com/docs/en/api/php/messages/batches:{cancel.md,create.md,delete.md,list.md,results.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/php/models:{list.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/python:{beta.md,completions.md,messages.md,models.md}
-claude/platform.claude.com/docs/en/api/python/beta:{agents.md,deployment_runs.md,deployments.md,environments.md,files.md,memory_stores.md,messages.md,models.md,sessions.md,skills.md,user_profiles.md,vaults.md,webhooks.md}
+claude/platform.claude.com/docs/en/api/python/beta:{agents.md,deployment_runs.md,deployments.md,environments.md,files.md,memory_stores.md,messages.md,models.md,sessions.md,skills.md,tunnels.md,user_profiles.md,vaults.md,webhooks.md}
 claude/platform.claude.com/docs/en/api/python/beta/agents:{archive.md,create.md,list.md,retrieve.md,update.md,versions.md}
 claude/platform.claude.com/docs/en/api/python/beta/agents/versions:{list.md}
 claude/platform.claude.com/docs/en/api/python/beta/deployment_runs:{list.md,retrieve.md}
@@ -261,6 +273,8 @@ claude/platform.claude.com/docs/en/api/python/beta/sessions/threads:{archive.md,
 claude/platform.claude.com/docs/en/api/python/beta/sessions/threads/events:{list.md,stream.md}
 claude/platform.claude.com/docs/en/api/python/beta/skills:{create.md,delete.md,list.md,retrieve.md,versions.md}
 claude/platform.claude.com/docs/en/api/python/beta/skills/versions:{create.md,delete.md,download.md,list.md,retrieve.md}
+claude/platform.claude.com/docs/en/api/python/beta/tunnels:{archive.md,certificates.md,create.md,list.md,retrieve.md,reveal_token.md,rotate_token.md}
+claude/platform.claude.com/docs/en/api/python/beta/tunnels/certificates:{archive.md,create.md,list.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/python/beta/user_profiles:{create.md,create_enrollment_url.md,list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/python/beta/vaults:{archive.md,create.md,credentials.md,delete.md,list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/python/beta/vaults/credentials:{archive.md,create.md,delete.md,list.md,mcp_oauth_validate.md,retrieve.md,update.md}
@@ -269,7 +283,7 @@ claude/platform.claude.com/docs/en/api/python/messages:{batches.md,count_tokens.
 claude/platform.claude.com/docs/en/api/python/messages/batches:{cancel.md,create.md,delete.md,list.md,results.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/python/models:{list.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/ruby:{beta.md,completions.md,messages.md,models.md}
-claude/platform.claude.com/docs/en/api/ruby/beta:{agents.md,deployment_runs.md,deployments.md,environments.md,files.md,memory_stores.md,messages.md,models.md,sessions.md,skills.md,user_profiles.md,vaults.md,webhooks.md}
+claude/platform.claude.com/docs/en/api/ruby/beta:{agents.md,deployment_runs.md,deployments.md,environments.md,files.md,memory_stores.md,messages.md,models.md,sessions.md,skills.md,tunnels.md,user_profiles.md,vaults.md,webhooks.md}
 claude/platform.claude.com/docs/en/api/ruby/beta/agents:{archive.md,create.md,list.md,retrieve.md,update.md,versions.md}
 claude/platform.claude.com/docs/en/api/ruby/beta/agents/versions:{list.md}
 claude/platform.claude.com/docs/en/api/ruby/beta/deployment_runs:{list.md,retrieve.md}
@@ -290,6 +304,8 @@ claude/platform.claude.com/docs/en/api/ruby/beta/sessions/threads:{archive.md,ev
 claude/platform.claude.com/docs/en/api/ruby/beta/sessions/threads/events:{list.md,stream.md}
 claude/platform.claude.com/docs/en/api/ruby/beta/skills:{create.md,delete.md,list.md,retrieve.md,versions.md}
 claude/platform.claude.com/docs/en/api/ruby/beta/skills/versions:{create.md,delete.md,download.md,list.md,retrieve.md}
+claude/platform.claude.com/docs/en/api/ruby/beta/tunnels:{archive.md,certificates.md,create.md,list.md,retrieve.md,reveal_token.md,rotate_token.md}
+claude/platform.claude.com/docs/en/api/ruby/beta/tunnels/certificates:{archive.md,create.md,list.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/ruby/beta/user_profiles:{create.md,create_enrollment_url.md,list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/ruby/beta/vaults:{archive.md,create.md,credentials.md,delete.md,list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/ruby/beta/vaults/credentials:{archive.md,create.md,delete.md,list.md,mcp_oauth_validate.md,retrieve.md,update.md}
@@ -298,7 +314,7 @@ claude/platform.claude.com/docs/en/api/ruby/messages:{batches.md,count_tokens.md
 claude/platform.claude.com/docs/en/api/ruby/messages/batches:{cancel.md,create.md,delete.md,list.md,results.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/ruby/models:{list.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/typescript:{beta.md,completions.md,messages.md,models.md}
-claude/platform.claude.com/docs/en/api/typescript/beta:{agents.md,deployment_runs.md,deployments.md,environments.md,files.md,memory_stores.md,messages.md,models.md,sessions.md,skills.md,user_profiles.md,vaults.md,webhooks.md}
+claude/platform.claude.com/docs/en/api/typescript/beta:{agents.md,deployment_runs.md,deployments.md,environments.md,files.md,memory_stores.md,messages.md,models.md,sessions.md,skills.md,tunnels.md,user_profiles.md,vaults.md,webhooks.md}
 claude/platform.claude.com/docs/en/api/typescript/beta/agents:{archive.md,create.md,list.md,retrieve.md,update.md,versions.md}
 claude/platform.claude.com/docs/en/api/typescript/beta/agents/versions:{list.md}
 claude/platform.claude.com/docs/en/api/typescript/beta/deployment_runs:{list.md,retrieve.md}
@@ -319,6 +335,8 @@ claude/platform.claude.com/docs/en/api/typescript/beta/sessions/threads:{archive
 claude/platform.claude.com/docs/en/api/typescript/beta/sessions/threads/events:{list.md,stream.md}
 claude/platform.claude.com/docs/en/api/typescript/beta/skills:{create.md,delete.md,list.md,retrieve.md,versions.md}
 claude/platform.claude.com/docs/en/api/typescript/beta/skills/versions:{create.md,delete.md,download.md,list.md,retrieve.md}
+claude/platform.claude.com/docs/en/api/typescript/beta/tunnels:{archive.md,certificates.md,create.md,list.md,retrieve.md,reveal_token.md,rotate_token.md}
+claude/platform.claude.com/docs/en/api/typescript/beta/tunnels/certificates:{archive.md,create.md,list.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/typescript/beta/user_profiles:{create.md,create_enrollment_url.md,list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/typescript/beta/vaults:{archive.md,create.md,credentials.md,delete.md,list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/typescript/beta/vaults/credentials:{archive.md,create.md,delete.md,list.md,mcp_oauth_validate.md,retrieve.md,update.md}
@@ -327,7 +345,7 @@ claude/platform.claude.com/docs/en/api/typescript/messages:{batches.md,count_tok
 claude/platform.claude.com/docs/en/api/typescript/messages/batches:{cancel.md,create.md,delete.md,list.md,results.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/typescript/models:{list.md,retrieve.md}
 claude/platform.claude.com/docs/en/build-with-claude:{adaptive-thinking.md,batch-processing.md,cache-diagnostics.md,citations.md,claude-in-amazon-bedrock.md,claude-in-microsoft-foundry.md,claude-on-amazon-bedrock-legacy.md,claude-on-vertex-ai.md,claude-platform-on-aws.md,compaction.md,context-editing.md,context-windows.md,effort.md,embeddings.md,extended-thinking.md,fallback-credit.md,fast-mode.md,files.md,handling-stop-reasons.md,mid-conversation-effort-example.md,mid-conversation-system-messages.md,multilingual-support.md,overview.md,pdf-support.md,prompt-caching.md,refusals-and-fallback.md,search-results.md,skills-guide.md,streaming.md,structured-outputs.md,task-budgets.md,token-counting.md,vision-coordinates.md,vision.md,working-with-messages.md}
-claude/platform.claude.com/docs/en/build-with-claude/prompt-engineering:{claude-prompting-best-practices.md,overview.md,prompting-claude-fable-5.md,prompting-claude-opus-4-8.md,prompting-tools.md}
+claude/platform.claude.com/docs/en/build-with-claude/prompt-engineering:{claude-prompting-best-practices.md,overview.md,prompting-claude-fable-5.md,prompting-claude-opus-4-8.md,prompting-claude-sonnet-5.md,prompting-tools.md}
 claude/platform.claude.com/docs/en/cli-sdks-libraries:{middleware.md,overview.md}
 claude/platform.claude.com/docs/en/cli-sdks-libraries/cli:{authentication.md,quickstart.md,scripting.md,using.md}
 claude/platform.claude.com/docs/en/cli-sdks-libraries/libraries:{apple-foundation-models.md,openai-sdk.md}

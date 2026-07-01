@@ -10,6 +10,15 @@ Updates to the Claude Platform, including the Claude API, client SDKs, and the C
   For updates to Claude Code, see the [complete CHANGELOG.md](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) in the `claude-code` repository.
 </Tip>
 
+### June 30, 2026
+
+* We've launched **Claude Sonnet 5** (`claude-sonnet-5`), the next generation of our Sonnet model family, at introductory pricing of $2 / $10 per MTok through August 31, 2026 (standard $3 / $15 thereafter). Claude Sonnet 5 supports a [1M token context window](/docs/en/build-with-claude/context-windows), 128k max output tokens, and the same set of tools and platform features as Claude Sonnet 4.6, except [Priority Tier](/docs/en/api/service-tiers#supported-models), which is not available on Claude Sonnet 5. Three behavior changes apply when migrating: [adaptive thinking](/docs/en/build-with-claude/adaptive-thinking) is now on by default; manual extended thinking (`thinking: {type: "enabled", budget_tokens: N}`) is removed and returns a 400 error (it was deprecated on Sonnet 4.6); and setting sampling parameters (`temperature`, `top_p`, `top_k`) to non-default values returns a 400 error. Claude Sonnet 5 also uses a new tokenizer that produces approximately 30% more tokens for the same text. See [What's new in Claude Sonnet 5](/docs/en/about-claude/models/whats-new-sonnet-5) for details and migration guidance.
+* Claude Managed Agents session event streams now support [event deltas](/docs/en/managed-agents/events-and-streaming#event-deltas). Opt in with the `event_deltas[]` query parameter on `GET /v1/sessions/{session_id}/events/stream`. The `event_start` and `event_delta` events preview an agent message's text as it's generated, before the complete `agent.message` event arrives.
+* [Listing sessions](/docs/en/managed-agents/session-operations#listing-sessions) for Claude Managed Agents now supports backward pagination. `GET /v1/sessions` returns a `prev_page` cursor alongside `next_page`; pass it as the `page` parameter to return to the previous page. See [Pagination](/docs/en/api/overview#pagination).
+* When creating a Claude Managed Agents session, you can now [override the agent's configuration for that session](/docs/en/managed-agents/sessions#override-agent-configuration-for-a-session). Pass `agent` with `type: "agent_with_overrides"` to replace the model, system prompt, tools, MCP servers, or skills for a single session. The agent itself is unchanged.
+* Claude Managed Agents vaults now support an `injection_location` setting on [environment variable credentials](/docs/en/managed-agents/vaults#add-a-credential) (the Environment variable tab). It controls whether the credential's value is substituted, at egress, into the agent's outbound request headers, the request body, or both.
+* Webhooks for Claude Managed Agents now cover the agent, deployment, and deployment run lifecycle. You can react to a newly published agent version, a paused deployment, or a failed scheduled run without polling. See the Agent events, Deployment events, and Deployment run events tabs in [Subscribe to webhooks](/docs/en/managed-agents/webhooks#supported-event-types).
+
 ### June 29, 2026
 
 * We've removed [fast mode](/docs/en/build-with-claude/fast-mode) for Claude Opus 4.6. Requests to `claude-opus-4-6` with `speed: "fast"` no longer run at fast speed or premium pricing: they run at standard speed, are billed at standard rates, and do not return an error. The response's `usage.speed` field reports the speed used. To continue using fast mode, migrate to [Claude Opus 4.8](/docs/en/about-claude/models/migration-guide). Read more in [Fast mode](/docs/en/build-with-claude/fast-mode#supported-models).
@@ -21,6 +30,10 @@ Updates to the Claude Platform, including the Claude API, client SDKs, and the C
 ### June 25, 2026
 
 * We've deprecated [fast mode](/docs/en/build-with-claude/fast-mode) for Claude Opus 4.7, with removal on July 24, 2026. After removal, requests to `claude-opus-4-7` with `speed: "fast"` will return an error. Migrate to fast mode for Claude Opus 4.8. Read more in [Fast mode](/docs/en/build-with-claude/fast-mode#supported-models).
+
+### June 22, 2026
+
+* **MCP tunnels** (research preview): the management API moved from `/v1/organizations/tunnels` on the Admin API to `/v1/tunnels` on the Claude API. The new surface uses the `anthropic-beta: mcp-tunnels-2026-06-22` header and the `workspace:manage_tunnels` WIF scope. The previous surface remains available during a migration window. See the [Tunnels API reference](/docs/en/api/beta/tunnels).
 
 ### June 18, 2026
 
@@ -205,7 +218,7 @@ Updates to the Claude Platform, including the Claude API, client SDKs, and the C
 
 ### February 7, 2026
 
-* We've launched [fast mode](/docs/en/build-with-claude/fast-mode) in research preview for Opus 4.6, providing significantly faster output token generation via the `speed` parameter. Fast mode is up to 2.5x as fast at premium pricing. Interested customers should join the [waitlist](https://claude.com/fast-mode).
+* We've launched [fast mode](/docs/en/build-with-claude/fast-mode) in research preview for Opus 4.6, providing significantly faster output token generation through the `speed` parameter. Fast mode is up to 2.5x as fast at premium pricing. Interested customers should join the [waitlist](https://claude.com/fast-mode).
 
 ### February 5, 2026
 
@@ -222,7 +235,7 @@ Updates to the Claude Platform, including the Claude API, client SDKs, and the C
 
 ### January 12, 2026
 
-* `console.anthropic.com` now redirects to `platform.claude.com`. The Claude Console has moved to its new home as part of our Claude brand consolidation. Existing bookmarks and links will continue working via automatic redirect. For more details, see the [September 16, 2025 announcement](#september-16-2025).
+* `console.anthropic.com` now redirects to `platform.claude.com`. The Claude Console has moved to its new home as part of our Claude brand consolidation. Existing bookmarks and links will continue working through an automatic redirect. For more details, see the [September 16, 2025 announcement](#september-16-2025).
 
 ### January 5, 2026
 
@@ -271,7 +284,7 @@ Updates to the Claude Platform, including the Claude API, client SDKs, and the C
 * We've launched [Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills) (`skills-2025-10-02` beta), a new way to extend Claude's capabilities. Skills are organized folders of instructions, scripts, and resources that Claude loads dynamically to perform specialized tasks. The initial release includes:
 
   * **Anthropic-managed Skills**: Pre-built Skills for working with PowerPoint (.pptx), Excel (.xlsx), Word (.docx), and PDF files
-  * **Custom Skills**: Upload your own Skills via the Skills API (`/v1/skills` endpoints) to package domain expertise and organizational workflows
+  * **Custom Skills**: Upload your own Skills through the Skills API (`/v1/skills` endpoints) to package domain expertise and organizational workflows
   * Skills require the [code execution tool](/docs/en/agents-and-tools/tool-use/code-execution-tool) to be enabled
   * Learn more in [Agent Skills](/docs/en/agents-and-tools/agent-skills/overview) and [API reference](/docs/en/api/skills/create-skill)
 
@@ -429,7 +442,7 @@ Updates to the Claude Platform, including the Claude API, client SDKs, and the C
 
 ### February 27th, 2025
 
-* We've added URL source blocks for images and PDFs in the Messages API. You can now reference images and PDFs directly via URL instead of having to base64-encode them. Learn more in [Vision](/docs/en/build-with-claude/vision) and [PDF support](/docs/en/build-with-claude/pdf-support).
+* We've added URL source blocks for images and PDFs in the Messages API. You can now reference images and PDFs directly through a URL instead of having to base64-encode them. Learn more in [Vision](/docs/en/build-with-claude/vision) and [PDF support](/docs/en/build-with-claude/pdf-support).
 * We've added support for a `none` option to the `tool_choice` parameter in the Messages API that prevents Claude from calling any tools. Additionally, you're no longer required to provide any `tools` when including `tool_use` and `tool_result` blocks.
 * We've launched an OpenAI-compatible API endpoint, allowing you to test Claude models by changing just your API key, base URL, and model name in existing OpenAI integrations. This compatibility layer supports core chat completions functionality. Learn more in [OpenAI SDK compatibility](/docs/en/cli-sdks-libraries/libraries/openai-sdk).
 

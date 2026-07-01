@@ -96,8 +96,9 @@ Some beta features are scoped to specific endpoints rather than individual reque
 | Endpoints                                        | Beta header                 |
 | ------------------------------------------------ | --------------------------- |
 | `/v1/agents`, `/v1/sessions`, `/v1/environments` | `managed-agents-2026-04-01` |
+| `/v1/tunnels`                                    | `mcp-tunnels-2026-06-22`    |
 
-See the [Managed Agents overview](/docs/en/managed-agents/overview) for details.
+See the [Managed Agents overview](/docs/en/managed-agents/overview) and the [MCP tunnels reference](/docs/en/agents-and-tools/mcp-tunnels/reference#tunnels-api) for details.
 
 ### Version naming conventions
 

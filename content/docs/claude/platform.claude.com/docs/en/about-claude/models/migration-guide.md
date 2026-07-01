@@ -1787,6 +1787,550 @@ model = "claude-opus-4-7"  # After
 
 ***
 
+## Migrating from Claude Sonnet 4.6 to Claude Sonnet 5
+
+Claude Sonnet 5 offers the best combination of speed and intelligence in the Claude model family. It builds on Claude Sonnet 4.6.
+
+Claude Sonnet 5 is a drop-in upgrade for Claude Sonnet 4.6 at the same `$3 / $15` per MTok pricing (introductory $2 / $10 per MTok through August 31, 2026; see [Pricing](/docs/en/about-claude/pricing#claude-sonnet-5-introductory-pricing)). There are two breaking API changes for code already running on Claude Sonnet 4.6: manual extended thinking (`thinking: {type: "enabled", budget_tokens: N}`) and sampling parameters (`temperature`, `top_p`, `top_k`) set to non-default values are no longer accepted and return a 400 error. Use [adaptive thinking](/docs/en/build-with-claude/adaptive-thinking) with the [effort parameter](/docs/en/build-with-claude/effort) instead. Claude Sonnet 5 supports the same set of features as Claude Sonnet 4.6, including the [1M token context window](/docs/en/build-with-claude/context-windows), [adaptive thinking](/docs/en/build-with-claude/adaptive-thinking), [prompt caching](/docs/en/build-with-claude/prompt-caching), [batch processing](/docs/en/build-with-claude/batch-processing), the [Files API](/docs/en/build-with-claude/files), [PDF support](/docs/en/build-with-claude/pdf-support), [vision](/docs/en/build-with-claude/vision), and the full set of server-side and client-side [tools](/docs/en/agents-and-tools/tool-use/overview). [Priority Tier](/docs/en/api/service-tiers#supported-models) is not available on Claude Sonnet 5. Claude Sonnet 5 also uses a new tokenizer.
+
+<Note>
+  If your code is on Claude Sonnet 4.5 or earlier, also apply the [Claude Sonnet 4.6 migration steps](#migrating-to-claude-sonnet-4-6) before upgrading to Claude Sonnet 5. Those steps include breaking changes (assistant message prefilling rejected, tool parameter JSON escaping differences) that the Sonnet 5 upgrade alone does not cover.
+</Note>
+
+### Update your model name
+
+```python
+# Sonnet migration
+model = "claude-sonnet-4-6"  # Before
+model = "claude-sonnet-5"  # After
+```
+
+### What changed
+
+Items 4 and 5 in the following list are breaking changes. `max_tokens` remains a hard limit on total output (thinking plus response text), so revisit it for workloads that ran without thinking on Claude Sonnet 4.6.
+
+1. **New tokenizer:** Claude Sonnet 5 uses a new tokenizer. The same input text produces approximately 30% more tokens than on Claude Sonnet 4.6. Requests, responses, and streaming events keep the same shape, and no code changes are required, but anything you measure or budget in tokens shifts: `usage` fields and [token counting](/docs/en/build-with-claude/token-counting) results for the same text are higher, the 1M token context window holds less text, and a `max_tokens` limit tuned for Claude Sonnet 4.6 may truncate equivalent output. Per-token pricing is unchanged, so the cost of an equivalent request can differ. Re-run token counting against Claude Sonnet 5 rather than reusing counts measured against earlier models.
+
+2. **128k max output tokens (unchanged):** Claude Sonnet 5 supports up to 128k output tokens, the same as Claude Sonnet 4.6. Existing `max_tokens` values remain valid. Account for the new tokenizer when sizing them.
+
+3. **Assistant message prefilling (unchanged):** Prefilling the assistant message returns a `400` error on Claude Sonnet 5, the same as on Claude Sonnet 4.6. If you removed prefill when migrating to Claude Sonnet 4.6, no further changes are needed. Use [structured outputs](/docs/en/build-with-claude/structured-outputs), system prompt instructions, or `output_config.format` instead.
+
+4. **Adaptive thinking on by default:** On Claude Sonnet 4.6, requests without a `thinking` field run without thinking; on Claude Sonnet 5, the same requests run with [adaptive thinking](/docs/en/build-with-claude/adaptive-thinking). To turn thinking off, pass `thinking: {type: "disabled"}`. Manual extended thinking (`thinking: {type: "enabled", budget_tokens: N}`) is not supported and returns a 400 error. Use the [effort parameter](/docs/en/build-with-claude/effort) (default `high`) to control thinking depth.
+
+   <Tabs>
+     <Tab title="Claude Sonnet 5">
+       <Note>
+         Adaptive thinking is on by default for Claude Sonnet 5. The `thinking` field is shown explicitly here to set `display: "summarized"`; if you omit `thinking`, Claude Sonnet 5 omits thinking content from the response by default. For per-model defaults, see [Adaptive thinking](/docs/en/build-with-claude/adaptive-thinking).
+       </Note>
+
+       <CodeGroup>
+         ```bash cURL
+         curl https://api.anthropic.com/v1/messages \
+              --header "x-api-key: $ANTHROPIC_API_KEY" \
+              --header "anthropic-version: 2023-06-01" \
+              --header "content-type: application/json" \
+              --data \
+         '{
+           "model": "claude-sonnet-5",
+           "max_tokens": 16000,
+           "thinking": {
+             "type": "adaptive",
+             "display": "summarized"
+           },
+           "output_config": {
+             "effort": "high"
+           },
+           "messages": [
+             {
+               "role": "user",
+               "content": "Are there an infinite number of prime numbers such that n mod 4 == 3?"
+             }
+           ]
+         }'
+         ```
+
+         ```bash CLI
+         ant messages create \
+           --transform content --format yaml <<'YAML'
+         model: claude-sonnet-5
+         max_tokens: 16000
+         thinking:
+           type: adaptive
+           display: summarized
+         output_config:
+           effort: high
+         messages:
+           - role: user
+             content: Are there an infinite number of prime numbers such that n mod 4 == 3?
+         YAML
+         ```
+
+         ```python Python
+         client = anthropic.Anthropic()
+
+         response = client.messages.create(
+             model="claude-sonnet-5",
+             max_tokens=16000,
+             thinking={"type": "adaptive", "display": "summarized"},
+             output_config={"effort": "high"},
+             messages=[
+                 {
+                     "role": "user",
+                     "content": "Are there an infinite number of prime numbers such that n mod 4 == 3?",
+                 }
+             ],
+         )
+
+         # The response contains summarized thinking blocks and text blocks
+         for block in response.content:
+             match block.type:
+                 case "thinking":
+                     print(f"\nThinking summary: {block.thinking}")
+                 case "text":
+                     print(f"\nResponse: {block.text}")
+         ```
+
+         ```typescript TypeScript
+         const client = new Anthropic();
+
+         const response = await client.messages.create({
+           model: "claude-sonnet-5",
+           max_tokens: 16000,
+           thinking: {
+             type: "adaptive",
+             display: "summarized"
+           },
+           output_config: {
+             effort: "high"
+           },
+           messages: [
+             {
+               role: "user",
+               content: "Are there an infinite number of prime numbers such that n mod 4 == 3?"
+             }
+           ]
+         });
+
+         // The response contains summarized thinking blocks and text blocks
+         for (const block of response.content) {
+           if (block.type === "thinking") {
+             console.log(`\nThinking summary: ${block.thinking}`);
+           } else if (block.type === "text") {
+             console.log(`\nResponse: ${block.text}`);
+           }
+         }
+         ```
+
+         ```csharp C#
+         AnthropicClient client = new();
+
+         var response = await client.Messages.Create(new()
+         {
+             Model = Model.ClaudeSonnet5,
+             MaxTokens = 16000,
+             Thinking = new ThinkingConfigAdaptive { Display = Display.Summarized },
+             OutputConfig = new OutputConfig { Effort = Effort.High },
+             Messages =
+             [
+                 new()
+                 {
+                     Role = Role.User,
+                     Content = "Are there an infinite number of prime numbers such that n mod 4 == 3?",
+                 },
+             ],
+         });
+
+         // The response contains summarized thinking blocks and text blocks
+         foreach (var block in response.Content)
+         {
+             if (block.TryPickThinking(out var thinking))
+             {
+                 Console.WriteLine($"\nThinking summary: {thinking.Thinking}");
+             }
+             else if (block.TryPickText(out var text))
+             {
+                 Console.WriteLine($"\nResponse: {text.Text}");
+             }
+         }
+         ```
+
+         ```go Go
+         client := anthropic.NewClient()
+
+         response, err := client.Messages.New(context.Background(), anthropic.MessageNewParams{
+         	Model:     anthropic.ModelClaudeSonnet5,
+         	MaxTokens: 16000,
+         	Thinking: anthropic.ThinkingConfigParamUnion{
+         		OfAdaptive: &anthropic.ThinkingConfigAdaptiveParam{
+         			Display: anthropic.ThinkingConfigAdaptiveDisplaySummarized,
+         		},
+         	},
+         	OutputConfig: anthropic.OutputConfigParam{
+         		Effort: anthropic.OutputConfigEffortHigh,
+         	},
+         	Messages: []anthropic.MessageParam{
+         		anthropic.NewUserMessage(anthropic.NewTextBlock("Are there an infinite number of prime numbers such that n mod 4 == 3?")),
+         	},
+         })
+         if err != nil {
+         	log.Fatal(err)
+         }
+
+         // The response contains summarized thinking blocks and text blocks
+         for _, block := range response.Content {
+         	switch block := block.AsAny().(type) {
+         	case anthropic.ThinkingBlock:
+         		fmt.Printf("\nThinking summary: %s", block.Thinking)
+         	case anthropic.TextBlock:
+         		fmt.Printf("\nResponse: %s", block.Text)
+         	}
+         }
+         ```
+
+         ```java Java
+         import com.anthropic.client.okhttp.AnthropicOkHttpClient;
+         import com.anthropic.models.messages.MessageCreateParams;
+         import com.anthropic.models.messages.Model;
+         import com.anthropic.models.messages.OutputConfig;
+         import com.anthropic.models.messages.ThinkingConfigAdaptive;
+
+         void main() {
+             var client = AnthropicOkHttpClient.fromEnv();
+
+             var params = MessageCreateParams.builder()
+                 .model(Model.CLAUDE_SONNET_5)
+                 .maxTokens(16_000)
+                 .thinking(ThinkingConfigAdaptive.builder()
+                     .display(ThinkingConfigAdaptive.Display.SUMMARIZED)
+                     .build())
+                 .outputConfig(OutputConfig.builder()
+                     .effort(OutputConfig.Effort.HIGH)
+                     .build())
+                 .addUserMessage("Are there an infinite number of prime numbers such that n mod 4 == 3?")
+                 .build();
+
+             var response = client.messages().create(params);
+
+             // The response contains summarized thinking blocks and text blocks
+             for (var block : response.content()) {
+                 block.thinking().ifPresent(thinkingBlock ->
+                     IO.println("\nThinking summary: " + thinkingBlock.thinking())
+                 );
+                 block.text().ifPresent(textBlock ->
+                     IO.println("\nResponse: " + textBlock.text())
+                 );
+             }
+         }
+         ```
+
+         ```php PHP
+         $client = new Client();
+
+         $response = $client->messages->create(
+             model: 'claude-sonnet-5',
+             maxTokens: 16000,
+             thinking: ['type' => 'adaptive', 'display' => 'summarized'],
+             outputConfig: ['effort' => 'high'],
+             messages: [
+                 [
+                     'role' => 'user',
+                     'content' => 'Are there an infinite number of prime numbers such that n mod 4 == 3?',
+                 ],
+             ],
+         );
+
+         // The response contains summarized thinking blocks and text blocks
+         foreach ($response->content as $block) {
+             echo match ($block->type) {
+                 'thinking' => "\nThinking summary: {$block->thinking}",
+                 'text' => "\nResponse: {$block->text}",
+                 default => '',
+             };
+         }
+         ```
+
+         ```ruby Ruby
+         client = Anthropic::Client.new
+
+         response = client.messages.create(
+           model: "claude-sonnet-5",
+           max_tokens: 16_000,
+           thinking: {type: :adaptive, display: :summarized},
+           output_config: {effort: :high},
+           messages: [
+             {
+               role: :user,
+               content: "Are there an infinite number of prime numbers such that n mod 4 == 3?"
+             }
+           ]
+         )
+
+         # The response contains summarized thinking blocks and text blocks
+         response.content.each do |block|
+           case block
+           in {type: :thinking, thinking:}
+             puts "\nThinking summary: #{thinking}"
+           in {type: :text, text:}
+             puts "\nResponse: #{text}"
+           else
+           end
+         end
+         ```
+       </CodeGroup>
+     </Tab>
+
+     <Tab title="Claude Sonnet 4.6">
+       <CodeGroup>
+         ```bash cURL
+         curl https://api.anthropic.com/v1/messages \
+              --header "x-api-key: $ANTHROPIC_API_KEY" \
+              --header "anthropic-version: 2023-06-01" \
+              --header "content-type: application/json" \
+              --data \
+         '{
+           "model": "claude-sonnet-4-6",
+           "max_tokens": 16000,
+           "thinking": {
+             "type": "enabled",
+             "budget_tokens": 10000
+           },
+           "messages": [
+             {
+               "role": "user",
+               "content": "Are there an infinite number of prime numbers such that n mod 4 == 3?"
+             }
+           ]
+         }'
+         ```
+
+         ```bash CLI
+         ant messages create \
+           --transform content --format yaml <<'YAML'
+         model: claude-sonnet-4-6
+         max_tokens: 16000
+         thinking:
+           type: enabled
+           budget_tokens: 10000
+         messages:
+           - role: user
+             content: Are there an infinite number of prime numbers such that n mod 4 == 3?
+         YAML
+         ```
+
+         ```python Python
+         client = anthropic.Anthropic()
+
+         response = client.messages.create(
+             model="claude-sonnet-4-6",
+             max_tokens=16000,
+             thinking={"type": "enabled", "budget_tokens": 10000},
+             messages=[
+                 {
+                     "role": "user",
+                     "content": "Are there an infinite number of prime numbers such that n mod 4 == 3?",
+                 }
+             ],
+         )
+
+         # The response contains summarized thinking blocks and text blocks
+         for block in response.content:
+             match block.type:
+                 case "thinking":
+                     print(f"\nThinking summary: {block.thinking}")
+                 case "text":
+                     print(f"\nResponse: {block.text}")
+         ```
+
+         ```typescript TypeScript
+         const client = new Anthropic();
+
+         const response = await client.messages.create({
+           model: "claude-sonnet-4-6",
+           max_tokens: 16000,
+           thinking: {
+             type: "enabled",
+             budget_tokens: 10000,
+           },
+           messages: [
+             {
+               role: "user",
+               content: "Are there an infinite number of prime numbers such that n mod 4 == 3?",
+             },
+           ],
+         });
+
+         // The response contains summarized thinking blocks and text blocks
+         for (const block of response.content) {
+           if (block.type === "thinking") {
+             console.log(`\nThinking summary: ${block.thinking}`);
+           } else if (block.type === "text") {
+             console.log(`\nResponse: ${block.text}`);
+           }
+         }
+         ```
+
+         ```csharp C#
+         AnthropicClient client = new();
+
+         var response = await client.Messages.Create(new()
+         {
+             Model = Model.ClaudeSonnet4_6,
+             MaxTokens = 16000,
+             Thinking = new ThinkingConfigEnabled(budgetTokens: 10000),
+             Messages =
+             [
+                 new()
+                 {
+                     Role = Role.User,
+                     Content = "Are there an infinite number of prime numbers such that n mod 4 == 3?",
+                 },
+             ],
+         });
+
+         // The response contains summarized thinking blocks and text blocks
+         foreach (var block in response.Content)
+         {
+             if (block.TryPickThinking(out var thinking))
+             {
+                 Console.WriteLine($"\nThinking summary: {thinking.Thinking}");
+             }
+             else if (block.TryPickText(out var text))
+             {
+                 Console.WriteLine($"\nResponse: {text.Text}");
+             }
+         }
+         ```
+
+         ```go Go
+         client := anthropic.NewClient()
+
+         response, err := client.Messages.New(context.Background(), anthropic.MessageNewParams{
+         	Model:     anthropic.ModelClaudeSonnet4_6,
+         	MaxTokens: 16000,
+         	Thinking:  anthropic.ThinkingConfigParamOfEnabled(10000),
+         	Messages: []anthropic.MessageParam{
+         		anthropic.NewUserMessage(anthropic.NewTextBlock("Are there an infinite number of prime numbers such that n mod 4 == 3?")),
+         	},
+         })
+         if err != nil {
+         	log.Fatal(err)
+         }
+
+         // The response contains summarized thinking blocks and text blocks
+         for _, block := range response.Content {
+         	switch block := block.AsAny().(type) {
+         	case anthropic.ThinkingBlock:
+         		fmt.Printf("\nThinking summary: %s", block.Thinking)
+         	case anthropic.TextBlock:
+         		fmt.Printf("\nResponse: %s", block.Text)
+         	}
+         }
+         ```
+
+         ```java Java
+         import com.anthropic.client.okhttp.AnthropicOkHttpClient;
+         import com.anthropic.models.messages.MessageCreateParams;
+         import com.anthropic.models.messages.Model;
+
+         void main() {
+             var client = AnthropicOkHttpClient.fromEnv();
+
+             var params = MessageCreateParams.builder()
+                 .model(Model.CLAUDE_SONNET_4_6)
+                 .maxTokens(16_000)
+                 .enabledThinking(10_000)
+                 .addUserMessage("Are there an infinite number of prime numbers such that n mod 4 == 3?")
+                 .build();
+
+             var response = client.messages().create(params);
+
+             // The response contains summarized thinking blocks and text blocks
+             for (var block : response.content()) {
+                 block.thinking().ifPresent(thinkingBlock ->
+                     IO.println("\nThinking summary: " + thinkingBlock.thinking())
+                 );
+                 block.text().ifPresent(textBlock ->
+                     IO.println("\nResponse: " + textBlock.text())
+                 );
+             }
+         }
+         ```
+
+         ```php PHP
+         $client = new Client();
+
+         $response = $client->messages->create(
+             model: 'claude-sonnet-4-6',
+             maxTokens: 16000,
+             thinking: ['type' => 'enabled', 'budget_tokens' => 10000],
+             messages: [
+                 [
+                     'role' => 'user',
+                     'content' => 'Are there an infinite number of prime numbers such that n mod 4 == 3?',
+                 ],
+             ],
+         );
+
+         // The response contains summarized thinking blocks and text blocks
+         foreach ($response->content as $block) {
+             echo match ($block->type) {
+                 'thinking' => "\nThinking summary: {$block->thinking}",
+                 'text' => "\nResponse: {$block->text}",
+                 default => '',
+             };
+         }
+         ```
+
+         ```ruby Ruby
+         client = Anthropic::Client.new
+
+         response = client.messages.create(
+           model: "claude-sonnet-4-6",
+           max_tokens: 16_000,
+           thinking: {
+             type: :enabled,
+             budget_tokens: 10_000
+           },
+           messages: [
+             {
+               role: :user,
+               content: "Are there an infinite number of prime numbers such that n mod 4 == 3?"
+             }
+           ]
+         )
+
+         # The response contains summarized thinking blocks and text blocks
+         response.content.each do |block|
+           case block
+           in {type: :thinking, thinking:}
+             puts "\nThinking summary: #{thinking}"
+           in {type: :text, text:}
+             puts "\nResponse: #{text}"
+           else
+           end
+         end
+         ```
+       </CodeGroup>
+     </Tab>
+   </Tabs>
+
+5. **Sampling parameters removed:** Sampling parameters (`temperature`, `top_p`, `top_k`) set to a non-default value are not accepted and return a 400 error.
+
+6. **Cybersecurity safeguards:** Claude Sonnet 5 is the first Sonnet-tier model with real-time cybersecurity safeguards. Requests that involve prohibited or high-risk cybersecurity topics may be refused. Refusals return as a successful HTTP 200 response with `stop_reason: "refusal"`, not an error. See [Safeguards, warnings, and appeals](https://support.claude.com/en/articles/8241253-safeguards-warnings-and-appeals) for background.
+
+### Migration checklist
+
+* Update model name from `claude-sonnet-4-6` to `claude-sonnet-5`.
+* Re-run [token counting](/docs/en/build-with-claude/token-counting) against Claude Sonnet 5. The new tokenizer produces approximately 30% more tokens for the same text, which can change per-request cost even though per-token pricing is unchanged.
+* Revisit `max_tokens` limits sized close to your expected output length, and raise them up to the 128k maximum (unchanged from Claude Sonnet 4.6) where useful.
+* Remove `thinking: {type: "enabled", budget_tokens: N}` configuration (returns a 400 error). Adaptive thinking is on by default; pass `{type: "disabled"}` to turn it off, or use the [effort parameter](/docs/en/build-with-claude/effort) to control depth.
+* Remove `temperature`, `top_p`, and `top_k` parameters set to non-default values (they return a 400 error on Claude Sonnet 5).
+* Add handling for `stop_reason: "refusal"` if your workload may touch cybersecurity topics.
+* Re-baseline cost on your typical workload before production deployment.
+* Review `max_tokens` for workloads that previously ran without thinking.
+
+***
+
 ## Migrating to Claude Sonnet 4.6
 
 Claude Sonnet 4.6 combines strong intelligence with fast performance, featuring improved agentic search capabilities and free code execution when used with web search or web fetch. It is ideal for everyday coding, analysis, and content tasks.
