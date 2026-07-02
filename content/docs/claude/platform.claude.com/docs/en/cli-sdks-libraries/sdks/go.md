@@ -55,7 +55,11 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", message.Content)
+	for _, block := range message.Content {
+		if textBlock, ok := block.AsAny().(anthropic.TextBlock); ok {
+			fmt.Println(textBlock.Text)
+		}
+	}
 }
 ```
 

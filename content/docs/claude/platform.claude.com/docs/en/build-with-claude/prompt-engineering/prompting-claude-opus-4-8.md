@@ -6,7 +6,7 @@ Behavioral differences and prompting patterns for Claude Opus 4.8, covering verb
 
 This guide covers the prompting patterns specific to Claude Opus 4.8. For the model's capabilities and API changes, see [What's new in Claude Opus 4.8](/docs/en/about-claude/models/whats-new-claude-4-8). For techniques that apply across all current Claude models, see [Prompting best practices](/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices).
 
-Claude Opus 4.8 has particular strengths in long-horizon agentic work, knowledge work, vision, and memory tasks. It performs well out of the box on existing Claude Opus 4.7 prompts. The patterns below cover the behaviors that most often require tuning.
+Claude Opus 4.8 has particular strengths in long-horizon agentic work, knowledge work, vision, and memory tasks. It performs well out of the box on existing Claude Opus 4.7 prompts. The following patterns cover the behaviors that most often require tuning.
 
 <Note>
   For API parameter changes when migrating from Claude Opus 4.7 (sampling parameters, effort default, 1M context window default, mid-conversation system messages, and refusal stop details), see the [migration guide](/docs/en/about-claude/models/migration-guide#migrating-from-claude-opus-47).
@@ -90,7 +90,7 @@ Spawn multiple subagents in the same turn when fanning out across items or readi
 
 ## Design and frontend defaults
 
-Claude Opus 4.8 has strong design instincts, with a consistent default house style: warm cream/off-white backgrounds (\~`#F4F1EA`), serif display type (Georgia, Fraunces, Playfair), italic word-accents, and a terracotta/amber accent. This reads well for editorial, hospitality, and portfolio briefs, but will feel off for dashboards, dev tools, fintech, healthcare, or enterprise apps. The default appears in slide decks as well as web UIs.
+Claude Opus 4.8 has strong design instincts, with a consistent default house style: warm cream/off-white backgrounds (\~`#F4F1EA`), serif display type (Georgia, Fraunces, Playfair), italic word-accents, and a terracotta/amber accent. This reads well for editorial, hospitality, and portfolio briefs, but will feel off for dashboards, dev tools, fintech, healthcare, or enterprise apps. The default appears in slide decks and web UIs.
 
 This default is persistent. Generic instructions ("don't use cream," "make it clean and minimal") tend to shift the model to a different fixed palette rather than producing variety. Two approaches work reliably:
 
@@ -125,7 +125,7 @@ Color palette should stay within this range:
 Before building, propose 4 distinct visual directions tailored to this brief (each as: bg hex / accent hex / typeface — one-line rationale). Ask the user to pick one, then implement only that direction.
 ```
 
-Additionally, Claude Opus 4.8 requires less frontend design prompting than previous models to avoid generic patterns that users call the "AI slop" aesthetic. With earlier models, Anthropic recommended a lengthier prompt snippet in the [frontend-design skill](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md). However, Claude Opus 4.8 generates distinctive, creative frontends with more minimal prompting guidance. This prompt snippet works well with the above prompting advice for variety:
+Additionally, Claude Opus 4.8 requires less frontend design prompting than previous models to avoid generic patterns that users call the "AI slop" aesthetic. With earlier models, Anthropic recommended a lengthier prompt snippet in the [frontend-design skill](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md). However, Claude Opus 4.8 generates distinctive, creative frontends with more minimal prompting guidance. This prompt snippet works well with the preceding prompting advice for variety:
 
 ```text wrap
 <frontend_aesthetics>

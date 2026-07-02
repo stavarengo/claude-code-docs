@@ -15,7 +15,7 @@ Guide for migrating to the latest Claude models from previous Claude versions
   /claude-api migrate this project to claude-opus-4-8
   ```
 
-  The skill applies the model ID swap and, as needed, breaking parameter changes, prefill replacement, and effort calibration for your target model across your codebase, then produces a checklist of items to verify manually. It asks you to confirm the migration scope (entire working directory, a subdirectory, or a specific file list) before editing any files. The skill also detects Amazon Bedrock, Google Cloud, Claude Platform on AWS, and Microsoft Foundry clients and adjusts model ID formats and feature changes for each platform.
+  The skill applies the model ID swap and, as needed, breaking parameter changes, prefill replacement, and effort calibration for your target model across your code base, then produces a checklist of items to verify manually. It asks you to confirm the migration scope (entire working directory, a subdirectory, or a specific file list) before editing any files. The skill also detects Amazon Bedrock, Google Cloud, Claude Platform on AWS, and Microsoft Foundry clients and adjusts model ID formats and feature changes for each platform.
 </Tip>
 
 ## Migrating from Claude Mythos Preview to Claude Mythos 5
@@ -318,7 +318,7 @@ The key changes to check are always-on [adaptive thinking](/docs/en/build-with-c
 
 Claude Fable 5 is priced at $10 per million input tokens and $50 per million output tokens, compared with $5 and $25 for Claude Opus 4.8. See [Claude pricing](/docs/en/about-claude/pricing) for details.
 
-Claude Fable 5 requires 30-day data retention and is not available under zero data retention (ZDR) arrangements; it is designated a Covered Model. A request from an organization whose data retention configuration does not meet this requirement returns a 400 `invalid_request_error`. Organizations with a ZDR arrangement should contact their Anthropic account team to discuss data retention configuration; Claude Opus 4.8 remains available under ZDR. Alternatively, you can configure data retention per workspace; see [Model-specific data retention requirements](/docs/en/manage-claude/api-and-data-retention#model-specific-data-retention-requirements). On Amazon Bedrock, Google Cloud, and Microsoft Foundry, data retention is governed by each platform.
+Claude Fable 5 requires 30-day data retention and is not available under zero data retention (ZDR) arrangements; it is designated a Covered Model. On the Claude API, a request from an organization whose data retention configuration does not meet this requirement returns a 400 `invalid_request_error`. Organizations with a ZDR arrangement should contact their Anthropic account team to discuss data retention configuration; Claude Opus 4.8 remains available under ZDR. Alternatively, you can configure data retention per workspace. The 30-day data retention requirement applies on every platform where Claude Fable 5 is offered; see [Model-specific data retention requirements](/docs/en/manage-claude/api-and-data-retention#model-specific-data-retention-requirements) for per-platform details.
 
 <Note>
   If your code is on Claude Opus 4.7 or earlier, first apply [Migrating from Claude Opus 4.7 to Claude Opus 4.8](#migrating-from-claude-opus-47) and, for models earlier than Claude Opus 4.7, the [Claude Opus 4.7 migration steps](#migrating-to-claude-opus-4-7). Those sections cover breaking changes (sampling parameters rejected, manual extended thinking rejected, prefill removed, new tokenizer) that this section does not repeat.
@@ -641,7 +641,7 @@ The items in this section describe the API and behavior differences worth checki
 
 ### Migration checklist
 
-* If your organization has a zero data retention (ZDR) arrangement, confirm eligibility before migrating. `claude-fable-5` requires 30-day data retention and returns a 400 `invalid_request_error` otherwise. See [Model-specific data retention requirements](/docs/en/manage-claude/api-and-data-retention#model-specific-data-retention-requirements).
+* If your organization has a zero data retention (ZDR) arrangement, confirm eligibility before migrating. `claude-fable-5` requires 30-day data retention and, on the Claude API, returns a 400 `invalid_request_error` otherwise. See [Model-specific data retention requirements](/docs/en/manage-claude/api-and-data-retention#model-specific-data-retention-requirements).
 * Update the model name from `claude-opus-4-8` to `claude-fable-5`.
 * Remove any `thinking: {type: "disabled"}` configuration. Disabling thinking returns an error on `claude-fable-5`, and requests without a `thinking` field run with adaptive thinking.
 * If you removed manual extended thinking and assistant prefills during earlier migrations, no action is needed: both remain unsupported on `claude-fable-5`.
@@ -653,7 +653,7 @@ The items in this section describe the API and behavior differences worth checki
 
 ## Migrating from Claude Opus 4.7 to Claude Opus 4.8
 
-Claude Opus 4.8 is Anthropic's most capable Opus-tier model. It builds on Claude Opus 4.7.
+Claude Opus 4.8 is built for complex agentic coding and enterprise work. It builds on Claude Opus 4.7.
 
 Claude Opus 4.8 should have strong out-of-the-box performance on existing Claude Opus 4.7 prompts and evals. There are no breaking API changes for code already running on Claude Opus 4.7. It supports the same set of features as Claude Opus 4.7, including the [1M token context window](/docs/en/build-with-claude/context-windows), [128k max output tokens](/docs/en/about-claude/models/overview), [adaptive thinking](/docs/en/build-with-claude/adaptive-thinking), [prompt caching](/docs/en/build-with-claude/prompt-caching), [batch processing](/docs/en/build-with-claude/batch-processing), the [Files API](/docs/en/build-with-claude/files), [PDF support](/docs/en/build-with-claude/pdf-support), [vision](/docs/en/build-with-claude/vision), and the full set of server-side and client-side [tools](/docs/en/agents-and-tools/tool-use/overview). It also adds [mid-conversation system messages](/docs/en/about-claude/models/whats-new-claude-4-8#mid-conversation-system-messages) and publicly documents [refusal stop details](/docs/en/about-claude/models/whats-new-claude-4-8#refusal-stop-details).
 
@@ -1230,7 +1230,7 @@ These are not required but will improve your experience:
 
 ## Migrating to Claude Opus 4.7 from Opus 4.5 or earlier
 
-If you are migrating from Claude Opus 4.5, Opus 4.1 (deprecated), or an earlier model directly to Claude Opus 4.7, apply **all of the [Opus 4.7 changes above](#migrating-to-claude-opus-4-7)** plus the cumulative changes in this section that took effect between Opus 4.5 and Opus 4.7. If you are migrating from Opus 4.6, you only need the [Opus 4.7 section above](#migrating-to-claude-opus-4-7).
+If you are migrating from Claude Opus 4.5, Opus 4.1 (deprecated), or an earlier model directly to Claude Opus 4.7, apply **all of the [Opus 4.7 changes](#migrating-to-claude-opus-4-7)** plus the cumulative changes in this section that took effect between Opus 4.5 and Opus 4.7. If you are migrating from Opus 4.6, you only need the [Opus 4.7 section](#migrating-to-claude-opus-4-7).
 
 ### Update your model name
 
@@ -1244,7 +1244,7 @@ model = "claude-opus-4-7"  # After
 
 1. **Prefill removal** is covered in the [Opus 4.7 breaking changes](#breaking-changes) above.
 
-2. **Tool parameter quoting:** Claude Opus 4.6 and later models may produce slightly different JSON string escaping in tool call arguments (e.g., different handling of Unicode escapes or forward slash escaping). If you parse tool call `input` as a raw string rather than using a JSON parser, verify your parsing logic. Standard JSON parsers (like `json.loads()` or `JSON.parse()`) handle these differences automatically.
+2. **Tool parameter quoting:** Claude Opus 4.6 and later models may produce slightly different JSON string escaping in tool call arguments (for example, different handling of Unicode escapes or forward slash escaping). If you parse tool call `input` as a raw string rather than using a JSON parser, verify your parsing logic. Standard JSON parsers (like `json.loads()` or `JSON.parse()`) handle these differences automatically.
 
 ### Recommended changes
 
@@ -1691,7 +1691,7 @@ model = "claude-opus-4-7"  # After
 
 4. **Handle the `model_context_window_exceeded` stop reason**
 
-   Claude 4.5+ models return a `model_context_window_exceeded` stop reason when generation stops due to hitting the context window limit, rather than the requested `max_tokens` limit. Update your application to handle this new stop reason:
+   Claude 4.5+ models return a `model_context_window_exceeded` stop reason when generation stops because of hitting the context window limit, rather than the requested `max_tokens` limit. Update your application to handle this new stop reason:
 
    <CodeGroup>
      ```python Python

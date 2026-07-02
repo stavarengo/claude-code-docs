@@ -17,10 +17,12 @@ claude/platform.claude.com/docs/en/agents-and-tools/mcp-tunnels:{concepts.md,con
 claude/platform.claude.com/docs/en/agents-and-tools/tool-use:{advisor-tool.md,bash-tool.md,build-a-tool-using-agent.md,code-execution-tool.md,computer-use-tool.md,define-tools.md,fine-grained-tool-streaming.md,handle-tool-calls.md,how-tool-use-works.md,manage-tool-context.md,memory-tool.md,overview.md,parallel-tool-use.md,programmatic-tool-calling.md,server-tools.md,strict-tool-use.md,text-editor-tool.md,tool-combinations.md,tool-reference.md,tool-runner.md,tool-search-tool.md,tool-use-with-prompt-caching.md,troubleshooting-tool-use.md,web-fetch-tool.md,web-search-tool.md}
 claude/platform.claude.com/docs/en/api:{admin.md,beta-headers.md,beta.md,claude-platform-on-aws-iam-actions.md,completions.md,compliance.md,errors.md,ip-addresses.md,messages.md,models.md,overview.md,rate-limits.md,service-tiers.md,supported-regions.md,versioning.md}
 claude/platform.claude.com/docs/en/api/admin:{analytics.md,api_keys.md,cost_report.md,external_keys.md,federation_issuers.md,federation_rules.md,invites.md,mcp_tunnels.md,organizations.md,rate_limits.md,service_accounts.md,spend_limits.md,usage_report.md,users.md,workspaces.md}
-claude/platform.claude.com/docs/en/api/admin/analytics:{chat_projects.md,connectors.md,cost.md,retrieve_summaries.md,skills.md,usage.md,users.md}
+claude/platform.claude.com/docs/en/api/admin/analytics:{artifacts.md,chat_projects.md,connectors.md,cost.md,plugins.md,retrieve_summaries.md,skills.md,usage.md,users.md}
+claude/platform.claude.com/docs/en/api/admin/analytics/artifacts:{list.md}
 claude/platform.claude.com/docs/en/api/admin/analytics/chat_projects:{list.md}
 claude/platform.claude.com/docs/en/api/admin/analytics/connectors:{list.md}
 claude/platform.claude.com/docs/en/api/admin/analytics/cost:{list.md,list_by_user.md}
+claude/platform.claude.com/docs/en/api/admin/analytics/plugins:{list.md}
 claude/platform.claude.com/docs/en/api/admin/analytics/skills:{list.md}
 claude/platform.claude.com/docs/en/api/admin/analytics/usage:{list.md,list_by_user.md}
 claude/platform.claude.com/docs/en/api/admin/analytics/users:{list.md}

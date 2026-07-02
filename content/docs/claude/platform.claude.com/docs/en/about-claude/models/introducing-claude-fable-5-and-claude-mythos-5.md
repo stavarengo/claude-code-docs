@@ -4,6 +4,10 @@ Claude Fable 5 and Claude Mythos 5 capabilities, API changes, and availability.
 
 ---
 
+<Tip>
+  Access to Claude Fable 5 and Claude Mythos 5 has been restored. See [our statement](https://www.anthropic.com/news/redeploying-fable-5-mythos-5) for more information.
+</Tip>
+
 Claude Fable 5 is Anthropic's most capable widely released model, built for the most demanding reasoning and long-horizon agentic work. Claude Mythos 5 shares the same capabilities and is available only in limited release through [Project Glasswing](https://anthropic.com/glasswing).
 
 The headline change for integrations: Claude Fable 5 includes safety classifiers that can decline requests. Claude Mythos 5 does not include these classifiers. If your integration calls Claude Fable 5, plan for three changes: new response handling for refusals, fallback options for retrying on another Claude model, and new billing rules. [Refusals, fallback, and billing on Claude Fable 5](#refusals-fallback-and-billing-on-claude-fable-5) summarizes all three.

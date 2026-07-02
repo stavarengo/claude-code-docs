@@ -59,7 +59,10 @@ message = client.messages.create(
     ],
     model="claude-opus-4-8",
 )
-print(message.content)
+
+for block in message.content:
+    if block.type == "text":
+        print(block.text)
 ```
 
 <Tip>

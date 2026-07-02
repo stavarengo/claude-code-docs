@@ -5,7 +5,7 @@ To mitigate misuse and manage capacity on the API, limits are in place on how mu
 ---
 
 <Note>
-  **[Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws):** The rate limits on this page apply. Billing and spend limits differ: spend limits are not available, and billing is through AWS Marketplace (not Anthropic credit purchases). Organizations on Claude Platform on AWS are placed on the Start tier and do not move between usage tiers automatically. To request higher limits, contact your Anthropic account representative. Per-workspace rate limit configuration and [fast mode](/docs/en/build-with-claude/fast-mode) are not available on Claude Platform on AWS.
+  **[Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws):** The rate limits on this page apply to Claude Platform on AWS. Billing and spend limits differ: spend limits are not available, and billing is through AWS Marketplace (not Anthropic credit purchases). Organizations on Claude Platform on AWS are placed on the Start tier and do not move between usage tiers automatically. To request higher limits, contact your Anthropic account representative. Per-workspace rate limit configuration and [fast mode](/docs/en/build-with-claude/fast-mode) are not available on Claude Platform on AWS.
 </Note>
 
 There are two types of limits:

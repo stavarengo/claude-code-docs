@@ -55,7 +55,13 @@ MessageCreateParams parameters = new()
 
 var message = await client.Messages.Create(parameters);
 
-Console.WriteLine(message);
+foreach (var block in message.Content)
+{
+    if (block.TryPickText(out var textBlock))
+    {
+        Console.WriteLine(textBlock.Text);
+    }
+}
 ```
 
 For authentication options including Workload Identity Federation, see [Authentication](/docs/en/manage-claude/authentication).

@@ -12,7 +12,7 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 1873 pages - /docs - Content included below
+- English (en) - 1877 pages - /docs - Content included below
 - German (Deutsch) (de) - 137 pages - /docs/de - Visit website for content
 - Spanish (Español) (es) - 137 pages - /docs/es - Visit website for content
 - French (Français) (fr) - 137 pages - /docs/fr - Visit website for content
@@ -321,6 +321,7 @@ The full documentation is available in the following languages on https://platfo
 - [Archive Vault (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/vaults/archive.md)
 - [Archive Vault (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/vaults/archive.md)
 - [Archive Workspace](https://platform.claude.com/docs/en/api/admin/workspaces/archive.md)
+- [Artifacts](https://platform.claude.com/docs/en/api/admin/analytics/artifacts.md)
 - [Artifacts](https://platform.claude.com/docs/en/api/compliance/apps/artifacts.md)
 - [Artifacts](https://platform.claude.com/docs/en/api/compliance/code/artifacts.md)
 - [Attachments](https://platform.claude.com/docs/en/api/compliance/apps/projects/attachments.md)
@@ -884,6 +885,7 @@ The full documentation is available in the following languages on https://platfo
 - [Get Agent (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/agents/retrieve.md)
 - [Get Agent (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/agents/retrieve.md)
 - [Get API Key](https://platform.claude.com/docs/en/api/admin/api_keys/retrieve.md)
+- [Get Artifact Activity](https://platform.claude.com/docs/en/api/admin/analytics/artifacts/list.md)
 - [Get artifact metadata](https://platform.claude.com/docs/en/api/compliance/apps/artifacts/retrieve.md)
 - [Get chat messages](https://platform.claude.com/docs/en/api/compliance/apps/chats/messages/list.md)
 - [Get Chat Project Usage](https://platform.claude.com/docs/en/api/admin/analytics/chat_projects/list.md)
@@ -954,6 +956,7 @@ The full documentation is available in the following languages on https://platfo
 - [Get Messages Usage Report](https://platform.claude.com/docs/en/api/admin/usage_report/retrieve_messages.md)
 - [Get Per-User Cost](https://platform.claude.com/docs/en/api/admin/analytics/cost/list_by_user.md)
 - [Get Per-User Token Usage](https://platform.claude.com/docs/en/api/admin/analytics/usage/list_by_user.md)
+- [Get Plugin Usage](https://platform.claude.com/docs/en/api/admin/analytics/plugins/list.md)
 - [Get project details](https://platform.claude.com/docs/en/api/compliance/apps/projects/retrieve.md)
 - [Get project document content](https://platform.claude.com/docs/en/api/compliance/apps/projects/documents/retrieve.md)
 - [Get project document metadata](https://platform.claude.com/docs/en/api/compliance/apps/projects/documents/metadata.md)
@@ -1458,6 +1461,7 @@ The full documentation is available in the following languages on https://platfo
 - [Pause Deployment (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/deployments/pause.md)
 - [Pause Deployment (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/deployments/pause.md)
 - [Permissions](https://platform.claude.com/docs/en/api/compliance/organizations/roles/permissions.md)
+- [Plugins](https://platform.claude.com/docs/en/api/admin/analytics/plugins.md)
 - [Poll for Work (Beta)](https://platform.claude.com/docs/en/api/beta/environments/work/poll.md)
 - [Poll for Work (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/environments/work/poll.md)
 - [Poll for Work (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/environments/work/poll.md)

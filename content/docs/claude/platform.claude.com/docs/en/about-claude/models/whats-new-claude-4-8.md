@@ -4,13 +4,13 @@ Overview of new features and behavior changes in Claude Opus 4.8.
 
 ---
 
-Claude Opus 4.8 is Anthropic's most capable Opus-tier model. It builds on Claude Opus 4.7. This page summarizes everything new at launch, including fast mode (research preview on the Claude API) and a lower 1,024-token minimum cacheable prompt length.
+Claude Opus 4.8 is built for complex agentic coding and enterprise work. It builds on Claude Opus 4.7. This page summarizes everything new at launch, including fast mode (research preview on the Claude API) and a lower 1,024-token minimum cacheable prompt length.
 
 ## New model
 
-| Model           | API model ID    | Description                                                                                                         |
-| --------------- | --------------- | ------------------------------------------------------------------------------------------------------------------- |
-| Claude Opus 4.8 | claude-opus-4-8 | Anthropic's most capable Opus-tier model for complex reasoning, long-horizon agentic coding, and high-autonomy work |
+| Model           | API model ID    | Description                                    |
+| --------------- | --------------- | ---------------------------------------------- |
+| Claude Opus 4.8 | claude-opus-4-8 | For complex agentic coding and enterprise work |
 
 Claude Opus 4.8 supports the [1M token context window](/docs/en/build-with-claude/context-windows) by default on the Claude API, Amazon Bedrock, Google Cloud, and Microsoft Foundry, 128k max output tokens, [adaptive thinking](/docs/en/build-with-claude/adaptive-thinking), and the same set of tools and platform features as Claude Opus 4.7.
 
