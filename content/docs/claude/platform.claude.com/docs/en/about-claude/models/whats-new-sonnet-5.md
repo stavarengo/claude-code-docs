@@ -40,7 +40,7 @@ thinking = {"type": "adaptive"}
 
 ## New tokenizer
 
-Claude Sonnet 5 uses a new tokenizer. The same input text produces approximately 30% more tokens than on Claude Sonnet 4.6. This is not an API change: requests, responses, and streaming events keep the same shape, and no code changes are required.
+Claude Sonnet 5 uses a new tokenizer. The same input text produces approximately 30% more tokens than on Claude Sonnet 4.6. The exact increase depends on the content. This is not an API change: requests, responses, and streaming events keep the same shape, and no code changes are required.
 
 The change affects anything you measure or budget in tokens:
 
@@ -71,7 +71,7 @@ Claude Sonnet 5 is the first Sonnet-tier model with real-time cybersecurity safe
 
 ## Pricing
 
-Claude Sonnet 5 is priced at $3 per million input tokens and $15 per million output tokens, unchanged from Claude Sonnet 4.6. Because the [new tokenizer](#new-tokenizer) produces approximately 30% more tokens for the same text, the cost of an equivalent request can differ from Claude Sonnet 4.6 even though per-token pricing is unchanged.
+Claude Sonnet 5 is priced at $3 per million input tokens and $15 per million output tokens, unchanged from Claude Sonnet 4.6. Because the [new tokenizer](#new-tokenizer) produces approximately 30% more tokens for the same text, the cost of an equivalent request can differ from Claude Sonnet 4.6 even though per-token pricing is unchanged. The exact increase depends on the content and workload shape.
 
 Introductory pricing of $2/$10 per million input/output tokens is in effect through August 31, 2026, after which the standard pricing of $3/$15 per million input/output tokens will take effect.
 
@@ -84,7 +84,7 @@ At launch, Claude Sonnet 5 is available on:
 * **Claude API:** available to all customers.
 * **AWS:** available through [Claude in Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock) and [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws). Claude Sonnet 5 is not available on [Claude on Amazon Bedrock (legacy)](/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy) (the `InvokeModel` and `Converse` APIs).
 * **Google Cloud:** available through [Claude on Google Cloud](/docs/en/build-with-claude/claude-on-vertex-ai).
-* **Microsoft Foundry (preview):** available through [Claude in Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry).
+* **Microsoft Foundry:** available through [Claude in Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry).
 
 Claude Sonnet 5 supports [zero data retention](/docs/en/manage-claude/api-and-data-retention) for organizations with ZDR agreements.
 
@@ -99,7 +99,7 @@ model = "claude-sonnet-5"  # After
 
 Then review the following:
 
-1. **Token budgets and counts:** the [new tokenizer](#new-tokenizer) produces approximately 30% more tokens for the same text. Recount prompts with [token counting](/docs/en/build-with-claude/token-counting), and revisit `max_tokens` limits sized close to your expected output length.
+1. **Token budgets and counts:** the [new tokenizer](#new-tokenizer) produces approximately 30% more tokens for the same text. The exact increase depends on the content and workload shape. Recount prompts with [token counting](/docs/en/build-with-claude/token-counting), and revisit `max_tokens` limits sized close to your expected output length.
 2. **Extended thinking:** if you still set `budget_tokens`, migrate to [adaptive thinking](/docs/en/build-with-claude/adaptive-thinking). Manual extended thinking (`thinking: {type: "enabled"}`) is not supported and returns a 400 error.
 3. **Sampling parameters:** requests that set sampling parameters (`temperature`, `top_p`, `top_k`) to a non-default value return a 400 error; remove them when migrating. Tool definitions and response shapes are unchanged, and assistant message prefilling was already unsupported on Claude Sonnet 4.6.
 

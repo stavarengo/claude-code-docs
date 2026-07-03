@@ -39,7 +39,7 @@ The following table shows pricing for all Claude models:
 </Note>
 
 <Note>
-  Claude Opus 4.7 and later Opus models, Claude Fable 5, Claude Mythos 5, Claude Mythos Preview, and Claude Sonnet 5 use a newer tokenizer that contributes to their improved performance on a wide range of tasks. This tokenizer produces approximately 30% more tokens for the same text. Claude Sonnet 4.6 and earlier models use the previous tokenizer.
+  Claude Opus 4.7 and later Opus models, Claude Fable 5, Claude Mythos 5, Claude Mythos Preview, and Claude Sonnet 5 use a newer tokenizer that contributes to their improved performance on a wide range of tasks. This tokenizer produces approximately 30% more tokens for the same text. The exact increase depends on the content and workload shape. Claude Sonnet 4.6 and earlier models use the previous tokenizer.
 </Note>
 
 For Claude Platform on AWS pricing, see [Claude Platform on AWS pricing](#claude-platform-on-aws-pricing).
