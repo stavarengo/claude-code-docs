@@ -66,11 +66,7 @@ The effect is pure CSS. The text is painted with `background-clip: text`, and th
 The shimmer composes with any component that renders text. A common pattern is a [Marker](/docs/components/marker) showing a live status while the assistant is working:
 
 ```tsx
-import {
-  Marker,
-  MarkerContent,
-  MarkerIcon,
-} from "@/components/ui/marker"
+import { Marker, MarkerContent, MarkerIcon } from "@/components/ui/marker"
 import { Spinner } from "@/components/ui/spinner"
 
 export function ShimmerMarker() {
