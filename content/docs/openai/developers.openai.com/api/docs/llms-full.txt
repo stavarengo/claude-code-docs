@@ -5152,9 +5152,6 @@ Once one specialist is defined cleanly, move to the guide that matches the next 
 
 Agents are applications that plan, call tools, collaborate across specialists, and keep enough state to complete multi-step work.
 
-- Use the [**Responses API**](https://developers.openai.com/api/reference/responses/overview) when one model call plus tools and application-owned logic is enough.
-- Use the **Agents SDK** pages when your application owns orchestration, tool execution, approvals, and state.
-
 ## Get your first agent running
 
 Start with the [Agents SDK quickstart](https://developers.openai.com/api/docs/guides/agents/quickstart) to install the SDK, define one agent, and run it. Once that works, return here to choose the next capability your application needs.
@@ -5212,7 +5209,7 @@ Use the GitHub repositories for more examples, issues, and language-specific ref
 
 ## Build with the SDK
 
-Use the SDK track when your server owns orchestration, tool execution, state, and approvals. That path is the best fit when you want:
+Use the SDK track when your server owns deployment, tool implementations, state storage, and approval decisions, while the SDK runs the agent loop and invokes those tools. That path is the best fit when you want:
 
 - typed application code in TypeScript or Python
 - direct control over tools, MCP servers, and runtime behavior
@@ -5225,6 +5222,42 @@ A typical SDK reading order is:
 - Use [Agent definitions](https://developers.openai.com/api/docs/guides/agents/define-agents) and [Models and providers](https://developers.openai.com/api/docs/guides/agents/models) to shape one specialist cleanly.
 - Continue to [Running agents](https://developers.openai.com/api/docs/guides/agents/running-agents), [Orchestration and handoffs](https://developers.openai.com/api/docs/guides/agents/orchestration), and [Guardrails and human review](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals) as the workflow grows more complex.
 - Use [Results and state](https://developers.openai.com/api/docs/guides/agents/results) and [Integrations and observability](https://developers.openai.com/api/docs/guides/agents/integrations-observability) when application logic depends on the run object or deeper visibility into behavior.
+
+## Agents SDK vs. Responses API
+
+Use the Responses API when you want to own the loop. Use the Agents SDK when you want the SDK to run it.
+
+### Choose the Responses API when
+
+- You want direct control over model interactions, output items, tools, state, and orchestration, whether the workflow takes one call or many.
+- You want to implement custom tool routing, loops, or branching directly in your application.
+
+In the [Responses function-calling flow](https://developers.openai.com/api/docs/guides/function-calling#the-tool-calling-flow), your application receives function calls, executes them, returns their output, and calls the model again.
+
+For example, a Responses API workflow might search a knowledge base and generate a cited answer.
+
+### Choose the Agents SDK when
+
+- You want the SDK to manage the agent loop and recurring orchestration such as repeated tool calls or branching.
+- Different specialists need different instructions, tools, or policies.
+- You want built-in sessions, tracing, guardrails, or resumable approval flows.
+
+The [Agents SDK runner](https://developers.openai.com/api/docs/guides/agents/running-agents#the-agent-loop) performs the tool loop, switches agents after handoffs, and stops when the run finishes or pauses for approval.
+
+For example, an Agents SDK workflow might investigate a support request, hand it to the correct specialist, call internal systems, request approval for a refund, and record the result.
+
+### Compare the Responses API and Agents SDK
+
+|                            | Responses API                                                                                                          | Agents SDK                                                                                                                                                                                          |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Best for**               | Custom model-powered features and workflows                                                                            | Bounded conversational or transactional workflows with defined tools and recurring orchestration patterns                                                                                             |
+| **Core abstraction**       | A model response                                                                                                       | An agent run                                                                                                                                                                                        |
+| **Tools**                  | Platform tools, function calling, and remote [Model Context Protocol (MCP)](https://developers.openai.com/api/docs/guides/tools-connectors-mcp)     | Platform tools attached to reusable agents, plus tool wrappers, local MCP connections, and [agents as tools](https://developers.openai.com/api/docs/guides/agents/orchestration#use-agents-as-tools-for-manager-style-workflows) |
+| **Workflow orchestration** | You manage custom loops and branching                                                                                  | The SDK provides the agent loop and lifecycle                                                                                                                                                       |
+| **Multi-agent workflows**  | Build routing and delegation yourself                                                                                  | Built-in agents-as-tools and [handoffs](https://developers.openai.com/api/docs/guides/agents/orchestration#use-handoffs-for-delegated-ownership)                                                                                 |
+| **State**                  | Manual history, response chaining, or [Conversations](https://developers.openai.com/api/docs/guides/conversation-state#using-the-conversations-api) | The same options, plus [SDK sessions and resumable run state](https://developers.openai.com/api/docs/guides/agents/running-agents#choose-one-conversation-strategy)                                                              |
+| **Safety and approvals**   | Tool-specific approvals; you build broader controls                                                                    | Input, output, and tool [guardrails plus resumable approval flows](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals)                                                                                    |
+| **Debugging and tracing**  | Response objects and API logs                                                                                          | [Built-in traces](https://developers.openai.com/api/docs/guides/agents/integrations-observability#tracing) across model calls, tools, agents, guardrails, and handoffs                                                           |
 
 ---
 
@@ -6500,7 +6533,7 @@ For build-path guidance, see the [Realtime and audio overview](https://developer
 
 ## Add audio to your existing application
 
-Models such as [`gpt-realtime-2`](https://developers.openai.com/api/docs/models/gpt-realtime-2) and [`gpt-audio-1.5`](https://developers.openai.com/api/docs/models/gpt-audio-1.5) are natively multimodal, meaning they can understand and generate audio and text as input and output.
+Models such as [`gpt-realtime-2.1`](https://developers.openai.com/api/docs/models/gpt-realtime-2.1) and [`gpt-audio-1.5`](https://developers.openai.com/api/docs/models/gpt-audio-1.5) are natively multimodal, meaning they can understand and generate audio and text as input and output.
 
 For live browser speech-to-speech interactions, start with a realtime session in the JavaScript SDK:
 
@@ -6515,7 +6548,7 @@ const agent = new RealtimeAgent({
 });
 
 const session = new RealtimeSession(agent, {
-  model: "gpt-realtime-2",
+  model: "gpt-realtime-2.1",
 });
 
 await session.connect({
@@ -17429,7 +17462,7 @@ The complete, unfiltered regional support table follows. Model snapshots for eac
 | `/v1/images/edits`                                                   | Images           | All listed regions                        | United States, Europe (EEA + Switzerland)                       | `gpt-image-1`, `gpt-image-1.5`, `gpt-image-1-mini`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | None                                                                     | —                                                                                                           |
 | `/v1/images/generations`                                             | Images           | All listed regions                        | United States, Europe (EEA + Switzerland)                       | `dall-e-3`, `gpt-image-1`, `gpt-image-1.5`, `gpt-image-1-mini`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | None                                                                     | —                                                                                                           |
 | `/v1/moderations`                                                    | Moderation       | All listed regions                        | United States, Europe (EEA + Switzerland)                       | `omni-moderation-latest`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | None                                                                     | —                                                                                                           |
-| `/v1/realtime`                                                       | Realtime         | United States, Europe (EEA + Switzerland) | United States, Europe (EEA + Switzerland)                       | `gpt-4o-realtime-preview-2025-06-03`, `gpt-realtime`, `gpt-realtime-1.5`, `gpt-realtime-mini`, `gpt-realtime-2`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | None                                                                     | —                                                                                                           |
+| `/v1/realtime`                                                       | Realtime         | United States, Europe (EEA + Switzerland) | United States, Europe (EEA + Switzerland)                       | `gpt-4o-realtime-preview-2025-06-03`, `gpt-realtime`, `gpt-realtime-1.5`, `gpt-realtime-mini`, `gpt-realtime-2`, `gpt-realtime-2.1`, `gpt-realtime-2.1-mini`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | None                                                                     | —                                                                                                           |
 | `/v1/realtime/transcription_sessions`                                | Realtime         | United States, Europe (EEA + Switzerland) | United States, Europe (EEA + Switzerland)                       | `gpt-realtime-whisper`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | None                                                                     | —                                                                                                           |
 | `/v1/realtime/translations`                                          | Realtime         | United States, Europe (EEA + Switzerland) | United States, Europe (EEA + Switzerland)                       | `gpt-realtime-translate`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | None                                                                     | —                                                                                                           |
 | `/v1/realtime (legacy previews)`                                     | Realtime         | United States                             | United States                                                   | `gpt-4o-realtime-preview-2024-12-17`, `gpt-4o-realtime-preview-2024-10-01`, `gpt-4o-mini-realtime-preview-2024-12-17`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | None                                                                     | —                                                                                                           |
@@ -19260,6 +19293,41 @@ Instead of passing entire sheets to the model, the API parses up to the first
 1,000 rows per sheet and adds model-generated summary and header metadata so the
 model can work from a smaller, structured view of the data.
 
+## PDF detail levels
+
+For PDF inputs in the Responses API, set the optional `detail` field on an
+`input_file` item to control how page images are processed. `low` is the default
+and uses fewer input tokens. Use `high` when you need more visual detail from PDF
+page images, such as dense charts, small print, or diagrams.
+
+The `detail` setting only affects PDF page image processing. Text extracted from
+the PDF is still included. Chat Completions file inputs don't support `detail`.
+
+A minimal Responses API request body with explicit high detail looks like this:
+
+```json
+{
+  "model": "gpt-4.1",
+  "input": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "input_file",
+          "filename": "document.pdf",
+          "file_data": "data:application/pdf;base64,...",
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Summarize this document."
+        }
+      ]
+    }
+  ]
+}
+```
+
 ## Accepted file types
 
 The following table lists common file types accepted in `input_file`. The full
@@ -19615,7 +19683,7 @@ print(response.output_text)
 
 Keep these constraints in mind when you use file inputs:
 
-- **Token usage:** PDF parsing includes both extracted text and page images in context, which can increase token usage. Before deploying at scale, review pricing and token implications. [More on pricing](https://developers.openai.com/api/docs/pricing).
+- **Token usage:** PDF parsing includes both extracted text and page images in context, which can increase token usage. In the Responses API, set `detail` to `low` (the default) or `high` to control how much visual detail is processed for PDF page images. Before deploying at scale, review pricing and token implications. [More on pricing](https://developers.openai.com/api/docs/pricing).
 - **File size limits:** A single request can include more than one file, but each file must be under 50 MB. The combined limit across all files in the request is 50 MB.
 - **Supported models:** PDF parsing that includes text and page images requires models with vision capabilities, such as `gpt-4o` and later models.
 - **File upload purpose:** You can upload files with any supported [purpose](https://developers.openai.com/api/docs/api-reference/files/create#files-create-purpose), but use `user_data` for files you plan to pass as model inputs.
@@ -20493,6 +20561,8 @@ Tool calling is a multi-step conversation between your application and a model v
 1. Receive a final response from the model (or more tool calls)
 
 ![Function Calling Diagram Steps](https://cdn.openai.com/API/docs/images/function-calling-diagram-steps.png)
+
+With Responses, your application can continue this flow for as many tool calls as the task requires. If you want a framework that packages recurring orchestration around that loop, see [how the Responses API compares with the Agents SDK](https://developers.openai.com/api/docs/guides/agents#agents-sdk-vs-responses-api).
 
 ## Function tool example
 
@@ -31676,7 +31746,7 @@ Start with the outcome you want to build. Realtime sessions are best for live au
     <tr>
       <td>Build a low-latency voice agent</td>
       <td className="whitespace-nowrap">
-        [`gpt-realtime-2`](https://developers.openai.com/api/docs/models/gpt-realtime-2)
+        [`gpt-realtime-2.1`](https://developers.openai.com/api/docs/models/gpt-realtime-2.1)
       </td>
       <td>
         <a href="/api/docs/guides/voice-agents">Voice agents</a>
@@ -31935,7 +32005,7 @@ curl -X POST "https://api.openai.com/v1/realtime/calls/$CALL_ID/accept" \
   -H "Content-Type: application/json" \
   -d '{
         "type": "realtime",
-        "model": "gpt-realtime-2",
+        "model": "gpt-realtime-2.1",
         "instructions": "You are Alex, a friendly concierge for Example Corp."
       }'
 ```
@@ -32090,7 +32160,7 @@ AUTH_HEADER = {
 call_accept = {
     "type": "realtime",
     "instructions": "You are a support agent.",
-    "model": "gpt-realtime-2",
+    "model": "gpt-realtime-2.1",
 }
 
 response_create = {
@@ -32207,7 +32277,7 @@ app.use(express.text({ type: ["application/sdp", "text/plain"] }));
 
 const sessionConfig = JSON.stringify({
   type: "realtime",
-  model: "gpt-realtime-2",
+  model: "gpt-realtime-2.1",
   audio: { output: { voice: "marin" } },
 });
 
@@ -32311,7 +32381,7 @@ const app = express();
 const sessionConfig = JSON.stringify({
   session: {
     type: "realtime",
-    model: "gpt-realtime-2",
+    model: "gpt-realtime-2.1",
     audio: {
       output: {
         voice: "marin",
@@ -32481,7 +32551,7 @@ It is possible to use WebSocket in browsers with an ephemeral API token as shown
 ```javascript
 import WebSocket from "ws";
 
-const url = "wss://api.openai.com/v1/realtime?model=gpt-realtime-2";
+const url = "wss://api.openai.com/v1/realtime?model=gpt-realtime-2.1";
 const ws = new WebSocket(url, {
   headers: {
     Authorization: "Bearer " + process.env.OPENAI_API_KEY,
@@ -32513,7 +32583,7 @@ import websocket
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
-url = "wss://api.openai.com/v1/realtime?model=gpt-realtime-2"
+url = "wss://api.openai.com/v1/realtime?model=gpt-realtime-2.1"
 headers = [
     "Authorization: Bearer " + OPENAI_API_KEY,
     "OpenAI-Safety-Identifier: hashed-user-id",
@@ -32553,7 +32623,7 @@ Cloudflare Workers.
 */
 
 const ws = new WebSocket(
-  "wss://api.openai.com/v1/realtime?model=gpt-realtime-2",
+  "wss://api.openai.com/v1/realtime?model=gpt-realtime-2.1",
   [
     "realtime",
     // Auth
@@ -32586,7 +32656,7 @@ Over a WebSocket, you will both send and receive JSON-serialized events as strin
 ```javascript
 import WebSocket from "ws";
 
-const url = "wss://api.openai.com/v1/realtime?model=gpt-realtime-2";
+const url = "wss://api.openai.com/v1/realtime?model=gpt-realtime-2.1";
 const ws = new WebSocket(url, {
   headers: {
     Authorization: "Bearer " + process.env.OPENAI_API_KEY,
@@ -32624,7 +32694,7 @@ To learn how to send and receive audio over Websockets, refer to the [Realtime c
 
 # Realtime conversations
 
-Once you have connected to the Realtime API through either [WebRTC](https://developers.openai.com/api/docs/guides/realtime-webrtc) or [WebSocket](https://developers.openai.com/api/docs/guides/realtime-websocket), you can call a Realtime model (such as [`gpt-realtime-2`](https://developers.openai.com/api/docs/models/gpt-realtime-2)) to have speech-to-speech conversations. Doing so will require you to **send client events** to initiate actions, and **listen for server events** to respond to actions taken by the Realtime API.
+Once you have connected to the Realtime API through either [WebRTC](https://developers.openai.com/api/docs/guides/realtime-webrtc) or [WebSocket](https://developers.openai.com/api/docs/guides/realtime-websocket), you can call a Realtime model (such as [`gpt-realtime-2.1`](https://developers.openai.com/api/docs/models/gpt-realtime-2.1)) to have speech-to-speech conversations. Doing so will require you to **send client events** to initiate actions, and **listen for server events** to respond to actions taken by the Realtime API.
 
 This guide will walk through the event flows required to use model capabilities like audio and text generation, image input, and function calling, and how to think about the state of a Realtime Session.
 
@@ -32664,7 +32734,7 @@ const event = {
   type: "session.update",
   session: {
       type: "realtime",
-      model: "gpt-realtime-2",
+      model: "gpt-realtime-2.1",
       // Lock the output to audio (set to ["text"] if you want text without audio)
       output_modalities: ["audio"],
       audio: {
@@ -32706,7 +32776,7 @@ event = {
     "type": "session.update",
     session: {
       type: "realtime",
-      model: "gpt-realtime-2",
+      model: "gpt-realtime-2.1",
       # Lock the output to audio (add "text" if you also want text)
       output_modalities: ["audio"],
       audio: {
@@ -34019,7 +34089,7 @@ When log probabilities are available, request them with `include`:
 
 Realtime translation lets you stream source audio into a dedicated translation session and receive translated audio plus transcript deltas while the speaker is still talking. Use it for live interpretation, multilingual calls, broadcasts, meetings, lessons, and video rooms.
 
-Use [`gpt-realtime-translate`](https://developers.openai.com/api/docs/models/gpt-realtime-translate) when your application should translate what a human says. If you need an assistant that answers questions, calls tools, and manages a conversation, use [`gpt-realtime-2`](https://developers.openai.com/api/docs/models/gpt-realtime-2) with a standard Realtime session instead.
+Use [`gpt-realtime-translate`](https://developers.openai.com/api/docs/models/gpt-realtime-translate) when your application should translate what a human says. If you need an assistant that answers questions, calls tools, and manages a conversation, use [`gpt-realtime-2.1`](https://developers.openai.com/api/docs/models/gpt-realtime-2.1) with a standard Realtime session instead.
 
 ## How translation sessions differ
 
@@ -34497,7 +34567,7 @@ const event = {
   type: "session.update",
   session: {
     type: "realtime",
-    model: "gpt-realtime-2",
+    model: "gpt-realtime-2.1",
     tools: [
       {
         type: "function",
@@ -34527,7 +34597,7 @@ event = {
     "type": "session.update",
     "session": {
         "type": "realtime",
-        "model": "gpt-realtime-2",
+        "model": "gpt-realtime-2.1",
         "tools": [
             {
                 "type": "function",
@@ -34619,7 +34689,7 @@ const event = {
   type: "session.update",
   session: {
     type: "realtime",
-    model: "gpt-realtime-2",
+    model: "gpt-realtime-2.1",
     output_modalities: ["text"],
     tools: [
       {
@@ -34641,7 +34711,7 @@ event = {
     "type": "session.update",
     "session": {
         "type": "realtime",
-        "model": "gpt-realtime-2",
+        "model": "gpt-realtime-2.1",
         "output_modalities": ["text"],
         "tools": [
             {
@@ -34673,7 +34743,7 @@ const event = {
   type: "session.update",
   session: {
     type: "realtime",
-    model: "gpt-realtime-2",
+    model: "gpt-realtime-2.1",
     output_modalities: ["text"],
     tools: [
       {
@@ -34696,7 +34766,7 @@ event = {
     "type": "session.update",
     "session": {
         "type": "realtime",
-        "model": "gpt-realtime-2",
+        "model": "gpt-realtime-2.1",
         "output_modalities": ["text"],
         "tools": [
             {
@@ -37553,7 +37623,7 @@ curl https://api.openai.com/v1/realtime/client_secrets \
 -d '{
 "session": {
 "type": "realtime",
-"model": "gpt-realtime-2"
+"model": "gpt-realtime-2.1"
 }
 }'
 ```
@@ -47159,7 +47229,7 @@ const agent = new RealtimeAgent({
 });
 
 const session = new RealtimeSession(agent, {
-  model: "gpt-realtime-2",
+  model: "gpt-realtime-2.1",
 });
 
 await session.connect({
@@ -49454,6 +49524,9 @@ Use the official OpenAI SDKs above for direct API requests. Use the Agents SDK
 when your application needs code-first orchestration for agents, tools,
 handoffs, guardrails, tracing, or sandbox execution.
 
+If you are deciding between direct API requests and code-first orchestration,
+see [how the Responses API compares with the Agents SDK](https://developers.openai.com/api/docs/guides/agents#agents-sdk-vs-responses-api).
+
 <a href="/api/docs/guides/agents/quickstart">
   
 
@@ -50769,7 +50842,7 @@ As someone building an MCP server, don't put anything malicious in your tool def
     }
   `}
 />
-<div className="pricing-switcher-layout">
+<div id="latest-models" className="pricing-switcher-layout">
   <div className="pricing-switcher-header pricing-section-heading">
     
 

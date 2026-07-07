@@ -73,6 +73,7 @@ claude/platform.claude.com/docs/en/api/beta/tunnels/certificates:{archive.md,cre
 claude/platform.claude.com/docs/en/api/beta/user_profiles:{create.md,create_enrollment_url.md,list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/beta/vaults:{archive.md,create.md,credentials.md,delete.md,list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/beta/vaults/credentials:{archive.md,create.md,delete.md,list.md,mcp_oauth_validate.md,retrieve.md,update.md}
+claude/platform.claude.com/docs/en/api/claude-code:{routines-fire.md}
 claude/platform.claude.com/docs/en/api/cli:{beta.md,completions.md,messages.md,models.md}
 claude/platform.claude.com/docs/en/api/cli/beta:{agents.md,deployment_runs.md,deployments.md,environments.md,files.md,memory_stores.md,messages.md,models.md,sessions.md,skills.md,tunnels.md,user_profiles.md,vaults.md,webhooks.md}
 claude/platform.claude.com/docs/en/api/cli/beta/agents:{archive.md,create.md,list.md,retrieve.md,update.md,versions.md}

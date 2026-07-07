@@ -29,7 +29,7 @@ The following runtimes are supported:
 * Vercel Edge Runtime.
 * Jest 28 or greater with the `"node"` environment (`"jsdom"` is not supported at this time).
 * Nitro v2.6 or greater.
-* Web browsers: disabled by default to avoid exposing your secret API credentials (see [API key best practices](https://support.anthropic.com/en/articles/9767949-api-key-best-practices-keeping-your-keys-safe-and-secure)). Enable browser support by explicitly setting `dangerouslyAllowBrowser` to `true`.
+* Web browsers: disabled by default to avoid exposing your secret API credentials (see [API key best practices](https://support.claude.com/en/articles/9767949-api-key-best-practices-keeping-your-keys-safe-and-secure)). Enable browser support by explicitly setting `dangerouslyAllowBrowser` to `true`.
 
 Note that React Native is not supported at this time.
 

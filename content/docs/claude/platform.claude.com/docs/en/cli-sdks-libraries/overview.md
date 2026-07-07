@@ -67,3 +67,21 @@ Libraries and integrations expose Claude through another framework's API surface
     Use Claude through the OpenAI SDK surface
   </Card>
 </CardGroup>
+
+## Building agents or using Claude Code?
+
+The CLI, client SDKs, and libraries are for calling the Claude API yourself: you send each request and handle each response. Claude Code, the Claude Agent SDK, and Claude Managed Agents work at a higher level, providing the agent loop, tool execution, and runtime.
+
+<CardGroup cols={3}>
+  <Card title="Claude Code" href="https://code.claude.com/docs/en/overview">
+    Agentic coding tool for delegating coding tasks to Claude
+  </Card>
+
+  <Card title="Claude Agent SDK" href="https://code.claude.com/docs/en/agent-sdk/overview">
+    Build agents that run in a process you operate
+  </Card>
+
+  <Card title="Claude Managed Agents" href="/docs/en/managed-agents/overview">
+    Run agents in Anthropic's managed infrastructure
+  </Card>
+</CardGroup>

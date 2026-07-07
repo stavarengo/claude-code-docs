@@ -1,5 +1,7 @@
 # Errors
 
+Understand the HTTP status codes, error response shape, and request IDs the Claude API returns, and handle errors with the SDKs' typed exceptions.
+
 ---
 
 ## HTTP errors
@@ -22,21 +24,23 @@ The API follows a predictable HTTP error code format:
 
 * 500 - `api_error`: An unexpected error has occurred internal to Anthropic's systems.
 
-* 504 - `timeout_error`: The request timed out while processing. Consider using [streaming](/docs/en/build-with-claude/streaming) for long-running requests.
+* 504 - `timeout_error`: The request timed out while processing. Consider using [streaming](/docs/en/build-with-claude/streaming) for long-running requests. See [Long requests](#long-requests) for more options.
 
 * 529 - `overloaded_error`: The API is temporarily overloaded.
 
   <Warning>
-    529 errors can occur when APIs experience high traffic across all users.
+    529 errors can occur when the API experiences high traffic across all users.
 
     In rare cases, if your organization has a sharp increase in usage, you might see 429 errors because of acceleration limits on the API. To avoid hitting acceleration limits, ramp up your traffic gradually and maintain consistent usage patterns.
   </Warning>
 
-When receiving a [streaming](/docs/en/build-with-claude/streaming) response over SSE, it's possible that an error can occur after returning a 200 response, in which case error handling wouldn't follow these standard mechanisms.
+The official SDKs automatically retry transient failures (such as connection errors, rate limits, and 5xx server errors) with exponential backoff, twice by default, honoring the `retry-after` header when present. Each SDK client accepts a maximum-retries option to configure or disable this behavior.
+
+When receiving a [streaming](/docs/en/build-with-claude/streaming) response over server-sent events (SSE), an error can occur after the API returns a 200 response. In that case, error handling doesn't follow these standard mechanisms. See [Error events](/docs/en/build-with-claude/streaming#error-events) for the shape of mid-stream errors.
 
 ## Request size limits
 
-The API enforces request size limits to ensure optimal performance:
+The API enforces request size limits:
 
 | Endpoint type                                            | Maximum request size |
 | -------------------------------------------------------- | -------------------- |
@@ -49,7 +53,7 @@ If you exceed these limits, you'll receive a 413 `request_too_large` error. On t
 
 ## Error shapes
 
-Errors are always returned as JSON, with a top-level `error` object that always includes a `type` and `message` value. The response also includes a `request_id` field for easier tracking and debugging. For example:
+The API always returns errors as JSON, with a top-level `error` object that always includes a `type` and `message` value. The response also includes a `request_id` field for easier tracking and debugging. For example:
 
 ```json JSON
 {
@@ -72,17 +76,30 @@ The official SDKs raise typed exceptions for these errors instead of returning r
 
 ## Request ID
 
-Every API response includes a unique `request-id` header. This header contains a value such as `req_018EeWyXxfu5pfWkrYcMdjWG`. When contacting support about a specific request, include this ID to help quickly resolve your issue.
+Every API response includes a unique `request-id` header. This header contains a value such as `req_018EeWyXxfu5pfWkrYcMdjWG`. The same identifier appears as the `request_id` field in [error response bodies](#error-shapes). When contacting support about a specific request, include this ID to help quickly resolve your issue.
 
 On [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws), responses include two request IDs: the AWS request ID (`x-amzn-requestid`, primary, indexed in CloudTrail) and the Anthropic request ID (`request-id`, secondary). Use the AWS request ID for CloudTrail lookups and the Anthropic request ID for Anthropic support tickets.
 
-The official SDKs provide the Anthropic request ID as a property on top-level response objects, containing the value of the `request-id` header. On Claude Platform on AWS, use the raw-response accessor to also read the AWS request ID from the HTTP headers:
+The Python and TypeScript SDKs expose the request ID as a `_request_id` property on top-level response objects. The C#, Go, Java, and PHP SDKs expose it through their raw-response accessors, which also let you read any other response header. On Claude Platform on AWS, use the raw-response accessor to read the AWS request ID (`x-amzn-requestid`) as well:
 
 <CodeGroup>
+  ```bash cURL
+  # Print the response headers (including request-id); discard the body
+  curl -sS -D - -o /dev/null https://api.anthropic.com/v1/messages \
+    -H "x-api-key: $ANTHROPIC_API_KEY" \
+    -H "anthropic-version: 2023-06-01" \
+    -H "content-type: application/json" \
+    -d '{
+      "model": "claude-sonnet-5",
+      "max_tokens": 1024,
+      "messages": [{"role": "user", "content": "Hello, Claude"}]
+    }'
+  ```
+
   ```bash CLI
   # The request-id header is printed to stderr with --debug:
   ant --debug messages create \
-    --model claude-opus-4-8 \
+    --model claude-sonnet-5 \
     --max-tokens 1024 \
     --message '{role: user, content: "Hello, Claude"}'
   ```
@@ -91,7 +108,7 @@ The official SDKs provide the Anthropic request ID as a property on top-level re
   client = anthropic.Anthropic()
 
   message = client.messages.create(
-      model="claude-opus-4-8",
+      model="claude-sonnet-5",
       max_tokens=1024,
       messages=[{"role": "user", "content": "Hello, Claude"}],
   )
@@ -102,11 +119,85 @@ The official SDKs provide the Anthropic request ID as a property on top-level re
   const client = new Anthropic();
 
   const message = await client.messages.create({
-    model: "claude-opus-4-8",
+    model: "claude-sonnet-5",
     max_tokens: 1024,
     messages: [{ role: "user", content: "Hello, Claude" }]
   });
   console.log("Request ID:", message._request_id);
+  ```
+
+  ```csharp C#
+  AnthropicClient client = new();
+
+  var response = await client.WithRawResponse.Messages.Create(new MessageCreateParams
+  {
+      Model = Model.ClaudeSonnet5,
+      MaxTokens = 1024,
+      Messages = [new() { Role = Role.User, Content = "Hello, Claude" }]
+  });
+  Console.WriteLine($"Request ID: {response.RequestID}");
+  ```
+
+  ```go Go
+  client := anthropic.NewClient()
+
+  var response *http.Response
+  message, err := client.Messages.New(
+  	context.Background(),
+  	anthropic.MessageNewParams{
+  		Model:     anthropic.ModelClaudeSonnet5,
+  		MaxTokens: 1024,
+  		Messages: []anthropic.MessageParam{
+  			anthropic.NewUserMessage(anthropic.NewTextBlock("Hello, Claude")),
+  		},
+  	},
+  	option.WithResponseInto(&response),
+  )
+  if err != nil {
+  	panic(err)
+  }
+
+  fmt.Println("Request ID:", response.Header.Get("request-id"))
+  fmt.Println(message.Content[0].Text)
+  ```
+
+  ```java Java
+  import com.anthropic.client.AnthropicClient;
+  import com.anthropic.client.okhttp.AnthropicOkHttpClient;
+  import com.anthropic.core.http.HttpResponseFor;
+  import com.anthropic.models.messages.Message;
+  import com.anthropic.models.messages.MessageCreateParams;
+  import com.anthropic.models.messages.Model;
+
+  void main() {
+      AnthropicClient client = AnthropicOkHttpClient.fromEnv();
+
+      HttpResponseFor<Message> response = client.messages().withRawResponse().create(
+          MessageCreateParams.builder()
+              .model(Model.CLAUDE_SONNET_5)
+              .maxTokens(1024)
+              .addUserMessage("Hello, Claude")
+              .build()
+      );
+
+      IO.println("Request ID: " + response.requestId().orElse(null));
+  }
+  ```
+
+  ```php PHP
+  $client = new Client();
+
+  $response = $client->messages->raw->create([
+      'model' => 'claude-sonnet-5',
+      'maxTokens' => 1024,
+      'messages' => [['role' => 'user', 'content' => 'Hello, Claude']],
+  ]);
+  echo 'Request ID: ' . $response->getHeaderLine('request-id') . "\n";
+  ```
+
+  ```ruby Ruby
+  # Accessing raw response headers is not currently supported in the Ruby SDK.
+  # To read the request-id header, use one of the other SDK examples.
   ```
 
   ```python Python (Claude Platform on AWS)
@@ -129,7 +220,7 @@ The official SDKs provide the Anthropic request ID as a property on top-level re
 
   const client = new AnthropicAws({ awsRegion: "us-west-2" });
 
-  const { data: message, response: raw } = await client.messages
+  const { response: raw, request_id } = await client.messages
     .create({
       model: "claude-opus-4-8",
       max_tokens: 1024,
@@ -137,7 +228,7 @@ The official SDKs provide the Anthropic request ID as a property on top-level re
     })
     .withResponse();
   console.log("AWS request ID:", raw.headers.get("x-amzn-requestid"));
-  console.log("Anthropic request ID:", message._request_id);
+  console.log("Anthropic request ID:", request_id);
   ```
 </CodeGroup>
 
@@ -152,33 +243,155 @@ For Claude Platform on AWS request-ID examples in other languages, see [Request 
 Avoid setting a large `max_tokens` value without using the [streaming Messages API](/docs/en/build-with-claude/streaming) or [Message Batches API](/docs/en/api/creating-message-batches):
 
 * Some networks may drop idle connections after a variable period of time, which can cause the request to fail or timeout without receiving a response from Anthropic.
-* Networks differ in reliability; the [Message Batches API](/docs/en/api/creating-message-batches) can help you manage the risk of network issues by allowing you to poll for results rather than requiring an uninterrupted network connection.
+* Networks differ in reliability. The [Message Batches API](/docs/en/api/creating-message-batches) can help you manage the risk of network issues by allowing you to poll for results rather than requiring an uninterrupted network connection.
 
-If you are building a direct API integration, you should be aware that setting a [TCP socket keep-alive](https://tldp.org/HOWTO/TCP-Keepalive-HOWTO/programming.html) can reduce the impact of idle connection timeouts on some networks.
+If you are building a direct API integration, setting a [TCP socket keep-alive](https://tldp.org/HOWTO/TCP-Keepalive-HOWTO/programming.html) can reduce the impact of idle connection timeouts on some networks.
 
-The [SDKs](/docs/en/cli-sdks-libraries/overview) validate that your non-streaming Messages API requests are not expected to exceed a 10 minute timeout and also will set a socket option for TCP keep-alive.
+The [SDKs](/docs/en/cli-sdks-libraries/overview) validate that your non-streaming Messages API requests are not expected to exceed a 10-minute timeout. They also set a socket option for TCP keep-alive.
 
-If you don't need to process events incrementally, use `.stream()` with `.get_final_message()` (Python) or `.finalMessage()` (TypeScript) to get the complete `Message` object without writing event-handling code:
+If you don't need to process events incrementally, the SDKs can consume the stream for you and return the complete `Message` object, identical to what a non-streaming call returns:
 
 <CodeGroup>
+  ```bash cURL
+  # Raw SSE output requires handling events; there is no single-command way
+  # to accumulate the final message with curl. Use the SDK examples instead.
+  ```
+
+  ```bash CLI
+  # The CLI streams events; --format jsonl emits one event per line
+  ant messages create --stream --format jsonl <<'YAML'
+  model: claude-sonnet-5
+  max_tokens: 128000
+  messages:
+    - role: user
+      content: Write a detailed analysis...
+  YAML
+  ```
+
   ```python Python
+  client = anthropic.Anthropic()
+
   with client.messages.stream(
       max_tokens=128000,
       messages=[{"role": "user", "content": "Write a detailed analysis..."}],
-      model="claude-opus-4-8",
+      model="claude-sonnet-5",
   ) as stream:
       message = stream.get_final_message()
-  print(message.content)
+
+  print(message.content[0].text)
   ```
 
   ```typescript TypeScript
+  const client = new Anthropic();
+
   const stream = client.messages.stream({
     max_tokens: 128000,
     messages: [{ role: "user", content: "Write a detailed analysis..." }],
-    model: "claude-opus-4-8"
+    model: "claude-sonnet-5"
   });
+
   const message = await stream.finalMessage();
-  console.log(message.content);
+  const textBlock = message.content.find((block) => block.type === "text");
+  if (textBlock && textBlock.type === "text") {
+    console.log(textBlock.text);
+  }
+  ```
+
+  ```csharp C#
+  AnthropicClient client = new();
+
+  var parameters = new MessageCreateParams
+  {
+      Model = Model.ClaudeSonnet5,
+      MaxTokens = 128000,
+      Messages = [new() { Role = Role.User, Content = "Write a detailed analysis..." }]
+  };
+
+  var message = await client.Messages.CreateStreaming(parameters).Aggregate();
+  Console.WriteLine(message);
+  ```
+
+  ```go Go
+  client := anthropic.NewClient()
+
+  stream := client.Messages.NewStreaming(context.TODO(), anthropic.MessageNewParams{
+  	Model:     anthropic.ModelClaudeSonnet5,
+  	MaxTokens: 128000,
+  	Messages: []anthropic.MessageParam{
+  		anthropic.NewUserMessage(anthropic.NewTextBlock("Write a detailed analysis...")),
+  	},
+  })
+
+  message := anthropic.Message{}
+  for stream.Next() {
+  	event := stream.Current()
+  	if err := message.Accumulate(event); err != nil {
+  		log.Fatal(err)
+  	}
+  }
+  if err := stream.Err(); err != nil {
+  	log.Fatal(err)
+  }
+
+  fmt.Println(message.Content[0].Text)
+  ```
+
+  ```java Java
+  import com.anthropic.client.AnthropicClient;
+  import com.anthropic.client.okhttp.AnthropicOkHttpClient;
+  import com.anthropic.helpers.MessageAccumulator;
+  import com.anthropic.models.messages.Message;
+  import com.anthropic.models.messages.MessageCreateParams;
+  import com.anthropic.models.messages.Model;
+
+  void main() {
+      AnthropicClient client = AnthropicOkHttpClient.fromEnv();
+
+      MessageCreateParams params = MessageCreateParams.builder()
+          .model(Model.CLAUDE_SONNET_5)
+          .maxTokens(128000L)
+          .addUserMessage("Write a detailed analysis...")
+          .build();
+
+      MessageAccumulator accumulator = MessageAccumulator.create();
+      try (var streamResponse = client.messages().createStreaming(params)) {
+          streamResponse.stream().forEach(accumulator::accumulate);
+      }
+
+      Message message = accumulator.message();
+      message.content().get(0).text().ifPresent(textBlock -> IO.println(textBlock.text()));
+  }
+  ```
+
+  ```php PHP
+  use Anthropic\Lib\Streaming\MessageAccumulator;
+
+  $client = new Client();
+
+  $stream = $client->messages->createStream(
+      model: 'claude-sonnet-5',
+      maxTokens: 128000,
+      messages: [['role' => 'user', 'content' => 'Write a detailed analysis...']],
+  );
+
+  $accumulator = MessageAccumulator::forMessages();
+  foreach ($stream as $event) {
+      $accumulator->accumulate($event);
+  }
+
+  echo $accumulator->message()->content[0]->text;
+  ```
+
+  ```ruby Ruby
+  client = Anthropic::Client.new
+
+  message = client.messages.stream(
+    model: "claude-sonnet-5",
+    max_tokens: 128000,
+    messages: [{ role: "user", content: "Write a detailed analysis..." }]
+  ).accumulated_message
+
+  puts message.content.first.text
   ```
 </CodeGroup>
 
@@ -215,3 +428,19 @@ With tool use, every `thinking` and `redacted_thinking` block from the assistant
 ### Outbound web identity federation disabled (Claude Platform on AWS)
 
 If every request to [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws) returns `"Outbound web identity federation is disabled for your account"`, run `aws iam enable-outbound-web-identity-federation` once per AWS account. See [Enable outbound web identity federation](/docs/en/build-with-claude/claude-platform-on-aws#enable-outbound-web-identity-federation) for details.
+
+## Next steps
+
+<CardGroup cols={3}>
+  <Card title="Trigger a routine via API" icon="play" href="/docs/en/api/claude-code/routines-fire">
+    Start a Claude Code routine session on demand by sending an authenticated POST request.
+  </Card>
+
+  <Card title="Rate limits" icon="gauge" href="/docs/en/api/rate-limits">
+    To mitigate misuse and manage capacity on the API, limits are in place on how much an organization can use the Claude API.
+  </Card>
+
+  <Card title="Streaming messages" icon="lightning" href="/docs/en/build-with-claude/streaming">
+    Stream Messages API responses incrementally with server-sent events, including text, tool use, and extended thinking deltas.
+  </Card>
+</CardGroup>

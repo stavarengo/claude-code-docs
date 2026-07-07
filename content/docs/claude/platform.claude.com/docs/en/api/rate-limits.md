@@ -224,7 +224,7 @@ In addition to providing token and request charts, the Usage page provides two s
 To request higher rate limits or a higher monthly spend cap, use **Request rate limit increase** on the [Limits](/settings/limits) page.
 
 <Note>
-  Support can also raise limits. For urgent needs, contact [support](https://support.anthropic.com).
+  Support can also raise limits. For urgent needs, contact [support](https://support.claude.com).
 </Note>
 
 ## Setting lower limits for Workspaces

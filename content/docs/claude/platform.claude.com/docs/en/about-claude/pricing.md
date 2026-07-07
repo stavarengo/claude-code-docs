@@ -249,7 +249,12 @@ For more information about tool use implementation and best practices, see [Tool
 
 #### Bash tool
 
-The bash tool adds **245 input tokens** to your API calls.
+The bash tool definition adds the following input tokens to your request. This is in addition to the per-model [tool use system prompt](/docs/en/agents-and-tools/tool-use/overview#pricing) that applies whenever any tool is present.
+
+| Model                                           | Additional input tokens |
+| ----------------------------------------------- | ----------------------- |
+| Claude Opus 4.7 and Claude Opus 4.8             | 325 tokens              |
+| Claude Opus 4.6, Claude Sonnet 4.6, and earlier | 244 tokens              |
 
 Additional tokens are consumed by:
 
