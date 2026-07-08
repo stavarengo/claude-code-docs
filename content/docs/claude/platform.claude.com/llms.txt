@@ -155,13 +155,13 @@ The full documentation is available in the following languages on https://platfo
 - [Overview](https://platform.claude.com/docs/en/manage-claude/cmek.md) - Customer-managed encryption keys
 - [Data residency](https://platform.claude.com/docs/en/manage-claude/data-residency.md)
 - [Design your integration](https://platform.claude.com/docs/en/manage-claude/compliance-integration-patterns.md) - Design your compliance integration
-- [Get access](https://platform.claude.com/docs/en/manage-claude/compliance-api-access.md) - Get access to the Compliance API
 - [Errors](https://platform.claude.com/docs/en/manage-claude/compliance-errors.md) - Handle Compliance API errors
 - [Organizations, users, roles, groups, and settings](https://platform.claude.com/docs/en/manage-claude/compliance-org-data.md) - List organizations, users, roles, groups, and settings
 - [Manage WIF via API](https://platform.claude.com/docs/en/manage-claude/wif-admin-api.md) - Manage WIF with the Admin API
 - [Activity Feed](https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed.md) - Query the Activity Feed
 - [Rate Limits API](https://platform.claude.com/docs/en/manage-claude/rate-limits-api.md)
 - [Chats, files, and projects](https://platform.claude.com/docs/en/manage-claude/compliance-content-data.md) - Retrieve and delete chats, files, and projects
+- [Set up the Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api-access.md)
 - [Spend Limits API](https://platform.claude.com/docs/en/manage-claude/spend-limits-api.md)
 - [Usage and Cost API](https://platform.claude.com/docs/en/manage-claude/usage-cost-api.md)
 - [AWS](https://platform.claude.com/docs/en/manage-claude/wif-providers/aws.md) - Use WIF with AWS

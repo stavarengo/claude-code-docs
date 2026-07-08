@@ -1623,7 +1623,7 @@ model = "claude-opus-4-7"  # After
    </CodeGroup>
 
    * **Text editor:** Use `text_editor_20250728` and `str_replace_based_edit_tool`. See [Text editor tool documentation](/docs/en/agents-and-tools/tool-use/text-editor-tool) for details.
-   * **Code execution:** Upgrade to `code_execution_20250825`. See [Code execution tool documentation](/docs/en/agents-and-tools/tool-use/code-execution-tool#upgrade-to-latest-tool-version) for migration instructions.
+   * **Code execution:** Upgrade to `code_execution_20260521`. See [Code execution tool documentation](/docs/en/agents-and-tools/tool-use/code-execution-tool#upgrade-to-latest-tool-version) for migration instructions.
 
 3. **Handle the `refusal` stop reason**
 
@@ -1777,7 +1777,7 @@ model = "claude-opus-4-7"  # After
 * Remove `interleaved-thinking-2025-05-14` beta header (adaptive thinking enables interleaved thinking automatically)
 * Migrate `output_format` to `output_config.format` (if applicable)
 * If migrating from Claude 4.1 or earlier: remove `temperature`, `top_p`, and `top_k` (non-default values return 400 on Opus 4.7)
-* If migrating from Claude 4.1 or earlier: update tool versions (`text_editor_20250728`, `code_execution_20250825`)
+* If migrating from Claude 4.1 or earlier: update tool versions (`text_editor_20250728`, `code_execution_20260521`)
 * If migrating from Claude 4.1 or earlier: handle `refusal` stop reason
 * If migrating from Claude 4.1 or earlier: handle `model_context_window_exceeded` stop reason
 * If migrating from Claude 4.1 or earlier: verify tool string parameter handling for trailing newlines
@@ -2397,7 +2397,7 @@ model = "claude-sonnet-4-6"  # After
      This is a breaking change when migrating from Claude 3.x models.
    </Warning>
 
-   Update to the latest tool versions (`text_editor_20250728`, `code_execution_20250825`). Remove any code using the `undo_edit` command.
+   Update to the latest tool versions (`text_editor_20250728`, `code_execution_20260521`). Remove any code using the `undo_edit` command.
 
 5. **Handle the `refusal` stop reason**
 
@@ -3091,7 +3091,7 @@ For chat, content generation, search, classification, and other non-coding tasks
 * Update model ID to `claude-sonnet-4-6`
 * **BREAKING:** Remove assistant message prefilling; use structured outputs or `output_config.format` instead
 * **BREAKING:** Verify tool parameter JSON parsing handles escaping differences
-* **BREAKING:** Update tool versions to latest (`text_editor_20250728`, `code_execution_20250825`); legacy versions are not supported (if migrating from 3.x)
+* **BREAKING:** Update tool versions to latest (`text_editor_20250728`, `code_execution_20260521`); legacy versions are not supported (if migrating from 3.x)
 * **BREAKING:** Remove any code using the `undo_edit` command (if applicable)
 * **BREAKING:** Update sampling parameters to use only `temperature` OR `top_p`, not both (if migrating from 3.x)
 * Handle new `refusal` stop reason in your application
@@ -3139,7 +3139,7 @@ These breaking changes apply when migrating from Claude 3.x Sonnet models.
      This is a breaking change when migrating from Claude 3.x models.
    </Warning>
 
-   Update to the latest tool versions (`text_editor_20250728`, `code_execution_20250825`). Remove any code using the `undo_edit` command.
+   Update to the latest tool versions (`text_editor_20250728`, `code_execution_20260521`). Remove any code using the `undo_edit` command.
 
 3. **Handle the `refusal` stop reason**
 
@@ -3152,7 +3152,7 @@ These breaking changes apply when migrating from Claude 3.x Sonnet models.
 ### Sonnet 4.5 migration checklist
 
 * Update model ID to `claude-sonnet-4-5-20250929`
-* **BREAKING:** Update tool versions to latest (`text_editor_20250728`, `code_execution_20250825`); legacy versions are not supported (if migrating from 3.x)
+* **BREAKING:** Update tool versions to latest (`text_editor_20250728`, `code_execution_20260521`); legacy versions are not supported (if migrating from 3.x)
 * **BREAKING:** Remove any code using the `undo_edit` command (if applicable)
 * **BREAKING:** Update sampling parameters to use only `temperature` OR `top_p`, not both (if migrating from 3.x)
 * Handle new `refusal` stop reason in your application
