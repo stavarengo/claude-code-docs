@@ -168,7 +168,7 @@ To use multiple beta features in a single request, include all feature names in 
 anthropic-beta: feature1,feature2,feature3
 ```
 
-When using an SDK, list each feature in the `betas` parameter (for example, `betas=["feature1", "feature2"]`). With the CLI, repeat the `--beta` flag.
+When using an SDK, list each feature in the `betas` parameter (for example, `betas=["feature1", "feature2"]`). With the CLI, pass a single `--beta` flag with the feature names separated by commas (for example, `--beta feature1,feature2`). Avoid repeating the flag: currently only the first flag's value takes effect.
 
 ### Endpoint-specific headers
 

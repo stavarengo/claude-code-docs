@@ -107,6 +107,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Orchestration and handoffs](https://developers.openai.com/api/docs/guides/agents/orchestration.md): Learn how to orchestrate multiple agents with handoffs and agents-as-tools in the OpenAI Agents SDK.
 - [Predicted Outputs](https://developers.openai.com/api/docs/guides/predicted-outputs.md): Understand how to reduce latency for model responses where much of the response is known ahead of time.
 - [Priority processing](https://developers.openai.com/api/docs/guides/priority-processing.md): Get faster processing in the API while retaining flexible pay-as-you-go pricing.
+- [Private Link](https://developers.openai.com/api/docs/guides/private-link.md): Configure Azure Private Link endpoints, DNS, health checks, and cross-region routing for the OpenAI API.
 - [Production best practices](https://developers.openai.com/api/docs/guides/production-best-practices.md): Explore best practices for transitioning your AI projects from prototype to production, including scaling, security, and cost management.
 - [Prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching.md): Learn how prompt caching reduces latency and cost for long prompts in OpenAI's API.
 - [Prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering.md): Learn strategies and tactics for better results using large language models in the OpenAI API.

@@ -1191,6 +1191,11 @@ Scrolling away from the live edge releases the view, whether by wheel, touch,
 keyboard scroll keys, or dragging the scrollbar. An explicit message jump
 releases it too. New chunks can then arrive without moving the reader.
 
+`autoScroll` composes with turn anchoring. When a new turn anchors near the
+top, the view stays put while the reply streams into the room below it. Once
+the reply fills the viewport, the reader is back at the live edge and
+follow-output takes over from the anchor.
+
 ```tsx
 <MessageScrollerProvider autoScroll>
   <MessageScroller>{/* streamed turns */}</MessageScroller>
@@ -2224,7 +2229,7 @@ function CommandMenu() {
           {userMessages.map((message) => (
             <DropdownMenuItem
               key={message.id}
-              onSelect={() =>
+              onClick={() =>
                 scrollToMessage(message.id, {
                   align: "start",
                   behavior: "smooth",
