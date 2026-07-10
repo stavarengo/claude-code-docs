@@ -73,7 +73,7 @@ Command:
 
 ```bash
 openai responses create \
-  --model gpt-5.5 \
+  --model gpt-5.6 \
   --input "Say hello in one sentence."
 ```
 
@@ -121,7 +121,7 @@ For a simple local file, build the prompt inline with command substitution:
 
 ```bash
 openai responses create \
-  --model gpt-5.5 \
+  --model gpt-5.6 \
   --input "Summarize this note in one sentence.
 
 <note>
@@ -179,7 +179,7 @@ When the prompt itself needs shell assembly, build a YAML body and pipe it into 
   sed 's/^/  /' ./note.md
   printf '  </note>\n'
 } | openai responses create \
-  --model gpt-5.5 \
+  --model gpt-5.6 \
   --format yaml \
   --transform 'output.#(type=="message").content.0.text'
 ```
@@ -212,7 +212,7 @@ Command:
 
 ```bash
 openai responses create \
-  --model gpt-5.5 \
+  --model gpt-5.6 \
   --instructions "Extract the person and topic from the input." \
   --input "Ada Lovelace wrote notes about the Analytical Engine." \
   --text.format "$(cat ./schema.json)" \
@@ -297,7 +297,7 @@ Command:
 
 ```bash
 openai responses create \
-  --model gpt-5.5 \
+  --model gpt-5.6 \
   --format yaml \
   --transform 'output.#(type=="message").content.0.text' <<'YAML'
 tools:

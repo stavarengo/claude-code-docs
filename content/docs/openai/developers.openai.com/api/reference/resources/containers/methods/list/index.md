@@ -2,7 +2,7 @@
 
 **get** `/containers`
 
-List Containers
+List containers
 
 ### Query Parameters
 

@@ -54,7 +54,7 @@ const prompt = [
 ].join("\n");
 
 const response = await openai.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   reasoning: { effort: "high" },
   input: prompt,
 });
@@ -77,7 +77,7 @@ Identify the likeliest root cause and the smallest safe fix.
 """
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     reasoning={"effort": "high"},
     input=prompt,
 )
@@ -113,7 +113,7 @@ const incident = [
 ].join("\n");
 
 const response = await openai.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   text: { verbosity: "low" },
   input: incident,
 });
@@ -127,7 +127,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     text={"verbosity": "low"},
     input="""
     Summarize this incident for the next on-call engineer.
@@ -255,7 +255,7 @@ const crmGetAccount = {
 };
 
 const response = await openai.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   input:
     "Find the right billing tool and explain why invoice INV-1043 still " +
     "shows overdue after a payment yesterday.",
@@ -307,7 +307,7 @@ crm_get_account = {
 }
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input=(
         "Find the right billing tool and explain why invoice INV-1043 still "
         "shows overdue after a payment yesterday."
@@ -393,12 +393,12 @@ const openai = new OpenAI();
 const longWindow = sessionItems;
 
 const compacted = await openai.responses.compact({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   input: longWindow,
 });
 
 const nextResponse = await openai.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   store: false,
   input: [
     ...compacted.output, // Use compact output as-is.
@@ -425,12 +425,12 @@ client = OpenAI()
 long_window = session_items
 
 compacted = client.responses.compact(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input=long_window,
 )
 
 next_response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     store=False,
     input=[
         *compacted.output,  # Use compact output as-is.
@@ -478,7 +478,7 @@ const instructions = [
 ].join("\n");
 
 const response = await openai.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   prompt_cache_key: "tenant-acme-support-agent",
   instructions,
   input: "Summarize the current escalation for the on-call lead.",
@@ -499,7 +499,7 @@ Use the same tone, safety rules, and tool plan for each ticket.
 """
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     prompt_cache_key="tenant-acme-support-agent",
     instructions=instructions,
     input="Summarize the current escalation for the on-call lead.",
@@ -531,7 +531,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const first = await openai.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   store: false,
   reasoning: { effort: "medium" },
   include: ["reasoning.encrypted_content"],
@@ -539,7 +539,7 @@ const first = await openai.responses.create({
 });
 
 const second = await openai.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   store: false,
   reasoning: { effort: "medium" },
   include: ["reasoning.encrypted_content"],
@@ -561,7 +561,7 @@ from openai import OpenAI
 client = OpenAI()
 
 first = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     store=False,
     reasoning={"effort": "medium"},
     include=["reasoning.encrypted_content"],
@@ -569,7 +569,7 @@ first = client.responses.create(
 )
 
 second = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     store=False,
     reasoning={"effort": "medium"},
     include=["reasoning.encrypted_content"],
@@ -604,7 +604,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 let job = await openai.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   background: true,
   store: true,
   input: "Analyze this large log bundle and cluster the primary failure modes.",
@@ -634,7 +634,7 @@ import time
 client = OpenAI()
 
 job = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     background=True,
     store=True,
     input="Analyze this large log bundle and cluster the primary failure modes.",
@@ -716,7 +716,7 @@ ws.on("open", () => {
   ws.send(
     JSON.stringify({
       type: "response.create",
-      model: "gpt-5.5",
+      model: "gpt-5.6",
       store: false,
       input: [
         {
@@ -760,7 +760,7 @@ ws.send(
     json.dumps(
         {
             "type": "response.create",
-            "model": "gpt-5.5",
+            "model": "gpt-5.6",
             "store": False,
             "input": [
                 {

@@ -36,7 +36,7 @@ class MyChatKitServer(ChatKitServer):
         super().__init__(data_store, file_store)
 
     assistant_agent = Agent[AgentContext](
-        model="gpt-5.5",
+        model="gpt-5.6",
         name="Assistant",
         instructions="You are a helpful assistant",
     )
@@ -115,7 +115,7 @@ async def add_to_todo_list(ctx: RunContextWrapper[AgentContext], item: str) -> N
     )
 
 assistant_agent = Agent[AgentContext](
-    model="gpt-5.5",
+    model="gpt-5.6",
     name="Assistant",
     instructions="You are a helpful assistant",
     tools=[add_to_todo_list],

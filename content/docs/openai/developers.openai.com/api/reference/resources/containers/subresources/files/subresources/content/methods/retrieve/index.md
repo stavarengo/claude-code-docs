@@ -2,7 +2,7 @@
 
 **get** `/containers/{container_id}/files/{file_id}/content`
 
-Retrieve Container File Content
+Retrieve container file content
 
 ### Path Parameters
 

@@ -18,7 +18,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-    model: "gpt-5.5",
+    model: "gpt-5.6",
     input: "Generate an image of gray tabby cat hugging an otter with an orange scarf",
     tools: [{type: "image_generation"}],
 });
@@ -42,7 +42,7 @@ import base64
 client = OpenAI() 
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
     tools=[{"type": "image_generation"}],
 )
@@ -121,7 +121,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   input:
     "Generate an image of gray tabby cat hugging an otter with an orange scarf",
   tools: [{ type: "image_generation" }],
@@ -140,7 +140,7 @@ if (imageData.length > 0) {
 // Follow up
 
 const response_fwup = await openai.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   previous_response_id: response.id,
   input: "Now make it look realistic",
   tools: [{ type: "image_generation" }],
@@ -167,7 +167,7 @@ import base64
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
     tools=[{"type": "image_generation"}],
 )
@@ -188,7 +188,7 @@ if image_data:
 # Follow up
 
 response_fwup = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     previous_response_id=response.id,
     input="Now make it look realistic",
     tools=[{"type": "image_generation"}],
@@ -216,7 +216,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   input:
     "Generate an image of gray tabby cat hugging an otter with an orange scarf",
   tools: [{ type: "image_generation" }],
@@ -237,7 +237,7 @@ if (imageData.length > 0) {
 // Follow up
 
 const response_fwup = await openai.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   input: [
     {
       role: "user",
@@ -270,7 +270,7 @@ import openai
 import base64
 
 response = openai.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
     tools=[{"type": "image_generation"}],
 )
@@ -293,7 +293,7 @@ if image_data:
 # Follow up
 
 response_fwup = openai.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input=[
         {
             "role": "user",
@@ -342,7 +342,7 @@ function saveBase64Image(filename, imageBase64) {
 }
 
 const stream = await openai.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   input:
     "Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape",
   stream: true,
@@ -377,7 +377,7 @@ def save_base64_image(filename, image_base64):
         f.write(image_bytes)
 
 stream = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input="Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape",
     stream=True,
     tools=[{"type": "image_generation", "partial_images": 2}],

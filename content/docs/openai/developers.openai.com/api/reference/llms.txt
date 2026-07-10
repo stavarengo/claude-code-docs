@@ -20,6 +20,7 @@ Each entry has a Markdown twin at `/api/reference/<slug>.md`.
 - [Realtime Beta Overview](https://developers.openai.com/api/reference/realtime-beta/overview.md)
 
 ## Resources
+- [Assistants streaming events](https://developers.openai.com/api/reference/resources/beta/subresources/assistants/streaming-events.md): OpenAI API streaming event reference.
 - [Audio](https://developers.openai.com/api/reference/resources/audio.md): OpenAI API endpoint reference.
 - [Audio Speech — Create](https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create.md): OpenAI API endpoint method reference.
 - [Audio Transcriptions — Create](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create.md): OpenAI API endpoint method reference.
@@ -50,6 +51,8 @@ Each entry has a Markdown twin at `/api/reference/<slug>.md`.
 - [Beta Chatkit Threads — List](https://developers.openai.com/api/reference/resources/beta/subresources/chatkit/subresources/threads/methods/list.md): OpenAI API endpoint method reference.
 - [Beta Chatkit Threads — List Items](https://developers.openai.com/api/reference/resources/beta/subresources/chatkit/subresources/threads/methods/list_items.md): OpenAI API endpoint method reference.
 - [Beta Chatkit Threads — Retrieve](https://developers.openai.com/api/reference/resources/beta/subresources/chatkit/subresources/threads/methods/retrieve.md): OpenAI API endpoint method reference.
+- [Beta Responses streaming events](https://developers.openai.com/api/reference/resources/beta/subresources/responses/streaming-events.md): OpenAI API streaming event reference.
+- [Beta Responses WebSocket events](https://developers.openai.com/api/reference/resources/beta/subresources/responses/websocket-events.md): OpenAI API streaming event reference.
 - [Beta Threads](https://developers.openai.com/api/reference/resources/beta/subresources/threads.md): OpenAI API endpoint reference.
 - [Beta Threads — Create](https://developers.openai.com/api/reference/resources/beta/subresources/threads/methods/create.md): OpenAI API endpoint method reference.
 - [Beta Threads — Delete](https://developers.openai.com/api/reference/resources/beta/subresources/threads/methods/delete.md): OpenAI API endpoint method reference.
@@ -73,6 +76,7 @@ Each entry has a Markdown twin at `/api/reference/<slug>.md`.
 - [Beta Threads Runs Steps — Retrieve](https://developers.openai.com/api/reference/resources/beta/subresources/threads/subresources/runs/subresources/steps/methods/retrieve.md): OpenAI API endpoint method reference.
 - [Chat](https://developers.openai.com/api/reference/resources/chat.md): OpenAI API endpoint reference.
 - [Chat Completions — Retrieve](https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/retrieve.md): OpenAI API endpoint method reference.
+- [Chat Completions streaming events](https://developers.openai.com/api/reference/resources/chat/subresources/completions/streaming-events.md): OpenAI API streaming event reference.
 - [Completions](https://developers.openai.com/api/reference/resources/completions.md): OpenAI API endpoint reference.
 - [Completions — Create](https://developers.openai.com/api/reference/resources/completions/methods/create.md): OpenAI API endpoint method reference.
 - [Containers](https://developers.openai.com/api/reference/resources/containers.md): OpenAI API endpoint reference.
@@ -112,6 +116,8 @@ Each entry has a Markdown twin at `/api/reference/<slug>.md`.
 - [Fine Tuning Jobs — List](https://developers.openai.com/api/reference/resources/fine_tuning/subresources/jobs/methods/list.md): OpenAI API endpoint method reference.
 - [Fine Tuning Jobs Checkpoints — List](https://developers.openai.com/api/reference/resources/fine_tuning/subresources/jobs/subresources/checkpoints/methods/list.md): OpenAI API endpoint method reference.
 - [Graders](https://developers.openai.com/api/reference/resources/graders.md): OpenAI API endpoint reference.
+- [Image edit streaming events](https://developers.openai.com/api/reference/resources/images/edit-streaming-events.md): OpenAI API streaming event reference.
+- [Image generation streaming events](https://developers.openai.com/api/reference/resources/images/generation-streaming-events.md): OpenAI API streaming event reference.
 - [Images](https://developers.openai.com/api/reference/resources/images.md): OpenAI API endpoint reference.
 - [Images — Create Variation](https://developers.openai.com/api/reference/resources/images/methods/create_variation.md): OpenAI API endpoint method reference.
 - [Models](https://developers.openai.com/api/reference/resources/models.md): OpenAI API endpoint reference.
@@ -200,8 +206,12 @@ Each entry has a Markdown twin at `/api/reference/<slug>.md`.
 - [Realtime Calls — Hangup](https://developers.openai.com/api/reference/resources/realtime/subresources/calls/methods/hangup.md): OpenAI API endpoint method reference.
 - [Realtime Calls — Refer](https://developers.openai.com/api/reference/resources/realtime/subresources/calls/methods/refer.md): OpenAI API endpoint method reference.
 - [Realtime Calls — Reject](https://developers.openai.com/api/reference/resources/realtime/subresources/calls/methods/reject.md): OpenAI API endpoint method reference.
+- [Realtime client events](https://developers.openai.com/api/reference/resources/realtime/client-events.md): OpenAI API streaming event reference.
 - [Realtime Client Secrets](https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets.md): OpenAI API endpoint reference.
 - [Realtime Client Secrets — Create](https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets/methods/create.md): OpenAI API endpoint method reference.
+- [Realtime server events](https://developers.openai.com/api/reference/resources/realtime/server-events.md): OpenAI API streaming event reference.
+- [Realtime translation client events](https://developers.openai.com/api/reference/resources/realtime/translation-client-events.md): OpenAI API streaming event reference.
+- [Realtime translation server events](https://developers.openai.com/api/reference/resources/realtime/translation-server-events.md): OpenAI API streaming event reference.
 - [Responses](https://developers.openai.com/api/reference/resources/responses.md): OpenAI API endpoint reference.
 - [Responses — Cancel](https://developers.openai.com/api/reference/resources/responses/methods/cancel.md): OpenAI API endpoint method reference.
 - [Responses — Compact](https://developers.openai.com/api/reference/resources/responses/methods/compact.md): OpenAI API endpoint method reference.
@@ -210,6 +220,8 @@ Each entry has a Markdown twin at `/api/reference/<slug>.md`.
 - [Responses — Retrieve](https://developers.openai.com/api/reference/resources/responses/methods/retrieve.md): OpenAI API endpoint method reference.
 - [Responses Input Items — List](https://developers.openai.com/api/reference/resources/responses/subresources/input_items/methods/list.md): OpenAI API endpoint method reference.
 - [Responses Input Tokens](https://developers.openai.com/api/reference/resources/responses/subresources/input_tokens.md): OpenAI API endpoint reference.
+- [Responses streaming events](https://developers.openai.com/api/reference/resources/responses/streaming-events.md): OpenAI API streaming event reference.
+- [Responses WebSocket events](https://developers.openai.com/api/reference/resources/responses/websocket-events.md): OpenAI API streaming event reference.
 - [Unwrap](https://developers.openai.com/api/reference/resources/webhooks/methods/unwrap.md)
 - [Uploads](https://developers.openai.com/api/reference/resources/uploads.md): OpenAI API endpoint reference.
 - [Uploads — Cancel](https://developers.openai.com/api/reference/resources/uploads/methods/cancel.md): OpenAI API endpoint method reference.
@@ -239,7 +251,7 @@ Each entry has a Markdown twin at `/api/reference/<slug>.md`.
 - [Videos — Delete](https://developers.openai.com/api/reference/resources/videos/methods/delete.md): OpenAI API endpoint method reference.
 - [Videos — List](https://developers.openai.com/api/reference/resources/videos/methods/list.md): OpenAI API endpoint method reference.
 - [Videos — Retrieve](https://developers.openai.com/api/reference/resources/videos/methods/retrieve.md): OpenAI API endpoint method reference.
-- [Webhooks](https://developers.openai.com/api/reference/resources/webhooks.md): OpenAI API endpoint reference.
+- [Webhooks events](https://developers.openai.com/api/reference/resources/webhooks.md): OpenAI API streaming event reference.
 
 ## Responses
 - [Responses Overview](https://developers.openai.com/api/reference/responses/overview.md)

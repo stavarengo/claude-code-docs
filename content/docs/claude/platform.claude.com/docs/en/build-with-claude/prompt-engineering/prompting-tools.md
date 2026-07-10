@@ -1,5 +1,7 @@
 # Console prompting tools
 
+Draft, template, and refine prompts in the Claude Console with the prompt generator, prompt templates and variables, and the prompt improver.
+
 ---
 
 The Claude Console offers a suite of tools to help you build and refine prompts. This page walks through them in the order you'll typically use them: generating a first draft, adding templates and variables, then improving an existing prompt.
@@ -86,7 +88,7 @@ Translate this text from English to Spanish: {{text}}
 The prompt improver helps you quickly iterate and improve your prompts through automated analysis and enhancement. It excels at making prompts more robust for complex tasks that require high accuracy.
 
 <Frame>
-  ![](/docs/images/prompt_improver.png)
+  ![Claude Console prompt improver showing the four-step improvement modal](/docs/images/prompt_improver.png)
 </Frame>
 
 ### Before you begin

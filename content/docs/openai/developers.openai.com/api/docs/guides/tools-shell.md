@@ -26,7 +26,7 @@ curl -L 'https://api.openai.com/v1/responses' \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "tools": [
       { "type": "shell", "environment": { "type": "container_auto" } }
     ],
@@ -49,7 +49,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   tools: [{ type: "shell", environment: { type: "container_auto" } }],
   input: [
     {
@@ -75,7 +75,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     tools=[{"type": "shell", "environment": {"type": "container_auto"}}],
     input=[
         {
@@ -171,7 +171,7 @@ curl -L 'https://api.openai.com/v1/responses' \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "tools": [
       {
         "type": "shell",
@@ -191,7 +191,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   tools: [
     {
       type: "shell",
@@ -213,7 +213,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     tools=[
         {
             "type": "shell",
@@ -300,7 +300,7 @@ curl -L 'https://api.openai.com/v1/responses' \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "tool_choice": "required",
     "tools": [
       {
@@ -329,7 +329,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   tool_choice: "required",
   tools: [
     {
@@ -361,7 +361,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     tool_choice="required",
     tools=[
         {
@@ -445,7 +445,7 @@ curl -L 'https://api.openai.com/v1/responses' \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "tools": [
       {
         "type": "shell",
@@ -500,7 +500,7 @@ const container = await client.containers.create({
 });
 
 const response = await client.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   tools: [
     {
       type: "shell",
@@ -560,7 +560,7 @@ container = client.containers.create(
 )
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     tools=[
         {
             "type": "shell",
@@ -651,7 +651,7 @@ curl -L 'https://api.openai.com/v1/responses' \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "input": [
       {
         "role": "user",
@@ -687,7 +687,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   input: [
     {
       role: "user",
@@ -726,7 +726,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input=[
         {
             "role": "user",
@@ -770,7 +770,7 @@ curl -L 'https://api.openai.com/v1/responses' \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "previous_response_id": "resp_2a8e5c9174d63b0f18a4c572de9f64a1b3c76d508e12f9ab47",
     "tools": [
       {
@@ -791,7 +791,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   previous_response_id: "resp_2a8e5c9174d63b0f18a4c572de9f64a1b3c76d508e12f9ab47",
   tools: [
     {
@@ -814,7 +814,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     previous_response_id="resp_2a8e5c9174d63b0f18a4c572de9f64a1b3c76d508e12f9ab47",
     tools=[
         {
@@ -868,7 +868,7 @@ curl -L 'https://api.openai.com/v1/responses' \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "instructions": "The local bash shell environment is on Mac.",
     "input": "find me the largest pdf file in ~/Documents",
     "tools": [{ "type": "shell", "environment": { "type": "local" } }]
@@ -881,7 +881,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     instructions="The local bash shell environment is on Mac.",
     input="find me the largest pdf file in ~/Documents",
     tools=[{"type": "shell", "environment": {"type": "local"}}],
@@ -896,7 +896,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-    model: "gpt-5.5",
+    model: "gpt-5.6",
     instructions: "The local bash shell environment is on Mac.",
     input: "find me the largest pdf file in ~/Documents",
     tools: [{ type: "shell", environment: { type: "local" } }],
@@ -1042,7 +1042,7 @@ const shell = new LocalShell();
 
 const agent = new Agent({
   name: "Shell Assistant",
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   instructions:
     "You can execute shell commands to inspect the repository. Keep responses concise and include command output when helpful.",
   tools: [
@@ -1098,7 +1098,7 @@ shell_tool = ShellTool(
 
 agent = Agent(
     name="Shell Assistant",
-    model="gpt-5.5",
+    model="gpt-5.6",
     instructions="You can execute shell commands to inspect the repository. Keep responses concise and include command output when helpful.",
     tools=[shell_tool],
 )

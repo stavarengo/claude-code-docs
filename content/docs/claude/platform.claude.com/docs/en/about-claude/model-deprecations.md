@@ -1,5 +1,7 @@
 # Model deprecations
 
+See which Claude models are active, deprecated, or retired, and find retirement dates and recommended replacements for models and API parameters.
+
 ---
 
 As safer and more capable models launch, Anthropic regularly retires older ones. Applications relying on Anthropic models may need occasional updates to keep working. Impacted customers will always be notified by email and in the documentation.

@@ -2,7 +2,7 @@
 
 **post** `/containers`
 
-Create Container
+Create container
 
 ### Body Parameters
 

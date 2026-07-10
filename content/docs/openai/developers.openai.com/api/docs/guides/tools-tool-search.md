@@ -118,7 +118,7 @@ crm_namespace = {
 }
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input="List open orders for customer CUST-12345.",
     tools=[
         crm_namespace,
@@ -175,7 +175,7 @@ const crmNamespace = {
 };
 
 const response = await client.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   input: "List open orders for customer CUST-12345.",
   // highlight-start:subtle
   tools: [crmNamespace, { type: "tool_search" }],
@@ -267,7 +267,7 @@ from openai import OpenAI
 client = OpenAI()
 
 first_response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input="Find the shipping ETA tool first, then use it for order_42.",
     tools=[
         {
@@ -311,7 +311,7 @@ loaded_tools = [
 ]
 
 second_response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input=[
         *first_response.output,
         {
@@ -337,7 +337,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const firstResponse = await client.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   input: "Find the shipping ETA tool first, then use it for order_42.",
   tools: [
     {
@@ -381,7 +381,7 @@ const loadedTools = [
 ];
 
 const secondResponse = await client.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   input: [
     ...firstResponse.output,
     {

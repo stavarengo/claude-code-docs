@@ -1,8 +1,10 @@
 # Mitigate jailbreaks and prompt injections
 
+Defend your application against jailbreaks and prompt injection with input screening, hardened system prompts, and safe handling of untrusted tool content.
+
 ---
 
-Jailbreaking and prompt injection are attempts to make Claude ignore its guidelines or your instructions. While Claude is inherently resilient to such attacks, the additional steps on this page strengthen your guardrails, particularly against uses that violate our [Terms of Service](https://www.anthropic.com/legal/commercial-terms) or [Usage Policy](https://www.anthropic.com/legal/aup).
+Jailbreaking and prompt injection are attempts to make Claude ignore its guidelines or your instructions. While Claude is inherently resilient to such attacks, the additional steps on this page strengthen your guardrails, particularly against uses that violate Anthropic's [Terms of Service](https://www.anthropic.com/legal/commercial-terms) or [Usage Policy](https://www.anthropic.com/legal/aup).
 
 These attacks fall into two categories with different threat models:
 

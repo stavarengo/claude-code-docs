@@ -101,6 +101,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Model selection](https://developers.openai.com/api/docs/guides/model-selection.md): Learn how to choose the right model by balancing accuracy, latency, and cost for optimal performance.
 - [Models and providers](https://developers.openai.com/api/docs/guides/agents/models.md): Learn how to choose models, set defaults, and think about providers and transport in the OpenAI Agents SDK.
 - [Moderation](https://developers.openai.com/api/docs/guides/moderation.md): Learn how to identify harmful content in text and images with OpenAI moderation models.
+- [Multi-agent](https://developers.openai.com/api/docs/guides/tools-multi-agent.md): Enable Responses API Multi-agent, handle client-side HTTP and WebSocket flows, and read Multi-agent output items.
 - [Node reference](https://developers.openai.com/api/docs/guides/node-reference.md): Explore all available nodes for composing workflows in Agent Builder.
 - [OpenAI models in Amazon Bedrock](https://developers.openai.com/api/docs/guides/amazon-bedrock.md): Learn how Amazon Bedrock availability differs from the OpenAI API, including supported capabilities, AWS-managed controls, and pricing considerations.
 - [Optimizing LLM Accuracy](https://developers.openai.com/api/docs/guides/optimizing-llm-accuracy.md): Learn strategies to enhance the accuracy of large language models using techniques like prompt engineering, retrieval-augmented generation, and fine-tuning.
@@ -109,12 +110,13 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Priority processing](https://developers.openai.com/api/docs/guides/priority-processing.md): Get faster processing in the API while retaining flexible pay-as-you-go pricing.
 - [Private Link](https://developers.openai.com/api/docs/guides/private-link.md): Configure Azure Private Link endpoints, DNS, health checks, and cross-region routing for the OpenAI API.
 - [Production best practices](https://developers.openai.com/api/docs/guides/production-best-practices.md): Explore best practices for transitioning your AI projects from prototype to production, including scaling, security, and cost management.
+- [Programmatic Tool Calling](https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling.md): Configure Programmatic Tool Calling, control which tools programs can invoke, and resume programs after client-owned function calls.
 - [Prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching.md): Learn how prompt caching reduces latency and cost for long prompts in OpenAI's API.
 - [Prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering.md): Learn strategies and tactics for better results using large language models in the OpenAI API.
 - [Prompt generation](https://developers.openai.com/api/docs/guides/prompt-generation.md): Learn how to generate prompts, functions, and schemas in the OpenAI API's Playground.
-- [Prompt guidance](https://developers.openai.com/api/docs/guides/prompt-guidance.md)
 - [Prompt optimizer](https://developers.openai.com/api/docs/guides/prompt-optimizer.md): Learn how to use your dataset to automatically improve your prompts.
 - [Prompting](https://developers.openai.com/api/docs/guides/prompting.md): Learn how to create, optimize, and maintain prompts with OpenAI models.
+- [Prompting guidance for GPT-5.6 Sol](https://developers.openai.com/api/docs/guides/prompt-guidance-gpt-5p6.md): Machine-readable prompting guidance for adapting prompts and agents to GPT-5.6 Sol.
 - [Quickstart](https://developers.openai.com/api/docs/guides/agents/quickstart.md): Build your first agent with the OpenAI Agents SDK, add tools and handoffs, and understand where to go next.
 - [Rate limits](https://developers.openai.com/api/docs/guides/rate-limits.md): Rate limits are restrictions that our API imposes on the number of times a user or client can access our services within a specified period of time.
 - [Realtime and audio](https://developers.openai.com/api/docs/guides/realtime.md): Learn which realtime and audio guide to use for each speech application.
@@ -152,7 +154,15 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Under 18 API Guidance](https://developers.openai.com/api/docs/guides/safety-checks/under-18-api-guidance.md)
 - [Upgrading to GPT-5.4](https://developers.openai.com/api/docs/guides/upgrading-to-gpt-5p4.md): Guidance for upgrading OpenAI API model strings and directly related prompts to GPT-5.4.
 - [Upgrading to GPT-5.5](https://developers.openai.com/api/docs/guides/upgrading-to-gpt-5p5.md): Guidance for upgrading OpenAI API model strings and directly related prompts to GPT-5.5.
-- [Using GPT-5.5](https://developers.openai.com/api/docs/guides/latest-model.md): Learn how to use and migrate to GPT-5.5, the latest model in the OpenAI API.
+- [Upgrading to GPT-5.6 Sol](https://developers.openai.com/api/docs/guides/upgrading-to-gpt-5p6-sol.md): Machine-readable guidance for migrating OpenAI API integrations to GPT-5.6 Sol and the GPT-5.6 family.
+- [Using GPT-4.1](https://developers.openai.com/api/docs/guides/latest-model/gpt-4.1.md): Learn how to use, migrate to, and prompt GPT-4.1 in the OpenAI API.
+- [Using GPT-5](https://developers.openai.com/api/docs/guides/latest-model/gpt-5.md): Learn how to use, migrate to, and prompt GPT-5 in the OpenAI API.
+- [Using GPT-5.1](https://developers.openai.com/api/docs/guides/latest-model/gpt-5.1.md): Learn how to use, migrate to, and prompt GPT-5.1 in the OpenAI API.
+- [Using GPT-5.2](https://developers.openai.com/api/docs/guides/latest-model/gpt-5.2.md): Learn how to use, migrate to, and prompt GPT-5.2 in the OpenAI API.
+- [Using GPT-5.3-Codex](https://developers.openai.com/api/docs/guides/latest-model/gpt-5.3-codex.md): Learn how to use, migrate to, and prompt GPT-5.3-Codex in the Responses API.
+- [Using GPT-5.4](https://developers.openai.com/api/docs/guides/latest-model/gpt-5.4.md): Learn how to use, migrate to, and prompt GPT-5.4 in the OpenAI API.
+- [Using GPT-5.5](https://developers.openai.com/api/docs/guides/latest-model/gpt-5.5.md): Learn how to use and migrate to GPT-5.5 in the OpenAI API.
+- [Using GPT-5.6](https://developers.openai.com/api/docs/guides/latest-model/gpt-5.6.md): Learn how to use and migrate to GPT-5.6, the latest model family in the OpenAI API.
 - [Using realtime models](https://developers.openai.com/api/docs/guides/realtime-models-prompting.md): Learn how to use realtime voice models, including Realtime 2 reasoning, preambles, tool use, and migration from earlier realtime models.
 - [Using tools](https://developers.openai.com/api/docs/guides/tools.md): Use powerful tools like remote MCP servers, or built-in tools like web search and file search to extend the model's capabilities.
 - [Vector embeddings](https://developers.openai.com/api/docs/guides/embeddings.md): Learn how to turn text into numbers, unlocking use cases like search, clustering, and more with OpenAI API embeddings.

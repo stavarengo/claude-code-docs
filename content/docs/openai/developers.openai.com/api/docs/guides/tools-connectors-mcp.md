@@ -32,7 +32,7 @@ curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \ 
 -H "Authorization: Bearer $OPENAI_API_KEY" \ 
 -d '{
-  "model": "gpt-5.5",
+  "model": "gpt-5.6",
     "tools": [
       {
         "type": "mcp",
@@ -51,7 +51,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   tools: [
     {
       type: "mcp",
@@ -73,7 +73,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     tools=[
         {
             "type": "mcp",
@@ -93,7 +93,7 @@ print(resp.output_text)
 using OpenAI.Responses;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-5.5", apiKey: key);
+OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
 
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateMcpTool(
@@ -132,7 +132,7 @@ curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer $OPENAI_API_KEY" \
 -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "tools": [
       {
         "type": "mcp",
@@ -151,7 +151,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   tools: [
     {
       type: "mcp",
@@ -173,7 +173,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     tools=[
         {
             "type": "mcp",
@@ -194,7 +194,7 @@ using OpenAI.Responses;
 
 string dropboxToken = Environment.GetEnvironmentVariable("DROPBOX_OAUTH_ACCESS_TOKEN")!;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-5.5", apiKey: key);
+OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
 
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateMcpTool(
@@ -318,7 +318,7 @@ curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer $OPENAI_API_KEY" \
 -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "tools": [
       {
         "type": "mcp",
@@ -338,7 +338,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   tools: [{
     type: "mcp",
     server_label: "dmcp",
@@ -359,7 +359,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     tools=[{
         "type": "mcp",
         "server_label": "dmcp",
@@ -378,7 +378,7 @@ print(resp.output_text)
 using OpenAI.Responses;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-5.5", apiKey: key);
+OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
 
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateMcpTool(
@@ -442,7 +442,7 @@ curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer $OPENAI_API_KEY" \
 -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "tools": [
       {
         "type": "mcp",
@@ -466,7 +466,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   tools: [{
     type: "mcp",
     server_label: "dmcp",
@@ -491,7 +491,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     tools=[{
         "type": "mcp",
         "server_label": "dmcp",
@@ -514,7 +514,7 @@ print(resp.output_text)
 using OpenAI.Responses;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-5.5", apiKey: key);
+OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
 
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateMcpTool(
@@ -553,7 +553,7 @@ curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer $OPENAI_API_KEY" \
 -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "tools": [
       {
         "type": "mcp",
@@ -575,7 +575,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   tools: [
     {
       type: "mcp",
@@ -600,7 +600,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     tools=[
         {
             "type": "mcp",
@@ -623,7 +623,7 @@ print(resp.output_text)
 using OpenAI.Responses;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-5.5", apiKey: key);
+OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
 
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateMcpTool(
@@ -654,7 +654,7 @@ curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer $OPENAI_API_KEY" \
 -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "input": "Create a payment link for $20",
     "tools": [
       {
@@ -672,7 +672,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   input: "Create a payment link for $20",
   tools: [
     {
@@ -693,7 +693,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input="Create a payment link for $20",
     tools=[
         {
@@ -713,7 +713,7 @@ using OpenAI.Responses;
 
 string authToken = Environment.GetEnvironmentVariable("STRIPE_OAUTH_ACCESS_TOKEN")!;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-5.5", apiKey: key);
+OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
 
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateMcpTool(
@@ -776,7 +776,7 @@ curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "tools": [
       {
         "type": "mcp",
@@ -795,7 +795,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   tools: [
     {
       type: "mcp",
@@ -817,7 +817,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     tools=[
         {
             "type": "mcp",
@@ -838,7 +838,7 @@ using OpenAI.Responses;
 
 string authToken = Environment.GetEnvironmentVariable("GOOGLE_CALENDAR_OAUTH_ACCESS_TOKEN")!;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-5.5", apiKey: key);
+OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
 
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateMcpTool(

@@ -98,7 +98,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     tools=[{
         "type": "web_search",
         "search_context_size": "low",
@@ -113,7 +113,7 @@ print(response.output_text)
 using OpenAI.Responses;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-5.5", apiKey: key);
+OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
 
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateWebSearchTool(
@@ -136,7 +136,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-    model: "gpt-5.5",
+    model: "gpt-5.6",
     tools: [{
         type: "web_search",
         search_context_size: "low",
@@ -151,7 +151,7 @@ curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-        "model": "gpt-5.5",
+        "model": "gpt-5.6",
         "tools": [{
             "type": "web_search",
             "search_context_size": "low"
@@ -185,7 +185,7 @@ curl "https://api.openai.com/v1/responses" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "reasoning": { "effort": "xhigh" },
     "tools": [
       {
@@ -202,7 +202,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-    model: "gpt-5.5",
+    model: "gpt-5.6",
     reasoning: { effort: "xhigh" },
     tools: [
         {
@@ -230,7 +230,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     reasoning={"effort": "xhigh"},
     tools=[
         {
@@ -272,7 +272,7 @@ curl "https://api.openai.com/v1/responses" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "reasoning": { "effort": "low" },
     "tools": [
       {
@@ -304,7 +304,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-    model: "gpt-5.5",
+    model: "gpt-5.6",
     reasoning: { effort: "low" },
     tools: [
         {
@@ -338,7 +338,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     reasoning={"effort": "low"},
     tools=[
         {
@@ -392,7 +392,7 @@ curl "https://api.openai.com/v1/responses" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "reasoning": { "effort": "low" },
     "tools": [
       {
@@ -414,7 +414,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-    model: "gpt-5.5",
+    model: "gpt-5.6",
     reasoning: { effort: "low" },
     tools: [
         {
@@ -438,7 +438,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     reasoning={"effort": "low"},
     tools=[
         {
@@ -507,7 +507,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     tools=[{
         "type": "web_search",
         "user_location": {
@@ -527,7 +527,7 @@ print(response.output_text)
 using OpenAI.Responses;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-5.5", apiKey: key);
+OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
 
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateWebSearchTool(
@@ -554,7 +554,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-    model: "gpt-5.5",
+    model: "gpt-5.6",
     tools: [{
         type: "web_search",
         user_location: {
@@ -574,7 +574,7 @@ curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-        "model": "gpt-5.5",
+        "model": "gpt-5.6",
         "tools": [{
             "type": "web_search",
             "user_location": {
@@ -610,7 +610,7 @@ curl "https://api.openai.com/v1/responses" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "tools": [
       { "type": "web_search", "external_web_access": false }
     ],
@@ -624,7 +624,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   tools: [
     { type: "web_search", external_web_access: false },
   ],
@@ -640,7 +640,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     tools=[{"type": "web_search", "external_web_access": False}],
     tool_choice="auto",
     input="Find when the Eiffel Tower opened to the public and cite the source.",

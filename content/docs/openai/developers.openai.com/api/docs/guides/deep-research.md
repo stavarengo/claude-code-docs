@@ -205,7 +205,7 @@ IMPORTANT: Do NOT conduct any research yourself, just gather information that wi
 input_text = "Research surfboards for me. I'm interested in ...";
 
 response = client.responses.create(
-  model="gpt-5.5",
+  model="gpt-5.6",
   input=input_text,
   instructions=instructions,
 )
@@ -232,7 +232,7 @@ IMPORTANT: Do NOT conduct any research yourself, just gather information that wi
 const input = "Research surfboards for me. I'm interested in ...";
 
 const response = await openai.responses.create({
-model: "gpt-5.5",
+model: "gpt-5.6",
 input,
 instructions,
 });
@@ -245,7 +245,7 @@ curl https://api.openai.com/v1/responses \
 -H "Authorization: Bearer $OPENAI_API_KEY" \
 -H "Content-Type: application/json" \
 -d '{
-  "model": "gpt-5.5",
+  "model": "gpt-5.6",
   "input": "Research surfboards for me. Im interested in ...",
   "instructions": "You are talking to a user who is asking for a research task to be conducted. Your job is to gather more information from the user to successfully complete the task. GUIDELINES: - Be concise while gathering all necessary information** - Make sure to gather all the information needed to carry out the research task in a concise, well-structured manner. - Use bullet points or numbered lists if appropriate for clarity. - Don't ask for unnecessary information, or information that the user has already provided. IMPORTANT: Do NOT conduct any research yourself, just gather information that will be given to a researcher to conduct the research task."
 }'
@@ -327,7 +327,7 @@ Examples:
 input_text = "Research surfboards for me. I'm interested in ..."
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input=input_text,
     instructions=instructions,
 )
@@ -408,7 +408,7 @@ Examples:
 const input = "Research surfboards for me. I'm interested in ...";
 
 const response = await openai.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   input,
   instructions,
 });
@@ -421,7 +421,7 @@ curl https://api.openai.com/v1/responses \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "input": "Research surfboards for me. Im interested in ...",
     "instructions": "You are a helpful assistant that generates a prompt for a deep research task. Examine the users prompt and generate a set of clarifying questions that will help the deep research model generate a better response."
   }'

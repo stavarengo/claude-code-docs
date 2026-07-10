@@ -1,5 +1,7 @@
 # Define success criteria and build evaluations
 
+Define measurable success criteria for your LLM application and build evaluations to test it, from exact match checks to LLM-based grading.
+
 ---
 
 Building a successful LLM-based application starts with clearly defining your success criteria and then designing evaluations to measure performance against them. This cycle is central to prompt engineering.

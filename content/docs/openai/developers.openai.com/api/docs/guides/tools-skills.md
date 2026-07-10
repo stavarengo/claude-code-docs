@@ -66,7 +66,7 @@ curl -L 'https://api.openai.com/v1/responses' \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "tools": [
       {
         "type": "shell",
@@ -89,7 +89,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   tools: [
     {
       type: "shell",
@@ -114,7 +114,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     tools=[
         {
             "type": "shell",
@@ -154,7 +154,7 @@ curl -L 'https://api.openai.com/v1/responses' \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "tools": [
       {
         "type": "shell",
@@ -180,7 +180,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   tools: [
     {
       type: "shell",
@@ -208,7 +208,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     tools=[
         {
             "type": "shell",

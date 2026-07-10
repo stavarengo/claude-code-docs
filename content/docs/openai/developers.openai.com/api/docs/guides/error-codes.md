@@ -231,7 +231,7 @@ client = OpenAI()
 try:
   #Make your OpenAI API request here
   response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input="Hello world"
   )
 except openai.APIError as e:

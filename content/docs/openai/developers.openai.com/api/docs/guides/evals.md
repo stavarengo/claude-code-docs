@@ -37,7 +37,7 @@ curl https://api.openai.com/v1/responses \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -H "Content-Type: application/json" \
     -d '{
-        "model": "gpt-5.5",
+        "model": "gpt-5.6",
         "input": [
             {
                 "role": "developer",
@@ -64,7 +64,7 @@ or "Other". Respond with only one of those words.
 const ticket = "My monitor won't turn on - help!";
 
 const response = await client.responses.create({
-    model: "gpt-5.5",
+    model: "gpt-5.6",
     input: [
         { role: "developer", content: instructions },
         { role: "user", content: ticket },
@@ -87,7 +87,7 @@ or "Other". Respond with only one of those words.
 ticket = "My monitor won't turn on - help!"
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input=[
         {"role": "developer", "content": instructions},
         {"role": "user", "content": ticket},
@@ -361,7 +361,7 @@ curl https://api.openai.com/v1/evals/YOUR_EVAL_ID/runs \
         "name": "Categorization text run",
         "data_source": {
             "type": "responses",
-            "model": "gpt-5.5",
+            "model": "gpt-5.6",
             "input_messages": {
                 "type": "template",
                 "template": [
@@ -382,7 +382,7 @@ const run = await openai.evals.runs.create("YOUR_EVAL_ID", {
     name: "Categorization text run",
     data_source: {
         type: "responses",
-        model: "gpt-5.5",
+        model: "gpt-5.6",
         input_messages: {
             type: "template",
             template: [
@@ -406,7 +406,7 @@ run = client.evals.runs.create(
     name="Categorization text run",
     data_source={
         "type": "responses",
-        "model": "gpt-5.5",
+        "model": "gpt-5.6",
         "input_messages": {
             "type": "template",
             "template": [

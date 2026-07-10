@@ -178,8 +178,11 @@ Some beta APIs are scoped to specific endpoints and require a feature-specific b
 | ------------------------------------------------ | --------------------------- |
 | `/v1/agents`, `/v1/sessions`, `/v1/environments` | `managed-agents-2026-04-01` |
 | `/v1/tunnels`                                    | `mcp-tunnels-2026-06-22`    |
+| `/v1/memory_stores` and sub-resources            | `agent-memory-2026-07-22`   |
 
-The SDKs' `beta` namespaces add these headers automatically. Add them yourself only when making raw HTTP requests. See the [Managed Agents overview](/docs/en/managed-agents/overview) and the [MCP tunnels reference](/docs/en/agents-and-tools/mcp-tunnels/reference#tunnels-api) for details.
+The SDKs' `beta` namespaces add these headers automatically. Add them yourself only when making raw HTTP requests. See the [Managed Agents overview](/docs/en/managed-agents/overview), [Using agent memory](/docs/en/managed-agents/memory), and the [MCP tunnels reference](/docs/en/agents-and-tools/mcp-tunnels/reference#tunnels-api) for details.
+
+Endpoint-specific headers that apply to the same endpoint aren't always combinable. On memory store endpoints, `agent-memory-2026-07-22` replaces `managed-agents-2026-04-01`: sending both on the same request returns a `400` error. The client SDKs send the correct header for each endpoint automatically.
 
 ### Version naming conventions
 

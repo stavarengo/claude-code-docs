@@ -163,7 +163,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input="What is deep research by OpenAI?",
     tools=[{
         "type": "file_search",
@@ -178,7 +178,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-    model: "gpt-5.5",
+    model: "gpt-5.6",
     input: "What is deep research by OpenAI?",
     tools: [
         {
@@ -194,7 +194,7 @@ console.log(response);
 using OpenAI.Responses;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-5.5", apiKey: key);
+OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
 
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateFileSearchTool(["<vector_store_id>"]));
@@ -278,7 +278,7 @@ Limit the number of results
 
 ```python
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input="What is deep research by OpenAI?",
     tools=[{
         "type": "file_search",
@@ -293,7 +293,7 @@ print(response)
 
 ```javascript
 const response = await openai.responses.create({
-    model: "gpt-5.5",
+    model: "gpt-5.6",
     input: "What is deep research by OpenAI?",
     tools: [{
         type: "file_search",
@@ -317,7 +317,7 @@ Include search results
 
 ```python
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input="What is deep research by OpenAI?",
     tools=[{
         "type": "file_search",
@@ -332,7 +332,7 @@ print(response)
 
 ```javascript
 const response = await openai.responses.create({
-    model: "gpt-5.5",
+    model: "gpt-5.6",
     input: "What is deep research by OpenAI?",
     tools: [{
         type: "file_search",
@@ -357,7 +357,7 @@ Metadata filtering
 
 ```python
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input="What is deep research by OpenAI?",
     tools=[{
         "type": "file_search",
@@ -376,7 +376,7 @@ print(response)
 
 ```javascript
 const response = await openai.responses.create({
-    model: "gpt-5.5",
+    model: "gpt-5.6",
     input: "What is deep research by OpenAI?",
     tools: [{
         type: "file_search",

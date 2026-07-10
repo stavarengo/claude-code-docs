@@ -31,7 +31,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.input_tokens.count(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input="Tell me a joke."
 )
 print(response.input_tokens)
@@ -43,7 +43,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.input_tokens.count({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   input: "Tell me a joke.",
 });
 
@@ -55,14 +55,14 @@ curl https://api.openai.com/v1/responses/input_tokens \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "input": "Tell me a joke."
   }'
 ```
 
 ```cli
 openai responses:input-tokens count \
-  --model gpt-5.5 \
+  --model gpt-5.6 \
   --input "Tell me a joke." \
   --raw-output \
   --transform input_tokens
@@ -79,7 +79,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.input_tokens.count(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input=[
         {"role": "user", "content": "What is 2 + 2?"},
         {"role": "assistant", "content": "2 + 2 equals 4."},
@@ -95,7 +95,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.input_tokens.count({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   input: [
     { role: "user", content: "What is 2 + 2?" },
     { role: "assistant", content: "2 + 2 equals 4." },
@@ -111,7 +111,7 @@ curl https://api.openai.com/v1/responses/input_tokens \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "input": [
       {"role": "user", "content": "What is 2 + 2?"},
       {"role": "assistant", "content": "2 + 2 equals 4."},
@@ -124,7 +124,7 @@ curl https://api.openai.com/v1/responses/input_tokens \
 openai responses:input-tokens count \
   --raw-output \
   --transform input_tokens <<'YAML'
-model: gpt-5.5
+model: gpt-5.6
 input:
   - role: user
     content: What is 2 + 2?
@@ -146,7 +146,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.input_tokens.count(
-    model="gpt-5.5",
+    model="gpt-5.6",
     instructions="You are a helpful assistant that explains concepts simply.",
     input="Explain quantum computing in one sentence.",
 )
@@ -159,7 +159,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.input_tokens.count({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   instructions:
     "You are a helpful assistant that explains concepts simply.",
   input: "Explain quantum computing in one sentence.",
@@ -173,7 +173,7 @@ curl https://api.openai.com/v1/responses/input_tokens \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "instructions": "You are a helpful assistant that explains concepts simply.",
     "input": "Explain quantum computing in one sentence."
   }'
@@ -183,7 +183,7 @@ curl https://api.openai.com/v1/responses/input_tokens \
 openai responses:input-tokens count \
   --raw-output \
   --transform input_tokens <<'YAML'
-model: gpt-5.5
+model: gpt-5.6
 instructions: You are a helpful assistant that explains concepts simply.
 input: Explain quantum computing in one sentence.
 YAML
@@ -203,7 +203,7 @@ client = OpenAI()
 
 # Use file_id from uploaded file, or image_url for a URL
 response = client.responses.input_tokens.count(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input=[
         {
             "role": "user",
@@ -223,7 +223,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.input_tokens.count({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   input: [
     {
       role: "user",
@@ -246,7 +246,7 @@ curl https://api.openai.com/v1/responses/input_tokens \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "input": [{
       "role": "user",
       "content": [
@@ -261,7 +261,7 @@ curl https://api.openai.com/v1/responses/input_tokens \
 openai responses:input-tokens count \
   --raw-output \
   --transform input_tokens <<'YAML'
-model: gpt-5.5
+model: gpt-5.6
 input:
   - role: user
     content:
@@ -287,7 +287,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.input_tokens.count(
-    model="gpt-5.5",
+    model="gpt-5.6",
     tools=[
         {
             "type": "function",
@@ -311,7 +311,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.input_tokens.count({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   tools: [
     {
       type: "function",
@@ -335,7 +335,7 @@ curl https://api.openai.com/v1/responses/input_tokens \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "tools": [{
       "type": "function",
       "name": "get_weather",
@@ -354,7 +354,7 @@ curl https://api.openai.com/v1/responses/input_tokens \
 openai responses:input-tokens count \
   --raw-output \
   --transform input_tokens <<'YAML'
-model: gpt-5.5
+model: gpt-5.6
 tools:
   - type: function
     name: get_weather

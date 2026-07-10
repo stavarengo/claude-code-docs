@@ -1,5 +1,7 @@
 # Prompt engineering overview
 
+Learn when prompt engineering is the right solution, and find Claude prompting techniques, Console prompting tools, and interactive tutorials.
+
 ---
 
 ## Before prompt engineering

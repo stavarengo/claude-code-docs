@@ -10,13 +10,15 @@ The API follows a predictable HTTP error code format:
 
 * 400 - `invalid_request_error`: There was an issue with the format or content of your request. This error type may also be used for other 4XX status codes not listed in this section.
 
-* 401 - `authentication_error`: There's an issue with your API key. On Claude Platform on AWS, this can also indicate a problem with your AWS credentials or SigV4 signature.
+* 401 - `authentication_error`: There's an issue with your API key (for example, it's malformed, revoked, or [expired](/docs/en/manage-claude/authentication#key-expiration)). On Claude Platform on AWS, this can also indicate a problem with your AWS credentials or SigV4 signature.
 
 * 402 - `billing_error`: There's an issue with your billing or payment information. Check your payment details in the [Claude Console](https://platform.claude.com), or in AWS Marketplace if you're using Claude Platform on AWS.
 
 * 403 - `permission_error`: Your API key does not have permission to use the specified resource.
 
 * 404 - `not_found_error`: The requested resource was not found.
+
+* 409 - `conflict_error`: The request conflicts with the current state of a resource. For example, the resource was modified concurrently, or a value that must be unique is already in use. Resolve the conflict, then retry the request.
 
 * 413 - `request_too_large`: Request exceeds the maximum allowed number of bytes. See [Request size limits](#request-size-limits) for per-endpoint maximums.
 

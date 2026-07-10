@@ -30,7 +30,7 @@ ws.send(
     json.dumps(
         {
             "type": "response.create",
-            "model": "gpt-5.5",
+            "model": "gpt-5.6",
             "store": False,
             "input": [
                 {
@@ -60,7 +60,7 @@ ws.send(
     json.dumps(
         {
             "type": "response.create",
-            "model": "gpt-5.5",
+            "model": "gpt-5.6",
             "store": False,
             "previous_response_id": "resp_123",
             "input": [
@@ -112,7 +112,7 @@ Start a new chain by omitting `previous_response_id` or setting it to `null`. Pa
 ```python
 # Compact your current window (HTTP call)
 compacted = client.responses.compact(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input=long_input_items_array,
 )
 
@@ -121,7 +121,7 @@ ws.send(
     json.dumps(
         {
             "type": "response.create",
-            "model": "gpt-5.5",
+            "model": "gpt-5.6",
             "store": False,
             "input": [
                 *compacted.output,

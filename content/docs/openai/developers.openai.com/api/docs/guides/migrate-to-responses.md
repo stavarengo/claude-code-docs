@@ -95,7 +95,7 @@ curl -s https://api.openai.com/v1/chat/completions \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d "{
-    \"model\": \"gpt-5.5\",
+    \"model\": \"gpt-5.6\",
     \"messages\": $INPUT
   }"
 
@@ -103,7 +103,7 @@ curl -s https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d "{
-    \"model\": \"gpt-5.5\",
+    \"model\": \"gpt-5.6\",
     \"input\": $INPUT
   }"
 ```
@@ -115,12 +115,12 @@ const context = [
 ];
 
 const completion = await client.chat.completions.create({
-  model: 'gpt-5.5',
+  model: 'gpt-5.6',
   messages: context
 });
 
 const response = await client.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   input: context
 });
 ```
@@ -132,12 +132,12 @@ context = [
 ]
 
 completion = client.chat.completions.create(
-  model="gpt-5.5",
+  model="gpt-5.6",
   messages=context
 )
 
 response = client.responses.create(
-  model="gpt-5.5",
+  model="gpt-5.6",
   input=context
 )
 ```
@@ -156,7 +156,7 @@ import OpenAI from 'openai';
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const completion = await client.chat.completions.create({
-  model: 'gpt-5.5',
+  model: 'gpt-5.6',
   messages: [
     { 'role': 'system', 'content': 'You are a helpful assistant.' },
     { 'role': 'user', 'content': 'Hello!' }
@@ -170,7 +170,7 @@ from openai import OpenAI
 client = OpenAI()
 
 completion = client.chat.completions.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     messages=[
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": "Hello!"}
@@ -184,7 +184,7 @@ curl https://api.openai.com/v1/chat/completions \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-      "model": "gpt-5.5",
+      "model": "gpt-5.6",
       "messages": [
           {"role": "system", "content": "You are a helpful assistant."},
           {"role": "user", "content": "Hello!"}
@@ -205,7 +205,7 @@ import OpenAI from 'openai';
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const response = await client.responses.create({
-  model: 'gpt-5.5',
+  model: 'gpt-5.6',
   instructions: 'You are a helpful assistant.',
   input: 'Hello!'
 });
@@ -218,7 +218,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     instructions="You are a helpful assistant.",
     input="Hello!"
 )
@@ -230,7 +230,7 @@ curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-      "model": "gpt-5.5",
+      "model": "gpt-5.6",
       "instructions": "You are a helpful assistant.",
       "input": "Hello!"
   }'
@@ -279,7 +279,7 @@ let messages = [
     { 'role': 'user', 'content': 'What is the capital of France?' }
   ];
 const res1 = await client.chat.completions.create({
-  model: 'gpt-5.5',
+  model: 'gpt-5.6',
   messages
 });
 
@@ -287,7 +287,7 @@ messages = messages.concat([res1.choices[0].message]);
 messages.push({ 'role': 'user', 'content': 'And its population?' });
 
 const res2 = await client.chat.completions.create({
-  model: 'gpt-5.5',
+  model: 'gpt-5.6',
   messages
 });
 ```
@@ -297,12 +297,12 @@ messages = [
     {"role": "system", "content": "You are a helpful assistant."},
     {"role": "user", "content": "What is the capital of France?"}
 ]
-res1 = client.chat.completions.create(model="gpt-5.5", messages=messages)
+res1 = client.chat.completions.create(model="gpt-5.6", messages=messages)
 
 messages += [res1.choices[0].message]
 messages += [{"role": "user", "content": "And its population?"}]
 
-res2 = client.chat.completions.create(model="gpt-5.5", messages=messages)
+res2 = client.chat.completions.create(model="gpt-5.6", messages=messages)
 ```
 
 
@@ -318,7 +318,7 @@ context = [
     { "role": "user", "content": "What is the capital of France?" }
 ]
 res1 = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input=context,
 )
 
@@ -331,7 +331,7 @@ context += [
 ]
 
 res2 = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input=context,
 )
 ```
@@ -342,7 +342,7 @@ let context = [
 ];
 
 const res1 = await client.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   input: context,
 });
 
@@ -353,7 +353,7 @@ context = context.concat(res1.output);
 context.push({ role: "user", content: "And its population?" });
 
 const res2 = await client.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   input: context,
 });
 ```
@@ -364,13 +364,13 @@ const res2 = await client.responses.create({
 
 ```javascript
 const res1 = await client.responses.create({
-  model: 'gpt-5.5',
+  model: 'gpt-5.6',
   input: 'What is the capital of France?',
   store: true
 });
 
 const res2 = await client.responses.create({
-  model: 'gpt-5.5',
+  model: 'gpt-5.6',
   input: 'And its population?',
   previous_response_id: res1.id,
   store: true
@@ -379,13 +379,13 @@ const res2 = await client.responses.create({
 
 ```python
 res1 = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input="What is the capital of France?",
     store=True
 )
 
 res2 = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input="And its population?",
     previous_response_id=res1.id,
     store=True
@@ -442,7 +442,7 @@ curl https://api.openai.com/v1/chat/completions \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-  "model": "gpt-5.5",
+  "model": "gpt-5.6",
   "messages": [
     {
       "role": "user",
@@ -484,7 +484,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.chat.completions.create(
-  model="gpt-5.5",
+  model="gpt-5.6",
   messages=[
     {
       "role": "user",
@@ -523,7 +523,7 @@ response = client.chat.completions.create(
 
 ```javascript
 const completion = await openai.chat.completions.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   messages: [
     {
       "role": "user",
@@ -570,7 +570,7 @@ curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-  "model": "gpt-5.5",
+  "model": "gpt-5.6",
   "input": "Jane, 54 years old",
   "text": {
     "format": {
@@ -603,7 +603,7 @@ curl https://api.openai.com/v1/responses \
 
 ```python
 response = client.responses.create(
-  model="gpt-5.5",
+  model="gpt-5.6",
   input="Jane, 54 years old", 
   text={
     "format": {
@@ -636,7 +636,7 @@ response = client.responses.create(
 
 ```javascript
 const response = await openai.responses.create({
-  model: "gpt-5.5",
+  model: "gpt-5.6",
   input: "Jane, 54 years old",
   text: {
     format: {
@@ -705,7 +705,7 @@ async function web_search(query) {
 }
 
 const completion = await client.chat.completions.create({
-  model: 'gpt-5.5',
+  model: 'gpt-5.6',
   messages: [
     { role: 'system', content: 'You are a helpful assistant.' },
     { role: 'user', content: 'Who is the current president of France?' }
@@ -732,7 +732,7 @@ def web_search(query):
     return r.json().get("results", [])
 
 completion = client.chat.completions.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     messages=[
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": "Who is the current president of France?"}
@@ -766,7 +766,7 @@ curl https://api.example.com/search \
 
 ```javascript
 const answer = await client.responses.create({
-  model: 'gpt-5.5',
+  model: 'gpt-5.6',
   input: 'Who is the current president of France?',
   tools: [{ type: 'web_search' }]
 });
@@ -776,7 +776,7 @@ console.log(answer.output_text);
 
 ```python
 answer = client.responses.create(
-    model="gpt-5.5",
+    model="gpt-5.6",
     input="Who is the current president of France?",
     tools=[{"type": "web_search"}]
 )
@@ -789,7 +789,7 @@ curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.5",
+    "model": "gpt-5.6",
     "input": "Who is the current president of France?",
     "tools": [{"type": "web_search"}]
   }'
