@@ -10,6 +10,10 @@ Updates to the Claude Platform, including the Claude API, client SDKs, and the C
   For updates to Claude Code, see the [complete CHANGELOG.md](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) in the `claude-code` repository.
 </Tip>
 
+### July 10, 2026
+
+* We've expanded the [Access Transparency](/docs/en/manage-claude/access-transparency) documentation of `cmek_preserve` events with a filter example, an example event payload, and two preservation reason codes (`policy_violation_investigation`, `csae_report`). The documentation now also clarifies that a preservation event is written whether the preservation was initiated by a human reviewer or an automated safety pipeline. See [CMEK content preservation](/docs/en/manage-claude/access-transparency#cmek-content-preservation).
+
 ### July 8, 2026
 
 * You can now set an expiration when you create an API key or an Admin API key in the [Claude Console](https://platform.claude.com/settings/keys). Choose a preset, a custom duration, or **Never**. For keys with a lifetime of at least 7 days, Anthropic emails the creator before expiration. Existing keys are unaffected. The Admin API reports each key's expiration in the [`expires_at`](/docs/en/api/admin/api_keys/list) field. See [Authentication](/docs/en/manage-claude/authentication#key-expiration).
@@ -21,7 +25,7 @@ Updates to the Claude Platform, including the Claude API, client SDKs, and the C
 
 ### July 1, 2026
 
-* We've restored access to Claude Fable 5 and Claude Mythos 5. See [our statement](https://www.anthropic.com/news/redeploying-fable-5-mythos-5) for more information.
+* We've restored access to Claude Fable 5 and Claude Mythos 5. See [our statement](https://www.anthropic.com/news/redeploying-fable-5) for more information.
 
 ### June 30, 2026
 
@@ -173,7 +177,7 @@ Updates to the Claude Platform, including the Claude API, client SDKs, and the C
 
 ### April 16, 2026
 
-* We've launched [Claude Opus 4.7](https://www.anthropic.com/news/claude-opus-4-7), our most capable generally available model for complex reasoning and agentic coding, at the same $5 / $25 per MTok pricing as Opus 4.6. See [What's new in Claude Opus 4.7](/docs/en/about-claude/models/whats-new-claude-4-7) for capability improvements, new features, and the updated tokenizer. Opus 4.7 includes API breaking changes versus Opus 4.6; see [Migrating to Claude Opus 4.7](/docs/en/about-claude/models/migration-guide#migrating-to-claude-opus-4-7) before upgrading.
+* We've launched [Claude Opus 4.7](https://www.anthropic.com/news/claude-opus-4-7), our most capable generally available model for complex reasoning and agentic coding, at the same $5 / $25 per MTok pricing as Opus 4.6. See [What's new in Claude Opus 4.7](/docs/en/about-claude/models/whats-new-claude-4-7) for capability improvements, new features, and the updated tokenizer. Opus 4.7 includes API breaking changes versus Opus 4.6; see [Migrating to Claude Opus 4.7](/docs/en/about-claude/models/migration-guide#migrating-from-claude-opus-46) before upgrading.
 * [Claude in Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock) is now open to all Amazon Bedrock customers. Claude Opus 4.7 and Claude Haiku 4.5 are available self-serve from the Bedrock console through the Messages API endpoint at `/anthropic/v1/messages`, in 27 AWS regions with global and regional endpoints.
 * We've launched [task budgets](/docs/en/build-with-claude/task-budgets) in beta on Claude Opus 4.7. Give Claude an advisory token budget for a full agentic loop (thinking, tool calls, tool results, and output) and the model sees a running countdown, using it to prioritize work and finish gracefully as the budget is consumed. Include the `task-budgets-2026-03-13` beta header in your requests.
 * Claude Opus 4.7 supports [high-resolution image input](/docs/en/build-with-claude/vision#high-resolution-image-support-on-claude-opus-4-7), raising the maximum image resolution from 1568 to 2576 pixels on the long edge for improved performance on computer use, screenshot understanding, and document analysis. High-resolution support is automatic and requires no beta header; images may use up to approximately 3x more image tokens than on prior models.

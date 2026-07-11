@@ -5,7 +5,7 @@ Claude Fable 5 and Claude Mythos 5 capabilities, API changes, and availability.
 ---
 
 <Tip>
-  Access to Claude Fable 5 and Claude Mythos 5 has been restored. See [our statement](https://www.anthropic.com/news/redeploying-fable-5-mythos-5) for more information.
+  Access to Claude Fable 5 and Claude Mythos 5 has been restored. See [our statement](https://www.anthropic.com/news/redeploying-fable-5) for more information.
 </Tip>
 
 Claude Fable 5 is Anthropic's most capable widely released model, built for the most demanding reasoning and long-horizon agentic work. Claude Mythos 5 shares the same capabilities and is available only in limited release through [Project Glasswing](https://anthropic.com/glasswing).
@@ -39,7 +39,7 @@ When Claude Fable 5 declines a request, the Messages API returns `stop_reason: "
 A request that Claude Fable 5 refuses can usually be served by another Claude model. There are three ways to retry:
 
 * **Server-side:** Pass the `fallbacks` parameter to have the API retry for you (in beta on the Claude API and Claude Platform on AWS). See [Server-side fallback](/docs/en/build-with-claude/refusals-and-fallback#server-side-fallback).
-* **Client-side:** Use the [SDK middleware](/docs/en/cli-sdks-libraries/middleware) (TypeScript, Python, Go, Java, and C#) to retry from the client on any platform. See [Client-side fallback](/docs/en/build-with-claude/refusals-and-fallback#client-side-fallback).
+* **Client-side:** Use the [SDK middleware](/docs/en/cli-sdks-libraries/middleware) to retry from the client on any platform. See [Client-side fallback](/docs/en/build-with-claude/refusals-and-fallback#client-side-fallback).
 * **Manual:** Build the retry yourself, on any platform and in any language. See [Fallback credit](/docs/en/build-with-claude/fallback-credit).
 
 ### Billing

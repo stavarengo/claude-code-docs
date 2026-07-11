@@ -166,6 +166,14 @@ With WebSocket, your application can inject each function output into the respon
 
 HTTP may be sufficient for workflows that require calling multiple hosted tools, such as parallel web searches, or one-request workflows with few function calls. For most Multi-agent workflows, WebSocket is likely to provide lower latency and better end-to-end performance.
 
+#### HTTP function call execution
+
+![HTTP function call execution across the application, Responses API root, and three subagents.](https://developers.openai.com/images/api/multi-agent/multi-agent-1.png)
+
+#### WebSocket function call execution
+
+![WebSocket function call execution across the application, Responses API root, and three subagents.](https://developers.openai.com/images/api/multi-agent/multi-agent-2.png)
+
 ### HTTP
 
 These examples require beta SDK builds that expose the beta Responses API. For HTTP streaming, call `client.beta.responses.create` and pass `responses_multi_agent=v1` with the `betas` argument; this enables beta types and autocomplete. In Python, import beta response item types from `openai.types.beta` when adding type annotations.

@@ -162,9 +162,7 @@ Claude 4 models excel in:
 
 If you're currently using Claude Opus 4.7 or earlier Claude models, see [Migrating to Claude Opus 4.8](/docs/en/about-claude/models/migration-guide#migrating-from-claude-opus-47).
 
-## Migrating to Claude Opus 4.7
-
-If you're currently using Claude Opus 4.6 or older Claude models, see [Migrating to Claude Opus 4.7](/docs/en/about-claude/models/migration-guide#migrating-to-claude-opus-4-7).
+If you're currently using Claude Opus 4.6 or older Claude models, see [Migrating to Claude Opus 4.8 from Claude Opus 4.6](/docs/en/about-claude/models/migration-guide#migrating-from-claude-opus-46).
 
 ## Get started with Claude
 

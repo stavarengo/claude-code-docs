@@ -289,7 +289,7 @@ These are not API breaking changes but might require prompt updates. See [Migrat
 
 ## Migration guide
 
-For step-by-step migration instructions and the full migration checklist, see [Migrating to Claude Opus 4.8](/docs/en/about-claude/models/migration-guide#migrating-from-claude-opus-47). If you are upgrading from Claude Opus 4.6 or earlier, also apply the [Claude Opus 4.7 migration steps](/docs/en/about-claude/models/migration-guide#migrating-to-claude-opus-4-7). Those steps cover breaking changes that the Claude Opus 4.8 upgrade alone does not. If you use Claude Code or the Agent SDK, the [Claude API skill](/docs/en/agents-and-tools/agent-skills/claude-api-skill) can apply these migration steps to your code base automatically.
+For step-by-step migration instructions and the full migration checklist, see [Migrating to Claude Opus 4.8](/docs/en/about-claude/models/migration-guide#migrating-from-claude-opus-47). If you are upgrading from Claude Opus 4.6 or earlier, also apply [Migrating to Claude Opus 4.8 from Claude Opus 4.6](/docs/en/about-claude/models/migration-guide#migrating-from-claude-opus-46). Those steps cover breaking changes that the upgrade from Claude Opus 4.7 alone does not. If you use Claude Code or the Agent SDK, the [Claude API skill](/docs/en/agents-and-tools/agent-skills/claude-api-skill) can apply these migration steps to your code base automatically.
 
 ## Next steps
 

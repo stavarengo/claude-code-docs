@@ -33,8 +33,7 @@ Each middleware is a function that receives the outgoing request and a `next` ca
 <Tabs>
   <Tab title="Python">
     ```python
-
-    def logging_middleware(request: APIRequest, call_next: CallNext):
+    def logging_middleware(request: APIRequest, call_next: CallNext) -> APIResponse[Any]:
         # Before the request
         print(f"-> {request.method} {request.url}")
 
@@ -53,7 +52,7 @@ Each middleware is a function that receives the outgoing request and a `next` ca
 
   <Tab title="TypeScript">
     ```typescript
-    import Anthropic, { type Middleware } from "@anthropic-ai/sdk";
+    import type { Middleware } from "@anthropic-ai/sdk";
 
     const loggingMiddleware: Middleware = async (request, next, ctx) => {
       // Before the request
@@ -75,18 +74,21 @@ Each middleware is a function that receives the outgoing request and a `next` ca
   <Tab title="Go">
     ```go
     client := anthropic.NewClient(
-    	option.WithMiddleware(func(req *http.Request, next option.MiddlewareNext) (res *http.Response, err error) {
+    	option.WithMiddleware(func(req *http.Request, next option.MiddlewareNext) (*http.Response, error) {
     		// Before the request
     		start := time.Now()
-    		LogReq(req)
+    		slog.Info("sending request", "method", req.Method, "url", req.URL)
 
-    		// Forward the request to the next handler
-    		res, err = next(req)
+    		// Forward the request to the rest of the chain
+    		res, err := next(req)
+    		if err != nil {
+    			return nil, err
+    		}
 
-    		// Handle stuff after the request
-    		LogRes(res, err, time.Since(start))
+    		// After the request
+    		slog.Info("received response", "status", res.StatusCode, "duration", time.Since(start))
 
-    		return res, err
+    		return res, nil
     	}),
     )
     ```
@@ -114,8 +116,6 @@ Each middleware is a function that receives the outgoing request and a `next` ca
 
   <Tab title="C#">
     ```csharp
-    using Anthropic.Core;
-
     AnthropicClient client = new()
     {
         Handlers =
@@ -139,15 +139,41 @@ Each middleware is a function that receives the outgoing request and a `next` ca
   </Tab>
 
   <Tab title="Ruby">
-    <Note>
-      Middleware is not currently available in the Ruby SDK.
-    </Note>
+    ```ruby
+    logging_middleware = lambda do |request, call_next|
+      # Before the request
+      puts "-> #{request.method.upcase} #{request.url}"
+
+      # Forward the request to the rest of the chain
+      response = call_next.call(request)
+
+      # After the request
+      puts "<- #{response.status}"
+
+      response
+    end
+
+    client = Anthropic::Client.new(middleware: [logging_middleware])
+    ```
   </Tab>
 
   <Tab title="PHP">
-    <Note>
-      Middleware is not currently available in the PHP SDK.
-    </Note>
+    ```php
+    $loggingMiddleware = function (RequestInterface $request, callable $next): ResponseInterface {
+        // Before the request
+        error_log("-> {$request->getMethod()} {$request->getUri()}");
+
+        // Forward the request to the rest of the chain
+        $response = $next($request);
+
+        // After the request
+        error_log("<- {$response->getStatusCode()}");
+
+        return $response;
+    };
+
+    $client = new Client(requestOptions: ['middleware' => [$loggingMiddleware]]);
+    ```
   </Tab>
 </Tabs>
 

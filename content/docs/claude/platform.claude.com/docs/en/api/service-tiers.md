@@ -60,15 +60,127 @@ Otherwise, requests proceed at standard tier.
 
 You can control which service tiers can be used for a request by setting the `service_tier` parameter:
 
-```python Python
-message = client.messages.create(
-    model="claude-opus-4-8",
-    max_tokens=1024,
-    messages=[{"role": "user", "content": "Hello, Claude!"}],
-    service_tier="auto",  # Automatically use Priority Tier when available, fallback to standard
-)
-print(message.usage.service_tier)
-```
+<CodeGroup>
+  ```bash cURL
+  curl https://api.anthropic.com/v1/messages \
+    -H "x-api-key: $ANTHROPIC_API_KEY" \
+    -H "anthropic-version: 2023-06-01" \
+    -H "content-type: application/json" \
+    -d '{
+      "model": "claude-opus-4-8",
+      "max_tokens": 1024,
+      "messages": [{"role": "user", "content": "Hello, Claude!"}],
+      "service_tier": "auto"
+    }'
+  ```
+
+  ```bash CLI
+  ant messages create \
+    --transform usage.service_tier \
+    --raw-output <<'YAML'
+  model: claude-opus-4-8
+  max_tokens: 1024
+  messages:
+    - role: user
+      content: Hello, Claude!
+  service_tier: auto  # Automatically use Priority Tier when available, fallback to standard
+  YAML
+  ```
+
+  ```python Python
+  client = anthropic.Anthropic()
+
+  message = client.messages.create(
+      model="claude-opus-4-8",
+      max_tokens=1024,
+      messages=[{"role": "user", "content": "Hello, Claude!"}],
+      service_tier="auto",  # Automatically use Priority Tier when available, fallback to standard
+  )
+  print(message.usage.service_tier)
+  ```
+
+  ```typescript TypeScript
+  const client = new Anthropic();
+
+  const message = await client.messages.create({
+    model: "claude-opus-4-8",
+    max_tokens: 1024,
+    messages: [{ role: "user", content: "Hello, Claude!" }],
+    service_tier: "auto" // Automatically use Priority Tier when available, fallback to standard
+  });
+  console.log(message.usage.service_tier);
+  ```
+
+  ```csharp C#
+  AnthropicClient client = new();
+
+  var message = await client.Messages.Create(new MessageCreateParams
+  {
+      Model = "claude-opus-4-8",
+      MaxTokens = 1024,
+      Messages = [new() { Role = Role.User, Content = "Hello, Claude!" }],
+      ServiceTier = ServiceTier.Auto, // Automatically use Priority Tier when available, fallback to standard
+  });
+  Console.WriteLine(message.Usage.ServiceTier);
+  ```
+
+  ```go Go
+  client := anthropic.NewClient()
+
+  message, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
+  	Model:     anthropic.ModelClaudeOpus4_8,
+  	MaxTokens: 1024,
+  	Messages: []anthropic.MessageParam{
+  		anthropic.NewUserMessage(anthropic.NewTextBlock("Hello, Claude!")),
+  	},
+  	// Automatically use Priority Tier when available, fallback to standard
+  	ServiceTier: anthropic.MessageNewParamsServiceTierAuto,
+  })
+  if err != nil {
+  	log.Fatal(err)
+  }
+  fmt.Println(message.Usage.ServiceTier)
+  ```
+
+  ```java Java
+  AnthropicClient client = AnthropicOkHttpClient.fromEnv();
+
+  MessageCreateParams params = MessageCreateParams.builder()
+      .model(Model.CLAUDE_OPUS_4_8)
+      .maxTokens(1024L)
+      .addUserMessage("Hello, Claude!")
+      // Automatically use Priority Tier when available, fallback to standard
+      .serviceTier(MessageCreateParams.ServiceTier.AUTO)
+      .build();
+
+  Message message = client.messages().create(params);
+  IO.println(message.usage().serviceTier().orElseThrow());
+  ```
+
+  ```php PHP
+  $client = new Client();
+
+  $message = $client->messages->create(
+      model: 'claude-opus-4-8',
+      maxTokens: 1024,
+      messages: [['role' => 'user', 'content' => 'Hello, Claude!']],
+      serviceTier: 'auto', // Automatically use Priority Tier when available, fallback to standard
+  );
+  echo $message->usage->serviceTier;
+  ```
+
+  ```ruby Ruby
+  client = Anthropic::Client.new
+
+  message = client.messages.create(
+    model: "claude-opus-4-8",
+    max_tokens: 1024,
+    messages: [{ role: "user", content: "Hello, Claude!" }],
+    service_tier: :auto # Automatically use Priority Tier when available, fallback to standard
+  )
+  puts(message.usage.service_tier)
+  ```
+</CodeGroup>
 
 The `service_tier` parameter accepts the following values:
 

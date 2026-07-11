@@ -128,7 +128,7 @@ The skill handles:
 
 As it edits, the skill explains each change and its motivation inline. On completion, it produces a checklist of items that require manual verification (typically integration tests, length-control prompt tuning, and cost/rate-limit re-baselining).
 
-For the full list of model-specific changes the skill applies, see [Migrating from Claude Opus 4.7 to Claude Opus 4.8](/docs/en/about-claude/models/migration-guide#migrating-from-claude-opus-47).
+For the full list of model-specific changes the skill applies, see [Migrating to Claude Opus 4.8 from Claude Opus 4.7](/docs/en/about-claude/models/migration-guide#migrating-from-claude-opus-47).
 
 ## Setting up a Managed Agent
 
