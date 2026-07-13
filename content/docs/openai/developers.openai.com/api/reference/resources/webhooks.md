@@ -3,7 +3,7 @@
 Webhooks are HTTP requests sent by OpenAI to a URL you specify when certain
 events happen during the course of API usage.
 
-[Learn more about webhooks](https://platform.openai.com/docs/guides/webhooks).
+[Learn more about webhooks](https://developers.openai.com/docs/guides/webhooks).
 
 ## response.completed
 

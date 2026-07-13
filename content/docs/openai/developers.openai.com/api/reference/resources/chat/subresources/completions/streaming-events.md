@@ -2,13 +2,13 @@
 
 Stream Chat Completions in real time. Receive chunks of completions
 returned from the model using server-sent events.
-[Learn more](https://platform.openai.com/docs/guides/streaming-responses?api-mode=chat).
+[Learn more](https://developers.openai.com/docs/guides/streaming-responses?api-mode=chat).
 
 ## chat.completion.chunk
 
 Represents a streamed chunk of a chat completion response returned
 by the model, based on the provided input.
-[Learn more](https://platform.openai.com/docs/guides/streaming-responses).
+[Learn more](https://developers.openai.com/docs/guides/streaming-responses).
 
 ### Schema
 
@@ -52,7 +52,7 @@ Schema name: `CreateChatCompletionStreamResponse`
         }
       ]
     },
-    "docstring": "Represents a streamed chunk of a chat completion response returned\nby the model, based on the provided input. \n[Learn more](https://platform.openai.com/docs/guides/streaming-responses).\n",
+    "docstring": "Represents a streamed chunk of a chat completion response returned\nby the model, based on the provided input. \n[Learn more](/docs/guides/streaming-responses).\n",
     "childrenParentSchema": "object",
     "children": [
       "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) id",
@@ -201,7 +201,7 @@ Schema name: `CreateChatCompletionStreamResponse`
   },
   "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) service_tier": {
     "kind": "HttpDeclProperty",
-    "docstring": "Specifies the processing type used for serving the request.\n  - If set to 'auto', then the request will be processed with the service tier configured in the Project settings. Unless otherwise configured, the Project will use 'default'.\n  - If set to 'default', then the request will be processed with the standard pricing and performance for the selected model.\n  - If set to '[flex](https://platform.openai.com/docs/guides/flex-processing)' or '[priority](https://openai.com/api-priority-processing/)', then the request will be processed with the corresponding service tier.\n  - When not set, the default behavior is 'auto'.\n\n  When the `service_tier` parameter is set, the response body will include the `service_tier` value based on the processing mode actually used to serve the request. This response value may be different from the value set in the parameter.\n",
+    "docstring": "Specifies the processing type used for serving the request.\n  - If set to 'auto', then the request will be processed with the service tier configured in the Project settings. Unless otherwise configured, the Project will use 'default'.\n  - If set to 'default', then the request will be processed with the standard pricing and performance for the selected model.\n  - If set to '[flex](/docs/guides/flex-processing)' or '[priority](https://openai.com/api-priority-processing/)', then the request will be processed with the corresponding service tier.\n  - When not set, the default behavior is 'auto'.\n\n  When the `service_tier` parameter is set, the response body will include the `service_tier` value based on the processing mode actually used to serve the request. This response value may be different from the value set in the parameter.\n",
     "key": "service_tier",
     "optional": true,
     "nullable": true,
@@ -912,7 +912,7 @@ Schema name: `CreateChatCompletionStreamResponse`
   },
   "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ChatCompletionModeration/properties/input/anyOf/0",
+    "oasRef": "#/components/schemas/ChatCompletionModeration/properties/input/oneOf/0",
     "ident": "ModerationResults",
     "type": {
       "kind": "HttpTypeObject",
@@ -938,7 +938,7 @@ Schema name: `CreateChatCompletionStreamResponse`
   },
   "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) input > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ChatCompletionModeration/properties/input/anyOf/1",
+    "oasRef": "#/components/schemas/ChatCompletionModeration/properties/input/oneOf/1",
     "ident": "Error",
     "type": {
       "kind": "HttpTypeObject",
@@ -964,7 +964,7 @@ Schema name: `CreateChatCompletionStreamResponse`
   },
   "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ChatCompletionModeration/properties/output/anyOf/0",
+    "oasRef": "#/components/schemas/ChatCompletionModeration/properties/output/oneOf/0",
     "ident": "ModerationResults",
     "type": {
       "kind": "HttpTypeObject",
@@ -990,7 +990,7 @@ Schema name: `CreateChatCompletionStreamResponse`
   },
   "(resource) chat.completions > (model) chat_completion_chunk > (schema) > (property) moderation > (property) output > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ChatCompletionModeration/properties/output/anyOf/1",
+    "oasRef": "#/components/schemas/ChatCompletionModeration/properties/output/oneOf/1",
     "ident": "Error",
     "type": {
       "kind": "HttpTypeObject",

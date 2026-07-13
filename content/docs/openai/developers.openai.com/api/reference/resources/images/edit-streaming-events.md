@@ -1,7 +1,7 @@
 # Image edit streaming events
 
 Stream image generation and editing in real time with server-sent events.
-[Learn more about image streaming](https://platform.openai.com/docs/guides/image-generation).
+[Learn more about image streaming](https://developers.openai.com/docs/guides/image-generation).
 
 ## image_edit.partial_image
 

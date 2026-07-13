@@ -2,7 +2,7 @@
 
 **get** `/containers/{container_id}`
 
-Retrieve container
+Retrieve Container
 
 ### Path Parameters
 

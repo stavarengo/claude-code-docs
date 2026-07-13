@@ -368,7 +368,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
               "literal": "inf"
             }
           ],
-          "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/max_output_tokens/anyOf/1"
+          "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/max_output_tokens/oneOf/1"
         }
       ],
       "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/max_output_tokens"
@@ -540,7 +540,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   },
   "(resource) realtime > (model) realtime_session_create_request > (schema) > (property) prompt": {
     "kind": "HttpDeclProperty",
-    "docstring": "Reference to a prompt template and its variables.\n[Learn more](https://platform.openai.com/docs/guides/text?api-mode=responses#reusable-prompts).\n",
+    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).\n",
     "key": "prompt",
     "optional": true,
     "nullable": true,
@@ -831,7 +831,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   },
   "(resource) realtime > (model) realtime_session_create_request > (schema) > (property) max_output_tokens > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/max_output_tokens/anyOf/0",
+    "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/max_output_tokens/oneOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeNumber"
@@ -840,7 +840,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   },
   "(resource) realtime > (model) realtime_session_create_request > (schema) > (property) max_output_tokens > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/max_output_tokens/anyOf/1",
+    "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/max_output_tokens/oneOf/1",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -850,7 +850,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
           "literal": "inf"
         }
       ],
-      "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/max_output_tokens/anyOf/1"
+      "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/max_output_tokens/oneOf/1"
     },
     "childrenParentSchema": "enum",
     "children": [
@@ -1088,7 +1088,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
         }
       ]
     },
-    "docstring": "Reference to a prompt template and its variables.\n[Learn more](https://platform.openai.com/docs/guides/text?api-mode=responses#reusable-prompts).\n",
+    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).\n",
     "childrenParentSchema": "object",
     "children": [
       "(resource) responses > (model) response_prompt > (schema) > (property) id",
@@ -1231,8 +1231,8 @@ Schema name: `RealtimeClientEventSessionUpdate`
   },
   "(resource) realtime > (model) realtime_tools_config_union > (schema) > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/tools/items/anyOf/1",
-    "ident": "Mcp",
+    "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/tools/items/oneOf/1",
+    "ident": "McpTool",
     "type": {
       "kind": "HttpTypeObject",
       "members": [
@@ -1274,7 +1274,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
         }
       ]
     },
-    "docstring": "Give the model access to additional tools via remote Model Context Protocol\n(MCP) servers. [Learn more about MCP](https://platform.openai.com/docs/guides/tools-remote-mcp).\n",
+    "docstring": "Give the model access to additional tools via remote Model Context Protocol\n(MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).\n",
     "childrenParentSchema": "object",
     "children": [
       "(resource) realtime > (model) realtime_tools_config_union > (schema) > (variant) 1 > (property) server_label",
@@ -1313,7 +1313,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   },
   "(resource) realtime > (model) realtime_tracing_config > (schema) > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/tracing/anyOf/0",
+    "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/tracing/oneOf/0",
     "ident": "Auto",
     "type": {
       "kind": "HttpTypeUnion",
@@ -1323,7 +1323,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
           "literal": "auto"
         }
       ],
-      "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/tracing/anyOf/0"
+      "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/tracing/oneOf/0"
     },
     "docstring": "Enables tracing and sets default values for tracing configuration options. Always `auto`.\n",
     "childrenParentSchema": "enum",
@@ -1333,7 +1333,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   },
   "(resource) realtime > (model) realtime_tracing_config > (schema) > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/tracing/anyOf/1",
+    "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/tracing/oneOf/1",
     "ident": "TracingConfiguration",
     "type": {
       "kind": "HttpTypeObject",
@@ -1372,7 +1372,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
               "literal": "auto"
             }
           ],
-          "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/tracing/anyOf/0"
+          "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/tracing/oneOf/0"
         },
         {
           "kind": "HttpTypeObject",
@@ -1400,8 +1400,8 @@ Schema name: `RealtimeClientEventSessionUpdate`
   },
   "(resource) realtime > (model) realtime_truncation > (schema) > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/RealtimeTruncation/anyOf/0",
-    "ident": "RealtimeTruncationStrategy",
+    "oasRef": "#/components/schemas/RealtimeTruncation/oneOf/0",
+    "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeUnion",
       "types": [
@@ -1414,7 +1414,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
           "literal": "disabled"
         }
       ],
-      "oasRef": "#/components/schemas/RealtimeTruncation/anyOf/0"
+      "oasRef": "#/components/schemas/RealtimeTruncation/oneOf/0"
     },
     "docstring": "The truncation strategy to use for the session. `auto` is the default truncation strategy. `disabled` will disable truncation and emit errors when the conversation exceeds the input token limit.",
     "childrenParentSchema": "enum",
@@ -1424,17 +1424,29 @@ Schema name: `RealtimeClientEventSessionUpdate`
     ]
   },
   "(resource) realtime > (model) realtime_truncation > (schema) > (variant) 1": {
-    "kind": "HttpDeclReference",
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/RealtimeTruncation/oneOf/1",
+    "ident": "RetentionRatioTruncation",
     "type": {
-      "kind": "HttpTypeReference",
-      "ident": "RealtimeTruncationRetentionRatio",
-      "$ref": "(resource) realtime > (model) realtime_truncation_retention_ratio > (schema)"
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "retention_ratio"
+        },
+        {
+          "ident": "type"
+        },
+        {
+          "ident": "token_limits"
+        }
+      ]
     },
+    "docstring": "Retain a fraction of the conversation tokens when the conversation exceeds the input token limit. This allows you to amortize truncations across multiple turns, which can help improve cached token usage.",
     "childrenParentSchema": "object",
     "children": [
-      "(resource) realtime > (model) realtime_truncation_retention_ratio > (schema) > (property) retention_ratio",
-      "(resource) realtime > (model) realtime_truncation_retention_ratio > (schema) > (property) type",
-      "(resource) realtime > (model) realtime_truncation_retention_ratio > (schema) > (property) token_limits"
+      "(resource) realtime > (model) realtime_truncation > (schema) > (variant) 1 > (property) retention_ratio",
+      "(resource) realtime > (model) realtime_truncation > (schema) > (variant) 1 > (property) type",
+      "(resource) realtime > (model) realtime_truncation > (schema) > (variant) 1 > (property) token_limits"
     ]
   },
   "(resource) realtime > (model) realtime_truncation > (schema)": {
@@ -1456,12 +1468,21 @@ Schema name: `RealtimeClientEventSessionUpdate`
               "literal": "disabled"
             }
           ],
-          "oasRef": "#/components/schemas/RealtimeTruncation/anyOf/0"
+          "oasRef": "#/components/schemas/RealtimeTruncation/oneOf/0"
         },
         {
-          "kind": "HttpTypeReference",
-          "ident": "RealtimeTruncationRetentionRatio",
-          "$ref": "(resource) realtime > (model) realtime_truncation_retention_ratio > (schema)"
+          "kind": "HttpTypeObject",
+          "members": [
+            {
+              "ident": "retention_ratio"
+            },
+            {
+              "ident": "type"
+            },
+            {
+              "ident": "token_limits"
+            }
+          ]
         }
       ],
       "oasRef": "#/components/schemas/RealtimeTruncation"
@@ -1575,7 +1596,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   },
   "(resource) realtime > (model) realtime_audio_config_input > (schema) > (property) transcription": {
     "kind": "HttpDeclProperty",
-    "docstring": "Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](https://platform.openai.com/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.\n",
+    "docstring": "Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.\n",
     "key": "transcription",
     "optional": true,
     "nullable": false,
@@ -1939,7 +1960,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   },
   "(resource) responses > (model) response_prompt > (schema) > (property) variables > (items) > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ResponsePromptVariables/anyOf/0/additionalProperties/anyOf/0",
+    "oasRef": "#/components/schemas/ResponsePromptVariables/anyOf/0/additionalProperties/oneOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -2044,7 +2065,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
         }
       ]
     },
-    "docstring": "An image input to the model. Learn about [image inputs](https://platform.openai.com/docs/guides/vision).",
+    "docstring": "An image input to the model. Learn about [image inputs](/docs/guides/vision).",
     "childrenParentSchema": "object",
     "children": [
       "(resource) responses > (model) response_input_image > (schema) > (property) detail",
@@ -2540,7 +2561,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
           "elementType": {
             "kind": "HttpTypeString"
           },
-          "oasRef": "#/components/schemas/MCPTool/properties/allowed_tools/anyOf/0/anyOf/0"
+          "oasRef": "#/components/schemas/MCPTool/properties/allowed_tools/anyOf/0/oneOf/0"
         },
         {
           "kind": "HttpTypeObject",
@@ -2581,7 +2602,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   },
   "(resource) realtime > (model) realtime_tools_config_union > (schema) > (variant) 1 > (property) connector_id": {
     "kind": "HttpDeclProperty",
-    "docstring": "Identifier for service connectors, like those available in ChatGPT. One of\n`server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more\nabout service connectors [here](https://platform.openai.com/docs/guides/tools-remote-mcp#connectors).\n\nCurrently supported `connector_id` values are:\n\n- Dropbox: `connector_dropbox`\n- Gmail: `connector_gmail`\n- Google Calendar: `connector_googlecalendar`\n- Google Drive: `connector_googledrive`\n- Microsoft Teams: `connector_microsoftteams`\n- Outlook Calendar: `connector_outlookcalendar`\n- Outlook Email: `connector_outlookemail`\n- SharePoint: `connector_sharepoint`\n",
+    "docstring": "Identifier for service connectors, like those available in ChatGPT. One of\n`server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more\nabout service connectors [here](/docs/guides/tools-remote-mcp#connectors).\n\nCurrently supported `connector_id` values are:\n\n- Dropbox: `connector_dropbox`\n- Gmail: `connector_gmail`\n- Google Calendar: `connector_googlecalendar`\n- Google Drive: `connector_googledrive`\n- Microsoft Teams: `connector_microsoftteams`\n- Outlook Calendar: `connector_outlookcalendar`\n- Outlook Email: `connector_outlookemail`\n- SharePoint: `connector_sharepoint`\n",
     "key": "connector_id",
     "optional": true,
     "nullable": false,
@@ -2709,7 +2730,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
               "literal": "never"
             }
           ],
-          "oasRef": "#/components/schemas/MCPTool/properties/require_approval/anyOf/0/anyOf/1"
+          "oasRef": "#/components/schemas/MCPTool/properties/require_approval/anyOf/0/oneOf/1"
         }
       ],
       "oasRef": "#/components/schemas/MCPTool/properties/require_approval"
@@ -2824,7 +2845,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
       ],
       "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/tools/items"
     },
-    "docstring": "Give the model access to additional tools via remote Model Context Protocol\n(MCP) servers. [Learn more about MCP](https://platform.openai.com/docs/guides/tools-remote-mcp).\n",
+    "docstring": "Give the model access to additional tools via remote Model Context Protocol\n(MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).\n",
     "childrenParentSchema": "union",
     "children": [
       "(resource) realtime > (model) realtime_tools_config_union > (schema) > (variant) 0",
@@ -2847,7 +2868,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/tracing/anyOf/1/properties/group_id",
+    "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/tracing/oneOf/1/properties/group_id",
     "deprecated": false,
     "schemaType": "string",
     "children": []
@@ -2861,7 +2882,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "type": {
       "kind": "HttpTypeUnknown"
     },
-    "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/tracing/anyOf/1/properties/metadata",
+    "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/tracing/oneOf/1/properties/metadata",
     "deprecated": false,
     "schemaType": "unknown",
     "children": []
@@ -2875,7 +2896,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/tracing/anyOf/1/properties/workflow_name",
+    "oasRef": "#/components/schemas/RealtimeSessionCreateRequestGA/properties/tracing/oneOf/1/properties/workflow_name",
     "deprecated": false,
     "schemaType": "string",
     "children": []
@@ -2894,7 +2915,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
       "literal": "disabled"
     }
   },
-  "(resource) realtime > (model) realtime_truncation_retention_ratio > (schema) > (property) retention_ratio": {
+  "(resource) realtime > (model) realtime_truncation > (schema) > (variant) 1 > (property) retention_ratio": {
     "kind": "HttpDeclProperty",
     "docstring": "Fraction of post-instruction conversation tokens to retain (`0.0` - `1.0`) when the conversation exceeds the input token limit. Setting this to `0.8` means that messages will be dropped until 80% of the maximum allowed tokens are used. This helps reduce the frequency of truncations and improve cache rates.\n",
     "key": "retention_ratio",
@@ -2907,12 +2928,12 @@ Schema name: `RealtimeClientEventSessionUpdate`
       "minimum": 0,
       "maximum": 1
     },
-    "oasRef": "#/components/schemas/RealtimeTruncation/anyOf/1/properties/retention_ratio",
+    "oasRef": "#/components/schemas/RealtimeTruncation/oneOf/1/properties/retention_ratio",
     "deprecated": false,
     "schemaType": "number",
     "children": []
   },
-  "(resource) realtime > (model) realtime_truncation_retention_ratio > (schema) > (property) type": {
+  "(resource) realtime > (model) realtime_truncation > (schema) > (variant) 1 > (property) type": {
     "kind": "HttpDeclProperty",
     "docstring": "Use retention ratio truncation.",
     "key": "type",
@@ -2926,17 +2947,17 @@ Schema name: `RealtimeClientEventSessionUpdate`
           "literal": "retention_ratio"
         }
       ],
-      "oasRef": "#/components/schemas/RealtimeTruncation/anyOf/1/properties/type"
+      "oasRef": "#/components/schemas/RealtimeTruncation/oneOf/1/properties/type"
     },
-    "oasRef": "#/components/schemas/RealtimeTruncation/anyOf/1/properties/type",
+    "oasRef": "#/components/schemas/RealtimeTruncation/oneOf/1/properties/type",
     "deprecated": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
     "children": [
-      "(resource) realtime > (model) realtime_truncation_retention_ratio > (schema) > (property) type > (member) 0"
+      "(resource) realtime > (model) realtime_truncation > (schema) > (variant) 1 > (property) type > (member) 0"
     ]
   },
-  "(resource) realtime > (model) realtime_truncation_retention_ratio > (schema) > (property) token_limits": {
+  "(resource) realtime > (model) realtime_truncation > (schema) > (variant) 1 > (property) token_limits": {
     "kind": "HttpDeclProperty",
     "docstring": "Optional custom token limits for this truncation strategy. If not provided, the model's default token limits will be used.",
     "key": "token_limits",
@@ -2950,38 +2971,12 @@ Schema name: `RealtimeClientEventSessionUpdate`
         }
       ]
     },
-    "oasRef": "#/components/schemas/RealtimeTruncation/anyOf/1/properties/token_limits",
+    "oasRef": "#/components/schemas/RealtimeTruncation/oneOf/1/properties/token_limits",
     "deprecated": false,
     "schemaType": "object",
     "childrenParentSchema": "object",
     "children": [
-      "(resource) realtime > (model) realtime_truncation_retention_ratio > (schema) > (property) token_limits > (property) post_instructions"
-    ]
-  },
-  "(resource) realtime > (model) realtime_truncation_retention_ratio > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/RealtimeTruncation/anyOf/1",
-    "ident": "RealtimeTruncationRetentionRatio",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "retention_ratio"
-        },
-        {
-          "ident": "type"
-        },
-        {
-          "ident": "token_limits"
-        }
-      ]
-    },
-    "docstring": "Retain a fraction of the conversation tokens when the conversation exceeds the input token limit. This allows you to amortize truncations across multiple turns, which can help improve cached token usage.",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) realtime > (model) realtime_truncation_retention_ratio > (schema) > (property) retention_ratio",
-      "(resource) realtime > (model) realtime_truncation_retention_ratio > (schema) > (property) type",
-      "(resource) realtime > (model) realtime_truncation_retention_ratio > (schema) > (property) token_limits"
+      "(resource) realtime > (model) realtime_truncation > (schema) > (variant) 1 > (property) token_limits > (property) post_instructions"
     ]
   },
   "(resource) realtime > (model) realtime_transcription_session_audio_input > (schema) > (property) format": {
@@ -3031,7 +3026,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   },
   "(resource) realtime > (model) realtime_transcription_session_audio_input > (schema) > (property) transcription": {
     "kind": "HttpDeclProperty",
-    "docstring": "Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](https://platform.openai.com/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.\n",
+    "docstring": "Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/docs/api-reference/audio/createTranscription) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.\n",
     "key": "transcription",
     "optional": true,
     "nullable": false,
@@ -3108,7 +3103,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   "(resource) realtime > (model) realtime_audio_formats > (schema) > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeAudioFormats/anyOf/0",
-    "ident": "AudioPCM",
+    "ident": "PCMAudioFormat",
     "type": {
       "kind": "HttpTypeObject",
       "members": [
@@ -3130,7 +3125,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   "(resource) realtime > (model) realtime_audio_formats > (schema) > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeAudioFormats/anyOf/1",
-    "ident": "AudioPCMU",
+    "ident": "PCMUAudioFormat",
     "type": {
       "kind": "HttpTypeObject",
       "members": [
@@ -3148,7 +3143,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   "(resource) realtime > (model) realtime_audio_formats > (schema) > (variant) 2": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeAudioFormats/anyOf/2",
-    "ident": "AudioPCMA",
+    "ident": "PCMAAudioFormat",
     "type": {
       "kind": "HttpTypeObject",
       "members": [
@@ -3344,7 +3339,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   },
   "(resource) realtime > (model) audio_transcription > (schema) > (property) prompt": {
     "kind": "HttpDeclProperty",
-    "docstring": "An optional text to guide the model's style or continue a previous audio\nsegment.\nFor `whisper-1`, the [prompt is a list of keywords](https://platform.openai.com/docs/guides/speech-to-text#prompting).\nFor `gpt-4o-transcribe` models (excluding `gpt-4o-transcribe-diarize`), the prompt is a free text string, for example \"expect words related to technology\".\nPrompt is not supported with `gpt-realtime-whisper` in GA Realtime sessions.\n",
+    "docstring": "An optional text to guide the model's style or continue a previous audio\nsegment.\nFor `whisper-1`, the [prompt is a list of keywords](/docs/guides/speech-to-text#prompting).\nFor `gpt-4o-transcribe` models (excluding `gpt-4o-transcribe-diarize`), the prompt is a free text string, for example \"expect words related to technology\".\nPrompt is not supported with `gpt-realtime-whisper` in GA Realtime sessions.\n",
     "key": "prompt",
     "optional": true,
     "nullable": false,
@@ -3387,7 +3382,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   },
   "(resource) realtime > (model) realtime_audio_input_turn_detection > (schema) > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/0",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/0",
     "ident": "ServerVad",
     "type": {
       "kind": "HttpTypeObject",
@@ -3429,7 +3424,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   },
   "(resource) realtime > (model) realtime_audio_input_turn_detection > (schema) > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/1",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/1",
     "ident": "SemanticVad",
     "type": {
       "kind": "HttpTypeObject",
@@ -3973,21 +3968,21 @@ Schema name: `RealtimeClientEventSessionUpdate`
   },
   "(resource) realtime > (model) realtime_tools_config_union > (schema) > (variant) 1 > (property) allowed_tools > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/MCPTool/properties/allowed_tools/anyOf/0/anyOf/0",
+    "oasRef": "#/components/schemas/MCPTool/properties/allowed_tools/anyOf/0/oneOf/0",
     "ident": "McpAllowedTools",
     "type": {
       "kind": "HttpTypeArray",
       "elementType": {
         "kind": "HttpTypeString"
       },
-      "oasRef": "#/components/schemas/MCPTool/properties/allowed_tools/anyOf/0/anyOf/0"
+      "oasRef": "#/components/schemas/MCPTool/properties/allowed_tools/anyOf/0/oneOf/0"
     },
     "docstring": "A string array of allowed tool names",
     "children": []
   },
   "(resource) realtime > (model) realtime_tools_config_union > (schema) > (variant) 1 > (property) allowed_tools > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/MCPTool/properties/allowed_tools/anyOf/0/anyOf/1",
+    "oasRef": "#/components/schemas/MCPTool/properties/allowed_tools/anyOf/0/oneOf/1",
     "ident": "McpToolFilter",
     "type": {
       "kind": "HttpTypeObject",
@@ -4065,7 +4060,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   },
   "(resource) realtime > (model) realtime_tools_config_union > (schema) > (variant) 1 > (property) require_approval > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/MCPTool/properties/require_approval/anyOf/0/anyOf/0",
+    "oasRef": "#/components/schemas/MCPTool/properties/require_approval/anyOf/0/oneOf/0",
     "ident": "McpToolApprovalFilter",
     "type": {
       "kind": "HttpTypeObject",
@@ -4087,7 +4082,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   },
   "(resource) realtime > (model) realtime_tools_config_union > (schema) > (variant) 1 > (property) require_approval > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/MCPTool/properties/require_approval/anyOf/0/anyOf/1",
+    "oasRef": "#/components/schemas/MCPTool/properties/require_approval/anyOf/0/oneOf/1",
     "ident": "McpToolApprovalSetting",
     "type": {
       "kind": "HttpTypeUnion",
@@ -4101,7 +4096,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
           "literal": "never"
         }
       ],
-      "oasRef": "#/components/schemas/MCPTool/properties/require_approval/anyOf/0/anyOf/1"
+      "oasRef": "#/components/schemas/MCPTool/properties/require_approval/anyOf/0/oneOf/1"
     },
     "docstring": "Specify a single approval policy for all tools. One of `always` or\n`never`. When set to `always`, all tools will require approval. When\nset to `never`, all tools will not require approval.\n",
     "childrenParentSchema": "enum",
@@ -4110,14 +4105,14 @@ Schema name: `RealtimeClientEventSessionUpdate`
       "(resource) realtime > (model) realtime_tools_config_union > (schema) > (variant) 1 > (property) require_approval > (variant) 1 > (member) 1"
     ]
   },
-  "(resource) realtime > (model) realtime_truncation_retention_ratio > (schema) > (property) type > (member) 0": {
+  "(resource) realtime > (model) realtime_truncation > (schema) > (variant) 1 > (property) type > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "retention_ratio"
     }
   },
-  "(resource) realtime > (model) realtime_truncation_retention_ratio > (schema) > (property) token_limits > (property) post_instructions": {
+  "(resource) realtime > (model) realtime_truncation > (schema) > (variant) 1 > (property) token_limits > (property) post_instructions": {
     "kind": "HttpDeclProperty",
     "docstring": "Maximum tokens allowed in the conversation after instructions (which including tool definitions). For example, setting this to 5,000 would mean that truncation would occur when the conversation exceeds 5,000 tokens after instructions. This cannot be higher than the model's context window size minus the maximum output tokens.",
     "key": "post_instructions",
@@ -4129,7 +4124,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "constraints": {
       "minimum": 0
     },
-    "oasRef": "#/components/schemas/RealtimeTruncation/anyOf/1/properties/token_limits/properties/post_instructions",
+    "oasRef": "#/components/schemas/RealtimeTruncation/oneOf/1/properties/token_limits/properties/post_instructions",
     "deprecated": false,
     "schemaType": "integer",
     "children": []
@@ -4158,7 +4153,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   },
   "(resource) realtime > (model) realtime_transcription_session_audio_input_turn_detection > (schema) > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/0",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/0",
     "ident": "ServerVad",
     "type": {
       "kind": "HttpTypeObject",
@@ -4200,7 +4195,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
   },
   "(resource) realtime > (model) realtime_transcription_session_audio_input_turn_detection > (schema) > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/1",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/1",
     "ident": "SemanticVad",
     "type": {
       "kind": "HttpTypeObject",
@@ -4527,9 +4522,9 @@ Schema name: `RealtimeClientEventSessionUpdate`
           "literal": "server_vad"
         }
       ],
-      "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/0/properties/type"
+      "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/0/properties/type"
     },
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/0/properties/type",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/0/properties/type",
     "deprecated": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
@@ -4547,7 +4542,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "type": {
       "kind": "HttpTypeBoolean"
     },
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/0/properties/create_response",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/0/properties/create_response",
     "deprecated": false,
     "schemaType": "boolean",
     "children": []
@@ -4565,7 +4560,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
       "minimum": 5000,
       "maximum": 30000
     },
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/0/properties/idle_timeout_ms",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/0/properties/idle_timeout_ms",
     "deprecated": false,
     "schemaType": "integer",
     "children": []
@@ -4580,7 +4575,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "type": {
       "kind": "HttpTypeBoolean"
     },
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/0/properties/interrupt_response",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/0/properties/interrupt_response",
     "deprecated": false,
     "schemaType": "boolean",
     "children": []
@@ -4594,7 +4589,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "type": {
       "kind": "HttpTypeNumber"
     },
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/0/properties/prefix_padding_ms",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/0/properties/prefix_padding_ms",
     "deprecated": false,
     "schemaType": "integer",
     "children": []
@@ -4608,7 +4603,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "type": {
       "kind": "HttpTypeNumber"
     },
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/0/properties/silence_duration_ms",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/0/properties/silence_duration_ms",
     "deprecated": false,
     "schemaType": "integer",
     "children": []
@@ -4622,7 +4617,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "type": {
       "kind": "HttpTypeNumber"
     },
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/0/properties/threshold",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/0/properties/threshold",
     "deprecated": false,
     "schemaType": "number",
     "children": []
@@ -4641,9 +4636,9 @@ Schema name: `RealtimeClientEventSessionUpdate`
           "literal": "semantic_vad"
         }
       ],
-      "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/1/properties/type"
+      "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/1/properties/type"
     },
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/1/properties/type",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/1/properties/type",
     "deprecated": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
@@ -4661,7 +4656,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "type": {
       "kind": "HttpTypeBoolean"
     },
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/1/properties/create_response",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/1/properties/create_response",
     "deprecated": false,
     "schemaType": "boolean",
     "children": []
@@ -4693,9 +4688,9 @@ Schema name: `RealtimeClientEventSessionUpdate`
           "literal": "auto"
         }
       ],
-      "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/1/properties/eagerness"
+      "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/1/properties/eagerness"
     },
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/1/properties/eagerness",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/1/properties/eagerness",
     "deprecated": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
@@ -4716,7 +4711,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "type": {
       "kind": "HttpTypeBoolean"
     },
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/1/properties/interrupt_response",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/1/properties/interrupt_response",
     "deprecated": false,
     "schemaType": "boolean",
     "children": []
@@ -5004,7 +4999,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
         }
       ]
     },
-    "oasRef": "#/components/schemas/MCPTool/properties/require_approval/anyOf/0/anyOf/0/properties/always",
+    "oasRef": "#/components/schemas/MCPTool/properties/require_approval/anyOf/0/oneOf/0/properties/always",
     "deprecated": false,
     "schemaType": "object",
     "childrenParentSchema": "object",
@@ -5031,7 +5026,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
         }
       ]
     },
-    "oasRef": "#/components/schemas/MCPTool/properties/require_approval/anyOf/0/anyOf/0/properties/never",
+    "oasRef": "#/components/schemas/MCPTool/properties/require_approval/anyOf/0/oneOf/0/properties/never",
     "deprecated": false,
     "schemaType": "object",
     "childrenParentSchema": "object",
@@ -5069,9 +5064,9 @@ Schema name: `RealtimeClientEventSessionUpdate`
           "literal": "server_vad"
         }
       ],
-      "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/0/properties/type"
+      "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/0/properties/type"
     },
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/0/properties/type",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/0/properties/type",
     "deprecated": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
@@ -5089,7 +5084,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "type": {
       "kind": "HttpTypeBoolean"
     },
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/0/properties/create_response",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/0/properties/create_response",
     "deprecated": false,
     "schemaType": "boolean",
     "children": []
@@ -5107,7 +5102,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
       "minimum": 5000,
       "maximum": 30000
     },
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/0/properties/idle_timeout_ms",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/0/properties/idle_timeout_ms",
     "deprecated": false,
     "schemaType": "integer",
     "children": []
@@ -5122,7 +5117,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "type": {
       "kind": "HttpTypeBoolean"
     },
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/0/properties/interrupt_response",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/0/properties/interrupt_response",
     "deprecated": false,
     "schemaType": "boolean",
     "children": []
@@ -5136,7 +5131,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "type": {
       "kind": "HttpTypeNumber"
     },
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/0/properties/prefix_padding_ms",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/0/properties/prefix_padding_ms",
     "deprecated": false,
     "schemaType": "integer",
     "children": []
@@ -5150,7 +5145,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "type": {
       "kind": "HttpTypeNumber"
     },
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/0/properties/silence_duration_ms",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/0/properties/silence_duration_ms",
     "deprecated": false,
     "schemaType": "integer",
     "children": []
@@ -5164,7 +5159,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "type": {
       "kind": "HttpTypeNumber"
     },
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/0/properties/threshold",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/0/properties/threshold",
     "deprecated": false,
     "schemaType": "number",
     "children": []
@@ -5183,9 +5178,9 @@ Schema name: `RealtimeClientEventSessionUpdate`
           "literal": "semantic_vad"
         }
       ],
-      "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/1/properties/type"
+      "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/1/properties/type"
     },
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/1/properties/type",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/1/properties/type",
     "deprecated": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
@@ -5203,7 +5198,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "type": {
       "kind": "HttpTypeBoolean"
     },
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/1/properties/create_response",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/1/properties/create_response",
     "deprecated": false,
     "schemaType": "boolean",
     "children": []
@@ -5235,9 +5230,9 @@ Schema name: `RealtimeClientEventSessionUpdate`
           "literal": "auto"
         }
       ],
-      "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/1/properties/eagerness"
+      "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/1/properties/eagerness"
     },
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/1/properties/eagerness",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/1/properties/eagerness",
     "deprecated": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
@@ -5258,7 +5253,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
     "type": {
       "kind": "HttpTypeBoolean"
     },
-    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/anyOf/1/properties/interrupt_response",
+    "oasRef": "#/components/schemas/RealtimeTurnDetection/anyOf/0/oneOf/1/properties/interrupt_response",
     "deprecated": false,
     "schemaType": "boolean",
     "children": []
@@ -9125,7 +9120,7 @@ Schema name: `RealtimeClientEventResponseCreate`
               "literal": "none"
             }
           ],
-          "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/conversation/anyOf/1"
+          "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/conversation/oneOf/1"
         }
       ],
       "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/conversation"
@@ -9204,7 +9199,7 @@ Schema name: `RealtimeClientEventResponseCreate`
               "literal": "inf"
             }
           ],
-          "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/max_output_tokens/anyOf/1"
+          "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/max_output_tokens/oneOf/1"
         }
       ],
       "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/max_output_tokens"
@@ -9285,7 +9280,7 @@ Schema name: `RealtimeClientEventResponseCreate`
   },
   "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) prompt": {
     "kind": "HttpDeclProperty",
-    "docstring": "Reference to a prompt template and its variables.\n[Learn more](https://platform.openai.com/docs/guides/text?api-mode=responses#reusable-prompts).\n",
+    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).\n",
     "key": "prompt",
     "optional": true,
     "nullable": true,
@@ -9383,9 +9378,45 @@ Schema name: `RealtimeClientEventResponseCreate`
             "$ref": "(resource) realtime > (model) realtime_function_tool > (schema)"
           },
           {
-            "kind": "HttpTypeReference",
-            "ident": "RealtimeResponseCreateMcpTool",
-            "$ref": "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema)"
+            "kind": "HttpTypeObject",
+            "members": [
+              {
+                "ident": "server_label"
+              },
+              {
+                "ident": "type"
+              },
+              {
+                "ident": "allowed_callers"
+              },
+              {
+                "ident": "allowed_tools"
+              },
+              {
+                "ident": "authorization"
+              },
+              {
+                "ident": "connector_id"
+              },
+              {
+                "ident": "defer_loading"
+              },
+              {
+                "ident": "headers"
+              },
+              {
+                "ident": "require_approval"
+              },
+              {
+                "ident": "server_description"
+              },
+              {
+                "ident": "server_url"
+              },
+              {
+                "ident": "tunnel_id"
+              }
+            ]
           }
         ],
         "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/tools/items"
@@ -9508,7 +9539,7 @@ Schema name: `RealtimeClientEventResponseCreate`
   },
   "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) conversation > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/conversation/anyOf/0",
+    "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/conversation/oneOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -9517,7 +9548,7 @@ Schema name: `RealtimeClientEventResponseCreate`
   },
   "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) conversation > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/conversation/anyOf/1",
+    "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/conversation/oneOf/1",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -9531,7 +9562,7 @@ Schema name: `RealtimeClientEventResponseCreate`
           "literal": "none"
         }
       ],
-      "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/conversation/anyOf/1"
+      "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/conversation/oneOf/1"
     },
     "docstring": "Controls which conversation the response is added to. Currently supports\n`auto` and `none`, with `auto` as the default value. The `auto` value\nmeans that the contents of the response will be added to the default\nconversation. Set this to `none` to create an out-of-band response which\nwill not add items to default conversation.\n",
     "childrenParentSchema": "enum",
@@ -9763,7 +9794,7 @@ Schema name: `RealtimeClientEventResponseCreate`
   },
   "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) max_output_tokens > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/max_output_tokens/anyOf/0",
+    "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/max_output_tokens/oneOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeNumber"
@@ -9772,7 +9803,7 @@ Schema name: `RealtimeClientEventResponseCreate`
   },
   "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) max_output_tokens > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/max_output_tokens/anyOf/1",
+    "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/max_output_tokens/oneOf/1",
     "ident": "UnionMember1",
     "type": {
       "kind": "HttpTypeUnion",
@@ -9782,7 +9813,7 @@ Schema name: `RealtimeClientEventResponseCreate`
           "literal": "inf"
         }
       ],
-      "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/max_output_tokens/anyOf/1"
+      "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/max_output_tokens/oneOf/1"
     },
     "childrenParentSchema": "enum",
     "children": [
@@ -9921,7 +9952,7 @@ Schema name: `RealtimeClientEventResponseCreate`
         }
       ]
     },
-    "docstring": "Reference to a prompt template and its variables.\n[Learn more](https://platform.openai.com/docs/guides/text?api-mode=responses#reusable-prompts).\n",
+    "docstring": "Reference to a prompt template and its variables.\n[Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).\n",
     "childrenParentSchema": "object",
     "children": [
       "(resource) responses > (model) response_prompt > (schema) > (property) id",
@@ -10108,61 +10139,9 @@ Schema name: `RealtimeClientEventResponseCreate`
     ]
   },
   "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeReference",
-      "ident": "RealtimeResponseCreateMcpTool",
-      "$ref": "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema)"
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) server_label",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) type",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) allowed_callers",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) allowed_tools",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) authorization",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) connector_id",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) defer_loading",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) headers",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) require_approval",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) server_description",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) server_url",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) tunnel_id"
-    ]
-  },
-  "(resource) realtime > (model) realtime_function_tool > (schema)": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/RealtimeFunctionTool",
-    "ident": "RealtimeFunctionTool",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "description"
-        },
-        {
-          "ident": "name"
-        },
-        {
-          "ident": "parameters"
-        },
-        {
-          "ident": "type"
-        }
-      ]
-    },
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) realtime > (model) realtime_function_tool > (schema) > (property) description",
-      "(resource) realtime > (model) realtime_function_tool > (schema) > (property) name",
-      "(resource) realtime > (model) realtime_function_tool > (schema) > (property) parameters",
-      "(resource) realtime > (model) realtime_function_tool > (schema) > (property) type"
-    ]
-  },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema)": {
-    "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/tools/items/anyOf/1",
-    "ident": "RealtimeResponseCreateMcpTool",
+    "oasRef": "#/components/schemas/RealtimeResponseCreateParams/properties/tools/items/oneOf/1",
+    "ident": "McpTool",
     "type": {
       "kind": "HttpTypeObject",
       "members": [
@@ -10204,21 +10183,50 @@ Schema name: `RealtimeClientEventResponseCreate`
         }
       ]
     },
-    "docstring": "Give the model access to additional tools via remote Model Context Protocol\n(MCP) servers. [Learn more about MCP](https://platform.openai.com/docs/guides/tools-remote-mcp).\n",
+    "docstring": "Give the model access to additional tools via remote Model Context Protocol\n(MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).\n",
     "childrenParentSchema": "object",
     "children": [
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) server_label",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) type",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) allowed_callers",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) allowed_tools",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) authorization",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) connector_id",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) defer_loading",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) headers",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) require_approval",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) server_description",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) server_url",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) tunnel_id"
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) server_label",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) type",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) allowed_callers",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) allowed_tools",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) authorization",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) connector_id",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) defer_loading",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) headers",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) require_approval",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) server_description",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) server_url",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) tunnel_id"
+    ]
+  },
+  "(resource) realtime > (model) realtime_function_tool > (schema)": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/RealtimeFunctionTool",
+    "ident": "RealtimeFunctionTool",
+    "type": {
+      "kind": "HttpTypeObject",
+      "members": [
+        {
+          "ident": "description"
+        },
+        {
+          "ident": "name"
+        },
+        {
+          "ident": "parameters"
+        },
+        {
+          "ident": "type"
+        }
+      ]
+    },
+    "childrenParentSchema": "object",
+    "children": [
+      "(resource) realtime > (model) realtime_function_tool > (schema) > (property) description",
+      "(resource) realtime > (model) realtime_function_tool > (schema) > (property) name",
+      "(resource) realtime > (model) realtime_function_tool > (schema) > (property) parameters",
+      "(resource) realtime > (model) realtime_function_tool > (schema) > (property) type"
     ]
   },
   "(resource) realtime > (model) realtime_response_create_audio_output > (schema) > (property) output > (property) format": {
@@ -11817,7 +11825,7 @@ Schema name: `RealtimeClientEventResponseCreate`
   },
   "(resource) responses > (model) response_prompt > (schema) > (property) variables > (items) > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/ResponsePromptVariables/anyOf/0/additionalProperties/anyOf/0",
+    "oasRef": "#/components/schemas/ResponsePromptVariables/anyOf/0/additionalProperties/oneOf/0",
     "ident": "UnionMember0",
     "type": {
       "kind": "HttpTypeString"
@@ -11922,7 +11930,7 @@ Schema name: `RealtimeClientEventResponseCreate`
         }
       ]
     },
-    "docstring": "An image input to the model. Learn about [image inputs](https://platform.openai.com/docs/guides/vision).",
+    "docstring": "An image input to the model. Learn about [image inputs](/docs/guides/vision).",
     "childrenParentSchema": "object",
     "children": [
       "(resource) responses > (model) response_input_image > (schema) > (property) detail",
@@ -12226,7 +12234,7 @@ Schema name: `RealtimeClientEventResponseCreate`
       "(resource) realtime > (model) realtime_function_tool > (schema) > (property) type > (member) 0"
     ]
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) server_label": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) server_label": {
     "kind": "HttpDeclProperty",
     "docstring": "A label for this MCP server, used to identify it in tool calls.\n",
     "key": "server_label",
@@ -12240,7 +12248,7 @@ Schema name: `RealtimeClientEventResponseCreate`
     "schemaType": "string",
     "children": []
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) type": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) type": {
     "kind": "HttpDeclProperty",
     "docstring": "The type of the MCP tool. Always `mcp`.",
     "key": "type",
@@ -12261,10 +12269,10 @@ Schema name: `RealtimeClientEventResponseCreate`
     "schemaType": "enum",
     "childrenParentSchema": "enum",
     "children": [
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) type > (member) 0"
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) type > (member) 0"
     ]
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) allowed_callers": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) allowed_callers": {
     "kind": "HttpDeclProperty",
     "docstring": "The tool invocation context(s).",
     "key": "allowed_callers",
@@ -12293,11 +12301,11 @@ Schema name: `RealtimeClientEventResponseCreate`
     "schemaType": "array",
     "childrenParentSchema": "enum",
     "children": [
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) allowed_callers > (items) > (member) 0",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) allowed_callers > (items) > (member) 1"
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) allowed_callers > (items) > (member) 0",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) allowed_callers > (items) > (member) 1"
     ]
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) allowed_tools": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) allowed_tools": {
     "kind": "HttpDeclProperty",
     "docstring": "List of allowed tool names or a filter object.\n",
     "key": "allowed_tools",
@@ -12311,7 +12319,7 @@ Schema name: `RealtimeClientEventResponseCreate`
           "elementType": {
             "kind": "HttpTypeString"
           },
-          "oasRef": "#/components/schemas/MCPTool/properties/allowed_tools/anyOf/0/anyOf/0"
+          "oasRef": "#/components/schemas/MCPTool/properties/allowed_tools/anyOf/0/oneOf/0"
         },
         {
           "kind": "HttpTypeObject",
@@ -12332,11 +12340,11 @@ Schema name: `RealtimeClientEventResponseCreate`
     "schemaType": "union",
     "childrenParentSchema": "union",
     "children": [
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) allowed_tools > (variant) 0",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) allowed_tools > (variant) 1"
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) allowed_tools > (variant) 0",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) allowed_tools > (variant) 1"
     ]
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) authorization": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) authorization": {
     "kind": "HttpDeclProperty",
     "docstring": "An OAuth access token that can be used with a remote MCP server, either\nwith a custom MCP server URL or a service connector. Your application\nmust handle the OAuth authorization flow and provide the token here.\n",
     "key": "authorization",
@@ -12350,9 +12358,9 @@ Schema name: `RealtimeClientEventResponseCreate`
     "schemaType": "string",
     "children": []
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) connector_id": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) connector_id": {
     "kind": "HttpDeclProperty",
-    "docstring": "Identifier for service connectors, like those available in ChatGPT. One of\n`server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more\nabout service connectors [here](https://platform.openai.com/docs/guides/tools-remote-mcp#connectors).\n\nCurrently supported `connector_id` values are:\n\n- Dropbox: `connector_dropbox`\n- Gmail: `connector_gmail`\n- Google Calendar: `connector_googlecalendar`\n- Google Drive: `connector_googledrive`\n- Microsoft Teams: `connector_microsoftteams`\n- Outlook Calendar: `connector_outlookcalendar`\n- Outlook Email: `connector_outlookemail`\n- SharePoint: `connector_sharepoint`\n",
+    "docstring": "Identifier for service connectors, like those available in ChatGPT. One of\n`server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more\nabout service connectors [here](/docs/guides/tools-remote-mcp#connectors).\n\nCurrently supported `connector_id` values are:\n\n- Dropbox: `connector_dropbox`\n- Gmail: `connector_gmail`\n- Google Calendar: `connector_googlecalendar`\n- Google Drive: `connector_googledrive`\n- Microsoft Teams: `connector_microsoftteams`\n- Outlook Calendar: `connector_outlookcalendar`\n- Outlook Email: `connector_outlookemail`\n- SharePoint: `connector_sharepoint`\n",
     "key": "connector_id",
     "optional": true,
     "nullable": false,
@@ -12399,17 +12407,17 @@ Schema name: `RealtimeClientEventResponseCreate`
     "schemaType": "enum",
     "childrenParentSchema": "enum",
     "children": [
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) connector_id > (member) 0",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) connector_id > (member) 1",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) connector_id > (member) 2",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) connector_id > (member) 3",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) connector_id > (member) 4",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) connector_id > (member) 5",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) connector_id > (member) 6",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) connector_id > (member) 7"
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) connector_id > (member) 0",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) connector_id > (member) 1",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) connector_id > (member) 2",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) connector_id > (member) 3",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) connector_id > (member) 4",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) connector_id > (member) 5",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) connector_id > (member) 6",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) connector_id > (member) 7"
     ]
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) defer_loading": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) defer_loading": {
     "kind": "HttpDeclProperty",
     "docstring": "Whether this MCP tool is deferred and discovered via tool search.\n",
     "key": "defer_loading",
@@ -12423,7 +12431,7 @@ Schema name: `RealtimeClientEventResponseCreate`
     "schemaType": "boolean",
     "children": []
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) headers": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) headers": {
     "kind": "HttpDeclProperty",
     "docstring": "Optional HTTP headers to send to the MCP server. Use for authentication\nor other purposes.\n",
     "key": "headers",
@@ -12447,7 +12455,7 @@ Schema name: `RealtimeClientEventResponseCreate`
     "schemaType": "map",
     "children": []
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) require_approval": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) require_approval": {
     "kind": "HttpDeclProperty",
     "docstring": "Specify which of the MCP server's tools require approval.",
     "key": "require_approval",
@@ -12480,7 +12488,7 @@ Schema name: `RealtimeClientEventResponseCreate`
               "literal": "never"
             }
           ],
-          "oasRef": "#/components/schemas/MCPTool/properties/require_approval/anyOf/0/anyOf/1"
+          "oasRef": "#/components/schemas/MCPTool/properties/require_approval/anyOf/0/oneOf/1"
         }
       ],
       "oasRef": "#/components/schemas/MCPTool/properties/require_approval"
@@ -12490,11 +12498,11 @@ Schema name: `RealtimeClientEventResponseCreate`
     "schemaType": "union",
     "childrenParentSchema": "union",
     "children": [
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) require_approval > (variant) 0",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) require_approval > (variant) 1"
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) require_approval > (variant) 0",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) require_approval > (variant) 1"
     ]
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) server_description": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) server_description": {
     "kind": "HttpDeclProperty",
     "docstring": "Optional description of the MCP server, used to provide more context.\n",
     "key": "server_description",
@@ -12508,7 +12516,7 @@ Schema name: `RealtimeClientEventResponseCreate`
     "schemaType": "string",
     "children": []
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) server_url": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) server_url": {
     "kind": "HttpDeclProperty",
     "docstring": "The URL for the MCP server. One of `server_url`, `connector_id`, or\n`tunnel_id` must be provided.\n",
     "key": "server_url",
@@ -12525,7 +12533,7 @@ Schema name: `RealtimeClientEventResponseCreate`
     "schemaType": "string",
     "children": []
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) tunnel_id": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) tunnel_id": {
     "kind": "HttpDeclProperty",
     "docstring": "The Secure MCP Tunnel ID to use instead of a direct server URL. One of\n`server_url`, `connector_id`, or `tunnel_id` must be provided.\n",
     "key": "tunnel_id",
@@ -12542,7 +12550,7 @@ Schema name: `RealtimeClientEventResponseCreate`
   "(resource) realtime > (model) realtime_audio_formats > (schema) > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeAudioFormats/anyOf/0",
-    "ident": "AudioPCM",
+    "ident": "PCMAudioFormat",
     "type": {
       "kind": "HttpTypeObject",
       "members": [
@@ -12564,7 +12572,7 @@ Schema name: `RealtimeClientEventResponseCreate`
   "(resource) realtime > (model) realtime_audio_formats > (schema) > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeAudioFormats/anyOf/1",
-    "ident": "AudioPCMU",
+    "ident": "PCMUAudioFormat",
     "type": {
       "kind": "HttpTypeObject",
       "members": [
@@ -12582,7 +12590,7 @@ Schema name: `RealtimeClientEventResponseCreate`
   "(resource) realtime > (model) realtime_audio_formats > (schema) > (variant) 2": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeAudioFormats/anyOf/2",
-    "ident": "AudioPCMA",
+    "ident": "PCMAAudioFormat",
     "type": {
       "kind": "HttpTypeObject",
       "members": [
@@ -13704,44 +13712,44 @@ Schema name: `RealtimeClientEventResponseCreate`
       "literal": "function"
     }
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) type > (member) 0": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) type > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "mcp"
     }
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) allowed_callers > (items) > (member) 0": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) allowed_callers > (items) > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "direct"
     }
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) allowed_callers > (items) > (member) 1": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) allowed_callers > (items) > (member) 1": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "programmatic"
     }
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) allowed_tools > (variant) 0": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) allowed_tools > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/MCPTool/properties/allowed_tools/anyOf/0/anyOf/0",
+    "oasRef": "#/components/schemas/MCPTool/properties/allowed_tools/anyOf/0/oneOf/0",
     "ident": "McpAllowedTools",
     "type": {
       "kind": "HttpTypeArray",
       "elementType": {
         "kind": "HttpTypeString"
       },
-      "oasRef": "#/components/schemas/MCPTool/properties/allowed_tools/anyOf/0/anyOf/0"
+      "oasRef": "#/components/schemas/MCPTool/properties/allowed_tools/anyOf/0/oneOf/0"
     },
     "docstring": "A string array of allowed tool names",
     "children": []
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) allowed_tools > (variant) 1": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) allowed_tools > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/MCPTool/properties/allowed_tools/anyOf/0/anyOf/1",
+    "oasRef": "#/components/schemas/MCPTool/properties/allowed_tools/anyOf/0/oneOf/1",
     "ident": "McpToolFilter",
     "type": {
       "kind": "HttpTypeObject",
@@ -13757,69 +13765,69 @@ Schema name: `RealtimeClientEventResponseCreate`
     "docstring": "A filter object to specify which tools are allowed.\n",
     "childrenParentSchema": "object",
     "children": [
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) allowed_tools > (variant) 1 > (property) read_only",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) allowed_tools > (variant) 1 > (property) tool_names"
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) allowed_tools > (variant) 1 > (property) read_only",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) allowed_tools > (variant) 1 > (property) tool_names"
     ]
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) connector_id > (member) 0": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) connector_id > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "connector_dropbox"
     }
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) connector_id > (member) 1": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) connector_id > (member) 1": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "connector_gmail"
     }
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) connector_id > (member) 2": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) connector_id > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "connector_googlecalendar"
     }
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) connector_id > (member) 3": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) connector_id > (member) 3": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "connector_googledrive"
     }
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) connector_id > (member) 4": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) connector_id > (member) 4": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "connector_microsoftteams"
     }
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) connector_id > (member) 5": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) connector_id > (member) 5": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "connector_outlookcalendar"
     }
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) connector_id > (member) 6": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) connector_id > (member) 6": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "connector_outlookemail"
     }
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) connector_id > (member) 7": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) connector_id > (member) 7": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "connector_sharepoint"
     }
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) require_approval > (variant) 0": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) require_approval > (variant) 0": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/MCPTool/properties/require_approval/anyOf/0/anyOf/0",
+    "oasRef": "#/components/schemas/MCPTool/properties/require_approval/anyOf/0/oneOf/0",
     "ident": "McpToolApprovalFilter",
     "type": {
       "kind": "HttpTypeObject",
@@ -13835,13 +13843,13 @@ Schema name: `RealtimeClientEventResponseCreate`
     "docstring": "Specify which of the MCP server's tools require approval. Can be\n`always`, `never`, or a filter object associated with tools\nthat require approval.\n",
     "childrenParentSchema": "object",
     "children": [
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) require_approval > (variant) 0 > (property) always",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) require_approval > (variant) 0 > (property) never"
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) require_approval > (variant) 0 > (property) always",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) require_approval > (variant) 0 > (property) never"
     ]
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) require_approval > (variant) 1": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) require_approval > (variant) 1": {
     "kind": "HttpDeclTypeAlias",
-    "oasRef": "#/components/schemas/MCPTool/properties/require_approval/anyOf/0/anyOf/1",
+    "oasRef": "#/components/schemas/MCPTool/properties/require_approval/anyOf/0/oneOf/1",
     "ident": "McpToolApprovalSetting",
     "type": {
       "kind": "HttpTypeUnion",
@@ -13855,13 +13863,13 @@ Schema name: `RealtimeClientEventResponseCreate`
           "literal": "never"
         }
       ],
-      "oasRef": "#/components/schemas/MCPTool/properties/require_approval/anyOf/0/anyOf/1"
+      "oasRef": "#/components/schemas/MCPTool/properties/require_approval/anyOf/0/oneOf/1"
     },
     "docstring": "Specify a single approval policy for all tools. One of `always` or\n`never`. When set to `always`, all tools will require approval. When\nset to `never`, all tools will not require approval.\n",
     "childrenParentSchema": "enum",
     "children": [
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) require_approval > (variant) 1 > (member) 0",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) require_approval > (variant) 1 > (member) 1"
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) require_approval > (variant) 1 > (member) 0",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) require_approval > (variant) 1 > (member) 1"
     ]
   },
   "(resource) realtime > (model) realtime_audio_formats > (schema) > (variant) 0 > (property) rate": {
@@ -14389,7 +14397,7 @@ Schema name: `RealtimeClientEventResponseCreate`
       "(resource) responses > (model) response_input_file > (schema) > (property) prompt_cache_breakpoint > (property) mode > (member) 0"
     ]
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) allowed_tools > (variant) 1 > (property) read_only": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) allowed_tools > (variant) 1 > (property) read_only": {
     "kind": "HttpDeclProperty",
     "docstring": "Indicates whether or not a tool modifies data or is read-only. If an\nMCP server is [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),\nit will match this filter.\n",
     "key": "read_only",
@@ -14403,7 +14411,7 @@ Schema name: `RealtimeClientEventResponseCreate`
     "schemaType": "boolean",
     "children": []
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) allowed_tools > (variant) 1 > (property) tool_names": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) allowed_tools > (variant) 1 > (property) tool_names": {
     "kind": "HttpDeclProperty",
     "title": "MCP allowed tools",
     "docstring": "List of allowed tool names.",
@@ -14422,7 +14430,7 @@ Schema name: `RealtimeClientEventResponseCreate`
     "schemaType": "array",
     "children": []
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) require_approval > (variant) 0 > (property) always": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) require_approval > (variant) 0 > (property) always": {
     "kind": "HttpDeclProperty",
     "title": "MCP tool filter",
     "docstring": "A filter object to specify which tools are allowed.\n",
@@ -14440,16 +14448,16 @@ Schema name: `RealtimeClientEventResponseCreate`
         }
       ]
     },
-    "oasRef": "#/components/schemas/MCPTool/properties/require_approval/anyOf/0/anyOf/0/properties/always",
+    "oasRef": "#/components/schemas/MCPTool/properties/require_approval/anyOf/0/oneOf/0/properties/always",
     "deprecated": false,
     "schemaType": "object",
     "childrenParentSchema": "object",
     "children": [
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) require_approval > (variant) 0 > (property) always > (property) read_only",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) require_approval > (variant) 0 > (property) always > (property) tool_names"
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) require_approval > (variant) 0 > (property) always > (property) read_only",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) require_approval > (variant) 0 > (property) always > (property) tool_names"
     ]
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) require_approval > (variant) 0 > (property) never": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) require_approval > (variant) 0 > (property) never": {
     "kind": "HttpDeclProperty",
     "title": "MCP tool filter",
     "docstring": "A filter object to specify which tools are allowed.\n",
@@ -14467,23 +14475,23 @@ Schema name: `RealtimeClientEventResponseCreate`
         }
       ]
     },
-    "oasRef": "#/components/schemas/MCPTool/properties/require_approval/anyOf/0/anyOf/0/properties/never",
+    "oasRef": "#/components/schemas/MCPTool/properties/require_approval/anyOf/0/oneOf/0/properties/never",
     "deprecated": false,
     "schemaType": "object",
     "childrenParentSchema": "object",
     "children": [
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) require_approval > (variant) 0 > (property) never > (property) read_only",
-      "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) require_approval > (variant) 0 > (property) never > (property) tool_names"
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) require_approval > (variant) 0 > (property) never > (property) read_only",
+      "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) require_approval > (variant) 0 > (property) never > (property) tool_names"
     ]
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) require_approval > (variant) 1 > (member) 0": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) require_approval > (variant) 1 > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "always"
     }
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) require_approval > (variant) 1 > (member) 1": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) require_approval > (variant) 1 > (member) 1": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
@@ -14560,7 +14568,7 @@ Schema name: `RealtimeClientEventResponseCreate`
       "literal": "explicit"
     }
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) require_approval > (variant) 0 > (property) always > (property) read_only": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) require_approval > (variant) 0 > (property) always > (property) read_only": {
     "kind": "HttpDeclProperty",
     "docstring": "Indicates whether or not a tool modifies data or is read-only. If an\nMCP server is [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),\nit will match this filter.\n",
     "key": "read_only",
@@ -14574,7 +14582,7 @@ Schema name: `RealtimeClientEventResponseCreate`
     "schemaType": "boolean",
     "children": []
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) require_approval > (variant) 0 > (property) always > (property) tool_names": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) require_approval > (variant) 0 > (property) always > (property) tool_names": {
     "kind": "HttpDeclProperty",
     "title": "MCP allowed tools",
     "docstring": "List of allowed tool names.",
@@ -14593,7 +14601,7 @@ Schema name: `RealtimeClientEventResponseCreate`
     "schemaType": "array",
     "children": []
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) require_approval > (variant) 0 > (property) never > (property) read_only": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) require_approval > (variant) 0 > (property) never > (property) read_only": {
     "kind": "HttpDeclProperty",
     "docstring": "Indicates whether or not a tool modifies data or is read-only. If an\nMCP server is [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),\nit will match this filter.\n",
     "key": "read_only",
@@ -14607,7 +14615,7 @@ Schema name: `RealtimeClientEventResponseCreate`
     "schemaType": "boolean",
     "children": []
   },
-  "(resource) realtime > (model) realtime_response_create_mcp_tool > (schema) > (property) require_approval > (variant) 0 > (property) never > (property) tool_names": {
+  "(resource) realtime > (model) realtime_response_create_params > (schema) > (property) tools > (items) > (variant) 1 > (property) require_approval > (variant) 0 > (property) never > (property) tool_names": {
     "kind": "HttpDeclProperty",
     "title": "MCP allowed tools",
     "docstring": "List of allowed tool names.",
@@ -14788,7 +14796,7 @@ Schema name: `RealtimeClientEventResponseCancel`
 stop generating audio and emit a `output_audio_buffer.cleared` event. This
 event should be preceded by a `response.cancel` client event to stop the
 generation of the current response.
-[Learn more](https://platform.openai.com/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
+[Learn more](https://developers.openai.com/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
 
 ### Schema
 
@@ -14811,7 +14819,7 @@ Schema name: `RealtimeClientEventOutputAudioBufferClear`
         }
       ]
     },
-    "docstring": "**WebRTC/SIP Only:** Emit to cut off the current audio response. This will trigger the server to\nstop generating audio and emit a `output_audio_buffer.cleared` event. This\nevent should be preceded by a `response.cancel` client event to stop the\ngeneration of the current response.\n[Learn more](https://platform.openai.com/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).\n",
+    "docstring": "**WebRTC/SIP Only:** Emit to cut off the current audio response. This will trigger the server to\nstop generating audio and emit a `output_audio_buffer.cleared` event. This\nevent should be preceded by a `response.cancel` client event to stop the\ngeneration of the current response.\n[Learn more](/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).\n",
     "childrenParentSchema": "object",
     "children": [
       "(resource) realtime > (model) output_audio_buffer_clear_event > (schema) > (property) type",
