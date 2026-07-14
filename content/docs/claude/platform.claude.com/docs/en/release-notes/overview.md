@@ -1,4 +1,4 @@
-# Claude Platform
+# Claude Platform release notes
 
 Updates to the Claude Platform, including the Claude API, client SDKs, and the Claude Console.
 
@@ -12,6 +12,7 @@ Updates to the Claude Platform, including the Claude API, client SDKs, and the C
 
 ### July 10, 2026
 
+* [Dreams](/docs/en/managed-agents/dreams) (research preview) now supports Claude Fable 5 and Claude Sonnet 5. See [Supported models](/docs/en/managed-agents/dreams#limits).
 * We've expanded the [Access Transparency](/docs/en/manage-claude/access-transparency) documentation of `cmek_preserve` events with a filter example, an example event payload, and two preservation reason codes (`policy_violation_investigation`, `csae_report`). The documentation now also clarifies that a preservation event is written whether the preservation was initiated by a human reviewer or an automated safety pipeline. See [CMEK content preservation](/docs/en/manage-claude/access-transparency#cmek-content-preservation).
 
 ### July 8, 2026
