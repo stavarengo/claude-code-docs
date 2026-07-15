@@ -39,7 +39,7 @@ Claude Opus 4.8 respects effort levels strictly, especially at the low end. At `
 If you observe shallow reasoning on complex problems, raise effort to `high` or `xhigh` rather than prompting around it. If you need to keep effort at `low` for latency, add targeted guidance:
 
 ```text wrap
-This task involves multi-step reasoning. Think carefully through the problem before responding.
+This task involves multistep reasoning. Think carefully through the problem before responding.
 ```
 
 Effort is likely to be more important for this model than for any prior Opus, so experiment with it actively when you upgrade.
@@ -47,7 +47,7 @@ Effort is likely to be more important for this model than for any prior Opus, so
 On Claude Opus 4.8, thinking is off unless you explicitly set `thinking: {type: "adaptive"}`. The triggering behavior for adaptive thinking is steerable. If you find the model thinking more often than you'd like, which can happen with large or complex system prompts, add guidance to steer it. As always, measure the effect of any prompting changes on performance. Example:
 
 ```text wrap
-Thinking adds latency and should only be used when it will meaningfully improve answer quality — typically for problems that require multi-step reasoning. When in doubt, respond directly.
+Thinking adds latency and should only be used when it will meaningfully improve answer quality — typically for problems that require multistep reasoning. When in doubt, respond directly.
 ```
 
 Conversely, if you're running hard workloads at `medium` and seeing under-thinking, the first lever is to raise effort. If you need finer control, prompt for it directly.

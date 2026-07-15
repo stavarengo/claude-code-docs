@@ -147,16 +147,16 @@ Claude Fable 5 is generally available on the Claude API, Claude Platform on AWS,
 
 ## Prompt and output performance
 
-Claude 4 models excel in:
+Current Claude models excel in:
 
-* **Performance:** Top-tier results in reasoning, coding, multilingual tasks, long-context handling, honesty, and image processing. See the [Claude 4 blog post](https://www.anthropic.com/news/claude-4) for more information.
+* **Performance:** Top-tier results in reasoning, coding, multilingual tasks, long-context handling, honesty, and image processing. See [Prompting Claude Sonnet 5](/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5) and [Prompting Claude Opus 4.8](/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-4-8) for model-specific prompting guidance.
 
 * **Engaging responses:** Claude models are ideal for applications that require rich, human-like interactions.
 
   * If you prefer more concise responses, you can adjust your prompts to guide the model toward the desired output length. Refer to the [prompt engineering guides](/docs/en/build-with-claude/prompt-engineering) for details.
   * For prompting best practices, see [Prompting best practices](/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices).
 
-* **Output quality:** When migrating from previous model generations to Claude 4, you may notice larger improvements in overall performance.
+* **Output quality:** When migrating from a previous model generation, you may notice larger improvements in overall performance.
 
 ## Migrating to Claude Opus 4.8
 

@@ -107,9 +107,7 @@ Progress
     └── ProgressIndicator
 ```
 
-## Examples
-
-### Label
+## Label
 
 Use `ProgressLabel` and `ProgressValue` to add a label and value display.
 
@@ -131,7 +129,7 @@ export function ProgressWithLabel() {
 
 ```
 
-### Controlled
+## Controlled
 
 A progress bar that can be controlled by a slider.
 

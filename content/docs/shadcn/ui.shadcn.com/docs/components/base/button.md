@@ -93,9 +93,7 @@ You can also enable this during project setup with `npx shadcn@latest init --poi
 }
 ```
 
-## Examples
-
-### Size
+## Size
 
 Use the `size` prop to change the size of the button.
 
@@ -143,7 +141,7 @@ export function ButtonSize() {
 
 ```
 
-### Default
+## Default
 
 ```tsx
 import { Button } from "@/components/ui/button"
@@ -154,7 +152,7 @@ export function ButtonDefault() {
 
 ```
 
-### Outline
+## Outline
 
 ```tsx
 import { Button } from "@/components/ui/button"
@@ -165,7 +163,7 @@ export function ButtonOutline() {
 
 ```
 
-### Secondary
+## Secondary
 
 ```tsx
 import { Button } from "@/components/ui/button"
@@ -176,7 +174,7 @@ export function ButtonSecondary() {
 
 ```
 
-### Ghost
+## Ghost
 
 ```tsx
 import { Button } from "@/components/ui/button"
@@ -187,7 +185,7 @@ export function ButtonGhost() {
 
 ```
 
-### Destructive
+## Destructive
 
 ```tsx
 import { Button } from "@/components/ui/button"
@@ -198,7 +196,7 @@ export function ButtonDestructive() {
 
 ```
 
-### Link
+## Link
 
 ```tsx
 import { Button } from "@/components/ui/button"
@@ -209,7 +207,7 @@ export function ButtonLink() {
 
 ```
 
-### Icon
+## Icon
 
 ```tsx
 import { CircleFadingArrowUpIcon } from "lucide-react"
@@ -226,7 +224,7 @@ export function ButtonIcon() {
 
 ```
 
-### With Icon
+## With Icon
 
 Remember to add the `data-icon="inline-start"` or `data-icon="inline-end"` attribute to the icon for the correct spacing.
 
@@ -251,7 +249,7 @@ export function ButtonWithIcon() {
 
 ```
 
-### Rounded
+## Rounded
 
 Use the `rounded-full` class to make the button rounded.
 
@@ -273,7 +271,7 @@ export function ButtonRounded() {
 
 ```
 
-### Spinner
+## Spinner
 
 Render a `<Spinner />` component inside the button to show a loading state. Remember to add the `data-icon="inline-start"` or `data-icon="inline-end"` attribute to the spinner for the correct spacing.
 
@@ -298,7 +296,7 @@ export function ButtonLoading() {
 
 ```
 
-### Button Group
+## Button Group
 
 To create a button group, use the `ButtonGroup` component. See the [Button Group](/docs/components/base/button-group) documentation for more details.
 
@@ -422,7 +420,7 @@ export function ButtonGroupDemo() {
 
 ```
 
-### As Link
+## As Link
 
 You can use the `buttonVariants` helper to make a link look like a button.
 

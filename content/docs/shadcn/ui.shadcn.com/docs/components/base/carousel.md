@@ -128,9 +128,7 @@ Carousel
 └── CarouselNext
 ```
 
-## Examples
-
-### Sizes
+## Sizes
 
 To set the size of the items, you can use the `basis` utility class on the `<CarouselItem />`.
 
@@ -197,7 +195,7 @@ export function CarouselSize() {
 </Carousel>
 ```
 
-### Spacing
+## Spacing
 
 To set the spacing between the items, we use a `pl-[VALUE]` utility on the `<CarouselItem />` and a negative `-ml-[VALUE]` on the `<CarouselContent />`.
 
@@ -257,7 +255,7 @@ export function CarouselSpacing() {
 </Carousel>
 ```
 
-### Orientation
+## Orientation
 
 Use the `orientation` prop to set the orientation of the carousel.
 

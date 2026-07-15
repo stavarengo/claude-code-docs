@@ -34,9 +34,11 @@ This guide focuses on success criteria that are controllable through prompt engi
 
 ## How to prompt engineer
 
-All prompting techniques — from clarity and examples to XML structuring, role prompting, thinking, and prompt chaining — are covered in [Prompting best practices](/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices). That's the living reference; start there.
+All prompting techniques (from clarity and examples to XML structuring, role prompting, thinking, and prompt chaining) are covered in [Prompting best practices](/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices). That's the living reference; start there.
 
-The [Claude Console](/dashboard) also offers [prompting tools](/docs/en/build-with-claude/prompt-engineering/prompting-tools)—prompt generator, templates and variables, and prompt improver—to help you build and refine prompts quickly.
+For general prompt engineering craft beyond Claude-specific techniques, see the blog post on [best practices for prompt engineering](https://claude.com/blog/best-practices-for-prompt-engineering).
+
+The [Claude Console](/dashboard) also offers [prompting tools](/docs/en/build-with-claude/prompt-engineering/prompting-tools) (prompt generator, templates and variables, and prompt improver) to help you build and refine prompts quickly.
 
 ***
 

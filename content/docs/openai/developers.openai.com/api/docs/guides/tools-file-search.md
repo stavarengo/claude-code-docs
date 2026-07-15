@@ -208,6 +208,25 @@ OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
 Console.WriteLine(response.GetOutputText());
 ```
 
+```ruby
+require "openai"
+
+openai = OpenAI::Client.new
+
+response = openai.responses.create(
+  model: "gpt-5.6",
+  input: "What is deep research by OpenAI?",
+  tools: [
+    {
+      type: "file_search",
+      vector_store_ids: ["<vector_store_id>"]
+    }
+  ]
+)
+
+puts(response)
+```
+
 
 When this tool is called by the model, you will receive a response with multiple outputs:
 

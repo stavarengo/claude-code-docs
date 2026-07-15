@@ -146,7 +146,7 @@ Regularly analyze outputs for signs of successful injection. Use this monitoring
 
 Combine strategies for robust protection. Here's an enterprise-grade example with tool use:
 
-<Accordion title="Example: Multi-layered protection for a financial advisor chatbot">
+<Accordion title="Example: Multilayered protection for a financial advisor chatbot">
   ### Bot system prompt
 
   | Role   | Content                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |

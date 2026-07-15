@@ -60,9 +60,7 @@ import { Textarea } from "@/components/ui/textarea"
 <Textarea />
 ```
 
-## Examples
-
-### Field
+## Field
 
 Use `Field`, `FieldLabel`, and `FieldDescription` to create a textarea with a label and description.
 
@@ -86,7 +84,7 @@ export function TextareaField() {
 
 ```
 
-### Disabled
+## Disabled
 
 Use the `disabled` prop to disable the textarea. To style the disabled state, add the `data-disabled` attribute to the `Field` component.
 
@@ -109,7 +107,7 @@ export function TextareaDisabled() {
 
 ```
 
-### Invalid
+## Invalid
 
 Use the `aria-invalid` prop to mark the textarea as invalid. To style the invalid state, add the `data-invalid` attribute to the `Field` component.
 
@@ -137,7 +135,7 @@ export function TextareaInvalid() {
 
 ```
 
-### Button
+## Button
 
 Pair with `Button` to create a textarea with a submit button.
 

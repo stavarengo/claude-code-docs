@@ -198,9 +198,7 @@ AttachmentGroup
 - Scrollable, snapping `AttachmentGroup` with an edge fade
 - Customizable styling through the `className` prop on every part
 
-## Examples
-
-### Image
+## Image
 
 Set `variant="image"` on `AttachmentMedia` and render an `<img>` inside it. Use `orientation="vertical"` to stack the media above the content.
 
@@ -277,7 +275,7 @@ export function AttachmentImage() {
 
 ```
 
-### States
+## States
 
 Set `state` to reflect the upload lifecycle. `uploading` and `processing` shimmer the title, and `error` switches to a destructive treatment.
 
@@ -386,7 +384,7 @@ export function AttachmentStates() {
 
 ```
 
-### Sizes
+## Sizes
 
 Use `size` to switch between `default`, `sm`, and `xs`.
 
@@ -436,7 +434,7 @@ export function AttachmentSizes() {
 
 ```
 
-### Group
+## Group
 
 Wrap attachments in `AttachmentGroup` to lay them out in a horizontally scrollable, snapping row with an edge fade.
 
@@ -515,7 +513,7 @@ export function AttachmentGroupDemo() {
 
 ```
 
-### Trigger
+## Trigger
 
 Add an `AttachmentTrigger` to make the whole card open a link or dialog. It fills the card behind the actions, so the actions stay clickable.
 

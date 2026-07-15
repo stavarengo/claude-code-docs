@@ -198,9 +198,7 @@ DropdownMenu
                 └── DropdownMenuItem
 ```
 
-## Examples
-
-### Basic
+## Basic
 
 A basic dropdown menu with labels and separators.
 
@@ -242,7 +240,7 @@ export function DropdownMenuBasic() {
 
 ```
 
-### Submenu
+## Submenu
 
 Use `DropdownMenuSub` to nest secondary actions.
 
@@ -307,7 +305,7 @@ export function DropdownMenuSubmenu() {
 
 ```
 
-### Shortcuts
+## Shortcuts
 
 Add `DropdownMenuShortcut` to show keyboard hints.
 
@@ -360,7 +358,7 @@ export function DropdownMenuShortcuts() {
 
 ```
 
-### Icons
+## Icons
 
 Combine icons with labels for quick scanning.
 
@@ -414,7 +412,7 @@ export function DropdownMenuIcons() {
 
 ```
 
-### Checkboxes
+## Checkboxes
 
 Use `DropdownMenuCheckboxItem` for toggles.
 
@@ -473,7 +471,7 @@ export function DropdownMenuCheckboxes() {
 
 ```
 
-### Checkboxes Icons
+## Checkboxes Icons
 
 Add icons to checkbox items.
 
@@ -543,7 +541,7 @@ export function DropdownMenuCheckboxesIcons() {
 
 ```
 
-### Radio Group
+## Radio Group
 
 Use `DropdownMenuRadioGroup` for exclusive choices.
 
@@ -587,7 +585,7 @@ export function DropdownMenuRadioGroupDemo() {
 
 ```
 
-### Radio Icons
+## Radio Icons
 
 Show radio options with icons.
 
@@ -644,7 +642,7 @@ export function DropdownMenuRadioIcons() {
 
 ```
 
-### Destructive
+## Destructive
 
 Use `variant="destructive"` for irreversible actions.
 
@@ -694,7 +692,7 @@ export function DropdownMenuDestructive() {
 
 ```
 
-### Avatar
+## Avatar
 
 An account switcher dropdown triggered by an avatar.
 
@@ -761,7 +759,7 @@ export function DropdownMenuAvatar() {
 
 ```
 
-### Complex
+## Complex
 
 A richer example combining groups, icons, and submenus.
 

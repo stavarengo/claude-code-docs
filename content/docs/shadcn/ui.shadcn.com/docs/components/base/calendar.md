@@ -379,9 +379,7 @@ export function CalendarWithTimezone() {
 
 **Why client-side?** The timezone is detected using `Intl.DateTimeFormat().resolvedOptions().timeZone` inside a `useEffect` to ensure compatibility with server-side rendering. Detecting the timezone during render would cause hydration mismatches, as the server and client may be in different timezones.
 
-## Examples
-
-### Basic
+## Basic
 
 A basic calendar component. We used `className="rounded-lg border"` to style the calendar.
 
@@ -396,7 +394,7 @@ export function CalendarBasic() {
 
 ```
 
-### Range Calendar
+## Range Calendar
 
 Use the `mode="range"` prop to enable range selection.
 
@@ -430,7 +428,7 @@ export function CalendarRange() {
 
 ```
 
-### Month and Year Selector
+## Month and Year Selector
 
 Use `captionLayout="dropdown"` to show month and year dropdowns.
 
@@ -451,7 +449,7 @@ export function CalendarCaption() {
 
 ```
 
-### Presets
+## Presets
 
 ```tsx
 "use client"
@@ -515,7 +513,7 @@ export function CalendarWithPresets() {
 
 ```
 
-### Date and Time Picker
+## Date and Time Picker
 
 ```tsx
 "use client"
@@ -587,7 +585,7 @@ export function CalendarWithTime() {
 
 ```
 
-### Booked dates
+## Booked dates
 
 ```tsx
 "use client"
@@ -629,7 +627,7 @@ export function CalendarBookedDates() {
 
 ```
 
-### Custom Cell Size
+## Custom Cell Size
 
 ```tsx
 "use client"
@@ -708,7 +706,7 @@ Or use fixed values:
 />
 ```
 
-### Week Numbers
+## Week Numbers
 
 Use `showWeekNumber` to show week numbers.
 

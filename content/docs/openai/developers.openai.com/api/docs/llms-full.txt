@@ -5266,14 +5266,19 @@ For example, an Agents SDK workflow might investigate a support request, hand it
 | Contents                                                                        | Expected impact                     |
 | ------------------------------------------------------------------------------- | ----------------------------------- |
 | [Use the Responses API](#use-the-responses-api)                                 | Quality, cost, latency, reliability |
+| [Choose a GPT-5.6 model](#choose-a-gpt-56-model)                                | Quality, cost, latency              |
 | [Set up `reasoning.effort`](#set-up-reasoningeffort)                            | Quality, cost, latency              |
 | [Set up `text.verbosity`](#set-up-textverbosity)                                | Quality, cost, latency              |
 | [Set up the assistant `phase` parameter](#set-up-the-assistant-phase-parameter) | Quality, cost                       |
 | [Use `tool_search`](#use-tool_search)                                           | Cost, latency                       |
+| [Use Programmatic Tool Calling](#use-programmatic-tool-calling)                 | Quality, cost, latency              |
+| [Use Multi-agent for parallel work](#use-multi-agent-for-parallel-work)         | Quality, cost, latency              |
 | [Leverage built-in tools](#leverage-built-in-tools)                             | Quality                             |
 | [Leverage compaction](#leverage-compaction)                                     | Cost                                |
 | [Use `prompt_cache_key`](#use-prompt_cache_key)                                 | Latency, cost                       |
 | [Use `reasoning.encrypted_content`](#use-reasoningencrypted_content)            | Quality, latency                    |
+| [Set image detail intentionally](#set-image-detail-intentionally)               | Quality, cost, latency              |
+| [Send a safety identifier](#send-a-safety-identifier)                           | Safety, reliability                 |
 | [Use `background=True`](#use-backgroundtrue)                                    | Resumability                        |
 | [Use WebSocket mode](#use-websocket-mode)                                       | Latency                             |
 
@@ -5284,21 +5289,42 @@ For example, an Agents SDK workflow might investigate a support request, hand it
 API and the best place to access the newest model behavior, built-in tools,
 stateful workflows, and agent features.
 
+## Choose a GPT-5.6 model
+
+Choose a [GPT-5.6 model](https://developers.openai.com/api/docs/guides/latest-model) for the workload instead
+of routing every request to the most capable tier. Use `gpt-5.6` or
+`gpt-5.6-sol` for frontier capability, `gpt-5.6-terra` for strong performance
+at a lower price, and `gpt-5.6-luna` for efficient, high-volume workloads.
+
+When migrating, preserve the current model's workload role and effective
+reasoning effort for the first comparison. Run representative evals before
+changing prompts or adding new capabilities. Compare task success, latency,
+input, output, reasoning, and cache-write tokens, and cost per successful task.
+
 ## Set up `reasoning.effort`
 
 Use `reasoning.effort` to decide how much thinking the model should do before it
 answers.
 
-For `gpt-5.5`, the supported values are `none`, `low`, `medium`, `high`, and
-`xhigh`. The default is `medium`. Lower effort is faster and uses fewer
-reasoning tokens. Higher effort gives the model more time for planning,
-debugging, synthesis, and multi-step tradeoffs. The right value depends on the
-**task**, not just the model.
+For GPT-5.6 models, the supported values are `none`, `low`, `medium`, `high`,
+`xhigh`, and `max`. The default is `medium`. Lower effort is faster and uses
+fewer reasoning tokens. Higher effort gives the model more time for planning,
+debugging, synthesis, and multi-step tradeoffs.
 
 Use `low` when the job is mostly extraction, routing, classification, or a
 simple rewrite. Use `medium` or `high` when the model needs to diagnose a
-problem, compare options, write a plan, or reason through code. Reserve `xhigh`
-for cases where your evals show the extra latency is worth it.
+problem, compare options, write a plan, or reason through code. Use `xhigh` or
+`max` only when representative evals show that the quality gain justifies the
+extra latency and cost. When migrating from GPT-5.5 or GPT-5.4, start with the
+current effort and compare the same setting with one level lower. GPT-5.6 can
+often maintain or improve quality with fewer reasoning tokens, so the lower
+setting may also reduce latency and cost.
+
+For the hardest quality-first workloads, also compare
+[`reasoning.mode: "pro"`](https://developers.openai.com/api/docs/guides/reasoning#reasoning-mode) with
+standard mode at the same effort. Reasoning mode and effort are independent.
+Pro mode can improve reliability by applying more model work before returning a
+single final answer, but it increases latency and token usage.
 
 Tune reasoning effort for the task
 
@@ -5318,7 +5344,7 @@ const prompt = [
 
 const response = await openai.responses.create({
   model: "gpt-5.6",
-  reasoning: { effort: "high" },
+  reasoning: { effort: "xhigh", mode: "pro" },
   input: prompt,
 });
 
@@ -5341,7 +5367,7 @@ Identify the likeliest root cause and the smallest safe fix.
 
 response = client.responses.create(
     model="gpt-5.6",
-    reasoning={"effort": "high"},
+    reasoning={"effort": "xhigh", "mode": "pro"},
     input=prompt,
 )
 
@@ -5359,6 +5385,12 @@ generates less and returns output faster.
 
 For coding, `medium` and `high` tend to produce longer, more organized output
 with clearer structure. `low` keeps the answer tighter and more minimal.
+
+GPT-5.6 tends to be more concise by default than GPT-5.5. When migrating, check
+whether broad instructions like "Be concise" still help. In some cases, they may
+make responses too brief. Keep them only when they still help, and prefer using
+`text.verbosity` to control the default level of detail; then use the prompt to
+specify required content, structure, and a more specific length, if applicable.
 
 Set lower verbosity for compact output
 
@@ -5441,16 +5473,15 @@ Assistant final answer message
 
 This is useful in long-running or tool-heavy workflows where the assistant may
 produce visible progress updates before it finishes. When you send that history
-back to the model, preserve `phase` on assistant messages so the model can tell
-which messages are progress updates and which message is the final result.
-
-**Preserve and resend `phase`** on assistant messages on follow-up requests for
-new models like `gpt-5.3-codex` and later. It helps address early stopping,
-ensuring the agent runs until it reaches the final answer.
+back on follow-up requests for `gpt-5.3-codex` and later models,
+**preserve and resend `phase`** on assistant messages so the model can distinguish
+progress updates from the final result. This helps reduce early stopping, making
+the agent more likely to continue until it reaches the final answer.
 
 ## Use `tool_search`
 
-Instead of loading the full tool catalog into every request, add
+Instead of loading the full tool catalog into every request, use
+[tool search](https://developers.openai.com/api/docs/guides/tools-tool-search): add
 `{"type": "tool_search"}` and mark expensive tool definitions with
 `defer_loading: true`. The model can then load the subset it needs at runtime.
 At request start, the model only sees the search tool name and description. If
@@ -5485,36 +5516,50 @@ import OpenAI from "openai";
 
 const openai = new OpenAI();
 
-const billingLookupInvoice = {
-  type: "function",
-  name: "billing.lookup_invoice",
-  description: "Look up invoice state, taxes, credits, and payment attempts.",
-  parameters: {
-    type: "object",
-    properties: {
-      invoice_id: { type: "string" },
+const billingNamespace = {
+  type: "namespace",
+  name: "billing",
+  description: "Billing tools for invoices, payments, taxes, and credits.",
+  tools: [
+    {
+      type: "function",
+      name: "lookup_invoice",
+      description: "Look up invoice state, taxes, credits, and payment attempts.",
+      parameters: {
+        type: "object",
+        properties: {
+          invoice_id: { type: "string" },
+        },
+        required: ["invoice_id"],
+        additionalProperties: false,
+      },
+      strict: true,
+      defer_loading: true,
     },
-    required: ["invoice_id"],
-    additionalProperties: false,
-  },
-  strict: true,
-  defer_loading: true,
+  ],
 };
 
-const crmGetAccount = {
-  type: "function",
-  name: "crm.get_account",
-  description: "Fetch account owner, plan, health, and payment history.",
-  parameters: {
-    type: "object",
-    properties: {
-      account_id: { type: "string" },
+const crmNamespace = {
+  type: "namespace",
+  name: "crm",
+  description: "CRM tools for account ownership, plans, health, and payment history.",
+  tools: [
+    {
+      type: "function",
+      name: "get_account",
+      description: "Fetch account owner, plan, health, and payment history.",
+      parameters: {
+        type: "object",
+        properties: {
+          account_id: { type: "string" },
+        },
+        required: ["account_id"],
+        additionalProperties: false,
+      },
+      strict: true,
+      defer_loading: true,
     },
-    required: ["account_id"],
-    additionalProperties: false,
-  },
-  strict: true,
-  defer_loading: true,
+  ],
 };
 
 const response = await openai.responses.create({
@@ -5522,14 +5567,10 @@ const response = await openai.responses.create({
   input:
     "Find the right billing tool and explain why invoice INV-1043 still " +
     "shows overdue after a payment yesterday.",
-  tools: [
-    { type: "tool_search" },
-    billingLookupInvoice,
-    crmGetAccount,
-  ],
+  tools: [billingNamespace, crmNamespace, { type: "tool_search" }],
 });
 
-console.log(response.output_text);
+console.log(response.output);
 ```
 
 ```python
@@ -5537,36 +5578,50 @@ from openai import OpenAI
 
 client = OpenAI()
 
-billing_lookup_invoice = {
-    "type": "function",
-    "name": "billing.lookup_invoice",
-    "description": "Look up invoice state, taxes, credits, and payment attempts.",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "invoice_id": {"type": "string"},
-        },
-        "required": ["invoice_id"],
-        "additionalProperties": False,
-    },
-    "strict": True,
-    "defer_loading": True,
+billing_namespace = {
+    "type": "namespace",
+    "name": "billing",
+    "description": "Billing tools for invoices, payments, taxes, and credits.",
+    "tools": [
+        {
+            "type": "function",
+            "name": "lookup_invoice",
+            "description": "Look up invoice state, taxes, credits, and payment attempts.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "invoice_id": {"type": "string"},
+                },
+                "required": ["invoice_id"],
+                "additionalProperties": False,
+            },
+            "strict": True,
+            "defer_loading": True,
+        }
+    ],
 }
 
-crm_get_account = {
-    "type": "function",
-    "name": "crm.get_account",
-    "description": "Fetch account owner, plan, health, and payment history.",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "account_id": {"type": "string"},
-        },
-        "required": ["account_id"],
-        "additionalProperties": False,
-    },
-    "strict": True,
-    "defer_loading": True,
+crm_namespace = {
+    "type": "namespace",
+    "name": "crm",
+    "description": "CRM tools for account ownership, plans, health, and payment history.",
+    "tools": [
+        {
+            "type": "function",
+            "name": "get_account",
+            "description": "Fetch account owner, plan, health, and payment history.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "account_id": {"type": "string"},
+                },
+                "required": ["account_id"],
+                "additionalProperties": False,
+            },
+            "strict": True,
+            "defer_loading": True,
+        }
+    ],
 }
 
 response = client.responses.create(
@@ -5575,16 +5630,62 @@ response = client.responses.create(
         "Find the right billing tool and explain why invoice INV-1043 still "
         "shows overdue after a payment yesterday."
     ),
-    tools=[
-        {"type": "tool_search"},
-        billing_lookup_invoice,
-        crm_get_account,
-    ],
+    tools=[billing_namespace, crm_namespace, {"type": "tool_search"}],
 )
 
-print(response.output_text)
+print(response.output)
 ```
 
+
+## Use Programmatic Tool Calling
+
+[Programmatic Tool Calling](https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling)
+lets GPT-5.6 write JavaScript that calls eligible tools and reduces their
+intermediate results inside a hosted runtime. Use it for bounded stages where
+code can filter, join, rank, remove duplicates, combine, or check large tool
+results before returning a smaller structured result to the model.
+
+Add the `programmatic_tool_calling` tool and opt in each eligible tool. Use
+`allowed_callers: ["programmatic"]` for program-only tools, or use
+`allowed_callers: ["direct", "programmatic"]` when the model may also call the
+tool directly. Keep calls direct when each result may change the model's next
+decision, an action requires approval, or the final answer must preserve
+citations or native artifacts. Document tool return fields and error behavior so
+the model can write a correct program without first inspecting a result.
+
+Your tool loop must handle `program` and `program_output` items, as well as
+program-issued `function_call` items and their `function_call_output` items.
+Preserve each `call_id`, and copy the function call's `caller` into its output so
+the service can resume the correct program.
+
+Test both the `program_output` and the final assistant message. A correct program
+result can still become an incomplete final answer. Compare task success,
+required evidence, total tokens, latency, and cost against the same workflow
+using direct tool calls.
+
+## Use Multi-agent for parallel work
+
+[Multi-agent](https://developers.openai.com/api/docs/guides/responses-multi-agent) is a GPT-5.6 feature that
+lets a root agent delegate independent workstreams to subagents and synthesize
+their results. Use it when you can split research, analysis, or implementation
+into concrete, bounded tasks that use separate context and run in parallel.
+
+Set `multi_agent.enabled` to `true` in the request. For HTTP, use the beta
+Responses SDK with `client.beta.responses` and pass `responses_multi_agent=v1`
+in `betas`. For raw HTTP or WebSocket connections, send
+`OpenAI-Beta: responses_multi_agent=v1`. Item schemas can change while
+Multi-agent is in beta.
+
+Prefer one agent for short tasks, ordered chains where each step depends on the
+last, or work that writes to the same mutable resource. Subagents can increase
+token usage, so start with the default `max_concurrent_subagents` value of `3`
+and measure end-to-end quality, latency, and cost. For tool-heavy or long-running
+Multi-agent workflows, WebSocket mode can reduce continuation overhead.
+
+Before enabling Multi-agent, account for its current limitations:
+`/responses/compact`, `reasoning.summary`, and `max_tool_calls` are not
+supported. The server automatically compacts the root context and every
+subagent context.
 
 ## Leverage built-in tools
 
@@ -5718,14 +5819,28 @@ print(next_response.output_text)
 and cost when requests reuse the same long prefix. For high-volume workflows,
 set
 [`prompt_cache_key`](https://developers.openai.com/api/docs/api-reference/responses/create#responses-create-prompt_cache_key)
-consistently for requests that share the same stable prefix.
+consistently for requests that share the same stable prefix. The service
+combines the key with the prompt prefix hash to help route similar requests to
+the same cache without changing the model input. Keep the key stable for
+genuinely shared prefixes, choose a granularity that avoids sending too much
+traffic to one key, and keep total traffic across the prefixes for each key to
+about 15 requests per minute. Partition higher-volume traffic across more keys
+with a stable mapping.
 
-The cache key is combined with the prompt prefix hash, so it helps route similar
-requests to the same cache without changing the model input. Keep the key stable
-for genuinely shared prefixes, and choose a granularity that avoids sending too
-much traffic to one prefix-key pair. If one prefix and `prompt_cache_key`
-combination exceeds about 15 requests per minute, requests may overflow to
-additional machines and reduce cache effectiveness.
+GPT-5.6 introduced explicit prompt caching. Implicit caching remains the
+default, but GPT-5.6 models and later model families also support explicit
+cache breakpoints and request-wide cache policy. On those models, set
+`prompt_cache_key` to use the more reliable matching for both implicit caching
+and explicit breakpoints. If a changing suffix comes after a stable prefix, add
+an explicit `prompt_cache_breakpoint` at the reusable boundary. Set
+`prompt_cache_options.mode` to `explicit` only when the request should use only
+the breakpoints you provide and no implicit breakpoint. Earlier models continue
+to use automatic prompt caching only.
+
+On GPT-5.6 models and later model families, cache writes cost 1.25× the
+uncached input token rate. Log `cached_tokens` and `cache_write_tokens`, then
+compare write volume with later cache reads to measure net cost and tune key
+granularity and breakpoint placement.
 
 Route related requests to the same prompt cache
 
@@ -5774,11 +5889,19 @@ print(response.output_text)
 
 ## Use `reasoning.encrypted_content`
 
-Always round-trip reasoning items. This helps the model by allowing it to work
-from its prior reasoning. If your [Zero Data Retention
+GPT-5.6 can [preserve reasoning across
+calls](https://developers.openai.com/api/docs/guides/reasoning#preserve-reasoning-across-calls). Use
+`reasoning.context: "all_turns"` when the task's goals, assumptions, and
+priorities remain stable. Use `current_turn` when earlier reasoning is no longer
+relevant and might anchor the model to an outdated approach. If you omit
+`reasoning.context` or set it to `auto`, inspect the response's
+`reasoning.context` field to confirm the effective mode.
+
+[Persisted reasoning](https://developers.openai.com/api/docs/guides/reasoning#keeping-reasoning-items-in-context)
+works only when earlier reasoning items are available. Use `previous_response_id`
+for stored responses. If your [Zero Data Retention
 (ZDR)](https://developers.openai.com/api/docs/guides/your-data#zero-data-retention) requirements do not allow
-storing response data, this is where `reasoning.encrypted_content` is important.
-`reasoning.encrypted_content` gives you a stateless handoff.
+storing response data, use `reasoning.encrypted_content` for a stateless handoff.
 
 Add `reasoning.encrypted_content` to `include`, and reasoning items in the
 response output will include encrypted reasoning content that can be passed back
@@ -5793,26 +5916,33 @@ import OpenAI from "openai";
 
 const openai = new OpenAI();
 
+const history = [
+  {
+    role: "user",
+    content: "Investigate why invoice INV-1043 has mismatched tax totals.",
+  },
+];
+
 const first = await openai.responses.create({
   model: "gpt-5.6",
   store: false,
-  reasoning: { effort: "medium" },
+  reasoning: { effort: "medium", context: "current_turn" },
   include: ["reasoning.encrypted_content"],
-  input: "Investigate why invoice INV-1043 has mismatched tax totals.",
+  input: history,
+});
+
+history.push(...first.output);
+history.push({
+  role: "user",
+  content: "Now write the customer-facing explanation in plain English.",
 });
 
 const second = await openai.responses.create({
   model: "gpt-5.6",
   store: false,
-  reasoning: { effort: "medium" },
+  reasoning: { effort: "medium", context: "all_turns" },
   include: ["reasoning.encrypted_content"],
-  input: [
-    ...first.output,
-    {
-      role: "user",
-      content: "Now write the customer-facing explanation in plain English.",
-    },
-  ],
+  input: history,
 });
 
 console.log(second.output_text);
@@ -5823,31 +5953,66 @@ from openai import OpenAI
 
 client = OpenAI()
 
+history = [
+    {
+        "role": "user",
+        "content": "Investigate why invoice INV-1043 has mismatched tax totals.",
+    }
+]
+
 first = client.responses.create(
     model="gpt-5.6",
     store=False,
-    reasoning={"effort": "medium"},
+    reasoning={"effort": "medium", "context": "current_turn"},
     include=["reasoning.encrypted_content"],
-    input="Investigate why invoice INV-1043 has mismatched tax totals.",
+    input=history,
+)
+
+history.extend(item.model_dump(exclude={"status"}) for item in first.output)
+history.append(
+    {
+        "role": "user",
+        "content": "Now write the customer-facing explanation in plain English.",
+    }
 )
 
 second = client.responses.create(
     model="gpt-5.6",
     store=False,
-    reasoning={"effort": "medium"},
+    reasoning={"effort": "medium", "context": "all_turns"},
     include=["reasoning.encrypted_content"],
-    input=[
-        *first.output,
-        {
-            "role": "user",
-            "content": "Now write the customer-facing explanation in plain English.",
-        },
-    ],
+    input=history,
 )
 
 print(second.output_text)
 ```
 
+
+## Set image detail intentionally
+
+On GPT-5.6 models, omitted image `detail` and `detail: "auto"` use the same
+sizing behavior as `original`. The service preserves the input dimensions
+instead of resizing the image to a patch budget or pixel-dimension limit. Large
+images can use more input tokens and add latency as a result.
+
+Choose [`detail`](https://developers.openai.com/api/docs/guides/images-vision#choose-an-image-detail-level)
+for the task. Resize the image, use `low` when fine visual detail is not
+important, or use `high` for standard high-fidelity image understanding. Keep
+`original` for large, dense, coordinate-sensitive, OCR, localization, or
+visual-inspection tasks where the extra detail improves quality. Measure
+worst-case image tokens and latency before deployment.
+
+## Send a safety identifier
+
+If your application serves individual end users, send a stable,
+privacy-preserving
+[`safety_identifier`](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers)
+with each request. It helps OpenAI detect misuse and gives your team a stable way
+to trace policy violations. It also reduces the chance that one user's misuse
+disrupts access for your broader organization.
+
+Hash the user's username or email address instead of sending identifying
+information. For logged-out experiences, use a stable session ID.
 
 ## Use `background=True`
 
@@ -5856,8 +6021,6 @@ a long time. Instead of keeping the client connection open, the API starts a job
 and returns an ID. Your app can poll that job until it finishes, fails, or is
 canceled. Use it for large analyses, long tool runs, or work that needs status
 and retry behavior.
-
-`background=True` **requires `store=True`**.
 
 Run and poll a background response
 
@@ -5869,7 +6032,7 @@ const openai = new OpenAI();
 let job = await openai.responses.create({
   model: "gpt-5.6",
   background: true,
-  store: true,
+  store: false,
   input: "Analyze this large log bundle and cluster the primary failure modes.",
   tools: [
     {
@@ -5899,7 +6062,7 @@ client = OpenAI()
 job = client.responses.create(
     model="gpt-5.6",
     background=True,
-    store=True,
+    store=False,
     input="Analyze this large log bundle and cluster the primary failure modes.",
     tools=[
         {
@@ -5925,9 +6088,6 @@ may take longer than a normal request.
 
 From the UI perspective, background mode indicates, "This is running; here is
 the status; the result will appear here when it's ready."
-
-Note: `background=True` is not compatible with [Zero Data
-Retention](https://developers.openai.com/api/docs/guides/your-data#zero-data-retention).
 
 ## Use WebSocket mode
 
@@ -6319,7 +6479,7 @@ from agents import Agent, ApplyPatchTool, Runner, apply_diff
 class WorkspaceEditor:
     async def create_file(self, operation):
         # convert the diff to the file content
-        content = apply_diff("", operation.diff, create=True)
+        content = apply_diff("", operation.diff, mode="create")
         # write the file content to the file system
         return {"status": "completed", "output": f"Created {operation.path}"}
 
@@ -6755,11 +6915,9 @@ Agents like [Codex](https://openai.com/index/introducing-codex/) and [Deep Resea
 
 Background mode kicks off these tasks asynchronously, and developers can poll response objects to check status over time. To start response generation in the background, make an API request with `background` set to `true`:
 
-Because background mode stores response data for roughly 10 minutes to enable
-  polling, it is not Zero Data Retention (ZDR) compatible. Requests from ZDR
-  projects are still accepted with `background=true` for legacy reasons, but
-  using it breaks ZDR guarantees. Modified Abuse Monitoring (MAM) projects can
-  safely rely on background mode.
+Background requests from Zero Data Retention (ZDR) projects run with
+  `store=false`. Response data is temporarily stored to disk for roughly 10
+  minutes to enable asynchronous execution and polling.
 
 Generate a response in the background
 
@@ -6963,7 +7121,8 @@ for event in stream:
 
 ## Limits
 
-1. Background sampling requires `store=true`; stateless requests are rejected.
+1. Background requests can use `store=false`, but response data is temporarily
+   stored to support asynchronous execution and polling.
 2. To cancel a synchronous response, terminate the connection
 3. You can only start a new stream from a background response if you created it with `stream=true`.
 
@@ -14028,7 +14187,7 @@ class GoogleMetadataIdentityTokenProvider
   end
 
   def token_type
-    OpenAI::Auth::TokenType::JWT
+    OpenAI::Auth::TokenType::ID
   end
 
   def get_token
@@ -19436,6 +19595,33 @@ response = client.responses.create(
 print(response.output_text)
 ```
 
+```ruby
+require "openai"
+
+openai = OpenAI::Client.new
+
+response = openai.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {
+      role: "user",
+      content: [
+        {
+          type: "input_text",
+          text: "Analyze the letter and provide a summary of the key points."
+        },
+        {
+          type: "input_file",
+          file_url: "https://www.berkshirehathaway.com/letters/2024ltr.pdf"
+        }
+      ]
+    }
+  ]
+)
+
+puts(response.output_text)
+```
+
 ```csharp
 using OpenAI.Files;
 using OpenAI.Responses;
@@ -19561,6 +19747,32 @@ response = client.responses.create(
 )
 
 print(response.output_text)
+```
+
+```ruby
+require "openai"
+
+openai = OpenAI::Client.new
+
+file = openai.files.create(
+  file: File.open("draconomicon.pdf", "rb"),
+  purpose: "user_data"
+)
+
+response = openai.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {
+      role: "user",
+      content: [
+        {type: "input_file", file_id: file.id},
+        {type: "input_text", text: "What is the first dragon in the book?"}
+      ]
+    }
+  ]
+)
+
+puts(response.output_text)
 ```
 
 ```csharp
@@ -19966,6 +20178,25 @@ OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
 ], options);
 
 Console.WriteLine(response.GetOutputText());
+```
+
+```ruby
+require "openai"
+
+openai = OpenAI::Client.new
+
+response = openai.responses.create(
+  model: "gpt-5.6",
+  input: "What is deep research by OpenAI?",
+  tools: [
+    {
+      type: "file_search",
+      vector_store_ids: ["<vector_store_id>"]
+    }
+  ]
+)
+
+puts(response)
 ```
 
 
@@ -20581,7 +20812,161 @@ Let's look at an end-to-end tool calling flow for a `get_horoscope` function tha
 
 
 
-  Note that for reasoning models like GPT-5 or o4-mini, any reasoning items
+  Complete tool calling example
+
+```python
+from openai import OpenAI
+import json
+
+client = OpenAI()
+
+# 1. Define a list of callable tools for the model
+tools = [
+    {
+        "type": "function",
+        "name": "get_horoscope",
+        "description": "Get today's horoscope for an astrological sign.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "sign": {
+                    "type": "string",
+                    "description": "An astrological sign like Taurus or Aquarius",
+                },
+            },
+            "required": ["sign"],
+        },
+    },
+]
+
+def get_horoscope(sign):
+    return f"{sign}: Next Tuesday you will befriend a baby otter."
+
+# Create a running input list we will add to over time
+input_list = [
+    {"role": "user", "content": "What is my horoscope? I am an Aquarius."}
+]
+
+# 2. Prompt the model with tools defined
+response = client.responses.create(
+    model="gpt-5.6",
+    tools=tools,
+    input=input_list,
+)
+
+# Save function call outputs for subsequent requests
+input_list += response.output
+
+for item in response.output:
+    if item.type == "function_call":
+        if item.name == "get_horoscope":
+            # 3. Execute the function logic for get_horoscope
+            sign = json.loads(item.arguments)["sign"]
+            horoscope = get_horoscope(sign)
+            
+            # 4. Provide function call results to the model
+            input_list.append({
+                "type": "function_call_output",
+                "call_id": item.call_id,
+                "output": horoscope,
+            })
+
+print("Final input:")
+print(input_list)
+
+response = client.responses.create(
+    model="gpt-5.6",
+    instructions="Respond only with a horoscope generated by a tool.",
+    tools=tools,
+    input=input_list,
+)
+
+# 5. The model should be able to give a response!
+print("Final output:")
+print(response.model_dump_json(indent=2))
+print("\n" + response.output_text)
+```
+
+```javascript
+import OpenAI from "openai";
+
+const openai = new OpenAI();
+
+// 1. Define a list of callable tools for the model
+const tools = [
+  {
+    type: "function",
+    name: "get_horoscope",
+    description: "Get today's horoscope for an astrological sign.",
+    parameters: {
+      type: "object",
+      properties: {
+        sign: {
+          type: "string",
+          description: "An astrological sign like Taurus or Aquarius",
+        },
+      },
+      required: ["sign"],
+      additionalProperties: false,
+    },
+    strict: true,
+  },
+];
+
+function getHoroscope(sign) {
+  return `${sign}: Next Tuesday you will befriend a baby otter.`;
+}
+
+// Create a running input list we will add to over time
+let input = [
+  { role: "user", content: "What is my horoscope? I am an Aquarius." },
+];
+
+// 2. Prompt the model with tools defined
+let response = await openai.responses.create({
+  model: "gpt-5.6",
+  tools,
+  input,
+});
+
+// Preserve model output for the next turn
+input.push(...response.output);
+
+for (const item of response.output) {
+  if (item.type !== "function_call") continue;
+
+  if (item.name === "get_horoscope") {
+    // 3. Execute the function logic for get_horoscope
+    const { sign } = JSON.parse(item.arguments);
+    const horoscope = getHoroscope(sign);
+
+    // 4. Provide function call results to the model
+    input.push({
+      type: "function_call_output",
+      call_id: item.call_id,
+      output: horoscope,
+    });
+  }
+}
+
+console.log("Final input:");
+console.log(JSON.stringify(input, null, 2));
+
+response = await openai.responses.create({
+  model: "gpt-5.6",
+  instructions: "Respond only with a horoscope generated by a tool.",
+  tools,
+  input,
+});
+
+// 5. The model should be able to give a response!
+console.log("Final output:");
+console.log(response.output_text);
+```
+
+
+
+Note that for reasoning models like GPT-5 or o4-mini, any reasoning items
   returned in model responses with tool calls must also be passed back with tool
   call outputs.
 
@@ -20713,9 +21098,98 @@ When the model calls a function, you must execute it and return the result. Sinc
 
 The response `output` array contains an entry with the `type` having a value of `function_call`. Each entry with a `call_id` (used later to submit the function result), `name`, and JSON-encoded `arguments`.
 
+Sample response with multiple function calls
+
+```json
+[
+    {
+        "id": "fc_12345xyz",
+        "call_id": "call_12345xyz",
+        "type": "function_call",
+        "name": "get_weather",
+        "arguments": "{\"location\":\"Paris, France\"}"
+    },
+    {
+        "id": "fc_67890abc",
+        "call_id": "call_67890abc",
+        "type": "function_call",
+        "name": "get_weather",
+        "arguments": "{\"location\":\"Bogotá, Colombia\"}"
+    },
+    {
+        "id": "fc_99999def",
+        "call_id": "call_99999def",
+        "type": "function_call",
+        "name": "send_email",
+        "arguments": "{\"to\":\"bob@email.com\",\"body\":\"Hi bob\"}"
+    }
+]
+```
+
+
 If you are using [tool search](https://developers.openai.com/api/docs/guides/tools-tool-search), you may also see `tool_search_call` and `tool_search_output` items before a `function_call`. Once the function is loaded, handle the function call in the same way shown here.
 
+Execute function calls and append results
+
+```python
+for tool_call in response.output:
+    if tool_call.type != "function_call":
+        continue
+
+    name = tool_call.name
+    args = json.loads(tool_call.arguments)
+
+    result = call_function(name, args)
+    input_messages.append({
+        "type": "function_call_output",
+        "call_id": tool_call.call_id,
+        "output": str(result)
+    })
+```
+
+```javascript
+for (const toolCall of response.output) {
+    if (toolCall.type !== "function_call") {
+        continue;
+    }
+
+    const name = toolCall.name;
+    const args = JSON.parse(toolCall.arguments);
+
+    const result = callFunction(name, args);
+    input.push({
+        type: "function_call_output",
+        call_id: toolCall.call_id,
+        output: result.toString()
+    });
+}
+```
+
+
+
 In the example above, we have a hypothetical `call_function` to route each call. Here’s a possible implementation:
+
+Execute function calls and append results
+
+```python
+def call_function(name, args):
+    if name == "get_weather":
+        return get_weather(**args)
+    if name == "send_email":
+        return send_email(**args)
+```
+
+```javascript
+const callFunction = async (name, args) => {
+    if (name === "get_weather") {
+        return getWeather(args.latitude, args.longitude);
+    }
+    if (name === "send_email") {
+        return sendEmail(args.to, args.body);
+    }
+};
+```
+
 
 ### Formatting results
 
@@ -20730,6 +21204,33 @@ If your function has no return value (e.g. `send_email`), simply return a string
 
 
 After appending the results to your `input`, you can send them back to the model to get a final response.
+
+Send results back to model
+
+```python
+response = client.responses.create(
+    model="gpt-5.6",
+    input=input_messages,
+    tools=tools,
+)
+```
+
+```javascript
+const response = await openai.responses.create({
+    model: "gpt-5.6",
+    input,
+    tools,
+});
+```
+
+
+
+Final response
+
+```json
+"It's about 15°C in Paris, 18°C in Bogotá, and I've sent that email to Bob."
+```
+
 
 ## Additional configurations
 
@@ -20804,10 +21305,68 @@ calling, explicitly set `strict: false`.
 
 <div data-content-switcher-pane data-value="enabled">
     <div class="hidden">Strict mode enabled</div>
-    </div>
+    ```json
+{
+    "type": "function",
+    "name": "get_weather",
+    "description": "Retrieves current weather for the given location.",
+    //highlight-start
+    "strict": true,
+    //highlight-end
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "location": {
+                "type": "string",
+                "description": "City and country e.g. Bogotá, Colombia"
+            },
+            "units": {
+                //highlight-start
+                "type": ["string", "null"],
+                //highlight-end
+                "enum": ["celsius", "fahrenheit"],
+                "description": "Units the temperature will be returned in."
+            }
+        },
+        //highlight-start
+        "required": ["location", "units"],
+        "additionalProperties": false
+        //highlight-end
+    }
+}
+```
+
+  </div>
   <div data-content-switcher-pane data-value="disabled" hidden>
     <div class="hidden">Strict mode disabled</div>
-    </div>
+    ```json
+{
+    "type": "function",
+    "name": "get_weather",
+    "description": "Retrieves current weather for the given location.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "location": {
+                "type": "string",
+                "description": "City and country e.g. Bogotá, Colombia"
+            },
+            "units": {
+                //highlight-start
+                "type": "string",
+                //highlight-end
+                "enum": ["celsius", "fahrenheit"],
+                "description": "Units the temperature will be returned in."
+            }
+        },
+        //highlight-start
+        "required": ["location"],
+        //highlight-end
+    }
+}
+```
+
+  </div>
 
 
 
@@ -20833,6 +21392,94 @@ Streaming can be used to surface progress by showing which function is called as
 
 Streaming function calls is very similar to streaming regular responses: you set `stream` to `true` and get different `event` objects.
 
+Streaming function calls
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+tools = [{
+    "type": "function",
+    "name": "get_weather",
+    "description": "Get current temperature for a given location.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "location": {
+                "type": "string",
+                "description": "City and country e.g. Bogotá, Colombia"
+            }
+        },
+        "required": [
+            "location"
+        ],
+        "additionalProperties": False
+    }
+}]
+
+stream = client.responses.create(
+    model="gpt-5.6",
+    input=[{"role": "user", "content": "What's the weather like in Paris today?"}],
+    tools=tools,
+    stream=True
+)
+
+for event in stream:
+    print(event)
+```
+
+```javascript
+import { OpenAI } from "openai";
+
+const openai = new OpenAI();
+
+const tools = [{
+    type: "function",
+    name: "get_weather",
+    description: "Get current temperature for provided coordinates in celsius.",
+    parameters: {
+        type: "object",
+        properties: {
+            latitude: { type: "number" },
+            longitude: { type: "number" }
+        },
+        required: ["latitude", "longitude"],
+        additionalProperties: false
+    },
+    strict: true
+}];
+
+const stream = await openai.responses.create({
+    model: "gpt-5.6",
+    input: [{ role: "user", content: "What's the weather like in Paris today?" }],
+    tools,
+    stream: true,
+    store: true,
+});
+
+for await (const event of stream) {
+    console.log(event)
+}
+```
+
+
+Output events
+
+```json
+{"type":"response.output_item.added","response_id":"resp_1234xyz","output_index":0,"item":{"type":"function_call","id":"fc_1234xyz","call_id":"call_1234xyz","name":"get_weather","arguments":""}}
+{"type":"response.function_call_arguments.delta","response_id":"resp_1234xyz","item_id":"fc_1234xyz","output_index":0,"delta":"{\""}
+{"type":"response.function_call_arguments.delta","response_id":"resp_1234xyz","item_id":"fc_1234xyz","output_index":0,"delta":"location"}
+{"type":"response.function_call_arguments.delta","response_id":"resp_1234xyz","item_id":"fc_1234xyz","output_index":0,"delta":"\":\""}
+{"type":"response.function_call_arguments.delta","response_id":"resp_1234xyz","item_id":"fc_1234xyz","output_index":0,"delta":"Paris"}
+{"type":"response.function_call_arguments.delta","response_id":"resp_1234xyz","item_id":"fc_1234xyz","output_index":0,"delta":","}
+{"type":"response.function_call_arguments.delta","response_id":"resp_1234xyz","item_id":"fc_1234xyz","output_index":0,"delta":" France"}
+{"type":"response.function_call_arguments.delta","response_id":"resp_1234xyz","item_id":"fc_1234xyz","output_index":0,"delta":"\"}"}
+{"type":"response.function_call_arguments.done","response_id":"resp_1234xyz","item_id":"fc_1234xyz","output_index":0,"arguments":"{\"location\":\"Paris, France\"}"}
+{"type":"response.output_item.done","response_id":"resp_1234xyz","output_index":0,"item":{"type":"function_call","id":"fc_1234xyz","call_id":"call_1234xyz","name":"get_weather","arguments":"{\"location\":\"Paris, France\"}"}}
+```
+
+
 Instead of aggregating chunks into a single `content` string, however, you're aggregating chunks into an encoded `arguments` JSON object.
 
 When the model calls one or more functions an event of type `response.output_item.added` will be emitted for each function call that contains the following fields:
@@ -20854,6 +21501,51 @@ Afterwards you will receive a series of events of type `response.function_call_a
 
 Below is a code snippet demonstrating how to aggregate the `delta`s into a final `tool_call` object.
 
+Accumulating tool_call deltas
+
+```python
+final_tool_calls = {}
+
+for event in stream:
+    if event.type === 'response.output_item.added':
+        final_tool_calls[event.output_index] = event.item;
+    elif event.type === 'response.function_call_arguments.delta':
+        index = event.output_index
+
+        if final_tool_calls[index]:
+            final_tool_calls[index].arguments += event.delta
+```
+
+```javascript
+const finalToolCalls = {};
+
+for await (const event of stream) {
+    if (event.type === 'response.output_item.added') {
+        finalToolCalls[event.output_index] = event.item;
+    } else if (event.type === 'response.function_call_arguments.delta') {
+        const index = event.output_index;
+
+        if (finalToolCalls[index]) {
+            finalToolCalls[index].arguments += event.delta;
+        }
+    }
+}
+```
+
+
+Accumulated final_tool_calls[0]
+
+```json
+{
+    "type": "function_call",
+    "id": "fc_1234xyz",
+    "call_id": "call_2345abc",
+    "name": "get_weather",
+    "arguments": "{\"location\":\"Paris, France\"}"
+}
+```
+
+
 When the model has finished calling the functions an event of type `response.function_call_arguments.done` will be emitted. This event contains the entire function call including the following fields:
 
 | Field          | Description                                                                                                  |
@@ -20869,6 +21561,47 @@ When the model has finished calling the functions an event of type `response.fun
 Custom tools work in much the same way as JSON schema-driven function tools. But rather than providing the model explicit instructions on what input your tool requires, the model can pass an arbitrary string back to your tool as input. This is useful to avoid unnecessarily wrapping a response in JSON, or to apply a custom grammar to the response (more on this below).
 
 The following code sample shows creating a custom tool that expects to receive a string of text containing Python code as a response.
+
+Custom tool calling example
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+response = client.responses.create(
+    model="gpt-5.6",
+    input="Use the code_exec tool to print hello world to the console.",
+    tools=[
+        {
+            "type": "custom",
+            "name": "code_exec",
+            "description": "Executes arbitrary Python code.",
+        }
+    ]
+)
+print(response.output)
+```
+
+```javascript
+import OpenAI from "openai";
+const client = new OpenAI();
+
+const response = await client.responses.create({
+  model: "gpt-5.6",
+  input: "Use the code_exec tool to print hello world to the console.",
+  tools: [
+    {
+      type: "custom",
+      name: "code_exec",
+      description: "Executes arbitrary Python code.",
+    },
+  ],
+});
+
+console.log(response.output);
+```
+
 
 Just as before, the `output` array will contain a tool call generated by the model. Except this time, the tool call input is given as plain text.
 
@@ -20898,6 +21631,83 @@ A [context-free grammar](https://en.wikipedia.org/wiki/Context-free_grammar) (CF
 You can provide a custom CFG using the `grammar` parameter when configuring a custom tool. Currently, we support two CFG syntaxes when defining grammars: `lark` and `regex`.
 
 #### Lark CFG
+
+Lark context free grammar example
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+grammar = """
+start: expr
+expr: term (SP ADD SP term)* -> add
+| term
+term: factor (SP MUL SP factor)* -> mul
+| factor
+factor: INT
+SP: " "
+ADD: "+"
+MUL: "*"
+%import common.INT
+"""
+
+response = client.responses.create(
+    model="gpt-5.6",
+    input="Use the math_exp tool to add four plus four.",
+    tools=[
+        {
+            "type": "custom",
+            "name": "math_exp",
+            "description": "Creates valid mathematical expressions",
+            "format": {
+                "type": "grammar",
+                "syntax": "lark",
+                "definition": grammar,
+            },
+        }
+    ]
+)
+print(response.output)
+```
+
+```javascript
+import OpenAI from "openai";
+const client = new OpenAI();
+
+const grammar = `
+start: expr
+expr: term (SP ADD SP term)* -> add
+| term
+term: factor (SP MUL SP factor)* -> mul
+| factor
+factor: INT
+SP: " "
+ADD: "+"
+MUL: "*"
+%import common.INT
+`;
+
+const response = await client.responses.create({
+  model: "gpt-5.6",
+  input: "Use the math_exp tool to add four plus four.",
+  tools: [
+    {
+      type: "custom",
+      name: "math_exp",
+      description: "Creates valid mathematical expressions",
+      format: {
+        type: "grammar",
+        syntax: "lark",
+        definition: grammar,
+      },
+    },
+  ],
+});
+
+console.log(response.output);
+```
+
 
 The output from the tool should then conform to the Lark CFG that you defined:
 
@@ -21006,6 +21816,61 @@ Don't rely on open-ended `%ignore` directives. Using unbounded ignore directives
   - Experiment with a higher reasoning effort (e.g, bump from medium to high).
 
 #### Regex CFG
+
+Regex context free grammar example
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+grammar = r"^(?P<month>January|February|March|April|May|June|July|August|September|October|November|December)\s+(?P<day>\d{1,2})(?:st|nd|rd|th)?\s+(?P<year>\d{4})\s+at\s+(?P<hour>0?[1-9]|1[0-2])(?P<ampm>AM|PM)$"
+
+response = client.responses.create(
+    model="gpt-5.6",
+    input="Use the timestamp tool to save a timestamp for August 7th 2025 at 10AM.",
+    tools=[
+        {
+            "type": "custom",
+            "name": "timestamp",
+            "description": "Saves a timestamp in date + time in 24-hr format.",
+            "format": {
+                "type": "grammar",
+                "syntax": "regex",
+                "definition": grammar,
+            },
+        }
+    ]
+)
+print(response.output)
+```
+
+```javascript
+import OpenAI from "openai";
+const client = new OpenAI();
+
+const grammar = "^(?P<month>January|February|March|April|May|June|July|August|September|October|November|December)\s+(?P<day>\d{1,2})(?:st|nd|rd|th)?\s+(?P<year>\d{4})\s+at\s+(?P<hour>0?[1-9]|1[0-2])(?P<ampm>AM|PM)$";
+
+const response = await client.responses.create({
+  model: "gpt-5.6",
+  input: "Use the timestamp tool to save a timestamp for August 7th 2025 at 10AM.",
+  tools: [
+    {
+      type: "custom",
+      name: "timestamp",
+      description: "Saves a timestamp in date + time in 24-hr format.",
+      format: {
+        type: "grammar",
+        syntax: "regex",
+        definition: grammar,
+      },
+    },
+  ],
+});
+
+console.log(response.output);
+```
+
 
 The output from the tool should then conform to the Regex CFG that you defined:
 
@@ -25806,7 +26671,7 @@ curl https://api.openai.com/v1/responses \
         "type": "mcp",
         "server_label": "dmcp",
         "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-        "server_url": "https://dmcp-server.deno.dev/sse",
+        "server_url": "https://dmcp-server.deno.dev/mcp",
         "require_approval": "never"
       }
     ],
@@ -25825,7 +26690,7 @@ const resp = await client.responses.create({
       type: "mcp",
       server_label: "dmcp",
       server_description: "A Dungeons and Dragons MCP server to assist with dice rolling.",
-      server_url: "https://dmcp-server.deno.dev/sse",
+      server_url: "https://dmcp-server.deno.dev/mcp",
       require_approval: "never",
     },
   ],
@@ -25847,7 +26712,7 @@ resp = client.responses.create(
             "type": "mcp",
             "server_label": "dmcp",
             "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-            "server_url": "https://dmcp-server.deno.dev/sse",
+            "server_url": "https://dmcp-server.deno.dev/mcp",
             "require_approval": "never",
         },
     ],
@@ -25866,7 +26731,7 @@ OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateMcpTool(
     serverLabel: "dmcp",
-    serverUri: new Uri("https://dmcp-server.deno.dev/sse"),
+    serverUri: new Uri("https://dmcp-server.deno.dev/mcp"),
     toolCallApprovalPolicy: new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
 ));
 
@@ -25877,6 +26742,28 @@ OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
 ], options);
 
 Console.WriteLine(response.GetOutputText());
+```
+
+```ruby
+require "openai"
+
+openai = OpenAI::Client.new
+
+response = openai.responses.create(
+  model: "gpt-5.6",
+  tools: [
+    {
+      type: "mcp",
+      server_label: "dmcp",
+      server_description: "A Dungeons and Dragons MCP server to assist with dice rolling.",
+      server_url: "https://dmcp-server.deno.dev/mcp",
+      require_approval: "never"
+    }
+  ],
+  input: "Roll 2d4+1"
+)
+
+puts(response.output_text)
 ```
 
 
@@ -26092,7 +26979,7 @@ curl https://api.openai.com/v1/responses \
         "type": "mcp",
         "server_label": "dmcp",
         "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-        "server_url": "https://dmcp-server.deno.dev/sse",
+        "server_url": "https://dmcp-server.deno.dev/mcp",
         "require_approval": "never",
         "allowed_tools": ["roll"]
       }
@@ -26111,7 +26998,7 @@ const resp = await client.responses.create({
     type: "mcp",
     server_label: "dmcp",
     server_description: "A Dungeons and Dragons MCP server to assist with dice rolling.",
-    server_url: "https://dmcp-server.deno.dev/sse",
+    server_url: "https://dmcp-server.deno.dev/mcp",
     require_approval: "never",
     allowed_tools: ["roll"],
   }],
@@ -26132,7 +27019,7 @@ resp = client.responses.create(
         "type": "mcp",
         "server_label": "dmcp",
         "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-        "server_url": "https://dmcp-server.deno.dev/sse",
+        "server_url": "https://dmcp-server.deno.dev/mcp",
         "require_approval": "never",
         "allowed_tools": ["roll"],
     }],
@@ -26151,7 +27038,7 @@ OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateMcpTool(
     serverLabel: "dmcp",
-    serverUri: new Uri("https://dmcp-server.deno.dev/sse"),
+    serverUri: new Uri("https://dmcp-server.deno.dev/mcp"),
     allowedTools: new McpToolFilter() { ToolNames = { "roll" } },
     toolCallApprovalPolicy: new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
 ));
@@ -26216,7 +27103,7 @@ curl https://api.openai.com/v1/responses \
         "type": "mcp",
         "server_label": "dmcp",
         "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-        "server_url": "https://dmcp-server.deno.dev/sse",
+        "server_url": "https://dmcp-server.deno.dev/mcp",
         "require_approval": "always",
       }
     ],
@@ -26239,7 +27126,7 @@ const resp = await client.responses.create({
     type: "mcp",
     server_label: "dmcp",
     server_description: "A Dungeons and Dragons MCP server to assist with dice rolling.",
-    server_url: "https://dmcp-server.deno.dev/sse",
+    server_url: "https://dmcp-server.deno.dev/mcp",
     require_approval: "always",
   }],
   previous_response_id: "resp_682d498bdefc81918b4a6aa477bfafd904ad1e533afccbfa",
@@ -26264,7 +27151,7 @@ resp = client.responses.create(
         "type": "mcp",
         "server_label": "dmcp",
         "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-        "server_url": "https://dmcp-server.deno.dev/sse",
+        "server_url": "https://dmcp-server.deno.dev/mcp",
         "require_approval": "always",
     }],
     previous_response_id="resp_682d498bdefc81918b4a6aa477bfafd904ad1e533afccbfa",
@@ -26287,7 +27174,7 @@ OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateMcpTool(
     serverLabel: "dmcp",
-    serverUri: new Uri("https://dmcp-server.deno.dev/sse"),
+    serverUri: new Uri("https://dmcp-server.deno.dev/mcp"),
     toolCallApprovalPolicy: new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.AlwaysRequireApproval)
 ));
 
@@ -26946,7 +27833,7 @@ When you defer loading an MCP server, the model can still use the MCP server's l
     "type": "mcp",
     "server_label": "dmcp",
     "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-    "server_url": "https://dmcp-server.deno.dev/sse",
+    "server_url": "https://dmcp-server.deno.dev/mcp",
 // highlight-start:subtle
     "defer_loading": true,
 // highlight-end
@@ -29026,7 +29913,9 @@ async function reviewPullRequest(diff: string): Promise<string> {
 
   return response.output
     .flatMap((item) =>
-      item.type === "message" && item.agent?.agent_name === "/root"
+      item.type === "message" &&
+      item.agent?.agent_name === "/root" &&
+      item.phase === "final_answer"
         ? item.content
         : [],
     )
@@ -32194,7 +33083,7 @@ Extended prompt cache retention is available for the following models:
 - `gpt-5-codex`
 - `gpt-4.1`
 
-Extended prompt cache retention keeps cached prefixes active for longer, up to a maximum of 24 hours. Extended Prompt Caching works by offloading the key/value tensors to GPU-local storage when memory is full, significantly increasing the storage capacity available for caching.
+Extended prompt cache retention keeps cached prefixes active for longer, up to a maximum of 24 hours. Extended Prompt Caching works by offloading the key/value tensors to GPU-local storage when memory is full, significantly increasing the storage capacity available for caching. Note that only key/value tensors are cached in GPU-local storage, not the prompts themselves.
 
 Key/value tensors are the intermediate representation from the model's attention layers produced during prefill. Only the key/value tensors may be persisted in local storage; the original customer content, such as prompt text, is only retained in memory.
 
@@ -32291,6 +33180,138 @@ With the OpenAI API, you can use a [large language model](https://developers.ope
 
 
 Here's a simple example using the [Responses API](https://developers.openai.com/api/docs/api-reference/responses).
+
+Generate text from a simple prompt
+
+```javascript
+import OpenAI from "openai";
+const client = new OpenAI();
+
+const response = await client.responses.create({
+    model: "gpt-5.6",
+    input: "Write a one-sentence bedtime story about a unicorn."
+});
+
+console.log(response.output_text);
+```
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+response = client.responses.create(
+    model="gpt-5.6",
+    input="Write a one-sentence bedtime story about a unicorn."
+)
+
+print(response.output_text)
+```
+
+```cli
+openai responses create \
+  --model "gpt-5.6" \
+  --input "Write a one-sentence bedtime story about a unicorn." \
+  --raw-output \
+  --transform 'output.#(type=="message").content.0.text'
+```
+
+```csharp
+using System;
+using System.Threading.Tasks;
+using OpenAI;
+
+class Program
+{
+    static async Task Main()
+    {
+        var client = new OpenAIClient(
+            Environment.GetEnvironmentVariable("OPENAI_API_KEY")
+        );
+
+        var response = await client.Responses.CreateAsync(new ResponseCreateRequest
+        {
+            Model = "gpt-5.6",
+            Input = "Say 'this is a test.'"
+        });
+
+        Console.WriteLine($"[ASSISTANT]: {response.OutputText()}");
+    }
+}
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.Response;
+import com.openai.models.responses.ResponseCreateParams;
+
+public class Main {
+    public static void main(String[] args) {
+        OpenAIClient client = OpenAIOkHttpClient.fromEnv();
+
+        ResponseCreateParams params = ResponseCreateParams.builder()
+                .input("Say this is a test")
+                .model("gpt-5.6")
+                .build();
+
+        Response response = client.responses().create(params);
+        System.out.println(response.outputText());
+    }
+}
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/option"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient(
+		option.WithAPIKey("My API Key"), // or set OPENAI_API_KEY in your env
+	)
+
+	resp, err := client.Responses.New(context.TODO(), responses.ResponseNewParams{
+		Model: "gpt-5.6",
+		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Say this is a test")},
+	})
+	if err != nil {
+		panic(err.Error())
+	}
+
+	fmt.Println(resp.OutputText())
+}
+```
+
+```ruby
+require "openai"
+
+openai = OpenAI::Client.new
+
+response = openai.responses.create(
+  model: "gpt-5.6",
+  input: "Write a one-sentence bedtime story about a unicorn."
+)
+
+puts(response.output_text)
+```
+
+```bash
+curl "https://api.openai.com/v1/responses" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $OPENAI_API_KEY" \
+    -d '{
+        "model": "gpt-5.6",
+        "input": "Write a one-sentence bedtime story about a unicorn."
+    }'
+```
+
 
 An array of content generated by the model is in the `output` property of the response. In this simple example, we have just one output which looks like this:
 
@@ -32857,10 +33878,143 @@ We use specific meta-prompts for different output types, like audio, to ensure t
 
 <div data-content-switcher-pane data-value="text-out">
     <div class="hidden">Text-out</div>
-    </div>
+    Text meta-prompt
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+META_PROMPT = """
+Given a task description or existing prompt, produce a detailed system prompt to guide a language model in completing the task effectively.
+
+# Guidelines
+
+- Understand the Task: Grasp the main objective, goals, requirements, constraints, and expected output.
+- Minimal Changes: If an existing prompt is provided, improve it only if it's simple. For complex prompts, enhance clarity and add missing elements without altering the original structure.
+- Reasoning Before Conclusions**: Encourage reasoning steps before any conclusions are reached. ATTENTION! If the user provides examples where the reasoning happens afterward, REVERSE the order! NEVER START EXAMPLES WITH CONCLUSIONS!
+    - Reasoning Order: Call out reasoning portions of the prompt and conclusion parts (specific fields by name). For each, determine the ORDER in which this is done, and whether it needs to be reversed.
+    - Conclusion, classifications, or results should ALWAYS appear last.
+- Examples: Include high-quality examples if helpful, using placeholders [in brackets] for complex elements.
+   - What kinds of examples may need to be included, how many, and whether they are complex enough to benefit from placeholders.
+- Clarity and Conciseness: Use clear, specific language. Avoid unnecessary instructions or bland statements.
+- Formatting: Use markdown features for readability. DO NOT USE ``` CODE BLOCKS UNLESS SPECIFICALLY REQUESTED.
+- Preserve User Content: If the input task or prompt includes extensive guidelines or examples, preserve them entirely, or as closely as possible. If they are vague, consider breaking down into sub-steps. Keep any details, guidelines, examples, variables, or placeholders provided by the user.
+- Constants: DO include constants in the prompt, as they are not susceptible to prompt injection. Such as guides, rubrics, and examples.
+- Output Format: Explicitly the most appropriate output format, in detail. This should include length and syntax (e.g. short sentence, paragraph, JSON, etc.)
+    - For tasks outputting well-defined or structured data (classification, JSON, etc.) bias toward outputting a JSON.
+    - JSON should never be wrapped in code blocks (```) unless explicitly requested.
+
+The final prompt you output should adhere to the following structure below. Do not include any additional commentary, only output the completed system prompt. SPECIFICALLY, do not include any additional messages at the start or end of the prompt. (e.g. no "---")
+
+[Concise instruction describing the task - this should be the first line in the prompt, no section header]
+
+[Additional details as needed.]
+
+[Optional sections with headings or bullet points for detailed steps.]
+
+# Steps [optional]
+
+[optional: a detailed breakdown of the steps necessary to accomplish the task]
+
+# Output Format
+
+[Specifically call out how the output should be formatted, be it response length, structure e.g. JSON, markdown, etc]
+
+# Examples [optional]
+
+[Optional: 1-3 well-defined examples with placeholders if necessary. Clearly mark where examples start and end, and what the input and output are. User placeholders as necessary.]
+[If the examples are shorter than what a realistic example is expected to be, make a reference with () explaining how real examples should be longer / shorter / different. AND USE PLACEHOLDERS! ]
+
+# Notes [optional]
+
+[optional: edge cases, details, and an area to call or repeat out specific important considerations]
+""".strip()
+
+def generate_prompt(task_or_prompt: str):
+    completion = client.chat.completions.create(
+        model="gpt-5.6",
+        messages=[
+            {
+                "role": "system",
+                "content": META_PROMPT,
+            },
+            {
+                "role": "user",
+                "content": "Task, Goal, or Current Prompt:\n" + task_or_prompt,
+            },
+        ],
+    )
+
+    return completion.choices[0].message.content
+```
+
+  </div>
   <div data-content-switcher-pane data-value="audio-out" hidden>
     <div class="hidden">Audio-out</div>
-    </div>
+    Audio meta-prompt
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+META_PROMPT = """
+Given a task description or existing prompt, produce a detailed system prompt to guide a realtime audio output language model in completing the task effectively.
+
+# Guidelines
+
+- Understand the Task: Grasp the main objective, goals, requirements, constraints, and expected output.
+- Tone: Make sure to specifically call out the tone. By default it should be emotive and friendly, and speak quickly to avoid keeping the user just waiting.
+- Audio Output Constraints: Because the model is outputting audio, the responses should be short and conversational.
+- Minimal Changes: If an existing prompt is provided, improve it only if it's simple. For complex prompts, enhance clarity and add missing elements without altering the original structure.
+- Examples: Include high-quality examples if helpful, using placeholders [in brackets] for complex elements.
+   - What kinds of examples may need to be included, how many, and whether they are complex enough to benefit from placeholders.
+  - It is very important that any examples included reflect the short, conversational output responses of the model.
+Keep the sentences very short by default. Instead of 3 sentences in a row by the assistant, it should be split up with a back and forth with the user instead.
+  - By default each sentence should be a few words only (5-20ish words). However, if the user specifically asks for "short" responses, then the examples should truly have 1-10 word responses max.
+  - Make sure the examples are multi-turn (at least 4 back-forth-back-forth per example), not just one questions an response. They should reflect an organic conversation.
+- Clarity and Conciseness: Use clear, specific language. Avoid unnecessary instructions or bland statements.
+- Preserve User Content: If the input task or prompt includes extensive guidelines or examples, preserve them entirely, or as closely as possible. If they are vague, consider breaking down into sub-steps. Keep any details, guidelines, examples, variables, or placeholders provided by the user.
+- Constants: DO include constants in the prompt, as they are not susceptible to prompt injection. Such as guides, rubrics, and examples.
+
+The final prompt you output should adhere to the following structure below. Do not include any additional commentary, only output the completed system prompt. SPECIFICALLY, do not include any additional messages at the start or end of the prompt. (e.g. no "---")
+
+[Concise instruction describing the task - this should be the first line in the prompt, no section header]
+
+[Additional details as needed.]
+
+[Optional sections with headings or bullet points for detailed steps.]
+
+# Examples [optional]
+
+[Optional: 1-3 well-defined examples with placeholders if necessary. Clearly mark where examples start and end, and what the input and output are. User placeholders as necessary.]
+[If the examples are shorter than what a realistic example is expected to be, make a reference with () explaining how real examples should be longer / shorter / different. AND USE PLACEHOLDERS! ]
+
+# Notes [optional]
+
+[optional: edge cases, details, and an area to call or repeat out specific important considerations]
+""".strip()
+
+def generate_prompt(task_or_prompt: str):
+    completion = client.chat.completions.create(
+        model="gpt-5.6",
+        messages=[
+            {
+                "role": "system",
+                "content": META_PROMPT,
+            },
+            {
+                "role": "user",
+                "content": "Task, Goal, or Current Prompt:\n" + task_or_prompt,
+            },
+        ],
+    )
+
+    return completion.choices[0].message.content
+```
+
+  </div>
 
 
 
@@ -32872,10 +34026,181 @@ To edit prompts, we use a slightly modified meta-prompt. While direct edits are 
 
 <div data-content-switcher-pane data-value="text-out">
     <div class="hidden">Text-out</div>
-    </div>
+    Text meta-prompt for edits
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+META_PROMPT = """
+Given a current prompt and a change description, produce a detailed system prompt to guide a language model in completing the task effectively.
+
+Your final output will be the full corrected prompt verbatim. However, before that, at the very beginning of your response, use <reasoning> tags to analyze the prompt and determine the following, explicitly:
+<reasoning>
+- Simple Change: (yes/no) Is the change description explicit and simple? (If so, skip the rest of these questions.)
+- Reasoning: (yes/no) Does the current prompt use reasoning, analysis, or chain of thought? 
+    - Identify: (max 10 words) if so, which section(s) utilize reasoning?
+    - Conclusion: (yes/no) is the chain of thought used to determine a conclusion?
+    - Ordering: (before/after) is the chain of though located before or after 
+- Structure: (yes/no) does the input prompt have a well defined structure
+- Examples: (yes/no) does the input prompt have few-shot examples
+    - Representative: (1-5) if present, how representative are the examples?
+- Complexity: (1-5) how complex is the input prompt?
+    - Task: (1-5) how complex is the implied task?
+    - Necessity: ()
+- Specificity: (1-5) how detailed and specific is the prompt? (not to be confused with length)
+- Prioritization: (list) what 1-3 categories are the MOST important to address.
+- Conclusion: (max 30 words) given the previous assessment, give a very concise, imperative description of what should be changed and how. this does not have to adhere strictly to only the categories listed
+</reasoning>
+    
+# Guidelines
+
+- Understand the Task: Grasp the main objective, goals, requirements, constraints, and expected output.
+- Minimal Changes: If an existing prompt is provided, improve it only if it's simple. For complex prompts, enhance clarity and add missing elements without altering the original structure.
+- Reasoning Before Conclusions**: Encourage reasoning steps before any conclusions are reached. ATTENTION! If the user provides examples where the reasoning happens afterward, REVERSE the order! NEVER START EXAMPLES WITH CONCLUSIONS!
+    - Reasoning Order: Call out reasoning portions of the prompt and conclusion parts (specific fields by name). For each, determine the ORDER in which this is done, and whether it needs to be reversed.
+    - Conclusion, classifications, or results should ALWAYS appear last.
+- Examples: Include high-quality examples if helpful, using placeholders [in brackets] for complex elements.
+   - What kinds of examples may need to be included, how many, and whether they are complex enough to benefit from placeholders.
+- Clarity and Conciseness: Use clear, specific language. Avoid unnecessary instructions or bland statements.
+- Formatting: Use markdown features for readability. DO NOT USE ``` CODE BLOCKS UNLESS SPECIFICALLY REQUESTED.
+- Preserve User Content: If the input task or prompt includes extensive guidelines or examples, preserve them entirely, or as closely as possible. If they are vague, consider breaking down into sub-steps. Keep any details, guidelines, examples, variables, or placeholders provided by the user.
+- Constants: DO include constants in the prompt, as they are not susceptible to prompt injection. Such as guides, rubrics, and examples.
+- Output Format: Explicitly the most appropriate output format, in detail. This should include length and syntax (e.g. short sentence, paragraph, JSON, etc.)
+    - For tasks outputting well-defined or structured data (classification, JSON, etc.) bias toward outputting a JSON.
+    - JSON should never be wrapped in code blocks (```) unless explicitly requested.
+
+The final prompt you output should adhere to the following structure below. Do not include any additional commentary, only output the completed system prompt. SPECIFICALLY, do not include any additional messages at the start or end of the prompt. (e.g. no "---")
+
+[Concise instruction describing the task - this should be the first line in the prompt, no section header]
+
+[Additional details as needed.]
+
+[Optional sections with headings or bullet points for detailed steps.]
+
+# Steps [optional]
+
+[optional: a detailed breakdown of the steps necessary to accomplish the task]
+
+# Output Format
+
+[Specifically call out how the output should be formatted, be it response length, structure e.g. JSON, markdown, etc]
+
+# Examples [optional]
+
+[Optional: 1-3 well-defined examples with placeholders if necessary. Clearly mark where examples start and end, and what the input and output are. User placeholders as necessary.]
+[If the examples are shorter than what a realistic example is expected to be, make a reference with () explaining how real examples should be longer / shorter / different. AND USE PLACEHOLDERS! ]
+
+# Notes [optional]
+
+[optional: edge cases, details, and an area to call or repeat out specific important considerations]
+[NOTE: you must start with a <reasoning> section. the immediate next token you produce should be <reasoning>]
+""".strip()
+
+def generate_prompt(task_or_prompt: str):
+    completion = client.chat.completions.create(
+        model="gpt-5.6",
+        messages=[
+            {
+                "role": "system",
+                "content": META_PROMPT,
+            },
+            {
+                "role": "user",
+                "content": "Task, Goal, or Current Prompt:\n" + task_or_prompt,
+            },
+        ],
+    )
+
+    return completion.choices[0].message.content
+```
+
+  </div>
   <div data-content-switcher-pane data-value="audio-out" hidden>
     <div class="hidden">Audio-out</div>
-    </div>
+    Audio meta-prompt for edits
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+META_PROMPT = """
+Given a current prompt and a change description, produce a detailed system prompt to guide a realtime audio output language model in completing the task effectively.
+
+Your final output will be the full corrected prompt verbatim. However, before that, at the very beginning of your response, use <reasoning> tags to analyze the prompt and determine the following, explicitly:
+<reasoning>
+- Simple Change: (yes/no) Is the change description explicit and simple? (If so, skip the rest of these questions.)
+- Reasoning: (yes/no) Does the current prompt use reasoning, analysis, or chain of thought? 
+    - Identify: (max 10 words) if so, which section(s) utilize reasoning?
+    - Conclusion: (yes/no) is the chain of thought used to determine a conclusion?
+    - Ordering: (before/after) is the chain of though located before or after 
+- Structure: (yes/no) does the input prompt have a well defined structure
+- Examples: (yes/no) does the input prompt have few-shot examples
+    - Representative: (1-5) if present, how representative are the examples?
+- Complexity: (1-5) how complex is the input prompt?
+    - Task: (1-5) how complex is the implied task?
+    - Necessity: ()
+- Specificity: (1-5) how detailed and specific is the prompt? (not to be confused with length)
+- Prioritization: (list) what 1-3 categories are the MOST important to address.
+- Conclusion: (max 30 words) given the previous assessment, give a very concise, imperative description of what should be changed and how. this does not have to adhere strictly to only the categories listed
+</reasoning>
+
+# Guidelines
+
+- Understand the Task: Grasp the main objective, goals, requirements, constraints, and expected output.
+- Tone: Make sure to specifically call out the tone. By default it should be emotive and friendly, and speak quickly to avoid keeping the user just waiting.
+- Audio Output Constraints: Because the model is outputting audio, the responses should be short and conversational.
+- Minimal Changes: If an existing prompt is provided, improve it only if it's simple. For complex prompts, enhance clarity and add missing elements without altering the original structure.
+- Examples: Include high-quality examples if helpful, using placeholders [in brackets] for complex elements.
+   - What kinds of examples may need to be included, how many, and whether they are complex enough to benefit from placeholders.
+  - It is very important that any examples included reflect the short, conversational output responses of the model.
+Keep the sentences very short by default. Instead of 3 sentences in a row by the assistant, it should be split up with a back and forth with the user instead.
+  - By default each sentence should be a few words only (5-20ish words). However, if the user specifically asks for "short" responses, then the examples should truly have 1-10 word responses max.
+  - Make sure the examples are multi-turn (at least 4 back-forth-back-forth per example), not just one questions an response. They should reflect an organic conversation.
+- Clarity and Conciseness: Use clear, specific language. Avoid unnecessary instructions or bland statements.
+- Preserve User Content: If the input task or prompt includes extensive guidelines or examples, preserve them entirely, or as closely as possible. If they are vague, consider breaking down into sub-steps. Keep any details, guidelines, examples, variables, or placeholders provided by the user.
+- Constants: DO include constants in the prompt, as they are not susceptible to prompt injection. Such as guides, rubrics, and examples.
+
+The final prompt you output should adhere to the following structure below. Do not include any additional commentary, only output the completed system prompt. SPECIFICALLY, do not include any additional messages at the start or end of the prompt. (e.g. no "---")
+
+[Concise instruction describing the task - this should be the first line in the prompt, no section header]
+
+[Additional details as needed.]
+
+[Optional sections with headings or bullet points for detailed steps.]
+
+# Examples [optional]
+
+[Optional: 1-3 well-defined examples with placeholders if necessary. Clearly mark where examples start and end, and what the input and output are. User placeholders as necessary.]
+[If the examples are shorter than what a realistic example is expected to be, make a reference with () explaining how real examples should be longer / shorter / different. AND USE PLACEHOLDERS! ]
+
+# Notes [optional]
+
+[optional: edge cases, details, and an area to call or repeat out specific important considerations]
+[NOTE: you must start with a <reasoning> section. the immediate next token you produce should be <reasoning>]
+""".strip()
+
+def generate_prompt(task_or_prompt: str):
+    completion = client.chat.completions.create(
+        model="gpt-5.6",
+        messages=[
+            {
+                "role": "system",
+                "content": META_PROMPT,
+            },
+            {
+                "role": "user",
+                "content": "Task, Goal, or Current Prompt:\n" + task_or_prompt,
+            },
+        ],
+    )
+
+    return completion.choices[0].message.content
+```
+
+  </div>
 
 
 
@@ -32935,10 +34260,576 @@ Each meta-schema has a corresponding prompt which includes few-shot examples. Wh
 
 <div data-content-switcher-pane data-value="structured-output">
     <div class="hidden">Structured output schema</div>
-    </div>
+    Structured output meta-schema
+
+```python
+from openai import OpenAI
+import json
+
+client = OpenAI()
+
+META_SCHEMA = {
+  "name": "metaschema",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "The name of the schema"
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "object",
+          "array",
+          "string",
+          "number",
+          "boolean",
+          "null"
+        ]
+      },
+      "properties": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/$defs/schema_definition"
+        }
+      },
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/schema_definition"
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/schema_definition"
+            }
+          }
+        ]
+      },
+      "required": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "type"
+    ],
+    "additionalProperties": False,
+    "if": {
+      "properties": {
+        "type": {
+          "const": "object"
+        }
+      }
+    },
+    "then": {
+      "required": [
+        "properties"
+      ]
+    },
+    "$defs": {
+      "schema_definition": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "object",
+              "array",
+              "string",
+              "number",
+              "boolean",
+              "null"
+            ]
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/$defs/schema_definition"
+            }
+          },
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/schema_definition"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/schema_definition"
+                }
+              }
+            ]
+          },
+          "required": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "additionalProperties": False,
+        "if": {
+          "properties": {
+            "type": {
+              "const": "object"
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "properties"
+          ]
+        }
+      }
+    }
+  }
+}
+
+META_PROMPT = """
+# Instructions
+Return a valid schema for the described JSON.
+
+You must also make sure:
+- all fields in an object are set as required
+- I REPEAT, ALL FIELDS MUST BE MARKED AS REQUIRED
+- all objects must have additionalProperties set to false
+    - because of this, some cases like "attributes" or "metadata" properties that would normally allow additional properties should instead have a fixed set of properties
+- all objects must have properties defined
+- field order matters. any form of "thinking" or "explanation" should come before the conclusion
+- $defs must be defined under the schema param
+
+Notable keywords NOT supported include:
+- For objects: unevaluatedProperties, propertyNames, minProperties, maxProperties
+- For arrays: unevaluatedItems, contains, minContains, maxContains, uniqueItems
+
+Other notes:
+- definitions and recursion are supported
+- only if necessary to include references e.g. "$defs", it must be inside the "schema" object
+
+# Examples
+Input: Generate a math reasoning schema with steps and a final answer.
+Output: {
+    "name": "math_reasoning",
+    "type": "object",
+    "properties": {
+        "steps": {
+            "type": "array",
+            "description": "A sequence of steps involved in solving the math problem.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "explanation": {
+                        "type": "string",
+                        "description": "Description of the reasoning or method used in this step."
+                    },
+                    "output": {
+                        "type": "string",
+                        "description": "Result or outcome of this specific step."
+                    }
+                },
+                "required": [
+                    "explanation",
+                    "output"
+                ],
+                "additionalProperties": false
+            }
+        },
+        "final_answer": {
+            "type": "string",
+            "description": "The final solution or answer to the math problem."
+        }
+    },
+    "required": [
+        "steps",
+        "final_answer"
+    ],
+    "additionalProperties": false
+}
+
+Input: Give me a linked list
+Output: {
+    "name": "linked_list",
+    "type": "object",
+    "properties": {
+        "linked_list": {
+            "$ref": "#/$defs/linked_list_node",
+            "description": "The head node of the linked list."
+        }
+    },
+    "$defs": {
+        "linked_list_node": {
+            "type": "object",
+            "description": "Defines a node in a singly linked list.",
+            "properties": {
+                "value": {
+                    "type": "number",
+                    "description": "The value stored in this node."
+                },
+                "next": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/linked_list_node"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "Reference to the next node; null if it is the last node."
+                }
+            },
+            "required": [
+                "value",
+                "next"
+            ],
+            "additionalProperties": false
+        }
+    },
+    "required": [
+        "linked_list"
+    ],
+    "additionalProperties": false
+}
+
+Input: Dynamically generated UI
+Output: {
+    "name": "ui",
+    "type": "object",
+    "properties": {
+        "type": {
+            "type": "string",
+            "description": "The type of the UI component",
+            "enum": [
+                "div",
+                "button",
+                "header",
+                "section",
+                "field",
+                "form"
+            ]
+        },
+        "label": {
+            "type": "string",
+            "description": "The label of the UI component, used for buttons or form fields"
+        },
+        "children": {
+            "type": "array",
+            "description": "Nested UI components",
+            "items": {
+                "$ref": "#"
+            }
+        },
+        "attributes": {
+            "type": "array",
+            "description": "Arbitrary attributes for the UI component, suitable for any element",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "The name of the attribute, for example onClick or className"
+                    },
+                    "value": {
+                        "type": "string",
+                        "description": "The value of the attribute"
+                    }
+                },
+                "required": [
+                    "name",
+                    "value"
+                ],
+                "additionalProperties": false
+            }
+        }
+    },
+    "required": [
+        "type",
+        "label",
+        "children",
+        "attributes"
+    ],
+    "additionalProperties": false
+}
+""".strip()
+
+def generate_schema(description: str):
+    completion = client.chat.completions.create(
+        model="gpt-5.6-terra",
+        response_format={"type": "json_schema", "json_schema": META_SCHEMA},
+        messages=[
+            {
+                "role": "system",
+                "content": META_PROMPT,
+            },
+            {
+                "role": "user",
+                "content": "Description:\n" + description,
+            },
+        ],
+    )
+
+    return json.loads(completion.choices[0].message.content)
+```
+
+  </div>
   <div data-content-switcher-pane data-value="function" hidden>
     <div class="hidden">Function schema</div>
-    </div>
+    Structured output meta-schema
+
+```python
+from openai import OpenAI
+import json
+
+client = OpenAI()
+
+META_SCHEMA = {
+  "name": "function-metaschema",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "The name of the function"
+      },
+      "description": {
+        "type": "string",
+        "description": "A description of what the function does"
+      },
+      "parameters": {
+        "$ref": "#/$defs/schema_definition",
+        "description": "A JSON schema that defines the function's parameters"
+      }
+    },
+    "required": [
+      "name",
+      "description",
+      "parameters"
+    ],
+    "additionalProperties": False,
+    "$defs": {
+      "schema_definition": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "object",
+              "array",
+              "string",
+              "number",
+              "boolean",
+              "null"
+            ]
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/$defs/schema_definition"
+            }
+          },
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/schema_definition"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/schema_definition"
+                }
+              }
+            ]
+          },
+          "required": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "additionalProperties": False,
+        "if": {
+          "properties": {
+            "type": {
+              "const": "object"
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "properties"
+          ]
+        }
+      }
+    }
+  }
+}
+
+META_PROMPT = """
+# Instructions
+Return a valid schema for the described function.
+
+Pay special attention to making sure that "required" and "type" are always at the correct level of nesting. For example, "required" should be at the same level as "properties", not inside it.
+Make sure that every property, no matter how short, has a type and description correctly nested inside it.
+
+# Examples
+Input: Assign values to NN hyperparameters
+Output: {
+    "name": "set_hyperparameters",
+    "description": "Assign values to NN hyperparameters",
+    "parameters": {
+        "type": "object",
+        "required": [
+            "learning_rate",
+            "epochs"
+        ],
+        "properties": {
+            "epochs": {
+                "type": "number",
+                "description": "Number of complete passes through dataset"
+            },
+            "learning_rate": {
+                "type": "number",
+                "description": "Speed of model learning"
+            }
+        }
+    }
+}
+
+Input: Plans a motion path for the robot
+Output: {
+    "name": "plan_motion",
+    "description": "Plans a motion path for the robot",
+    "parameters": {
+        "type": "object",
+        "required": [
+            "start_position",
+            "end_position"
+        ],
+        "properties": {
+            "end_position": {
+                "type": "object",
+                "properties": {
+                    "x": {
+                        "type": "number",
+                        "description": "End X coordinate"
+                    },
+                    "y": {
+                        "type": "number",
+                        "description": "End Y coordinate"
+                    }
+                }
+            },
+            "obstacles": {
+                "type": "array",
+                "description": "Array of obstacle coordinates",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "x": {
+                            "type": "number",
+                            "description": "Obstacle X coordinate"
+                        },
+                        "y": {
+                            "type": "number",
+                            "description": "Obstacle Y coordinate"
+                        }
+                    }
+                }
+            },
+            "start_position": {
+                "type": "object",
+                "properties": {
+                    "x": {
+                        "type": "number",
+                        "description": "Start X coordinate"
+                    },
+                    "y": {
+                        "type": "number",
+                        "description": "Start Y coordinate"
+                    }
+                }
+            }
+        }
+    }
+}
+
+Input: Calculates various technical indicators
+Output: {
+    "name": "technical_indicator",
+    "description": "Calculates various technical indicators",
+    "parameters": {
+        "type": "object",
+        "required": [
+            "ticker",
+            "indicators"
+        ],
+        "properties": {
+            "indicators": {
+                "type": "array",
+                "description": "List of technical indicators to calculate",
+                "items": {
+                    "type": "string",
+                    "description": "Technical indicator",
+                    "enum": [
+                        "RSI",
+                        "MACD",
+                        "Bollinger_Bands",
+                        "Stochastic_Oscillator"
+                    ]
+                }
+            },
+            "period": {
+                "type": "number",
+                "description": "Time period for the analysis"
+            },
+            "ticker": {
+                "type": "string",
+                "description": "Stock ticker symbol"
+            }
+        }
+    }
+}
+""".strip()
+
+def generate_function_schema(description: str):
+    completion = client.chat.completions.create(
+        model="gpt-5.6-terra",
+        response_format={"type": "json_schema", "json_schema": META_SCHEMA},
+        messages=[
+            {
+                "role": "system",
+                "content": META_PROMPT,
+            },
+            {
+                "role": "user",
+                "content": "Description:\n" + description,
+            },
+        ],
+    )
+
+    return json.loads(completion.choices[0].message.content)
+```
+
+  </div>
 
 ---
 
@@ -33737,6 +35628,12 @@ Project-token headers may be present when a project-scoped token limit applies.
 
 The fine-tuning rate limits for your organization can be [found in the dashboard as well](https://platform.openai.com/settings/organization/limits), and can also be retrieved via API:
 
+```bash
+curl https://api.openai.com/v1/fine_tuning/model_limits \
+  -H "Authorization: Bearer $OPENAI_API_KEY"
+```
+
+
 ## Error mitigation
 
 ### What are some steps I can take to mitigate this?
@@ -33765,6 +35662,26 @@ Example 1: Using the Tenacity library
 Tenacity is an Apache 2.0 licensed general-purpose retrying library, written in Python, to simplify the task of adding retry behavior to just about anything.
 To add exponential backoff to your requests, you can use the `tenacity.retry` decorator. The below example uses the `tenacity.wait_random_exponential` function to add random exponential backoff to a request.
 
+Using the Tenacity library
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+from tenacity import (
+retry,
+stop_after_attempt,
+wait_random_exponential,
+) # for exponential backoff
+
+@retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(6))
+def completion_with_backoff(**kwargs):
+return client.completions.create(**kwargs)
+
+completion_with_backoff(model="gpt-3.5-turbo-instruct", prompt="Once upon a time,")
+```
+
+
 Note that the Tenacity library is a third-party tool, and OpenAI makes no guarantees about
 its reliability or security.
 
@@ -33772,11 +35689,88 @@ Example 2: Using the backoff library
 
 Another python library that provides function decorators for backoff and retry is [backoff](https://pypi.org/project/backoff/):
 
+Using the Tenacity library
+
+```python
+import backoff
+import openai
+from openai import OpenAI
+client = OpenAI()
+
+@backoff.on_exception(backoff.expo, openai.RateLimitError)
+def completions_with_backoff(**kwargs):
+return client.completions.create(**kwargs)
+
+completions_with_backoff(model="gpt-3.5-turbo-instruct", prompt="Once upon a time,")
+```
+
+
 Like Tenacity, the backoff library is a third-party tool, and OpenAI makes no guarantees about its reliability or security.
 
 Example 3: Manual backoff implementation
 
 If you don't want to use third-party libraries, you can implement your own backoff logic following this example:
+Using manual backoff implementation
+
+```python
+# imports
+import random
+import time
+
+import openai
+from openai import OpenAI
+client = OpenAI()
+
+# define a retry decorator
+
+def retry_with_exponential_backoff(
+func,
+initial_delay: float = 1,
+exponential_base: float = 2,
+jitter: bool = True,
+max_retries: int = 10,
+errors: tuple = (openai.RateLimitError,),
+):
+"""Retry a function with exponential backoff."""
+
+    def wrapper(*args, **kwargs):
+        # Initialize variables
+        num_retries = 0
+        delay = initial_delay
+
+        # Loop until a successful response or max_retries is hit or an exception is raised
+        while True:
+            try:
+                return func(*args, **kwargs)
+
+            # Retry on specific errors
+            except errors as e:
+                # Increment retries
+                num_retries += 1
+
+                # Check if max retries has been reached
+                if num_retries > max_retries:
+                    raise Exception(
+                        f"Maximum number of retries ({max_retries}) exceeded."
+                    )
+
+                # Increment the delay
+                delay *= exponential_base * (1 + jitter * random.random())
+
+                # Sleep for the delay
+                time.sleep(delay)
+
+            # Raise exceptions for any errors not specified
+            except Exception as e:
+                raise e
+
+    return wrapper
+
+@retry_with_exponential_backoff
+def completions_with_backoff(**kwargs):
+return client.completions.create(**kwargs)
+```
+
 Again, OpenAI makes no guarantees on the security or efficiency of this solution but it can be a good starting place for your own solution.
 
 #### Reduce the `max_tokens` to match the size of your completions
@@ -37386,7 +39380,7 @@ For more inspiration, visit the [OpenAI Cookbook](https://developers.openai.com/
 
 **Reasoning models** like [GPT-5.5](https://developers.openai.com/api/docs/models/gpt-5.5) use internal reasoning tokens before producing a response. This helps the model plan, use tools effectively, inspect alternatives, recover from ambiguity, and solve harder multi-step tasks. Reasoning models work especially well for complex problem solving, coding, scientific reasoning, and multi-step agentic workflows. They're also the best models for [Codex CLI](https://github.com/openai/codex), our lightweight coding agent.
 
-Start with `gpt-5.6` for most reasoning workloads. If you need the highest-intelligence API option for more challenging problems that can tolerate more latency, use <a href="/api/docs/models/gpt-5.6-sol"><code>gpt-5.6-sol</code></a> in the Responses API with `reasoning.mode` set to `pro`. For lower cost, consider `gpt-5.4` and for lower cost and latency, consider `gpt-5.4-mini`.
+Start with `gpt-5.6` for most reasoning workloads. If you need the highest-intelligence API option for more challenging problems that can tolerate more latency, use <a href="/api/docs/models/gpt-5.6-sol"><code>gpt-5.6-sol</code></a> in the Responses API with `reasoning.mode` set to `pro`. For lower cost, consider [`gpt-5.6-terra`](https://developers.openai.com/api/docs/models/gpt-5.6-terra), or [`gpt-5.6-luna`](https://developers.openai.com/api/docs/models/gpt-5.6-luna) for the lowest cost and latency.
 
 **Reasoning models work better with the [Responses
   API](https://developers.openai.com/api/docs/guides/migrate-to-responses)**. While the Chat Completions API
@@ -39158,9 +41152,61 @@ The Retrieval API is powered by [**vector stores**](#vector-stores), which serve
   **Create vector store** and upload files.
 </li>
 
+Create vector store with files
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+vector_store = client.vector_stores.create(        # Create vector store
+    name="Support FAQ",
+)
+
+client.vector_stores.files.upload_and_poll(        # Upload file
+    vector_store_id=vector_store.id,
+    file=open("customer_policies.txt", "rb")
+)
+```
+
+```javascript
+import OpenAI from "openai";
+const client = new OpenAI();
+
+const vector_store = await client.vectorStores.create({   // Create vector store
+    name: "Support FAQ",
+});
+
+await client.vector_stores.files.upload_and_poll({         // Upload file
+    vector_store_id: vector_store.id,
+    file: fs.createReadStream("customer_policies.txt"),
+});
+```
+
+
 <li className={s.StandaloneLi} data-number={2}>
   **Send search query** to get relevant results.
 </li>
+
+Search query
+
+```python
+user_query = "What is the return policy?"
+
+results = client.vector_stores.search(
+    vector_store_id=vector_store.id,
+    query=user_query,
+)
+```
+
+```javascript
+const userQuery = "What is the return policy?";
+
+const results = await client.vectorStores.search({
+    vector_store_id: vector_store.id,
+    query: userQuery,
+});
+```
+
 
 To learn how to use the results with our models, check out the [synthesizing
   responses](#synthesizing-responses) section.
@@ -39187,6 +41233,71 @@ Semantic search is powered by [vector stores](#vector-stores), which we cover in
 
 You can query a vector store using the `search` function and specifying a `query` in natural language. This will return a list of results, each with the relevant chunks, similarity scores, and file of origin.
 
+Search query
+
+```python
+results = client.vector_stores.search(
+    vector_store_id=vector_store.id,
+    query="How many woodchucks are allowed per passenger?",
+)
+```
+
+```javascript
+const results = await client.vectorStores.search({
+    vector_store_id: vector_store.id,
+    query: "How many woodchucks are allowed per passenger?",
+});
+```
+
+
+Results
+
+```json
+{
+  "object": "vector_store.search_results.page",
+  "search_query": "How many woodchucks are allowed per passenger?",
+  "data": [
+    {
+      "file_id": "file-12345",
+      "filename": "woodchuck_policy.txt",
+      "score": 0.85,
+      "attributes": {
+        "region": "North America",
+        "author": "Wildlife Department"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "According to the latest regulations, each passenger is allowed to carry up to two woodchucks."
+        },
+        {
+          "type": "text",
+          "text": "Ensure that the woodchucks are properly contained during transport."
+        }
+      ]
+    },
+    {
+      "file_id": "file-67890",
+      "filename": "transport_guidelines.txt",
+      "score": 0.75,
+      "attributes": {
+        "region": "North America",
+        "author": "Transport Authority"
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Passengers must adhere to the guidelines set forth by the Transport Authority regarding the transport of woodchucks."
+        }
+      ]
+    }
+  ],
+  "has_more": false,
+  "next_page": null
+}
+```
+
+
 A response will contain 10 results maximum by default, but you can set up to 50 using the `max_num_results` param.
 
 ### Query rewriting
@@ -39207,25 +41318,136 @@ Attribute filtering helps narrow down results by applying criteria, such as rest
 
 Use **comparison filters** to compare a specific `key` in a file's `attributes` with a given `value`, and **compound filters** to combine multiple filters using `and` and `or`.
 
+Comparison filter
+
+```json
+{
+  "type": "eq" | "ne" | "gt" | "gte" | "lt" | "lte" | "in" | "nin",  // comparison operators
+  "key": "attributes_key",                           // attributes key
+  "value": "target_value"                             // value to compare against
+}
+```
+
+
+Compound filter
+
+```json
+{
+  "type": "and" | "or",                                // logical operators
+  "filters": [...]                                   
+}
+```
+
+
 Below are some example filters.
 
 
 
 <div data-content-switcher-pane data-value="region">
     <div class="hidden">Region</div>
-    </div>
+    Filter for a region
+
+```json
+{
+  "type": "eq",
+  "key": "region",
+  "value": "us"
+}
+```
+
+  </div>
   <div data-content-switcher-pane data-value="date-range" hidden>
     <div class="hidden">Date range</div>
-    </div>
+    Filter for a date range
+
+```json
+{
+  "type": "and",
+  "filters": [
+    {
+      "type": "gte",
+      "key": "date",
+      "value": 1704067200  // unix timestamp for 2024-01-01
+    },
+    {
+      "type": "lte",
+      "key": "date",
+      "value": 1710892800  // unix timestamp for 2024-03-20
+    }
+  ]
+}
+```
+
+  </div>
   <div data-content-switcher-pane data-value="filename" hidden>
     <div class="hidden">Filenames</div>
-    </div>
+    Filter to match any of a set of filenames
+
+```json
+{
+  "type": "in",
+  "property": "filename",
+  "value": ["example.txt", "example2.txt"]
+}
+```
+
+  </div>
   <div data-content-switcher-pane data-value="exclude-filenames" hidden>
     <div class="hidden">Exclude filenames</div>
-    </div>
+    Filter to exclude drafts by filename
+
+```json
+{
+  "type": "nin",
+  "property": "filename",
+  "value": ["draft.txt", "internal_notes.md"]
+}
+```
+
+  </div>
   <div data-content-switcher-pane data-value="date-range-and-region" hidden>
     <div class="hidden">Complex</div>
-    </div>
+    Filter for top secret projects with certain names in english
+
+```json
+{
+  "type": "or",
+  "filters": [
+    {
+      "type": "and",
+      "filters": [
+        {
+          "type": "or",
+          "filters": [
+            {
+              "type": "eq",
+              "key": "project_code",
+              "value": "X123"
+            },
+            {
+              "type": "eq",
+              "key": "project_code",
+              "value": "X999"
+            }
+          ]
+        },
+        {
+          "type": "eq",
+          "key": "confidentiality",
+          "value": "top_secret"
+        }
+      ]
+    },
+    {
+      "type": "eq",
+      "key": "language",
+      "value": "en"
+    }
+  ]
+}
+```
+
+  </div>
 
 
 
@@ -39262,19 +41484,89 @@ See [expiration policies](#expiration-policies) for options to minimize costs.
 
 <div data-content-switcher-pane data-value="create">
     <div class="hidden">Create</div>
-    </div>
+    Create vector store
+
+```python
+client.vector_stores.create(
+    name="Support FAQ",
+    file_ids=["file_123"]
+)
+```
+
+```javascript
+await client.vector_stores.create({
+    name: "Support FAQ",
+    file_ids: ["file_123"]
+});
+```
+
+  </div>
   <div data-content-switcher-pane data-value="retrieve" hidden>
     <div class="hidden">Retrieve</div>
-    </div>
+    Retrieve vector store
+
+```python
+client.vector_stores.retrieve(
+    vector_store_id="vs_123"
+)
+```
+
+```javascript
+await client.vector_stores.retrieve({
+    vector_store_id: "vs_123"
+});
+```
+
+  </div>
   <div data-content-switcher-pane data-value="update" hidden>
     <div class="hidden">Update</div>
-    </div>
+    Update vector store
+
+```python
+client.vector_stores.update(
+    vector_store_id="vs_123",
+    name="Support FAQ Updated"
+)
+```
+
+```javascript
+await client.vector_stores.update({
+    vector_store_id: "vs_123",
+    name: "Support FAQ Updated"
+});
+```
+
+  </div>
   <div data-content-switcher-pane data-value="delete" hidden>
     <div class="hidden">Delete</div>
-    </div>
+    Delete vector store
+
+```python
+client.vector_stores.delete(
+    vector_store_id="vs_123"
+)
+```
+
+```javascript
+await client.vector_stores.delete({
+    vector_store_id: "vs_123"
+});
+```
+
+  </div>
   <div data-content-switcher-pane data-value="list" hidden>
     <div class="hidden">List</div>
-    </div>
+    List vector stores
+
+```python
+client.vector_stores.list()
+```
+
+```javascript
+await client.vector_stores.list();
+```
+
+  </div>
 
 
 
@@ -39288,22 +41580,118 @@ Adding files is rate limited per vector store ID. Requests to [`/vector_stores/{
 
 <div data-content-switcher-pane data-value="create">
     <div class="hidden">Create</div>
-    </div>
+    Create vector store file
+
+```python
+client.vector_stores.files.create_and_poll(
+    vector_store_id="vs_123",
+    file_id="file_123"
+)
+```
+
+```javascript
+await client.vector_stores.files.create_and_poll({
+    vector_store_id: "vs_123",
+    file_id: "file_123"
+});
+```
+
+  </div>
   <div data-content-switcher-pane data-value="upload" hidden>
     <div class="hidden">Upload</div>
-    </div>
+    Upload vector store file
+
+```python
+client.vector_stores.files.upload_and_poll(
+    vector_store_id="vs_123",
+    file=open("customer_policies.txt", "rb")
+)
+```
+
+```javascript
+await client.vector_stores.files.upload_and_poll({
+    vector_store_id: "vs_123",
+    file: fs.createReadStream("customer_policies.txt"),
+});
+```
+
+  </div>
   <div data-content-switcher-pane data-value="retrieve" hidden>
     <div class="hidden">Retrieve</div>
-    </div>
+    Retrieve vector store file
+
+```python
+client.vector_stores.files.retrieve(
+    vector_store_id="vs_123",
+    file_id="file_123"
+)
+```
+
+```javascript
+await client.vector_stores.files.retrieve({
+    vector_store_id: "vs_123",
+    file_id: "file_123"
+});
+```
+
+  </div>
   <div data-content-switcher-pane data-value="update" hidden>
     <div class="hidden">Update</div>
-    </div>
+    Update vector store file
+
+```python
+client.vector_stores.files.update(
+    vector_store_id="vs_123",
+    file_id="file_123",
+    attributes={"key": "value"}
+)
+```
+
+```javascript
+await client.vector_stores.files.update({
+    vector_store_id: "vs_123",
+    file_id: "file_123",
+    attributes: { key: "value" }
+});
+```
+
+  </div>
   <div data-content-switcher-pane data-value="delete" hidden>
     <div class="hidden">Delete</div>
-    </div>
+    Delete vector store file
+
+```python
+client.vector_stores.files.delete(
+    vector_store_id="vs_123",
+    file_id="file_123"
+)
+```
+
+```javascript
+await client.vector_stores.files.delete({
+    vector_store_id: "vs_123",
+    file_id: "file_123"
+});
+```
+
+  </div>
   <div data-content-switcher-pane data-value="list" hidden>
     <div class="hidden">List</div>
-    </div>
+    List vector store files
+
+```python
+client.vector_stores.files.list(
+    vector_store_id="vs_123"
+)
+```
+
+```javascript
+await client.vector_stores.files.list({
+    vector_store_id: "vs_123"
+});
+```
+
+  </div>
 
 
 
@@ -39313,16 +41701,104 @@ Adding files is rate limited per vector store ID. Requests to [`/vector_stores/{
 
 <div data-content-switcher-pane data-value="create">
     <div class="hidden">Create</div>
-    </div>
+    Batch create operation
+
+```python
+client.vector_stores.file_batches.create_and_poll(
+    vector_store_id="vs_123",
+    files=[
+        {
+            "file_id": "file_123",
+            "attributes": {"department": "finance"}
+        },
+        {
+            "file_id": "file_456",
+            "chunking_strategy": {
+                "type": "static",
+                "max_chunk_size_tokens": 1200,
+                "chunk_overlap_tokens": 200
+            }
+        }
+    ]
+)
+```
+
+```javascript
+await client.vector_stores.file_batches.create_and_poll({
+    vector_store_id: "vs_123",
+    files: [
+        {
+            file_id: "file_123",
+            attributes: { department: "finance" }
+        },
+        {
+            file_id: "file_456",
+            chunking_strategy: {
+                type: "static",
+                max_chunk_size_tokens: 1200,
+                chunk_overlap_tokens: 200
+            }
+        }
+    ]
+});
+```
+
+  </div>
   <div data-content-switcher-pane data-value="retrieve" hidden>
     <div class="hidden">Retrieve</div>
-    </div>
+    Batch retrieve operation
+
+```python
+client.vector_stores.file_batches.retrieve(
+    vector_store_id="vs_123",
+    batch_id="vsfb_123"
+)
+```
+
+```javascript
+await client.vector_stores.file_batches.retrieve({
+    vector_store_id: "vs_123",
+    batch_id: "vsfb_123"
+});
+```
+
+  </div>
   <div data-content-switcher-pane data-value="cancel" hidden>
     <div class="hidden">Cancel</div>
-    </div>
+    Batch cancel operation
+
+```python
+client.vector_stores.file_batches.cancel(
+    vector_store_id="vs_123",
+    batch_id="vsfb_123"
+)
+```
+
+```javascript
+await client.vector_stores.file_batches.cancel({
+    vector_store_id: "vs_123",
+    batch_id: "vsfb_123"
+});
+```
+
+  </div>
   <div data-content-switcher-pane data-value="list" hidden>
     <div class="hidden">List</div>
-    </div>
+    Batch list operation
+
+```python
+client.vector_stores.file_batches.list(
+    vector_store_id="vs_123"
+)
+```
+
+```javascript
+await client.vector_stores.file_batches.list({
+    vector_store_id: "vs_123"
+});
+```
+
+  </div>
 
 
 
@@ -39334,9 +41810,58 @@ For higher-throughput ingestion into a single vector store, we recommend batch c
 
 Each `vector_store.file` can have associated `attributes`, a dictionary of values that can be referenced when performing [semantic search](#semantic-search) with [attribute filtering](#attribute-filtering). The dictionary can have at most 16 keys, with a limit of 256 characters each.
 
+Create vector store file with attributes
+
+```python
+client.vector_stores.files.create(
+    vector_store_id="<vector_store_id>",
+    file_id="file_123",
+    attributes={
+        "region": "US",
+        "category": "Marketing",
+        "date": 1672531200      # Jan 1, 2023
+    }
+)
+```
+
+```javascript
+await client.vector_stores.files.create(<vector_store_id>, {
+    file_id: "file_123",
+    attributes: {
+        region: "US",
+        category: "Marketing",
+        date: 1672531200, // Jan 1, 2023
+    },
+});
+```
+
+
 ### Expiration policies
 
 You can set an expiration policy on `vector_store` objects with `expires_after`. Once a vector store expires, all associated `vector_store.file` objects will be deleted and you'll no longer be charged for them.
+
+Set expiration policy for vector store
+
+```python
+client.vector_stores.update(
+    vector_store_id="vs_123",
+    expires_after={
+        "anchor": "last_active_at",
+        "days": 7
+    }
+)
+```
+
+```javascript
+await client.vector_stores.update({
+    vector_store_id: "vs_123",
+    expires_after: {
+        anchor: "last_active_at",
+        days: 7,
+    },
+});
+```
+
 
 ### Limits
 
@@ -39386,8 +41911,114 @@ _For `text/` MIME types, the encoding must be one of `utf-8`, `utf-16`, or `asci
 
 After performing a query you may want to synthesize a response based on the results. You can leverage our models to do so, by supplying the results and original query, to get back a grounded response.
 
+Perform search query to get results
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+user_query = "What is the return policy?"
+
+results = client.vector_stores.search(
+    vector_store_id=vector_store.id,
+    query=user_query,
+)
+```
+
+```javascript
+import OpenAI from "openai";
+const client = new OpenAI();
+
+const userQuery = "What is the return policy?";
+
+const results = await client.vectorStores.search({
+    vector_store_id: vector_store.id,
+    query: userQuery,
+});
+```
+
+
+Synthesize a response based on results
+
+```python
+formatted_results = format_results(results.data)
+
+'\n'.join('\n'.join(c.text) for c in result.content for result in results.data)
+
+completion = client.chat.completions.create(
+    model="gpt-5.6",
+    messages=[
+        {
+            "role": "developer",
+            "content": "Produce a concise answer to the query based on the provided sources."
+        },
+        {
+            "role": "user",
+            "content": f"Sources: {formatted_results}\n\nQuery: '{user_query}'"
+        }
+    ],
+)
+
+print(completion.choices[0].message.content)
+```
+
+```javascript
+const formattedResults = formatResults(results.data);
+// Join the text content of all results
+const textSources = results.data.map(result => result.content.map(c => c.text).join('\n')).join('\n');
+
+const completion = await client.chat.completions.create({
+    model: "gpt-5.6",
+    messages: [
+        {
+            role: "developer",
+            content: "Produce a concise answer to the query based on the provided sources."
+        },
+        {
+            role: "user",
+            content: `Sources: ${formattedResults}\n\nQuery: '${userQuery}'`
+        }
+    ],
+});
+
+console.log(completion.choices[0].message.content);
+```
+
+
+```json
+"Our return policy allows returns within 30 days of purchase."
+```
+
 This uses a sample `format_results` function, which could be implemented like
 so:
+
+Sample result formatting function
+
+```python
+def format_results(results):
+    formatted_results = ''
+    for result in results.data:
+        formatted_result = f"<result file_id='{result.file_id}' file_name='{result.file_name}'>"
+        for part in result.content:
+            formatted_result += f"<content>{part.text}</content>"
+        formatted_results += formatted_result + "</result>"
+    return f"<sources>{formatted_results}</sources>"
+```
+
+```javascript
+function formatResults(results) {
+    let formattedResults = '';
+    for (const result of results.data) {
+        let formattedResult = `<result file_id='${result.file_id}' file_name='${result.file_name}'>`;
+        for (const part of result.content) {
+            formattedResult += `<content>${part.text}</content>`;
+        }
+        formattedResults += formattedResult + "</result>";
+    }
+    return `<sources>${formattedResults}</sources>`;
+}
+```
 
 ---
 
@@ -43116,6 +45747,87 @@ This guide focuses on HTTP streaming (`stream=true`) over server-sent events (SS
 
 To start streaming responses, set `stream=True` in your request to the Responses endpoint:
 
+```javascript
+import { OpenAI } from "openai";
+const client = new OpenAI();
+
+const stream = await client.responses.create({
+    model: "gpt-5.6",
+    input: [
+        {
+            role: "user",
+            content: "Say 'double bubble bath' ten times fast.",
+        },
+    ],
+    stream: true,
+});
+
+for await (const event of stream) {
+    console.log(event);
+}
+```
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+stream = client.responses.create(
+    model="gpt-5.6",
+    input=[
+        {
+            "role": "user",
+            "content": "Say 'double bubble bath' ten times fast.",
+        },
+    ],
+    stream=True,
+)
+
+for event in stream:
+    print(event)
+```
+
+```csharp
+using OpenAI.Responses;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
+
+var responses = client.CreateResponseStreamingAsync([
+    ResponseItem.CreateUserMessageItem([
+        ResponseContentPart.CreateInputTextPart("Say 'double bubble bath' ten times fast."),
+    ]),
+]);
+
+await foreach (var response in responses)
+{
+    if (response is StreamingResponseOutputTextDeltaUpdate delta)
+    {
+        Console.Write(delta.Delta);
+    }
+}
+```
+
+```ruby
+require "openai"
+
+openai = OpenAI::Client.new
+
+stream = openai.responses.stream(
+  model: "gpt-5.6",
+  input: [
+    {
+      role: "user",
+      content: "Say 'double bubble bath' ten times fast."
+    }
+  ]
+)
+
+stream.each do |event|
+  puts(event)
+end
+```
+
+
 The Responses API uses semantic events for streaming. Each event is typed with a predefined schema, so you can listen for events you care about.
 
 For a full list of event types, see the [API reference for streaming](https://developers.openai.com/api/docs/api-reference/responses-streaming). Here are a few examples:
@@ -43308,12 +46020,131 @@ When the `refusal` property appears in your output object, you might present the
 
 
 
-  The API response from a refusal will look something like this:
+  ```python
+class Step(BaseModel):
+    explanation: str
+    output: str
+
+class MathReasoning(BaseModel):
+    steps: list[Step]
+    final_answer: str
+
+response = client.responses.parse(
+    model="gpt-5.6",
+    input=[
+        {"role": "system", "content": "You are a helpful math tutor. Guide the user through the solution step by step."},
+        {"role": "user", "content": "how can I solve 8x + 7 = -23"},
+    ],
+    text_format=MathReasoning,
+)
+
+for output in response.output:
+    if output.type != "message":
+        continue
+
+    for item in output.content:
+        if item.type == "refusal":
+            # If the model refuses to respond, you will get a refusal message
+            print(item.refusal)
+            continue
+
+        if not item.parsed:
+            raise Exception("Could not parse response")
+
+        print(item.parsed)
+```
+
+```javascript
+const Step = z.object({
+  explanation: z.string(),
+  output: z.string(),
+});
+
+const MathReasoning = z.object({
+  steps: z.array(Step),
+  final_answer: z.string(),
+});
+
+const response = await openai.responses.parse({
+  model: "gpt-5.6",
+  input: [
+    { role: "system", content: "You are a helpful math tutor. Guide the user through the solution step by step." },
+    { role: "user", content: "how can I solve 8x + 7 = -23" },
+  ],
+  text: {
+    format: zodTextFormat(MathReasoning, "math_response"),
+  },
+});
+
+for (const output of response.output) {
+  if (output.type !== "message") {
+    continue;
+  }
+
+  for (const item of output.content) {
+    if (item.type == "refusal") {
+      // If the model refuses to respond, you will get a refusal message
+      console.log(item.refusal);
+      continue;
+    }
+
+    if (!item.parsed) {
+      throw new Error("Could not parse response");
+    }
+
+    console.log(item.parsed);
+  }
+}
+```
+
+
+
+The API response from a refusal will look something like this:
 
 
 
 
-  Tips and best practices
+  ```json
+{
+  "id": "resp_1234567890",
+  "object": "response",
+  "created_at": 1721596428,
+  "status": "completed",
+  "completed_at": 1721596429,
+  "error": null,
+  "incomplete_details": null,
+  "input": [],
+  "instructions": null,
+  "max_output_tokens": null,
+  "model": "gpt-4o-2024-08-06",
+  "output": [{
+    "id": "msg_1234567890",
+    "type": "message",
+    "role": "assistant",
+    "content": [
+      // highlight-start
+      {
+        "type": "refusal",
+        "refusal": "I'm sorry, I cannot assist with that request."
+      }
+      // highlight-end
+    ]
+  }],
+  "usage": {
+    "input_tokens": 81,
+    "output_tokens": 11,
+    "total_tokens": 92,
+    "output_tokens_details": {
+      "reasoning_tokens": 0,
+    }
+  },
+}
+```
+
+
+
+
+Tips and best practices
 
 
 
@@ -43637,6 +46468,138 @@ Now that you know the basics of supervised fine-tuning, explore these other meth
 With the OpenAI API, you can use a [large language model](https://developers.openai.com/api/docs/models) to generate text from a prompt, as you might using [ChatGPT](https://chatgpt.com). Models can generate almost any kind of text response—like code, mathematical equations, structured JSON data, or human-like prose.
 
 Use the [Responses API](https://developers.openai.com/api/docs/api-reference/responses) for direct model requests like this text-generation call.
+
+Generate text from a simple prompt
+
+```javascript
+import OpenAI from "openai";
+const client = new OpenAI();
+
+const response = await client.responses.create({
+    model: "gpt-5.6",
+    input: "Write a one-sentence bedtime story about a unicorn."
+});
+
+console.log(response.output_text);
+```
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+response = client.responses.create(
+    model="gpt-5.6",
+    input="Write a one-sentence bedtime story about a unicorn."
+)
+
+print(response.output_text)
+```
+
+```cli
+openai responses create \
+  --model "gpt-5.6" \
+  --input "Write a one-sentence bedtime story about a unicorn." \
+  --raw-output \
+  --transform 'output.#(type=="message").content.0.text'
+```
+
+```csharp
+using System;
+using System.Threading.Tasks;
+using OpenAI;
+
+class Program
+{
+    static async Task Main()
+    {
+        var client = new OpenAIClient(
+            Environment.GetEnvironmentVariable("OPENAI_API_KEY")
+        );
+
+        var response = await client.Responses.CreateAsync(new ResponseCreateRequest
+        {
+            Model = "gpt-5.6",
+            Input = "Say 'this is a test.'"
+        });
+
+        Console.WriteLine($"[ASSISTANT]: {response.OutputText()}");
+    }
+}
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.Response;
+import com.openai.models.responses.ResponseCreateParams;
+
+public class Main {
+    public static void main(String[] args) {
+        OpenAIClient client = OpenAIOkHttpClient.fromEnv();
+
+        ResponseCreateParams params = ResponseCreateParams.builder()
+                .input("Say this is a test")
+                .model("gpt-5.6")
+                .build();
+
+        Response response = client.responses().create(params);
+        System.out.println(response.outputText());
+    }
+}
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/option"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient(
+		option.WithAPIKey("My API Key"), // or set OPENAI_API_KEY in your env
+	)
+
+	resp, err := client.Responses.New(context.TODO(), responses.ResponseNewParams{
+		Model: "gpt-5.6",
+		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Say this is a test")},
+	})
+	if err != nil {
+		panic(err.Error())
+	}
+
+	fmt.Println(resp.OutputText())
+}
+```
+
+```ruby
+require "openai"
+
+openai = OpenAI::Client.new
+
+response = openai.responses.create(
+  model: "gpt-5.6",
+  input: "Write a one-sentence bedtime story about a unicorn."
+)
+
+puts(response.output_text)
+```
+
+```bash
+curl "https://api.openai.com/v1/responses" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $OPENAI_API_KEY" \
+    -d '{
+        "model": "gpt-5.6",
+        "input": "Write a one-sentence bedtime story about a unicorn."
+    }'
+```
+
 
 An array of content generated by the model is in the `output` property of the response. In this simple example, we have just one output which looks like this:
 
@@ -53673,7 +56636,91 @@ When generating model responses or building agents, you can extend capabilities 
 
 <div data-content-switcher-pane data-value="web-search">
     <div class="hidden">Web search</div>
-    </div>
+    Include web search results for the model response
+
+```javascript
+import OpenAI from "openai";
+const client = new OpenAI();
+
+const response = await client.responses.create({
+    model: "gpt-5.6",
+    tools: [
+        { type: "web_search" },
+    ],
+    input: "What was a positive news story from today?",
+});
+
+console.log(response.output_text);
+```
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+response = client.responses.create(
+    model="gpt-5.6",
+    tools=[{"type": "web_search"}],
+    input="What was a positive news story from today?"
+)
+
+print(response.output_text)
+```
+
+```bash
+curl "https://api.openai.com/v1/responses" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $OPENAI_API_KEY" \
+    -d '{
+        "model": "gpt-5.6",
+        "tools": [{"type": "web_search"}],
+        "input": "what was a positive news story from today?"
+}'
+```
+
+```cli
+openai responses create \
+  --model gpt-5.6 \
+  --raw-output \
+  --transform 'output.#(type=="message").content.0.text' <<'YAML'
+tools:
+  - type: web_search
+input: What was a positive news story from today?
+YAML
+```
+
+```csharp
+using OpenAI.Responses;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
+
+ResponseCreationOptions options = new();
+options.Tools.Add(ResponseTool.CreateWebSearchTool());
+
+OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
+    ResponseItem.CreateUserMessageItem([
+        ResponseContentPart.CreateInputTextPart("What was a positive news story from today?"),
+    ]),
+], options);
+
+Console.WriteLine(response.GetOutputText());
+```
+
+```ruby
+require "openai"
+
+openai = OpenAI::Client.new
+
+response = openai.responses.create(
+  model: "gpt-5.6",
+  tools: [{type: "web_search"}],
+  input: "What was a positive news story from today?"
+)
+
+puts(response.output_text)
+```
+
+  </div>
   <div data-content-switcher-pane data-value="file-search" hidden>
     <div class="hidden">File search</div>
     Search your files in a response
@@ -53726,6 +56773,25 @@ OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
 ], options);
 
 Console.WriteLine(response.GetOutputText());
+```
+
+```ruby
+require "openai"
+
+openai = OpenAI::Client.new
+
+response = openai.responses.create(
+  model: "gpt-5.6",
+  input: "What is deep research by OpenAI?",
+  tools: [
+    {
+      type: "file_search",
+      vector_store_ids: ["<vector_store_id>"]
+    }
+  ]
+)
+
+puts(response)
 ```
 
   </div>
@@ -53847,7 +56913,185 @@ console.log(response.output);
   </div>
   <div data-content-switcher-pane data-value="function-calling" hidden>
     <div class="hidden">Function calling</div>
-    </div>
+    Call your own function
+
+```javascript
+import OpenAI from "openai";
+const client = new OpenAI();
+
+const tools = [
+    {
+        type: "function",
+        name: "get_weather",
+        description: "Get current temperature for a given location.",
+        parameters: {
+            type: "object",
+            properties: {
+                location: {
+                    type: "string",
+                    description: "City and country e.g. Bogotá, Colombia",
+                },
+            },
+            required: ["location"],
+            additionalProperties: false,
+        },
+        strict: true,
+    },
+];
+
+const response = await client.responses.create({
+    model: "gpt-5.6",
+    input: [
+        { role: "user", content: "What is the weather like in Paris today?" },
+    ],
+    tools,
+});
+
+console.log(response.output[0].to_json());
+```
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+tools = [
+    {
+        "type": "function",
+        "name": "get_weather",
+        "description": "Get current temperature for a given location.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "location": {
+                    "type": "string",
+                    "description": "City and country e.g. Bogotá, Colombia",
+                }
+            },
+            "required": ["location"],
+            "additionalProperties": False,
+        },
+        "strict": True,
+    },
+]
+
+response = client.responses.create(
+    model="gpt-5.6",
+    input=[
+        {"role": "user", "content": "What is the weather like in Paris today?"},
+    ],
+    tools=tools,
+)
+
+print(response.output[0].to_json())
+```
+
+```csharp
+using System.Text.Json;
+using OpenAI.Responses;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
+
+ResponseCreationOptions options = new();
+options.Tools.Add(ResponseTool.CreateFunctionTool(
+        functionName: "get_weather",
+        functionDescription: "Get current temperature for a given location.",
+        functionParameters: BinaryData.FromObjectAsJson(new
+        {
+            type = "object",
+            properties = new
+            {
+                location = new
+                {
+                    type = "string",
+                    description = "City and country e.g. Bogotá, Colombia"
+                }
+            },
+            required = new[] { "location" },
+            additionalProperties = false
+        }),
+        strictModeEnabled: true
+    )
+);
+
+OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
+    ResponseItem.CreateUserMessageItem([
+        ResponseContentPart.CreateInputTextPart("What is the weather like in Paris today?")
+    ])
+], options);
+
+Console.WriteLine(JsonSerializer.Serialize(response.OutputItems[0]));
+```
+
+```bash
+curl -X POST https://api.openai.com/v1/responses \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-5.6",
+    "input": [
+      {"role": "user", "content": "What is the weather like in Paris today?"}
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "name": "get_weather",
+        "description": "Get current temperature for a given location.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "location": {
+              "type": "string",
+              "description": "City and country e.g. Bogotá, Colombia"
+            }
+          },
+          "required": ["location"],
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    ]
+  }'
+```
+
+```ruby
+require "openai"
+
+openai = OpenAI::Client.new
+
+tools = [
+  {
+    type: "function",
+    name: "get_weather",
+    description: "Get current temperature for a given location.",
+    parameters: {
+      type: "object",
+      properties: {
+        location: {
+          type: "string",
+          description: "City and country e.g. Bogotá, Colombia"
+        }
+      },
+      required: ["location"],
+      additionalProperties: false
+    },
+    strict: true
+  }
+]
+
+response = openai.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {role: "user", content: "What is the weather like in Paris today?"}
+  ],
+  tools: tools
+)
+
+puts(response.output.first.to_json)
+```
+
+  </div>
   <div data-content-switcher-pane data-value="remote-mcp" hidden>
     <div class="hidden">Remote MCP</div>
     Call a remote MCP server
@@ -53863,7 +57107,7 @@ curl https://api.openai.com/v1/responses \
         "type": "mcp",
         "server_label": "dmcp",
         "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-        "server_url": "https://dmcp-server.deno.dev/sse",
+        "server_url": "https://dmcp-server.deno.dev/mcp",
         "require_approval": "never"
       }
     ],
@@ -53882,7 +57126,7 @@ const resp = await client.responses.create({
       type: "mcp",
       server_label: "dmcp",
       server_description: "A Dungeons and Dragons MCP server to assist with dice rolling.",
-      server_url: "https://dmcp-server.deno.dev/sse",
+      server_url: "https://dmcp-server.deno.dev/mcp",
       require_approval: "never",
     },
   ],
@@ -53904,7 +57148,7 @@ resp = client.responses.create(
             "type": "mcp",
             "server_label": "dmcp",
             "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-            "server_url": "https://dmcp-server.deno.dev/sse",
+            "server_url": "https://dmcp-server.deno.dev/mcp",
             "require_approval": "never",
         },
     ],
@@ -53923,7 +57167,7 @@ OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateMcpTool(
     serverLabel: "dmcp",
-    serverUri: new Uri("https://dmcp-server.deno.dev/sse"),
+    serverUri: new Uri("https://dmcp-server.deno.dev/mcp"),
     toolCallApprovalPolicy: new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
 ));
 
@@ -53934,6 +57178,28 @@ OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
 ], options);
 
 Console.WriteLine(response.GetOutputText());
+```
+
+```ruby
+require "openai"
+
+openai = OpenAI::Client.new
+
+response = openai.responses.create(
+  model: "gpt-5.6",
+  tools: [
+    {
+      type: "mcp",
+      server_label: "dmcp",
+      server_description: "A Dungeons and Dragons MCP server to assist with dice rolling.",
+      server_url: "https://dmcp-server.deno.dev/mcp",
+      require_approval: "never"
+    }
+  ],
+  input: "Roll 2d4+1"
+)
+
+puts(response.output_text)
 ```
 
   </div>
@@ -55699,6 +58965,91 @@ There are three main types of web search available with OpenAI models:
 Using the [Responses API](https://developers.openai.com/api/docs/api-reference/responses), you can enable web search by configuring it in the `tools` array in an API request to generate content. Like any other tool, the model can choose to search the web or not based on the content of the input prompt.
 
 For new Responses API integrations, use `{ "type": "web_search" }`. The earlier `web_search_preview` tool remains available for legacy integrations, but it does not support newer controls such as `filters`, `external_web_access`, and `return_token_budget`.
+
+Web search tool example
+
+```javascript
+import OpenAI from "openai";
+const client = new OpenAI();
+
+const response = await client.responses.create({
+    model: "gpt-5.6",
+    tools: [
+        { type: "web_search" },
+    ],
+    input: "What was a positive news story from today?",
+});
+
+console.log(response.output_text);
+```
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+response = client.responses.create(
+    model="gpt-5.6",
+    tools=[{"type": "web_search"}],
+    input="What was a positive news story from today?"
+)
+
+print(response.output_text)
+```
+
+```bash
+curl "https://api.openai.com/v1/responses" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $OPENAI_API_KEY" \
+    -d '{
+        "model": "gpt-5.6",
+        "tools": [{"type": "web_search"}],
+        "input": "what was a positive news story from today?"
+}'
+```
+
+```cli
+openai responses create \
+  --model gpt-5.6 \
+  --raw-output \
+  --transform 'output.#(type=="message").content.0.text' <<'YAML'
+tools:
+  - type: web_search
+input: What was a positive news story from today?
+YAML
+```
+
+```csharp
+using OpenAI.Responses;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
+
+ResponseCreationOptions options = new();
+options.Tools.Add(ResponseTool.CreateWebSearchTool());
+
+OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
+    ResponseItem.CreateUserMessageItem([
+        ResponseContentPart.CreateInputTextPart("What was a positive news story from today?"),
+    ]),
+], options);
+
+Console.WriteLine(response.GetOutputText());
+```
+
+```ruby
+require "openai"
+
+openai = OpenAI::Client.new
+
+response = openai.responses.create(
+  model: "gpt-5.6",
+  tools: [{type: "web_search"}],
+  input: "What was a positive news story from today?"
+)
+
+puts(response.output_text)
+```
+
 
 ## Output and citations
 
@@ -59607,7 +62958,7 @@ Finetuning
 
 # Developer quickstart
 
-The OpenAI API provides a simple interface to state-of-the-art AI [models](https://developers.openai.com/api/docs/models) for text generation, natural language processing, computer vision, and more. Get started by creating an API Key and running your first API call. Discover how to generate text, analyze images, build agents, and more.
+The OpenAI API provides a consistent interface to state-of-the-art AI [models](https://developers.openai.com/api/docs/models) for text generation, natural language processing, computer vision, and more. Get started by creating an API Key and running your first API call. Discover how to generate text, analyze images, build agents, and more.
 
 ## Create and export an API key
 
@@ -59632,14 +62983,26 @@ in your terminal.
 
 <div data-content-switcher-pane data-value="macOS">
     <div class="hidden">macOS / Linux</div>
-    </div>
+    Export an environment variable on macOS or Linux systems
+
+```bash
+export OPENAI_API_KEY="your_api_key_here"
+```
+
+  </div>
   <div data-content-switcher-pane data-value="windows" hidden>
     <div class="hidden">Windows</div>
-    </div>
+    Export an environment variable in PowerShell
+
+```bash
+setx OPENAI_API_KEY "your_api_key_here"
+```
+
+  </div>
 
 
 
-OpenAI SDKs are configured to automatically read your API key from the system environment.
+Each OpenAI SDK automatically reads your API key from the system environment.
 
 ## Install the OpenAI SDK and Run an API Call
 
@@ -59659,6 +63022,9 @@ OpenAI SDKs are configured to automatically read your API key from the system en
     </div>
   <div data-content-switcher-pane data-value="golang" hidden>
     <div class="hidden">Go</div>
+    </div>
+  <div data-content-switcher-pane data-value="ruby" hidden>
+    <div class="hidden">Ruby</div>
     </div>
 
 
@@ -59736,13 +63102,416 @@ Send image URLs, uploaded files, or PDF documents directly to the model to extra
 
 <div data-content-switcher-pane data-value="image-url">
     <div class="hidden">Image URL</div>
-    </div>
+    Analyze the content of an image
+
+```javascript
+import OpenAI from "openai";
+const client = new OpenAI();
+
+const response = await client.responses.create({
+    model: "gpt-5.6",
+    input: [
+        {
+            role: "user",
+            content: [
+                {
+                    type: "input_text",
+                    text: "What is in this image?",
+                },
+                {
+                    type: "input_image",
+                    image_url: "https://openai-documentation.vercel.app/images/cat_and_otter.png",
+                },
+            ],
+        },
+    ],
+});
+
+console.log(response.output_text);
+```
+
+```bash
+curl "https://api.openai.com/v1/responses" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $OPENAI_API_KEY" \
+    -d '{
+        "model": "gpt-5.6",
+        "input": [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "input_text",
+                        "text": "What is in this image?"
+                    },
+                    {
+                        "type": "input_image",
+                        "image_url": "https://openai-documentation.vercel.app/images/cat_and_otter.png"
+                    }
+                ]
+            }
+        ]
+}'
+```
+
+```cli
+openai responses create \
+  --model gpt-5.6 \
+  --raw-output \
+  --transform 'output.#(type=="message").content.0.text' <<'YAML'
+input:
+  - role: user
+    content:
+      - type: input_text
+        text: What is in this image?
+      - type: input_image
+        image_url: https://openai-documentation.vercel.app/images/cat_and_otter.png
+YAML
+```
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+response = client.responses.create(
+    model="gpt-5.6",
+    input=[
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "input_text",
+                    "text": "What teams are playing in this image?",
+                },
+                {
+                    "type": "input_image",
+                    "image_url": "https://api.nga.gov/iiif/a2e6da57-3cd1-4235-b20e-95dcaefed6c8/full/!800,800/0/default.jpg"
+                }
+            ]
+        }
+    ]
+)
+
+print(response.output_text)
+```
+
+```csharp
+using OpenAI.Responses;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
+
+OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
+    ResponseItem.CreateUserMessageItem([
+        ResponseContentPart.CreateInputTextPart("What is in this image?"),
+        ResponseContentPart.CreateInputImagePart(new Uri("https://openai-documentation.vercel.app/images/cat_and_otter.png")),
+    ]),
+]);
+
+Console.WriteLine(response.GetOutputText());
+```
+
+```ruby
+require "openai"
+
+openai = OpenAI::Client.new
+
+response = openai.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {
+      role: "user",
+      content: [
+        {
+          type: "input_text",
+          text: "What teams are playing in this image?"
+        },
+        {
+          type: "input_image",
+          image_url: "https://api.nga.gov/iiif/a2e6da57-3cd1-4235-b20e-95dcaefed6c8/full/!800,800/0/default.jpg"
+        }
+      ]
+    }
+  ]
+)
+
+puts(response.output_text)
+```
+
+  </div>
   <div data-content-switcher-pane data-value="file-url" hidden>
     <div class="hidden">File URL</div>
-    </div>
+    Use a file URL as input
+
+```bash
+curl "https://api.openai.com/v1/responses" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $OPENAI_API_KEY" \
+    -d '{
+        "model": "gpt-5.6",
+        "input": [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "input_text",
+                        "text": "Analyze the letter and provide a summary of the key points."
+                    },
+                    {
+                        "type": "input_file",
+                        "file_url": "https://www.berkshirehathaway.com/letters/2024ltr.pdf"
+                    }
+                ]
+            }
+        ]
+    }'
+```
+
+```javascript
+import OpenAI from "openai";
+const client = new OpenAI();
+
+const response = await client.responses.create({
+    model: "gpt-5.6",
+    input: [
+        {
+            role: "user",
+            content: [
+                {
+                    type: "input_text",
+                    text: "Analyze the letter and provide a summary of the key points.",
+                },
+                {
+                    type: "input_file",
+                    file_url: "https://www.berkshirehathaway.com/letters/2024ltr.pdf",
+                },
+            ],
+        },
+    ],
+});
+
+console.log(response.output_text);
+```
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+response = client.responses.create(
+    model="gpt-5.6",
+    input=[
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "input_text",
+                    "text": "Analyze the letter and provide a summary of the key points.",
+                },
+                {
+                    "type": "input_file",
+                    "file_url": "https://www.berkshirehathaway.com/letters/2024ltr.pdf",
+                },
+            ],
+        },
+    ]
+)
+
+print(response.output_text)
+```
+
+```ruby
+require "openai"
+
+openai = OpenAI::Client.new
+
+response = openai.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {
+      role: "user",
+      content: [
+        {
+          type: "input_text",
+          text: "Analyze the letter and provide a summary of the key points."
+        },
+        {
+          type: "input_file",
+          file_url: "https://www.berkshirehathaway.com/letters/2024ltr.pdf"
+        }
+      ]
+    }
+  ]
+)
+
+puts(response.output_text)
+```
+
+```csharp
+using OpenAI.Files;
+using OpenAI.Responses;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
+
+using HttpClient http = new();
+using Stream stream = await http.GetStreamAsync("https://www.berkshirehathaway.com/letters/2024ltr.pdf");
+OpenAIFileClient files = new(key);
+OpenAIFile file = files.UploadFile(stream, "2024ltr.pdf", FileUploadPurpose.UserData);
+
+OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
+    ResponseItem.CreateUserMessageItem([
+        ResponseContentPart.CreateInputTextPart("Analyze the letter and provide a summary of the key points."),
+        ResponseContentPart.CreateInputFilePart(file.Id),
+    ]),
+]);
+
+Console.WriteLine(response.GetOutputText());
+```
+
+  </div>
   <div data-content-switcher-pane data-value="file-upload" hidden>
     <div class="hidden">Upload file</div>
-    </div>
+    Upload a file and use it as input
+
+```bash
+curl https://api.openai.com/v1/files \
+    -H "Authorization: Bearer $OPENAI_API_KEY" \
+    -F purpose="user_data" \
+    -F file="@draconomicon.pdf"
+
+curl "https://api.openai.com/v1/responses" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $OPENAI_API_KEY" \
+    -d '{
+        "model": "gpt-5.6",
+        "input": [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "input_file",
+                        "file_id": "file-6F2ksmvXxt4VdoqmHRw6kL"
+                    },
+                    {
+                        "type": "input_text",
+                        "text": "What is the first dragon in the book?"
+                    }
+                ]
+            }
+        ]
+    }'
+```
+
+```javascript
+import fs from "fs";
+import OpenAI from "openai";
+const client = new OpenAI();
+
+const file = await client.files.create({
+    file: fs.createReadStream("draconomicon.pdf"),
+    purpose: "user_data",
+});
+
+const response = await client.responses.create({
+    model: "gpt-5.6",
+    input: [
+        {
+            role: "user",
+            content: [
+                {
+                    type: "input_file",
+                    file_id: file.id,
+                },
+                {
+                    type: "input_text",
+                    text: "What is the first dragon in the book?",
+                },
+            ],
+        },
+    ],
+});
+
+console.log(response.output_text);
+```
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+file = client.files.create(
+    file=open("draconomicon.pdf", "rb"),
+    purpose="user_data"
+)
+
+response = client.responses.create(
+    model="gpt-5.6",
+    input=[
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "input_file",
+                    "file_id": file.id,
+                },
+                {
+                    "type": "input_text",
+                    "text": "What is the first dragon in the book?",
+                },
+            ]
+        }
+    ]
+)
+
+print(response.output_text)
+```
+
+```ruby
+require "openai"
+
+openai = OpenAI::Client.new
+
+file = openai.files.create(
+  file: File.open("draconomicon.pdf", "rb"),
+  purpose: "user_data"
+)
+
+response = openai.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {
+      role: "user",
+      content: [
+        {type: "input_file", file_id: file.id},
+        {type: "input_text", text: "What is the first dragon in the book?"}
+      ]
+    }
+  ]
+)
+
+puts(response.output_text)
+```
+
+```csharp
+using OpenAI.Files;
+using OpenAI.Responses;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
+
+OpenAIFileClient files = new(key);
+OpenAIFile file = files.UploadFile("draconomicon.pdf", FileUploadPurpose.UserData);
+
+OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
+    ResponseItem.CreateUserMessageItem([
+        ResponseContentPart.CreateInputFilePart(file.Id),
+        ResponseContentPart.CreateInputTextPart("What is the first dragon in the book?"),
+    ]),
+]);
+
+Console.WriteLine(response.GetOutputText());
+```
+
+  </div>
 
 
 
@@ -59770,19 +63539,535 @@ Give the model access to external data and functions by attaching [tools](https:
 
 <div data-content-switcher-pane data-value="web-search">
     <div class="hidden">Web search</div>
-    </div>
+    Use web search in a response
+
+```javascript
+import OpenAI from "openai";
+const client = new OpenAI();
+
+const response = await client.responses.create({
+    model: "gpt-5.6",
+    tools: [
+        { type: "web_search" },
+    ],
+    input: "What was a positive news story from today?",
+});
+
+console.log(response.output_text);
+```
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+response = client.responses.create(
+    model="gpt-5.6",
+    tools=[{"type": "web_search"}],
+    input="What was a positive news story from today?"
+)
+
+print(response.output_text)
+```
+
+```bash
+curl "https://api.openai.com/v1/responses" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $OPENAI_API_KEY" \
+    -d '{
+        "model": "gpt-5.6",
+        "tools": [{"type": "web_search"}],
+        "input": "what was a positive news story from today?"
+}'
+```
+
+```cli
+openai responses create \
+  --model gpt-5.6 \
+  --raw-output \
+  --transform 'output.#(type=="message").content.0.text' <<'YAML'
+tools:
+  - type: web_search
+input: What was a positive news story from today?
+YAML
+```
+
+```csharp
+using OpenAI.Responses;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
+
+ResponseCreationOptions options = new();
+options.Tools.Add(ResponseTool.CreateWebSearchTool());
+
+OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
+    ResponseItem.CreateUserMessageItem([
+        ResponseContentPart.CreateInputTextPart("What was a positive news story from today?"),
+    ]),
+], options);
+
+Console.WriteLine(response.GetOutputText());
+```
+
+```ruby
+require "openai"
+
+openai = OpenAI::Client.new
+
+response = openai.responses.create(
+  model: "gpt-5.6",
+  tools: [{type: "web_search"}],
+  input: "What was a positive news story from today?"
+)
+
+puts(response.output_text)
+```
+
+  </div>
   <div data-content-switcher-pane data-value="file-search" hidden>
     <div class="hidden">File search</div>
-    </div>
+    Search your files in a response
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+response = client.responses.create(
+    model="gpt-5.6",
+    input="What is deep research by OpenAI?",
+    tools=[{
+        "type": "file_search",
+        "vector_store_ids": ["<vector_store_id>"]
+    }]
+)
+print(response)
+```
+
+```javascript
+import OpenAI from "openai";
+const openai = new OpenAI();
+
+const response = await openai.responses.create({
+    model: "gpt-5.6",
+    input: "What is deep research by OpenAI?",
+    tools: [
+        {
+            type: "file_search",
+            vector_store_ids: ["<vector_store_id>"],
+        },
+    ],
+});
+console.log(response);
+```
+
+```csharp
+using OpenAI.Responses;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
+
+ResponseCreationOptions options = new();
+options.Tools.Add(ResponseTool.CreateFileSearchTool(["<vector_store_id>"]));
+
+OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
+    ResponseItem.CreateUserMessageItem([
+        ResponseContentPart.CreateInputTextPart("What is deep research by OpenAI?"),
+    ]),
+], options);
+
+Console.WriteLine(response.GetOutputText());
+```
+
+```ruby
+require "openai"
+
+openai = OpenAI::Client.new
+
+response = openai.responses.create(
+  model: "gpt-5.6",
+  input: "What is deep research by OpenAI?",
+  tools: [
+    {
+      type: "file_search",
+      vector_store_ids: ["<vector_store_id>"]
+    }
+  ]
+)
+
+puts(response)
+```
+
+  </div>
   <div data-content-switcher-pane data-value="code-interpreter" hidden>
     <div class="hidden">Code Interpreter</div>
-    </div>
+    Use Code Interpreter in a response
+
+```javascript
+import OpenAI from "openai";
+const client = new OpenAI();
+
+const response = await client.responses.create({
+    model: "gpt-5.6",
+    instructions: "You are a personal math tutor. When asked a math question, write and run code to answer the question.",
+    tools: [
+        {
+            type: "code_interpreter",
+            container: { type: "auto" },
+        },
+    ],
+    input: "I need to solve the equation 3x + 11 = 14. Can you help me?",
+});
+
+console.log(response.output_text);
+```
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+response = client.responses.create(
+    model="gpt-5.6",
+    instructions="You are a personal math tutor. When asked a math question, write and run code to answer the question.",
+    tools=[{
+        "type": "code_interpreter",
+        "container": {"type": "auto"}
+    }],
+    input="I need to solve the equation 3x + 11 = 14. Can you help me?"
+)
+
+print(response.output_text)
+```
+
+```bash
+curl https://api.openai.com/v1/responses \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -d '{
+    "model": "gpt-5.6",
+    "instructions": "You are a personal math tutor. When asked a math question, write and run code to answer the question.",
+    "tools": [
+      {
+        "type": "code_interpreter",
+        "container": { "type": "auto" }
+      }
+    ],
+    "input": "I need to solve the equation 3x + 11 = 14. Can you help me?"
+  }'
+```
+
+```ruby
+require "openai"
+
+openai = OpenAI::Client.new
+
+response = openai.responses.create(
+  model: "gpt-5.6",
+  instructions: "You are a personal math tutor. When asked a math question, write and run code to answer the question.",
+  tools: [
+    {
+      type: "code_interpreter",
+      container: {type: "auto"}
+    }
+  ],
+  input: "I need to solve the equation 3x + 11 = 14. Can you help me?"
+)
+
+puts(response.output_text)
+```
+
+  </div>
   <div data-content-switcher-pane data-value="function-calling" hidden>
     <div class="hidden">Function calling</div>
-    </div>
+    Call your own function
+
+```javascript
+import OpenAI from "openai";
+const client = new OpenAI();
+
+const tools = [
+    {
+        type: "function",
+        name: "get_weather",
+        description: "Get current temperature for a given location.",
+        parameters: {
+            type: "object",
+            properties: {
+                location: {
+                    type: "string",
+                    description: "City and country e.g. Bogotá, Colombia",
+                },
+            },
+            required: ["location"],
+            additionalProperties: false,
+        },
+        strict: true,
+    },
+];
+
+const response = await client.responses.create({
+    model: "gpt-5.6",
+    input: [
+        { role: "user", content: "What is the weather like in Paris today?" },
+    ],
+    tools,
+});
+
+console.log(response.output[0].to_json());
+```
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+tools = [
+    {
+        "type": "function",
+        "name": "get_weather",
+        "description": "Get current temperature for a given location.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "location": {
+                    "type": "string",
+                    "description": "City and country e.g. Bogotá, Colombia",
+                }
+            },
+            "required": ["location"],
+            "additionalProperties": False,
+        },
+        "strict": True,
+    },
+]
+
+response = client.responses.create(
+    model="gpt-5.6",
+    input=[
+        {"role": "user", "content": "What is the weather like in Paris today?"},
+    ],
+    tools=tools,
+)
+
+print(response.output[0].to_json())
+```
+
+```csharp
+using System.Text.Json;
+using OpenAI.Responses;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
+
+ResponseCreationOptions options = new();
+options.Tools.Add(ResponseTool.CreateFunctionTool(
+        functionName: "get_weather",
+        functionDescription: "Get current temperature for a given location.",
+        functionParameters: BinaryData.FromObjectAsJson(new
+        {
+            type = "object",
+            properties = new
+            {
+                location = new
+                {
+                    type = "string",
+                    description = "City and country e.g. Bogotá, Colombia"
+                }
+            },
+            required = new[] { "location" },
+            additionalProperties = false
+        }),
+        strictModeEnabled: true
+    )
+);
+
+OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
+    ResponseItem.CreateUserMessageItem([
+        ResponseContentPart.CreateInputTextPart("What is the weather like in Paris today?")
+    ])
+], options);
+
+Console.WriteLine(JsonSerializer.Serialize(response.OutputItems[0]));
+```
+
+```bash
+curl -X POST https://api.openai.com/v1/responses \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-5.6",
+    "input": [
+      {"role": "user", "content": "What is the weather like in Paris today?"}
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "name": "get_weather",
+        "description": "Get current temperature for a given location.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "location": {
+              "type": "string",
+              "description": "City and country e.g. Bogotá, Colombia"
+            }
+          },
+          "required": ["location"],
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    ]
+  }'
+```
+
+```ruby
+require "openai"
+
+openai = OpenAI::Client.new
+
+tools = [
+  {
+    type: "function",
+    name: "get_weather",
+    description: "Get current temperature for a given location.",
+    parameters: {
+      type: "object",
+      properties: {
+        location: {
+          type: "string",
+          description: "City and country e.g. Bogotá, Colombia"
+        }
+      },
+      required: ["location"],
+      additionalProperties: false
+    },
+    strict: true
+  }
+]
+
+response = openai.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {role: "user", content: "What is the weather like in Paris today?"}
+  ],
+  tools: tools
+)
+
+puts(response.output.first.to_json)
+```
+
+  </div>
   <div data-content-switcher-pane data-value="remote-mcp" hidden>
     <div class="hidden">Remote MCP</div>
-    </div>
+    Call a remote MCP server
+
+```bash
+curl https://api.openai.com/v1/responses \ 
+-H "Content-Type: application/json" \ 
+-H "Authorization: Bearer $OPENAI_API_KEY" \ 
+-d '{
+  "model": "gpt-5.6",
+    "tools": [
+      {
+        "type": "mcp",
+        "server_label": "dmcp",
+        "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
+        "server_url": "https://dmcp-server.deno.dev/mcp",
+        "require_approval": "never"
+      }
+    ],
+    "input": "Roll 2d4+1"
+  }'
+```
+
+```javascript
+import OpenAI from "openai";
+const client = new OpenAI();
+
+const resp = await client.responses.create({
+  model: "gpt-5.6",
+  tools: [
+    {
+      type: "mcp",
+      server_label: "dmcp",
+      server_description: "A Dungeons and Dragons MCP server to assist with dice rolling.",
+      server_url: "https://dmcp-server.deno.dev/mcp",
+      require_approval: "never",
+    },
+  ],
+  input: "Roll 2d4+1",
+});
+
+console.log(resp.output_text);
+```
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+resp = client.responses.create(
+    model="gpt-5.6",
+    tools=[
+        {
+            "type": "mcp",
+            "server_label": "dmcp",
+            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
+            "server_url": "https://dmcp-server.deno.dev/mcp",
+            "require_approval": "never",
+        },
+    ],
+    input="Roll 2d4+1",
+)
+
+print(resp.output_text)
+```
+
+```csharp
+using OpenAI.Responses;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
+
+ResponseCreationOptions options = new();
+options.Tools.Add(ResponseTool.CreateMcpTool(
+    serverLabel: "dmcp",
+    serverUri: new Uri("https://dmcp-server.deno.dev/mcp"),
+    toolCallApprovalPolicy: new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
+));
+
+OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
+    ResponseItem.CreateUserMessageItem([
+        ResponseContentPart.CreateInputTextPart("Roll 2d4+1")
+    ])
+], options);
+
+Console.WriteLine(response.GetOutputText());
+```
+
+```ruby
+require "openai"
+
+openai = OpenAI::Client.new
+
+response = openai.responses.create(
+  model: "gpt-5.6",
+  tools: [
+    {
+      type: "mcp",
+      server_label: "dmcp",
+      server_description: "A Dungeons and Dragons MCP server to assist with dice rolling.",
+      server_url: "https://dmcp-server.deno.dev/mcp",
+      require_approval: "never"
+    }
+  ],
+  input: "Roll 2d4+1"
+)
+
+puts(response.output_text)
+```
+
+  </div>
 
 
 
@@ -59802,9 +64087,92 @@ Give the model access to external data and functions by attaching [tools](https:
 
 ](https://developers.openai.com/api/docs/guides/function-calling)
 
-## Stream responses and build realtime apps
+## Stream responses and build real-time apps
 
-Use server‑sent [streaming events](https://developers.openai.com/api/docs/guides/streaming-responses) to show results as they’re generated, or the [Realtime API](https://developers.openai.com/api/docs/guides/realtime) for interactive voice and multimodal apps.
+Use server‑sent [streaming events](https://developers.openai.com/api/docs/guides/streaming-responses) to show results as they’re generated, or use the [Realtime API](https://developers.openai.com/api/docs/guides/realtime) for interactive voice apps and apps with text, audio, and image inputs.
+
+Stream server-sent events from the API
+
+```javascript
+import { OpenAI } from "openai";
+const client = new OpenAI();
+
+const stream = await client.responses.create({
+    model: "gpt-5.6",
+    input: [
+        {
+            role: "user",
+            content: "Say 'double bubble bath' ten times fast.",
+        },
+    ],
+    stream: true,
+});
+
+for await (const event of stream) {
+    console.log(event);
+}
+```
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+stream = client.responses.create(
+    model="gpt-5.6",
+    input=[
+        {
+            "role": "user",
+            "content": "Say 'double bubble bath' ten times fast.",
+        },
+    ],
+    stream=True,
+)
+
+for event in stream:
+    print(event)
+```
+
+```csharp
+using OpenAI.Responses;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
+
+var responses = client.CreateResponseStreamingAsync([
+    ResponseItem.CreateUserMessageItem([
+        ResponseContentPart.CreateInputTextPart("Say 'double bubble bath' ten times fast."),
+    ]),
+]);
+
+await foreach (var response in responses)
+{
+    if (response is StreamingResponseOutputTextDeltaUpdate delta)
+    {
+        Console.Write(delta.Delta);
+    }
+}
+```
+
+```ruby
+require "openai"
+
+openai = OpenAI::Client.new
+
+stream = openai.responses.stream(
+  model: "gpt-5.6",
+  input: [
+    {
+      role: "user",
+      content: "Say 'double bubble bath' ten times fast."
+    }
+  ]
+)
+
+stream.each do |event|
+  puts(event)
+end
+```
+
 
 [
 
@@ -59824,7 +64192,64 @@ Use server‑sent [streaming events](https://developers.openai.com/api/docs/guid
 
 ## Build agents
 
-Use the OpenAI platform to build [agents](https://developers.openai.com/api/docs/guides/agents) capable of taking action—like [controlling computers](https://developers.openai.com/api/docs/guides/tools-computer-use)—on behalf of your users. Use the [Agents SDK](https://developers.openai.com/api/docs/guides/agents) to create orchestration logic on the backend.
+Use the OpenAI platform to build [agents](https://developers.openai.com/api/docs/guides/agents) capable of taking action—like [controlling computers](https://developers.openai.com/api/docs/guides/tools-computer-use)—on behalf of your users. Use the [Agents SDK](https://developers.openai.com/api/docs/guides/agents) to create orchestration logic on your server.
+
+Build a language triage agent
+
+```javascript
+import { Agent, run } from '@openai/agents';
+
+const spanishAgent = new Agent({
+    name: 'Spanish agent',
+    instructions: 'You only speak Spanish.',
+});
+
+const englishAgent = new Agent({
+    name: 'English agent',
+    instructions: 'You only speak English',
+});
+
+const triageAgent = new Agent({
+    name: 'Triage agent',
+    instructions:
+        'Handoff to the appropriate agent based on the language of the request.',
+    handoffs: [spanishAgent, englishAgent],
+});
+
+const result = await run(triageAgent, 'Hola, ¿cómo estás?');
+console.log(result.finalOutput);
+```
+
+```python
+from agents import Agent, Runner
+import asyncio
+
+spanish_agent = Agent(
+    name="Spanish agent",
+    instructions="You only speak Spanish.",
+)
+
+english_agent = Agent(
+    name="English agent",
+    instructions="You only speak English",
+)
+
+triage_agent = Agent(
+    name="Triage agent",
+    instructions="Handoff to the appropriate agent based on the language of the request.",
+    handoffs=[spanish_agent, english_agent],
+)
+
+
+async def main():
+    result = await Runner.run(triage_agent, input="Hola, ¿cómo estás?")
+    print(result.final_output)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
 
 [
 

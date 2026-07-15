@@ -256,7 +256,7 @@ from agents import Agent, ApplyPatchTool, Runner, apply_diff
 class WorkspaceEditor:
     async def create_file(self, operation):
         # convert the diff to the file content
-        content = apply_diff("", operation.diff, create=True)
+        content = apply_diff("", operation.diff, mode="create")
         # write the file content to the file system
         return {"status": "completed", "output": f"Created {operation.path}"}
 

@@ -85,9 +85,7 @@ KbdGroup
 └── Kbd
 ```
 
-## Examples
-
-### Group
+## Group
 
 Use the `KbdGroup` component to group keyboard keys together.
 
@@ -111,7 +109,7 @@ export function KbdGroupExample() {
 
 ```
 
-### Button
+## Button
 
 Use the `Kbd` component inside a `Button` component to display a keyboard key inside a button.
 
@@ -132,7 +130,7 @@ export function KbdButton() {
 
 ```
 
-### Tooltip
+## Tooltip
 
 You can use the `Kbd` component inside a `Tooltip` component to display a tooltip with a keyboard key.
 
@@ -177,7 +175,7 @@ export function KbdTooltip() {
 
 ```
 
-### Input Group
+## Input Group
 
 You can use the `Kbd` component inside a `InputGroupAddon` component to display a keyboard key inside an input group.
 

@@ -173,9 +173,7 @@ Command
         └── CommandItem
 ```
 
-## Examples
-
-### Basic
+## Basic
 
 A simple command menu in a dialog.
 
@@ -222,7 +220,7 @@ export function CommandBasic() {
 
 ```
 
-### Shortcuts
+## Shortcuts
 
 ```tsx
 "use client"
@@ -281,7 +279,7 @@ export function CommandWithShortcuts() {
 
 ```
 
-### Groups
+## Groups
 
 A command menu with groups, icons and separators.
 
@@ -365,7 +363,7 @@ export function CommandWithGroups() {
 
 ```
 
-### Scrollable
+## Scrollable
 
 Scrollable command menu with multiple items.
 

@@ -306,9 +306,7 @@ export function InputGroupBlockEnd() {
 
 ```
 
-## Examples
-
-### Icon
+## Icon
 
 ```tsx
 import {
@@ -363,7 +361,7 @@ export function InputGroupIcon() {
 
 ```
 
-### Text
+## Text
 
 ```tsx
 import {
@@ -415,7 +413,7 @@ export function InputGroupTextExample() {
 
 ```
 
-### Button
+## Button
 
 ```tsx
 "use client"
@@ -505,7 +503,7 @@ export function InputGroupButtonExample() {
 
 ```
 
-### Kbd
+## Kbd
 
 ```tsx
 import { SearchIcon } from "lucide-react"
@@ -533,7 +531,7 @@ export function InputGroupKbd() {
 
 ```
 
-### Dropdown
+## Dropdown
 
 ```tsx
 "use client"
@@ -609,7 +607,7 @@ export function InputGroupDropdown() {
 
 ```
 
-### Spinner
+## Spinner
 
 ```tsx
 import { LoaderIcon } from "lucide-react"
@@ -661,7 +659,7 @@ export function InputGroupSpinner() {
 
 ```
 
-### Textarea
+## Textarea
 
 ```tsx
 import {
@@ -713,7 +711,7 @@ export function InputGroupTextareaExample() {
 
 ```
 
-### Custom Input
+## Custom Input
 
 Add the `data-slot="input-group-control"` attribute to your custom input for automatic focus state handling.
 

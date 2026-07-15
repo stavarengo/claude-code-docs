@@ -20,6 +20,91 @@ Using the [Responses API](https://developers.openai.com/api/docs/api-reference/r
 
 For new Responses API integrations, use `{ "type": "web_search" }`. The earlier `web_search_preview` tool remains available for legacy integrations, but it does not support newer controls such as `filters`, `external_web_access`, and `return_token_budget`.
 
+Web search tool example
+
+```javascript
+import OpenAI from "openai";
+const client = new OpenAI();
+
+const response = await client.responses.create({
+    model: "gpt-5.6",
+    tools: [
+        { type: "web_search" },
+    ],
+    input: "What was a positive news story from today?",
+});
+
+console.log(response.output_text);
+```
+
+```python
+from openai import OpenAI
+client = OpenAI()
+
+response = client.responses.create(
+    model="gpt-5.6",
+    tools=[{"type": "web_search"}],
+    input="What was a positive news story from today?"
+)
+
+print(response.output_text)
+```
+
+```bash
+curl "https://api.openai.com/v1/responses" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $OPENAI_API_KEY" \
+    -d '{
+        "model": "gpt-5.6",
+        "tools": [{"type": "web_search"}],
+        "input": "what was a positive news story from today?"
+}'
+```
+
+```cli
+openai responses create \
+  --model gpt-5.6 \
+  --raw-output \
+  --transform 'output.#(type=="message").content.0.text' <<'YAML'
+tools:
+  - type: web_search
+input: What was a positive news story from today?
+YAML
+```
+
+```csharp
+using OpenAI.Responses;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
+
+ResponseCreationOptions options = new();
+options.Tools.Add(ResponseTool.CreateWebSearchTool());
+
+OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
+    ResponseItem.CreateUserMessageItem([
+        ResponseContentPart.CreateInputTextPart("What was a positive news story from today?"),
+    ]),
+], options);
+
+Console.WriteLine(response.GetOutputText());
+```
+
+```ruby
+require "openai"
+
+openai = OpenAI::Client.new
+
+response = openai.responses.create(
+  model: "gpt-5.6",
+  tools: [{type: "web_search"}],
+  input: "What was a positive news story from today?"
+)
+
+puts(response.output_text)
+```
+
+
 ## Output and citations
 
 Model responses that use the web search tool will include two parts:

@@ -91,15 +91,15 @@ const chat = createChat()
   .assistant(
     '`MessageScrollerContent` sets `role="log"` and `aria-relevant="additions"` by default, so screen readers announce new messages as they stream in.\n\nThe scroll button is a real `<button>` with an sr-only label, and it\'s removed from the tab order when you\'re already at the bottom — no ghost focus stops.'
   )
-const initialMessages = chat.get({ count: 0 })
-const transport = chat.transport({ chunkDelayMs: 20 })
+const initialMessages = chat.get(0)
+const transport = chat.transport({ delayMs: 20 })
 
 export function MessageScrollerDemo() {
   const { messages, sendMessage, status, setMessages } = useChat({
     messages: initialMessages,
     transport,
   })
-  const nextMessage = chat.next({ after: messages })
+  const nextMessage = chat.next(messages)
   const isBusy = status === "submitted" || status === "streaming"
 
   return (
@@ -1004,8 +1004,8 @@ const chat = createChat()
   .assistant(
     '`MessageScrollerContent` sets `role="log"` and `aria-relevant="additions"` by default, so screen readers announce new messages as they stream in.\n\nThe scroll button is a real `<button>` with an sr-only label, and it\'s removed from the tab order when you\'re already at the bottom — no ghost focus stops.'
   )
-const initialMessages = chat.get({ count: 2 })
-const transport = chat.transport({ chunkDelayMs: 35 })
+const initialMessages = chat.get(2)
+const transport = chat.transport({ delayMs: 35 })
 
 export function MessageScrollerPreviousContext() {
   const [demoKey, setDemoKey] = React.useState(0)
@@ -1014,7 +1014,7 @@ export function MessageScrollerPreviousContext() {
     messages: initialMessages,
     transport,
   })
-  const nextMessage = chat.next({ after: messages })
+  const nextMessage = chat.next(messages)
   const isBusy = status === "submitted" || status === "streaming"
 
   return (
@@ -1288,15 +1288,15 @@ const chat = createChat()
   .assistant(
     '`MessageScrollerContent` sets `role="log"` and `aria-relevant="additions"` by default, so screen readers announce new messages as they stream in.\n\nThe scroll button is a real `<button>` with an sr-only label, and it\'s removed from the tab order when you\'re already at the bottom — no ghost focus stops.'
   )
-const initialMessages = chat.get({ count: 0 })
-const transport = chat.transport({ chunkDelayMs: 20 })
+const initialMessages = chat.get(0)
+const transport = chat.transport({ delayMs: 20 })
 
 export function MessageScrollerStreaming() {
   const { messages, sendMessage, setMessages, status } = useChat({
     messages: initialMessages,
     transport,
   })
-  const nextMessage = chat.next({ after: messages })
+  const nextMessage = chat.next(messages)
   const isBusy = status === "submitted" || status === "streaming"
 
   return (
@@ -1944,8 +1944,8 @@ const chat = createChat()
     "Yes. Keep the conversation in place while you change the preset, then send the next message to compare the new entrance against the same context.\n\nThat makes it easier to judge the difference between a subtle fade, a snappy pop, and a more dramatic 3D tilt without rebuilding the scenario each time."
   )
 
-const initialMessages = chat.get({ count: 0 })
-const transport = chat.transport({ chunkDelayMs: 15 })
+const initialMessages = chat.get(0)
+const transport = chat.transport({ delayMs: 15 })
 
 export function MessageScrollerAnimation() {
   const { messages, sendMessage, setMessages, status } = useChat({
@@ -1953,7 +1953,7 @@ export function MessageScrollerAnimation() {
     transport,
   })
   const [presetId, setPresetId] = React.useState<MessageAnimationId>("fade")
-  const nextMessage = chat.next({ after: messages })
+  const nextMessage = chat.next(messages)
   const isBusy = status === "submitted" || status === "streaming"
   const preset = MESSAGE_ANIMATIONS[presetId as MessageAnimationId]
 

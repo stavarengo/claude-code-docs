@@ -142,9 +142,7 @@ Use the `side` and `align` props on `HoverCardContent` to control placement.
 </HoverCard>
 ```
 
-## Examples
-
-### Basic
+## Basic
 
 ```tsx
 import {
@@ -182,7 +180,7 @@ export function HoverCardDemo() {
 
 ```
 
-### Sides
+## Sides
 
 ```tsx
 import { Button } from "@/components/ui/button"

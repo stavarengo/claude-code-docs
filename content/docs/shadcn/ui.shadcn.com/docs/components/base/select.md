@@ -149,9 +149,7 @@ Select
         └── SelectItem
 ```
 
-## Examples
-
-### Align Item With Trigger
+## Align Item With Trigger
 
 Use `alignItemWithTrigger` on `SelectContent` to control whether the selected item aligns with the trigger. When `true` (default), the popup positions so the selected item appears over the trigger. When `false`, the popup aligns to the trigger edge.
 
@@ -227,7 +225,7 @@ export function SelectAlignItem() {
 
 ```
 
-### Groups
+## Groups
 
 Use `SelectGroup`, `SelectLabel`, and `SelectSeparator` to organize items.
 
@@ -289,7 +287,7 @@ export function SelectGroups() {
 
 ```
 
-### Scrollable
+## Scrollable
 
 A select with many items that scrolls.
 
@@ -409,7 +407,7 @@ export function SelectScrollable() {
 
 ```
 
-### Disabled
+## Disabled
 
 ```tsx
 import {
@@ -454,7 +452,7 @@ export function SelectDisabled() {
 
 ```
 
-### Invalid
+## Invalid
 
 Add the `data-invalid` attribute to the `Field` component and the `aria-invalid` attribute to the `SelectTrigger` component to show an error state.
 

@@ -113,9 +113,7 @@ Popover
     └── Calendar
 ```
 
-## Examples
-
-### Basic
+## Basic
 
 A basic date picker component.
 
@@ -167,7 +165,7 @@ export function DatePickerSimple() {
 
 ```
 
-### Range Picker
+## Range Picker
 
 A date picker component for selecting a range of dates.
 
@@ -237,7 +235,7 @@ export function DatePickerWithRange() {
 
 ```
 
-### Date of Birth
+## Date of Birth
 
 A date picker component for selecting a date of birth. This component includes a dropdown caption layout for date and month selection.
 
@@ -293,7 +291,7 @@ export function DatePickerSimple() {
 
 ```
 
-### Input
+## Input
 
 A date picker component with an input field for selecting a date.
 
@@ -409,7 +407,7 @@ export function DatePickerInput() {
 
 ```
 
-### Time Picker
+## Time Picker
 
 A date picker component with a time input field for selecting a time.
 
@@ -481,7 +479,7 @@ export function DatePickerTime() {
 
 ```
 
-### Natural Language Picker
+## Natural Language Picker
 
 This component uses the `chrono-node` library to parse natural language dates.
 

@@ -1,4 +1,4 @@
-# Errors
+# Claude API errors
 
 Understand the HTTP status codes, error response shape, and request IDs the Claude API returns, and handle errors with the SDKs' typed exceptions.
 

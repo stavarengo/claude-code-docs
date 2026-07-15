@@ -148,9 +148,7 @@ Dialog
     └── DialogFooter
 ```
 
-## Examples
-
-### Custom Close Button
+## Custom Close Button
 
 Replace the default close control with your own button.
 
@@ -202,7 +200,7 @@ export function DialogCloseButton() {
 
 ```
 
-### No Close Button
+## No Close Button
 
 Use `showCloseButton={false}` to hide the close button.
 
@@ -240,7 +238,7 @@ export function DialogNoCloseButton() {
 
 ```
 
-### Sticky Footer
+## Sticky Footer
 
 Keep actions visible while the content scrolls.
 
@@ -294,7 +292,7 @@ export function DialogStickyFooter() {
 
 ```
 
-### Scrollable Content
+## Scrollable Content
 
 Long content can scroll while the header stays in view.
 

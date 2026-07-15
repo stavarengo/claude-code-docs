@@ -68,9 +68,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 <Skeleton className="h-[20px] w-[100px] rounded-full" />
 ```
 
-## Examples
-
-### Avatar
+## Avatar
 
 ```tsx
 import { Skeleton } from "@/components/ui/skeleton"
@@ -89,7 +87,7 @@ export function SkeletonAvatar() {
 
 ```
 
-### Card
+## Card
 
 ```tsx
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
@@ -111,7 +109,7 @@ export function SkeletonCard() {
 
 ```
 
-### Text
+## Text
 
 ```tsx
 import { Skeleton } from "@/components/ui/skeleton"
@@ -128,7 +126,7 @@ export function SkeletonText() {
 
 ```
 
-### Form
+## Form
 
 ```tsx
 import { Skeleton } from "@/components/ui/skeleton"
@@ -151,7 +149,7 @@ export function SkeletonForm() {
 
 ```
 
-### Table
+## Table
 
 ```tsx
 import { Skeleton } from "@/components/ui/skeleton"

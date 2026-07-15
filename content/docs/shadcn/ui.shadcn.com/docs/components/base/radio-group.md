@@ -105,9 +105,7 @@ RadioGroup
 └── RadioGroupItem
 ```
 
-## Examples
-
-### Description
+## Description
 
 Radio group items with a description using the `Field` component.
 
@@ -154,7 +152,7 @@ export function RadioGroupDescription() {
 
 ```
 
-### Choice Card
+## Choice Card
 
 Use `FieldLabel` to wrap the entire `Field` for a clickable card-style selection.
 
@@ -208,7 +206,7 @@ export function RadioGroupChoiceCard() {
 
 ```
 
-### Fieldset
+## Fieldset
 
 Use `FieldSet` and `FieldLegend` to group radio items with a label and description.
 
@@ -255,7 +253,7 @@ export function RadioGroupFieldset() {
 
 ```
 
-### Disabled
+## Disabled
 
 Use the `disabled` prop on `RadioGroup` to disable all items.
 
@@ -290,7 +288,7 @@ export function RadioGroupDisabled() {
 
 ```
 
-### Invalid
+## Invalid
 
 Use `aria-invalid` on `RadioGroupItem` and `data-invalid` on `Field` to show validation errors.
 

@@ -138,9 +138,7 @@ Sheet
     └── SheetFooter
 ```
 
-## Examples
-
-### Side
+## Side
 
 Use the `side` prop on `SheetContent` to set the edge of the screen where the sheet appears. Values are `top`, `right`, `bottom`, or `left`.
 
@@ -209,7 +207,7 @@ export function SheetSide() {
 
 ```
 
-### No Close Button
+## No Close Button
 
 Use `showCloseButton={false}` on `SheetContent` to hide the close button.
 

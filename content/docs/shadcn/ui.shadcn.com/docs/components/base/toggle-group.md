@@ -100,9 +100,7 @@ ToggleGroup
 └── ToggleGroupItem
 ```
 
-## Examples
-
-### Outline
+## Outline
 
 Use `variant="outline"` for an outline style.
 
@@ -127,7 +125,7 @@ export function ToggleGroupOutline() {
 
 ```
 
-### Size
+## Size
 
 Use the `size` prop to change the size of the toggle group.
 
@@ -174,7 +172,7 @@ export function ToggleGroupSizes() {
 
 ```
 
-### Spacing
+## Spacing
 
 Use `spacing` to add spacing between toggle group items.
 
@@ -205,7 +203,7 @@ export function ToggleGroupSpacing() {
 
 ```
 
-### Vertical
+## Vertical
 
 Use `orientation="vertical"` for vertical toggle groups.
 
@@ -240,7 +238,7 @@ export function ToggleGroupVertical() {
 
 ```
 
-### Disabled
+## Disabled
 
 ```tsx
 import { Bold, Italic, Underline } from "lucide-react"
@@ -268,7 +266,7 @@ export function ToggleGroupDisabled() {
 
 ```
 
-### Custom
+## Custom
 
 A custom toggle group example.
 

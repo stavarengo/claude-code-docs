@@ -249,9 +249,7 @@ export function ItemSizeDemo() {
 
 ```
 
-## Examples
-
-### Icon
+## Icon
 
 Use `ItemMedia` with `variant="icon"` to display an icon.
 
@@ -293,7 +291,7 @@ export function ItemIcon() {
 
 ```
 
-### Avatar
+## Avatar
 
 You can use `ItemMedia` with `variant="avatar"` to display an avatar.
 
@@ -381,7 +379,7 @@ export function ItemAvatar() {
 
 ```
 
-### Image
+## Image
 
 Use `ItemMedia` with `variant="image"` to display an image.
 
@@ -457,7 +455,7 @@ export function ItemImage() {
 
 ```
 
-### Group
+## Group
 
 Use `ItemGroup` to group related items together.
 
@@ -528,7 +526,7 @@ export function ItemGroupExample() {
 
 ```
 
-### Header
+## Header
 
 Use `ItemHeader` to add a header above the item content.
 
@@ -596,7 +594,7 @@ export function ItemHeaderDemo() {
 
 ```
 
-### Link
+## Link
 
 Use the `render` prop to render the item as a link. The hover and focus states will be applied to the anchor element.
 
@@ -657,7 +655,7 @@ export function ItemLink() {
 </Item>
 ```
 
-### Dropdown
+## Dropdown
 
 ```tsx
 "use client"

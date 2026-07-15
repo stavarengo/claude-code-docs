@@ -99,9 +99,7 @@ ScrollArea
 └── ScrollBar
 ```
 
-## Examples
-
-### Horizontal
+## Horizontal
 
 Use `ScrollBar` with `orientation="horizontal"` for horizontal scrolling.
 

@@ -73,9 +73,7 @@ import { Input } from "@/components/ui/input"
 <Input />
 ```
 
-## Examples
-
-### Basic
+## Basic
 
 ```tsx
 import { Input } from "@/components/ui/input"
@@ -86,7 +84,7 @@ export function InputBasic() {
 
 ```
 
-### Field
+## Field
 
 Use `Field`, `FieldLabel`, and `FieldDescription` to create an input with a
 label and description.
@@ -117,7 +115,7 @@ export function InputField() {
 
 ```
 
-### Field Group
+## Field Group
 
 Use `FieldGroup` to show multiple `Field` blocks and to build forms.
 
@@ -161,7 +159,7 @@ export function InputFieldgroup() {
 
 ```
 
-### Disabled
+## Disabled
 
 Use the `disabled` prop to disable the input. To style the disabled state, add the `data-disabled` attribute to the `Field` component.
 
@@ -190,7 +188,7 @@ export function InputDisabled() {
 
 ```
 
-### Invalid
+## Invalid
 
 Use the `aria-invalid` prop to mark the input as invalid. To style the invalid state, add the `data-invalid` attribute to the `Field` component.
 
@@ -216,7 +214,7 @@ export function InputInvalid() {
 
 ```
 
-### File
+## File
 
 Use the `type="file"` prop to create a file input.
 
@@ -240,7 +238,7 @@ export function InputFile() {
 
 ```
 
-### Inline
+## Inline
 
 Use `Field` with `orientation="horizontal"` to create an inline input.
 Pair with `Button` to create a search input with a button.
@@ -261,7 +259,7 @@ export function InputInline() {
 
 ```
 
-### Grid
+## Grid
 
 Use a grid layout to place multiple inputs side by side.
 
@@ -286,7 +284,7 @@ export function InputGrid() {
 
 ```
 
-### Required
+## Required
 
 Use the `required` attribute to indicate required inputs.
 
@@ -316,7 +314,7 @@ export function InputRequired() {
 
 ```
 
-### Badge
+## Badge
 
 Use `Badge` in the label to highlight a recommended field.
 
@@ -345,7 +343,7 @@ export function InputBadge() {
 
 ```
 
-### Input Group
+## Input Group
 
 To add icons, text, or buttons inside an input, use the `InputGroup` component. See the [Input Group](/docs/components/input-group) component for more examples.
 
@@ -379,7 +377,7 @@ export function InputInputGroup() {
 
 ```
 
-### Button Group
+## Button Group
 
 To add buttons to an input, use the `ButtonGroup` component. See the [Button Group](/docs/components/button-group) component for more examples.
 
@@ -403,7 +401,7 @@ export function InputButtonGroup() {
 
 ```
 
-### Form
+## Form
 
 A full form example with multiple inputs, a select, and a button.
 

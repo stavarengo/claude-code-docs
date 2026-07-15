@@ -83,9 +83,7 @@ import { Separator } from "@/components/ui/separator"
 <Separator />
 ```
 
-## Examples
-
-### Vertical
+## Vertical
 
 Use `orientation="vertical"` for a vertical separator.
 
@@ -106,7 +104,7 @@ export function SeparatorVertical() {
 
 ```
 
-### Menu
+## Menu
 
 Vertical separators between menu items with descriptions.
 
@@ -140,7 +138,7 @@ export function SeparatorMenu() {
 
 ```
 
-### List
+## List
 
 Horizontal separators between list items.
 

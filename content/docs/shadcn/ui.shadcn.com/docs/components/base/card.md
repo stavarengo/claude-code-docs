@@ -152,9 +152,7 @@ Card
 └── CardFooter
 ```
 
-## Examples
-
-### Size
+## Size
 
 Use the `size="sm"` prop to set the size of the card to small. The small size variant uses smaller spacing.
 
@@ -212,7 +210,7 @@ export function CardSmall() {
 
 ```
 
-### Spacing
+## Spacing
 
 In addition to the `size` prop, you can use the `--card-spacing` CSS variable to control the spacing between sections and the inset of card parts.
 
@@ -391,7 +389,7 @@ export function CardEdgeToEdge() {
 
 ```
 
-### Image
+## Image
 
 Add an image before the card header to create a card with an image.
 

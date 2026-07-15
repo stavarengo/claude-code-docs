@@ -166,9 +166,7 @@ Tabs
 └── TabsContent
 ```
 
-## Examples
-
-### Line
+## Line
 
 Use the `variant="line"` prop on `TabsList` for a line style.
 
@@ -189,7 +187,7 @@ export function TabsLine() {
 
 ```
 
-### Vertical
+## Vertical
 
 Use `orientation="vertical"` for vertical tabs.
 
@@ -210,7 +208,7 @@ export function TabsVertical() {
 
 ```
 
-### Disabled
+## Disabled
 
 ```tsx
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -230,7 +228,7 @@ export function TabsDisabled() {
 
 ```
 
-### Icons
+## Icons
 
 ```tsx
 import { AppWindowIcon, CodeIcon } from "lucide-react"

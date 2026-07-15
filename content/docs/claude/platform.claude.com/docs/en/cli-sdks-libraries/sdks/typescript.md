@@ -775,7 +775,7 @@ const response = await client.beta.messages.create({
   For detailed platform setup guides with code examples, see:
 
   * [Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock)
-  * [Amazon Bedrock (legacy)](/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy)
+  * [Amazon Bedrock (Opus 4.6 and earlier)](/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy)
   * [Google Cloud](/docs/en/build-with-claude/claude-on-vertex-ai)
   * [Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry)
   * [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws)

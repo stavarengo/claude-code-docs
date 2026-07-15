@@ -38,7 +38,7 @@ curl https://api.openai.com/v1/responses \
         "type": "mcp",
         "server_label": "dmcp",
         "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-        "server_url": "https://dmcp-server.deno.dev/sse",
+        "server_url": "https://dmcp-server.deno.dev/mcp",
         "require_approval": "never"
       }
     ],
@@ -57,7 +57,7 @@ const resp = await client.responses.create({
       type: "mcp",
       server_label: "dmcp",
       server_description: "A Dungeons and Dragons MCP server to assist with dice rolling.",
-      server_url: "https://dmcp-server.deno.dev/sse",
+      server_url: "https://dmcp-server.deno.dev/mcp",
       require_approval: "never",
     },
   ],
@@ -79,7 +79,7 @@ resp = client.responses.create(
             "type": "mcp",
             "server_label": "dmcp",
             "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-            "server_url": "https://dmcp-server.deno.dev/sse",
+            "server_url": "https://dmcp-server.deno.dev/mcp",
             "require_approval": "never",
         },
     ],
@@ -98,7 +98,7 @@ OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateMcpTool(
     serverLabel: "dmcp",
-    serverUri: new Uri("https://dmcp-server.deno.dev/sse"),
+    serverUri: new Uri("https://dmcp-server.deno.dev/mcp"),
     toolCallApprovalPolicy: new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
 ));
 
@@ -109,6 +109,28 @@ OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
 ], options);
 
 Console.WriteLine(response.GetOutputText());
+```
+
+```ruby
+require "openai"
+
+openai = OpenAI::Client.new
+
+response = openai.responses.create(
+  model: "gpt-5.6",
+  tools: [
+    {
+      type: "mcp",
+      server_label: "dmcp",
+      server_description: "A Dungeons and Dragons MCP server to assist with dice rolling.",
+      server_url: "https://dmcp-server.deno.dev/mcp",
+      require_approval: "never"
+    }
+  ],
+  input: "Roll 2d4+1"
+)
+
+puts(response.output_text)
 ```
 
 
@@ -324,7 +346,7 @@ curl https://api.openai.com/v1/responses \
         "type": "mcp",
         "server_label": "dmcp",
         "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-        "server_url": "https://dmcp-server.deno.dev/sse",
+        "server_url": "https://dmcp-server.deno.dev/mcp",
         "require_approval": "never",
         "allowed_tools": ["roll"]
       }
@@ -343,7 +365,7 @@ const resp = await client.responses.create({
     type: "mcp",
     server_label: "dmcp",
     server_description: "A Dungeons and Dragons MCP server to assist with dice rolling.",
-    server_url: "https://dmcp-server.deno.dev/sse",
+    server_url: "https://dmcp-server.deno.dev/mcp",
     require_approval: "never",
     allowed_tools: ["roll"],
   }],
@@ -364,7 +386,7 @@ resp = client.responses.create(
         "type": "mcp",
         "server_label": "dmcp",
         "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-        "server_url": "https://dmcp-server.deno.dev/sse",
+        "server_url": "https://dmcp-server.deno.dev/mcp",
         "require_approval": "never",
         "allowed_tools": ["roll"],
     }],
@@ -383,7 +405,7 @@ OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateMcpTool(
     serverLabel: "dmcp",
-    serverUri: new Uri("https://dmcp-server.deno.dev/sse"),
+    serverUri: new Uri("https://dmcp-server.deno.dev/mcp"),
     allowedTools: new McpToolFilter() { ToolNames = { "roll" } },
     toolCallApprovalPolicy: new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
 ));
@@ -448,7 +470,7 @@ curl https://api.openai.com/v1/responses \
         "type": "mcp",
         "server_label": "dmcp",
         "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-        "server_url": "https://dmcp-server.deno.dev/sse",
+        "server_url": "https://dmcp-server.deno.dev/mcp",
         "require_approval": "always",
       }
     ],
@@ -471,7 +493,7 @@ const resp = await client.responses.create({
     type: "mcp",
     server_label: "dmcp",
     server_description: "A Dungeons and Dragons MCP server to assist with dice rolling.",
-    server_url: "https://dmcp-server.deno.dev/sse",
+    server_url: "https://dmcp-server.deno.dev/mcp",
     require_approval: "always",
   }],
   previous_response_id: "resp_682d498bdefc81918b4a6aa477bfafd904ad1e533afccbfa",
@@ -496,7 +518,7 @@ resp = client.responses.create(
         "type": "mcp",
         "server_label": "dmcp",
         "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-        "server_url": "https://dmcp-server.deno.dev/sse",
+        "server_url": "https://dmcp-server.deno.dev/mcp",
         "require_approval": "always",
     }],
     previous_response_id="resp_682d498bdefc81918b4a6aa477bfafd904ad1e533afccbfa",
@@ -519,7 +541,7 @@ OpenAIResponseClient client = new(model: "gpt-5.6", apiKey: key);
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateMcpTool(
     serverLabel: "dmcp",
-    serverUri: new Uri("https://dmcp-server.deno.dev/sse"),
+    serverUri: new Uri("https://dmcp-server.deno.dev/mcp"),
     toolCallApprovalPolicy: new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.AlwaysRequireApproval)
 ));
 
@@ -1178,7 +1200,7 @@ When you defer loading an MCP server, the model can still use the MCP server's l
     "type": "mcp",
     "server_label": "dmcp",
     "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-    "server_url": "https://dmcp-server.deno.dev/sse",
+    "server_url": "https://dmcp-server.deno.dev/mcp",
 // highlight-start:subtle
     "defer_loading": true,
 // highlight-end

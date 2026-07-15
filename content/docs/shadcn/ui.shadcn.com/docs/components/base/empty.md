@@ -128,9 +128,7 @@ Empty
 └── EmptyContent
 ```
 
-## Examples
-
-### Outline
+## Outline
 
 Use the `border` utility class to create an outline empty state.
 
@@ -170,7 +168,7 @@ export function EmptyOutline() {
 
 ```
 
-### Background
+## Background
 
 Use the `bg-*` and `bg-gradient-*` utilities to add a background to the empty state.
 
@@ -212,7 +210,7 @@ export function EmptyMuted() {
 
 ```
 
-### Avatar
+## Avatar
 
 Use the `EmptyMedia` component to display an avatar in the empty state.
 
@@ -260,7 +258,7 @@ export function EmptyAvatar() {
 
 ```
 
-### Avatar Group
+## Avatar Group
 
 Use the `EmptyMedia` component to display an avatar group in the empty state.
 
@@ -325,7 +323,7 @@ export function EmptyAvatarGroup() {
 
 ```
 
-### InputGroup
+## InputGroup
 
 You can add an `InputGroup` component to the `EmptyContent` component.
 

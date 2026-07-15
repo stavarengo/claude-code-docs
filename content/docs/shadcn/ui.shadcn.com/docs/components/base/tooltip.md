@@ -140,9 +140,7 @@ Tooltip
 └── TooltipContent
 ```
 
-## Examples
-
-### Side
+## Side
 
 Use the `side` prop to change the position of the tooltip.
 
@@ -175,7 +173,7 @@ export function TooltipSides() {
 
 ```
 
-### With Keyboard Shortcut
+## With Keyboard Shortcut
 
 ```tsx
 import { SaveIcon } from "lucide-react"
@@ -203,7 +201,7 @@ export function TooltipKeyboard() {
 
 ```
 
-### Disabled Button
+## Disabled Button
 
 Show a tooltip on a disabled button by wrapping it with a span.
 

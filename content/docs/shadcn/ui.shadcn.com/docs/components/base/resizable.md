@@ -123,9 +123,7 @@ ResizablePanelGroup
 └── ResizablePanel
 ```
 
-## Examples
-
-### Vertical
+## Vertical
 
 Use `orientation="vertical"` for vertical resizing.
 
@@ -159,7 +157,7 @@ export function ResizableVertical() {
 
 ```
 
-### Handle
+## Handle
 
 Use the `withHandle` prop on `ResizableHandle` to show a visible handle.
 

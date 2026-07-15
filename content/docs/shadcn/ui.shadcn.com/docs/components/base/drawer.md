@@ -302,9 +302,7 @@ The drawer also sets data attributes you can target with variants such as `data-
 | `data-swiping`            | Present                       | A swipe is in progress.               |
 | `data-nested-drawer-open` | Present                       | A nested drawer is open on top.       |
 
-## Examples
-
-### Position
+## Position
 
 Use the `swipeDirection` prop to set the side of the drawer.
 
@@ -347,7 +345,7 @@ export function DrawerWithSides() {
 
 ```
 
-### Swipe Handle
+## Swipe Handle
 
 Use `showSwipeHandle` on `Drawer` to render a swipe handle.
 
@@ -390,7 +388,7 @@ export function DrawerSwipeHandle() {
 
 ```
 
-### Nested
+## Nested
 
 Open drawers from inside another drawer. Parent drawers stay mounted and stack behind the frontmost drawer.
 
@@ -509,7 +507,7 @@ export function DrawerNested() {
 
 ```
 
-### Non Modal
+## Non Modal
 
 Set `modal={false}` to allow interaction with the rest of the page while the drawer is open. Combine with `disablePointerDismissal` to prevent the drawer from closing on outside presses. Use `modal="trap-focus"` to keep focus inside the drawer while leaving scroll and pointer interaction unrestricted.
 
@@ -548,7 +546,7 @@ export function DrawerNonModal() {
 
 ```
 
-### Snap Points
+## Snap Points
 
 Use `snapPoints` to snap a drawer to preset heights. Numbers between `0` and `1` represent fractions of the viewport. Numbers greater than `1` are treated as pixel values. String values support `px` and `rem` units. Snap points apply to vertical drawers.
 
@@ -598,7 +596,7 @@ export function DrawerSnapPoints() {
 
 ```
 
-### Responsive
+## Responsive
 
 You can combine the `Dialog` and `Drawer` components to create a responsive dialog. This renders a `Dialog` component on desktop and a `Drawer` on mobile.
 

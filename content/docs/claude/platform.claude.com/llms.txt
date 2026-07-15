@@ -12,7 +12,7 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 1877 pages - /docs - Content included below
+- English (en) - 1893 pages - /docs - Content included below
 - German (Deutsch) (de) - 137 pages - /docs/de - Visit website for content
 - Spanish (Español) (es) - 137 pages - /docs/es - Visit website for content
 - French (Français) (fr) - 137 pages - /docs/fr - Visit website for content
@@ -47,9 +47,9 @@ The full documentation is available in the following languages on https://platfo
 - [Build an orchestration mode](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-effort-example.md)
 - [Cache diagnostics (beta)](https://platform.claude.com/docs/en/build-with-claude/cache-diagnostics.md) - Cache diagnostics
 - [Citations](https://platform.claude.com/docs/en/build-with-claude/citations.md)
-- [Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock.md) - Claude in Amazon Bedrock
+- [Amazon Bedrock (Opus 4.7 and later)](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock.md) - Claude in Amazon Bedrock (Opus 4.7 and later)
 - [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry.md) - Claude in Microsoft Foundry
-- [Amazon Bedrock (legacy)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy.md) - Claude on Amazon Bedrock (legacy)
+- [Amazon Bedrock (Opus 4.6 and earlier)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy.md) - Claude on Amazon Bedrock (Opus 4.6 and earlier)
 - [Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai.md) - Claude on Google Cloud
 - [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws.md)
 - [Code execution tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool.md)
@@ -123,7 +123,7 @@ The full documentation is available in the following languages on https://platfo
 - [Agent setup](https://platform.claude.com/docs/en/managed-agents/agent-setup.md) - Define your agent
 - [Dreams](https://platform.claude.com/docs/en/managed-agents/dreams.md)
 - [MCP connector](https://platform.claude.com/docs/en/managed-agents/mcp-connector.md)
-- [Multi-agent sessions](https://platform.claude.com/docs/en/managed-agents/multi-agent.md)
+- [Multiagent orchestration](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration.md)
 - [Permission policies](https://platform.claude.com/docs/en/managed-agents/permission-policies.md)
 - [Prototype in Console](https://platform.claude.com/docs/en/managed-agents/onboarding.md)
 - [Managed Agents reference](https://platform.claude.com/docs/en/managed-agents/reference.md) - Reference
@@ -171,6 +171,7 @@ The full documentation is available in the following languages on https://platfo
 - [Microsoft Entra ID](https://platform.claude.com/docs/en/manage-claude/wif-providers/azure.md) - Use WIF with Microsoft Entra ID
 - [Okta](https://platform.claude.com/docs/en/manage-claude/wif-providers/okta.md) - Use WIF with Okta
 - [SPIFFE](https://platform.claude.com/docs/en/manage-claude/wif-providers/spiffe.md) - Use WIF with SPIFFE
+- [User management (beta)](https://platform.claude.com/docs/en/manage-claude/user-management.md) - User management
 - [WIF reference](https://platform.claude.com/docs/en/manage-claude/wif-reference.md)
 - [Workload Identity Federation](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation.md)
 - [Workspaces](https://platform.claude.com/docs/en/manage-claude/workspaces.md)
@@ -189,6 +190,7 @@ The full documentation is available in the following languages on https://platfo
 - [Acknowledge Work (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/environments/work/ack.md)
 - [Activities](https://platform.claude.com/docs/en/api/compliance/activities.md)
 - [Add Federation Rule Workspace](https://platform.claude.com/docs/en/api/admin/federation_rules/workspaces/create.md)
+- [Add RBAC Group Member](https://platform.claude.com/docs/en/api/admin/rbac_groups/members/create.md)
 - [Add Session Resource (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/resources/add.md)
 - [Add Session Resource (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/sessions/resources/add.md)
 - [Add Session Resource (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/sessions/resources/add.md)
@@ -547,6 +549,7 @@ The full documentation is available in the following languages on https://platfo
 - [Create Federation Issuer](https://platform.claude.com/docs/en/api/admin/federation_issuers/create.md)
 - [Create Federation Rule](https://platform.claude.com/docs/en/api/admin/federation_rules/create.md)
 - [Create Invite](https://platform.claude.com/docs/en/api/admin/invites/create.md)
+- [Create RBAC Group](https://platform.claude.com/docs/en/api/admin/rbac_groups/create.md)
 - [Create Service Account](https://platform.claude.com/docs/en/api/admin/service_accounts/create.md)
 - [Create Service Account Workspace Member](https://platform.claude.com/docs/en/api/admin/workspaces/service_accounts/create.md)
 - [Create Session (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/create.md)
@@ -709,6 +712,7 @@ The full documentation is available in the following languages on https://platfo
 - [Delete Invite](https://platform.claude.com/docs/en/api/admin/invites/delete.md)
 - [Delete project](https://platform.claude.com/docs/en/api/compliance/apps/projects/delete.md)
 - [Delete project document](https://platform.claude.com/docs/en/api/compliance/apps/projects/documents/delete.md)
+- [Delete RBAC Group](https://platform.claude.com/docs/en/api/admin/rbac_groups/delete.md)
 - [Delete Service Account Workspace Member](https://platform.claude.com/docs/en/api/admin/workspaces/service_accounts/delete.md)
 - [Delete Session (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/delete.md)
 - [Delete Session (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/sessions/delete.md)
@@ -970,6 +974,8 @@ The full documentation is available in the following languages on https://platfo
 - [Get Queue Statistics (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/environments/work/stats.md)
 - [Get Queue Statistics (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/environments/work/stats.md)
 - [Get Queue Statistics (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/environments/work/stats.md)
+- [Get RBAC Group](https://platform.claude.com/docs/en/api/admin/rbac_groups/retrieve.md)
+- [Get RBAC Role](https://platform.claude.com/docs/en/api/admin/rbac_roles/retrieve.md)
 - [Get Service Account](https://platform.claude.com/docs/en/api/admin/service_accounts/retrieve.md)
 - [Get Service Account Workspace Member](https://platform.claude.com/docs/en/api/admin/workspaces/service_accounts/retrieve.md)
 - [Get Session (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/retrieve.md)
@@ -1253,6 +1259,10 @@ The full documentation is available in the following languages on https://platfo
 - [List project attachments](https://platform.claude.com/docs/en/api/compliance/apps/projects/attachments/list.md)
 - [List project collaborators](https://platform.claude.com/docs/en/api/compliance/apps/projects/collaborators/list.md)
 - [List projects](https://platform.claude.com/docs/en/api/compliance/apps/projects/list.md)
+- [List RBAC Group Members](https://platform.claude.com/docs/en/api/admin/rbac_groups/members/list.md)
+- [List RBAC Groups](https://platform.claude.com/docs/en/api/admin/rbac_groups/list.md)
+- [List RBAC Role Permissions](https://platform.claude.com/docs/en/api/admin/rbac_roles/permissions/list.md)
+- [List RBAC Roles](https://platform.claude.com/docs/en/api/admin/rbac_roles/list.md)
 - [List Service Account Workspace Members](https://platform.claude.com/docs/en/api/admin/workspaces/service_accounts/list.md)
 - [List Service Accounts](https://platform.claude.com/docs/en/api/admin/service_accounts/list.md)
 - [List Session Resources (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/resources/list.md)
@@ -1375,6 +1385,7 @@ The full documentation is available in the following languages on https://platfo
 - [List Workspaces](https://platform.claude.com/docs/en/api/admin/workspaces/list.md)
 - [List Workspaces For Service Account](https://platform.claude.com/docs/en/api/admin/service_accounts/workspaces/list.md)
 - [MCP Tunnels](https://platform.claude.com/docs/en/api/admin/mcp_tunnels.md)
+- [Members](https://platform.claude.com/docs/en/api/admin/rbac_groups/members.md)
 - [Members](https://platform.claude.com/docs/en/api/admin/workspaces/members.md)
 - [Members](https://platform.claude.com/docs/en/api/compliance/groups/members.md)
 - [Memories (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memories.md)
@@ -1460,6 +1471,7 @@ The full documentation is available in the following languages on https://platfo
 - [Pause Deployment (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/deployments/pause.md)
 - [Pause Deployment (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/deployments/pause.md)
 - [Pause Deployment (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/deployments/pause.md)
+- [Permissions](https://platform.claude.com/docs/en/api/admin/rbac_roles/permissions.md)
 - [Permissions](https://platform.claude.com/docs/en/api/compliance/organizations/roles/permissions.md)
 - [Plugins](https://platform.claude.com/docs/en/api/admin/analytics/plugins.md)
 - [Poll for Work (Beta)](https://platform.claude.com/docs/en/api/beta/environments/work/poll.md)
@@ -1476,6 +1488,8 @@ The full documentation is available in the following languages on https://platfo
 - [Query compliance activities](https://platform.claude.com/docs/en/api/compliance/activities/list.md)
 - [Rate Limits](https://platform.claude.com/docs/en/api/admin/workspaces/rate_limits.md)
 - [Rate Limits](https://platform.claude.com/docs/en/api/admin/rate_limits.md)
+- [RBAC Groups](https://platform.claude.com/docs/en/api/admin/rbac_groups.md)
+- [RBAC Roles](https://platform.claude.com/docs/en/api/admin/rbac_roles.md)
 - [Record Heartbeat (Beta)](https://platform.claude.com/docs/en/api/beta/environments/work/heartbeat.md)
 - [Record Heartbeat (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/environments/work/heartbeat.md)
 - [Record Heartbeat (Beta) (csharp)](https://platform.claude.com/docs/en/api/csharp/beta/environments/work/heartbeat.md)
@@ -1497,6 +1511,7 @@ The full documentation is available in the following languages on https://platfo
 - [Redact a memory version (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/memory_stores/memory_versions/redact.md)
 - [Redact a memory version (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/memory_stores/memory_versions/redact.md)
 - [Remove Federation Rule Workspace](https://platform.claude.com/docs/en/api/admin/federation_rules/workspaces/delete.md)
+- [Remove RBAC Group Member](https://platform.claude.com/docs/en/api/admin/rbac_groups/members/delete.md)
 - [Remove User](https://platform.claude.com/docs/en/api/admin/users/delete.md)
 - [Remove Workspace From Service Account](https://platform.claude.com/docs/en/api/admin/service_accounts/workspaces/delete.md)
 - [Resources (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/resources.md)
@@ -1773,6 +1788,7 @@ The full documentation is available in the following languages on https://platfo
 - [Update External Key](https://platform.claude.com/docs/en/api/admin/external_keys/update.md)
 - [Update Federation Issuer](https://platform.claude.com/docs/en/api/admin/federation_issuers/update.md)
 - [Update Federation Rule](https://platform.claude.com/docs/en/api/admin/federation_rules/update.md)
+- [Update RBAC Group](https://platform.claude.com/docs/en/api/admin/rbac_groups/update.md)
 - [Update Service Account](https://platform.claude.com/docs/en/api/admin/service_accounts/update.md)
 - [Update Service Account Workspace Member](https://platform.claude.com/docs/en/api/admin/workspaces/service_accounts/update.md)
 - [Update Session (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/update.md)

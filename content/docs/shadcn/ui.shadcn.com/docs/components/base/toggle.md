@@ -76,9 +76,7 @@ import { Toggle } from "@/components/ui/toggle"
 <Toggle>Toggle</Toggle>
 ```
 
-## Examples
-
-### Outline
+## Outline
 
 Use `variant="outline"` for an outline style.
 
@@ -104,7 +102,7 @@ export function ToggleOutline() {
 
 ```
 
-### With Text
+## With Text
 
 ```tsx
 import { ItalicIcon } from "lucide-react"
@@ -122,7 +120,7 @@ export function ToggleText() {
 
 ```
 
-### Size
+## Size
 
 Use the `size` prop to change the size of the toggle.
 
@@ -147,7 +145,7 @@ export function ToggleSizes() {
 
 ```
 
-### Disabled
+## Disabled
 
 ```tsx
 import { Toggle } from "@/components/ui/toggle"

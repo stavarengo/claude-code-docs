@@ -111,9 +111,7 @@ Alert
 └── AlertAction
 ```
 
-## Examples
-
-### Basic
+## Basic
 
 A basic alert with an icon, title and description.
 
@@ -141,7 +139,7 @@ export function AlertBasic() {
 
 ```
 
-### Destructive
+## Destructive
 
 Use `variant="destructive"` to create a destructive alert.
 
@@ -169,7 +167,7 @@ export function AlertDestructive() {
 
 ```
 
-### Action
+## Action
 
 Use `AlertAction` to add a button or other action element to the alert.
 
@@ -200,7 +198,7 @@ export function AlertActionExample() {
 
 ```
 
-### Custom Colors
+## Custom Colors
 
 You can customize the alert colors by adding custom classes such as `bg-amber-50 dark:bg-amber-950` to the `Alert` component.
 

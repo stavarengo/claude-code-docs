@@ -330,9 +330,7 @@ The `Field` family is designed for composing accessible forms. A typical field i
 
 See the [Form](/docs/forms) documentation for building forms with the `Field` component and [React Hook Form](/docs/forms/react-hook-form), [Tanstack Form](/docs/forms/tanstack-form), or [Formisch](/docs/forms/formisch).
 
-## Examples
-
-### Input
+## Input
 
 ```tsx
 import {
@@ -369,7 +367,7 @@ export function FieldInput() {
 
 ```
 
-### Textarea
+## Textarea
 
 ```tsx
 import {
@@ -403,7 +401,7 @@ export function FieldTextarea() {
 
 ```
 
-### Select
+## Select
 
 ```tsx
 import {
@@ -459,7 +457,7 @@ export function FieldSelect() {
 
 ```
 
-### Slider
+## Slider
 
 ```tsx
 "use client"
@@ -499,7 +497,7 @@ export function FieldSlider() {
 
 ```
 
-### Fieldset
+## Fieldset
 
 ```tsx
 import {
@@ -541,7 +539,7 @@ export function FieldFieldset() {
 
 ```
 
-### Checkbox
+## Checkbox
 
 ```tsx
 import { Checkbox } from "@/components/ui/checkbox"
@@ -625,7 +623,7 @@ export function FieldCheckbox() {
 
 ```
 
-### Radio
+## Radio
 
 ```tsx
 import {
@@ -670,7 +668,7 @@ export function FieldRadio() {
 
 ```
 
-### Switch
+## Switch
 
 ```tsx
 import { Field, FieldLabel } from "@/components/ui/field"
@@ -687,7 +685,7 @@ export function FieldSwitch() {
 
 ```
 
-### Choice Card
+## Choice Card
 
 Wrap `Field` components inside `FieldLabel` to create selectable field groups. This works with `RadioItem`, `Checkbox` and `Switch` components.
 
@@ -743,7 +741,7 @@ export function FieldChoiceCard() {
 
 ```
 
-### Field Group
+## Field Group
 
 Stack `Field` components with `FieldGroup`. Add `FieldSeparator` to divide them.
 

@@ -195,9 +195,7 @@ Table
 └── TableFooter
 ```
 
-## Examples
-
-### Footer
+## Footer
 
 Use the `<TableFooter />` component to add a footer to the table.
 
@@ -292,7 +290,7 @@ export function TableFooterExample() {
 
 ```
 
-### Actions
+## Actions
 
 A table showing actions for each row using a `<DropdownMenu />` component.
 

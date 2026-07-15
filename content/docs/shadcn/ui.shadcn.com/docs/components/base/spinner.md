@@ -129,9 +129,7 @@ function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
 export { Spinner }
 ```
 
-## Examples
-
-### Size
+## Size
 
 Use the `size-*` utility class to change the size of the spinner.
 
@@ -151,7 +149,7 @@ export function SpinnerSize() {
 
 ```
 
-### Button
+## Button
 
 Add a spinner to a button to indicate a loading state. Place the `<Spinner />` before the label with `data-icon="inline-start"` for a start position, or after the label with `data-icon="inline-end"` for an end position.
 
@@ -180,7 +178,7 @@ export function SpinnerButton() {
 
 ```
 
-### Badge
+## Badge
 
 Add a spinner to a badge to indicate a loading state. Place the `<Spinner />` before the label with `data-icon="inline-start"` for a start position, or after the label with `data-icon="inline-end"` for an end position.
 
@@ -209,7 +207,7 @@ export function SpinnerBadge() {
 
 ```
 
-### Input Group
+## Input Group
 
 ```tsx
 import { ArrowUpIcon } from "lucide-react"
@@ -248,7 +246,7 @@ export function SpinnerInputGroup() {
 
 ```
 
-### Empty
+## Empty
 
 ```tsx
 import { Button } from "@/components/ui/button"

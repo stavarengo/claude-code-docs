@@ -112,9 +112,7 @@ Marker
 - Pairs with the [`shimmer`](/docs/utils/shimmer) utility for streaming status text
 - Customizable styling through the `className` prop on every part
 
-## Examples
-
-### Variants
+## Variants
 
 Use `variant` to switch between an inline marker, bordered row, and labeled separator.
 
@@ -145,7 +143,7 @@ export function MarkerVariantsDemo() {
 | `border`    | A default marker with a bottom border under the row. |
 | `separator` | A centered label with divider lines on each side.    |
 
-### Status
+## Status
 
 Set `role="status"` and include a [`Spinner`](/docs/components/spinner) for streaming or in-progress markers so updates are announced.
 
@@ -174,7 +172,7 @@ export function MarkerStatusDemo() {
 
 ```
 
-### Shimmer
+## Shimmer
 
 Add the [`shimmer`](/docs/utils/shimmer) utility class to `MarkerContent` for an animated streaming-text effect. The utility ships with the `shadcn` package — see the shimmer docs for installation.
 
@@ -196,7 +194,7 @@ export function MarkerShimmerDemo() {
 
 ```
 
-### Separator
+## Separator
 
 Use the `separator` variant for labeled dividers, such as dates or section breaks, in a conversation.
 
@@ -221,7 +219,7 @@ export function MarkerSeparatorDemo() {
 
 ```
 
-### Border
+## Border
 
 Use the `border` variant for status rows that should keep the default marker alignment while separating the next row.
 
@@ -257,7 +255,7 @@ export function MarkerBorderDemo() {
 
 ```
 
-### With Icon
+## With Icon
 
 Use `MarkerIcon` to render an icon alongside the content. Use `flex-col` to stack the icon above the content.
 
@@ -293,7 +291,7 @@ export function MarkerIconDemo() {
 
 ```
 
-### Links and Buttons
+## Links and Buttons
 
 Turn a marker into a link or button with the `render` prop on `Marker`.
 

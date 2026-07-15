@@ -131,9 +131,7 @@ import { toast } from "sonner"
 toast("Event has been created.")
 ```
 
-## Examples
-
-### Types
+## Types
 
 ```tsx
 "use client"
@@ -200,7 +198,7 @@ export function SonnerTypes() {
 
 ```
 
-### Description
+## Description
 
 ```tsx
 "use client"
@@ -227,7 +225,7 @@ export function SonnerDescription() {
 
 ```
 
-### Position
+## Position
 
 Use the `position` prop to change the position of the toast.
 

@@ -284,9 +284,7 @@ export function ExampleComboboxMultiple() {
 }
 ```
 
-## Examples
-
-### Basic
+## Basic
 
 A simple combobox with a list of frameworks.
 
@@ -330,7 +328,7 @@ export function ComboboxBasic() {
 
 ```
 
-### Multiple
+## Multiple
 
 A combobox with multiple selection using `multiple` and `ComboboxChips`.
 
@@ -398,7 +396,7 @@ export function ComboboxMultiple() {
 
 ```
 
-### Clear Button
+## Clear Button
 
 Use the `showClear` prop to show a clear button.
 
@@ -442,7 +440,7 @@ export function ComboboxWithClear() {
 
 ```
 
-### Groups
+## Groups
 
 Use `ComboboxGroup` and `ComboboxSeparator` to group items.
 
@@ -526,7 +524,7 @@ export function ComboboxWithGroupsAndSeparator() {
 
 ```
 
-### Custom Items
+## Custom Items
 
 You can render a custom component inside `ComboboxItem`.
 
@@ -633,7 +631,7 @@ export function ComboboxWithCustomItems() {
 
 ```
 
-### Invalid
+## Invalid
 
 Use the `aria-invalid` prop to make the combobox invalid.
 
@@ -677,7 +675,7 @@ export function ComboboxInvalid() {
 
 ```
 
-### Disabled
+## Disabled
 
 Use the `disabled` prop to disable the combobox.
 
@@ -721,7 +719,7 @@ export function ComboboxDisabled() {
 
 ```
 
-### Auto Highlight
+## Auto Highlight
 
 Use the `autoHighlight` prop to automatically highlight the first item on filter.
 
@@ -765,7 +763,7 @@ export function ComboboxAutoHighlight() {
 
 ```
 
-### Popup
+## Popup
 
 You can trigger the combobox from a button or any other component by using the `render` prop. Move the `ComboboxInput` inside the `ComboboxContent`.
 
@@ -869,7 +867,7 @@ export function ComboboxPopup() {
 
 ```
 
-### Input Group
+## Input Group
 
 You can add an addon to the combobox by using the `InputGroupAddon` component inside the `ComboboxInput`.
 

@@ -160,9 +160,7 @@ export function CheckboxInvalid() {
 
 ```
 
-## Examples
-
-### Basic
+## Basic
 
 Pair the checkbox with `Field` and `FieldLabel` for proper layout and labeling.
 
@@ -185,7 +183,7 @@ export function CheckboxBasic() {
 
 ```
 
-### Description
+## Description
 
 Use `FieldContent` and `FieldDescription` for helper text.
 
@@ -223,7 +221,7 @@ export function CheckboxDescription() {
 
 ```
 
-### Disabled
+## Disabled
 
 Use the `disabled` prop to prevent interaction and add the `data-disabled` attribute to the `<Field>` component for disabled styles.
 
@@ -250,7 +248,7 @@ export function CheckboxDisabled() {
 
 ```
 
-### Group
+## Group
 
 Use multiple fields to create a checkbox list.
 
@@ -332,7 +330,7 @@ export function CheckboxGroup() {
 
 ```
 
-### Table
+## Table
 
 ```tsx
 "use client"

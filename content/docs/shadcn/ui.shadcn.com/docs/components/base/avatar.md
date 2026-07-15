@@ -145,9 +145,7 @@ AvatarGroup
 └── AvatarGroupCount
 ```
 
-## Examples
-
-### Basic
+## Basic
 
 A basic avatar component with an image and a fallback.
 
@@ -173,7 +171,7 @@ export function AvatarDemo() {
 
 ```
 
-### Badge
+## Badge
 
 Use the `AvatarBadge` component to add a badge to the avatar. The badge is positioned at the bottom right of the avatar.
 
@@ -207,7 +205,7 @@ Use the `className` prop to add custom styles to the badge such as custom colors
 </Avatar>
 ```
 
-### Badge with Icon
+## Badge with Icon
 
 You can also use an icon inside `<AvatarBadge>`.
 
@@ -235,7 +233,7 @@ export function AvatarBadgeIconExample() {
 
 ```
 
-### Avatar Group
+## Avatar Group
 
 Use the `AvatarGroup` component to add a group of avatars.
 
@@ -271,7 +269,7 @@ export function AvatarGroupExample() {
 
 ```
 
-### Avatar Group Count
+## Avatar Group Count
 
 Use `<AvatarGroupCount>` to add a count to the group.
 
@@ -309,7 +307,7 @@ export function AvatarGroupCountExample() {
 
 ```
 
-### Avatar Group with Icon
+## Avatar Group with Icon
 
 You can also use an icon inside `<AvatarGroupCount>`.
 
@@ -351,7 +349,7 @@ export function AvatarGroupCountIconExample() {
 
 ```
 
-### Sizes
+## Sizes
 
 Use the `size` prop to change the size of the avatar.
 
@@ -383,7 +381,7 @@ export function AvatarSizeExample() {
 
 ```
 
-### Dropdown
+## Dropdown
 
 You can use the `Avatar` component as a trigger for a dropdown menu.
 

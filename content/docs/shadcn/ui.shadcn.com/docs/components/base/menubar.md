@@ -266,9 +266,7 @@ Menubar
             └── MenubarItem
 ```
 
-## Examples
-
-### Checkbox
+## Checkbox
 
 Use `MenubarCheckboxItem` for toggleable options.
 
@@ -317,7 +315,7 @@ export function MenubarCheckbox() {
 
 ```
 
-### Radio
+## Radio
 
 Use `MenubarRadioGroup` and `MenubarRadioItem` for single-select options.
 
@@ -372,7 +370,7 @@ export function MenubarRadio() {
 
 ```
 
-### Submenu
+## Submenu
 
 Use `MenubarSub`, `MenubarSubTrigger`, and `MenubarSubContent` for nested menus.
 
@@ -440,7 +438,7 @@ export function MenubarSubmenu() {
 
 ```
 
-### With Icons
+## With Icons
 
 ```tsx
 import {

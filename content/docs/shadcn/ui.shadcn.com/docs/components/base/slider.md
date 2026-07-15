@@ -76,9 +76,7 @@ import { Slider } from "@/components/ui/slider"
 <Slider defaultValue={[33]} max={100} step={1} />
 ```
 
-## Examples
-
-### Range
+## Range
 
 Use an array with two values for a range slider.
 
@@ -98,7 +96,7 @@ export function SliderRange() {
 
 ```
 
-### Multiple Thumbs
+## Multiple Thumbs
 
 Use an array with multiple values for multiple thumbs.
 
@@ -118,7 +116,7 @@ export function SliderMultiple() {
 
 ```
 
-### Vertical
+## Vertical
 
 Use `orientation="vertical"` for a vertical slider.
 
@@ -148,7 +146,7 @@ export function SliderVertical() {
 
 ```
 
-### Controlled
+## Controlled
 
 ```tsx
 "use client"
@@ -183,7 +181,7 @@ export function SliderControlled() {
 
 ```
 
-### Disabled
+## Disabled
 
 Use the `disabled` prop to disable the slider.
 

@@ -190,9 +190,7 @@ ContextMenu
                 └── ContextMenuItem
 ```
 
-## Examples
-
-### Basic
+## Basic
 
 A simple context menu with a few actions.
 
@@ -229,7 +227,7 @@ export function ContextMenuBasic() {
 
 ```
 
-### Submenu
+## Submenu
 
 Use `ContextMenuSub` to nest secondary actions.
 
@@ -294,7 +292,7 @@ export function ContextMenuSubmenu() {
 
 ```
 
-### Shortcuts
+## Shortcuts
 
 Add `ContextMenuShortcut` to show keyboard hints.
 
@@ -353,7 +351,7 @@ export function ContextMenuShortcuts() {
 
 ```
 
-### Groups
+## Groups
 
 Group related actions and separate them with dividers.
 
@@ -437,7 +435,7 @@ export function ContextMenuGroups() {
 
 ```
 
-### Icons
+## Icons
 
 Combine icons with labels for quick scanning.
 
@@ -498,7 +496,7 @@ export function ContextMenuIcons() {
 
 ```
 
-### Checkboxes
+## Checkboxes
 
 Use `ContextMenuCheckboxItem` for toggles.
 
@@ -539,7 +537,7 @@ export function ContextMenuCheckboxes() {
 
 ```
 
-### Radio
+## Radio
 
 Use `ContextMenuRadioItem` for exclusive choices.
 
@@ -599,7 +597,7 @@ export function ContextMenuRadio() {
 
 ```
 
-### Destructive
+## Destructive
 
 Use `variant="destructive"` to style the menu item as destructive.
 
@@ -651,7 +649,7 @@ export function ContextMenuDestructive() {
 
 ```
 
-### Sides
+## Sides
 
 Control submenu placement with side and align props.
 

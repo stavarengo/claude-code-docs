@@ -152,9 +152,7 @@ Breadcrumb
         └── BreadcrumbPage
 ```
 
-## Examples
-
-### Basic
+## Basic
 
 A basic breadcrumb with a home link and a components link.
 
@@ -190,7 +188,7 @@ export function BreadcrumbBasic() {
 
 ```
 
-### Custom separator
+## Custom separator
 
 Use a custom component as `children` for `<BreadcrumbSeparator />` to create a custom separator.
 
@@ -235,7 +233,7 @@ export function BreadcrumbSeparatorDemo() {
 
 ```
 
-### Dropdown
+## Dropdown
 
 You can compose `<BreadcrumbItem />` with a `<DropdownMenu />` to create a dropdown in the breadcrumb.
 
@@ -299,7 +297,7 @@ export function BreadcrumbDropdown() {
 
 ```
 
-### Collapsed
+## Collapsed
 
 We provide a `<BreadcrumbEllipsis />` component to show a collapsed state when the breadcrumb is too long.
 
@@ -344,7 +342,7 @@ export function BreadcrumbEllipsisDemo() {
 
 ```
 
-### Link component
+## Link component
 
 To use a custom link component from your routing library, you can use the `render` prop on `<BreadcrumbLink />`.
 

@@ -169,9 +169,7 @@ export function InputOTPPattern() {
 
 ```
 
-## Examples
-
-### Separator
+## Separator
 
 Use the `<InputOTPSeparator />` component to add a separator between input groups.
 
@@ -206,7 +204,7 @@ export function InputOTPWithSeparator() {
 
 ```
 
-### Disabled
+## Disabled
 
 Use the `disabled` prop to disable the input.
 
@@ -239,7 +237,7 @@ export function InputOTPDisabled() {
 
 ```
 
-### Controlled
+## Controlled
 
 Use the `value` and `onChange` props to control the input value.
 
@@ -286,7 +284,7 @@ export function InputOTPControlled() {
 
 ```
 
-### Invalid
+## Invalid
 
 Use `aria-invalid` on the slots to show an error state.
 
@@ -327,7 +325,7 @@ export function InputOTPInvalid() {
 
 ```
 
-### Four Digits
+## Four Digits
 
 A common pattern for PIN codes. This uses the `pattern={REGEXP_ONLY_DIGITS}` prop.
 
@@ -357,7 +355,7 @@ export function InputOTPFourDigits() {
 
 ```
 
-### Alphanumeric
+## Alphanumeric
 
 Use `REGEXP_ONLY_DIGITS_AND_CHARS` to accept both letters and numbers.
 
@@ -393,7 +391,7 @@ export function InputOTPAlphanumeric() {
 
 ```
 
-### Form
+## Form
 
 ```tsx
 import { RefreshCwIcon } from "lucide-react"

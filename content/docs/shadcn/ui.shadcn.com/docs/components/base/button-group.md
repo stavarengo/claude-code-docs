@@ -213,9 +213,7 @@ ButtonGroup
 - Use the `ButtonGroup` component when you want to group buttons that perform an action.
 - Use the `ToggleGroup` component when you want to group buttons that toggle a state.
 
-## Examples
-
-### Orientation
+## Orientation
 
 Set the `orientation` prop to change the button group layout.
 
@@ -244,7 +242,7 @@ export function ButtonGroupOrientation() {
 
 ```
 
-### Size
+## Size
 
 Control the size of buttons using the `size` prop on individual buttons.
 
@@ -299,7 +297,7 @@ export function ButtonGroupSize() {
 
 ```
 
-### Nested
+## Nested
 
 Nest `<ButtonGroup>` components to create button groups with spacing.
 
@@ -345,7 +343,7 @@ export function ButtonGroupNested() {
 
 ```
 
-### Separator
+## Separator
 
 The `ButtonGroupSeparator` component visually divides buttons within a group.
 
@@ -374,7 +372,7 @@ export function ButtonGroupSeparatorDemo() {
 
 ```
 
-### Split
+## Split
 
 Create a split button group by adding two buttons separated by a `ButtonGroupSeparator`.
 
@@ -401,7 +399,7 @@ export function ButtonGroupSplit() {
 
 ```
 
-### Input
+## Input
 
 Wrap an `Input` component with buttons.
 
@@ -425,7 +423,7 @@ export function ButtonGroupInput() {
 
 ```
 
-### Input Group
+## Input Group
 
 Wrap an `InputGroup` component to create complex input layouts.
 
@@ -493,7 +491,7 @@ export function ButtonGroupInputGroup() {
 
 ```
 
-### Dropdown Menu
+## Dropdown Menu
 
 Create a split button group with a `DropdownMenu` component.
 
@@ -574,7 +572,7 @@ export function ButtonGroupDropdown() {
 
 ```
 
-### Select
+## Select
 
 Pair with a `Select` component.
 
@@ -637,7 +635,7 @@ export function ButtonGroupSelect() {
 
 ```
 
-### Popover
+## Popover
 
 Use with a `Popover` component.
 

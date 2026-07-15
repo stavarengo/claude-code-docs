@@ -75,9 +75,7 @@ import { Switch } from "@/components/ui/switch"
 <Switch />
 ```
 
-## Examples
-
-### Description
+## Description
 
 ```tsx
 import {
@@ -106,7 +104,7 @@ export function SwitchDescription() {
 
 ```
 
-### Choice Card
+## Choice Card
 
 Card-style selection where `FieldLabel` wraps the entire `Field` for a clickable card pattern.
 
@@ -153,7 +151,7 @@ export function SwitchChoiceCard() {
 
 ```
 
-### Disabled
+## Disabled
 
 Add the `disabled` prop to the `Switch` component to disable the switch. Add the `data-disabled` prop to the `Field` component for styling.
 
@@ -172,7 +170,7 @@ export function SwitchDisabled() {
 
 ```
 
-### Invalid
+## Invalid
 
 Add the `aria-invalid` prop to the `Switch` component to indicate an invalid state. Add the `data-invalid` prop to the `Field` component for styling.
 
@@ -203,7 +201,7 @@ export function SwitchInvalid() {
 
 ```
 
-### Size
+## Size
 
 Use the `size` prop to change the size of the switch.
 

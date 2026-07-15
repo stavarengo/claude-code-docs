@@ -143,9 +143,7 @@ BubbleGroup
 - Polymorphic content via `render` for link and button bubbles
 - Customizable styling through the `className` prop on every part
 
-## Examples
-
-### Variants
+## Variants
 
 Use `variant` to change the visual treatment of the bubble.
 
@@ -217,7 +215,7 @@ Ghost bubbles are full width and can take the full width of the container.
 
 A bubble sizes to its content, up to 80% of the container width. The `ghost` variant removes the max-width so assistant text and rich content can span the full row.
 
-### Alignment
+## Alignment
 
 Use `align` on `Bubble` to align the bubble to the start or end of the conversation.
 
@@ -250,7 +248,7 @@ export function BubbleAlignmentDemo() {
 
 **Note:** When building chat interfaces, you probably want to use alignment on the `Message` component itself, not the `Bubble` component. You can use the `role` prop on the `Message` component to automatically align the bubble to the start or end of the conversation.
 
-### Bubble Group
+## Bubble Group
 
 Use `BubbleGroup` to group consecutive bubbles from the same sender. Note the `align` prop should be set on the `Bubble` component itself, not the `BubbleGroup` component.
 
@@ -302,7 +300,7 @@ export function BubbleGroupDemo() {
 
 ```
 
-### Links and Buttons
+## Links and Buttons
 
 You can turn a bubble into a link or button by using the `render` prop on `BubbleContent`.
 
@@ -376,7 +374,7 @@ export function BubbleLinkDemo() {
 }
 ```
 
-### Reactions
+## Reactions
 
 Use `BubbleReactions` for bubble reactions. You can use it to display reactions or quick action buttons. Use `side` and `align` to position the row — `side="top"` anchors it to the upper edge. Reactions overlap the bubble edge, so leave vertical space between rows — the examples below use a larger `gap` for this reason.
 
@@ -454,7 +452,7 @@ export function BubbleReactionsDemo() {
 
 ```
 
-### Show More / Collapsible
+## Show More / Collapsible
 
 Long bubble content can be composed with [`Collapsible`](/docs/components/collapsible) to allow for a show more or show less interaction. Use the `CollapsibleTrigger` component to trigger the collapsible content.
 
@@ -521,7 +519,7 @@ export function BubbleCollapsible() {
 
 ```
 
-### Tooltip
+## Tooltip
 
 Wrap a bubble in a [`Tooltip`](/docs/components/tooltip) to reveal metadata on hover, such as when a message was read.
 
@@ -563,7 +561,7 @@ export function BubbleTooltipDemo() {
 
 ```
 
-### Popover
+## Popover
 
 Pair a bubble with a [`Popover`](/docs/components/popover) to surface more information on demand, such as the full error message for a failed action.
 

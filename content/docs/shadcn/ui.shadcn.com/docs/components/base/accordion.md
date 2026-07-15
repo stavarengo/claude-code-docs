@@ -125,9 +125,7 @@ Accordion
     └── AccordionContent
 ```
 
-## Examples
-
-### Basic
+## Basic
 
 A basic accordion that shows one item at a time. The first item is open by default.
 
@@ -175,7 +173,7 @@ export function AccordionBasic() {
 
 ```
 
-### Multiple
+## Multiple
 
 Use the `multiple` prop to allow multiple items to be open at the same time.
 
@@ -223,7 +221,7 @@ export function AccordionMultiple() {
 
 ```
 
-### Disabled
+## Disabled
 
 Use the `disabled` prop on `AccordionItem` to disable individual items.
 
@@ -267,7 +265,7 @@ export function AccordionDisabled() {
 
 ```
 
-### Borders
+## Borders
 
 Add `border` to the `Accordion` and `border-b last:border-b-0` to the `AccordionItem` to add borders to the items.
 
@@ -322,7 +320,7 @@ export function AccordionBorders() {
 
 ```
 
-### Card
+## Card
 
 Wrap the `Accordion` in a `Card` component.
 

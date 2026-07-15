@@ -74,9 +74,9 @@ ant beta:agents list \
 ```
 
 ```jsonl Output
-{"id": "agent_011CYm1BLqPX...", "name": "Docs CLI Test Agent", "model": "claude-sonnet-4-6"}
-{"id": "agent_011CYkVwfaEt...", "name": "Coffee Making Assistant", "model": "claude-sonnet-4-6"}
-{"id": "agent_011CYixHhtUP...", "name": "Coding Assistant", "model": "claude-opus-4-5"}
+{"id": "agent_011CYm1BLqPX...", "name": "Docs CLI Test Agent", "model": "claude-opus-4-8"}
+{"id": "agent_011CYkVwfaEt...", "name": "Coffee Making Assistant", "model": "claude-opus-4-8"}
+{"id": "agent_011CYixHhtUP...", "name": "Coding Assistant", "model": "claude-opus-4-8"}
 ```
 
 ### Extract a scalar
@@ -86,7 +86,7 @@ To capture a single field as an unquoted string (for example, the ID of a newly 
 ```bash
 AGENT_ID=$(ant beta:agents create \
   --name "My Agent" \
-  --model '{id: claude-sonnet-4-6}' \
+  --model '{id: claude-opus-4-8}' \
   --transform id --raw-output)
 
 printf '%s\n' "$AGENT_ID"
@@ -102,7 +102,7 @@ agent_011CYm1BLqPXpQRk5khsSXrs
 
 ## Passing request bodies
 
-The right input mechanism depends on the shape of the data: use **flags** for scalar fields and short structured values, pipe a **stdin** document for nested or multi-line bodies, and use **`@file` references** to pull file contents into any string or binary field.
+The right input mechanism depends on the shape of the data: use **flags** for scalar fields and short structured values, pipe a **stdin** document for nested or multiline bodies, and use **`@file` references** to pull file contents into any string or binary field.
 
 ### Flags
 
@@ -134,7 +134,7 @@ echo '{"description": "Updated test agent.", "version": 1}' | \
   ant beta:agents update --agent-id "$AGENT_ID"
 ```
 
-Heredocs work the same way and are convenient for multi-line YAML. Quote the delimiter (as in `<<'YAML'`) to disable variable expansion inside the body.
+Heredocs work the same way and are convenient for multiline YAML. Quote the delimiter (as in `<<'YAML'`) to disable variable expansion inside the body.
 
 ```bash
 ant beta:agents create <<'YAML'
@@ -159,7 +159,7 @@ To inline a file's contents into a string-valued field, prefix the path with `@`
 
 ```bash
 ant beta:agents create \
-  --name "Researcher" --model '{id: claude-sonnet-4-6}' \
+  --name "Researcher" --model '{id: claude-opus-4-8}' \
   --system @./prompts/researcher.txt
 ```
 

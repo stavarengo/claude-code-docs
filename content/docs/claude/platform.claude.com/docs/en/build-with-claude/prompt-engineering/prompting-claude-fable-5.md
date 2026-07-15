@@ -20,12 +20,12 @@ Claude Fable 5 has several behavioral differences from Claude Opus 4.8 that may 
 
 Compared with Claude Opus 4.8, Claude Fable 5 shows improvement in:
 
-* **Long-horizon autonomy.** Claude Fable 5 sustains productive output over extended periods, completing multi-day, goal-directed runs with strong instruction retention across long, complex tasks.
+* **Long-horizon autonomy.** Claude Fable 5 sustains productive output over extended periods, completing multiday, goal-directed runs with strong instruction retention across long, complex tasks.
 * **First-shot correctness on complex, well-specified problems.** Early testers reported single-pass implementations of systems that previously took days of iteration.
 * **Vision.** Claude Fable 5 interprets dense technical images, web applications, and detailed screenshots with substantially higher accuracy, often while using fewer output tokens, and is trained to use bash and crop tools to handle flipped, blurry, or noisy images.
 * **Enterprise workflows.** Claude Fable 5 follows instructions, stays in scope, and produces professional-grade output on financial analysis, spreadsheets, slides, and documents.
 * **Code review and debugging.** Bug-finding recall (outside the cybersecurity domains the safety classifiers cover) is noticeably higher than Claude Opus 4.8, including search across codebases and repository history.
-* **Navigating ambiguity.** Claude Fable 5 performs well when given complex, multi-threaded requests and asked to determine next steps.
+* **Navigating ambiguity.** Claude Fable 5 performs well when given complex, multithreaded requests and asked to determine next steps.
 * **Delegation and collaboration.** Claude Fable 5 is significantly more dependable at dispatching and sustaining parallel subagents, and reliably manages ongoing communication with long-running subagents and peer agents.
 
 Beyond these specific improvements, Claude Fable 5 is generally more capable than prior models on almost all tasks. Claude Fable 5 is not intended for offensive cybersecurity or biology and life sciences work; requests in those domains can return [`stop_reason: "refusal"`](/docs/en/build-with-claude/refusals-and-fallback).

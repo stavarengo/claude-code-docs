@@ -153,9 +153,7 @@ Popover
 └── PopoverContent
 ```
 
-## Examples
-
-### Basic
+## Basic
 
 A simple popover with a header, title, and description.
 
@@ -192,7 +190,7 @@ export function PopoverBasic() {
 
 ```
 
-### Align
+## Align
 
 Use the `align` prop on `PopoverContent` to control the horizontal alignment.
 
@@ -239,7 +237,7 @@ export function PopoverAlignments() {
 
 ```
 
-### With Form
+## With Form
 
 A popover with form fields inside.
 

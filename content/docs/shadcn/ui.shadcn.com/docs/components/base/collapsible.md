@@ -151,9 +151,7 @@ export function Example() {
 }
 ```
 
-## Examples
-
-### Basic
+## Basic
 
 ```tsx
 import { ChevronDownIcon } from "@/registry/icons/__lucide__"
@@ -191,7 +189,7 @@ export function CollapsibleBasic() {
 
 ```
 
-### Settings Panel
+## Settings Panel
 
 Use a trigger button to reveal additional settings.
 
@@ -271,7 +269,7 @@ export function CollapsibleSettings() {
 
 ```
 
-### File Tree
+## File Tree
 
 Use nested collapsibles to build a file tree.
 

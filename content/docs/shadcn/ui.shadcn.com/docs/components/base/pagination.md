@@ -141,9 +141,7 @@ Pagination
         └── PaginationNext
 ```
 
-## Examples
-
-### Simple
+## Simple
 
 A simple pagination with only page numbers.
 
@@ -183,7 +181,7 @@ export function PaginationSimple() {
 
 ```
 
-### Icons Only
+## Icons Only
 
 Use just the previous and next buttons without page numbers. This is useful for data tables with a rows per page selector.
 

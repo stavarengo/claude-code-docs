@@ -20,7 +20,7 @@ You can use the CLI to version control API resources such as skills, agents, env
 
     ```yaml summarizer.agent.yaml
     name: Summarizer
-    model: claude-sonnet-4-6
+    model: claude-opus-4-8
     system: |
       You are a helpful assistant that writes concise summaries.
     tools:
@@ -38,7 +38,7 @@ You can use the CLI to version control API resources such as skills, agents, env
       "id": "agent_011CYm1BLqPXpQRk5khsSXrs",
       "version": 1,
       "name": "Summarizer",
-      "model": "claude-sonnet-4-6"
+      "model": "claude-opus-4-8"
       /* ... */
     }
     ```

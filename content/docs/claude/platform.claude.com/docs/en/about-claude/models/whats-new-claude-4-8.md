@@ -276,7 +276,7 @@ Compared with Claude Opus 4.7, Claude Opus 4.8 targets behavioral improvements i
 
 ### Adaptive thinking
 
-With [adaptive thinking](/docs/en/build-with-claude/adaptive-thinking) enabled, Claude Opus 4.8 triggers reasoning only when it determines the turn needs it. On simple lookups and short agentic steps it responds directly. On complex multi-step problems it reasons before answering. This reduces wasted thinking tokens on bimodal workloads compared to Claude Opus 4.7 at the same effort level. As on Claude Opus 4.7, thinking is off unless you explicitly set `thinking: {type: "adaptive"}` in your request.
+With [adaptive thinking](/docs/en/build-with-claude/adaptive-thinking) enabled, Claude Opus 4.8 triggers reasoning only when it determines the turn needs it. On simple lookups and short agentic steps it responds directly. On complex multistep problems it reasons before answering. This reduces wasted thinking tokens on bimodal workloads compared to Claude Opus 4.7 at the same effort level. As on Claude Opus 4.7, thinking is off unless you explicitly set `thinking: {type: "adaptive"}` in your request.
 
 ## Behavior changes
 
