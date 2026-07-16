@@ -408,7 +408,7 @@ Some organizations, such as those with Zero Data Retention (ZDR) requirements, c
 To disable statefulness but still take advantage of reasoning:
 
 - Set `store: false` in the [store field](https://developers.openai.com/api/docs/api-reference/responses/create#responses_create-store).
-- Add `["reasoning.encrypted_content"]` to the [include field](https://developers.openai.com/api/docs/api-reference/responses/create#responses_create-include).
+- Preserve and replay every returned reasoning item. Each item includes `encrypted_content` by default when you create a response.
 
 The API will then return an encrypted version of the reasoning tokens, which you can pass back in future requests just like regular reasoning items.
 For ZDR organizations, OpenAI enforces `store: false` automatically. When a request includes `encrypted_content`, it is decrypted in memory, used for generating the next response, and then securely discarded. Any new reasoning tokens are immediately encrypted and returned to you, ensuring no intermediate state is persisted.

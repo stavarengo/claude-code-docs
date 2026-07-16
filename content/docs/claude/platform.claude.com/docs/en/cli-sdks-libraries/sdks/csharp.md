@@ -432,17 +432,17 @@ The SDK is typed for convenient usage of the documented API. However, it also su
 
   * [Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock)
   * [Amazon Bedrock (Opus 4.6 and earlier)](/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy)
+  * [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws)
   * [Google Cloud](/docs/en/build-with-claude/claude-on-vertex-ai)
   * [Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry)
-  * [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws)
 </Note>
 
 The C# SDK supports the following platforms through separate NuGet packages:
 
-* **Bedrock:** `Anthropic.Bedrock`. Use `AnthropicBedrockMantleClient` for the Messages-API Bedrock endpoint, or `AnthropicBedrockClient` (`bedrock-runtime` path). `AnthropicBedrockMantleClient` takes an optional `MantleAwsClientOptions` config object; `AnthropicBedrockClient` accepts `AnthropicBedrockCredentialsHelper.FromEnv()` or explicit credentials.
 * **Agent Platform:** `Anthropic.Vertex`. See [Claude on Google Cloud](/docs/en/build-with-claude/claude-on-vertex-ai) for client setup.
-* **Foundry:** `Anthropic.Foundry`. Use `AnthropicFoundryClient` with `DefaultAnthropicFoundryCredentials.FromEnv()` or explicit credentials.
+* **Bedrock:** `Anthropic.Bedrock`. Use `AnthropicBedrockMantleClient` for the Messages-API Bedrock endpoint, or `AnthropicBedrockClient` (`bedrock-runtime` path). `AnthropicBedrockMantleClient` takes an optional `MantleAwsClientOptions` config object; `AnthropicBedrockClient` accepts `AnthropicBedrockCredentialsHelper.FromEnv()` or explicit credentials.
 * **Claude Platform on AWS:** `Anthropic.Aws`. Use `AnthropicAwsClient`; set `WorkspaceId` on the client or the `ANTHROPIC_AWS_WORKSPACE_ID` environment variable (see [Workspaces](/docs/en/build-with-claude/claude-platform-on-aws#workspaces)). Available in beta.
+* **Foundry:** `Anthropic.Foundry`. Use `AnthropicFoundryClient` with `DefaultAnthropicFoundryCredentials.FromEnv()` or explicit credentials.
 
 Use `AnthropicBedrockMantleClient` for new projects; `AnthropicBedrockClient` remains for existing applications using the Bedrock `InvokeModel` API.
 

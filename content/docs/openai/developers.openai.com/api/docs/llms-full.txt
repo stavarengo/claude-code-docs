@@ -5901,13 +5901,14 @@ relevant and might anchor the model to an outdated approach. If you omit
 works only when earlier reasoning items are available. Use `previous_response_id`
 for stored responses. If your [Zero Data Retention
 (ZDR)](https://developers.openai.com/api/docs/guides/your-data#zero-data-retention) requirements do not allow
-storing response data, use `reasoning.encrypted_content` for a stateless handoff.
+storing response data, encrypted reasoning content enables a stateless
+handoff.
 
-Add `reasoning.encrypted_content` to `include`, and reasoning items in the
-response output will include encrypted reasoning content that can be passed back
-into the next request. Your app does not need to understand that value. It just
-keeps the reasoning item exactly as returned and sends it back during the next
-turn, so the model can use it to continue the workflow.
+Reasoning items in the response output include encrypted reasoning content by
+default. You can access the encrypted reasoning content from each reasoning
+item's `encrypted_content` property. Your app does not need to understand that
+value. It just keeps each reasoning item exactly as returned and sends it back
+during the next turn, so the model can use it to continue the workflow.
 
 Pass encrypted reasoning between stateless turns
 
@@ -5927,7 +5928,6 @@ const first = await openai.responses.create({
   model: "gpt-5.6",
   store: false,
   reasoning: { effort: "medium", context: "current_turn" },
-  include: ["reasoning.encrypted_content"],
   input: history,
 });
 
@@ -5941,7 +5941,6 @@ const second = await openai.responses.create({
   model: "gpt-5.6",
   store: false,
   reasoning: { effort: "medium", context: "all_turns" },
-  include: ["reasoning.encrypted_content"],
   input: history,
 });
 
@@ -5964,7 +5963,6 @@ first = client.responses.create(
     model="gpt-5.6",
     store=False,
     reasoning={"effort": "medium", "context": "current_turn"},
-    include=["reasoning.encrypted_content"],
     input=history,
 )
 
@@ -5980,7 +5978,6 @@ second = client.responses.create(
     model="gpt-5.6",
     store=False,
     reasoning={"effort": "medium", "context": "all_turns"},
-    include=["reasoning.encrypted_content"],
     input=history,
 )
 
@@ -16679,7 +16676,7 @@ By using alternating `user` and `assistant` messages, you capture the previous s
 
 To manually share context across generated responses, include the model's previous response output as input, and append that input to your next request.
 
-For stateless reasoning-model requests, add `reasoning.encrypted_content` to `include` and preserve every item in the response's `output` array. This keeps encrypted reasoning items and assistant `phase` values intact. Models that support persisted reasoning can use `reasoning.context: "all_turns"` to render the available reasoning from earlier turns into the next sample. See [preserve reasoning across calls](https://developers.openai.com/api/docs/guides/reasoning#preserve-reasoning-across-calls).
+For stateless reasoning-model requests, preserve every item in the response's `output` array. The Responses API returns encrypted reasoning items by default. Replaying the complete output keeps reasoning items and assistant `phase` values intact. Models that support persisted reasoning can use `reasoning.context: "all_turns"` to render the available reasoning from earlier turns into the next sample. See [preserve reasoning across calls](https://developers.openai.com/api/docs/guides/reasoning#preserve-reasoning-across-calls).
 
 In the following example, we ask the model to tell a joke, followed by a request for another joke. Appending previous responses to new requests in this way helps ensure conversations feel natural and retain the context of previous interactions.
 
@@ -16704,7 +16701,6 @@ const response = await openai.responses.create({
     model: "gpt-5.6",
     input: history,
     store: false,
-    include: ["reasoning.encrypted_content"],
 });
 
 console.log(response.output_text);
@@ -16721,7 +16717,6 @@ const secondResponse = await openai.responses.create({
     model: "gpt-5.6",
     input: history,
     store: false,
-    include: ["reasoning.encrypted_content"],
 });
 
 console.log(secondResponse.output_text);
@@ -16743,7 +16738,6 @@ response = client.responses.create(
     model="gpt-5.6",
     input=history,
     store=False,
-    include=["reasoning.encrypted_content"],
 )
 
 print(response.output_text)
@@ -16757,7 +16751,6 @@ second_response = client.responses.create(
     model="gpt-5.6",
     input=history,
     store=False,
-    include=["reasoning.encrypted_content"],
 )
 
 print(second_response.output_text)
@@ -28660,7 +28653,7 @@ Some organizations, such as those with Zero Data Retention (ZDR) requirements, c
 To disable statefulness but still take advantage of reasoning:
 
 - Set `store: false` in the [store field](https://developers.openai.com/api/docs/api-reference/responses/create#responses_create-store).
-- Add `["reasoning.encrypted_content"]` to the [include field](https://developers.openai.com/api/docs/api-reference/responses/create#responses_create-include).
+- Preserve and replay every returned reasoning item. Each item includes `encrypted_content` by default when you create a response.
 
 The API will then return an encrypted version of the reasoning tokens, which you can pass back in future requests just like regular reasoning items.
 For ZDR organizations, OpenAI enforces `store: false` automatically. When a request includes `encrypted_content`, it is decrypted in memory, used for generating the next response, and then securely discarded. Any new reasoning tokens are immediately encrypted and returned to you, ensuring no intermediate state is persisted.
@@ -30064,7 +30057,6 @@ while True:
         input=history,
         tools=tools,
         store=False,
-        include=["reasoning.encrypted_content"],
         multi_agent={
             "enabled": True,
             "max_concurrent_subagents": 3,
@@ -30181,7 +30173,6 @@ while (true) {
     input: history as BetaResponseInput,
     tools,
     store: false,
-    include: ["reasoning.encrypted_content"],
     multi_agent: {
       enabled: true,
       max_concurrent_subagents: 3,
@@ -32712,7 +32703,6 @@ while (true) {
     store: false,
     input,
     tools,
-    include: ["reasoning.encrypted_content"],
   });
 
   if (response.status !== "completed") {
@@ -32835,7 +32825,6 @@ while True:
         store=False,
         input=input_items,
         tools=tools,
-        include=["reasoning.encrypted_content"],
     )
 
     if response.status != "completed":
@@ -32878,7 +32867,7 @@ while True:
 
 When you store responses, you can continue from `previous_response_id` instead of resending all earlier response items. Send the new `function_call_output` items as the next input. With `store: false`, replay the complete sequence in order, including every `program`, reasoning, function-call, function-call-output, and `program_output` item.
 
-For stateless reasoning-model requests, include `reasoning.encrypted_content` and replay the returned reasoning items. See [conversation state](https://developers.openai.com/api/docs/guides/conversation-state#manually-manage-conversation-state) for the general stateless pattern.
+For stateless reasoning-model requests, replay every returned reasoning item. Each item includes `encrypted_content` by default. See [conversation state](https://developers.openai.com/api/docs/guides/conversation-state#manually-manage-conversation-state) for the general stateless pattern.
 
 ## Design tools for programs
 
@@ -39702,7 +39691,9 @@ Use `current_turn` when replaying older response items that the model no longer 
 
 ### Preserve reasoning without stored responses
 
-When using the Responses API in a stateless mode, either with `store` set to `false` or for an organization enrolled in zero data retention, request `reasoning.encrypted_content` in the `include` parameter on every call:
+When you create a response in stateless mode, reasoning items in the response's `output` array include an `encrypted_content` property by default. Stateless mode applies when `store` is `false` or when your organization uses Zero Data Retention (ZDR). The API still accepts the legacy `reasoning.encrypted_content` value in `include` for compatibility, but doesn't require it.
+
+The following request returns encrypted reasoning content without specifying `include`:
 
 ```bash
 curl https://api.openai.com/v1/responses \
@@ -39710,17 +39701,17 @@ curl https://api.openai.com/v1/responses \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
     "model": "gpt-5.6",
+    "store": false,
     "reasoning": {"effort": "medium"},
     "input": "What is the weather like today?",
-    "tools": [ ... function config here ... ],
-    "include": [ "reasoning.encrypted_content" ]
+    "tools": [ ... function config here ... ]
   }'
 ```
 
 
 Reasoning items in the `output` array will include an `encrypted_content` property containing encrypted reasoning tokens that you can pass to future calls.
 
-To use `all_turns` with `store: false`, request encrypted reasoning content on every call, preserve every output item, append the next user message, and replay the complete history:
+To use `all_turns` with `store: false`, preserve every output item, append the next user message, and replay the complete history:
 
 Preserve reasoning without storing responses
 
@@ -39740,7 +39731,6 @@ const first = await client.responses.create({
   model: "YOUR_MODEL_ID",
   store: false,
   input: history,
-  include: ["reasoning.encrypted_content"],
   reasoning: { context: "current_turn" },
 });
 
@@ -39755,7 +39745,6 @@ const second = await client.responses.create({
   model: "YOUR_MODEL_ID",
   store: false,
   input: history,
-  include: ["reasoning.encrypted_content"],
   reasoning: { context: "all_turns" },
 });
 
@@ -39778,7 +39767,6 @@ first = client.responses.create(
     model="YOUR_MODEL_ID",
     store=False,
     input=history,
-    include=["reasoning.encrypted_content"],
     reasoning={"context": "current_turn"},
 )
 
@@ -39795,7 +39783,6 @@ second = client.responses.create(
     model="YOUR_MODEL_ID",
     store=False,
     input=history,
-    include=["reasoning.encrypted_content"],
     reasoning={"context": "all_turns"},
 )
 
@@ -48621,7 +48608,7 @@ If deliberately enabling persisted reasoning:
 - use `reasoning.context: "all_turns"` only when the objective and assumptions remain stable;
 - prefer `previous_response_id` when the server can carry state;
 - when replaying manually, preserve every prior user input and every relevant output item, not only assistant text;
-- with `store: false` or ZDR, request and replay `reasoning.encrypted_content`;
+- with `store: false` or ZDR, preserve and replay returned reasoning items, including `encrypted_content`;
 - use current-turn behavior when old reasoning may be stale or misleading.
 
 For manual replay, preserve item types, IDs, call IDs, caller metadata, and assistant phase values exactly. Incomplete replay can silently reduce quality or break tool continuation.
@@ -54414,7 +54401,7 @@ To use this skill in other coding agents, download it from the [OpenAI skills re
   - Omit `reasoning.context` or set it to `auto` to use the model's default. Check the response's `reasoning.context` field to confirm the effective mode.
   - Set `reasoning.context` to `all_turns` when the task's goals, assumptions, and priorities stay stable across turns.
   - With `all_turns`, continue with `previous_response_id` to make reasoning from earlier responses available to the model.
-  - When managing history manually, preserve and resend previous user inputs and every response output item. For `store: false` or Zero Data Retention, add `include: ["reasoning.encrypted_content"]` and replay the returned encrypted reasoning items.
+  - When managing history manually, preserve and resend previous user inputs and every response output item. For `store: false` or Zero Data Retention, replay the encrypted reasoning items that the API returns by default.
   - Set `reasoning.context` to `current_turn` when earlier reasoning is no longer relevant.
 - Review prompt caching. You do not need to change code to keep using implicit caching. Because GPT-5.6 cache writes cost 1.25× the uncached input rate, track `cached_tokens` and `cache_write_tokens` to understand net cost. Use explicit breakpoints or `prompt_cache_options.mode: "explicit"` to avoid unnecessary writes, and replace `prompt_cache_retention` with `prompt_cache_options.ttl`.
 - To use Programmatic Tool Calling, add the `programmatic_tool_calling` tool and opt eligible tools in with `allowed_callers`. Update your application to handle `program` items, program-issued function calls, and `program_output` items while preserving each call's `call_id` and `caller` linkage. See the [Programmatic Tool Calling guide](https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling) for request and continuation examples.

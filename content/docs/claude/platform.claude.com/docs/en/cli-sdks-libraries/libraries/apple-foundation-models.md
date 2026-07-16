@@ -9,7 +9,7 @@ Use Claude on Apple platforms through the Foundation Models framework with the C
 Requests go directly from your app to the Claude API; Apple is not in the request path and does not see prompts or responses. Usage is billed to your Anthropic account at [standard API pricing](/docs/en/about-claude/pricing). Your app decides when to use Claude and when to use Apple's on-device model: pass whichever model you want to each session.
 
 <Note>
-  **Beta.** This package targets the Foundation Models server-side language model API introduced in the OS 27 betas. APIs may change before general availability.
+  **Beta.** This package targets the Foundation Models server-side language model API introduced in the OS 27 betas. APIs might change before general availability.
 </Note>
 
 <Info>
@@ -75,7 +75,7 @@ Constants mirror API model IDs (`.opus4_8` is `claude-opus-4-8`) and carry each 
 
 ### Capabilities
 
-Each `ClaudeModel` declares what it accepts: sampling parameters, effort levels, adaptive thinking, structured output, and image input. The package uses this to decide which request fields to send, because sending a field a model rejects is a hard error. The constants carry the right capabilities. For an ID that isn't compiled in, declare what the model accepts (there is deliberately no shorthand that guesses):
+Each `ClaudeModel` declares what it accepts: sampling parameters, effort levels, adaptive thinking, structured output, and image input. The package uses this to determine which request fields to send, because sending a field a model rejects is a hard error. The constants carry the right capabilities. For an ID that isn't compiled in, declare what the model accepts (there is deliberately no shorthand that guesses):
 
 ```swift
 let model = ClaudeModel(

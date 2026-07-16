@@ -12,7 +12,7 @@ This guide assumes that you have:
 2. Some ways to empirically test against those criteria
 3. A first draft prompt you want to improve
 
-If not, we highly suggest you spend time establishing that first. Check out [Define success criteria and build evaluations](/docs/en/test-and-evaluate/develop-tests) for tips and guidance.
+If not, spend time establishing that first. Check out [Define success criteria and build evaluations](/docs/en/test-and-evaluate/develop-tests) for tips and guidance.
 
 <CardGroup cols={2}>
   <Card title="Prompt generator" icon="link" href="/dashboard">
@@ -44,14 +44,14 @@ The [Claude Console](/dashboard) also offers [prompting tools](/docs/en/build-wi
 
 ## Prompt engineering tutorial
 
-If you're an interactive learner, you can dive into our interactive tutorials instead!
+If you're an interactive learner, you can dive into the interactive tutorials instead!
 
 <CardGroup cols={2}>
   <Card title="GitHub prompting tutorial" icon="link" href="https://github.com/anthropics/prompt-eng-interactive-tutorial">
-    An example-filled tutorial that covers the prompt engineering concepts found in our docs.
+    An example-filled tutorial that covers the prompt engineering concepts found in the docs.
   </Card>
 
   <Card title="Google Sheets prompting tutorial" icon="link" href="https://docs.google.com/spreadsheets/d/19jzLgRruG9kjUQNKtCg1ZjdD6l6weA6qRXG5zLIAhC8">
-    A lighter weight version of our prompt engineering tutorial via an interactive spreadsheet.
+    A lighter-weight version of the prompt engineering tutorial, as an interactive spreadsheet.
   </Card>
 </CardGroup>

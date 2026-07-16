@@ -78,7 +78,7 @@ Documentation for each method, request param, and response field are available i
 
 ## Counting tokens
 
-You can see the exact usage for a given request through the `usage` response property, e.g.
+You can see the exact usage for a given request through the `usage` response property, for example:
 
 ```typescript
 const message = await client.messages.create(/* ... */);
@@ -365,7 +365,7 @@ await client.beta.files.upload({
 
 ## Handling errors
 
-When the library is unable to connect to the API, or if the API returns a non-success status code (i.e., 4xx or 5xx response), a subclass of `APIError` is thrown:
+When the library is unable to connect to the API, or if the API returns a non-success status code (that is, 4xx or 5xx response), a subclass of `APIError` is thrown:
 
 ```typescript
 const message = await client.messages
@@ -539,7 +539,7 @@ const message = await client.messages.create(
 
 ## Advanced usage
 
-### Accessing raw Response data (e.g., headers)
+### Accessing raw Response data (for example, headers)
 
 The "raw" `Response` returned by `fetch()` can be accessed through the `.asResponse()` method on the `APIPromise` type that all methods return. This method returns as soon as the headers for a successful response are received and does not consume the response body, so you are free to write custom parsing or streaming logic.
 
@@ -579,7 +579,7 @@ console.log(message.content);
 
 The log level can be configured in two ways:
 
-1. Via the `ANTHROPIC_LOG` environment variable
+1. Through the `ANTHROPIC_LOG` environment variable
 2. Using the `logLevel` client option (overrides the environment variable if set)
 
 ```typescript
@@ -602,7 +602,7 @@ At the `'debug'` level, all HTTP requests and responses are logged, including he
 
 By default, this library logs to `globalThis.console`. You can also provide a custom logger. Most logging libraries are supported, including [pino](https://www.npmjs.com/package/pino), [winston](https://www.npmjs.com/package/winston), [bunyan](https://www.npmjs.com/package/bunyan), [consola](https://www.npmjs.com/package/consola), [signale](https://www.npmjs.com/package/signale), and [@std/log](https://jsr.io/@std/log). If your logger doesn't work, open an issue.
 
-When providing a custom logger, the `logLevel` option still controls which messages are emitted, messages below the configured level will not be sent to your logger.
+When providing a custom logger, the `logLevel` option still controls which messages are emitted; messages below the configured level will not be sent to your logger.
 
 ```typescript
 import pino from "pino";
@@ -765,7 +765,7 @@ const response = await client.beta.messages.create({
 
   In certain scenarios where enabling browser support might not pose significant risks:
 
-  * **Internal Tools:** If the application is used solely within a controlled internal environment where the users are trusted, the risk of credential exposure can be mitigated.
+  * **Internal tools:** If the application is used solely within a controlled internal environment where the users are trusted, the risk of credential exposure can be mitigated.
   * **Development or debugging purpose:** Enabling this feature temporarily might be acceptable, provided the credentials are short-lived, aren't also used in production environments, or are frequently rotated.
 </Accordion>
 
@@ -776,17 +776,17 @@ const response = await client.beta.messages.create({
 
   * [Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock)
   * [Amazon Bedrock (Opus 4.6 and earlier)](/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy)
+  * [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws)
   * [Google Cloud](/docs/en/build-with-claude/claude-on-vertex-ai)
   * [Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry)
-  * [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws)
 </Note>
 
 The TypeScript SDK supports the following platforms:
 
-* **Bedrock:** `npm install @anthropic-ai/bedrock-sdk`: Provides `AnthropicBedrockMantle` client, and `AnthropicBedrock` for the `bedrock-runtime` path
 * **Agent Platform:** `npm install @anthropic-ai/vertex-sdk`: Provides `AnthropicVertex` client
-* **Foundry:** `npm install @anthropic-ai/foundry-sdk`: Provides `AnthropicFoundry` client
+* **Bedrock:** `npm install @anthropic-ai/bedrock-sdk`: Provides `AnthropicBedrockMantle` client, and `AnthropicBedrock` for the `bedrock-runtime` path
 * **Claude Platform on AWS:** `npm install @anthropic-ai/aws-sdk`: Provides `AnthropicAws` client. Pass `workspaceId` to the constructor or set the `ANTHROPIC_AWS_WORKSPACE_ID` environment variable. Available in beta.
+* **Foundry:** `npm install @anthropic-ai/foundry-sdk`: Provides `AnthropicFoundry` client
 
 Use `AnthropicBedrockMantle` for new projects; `AnthropicBedrock` remains for existing applications using the Bedrock `InvokeModel` API.
 

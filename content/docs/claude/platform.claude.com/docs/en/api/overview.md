@@ -93,9 +93,9 @@ Access Claude through AWS, Google Cloud, or Microsoft Azure:
 
 | Platform               | Provider                             | Documentation                                                                         |
 | ---------------------- | ------------------------------------ | ------------------------------------------------------------------------------------- |
-| Claude Platform on AWS | AWS (Anthropic-operated)             | [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws)           |
-| Amazon Bedrock         | AWS                                  | [Claude in Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock)       |
 | Agent Platform         | Google Cloud                         | [Claude on Google Cloud](/docs/en/build-with-claude/claude-on-vertex-ai)              |
+| Amazon Bedrock         | AWS                                  | [Claude in Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock)       |
+| Claude Platform on AWS | AWS (Anthropic-operated)             | [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws)           |
 | Microsoft Foundry      | Microsoft Azure (Anthropic-operated) | [Claude in Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry) |
 
 <Note>
@@ -116,7 +116,7 @@ Access Claude through AWS, Google Cloud, or Microsoft Azure:
 If you exceed these limits, you'll receive a 413 `request_too_large` error.
 
 <Note>
-  Partner-operated platforms have their own request size limits: Google Cloud limits requests to 30 MB, and Bedrock limits requests to 20 MB. Claude Platform on AWS uses the same limits as the direct Claude API. Consult your platform's documentation for current values.
+  Partner-operated platforms have their own request size limits: Bedrock limits requests to 20 MB, and Google Cloud limits requests to 30 MB. Claude Platform on AWS uses the same limits as the direct Claude API. Consult your platform's documentation for current values.
 </Note>
 
 ### Response headers

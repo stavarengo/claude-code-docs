@@ -98,7 +98,7 @@ The full documentation is available in the following languages on https://platfo
 - [Token counting](https://platform.claude.com/docs/en/build-with-claude/token-counting.md)
 - [Tool combinations](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-combinations.md)
 - [Tool reference](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference.md)
-- [Tool Runner (SDK)](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-runner.md)
+- [Tool Runner (SDK)](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-runner.md) - Tool runner (SDK)
 - [Tool search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool.md)
 - [Tool use with prompt caching](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-use-with-prompt-caching.md)
 - [Troubleshooting](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/troubleshooting.md) - Troubleshoot MCP tunnels

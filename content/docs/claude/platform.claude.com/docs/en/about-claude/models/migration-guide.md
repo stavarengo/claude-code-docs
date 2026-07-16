@@ -15,7 +15,7 @@ Guide for migrating to the latest Claude models from previous Claude versions
   /claude-api migrate this project to claude-opus-4-8
   ```
 
-  The skill applies the model ID swap and, as needed, breaking parameter changes, prefill replacement, and effort calibration for your target model across your code base, then produces a checklist of items to verify manually. It asks you to confirm the migration scope (entire working directory, a subdirectory, or a specific file list) before editing any files. The skill also detects Amazon Bedrock, Google Cloud, Claude Platform on AWS, and Microsoft Foundry clients and adjusts model ID formats and feature changes for each platform.
+  The skill applies the model ID swap and, as needed, breaking parameter changes, prefill replacement, and effort calibration for your target model across your code base, then produces a checklist of items to verify manually. It asks you to confirm the migration scope (entire working directory, a subdirectory, or a specific file list) before editing any files. The skill also detects Amazon Bedrock, Claude Platform on AWS, Google Cloud, and Microsoft Foundry clients and adjusts model ID formats and feature changes for each platform.
 </Tip>
 
 ## Migrating to Claude Mythos 5
@@ -52,24 +52,23 @@ model = "claude-mythos-5"  # After
    <CodeGroup>
      ```bash cURL
      curl https://api.anthropic.com/v1/messages \
-          --header "x-api-key: $ANTHROPIC_API_KEY" \
-          --header "anthropic-version: 2023-06-01" \
-          --header "content-type: application/json" \
-          --data \
-     '{
+       -H "x-api-key: $ANTHROPIC_API_KEY" \
+       -H "anthropic-version: 2023-06-01" \
+       -H "content-type: application/json" \
+       -d '{
          "model": "claude-mythos-preview",
          "max_tokens": 16000,
          "thinking": {
-             "type": "enabled",
-             "budget_tokens": 10000
+           "type": "enabled",
+           "budget_tokens": 10000
          },
          "messages": [
-             {
-                 "role": "user",
-                 "content": "..."
-             }
+           {
+             "role": "user",
+             "content": "..."
+           }
          ]
-     }'
+       }'
      ```
 
      ```bash CLI
@@ -318,7 +317,7 @@ model = "claude-mythos-5"  # After
 
 ## Migrating to Claude Fable 5
 
-[Claude Fable 5](/docs/en/about-claude/models/introducing-claude-fable-5-and-claude-mythos-5) is Anthropic's most capable widely released model, generally available on the Claude API, [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws), [Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock), [Google Cloud](/docs/en/build-with-claude/claude-on-vertex-ai), and [Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry).
+[Claude Fable 5](/docs/en/about-claude/models/introducing-claude-fable-5-and-claude-mythos-5) is Anthropic's most capable widely released model, generally available on the Claude API, [Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock), [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws), [Google Cloud](/docs/en/build-with-claude/claude-on-vertex-ai), and [Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry).
 
 Migration is mostly drop-in. Claude Fable 5 uses the same [Messages API](/docs/en/build-with-claude/working-with-messages) and the same [tool use](/docs/en/agents-and-tools/tool-use/overview) patterns as Claude Opus 4.8. It supports the same [1M token context window](/docs/en/build-with-claude/context-windows) by default and the same [128k max output tokens](/docs/en/about-claude/models/overview). Token counts are roughly unchanged because both models use the same tokenizer.
 
@@ -1037,7 +1036,7 @@ model = "claude-opus-4-8"  # After
 
 3. **Thinking content omitted by default:** Thinking blocks still appear in the response stream on Claude Opus 4.7, but their `thinking` field is empty unless you explicitly opt in. This is a silent change from Claude Opus 4.6, where the default was to return summarized thinking text. To restore summarized thinking content on Claude Opus 4.7, set `thinking.display` to `"summarized"`:
 
-   <CodeGroup>
+   <CodeGroup exclude="shell">
      ```python Python
      thinking = {
          "type": "adaptive",
@@ -1153,7 +1152,7 @@ These are not required but will improve your experience:
 
 3. **Adopt [task budgets](/docs/en/build-with-claude/task-budgets) (beta):** Claude Opus 4.7 introduces task budgets. These budgets let you inform Claude how many tokens it has for a full agentic loop, including thinking, tool calls, tool results, and final output. The model sees a running countdown and uses it to prioritize work and finish the task gracefully as the budget is consumed. To use, set the beta header `task-budgets-2026-03-13` and add the following to your output config:
 
-   <CodeGroup>
+   <CodeGroup exclude="shell">
      ```python Python
      output_config = {
          "effort": "high",
@@ -1456,7 +1455,7 @@ model = "claude-opus-4-8"  # After
 
    Starting with Claude Opus 4.7, setting `temperature`, `top_p`, or `top_k` to any non-default value will return a 400 error. The safest migration path is to omit these parameters entirely from requests, and to use prompting to guide the model's behavior. If you were using `temperature = 0` for determinism, note that it never guaranteed identical outputs.
 
-   <CodeGroup>
+   <CodeGroup exclude="shell">
      ```python Python
      # Before - This will error in Claude 4+ models
      response = client.messages.create(
@@ -1580,7 +1579,7 @@ model = "claude-opus-4-8"  # After
 
    Update to the latest tool versions. Remove any code using the `undo_edit` command.
 
-   <CodeGroup>
+   <CodeGroup exclude="shell">
      ```python Python
      # Before
      tools = [{"type": "text_editor_20250124", "name": "str_replace_editor"}]
@@ -1645,14 +1644,14 @@ model = "claude-opus-4-8"  # After
      ```
    </CodeGroup>
 
-   * **Text editor:** Use `text_editor_20250728` and `str_replace_based_edit_tool`. See [Text editor tool documentation](/docs/en/agents-and-tools/tool-use/text-editor-tool) for details.
-   * **Code execution:** Upgrade to `code_execution_20260521`. See [Code execution tool documentation](/docs/en/agents-and-tools/tool-use/code-execution-tool#upgrade-to-latest-tool-version) for migration instructions.
+   * **Text editor:** Use `text_editor_20250728` and `str_replace_based_edit_tool`. See [Text editor tool](/docs/en/agents-and-tools/tool-use/text-editor-tool) documentation for details.
+   * **Code execution:** Upgrade to `code_execution_20260521`. See [Code execution tool](/docs/en/agents-and-tools/tool-use/code-execution-tool#upgrade-to-latest-tool-version) documentation for migration instructions.
 
 3. **Handle the `refusal` stop reason**
 
    Update your application to [handle `refusal` stop reasons](/docs/en/test-and-evaluate/strengthen-guardrails/handle-streaming-refusals):
 
-   <CodeGroup>
+   <CodeGroup exclude="shell">
      ```python Python
      response = client.messages.create(...)
 
@@ -1716,7 +1715,7 @@ model = "claude-opus-4-8"  # After
 
    Claude 4.5+ models return a `model_context_window_exceeded` stop reason when generation stops because of hitting the context window limit, rather than the requested `max_tokens` limit. Update your application to handle this new stop reason:
 
-   <CodeGroup>
+   <CodeGroup exclude="shell">
      ```python Python
      response = client.messages.create(...)
 
@@ -2108,24 +2107,23 @@ Items 4 and 5 in the following list are breaking changes. `max_tokens` remains a
        <CodeGroup>
          ```bash cURL
          curl https://api.anthropic.com/v1/messages \
-              --header "x-api-key: $ANTHROPIC_API_KEY" \
-              --header "anthropic-version: 2023-06-01" \
-              --header "content-type: application/json" \
-              --data \
-         '{
-           "model": "claude-sonnet-4-6",
-           "max_tokens": 16000,
-           "thinking": {
-             "type": "enabled",
-             "budget_tokens": 10000
-           },
-           "messages": [
-             {
-               "role": "user",
-               "content": "Are there an infinite number of prime numbers such that n mod 4 == 3?"
-             }
-           ]
-         }'
+           -H "x-api-key: $ANTHROPIC_API_KEY" \
+           -H "anthropic-version: 2023-06-01" \
+           -H "content-type: application/json" \
+           -d '{
+             "model": "claude-sonnet-4-6",
+             "max_tokens": 16000,
+             "thinking": {
+               "type": "enabled",
+               "budget_tokens": 10000
+             },
+             "messages": [
+               {
+                 "role": "user",
+                 "content": "Are there an infinite number of prime numbers such that n mod 4 == 3?"
+               }
+             ]
+           }'
          ```
 
          ```bash CLI
@@ -2454,7 +2452,7 @@ model = "claude-3-5-haiku-20241022"  # Before
 model = "claude-haiku-4-5-20251001"  # After
 ```
 
-**Review new rate limits:** Haiku 4.5 has separate rate limits from Haiku 3.5. See [Rate limits documentation](/docs/en/api/rate-limits) for details.
+**Review new rate limits:** Haiku 4.5 has separate rate limits from Haiku 3.5. See [Rate limits](/docs/en/api/rate-limits) documentation for details.
 
 **Explore new capabilities:** See the [models overview](/docs/en/about-claude/models/overview) for details on context awareness, increased output capacity (64k tokens), higher intelligence, and improved speed.
 

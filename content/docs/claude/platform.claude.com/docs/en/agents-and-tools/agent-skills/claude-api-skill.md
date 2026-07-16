@@ -32,7 +32,7 @@ When triggered, the skill equips Claude with:
 
 **For Managed Agents (beta):**
 
-* **Onboarding flow:** An interview-driven walkthrough for setting up a new Managed Agent from scratch, available via the `/claude-api managed-agents-onboard` subcommand
+* **Onboarding flow:** An interview-driven walkthrough for setting up a new Managed Agent from scratch, available through the `/claude-api managed-agents-onboard` subcommand
 * **Language-specific Managed Agents docs:** Creating persistent agents, starting sessions, streaming events, and handling tool confirmations for Python, TypeScript, C#, Go, Java, PHP, Ruby, and cURL
 * **Client patterns:** Lossless stream reconnect, `processed_at` queued/processed gate, interrupt handling, file-mount gotchas, and credential handling
 * **Deployment constraints:** Managed Agents is available on the Claude API and [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws) only (not on Amazon Bedrock, Google Cloud, or Microsoft Foundry). The skill routes other deployments to the Messages API and tool use instead.
@@ -99,7 +99,7 @@ Or install it as a Claude Code [plugin](https://code.claude.com/docs/en/plugins)
 
 ## Migrating to a newer Claude model
 
-The Claude API skill can perform Claude model migrations across a codebase. Invoke it directly with `/claude-api migrate`:
+The Claude API skill can perform Claude model migrations across a code base. Invoke it directly with `/claude-api migrate`:
 
 ```text wrap
 /claude-api migrate this project to claude-opus-4-8

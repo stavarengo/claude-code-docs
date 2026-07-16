@@ -128,7 +128,7 @@ Each middleware is a function that receives the outgoing request and a `next` ca
                 // Forward the request to the next handler
                 var response = await next(request, cancellationToken);
 
-                // Handle stuff after the request
+                // After the request
                 Console.WriteLine($"Received {(int)response.StatusCode}");
 
                 return response;

@@ -4,7 +4,7 @@ Install and configure the Anthropic Python SDK with sync and async client suppor
 
 ---
 
-The Anthropic Python SDK provides convenient access to the Anthropic REST API from Python applications. It supports both synchronous and asynchronous operations, streaming, and integrations with Amazon Bedrock, Google Cloud, Microsoft Foundry, and Claude Platform on AWS.
+The Anthropic Python SDK provides convenient access to the Anthropic REST API from Python applications. It supports both synchronous and asynchronous operations, streaming, and integrations with Amazon Bedrock, Claude Platform on AWS, Google Cloud, and Microsoft Foundry.
 
 <Info>
   For API feature documentation with code examples, see the [API reference](/docs/en/api/overview). This page covers Python-specific SDK features and configuration.
@@ -344,7 +344,7 @@ The async client uses the exact same interface. If you pass a `PathLike` instanc
 
 ## Handling errors
 
-When the library is unable to connect to the API, or if the API returns a non-success status code (i.e., 4xx or 5xx response), a subclass of `APIError` is raised:
+When the library is unable to connect to the API, or if the API returns a non-success status code (that is, 4xx or 5xx response), a subclass of `APIError` is raised:
 
 ```python
 import anthropic
@@ -747,20 +747,20 @@ response = client.beta.messages.create(
 
   * [Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock)
   * [Amazon Bedrock (Opus 4.6 and earlier)](/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy)
+  * [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws)
   * [Google Cloud](/docs/en/build-with-claude/claude-on-vertex-ai)
   * [Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry)
-  * [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws)
 </Note>
 
 All five client classes are included in the base `anthropic` package:
 
 | Provider                         | Client                                         | Extra dependencies                 |
 | -------------------------------- | ---------------------------------------------- | ---------------------------------- |
+| Agent Platform                   | `from anthropic import AnthropicVertex`        | `pip install "anthropic[vertex]"`  |
 | Bedrock                          | `from anthropic import AnthropicBedrockMantle` | `pip install "anthropic[bedrock]"` |
 | Bedrock (`bedrock-runtime` path) | `from anthropic import AnthropicBedrock`       | `pip install "anthropic[bedrock]"` |
-| Agent Platform                   | `from anthropic import AnthropicVertex`        | `pip install "anthropic[vertex]"`  |
-| Foundry                          | `from anthropic import AnthropicFoundry`       | None                               |
 | Claude Platform on AWS           | `from anthropic import AnthropicAWS`           | `pip install "anthropic[aws]"`     |
+| Foundry                          | `from anthropic import AnthropicFoundry`       | None                               |
 
 The `AnthropicAWS` client is in beta. Pass `workspace_id` to the constructor or set the `ANTHROPIC_AWS_WORKSPACE_ID` environment variable.
 

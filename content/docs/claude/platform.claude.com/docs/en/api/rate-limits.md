@@ -67,15 +67,15 @@ The rate limits for the Messages API are measured in requests per minute (RPM), 
 
 ### Cache-aware ITPM
 
-Many API providers use a combined "tokens per minute" (TPM) limit that may include all tokens, both cached and uncached, input and output. **For most Claude models, only uncached input tokens count towards your ITPM rate limits.** This is a key advantage that makes the rate limits effectively higher than they might initially appear.
+Many API providers use a combined "tokens per minute" (TPM) limit that may include all tokens, both cached and uncached, input and output. **For most Claude models, only uncached input tokens count toward your ITPM rate limits.** This is a key advantage that makes the rate limits effectively higher than they might initially appear.
 
 ITPM rate limits are estimated at the beginning of each request, and the estimate is adjusted during the request to reflect the actual number of input tokens used.
 
-Here's what counts towards ITPM:
+Here's what counts toward ITPM:
 
-* `input_tokens` (tokens after the last cache breakpoint) ✓ **Count towards ITPM**
-* `cache_creation_input_tokens` (tokens being written to cache) ✓ **Count towards ITPM**
-* `cache_read_input_tokens` (tokens read from cache) ✗ **Do NOT count towards ITPM** for most models
+* `input_tokens` (tokens after the last cache breakpoint) ✓ **Count toward ITPM**
+* `cache_creation_input_tokens` (tokens being written to cache) ✓ **Count toward ITPM**
+* `cache_read_input_tokens` (tokens read from cache) ✗ **Do NOT count toward ITPM** for most models
 
 <Note>
   The `input_tokens` field only represents tokens that appear **after your last cache breakpoint**, not all input tokens in your request. To calculate total input tokens:
@@ -89,12 +89,12 @@ Here's what counts towards ITPM:
   For rate limit purposes on most models, only `input_tokens` + `cache_creation_input_tokens` count toward your ITPM limit, making [prompt caching](/docs/en/build-with-claude/prompt-caching) an effective way to increase your effective throughput.
 </Note>
 
-**Example**: With a 2,000,000 ITPM limit and an 80% cache hit rate, you could effectively process 10,000,000 total input tokens per minute (2M uncached + 8M cached), because cached tokens don't count towards your rate limit.
+**Example:** With a 2,000,000 ITPM limit and an 80% cache hit rate, you could effectively process 10,000,000 total input tokens per minute (2M uncached + 8M cached), because cached tokens don't count toward your rate limit.
 
 <Note>
   Claude Haiku 3.5 (marked with † in the following rate limit tables) also counts `cache_read_input_tokens` toward ITPM rate limits.
 
-  For all models without the † marker, cached input tokens do not count towards rate limits and are billed at a reduced rate (10% of base input token price). This means you can achieve significantly higher effective throughput by using [prompt caching](/docs/en/build-with-claude/prompt-caching).
+  For all models without the † marker, cached input tokens do not count toward rate limits and are billed at a reduced rate (10% of base input token price). This means you can achieve significantly higher effective throughput by using [prompt caching](/docs/en/build-with-claude/prompt-caching).
 </Note>
 
 <Tip>
@@ -161,11 +161,11 @@ Rate limits are applied separately for each model; therefore you can use differe
 
 *\*\* - Sonnet 4.x rate limit is a total limit that applies to combined traffic across Sonnet 4.6 and Sonnet 4.5. Claude Sonnet 5 has a separate rate limit and is not part of this combined bucket.*
 
-*† - Limit counts `cache_read_input_tokens` towards ITPM usage.*
+*† - Limit counts `cache_read_input_tokens` toward ITPM usage.*
 
 ### Message Batches API
 
-The Message Batches API has its own set of rate limits which are shared across all models. These include a requests per minute (RPM) limit to all API endpoints and a limit on the number of batch requests that can be in the processing queue at the same time. A "batch request" here refers to part of a Message Batch. You may create a Message Batch containing thousands of batch requests, each of which count towards this limit. A batch request is considered part of the processing queue when it has yet to be successfully processed by the model.
+The Message Batches API has its own set of rate limits which are shared across all models. These include a requests per minute (RPM) limit to all API endpoints and a limit on the number of batch requests that can be in the processing queue at the same time. A "batch request" here refers to part of a Message Batch. You may create a Message Batch containing thousands of batch requests, each of which count toward this limit. A batch request is considered part of the processing queue when it has yet to be successfully processed by the model.
 
 <Tabs>
   <Tab title="Start tier">

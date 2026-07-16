@@ -1,11 +1,11 @@
-# Trigger a routine via API
+# Trigger a routine through the API
 
 Start a Claude Code routine session on demand by sending an authenticated POST request.
 
 ---
 
 <Warning>
-  This is an experimental API. Request and response shapes, rate limits, and token semantics may change. Breaking changes ship behind new dated beta header versions, and the two previous header versions continue to work so that callers have time to migrate.
+  This is an experimental API. Request and response shapes, rate limits, and token semantics might change. Breaking changes ship behind new dated beta header versions, and the two previous header versions continue to work so that callers have time to migrate.
 </Warning>
 
 [Claude Code](https://code.claude.com/docs) is Anthropic's agentic coding tool. [Claude Code on the web](https://code.claude.com/docs/en/claude-code-on-the-web) runs Claude Code sessions on Anthropic-managed cloud infrastructure at claude.ai/code, and a [routine](https://code.claude.com/docs/en/routines) is a saved configuration there: a prompt, one or more repositories, and connectors, packaged so it can run unattended on a schedule, in response to GitHub events, or when called over HTTP.
@@ -44,7 +44,7 @@ POST https://api.anthropic.com/v1/claude_code/routines/{routine_id}/fire
 
 Every request must include the `anthropic-beta: experimental-cc-routine-2026-04-01` header. Requests without it return `400 invalid_request_error`.
 
-The Claude Code web UI provides the full URL alongside the token when you add an API trigger, so most integrations store both as secrets and call the endpoint directly. The examples below show a shell call and a GitHub Actions step that triggers the routine on CI failure.
+The Claude Code web UI provides the full URL alongside the token when you add an API trigger, so most integrations store both as secrets and call the endpoint directly. The following examples show a shell call and a GitHub Actions step that triggers the routine on CI failure.
 
 ```bash cURL
 curl -X POST https://api.anthropic.com/v1/claude_code/routines/$ROUTINE_ID/fire \

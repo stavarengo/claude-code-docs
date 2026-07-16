@@ -218,18 +218,18 @@ $response = $client->request(
 
   * [Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock)
   * [Amazon Bedrock (Opus 4.6 and earlier)](/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy)
+  * [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws)
   * [Google Cloud](/docs/en/build-with-claude/claude-on-vertex-ai)
   * [Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry)
-  * [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws)
 </Note>
 
 The PHP SDK supports the following platforms:
 
+* **Agent Platform:** `Anthropic\Vertex\Client`. Use `::fromEnvironment()`.
 * **Bedrock:** `Anthropic\Bedrock\MantleClient`. Use `new MantleClient(awsRegion: ...)`.
 * **Bedrock (legacy):** `Anthropic\Bedrock\Client`. Use `::fromEnvironment()` or `::withCredentials()`.
-* **Agent Platform:** `Anthropic\Vertex\Client`. Use `::fromEnvironment()`.
-* **Foundry:** `Anthropic\Foundry\Client`. Use `::withCredentials()`.
 * **Claude Platform on AWS:** `Anthropic\Aws\Client` (requires `aws/aws-sdk-php` as a soft dependency). Use `new Anthropic\Aws\Client(workspaceId: ...)` or set `ANTHROPIC_AWS_WORKSPACE_ID`. Available in beta.
+* **Foundry:** `Anthropic\Foundry\Client`. Use `::withCredentials()`.
 
 Use `MantleClient` for new projects; `Anthropic\Bedrock\Client` remains for existing applications using the Bedrock `InvokeModel` API.
 

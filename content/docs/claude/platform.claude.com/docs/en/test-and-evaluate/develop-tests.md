@@ -65,7 +65,7 @@ Here are some criteria that might be important for your use case. This list is n
   </Accordion>
 
   <Accordion title="Consistency">
-    How similar does the model's responses need to be for similar types of input? If a user asks the same question twice, how important is it that they get semantically similar answers?
+    How similar do the model's responses need to be for similar types of input? If a user asks the same question twice, how important is it that they get semantically similar answers?
   </Accordion>
 
   <Accordion title="Relevance and coherence">
@@ -96,12 +96,12 @@ Here are some criteria that might be important for your use case. This list is n
 Most use cases will need multidimensional evaluation along several success criteria.
 
 <Accordion title="Example multidimensional criteria for sentiment analysis">
-  |      | Criteria                                                                                                                                                                                                                                                               |
-  | ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-  | Bad  | The model should classify sentiments well                                                                                                                                                                                                                              |
-  | Good | On a held-out test set of 10,000 diverse Twitter posts, our sentiment analysis model should achieve: - an F1 score of at least 0.85 - 99.5% of outputs are non-toxic - 90% of errors are would cause inconvenience, not egregious error\* - 95% response time \< 200ms |
+  |      | Criteria                                                                                                                                                                                                                                                           |
+  | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+  | Bad  | The model should classify sentiments well                                                                                                                                                                                                                          |
+  | Good | On a held-out test set of 10,000 diverse Twitter posts, the sentiment analysis model should achieve: - an F1 score of at least 0.85 - 99.5% of outputs are non-toxic - 90% of errors would cause inconvenience, not egregious error\* - 95% response time \< 200ms |
 
-  \*In reality, we would also define what "inconvenience" and "egregious" means.
+  \*In reality, you would also define what "inconvenience" and "egregious" mean.
 </Accordion>
 
 ***
@@ -128,7 +128,7 @@ Most use cases will need multidimensional evaluation along several success crite
 
     **Example eval test cases**: 1000 tweets with human-labeled sentiments.
 
-    <CodeGroup>
+    <CodeGroup exclude="shell">
       ```python Python
       tweets = [
           {"text": "This movie was a total waste of time. 👎", "sentiment": "negative"},
@@ -490,7 +490,7 @@ Most use cases will need multidimensional evaluation along several success crite
 
     **Example eval test cases**: 50 groups with a few paraphrased versions each.
 
-    <CodeGroup>
+    <CodeGroup exclude="shell">
       ```python Python
       from sentence_transformers import SentenceTransformer
       import numpy as np
@@ -643,7 +643,7 @@ Most use cases will need multidimensional evaluation along several success crite
 
     **Example eval test cases**: 200 articles with reference summaries.
 
-    <CodeGroup>
+    <CodeGroup exclude="shell">
       ```python Python
       from rouge import Rouge
       # ...
@@ -1168,7 +1168,7 @@ Most use cases will need multidimensional evaluation along several success crite
 
     **Example eval test cases**: 100 customer inquiries with target tone (empathetic, patient, professional).
 
-    <CodeGroup>
+    <CodeGroup exclude="shell">
       ```python Python
       inquiries = [
           {
@@ -1637,7 +1637,7 @@ Most use cases will need multidimensional evaluation along several success crite
 
     **Example eval test cases**: 500 simulated patient queries, some with PHI.
 
-    <CodeGroup>
+    <CodeGroup exclude="shell">
       ```python Python
       patient_queries = [
           {"query": "What are the side effects of Lisinopril?", "contains_phi": False},
@@ -2185,7 +2185,7 @@ Most use cases will need multidimensional evaluation along several success crite
 
     **Example eval test cases**: 100 multi-turn conversations with context-dependent questions.
 
-    <CodeGroup>
+    <CodeGroup exclude="shell">
       ```python Python
       conversations = [
           [
@@ -2839,7 +2839,7 @@ When deciding which method to use to grade evals, choose the fastest, most relia
 * **Encourage reasoning:** Ask the LLM to think first before deciding an evaluation score, and then discard the reasoning. This increases evaluation performance, particularly for tasks requiring complex judgement.
 
 <Accordion title="Example: LLM-based grading">
-  <CodeGroup>
+  <CodeGroup exclude="shell">
     ```python Python
     client = anthropic.Anthropic()
 

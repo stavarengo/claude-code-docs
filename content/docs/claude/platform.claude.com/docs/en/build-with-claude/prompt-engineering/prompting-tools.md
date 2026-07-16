@@ -14,9 +14,9 @@ The Claude Console offers a suite of tools to help you build and refine prompts.
   The prompt generator is compatible with all Claude models, including those with extended thinking capabilities. For prompting tips specific to extended thinking models, see the [extended thinking prompting tips](/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#leverage-thinking-and-interleaved-thinking-capabilities).
 </Note>
 
-Sometimes, the hardest part of using an AI model is figuring out how to prompt it effectively. The prompt generator guides Claude to create high-quality prompt templates tailored to your specific tasks, following many of our prompt engineering best practices.
+Sometimes, the hardest part of using an AI model is figuring out how to prompt it effectively. The prompt generator guides Claude to create high-quality prompt templates tailored to your specific tasks, following many of Anthropic's prompt engineering best practices.
 
-The prompt generator is particularly useful for solving the "blank page problem"—it gives you a jumping-off point for further testing and iteration.
+The prompt generator is particularly useful for solving the "blank page problem": it gives you a jumping-off point for further testing and iteration.
 
 <Tip>
   Try the prompt generator now directly on the 
@@ -26,7 +26,7 @@ The prompt generator is particularly useful for solving the "blank page problem"
   .
 </Tip>
 
-If you're interested in analyzing the underlying prompt and architecture, check out our [prompt generator Google Colab notebook](https://colab.research.google.com/github/anthropics/claude-cookbooks/blob/main/misc/metaprompt.ipynb). To run the Colab notebook, you'll need an [API key](/settings/keys).
+If you're interested in analyzing the underlying prompt and architecture, see the [prompt generator Google Colab notebook](https://colab.research.google.com/github/anthropics/claude-cookbooks/blob/main/misc/metaprompt.ipynb). To run the Colab notebook, you'll need an [API key](/settings/keys).
 
 ***
 
@@ -45,7 +45,7 @@ When deploying an LLM-based application with Claude, your API calls will typical
 
 A **prompt template** combines these fixed and variable parts, using placeholders for the dynamic content. In the [Claude Console](/), these placeholders are denoted with **\{\{double brackets}}**, making them easily identifiable and allowing for quick testing of different values.
 
-You should use prompt templates and variables when you expect any part of your prompt to be repeated in another call to Claude (via the API or the [Claude Console](/). [claude.ai](https://claude.ai/) currently does not support prompt templates or variables).
+You should use prompt templates and variables when you expect any part of your prompt to be repeated in another call to Claude (through the API or the [Claude Console](/). [claude.ai](https://claude.ai/) currently does not support prompt templates or variables).
 
 Prompt templates offer several benefits:
 
@@ -101,7 +101,7 @@ You'll need:
 
 ### How the prompt improver works
 
-The prompt improver enhances your prompts in 4 steps:
+The prompt improver enhances your prompts in four steps:
 
 1. **Example identification**: Locates and extracts examples from your prompt template
 2. **Initial draft**: Creates a structured template with clear sections and XML tags
@@ -230,6 +230,6 @@ Common issues and solutions:
   </Card>
 
   <Card title="GitHub prompting tutorial" icon="link" href="https://github.com/anthropics/prompt-eng-interactive-tutorial">
-    An example-filled tutorial that covers the prompt engineering concepts found in our docs.
+    An example-filled tutorial that covers the prompt engineering concepts found in the docs.
   </Card>
 </CardGroup>

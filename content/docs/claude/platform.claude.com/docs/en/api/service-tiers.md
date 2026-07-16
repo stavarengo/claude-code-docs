@@ -28,8 +28,8 @@ For more information, see [Existing Priority Tier commitments](#existing-priorit
 
 When handling a request, Anthropic decides to assign a request to Priority Tier in the following scenarios:
 
-* Your organization has sufficient priority tier capacity **input** tokens per minute
-* Your organization has sufficient priority tier capacity **output** tokens per minute
+* Your organization has sufficient Priority Tier capacity **input** tokens per minute
+* Your organization has sufficient Priority Tier capacity **output** tokens per minute
 
 Anthropic counts usage against Priority Tier capacity as follows:
 
