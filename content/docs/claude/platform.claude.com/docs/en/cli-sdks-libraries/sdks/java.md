@@ -335,23 +335,17 @@ enum Unit {
   FAHRENHEIT;
 
   public String toString() {
-    switch (this) {
-      case CELSIUS:
-        return "C";
-      case FAHRENHEIT:
-      default:
-        return "F";
-    }
+    return switch (this) {
+      case CELSIUS -> "C";
+      case FAHRENHEIT -> "F";
+    };
   }
 
   public double fromKelvin(double temperatureK) {
-    switch (this) {
-      case CELSIUS:
-        return temperatureK - 273.15;
-      case FAHRENHEIT:
-      default:
-        return (temperatureK - 273.15) * 1.8 + 32.0;
-    }
+    return switch (this) {
+      case CELSIUS -> temperatureK - 273.15;
+      case FAHRENHEIT -> (temperatureK - 273.15) * 1.8 + 32.0;
+    };
   }
 }
 
@@ -365,21 +359,12 @@ static class GetWeather {
   public Unit unit;
 
   public Weather execute() {
-    double temperatureK;
-    switch (location) {
-      case "San Francisco, CA":
-        temperatureK = 300.0;
-        break;
-      case "New York, NY":
-        temperatureK = 310.0;
-        break;
-      case "Dallas, TX":
-        temperatureK = 305.0;
-        break;
-      default:
-        temperatureK = 295;
-        break;
-    }
+    double temperatureK = switch (location) {
+      case "San Francisco, CA" -> 300.0;
+      case "New York, NY" -> 310.0;
+      case "Dallas, TX" -> 305.0;
+      default -> 295;
+    };
     return new Weather(String.format("%.0f%s", unit.fromKelvin(temperatureK), unit));
   }
 }
@@ -506,7 +491,7 @@ import com.anthropic.models.beta.files.FileUploadParams;
 FileUploadParams params = FileUploadParams.builder()
   .file(
     MultipartField.<InputStream>builder()
-      .value(new URL("https://example.com/path/to/file").openStream())
+      .value(URI.create("https://example.com/path/to/file").toURL().openStream())
       .filename("document.pdf")
       .contentType("application/pdf")
       .build()
@@ -543,7 +528,7 @@ The SDK defines methods that return binary responses for API responses that aren
 ```java
 import com.anthropic.core.http.HttpResponse;
 
-HttpResponse response = client.beta().files().download("file_id");
+HttpResponse response = client.beta().files().download("file_abc123");
 ```
 
 To save the response content to a file:
@@ -821,13 +806,13 @@ MessageCreateParams params = MessageCreateParams.builder()
 MessageCreateParams modified = params.toBuilder().maxTokens(2048L).build();
 ```
 
-Because each class is immutable, builder modification will never affect already built class instances.
+Because each class is immutable, builder modification never affects already built class instances.
 
 ### Requests and responses
 
 To send a request to the Claude API, build an instance of some `Params` class and pass it to the corresponding client method. When the response is received, it is deserialized into an instance of a Java class.
 
-For example, `client.messages().create(...)` should be called with an instance of `MessageCreateParams`, and it will return an instance of `Message`.
+For example, `client.messages().create(...)` should be called with an instance of `MessageCreateParams`, and it returns an instance of `Message`.
 
 ### Undocumented parameters
 
@@ -1250,9 +1235,9 @@ void main() {
 
 <AccordionGroup>
   <Accordion title="Why doesn't the SDK use plain enum classes?">
-    Java `enum` classes are not trivially forwards compatible. Using them in the SDK could cause runtime exceptions if the API is updated to respond with a new enum value.
+    Java `enum` classes are not trivially forward compatible. Using them in the SDK could cause runtime exceptions if the API is updated to respond with a new enum value.
 
-    Because these classes are open, you can also construct them with any string value via their `of(String)` factory method. See [New or unreleased enum values](#new-or-unreleased-enum-values) if you need to use a value that isn't in your SDK version yet.
+    Because these classes are open, you can also construct them with any string value through their `of(String)` factory method. See [New or unreleased enum values](#new-or-unreleased-enum-values) if you need to use a value that isn't in your SDK version yet.
   </Accordion>
 
   <Accordion title="Why are fields represented using JsonField<T> instead of just plain T?">

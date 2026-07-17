@@ -97,7 +97,7 @@ The level must be one the model accepts. Each `ClaudeModel` declares which of th
 
 ### When to use Claude versus the on-device model
 
-Apple's on-device model is fast, private, and works offline, but it is sized for lightweight tasks. Escalate to Claude when you need larger context, frontier reasoning, or server-side tools such as web search and code execution. Because both use the same `LanguageModelSession` API, you can switch by swapping the `model:` argument.
+Apple's on-device model is fast, private, and available offline, but it is sized for lightweight tasks. Escalate to Claude when you need larger context, frontier reasoning, or server-side tools such as web search and code execution. Because both use the same `LanguageModelSession` API, you can switch by swapping the `model:` argument.
 
 ## Authentication
 
@@ -169,7 +169,7 @@ let session = LanguageModelSession(model: model, tools: [FindRestaurantsTool()])
 
 ### Server-side tools
 
-[Server tools](/docs/en/agents-and-tools/tool-use/server-tools) (web search, web fetch, and code execution) run on Anthropic's infrastructure within a single round trip, with nothing for the framework to invoke on the device. Configure them per model with `serverTools:`:
+[Server tools](/docs/en/agents-and-tools/tool-use/server-tools) (web search, web fetch, and code execution) run on Anthropic's infrastructure within a single round trip, with nothing for the framework to invoke on the device. Configure them for each model with `serverTools:`:
 
 ```swift
 let model = ClaudeLanguageModel(
@@ -185,7 +185,7 @@ let model = ClaudeLanguageModel(
 `.webSearch` and `.webFetch` accept optional `allowedDomains`, `blockedDomains`, and `maxUses`. Server tool activity surfaces in the transcript as `ClaudeServerToolSegment` custom segments.
 
 <Note>
-  `serverTools` is configured on `ClaudeLanguageModel` rather than on `LanguageModelSession` because the session type is Apple's. To use different server-tool sets per conversation, construct multiple `ClaudeLanguageModel` instances.
+  `serverTools` is configured on `ClaudeLanguageModel` rather than on `LanguageModelSession` because the session type is Apple's. To use different server-tool sets for each conversation, construct multiple `ClaudeLanguageModel` instances.
 </Note>
 
 ## Images

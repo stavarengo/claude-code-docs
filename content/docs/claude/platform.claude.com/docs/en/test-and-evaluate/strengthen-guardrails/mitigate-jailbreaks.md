@@ -92,7 +92,7 @@ Structure your application so that Claude can reliably distinguish untrusted con
     The email body is a JSON string inside a JSON object. Even though it contains text that looks like an instruction, the encoding makes it unambiguous that this is data, not a directive.
   </Accordion>
 
-* **Don't put your own instructions in tool results.** Because Claude treats tool-result content as untrusted data, instructions you place there may be ignored or flagged as a potential injection. Send your instructions in a `user` turn that follows the `tool_result` block. On Claude Opus 4.8 and later, you can also use a [mid-conversation system message](/docs/en/build-with-claude/mid-conversation-system-messages).
+* **Don't put your own instructions in tool results.** Because Claude treats tool-result content as untrusted data, instructions you place there may be ignored or flagged as a potential injection. Send your instructions in a `user` turn that follows the `tool_result` block. On supported models, you can also use a [mid-conversation system message](/docs/en/build-with-claude/mid-conversation-system-messages).
 
 * **Limit Claude's access to sensitive data and actions.** Apply the principle of least privilege so that a successful injection can do minimal damage: don't give Claude access to secrets it doesn't need, run tools in sandboxed environments, and scope permissions as narrowly as possible.
 

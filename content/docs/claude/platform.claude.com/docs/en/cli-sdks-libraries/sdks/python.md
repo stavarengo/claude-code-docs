@@ -269,7 +269,7 @@ for message in runner:
     print(message)
 ```
 
-On every iteration, an API request is made. If Claude wants to call one of the given tools, it's automatically called, and the result is returned directly to the model in the next iteration.
+On every iteration, an API request is made. If the response includes a call to one of the given tools, the tool is automatically called, and the result is returned directly to the model in the next iteration.
 
 ## Message batches
 
@@ -373,7 +373,7 @@ except anthropic.APIStatusError as e:
 
 Error codes are as follows:
 
-| Status Code | Error Type                 |
+| Status code | Error type                 |
 | ----------- | -------------------------- |
 | 400         | `BadRequestError`          |
 | 401         | `AuthenticationError`      |
@@ -450,9 +450,9 @@ client.with_options(timeout=5.0).messages.create(
 )
 ```
 
-On timeout, an `APITimeoutError` is thrown.
+On timeout, the SDK throws an `APITimeoutError`.
 
-Note that requests which time out will be [retried twice by default](#retries).
+Note that requests that time out are [retried twice by default](#retries).
 
 ## Long requests
 
@@ -642,7 +642,7 @@ This library is typed for convenient access to the documented API. If you need t
 
 #### Undocumented endpoints
 
-To make requests to undocumented endpoints, you can use `client.get`, `client.post`, and other HTTP verbs. Options on the client, such as retries, will be respected when making these requests.
+To make requests to undocumented endpoints, you can use `client.get`, `client.post`, and other HTTP verbs. Options on the client, such as retries, are respected when making these requests.
 
 ```python
 import httpx
@@ -658,7 +658,7 @@ print(response.json())
 
 #### Undocumented request params
 
-If you want to explicitly send an extra param, you can do so with the `extra_query`, `extra_body`, and `extra_headers` request options.
+If you want to explicitly send an extra parameter, you can do so with the `extra_query`, `extra_body`, and `extra_headers` request options.
 
 <Warning>
   The `extra_` parameters override documented parameters of the same name. For security reasons, ensure these methods are only used with trusted input data.
@@ -693,7 +693,7 @@ client.with_options(http_client=DefaultHttpxClient(...))
 ```
 
 <Note>
-  Use `DefaultHttpxClient` and `DefaultAsyncHttpxClient` instead of raw `httpx.Client` and `httpx.AsyncClient` to ensure the SDK's default configuration (timeouts, connection limits, etc.) is preserved.
+  Use `DefaultHttpxClient` and `DefaultAsyncHttpxClient` instead of raw `httpx.Client` and `httpx.AsyncClient` to ensure the SDK's default configuration (such as timeouts and connection limits) is preserved.
 </Note>
 
 ### Managing HTTP resources
@@ -768,7 +768,7 @@ Use `AnthropicBedrockMantle` for new projects; `AnthropicBedrock` remains for ex
 
 ## Semantic versioning
 
-This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) conventions, though certain backwards-incompatible changes may be released as minor versions:
+This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) conventions, though certain backward-incompatible changes may be released as minor versions:
 
 1. Changes that only affect static types, without breaking runtime behavior.
 2. Changes to library internals which are technically public but not intended or documented for external use.

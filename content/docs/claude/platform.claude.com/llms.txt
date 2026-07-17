@@ -12,7 +12,7 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 1893 pages - /docs - Content included below
+- English (en) - 1894 pages - /docs - Content included below
 - German (Deutsch) (de) - 137 pages - /docs/de - Visit website for content
 - Spanish (Español) (es) - 137 pages - /docs/es - Visit website for content
 - French (Français) (fr) - 137 pages - /docs/fr - Visit website for content
@@ -68,6 +68,7 @@ The full documentation is available in the following languages on https://platfo
 - [Fast mode (research preview)](https://platform.claude.com/docs/en/build-with-claude/fast-mode.md)
 - [Files API](https://platform.claude.com/docs/en/build-with-claude/files.md)
 - [Fine-grained tool streaming](https://platform.claude.com/docs/en/agents-and-tools/tool-use/fine-grained-tool-streaming.md)
+- [Streaming refusals](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/handle-streaming-refusals.md) - Handle streaming refusals
 - [Handle tool calls](https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md)
 - [How tool use works](https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works.md)
 - [Manage tool context](https://platform.claude.com/docs/en/agents-and-tools/tool-use/manage-tool-context.md)
@@ -90,7 +91,6 @@ The full documentation is available in the following languages on https://platfo
 - [Skills for enterprise](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/enterprise.md)
 - [Stop reasons and fallback](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons.md)
 - [Streaming Messages](https://platform.claude.com/docs/en/build-with-claude/streaming.md) - Streaming messages
-- [Streaming refusals](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/handle-streaming-refusals.md)
 - [Strict tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use.md)
 - [Structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md)
 - [Task budgets (beta)](https://platform.claude.com/docs/en/build-with-claude/task-budgets.md) - Task budgets
@@ -123,6 +123,7 @@ The full documentation is available in the following languages on https://platfo
 - [Agent setup](https://platform.claude.com/docs/en/managed-agents/agent-setup.md) - Define your agent
 - [Dreams](https://platform.claude.com/docs/en/managed-agents/dreams.md)
 - [MCP connector](https://platform.claude.com/docs/en/managed-agents/mcp-connector.md)
+- [Migration](https://platform.claude.com/docs/en/managed-agents/migration.md)
 - [Multiagent orchestration](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration.md)
 - [Permission policies](https://platform.claude.com/docs/en/managed-agents/permission-policies.md)
 - [Prototype in Console](https://platform.claude.com/docs/en/managed-agents/onboarding.md)

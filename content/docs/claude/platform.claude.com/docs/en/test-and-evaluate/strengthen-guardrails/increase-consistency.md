@@ -16,7 +16,7 @@ Here's how to make Claude's responses more consistent:
 
 ## Specify the desired output format
 
-Precisely define your desired output format using JSON, XML, or custom templates so that Claude understands every output formatting element you require.
+Precisely define your desired output format using JSON, XML, or custom templates so that Claude follows every output formatting element you require.
 
 <Accordion title="Example: Standardizing customer feedback">
   | Role      | Content                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
@@ -55,7 +55,7 @@ Prefill the `Assistant` turn with your desired format. This trick bypasses Claud
 
 ## Constrain with examples
 
-Provide examples of your desired output. This trains Claude's understanding better than abstract instructions.
+Provide examples of your desired output. This is more effective than abstract instructions.
 
 <Accordion title="Example: Generating consistent market intelligence">
   | Role      | Content                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
@@ -85,7 +85,7 @@ For role-based applications, maintaining consistent character requires deliberat
 
 * **Use system prompts to set the role:** Use [system prompts](/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#give-claude-a-role) to define Claude's role and personality. This sets a strong foundation for consistent responses.
   <Tip>
-    When setting up the character, provide detailed information about the personality, background, and any specific traits or quirks. This will help the model better emulate and generalize the character's traits.
+    When setting up the character, provide detailed information about the personality, background, and any specific traits or quirks. This helps the model better emulate and generalize the character's traits.
   </Tip>
 * **Prepare Claude for possible scenarios:** Provide a list of common scenarios and expected responses in your prompts. This "trains" Claude to handle diverse situations without breaking character.
 

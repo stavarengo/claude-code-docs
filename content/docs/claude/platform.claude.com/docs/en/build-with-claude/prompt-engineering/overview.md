@@ -28,7 +28,7 @@ If not, spend time establishing that first. Check out [Define success criteria a
 
 ## When to prompt engineer
 
-This guide focuses on success criteria that are controllable through prompt engineering. Not every success criteria or failing eval is best solved by prompt engineering. For example, latency and cost can be sometimes more easily improved by selecting a different model.
+This guide focuses on success criteria that are controllable through prompt engineering. Not every success criteria or failing eval is best solved by prompt engineering. For example, you can sometimes improve latency and cost more easily by selecting a different model.
 
 ***
 
@@ -44,7 +44,7 @@ The [Claude Console](/dashboard) also offers [prompting tools](/docs/en/build-wi
 
 ## Prompt engineering tutorial
 
-If you're an interactive learner, you can dive into the interactive tutorials instead!
+If you're an interactive learner, you can start with the interactive tutorials instead!
 
 <CardGroup cols={2}>
   <Card title="GitHub prompting tutorial" icon="link" href="https://github.com/anthropics/prompt-eng-interactive-tutorial">

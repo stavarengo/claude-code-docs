@@ -10,13 +10,13 @@ The API follows a predictable HTTP error code format:
 
 * 400 - `invalid_request_error`: There was an issue with the format or content of your request. This error type may also be used for other 4XX status codes not listed in this section.
 
-* 401 - `authentication_error`: There's an issue with your API key (for example, it's malformed, revoked, or [expired](/docs/en/manage-claude/authentication#key-expiration)). On Claude Platform on AWS, this can also indicate a problem with your AWS credentials or SigV4 signature.
+* 401 - `authentication_error`: There's an issue with your API key (for example, it's malformed, revoked, or expired; see [Key expiration](/docs/en/manage-claude/authentication#key-expiration)). On Claude Platform on AWS, this can also indicate a problem with your AWS credentials or SigV4 signature.
 
 * 402 - `billing_error`: There's an issue with your billing or payment information. Check your payment details in the [Claude Console](https://platform.claude.com), or in AWS Marketplace if you're using Claude Platform on AWS.
 
-* 403 - `permission_error`: Your API key does not have permission to use the specified resource.
+* 403 - `permission_error`: Your API key does not have permission to use the specified resource. Check your organization's access and workspace settings in the [Claude Console](https://platform.claude.com).
 
-* 404 - `not_found_error`: The requested resource was not found.
+* 404 - `not_found_error`: The requested resource was not found. Check the endpoint path and any resource IDs in the request URL.
 
 * 409 - `conflict_error`: The request conflicts with the current state of a resource. For example, the resource was modified concurrently, or a value that must be unique is already in use. Resolve the conflict, then retry the request.
 
@@ -24,9 +24,9 @@ The API follows a predictable HTTP error code format:
 
 * 429 - `rate_limit_error`: Your account has hit a rate limit.
 
-* 500 - `api_error`: An unexpected error has occurred internal to Anthropic's systems.
+* 500 - `api_error`: An unexpected error has occurred internal to Anthropic's systems. Retry the request with exponential backoff; if the error persists, contact support with the [request ID](#request-id).
 
-* 504 - `timeout_error`: The request timed out while processing. Consider using [streaming](/docs/en/build-with-claude/streaming) for long-running requests. See [Long requests](#long-requests) for more options.
+* 504 - `timeout_error`: The request timed out while processing. Consider using the [streaming Messages API](/docs/en/build-with-claude/streaming) for long-running requests. See [Long requests](#long-requests) for more options.
 
 * 529 - `overloaded_error`: The API is temporarily overloaded.
 
@@ -51,7 +51,7 @@ The API enforces request size limits:
 | [Batch API](/docs/en/build-with-claude/batch-processing) | 256 MB               |
 | [Files API](/docs/en/build-with-claude/files)            | 500 MB               |
 
-If you exceed these limits, you'll receive a 413 `request_too_large` error. On the direct Claude API, this error is returned from Cloudflare before the request reaches the API servers.
+If you exceed these limits, you'll receive a 413 `request_too_large` error. On the direct Claude API, Cloudflare returns this error before the request reaches the API servers.
 
 ## Error shapes
 
@@ -244,7 +244,7 @@ For Claude Platform on AWS request-ID examples in other languages, see [Request 
 
 Avoid setting a large `max_tokens` value without using the [streaming Messages API](/docs/en/build-with-claude/streaming) or [Message Batches API](/docs/en/api/messages/batches/create):
 
-* Some networks may drop idle connections after a variable period of time, which can cause the request to fail or timeout without receiving a response from Anthropic.
+* Some networks may drop idle connections after a variable period of time, which can cause the request to fail or time out without receiving a response from Anthropic.
 * Networks differ in reliability. The [Message Batches API](/docs/en/api/messages/batches/create) can help you manage the risk of network issues by allowing you to poll for results rather than requiring an uninterrupted network connection.
 
 If you are building a direct API integration, setting a [TCP socket keep-alive](https://tldp.org/HOWTO/TCP-Keepalive-HOWTO/programming.html) can reduce the impact of idle connection timeouts on some networks.
@@ -434,7 +434,7 @@ If every request to [Claude Platform on AWS](/docs/en/build-with-claude/claude-p
 ## Next steps
 
 <CardGroup cols={3}>
-  <Card title="Trigger a routine via API" icon="play" href="/docs/en/api/claude-code/routines-fire">
+  <Card title="Trigger a routine through the API" icon="play" href="/docs/en/api/claude-code/routines-fire">
     Start a Claude Code routine session on demand by sending an authenticated POST request.
   </Card>
 

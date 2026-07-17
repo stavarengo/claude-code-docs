@@ -33,7 +33,7 @@ When handling a request, Anthropic decides to assign a request to Priority Tier 
 
 Anthropic counts usage against Priority Tier capacity as follows:
 
-**Input Tokens**
+**Input tokens**
 
 * Cache reads as 0.1 tokens per token read from the cache
 * Cache writes as 1.25 tokens per token written to the cache with a 5 minute TTL
@@ -41,7 +41,7 @@ Anthropic counts usage against Priority Tier capacity as follows:
 * For [US-only inference](/docs/en/manage-claude/data-residency) (`inference_geo: "us"`) requests on Claude Opus 4.6, Claude Sonnet 4.6, and later models, input tokens are 1.1 tokens per token
 * All other input tokens are 1 token per token
 
-**Output Tokens**
+**Output tokens**
 
 * For [US-only inference](/docs/en/manage-claude/data-residency) (`inference_geo: "us"`) requests on Claude Opus 4.6, Claude Sonnet 4.6, and later models, output tokens are 1.1 tokens per token
 * All other output tokens are 1 token per token
@@ -116,7 +116,7 @@ You can control which service tiers can be used for a request by setting the `se
 
   var message = await client.Messages.Create(new MessageCreateParams
   {
-      Model = "claude-opus-4-8",
+      Model = Model.ClaudeOpus4_8,
       MaxTokens = 1024,
       Messages = [new() { Role = Role.User, Content = "Hello, Claude!" }],
       ServiceTier = ServiceTier.Auto, // Automatically use Priority Tier when available, fallback to standard

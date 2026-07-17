@@ -5,7 +5,7 @@ To mitigate misuse and manage capacity on the API, limits are in place on how mu
 ---
 
 <Note>
-  **[Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws):** The rate limits on this page apply to Claude Platform on AWS, but billing and limit management differ. Billing is through AWS Marketplace (not Anthropic credit purchases). Organizations on Claude Platform on AWS are placed on the Start tier and do not move between usage tiers automatically. To request higher limits, contact your Anthropic account representative or [support](https://support.claude.com); the **Request rate limit increase** flow is not available. Spend limits are set in [Settings > Billing](/settings/billing) rather than **Settings > Limits**. Per-workspace rate limit configuration and [fast mode](/docs/en/build-with-claude/fast-mode) are not available on Claude Platform on AWS. For details, see [Rate limits and quotas on Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws#rate-limits-and-quotas).
+  **[Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws):** The rate limits on this page apply to Claude Platform on AWS, but billing and limit management differ. Billing is through AWS Marketplace (not Anthropic credit purchases). Organizations on Claude Platform on AWS are placed on the Start tier and do not move between usage tiers automatically. To request higher limits, contact your Anthropic account representative or [Anthropic support](https://support.claude.com); the **Request rate limit increase** flow is not available. Spend limits are set in [Settings > Billing](/settings/billing) rather than **Settings > Limits**. Per-workspace rate limit configuration and [fast mode](/docs/en/build-with-claude/fast-mode) are not available on Claude Platform on AWS. For details, see [Rate limits and quotas on Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws#rate-limits-and-quotas).
 </Note>
 
 There are two types of limits:
@@ -35,9 +35,9 @@ Each of the Start, Build, and Scale tiers carries a monthly spend cap, which is 
 
 | Usage tier | Monthly spend cap |
 | ---------- | ----------------- |
-| Start      | $500              |
-| Build      | $1,000            |
-| Scale      | $200,000          |
+| Start      | $500 USD          |
+| Build      | $1,000 USD        |
+| Scale      | $200,000 USD      |
 
 Organizations on the Custom tier have no monthly spend cap; limits are arranged with their account team.
 
@@ -100,7 +100,7 @@ Here's what counts toward ITPM:
 <Tip>
   **Maximize your rate limits with prompt caching**
 
-  To get the most out of your rate limits, use [prompt caching](/docs/en/build-with-claude/prompt-caching) for repeated content like:
+  See [prompt caching](/docs/en/build-with-claude/prompt-caching) for guidance on increasing effective throughput by caching repeated content such as:
 
   * System instructions and prompts
   * Large context documents
@@ -112,7 +112,7 @@ Here's what counts toward ITPM:
 
 OTPM rate limits are evaluated in real time as output tokens are produced, counting only the actual tokens generated. The `max_tokens` parameter does not factor into OTPM rate limit calculations, so there is no rate limit downside to setting a higher `max_tokens` value.
 
-Rate limits are applied separately for each model; therefore you can use different models up to their respective limits simultaneously. You can check your current rate limits and behavior in the [Claude Console](/settings/limits), or read the configured limits programmatically with the [Rate Limits API](/docs/en/manage-claude/rate-limits-api).
+Rate limits are applied separately for each model; therefore you can use different models up to their respective limits simultaneously. You can check your current rate limits and behavior on the [Limits](/settings/limits) page in the Claude Console, or read the configured limits programmatically with the [Rate Limits API](/docs/en/manage-claude/rate-limits-api).
 
 <Note>
   Rate limits are currently shared across all `inference_geo` values. Requests with `inference_geo: "us"` and `inference_geo: "global"` draw from the same rate limit pool.
@@ -153,7 +153,7 @@ Rate limits are applied separately for each model; therefore you can use differe
   </Tab>
 
   <Tab title="Custom tier">
-    If you need limits higher than the Scale tier, contact sales through the [Claude Console](/settings/limits).
+    If you need limits higher than the Scale tier, contact sales through the [Limits](/settings/limits) page in the Claude Console.
   </Tab>
 </Tabs>
 
@@ -187,7 +187,7 @@ The Message Batches API has its own set of rate limits which are shared across a
   </Tab>
 
   <Tab title="Custom tier">
-    If you need limits higher than the Scale tier, contact sales through the [Claude Console](/settings/limits).
+    If you need limits higher than the Scale tier, contact sales through the [Limits](/settings/limits) page in the Claude Console.
   </Tab>
 </Tabs>
 
@@ -204,13 +204,13 @@ The Message Batches API has its own set of rate limits which are shared across a
 
 When using [fast mode](/docs/en/build-with-claude/fast-mode) (research preview) with `speed: "fast"` on Claude Opus 4.8 or Opus 4.7, dedicated rate limits apply that are separate from standard Opus rate limits. When fast mode rate limits are exceeded, the API returns a `429` error with a `retry-after` header. Fast mode is not available on Claude Opus 4.6: requests to `claude-opus-4-6` with `speed: "fast"` run at standard speed. See [Fast mode](/docs/en/build-with-claude/fast-mode#supported-models).
 
-The response includes `anthropic-fast-*` headers that indicate your fast mode rate limit status. See [Fast mode](/docs/en/build-with-claude/fast-mode#rate-limits) for details on these headers.
+The response includes `anthropic-fast-*` headers that indicate your fast mode rate limit status. See [Fast mode rate limits](/docs/en/build-with-claude/fast-mode#rate-limits) for details on these headers.
 
 ### Monitoring your rate limits in the Console
 
 You can monitor your rate limit usage on the [Usage](/usage) page of the [Claude Console](/).
 
-In addition to providing token and request charts, the Usage page provides two separate rate limit charts. Use these charts to see what headroom you have to grow, when you may be hitting peak use, better understand what rate limits to request, or how you can improve your caching rates. The charts visualize a number of metrics for a given rate limit (for example, per model):
+In addition to providing token and request charts, the Usage page provides two separate rate limit charts. Use these charts to see what headroom you have to grow, identify when you may be hitting peak use, understand what rate limits to request, and learn how to improve your caching rates. The charts visualize a number of metrics for a given rate limit (for example, per model):
 
 * The **Rate Limit - Input Tokens** chart includes:
 
@@ -228,11 +228,11 @@ In addition to providing token and request charts, the Usage page provides two s
 To request higher rate limits or a higher monthly spend cap, use **Request rate limit increase** on the [Limits](/settings/limits) page.
 
 <Note>
-  Support can also raise limits. For urgent needs, contact [support](https://support.claude.com).
+  Support can also raise limits. For urgent needs, contact [Anthropic support](https://support.claude.com).
 </Note>
 
 <Note>
-  **[Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws):** The **Request rate limit increase** flow is not available. Contact your Anthropic account representative or [support](https://support.claude.com), and include the models you need raised, your peak input and output tokens per minute for each model, and roughly what share of your input is cached or repeated context. See [Rate limits and quotas on Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws#rate-limits-and-quotas).
+  **[Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws):** The **Request rate limit increase** flow is not available. Contact your Anthropic account representative or [Anthropic support](https://support.claude.com), and include the models you need raised, your peak input and output tokens per minute for each model, and roughly what share of your input is cached or repeated context. See [Rate limits and quotas on Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws#rate-limits-and-quotas).
 </Note>
 
 ## Setting lower limits for Workspaces

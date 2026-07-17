@@ -10,6 +10,10 @@ Updates to the Claude Platform, including the Claude API, client SDKs, and the C
   For updates to Claude Code, see the [complete CHANGELOG.md](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) in the `claude-code` repository.
 </Tip>
 
+### July 15, 2026
+
+* [Mid-conversation system messages](/docs/en/build-with-claude/mid-conversation-system-messages) are available on Claude Fable 5, Claude Mythos 5, and Claude Opus 4.8, on the Claude API, [Claude in Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock), and [Google Cloud](/docs/en/build-with-claude/claude-on-vertex-ai). No beta header is required. This corrects earlier availability notes.
+
 ### July 14, 2026
 
 * You can now manage the people in your **Claude Enterprise** (claude.ai) organization with the [Admin API](/docs/en/api/admin), in beta for all Claude Enterprise organizations: list members and look them up by email address, change a member's role, remove members, send and withdraw invites, manage groups and their membership, and read custom roles. Group and custom-role requests require the `anthropic-beta: ce-user-management-2026-07-13` beta header; member and invite requests take no beta header. An Admin API key with the `read:org_audit` scope can also call every user-management `GET` endpoint. See [User management](/docs/en/manage-claude/user-management).

@@ -31,8 +31,8 @@ The routine fire endpoint belongs to the Claude Code product surface, which diff
 
 To call this endpoint, you need:
 
-1. A routine created at [claude.ai/code/routines](https://claude.ai/code/routines)
-2. A bearer token generated for that routine: open the routine for editing, click **Add another trigger** under **Select a trigger**, choose **API**, then click **Generate token** in the modal. The token is shown once and cannot be retrieved later.
+1. A routine created at [claude.ai/code/routines](https://claude.ai/code/routines).
+2. A bearer token generated for that routine: open the routine for editing, click **Add another trigger** under **Select a trigger**, choose **API**, then click **Generate token** in the modal window. The token is shown once and cannot be retrieved later.
 
 See [Add an API trigger](https://code.claude.com/docs/en/routines#add-an-api-trigger) in the Claude Code documentation for the full setup walkthrough.
 
@@ -82,9 +82,9 @@ The request returns once the session is created. It does not stream session outp
 
 ### Path parameters
 
-| Name         | Type   | Description                                                                                                                                                                  |
-| ------------ | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `routine_id` | string | The routine's identifier. Despite the parameter name, the value is prefixed `trig_` rather than `routine_`. Included in the URL the modal shows when you add an API trigger. |
+| Name         | Type   | Description                                                                                                                                                                         |
+| ------------ | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `routine_id` | string | The routine's identifier. Despite the parameter name, the value is prefixed `trig_` rather than `routine_`. Included in the URL the modal window shows when you add an API trigger. |
 
 ### Request body
 
@@ -126,15 +126,15 @@ Errors use the standard Anthropic [error envelope](/docs/en/api/errors):
 }
 ```
 
-| HTTP status | Error type              | Cause                                                                                                                                                                         |
-| ----------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 400         | `invalid_request_error` | Missing or invalid `anthropic-beta` header, `text` exceeds 65,536 characters, or the routine is [paused](https://code.claude.com/docs/en/routines#edit-and-control-routines). |
-| 401         | `authentication_error`  | No bearer token in the `Authorization` header, or the token does not match this routine.                                                                                      |
-| 403         | `permission_error`      | The account or organization does not have access to this endpoint.                                                                                                            |
-| 404         | `not_found_error`       | The routine does not exist.                                                                                                                                                   |
-| 429         | `rate_limit_error`      | The account's routine run limit or usage limit has been reached. The response includes a `Retry-After` header indicating when the window resets.                              |
-| 500         | `api_error`             | An unexpected server error.                                                                                                                                                   |
-| 503         | `overloaded_error`      | The service is temporarily overloaded. Retry after a short delay. The Claude Platform returns 529 for this error type; this endpoint returns 503.                             |
+| HTTP status | Error type              | Cause                                                                                                                                                                                                         |
+| ----------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 400         | `invalid_request_error` | Missing or invalid `anthropic-beta` header, `text` exceeds 65,536 characters, or the routine is paused (see [Edit and control routines](https://code.claude.com/docs/en/routines#edit-and-control-routines)). |
+| 401         | `authentication_error`  | No bearer token in the `Authorization` header, or the token does not match this routine.                                                                                                                      |
+| 403         | `permission_error`      | The account or organization does not have access to this endpoint.                                                                                                                                            |
+| 404         | `not_found_error`       | The routine does not exist.                                                                                                                                                                                   |
+| 429         | `rate_limit_error`      | The account's routine run limit or usage limit has been reached. The response includes a `Retry-After` header indicating when the window resets.                                                              |
+| 500         | `api_error`             | An unexpected server error. Retry with exponential backoff; if the error persists, contact support with the request ID.                                                                                       |
+| 503         | `overloaded_error`      | The service is temporarily overloaded. Retry after a short delay. The Claude Platform returns 529 for this error type; this endpoint returns 503.                                                             |
 
 ## Authentication
 
@@ -150,7 +150,7 @@ Each successful request creates a new session. There is no idempotency key. If a
 
 Routine runs count against a per-account daily allowance that varies by plan, and the resulting sessions draw down the same Claude Code subscription usage as interactive sessions. When either limit is reached, the endpoint returns `429 rate_limit_error` with a `Retry-After` header. Organizations with extra usage enabled continue past the included allowance on metered overage.
 
-Your remaining daily runs are shown at [claude.ai/code/routines](https://claude.ai/code/routines). For how routine usage interacts with subscription limits and extra usage billing, see [Usage and limits](https://code.claude.com/docs/en/routines#usage-and-limits) in the Claude Code documentation.
+View your remaining daily runs at [claude.ai/code/routines](https://claude.ai/code/routines). For how routine usage interacts with subscription limits and extra usage billing, see [Usage and limits](https://code.claude.com/docs/en/routines#usage-and-limits) in the Claude Code documentation.
 
 ## SDK support
 

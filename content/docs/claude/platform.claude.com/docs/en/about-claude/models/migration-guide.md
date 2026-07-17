@@ -184,20 +184,19 @@ model = "claude-mythos-5"  # After
    <CodeGroup>
      ```bash cURL
      curl https://api.anthropic.com/v1/messages \
-          --header "x-api-key: $ANTHROPIC_API_KEY" \
-          --header "anthropic-version: 2023-06-01" \
-          --header "content-type: application/json" \
-          --data \
-     '{
+       -H "x-api-key: $ANTHROPIC_API_KEY" \
+       -H "anthropic-version: 2023-06-01" \
+       -H "content-type: application/json" \
+       -d '{
          "model": "claude-mythos-5",
          "max_tokens": 16000,
          "messages": [
-             {
-                 "role": "user",
-                 "content": "..."
-             }
+           {
+             "role": "user",
+             "content": "..."
+           }
          ]
-     }'
+       }'
      ```
 
      ```bash CLI
@@ -325,7 +324,7 @@ The key changes to check are always-on [adaptive thinking](/docs/en/build-with-c
 
 ### Before you migrate
 
-Claude Fable 5 is priced at $10 per million input tokens and $50 per million output tokens, compared with $5 and $25 for Claude Opus 4.8. See [Claude pricing](/docs/en/about-claude/pricing) for details.
+Claude Fable 5 is priced at $10 USD per million input tokens and $50 USD per million output tokens, compared with $5 USD and $25 USD for Claude Opus 4.8. See [Claude pricing](/docs/en/about-claude/pricing) for details.
 
 Claude Fable 5 requires 30-day data retention and is not available under zero data retention (ZDR) arrangements; it is designated a Covered Model. On the Claude API, a request from an organization whose data retention configuration does not meet this requirement returns a 400 `invalid_request_error`. Organizations with a ZDR arrangement should contact their Anthropic account team to discuss data retention configuration; Claude Opus 4.8 remains available under ZDR. Alternatively, you can configure data retention per workspace. The 30-day data retention requirement applies on every platform where Claude Fable 5 is offered; see [Model-specific data retention requirements](/docs/en/manage-claude/api-and-data-retention#model-specific-data-retention-requirements) for per-platform details.
 
@@ -355,26 +354,25 @@ The items in this section describe the API and behavior differences worth checki
    <CodeGroup>
      ```bash cURL
      curl https://api.anthropic.com/v1/messages \
-          --header "x-api-key: $ANTHROPIC_API_KEY" \
-          --header "anthropic-version: 2023-06-01" \
-          --header "content-type: application/json" \
-          --data \
-     '{
+       -H "x-api-key: $ANTHROPIC_API_KEY" \
+       -H "anthropic-version: 2023-06-01" \
+       -H "content-type: application/json" \
+       -d '{
          "model": "claude-opus-4-8",
          "max_tokens": 16000,
          "thinking": {
-             "type": "adaptive"
+           "type": "adaptive"
          },
          "output_config": {
-             "effort": "high"
+           "effort": "high"
          },
          "messages": [
-             {
-                 "role": "user",
-                 "content": "..."
-             }
+           {
+             "role": "user",
+             "content": "..."
+           }
          ]
-     }'
+       }'
      ```
 
      ```bash CLI
@@ -505,23 +503,22 @@ The items in this section describe the API and behavior differences worth checki
    <CodeGroup>
      ```bash cURL
      curl https://api.anthropic.com/v1/messages \
-          --header "x-api-key: $ANTHROPIC_API_KEY" \
-          --header "anthropic-version: 2023-06-01" \
-          --header "content-type: application/json" \
-          --data \
-     '{
+       -H "x-api-key: $ANTHROPIC_API_KEY" \
+       -H "anthropic-version: 2023-06-01" \
+       -H "content-type: application/json" \
+       -d '{
          "model": "claude-fable-5",
          "max_tokens": 16000,
          "output_config": {
-             "effort": "high"
+           "effort": "high"
          },
          "messages": [
-             {
-                 "role": "user",
-                 "content": "..."
-             }
+           {
+             "role": "user",
+             "content": "..."
+           }
          ]
-     }'
+       }'
      ```
 
      ```bash CLI
@@ -644,7 +641,7 @@ The items in this section describe the API and behavior differences worth checki
 
    You are not billed for the input tokens of a request refused before any output is generated. When a classifier fires mid-stream, the input and already-streamed output are billed; discard the partial output.
 
-   To re-run refused requests on another model automatically, pass the opt-in `fallbacks` parameter, which is in beta on the Claude API and Claude Platform on AWS. The parameter is not available on the Message Batches API or on Amazon Bedrock, Google Cloud, and Microsoft Foundry; on those three platforms, run the retry client-side or use the SDK refusal-fallback middleware. See [Handling stop reasons](/docs/en/build-with-claude/refusals-and-fallback).
+   To re-run refused requests on another model automatically, pass the opt-in `fallbacks` parameter, which is in beta on the Claude API and Claude Platform on AWS. The parameter is not available on the Message Batches API or on Amazon Bedrock, Google Cloud, and Microsoft Foundry; on those three platforms, run the retry client-side or use the SDK refusal-fallback middleware. See [Refusals and fallback](/docs/en/build-with-claude/refusals-and-fallback).
 
 6. **Start at `high` effort:** The [effort parameter](/docs/en/build-with-claude/effort) default remains `high`. On Claude Opus 4.8, the recommendation for coding and high-autonomy work is to set `xhigh` explicitly. On `claude-fable-5`, use `high` as the default for most tasks and reserve `xhigh` for the most capability-sensitive workloads. Lower effort settings on `claude-fable-5` still perform well and often exceed `xhigh` performance on prior models. Reduce effort if a task completes but takes longer than necessary. See [Prompting Claude Fable 5](/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5#consider-all-effort-levels).
 
@@ -658,7 +655,7 @@ The items in this section describe the API and behavior differences worth checki
 * If you removed manual extended thinking and assistant prefills during earlier migrations, no action is needed: both remain unsupported on `claude-fable-5`.
 * Verify any code that parses the `thinking` field treats it as display text only and passes thinking blocks back unchanged when continuing on the same model. `thinking.display` defaults to `"omitted"` on `claude-fable-5`, the same as on Claude Opus 4.8; set `display: "summarized"` to receive readable summaries. See [Thinking output on Claude Fable 5 and Claude Mythos 5](/docs/en/build-with-claude/adaptive-thinking#thinking-output-on-claude-fable-5-and-claude-mythos-5).
 * If you replay conversation history on another model, strip `thinking` and `redacted_thinking` blocks from prior assistant turns first. Thinking blocks from `claude-fable-5` are tied to the model that produced them, and models other than Claude Fable 5 and Claude Mythos 5 silently ignore them. Stripping keeps cross-model requests minimal and uniform. The exception is redeeming a [fallback credit](/docs/en/build-with-claude/fallback-credit), which requires the request body echoed under that feature's exact rules.
-* Handle `stop_reason: "refusal"` and read the `stop_details.category` field. To re-run refused requests on another model automatically, consider the opt-in `fallbacks` parameter (beta). See [Handling stop reasons](/docs/en/build-with-claude/refusals-and-fallback).
+* Handle `stop_reason: "refusal"` and read the `stop_details.category` field. To re-run refused requests on another model automatically, consider the opt-in `fallbacks` parameter (beta). See [Refusals and fallback](/docs/en/build-with-claude/refusals-and-fallback).
 * Re-evaluate your `effort` setting. Start at `high` for most tasks, including workloads that ran at `xhigh` on Claude Opus 4.8.
 * Re-baseline cost and latency on your own workloads. Token counts are roughly unchanged when migrating from `claude-opus-4-8`; per-token pricing differs.
 
@@ -752,24 +749,23 @@ model = "claude-opus-4-8"  # After
    <CodeGroup>
      ```bash cURL
      curl https://api.anthropic.com/v1/messages \
-          --header "x-api-key: $ANTHROPIC_API_KEY" \
-          --header "anthropic-version: 2023-06-01" \
-          --header "content-type: application/json" \
-          --data \
-     '{
+       -H "x-api-key: $ANTHROPIC_API_KEY" \
+       -H "anthropic-version: 2023-06-01" \
+       -H "content-type: application/json" \
+       -d '{
          "model": "claude-opus-4-6",
          "max_tokens": 16000,
          "thinking": {
-             "type": "enabled",
-             "budget_tokens": 10000
+           "type": "enabled",
+           "budget_tokens": 10000
          },
          "messages": [
-             {
-                 "role": "user",
-                 "content": "..."
-             }
+           {
+             "role": "user",
+             "content": "..."
+           }
          ]
-     }'
+       }'
      ```
 
      ```bash CLI
@@ -885,26 +881,25 @@ model = "claude-opus-4-8"  # After
    <CodeGroup>
      ```bash cURL
      curl https://api.anthropic.com/v1/messages \
-          --header "x-api-key: $ANTHROPIC_API_KEY" \
-          --header "anthropic-version: 2023-06-01" \
-          --header "content-type: application/json" \
-          --data \
-     '{
+       -H "x-api-key: $ANTHROPIC_API_KEY" \
+       -H "anthropic-version: 2023-06-01" \
+       -H "content-type: application/json" \
+       -d '{
          "model": "claude-opus-4-8",
          "max_tokens": 16000,
          "thinking": {
-             "type": "adaptive"
+           "type": "adaptive"
          },
          "output_config": {
-             "effort": "high"
+           "effort": "high"
          },
          "messages": [
-             {
-                 "role": "user",
-                 "content": "..."
-             }
+           {
+             "role": "user",
+             "content": "..."
+           }
          ]
-     }'
+       }'
      ```
 
      ```bash CLI
@@ -1085,7 +1080,7 @@ model = "claude-opus-4-8"  # After
 
 4. **Updated token counting:** Claude Opus 4.7 uses a new tokenizer, contributing to its improved performance on a wide range of tasks. The new tokenizer may use roughly 1x to 1.35x as many tokens when processing text compared to previous models (up to \~35% more, varying by content).
 
-   [`/v1/messages/count_tokens`](/docs/en/build-with-claude/token-counting) will return a different number of tokens for Claude Opus 4.7 than it did for Claude Opus 4.6. Token efficiency can vary by workload shape.
+   [`/v1/messages/count_tokens`](/docs/en/build-with-claude/token-counting) returns a different number of tokens for Claude Opus 4.7 than it did for Claude Opus 4.6. Token efficiency can vary by workload shape.
 
    Prompting interventions, `task_budget`, and `effort` can help control costs and ensure appropriate token usage. These controls may trade off model intelligence. Update your `max_tokens` parameters to give additional headroom, including compaction triggers. Claude Opus 4.7 provides a 1M context window at standard API pricing with no long-context premium.
 
@@ -1093,7 +1088,7 @@ model = "claude-opus-4-8"  # After
 
 #### Choosing an effort level
 
-The [effort parameter](/docs/en/build-with-claude/effort) allows you to tune Claude's intelligence vs. token spend, trading off capability for faster speed and lower costs. Start with the `xhigh` effort level for coding and agentic use cases, and use a minimum of `high` effort for most intelligence-sensitive use cases. Experiment with other effort levels to further tune token usage and intelligence:
+The [effort parameter](/docs/en/build-with-claude/effort) allows you to tune Claude's intelligence versus token spend, trading off capability for faster speed and lower costs. Start with the `xhigh` effort level for coding and agentic use cases, and use a minimum of `high` effort for most intelligence-sensitive use cases. Experiment with other effort levels to further tune token usage and intelligence:
 
 * **`max`:** Max effort can deliver performance gains in some use cases, but may show diminishing returns from increased token usage. This setting can also sometimes be prone to overthinking. Test max effort for intelligence-demanding tasks.
 * **`xhigh`:** Extra high effort is the best setting for most coding and agentic use cases.
@@ -1113,7 +1108,7 @@ Claude Opus 4.7 has several behavioral differences from Claude Opus 4.6 that are
 
    Positive examples showing how Claude can communicate with the appropriate level of concision tend to be more effective than negative examples or instructions that tell the model what not to do.
 
-2. **More literal instruction following:** Claude Opus 4.7 interprets prompts more literally and explicitly than Claude Opus 4.6, particularly at lower effort levels. It will not silently generalize an instruction from one item to another, and it will not infer requests you didn't make. The upside of this literalism is precision and less thrash. It generally performs better for API use cases with carefully tuned prompts, structured extraction, and pipelines where you want predictable behavior. A prompt and harness review may be especially helpful for migration to Claude Opus 4.8.
+2. **More literal instruction following:** Claude Opus 4.7 interprets prompts more literally and explicitly than Claude Opus 4.6, particularly at lower effort levels. It does not silently generalize an instruction from one item to another, and it does not infer requests you didn't make. The upside of this literalism is precision and less thrash. It generally performs better for API use cases with carefully tuned prompts, structured extraction, and pipelines where you want predictable behavior. A prompt and harness review may be especially helpful for migration to Claude Opus 4.8.
 
 3. **More direct tone:** As with any new model, prose style on long-form writing may shift. Claude Opus 4.7 is more direct and opinionated, with less validation-forward phrasing and fewer emoji than Claude Opus 4.6's warmer style. If your product relies on a specific voice, re-evaluate style prompts against the new baseline.
 
@@ -1121,7 +1116,7 @@ Claude Opus 4.7 has several behavioral differences from Claude Opus 4.6 that are
 
 5. **Fewer subagents spawned by default:** Claude Opus 4.7 tends to spawn fewer subagents by default. However, this behavior is steerable through prompting; give Claude Opus 4.7 explicit guidance around when subagents are desirable.
 
-6. **Stricter effort calibration:** Meaningfully changing from Claude Opus 4.6, Claude Opus 4.7 respects [effort levels](/docs/en/build-with-claude/effort) strictly, especially at the low end. At `low` and `medium`, the model scopes its work to what was asked rather than going above and beyond.
+6. **Stricter effort calibration:** Meaningfully changing from Claude Opus 4.6, Claude Opus 4.7 respects [effort levels](/docs/en/build-with-claude/effort) strictly, especially at the low end. At `low` and `medium`, the model scopes its work to what was asked rather than doing more than requested.
 
    This is good for latency and cost, but on moderately complex tasks running at `low` effort there is some risk of under-thinking. If you observe shallow reasoning on complex problems, raise effort to `high` or `xhigh` rather than prompting around it.
 
@@ -1133,7 +1128,7 @@ Claude Opus 4.7 has several behavioral differences from Claude Opus 4.6 that are
 
 8. **Real-time cybersecurity safeguards:** Newly added in Claude Opus 4.7, requests that involve prohibited or high-risk topics may lead to refusals. For legitimate security work such as penetration testing, vulnerability research, or red-teaming, apply to the [Cyber Verification Program](https://claude.com/form/cyber-use-case) to request reduced restrictions. See [Safeguards, warnings, and appeals](https://support.claude.com/en/articles/8241253-safeguards-warnings-and-appeals) for background.
 
-9. **High-resolution image support:** Claude Opus 4.7 is the first Claude model with high-resolution image support. Maximum image resolution is 2576 pixels on the long edge, up from 1568 pixels on prior models. This unlocks gains on vision-heavy workloads and is particularly valuable for computer use, screenshot understanding, and document analysis.
+9. **High-resolution image support:** Claude Opus 4.7 is the first Claude model with high-resolution image support. Maximum image resolution is 2,576 pixels on the long edge, up from 1,568 pixels on prior models. This unlocks gains on vision-heavy workloads and is particularly valuable for computer use, screenshot understanding, and document analysis.
 
    High-resolution support is automatic and requires no beta header or client-side opt-in. Two things to plan for:
 
@@ -1266,7 +1261,7 @@ model = "claude-opus-4-8"  # After
 
 1. **Prefill removal** is covered in the [breaking changes for migrating from Claude Opus 4.6](#breaking-changes).
 
-2. **Tool parameter quoting:** Claude Opus 4.6 and later models may produce slightly different JSON string escaping in tool call arguments (for example, different handling of Unicode escapes or forward slash escaping). If you parse tool call `input` as a raw string rather than using a JSON parser, verify your parsing logic. Standard JSON parsers (like `json.loads()` or `JSON.parse()`) handle these differences automatically.
+2. **Tool parameter quoting:** Claude Opus 4.6 and later models may produce slightly different JSON string escaping in tool call arguments (for example, different handling of Unicode escapes or forward slash escaping). If you parse tool call `input` as a raw string rather than using a JSON parser, verify your parsing logic. Standard JSON parsers (such as `json.loads()` or `JSON.parse()`) handle these differences automatically.
 
 #### Recommended changes
 
@@ -1380,6 +1375,8 @@ These changes improve your experience on Claude Opus 4.7 and later models. Items
      import com.anthropic.models.messages.OutputConfig;
      import com.anthropic.models.messages.ThinkingConfigAdaptive;
      // ...
+     public class AdaptiveThinkingExample {
+         public static void main(String[] args) {
              AnthropicClient client = AnthropicOkHttpClient.fromEnv();
 
              MessageCreateParams params = MessageCreateParams.builder()
@@ -1394,6 +1391,8 @@ These changes improve your experience on Claude Opus 4.7 and later models. Items
 
              Message response = client.messages().create(params);
              System.out.println(response);
+         }
+     }
      ```
 
      ```php PHP
@@ -1453,7 +1452,7 @@ model = "claude-opus-4-8"  # After
      This is a breaking change when migrating from Claude 3.x models.
    </Warning>
 
-   Starting with Claude Opus 4.7, setting `temperature`, `top_p`, or `top_k` to any non-default value will return a 400 error. The safest migration path is to omit these parameters entirely from requests, and to use prompting to guide the model's behavior. If you were using `temperature = 0` for determinism, note that it never guaranteed identical outputs.
+   Starting with Claude Opus 4.7, setting `temperature`, `top_p`, or `top_k` to any non-default value returns a 400 error. The safest migration path is to omit these parameters entirely from requests, and to use prompting to guide the model's behavior. If you were using `temperature = 0` for determinism, note that it never guaranteed identical outputs.
 
    <CodeGroup exclude="shell">
      ```python Python
@@ -1813,7 +1812,7 @@ model = "claude-opus-4-8"  # After
 
 Claude Sonnet 5 offers the best combination of speed and intelligence in the Claude model family. It builds on Claude Sonnet 4.6.
 
-Claude Sonnet 5 is a drop-in upgrade for Claude Sonnet 4.6. Introductory pricing of $2/$10 per million input/output tokens is in effect through August 31, 2026, after which the standard pricing of $3/$15 per million input/output tokens will take effect; see [Pricing](/docs/en/about-claude/pricing#claude-sonnet-5-introductory-pricing) for details. There are two breaking API changes for code already running on Claude Sonnet 4.6: manual extended thinking (`thinking: {type: "enabled", budget_tokens: N}`) and sampling parameters (`temperature`, `top_p`, `top_k`) set to non-default values are no longer accepted and return a 400 error. Use [adaptive thinking](/docs/en/build-with-claude/adaptive-thinking) with the [effort parameter](/docs/en/build-with-claude/effort) instead. Claude Sonnet 5 supports the same set of features as Claude Sonnet 4.6, including the [1M token context window](/docs/en/build-with-claude/context-windows), [adaptive thinking](/docs/en/build-with-claude/adaptive-thinking), [prompt caching](/docs/en/build-with-claude/prompt-caching), [batch processing](/docs/en/build-with-claude/batch-processing), the [Files API](/docs/en/build-with-claude/files), [PDF support](/docs/en/build-with-claude/pdf-support), [vision](/docs/en/build-with-claude/vision), and the full set of server-side and client-side [tools](/docs/en/agents-and-tools/tool-use/overview). [Priority Tier](/docs/en/api/service-tiers#supported-models) is not available on Claude Sonnet 5. Claude Sonnet 5 also uses a new tokenizer.
+Claude Sonnet 5 is a drop-in upgrade for Claude Sonnet 4.6. Introductory pricing of $2/$10 USD per million input/output tokens is in effect through August 31, 2026, after which the standard pricing of $3/$15 USD per million input/output tokens will take effect; see [Pricing](/docs/en/about-claude/pricing#claude-sonnet-5-introductory-pricing) for details. There are two breaking API changes for code already running on Claude Sonnet 4.6: manual extended thinking (`thinking: {type: "enabled", budget_tokens: N}`) and sampling parameters (`temperature`, `top_p`, `top_k`) set to non-default values are no longer accepted and return a 400 error. Use [adaptive thinking](/docs/en/build-with-claude/adaptive-thinking) with the [effort parameter](/docs/en/build-with-claude/effort) instead. Claude Sonnet 5 supports the same set of features as Claude Sonnet 4.6, including the [1M token context window](/docs/en/build-with-claude/context-windows), [adaptive thinking](/docs/en/build-with-claude/adaptive-thinking), [prompt caching](/docs/en/build-with-claude/prompt-caching), [batch processing](/docs/en/build-with-claude/batch-processing), the [Files API](/docs/en/build-with-claude/files), [PDF support](/docs/en/build-with-claude/pdf-support), [vision](/docs/en/build-with-claude/vision), and the full set of server-side and client-side [tools](/docs/en/agents-and-tools/tool-use/overview). [Priority Tier](/docs/en/api/service-tiers#supported-models) is not available on Claude Sonnet 5. Claude Sonnet 5 also uses a new tokenizer.
 
 ### Migrating to Claude Sonnet 5 from Claude Sonnet 4.6
 
@@ -1850,27 +1849,26 @@ Items 4 and 5 in the following list are breaking changes. `max_tokens` remains a
        <CodeGroup>
          ```bash cURL
          curl https://api.anthropic.com/v1/messages \
-              --header "x-api-key: $ANTHROPIC_API_KEY" \
-              --header "anthropic-version: 2023-06-01" \
-              --header "content-type: application/json" \
-              --data \
-         '{
-           "model": "claude-sonnet-5",
-           "max_tokens": 16000,
-           "thinking": {
-             "type": "adaptive",
-             "display": "summarized"
-           },
-           "output_config": {
-             "effort": "high"
-           },
-           "messages": [
-             {
-               "role": "user",
-               "content": "Are there an infinite number of prime numbers such that n mod 4 == 3?"
-             }
-           ]
-         }'
+           -H "x-api-key: $ANTHROPIC_API_KEY" \
+           -H "anthropic-version: 2023-06-01" \
+           -H "content-type: application/json" \
+           -d '{
+             "model": "claude-sonnet-5",
+             "max_tokens": 16000,
+             "thinking": {
+               "type": "adaptive",
+               "display": "summarized"
+             },
+             "output_config": {
+               "effort": "high"
+             },
+             "messages": [
+               {
+                 "role": "user",
+                 "content": "Are there an infinite number of prime numbers such that n mod 4 == 3?"
+               }
+             ]
+           }'
          ```
 
          ```bash CLI

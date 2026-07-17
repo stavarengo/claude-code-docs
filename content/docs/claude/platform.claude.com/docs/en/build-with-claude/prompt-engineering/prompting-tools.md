@@ -16,7 +16,7 @@ The Claude Console offers a suite of tools to help you build and refine prompts.
 
 Sometimes, the hardest part of using an AI model is figuring out how to prompt it effectively. The prompt generator guides Claude to create high-quality prompt templates tailored to your specific tasks, following many of Anthropic's prompt engineering best practices.
 
-The prompt generator is particularly useful for solving the "blank page problem": it gives you a jumping-off point for further testing and iteration.
+The prompt generator is particularly useful for solving the "blank page problem": it gives you a starting point for further testing and iteration.
 
 <Tip>
   Try the prompt generator now directly on the 
@@ -32,7 +32,7 @@ If you're interested in analyzing the underlying prompt and architecture, see th
 
 ## Prompt templates and variables
 
-When deploying an LLM-based application with Claude, your API calls will typically consist of two types of content:
+When deploying an LLM-based application with Claude, your API calls typically consist of two types of content:
 
 * **Fixed content:** Static instructions or context that remain constant across multiple interactions
 
@@ -53,17 +53,17 @@ Prompt templates offer several benefits:
 * **Efficiency:** Easily swap out variable content without rewriting the entire prompt
 * **Testability:** Quickly test different inputs and edge cases by changing only the variable portion
 * **Scalability:** Simplify prompt management as your application grows in complexity
-* **Version control:** Easily track changes to your prompt structure over time by keeping tabs only on the core part of your prompt, separate from dynamic inputs
+* **Version control:** Easily track changes to your prompt structure over time by monitoring only the core part of your prompt, separate from dynamic inputs
 
 The Console uses prompt templates and variables to power its tooling:
 
-* **Prompt generator:** Decides what variables your prompt needs and includes them in the template it outputs
+* **Prompt generator:** Determines what variables your prompt needs and includes them in the template it outputs
 * **Prompt improver:** Takes your existing template, including all variables, and maintains them in the improved template it outputs
 * **[Evaluation tool](/docs/en/test-and-evaluate/eval-tool):** Allows you to easily test, scale, and track versions of your prompts by separating the variable and fixed portions of your prompt template
 
 ### Example prompt template
 
-Consider a simple application that translates English text to Spanish. The translated text would be variable since it changes between users or calls to Claude. You might use this prompt template:
+Consider a simple application that translates English text to Spanish. The translated text would be variable because it changes between users or calls to Claude. You might use this prompt template:
 
 ```text wrap
 Translate this text from English to Spanish: {{text}}
@@ -95,7 +95,7 @@ The prompt improver helps you quickly iterate and improve your prompts through a
 
 You'll need:
 
-* A prompt template (see [Prompt templates and variables](#prompt-templates-and-variables) above)
+* A prompt template (see [Prompt templates and variables](#prompt-templates-and-variables))
 * Feedback on current issues with Claude's outputs (optional but recommended)
 * Example inputs and ideal outputs (optional but recommended)
 
@@ -103,10 +103,10 @@ You'll need:
 
 The prompt improver enhances your prompts in four steps:
 
-1. **Example identification**: Locates and extracts examples from your prompt template
-2. **Initial draft**: Creates a structured template with clear sections and XML tags
-3. **Chain of thought refinement**: Adds and refines detailed reasoning instructions
-4. **Example enhancement**: Updates examples to demonstrate the new reasoning process
+1. **Example identification:** Locates and extracts examples from your prompt template.
+2. **Initial draft:** Creates a structured template with clear sections and XML tags.
+3. **Chain of thought refinement:** Adds and refines detailed reasoning instructions.
+4. **Example enhancement:** Updates examples to demonstrate the new reasoning process.
 
 You can watch these steps happen in real-time in the improvement modal.
 
@@ -120,24 +120,24 @@ The prompt improver generates templates with:
 * Strategic prefills that guide Claude's initial responses
 
 <Note>
-  While examples appear separately in the Workbench UI, they're included at the start of the first user message in the actual API call. View the raw format by clicking "**\</> Get Code**" or insert examples as raw text via the Examples box.
+  While examples appear separately in the Workbench UI, they're included at the start of the first user message in the actual API call. View the raw format by clicking "**\</> Get Code**" or insert examples as raw text through the Examples box.
 </Note>
 
 ### How to use the prompt improver
 
-1. Submit your prompt template
-2. Add any feedback about issues with Claude's current outputs (e.g., "summaries are too basic for expert audiences")
-3. Include example inputs and ideal outputs
-4. Review the improved prompt
+1. Submit your prompt template.
+2. Add any feedback about issues with Claude's current outputs (for example, "summaries are too basic for expert audiences.")
+3. Include example inputs and ideal outputs.
+4. Review the improved prompt.
 
 ### Generate test examples
 
 Don't have examples yet? Use the [Test Case Generator](/docs/en/test-and-evaluate/eval-tool#creating-test-cases) to:
 
-1. Generate sample inputs
-2. Get Claude's responses
-3. Edit the responses to match your ideal outputs
-4. Add the polished examples to your prompt
+1. Generate sample inputs.
+2. Get Claude's responses.
+3. Edit the responses to match your ideal outputs.
+4. Add the polished examples to your prompt.
 
 ### When to use the prompt improver
 
@@ -212,9 +212,9 @@ Notice how the improved prompt:
 
 Common issues and solutions:
 
-* **Examples not appearing in output**: Check that examples are properly formatted with XML tags and appear at the start of the first user message
-* **Chain of thought too verbose**: Add specific instructions about desired output length and level of detail
-* **Reasoning steps don't match your needs**: Modify the steps section to match your specific use case
+* **Examples not appearing in output:** Check that examples are properly formatted with XML tags and appear at the start of the first user message.
+* **Chain of thought too verbose:** Add specific instructions about desired output length and level of detail.
+* **Reasoning steps don't match your needs:** Modify the steps section to match your specific use case.
 
 ***
 

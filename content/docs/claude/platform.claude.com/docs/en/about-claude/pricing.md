@@ -272,8 +272,8 @@ When used without these tools, code execution is billed by execution time, track
 
 * Execution time has a minimum of 5 minutes
 * Each organization receives **1,550 free hours** of usage per month
-* Additional usage beyond 1,550 hours is billed at **$0.05 per hour, per container**
-* If files are included in the request, execution time is billed even if the tool is not invoked, because files are preloaded onto the container
+* Additional usage beyond 1,550 hours is billed at **$0.05 USD per hour, per container**
+* If files are included in the request, execution time is billed even if the tool is not called, because files are preloaded onto the container
 
 Code execution usage is tracked in the response:
 
@@ -355,7 +355,7 @@ Example token usage for typical content:
 
 Computer use follows the standard [tool use pricing](/docs/en/agents-and-tools/tool-use/overview#pricing). When using the computer use tool:
 
-**System prompt overhead:** The computer use beta adds 466-499 tokens to the system prompt
+**System prompt overhead:** The computer use beta adds 466–499 tokens to the system prompt
 
 **Computer use tool token usage:**
 

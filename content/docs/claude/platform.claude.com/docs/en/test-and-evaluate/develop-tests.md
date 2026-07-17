@@ -85,15 +85,15 @@ Here are some criteria that might be important for your use case. This list is n
   </Accordion>
 
   <Accordion title="Latency">
-    What is the acceptable response time for the model? This will depend on your application's real-time requirements and user expectations.
+    What is the acceptable response time for the model? This depends on your application's real-time requirements and user expectations.
   </Accordion>
 
   <Accordion title="Price">
-    What is your budget for running the model? Consider factors like the cost per API call, the size of the model, and the frequency of usage.
+    What is your budget for running the model? Consider factors like the cost for each API call, the size of the model, and the frequency of usage.
   </Accordion>
 </AccordionGroup>
 
-Most use cases will need multidimensional evaluation along several success criteria.
+Most use cases need multidimensional evaluation along several success criteria.
 
 <Accordion title="Example multidimensional criteria for sentiment analysis">
   |      | Criteria                                                                                                                                                                                                                                                           |
@@ -117,16 +117,16 @@ Most use cases will need multidimensional evaluation along several success crite
      * \[Chat use cases] Poor, harmful, or irrelevant user input
      * Ambiguous test cases where even humans would find it hard to reach an assessment consensus
    </Accordion>
-2. **Automate when possible:** Structure questions to allow for automated grading (e.g., multiple-choice, string match, code-graded, LLM-graded).
+2. **Automate when possible:** Structure questions to allow for automated grading (for example, multiple-choice, string match, code-graded, LLM-graded).
 3. **Prioritize volume over quality:** More questions with slightly lower signal automated grading is better than fewer questions with high-quality human hand-graded evals.
 
 ### Example evals
 
 <AccordionGroup>
   <Accordion title="Task fidelity (sentiment analysis) - exact match evaluation">
-    **What it measures**: Exact match evals measure whether the model's output matches a predefined correct answer, typically after normalizing whitespace and case. It's a simple, unambiguous metric that's perfect for tasks with clear-cut, categorical answers like sentiment analysis (positive, negative, neutral).
+    **What it measures:** Exact match evals measure whether the model's output matches a predefined correct answer, typically after normalizing whitespace and case. It's a simple, unambiguous metric that's perfect for tasks with clear-cut, categorical answers like sentiment analysis (positive, negative, neutral).
 
-    **Example eval test cases**: 1000 tweets with human-labeled sentiments.
+    **Example eval test cases:** 1,000 tweets with human-labeled sentiments.
 
     <CodeGroup exclude="shell">
       ```python Python
@@ -486,9 +486,9 @@ Most use cases will need multidimensional evaluation along several success crite
   </Accordion>
 
   <Accordion title="Consistency (FAQ bot) - cosine similarity evaluation">
-    **What it measures**: Cosine similarity measures the similarity between two vectors (in this case, sentence embeddings of the model's output using [Sentence-BERT (SBERT)](https://sbert.net/)) by computing the cosine of the angle between them. Values closer to 1 indicate higher similarity. It's ideal for evaluating consistency because similar questions should yield semantically similar answers, even if the wording varies.
+    **What it measures:** Cosine similarity measures the similarity between two vectors (in this case, sentence embeddings of the model's output using [Sentence-BERT (SBERT)](https://sbert.net/)) by computing the cosine of the angle between them. Values closer to 1 indicate higher similarity. It's ideal for evaluating consistency because similar questions should yield semantically similar answers, even if the wording varies.
 
-    **Example eval test cases**: 50 groups with a few paraphrased versions each.
+    **Example eval test cases:** 50 groups with a few paraphrased versions each.
 
     <CodeGroup exclude="shell">
       ```python Python
@@ -639,9 +639,9 @@ Most use cases will need multidimensional evaluation along several success crite
   </Accordion>
 
   <Accordion title="Relevance and coherence (summarization) - ROUGE-L evaluation">
-    **What it measures**: ROUGE-L (Recall-Oriented Understudy for Gisting Evaluation - Longest Common Subsequence) evaluates the quality of generated summaries. It measures the length of the longest common subsequence between the candidate and reference summaries. High ROUGE-L scores indicate that the generated summary captures key information in a coherent order.
+    **What it measures:** ROUGE-L (Recall-Oriented Understudy for Gisting Evaluation - Longest Common Subsequence) evaluates the quality of generated summaries. It measures the length of the longest common subsequence between the candidate and reference summaries. High ROUGE-L scores indicate that the generated summary captures key information in a coherent order.
 
-    **Example eval test cases**: 200 articles with reference summaries.
+    **Example eval test cases:** 200 articles with reference summaries.
 
     <CodeGroup exclude="shell">
       ```python Python
@@ -1164,9 +1164,9 @@ Most use cases will need multidimensional evaluation along several success crite
   </Accordion>
 
   <Accordion title="Tone and style (customer service) - LLM-based Likert scale">
-    **What it measures**: The LLM-based Likert scale is a psychometric scale that uses an LLM to judge subjective attitudes or perceptions. Here, it's used to rate the tone of responses on a scale from 1 to 5. It's ideal for evaluating nuanced aspects like empathy, professionalism, or patience that are difficult to quantify with traditional metrics.
+    **What it measures:** The LLM-based Likert scale is a psychometric scale that uses an LLM to judge subjective attitudes or perceptions. Here, it's used to rate the tone of responses on a scale from 1 to 5. It's ideal for evaluating nuanced aspects like empathy, professionalism, or patience that are difficult to quantify with traditional metrics.
 
-    **Example eval test cases**: 100 customer inquiries with target tone (empathetic, patient, professional).
+    **Example eval test cases:** 100 customer inquiries with target tone (empathetic, patient, professional).
 
     <CodeGroup exclude="shell">
       ```python Python
@@ -1633,9 +1633,9 @@ Most use cases will need multidimensional evaluation along several success crite
   </Accordion>
 
   <Accordion title="Privacy preservation (medical chatbot) - LLM-based binary classification">
-    **What it measures**: Binary classification determines if an input belongs to one of two classes. Here, it's used to classify whether a response contains PHI or not. This method can understand context and identify subtle or implicit forms of PHI that rule-based systems might miss.
+    **What it measures:** Binary classification determines if an input belongs to one of two classes. Here, it's used to classify whether a response contains PHI or not. This method can account for context and identify subtle or implicit forms of PHI that rule-based systems might miss.
 
-    **Example eval test cases**: 500 simulated patient queries, some with PHI.
+    **Example eval test cases:** 500 simulated patient queries, some with PHI.
 
     <CodeGroup exclude="shell">
       ```python Python
@@ -2181,9 +2181,9 @@ Most use cases will need multidimensional evaluation along several success crite
   </Accordion>
 
   <Accordion title="Context utilization (conversation assistant) - LLM-based ordinal scale">
-    **What it measures**: Similar to the Likert scale, the ordinal scale measures on a fixed, ordered scale (1-5). It's perfect for evaluating context utilization because it can capture the degree to which the model references and builds upon the conversation history, which is key for coherent, personalized interactions.
+    **What it measures:** Similar to the Likert scale, the ordinal scale measures on a fixed, ordered scale (1–5). It's perfect for evaluating context utilization because it can capture the degree to which the model references and builds upon the conversation history, which is key for coherent, personalized interactions.
 
-    **Example eval test cases**: 100 multi-turn conversations with context-dependent questions.
+    **Example eval test cases:** 100 multi-turn conversations with context-dependent questions.
 
     <CodeGroup exclude="shell">
       ```python Python
@@ -2835,7 +2835,7 @@ When deciding which method to use to grade evals, choose the fastest, most relia
   <Note>
     A given use case, or even a specific success criteria for that use case, might require several rubrics for holistic evaluation.
   </Note>
-* **Empirical or specific:** For example, instruct the LLM to output only 'correct' or 'incorrect', or to judge from a scale of 1-5. Purely qualitative evaluations are hard to assess quickly and at scale.
+* **Empirical or specific:** For example, instruct the LLM to output only 'correct' or 'incorrect', or to judge from a scale of 1–5. Purely qualitative evaluations are hard to assess quickly and at scale.
 * **Encourage reasoning:** Ask the LLM to think first before deciding an evaluation score, and then discard the reasoning. This increases evaluation performance, particularly for tasks requiring complex judgement.
 
 <Accordion title="Example: LLM-based grading">
@@ -3309,7 +3309,7 @@ When deciding which method to use to grade evals, choose the fastest, most relia
   <Card title="Brainstorm criteria" icon="link" href="https://claude.ai/">
     Brainstorm success criteria for your use case with Claude on claude.ai.\
     \
-    **Tip**: Drop this page into the chat as guidance for Claude!
+    **Tip:** Drop this page into the chat as guidance for Claude!
   </Card>
 
   <Card title="Evals cookbook" icon="link" href="https://platform.claude.com/cookbook/misc-building-evals">

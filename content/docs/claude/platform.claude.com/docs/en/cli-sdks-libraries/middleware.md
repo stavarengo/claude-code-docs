@@ -30,152 +30,138 @@ Each middleware can inspect or replace the request before calling `next()`, and 
 
 Each middleware is a function that receives the outgoing request and a `next` callable. Call `next` to forward the request to the rest of the chain (or directly to the SDK core if this is the last middleware), and return its response. Anything before the `next` call runs on the way out; anything after runs on the way back.
 
-<Tabs>
-  <Tab title="Python">
-    ```python
-    def logging_middleware(request: APIRequest, call_next: CallNext) -> APIResponse[Any]:
-        # Before the request
-        print(f"-> {request.method} {request.url}")
-
-        # Forward the request to the rest of the chain
-        response = call_next(request)
-
-        # After the request
-        print(f"<- {response.status_code}")
-
-        return response
-
-
-    client = Anthropic(middleware=[logging_middleware])
-    ```
-  </Tab>
-
-  <Tab title="TypeScript">
-    ```typescript
-    import type { Middleware } from "@anthropic-ai/sdk";
-
-    const loggingMiddleware: Middleware = async (request, next, ctx) => {
-      // Before the request
-      ctx.logger.debug("->", request.method, request.url);
-
-      // Forward the request to the rest of the chain
-      const response = await next(request);
-
-      // After the request
-      ctx.logger.debug("<-", response.status, request.url);
-
-      return response;
-    };
-
-    const client = new Anthropic({ middleware: [loggingMiddleware] });
-    ```
-  </Tab>
-
-  <Tab title="Go">
-    ```go
-    client := anthropic.NewClient(
-    	option.WithMiddleware(func(req *http.Request, next option.MiddlewareNext) (*http.Response, error) {
-    		// Before the request
-    		start := time.Now()
-    		slog.Info("sending request", "method", req.Method, "url", req.URL)
-
-    		// Forward the request to the rest of the chain
-    		res, err := next(req)
-    		if err != nil {
-    			return nil, err
-    		}
-
-    		// After the request
-    		slog.Info("received response", "status", res.StatusCode, "duration", time.Since(start))
-
-    		return res, nil
-    	}),
-    )
-    ```
-  </Tab>
-
-  <Tab title="Java">
-    ```java
-    AnthropicClient client = AnthropicOkHttpClient.builder()
-        .fromEnv()
-        .addInterceptor(Interceptor.syncOnly((nextClient, request, requestOptions) -> {
-            // Before the request
-            IO.println(request.method() + " /" + String.join("/", request.pathSegments()));
-
-            // Forward the request to the next handler
-            HttpResponse response = nextClient.execute(request, requestOptions);
-
-            // After the request
-            IO.println(response.statusCode());
-
-            return response;
-        }))
-        .build();
-    ```
-  </Tab>
-
-  <Tab title="C#">
-    ```csharp
-    AnthropicClient client = new()
-    {
-        Handlers =
-        [
-            Handler.Create(async (request, next, cancellationToken) =>
-            {
-                // Before the request
-                Console.WriteLine($"Sending {request.Method} {request.RequestUri}");
-
-                // Forward the request to the next handler
-                var response = await next(request, cancellationToken);
-
-                // After the request
-                Console.WriteLine($"Received {(int)response.StatusCode}");
-
-                return response;
-            }),
-        ],
-    };
-    ```
-  </Tab>
-
-  <Tab title="Ruby">
-    ```ruby
-    logging_middleware = lambda do |request, call_next|
+<CodeGroup exclude="shell">
+  ```python Python
+  def logging_middleware(request: APIRequest, call_next: CallNext) -> APIResponse[Any]:
       # Before the request
-      puts "-> #{request.method.upcase} #{request.url}"
+      print(f"-> {request.method} {request.url}")
 
       # Forward the request to the rest of the chain
-      response = call_next.call(request)
+      response = call_next(request)
 
       # After the request
-      puts "<- #{response.status}"
+      print(f"<- {response.status_code}")
 
-      response
-    end
+      return response
 
-    client = Anthropic::Client.new(middleware: [logging_middleware])
-    ```
-  </Tab>
 
-  <Tab title="PHP">
-    ```php
-    $loggingMiddleware = function (RequestInterface $request, callable $next): ResponseInterface {
-        // Before the request
-        error_log("-> {$request->getMethod()} {$request->getUri()}");
+  client = Anthropic(middleware=[logging_middleware])
+  ```
 
-        // Forward the request to the rest of the chain
-        $response = $next($request);
+  ```typescript TypeScript
+  import type { Middleware } from "@anthropic-ai/sdk";
 
-        // After the request
-        error_log("<- {$response->getStatusCode()}");
+  const loggingMiddleware: Middleware = async (request, next, ctx) => {
+    // Before the request
+    ctx.logger.debug("->", request.method, request.url);
 
-        return $response;
-    };
+    // Forward the request to the rest of the chain
+    const response = await next(request);
 
-    $client = new Client(requestOptions: ['middleware' => [$loggingMiddleware]]);
-    ```
-  </Tab>
-</Tabs>
+    // After the request
+    ctx.logger.debug("<-", response.status, request.url);
+
+    return response;
+  };
+
+  const client = new Anthropic({ middleware: [loggingMiddleware] });
+  ```
+
+  ```csharp C#
+  AnthropicClient client = new()
+  {
+      Handlers =
+      [
+          Handler.Create(async (request, next, cancellationToken) =>
+          {
+              // Before the request
+              Console.WriteLine($"Sending {request.Method} {request.RequestUri}");
+
+              // Forward the request to the next handler
+              var response = await next(request, cancellationToken);
+
+              // After the request
+              Console.WriteLine($"Received {(int)response.StatusCode}");
+
+              return response;
+          }),
+      ],
+  };
+  ```
+
+  ```go Go
+  client := anthropic.NewClient(
+  	option.WithMiddleware(func(req *http.Request, next option.MiddlewareNext) (*http.Response, error) {
+  		// Before the request
+  		start := time.Now()
+  		slog.Info("sending request", "method", req.Method, "url", req.URL)
+
+  		// Forward the request to the rest of the chain
+  		res, err := next(req)
+  		if err != nil {
+  			return nil, err
+  		}
+
+  		// After the request
+  		slog.Info("received response", "status", res.StatusCode, "duration", time.Since(start))
+
+  		return res, nil
+  	}),
+  )
+  ```
+
+  ```java Java
+  AnthropicClient client = AnthropicOkHttpClient.builder()
+      .fromEnv()
+      .addInterceptor(Interceptor.syncOnly((nextClient, request, requestOptions) -> {
+          // Before the request
+          IO.println(request.method() + " /" + String.join("/", request.pathSegments()));
+
+          // Forward the request to the next handler
+          HttpResponse response = nextClient.execute(request, requestOptions);
+
+          // After the request
+          IO.println(response.statusCode());
+
+          return response;
+      }))
+      .build();
+  ```
+
+  ```php PHP
+  $loggingMiddleware = function (RequestInterface $request, callable $next): ResponseInterface {
+      // Before the request
+      error_log("-> {$request->getMethod()} {$request->getUri()}");
+
+      // Forward the request to the rest of the chain
+      $response = $next($request);
+
+      // After the request
+      error_log("<- {$response->getStatusCode()}");
+
+      return $response;
+  };
+
+  $client = new Client(requestOptions: ['middleware' => [$loggingMiddleware]]);
+  ```
+
+  ```ruby Ruby
+  logging_middleware = lambda do |request, call_next|
+    # Before the request
+    puts "-> #{request.method.upcase} #{request.url}"
+
+    # Forward the request to the rest of the chain
+    response = call_next.call(request)
+
+    # After the request
+    puts "<- #{response.status}"
+
+    response
+  end
+
+  client = Anthropic::Client.new(middleware: [logging_middleware])
+  ```
+</CodeGroup>
 
 ## Middleware ordering
 

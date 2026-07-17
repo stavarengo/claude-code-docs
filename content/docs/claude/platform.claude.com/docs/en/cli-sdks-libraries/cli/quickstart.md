@@ -10,7 +10,7 @@ The `ant` CLI provides access to the Claude API from your terminal. Every API re
   [](/docs/videos/ant-cli-demo.webm)
 </Frame>
 
-Compared to `curl`, `ant` builds request bodies from typed flags or piped YAML instead of hand-written JSON, and inlines file contents into string fields with an `@path` reference. It extracts response fields with a built-in `--transform` query, so you don't need a separate tool like `jq`, and it paginates list endpoints automatically.
+Compared to `curl`, `ant` builds request bodies from typed flags or piped YAML instead of hand-written JSON, and inlines file contents into string fields with an `@path` reference. It extracts response fields with a built-in `--transform` query, so you don't need a separate tool such as `jq`, and it paginates list endpoints automatically.
 
 <Info>
   For endpoint-specific parameters and response schemas, see the [API reference](/docs/en/api/cli/messages/create). This page gets you to a working command. For everything else the CLI does, see [Using the CLI](/docs/en/cli-sdks-libraries/cli/using) and [CLI scripting and automation](/docs/en/cli-sdks-libraries/cli/scripting).
@@ -86,7 +86,7 @@ ant messages create \
   --message '{role: user, content: "Hello, Claude"}'
 ```
 
-```json Output
+```text Output wrap
 {
   "model": "claude-opus-4-8",
   "id": "msg_01YMmR5XodC5nTqMxLZMKaq6",
