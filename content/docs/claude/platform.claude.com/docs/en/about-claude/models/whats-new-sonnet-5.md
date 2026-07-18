@@ -82,7 +82,7 @@ See [Pricing](/docs/en/about-claude/pricing) for complete pricing, including bat
 At launch, Claude Sonnet 5 is available on:
 
 * **Claude API:** available to all customers.
-* **AWS:** available through [Claude in Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock) and [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws). Claude Sonnet 5 is not available on [Claude on Amazon Bedrock (Opus 4.6 and earlier)](/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy) (the `InvokeModel` and `Converse` APIs).
+* **AWS:** available through [Claude in Amazon Bedrock](/docs/en/build-with-claude/claude-in-amazon-bedrock) and [Claude Platform on AWS](/docs/en/build-with-claude/claude-platform-on-aws). On Amazon Bedrock, Claude Sonnet 5 is also reachable through the `InvokeModel` API, served by the same infrastructure as Claude in Amazon Bedrock. The legacy [Claude on Amazon Bedrock (Opus 4.6 and earlier)](/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy) integration does not include Claude Sonnet 5.
 * **Google Cloud:** available through [Claude on Google Cloud](/docs/en/build-with-claude/claude-on-vertex-ai).
 * **Microsoft Foundry:** available through [Claude in Microsoft Foundry](/docs/en/build-with-claude/claude-in-microsoft-foundry).
 

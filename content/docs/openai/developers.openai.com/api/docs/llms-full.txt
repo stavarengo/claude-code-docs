@@ -4004,9 +4004,8 @@ openai = OpenAI::Client.new(
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 
-OpenAIClient client = OpenAIOkHttpClient.builder()
-    .adminApiKey(System.getenv("OPENAI_ADMIN_KEY"))
-    .build();
+OpenAIClient client =
+    OpenAIOkHttpClient.builder().adminApiKey(System.getenv("OPENAI_ADMIN_KEY")).build();
 ```
 
 
@@ -4069,17 +4068,18 @@ import com.openai.models.admin.organization.projects.modelpermissions.ModelPermi
 import com.openai.models.admin.organization.projects.modelpermissions.ProjectModelPermissions;
 import java.util.List;
 
-ProjectModelPermissions modelPermissions = client.admin()
-    .organization()
-    .projects()
-    .modelPermissions()
-    .update(
-        "proj_abc",
-        ModelPermissionUpdateParams.builder()
-            .mode(ModelPermissionUpdateParams.Mode.ALLOW_LIST)
-            .modelIds(List.of("gpt-4.1", "o3"))
-            .build()
-    );
+ProjectModelPermissions modelPermissions =
+    client
+        .admin()
+        .organization()
+        .projects()
+        .modelPermissions()
+        .update(
+            "proj_abc",
+            ModelPermissionUpdateParams.builder()
+                .mode(ModelPermissionUpdateParams.Mode.ALLOW_LIST)
+                .modelIds(List.of("gpt-4.1", "o3"))
+                .build());
 
 System.out.println(modelPermissions.mode());
 ```
@@ -4167,24 +4167,24 @@ puts(spend_alert.id)
 import com.openai.models.admin.organization.projects.spendalerts.ProjectSpendAlert;
 import com.openai.models.admin.organization.projects.spendalerts.SpendAlertCreateParams;
 
-ProjectSpendAlert spendAlert = client.admin()
-    .organization()
-    .projects()
-    .spendAlerts()
-    .create(
-        "proj_abc",
-        SpendAlertCreateParams.builder()
-            .currency(SpendAlertCreateParams.Currency.USD)
-            .interval(SpendAlertCreateParams.Interval.MONTH)
-            .notificationChannel(
-                SpendAlertCreateParams.NotificationChannel.builder()
-                    .addRecipient("billing@example.com")
-                    .subjectPrefix("[OpenAI spend]")
-                    .build()
-            )
-            .thresholdAmount(50000L)
-            .build()
-    );
+ProjectSpendAlert spendAlert =
+    client
+        .admin()
+        .organization()
+        .projects()
+        .spendAlerts()
+        .create(
+            "proj_abc",
+            SpendAlertCreateParams.builder()
+                .currency(SpendAlertCreateParams.Currency.USD)
+                .interval(SpendAlertCreateParams.Interval.MONTH)
+                .notificationChannel(
+                    SpendAlertCreateParams.NotificationChannel.builder()
+                        .addRecipient("billing@example.com")
+                        .subjectPrefix("[OpenAI spend]")
+                        .build())
+                .thresholdAmount(50000L)
+                .build());
 
 System.out.println(spendAlert.id());
 ```
@@ -4244,16 +4244,17 @@ puts(data_retention.type)
 import com.openai.models.admin.organization.projects.dataretention.DataRetentionUpdateParams;
 import com.openai.models.admin.organization.projects.dataretention.ProjectDataRetention;
 
-ProjectDataRetention dataRetention = client.admin()
-    .organization()
-    .projects()
-    .dataRetention()
-    .update(
-        "proj_abc",
-        DataRetentionUpdateParams.builder()
-            .retentionType(DataRetentionUpdateParams.RetentionType.ORGANIZATION_DEFAULT)
-            .build()
-    );
+ProjectDataRetention dataRetention =
+    client
+        .admin()
+        .organization()
+        .projects()
+        .dataRetention()
+        .update(
+            "proj_abc",
+            DataRetentionUpdateParams.builder()
+                .retentionType(DataRetentionUpdateParams.RetentionType.ORGANIZATION_DEFAULT)
+                .build());
 
 System.out.println(dataRetention.type());
 ```
@@ -4310,12 +4311,16 @@ puts(invite.id)
 import com.openai.models.admin.organization.invites.Invite;
 import com.openai.models.admin.organization.invites.InviteCreateParams;
 
-Invite invite = client.admin().organization().invites().create(
-    InviteCreateParams.builder()
-        .email("user@example.com")
-        .role(InviteCreateParams.Role.READER)
-        .build()
-);
+Invite invite =
+    client
+        .admin()
+        .organization()
+        .invites()
+        .create(
+            InviteCreateParams.builder()
+                .email("user@example.com")
+                .role(InviteCreateParams.Role.READER)
+                .build());
 
 System.out.println(invite.id());
 ```
@@ -4368,11 +4373,12 @@ end
 ```java
 import com.openai.models.admin.organization.auditlogs.AuditLogListParams;
 
-var page = client.admin().organization().auditLogs().list(
-    AuditLogListParams.builder()
-        .limit(10L)
-        .build()
-);
+var page =
+    client
+        .admin()
+        .organization()
+        .auditLogs()
+        .list(AuditLogListParams.builder().limit(10L).build());
 
 page.data().forEach(auditLog -> System.out.println(auditLog.id()));
 ```
@@ -12508,7 +12514,6 @@ import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.core.http.HttpClient;
 import com.openai.errors.SubjectTokenProviderException;
-import com.openai.models.ChatModel;
 import com.openai.models.responses.ResponseCreateParams;
 import java.util.concurrent.CompletableFuture;
 import software.amazon.awssdk.regions.Region;
@@ -12516,83 +12521,81 @@ import software.amazon.awssdk.services.sts.StsClient;
 import software.amazon.awssdk.services.sts.model.GetWebIdentityTokenRequest;
 
 public final class AwsOutboundWorkloadIdentityExample {
-    private AwsOutboundWorkloadIdentityExample() {}
+  private AwsOutboundWorkloadIdentityExample() {}
 
-    static final class AwsOutboundWebIdentityTokenProvider implements SubjectTokenProvider {
-        private final StsClient stsClient;
-        private final String audience;
+  static final class AwsOutboundWebIdentityTokenProvider implements SubjectTokenProvider {
+    private final StsClient stsClient;
+    private final String audience;
 
-        AwsOutboundWebIdentityTokenProvider(StsClient stsClient, String audience) {
-            this.stsClient = stsClient;
-            this.audience = audience;
-        }
+    AwsOutboundWebIdentityTokenProvider(StsClient stsClient, String audience) {
+      this.stsClient = stsClient;
+      this.audience = audience;
+    }
 
-        @Override
-        public SubjectTokenType tokenType() {
-            return SubjectTokenType.JWT;
-        }
+    @Override
+    public SubjectTokenType tokenType() {
+      return SubjectTokenType.JWT;
+    }
 
-        @Override
-        public String getToken(HttpClient httpClient, JsonMapper jsonMapper) {
-            try {
-                String token = stsClient.getWebIdentityToken(GetWebIdentityTokenRequest.builder()
+    @Override
+    public String getToken(HttpClient httpClient, JsonMapper jsonMapper) {
+      try {
+        String token =
+            stsClient
+                .getWebIdentityToken(
+                    GetWebIdentityTokenRequest.builder()
                         .audience(audience)
                         .durationSeconds(300)
                         .signingAlgorithm("ES384")
-                        .build()).webIdentityToken();
+                        .build())
+                .webIdentityToken();
 
-                if (token == null || token.isEmpty()) {
-                    throw new SubjectTokenProviderException(
-                            "aws-outbound",
-                            "AWS STS did not return a web identity token",
-                            null);
-                }
-
-                return token;
-            } catch (SubjectTokenProviderException e) {
-                throw e;
-            } catch (Exception e) {
-                throw new SubjectTokenProviderException(
-                        "aws-outbound",
-                        "failed to request AWS web identity token",
-                        e);
-            }
+        if (token == null || token.isEmpty()) {
+          throw new SubjectTokenProviderException(
+              "aws-outbound", "AWS STS did not return a web identity token", null);
         }
 
-        @Override
-        public CompletableFuture<String> getTokenAsync(
-                HttpClient httpClient, JsonMapper jsonMapper) {
-            return CompletableFuture.supplyAsync(() -> getToken(httpClient, jsonMapper));
-        }
+        return token;
+      } catch (SubjectTokenProviderException e) {
+        throw e;
+      } catch (Exception e) {
+        throw new SubjectTokenProviderException(
+            "aws-outbound", "failed to request AWS web identity token", e);
+      }
     }
 
-    public static void main(String[] args) {
-        String audience = System.getenv("OPENAI_WIF_AUDIENCE");
-        StsClient stsClient = StsClient.builder()
-                .region(Region.of(System.getenv("AWS_REGION")))
-                .build();
-
-        WorkloadIdentity workloadIdentity = WorkloadIdentity.builder()
-                .identityProviderId(System.getenv("OPENAI_IDENTITY_PROVIDER_ID"))
-                .serviceAccountId(System.getenv("OPENAI_SERVICE_ACCOUNT_ID"))
-                .provider(new AwsOutboundWebIdentityTokenProvider(stsClient, audience))
-                .build();
-
-        OpenAIClient client = OpenAIOkHttpClient.builder()
-                .workloadIdentity(workloadIdentity)
-                .build();
-
-        ResponseCreateParams params = ResponseCreateParams.builder()
-                .model(ChatModel.GPT_4_1_MINI)
-                .input("Say hello from AWS outbound workload identity federation.")
-                .build();
-
-        client.responses().create(params).output().stream()
-                .flatMap(item -> item.message().stream())
-                .flatMap(message -> message.content().stream())
-                .flatMap(content -> content.outputText().stream())
-                .forEach(outputText -> System.out.println(outputText.text()));
+    @Override
+    public CompletableFuture<String> getTokenAsync(HttpClient httpClient, JsonMapper jsonMapper) {
+      return CompletableFuture.supplyAsync(() -> getToken(httpClient, jsonMapper));
     }
+  }
+
+  public static void main(String[] args) {
+    String audience = System.getenv("OPENAI_WIF_AUDIENCE");
+    StsClient stsClient =
+        StsClient.builder().region(Region.of(System.getenv("AWS_REGION"))).build();
+
+    WorkloadIdentity workloadIdentity =
+        WorkloadIdentity.builder()
+            .identityProviderId(System.getenv("OPENAI_IDENTITY_PROVIDER_ID"))
+            .serviceAccountId(System.getenv("OPENAI_SERVICE_ACCOUNT_ID"))
+            .provider(new AwsOutboundWebIdentityTokenProvider(stsClient, audience))
+            .build();
+
+    OpenAIClient client = OpenAIOkHttpClient.builder().workloadIdentity(workloadIdentity).build();
+
+    ResponseCreateParams params =
+        ResponseCreateParams.builder()
+            .model("gpt-5.6-terra")
+            .input("Say hello from AWS outbound workload identity federation.")
+            .build();
+
+    client.responses().create(params).output().stream()
+        .flatMap(item -> item.message().stream())
+        .flatMap(message -> message.content().stream())
+        .flatMap(content -> content.outputText().stream())
+        .forEach(outputText -> System.out.println(outputText.text()));
+  }
 }
 ```
 
@@ -12958,80 +12961,74 @@ import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.core.http.HttpClient;
 import com.openai.errors.SubjectTokenProviderException;
-import com.openai.models.ChatModel;
 import com.openai.models.responses.ResponseCreateParams;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
 public final class AwsEksWorkloadIdentityExample {
-    private static final String TOKEN_PATH = "/var/run/secrets/tokens/token";
+  private static final String TOKEN_PATH = "/var/run/secrets/tokens/token";
 
-    private AwsEksWorkloadIdentityExample() {}
+  private AwsEksWorkloadIdentityExample() {}
 
-    static final class MountedEksServiceAccountTokenProvider implements SubjectTokenProvider {
-        private final Path tokenPath;
+  static final class MountedEksServiceAccountTokenProvider implements SubjectTokenProvider {
+    private final Path tokenPath;
 
-        MountedEksServiceAccountTokenProvider(String tokenPath) {
-            this.tokenPath = Path.of(tokenPath);
-        }
-
-        @Override
-        public SubjectTokenType tokenType() {
-            return SubjectTokenType.JWT;
-        }
-
-        @Override
-        public String getToken(HttpClient httpClient, JsonMapper jsonMapper) {
-            String token;
-            try {
-                token = Files.readString(tokenPath).trim();
-            } catch (Exception e) {
-                throw new SubjectTokenProviderException(
-                        "aws-eks",
-                        "failed to read mounted EKS service account token",
-                        e);
-            }
-
-            if (token.isEmpty()) {
-                throw new SubjectTokenProviderException(
-                        "aws-eks",
-                        "mounted EKS service account token is empty",
-                        null);
-            }
-
-            return token;
-        }
-
-        @Override
-        public CompletableFuture<String> getTokenAsync(
-                HttpClient httpClient, JsonMapper jsonMapper) {
-            return CompletableFuture.supplyAsync(() -> getToken(httpClient, jsonMapper));
-        }
+    MountedEksServiceAccountTokenProvider(String tokenPath) {
+      this.tokenPath = Path.of(tokenPath);
     }
 
-    public static void main(String[] args) {
-        WorkloadIdentity workloadIdentity = WorkloadIdentity.builder()
-                .identityProviderId(System.getenv("OPENAI_IDENTITY_PROVIDER_ID"))
-                .serviceAccountId(System.getenv("OPENAI_SERVICE_ACCOUNT_ID"))
-                .provider(new MountedEksServiceAccountTokenProvider(TOKEN_PATH))
-                .build();
-
-        OpenAIClient client = OpenAIOkHttpClient.builder()
-                .workloadIdentity(workloadIdentity)
-                .build();
-
-        ResponseCreateParams params = ResponseCreateParams.builder()
-                .model(ChatModel.GPT_4_1_MINI)
-                .input("Say hello from AWS workload identity federation.")
-                .build();
-
-        client.responses().create(params).output().stream()
-                .flatMap(item -> item.message().stream())
-                .flatMap(message -> message.content().stream())
-                .flatMap(content -> content.outputText().stream())
-                .forEach(outputText -> System.out.println(outputText.text()));
+    @Override
+    public SubjectTokenType tokenType() {
+      return SubjectTokenType.JWT;
     }
+
+    @Override
+    public String getToken(HttpClient httpClient, JsonMapper jsonMapper) {
+      String token;
+      try {
+        token = Files.readString(tokenPath).trim();
+      } catch (Exception e) {
+        throw new SubjectTokenProviderException(
+            "aws-eks", "failed to read mounted EKS service account token", e);
+      }
+
+      if (token.isEmpty()) {
+        throw new SubjectTokenProviderException(
+            "aws-eks", "mounted EKS service account token is empty", null);
+      }
+
+      return token;
+    }
+
+    @Override
+    public CompletableFuture<String> getTokenAsync(HttpClient httpClient, JsonMapper jsonMapper) {
+      return CompletableFuture.supplyAsync(() -> getToken(httpClient, jsonMapper));
+    }
+  }
+
+  public static void main(String[] args) {
+    WorkloadIdentity workloadIdentity =
+        WorkloadIdentity.builder()
+            .identityProviderId(System.getenv("OPENAI_IDENTITY_PROVIDER_ID"))
+            .serviceAccountId(System.getenv("OPENAI_SERVICE_ACCOUNT_ID"))
+            .provider(new MountedEksServiceAccountTokenProvider(TOKEN_PATH))
+            .build();
+
+    OpenAIClient client = OpenAIOkHttpClient.builder().workloadIdentity(workloadIdentity).build();
+
+    ResponseCreateParams params =
+        ResponseCreateParams.builder()
+            .model("gpt-5.6-terra")
+            .input("Say hello from AWS workload identity federation.")
+            .build();
+
+    client.responses().create(params).output().stream()
+        .flatMap(item -> item.message().stream())
+        .flatMap(message -> message.content().stream())
+        .flatMap(content -> content.outputText().stream())
+        .forEach(outputText -> System.out.println(outputText.text()));
+  }
 }
 ```
 
@@ -13514,12 +13511,11 @@ func main() {
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.openai.auth.SubjectTokenProvider;
-import com.openai.errors.SubjectTokenProviderException;
 import com.openai.auth.SubjectTokenType;
 import com.openai.auth.WorkloadIdentity;
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
-import com.openai.models.ChatModel;
+import com.openai.errors.SubjectTokenProviderException;
 import com.openai.models.responses.ResponseCreateParams;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -13529,103 +13525,101 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
 
 public final class GitHubActionsWorkloadIdentityExample {
-    private GitHubActionsWorkloadIdentityExample() {}
+  private GitHubActionsWorkloadIdentityExample() {}
 
-    static final class GitHubActionsOidcTokenProvider implements SubjectTokenProvider {
-        private final String requestUrl;
-        private final String requestToken;
-        private final String audience;
+  static final class GitHubActionsOidcTokenProvider implements SubjectTokenProvider {
+    private final String requestUrl;
+    private final String requestToken;
+    private final String audience;
 
-        GitHubActionsOidcTokenProvider(String requestUrl, String requestToken, String audience) {
-            this.requestUrl = requestUrl;
-            this.requestToken = requestToken;
-            this.audience = audience;
-        }
-
-        @Override
-        public SubjectTokenType tokenType() {
-            return SubjectTokenType.JWT;
-        }
-
-        @Override
-        public String getToken(
-                com.openai.core.http.HttpClient httpClient, JsonMapper jsonMapper) {
-            try {
-                String separator = requestUrl.contains("?") ? "&" : "?";
-                URI uri = URI.create(
-                        requestUrl
-                                + separator
-                                + "audience="
-                                + URLEncoder.encode(audience, StandardCharsets.UTF_8));
-
-                HttpRequest request = HttpRequest.newBuilder(uri)
-                        .header("Authorization", "bearer " + requestToken)
-                        .GET()
-                        .build();
-
-                HttpResponse<String> response = java.net.http.HttpClient.newHttpClient()
-                        .send(request, HttpResponse.BodyHandlers.ofString());
-
-                if (response.statusCode() < 200 || response.statusCode() >= 300) {
-                    throw new SubjectTokenProviderException(
-                            "github-actions",
-                            "GitHub OIDC token request failed with status "
-                                    + response.statusCode(),
-                            null);
-                }
-
-                JsonNode payload = jsonMapper.readTree(response.body());
-                String token = payload.path("value").asText("");
-                if (token.isEmpty()) {
-                    throw new SubjectTokenProviderException(
-                            "github-actions",
-                            "GitHub OIDC token response did not include a value",
-                            null);
-                }
-
-                return token;
-            } catch (SubjectTokenProviderException e) {
-                throw e;
-            } catch (Exception e) {
-                throw new SubjectTokenProviderException(
-                        "github-actions",
-                        "failed to request GitHub OIDC token",
-                        e);
-            }
-        }
-
-        @Override
-        public CompletableFuture<String> getTokenAsync(
-                com.openai.core.http.HttpClient httpClient, JsonMapper jsonMapper) {
-            return CompletableFuture.supplyAsync(() -> getToken(httpClient, jsonMapper));
-        }
+    GitHubActionsOidcTokenProvider(String requestUrl, String requestToken, String audience) {
+      this.requestUrl = requestUrl;
+      this.requestToken = requestToken;
+      this.audience = audience;
     }
 
-    public static void main(String[] args) {
-        WorkloadIdentity workloadIdentity = WorkloadIdentity.builder()
-                .identityProviderId(System.getenv("OPENAI_IDENTITY_PROVIDER_ID"))
-                .serviceAccountId(System.getenv("OPENAI_SERVICE_ACCOUNT_ID"))
-                .provider(new GitHubActionsOidcTokenProvider(
-                        System.getenv("ACTIONS_ID_TOKEN_REQUEST_URL"),
-                        System.getenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN"),
-                        System.getenv("OPENAI_WIF_AUDIENCE")))
-                .build();
-
-        OpenAIClient client = OpenAIOkHttpClient.builder()
-                .workloadIdentity(workloadIdentity)
-                .build();
-
-        ResponseCreateParams params = ResponseCreateParams.builder()
-                .model(ChatModel.GPT_4_1_MINI)
-                .input("Say hello from GitHub Actions workload identity federation.")
-                .build();
-
-        client.responses().create(params).output().stream()
-                .flatMap(item -> item.message().stream())
-                .flatMap(message -> message.content().stream())
-                .flatMap(content -> content.outputText().stream())
-                .forEach(outputText -> System.out.println(outputText.text()));
+    @Override
+    public SubjectTokenType tokenType() {
+      return SubjectTokenType.JWT;
     }
+
+    @Override
+    public String getToken(com.openai.core.http.HttpClient httpClient, JsonMapper jsonMapper) {
+      try {
+        String separator = requestUrl.contains("?") ? "&" : "?";
+        URI uri =
+            URI.create(
+                requestUrl
+                    + separator
+                    + "audience="
+                    + URLEncoder.encode(audience, StandardCharsets.UTF_8));
+
+        HttpRequest request =
+            HttpRequest.newBuilder(uri)
+                .header("Authorization", "bearer " + requestToken)
+                .GET()
+                .build();
+
+        HttpResponse<String> response =
+            java.net.http.HttpClient.newHttpClient()
+                .send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() < 200 || response.statusCode() >= 300) {
+          throw new SubjectTokenProviderException(
+              "github-actions",
+              "GitHub OIDC token request failed with status " + response.statusCode(),
+              null);
+        }
+
+        JsonNode payload = jsonMapper.readTree(response.body());
+        String token = payload.path("value").asText("");
+        if (token.isEmpty()) {
+          throw new SubjectTokenProviderException(
+              "github-actions", "GitHub OIDC token response did not include a value", null);
+        }
+
+        return token;
+      } catch (SubjectTokenProviderException e) {
+        throw e;
+      } catch (Exception e) {
+        throw new SubjectTokenProviderException(
+            "github-actions", "failed to request GitHub OIDC token", e);
+      }
+    }
+
+    @Override
+    public CompletableFuture<String> getTokenAsync(
+        com.openai.core.http.HttpClient httpClient, JsonMapper jsonMapper) {
+      return CompletableFuture.supplyAsync(() -> getToken(httpClient, jsonMapper));
+    }
+  }
+
+  public static void main(String[] args) {
+    WorkloadIdentity workloadIdentity =
+        WorkloadIdentity.builder()
+            .identityProviderId(System.getenv("OPENAI_IDENTITY_PROVIDER_ID"))
+            .serviceAccountId(System.getenv("OPENAI_SERVICE_ACCOUNT_ID"))
+            .provider(
+                new GitHubActionsOidcTokenProvider(
+                    System.getenv("ACTIONS_ID_TOKEN_REQUEST_URL"),
+                    System.getenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN"),
+                    System.getenv("OPENAI_WIF_AUDIENCE")))
+            .build();
+
+    OpenAIClient client = OpenAIOkHttpClient.builder().workloadIdentity(workloadIdentity).build();
+
+    ResponseCreateParams params =
+        ResponseCreateParams.builder()
+            .model("gpt-5.6-terra")
+            .input("Say hello from GitHub Actions workload identity federation.")
+            .build();
+
+    client.responses().create(params).output().stream()
+        .flatMap(item -> item.message().stream())
+        .flatMap(message -> message.content().stream())
+        .flatMap(content -> content.outputText().stream())
+        .forEach(outputText -> System.out.println(outputText.text()));
+  }
 }
 ```
 
@@ -14066,7 +14060,6 @@ import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.core.http.HttpClient;
 import com.openai.errors.SubjectTokenProviderException;
-import com.openai.models.ChatModel;
 import com.openai.models.responses.ResponseCreateParams;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -14076,95 +14069,89 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
 
 public final class GoogleWorkloadIdentityExample {
-    private static final String METADATA_ENDPOINT =
-            "http://metadata.google.internal/computeMetadata/v1/instance/"
-                    + "service-accounts/default/identity";
+  private static final String METADATA_ENDPOINT =
+      "http://metadata.google.internal/computeMetadata/v1/instance/"
+          + "service-accounts/default/identity";
 
-    private GoogleWorkloadIdentityExample() {}
+  private GoogleWorkloadIdentityExample() {}
 
-    static final class GoogleMetadataIdentityTokenProvider implements SubjectTokenProvider {
-        private final String audience;
+  static final class GoogleMetadataIdentityTokenProvider implements SubjectTokenProvider {
+    private final String audience;
 
-        GoogleMetadataIdentityTokenProvider(String audience) {
-            this.audience = audience;
-        }
-
-        @Override
-        public SubjectTokenType tokenType() {
-            return SubjectTokenType.JWT;
-        }
-
-        @Override
-        public String getToken(HttpClient httpClient, JsonMapper jsonMapper) {
-            try {
-                String query = "audience="
-                        + URLEncoder.encode(audience, StandardCharsets.UTF_8)
-                        + "&format=full";
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(METADATA_ENDPOINT + "?" + query))
-                        .header("Metadata-Flavor", "Google")
-                        .GET()
-                        .build();
-
-                HttpResponse<String> response = java.net.http.HttpClient.newHttpClient()
-                        .send(request, HttpResponse.BodyHandlers.ofString());
-                if (response.statusCode() < 200 || response.statusCode() >= 300) {
-                    throw new SubjectTokenProviderException(
-                            "google-metadata",
-                            "Google metadata token request failed with status "
-                                    + response.statusCode(),
-                            null);
-                }
-
-                String token = response.body().trim();
-                if (token.isEmpty()) {
-                    throw new SubjectTokenProviderException(
-                            "google-metadata",
-                            "Google metadata server did not return an identity token",
-                            null);
-                }
-
-                return token;
-            } catch (SubjectTokenProviderException e) {
-                throw e;
-            } catch (Exception e) {
-                throw new SubjectTokenProviderException(
-                        "google-metadata",
-                        "failed to request Google identity token",
-                        e);
-            }
-        }
-
-        @Override
-        public CompletableFuture<String> getTokenAsync(
-                HttpClient httpClient, JsonMapper jsonMapper) {
-            return CompletableFuture.supplyAsync(() -> getToken(httpClient, jsonMapper));
-        }
+    GoogleMetadataIdentityTokenProvider(String audience) {
+      this.audience = audience;
     }
 
-    public static void main(String[] args) {
-        WorkloadIdentity workloadIdentity = WorkloadIdentity.builder()
-                .identityProviderId(System.getenv("OPENAI_IDENTITY_PROVIDER_ID"))
-                .serviceAccountId(System.getenv("OPENAI_SERVICE_ACCOUNT_ID"))
-                .provider(new GoogleMetadataIdentityTokenProvider(
-                        System.getenv("OPENAI_WIF_AUDIENCE")))
-                .build();
-
-        OpenAIClient client = OpenAIOkHttpClient.builder()
-                .workloadIdentity(workloadIdentity)
-                .build();
-
-        ResponseCreateParams params = ResponseCreateParams.builder()
-                .model(ChatModel.GPT_4_1_MINI)
-                .input("Say hello from Google Cloud workload identity federation.")
-                .build();
-
-        client.responses().create(params).output().stream()
-                .flatMap(item -> item.message().stream())
-                .flatMap(message -> message.content().stream())
-                .flatMap(content -> content.outputText().stream())
-                .forEach(outputText -> System.out.println(outputText.text()));
+    @Override
+    public SubjectTokenType tokenType() {
+      return SubjectTokenType.JWT;
     }
+
+    @Override
+    public String getToken(HttpClient httpClient, JsonMapper jsonMapper) {
+      try {
+        String query =
+            "audience=" + URLEncoder.encode(audience, StandardCharsets.UTF_8) + "&format=full";
+        HttpRequest request =
+            HttpRequest.newBuilder()
+                .uri(URI.create(METADATA_ENDPOINT + "?" + query))
+                .header("Metadata-Flavor", "Google")
+                .GET()
+                .build();
+
+        HttpResponse<String> response =
+            java.net.http.HttpClient.newHttpClient()
+                .send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() < 200 || response.statusCode() >= 300) {
+          throw new SubjectTokenProviderException(
+              "google-metadata",
+              "Google metadata token request failed with status " + response.statusCode(),
+              null);
+        }
+
+        String token = response.body().trim();
+        if (token.isEmpty()) {
+          throw new SubjectTokenProviderException(
+              "google-metadata", "Google metadata server did not return an identity token", null);
+        }
+
+        return token;
+      } catch (SubjectTokenProviderException e) {
+        throw e;
+      } catch (Exception e) {
+        throw new SubjectTokenProviderException(
+            "google-metadata", "failed to request Google identity token", e);
+      }
+    }
+
+    @Override
+    public CompletableFuture<String> getTokenAsync(HttpClient httpClient, JsonMapper jsonMapper) {
+      return CompletableFuture.supplyAsync(() -> getToken(httpClient, jsonMapper));
+    }
+  }
+
+  public static void main(String[] args) {
+    WorkloadIdentity workloadIdentity =
+        WorkloadIdentity.builder()
+            .identityProviderId(System.getenv("OPENAI_IDENTITY_PROVIDER_ID"))
+            .serviceAccountId(System.getenv("OPENAI_SERVICE_ACCOUNT_ID"))
+            .provider(new GoogleMetadataIdentityTokenProvider(System.getenv("OPENAI_WIF_AUDIENCE")))
+            .build();
+
+    OpenAIClient client = OpenAIOkHttpClient.builder().workloadIdentity(workloadIdentity).build();
+
+    ResponseCreateParams params =
+        ResponseCreateParams.builder()
+            .model("gpt-5.6-terra")
+            .input("Say hello from Google Cloud workload identity federation.")
+            .build();
+
+    client.responses().create(params).output().stream()
+        .flatMap(item -> item.message().stream())
+        .flatMap(message -> message.content().stream())
+        .flatMap(content -> content.outputText().stream())
+        .forEach(outputText -> System.out.println(outputText.text()));
+  }
 }
 ```
 
@@ -14553,80 +14540,74 @@ import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.core.http.HttpClient;
 import com.openai.errors.SubjectTokenProviderException;
-import com.openai.models.ChatModel;
 import com.openai.models.responses.ResponseCreateParams;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
 public final class GoogleGkeWorkloadIdentityExample {
-    private static final String TOKEN_PATH = "/var/run/secrets/tokens/token";
+  private static final String TOKEN_PATH = "/var/run/secrets/tokens/token";
 
-    private GoogleGkeWorkloadIdentityExample() {}
+  private GoogleGkeWorkloadIdentityExample() {}
 
-    static final class MountedGkeServiceAccountTokenProvider implements SubjectTokenProvider {
-        private final Path tokenPath;
+  static final class MountedGkeServiceAccountTokenProvider implements SubjectTokenProvider {
+    private final Path tokenPath;
 
-        MountedGkeServiceAccountTokenProvider(String tokenPath) {
-            this.tokenPath = Path.of(tokenPath);
-        }
-
-        @Override
-        public SubjectTokenType tokenType() {
-            return SubjectTokenType.JWT;
-        }
-
-        @Override
-        public String getToken(HttpClient httpClient, JsonMapper jsonMapper) {
-            String token;
-            try {
-                token = Files.readString(tokenPath).trim();
-            } catch (Exception e) {
-                throw new SubjectTokenProviderException(
-                        "google-gke",
-                        "failed to read mounted GKE service account token",
-                        e);
-            }
-
-            if (token.isEmpty()) {
-                throw new SubjectTokenProviderException(
-                        "google-gke",
-                        "mounted GKE service account token is empty",
-                        null);
-            }
-
-            return token;
-        }
-
-        @Override
-        public CompletableFuture<String> getTokenAsync(
-                HttpClient httpClient, JsonMapper jsonMapper) {
-            return CompletableFuture.supplyAsync(() -> getToken(httpClient, jsonMapper));
-        }
+    MountedGkeServiceAccountTokenProvider(String tokenPath) {
+      this.tokenPath = Path.of(tokenPath);
     }
 
-    public static void main(String[] args) {
-        WorkloadIdentity workloadIdentity = WorkloadIdentity.builder()
-                .identityProviderId(System.getenv("OPENAI_IDENTITY_PROVIDER_ID"))
-                .serviceAccountId(System.getenv("OPENAI_SERVICE_ACCOUNT_ID"))
-                .provider(new MountedGkeServiceAccountTokenProvider(TOKEN_PATH))
-                .build();
-
-        OpenAIClient client = OpenAIOkHttpClient.builder()
-                .workloadIdentity(workloadIdentity)
-                .build();
-
-        ResponseCreateParams params = ResponseCreateParams.builder()
-                .model(ChatModel.GPT_4_1_MINI)
-                .input("Say hello from Google GKE workload identity federation.")
-                .build();
-
-        client.responses().create(params).output().stream()
-                .flatMap(item -> item.message().stream())
-                .flatMap(message -> message.content().stream())
-                .flatMap(content -> content.outputText().stream())
-                .forEach(outputText -> System.out.println(outputText.text()));
+    @Override
+    public SubjectTokenType tokenType() {
+      return SubjectTokenType.JWT;
     }
+
+    @Override
+    public String getToken(HttpClient httpClient, JsonMapper jsonMapper) {
+      String token;
+      try {
+        token = Files.readString(tokenPath).trim();
+      } catch (Exception e) {
+        throw new SubjectTokenProviderException(
+            "google-gke", "failed to read mounted GKE service account token", e);
+      }
+
+      if (token.isEmpty()) {
+        throw new SubjectTokenProviderException(
+            "google-gke", "mounted GKE service account token is empty", null);
+      }
+
+      return token;
+    }
+
+    @Override
+    public CompletableFuture<String> getTokenAsync(HttpClient httpClient, JsonMapper jsonMapper) {
+      return CompletableFuture.supplyAsync(() -> getToken(httpClient, jsonMapper));
+    }
+  }
+
+  public static void main(String[] args) {
+    WorkloadIdentity workloadIdentity =
+        WorkloadIdentity.builder()
+            .identityProviderId(System.getenv("OPENAI_IDENTITY_PROVIDER_ID"))
+            .serviceAccountId(System.getenv("OPENAI_SERVICE_ACCOUNT_ID"))
+            .provider(new MountedGkeServiceAccountTokenProvider(TOKEN_PATH))
+            .build();
+
+    OpenAIClient client = OpenAIOkHttpClient.builder().workloadIdentity(workloadIdentity).build();
+
+    ResponseCreateParams params =
+        ResponseCreateParams.builder()
+            .model("gpt-5.6-terra")
+            .input("Say hello from Google GKE workload identity federation.")
+            .build();
+
+    client.responses().create(params).output().stream()
+        .flatMap(item -> item.message().stream())
+        .flatMap(message -> message.content().stream())
+        .flatMap(content -> content.outputText().stream())
+        .forEach(outputText -> System.out.println(outputText.text()));
+  }
 }
 ```
 
@@ -14994,80 +14975,74 @@ import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.core.http.HttpClient;
 import com.openai.errors.SubjectTokenProviderException;
-import com.openai.models.ChatModel;
 import com.openai.models.responses.ResponseCreateParams;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
 public final class KubernetesWorkloadIdentityExample {
-    private static final String TOKEN_PATH = "/var/run/secrets/tokens/token";
+  private static final String TOKEN_PATH = "/var/run/secrets/tokens/token";
 
-    private KubernetesWorkloadIdentityExample() {}
+  private KubernetesWorkloadIdentityExample() {}
 
-    static final class MountedServiceAccountTokenProvider implements SubjectTokenProvider {
-        private final Path tokenPath;
+  static final class MountedServiceAccountTokenProvider implements SubjectTokenProvider {
+    private final Path tokenPath;
 
-        MountedServiceAccountTokenProvider(String tokenPath) {
-            this.tokenPath = Path.of(tokenPath);
-        }
-
-        @Override
-        public SubjectTokenType tokenType() {
-            return SubjectTokenType.JWT;
-        }
-
-        @Override
-        public String getToken(HttpClient httpClient, JsonMapper jsonMapper) {
-            String token;
-            try {
-                token = Files.readString(tokenPath).trim();
-            } catch (Exception e) {
-                throw new SubjectTokenProviderException(
-                        "kubernetes",
-                        "failed to read mounted service account token",
-                        e);
-            }
-
-            if (token.isEmpty()) {
-                throw new SubjectTokenProviderException(
-                        "kubernetes",
-                        "mounted service account token is empty",
-                        null);
-            }
-
-            return token;
-        }
-
-        @Override
-        public CompletableFuture<String> getTokenAsync(
-                HttpClient httpClient, JsonMapper jsonMapper) {
-            return CompletableFuture.supplyAsync(() -> getToken(httpClient, jsonMapper));
-        }
+    MountedServiceAccountTokenProvider(String tokenPath) {
+      this.tokenPath = Path.of(tokenPath);
     }
 
-    public static void main(String[] args) {
-        WorkloadIdentity workloadIdentity = WorkloadIdentity.builder()
-                .identityProviderId(System.getenv("OPENAI_IDENTITY_PROVIDER_ID"))
-                .serviceAccountId(System.getenv("OPENAI_SERVICE_ACCOUNT_ID"))
-                .provider(new MountedServiceAccountTokenProvider(TOKEN_PATH))
-                .build();
-
-        OpenAIClient client = OpenAIOkHttpClient.builder()
-                .workloadIdentity(workloadIdentity)
-                .build();
-
-        ResponseCreateParams params = ResponseCreateParams.builder()
-                .model(ChatModel.GPT_4_1_MINI)
-                .input("Say hello from Kubernetes workload identity federation.")
-                .build();
-
-        client.responses().create(params).output().stream()
-                .flatMap(item -> item.message().stream())
-                .flatMap(message -> message.content().stream())
-                .flatMap(content -> content.outputText().stream())
-                .forEach(outputText -> System.out.println(outputText.text()));
+    @Override
+    public SubjectTokenType tokenType() {
+      return SubjectTokenType.JWT;
     }
+
+    @Override
+    public String getToken(HttpClient httpClient, JsonMapper jsonMapper) {
+      String token;
+      try {
+        token = Files.readString(tokenPath).trim();
+      } catch (Exception e) {
+        throw new SubjectTokenProviderException(
+            "kubernetes", "failed to read mounted service account token", e);
+      }
+
+      if (token.isEmpty()) {
+        throw new SubjectTokenProviderException(
+            "kubernetes", "mounted service account token is empty", null);
+      }
+
+      return token;
+    }
+
+    @Override
+    public CompletableFuture<String> getTokenAsync(HttpClient httpClient, JsonMapper jsonMapper) {
+      return CompletableFuture.supplyAsync(() -> getToken(httpClient, jsonMapper));
+    }
+  }
+
+  public static void main(String[] args) {
+    WorkloadIdentity workloadIdentity =
+        WorkloadIdentity.builder()
+            .identityProviderId(System.getenv("OPENAI_IDENTITY_PROVIDER_ID"))
+            .serviceAccountId(System.getenv("OPENAI_SERVICE_ACCOUNT_ID"))
+            .provider(new MountedServiceAccountTokenProvider(TOKEN_PATH))
+            .build();
+
+    OpenAIClient client = OpenAIOkHttpClient.builder().workloadIdentity(workloadIdentity).build();
+
+    ResponseCreateParams params =
+        ResponseCreateParams.builder()
+            .model("gpt-5.6-terra")
+            .input("Say hello from Kubernetes workload identity federation.")
+            .build();
+
+    client.responses().create(params).output().stream()
+        .flatMap(item -> item.message().stream())
+        .flatMap(message -> message.content().stream())
+        .flatMap(content -> content.outputText().stream())
+        .forEach(outputText -> System.out.println(outputText.text()));
+  }
 }
 ```
 
@@ -15500,7 +15475,6 @@ import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.core.http.HttpClient;
 import com.openai.errors.SubjectTokenProviderException;
-import com.openai.models.ChatModel;
 import com.openai.models.responses.ResponseCreateParams;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -15510,100 +15484,95 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
 
 public final class AzureManagedIdentityWorkloadIdentityExample {
-    private static final String IMDS_ENDPOINT =
-            "http://169.254.169.254/metadata/identity/oauth2/token";
+  private static final String IMDS_ENDPOINT =
+      "http://169.254.169.254/metadata/identity/oauth2/token";
 
-    private AzureManagedIdentityWorkloadIdentityExample() {}
+  private AzureManagedIdentityWorkloadIdentityExample() {}
 
-    static final class AzureManagedIdentityTokenProvider implements SubjectTokenProvider {
-        private final String resource;
+  static final class AzureManagedIdentityTokenProvider implements SubjectTokenProvider {
+    private final String resource;
 
-        AzureManagedIdentityTokenProvider(String resource) {
-            this.resource = resource;
-        }
-
-        @Override
-        public SubjectTokenType tokenType() {
-            return SubjectTokenType.JWT;
-        }
-
-        @Override
-        public String getToken(HttpClient httpClient, JsonMapper jsonMapper) {
-            try {
-                String query = "api-version=2018-02-01&resource="
-                        + URLEncoder.encode(resource, StandardCharsets.UTF_8);
-                String clientId = System.getenv("AZURE_CLIENT_ID");
-                if (clientId != null && !clientId.isEmpty()) {
-                    query += "&client_id="
-                            + URLEncoder.encode(clientId, StandardCharsets.UTF_8);
-                }
-
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(IMDS_ENDPOINT + "?" + query))
-                        .header("Metadata", "true")
-                        .GET()
-                        .build();
-
-                HttpResponse<String> response = java.net.http.HttpClient.newHttpClient()
-                        .send(request, HttpResponse.BodyHandlers.ofString());
-                if (response.statusCode() < 200 || response.statusCode() >= 300) {
-                    throw new SubjectTokenProviderException(
-                            "azure-managed-identity",
-                            "Azure IMDS token request failed with status "
-                                    + response.statusCode(),
-                            null);
-                }
-
-                JsonNode body = jsonMapper.readTree(response.body());
-                String token = body.path("access_token").asText();
-                if (token.isEmpty()) {
-                    throw new SubjectTokenProviderException(
-                            "azure-managed-identity",
-                            "Azure IMDS did not return an access token",
-                            null);
-                }
-
-                return token;
-            } catch (SubjectTokenProviderException e) {
-                throw e;
-            } catch (Exception e) {
-                throw new SubjectTokenProviderException(
-                        "azure-managed-identity",
-                        "failed to request Azure managed identity token",
-                        e);
-            }
-        }
-
-        @Override
-        public CompletableFuture<String> getTokenAsync(
-                HttpClient httpClient, JsonMapper jsonMapper) {
-            return CompletableFuture.supplyAsync(() -> getToken(httpClient, jsonMapper));
-        }
+    AzureManagedIdentityTokenProvider(String resource) {
+      this.resource = resource;
     }
 
-    public static void main(String[] args) {
-        WorkloadIdentity workloadIdentity = WorkloadIdentity.builder()
-                .identityProviderId(System.getenv("OPENAI_IDENTITY_PROVIDER_ID"))
-                .serviceAccountId(System.getenv("OPENAI_SERVICE_ACCOUNT_ID"))
-                .provider(new AzureManagedIdentityTokenProvider(
-                        System.getenv("OPENAI_WIF_AUDIENCE")))
-                .build();
-
-        OpenAIClient client = OpenAIOkHttpClient.builder()
-                .workloadIdentity(workloadIdentity)
-                .build();
-
-        ResponseCreateParams params = ResponseCreateParams.builder()
-                .model(ChatModel.GPT_4_1_MINI)
-                .input("Say hello from Azure managed identity workload identity federation.")
-                .build();
-
-        client.responses().create(params).output().stream()
-                .flatMap(item -> item.message().stream())
-                .flatMap(message -> message.content().stream())
-                .flatMap(content -> content.outputText().stream())
-                .forEach(outputText -> System.out.println(outputText.text()));
+    @Override
+    public SubjectTokenType tokenType() {
+      return SubjectTokenType.JWT;
     }
+
+    @Override
+    public String getToken(HttpClient httpClient, JsonMapper jsonMapper) {
+      try {
+        String query =
+            "api-version=2018-02-01&resource="
+                + URLEncoder.encode(resource, StandardCharsets.UTF_8);
+        String clientId = System.getenv("AZURE_CLIENT_ID");
+        if (clientId != null && !clientId.isEmpty()) {
+          query += "&client_id=" + URLEncoder.encode(clientId, StandardCharsets.UTF_8);
+        }
+
+        HttpRequest request =
+            HttpRequest.newBuilder()
+                .uri(URI.create(IMDS_ENDPOINT + "?" + query))
+                .header("Metadata", "true")
+                .GET()
+                .build();
+
+        HttpResponse<String> response =
+            java.net.http.HttpClient.newHttpClient()
+                .send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() < 200 || response.statusCode() >= 300) {
+          throw new SubjectTokenProviderException(
+              "azure-managed-identity",
+              "Azure IMDS token request failed with status " + response.statusCode(),
+              null);
+        }
+
+        JsonNode body = jsonMapper.readTree(response.body());
+        String token = body.path("access_token").asText();
+        if (token.isEmpty()) {
+          throw new SubjectTokenProviderException(
+              "azure-managed-identity", "Azure IMDS did not return an access token", null);
+        }
+
+        return token;
+      } catch (SubjectTokenProviderException e) {
+        throw e;
+      } catch (Exception e) {
+        throw new SubjectTokenProviderException(
+            "azure-managed-identity", "failed to request Azure managed identity token", e);
+      }
+    }
+
+    @Override
+    public CompletableFuture<String> getTokenAsync(HttpClient httpClient, JsonMapper jsonMapper) {
+      return CompletableFuture.supplyAsync(() -> getToken(httpClient, jsonMapper));
+    }
+  }
+
+  public static void main(String[] args) {
+    WorkloadIdentity workloadIdentity =
+        WorkloadIdentity.builder()
+            .identityProviderId(System.getenv("OPENAI_IDENTITY_PROVIDER_ID"))
+            .serviceAccountId(System.getenv("OPENAI_SERVICE_ACCOUNT_ID"))
+            .provider(new AzureManagedIdentityTokenProvider(System.getenv("OPENAI_WIF_AUDIENCE")))
+            .build();
+
+    OpenAIClient client = OpenAIOkHttpClient.builder().workloadIdentity(workloadIdentity).build();
+
+    ResponseCreateParams params =
+        ResponseCreateParams.builder()
+            .model("gpt-5.6-terra")
+            .input("Say hello from Azure managed identity workload identity federation.")
+            .build();
+
+    client.responses().create(params).output().stream()
+        .flatMap(item -> item.message().stream())
+        .flatMap(message -> message.content().stream())
+        .flatMap(content -> content.outputText().stream())
+        .forEach(outputText -> System.out.println(outputText.text()));
+  }
 }
 ```
 
@@ -16003,80 +15972,74 @@ import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.core.http.HttpClient;
 import com.openai.errors.SubjectTokenProviderException;
-import com.openai.models.ChatModel;
 import com.openai.models.responses.ResponseCreateParams;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
 public final class AzureAksWorkloadIdentityExample {
-    private static final String TOKEN_PATH = "/var/run/secrets/tokens/token";
+  private static final String TOKEN_PATH = "/var/run/secrets/tokens/token";
 
-    private AzureAksWorkloadIdentityExample() {}
+  private AzureAksWorkloadIdentityExample() {}
 
-    static final class MountedAksServiceAccountTokenProvider implements SubjectTokenProvider {
-        private final Path tokenPath;
+  static final class MountedAksServiceAccountTokenProvider implements SubjectTokenProvider {
+    private final Path tokenPath;
 
-        MountedAksServiceAccountTokenProvider(String tokenPath) {
-            this.tokenPath = Path.of(tokenPath);
-        }
-
-        @Override
-        public SubjectTokenType tokenType() {
-            return SubjectTokenType.JWT;
-        }
-
-        @Override
-        public String getToken(HttpClient httpClient, JsonMapper jsonMapper) {
-            String token;
-            try {
-                token = Files.readString(tokenPath).trim();
-            } catch (Exception e) {
-                throw new SubjectTokenProviderException(
-                        "azure-aks",
-                        "failed to read mounted AKS service account token",
-                        e);
-            }
-
-            if (token.isEmpty()) {
-                throw new SubjectTokenProviderException(
-                        "azure-aks",
-                        "mounted AKS service account token is empty",
-                        null);
-            }
-
-            return token;
-        }
-
-        @Override
-        public CompletableFuture<String> getTokenAsync(
-                HttpClient httpClient, JsonMapper jsonMapper) {
-            return CompletableFuture.supplyAsync(() -> getToken(httpClient, jsonMapper));
-        }
+    MountedAksServiceAccountTokenProvider(String tokenPath) {
+      this.tokenPath = Path.of(tokenPath);
     }
 
-    public static void main(String[] args) {
-        WorkloadIdentity workloadIdentity = WorkloadIdentity.builder()
-                .identityProviderId(System.getenv("OPENAI_IDENTITY_PROVIDER_ID"))
-                .serviceAccountId(System.getenv("OPENAI_SERVICE_ACCOUNT_ID"))
-                .provider(new MountedAksServiceAccountTokenProvider(TOKEN_PATH))
-                .build();
-
-        OpenAIClient client = OpenAIOkHttpClient.builder()
-                .workloadIdentity(workloadIdentity)
-                .build();
-
-        ResponseCreateParams params = ResponseCreateParams.builder()
-                .model(ChatModel.GPT_4_1_MINI)
-                .input("Say hello from AKS workload identity federation.")
-                .build();
-
-        client.responses().create(params).output().stream()
-                .flatMap(item -> item.message().stream())
-                .flatMap(message -> message.content().stream())
-                .flatMap(content -> content.outputText().stream())
-                .forEach(outputText -> System.out.println(outputText.text()));
+    @Override
+    public SubjectTokenType tokenType() {
+      return SubjectTokenType.JWT;
     }
+
+    @Override
+    public String getToken(HttpClient httpClient, JsonMapper jsonMapper) {
+      String token;
+      try {
+        token = Files.readString(tokenPath).trim();
+      } catch (Exception e) {
+        throw new SubjectTokenProviderException(
+            "azure-aks", "failed to read mounted AKS service account token", e);
+      }
+
+      if (token.isEmpty()) {
+        throw new SubjectTokenProviderException(
+            "azure-aks", "mounted AKS service account token is empty", null);
+      }
+
+      return token;
+    }
+
+    @Override
+    public CompletableFuture<String> getTokenAsync(HttpClient httpClient, JsonMapper jsonMapper) {
+      return CompletableFuture.supplyAsync(() -> getToken(httpClient, jsonMapper));
+    }
+  }
+
+  public static void main(String[] args) {
+    WorkloadIdentity workloadIdentity =
+        WorkloadIdentity.builder()
+            .identityProviderId(System.getenv("OPENAI_IDENTITY_PROVIDER_ID"))
+            .serviceAccountId(System.getenv("OPENAI_SERVICE_ACCOUNT_ID"))
+            .provider(new MountedAksServiceAccountTokenProvider(TOKEN_PATH))
+            .build();
+
+    OpenAIClient client = OpenAIOkHttpClient.builder().workloadIdentity(workloadIdentity).build();
+
+    ResponseCreateParams params =
+        ResponseCreateParams.builder()
+            .model("gpt-5.6-terra")
+            .input("Say hello from AKS workload identity federation.")
+            .build();
+
+    client.responses().create(params).output().stream()
+        .flatMap(item -> item.message().stream())
+        .flatMap(message -> message.content().stream())
+        .flatMap(content -> content.outputText().stream())
+        .forEach(outputText -> System.out.println(outputText.text()));
+  }
 }
 ```
 
@@ -16473,80 +16436,72 @@ import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.core.http.HttpClient;
 import com.openai.errors.SubjectTokenProviderException;
-import com.openai.models.ChatModel;
 import com.openai.models.responses.ResponseCreateParams;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
 public final class SpiffeWorkloadIdentityExample {
-    private static final String TOKEN_PATH = "/var/run/spiffe/openai.jwt";
+  private static final String TOKEN_PATH = "/var/run/spiffe/openai.jwt";
 
-    private SpiffeWorkloadIdentityExample() {}
+  private SpiffeWorkloadIdentityExample() {}
 
-    static final class SpiffeJwtSvidProvider implements SubjectTokenProvider {
-        private final Path tokenPath;
+  static final class SpiffeJwtSvidProvider implements SubjectTokenProvider {
+    private final Path tokenPath;
 
-        SpiffeJwtSvidProvider(String tokenPath) {
-            this.tokenPath = Path.of(tokenPath);
-        }
-
-        @Override
-        public SubjectTokenType tokenType() {
-            return SubjectTokenType.JWT;
-        }
-
-        @Override
-        public String getToken(HttpClient httpClient, JsonMapper jsonMapper) {
-            String token;
-            try {
-                token = Files.readString(tokenPath).trim();
-            } catch (Exception e) {
-                throw new SubjectTokenProviderException(
-                        "spiffe",
-                        "failed to read SPIFFE JWT-SVID",
-                        e);
-            }
-
-            if (token.isEmpty()) {
-                throw new SubjectTokenProviderException(
-                        "spiffe",
-                        "SPIFFE JWT-SVID file is empty",
-                        null);
-            }
-
-            return token;
-        }
-
-        @Override
-        public CompletableFuture<String> getTokenAsync(
-                HttpClient httpClient, JsonMapper jsonMapper) {
-            return CompletableFuture.supplyAsync(() -> getToken(httpClient, jsonMapper));
-        }
+    SpiffeJwtSvidProvider(String tokenPath) {
+      this.tokenPath = Path.of(tokenPath);
     }
 
-    public static void main(String[] args) {
-        WorkloadIdentity workloadIdentity = WorkloadIdentity.builder()
-                .identityProviderId(System.getenv("OPENAI_IDENTITY_PROVIDER_ID"))
-                .serviceAccountId(System.getenv("OPENAI_SERVICE_ACCOUNT_ID"))
-                .provider(new SpiffeJwtSvidProvider(TOKEN_PATH))
-                .build();
-
-        OpenAIClient client = OpenAIOkHttpClient.builder()
-                .workloadIdentity(workloadIdentity)
-                .build();
-
-        ResponseCreateParams params = ResponseCreateParams.builder()
-                .model(ChatModel.GPT_4_1_MINI)
-                .input("Say hello from SPIFFE workload identity federation.")
-                .build();
-
-        client.responses().create(params).output().stream()
-                .flatMap(item -> item.message().stream())
-                .flatMap(message -> message.content().stream())
-                .flatMap(content -> content.outputText().stream())
-                .forEach(outputText -> System.out.println(outputText.text()));
+    @Override
+    public SubjectTokenType tokenType() {
+      return SubjectTokenType.JWT;
     }
+
+    @Override
+    public String getToken(HttpClient httpClient, JsonMapper jsonMapper) {
+      String token;
+      try {
+        token = Files.readString(tokenPath).trim();
+      } catch (Exception e) {
+        throw new SubjectTokenProviderException("spiffe", "failed to read SPIFFE JWT-SVID", e);
+      }
+
+      if (token.isEmpty()) {
+        throw new SubjectTokenProviderException("spiffe", "SPIFFE JWT-SVID file is empty", null);
+      }
+
+      return token;
+    }
+
+    @Override
+    public CompletableFuture<String> getTokenAsync(HttpClient httpClient, JsonMapper jsonMapper) {
+      return CompletableFuture.supplyAsync(() -> getToken(httpClient, jsonMapper));
+    }
+  }
+
+  public static void main(String[] args) {
+    WorkloadIdentity workloadIdentity =
+        WorkloadIdentity.builder()
+            .identityProviderId(System.getenv("OPENAI_IDENTITY_PROVIDER_ID"))
+            .serviceAccountId(System.getenv("OPENAI_SERVICE_ACCOUNT_ID"))
+            .provider(new SpiffeJwtSvidProvider(TOKEN_PATH))
+            .build();
+
+    OpenAIClient client = OpenAIOkHttpClient.builder().workloadIdentity(workloadIdentity).build();
+
+    ResponseCreateParams params =
+        ResponseCreateParams.builder()
+            .model("gpt-5.6-terra")
+            .input("Say hello from SPIFFE workload identity federation.")
+            .build();
+
+    client.responses().create(params).output().stream()
+        .flatMap(item -> item.message().stream())
+        .flatMap(message -> message.content().stream())
+        .flatMap(content -> content.outputText().stream())
+        .forEach(outputText -> System.out.println(outputText.text()));
+  }
 }
 ```
 
@@ -31053,8 +31008,8 @@ plan to use.
 - Confirm your supported model and AWS Region in Amazon Bedrock.
 - Verify the exact API features your workload needs.
 - Compare Bedrock pricing and direct API pricing before launch.
-- For Codex-specific setup, see
-  [Use Codex with Amazon Bedrock](https://developers.openai.com/codex/amazon-bedrock).
+- For setup in ChatGPT Work and Codex, see
+  [Use ChatGPT Work and Codex with Amazon Bedrock](https://developers.openai.com/codex/amazon-bedrock).
 
 ---
 
@@ -33235,17 +33190,19 @@ import com.openai.models.responses.Response;
 import com.openai.models.responses.ResponseCreateParams;
 
 public class Main {
-    public static void main(String[] args) {
-        OpenAIClient client = OpenAIOkHttpClient.fromEnv();
+  public static void main(String[] args) {
+    OpenAIClient client = OpenAIOkHttpClient.fromEnv();
 
-        ResponseCreateParams params = ResponseCreateParams.builder()
-                .input("Say this is a test")
-                .model("gpt-5.6")
-                .build();
+    ResponseCreateParams params =
+        ResponseCreateParams.builder().input("Say this is a test").model("gpt-5.6").build();
 
-        Response response = client.responses().create(params);
-        System.out.println(response.outputText());
-    }
+    Response response = client.responses().create(params);
+    response.output().stream()
+        .flatMap(item -> item.message().stream())
+        .flatMap(message -> message.content().stream())
+        .flatMap(content -> content.outputText().stream())
+        .forEach(outputText -> System.out.println(outputText.text()));
+  }
 }
 ```
 
@@ -46521,17 +46478,19 @@ import com.openai.models.responses.Response;
 import com.openai.models.responses.ResponseCreateParams;
 
 public class Main {
-    public static void main(String[] args) {
-        OpenAIClient client = OpenAIOkHttpClient.fromEnv();
+  public static void main(String[] args) {
+    OpenAIClient client = OpenAIOkHttpClient.fromEnv();
 
-        ResponseCreateParams params = ResponseCreateParams.builder()
-                .input("Say this is a test")
-                .model("gpt-5.6")
-                .build();
+    ResponseCreateParams params =
+        ResponseCreateParams.builder().input("Say this is a test").model("gpt-5.6").build();
 
-        Response response = client.responses().create(params);
-        System.out.println(response.outputText());
-    }
+    Response response = client.responses().create(params);
+    response.output().stream()
+        .flatMap(item -> item.message().stream())
+        .flatMap(message -> message.content().stream())
+        .flatMap(content -> content.outputText().stream())
+        .forEach(outputText -> System.out.println(outputText.text()));
+  }
 }
 ```
 
