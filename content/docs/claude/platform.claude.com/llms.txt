@@ -12,18 +12,18 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 1894 pages - /docs - Content included below
-- German (Deutsch) (de) - 137 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 137 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 137 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 137 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 137 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 137 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 137 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 137 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 137 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 137 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 137 pages - /docs/id - Visit website for content
+- English (en) - 1953 pages - /docs - Content included below
+- German (Deutsch) (de) - 196 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 196 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 196 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 196 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 196 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 196 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 196 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 196 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 196 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 196 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 196 pages - /docs/id - Visit website for content
 
 ---
 
@@ -176,6 +176,81 @@ The full documentation is available in the following languages on https://platfo
 - [WIF reference](https://platform.claude.com/docs/en/manage-claude/wif-reference.md)
 - [Workload Identity Federation](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation.md)
 - [Workspaces](https://platform.claude.com/docs/en/manage-claude/workspaces.md)
+
+### Best practices
+
+- [Overview](https://platform.claude.com/docs/en/about-claude/use-case-guides/overview.md) - Guides to common use cases
+- [Overview](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview.md) - Prompt engineering overview
+- [Console prompting tools](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-tools.md)
+- [Content moderation](https://platform.claude.com/docs/en/about-claude/use-case-guides/content-moderation.md)
+- [Customer support agent](https://platform.claude.com/docs/en/about-claude/use-case-guides/customer-support-chat.md)
+- [Define success and build evaluations](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests.md) - Define success criteria and build evaluations
+- [Glossary](https://platform.claude.com/docs/en/about-claude/glossary.md)
+- [Increase output consistency](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/increase-consistency.md)
+- [Legal summarization](https://platform.claude.com/docs/en/about-claude/use-case-guides/legal-summarization.md)
+- [Mitigate jailbreaks](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks.md) - Mitigate jailbreaks and prompt injections
+- [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md)
+- [Prompting Claude Fable 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5.md)
+- [Prompting Claude Opus 4.8](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-4-8.md)
+- [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5.md)
+- [Reduce hallucinations](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations.md)
+- [Reduce prompt leak](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-prompt-leak.md)
+- [Reducing latency](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency.md)
+- [Ticket routing](https://platform.claude.com/docs/en/about-claude/use-case-guides/ticket-routing.md)
+- [Using the Evaluation Tool in Console](https://platform.claude.com/docs/en/test-and-evaluate/eval-tool.md) - Using the Evaluation Tool
+
+### Models & pricing
+
+- [Introducing Claude Fable 5 and Claude Mythos 5](https://platform.claude.com/docs/en/about-claude/models/introducing-claude-fable-5-and-claude-mythos-5.md)
+- [Models overview](https://platform.claude.com/docs/en/about-claude/models/overview.md)
+- [Model cards](https://platform.claude.com/docs/en/resources/overview.md) - Resources
+- [Choosing a model](https://platform.claude.com/docs/en/about-claude/models/choosing-a-model.md) - Choosing the right model
+- [Upgrade between model versions](https://platform.claude.com/docs/en/about-claude/models/migration-guide.md) - Migration guide
+- [Model deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations.md)
+- [Model IDs and versioning](https://platform.claude.com/docs/en/about-claude/models/model-ids-and-versions.md)
+- [Pricing](https://platform.claude.com/docs/en/about-claude/pricing.md)
+- [System prompts](https://platform.claude.com/docs/en/release-notes/system-prompts.md) - System Prompts
+- [What's new in Claude Opus 4.8](https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-8.md)
+- [What's new in Claude Sonnet 5](https://platform.claude.com/docs/en/about-claude/models/whats-new-sonnet-5.md)
+
+### CLI, SDKs, and libraries
+
+- [Quickstart](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/quickstart.md) - CLI quickstart
+- [Overview](https://platform.claude.com/docs/en/cli-sdks-libraries/overview.md) - CLI, SDKs, and libraries
+- [Apple Foundation Models](https://platform.claude.com/docs/en/cli-sdks-libraries/libraries/apple-foundation-models.md)
+- [C#](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/csharp.md) - C# SDK
+- [Authentication options](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/authentication.md) - CLI authentication options
+- [Scripting and automation](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/scripting.md) - CLI scripting and automation
+- [Go](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/go.md) - Go SDK
+- [Java](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/java.md) - Java SDK
+- [OpenAI SDK compatibility](https://platform.claude.com/docs/en/cli-sdks-libraries/libraries/openai-sdk.md)
+- [PHP](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/php.md) - PHP SDK
+- [Python](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/python.md) - Python SDK
+- [Ruby](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/ruby.md) - Ruby SDK
+- [Middleware](https://platform.claude.com/docs/en/cli-sdks-libraries/middleware.md) - SDK middleware
+- [TypeScript](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/typescript.md) - TypeScript SDK
+- [Using the CLI](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/using.md)
+
+### API reference
+
+- [Features overview](https://platform.claude.com/docs/en/api/overview.md) - API overview
+- [Beta headers](https://platform.claude.com/docs/en/api/beta-headers.md)
+- [Errors](https://platform.claude.com/docs/en/api/errors.md) - Claude API errors
+- [IAM actions (Claude Platform on AWS)](https://platform.claude.com/docs/en/api/claude-platform-on-aws-iam-actions.md) - IAM actions for Claude Platform on AWS
+- [IP addresses](https://platform.claude.com/docs/en/api/ip-addresses.md)
+- [Rate limits](https://platform.claude.com/docs/en/api/rate-limits.md)
+- [Service tiers](https://platform.claude.com/docs/en/api/service-tiers.md)
+- [Supported regions](https://platform.claude.com/docs/en/api/supported-regions.md)
+- [Trigger a routine](https://platform.claude.com/docs/en/api/claude-code/routines-fire.md) - Trigger a routine through the API
+- [Versions](https://platform.claude.com/docs/en/api/versioning.md)
+
+### Claude API skill
+
+- [Overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/claude-api-skill.md) - Claude API skill
+
+### Release notes
+
+- [Overview](https://platform.claude.com/docs/en/release-notes/overview.md) - Claude Platform release notes
 
 ### API Reference
 
@@ -889,7 +964,6 @@ The full documentation is available in the following languages on https://platfo
 - [Get Agent (Beta) (Ruby)](https://platform.claude.com/docs/en/api/ruby/beta/agents/retrieve.md)
 - [Get Agent (Beta) (terraform)](https://platform.claude.com/docs/en/api/terraform/beta/agents/retrieve.md)
 - [Get Agent (Beta) (TypeScript)](https://platform.claude.com/docs/en/api/typescript/beta/agents/retrieve.md)
-- [Get API Key](https://platform.claude.com/docs/en/api/admin/api_keys/retrieve.md)
 - [Get Artifact Activity](https://platform.claude.com/docs/en/api/admin/analytics/artifacts/list.md)
 - [Get artifact metadata](https://platform.claude.com/docs/en/api/compliance/apps/artifacts/retrieve.md)
 - [Get chat messages](https://platform.claude.com/docs/en/api/compliance/apps/chats/messages/list.md)
@@ -1575,6 +1649,7 @@ The full documentation is available in the following languages on https://platfo
 - [Retrieve a Message Batch (Ruby)](https://platform.claude.com/docs/en/api/ruby/messages/batches/retrieve.md)
 - [Retrieve a Message Batch (terraform)](https://platform.claude.com/docs/en/api/terraform/messages/batches/retrieve.md)
 - [Retrieve a Message Batch (TypeScript)](https://platform.claude.com/docs/en/api/typescript/messages/batches/retrieve.md)
+- [Retrieve API Key (Admin API)](https://platform.claude.com/docs/en/api/admin/api_keys/retrieve.md)
 - [Retrieve Message Batch results](https://platform.claude.com/docs/en/api/messages/batches/results.md)
 - [Retrieve Message Batch results (Beta)](https://platform.claude.com/docs/en/api/beta/messages/batches/results.md)
 - [Retrieve Message Batch results (Beta) (cli)](https://platform.claude.com/docs/en/api/cli/beta/messages/batches/results.md)
@@ -1934,6 +2009,11 @@ The full documentation is available in the following languages on https://platfo
 - [Workspaces](https://platform.claude.com/docs/en/api/admin/workspaces.md)
 - [Workspaces](https://platform.claude.com/docs/en/api/admin/service_accounts/workspaces.md)
 - [Workspaces](https://platform.claude.com/docs/en/api/admin/federation_rules/workspaces.md)
+
+### Other pages
+
+- [API usage primer for Claude](https://platform.claude.com/docs/en/claude_api_primer.md)
+- [Classification](https://platform.claude.com/docs/en/about-claude/use-case-guides/classification.md)
 
 ---
 
