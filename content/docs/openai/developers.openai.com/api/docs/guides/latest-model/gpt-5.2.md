@@ -74,10 +74,11 @@ const openai = new OpenAI();
 
 const response = await openai.responses.create({
   model: "gpt-5.2",
-  input: "Think carefully and outline your steps before answering. How much gold would it take to coat the Statue of Liberty in a 1mm layer?",
+  input:
+    "Think carefully and outline your steps before answering. How much gold would it take to coat the Statue of Liberty in a 1mm layer?",
   reasoning: {
-    effort: "none"
-  }
+    effort: "none",
+  },
 });
 
 console.log(response);
@@ -132,10 +133,11 @@ const openai = new OpenAI();
 
 const response = await openai.responses.create({
   model: "gpt-5.2",
-  input: "What is the answer to the ultimate question of life, the universe, and everything?",
+  input:
+    "What is the answer to the ultimate question of life, the universe, and everything?",
   text: {
-    verbosity: "low"
-  }
+    verbosity: "low",
+  },
 });
 
 console.log(response);

@@ -139,18 +139,22 @@ print(response.output_text)
 import OpenAI from "openai";
 const client = new OpenAI();
 
-const container = await client.containers.create({ name: "test-container", memory_limit: "4g" });
+const container = await client.containers.create({
+  name: "test-container",
+  memory_limit: "4g",
+});
 
 const resp = await client.responses.create({
-    model: "gpt-5.6",
-    tools: [
-      {
-        type: "code_interpreter",
-        container: container.id
-      }
-    ],
-    tool_choice: "required",
-    input: "use the python tool to calculate what is 4 * 3.82. and then find its square root and then find the square root of that result"
+  model: "gpt-5.6",
+  tools: [
+    {
+      type: "code_interpreter",
+      container: container.id,
+    },
+  ],
+  tool_choice: "required",
+  input:
+    "use the python tool to calculate what is 4 * 3.82. and then find its square root and then find the square root of that result",
 });
 
 console.log(resp.output_text);

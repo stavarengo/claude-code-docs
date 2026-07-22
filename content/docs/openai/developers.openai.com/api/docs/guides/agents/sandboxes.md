@@ -267,12 +267,7 @@ Run a Unix-local sandbox agent
 
 ```typescript
 import { run } from "@openai/agents";
-import {
-  Manifest,
-  SandboxAgent,
-  file,
-  shell,
-} from "@openai/agents/sandbox";
+import { Manifest, SandboxAgent, file, shell } from "@openai/agents/sandbox";
 import { UnixLocalSandboxClient } from "@openai/agents/sandbox/local";
 
 const manifest = new Manifest({
@@ -309,7 +304,7 @@ const result = await run(
     sandbox: {
       client: new UnixLocalSandboxClient(),
     },
-  },
+  }
 );
 
 console.log(result.finalOutput);
@@ -512,7 +507,7 @@ if (!frozenSessionState || !client.deserializeSessionState || !client.resume) {
 }
 
 const resumedSession = await client.resume(
-  await client.deserializeSessionState(frozenSessionState),
+  await client.deserializeSessionState(frozenSessionState)
 );
 
 try {

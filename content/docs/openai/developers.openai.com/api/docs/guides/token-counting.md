@@ -42,7 +42,7 @@ import OpenAI from "openai";
 
 const client = new OpenAI();
 
-const response = await client.responses.input_tokens.count({
+const response = await client.responses.inputTokens.count({
   model: "gpt-5.6",
   input: "Tell me a joke.",
 });
@@ -94,7 +94,7 @@ import OpenAI from "openai";
 
 const client = new OpenAI();
 
-const response = await client.responses.input_tokens.count({
+const response = await client.responses.inputTokens.count({
   model: "gpt-5.6",
   input: [
     { role: "user", content: "What is 2 + 2?" },
@@ -158,10 +158,9 @@ import OpenAI from "openai";
 
 const client = new OpenAI();
 
-const response = await client.responses.input_tokens.count({
+const response = await client.responses.inputTokens.count({
   model: "gpt-5.6",
-  instructions:
-    "You are a helpful assistant that explains concepts simply.",
+  instructions: "You are a helpful assistant that explains concepts simply.",
   input: "Explain quantum computing in one sentence.",
 });
 
@@ -222,7 +221,7 @@ import OpenAI from "openai";
 
 const client = new OpenAI();
 
-const response = await client.responses.input_tokens.count({
+const response = await client.responses.inputTokens.count({
   model: "gpt-5.6",
   input: [
     {
@@ -231,6 +230,7 @@ const response = await client.responses.input_tokens.count({
         {
           type: "input_image",
           image_url: "https://example.com/chart.png",
+          detail: "auto",
         },
         { type: "input_text", text: "Summarize this chart." },
       ],
@@ -310,17 +310,19 @@ import OpenAI from "openai";
 
 const client = new OpenAI();
 
-const response = await client.responses.input_tokens.count({
+const response = await client.responses.inputTokens.count({
   model: "gpt-5.6",
   tools: [
     {
       type: "function",
       name: "get_weather",
       description: "Get the current weather in a location",
+      strict: true,
       parameters: {
         type: "object",
         properties: { location: { type: "string" } },
         required: ["location"],
+        additionalProperties: false,
       },
     },
   ],

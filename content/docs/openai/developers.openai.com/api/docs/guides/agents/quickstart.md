@@ -34,8 +34,7 @@ import { Agent, run } from "@openai/agents";
 
 const agent = new Agent({
   name: "History tutor",
-  instructions:
-    "You answer history questions clearly and concisely.",
+  instructions: "You answer history questions clearly and concisely.",
   model: "gpt-5.6",
 });
 
@@ -108,7 +107,7 @@ const agent = new Agent({
 
 const result = await run(
   agent,
-  "Tell me something surprising about ancient life on Earth.",
+  "Tell me something surprising about ancient life on Earth."
 );
 
 console.log(result.finalOutput);
@@ -175,7 +174,7 @@ const triageAgent = Agent.create({
 
 const result = await run(
   triageAgent,
-  "Who was the first president of the United States?",
+  "Who was the first president of the United States?"
 );
 
 console.log(result.finalOutput);

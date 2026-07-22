@@ -69,6 +69,12 @@ const response = await client.responses.create({
 
 const inputModeration = response.moderation.input;
 const outputModeration = response.moderation.output;
+if (inputModeration.type === "error") {
+  throw new Error(inputModeration.message);
+}
+if (outputModeration.type === "error") {
+  throw new Error(outputModeration.message);
+}
 
 console.log(inputModeration.flagged);
 console.log(outputModeration.flagged);

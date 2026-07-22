@@ -18,9 +18,10 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-    model: "gpt-5.6",
-    input: "Generate an image of gray tabby cat hugging an otter with an orange scarf",
-    tools: [{type: "image_generation"}],
+  model: "gpt-5.6",
+  input:
+    "Generate an image of gray tabby cat hugging an otter with an orange scarf",
+  tools: [{ type: "image_generation" }],
 });
 
 // Save the image to a file

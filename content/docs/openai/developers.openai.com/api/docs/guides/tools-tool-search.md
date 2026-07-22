@@ -137,6 +137,7 @@ import OpenAI from "openai";
 
 const client = new OpenAI();
 
+/** @type {OpenAI.Responses.NamespaceTool} */
 const crmNamespace = {
   type: "namespace",
   name: "crm",
@@ -345,7 +346,8 @@ const firstResponse = await client.responses.create({
       // highlight-start:subtle
       execution: "client",
       // highlight-end
-      description: "Find the project-specific tools needed to continue the task.",
+      description:
+        "Find the project-specific tools needed to continue the task.",
       parameters: {
         type: "object",
         properties: {
@@ -360,9 +362,14 @@ const firstResponse = await client.responses.create({
 });
 
 const searchCall = firstResponse.output.find(
-  (item) => item.type === "tool_search_call",
+  (item) => item.type === "tool_search_call"
 );
 
+if (!searchCall) {
+  throw new Error("The response did not include a tool search call.");
+}
+
+/** @type {OpenAI.Responses.Tool[]} */
 const loadedTools = [
   {
     type: "function",
@@ -377,24 +384,26 @@ const loadedTools = [
       required: ["order_id"],
       additionalProperties: false,
     },
+    strict: true,
   },
 ];
+
+/** @type {OpenAI.Responses.ResponseToolSearchOutputItemParam} */
+const searchOutput = {
+  type: "tool_search_output",
+  execution: "client",
+  call_id: searchCall.call_id,
+  status: "completed",
+  tools: loadedTools,
+};
 
 const secondResponse = await client.responses.create({
   model: "gpt-5.6",
   input: [
     ...firstResponse.output,
-    {
-      // highlight-start:subtle
-      type: "tool_search_output",
-      // highlight-end
-      execution: "client",
-      call_id: searchCall.call_id,
-      status: "completed",
-      // highlight-start:subtle
-      tools: loadedTools,
-      // highlight-end
-    },
+    // highlight-start:subtle
+    searchOutput,
+    // highlight-end
   ],
 });
 

@@ -253,6 +253,7 @@ import OpenAI from "openai";
 
 const openai = new OpenAI();
 
+/** @type {OpenAI.Responses.Tool} */
 const billingNamespace = {
   type: "namespace",
   name: "billing",
@@ -261,7 +262,8 @@ const billingNamespace = {
     {
       type: "function",
       name: "lookup_invoice",
-      description: "Look up invoice state, taxes, credits, and payment attempts.",
+      description:
+        "Look up invoice state, taxes, credits, and payment attempts.",
       parameters: {
         type: "object",
         properties: {
@@ -276,10 +278,12 @@ const billingNamespace = {
   ],
 };
 
+/** @type {OpenAI.Responses.Tool} */
 const crmNamespace = {
   type: "namespace",
   name: "crm",
-  description: "CRM tools for account ownership, plans, health, and payment history.",
+  description:
+    "CRM tools for account ownership, plans, health, and payment history.",
   tools: [
     {
       type: "function",
@@ -654,6 +658,7 @@ import OpenAI from "openai";
 
 const openai = new OpenAI();
 
+/** @type {OpenAI.Responses.ResponseInput} */
 const history = [
   {
     role: "user",

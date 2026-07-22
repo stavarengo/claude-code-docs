@@ -91,10 +91,7 @@ const agent = new Agent({
   outputType: calendarEvent,
 });
 
-const result = await run(
-  agent,
-  "Dinner with Priya and Sam on Friday.",
-);
+const result = await run(agent, "Dinner with Priya and Sam on Friday.");
 
 console.log(result.finalOutput);
 ```

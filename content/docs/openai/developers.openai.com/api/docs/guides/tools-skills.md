@@ -97,12 +97,13 @@ const response = await client.responses.create({
         type: "container_auto",
         skills: [
           { type: "skill_reference", skill_id: "<skill_id>" },
-          { type: "skill_reference", skill_id: "<skill_id>", version: 2 },
+          { type: "skill_reference", skill_id: "<skill_id>", version: "2" },
         ],
       },
     },
   ],
-  input: "Use the skills to add 144 and 377, then compute triangle area with base 9 height 13.",
+  input:
+    "Use the skills to add 144 and 377, then compute triangle area with base 9 height 13.",
 });
 
 console.log(response.output_text);
@@ -196,7 +197,8 @@ const response = await client.responses.create({
       },
     },
   ],
-  input: "Use the csv-insights skill and run locally to summarize today's CSV reports in this repo.",
+  input:
+    "Use the csv-insights skill and run locally to summarize today's CSV reports in this repo.",
 });
 
 console.log(response.output_text);

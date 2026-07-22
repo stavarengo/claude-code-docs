@@ -55,7 +55,6 @@ print(response.output_text)
 import OpenAI from "openai";
 const openai = new OpenAI({ timeout: 3600 * 1000 });
 
-
 const input = `
 Research the economic impact of semaglutide on global healthcare systems.
 Do:
@@ -79,7 +78,7 @@ const response = await openai.responses.create({
       type: "file_search",
       vector_store_ids: [
         "vs_68870b8868b88191894165101435eef6",
-        "vs_12345abcde6789fghijk101112131415"
+        "vs_12345abcde6789fghijk101112131415",
       ],
     },
     { type: "code_interpreter", container: { type: "auto" } },
@@ -232,9 +231,9 @@ IMPORTANT: Do NOT conduct any research yourself, just gather information that wi
 const input = "Research surfboards for me. I'm interested in ...";
 
 const response = await openai.responses.create({
-model: "gpt-5.6",
-input,
-instructions,
+  model: "gpt-5.6",
+  input,
+  instructions,
 });
 
 console.log(response.output_text);
@@ -503,7 +502,8 @@ const resp = await client.responses.create({
     },
   ],
   instructions,
-  input: "What similarities are in the notes for our closed/lost Salesforce opportunities?",
+  input:
+    "What similarities are in the notes for our closed/lost Salesforce opportunities?",
 });
 
 console.log(resp.output_text);

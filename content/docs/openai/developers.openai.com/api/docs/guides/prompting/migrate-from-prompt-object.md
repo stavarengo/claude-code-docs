@@ -19,7 +19,7 @@ const client = new OpenAI();
 
 const response = await client.responses.create({
   prompt: {
-    prompt_id: "pmpt_123",
+    id: "pmpt_123",
     version: "1",
     variables: {
       customer_name: "Acme",
@@ -160,6 +160,7 @@ import OpenAI from "openai";
 
 const client = new OpenAI();
 
+/** @returns {OpenAI.Responses.ResponseInput} */
 function buildSupportPrompt({ customerName, issue }) {
   return [
     {

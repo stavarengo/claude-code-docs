@@ -64,11 +64,11 @@ or "Other". Respond with only one of those words.
 const ticket = "My monitor won't turn on - help!";
 
 const response = await client.responses.create({
-    model: "gpt-5.6",
-    input: [
-        { role: "developer", content: instructions },
-        { role: "user", content: ticket },
-    ],
+  model: "gpt-5.6",
+  input: [
+    { role: "developer", content: instructions },
+    { role: "user", content: ticket },
+  ],
 });
 
 console.log(response.output_text);
@@ -143,28 +143,28 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const evalObj = await openai.evals.create({
-    name: "IT Ticket Categorization",
-    data_source_config: {
-        type: "custom",
-        item_schema: {
-            type: "object",
-            properties: {
-                ticket_text: { type: "string" },
-                correct_label: { type: "string" }
-            },
-            required: ["ticket_text", "correct_label"],
-        },
-        include_sample_schema: true,
+  name: "IT Ticket Categorization",
+  data_source_config: {
+    type: "custom",
+    item_schema: {
+      type: "object",
+      properties: {
+        ticket_text: { type: "string" },
+        correct_label: { type: "string" },
+      },
+      required: ["ticket_text", "correct_label"],
     },
-    testing_criteria: [
-        {
-            type: "string_check",
-            name: "Match output to human label",
-            input: "{{ sample.output_text }}",
-            operation: "eq",
-            reference: "{{ item.correct_label }}",
-        },
-    ],
+    include_sample_schema: true,
+  },
+  testing_criteria: [
+    {
+      type: "string_check",
+      name: "Match output to human label",
+      input: "{{ sample.output_text }}",
+      operation: "eq",
+      reference: "{{ item.correct_label }}",
+    },
+  ],
 });
 
 console.log(evalObj);
@@ -308,8 +308,8 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const file = await openai.files.create({
-    file: fs.createReadStream("tickets.jsonl"),
-    purpose: "evals",
+  file: fs.createReadStream("fixtures/tickets.jsonl"),
+  purpose: "evals",
 });
 
 console.log(file);
@@ -379,19 +379,23 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const run = await openai.evals.runs.create("YOUR_EVAL_ID", {
-    name: "Categorization text run",
-    data_source: {
-        type: "responses",
-        model: "gpt-5.6",
-        input_messages: {
-            type: "template",
-            template: [
-                { role: "developer", content: "You are an expert in categorizing IT support tickets. Given the support ticket below, categorize the request into one of 'Hardware', 'Software', or 'Other'. Respond with only one of those words." },
-                { role: "user", content: "{{ item.ticket_text }}" },
-            ],
+  name: "Categorization text run",
+  data_source: {
+    type: "responses",
+    model: "gpt-5.6",
+    input_messages: {
+      type: "template",
+      template: [
+        {
+          role: "developer",
+          content:
+            "You are an expert in categorizing IT support tickets. Given the support ticket below, categorize the request into one of 'Hardware', 'Software', or 'Other'. Respond with only one of those words.",
         },
-        source: { type: "file_id", id: "YOUR_FILE_ID" },
+        { role: "user", content: "{{ item.ticket_text }}" },
+      ],
     },
+    source: { type: "file_id", id: "YOUR_FILE_ID" },
+  },
 });
 
 console.log(run);
@@ -502,7 +506,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const run = await openai.evals.runs.retrieve("YOUR_RUN_ID", {
-    eval_id: "YOUR_EVAL_ID",
+  eval_id: "YOUR_EVAL_ID",
 });
 console.log(run);
 ```

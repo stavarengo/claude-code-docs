@@ -209,9 +209,14 @@ event = client.webhooks.unwrap(request.data, request.headers, secret=webhook_sec
 ```javascript
 const client = new OpenAI();
 const webhook_secret = process.env.OPENAI_WEBHOOK_SECRET;
+if (!webhook_secret) throw new Error("Set OPENAI_WEBHOOK_SECRET.");
 
 // will throw if the signature is invalid
-const event = client.webhooks.unwrap(req.body, req.headers, { secret: webhook_secret });
+const event = await client.webhooks.unwrap(
+  req.body,
+  req.headers,
+  webhook_secret
+);
 ```
 
 
