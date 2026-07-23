@@ -12,7 +12,7 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 541 pages - /docs - Content included below
+- English (en) - 548 pages - /docs - Content included below
 - German (Deutsch) (de) - 196 pages - /docs/de - Visit website for content
 - Spanish (Español) (es) - 196 pages - /docs/es - Visit website for content
 - French (Français) (fr) - 196 pages - /docs/fr - Visit website for content
@@ -39,7 +39,6 @@ The full documentation is available in the following languages on https://platfo
 - [Overview](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/overview.md) - MCP tunnels
 - [Quickstart](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/quickstart.md) - MCP tunnels quickstart
 - [Overview](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview.md) - Tool use with Claude
-- [Adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking.md)
 - [Advisor tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool.md)
 - [Architecture and components](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/concepts.md)
 - [Bash tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/bash-tool.md)
@@ -63,7 +62,7 @@ The full documentation is available in the following languages on https://platfo
 - [Deploy with Helm](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/deploy-helm.md) - Deploy MCP tunnels with Helm
 - [Effort](https://platform.claude.com/docs/en/build-with-claude/effort.md)
 - [Embeddings](https://platform.claude.com/docs/en/build-with-claude/embeddings.md)
-- [Extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking.md)
+- [Extended thinking (legacy)](https://platform.claude.com/docs/en/build-with-claude/extended-thinking.md) - Extended thinking
 - [Fallback credit](https://platform.claude.com/docs/en/build-with-claude/fallback-credit.md)
 - [Fast mode (research preview)](https://platform.claude.com/docs/en/build-with-claude/fast-mode.md)
 - [Files API](https://platform.claude.com/docs/en/build-with-claude/files.md)
@@ -90,12 +89,15 @@ The full documentation is available in the following languages on https://platfo
 - [Server tools](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools.md)
 - [Best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices.md) - Skill authoring best practices
 - [Skills for enterprise](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/enterprise.md)
+- [Steering and cost control](https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost.md) - Steering thinking
 - [Stop reasons and fallback](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons.md)
 - [Streaming Messages](https://platform.claude.com/docs/en/build-with-claude/streaming.md) - Streaming messages
 - [Strict tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use.md)
 - [Structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md)
 - [Task budgets (beta)](https://platform.claude.com/docs/en/build-with-claude/task-budgets.md) - Task budgets
 - [Text editor tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/text-editor-tool.md)
+- [Overview](https://platform.claude.com/docs/en/build-with-claude/thinking.md) - Thinking
+- [Tool and multi-turn workflows](https://platform.claude.com/docs/en/build-with-claude/thinking-tool-workflows.md) - Thinking in tool and multi-turn workflows
 - [Token counting](https://platform.claude.com/docs/en/build-with-claude/token-counting.md)
 - [Tool combinations](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-combinations.md)
 - [Tool reference](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference.md)
@@ -103,6 +105,7 @@ The full documentation is available in the following languages on https://platfo
 - [Tool search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool.md)
 - [Tool use with prompt caching](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-use-with-prompt-caching.md)
 - [Troubleshooting](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/troubleshooting.md) - Troubleshoot MCP tunnels
+- [Troubleshooting](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting.md) - Troubleshooting thinking
 - [Troubleshooting](https://platform.claude.com/docs/en/agents-and-tools/tool-use/troubleshooting-tool-use.md) - Troubleshooting tool use
 - [Tutorial: Build a tool-using agent](https://platform.claude.com/docs/en/agents-and-tools/tool-use/build-a-tool-using-agent.md)
 - [Skills in the API](https://platform.claude.com/docs/en/build-with-claude/skills-guide.md) - Using Agent Skills with the API
@@ -182,7 +185,6 @@ The full documentation is available in the following languages on https://platfo
 
 - [Overview](https://platform.claude.com/docs/en/about-claude/use-case-guides/overview.md) - Guides to common use cases
 - [Overview](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview.md) - Prompt engineering overview
-- [Console prompting tools](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-tools.md)
 - [Content moderation](https://platform.claude.com/docs/en/about-claude/use-case-guides/content-moderation.md)
 - [Customer support agent](https://platform.claude.com/docs/en/about-claude/use-case-guides/customer-support-chat.md)
 - [Define success and build evaluations](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests.md) - Define success criteria and build evaluations
@@ -198,7 +200,6 @@ The full documentation is available in the following languages on https://platfo
 - [Reduce prompt leak](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-prompt-leak.md)
 - [Reducing latency](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency.md)
 - [Ticket routing](https://platform.claude.com/docs/en/about-claude/use-case-guides/ticket-routing.md)
-- [Using the Evaluation Tool in Console](https://platform.claude.com/docs/en/test-and-evaluate/eval-tool.md) - Using the Evaluation Tool
 
 ### Models & pricing
 
@@ -267,6 +268,7 @@ The full documentation is available in the following languages on https://platfo
 - [API Keys](https://platform.claude.com/docs/en/api/admin/api_keys.md)
 - [Approve Spend Limit Increase Request](https://platform.claude.com/docs/en/api/admin/spend_limits/increase_requests/approve.md)
 - [Apps](https://platform.claude.com/docs/en/api/compliance/apps.md)
+- [Archive a Dream (Beta)](https://platform.claude.com/docs/en/api/beta/dreams/archive.md)
 - [Archive a memory store (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/archive.md)
 - [Archive Agent (Beta)](https://platform.claude.com/docs/en/api/beta/agents/archive.md)
 - [Archive Credential (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/credentials/archive.md)
@@ -290,6 +292,7 @@ The full documentation is available in the following languages on https://platfo
 - [Batches](https://platform.claude.com/docs/en/api/messages/batches.md)
 - [Batches (Beta)](https://platform.claude.com/docs/en/api/beta/messages/batches.md)
 - [Beta (Beta)](https://platform.claude.com/docs/en/api/beta.md)
+- [Cancel a Dream (Beta)](https://platform.claude.com/docs/en/api/beta/dreams/cancel.md)
 - [Cancel a Message Batch](https://platform.claude.com/docs/en/api/messages/batches/cancel.md)
 - [Cancel a Message Batch (Beta)](https://platform.claude.com/docs/en/api/beta/messages/batches/cancel.md)
 - [Certificates (Beta)](https://platform.claude.com/docs/en/api/beta/tunnels/certificates.md)
@@ -304,6 +307,7 @@ The full documentation is available in the following languages on https://platfo
 - [Cost Report](https://platform.claude.com/docs/en/api/admin/cost_report.md)
 - [Count tokens in a Message](https://platform.claude.com/docs/en/api/messages/count_tokens.md)
 - [Count tokens in a Message (Beta)](https://platform.claude.com/docs/en/api/beta/messages/count_tokens.md)
+- [Create a Dream (Beta)](https://platform.claude.com/docs/en/api/beta/dreams/create.md)
 - [Create a memory (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memories/create.md)
 - [Create a memory store (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/create.md)
 - [Create a Message](https://platform.claude.com/docs/en/api/messages/create.md)
@@ -367,6 +371,7 @@ The full documentation is available in the following languages on https://platfo
 - [Download File (Beta)](https://platform.claude.com/docs/en/api/beta/files/download.md)
 - [Download file content](https://platform.claude.com/docs/en/api/compliance/apps/chats/files/download.md)
 - [Download Skill Version Content (Beta)](https://platform.claude.com/docs/en/api/beta/skills/versions/download.md)
+- [Dreams (Beta)](https://platform.claude.com/docs/en/api/beta/dreams.md)
 - [Environments (Beta)](https://platform.claude.com/docs/en/api/beta/environments.md)
 - [Events (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/events.md)
 - [Events (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/threads/events.md)
@@ -376,6 +381,7 @@ The full documentation is available in the following languages on https://platfo
 - [Files](https://platform.claude.com/docs/en/api/compliance/apps/chats/files.md)
 - [Files (Beta)](https://platform.claude.com/docs/en/api/beta/files.md)
 - [Generated Files](https://platform.claude.com/docs/en/api/compliance/apps/chats/generated_files.md)
+- [Get a Dream (Beta)](https://platform.claude.com/docs/en/api/beta/dreams/retrieve.md)
 - [Get a Model](https://platform.claude.com/docs/en/api/models/retrieve.md)
 - [Get a Model (Beta)](https://platform.claude.com/docs/en/api/beta/models/retrieve.md)
 - [Get Activity Summaries](https://platform.claude.com/docs/en/api/admin/analytics/retrieve_summaries.md)
@@ -449,6 +455,7 @@ The full documentation is available in the following languages on https://platfo
 - [List Credentials (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/credentials/list.md)
 - [List Deployment Runs (Beta)](https://platform.claude.com/docs/en/api/beta/deployment_runs/list.md)
 - [List Deployments (Beta)](https://platform.claude.com/docs/en/api/beta/deployments/list.md)
+- [List Dreams (Beta)](https://platform.claude.com/docs/en/api/beta/dreams/list.md)
 - [List Effective Spend Limits](https://platform.claude.com/docs/en/api/admin/spend_limits/list_effective.md)
 - [List Environments (Beta)](https://platform.claude.com/docs/en/api/beta/environments/list.md)
 - [List Events (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/events/list.md)

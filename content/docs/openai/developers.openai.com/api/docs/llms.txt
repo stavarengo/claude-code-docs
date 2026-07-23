@@ -143,6 +143,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Shell](https://developers.openai.com/api/docs/guides/tools-shell.md): Run shell commands in hosted containers or your own local runtime.
 - [Skills](https://developers.openai.com/api/docs/guides/tools-skills.md): Upload, manage, and attach reusable skills to hosted environments.
 - [Speech to text](https://developers.openai.com/api/docs/guides/speech-to-text.md): Learn how to turn audio into text with the OpenAI API.
+- [Spend limits](https://developers.openai.com/api/docs/guides/spend-limits.md): Control API spend with organization and project monthly spend limits.
 - [Streaming API responses](https://developers.openai.com/api/docs/guides/streaming-responses.md): Learn how to stream model responses from the OpenAI API using server-sent events.
 - [Structured model outputs](https://developers.openai.com/api/docs/guides/structured-outputs.md): Understand how to ensure model responses follow specific JSON Schema you define.
 - [Supervised fine-tuning](https://developers.openai.com/api/docs/guides/supervised-fine-tuning.md): Fine-tune models with example inputs and known good outputs for better results and efficiency.

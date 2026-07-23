@@ -3247,14 +3247,14 @@ On July 20, 2026, we notified developers using legacy audio, realtime, and trans
 
 On June 11, 2026, we notified developers using older GPT-5 and o3 model snapshots of their deprecation and removal from the API on December 11, 2026.
 
-| Shutdown date | Model / system          | Recommended replacement |
-| ------------- | ----------------------- | ----------------------- |
-| Dec 11, 2026  | `gpt-5-2025-08-07`      | `gpt-5.5`               |
-| Dec 11, 2026  | `gpt-5-mini-2025-08-07` | `gpt-5.4-mini`          |
-| Dec 11, 2026  | `gpt-5-nano-2025-08-07` | `gpt-5.4-nano`          |
-| Dec 11, 2026  | `gpt-5-pro-2025-10-06`  | `gpt-5.5-pro`           |
-| Dec 11, 2026  | `o3-2025-04-16`         | `gpt-5.5`               |
-| Dec 11, 2026  | `o3-pro-2025-06-10`     | `gpt-5.5-pro`           |
+| Shutdown date | Model / system          | Recommended replacement               |
+| ------------- | ----------------------- | ------------------------------------- |
+| Dec 11, 2026  | `gpt-5-2025-08-07`      | `gpt-5.6-sol`                         |
+| Dec 11, 2026  | `gpt-5-mini-2025-08-07` | `gpt-5.6-terra`                       |
+| Dec 11, 2026  | `gpt-5-nano-2025-08-07` | `gpt-5.6-luna`                        |
+| Dec 11, 2026  | `gpt-5-pro-2025-10-06`  | `gpt-5.6-sol` (`reasoning.mode: pro`) |
+| Dec 11, 2026  | `o3-2025-04-16`         | `gpt-5.6-sol`                         |
+| Dec 11, 2026  | `o3-pro-2025-06-10`     | `gpt-5.6-sol` (`reasoning.mode: pro`) |
 
 ### 2026-06-03: Reusable prompts
 
@@ -3308,8 +3308,8 @@ On May 8th, 2026, we notified developers using `gpt-5.2-chat-latest` and `gpt-5.
 
 | Shutdown date | Model / system        | Recommended replacement |
 | ------------- | --------------------- | ----------------------- |
-| Aug 10, 2026  | `gpt-5.2-chat-latest` | `gpt-5.5`               |
-| Aug 10, 2026  | `gpt-5.3-chat-latest` | `gpt-5.5`               |
+| Aug 10, 2026  | `gpt-5.2-chat-latest` | `gpt-5.6-sol`           |
+| Aug 10, 2026  | `gpt-5.3-chat-latest` | `gpt-5.6-sol`           |
 
 ### Update to OpenAI’s self-serve fine-tuning
 
@@ -3327,35 +3327,35 @@ Inference on fine-tuned models will continue to be available until the base mode
 
 To improve reliability and make it easier for developers to choose the right models, we are deprecating a set of older OpenAI models. Access to these models will be shut down on the dates below.
 
-| Shutdown date | Model snapshot                                                         | Substitute model             |
-| ------------- | ---------------------------------------------------------------------- | ---------------------------- |
-| 2026-07-23    | `computer-use-preview-2025-03-11` \| `computer-use-preview`            | `gpt-5.4-mini`               |
-| 2026-07-23    | `gpt-4o-mini-search-preview-2025-03-11`                                | `gpt-5.4-mini`               |
-| 2026-07-23    | `gpt-4o-mini-tts-2025-03-20`                                           | `gpt-4o-mini-tts-2025-12-15` |
-| 2026-07-23    | `gpt-4o-search-preview-2025-03-11`                                     | `gpt-5.4-mini`               |
-| 2026-07-23    | `gpt-5-chat-latest`                                                    | `gpt-5.5`                    |
-| 2026-07-23    | `gpt-5-codex`                                                          | `gpt-5.5`                    |
-| 2026-07-23    | `gpt-5.1-chat-latest`                                                  | `gpt-5.5`                    |
-| 2026-07-23    | `gpt-5.1-codex`                                                        | `gpt-5.5`                    |
-| 2026-07-23    | `gpt-5.1-codex-max`                                                    | `gpt-5.5`                    |
-| 2026-07-23    | `gpt-5.1-codex-mini`                                                   | `gpt-5.4-mini`               |
-| 2026-07-23    | `gpt-audio-mini-2025-10-06`                                            | `gpt-audio-1.5`              |
-| 2026-07-23    | `gpt-realtime-mini-2025-10-06`                                         | `gpt-realtime-mini`          |
-| 2026-07-23    | `o3-deep-research-2025-06-26` \| `o3-deep-research`                    | `gpt-5.5-pro`                |
-| 2026-07-23    | `o4-mini-deep-research-2025-06-26` \| `o4-mini-deep-research`          | `gpt-5.5-pro`                |
-| 2026-07-23    | `gpt-5.2-codex`                                                        | `gpt-5.5`                    |
-| 2026-10-23    | `gpt-3.5-turbo-0125` \| `gpt-3.5-turbo`, `gpt-3.5-turbo-completions`   | `gpt-5.4-mini`               |
-| 2026-10-23    | `gpt-4-0613` \| `gpt-4`, `gpt-4-0613-completions`, `gpt-4-completions` | `gpt-5.5`                    |
-| 2026-10-23    | `gpt-4-1106-preview`                                                   | `gpt-5.5`                    |
-| 2026-10-23    | `gpt-4-turbo` \| `gpt-4-turbo-2024-04-09`, `gpt-4-turbo-completions`   | `gpt-5.5`                    |
-| 2026-10-23    | `gpt-4.1-nano` \| `gpt-4.1-nano-2025-04-14`                            | `gpt-5.4-nano`               |
-| 2026-10-23    | `gpt-4o-2024-05-13`                                                    | `gpt-5.5`                    |
-| 2026-10-23    | `gpt-image-1`                                                          | `gpt-image-2`                |
-| 2026-10-23    | `o1-2024-12-17` \| `o1`                                                | `gpt-5.5`                    |
-| 2026-10-23    | `o1-pro-2025-03-19` \| `o1-pro`                                        | `gpt-5.5-pro`                |
-| 2026-10-23    | `o3-mini-2025-01-31` \| `o3-mini`                                      | `gpt-5.5`                    |
-| 2026-10-23    | `ft-o4-mini-2025-04-16`                                                | `gpt-5.4-mini`               |
-| 2026-10-23    | `o4-mini-2025-04-16` \| `o4-mini`                                      | `gpt-5.4-mini`               |
+| Shutdown date | Model snapshot                                                         | Substitute model                      |
+| ------------- | ---------------------------------------------------------------------- | ------------------------------------- |
+| July 23, 2026 | `computer-use-preview-2025-03-11` \| `computer-use-preview`            | `gpt-5.6-terra`                       |
+| July 23, 2026 | `gpt-4o-mini-search-preview-2025-03-11`                                | `gpt-5.6-terra`                       |
+| July 23, 2026 | `gpt-4o-mini-tts-2025-03-20`                                           | `gpt-4o-mini-tts-2025-12-15`          |
+| July 23, 2026 | `gpt-4o-search-preview-2025-03-11`                                     | `gpt-5.6-terra`                       |
+| July 23, 2026 | `gpt-5-chat-latest`                                                    | `gpt-5.6-sol`                         |
+| July 23, 2026 | `gpt-5-codex`                                                          | `gpt-5.6-sol`                         |
+| July 23, 2026 | `gpt-5.1-chat-latest`                                                  | `gpt-5.6-sol`                         |
+| July 23, 2026 | `gpt-5.1-codex`                                                        | `gpt-5.6-sol`                         |
+| July 23, 2026 | `gpt-5.1-codex-max`                                                    | `gpt-5.6-sol`                         |
+| July 23, 2026 | `gpt-5.1-codex-mini`                                                   | `gpt-5.6-terra`                       |
+| July 23, 2026 | `gpt-audio-mini-2025-10-06`                                            | `gpt-audio-1.5`                       |
+| July 23, 2026 | `gpt-realtime-mini-2025-10-06`                                         | `gpt-realtime-2.1-mini`               |
+| July 23, 2026 | `o3-deep-research-2025-06-26` \| `o3-deep-research`                    | `gpt-5.6-sol`                         |
+| July 23, 2026 | `o4-mini-deep-research-2025-06-26` \| `o4-mini-deep-research`          | `gpt-5.6-sol`                         |
+| July 23, 2026 | `gpt-5.2-codex`                                                        | `gpt-5.6-sol`                         |
+| 2026-10-23    | `gpt-3.5-turbo-0125` \| `gpt-3.5-turbo`, `gpt-3.5-turbo-completions`   | `gpt-5.6-terra`                       |
+| 2026-10-23    | `gpt-4-0613` \| `gpt-4`, `gpt-4-0613-completions`, `gpt-4-completions` | `gpt-5.6-sol`                         |
+| 2026-10-23    | `gpt-4-1106-preview`                                                   | `gpt-5.6-sol`                         |
+| 2026-10-23    | `gpt-4-turbo` \| `gpt-4-turbo-2024-04-09`, `gpt-4-turbo-completions`   | `gpt-5.6-sol`                         |
+| 2026-10-23    | `gpt-4.1-nano` \| `gpt-4.1-nano-2025-04-14`                            | `gpt-5.6-luna`                        |
+| 2026-10-23    | `gpt-4o-2024-05-13`                                                    | `gpt-5.6-sol`                         |
+| 2026-10-23    | `gpt-image-1`                                                          | `gpt-image-2`                         |
+| 2026-10-23    | `o1-2024-12-17` \| `o1`                                                | `gpt-5.6-sol`                         |
+| 2026-10-23    | `o1-pro-2025-03-19` \| `o1-pro`                                        | `gpt-5.6-sol` (`reasoning.mode: pro`) |
+| 2026-10-23    | `o3-mini-2025-01-31` \| `o3-mini`                                      | `gpt-5.6-sol`                         |
+| 2026-10-23    | `ft-o4-mini-2025-04-16`                                                | `gpt-5.6-terra`                       |
+| 2026-10-23    | `o4-mini-2025-04-16` \| `o4-mini`                                      | `gpt-5.6-terra`                       |
 
 We are also removing fine-tuned versions as below:
 
@@ -8626,7 +8626,7 @@ function extractCitations(text, { families = ["cite"] } = {}) {
     .join("|");
 
   const tokenRe = new RegExp(
-    `${CITATION_START}(?<family>${familyPattern})${CITATION_DELIMITER}(?<body>[\\s\\S]*?)${CITATION_STOP}`,
+    `\uE200(?<family>${familyPattern})\uE202(?<body>[\\s\\S]*?)\uE201`,
     "g"
   );
 
@@ -18430,7 +18430,7 @@ Now that you know the basics of DPO, explore these other methods as well.
 
 # Error codes
 
-This guide includes an overview on error codes you might see from both the [API](https://developers.openai.com/api/docs/introduction) and our [official Python library](https://developers.openai.com/api/docs/libraries#python-library). Each error code mentioned in the overview has a dedicated section with further guidance.
+This guide includes an overview on error codes you might see from both the [API](https://developers.openai.com/api/docs/introduction) and our [official Python library](https://developers.openai.com/api/docs/libraries#install-an-official-sdk). Each error code mentioned in the overview has a dedicated section with further guidance.
 
 ## API errors
 
@@ -18516,17 +18516,13 @@ To resolve this error, please follow these steps:
 
 429 - You exceeded your current quota, please check your plan and billing details
 
-This error message indicates that you hit your monthly [usage limit](https://platform.openai.com/settings/organization/limits) for the API, or for prepaid credits customers that you've consumed all your credits. You can view your maximum usage limit on the [limits page](https://platform.openai.com/settings/organization/limits). This could happen for several reasons, such as:
+This error message indicates that the organization exhausted its prepaid credits, reached its OpenAI-approved monthly [usage limit](https://platform.openai.com/settings/organization/limits), or reached an enforced organization or project [spend limit](https://developers.openai.com/api/docs/guides/spend-limits).
 
-- You are using a high-volume or complex service that consumes a lot of credits or tokens.
-- Your monthly budget is set too low for your organization’s usage.
-- Your monthly budget is set too low for your project's usage.
+To resolve this error:
 
-To resolve this error, please follow these steps:
-
-- Check your [current usage](https://platform.openai.com/settings/organization/usage) of your account, and compare that to your account's [limits](https://platform.openai.com/settings/organization/limits).
-- If you are on a free plan, consider [upgrading to a paid plan](https://platform.openai.com/settings/organization/billing) to get higher limits.
-- Reach out to your organization owner to increase the budgets for your project.
+- Compare [current usage](https://platform.openai.com/settings/organization/usage) with the organization's approved usage limit and applicable organization or project spend limits.
+- [Buy more credits](https://platform.openai.com/settings/organization/billing) or request a higher approved usage limit when needed.
+- Raise or remove the applicable hard spend limit if API traffic should resume before the monthly reset.
 
 503 - The engine is currently overloaded, please try again later
 
@@ -30900,39 +30896,40 @@ Bedrock Region itself and the corresponding AWS terms.
 Amazon Bedrock uses separate controls for operator access and data retention:
 
 - **[Zero operator access (ZOA)](https://aws.amazon.com/blogs/machine-learning/exploring-the-zero-operator-access-design-of-mantle/)**
-  prevents service operators from accessing model inputs and outputs processed
-  by Mantle.
+  means AWS operators have no technical mechanism to sign in to Mantle's
+  underlying compute systems or access customer data, including inference
+  prompts and completions.
 - **[Zero data retention (ZDR)](https://docs.aws.amazon.com/bedrock/latest/userguide/data-retention.html)**
-  means AWS does not write model inputs or outputs to durable storage or share
-  them with OpenAI when the effective retention mode is `none`.
+  means AWS does not write model inputs or outputs to durable storage when the
+  effective retention mode is `none`.
+
+For OpenAI models in Amazon Bedrock, AWS does not share request or response
+content with OpenAI when the effective retention mode is `default` or `none`.
 
 [Configure Bedrock data
 retention](https://docs.aws.amazon.com/bedrock/latest/userguide/data-retention.html#data-retention-configuration)
-for your AWS account or project. For requests sent directly to the OpenAI API,
-use the separate [OpenAI Zero Data Retention
-controls](https://developers.openai.com/api/docs/guides/your-data#zero-data-retention).
+for your AWS account or project.
 
 Under the `default` retention mode, retention depends on the model and request
 settings. For specific OpenAI GPT models, AWS retains classifier-flagged traffic
-for up to 30 days for automated offline abuse detection. AWS stores and
-processes this data and does not share it with OpenAI. On the Responses API,
-`store` defaults to `true`, so AWS may store response data beyond abuse
-detection. See [Amazon Bedrock abuse
+for up to 30 days for automated offline abuse detection. Responses API requests
+use `store: true` by default. AWS retains the response, including its input and
+output, for 30 days so you can retrieve it or reference it in a later request.
+See [Amazon Bedrock abuse
 detection](https://docs.aws.amazon.com/bedrock/latest/userguide/abuse-detection.html)
 for the current model list and retention details.
 
-If you need full ZDR for a model that requires retention, [contact your AWS
-account
-manager](https://docs.aws.amazon.com/bedrock/latest/userguide/data-retention.html#data-retention-zdr)
-to discuss eligibility. AWS evaluates ZDR access for each account and model. If
-AWS approves access, confirm that `none` appears in the model's `allowed_modes`,
-then set the account or project retention mode to `none`. Setting `store: false`
-does not guarantee ZDR. When the effective retention mode is `none`, AWS rejects
-`store: true`, and background mode is unavailable.
+If you need full ZDR for a model that requires retention, contact your AWS
+account manager to discuss eligibility. AWS evaluates ZDR access for each account
+and model. If AWS approves access, confirm that `none` appears in the model's
+`allowed_modes`, then set the account or project retention mode to `none`.
+Setting `store: false` does not guarantee ZDR. When the effective retention mode
+is `none`, AWS rejects `store: true`, and background mode is unavailable.
 
-If AWS detects apparent CSAM in an image input, AWS may store and review the
-  flagged input or output only to determine whether it is CSAM. AWS may also
-  file a report with national authorities.
+If AWS detects apparent CSAM in an image input, AWS may move the flagged input
+  or output outside the ZOA environment and store and review it only to
+  determine whether it is CSAM. AWS may also file a report with national
+  authorities.
 
 ## Responses API feature availability
 
@@ -32249,9 +32246,9 @@ Owners:
 
 ### Managing billing limits
 
-Once you’ve entered your billing information, you will have an approved usage limit of $100 per month, which is set by OpenAI. Your quota limit will automatically increase as your usage on your platform increases and you move from one [usage tier](https://developers.openai.com/api/docs/guides/rate-limits#usage-tiers) to another. You can review your current usage limit in the [limits](https://platform.openai.com/settings/organization/limits) page in your account settings.
+Once you’ve entered your billing information, OpenAI sets an approved usage limit for your organization. Your quota limit will automatically increase as your usage on your platform increases and you move from one [usage tier](https://developers.openai.com/api/docs/guides/rate-limits#usage-tiers) to another. You can review your current usage limit in the [limits](https://platform.openai.com/settings/organization/limits) page in your account settings.
 
-If you’d like to be notified when your usage exceeds a certain dollar amount, you can set a notification threshold through the [usage limits](https://platform.openai.com/settings/organization/limits) page.
+Set spend alerts on the [limits](https://platform.openai.com/settings/organization/limits) page to send notifications when usage exceeds a certain dollar amount. To enforce a monthly cap, set a hard spend limit. Hard spend limits stop affected API traffic when tracked spend reaches the limit, so review the [spend limits guide](https://developers.openai.com/api/docs/guides/spend-limits) before enabling one in production.
 
 ### API keys
 
@@ -33351,8 +33348,8 @@ client = OpenAI()
 response = client.responses.create(
     model="gpt-5.6",
     reasoning={"effort": "low"},
-    instructions="${semicolonsDevMsg}",
-    input="${semicolonsPrompt}",
+    instructions="Talk like a pirate.",
+    input="Are semicolons optional in JavaScript?",
 )
 
 print(response.output_text)
@@ -33365,8 +33362,8 @@ curl "https://api.openai.com/v1/responses" \
     -d '{
         "model": "gpt-5.6",
         "reasoning": {"effort": "low"},
-        "instructions": "${semicolonsDevMsg}",
-        "input": "${semicolonsPrompt}"
+        "instructions": "Talk like a pirate.",
+        "input": "Are semicolons optional in JavaScript?"
     }'
 ```
 
@@ -33407,11 +33404,11 @@ response = client.responses.create(
     input=[
         {
             "role": "developer",
-            "content": "${semicolonsDevMsg}"
+            "content": "Talk like a pirate."
         },
         {
             "role": "user",
-            "content": "${semicolonsPrompt}"
+            "content": "Are semicolons optional in JavaScript?"
         }
     ]
 )
@@ -33429,11 +33426,11 @@ curl "https://api.openai.com/v1/responses" \
         "input": [
             {
                 "role": "developer",
-                "content": "${semicolonsDevMsg}"
+                "content": "Talk like a pirate."
             },
             {
                 "role": "user",
-                "content": "${semicolonsPrompt}"
+                "content": "Are semicolons optional in JavaScript?"
             }
         ]
     }'
@@ -35539,7 +35536,7 @@ Other important things worth noting:
 - Rate limits are defined at the [organization level](https://developers.openai.com/api/docs/guides/production-best-practices) and at the project level, not user level.
 - Rate limits vary by the [model](https://developers.openai.com/api/docs/models) being used.
 - For long context models like GPT-5.5, there is a separate rate limit for long context requests. You can view these rate limits in [developer console](https://platform.openai.com/settings/organization/limits).
-- Limits are also placed on the total amount an organization can spend on the API each month. These are also known as "usage limits".
+- OpenAI sets an approved monthly usage limit for each organization. This is separate from the [spend limits](https://developers.openai.com/api/docs/guides/spend-limits) that you can configure for an organization or project.
 - Some model families have shared rate limits. Any models listed under a "shared limit" in your [organizations limit page](https://platform.openai.com/settings/organization/limits) share a rate limit between them. For example, if the listed shared TPM is 3.5M, all calls to any model in the given "shared limit" list will count towards that 3.5M.
 - Vector store ingestion is also rate limited per vector store ID. `/vector_stores/{vector_store_id}/files` and `/vector_stores/{vector_store_id}/file_batches` share a limit of 300 requests per minute for each vector store. For larger ingests, prefer `/vector_stores/{vector_store_id}/file_batches`.
 
@@ -45715,6 +45712,84 @@ If you try this on your own audio file, you'll see that GPT-4 corrects many miss
 
 ---
 
+# Spend limits
+
+Use spend alerts to track monthly API costs. To stop traffic after tracked spend reaches a configured amount, enforce a hard spend limit for your organization or an individual project.
+
+Hard spend limits can interrupt production traffic. When tracked spend reaches
+  an applicable hard limit, affected API requests return a `429` error with the
+  `insufficient_quota` code. Enforcement is not instantaneous, so recorded spend
+  can slightly exceed the configured amount.
+
+## Choose a spend control
+
+Spend alerts and hard spend limits have different effects:
+
+| Control          | What happens at the configured amount       | Use it when you want to                       |
+| ---------------- | ------------------------------------------- | --------------------------------------------- |
+| Spend alert      | Sends a notification; API traffic continues | Track spend without interrupting traffic      |
+| Hard spend limit | Affected API requests return a `429` error  | Enforce a monthly organization or project cap |
+
+Spend alerts do not enforce a cap. They remain active when you add a hard spend limit, so you can use alerts for notification before a hard limit interrupts traffic.
+
+OpenAI also assigns your organization an approved monthly [usage limit based on its usage tier](https://developers.openai.com/api/docs/guides/rate-limits#usage-tiers). This OpenAI-approved usage limit is separate from the spend limits you configure.
+
+## Configure a spend limit
+
+You need permission to manage the applicable organization or project settings. For details, see [API Platform permissions](https://developers.openai.com/api/docs/guides/rbac).
+
+
+
+<div data-content-switcher-pane data-value="organization">
+    <div class="hidden">Organization</div>
+
+1. Go to [Organization limits](https://platform.openai.com/settings/organization/limits).
+2. In **Spend**, select **Edit spend limit**.
+3. Enter the **Monthly spend limit**.
+4. To make API responses fail after the organization reaches the limit, turn on **Enforce a hard limit**.
+5. Select **Save**.
+
+  </div>
+  <div data-content-switcher-pane data-value="project" hidden>
+    <div class="hidden">Project</div>
+
+1. Go to [Project settings](https://platform.openai.com/settings/).
+2. Select **Limits**.
+3. In **Spend**, select **Edit spend limit**.
+4. Enter the **Monthly spend limit**.
+5. To make API responses fail after the project reaches the limit, turn on **Enforce a hard limit**.
+6. Select **Save**.
+
+  </div>
+
+
+
+## Understand hard-limit behavior
+
+Organization and project hard limits can both apply to a request:
+
+- An organization hard limit applies to API traffic across all projects in the organization.
+- A project hard limit applies only to API traffic billed to that project.
+- Reaching either applicable hard limit causes affected requests to return `429` errors with the `insufficient_quota` code.
+- Raising or removing the reached limit allows traffic to resume after the update propagates. Otherwise, the limit resets with the next monthly cycle.
+
+Enforcement is not instantaneous. The API Platform can process a small amount of extra usage while the limit state propagates, so recorded spend can slightly exceed the configured amount.
+
+## Spend alerts
+
+Use spend alerts to get notified before spend reaches a hard limit. Add alerts at thresholds that allow time to adjust usage, raise the limit, or investigate unexpected traffic.
+
+## Restore API traffic
+
+If requests return quota-related `429` errors:
+
+1. Compare [current usage](https://platform.openai.com/settings/organization/usage) with the organization and project spend limits that apply to the request.
+2. Raise or remove the reached hard limit if traffic should resume before the monthly reset.
+3. If tracked spend is below every applicable hard limit, check whether the organization exhausted prepaid credits or reached its OpenAI-approved usage limit.
+4. If the error reports a request or token rate limit instead of `insufficient_quota`, follow the [rate limit guide](https://developers.openai.com/api/docs/guides/rate-limits).
+
+---
+
 # Streaming API responses
 
 By default, when you make a request to the OpenAI API, we generate the model's entire output before sending it back in a single HTTP response. When generating long outputs, waiting for a response can take time. Streaming responses lets you start printing or processing the beginning of the model's output while it continues generating the full response.
@@ -46659,8 +46734,8 @@ client = OpenAI()
 response = client.responses.create(
     model="gpt-5.6",
     reasoning={"effort": "low"},
-    instructions="${semicolonsDevMsg}",
-    input="${semicolonsPrompt}",
+    instructions="Talk like a pirate.",
+    input="Are semicolons optional in JavaScript?",
 )
 
 print(response.output_text)
@@ -46673,8 +46748,8 @@ curl "https://api.openai.com/v1/responses" \
     -d '{
         "model": "gpt-5.6",
         "reasoning": {"effort": "low"},
-        "instructions": "${semicolonsDevMsg}",
-        "input": "${semicolonsPrompt}"
+        "instructions": "Talk like a pirate.",
+        "input": "Are semicolons optional in JavaScript?"
     }'
 ```
 
@@ -46715,11 +46790,11 @@ response = client.responses.create(
     input=[
         {
             "role": "developer",
-            "content": "${semicolonsDevMsg}"
+            "content": "Talk like a pirate."
         },
         {
             "role": "user",
-            "content": "${semicolonsPrompt}"
+            "content": "Are semicolons optional in JavaScript?"
         }
     ]
 )
@@ -46737,11 +46812,11 @@ curl "https://api.openai.com/v1/responses" \
         "input": [
             {
                 "role": "developer",
-                "content": "${semicolonsDevMsg}"
+                "content": "Talk like a pirate."
             },
             {
                 "role": "user",
-                "content": "${semicolonsPrompt}"
+                "content": "Are semicolons optional in JavaScript?"
             }
         ]
     }'
