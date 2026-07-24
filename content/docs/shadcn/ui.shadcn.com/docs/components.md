@@ -10,6 +10,7 @@ description: Here you can find all the components available in the library. We a
 - [Marker](https://ui.shadcn.com/docs/components/marker): Displays an inline status, system note, bordered row, or labeled separator in a conversation.
 - [Message](https://ui.shadcn.com/docs/components/message): Displays a message in a conversation, with optional avatar, header, footer, and alignment.
 - [Message Scroller](https://ui.shadcn.com/docs/components/message-scroller): A chat scroll container that anchors turns, opens saved transcripts, follows streamed responses, loads history without jumping, and jumps to any message.
+- [Toast](https://ui.shadcn.com/docs/components/toast): A succinct message that is displayed temporarily.
 
 ## All Components
 
@@ -66,7 +67,6 @@ description: Here you can find all the components available in the library. We a
 - [Sidebar](https://ui.shadcn.com/docs/components/sidebar): A composable, themeable and customizable sidebar component.
 - [Skeleton](https://ui.shadcn.com/docs/components/skeleton): Use to show a placeholder while content is loading.
 - [Slider](https://ui.shadcn.com/docs/components/slider): An input where the user selects a value from within a given range.
-- [Sonner](https://ui.shadcn.com/docs/components/sonner): An opinionated toast component for React.
 - [Spinner](https://ui.shadcn.com/docs/components/spinner): An indicator that can be used to show a loading state.
 - [Switch](https://ui.shadcn.com/docs/components/switch): A control that allows the user to toggle between checked and not checked.
 - [Table](https://ui.shadcn.com/docs/components/table): A responsive table component.
