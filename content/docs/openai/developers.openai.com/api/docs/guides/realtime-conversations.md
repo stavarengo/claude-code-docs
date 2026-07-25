@@ -81,39 +81,37 @@ dataChannel.send(JSON.stringify(event));
 ```python
 event = {
     "type": "session.update",
-    session: {
-      type: "realtime",
-      model: "gpt-realtime-2.1",
-      # Lock the output to audio (add "text" if you also want text)
-      output_modalities: ["audio"],
-      audio: {
-        input: {
-          format: {
-            type: "audio/pcm",
-            rate: 24000,
-          },
-          turn_detection: {
-            type: "semantic_vad"
-          }
+    "session": {
+        "type": "realtime",
+        "model": "gpt-realtime-2.1",
+        # Lock the output to audio (add "text" if you also want text).
+        "output_modalities": ["audio"],
+        "audio": {
+            "input": {
+                "format": {
+                    "type": "audio/pcm",
+                    "rate": 24000,
+                },
+                "turn_detection": {"type": "semantic_vad"},
+            },
+            "output": {
+                "format": {
+                    "type": "audio/pcmu",
+                },
+                "voice": "marin",
+            },
         },
-        output: {
-          format: {
-            type: "audio/pcmu",
-          },
-          voice: "marin",
-        }
-      },
-      # Use a server-stored prompt by ID. Optionally pin a version and pass variables.
-      prompt: {
-        id: "pmpt_123",          // your stored prompt ID
-        version: "89",           // optional: pin a specific version
-        variables: {
-          city: "Paris"          // example variable used by your prompt
-        }
-      },
-      # You can still set direct session fields; these override prompt fields if they overlap:
-      instructions: "Speak clearly and briefly. Confirm understanding before taking actions."
-    }
+        # Use a server-stored prompt by ID. Optionally pin a version and pass variables.
+        "prompt": {
+            "id": "pmpt_123",  # Your stored prompt ID.
+            "version": "89",  # Optional: pin a specific version.
+            "variables": {
+                "city": "Paris",  # Example variable used by your prompt.
+            },
+        },
+        # Direct session fields override prompt fields if they overlap.
+        "instructions": "Speak clearly and briefly. Confirm understanding before taking actions.",
+    },
 }
 ws.send(json.dumps(event))
 ```
@@ -176,8 +174,8 @@ event = {
                 "type": "input_text",
                 "text": "What Prince album sold the most copies?",
             }
-        ]
-    }
+        ],
+    },
 }
 ws.send(json.dumps(event))
 ```
@@ -200,12 +198,7 @@ dataChannel.send(JSON.stringify(event));
 ```
 
 ```python
-event = {
-    "type": "response.create",
-    "response": {
-        "output_modalities": [ "text" ]
-    }
-}
+event = {"type": "response.create", "response": {"output_modalities": ["text"]}}
 ws.send(json.dumps(event))
 ```
 
@@ -233,8 +226,8 @@ dataChannel.addEventListener("message", handleEvent);
 ```python
 def on_message(ws, message):
     server_event = json.loads(message)
-    if server_event.type == "response.done":
-        print(server_event.response.output[0])
+    if server_event["type"] == "response.done":
+        print(server_event["response"]["output"][0])
 ```
 
 
@@ -490,32 +483,28 @@ from websocket import create_connection
 
 # ... create websocket-client named ws ...
 
+
 def float_to_16bit_pcm(float32_array):
     clipped = [max(-1.0, min(1.0, x)) for x in float32_array]
-    pcm16 = b''.join(struct.pack('<h', int(x * 32767)) for x in clipped)
+    pcm16 = b"".join(struct.pack("<h", int(x * 32767)) for x in clipped)
     return pcm16
+
 
 def base64_encode_audio(float32_array):
     pcm_bytes = float_to_16bit_pcm(float32_array)
-    encoded = base64.b64encode(pcm_bytes).decode('ascii')
+    encoded = base64.b64encode(pcm_bytes).decode("ascii")
     return encoded
 
-files = [
-    './path/to/sample1.wav',
-    './path/to/sample2.wav',
-    './path/to/sample3.wav'
-]
+
+files = ["./path/to/sample1.wav", "./path/to/sample2.wav", "./path/to/sample3.wav"]
 
 for filename in files:
-    data, samplerate = sf.read(filename, dtype='float32')
+    data, samplerate = sf.read(filename, dtype="float32")
     channel_data = data[:, 0] if data.ndim > 1 else data
     base64_chunk = base64_encode_audio(channel_data)
 
     # Send the client event
-    event = {
-        "type": "input_audio_buffer.append",
-        "audio": base64_chunk
-    }
+    event = {"type": "input_audio_buffer.append", "audio": base64_chunk}
     ws.send(json.dumps(event))
 ```
 
@@ -601,7 +590,7 @@ def on_message(ws, message):
     server_event = json.loads(message)
     if server_event["type"] == "response.output_audio.delta":
         # Access Base64-encoded audio chunks:
-        # print(server_event["delta"])
+        print(server_event["delta"])
 ```
 
 
@@ -703,12 +692,10 @@ event = {
         # Setting to "none" indicates the response is out of band,
         # and will not be added to the default conversation
         "conversation": "none",
-
         # Set metadata to help identify responses sent back from the model
-        "metadata": { "topic": "classification" },
-
+        "metadata": {"topic": "classification"},
         # Set any other available response fields
-        "output_modalities": [ "text" ],
+        "output_modalities": ["text"],
         "instructions": prompt,
     },
 }
@@ -748,13 +735,13 @@ def on_message(ws, message):
 
     # See if metadata is present
     try:
-        topic = server_event.response.metadata.topic
-    except AttributeError:
+        topic = server_event["response"]["metadata"]["topic"]
+    except KeyError:
         print("topic not set")
 
-    if server_event.type == "response.done" and topic == "classification":
+    if server_event["type"] == "response.done" and topic == "classification":
         # this server event pertained to our OOB model response
-        print(server_event.response.output[0])
+        print(server_event["response"]["output"][0])
 ```
 
 
@@ -803,18 +790,13 @@ event = {
     "type": "response.create",
     "response": {
         "conversation": "none",
-        "metadata": { "topic": "pizza" },
-        "output_modalities": [ "text" ],
-
+        "metadata": {"topic": "pizza"},
+        "output_modalities": ["text"],
         # Create a custom input array for this request with whatever
         # context is appropriate
         "input": [
             # potentially include existing conversation items:
-            {
-                "type": "item_reference",
-                "id": "some_conversation_item_id"
-            },
-
+            {"type": "item_reference", "id": "some_conversation_item_id"},
             # include new content as well
             {
                 "type": "message",
@@ -825,7 +807,7 @@ event = {
                         "text": "Is it okay to put pineapple on pizza?",
                     }
                 ],
-            }
+            },
         ],
     },
 }

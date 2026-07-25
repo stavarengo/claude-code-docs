@@ -78,13 +78,8 @@ Below, we share the agentic prompt that we used to achieve our highest score on 
 
 ```python
 from openai import OpenAI
-import os
 
-client = OpenAI(
-    api_key=os.environ.get(
-        "OPENAI_API_KEY", "<your OpenAI API key if not set as env var>"
-    )
-)
+client = OpenAI()
 
 SYS_PROMPT_SWEBENCH = """
 You will be tasked to fix an issue from an open-source repository.
@@ -227,20 +222,20 @@ File references can only be relative, NEVER ABSOLUTE. After the apply_patch comm
 """
 
 python_bash_patch_tool = {
-  "type": "function",
-  "name": "python",
-  "description": PYTHON_TOOL_DESCRIPTION,
-  "parameters": {
-      "type": "object",
-      "strict": True,
-      "properties": {
-          "input": {
-              "type": "string",
-              "description": " The Python code, terminal command (prefaced by exclamation mark), or apply_patch command that you wish to execute.",
-          }
-      },
-      "required": ["input"],
-  },
+    "type": "function",
+    "name": "python",
+    "description": PYTHON_TOOL_DESCRIPTION,
+    "parameters": {
+        "type": "object",
+        "strict": True,
+        "properties": {
+            "input": {
+                "type": "string",
+                "description": " The Python code, terminal command (prefaced by exclamation mark), or apply_patch command that you wish to execute.",
+            }
+        },
+        "required": ["input"],
+    },
 }
 
 # Additional harness setup:
@@ -252,11 +247,12 @@ response = client.responses.create(
     instructions=SYS_PROMPT_SWEBENCH,
     model="gpt-4.1-2025-04-14",
     tools=[python_bash_patch_tool],
-    input=f"Please answer the following question:\nBug: Typerror..."
+    input="Please answer the following question:\nBug: Typerror...",
 )
 
 response.to_dict()["output"]
 ```
+
 
 ```text
 [{'id': 'msg_67fe92df26ac819182ffafce9ff4e4fc07c7e06242e51f8b',
@@ -470,6 +466,7 @@ response = client.responses.create(
 response.to_dict()["output"]
 ```
 
+
 ```text
 [{'id': 'msg_67fe92d431548191b7ca6cd604b4784b06efc5beb16b3c5e',
   'content': [{'annotations': [],
@@ -627,6 +624,7 @@ APPLY_PATCH_TOOL = {
     },
 }
 ```
+
 
 ### Reference Implementation: apply_patch.py
 
@@ -1167,6 +1165,7 @@ if __name__ == "__main__":
     main()
 ```
 
+
 ### Other Effective Diff Formats
 
 If you want to try using a different diff format, we found in testing that the SEARCH/REPLACE diff format used in Aider’s polyglot benchmark, as well as a pseudo-XML format with no internal escaping, both had high success rates.
@@ -1202,4 +1201,5 @@ def search():
 `</edit>`
 """
 ````
+
 

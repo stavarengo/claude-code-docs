@@ -154,6 +154,7 @@ client = OpenAI(
 )
 ```
 
+
 The SDK reads `OPENAI_API_KEY` from your environment.
 
 You can also call the regional endpoint directly:

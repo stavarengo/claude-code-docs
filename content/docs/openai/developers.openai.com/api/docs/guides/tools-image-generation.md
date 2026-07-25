@@ -40,7 +40,7 @@ if (imageData.length > 0) {
 from openai import OpenAI
 import base64
 
-client = OpenAI() 
+client = OpenAI()
 
 response = client.responses.create(
     model="gpt-5.6",
@@ -54,7 +54,7 @@ image_data = [
     for output in response.output
     if output.type == "image_generation_call"
 ]
-    
+
 if image_data:
     image_base64 = image_data[0]
     with open("otter.png", "wb") as f:
@@ -277,9 +277,7 @@ response = openai.responses.create(
 )
 
 image_generation_calls = [
-    output
-    for output in response.output
-    if output.type == "image_generation_call"
+    output for output in response.output if output.type == "image_generation_call"
 ]
 
 image_data = [output.result for output in image_generation_calls]
@@ -372,10 +370,12 @@ import base64
 
 client = OpenAI()
 
+
 def save_base64_image(filename, image_base64):
     image_bytes = base64.b64decode(image_base64)
     with open(filename, "wb") as f:
         f.write(image_bytes)
+
 
 stream = client.responses.create(
     model="gpt-5.6",

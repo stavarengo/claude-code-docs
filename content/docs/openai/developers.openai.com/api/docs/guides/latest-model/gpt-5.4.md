@@ -89,14 +89,13 @@ console.log(response);
 
 ```python
 from openai import OpenAI
+
 client = OpenAI()
 
 response = client.responses.create(
     model="gpt-5.4",
     input="Think carefully and outline your steps before answering. How much gold would it take to coat the Statue of Liberty in a 1mm layer?",
-    reasoning={
-        "effort": "none"
-    }
+    reasoning={"effort": "none"},
 )
 
 print(response)
@@ -148,14 +147,13 @@ console.log(response);
 
 ```python
 from openai import OpenAI
+
 client = OpenAI()
 
 response = client.responses.create(
     model="gpt-5.4",
     input="What is the answer to the ultimate question of life, the universe, and everything?",
-    text={
-        "verbosity": "low"
-    }
+    text={"verbosity": "low"},
 )
 
 print(response)

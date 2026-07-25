@@ -118,7 +118,7 @@ call as-is.
 
 ```python
 # Full window collected from prior turns
-long_input_items_array = [...]
+long_input_items_array = [{"role": "user", "content": "Plan a trip to Kyoto."}]
 
 # 1) Compact the current window
 compacted = client.responses.compact(

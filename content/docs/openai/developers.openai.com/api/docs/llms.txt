@@ -183,7 +183,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [OpenAI CLI](https://developers.openai.com/api/docs/libraries/openai-cli.md): Install and use the generated openai command-line tool for Responses, structured outputs, images, speech, and shell workflows.
 
 ## Mcp
-- [Building MCP servers for ChatGPT Apps and API integrations](https://developers.openai.com/api/docs/mcp.md): Learn how to build MCP servers for use with ChatGPT Apps, deep research, or API integrations.
+- [Building MCP servers for plugins and API integrations](https://developers.openai.com/api/docs/mcp.md): Learn how to build MCP servers for use with plugins, deep research, or API integrations.
 
 ## Pricing
 - [Pricing](https://developers.openai.com/api/docs/pricing.md): Pricing information for the OpenAI platform.

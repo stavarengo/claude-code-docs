@@ -314,11 +314,10 @@ With GPT-5.1, you can use apply_patch as a new tool type without writing custom 
 
 ```python
 response = client.responses.create(
-model="gpt-5.1",
-input=RESPONSE_INPUT,
-tools=[{"type": "apply_patch"}]
+    model="gpt-5.1", input=RESPONSE_INPUT, tools=[{"type": "apply_patch"}]
 )
 ```
+
 
 When the model decides to execute an apply_patch tool, you will receive an apply_patch_call function type within the response stream. Within the operation object, you’ll receive a type field (with one of `create_file`, `update_file`, or `delete_file`) and the diff to implement.
 
@@ -351,9 +350,10 @@ When the model decides to execute an apply_patch tool, you will receive an apply
     "type": "apply_patch_call_output",
     "call_id": call["call_id"],
     "status": "completed" if success else "failed",
-    "output": log_output
+    "output": log_output,
 }
 ```
+
 
 #### Using the shell tool
 
@@ -364,6 +364,7 @@ The shell tool is invoked in the same way as apply_patch: include it as a tool o
 ```python
 tools = [{"type": "shell"}]
 ```
+
 
 When a shell tool call is returned, the Responses API includes a `shell_call` object with a timeout, a maximum output length, and the command to run.
 

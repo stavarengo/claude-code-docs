@@ -9,7 +9,7 @@ claude/code.claude.com/docs/en/whats-new:{2026-w13.md,2026-w14.md,2026-w15.md,20
 claude/platform.claude.com:{llms.txt}
 claude/platform.claude.com/docs/en:{claude_api_primer.md,get-api-key.md,get-started.md,intro.md}
 claude/platform.claude.com/docs/en/about-claude:{glossary.md,model-deprecations.md,pricing.md}
-claude/platform.claude.com/docs/en/about-claude/models:{choosing-a-model.md,introducing-claude-fable-5-and-claude-mythos-5.md,migration-guide.md,model-ids-and-versions.md,overview.md,whats-new-claude-4-8.md,whats-new-sonnet-5.md}
+claude/platform.claude.com/docs/en/about-claude/models:{choosing-a-model.md,introducing-claude-fable-5-and-claude-mythos-5.md,migration-guide.md,model-ids-and-versions.md,overview.md,whats-new-opus-5.md,whats-new-sonnet-5.md}
 claude/platform.claude.com/docs/en/about-claude/use-case-guides:{classification.md,content-moderation.md,customer-support-chat.md,legal-summarization.md,overview.md,ticket-routing.md}
 claude/platform.claude.com/docs/en/agents-and-tools:{mcp-connector.md,remote-mcp-servers.md}
 claude/platform.claude.com/docs/en/agents-and-tools/agent-skills:{best-practices.md,claude-api-skill.md,enterprise.md,overview.md,quickstart.md}
@@ -107,7 +107,7 @@ claude/platform.claude.com/docs/en/api/messages:{batches.md,count_tokens.md,crea
 claude/platform.claude.com/docs/en/api/messages/batches:{cancel.md,create.md,delete.md,list.md,results.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/models:{list.md,retrieve.md}
 claude/platform.claude.com/docs/en/build-with-claude:{batch-processing.md,cache-diagnostics.md,citations.md,claude-in-amazon-bedrock.md,claude-in-microsoft-foundry.md,claude-on-amazon-bedrock-legacy.md,claude-on-vertex-ai.md,claude-platform-on-aws.md,compaction.md,context-editing.md,context-windows.md,effort.md,embeddings.md,extended-thinking.md,fallback-credit.md,fast-mode.md,files.md,handling-stop-reasons.md,mid-conversation-effort-example.md,mid-conversation-system-messages.md,multilingual-support.md,overview.md,pdf-support.md,prompt-caching.md,refusals-and-fallback.md,search-results.md,skills-guide.md,streaming.md,structured-outputs.md,task-budgets.md,thinking-steering-and-cost.md,thinking-tool-workflows.md,thinking-troubleshooting.md,thinking.md,token-counting.md,vision-coordinates.md,vision.md,working-with-messages.md}
-claude/platform.claude.com/docs/en/build-with-claude/prompt-engineering:{claude-prompting-best-practices.md,overview.md,prompting-claude-fable-5.md,prompting-claude-opus-4-8.md,prompting-claude-sonnet-5.md}
+claude/platform.claude.com/docs/en/build-with-claude/prompt-engineering:{claude-prompting-best-practices.md,overview.md,prompting-claude-fable-5.md,prompting-claude-opus-4-8.md,prompting-claude-opus-5.md,prompting-claude-sonnet-5.md}
 claude/platform.claude.com/docs/en/cli-sdks-libraries:{middleware.md,overview.md}
 claude/platform.claude.com/docs/en/cli-sdks-libraries/cli:{authentication.md,quickstart.md,scripting.md,using.md}
 claude/platform.claude.com/docs/en/cli-sdks-libraries/libraries:{apple-foundation-models.md,openai-sdk.md}

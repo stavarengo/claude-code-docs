@@ -86,14 +86,13 @@ console.log(response);
 
 ```python
 from openai import OpenAI
+
 client = OpenAI()
 
 response = client.responses.create(
     model="gpt-5.2",
     input="Think carefully and outline your steps before answering. How much gold would it take to coat the Statue of Liberty in a 1mm layer?",
-    reasoning={
-        "effort": "none"
-    }
+    reasoning={"effort": "none"},
 )
 
 print(response)
@@ -145,14 +144,13 @@ console.log(response);
 
 ```python
 from openai import OpenAI
+
 client = OpenAI()
 
 response = client.responses.create(
     model="gpt-5.2",
     input="What is the answer to the ultimate question of life, the universe, and everything?",
-    text={
-        "verbosity": "low"
-    }
+    text={"verbosity": "low"},
 )
 
 print(response)
@@ -598,13 +596,13 @@ client = OpenAI()
 
 
 response = client.responses.create(
-   model="gpt-5.2",
-   input=[
-       {
-           "role": "user",
-           "content": "write a very long poem about a dog.",
-       },
-   ]
+    model="gpt-5.2",
+    input=[
+        {
+            "role": "user",
+            "content": "write a very long poem about a dog.",
+        },
+    ],
 )
 
 
@@ -613,19 +611,20 @@ output_json = [msg.model_dump() for msg in response.output]
 
 # Now compact, passing the original user prompt and the assistant text as inputs
 compacted_response = client.responses.compact(
-   model="gpt-5.2",
-   input=[
-       {
-           "role": "user",
-           "content": "write a very long poem about a dog.",
-       },
-       output_json[0]
-   ]
+    model="gpt-5.2",
+    input=[
+        {
+            "role": "user",
+            "content": "write a very long poem about a dog.",
+        },
+        output_json[0],
+    ],
 )
 
 
 print(json.dumps(compacted_response.model_dump(), indent=2))
 ```
+
 
 ### 5. Agentic steerability & user updates
 

@@ -241,7 +241,7 @@ For endpoint details see our `/responses/compact` [docs](https://developers.open
 
 The easiest way to implement apply_patch is with our first-class implementation in the Responses API, but you can also use our freeform tool implementation with [context-free grammar](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_new_params_and_tools?utm_source=chatgpt.com#3-contextfree-grammar-cfg). Both are demonstrated below.
 
-```py
+```python
 # Sample script to demonstrate the server-defined apply_patch tool
 
 import json
@@ -389,6 +389,7 @@ for item in response_cfg.output:
         #  }
         # *** End Patch
 ```
+
 
 Patches objects the Responses API tool can be implemented by following this [example](https://github.com/openai/openai-agents-python/blob/main/examples/tools/apply_patch.py) and patches from the freeform tool can be applied with the logic in our canonical GPT-5 [apply_patch.py](https://github.com/openai/openai-cookbook/blob/main/examples/gpt-5/apply_patch.py%20) implementation.
 
@@ -546,10 +547,14 @@ GIT_TOOL = {
     },
 }
 
-...
+TOOLS = [GIT_TOOL]
 
-PROMPT_TOOL_USE_DIRECTIVE = "- Strictly avoid raw `cmd`/terminal when a dedicated tool exists. Default to solver tools: `git` (all git), `list_dir`, `apply_patch`. Use `cmd`/`run_terminal_cmd` only when no listed tool can perform the action." # update with your desired tools
+PROMPT_TOOL_USE_DIRECTIVE = (
+    "- Strictly avoid raw `cmd`/terminal for Git operations. Use the dedicated "
+    "`git` tool instead."
+)
 ```
+
 
 ### Other Custom Tools (web search, semantic search, memory, etc.)
 

@@ -12,18 +12,18 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 548 pages - /docs - Content included below
-- German (Deutsch) (de) - 196 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 196 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 196 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 196 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 196 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 196 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 196 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 196 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 196 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 196 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 196 pages - /docs/id - Visit website for content
+- English (en) - 549 pages - /docs - Content included below
+- German (Deutsch) (de) - 201 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 201 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 201 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 201 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 201 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 201 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 201 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 201 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 201 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 201 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 201 pages - /docs/id - Visit website for content
 
 ---
 
@@ -77,7 +77,7 @@ The full documentation is available in the following languages on https://platfo
 - [Reference](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/reference.md) - MCP tunnels reference
 - [Security](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/security.md) - MCP tunnels security
 - [Memory tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool.md)
-- [Mid-conversation system messages](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages.md)
+- [Mid-conversation system messages and tool changes](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages.md)
 - [Multilingual support](https://platform.claude.com/docs/en/build-with-claude/multilingual-support.md)
 - [Parallel tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use.md)
 - [PDF support](https://platform.claude.com/docs/en/build-with-claude/pdf-support.md)
@@ -195,6 +195,7 @@ The full documentation is available in the following languages on https://platfo
 - [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices.md)
 - [Prompting Claude Fable 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5.md)
 - [Prompting Claude Opus 4.8](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-4-8.md)
+- [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5.md)
 - [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5.md)
 - [Reduce hallucinations](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations.md)
 - [Reduce prompt leak](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-prompt-leak.md)
@@ -212,7 +213,7 @@ The full documentation is available in the following languages on https://platfo
 - [Model IDs and versioning](https://platform.claude.com/docs/en/about-claude/models/model-ids-and-versions.md)
 - [Pricing](https://platform.claude.com/docs/en/about-claude/pricing.md)
 - [System prompts](https://platform.claude.com/docs/en/release-notes/system-prompts.md) - System Prompts
-- [What's new in Claude Opus 4.8](https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-8.md)
+- [What's new in Claude Opus 5](https://platform.claude.com/docs/en/about-claude/models/whats-new-opus-5.md)
 - [What's new in Claude Sonnet 5](https://platform.claude.com/docs/en/about-claude/models/whats-new-sonnet-5.md)
 
 ### CLI, SDKs, and libraries
