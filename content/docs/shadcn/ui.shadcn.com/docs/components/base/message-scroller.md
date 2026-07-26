@@ -360,7 +360,7 @@ import {
 ```
 
 ```tsx
-<MessageScrollerProvider autoScroll>
+<MessageScrollerProvider>
   <MessageScroller>
     <MessageScrollerViewport>
       <MessageScrollerContent>
