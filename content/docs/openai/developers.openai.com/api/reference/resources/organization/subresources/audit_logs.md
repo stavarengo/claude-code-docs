@@ -1,5 +1,7 @@
 # Organization Audit Logs
 
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
 OpenAI API endpoint reference.
 
 Canonical reference URL: https://developers.openai.com/api/reference/resources/organization/subresources/audit_logs

@@ -1,12 +1,7 @@
-# Unwrap
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-Unwrap is a convenience helper available in the official SDKs to verify a webhook signature and parse the JSON payload in a single call. Use `client.webhooks.unwrap(body, headers, options?)` to verify the signature and parse the JSON payload in one call. For end-to-end webhook examples, see the [Webhooks guide](https://developers.openai.com/api/docs/guides/webhooks).
+## 
 
-## Supported SDKs
+**** ``
 
-This helper is available in official SDKs, including:
-
-- [JavaScript / TypeScript](https://developers.openai.com/api/reference/typescript/resources/webhooks/methods/unwrap)
-- [Python](https://developers.openai.com/api/reference/python/resources/webhooks/methods/unwrap)
-- [Ruby](https://developers.openai.com/api/reference/ruby/resources/webhooks/methods/unwrap)
-- [Go](https://developers.openai.com/api/reference/go/resources/webhooks/methods/unwrap)
+Validates that the given payload was sent by OpenAI and parses the payload.

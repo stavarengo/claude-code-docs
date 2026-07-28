@@ -120,7 +120,7 @@ claude/platform.claude.com/docs/en/resources:{overview.md}
 claude/platform.claude.com/docs/en/test-and-evaluate:{develop-tests.md}
 claude/platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails:{handle-streaming-refusals.md,increase-consistency.md,mitigate-jailbreaks.md,reduce-hallucinations.md,reduce-latency.md,reduce-prompt-leak.md}
 claude/raw.githubusercontent.com/aws-solutions-library-samples/guidance-for-claude-code-with-amazon-bedrock/refs/heads/main/assets/docs:{MONITORING.md}
-openai/developers.openai.com/api/docs:{bots.md,concepts.md,deprecations.md,libraries.md,llms-full.txt,llms.txt,mcp.md,pricing.md,quickstart.md,supported-countries.md,ui-kit-demo.md}
+openai/developers.openai.com/api/docs:{bots.md,changelog.md,concepts.md,deprecations.md,libraries.md,llms-full.txt,llms.txt,mcp.md,models.md,pricing.md,quickstart.md,supported-countries.md}
 openai/developers.openai.com/api/docs/actions:{actions-library.md,authentication.md,data-retrieval.md,getting-started.md,introduction.md,production.md,sending-files.md}
 openai/developers.openai.com/api/docs/assistants:{deep-dive.md,migration.md,tools.md}
 openai/developers.openai.com/api/docs/assistants/tools:{code-interpreter.md,file-search.md,function-calling.md}
@@ -131,13 +131,16 @@ openai/developers.openai.com/api/docs/guides/agents:{define-agents.md,guardrails
 openai/developers.openai.com/api/docs/guides/latest-model:{gpt-4.1.md,gpt-5.1.md,gpt-5.2.md,gpt-5.3-codex.md,gpt-5.4.md,gpt-5.5.md,gpt-5.6.md,gpt-5.md}
 openai/developers.openai.com/api/docs/guides/prompting:{migrate-from-prompt-object.md}
 openai/developers.openai.com/api/docs/guides/safety-checks:{cybersecurity.md,under-18-api-guidance.md}
-openai/developers.openai.com/api/docs/guides/workload-identity-federation:{aws.md,github-actions.md,google-cloud.md,kubernetes.md,microsoft-azure.md,spiffe.md}
+openai/developers.openai.com/api/docs/guides/workload-identity-federation:{aws.md,github-actions.md,google-cloud.md,kubernetes.md,microsoft-azure.md,oracle-cloud.md,spiffe.md}
 openai/developers.openai.com/api/docs/libraries:{openai-cli.md}
+openai/developers.openai.com/api/docs/models:{all.md,babbage-002.md,chat-latest.md,chatgpt-4o-latest.md,chatgpt-image-latest.md,codex-mini-latest.md,compare.md,computer-use-preview.md,dall-e-2.md,dall-e-3.md,davinci-002.md,gpt-3.5-turbo-16k-0613.md,gpt-3.5-turbo-instruct.md,gpt-3.5-turbo.md,gpt-4-turbo-preview.md,gpt-4-turbo.md,gpt-4.1-mini.md,gpt-4.1-nano.md,gpt-4.1.md,gpt-4.5-preview.md,gpt-4.md,gpt-4o-audio-preview.md,gpt-4o-mini-audio-preview.md,gpt-4o-mini-realtime-preview.md,gpt-4o-mini-search-preview.md,gpt-4o-mini-transcribe.md,gpt-4o-mini-tts.md,gpt-4o-mini.md,gpt-4o-realtime-preview.md,gpt-4o-search-preview.md,gpt-4o-transcribe-diarize.md,gpt-4o-transcribe.md,gpt-4o.md,gpt-5-chat-latest.md,gpt-5-codex.md,gpt-5-mini.md,gpt-5-nano.md,gpt-5-pro.md,gpt-5.1-chat-latest.md,gpt-5.1-codex-max.md,gpt-5.1-codex-mini.md,gpt-5.1-codex.md,gpt-5.1.md,gpt-5.2-chat-latest.md,gpt-5.2-codex.md,gpt-5.2-pro.md,gpt-5.2.md,gpt-5.3-chat-latest.md,gpt-5.3-codex.md,gpt-5.4-mini.md,gpt-5.4-nano.md,gpt-5.4-pro.md,gpt-5.4.md,gpt-5.5-pro.md,gpt-5.5.md,gpt-5.6-luna.md,gpt-5.6-sol.md,gpt-5.6-terra.md,gpt-5.md,gpt-audio-1.5.md,gpt-audio-mini.md,gpt-audio.md,gpt-image-1-mini.md,gpt-image-1.5.md,gpt-image-1.md,gpt-image-2.md,gpt-oss-120b.md,gpt-oss-20b.md,gpt-realtime-1.5.md,gpt-realtime-2.1-mini.md,gpt-realtime-2.1.md,gpt-realtime-2.md,gpt-realtime-mini.md,gpt-realtime-translate.md,gpt-realtime-whisper.md,gpt-realtime.md,o1-mini.md,o1-preview.md,o1-pro.md,o1.md,o3-deep-research.md,o3-mini.md,o3-pro.md,o3.md,o4-mini-deep-research.md,o4-mini.md,omni-moderation-latest.md,sora-2-pro.md,sora-2.md,text-embedding-3-large.md,text-embedding-3-small.md,text-embedding-ada-002.md,tts-1-hd.md,tts-1.md,whisper-1.md}
 openai/developers.openai.com/api/docs/tutorials:{meeting-minutes.md,web-qa-embeddings.md}
 openai/developers.openai.com/api/reference:{llms-full.txt,llms.txt,overview.md,workload-identity-federation.md}
 openai/developers.openai.com/api/reference/administration:{overview.md}
 openai/developers.openai.com/api/reference/chat-completions:{overview.md}
+openai/developers.openai.com/api/reference/go/resources/webhooks/methods:{unwrap.md}
 openai/developers.openai.com/api/reference/go/resources/webhooks/methods/unwrap:{index.md}
+openai/developers.openai.com/api/reference/python/resources/webhooks/methods:{unwrap.md}
 openai/developers.openai.com/api/reference/python/resources/webhooks/methods/unwrap:{index.md}
 openai/developers.openai.com/api/reference/realtime-beta:{overview.md}
 openai/developers.openai.com/api/reference/resources:{audio.md,batches.md,chat.md,completions.md,containers.md,conversations.md,embeddings.md,evals.md,files.md,fine_tuning.md,graders.md,images.md,models.md,moderations.md,organization.md,projects.md,realtime.md,responses.md,uploads.md,vector_stores.md,videos.md,webhooks.md}
@@ -430,7 +433,9 @@ openai/developers.openai.com/api/reference/resources/videos/methods/retrieve:{in
 openai/developers.openai.com/api/reference/resources/webhooks:{index.md}
 openai/developers.openai.com/api/reference/resources/webhooks/methods:{unwrap.md}
 openai/developers.openai.com/api/reference/responses:{overview.md}
+openai/developers.openai.com/api/reference/ruby/resources/webhooks/methods:{unwrap.md}
 openai/developers.openai.com/api/reference/ruby/resources/webhooks/methods/unwrap:{index.md}
+openai/developers.openai.com/api/reference/typescript/resources/webhooks/methods:{unwrap.md}
 openai/developers.openai.com/api/reference/typescript/resources/webhooks/methods/unwrap:{index.md}
 shadcn/ui.shadcn.com:{docs.md,llms.txt}
 shadcn/ui.shadcn.com/docs:{changelog.md,cli.md,components-json.md,components.md,dark-mode.md,directory.md,figma.md,forms.md,installation.md,javascript.md,mcp.md,monorepo.md,package-imports.md,react-19.md,registry.md,rtl.md,skills.md,tailwind-v4.md,theming.md,typeset.md}

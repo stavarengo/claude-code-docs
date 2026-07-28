@@ -1,5 +1,7 @@
 # Webhooks events
 
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
 Webhooks are HTTP requests sent by OpenAI to a URL you specify when certain
 events happen during the course of API usage.
 

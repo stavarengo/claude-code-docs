@@ -1,5 +1,7 @@
 # Chat Completions streaming events
 
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
 Stream Chat Completions in real time. Receive chunks of completions
 returned from the model using server-sent events.
 [Learn more](https://developers.openai.com/docs/guides/streaming-responses?api-mode=chat).

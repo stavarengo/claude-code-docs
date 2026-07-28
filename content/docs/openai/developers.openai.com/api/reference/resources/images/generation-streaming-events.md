@@ -1,5 +1,7 @@
 # Image generation streaming events
 
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
 Stream image generation and editing in real time with server-sent events.
 [Learn more about image streaming](https://developers.openai.com/docs/guides/image-generation).
 

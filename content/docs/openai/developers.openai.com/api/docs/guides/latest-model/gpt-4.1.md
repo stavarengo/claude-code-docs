@@ -1,5 +1,7 @@
 # Using GPT-4.1
 
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
 ## Introduction
 
 The GPT-4.1 family of models represents a significant step forward from GPT-4o in capabilities across coding, instruction following, and long context. In this prompting guide, we collate a series of important prompting tips derived from extensive internal testing to help developers fully leverage the improved abilities of this new model family.
@@ -542,7 +544,7 @@ The model is trained to robustly understand structure in a variety of formats. G
 ### Caveats
 
 - In some isolated cases we have observed the model being resistant to producing very long, repetitive outputs, for example, analyzing hundreds of items one by one. If this is necessary for your use case, instruct the model strongly to output this information in full, and consider breaking down the problem or using a more concise approach.
-- We have seen some rare instances of parallel tool calls being incorrect. We advise testing this, and considering setting the [parallel_tool_calls](https://developers.openai.com/api/docs/api-reference/responses/create#responses-create-parallel_tool_calls) param to false if you’re seeing issues.
+- We have seen some rare instances of parallel tool calls being incorrect. We advise testing this, and considering setting the [parallel_tool_calls](https://developers.openai.com/api/reference/resources/responses/methods/create#responses-create-parallel_tool_calls) param to false if you’re seeing issues.
 
 ### Appendix: Generating and Applying File Diffs
 

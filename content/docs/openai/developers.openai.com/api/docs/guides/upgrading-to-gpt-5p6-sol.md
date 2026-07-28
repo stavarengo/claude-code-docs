@@ -1,5 +1,7 @@
 # Upgrading to GPT-5.6 Sol
 
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
 # Upgrading to GPT-5.6 Sol
 
 Use this guide when the user asks to migrate an existing OpenAI API integration, repository, prompt stack, agent, model router, or model picker to GPT-5.6 Sol or the GPT-5.6 family.

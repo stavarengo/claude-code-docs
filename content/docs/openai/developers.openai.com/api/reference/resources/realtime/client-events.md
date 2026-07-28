@@ -1,5 +1,7 @@
 # Realtime client events
 
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
 These are events that the OpenAI Realtime WebSocket server will accept from the client.
 
 ## session.update

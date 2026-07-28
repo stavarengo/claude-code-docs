@@ -1,5 +1,7 @@
 # Assistants streaming events
 
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
 Stream the result of executing a Run or resuming a Run after submitting tool outputs.
 You can stream events from the [Create Thread and Run](https://developers.openai.com/docs/api-reference/runs/createThreadAndRun),
 [Create Run](https://developers.openai.com/docs/api-reference/runs/createRun), and [Submit Tool Outputs](https://developers.openai.com/docs/api-reference/runs/submitToolOutputs)

@@ -1,5 +1,7 @@
 # Prompting guidance for GPT-5.6 Sol
 
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
 # Prompting guidance for GPT-5.6 Sol
 
 Use this guide when adapting prompts, tool descriptions, agent instructions, or prompt stacks to GPT-5.6 Sol or the GPT-5.6 family. Pair it with the current [GPT-5.6 model guide](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.6) for API details, limits, pricing, and feature availability.
@@ -36,13 +38,15 @@ Describe the destination rather than prescribing every step. GPT-5.6 can usually
 
 Prefer:
 
-    Resolve the customer's issue end to end.
+```text
+Resolve the customer's issue end to end.
 
-    Success means:
-    - make the eligibility decision from available policy and account evidence
-    - complete any allowed action before responding
-    - return completed_actions, customer_message, and blockers
-    - if required evidence is missing, ask for the smallest missing field
+Success means:
+- make the eligibility decision from available policy and account evidence
+- complete any allowed action before responding
+- return completed_actions, customer_message, and blockers
+- if required evidence is missing, ask for the smallest missing field
+```
 
 Avoid unnecessary absolute rules. Use ALWAYS, NEVER, must, and only for true invariants such as safety rules, required fields, or actions that should never happen. For judgment calls, such as when to search, ask, use a tool, or keep iterating, prefer decision rules.
 
@@ -240,13 +244,15 @@ Give GPT-5.6 access to tools that can validate the output, and state what valida
 
 For coding:
 
-    After making changes, run the most relevant validation available:
-    - targeted tests for changed behavior
-    - type checks or lint checks when applicable
-    - build checks for affected packages
-    - a minimal smoke test when full validation is too expensive
+```text
+After making changes, run the most relevant validation available:
+- targeted tests for changed behavior
+- type checks or lint checks when applicable
+- build checks for affected packages
+- a minimal smoke test when full validation is too expensive
 
-    If validation cannot be run, explain why and describe the next best check.
+If validation cannot be run, explain why and describe the next best check.
+```
 
 For visual artifacts:
 

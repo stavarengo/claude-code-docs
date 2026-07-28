@@ -1,5 +1,7 @@
 # Using GPT-5.2
 
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
 ## Introduction
 
 GPT-5.2 was released as a flagship general-purpose model for both general and agentic tasks. Compared with GPT-5.1, it improved:
@@ -177,13 +179,11 @@ Local shell is supported in GPT-5.2. The shell tool allows the model to interact
 
 When the GPT-5 model family launched, we introduced a new capability called custom tools, which lets models send any raw text as tool call input but still constrain outputs if desired. This tool behavior remains true in GPT-5.2.
 
-[
+[Function calling guide
 
-<span slot="icon">
-      </span>
-    Learn about custom tools in the function calling guide.
 
-](https://developers.openai.com/api/docs/guides/function-calling)
+
+      Learn about custom tools in the function calling guide.](https://developers.openai.com/api/docs/guides/function-calling)
 
 #### Freeform inputs
 
@@ -212,13 +212,11 @@ This enables precise, constrained tool calls or structured responses and lets yo
 
 The `allowed_tools` parameter under `tool_choice` lets you pass N tool definitions but restrict the model to only M (&lt; N) of them. List your full toolkit in `tools`, and then use an `allowed_tools` block to name the subset and specify a mode—either `auto` (the model may pick any of those) or `required` (the model must invoke one).
 
-[
+[Function calling guide
 
-<span slot="icon">
-      </span>
-    Learn about the allowed tools option in the function calling guide.
 
-](https://developers.openai.com/api/docs/guides/function-calling)
+
+      Learn about the allowed tools option in the function calling guide.](https://developers.openai.com/api/docs/guides/function-calling)
 
 By separating all possible tools from the subset that can be used _now_, you gain greater safety, predictability, and improved prompt caching. You also avoid brittle prompt engineering, such as hard-coded call order. GPT-5.2 dynamically invokes or requires specific functions mid-conversation while reducing the risk of unintended tool usage over long contexts.
 
@@ -287,7 +285,7 @@ To achieve similar results with reasoning effort set higher, or with another GPT
 
 ### Migrating from Chat Completions to Responses API
 
-The biggest difference, and main reason to migrate from Chat Completions to the Responses API for GPT-5.2, is support for passing chain of thought (CoT) between turns. See a full [comparison of the APIs](https://developers.openai.com/api/docs/guides/responses-vs-chat-completions).
+The biggest difference, and main reason to migrate from Chat Completions to the Responses API for GPT-5.2, is support for passing chain of thought (CoT) between turns. See a full [comparison of the APIs](https://developers.openai.com/api/docs/guides/migrate-to-responses).
 
 Passing CoT exists only in the Responses API, and we've seen improved intelligence, fewer generated reasoning tokens, higher cache hit rates, and lower latency as a result of doing so. Most other parameters remain at parity, though the formatting is different. Here's how new parameters are handled differently between Chat Completions and the Responses API:
 
@@ -295,8 +293,8 @@ Passing CoT exists only in the Responses API, and we've seen improved intelligen
 
 
 
-<div data-content-switcher-pane data-value="responses">
-    <div class="hidden">Responses API</div>
+Responses API
+
     Generate response with reasoning effort set to none
 
 ```bash
@@ -313,9 +311,13 @@ curl --request POST \
 }'
 ```
 
-  </div>
-  <div data-content-switcher-pane data-value="chat" hidden>
-    <div class="hidden">Chat Completions</div>
+  
+
+  
+
+    
+Chat Completions
+
     Generate response with reasoning effort set to none
 
 ```bash
@@ -335,16 +337,14 @@ curl --request POST \
 }'
 ```
 
-  </div>
-
 
 
 **Verbosity**
 
 
 
-<div data-content-switcher-pane data-value="responses">
-    <div class="hidden">Responses API</div>
+Responses API
+
     Control verbosity
 
 ```bash
@@ -361,9 +361,13 @@ curl --request POST \
 }'
 ```
 
-  </div>
-  <div data-content-switcher-pane data-value="chat" hidden>
-    <div class="hidden">Chat Completions</div>
+  
+
+  
+
+    
+Chat Completions
+
     Control verbosity
 
 ```bash
@@ -383,16 +387,14 @@ curl --request POST \
 }'
 ```
 
-  </div>
-
 
 
 **Custom tools**
 
 
 
-<div data-content-switcher-pane data-value="responses">
-    <div class="hidden">Responses API</div>
+Responses API
+
     Custom tool call
 
 ```bash
@@ -413,9 +415,13 @@ curl --request POST \
 }'
 ```
 
-  </div>
-  <div data-content-switcher-pane data-value="chat" hidden>
-    <div class="hidden">Chat Completions</div>
+  
+
+  
+
+    
+Chat Completions
+
     Custom tool call
 
 ```bash
@@ -442,8 +448,6 @@ curl --request POST \
   ]
 }'
 ```
-
-  </div>
 
 
 
@@ -583,7 +587,7 @@ Runs a compaction pass over a conversation and returns a compacted response obje
 - Keep prompts functionally identical when resuming to avoid behavior drift
 - Treat compacted items as opaque; don’t parse or depend on internals
 
-For guidance on when and how to compact in production, see the [Conversation State](https://developers.openai.com/api/docs/guides/conversation-state?api-mode=responses) guide and [Compact a Response](https://developers.openai.com/api/docs/api-reference/responses/compact) page.
+For guidance on when and how to compact in production, see the [Conversation State](https://developers.openai.com/api/docs/guides/conversation-state?api-mode=responses) guide and [Compact a Response](https://developers.openai.com/api/reference/resources/responses/methods/compact) page.
 
 Here is an example:
 

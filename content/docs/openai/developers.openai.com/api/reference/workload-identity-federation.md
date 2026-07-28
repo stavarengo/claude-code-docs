@@ -1,5 +1,7 @@
 # Workload identity token exchange
 
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
 Use this reference to exchange an externally issued identity token for a short-lived OpenAI access token after you configure a trusted provider and service account mapping. For concepts, dashboard configuration, provider-specific setup, and SDK examples, see the [workload identity federation guide](https://developers.openai.com/api/docs/guides/workload-identity-federation).
 
 ## Exchange a subject token

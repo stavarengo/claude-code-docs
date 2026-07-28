@@ -1,5 +1,7 @@
 # Organization Groups — Update
 
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
 OpenAI API endpoint method reference.
 
 Canonical reference URL: https://developers.openai.com/api/reference/resources/organization/subresources/groups/methods/update

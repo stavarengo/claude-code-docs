@@ -1,5 +1,7 @@
 # Responses Overview
 
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
 OpenAI's most advanced interface for generating model responses. Supports
 text and image inputs, and text outputs. Create stateful interactions
 with the model, using the output of previous responses as input. Extend

@@ -1,5 +1,7 @@
 # Chat Completions Overview
 
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
 The Chat Completions API endpoint will generate a model response from a
 list of messages comprising a conversation.
 

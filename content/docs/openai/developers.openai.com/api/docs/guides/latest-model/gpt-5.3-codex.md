@@ -1,5 +1,7 @@
 # Using GPT-5.3-Codex
 
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
 ## Introduction
 
 GPT-5.3-Codex advances the frontier of intelligence and efficiency for agentic coding. Follow this guide closely to ensure you’re getting the best performance possible from this model. This guide is for anyone using the model directly via the API for maximum customizability; we also have the [Codex SDK](https://developers.openai.com/codex/codex-sdk/) for simpler integrations.
@@ -229,7 +231,7 @@ How it works:
    2. The endpoint is ZDR compatible and will return an “encrypted_content” item that you can pass into future requests.
 3. For subsequent calls to the /responses endpoint, you can pass your updated, compacted list of conversation items (including the added compaction item). The model retains key prior state with fewer conversation tokens.
 
-For endpoint details see our `/responses/compact` [docs](https://developers.openai.com/api/docs/api-reference/responses/compact).
+For endpoint details see our `/responses/compact` [docs](https://developers.openai.com/api/reference/resources/responses/methods/compact).
 
 ### Tools
 

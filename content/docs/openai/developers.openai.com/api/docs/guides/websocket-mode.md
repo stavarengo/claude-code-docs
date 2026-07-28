@@ -1,5 +1,7 @@
 # WebSocket Mode
 
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
 The Responses API supports a WebSocket mode for long-running, tool-call-heavy workflows. In this mode, you keep a persistent connection to `/v1/responses` and continue each turn by sending only new input items plus `previous_response_id`.
 
 WebSocket mode is compatible with both Zero Data Retention (ZDR) and `store=false`.
@@ -105,7 +107,7 @@ When you enable server-side compaction (`context_management` with `compact_thres
 
 ### Standalone `/responses/compact`
 
-The standalone [`/responses/compact` endpoint](https://developers.openai.com/api/docs/api-reference/responses/compact) returns a new compacted input window, not a response ID. After compaction, create a new response on your WebSocket connection using the compacted window as `input` (plus the next user/tool items).
+The standalone [`/responses/compact` endpoint](https://developers.openai.com/api/reference/resources/responses/methods/compact) returns a new compacted input window, not a response ID. After compaction, create a new response on your WebSocket connection using the compacted window as `input` (plus the next user/tool items).
 
 Start a new chain by omitting `previous_response_id` or setting it to `null`. Pass the compacted output as-is; do not prune the returned window.
 
@@ -187,4 +189,4 @@ When a connection closes (or hits the 60-minute limit), open a new WebSocket con
 
 - [Conversation state](https://developers.openai.com/api/docs/guides/conversation-state)
 - [Streaming API responses](https://developers.openai.com/api/docs/guides/streaming-responses)
-- [Responses streaming events reference](https://developers.openai.com/api/docs/api-reference/responses-streaming)
+- [Responses streaming events reference](https://developers.openai.com/api/reference/resources/responses)

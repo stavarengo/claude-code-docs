@@ -1,5 +1,7 @@
 # Using GPT-5.4
 
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
 ## Introduction
 
 [GPT-5.4](https://developers.openai.com/api/docs/models/gpt-5.4) was released as a frontier model for professional work across the API and Codex. It helps developers analyze complex information, build production software, and automate multi-step workflows.
@@ -182,14 +184,12 @@ Computer use lets GPT-5.4 operate software through the user interface by inspect
 
 Use it in an isolated browser or VM, and keep a human in the loop for high-impact actions. The full guide covers the built-in Responses API loop, custom harness patterns, and code-execution-based setups.
 
-[
+[Computer use guide
 
-<span slot="icon">
-      </span>
-    Learn how to run the built-in computer tool safely and integrate it with
-    your own harness.
 
-](https://developers.openai.com/api/docs/guides/tools-computer-use)
+
+      Learn how to run the built-in computer tool safely and integrate it with
+    your own harness.](https://developers.openai.com/api/docs/guides/tools-computer-use)
 
 ### Tool search tool
 
@@ -197,25 +197,21 @@ Tool search lets GPT-5.4 defer large tool surfaces until runtime so the model lo
 
 Use hosted tool search when the candidate tools are already known at request time, or client-executed tool search when your application needs to decide what to load dynamically. The full guide also covers best practices for `namespaces`, MCP servers, and deferred loading.
 
-[
+[Tool search guide
 
-<span slot="icon">
-      </span>
-    Learn how to defer tool definitions and load the right subset at runtime.
 
-](https://developers.openai.com/api/docs/guides/tools-tool-search)
+
+      Learn how to defer tool definitions and load the right subset at runtime.](https://developers.openai.com/api/docs/guides/tools-tool-search)
 
 ### Custom tools
 
 When the GPT-5 model family launched, we introduced a new capability called custom tools, which lets models send any raw text as tool call input but still constrain outputs if desired. This tool behavior remains true in GPT-5.4.
 
-[
+[Function calling guide
 
-<span slot="icon">
-      </span>
-    Learn about custom tools in the function calling guide.
 
-](https://developers.openai.com/api/docs/guides/function-calling)
+
+      Learn about custom tools in the function calling guide.](https://developers.openai.com/api/docs/guides/function-calling)
 
 #### Freeform inputs
 
@@ -244,13 +240,11 @@ This enables precise, constrained tool calls or structured responses and lets yo
 
 The `allowed_tools` parameter under `tool_choice` lets you pass N tool definitions but restrict the model to only M (&lt; N) of them. List your full toolkit in `tools`, and then use an `allowed_tools` block to name the subset and specify a mode—either `auto` (the model may pick any of those) or `required` (the model must invoke one).
 
-[
+[Function calling guide
 
-<span slot="icon">
-      </span>
-    Learn about the allowed tools option in the function calling guide.
 
-](https://developers.openai.com/api/docs/guides/function-calling)
+
+      Learn about the allowed tools option in the function calling guide.](https://developers.openai.com/api/docs/guides/function-calling)
 
 By separating all possible tools from the subset that can be used _now_, you gain greater safety, predictability, and improved prompt caching. You also avoid brittle prompt engineering, such as hard-coded call order. GPT-5.4 dynamically invokes or requires specific functions mid-conversation while reducing the risk of unintended tool usage over long contexts.
 
@@ -397,7 +391,7 @@ To achieve similar results with reasoning effort set higher, or with another GPT
 
 ### Migrating from Chat Completions to Responses API
 
-The biggest difference, and main reason to migrate from Chat Completions to the Responses API for GPT-5.4, is support for passing chain of thought (CoT) between turns. See a full [comparison of the APIs](https://developers.openai.com/api/docs/guides/responses-vs-chat-completions).
+The biggest difference, and main reason to migrate from Chat Completions to the Responses API for GPT-5.4, is support for passing chain of thought (CoT) between turns. See a full [comparison of the APIs](https://developers.openai.com/api/docs/guides/migrate-to-responses).
 
 Passing CoT exists only in the Responses API, and we've seen improved intelligence, fewer generated reasoning tokens, higher cache hit rates, and lower latency as a result of doing so. Most other parameters remain at parity, though the formatting is different. Here's how new parameters are handled differently between Chat Completions and the Responses API:
 
@@ -405,8 +399,8 @@ Passing CoT exists only in the Responses API, and we've seen improved intelligen
 
 
 
-<div data-content-switcher-pane data-value="responses">
-    <div class="hidden">Responses API</div>
+Responses API
+
     Generate response with reasoning effort set to none
 
 ```bash
@@ -423,9 +417,13 @@ curl --request POST \
 }'
 ```
 
-  </div>
-  <div data-content-switcher-pane data-value="chat" hidden>
-    <div class="hidden">Chat Completions</div>
+  
+
+  
+
+    
+Chat Completions
+
     Generate response with reasoning effort set to none
 
 ```bash
@@ -445,16 +443,14 @@ curl --request POST \
 }'
 ```
 
-  </div>
-
 
 
 **Verbosity**
 
 
 
-<div data-content-switcher-pane data-value="responses">
-    <div class="hidden">Responses API</div>
+Responses API
+
     Control verbosity
 
 ```bash
@@ -471,9 +467,13 @@ curl --request POST \
 }'
 ```
 
-  </div>
-  <div data-content-switcher-pane data-value="chat" hidden>
-    <div class="hidden">Chat Completions</div>
+  
+
+  
+
+    
+Chat Completions
+
     Control verbosity
 
 ```bash
@@ -493,16 +493,14 @@ curl --request POST \
 }'
 ```
 
-  </div>
-
 
 
 **Custom tools**
 
 
 
-<div data-content-switcher-pane data-value="responses">
-    <div class="hidden">Responses API</div>
+Responses API
+
     Custom tool call
 
 ```bash
@@ -523,9 +521,13 @@ curl --request POST \
 }'
 ```
 
-  </div>
-  <div data-content-switcher-pane data-value="chat" hidden>
-    <div class="hidden">Chat Completions</div>
+  
+
+  
+
+    
+Chat Completions
+
     Custom tool call
 
 ```bash
@@ -552,8 +554,6 @@ curl --request POST \
   ]
 }'
 ```
-
-  </div>
 
 
 
@@ -993,7 +993,7 @@ Compaction unlocks significantly longer effective context windows, where user co
 
 If you are using [Compaction](https://developers.openai.com/api/docs/guides/compaction) in the Responses API, compact after major milestones, treat compacted items as opaque state, and keep prompts functionally identical after compaction. The endpoint is ZDR compatible and returns an `encrypted_content` item that you can pass into future requests. GPT-5.4 tends to remain more coherent and reliable over longer, multi-turn conversations with fewer breakdowns as sessions grow.
 
-For more guidance, see the [`/responses/compact` API reference](https://developers.openai.com/api/docs/api-reference/responses/compact).
+For more guidance, see the [`/responses/compact` API reference](https://developers.openai.com/api/reference/resources/responses/methods/compact).
 
 #### Control personality for customer-facing workflows
 

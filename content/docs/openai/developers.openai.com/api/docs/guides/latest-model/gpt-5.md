@@ -1,5 +1,7 @@
 # Using GPT-5
 
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
 ## Introduction
 
 GPT-5 represents a substantial leap forward in agentic task performance, coding, raw intelligence, and control.
@@ -35,7 +37,7 @@ We’ve seen significant gains from applying these best practices and adopting o
 
 ### Agentic workflow predictability
 
-We trained GPT-5 with developers in mind: we’ve focused on improving tool calling, instruction following, and long-context understanding to serve as the best foundation model for agentic applications. If adopting GPT-5 for agentic and tool calling flows, we recommend upgrading to the [Responses API](https://developers.openai.com/api/docs/api-reference/responses), where reasoning is persisted between tool calls, leading to more efficient and intelligent outputs.
+We trained GPT-5 with developers in mind: we’ve focused on improving tool calling, instruction following, and long-context understanding to serve as the best foundation model for agentic applications. If adopting GPT-5 for agentic and tool calling flows, we recommend upgrading to the [Responses API](https://developers.openai.com/api/reference/resources/responses), where reasoning is persisted between tool calls, leading to more efficient and intelligent outputs.
 
 #### Controlling agentic eagerness
 
