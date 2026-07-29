@@ -145,7 +145,7 @@ Once you see the Claude Code welcome screen, you're ready to go. You don't need 
 
 Claude can create projects from a description:
 
-```text theme={null}
+```text wrap theme={null}
 make me a simple webpage that says hello world
 ```
 
@@ -155,7 +155,7 @@ Before creating or changing files, Claude asks for your permission. Press `Enter
 
 Claude can read and organize files you already have:
 
-```text theme={null}
+```text wrap theme={null}
 look at the screenshots on my Desktop and rename them based on what's in each image
 ```
 
@@ -163,7 +163,7 @@ look at the screenshots on my Desktop and rename them based on what's in each im
 
 Claude can explain things, help you learn, or plan out a project:
 
-```text theme={null}
+```text wrap theme={null}
 I want to build a personal budget tracker. What would I need?
 ```
 
@@ -224,6 +224,8 @@ If you run into problems installing on macOS or Linux, check these common issues
   ```bash theme={null}
   brew install --cask claude-code
   ```
+
+  When it finishes, open a new terminal window, type `claude --version`, and press Enter: the command prints a version number such as `2.1.211 (Claude Code)` when the install worked.
 </Accordion>
 
 <Accordion title="'dyld' error or 'built for Mac OS X 13.0'">
@@ -284,6 +286,10 @@ If you run into problems installing on Windows, check these common issues:
   ```
 
   Close PowerShell, open a new window, and try `claude` again. You should see the Claude Code welcome screen. See [verify your PATH](/docs/en/troubleshoot-install#verify-your-path) for more details.
+</Accordion>
+
+<Accordion title="'Claude Code does not support 32-bit Windows'">
+  On a 64-bit machine, this error means you opened `Windows PowerShell (x86)` instead of `Windows PowerShell`. The x86 entry runs as a 32-bit process. Close it, open the Start menu entry without `(x86)` in its name, and run the install command again. If you're not sure your machine is 64-bit, or the error persists, see [the full explanation](/docs/en/troubleshoot-install#claude-code-does-not-support-32-bit-windows).
 </Accordion>
 
 For other errors, see the full [installation troubleshooting guide](/docs/en/troubleshoot-install).
