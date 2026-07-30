@@ -4127,6 +4127,63 @@ curl https://api.openai.com/v1/conversations \
 }
 ```
 
+## Delete a conversation
+
+**delete** `/conversations/{conversation_id}`
+
+Delete a conversation. Items in the conversation will not be deleted.
+
+### Path Parameters
+
+- `conversation_id: string`
+
+### Returns
+
+- `ConversationDeletedResource object { id, deleted, object }`
+
+  - `id: string`
+
+  - `deleted: boolean`
+
+  - `object: "conversation.deleted"`
+
+    - `"conversation.deleted"`
+
+### Example
+
+```http
+curl https://api.openai.com/v1/conversations/$CONVERSATION_ID \
+    -X DELETE \
+    -H "Authorization: Bearer $OPENAI_API_KEY"
+```
+
+#### Response
+
+```json
+{
+  "id": "id",
+  "deleted": true,
+  "object": "conversation.deleted"
+}
+```
+
+### Example
+
+```http
+curl -X DELETE https://api.openai.com/v1/conversations/conv_123 \
+  -H "Authorization: Bearer $OPENAI_API_KEY"
+```
+
+#### Response
+
+```json
+{
+  "id": "conv_123",
+  "object": "conversation.deleted",
+  "deleted": true
+}
+```
+
 ## Retrieve a conversation
 
 **get** `/conversations/{conversation_id}`
@@ -4283,63 +4340,6 @@ curl https://api.openai.com/v1/conversations/conv_123 \
   "object": "conversation",
   "created_at": 1741900000,
   "metadata": {"topic": "project-x"}
-}
-```
-
-## Delete a conversation
-
-**delete** `/conversations/{conversation_id}`
-
-Delete a conversation. Items in the conversation will not be deleted.
-
-### Path Parameters
-
-- `conversation_id: string`
-
-### Returns
-
-- `ConversationDeletedResource object { id, deleted, object }`
-
-  - `id: string`
-
-  - `deleted: boolean`
-
-  - `object: "conversation.deleted"`
-
-    - `"conversation.deleted"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/conversations/$CONVERSATION_ID \
-    -X DELETE \
-    -H "Authorization: Bearer $OPENAI_API_KEY"
-```
-
-#### Response
-
-```json
-{
-  "id": "id",
-  "deleted": true,
-  "object": "conversation.deleted"
-}
-```
-
-### Example
-
-```http
-curl -X DELETE https://api.openai.com/v1/conversations/conv_123 \
-  -H "Authorization: Bearer $OPENAI_API_KEY"
-```
-
-#### Response
-
-```json
-{
-  "id": "conv_123",
-  "object": "conversation.deleted",
-  "deleted": true
 }
 ```
 
@@ -13023,6 +13023,78 @@ curl https://api.openai.com/v1/conversations/conv_123/items \
 }
 ```
 
+## Delete an item
+
+**delete** `/conversations/{conversation_id}/items/{item_id}`
+
+Delete an item from a conversation with the given IDs.
+
+### Path Parameters
+
+- `conversation_id: string`
+
+- `item_id: string`
+
+### Returns
+
+- `Conversation object { id, created_at, metadata, object }`
+
+  - `id: string`
+
+    The unique ID of the conversation.
+
+  - `created_at: number`
+
+    The time at which the conversation was created, measured in seconds since the Unix epoch.
+
+  - `metadata: unknown`
+
+    Set of 16 key-value pairs that can be attached to an object. This can be         useful for storing additional information about the object in a structured         format, and querying for objects via API or the dashboard.
+    Keys are strings with a maximum length of 64 characters. Values are strings         with a maximum length of 512 characters.
+
+  - `object: "conversation"`
+
+    The object type, which is always `conversation`.
+
+    - `"conversation"`
+
+### Example
+
+```http
+curl https://api.openai.com/v1/conversations/$CONVERSATION_ID/items/$ITEM_ID \
+    -X DELETE \
+    -H "Authorization: Bearer $OPENAI_API_KEY"
+```
+
+#### Response
+
+```json
+{
+  "id": "id",
+  "created_at": 0,
+  "metadata": {},
+  "object": "conversation"
+}
+```
+
+### Example
+
+```http
+curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
+  -H "Authorization: Bearer $OPENAI_API_KEY"
+```
+
+#### Response
+
+```json
+{
+  "id": "conv_123",
+  "object": "conversation",
+  "created_at": 1741900000,
+  "metadata": {"topic": "demo"}
+}
+```
+
 ## List items
 
 **get** `/conversations/{conversation_id}/items`
@@ -21195,78 +21267,6 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
   "content": [
     {"type": "input_text", "text": "Hello!"}
   ]
-}
-```
-
-## Delete an item
-
-**delete** `/conversations/{conversation_id}/items/{item_id}`
-
-Delete an item from a conversation with the given IDs.
-
-### Path Parameters
-
-- `conversation_id: string`
-
-- `item_id: string`
-
-### Returns
-
-- `Conversation object { id, created_at, metadata, object }`
-
-  - `id: string`
-
-    The unique ID of the conversation.
-
-  - `created_at: number`
-
-    The time at which the conversation was created, measured in seconds since the Unix epoch.
-
-  - `metadata: unknown`
-
-    Set of 16 key-value pairs that can be attached to an object. This can be         useful for storing additional information about the object in a structured         format, and querying for objects via API or the dashboard.
-    Keys are strings with a maximum length of 64 characters. Values are strings         with a maximum length of 512 characters.
-
-  - `object: "conversation"`
-
-    The object type, which is always `conversation`.
-
-    - `"conversation"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/conversations/$CONVERSATION_ID/items/$ITEM_ID \
-    -X DELETE \
-    -H "Authorization: Bearer $OPENAI_API_KEY"
-```
-
-#### Response
-
-```json
-{
-  "id": "id",
-  "created_at": 0,
-  "metadata": {},
-  "object": "conversation"
-}
-```
-
-### Example
-
-```http
-curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
-  -H "Authorization: Bearer $OPENAI_API_KEY"
-```
-
-#### Response
-
-```json
-{
-  "id": "conv_123",
-  "object": "conversation",
-  "created_at": 1741900000,
-  "metadata": {"topic": "demo"}
 }
 ```
 

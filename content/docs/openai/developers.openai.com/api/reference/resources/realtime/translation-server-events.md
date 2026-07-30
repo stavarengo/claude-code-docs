@@ -19,6 +19,7 @@ Schema name: `RealtimeServerEventError`
   "(resource) realtime > (model) realtime_error_event > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeServerEventError",
+    "docstring": "Returned when an error occurs, which could be a client problem or a server\nproblem. Most errors are recoverable and the session will stay open, we\nrecommend to implementors to monitor and log error messages by default.\n",
     "ident": "RealtimeErrorEvent",
     "type": {
       "kind": "HttpTypeObject",
@@ -34,7 +35,6 @@ Schema name: `RealtimeServerEventError`
         }
       ]
     },
-    "docstring": "Returned when an error occurs, which could be a client problem or a server\nproblem. Most errors are recoverable and the session will stay open, we\nrecommend to implementors to monitor and log error messages by default.\n",
     "childrenParentSchema": "object",
     "children": [
       "(resource) realtime > (model) realtime_error_event > (schema) > (property) error",
@@ -44,19 +44,19 @@ Schema name: `RealtimeServerEventError`
   },
   "(resource) realtime > (model) realtime_error_event > (schema) > (property) error": {
     "kind": "HttpDeclProperty",
-    "docstring": "Details of the error.",
+    "oasRef": "#/components/schemas/RealtimeServerEventError/properties/error",
+    "deprecated": false,
     "key": "error",
-    "optional": false,
-    "nullable": false,
+    "docstring": "Details of the error.",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "RealtimeError",
       "$ref": "(resource) realtime > (model) realtime_error > (schema)"
     },
-    "oasRef": "#/components/schemas/RealtimeServerEventError/properties/error",
-    "deprecated": false,
-    "schemaType": "object",
+    "optional": false,
+    "nullable": false,
     "modelImplicit": false,
+    "schemaType": "object",
     "modelPath": "(resource) realtime > (model) realtime_error",
     "childrenParentSchema": "object",
     "children": [
@@ -69,36 +69,36 @@ Schema name: `RealtimeServerEventError`
   },
   "(resource) realtime > (model) realtime_error_event > (schema) > (property) event_id": {
     "kind": "HttpDeclProperty",
-    "docstring": "The unique ID of the server event.",
+    "oasRef": "#/components/schemas/RealtimeServerEventError/properties/event_id",
+    "deprecated": false,
     "key": "event_id",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The unique ID of the server event.",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeServerEventError/properties/event_id",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "string",
     "children": []
   },
   "(resource) realtime > (model) realtime_error_event > (schema) > (property) type": {
     "kind": "HttpDeclProperty",
-    "docstring": "The event type, must be `error`.",
+    "oasRef": "#/components/schemas/RealtimeServerEventError/properties/type",
+    "deprecated": false,
     "key": "type",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The event type, must be `error`.",
     "type": {
       "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/RealtimeServerEventError/properties/type",
       "types": [
         {
           "kind": "HttpTypeLiteral",
           "literal": "error"
         }
-      ],
-      "oasRef": "#/components/schemas/RealtimeServerEventError/properties/type"
+      ]
     },
-    "oasRef": "#/components/schemas/RealtimeServerEventError/properties/type",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
     "children": [
@@ -107,77 +107,78 @@ Schema name: `RealtimeServerEventError`
   },
   "(resource) realtime > (model) realtime_error > (schema) > (property) message": {
     "kind": "HttpDeclProperty",
-    "docstring": "A human-readable error message.",
+    "oasRef": "#/components/schemas/RealtimeServerEventError/properties/error/properties/message",
+    "deprecated": false,
     "key": "message",
-    "optional": false,
-    "nullable": false,
+    "docstring": "A human-readable error message.",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeServerEventError/properties/error/properties/message",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "string",
     "children": []
   },
   "(resource) realtime > (model) realtime_error > (schema) > (property) type": {
     "kind": "HttpDeclProperty",
-    "docstring": "The type of error (e.g., \"invalid_request_error\", \"server_error\").\n",
+    "oasRef": "#/components/schemas/RealtimeServerEventError/properties/error/properties/type",
+    "deprecated": false,
     "key": "type",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The type of error (e.g., \"invalid_request_error\", \"server_error\").\n",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeServerEventError/properties/error/properties/type",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "string",
     "children": []
   },
   "(resource) realtime > (model) realtime_error > (schema) > (property) code": {
     "kind": "HttpDeclProperty",
-    "docstring": "Error code, if any.",
+    "oasRef": "#/components/schemas/RealtimeServerEventError/properties/error/properties/code",
+    "deprecated": false,
     "key": "code",
-    "optional": true,
-    "nullable": true,
+    "docstring": "Error code, if any.",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeServerEventError/properties/error/properties/code",
-    "deprecated": false,
+    "optional": true,
+    "nullable": true,
     "schemaType": "string",
     "children": []
   },
   "(resource) realtime > (model) realtime_error > (schema) > (property) event_id": {
     "kind": "HttpDeclProperty",
-    "docstring": "The event_id of the client event that caused the error, if applicable.\n",
+    "oasRef": "#/components/schemas/RealtimeServerEventError/properties/error/properties/event_id",
+    "deprecated": false,
     "key": "event_id",
-    "optional": true,
-    "nullable": true,
+    "docstring": "The event_id of the client event that caused the error, if applicable.\n",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeServerEventError/properties/error/properties/event_id",
-    "deprecated": false,
+    "optional": true,
+    "nullable": true,
     "schemaType": "string",
     "children": []
   },
   "(resource) realtime > (model) realtime_error > (schema) > (property) param": {
     "kind": "HttpDeclProperty",
-    "docstring": "Parameter related to the error, if any.",
+    "oasRef": "#/components/schemas/RealtimeServerEventError/properties/error/properties/param",
+    "deprecated": false,
     "key": "param",
-    "optional": true,
-    "nullable": true,
+    "docstring": "Parameter related to the error, if any.",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeServerEventError/properties/error/properties/param",
-    "deprecated": false,
+    "optional": true,
+    "nullable": true,
     "schemaType": "string",
     "children": []
   },
   "(resource) realtime > (model) realtime_error > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeServerEventError/properties/error",
+    "docstring": "Details of the error.",
     "ident": "RealtimeError",
     "type": {
       "kind": "HttpTypeObject",
@@ -199,7 +200,6 @@ Schema name: `RealtimeServerEventError`
         }
       ]
     },
-    "docstring": "Details of the error.",
     "childrenParentSchema": "object",
     "children": [
       "(resource) realtime > (model) realtime_error > (schema) > (property) message",
@@ -250,6 +250,7 @@ Schema name: `RealtimeTranslationServerEventSessionCreated`
   "(resource) realtime > (model) realtime_translation_session_created_event > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionCreated",
+    "docstring": "Returned when a translation session is created. Emitted automatically when a\nnew connection is established as the first server event. This event contains\nthe default translation session configuration.\n",
     "ident": "RealtimeTranslationSessionCreatedEvent",
     "type": {
       "kind": "HttpTypeObject",
@@ -265,7 +266,6 @@ Schema name: `RealtimeTranslationServerEventSessionCreated`
         }
       ]
     },
-    "docstring": "Returned when a translation session is created. Emitted automatically when a\nnew connection is established as the first server event. This event contains\nthe default translation session configuration.\n",
     "childrenParentSchema": "object",
     "children": [
       "(resource) realtime > (model) realtime_translation_session_created_event > (schema) > (property) event_id",
@@ -275,34 +275,34 @@ Schema name: `RealtimeTranslationServerEventSessionCreated`
   },
   "(resource) realtime > (model) realtime_translation_session_created_event > (schema) > (property) event_id": {
     "kind": "HttpDeclProperty",
-    "docstring": "The unique ID of the server event.",
+    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionCreated/properties/event_id",
+    "deprecated": false,
     "key": "event_id",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The unique ID of the server event.",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionCreated/properties/event_id",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "string",
     "children": []
   },
   "(resource) realtime > (model) realtime_translation_session_created_event > (schema) > (property) session": {
     "kind": "HttpDeclProperty",
-    "title": "Realtime translation session",
-    "docstring": "The translation session configuration.",
+    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionCreated/properties/session",
+    "deprecated": false,
     "key": "session",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The translation session configuration.",
+    "title": "Realtime translation session",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "RealtimeTranslationSession",
       "$ref": "(resource) realtime > (model) realtime_translation_session > (schema)"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionCreated/properties/session",
-    "deprecated": false,
-    "schemaType": "object",
+    "optional": false,
+    "nullable": false,
     "modelImplicit": false,
+    "schemaType": "object",
     "modelPath": "(resource) realtime > (model) realtime_translation_session",
     "childrenParentSchema": "object",
     "children": [
@@ -315,22 +315,22 @@ Schema name: `RealtimeTranslationServerEventSessionCreated`
   },
   "(resource) realtime > (model) realtime_translation_session_created_event > (schema) > (property) type": {
     "kind": "HttpDeclProperty",
-    "docstring": "The event type, must be `session.created`.",
+    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionCreated/properties/type",
+    "deprecated": false,
     "key": "type",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The event type, must be `session.created`.",
     "type": {
       "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionCreated/properties/type",
       "types": [
         {
           "kind": "HttpTypeLiteral",
           "literal": "session.created"
         }
-      ],
-      "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionCreated/properties/type"
+      ]
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionCreated/properties/type",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
     "children": [
@@ -339,24 +339,24 @@ Schema name: `RealtimeTranslationServerEventSessionCreated`
   },
   "(resource) realtime > (model) realtime_translation_session > (schema) > (property) id": {
     "kind": "HttpDeclProperty",
-    "docstring": "Unique identifier for the session that looks like `sess_1234567890abcdef`.\n",
+    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/id",
+    "deprecated": false,
     "key": "id",
-    "optional": false,
-    "nullable": false,
+    "docstring": "Unique identifier for the session that looks like `sess_1234567890abcdef`.\n",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/id",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "string",
     "children": []
   },
   "(resource) realtime > (model) realtime_translation_session > (schema) > (property) audio": {
     "kind": "HttpDeclProperty",
-    "docstring": "Configuration for translation input and output audio.\n",
+    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio",
+    "deprecated": false,
     "key": "audio",
-    "optional": false,
-    "nullable": false,
+    "docstring": "Configuration for translation input and output audio.\n",
     "type": {
       "kind": "HttpTypeObject",
       "members": [
@@ -368,8 +368,8 @@ Schema name: `RealtimeTranslationServerEventSessionCreated`
         }
       ]
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "object",
     "childrenParentSchema": "object",
     "children": [
@@ -379,53 +379,53 @@ Schema name: `RealtimeTranslationServerEventSessionCreated`
   },
   "(resource) realtime > (model) realtime_translation_session > (schema) > (property) expires_at": {
     "kind": "HttpDeclProperty",
-    "docstring": "Expiration timestamp for the session, in seconds since epoch.",
+    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/expires_at",
+    "deprecated": false,
     "key": "expires_at",
-    "optional": false,
-    "nullable": false,
+    "docstring": "Expiration timestamp for the session, in seconds since epoch.",
     "type": {
       "kind": "HttpTypeNumber"
     },
     "constraints": {
       "format": "unixtime"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/expires_at",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "integer",
     "children": []
   },
   "(resource) realtime > (model) realtime_translation_session > (schema) > (property) model": {
     "kind": "HttpDeclProperty",
-    "docstring": "The Realtime translation model used for this session. This field is set at\nsession creation and cannot be changed with `session.update`.\n",
+    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/model",
+    "deprecated": false,
     "key": "model",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The Realtime translation model used for this session. This field is set at\nsession creation and cannot be changed with `session.update`.\n",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/model",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "string",
     "children": []
   },
   "(resource) realtime > (model) realtime_translation_session > (schema) > (property) type": {
     "kind": "HttpDeclProperty",
-    "docstring": "The session type. Always `translation` for Realtime translation sessions.\n",
+    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/type",
+    "deprecated": false,
     "key": "type",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The session type. Always `translation` for Realtime translation sessions.\n",
     "type": {
       "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/type",
       "types": [
         {
           "kind": "HttpTypeLiteral",
           "literal": "translation"
         }
-      ],
-      "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/type"
+      ]
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/type",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
     "children": [
@@ -435,6 +435,7 @@ Schema name: `RealtimeTranslationServerEventSessionCreated`
   "(resource) realtime > (model) realtime_translation_session > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeTranslationSession",
+    "docstring": "A Realtime translation session. Translation sessions continuously translate input\naudio into the configured output language.\n",
     "ident": "RealtimeTranslationSession",
     "type": {
       "kind": "HttpTypeObject",
@@ -456,7 +457,6 @@ Schema name: `RealtimeTranslationServerEventSessionCreated`
         }
       ]
     },
-    "docstring": "A Realtime translation session. Translation sessions continuously translate input\naudio into the configured output language.\n",
     "childrenParentSchema": "object",
     "children": [
       "(resource) realtime > (model) realtime_translation_session > (schema) > (property) id",
@@ -475,9 +475,9 @@ Schema name: `RealtimeTranslationServerEventSessionCreated`
   },
   "(resource) realtime > (model) realtime_translation_session > (schema) > (property) audio > (property) input": {
     "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/input",
+    "deprecated": false,
     "key": "input",
-    "optional": true,
-    "nullable": false,
     "type": {
       "kind": "HttpTypeObject",
       "members": [
@@ -489,8 +489,8 @@ Schema name: `RealtimeTranslationServerEventSessionCreated`
         }
       ]
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/input",
-    "deprecated": false,
+    "optional": true,
+    "nullable": false,
     "schemaType": "object",
     "childrenParentSchema": "object",
     "children": [
@@ -500,9 +500,9 @@ Schema name: `RealtimeTranslationServerEventSessionCreated`
   },
   "(resource) realtime > (model) realtime_translation_session > (schema) > (property) audio > (property) output": {
     "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/output",
+    "deprecated": false,
     "key": "output",
-    "optional": true,
-    "nullable": false,
     "type": {
       "kind": "HttpTypeObject",
       "members": [
@@ -511,8 +511,8 @@ Schema name: `RealtimeTranslationServerEventSessionCreated`
         }
       ]
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/output",
-    "deprecated": false,
+    "optional": true,
+    "nullable": false,
     "schemaType": "object",
     "childrenParentSchema": "object",
     "children": [
@@ -528,10 +528,10 @@ Schema name: `RealtimeTranslationServerEventSessionCreated`
   },
   "(resource) realtime > (model) realtime_translation_session > (schema) > (property) audio > (property) input > (property) noise_reduction": {
     "kind": "HttpDeclProperty",
-    "docstring": "Optional input noise reduction.\n",
+    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/input/properties/noise_reduction",
+    "deprecated": false,
     "key": "noise_reduction",
-    "optional": true,
-    "nullable": true,
+    "docstring": "Optional input noise reduction.\n",
     "type": {
       "kind": "HttpTypeObject",
       "members": [
@@ -540,8 +540,8 @@ Schema name: `RealtimeTranslationServerEventSessionCreated`
         }
       ]
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/input/properties/noise_reduction",
-    "deprecated": false,
+    "optional": true,
+    "nullable": true,
     "schemaType": "object",
     "childrenParentSchema": "object",
     "children": [
@@ -550,10 +550,10 @@ Schema name: `RealtimeTranslationServerEventSessionCreated`
   },
   "(resource) realtime > (model) realtime_translation_session > (schema) > (property) audio > (property) input > (property) transcription": {
     "kind": "HttpDeclProperty",
-    "docstring": "Optional source-language transcription. When configured, the server emits\n`session.input_transcript.delta` events. Translation itself still runs from\nthe input audio stream.\n",
+    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/input/properties/transcription",
+    "deprecated": false,
     "key": "transcription",
-    "optional": true,
-    "nullable": true,
+    "docstring": "Optional source-language transcription. When configured, the server emits\n`session.input_transcript.delta` events. Translation itself still runs from\nthe input audio stream.\n",
     "type": {
       "kind": "HttpTypeObject",
       "members": [
@@ -562,8 +562,8 @@ Schema name: `RealtimeTranslationServerEventSessionCreated`
         }
       ]
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/input/properties/transcription",
-    "deprecated": false,
+    "optional": true,
+    "nullable": true,
     "schemaType": "object",
     "childrenParentSchema": "object",
     "children": [
@@ -572,33 +572,33 @@ Schema name: `RealtimeTranslationServerEventSessionCreated`
   },
   "(resource) realtime > (model) realtime_translation_session > (schema) > (property) audio > (property) output > (property) language": {
     "kind": "HttpDeclProperty",
-    "docstring": "Target language for translated output audio and transcript deltas.\n",
+    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/output/properties/language",
+    "deprecated": false,
     "key": "language",
-    "optional": true,
-    "nullable": false,
+    "docstring": "Target language for translated output audio and transcript deltas.\n",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/output/properties/language",
-    "deprecated": false,
+    "optional": true,
+    "nullable": false,
     "schemaType": "string",
     "children": []
   },
   "(resource) realtime > (model) realtime_translation_session > (schema) > (property) audio > (property) input > (property) noise_reduction > (property) type": {
     "kind": "HttpDeclProperty",
-    "docstring": "Type of noise reduction. `near_field` is for close-talking microphones such as headphones, `far_field` is for far-field microphones such as laptop or conference room microphones.\n",
+    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/input/properties/noise_reduction/anyOf/0/properties/type",
+    "deprecated": false,
     "key": "type",
-    "optional": false,
-    "nullable": false,
+    "docstring": "Type of noise reduction. `near_field` is for close-talking microphones such as headphones, `far_field` is for far-field microphones such as laptop or conference room microphones.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "NoiseReductionType",
       "$ref": "(resource) realtime > (model) noise_reduction_type > (schema)"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/input/properties/noise_reduction/anyOf/0/properties/type",
-    "deprecated": false,
-    "schemaType": "enum",
+    "optional": false,
+    "nullable": false,
     "modelImplicit": false,
+    "schemaType": "enum",
     "modelPath": "(resource) realtime > (model) noise_reduction_type",
     "childrenParentSchema": "enum",
     "children": [
@@ -608,15 +608,15 @@ Schema name: `RealtimeTranslationServerEventSessionCreated`
   },
   "(resource) realtime > (model) realtime_translation_session > (schema) > (property) audio > (property) input > (property) transcription > (property) model": {
     "kind": "HttpDeclProperty",
-    "docstring": "The transcription model used for source transcript deltas.",
+    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/input/properties/transcription/anyOf/0/properties/model",
+    "deprecated": false,
     "key": "model",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The transcription model used for source transcript deltas.",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/input/properties/transcription/anyOf/0/properties/model",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "string",
     "children": []
   },
@@ -637,9 +637,11 @@ Schema name: `RealtimeTranslationServerEventSessionCreated`
   "(resource) realtime > (model) noise_reduction_type > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/NoiseReductionType",
+    "docstring": "Type of noise reduction. `near_field` is for close-talking microphones such as headphones, `far_field` is for far-field microphones such as laptop or conference room microphones.\n",
     "ident": "NoiseReductionType",
     "type": {
       "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/NoiseReductionType",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -649,10 +651,8 @@ Schema name: `RealtimeTranslationServerEventSessionCreated`
           "kind": "HttpTypeLiteral",
           "literal": "far_field"
         }
-      ],
-      "oasRef": "#/components/schemas/NoiseReductionType"
+      ]
     },
-    "docstring": "Type of noise reduction. `near_field` is for close-talking microphones such as headphones, `far_field` is for far-field microphones such as laptop or conference room microphones.\n",
     "childrenParentSchema": "enum",
     "children": [
       "(resource) realtime > (model) noise_reduction_type > (schema) > (member) 0",
@@ -705,6 +705,7 @@ Schema name: `RealtimeTranslationServerEventSessionUpdated`
   "(resource) realtime > (model) realtime_translation_session_updated_event > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionUpdated",
+    "docstring": "Returned when a translation session is updated with a `session.update` event,\nunless there is an error.\n",
     "ident": "RealtimeTranslationSessionUpdatedEvent",
     "type": {
       "kind": "HttpTypeObject",
@@ -720,7 +721,6 @@ Schema name: `RealtimeTranslationServerEventSessionUpdated`
         }
       ]
     },
-    "docstring": "Returned when a translation session is updated with a `session.update` event,\nunless there is an error.\n",
     "childrenParentSchema": "object",
     "children": [
       "(resource) realtime > (model) realtime_translation_session_updated_event > (schema) > (property) event_id",
@@ -730,34 +730,34 @@ Schema name: `RealtimeTranslationServerEventSessionUpdated`
   },
   "(resource) realtime > (model) realtime_translation_session_updated_event > (schema) > (property) event_id": {
     "kind": "HttpDeclProperty",
-    "docstring": "The unique ID of the server event.",
+    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionUpdated/properties/event_id",
+    "deprecated": false,
     "key": "event_id",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The unique ID of the server event.",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionUpdated/properties/event_id",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "string",
     "children": []
   },
   "(resource) realtime > (model) realtime_translation_session_updated_event > (schema) > (property) session": {
     "kind": "HttpDeclProperty",
-    "title": "Realtime translation session",
-    "docstring": "The translation session configuration.",
+    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionUpdated/properties/session",
+    "deprecated": false,
     "key": "session",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The translation session configuration.",
+    "title": "Realtime translation session",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "RealtimeTranslationSession",
       "$ref": "(resource) realtime > (model) realtime_translation_session > (schema)"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionUpdated/properties/session",
-    "deprecated": false,
-    "schemaType": "object",
+    "optional": false,
+    "nullable": false,
     "modelImplicit": false,
+    "schemaType": "object",
     "modelPath": "(resource) realtime > (model) realtime_translation_session",
     "childrenParentSchema": "object",
     "children": [
@@ -770,22 +770,22 @@ Schema name: `RealtimeTranslationServerEventSessionUpdated`
   },
   "(resource) realtime > (model) realtime_translation_session_updated_event > (schema) > (property) type": {
     "kind": "HttpDeclProperty",
-    "docstring": "The event type, must be `session.updated`.",
+    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionUpdated/properties/type",
+    "deprecated": false,
     "key": "type",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The event type, must be `session.updated`.",
     "type": {
       "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionUpdated/properties/type",
       "types": [
         {
           "kind": "HttpTypeLiteral",
           "literal": "session.updated"
         }
-      ],
-      "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionUpdated/properties/type"
+      ]
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionUpdated/properties/type",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
     "children": [
@@ -794,24 +794,24 @@ Schema name: `RealtimeTranslationServerEventSessionUpdated`
   },
   "(resource) realtime > (model) realtime_translation_session > (schema) > (property) id": {
     "kind": "HttpDeclProperty",
-    "docstring": "Unique identifier for the session that looks like `sess_1234567890abcdef`.\n",
+    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/id",
+    "deprecated": false,
     "key": "id",
-    "optional": false,
-    "nullable": false,
+    "docstring": "Unique identifier for the session that looks like `sess_1234567890abcdef`.\n",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/id",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "string",
     "children": []
   },
   "(resource) realtime > (model) realtime_translation_session > (schema) > (property) audio": {
     "kind": "HttpDeclProperty",
-    "docstring": "Configuration for translation input and output audio.\n",
+    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio",
+    "deprecated": false,
     "key": "audio",
-    "optional": false,
-    "nullable": false,
+    "docstring": "Configuration for translation input and output audio.\n",
     "type": {
       "kind": "HttpTypeObject",
       "members": [
@@ -823,8 +823,8 @@ Schema name: `RealtimeTranslationServerEventSessionUpdated`
         }
       ]
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "object",
     "childrenParentSchema": "object",
     "children": [
@@ -834,53 +834,53 @@ Schema name: `RealtimeTranslationServerEventSessionUpdated`
   },
   "(resource) realtime > (model) realtime_translation_session > (schema) > (property) expires_at": {
     "kind": "HttpDeclProperty",
-    "docstring": "Expiration timestamp for the session, in seconds since epoch.",
+    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/expires_at",
+    "deprecated": false,
     "key": "expires_at",
-    "optional": false,
-    "nullable": false,
+    "docstring": "Expiration timestamp for the session, in seconds since epoch.",
     "type": {
       "kind": "HttpTypeNumber"
     },
     "constraints": {
       "format": "unixtime"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/expires_at",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "integer",
     "children": []
   },
   "(resource) realtime > (model) realtime_translation_session > (schema) > (property) model": {
     "kind": "HttpDeclProperty",
-    "docstring": "The Realtime translation model used for this session. This field is set at\nsession creation and cannot be changed with `session.update`.\n",
+    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/model",
+    "deprecated": false,
     "key": "model",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The Realtime translation model used for this session. This field is set at\nsession creation and cannot be changed with `session.update`.\n",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/model",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "string",
     "children": []
   },
   "(resource) realtime > (model) realtime_translation_session > (schema) > (property) type": {
     "kind": "HttpDeclProperty",
-    "docstring": "The session type. Always `translation` for Realtime translation sessions.\n",
+    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/type",
+    "deprecated": false,
     "key": "type",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The session type. Always `translation` for Realtime translation sessions.\n",
     "type": {
       "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/type",
       "types": [
         {
           "kind": "HttpTypeLiteral",
           "literal": "translation"
         }
-      ],
-      "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/type"
+      ]
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/type",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
     "children": [
@@ -890,6 +890,7 @@ Schema name: `RealtimeTranslationServerEventSessionUpdated`
   "(resource) realtime > (model) realtime_translation_session > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeTranslationSession",
+    "docstring": "A Realtime translation session. Translation sessions continuously translate input\naudio into the configured output language.\n",
     "ident": "RealtimeTranslationSession",
     "type": {
       "kind": "HttpTypeObject",
@@ -911,7 +912,6 @@ Schema name: `RealtimeTranslationServerEventSessionUpdated`
         }
       ]
     },
-    "docstring": "A Realtime translation session. Translation sessions continuously translate input\naudio into the configured output language.\n",
     "childrenParentSchema": "object",
     "children": [
       "(resource) realtime > (model) realtime_translation_session > (schema) > (property) id",
@@ -930,9 +930,9 @@ Schema name: `RealtimeTranslationServerEventSessionUpdated`
   },
   "(resource) realtime > (model) realtime_translation_session > (schema) > (property) audio > (property) input": {
     "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/input",
+    "deprecated": false,
     "key": "input",
-    "optional": true,
-    "nullable": false,
     "type": {
       "kind": "HttpTypeObject",
       "members": [
@@ -944,8 +944,8 @@ Schema name: `RealtimeTranslationServerEventSessionUpdated`
         }
       ]
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/input",
-    "deprecated": false,
+    "optional": true,
+    "nullable": false,
     "schemaType": "object",
     "childrenParentSchema": "object",
     "children": [
@@ -955,9 +955,9 @@ Schema name: `RealtimeTranslationServerEventSessionUpdated`
   },
   "(resource) realtime > (model) realtime_translation_session > (schema) > (property) audio > (property) output": {
     "kind": "HttpDeclProperty",
+    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/output",
+    "deprecated": false,
     "key": "output",
-    "optional": true,
-    "nullable": false,
     "type": {
       "kind": "HttpTypeObject",
       "members": [
@@ -966,8 +966,8 @@ Schema name: `RealtimeTranslationServerEventSessionUpdated`
         }
       ]
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/output",
-    "deprecated": false,
+    "optional": true,
+    "nullable": false,
     "schemaType": "object",
     "childrenParentSchema": "object",
     "children": [
@@ -983,10 +983,10 @@ Schema name: `RealtimeTranslationServerEventSessionUpdated`
   },
   "(resource) realtime > (model) realtime_translation_session > (schema) > (property) audio > (property) input > (property) noise_reduction": {
     "kind": "HttpDeclProperty",
-    "docstring": "Optional input noise reduction.\n",
+    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/input/properties/noise_reduction",
+    "deprecated": false,
     "key": "noise_reduction",
-    "optional": true,
-    "nullable": true,
+    "docstring": "Optional input noise reduction.\n",
     "type": {
       "kind": "HttpTypeObject",
       "members": [
@@ -995,8 +995,8 @@ Schema name: `RealtimeTranslationServerEventSessionUpdated`
         }
       ]
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/input/properties/noise_reduction",
-    "deprecated": false,
+    "optional": true,
+    "nullable": true,
     "schemaType": "object",
     "childrenParentSchema": "object",
     "children": [
@@ -1005,10 +1005,10 @@ Schema name: `RealtimeTranslationServerEventSessionUpdated`
   },
   "(resource) realtime > (model) realtime_translation_session > (schema) > (property) audio > (property) input > (property) transcription": {
     "kind": "HttpDeclProperty",
-    "docstring": "Optional source-language transcription. When configured, the server emits\n`session.input_transcript.delta` events. Translation itself still runs from\nthe input audio stream.\n",
+    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/input/properties/transcription",
+    "deprecated": false,
     "key": "transcription",
-    "optional": true,
-    "nullable": true,
+    "docstring": "Optional source-language transcription. When configured, the server emits\n`session.input_transcript.delta` events. Translation itself still runs from\nthe input audio stream.\n",
     "type": {
       "kind": "HttpTypeObject",
       "members": [
@@ -1017,8 +1017,8 @@ Schema name: `RealtimeTranslationServerEventSessionUpdated`
         }
       ]
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/input/properties/transcription",
-    "deprecated": false,
+    "optional": true,
+    "nullable": true,
     "schemaType": "object",
     "childrenParentSchema": "object",
     "children": [
@@ -1027,33 +1027,33 @@ Schema name: `RealtimeTranslationServerEventSessionUpdated`
   },
   "(resource) realtime > (model) realtime_translation_session > (schema) > (property) audio > (property) output > (property) language": {
     "kind": "HttpDeclProperty",
-    "docstring": "Target language for translated output audio and transcript deltas.\n",
+    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/output/properties/language",
+    "deprecated": false,
     "key": "language",
-    "optional": true,
-    "nullable": false,
+    "docstring": "Target language for translated output audio and transcript deltas.\n",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/output/properties/language",
-    "deprecated": false,
+    "optional": true,
+    "nullable": false,
     "schemaType": "string",
     "children": []
   },
   "(resource) realtime > (model) realtime_translation_session > (schema) > (property) audio > (property) input > (property) noise_reduction > (property) type": {
     "kind": "HttpDeclProperty",
-    "docstring": "Type of noise reduction. `near_field` is for close-talking microphones such as headphones, `far_field` is for far-field microphones such as laptop or conference room microphones.\n",
+    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/input/properties/noise_reduction/anyOf/0/properties/type",
+    "deprecated": false,
     "key": "type",
-    "optional": false,
-    "nullable": false,
+    "docstring": "Type of noise reduction. `near_field` is for close-talking microphones such as headphones, `far_field` is for far-field microphones such as laptop or conference room microphones.\n",
     "type": {
       "kind": "HttpTypeReference",
       "ident": "NoiseReductionType",
       "$ref": "(resource) realtime > (model) noise_reduction_type > (schema)"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/input/properties/noise_reduction/anyOf/0/properties/type",
-    "deprecated": false,
-    "schemaType": "enum",
+    "optional": false,
+    "nullable": false,
     "modelImplicit": false,
+    "schemaType": "enum",
     "modelPath": "(resource) realtime > (model) noise_reduction_type",
     "childrenParentSchema": "enum",
     "children": [
@@ -1063,15 +1063,15 @@ Schema name: `RealtimeTranslationServerEventSessionUpdated`
   },
   "(resource) realtime > (model) realtime_translation_session > (schema) > (property) audio > (property) input > (property) transcription > (property) model": {
     "kind": "HttpDeclProperty",
-    "docstring": "The transcription model used for source transcript deltas.",
+    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/input/properties/transcription/anyOf/0/properties/model",
+    "deprecated": false,
     "key": "model",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The transcription model used for source transcript deltas.",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationSession/properties/audio/properties/input/properties/transcription/anyOf/0/properties/model",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "string",
     "children": []
   },
@@ -1092,9 +1092,11 @@ Schema name: `RealtimeTranslationServerEventSessionUpdated`
   "(resource) realtime > (model) noise_reduction_type > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/NoiseReductionType",
+    "docstring": "Type of noise reduction. `near_field` is for close-talking microphones such as headphones, `far_field` is for far-field microphones such as laptop or conference room microphones.\n",
     "ident": "NoiseReductionType",
     "type": {
       "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/NoiseReductionType",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -1104,10 +1106,8 @@ Schema name: `RealtimeTranslationServerEventSessionUpdated`
           "kind": "HttpTypeLiteral",
           "literal": "far_field"
         }
-      ],
-      "oasRef": "#/components/schemas/NoiseReductionType"
+      ]
     },
-    "docstring": "Type of noise reduction. `near_field` is for close-talking microphones such as headphones, `far_field` is for far-field microphones such as laptop or conference room microphones.\n",
     "childrenParentSchema": "enum",
     "children": [
       "(resource) realtime > (model) noise_reduction_type > (schema) > (member) 0",
@@ -1159,6 +1159,7 @@ Schema name: `RealtimeTranslationServerEventSessionClosed`
   "(resource) realtime > (model) realtime_translation_session_closed_event > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionClosed",
+    "docstring": "Returned when a realtime translation session is closed.\n",
     "ident": "RealtimeTranslationSessionClosedEvent",
     "type": {
       "kind": "HttpTypeObject",
@@ -1171,7 +1172,6 @@ Schema name: `RealtimeTranslationServerEventSessionClosed`
         }
       ]
     },
-    "docstring": "Returned when a realtime translation session is closed.\n",
     "childrenParentSchema": "object",
     "children": [
       "(resource) realtime > (model) realtime_translation_session_closed_event > (schema) > (property) event_id",
@@ -1180,36 +1180,36 @@ Schema name: `RealtimeTranslationServerEventSessionClosed`
   },
   "(resource) realtime > (model) realtime_translation_session_closed_event > (schema) > (property) event_id": {
     "kind": "HttpDeclProperty",
-    "docstring": "The unique ID of the server event.",
+    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionClosed/properties/event_id",
+    "deprecated": false,
     "key": "event_id",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The unique ID of the server event.",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionClosed/properties/event_id",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "string",
     "children": []
   },
   "(resource) realtime > (model) realtime_translation_session_closed_event > (schema) > (property) type": {
     "kind": "HttpDeclProperty",
-    "docstring": "The event type, must be `session.closed`.",
+    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionClosed/properties/type",
+    "deprecated": false,
     "key": "type",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The event type, must be `session.closed`.",
     "type": {
       "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionClosed/properties/type",
       "types": [
         {
           "kind": "HttpTypeLiteral",
           "literal": "session.closed"
         }
-      ],
-      "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionClosed/properties/type"
+      ]
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionClosed/properties/type",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
     "children": [
@@ -1252,6 +1252,7 @@ Schema name: `RealtimeTranslationServerEventSessionInputTranscriptDelta`
   "(resource) realtime > (model) realtime_translation_input_transcript_delta_event > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionInputTranscriptDelta",
+    "docstring": "Returned when optional source-language transcript text is available. This event\nis emitted only when `audio.input.transcription` is configured.\n\nTranscript deltas are append-only text fragments. Clients should not insert\nunconditional spaces between deltas.\n",
     "ident": "RealtimeTranslationInputTranscriptDeltaEvent",
     "type": {
       "kind": "HttpTypeObject",
@@ -1270,7 +1271,6 @@ Schema name: `RealtimeTranslationServerEventSessionInputTranscriptDelta`
         }
       ]
     },
-    "docstring": "Returned when optional source-language transcript text is available. This event\nis emitted only when `audio.input.transcription` is configured.\n\nTranscript deltas are append-only text fragments. Clients should not insert\nunconditional spaces between deltas.\n",
     "childrenParentSchema": "object",
     "children": [
       "(resource) realtime > (model) realtime_translation_input_transcript_delta_event > (schema) > (property) delta",
@@ -1281,50 +1281,50 @@ Schema name: `RealtimeTranslationServerEventSessionInputTranscriptDelta`
   },
   "(resource) realtime > (model) realtime_translation_input_transcript_delta_event > (schema) > (property) delta": {
     "kind": "HttpDeclProperty",
-    "docstring": "Append-only source-language transcript text.",
+    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionInputTranscriptDelta/properties/delta",
+    "deprecated": false,
     "key": "delta",
-    "optional": false,
-    "nullable": false,
+    "docstring": "Append-only source-language transcript text.",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionInputTranscriptDelta/properties/delta",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "string",
     "children": []
   },
   "(resource) realtime > (model) realtime_translation_input_transcript_delta_event > (schema) > (property) event_id": {
     "kind": "HttpDeclProperty",
-    "docstring": "The unique ID of the server event.",
+    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionInputTranscriptDelta/properties/event_id",
+    "deprecated": false,
     "key": "event_id",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The unique ID of the server event.",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionInputTranscriptDelta/properties/event_id",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "string",
     "children": []
   },
   "(resource) realtime > (model) realtime_translation_input_transcript_delta_event > (schema) > (property) type": {
     "kind": "HttpDeclProperty",
-    "docstring": "The event type, must be `session.input_transcript.delta`.",
+    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionInputTranscriptDelta/properties/type",
+    "deprecated": false,
     "key": "type",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The event type, must be `session.input_transcript.delta`.",
     "type": {
       "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionInputTranscriptDelta/properties/type",
       "types": [
         {
           "kind": "HttpTypeLiteral",
           "literal": "session.input_transcript.delta"
         }
-      ],
-      "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionInputTranscriptDelta/properties/type"
+      ]
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionInputTranscriptDelta/properties/type",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
     "children": [
@@ -1333,15 +1333,15 @@ Schema name: `RealtimeTranslationServerEventSessionInputTranscriptDelta`
   },
   "(resource) realtime > (model) realtime_translation_input_transcript_delta_event > (schema) > (property) elapsed_ms": {
     "kind": "HttpDeclProperty",
-    "docstring": "Timing metadata for stream alignment, derived from the translation frame\nwhen available. It advances in 200 ms increments, but multiple transcript\ndeltas may share the same `elapsed_ms`. Treat it as alignment metadata,\nnot a unique transcript-delta identifier.\n",
+    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionInputTranscriptDelta/properties/elapsed_ms",
+    "deprecated": false,
     "key": "elapsed_ms",
-    "optional": true,
-    "nullable": true,
+    "docstring": "Timing metadata for stream alignment, derived from the translation frame\nwhen available. It advances in 200 ms increments, but multiple transcript\ndeltas may share the same `elapsed_ms`. Treat it as alignment metadata,\nnot a unique transcript-delta identifier.\n",
     "type": {
       "kind": "HttpTypeNumber"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionInputTranscriptDelta/properties/elapsed_ms",
-    "deprecated": false,
+    "optional": true,
+    "nullable": true,
     "schemaType": "integer",
     "children": []
   },
@@ -1382,6 +1382,7 @@ Schema name: `RealtimeTranslationServerEventSessionOutputTranscriptDelta`
   "(resource) realtime > (model) realtime_translation_output_transcript_delta_event > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputTranscriptDelta",
+    "docstring": "Returned when translated transcript text is available.\n\nTranscript deltas are append-only text fragments. Clients should not insert\nunconditional spaces between deltas.\n",
     "ident": "RealtimeTranslationOutputTranscriptDeltaEvent",
     "type": {
       "kind": "HttpTypeObject",
@@ -1400,7 +1401,6 @@ Schema name: `RealtimeTranslationServerEventSessionOutputTranscriptDelta`
         }
       ]
     },
-    "docstring": "Returned when translated transcript text is available.\n\nTranscript deltas are append-only text fragments. Clients should not insert\nunconditional spaces between deltas.\n",
     "childrenParentSchema": "object",
     "children": [
       "(resource) realtime > (model) realtime_translation_output_transcript_delta_event > (schema) > (property) delta",
@@ -1411,50 +1411,50 @@ Schema name: `RealtimeTranslationServerEventSessionOutputTranscriptDelta`
   },
   "(resource) realtime > (model) realtime_translation_output_transcript_delta_event > (schema) > (property) delta": {
     "kind": "HttpDeclProperty",
-    "docstring": "Append-only transcript text for the translated output audio.",
+    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputTranscriptDelta/properties/delta",
+    "deprecated": false,
     "key": "delta",
-    "optional": false,
-    "nullable": false,
+    "docstring": "Append-only transcript text for the translated output audio.",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputTranscriptDelta/properties/delta",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "string",
     "children": []
   },
   "(resource) realtime > (model) realtime_translation_output_transcript_delta_event > (schema) > (property) event_id": {
     "kind": "HttpDeclProperty",
-    "docstring": "The unique ID of the server event.",
+    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputTranscriptDelta/properties/event_id",
+    "deprecated": false,
     "key": "event_id",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The unique ID of the server event.",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputTranscriptDelta/properties/event_id",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "string",
     "children": []
   },
   "(resource) realtime > (model) realtime_translation_output_transcript_delta_event > (schema) > (property) type": {
     "kind": "HttpDeclProperty",
-    "docstring": "The event type, must be `session.output_transcript.delta`.",
+    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputTranscriptDelta/properties/type",
+    "deprecated": false,
     "key": "type",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The event type, must be `session.output_transcript.delta`.",
     "type": {
       "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputTranscriptDelta/properties/type",
       "types": [
         {
           "kind": "HttpTypeLiteral",
           "literal": "session.output_transcript.delta"
         }
-      ],
-      "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputTranscriptDelta/properties/type"
+      ]
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputTranscriptDelta/properties/type",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
     "children": [
@@ -1463,15 +1463,15 @@ Schema name: `RealtimeTranslationServerEventSessionOutputTranscriptDelta`
   },
   "(resource) realtime > (model) realtime_translation_output_transcript_delta_event > (schema) > (property) elapsed_ms": {
     "kind": "HttpDeclProperty",
-    "docstring": "Timing metadata for stream alignment, derived from the translation frame\nwhen available. It advances in 200 ms increments, but multiple transcript\ndeltas may share the same `elapsed_ms`. Treat it as alignment metadata,\nnot a unique transcript-delta identifier.\n",
+    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputTranscriptDelta/properties/elapsed_ms",
+    "deprecated": false,
     "key": "elapsed_ms",
-    "optional": true,
-    "nullable": true,
+    "docstring": "Timing metadata for stream alignment, derived from the translation frame\nwhen available. It advances in 200 ms increments, but multiple transcript\ndeltas may share the same `elapsed_ms`. Treat it as alignment metadata,\nnot a unique transcript-delta identifier.\n",
     "type": {
       "kind": "HttpTypeNumber"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputTranscriptDelta/properties/elapsed_ms",
-    "deprecated": false,
+    "optional": true,
+    "nullable": true,
     "schemaType": "integer",
     "children": []
   },
@@ -1510,6 +1510,7 @@ Schema name: `RealtimeTranslationServerEventSessionOutputAudioDelta`
   "(resource) realtime > (model) realtime_translation_output_audio_delta_event > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputAudioDelta",
+    "docstring": "Returned when translated output audio is available. Output audio deltas are\n200 ms frames of PCM16 audio.\n",
     "ident": "RealtimeTranslationOutputAudioDeltaEvent",
     "type": {
       "kind": "HttpTypeObject",
@@ -1537,7 +1538,6 @@ Schema name: `RealtimeTranslationServerEventSessionOutputAudioDelta`
         }
       ]
     },
-    "docstring": "Returned when translated output audio is available. Output audio deltas are\n200 ms frames of PCM16 audio.\n",
     "childrenParentSchema": "object",
     "children": [
       "(resource) realtime > (model) realtime_translation_output_audio_delta_event > (schema) > (property) delta",
@@ -1551,50 +1551,50 @@ Schema name: `RealtimeTranslationServerEventSessionOutputAudioDelta`
   },
   "(resource) realtime > (model) realtime_translation_output_audio_delta_event > (schema) > (property) delta": {
     "kind": "HttpDeclProperty",
-    "docstring": "Base64-encoded translated audio data.",
+    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputAudioDelta/properties/delta",
+    "deprecated": false,
     "key": "delta",
-    "optional": false,
-    "nullable": false,
+    "docstring": "Base64-encoded translated audio data.",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputAudioDelta/properties/delta",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "string",
     "children": []
   },
   "(resource) realtime > (model) realtime_translation_output_audio_delta_event > (schema) > (property) event_id": {
     "kind": "HttpDeclProperty",
-    "docstring": "The unique ID of the server event.",
+    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputAudioDelta/properties/event_id",
+    "deprecated": false,
     "key": "event_id",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The unique ID of the server event.",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputAudioDelta/properties/event_id",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "string",
     "children": []
   },
   "(resource) realtime > (model) realtime_translation_output_audio_delta_event > (schema) > (property) type": {
     "kind": "HttpDeclProperty",
-    "docstring": "The event type, must be `session.output_audio.delta`.",
+    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputAudioDelta/properties/type",
+    "deprecated": false,
     "key": "type",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The event type, must be `session.output_audio.delta`.",
     "type": {
       "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputAudioDelta/properties/type",
       "types": [
         {
           "kind": "HttpTypeLiteral",
           "literal": "session.output_audio.delta"
         }
-      ],
-      "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputAudioDelta/properties/type"
+      ]
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputAudioDelta/properties/type",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
     "children": [
@@ -1603,51 +1603,51 @@ Schema name: `RealtimeTranslationServerEventSessionOutputAudioDelta`
   },
   "(resource) realtime > (model) realtime_translation_output_audio_delta_event > (schema) > (property) channels": {
     "kind": "HttpDeclProperty",
-    "docstring": "Number of audio channels.",
+    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputAudioDelta/properties/channels",
+    "deprecated": false,
     "key": "channels",
-    "optional": true,
-    "nullable": false,
-    "default": 1,
+    "docstring": "Number of audio channels.",
     "type": {
       "kind": "HttpTypeNumber"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputAudioDelta/properties/channels",
-    "deprecated": false,
+    "default": 1,
+    "optional": true,
+    "nullable": false,
     "schemaType": "integer",
     "children": []
   },
   "(resource) realtime > (model) realtime_translation_output_audio_delta_event > (schema) > (property) elapsed_ms": {
     "kind": "HttpDeclProperty",
-    "docstring": "Timing metadata for stream alignment, derived from the translation frame\nwhen available. Treat `elapsed_ms` as alignment metadata, not a unique\nevent identifier.\n",
+    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputAudioDelta/properties/elapsed_ms",
+    "deprecated": false,
     "key": "elapsed_ms",
-    "optional": true,
-    "nullable": true,
+    "docstring": "Timing metadata for stream alignment, derived from the translation frame\nwhen available. Treat `elapsed_ms` as alignment metadata, not a unique\nevent identifier.\n",
     "type": {
       "kind": "HttpTypeNumber"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputAudioDelta/properties/elapsed_ms",
-    "deprecated": false,
+    "optional": true,
+    "nullable": true,
     "schemaType": "integer",
     "children": []
   },
   "(resource) realtime > (model) realtime_translation_output_audio_delta_event > (schema) > (property) format": {
     "kind": "HttpDeclProperty",
-    "docstring": "Audio encoding for `delta`.",
+    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputAudioDelta/properties/format",
+    "deprecated": false,
     "key": "format",
-    "optional": true,
-    "nullable": false,
+    "docstring": "Audio encoding for `delta`.",
     "type": {
       "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputAudioDelta/properties/format",
       "types": [
         {
           "kind": "HttpTypeLiteral",
           "literal": "pcm16"
         }
-      ],
-      "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputAudioDelta/properties/format"
+      ]
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputAudioDelta/properties/format",
-    "deprecated": false,
+    "optional": true,
+    "nullable": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
     "children": [
@@ -1656,16 +1656,16 @@ Schema name: `RealtimeTranslationServerEventSessionOutputAudioDelta`
   },
   "(resource) realtime > (model) realtime_translation_output_audio_delta_event > (schema) > (property) sample_rate": {
     "kind": "HttpDeclProperty",
-    "docstring": "Sample rate of the audio delta.",
+    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputAudioDelta/properties/sample_rate",
+    "deprecated": false,
     "key": "sample_rate",
-    "optional": true,
-    "nullable": false,
-    "default": 24000,
+    "docstring": "Sample rate of the audio delta.",
     "type": {
       "kind": "HttpTypeNumber"
     },
-    "oasRef": "#/components/schemas/RealtimeTranslationServerEventSessionOutputAudioDelta/properties/sample_rate",
-    "deprecated": false,
+    "default": 24000,
+    "optional": true,
+    "nullable": false,
     "schemaType": "integer",
     "children": []
   },

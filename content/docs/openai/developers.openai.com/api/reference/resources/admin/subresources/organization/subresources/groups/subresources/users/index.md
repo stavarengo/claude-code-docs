@@ -1,5 +1,137 @@
 # Users
 
+## Add group user
+
+**post** `/organization/groups/{group_id}/users`
+
+Adds a user to a group.
+
+### Path Parameters
+
+- `group_id: string`
+
+### Body Parameters
+
+- `user_id: string`
+
+  Identifier of the user to add to the group.
+
+### Returns
+
+- `group_id: string`
+
+  Identifier of the group the user was added to.
+
+- `object: "group.user"`
+
+  Always `group.user`.
+
+  - `"group.user"`
+
+- `user_id: string`
+
+  Identifier of the user that was added.
+
+### Example
+
+```http
+curl https://api.openai.com/v1/organization/groups/$GROUP_ID/users \
+    -H 'Content-Type: application/json' \
+    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
+    -d '{
+          "user_id": "user_id"
+        }'
+```
+
+#### Response
+
+```json
+{
+  "group_id": "group_id",
+  "object": "group.user",
+  "user_id": "user_id"
+}
+```
+
+### Example
+
+```http
+curl -X POST https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/users \
+  -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+      "user_id": "user_abc123"
+  }'
+```
+
+#### Response
+
+```json
+{
+    "object": "group.user",
+    "user_id": "user_abc123",
+    "group_id": "group_01J1F8ABCDXYZ"
+}
+```
+
+## Remove group user
+
+**delete** `/organization/groups/{group_id}/users/{user_id}`
+
+Removes a user from a group.
+
+### Path Parameters
+
+- `group_id: string`
+
+- `user_id: string`
+
+### Returns
+
+- `deleted: boolean`
+
+  Whether the group membership was removed.
+
+- `object: "group.user.deleted"`
+
+  Always `group.user.deleted`.
+
+  - `"group.user.deleted"`
+
+### Example
+
+```http
+curl https://api.openai.com/v1/organization/groups/$GROUP_ID/users/$USER_ID \
+    -X DELETE \
+    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
+```
+
+#### Response
+
+```json
+{
+  "deleted": true,
+  "object": "group.user.deleted"
+}
+```
+
+### Example
+
+```http
+curl -X DELETE https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/users/user_abc123 \
+  -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
+  -H "Content-Type: application/json"
+```
+
+#### Response
+
+```json
+{
+    "object": "group.user.deleted",
+    "deleted": true
+}
+```
+
 ## List group users
 
 **get** `/organization/groups/{group_id}/users`
@@ -109,80 +241,6 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/users?lim
 }
 ```
 
-## Add group user
-
-**post** `/organization/groups/{group_id}/users`
-
-Adds a user to a group.
-
-### Path Parameters
-
-- `group_id: string`
-
-### Body Parameters
-
-- `user_id: string`
-
-  Identifier of the user to add to the group.
-
-### Returns
-
-- `group_id: string`
-
-  Identifier of the group the user was added to.
-
-- `object: "group.user"`
-
-  Always `group.user`.
-
-  - `"group.user"`
-
-- `user_id: string`
-
-  Identifier of the user that was added.
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/groups/$GROUP_ID/users \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{
-          "user_id": "user_id"
-        }'
-```
-
-#### Response
-
-```json
-{
-  "group_id": "group_id",
-  "object": "group.user",
-  "user_id": "user_id"
-}
-```
-
-### Example
-
-```http
-curl -X POST https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/users \
-  -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-      "user_id": "user_abc123"
-  }'
-```
-
-#### Response
-
-```json
-{
-    "object": "group.user",
-    "user_id": "user_abc123",
-    "group_id": "group_01J1F8ABCDXYZ"
-}
-```
-
 ## Retrieve group user
 
 **get** `/organization/groups/{group_id}/users/{user_id}`
@@ -266,64 +324,6 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/users/use
 }
 ```
 
-## Remove group user
-
-**delete** `/organization/groups/{group_id}/users/{user_id}`
-
-Removes a user from a group.
-
-### Path Parameters
-
-- `group_id: string`
-
-- `user_id: string`
-
-### Returns
-
-- `deleted: boolean`
-
-  Whether the group membership was removed.
-
-- `object: "group.user.deleted"`
-
-  Always `group.user.deleted`.
-
-  - `"group.user.deleted"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/groups/$GROUP_ID/users/$USER_ID \
-    -X DELETE \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### Response
-
-```json
-{
-  "deleted": true,
-  "object": "group.user.deleted"
-}
-```
-
-### Example
-
-```http
-curl -X DELETE https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/users/user_abc123 \
-  -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-  -H "Content-Type: application/json"
-```
-
-#### Response
-
-```json
-{
-    "object": "group.user.deleted",
-    "deleted": true
-}
-```
-
 ## Domain Types
 
 ### Organization Group User
@@ -364,6 +364,22 @@ curl -X DELETE https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ
 
     Identifier of the user that was added.
 
+### User Delete Response
+
+- `UserDeleteResponse object { deleted, object }`
+
+  Confirmation payload returned after removing a user from a group.
+
+  - `deleted: boolean`
+
+    Whether the group membership was removed.
+
+  - `object: "group.user.deleted"`
+
+    Always `group.user.deleted`.
+
+    - `"group.user.deleted"`
+
 ### User Retrieve Response
 
 - `UserRetrieveResponse object { id, email, is_service_account, 3 more }`
@@ -397,19 +413,3 @@ curl -X DELETE https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ
     - `"user"`
 
     - `"tenant_user"`
-
-### User Delete Response
-
-- `UserDeleteResponse object { deleted, object }`
-
-  Confirmation payload returned after removing a user from a group.
-
-  - `deleted: boolean`
-
-    Whether the group membership was removed.
-
-  - `object: "group.user.deleted"`
-
-    Always `group.user.deleted`.
-
-    - `"group.user.deleted"`

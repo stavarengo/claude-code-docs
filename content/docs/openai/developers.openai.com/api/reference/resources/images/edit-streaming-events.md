@@ -18,6 +18,7 @@ Schema name: `ImageEditPartialImageEvent`
   "(resource) images > (model) image_edit_partial_image_event > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/ImageEditPartialImageEvent",
+    "docstring": "Emitted when a partial image is available during image editing streaming.\n",
     "ident": "ImageEditPartialImageEvent",
     "type": {
       "kind": "HttpTypeObject",
@@ -48,7 +49,6 @@ Schema name: `ImageEditPartialImageEvent`
         }
       ]
     },
-    "docstring": "Emitted when a partial image is available during image editing streaming.\n",
     "childrenParentSchema": "object",
     "children": [
       "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) b64_json",
@@ -63,26 +63,27 @@ Schema name: `ImageEditPartialImageEvent`
   },
   "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) b64_json": {
     "kind": "HttpDeclProperty",
-    "docstring": "Base64-encoded partial image data, suitable for rendering as an image.\n",
+    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/b64_json",
+    "deprecated": false,
     "key": "b64_json",
-    "optional": false,
-    "nullable": false,
+    "docstring": "Base64-encoded partial image data, suitable for rendering as an image.\n",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/b64_json",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "string",
     "children": []
   },
   "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) background": {
     "kind": "HttpDeclProperty",
-    "docstring": "The background setting for the requested edited image.\n",
+    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/background",
+    "deprecated": false,
     "key": "background",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The background setting for the requested edited image.\n",
     "type": {
       "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/background",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -96,11 +97,10 @@ Schema name: `ImageEditPartialImageEvent`
           "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
-      ],
-      "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/background"
+      ]
     },
-    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/background",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
     "children": [
@@ -111,29 +111,30 @@ Schema name: `ImageEditPartialImageEvent`
   },
   "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) created_at": {
     "kind": "HttpDeclProperty",
-    "docstring": "The Unix timestamp when the event was created.\n",
+    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/created_at",
+    "deprecated": false,
     "key": "created_at",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The Unix timestamp when the event was created.\n",
     "type": {
       "kind": "HttpTypeNumber"
     },
     "constraints": {
       "format": "unixtime"
     },
-    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/created_at",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "integer",
     "children": []
   },
   "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) output_format": {
     "kind": "HttpDeclProperty",
-    "docstring": "The output format for the requested edited image.\n",
+    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/output_format",
+    "deprecated": false,
     "key": "output_format",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The output format for the requested edited image.\n",
     "type": {
       "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/output_format",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -147,11 +148,10 @@ Schema name: `ImageEditPartialImageEvent`
           "kind": "HttpTypeLiteral",
           "literal": "jpeg"
         }
-      ],
-      "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/output_format"
+      ]
     },
-    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/output_format",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
     "children": [
@@ -162,26 +162,27 @@ Schema name: `ImageEditPartialImageEvent`
   },
   "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) partial_image_index": {
     "kind": "HttpDeclProperty",
-    "docstring": "0-based index for the partial image (streaming).\n",
+    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/partial_image_index",
+    "deprecated": false,
     "key": "partial_image_index",
-    "optional": false,
-    "nullable": false,
+    "docstring": "0-based index for the partial image (streaming).\n",
     "type": {
       "kind": "HttpTypeNumber"
     },
-    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/partial_image_index",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "integer",
     "children": []
   },
   "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) quality": {
     "kind": "HttpDeclProperty",
-    "docstring": "The quality setting for the requested edited image.\n",
+    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/quality",
+    "deprecated": false,
     "key": "quality",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The quality setting for the requested edited image.\n",
     "type": {
       "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/quality",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -199,11 +200,10 @@ Schema name: `ImageEditPartialImageEvent`
           "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
-      ],
-      "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/quality"
+      ]
     },
-    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/quality",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
     "children": [
@@ -215,12 +215,13 @@ Schema name: `ImageEditPartialImageEvent`
   },
   "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) size": {
     "kind": "HttpDeclProperty",
-    "docstring": "The size of the requested edited image.\n",
+    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/size",
+    "deprecated": false,
     "key": "size",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The size of the requested edited image.\n",
     "type": {
       "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/size",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -238,11 +239,10 @@ Schema name: `ImageEditPartialImageEvent`
           "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
-      ],
-      "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/size"
+      ]
     },
-    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/size",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
     "children": [
@@ -254,22 +254,22 @@ Schema name: `ImageEditPartialImageEvent`
   },
   "(resource) images > (model) image_edit_partial_image_event > (schema) > (property) type": {
     "kind": "HttpDeclProperty",
-    "docstring": "The type of the event. Always `image_edit.partial_image`.\n",
+    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/type",
+    "deprecated": false,
     "key": "type",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The type of the event. Always `image_edit.partial_image`.\n",
     "type": {
       "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/type",
       "types": [
         {
           "kind": "HttpTypeLiteral",
           "literal": "image_edit.partial_image"
         }
-      ],
-      "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/type"
+      ]
     },
-    "oasRef": "#/components/schemas/ImageEditPartialImageEvent/properties/type",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
     "children": [
@@ -412,6 +412,7 @@ Schema name: `ImageEditCompletedEvent`
   "(resource) images > (model) image_edit_completed_event > (schema)": {
     "kind": "HttpDeclTypeAlias",
     "oasRef": "#/components/schemas/ImageEditCompletedEvent",
+    "docstring": "Emitted when image editing has completed and the final image is available.\n",
     "ident": "ImageEditCompletedEvent",
     "type": {
       "kind": "HttpTypeObject",
@@ -442,7 +443,6 @@ Schema name: `ImageEditCompletedEvent`
         }
       ]
     },
-    "docstring": "Emitted when image editing has completed and the final image is available.\n",
     "childrenParentSchema": "object",
     "children": [
       "(resource) images > (model) image_edit_completed_event > (schema) > (property) b64_json",
@@ -457,26 +457,27 @@ Schema name: `ImageEditCompletedEvent`
   },
   "(resource) images > (model) image_edit_completed_event > (schema) > (property) b64_json": {
     "kind": "HttpDeclProperty",
-    "docstring": "Base64-encoded final edited image data, suitable for rendering as an image.\n",
+    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/b64_json",
+    "deprecated": false,
     "key": "b64_json",
-    "optional": false,
-    "nullable": false,
+    "docstring": "Base64-encoded final edited image data, suitable for rendering as an image.\n",
     "type": {
       "kind": "HttpTypeString"
     },
-    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/b64_json",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "string",
     "children": []
   },
   "(resource) images > (model) image_edit_completed_event > (schema) > (property) background": {
     "kind": "HttpDeclProperty",
-    "docstring": "The background setting for the edited image.\n",
+    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/background",
+    "deprecated": false,
     "key": "background",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The background setting for the edited image.\n",
     "type": {
       "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/background",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -490,11 +491,10 @@ Schema name: `ImageEditCompletedEvent`
           "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
-      ],
-      "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/background"
+      ]
     },
-    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/background",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
     "children": [
@@ -505,29 +505,30 @@ Schema name: `ImageEditCompletedEvent`
   },
   "(resource) images > (model) image_edit_completed_event > (schema) > (property) created_at": {
     "kind": "HttpDeclProperty",
-    "docstring": "The Unix timestamp when the event was created.\n",
+    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/created_at",
+    "deprecated": false,
     "key": "created_at",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The Unix timestamp when the event was created.\n",
     "type": {
       "kind": "HttpTypeNumber"
     },
     "constraints": {
       "format": "unixtime"
     },
-    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/created_at",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "integer",
     "children": []
   },
   "(resource) images > (model) image_edit_completed_event > (schema) > (property) output_format": {
     "kind": "HttpDeclProperty",
-    "docstring": "The output format for the edited image.\n",
+    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/output_format",
+    "deprecated": false,
     "key": "output_format",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The output format for the edited image.\n",
     "type": {
       "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/output_format",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -541,11 +542,10 @@ Schema name: `ImageEditCompletedEvent`
           "kind": "HttpTypeLiteral",
           "literal": "jpeg"
         }
-      ],
-      "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/output_format"
+      ]
     },
-    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/output_format",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
     "children": [
@@ -556,12 +556,13 @@ Schema name: `ImageEditCompletedEvent`
   },
   "(resource) images > (model) image_edit_completed_event > (schema) > (property) quality": {
     "kind": "HttpDeclProperty",
-    "docstring": "The quality setting for the edited image.\n",
+    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/quality",
+    "deprecated": false,
     "key": "quality",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The quality setting for the edited image.\n",
     "type": {
       "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/quality",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -579,11 +580,10 @@ Schema name: `ImageEditCompletedEvent`
           "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
-      ],
-      "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/quality"
+      ]
     },
-    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/quality",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
     "children": [
@@ -595,12 +595,13 @@ Schema name: `ImageEditCompletedEvent`
   },
   "(resource) images > (model) image_edit_completed_event > (schema) > (property) size": {
     "kind": "HttpDeclProperty",
-    "docstring": "The size of the edited image.\n",
+    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/size",
+    "deprecated": false,
     "key": "size",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The size of the edited image.\n",
     "type": {
       "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/size",
       "types": [
         {
           "kind": "HttpTypeLiteral",
@@ -618,11 +619,10 @@ Schema name: `ImageEditCompletedEvent`
           "kind": "HttpTypeLiteral",
           "literal": "auto"
         }
-      ],
-      "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/size"
+      ]
     },
-    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/size",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
     "children": [
@@ -634,22 +634,22 @@ Schema name: `ImageEditCompletedEvent`
   },
   "(resource) images > (model) image_edit_completed_event > (schema) > (property) type": {
     "kind": "HttpDeclProperty",
-    "docstring": "The type of the event. Always `image_edit.completed`.\n",
+    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/type",
+    "deprecated": false,
     "key": "type",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The type of the event. Always `image_edit.completed`.\n",
     "type": {
       "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/type",
       "types": [
         {
           "kind": "HttpTypeLiteral",
           "literal": "image_edit.completed"
         }
-      ],
-      "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/type"
+      ]
     },
-    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/type",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "enum",
     "childrenParentSchema": "enum",
     "children": [
@@ -658,10 +658,10 @@ Schema name: `ImageEditCompletedEvent`
   },
   "(resource) images > (model) image_edit_completed_event > (schema) > (property) usage": {
     "kind": "HttpDeclProperty",
-    "docstring": "For the GPT image models only, the token usage information for the image generation.\n",
+    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/usage",
+    "deprecated": false,
     "key": "usage",
-    "optional": false,
-    "nullable": false,
+    "docstring": "For the GPT image models only, the token usage information for the image generation.\n",
     "type": {
       "kind": "HttpTypeObject",
       "members": [
@@ -679,8 +679,8 @@ Schema name: `ImageEditCompletedEvent`
         }
       ]
     },
-    "oasRef": "#/components/schemas/ImageEditCompletedEvent/properties/usage",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "object",
     "childrenParentSchema": "object",
     "children": [
@@ -797,24 +797,24 @@ Schema name: `ImageEditCompletedEvent`
   },
   "(resource) images > (model) image_edit_completed_event > (schema) > (property) usage > (property) input_tokens": {
     "kind": "HttpDeclProperty",
-    "docstring": "The number of tokens (images and text) in the input prompt.",
+    "oasRef": "#/components/schemas/ImagesUsage/properties/input_tokens",
+    "deprecated": false,
     "key": "input_tokens",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The number of tokens (images and text) in the input prompt.",
     "type": {
       "kind": "HttpTypeNumber"
     },
-    "oasRef": "#/components/schemas/ImagesUsage/properties/input_tokens",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "integer",
     "children": []
   },
   "(resource) images > (model) image_edit_completed_event > (schema) > (property) usage > (property) input_tokens_details": {
     "kind": "HttpDeclProperty",
-    "docstring": "The input tokens detailed information for the image generation.",
+    "oasRef": "#/components/schemas/ImagesUsage/properties/input_tokens_details",
+    "deprecated": false,
     "key": "input_tokens_details",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The input tokens detailed information for the image generation.",
     "type": {
       "kind": "HttpTypeObject",
       "members": [
@@ -826,8 +826,8 @@ Schema name: `ImageEditCompletedEvent`
         }
       ]
     },
-    "oasRef": "#/components/schemas/ImagesUsage/properties/input_tokens_details",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "object",
     "childrenParentSchema": "object",
     "children": [
@@ -837,57 +837,57 @@ Schema name: `ImageEditCompletedEvent`
   },
   "(resource) images > (model) image_edit_completed_event > (schema) > (property) usage > (property) output_tokens": {
     "kind": "HttpDeclProperty",
-    "docstring": "The number of image tokens in the output image.",
+    "oasRef": "#/components/schemas/ImagesUsage/properties/output_tokens",
+    "deprecated": false,
     "key": "output_tokens",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The number of image tokens in the output image.",
     "type": {
       "kind": "HttpTypeNumber"
     },
-    "oasRef": "#/components/schemas/ImagesUsage/properties/output_tokens",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "integer",
     "children": []
   },
   "(resource) images > (model) image_edit_completed_event > (schema) > (property) usage > (property) total_tokens": {
     "kind": "HttpDeclProperty",
-    "docstring": "The total number of tokens (images and text) used for the image generation.\n",
+    "oasRef": "#/components/schemas/ImagesUsage/properties/total_tokens",
+    "deprecated": false,
     "key": "total_tokens",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The total number of tokens (images and text) used for the image generation.\n",
     "type": {
       "kind": "HttpTypeNumber"
     },
-    "oasRef": "#/components/schemas/ImagesUsage/properties/total_tokens",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "integer",
     "children": []
   },
   "(resource) images > (model) image_edit_completed_event > (schema) > (property) usage > (property) input_tokens_details > (property) image_tokens": {
     "kind": "HttpDeclProperty",
-    "docstring": "The number of image tokens in the input prompt.",
+    "oasRef": "#/components/schemas/ImagesUsage/properties/input_tokens_details/properties/image_tokens",
+    "deprecated": false,
     "key": "image_tokens",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The number of image tokens in the input prompt.",
     "type": {
       "kind": "HttpTypeNumber"
     },
-    "oasRef": "#/components/schemas/ImagesUsage/properties/input_tokens_details/properties/image_tokens",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "integer",
     "children": []
   },
   "(resource) images > (model) image_edit_completed_event > (schema) > (property) usage > (property) input_tokens_details > (property) text_tokens": {
     "kind": "HttpDeclProperty",
-    "docstring": "The number of text tokens in the input prompt.",
+    "oasRef": "#/components/schemas/ImagesUsage/properties/input_tokens_details/properties/text_tokens",
+    "deprecated": false,
     "key": "text_tokens",
-    "optional": false,
-    "nullable": false,
+    "docstring": "The number of text tokens in the input prompt.",
     "type": {
       "kind": "HttpTypeNumber"
     },
-    "oasRef": "#/components/schemas/ImagesUsage/properties/input_tokens_details/properties/text_tokens",
-    "deprecated": false,
+    "optional": false,
+    "nullable": false,
     "schemaType": "integer",
     "children": []
   }
