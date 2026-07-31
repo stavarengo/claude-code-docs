@@ -103,7 +103,7 @@ Create a message.
 
   - `"assistant"`
 
-- `attachments: optional array of object { file_id, tools }`
+- `attachments: optional array of object { file_id, tools }  or null`
 
   A list of files attached to the message, and the tools they should be added to.
 
@@ -131,7 +131,7 @@ Create a message.
 
         - `"file_search"`
 
-- `metadata: optional Metadata`
+- `metadata: optional Metadata or null`
 
   Set of 16 key-value pairs that can be attached to an object. This can be
   useful for storing additional information about the object in a structured
@@ -150,11 +150,11 @@ Create a message.
 
     The identifier, which can be referenced in API endpoints.
 
-  - `assistant_id: string`
+  - `assistant_id: string or null`
 
     If applicable, the ID of the [assistant](/docs/api-reference/assistants) that authored this message.
 
-  - `attachments: array of object { file_id, tools }`
+  - `attachments: array of object { file_id, tools }  or null`
 
     A list of files attached to the message, and the tools they were added to.
 
@@ -182,7 +182,7 @@ Create a message.
 
           - `"file_search"`
 
-  - `completed_at: number`
+  - `completed_at: number or null`
 
     The Unix timestamp (in seconds) for when the message was completed.
 
@@ -324,11 +324,11 @@ Create a message.
 
     The Unix timestamp (in seconds) for when the message was created.
 
-  - `incomplete_at: number`
+  - `incomplete_at: number or null`
 
     The Unix timestamp (in seconds) for when the message was marked as incomplete.
 
-  - `incomplete_details: object { reason }`
+  - `incomplete_details: object { reason }  or null`
 
     On an incomplete message, details about why the message is incomplete.
 
@@ -346,7 +346,7 @@ Create a message.
 
       - `"run_failed"`
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -369,7 +369,7 @@ Create a message.
 
     - `"assistant"`
 
-  - `run_id: string`
+  - `run_id: string or null`
 
     The ID of the [run](/docs/api-reference/runs) associated with the creation of this message. Value is `null` when messages are created manually using the create message or create thread endpoints.
 
@@ -586,11 +586,11 @@ Returns a list of messages for a given thread.
 
     The identifier, which can be referenced in API endpoints.
 
-  - `assistant_id: string`
+  - `assistant_id: string or null`
 
     If applicable, the ID of the [assistant](/docs/api-reference/assistants) that authored this message.
 
-  - `attachments: array of object { file_id, tools }`
+  - `attachments: array of object { file_id, tools }  or null`
 
     A list of files attached to the message, and the tools they were added to.
 
@@ -618,7 +618,7 @@ Returns a list of messages for a given thread.
 
           - `"file_search"`
 
-  - `completed_at: number`
+  - `completed_at: number or null`
 
     The Unix timestamp (in seconds) for when the message was completed.
 
@@ -760,11 +760,11 @@ Returns a list of messages for a given thread.
 
     The Unix timestamp (in seconds) for when the message was created.
 
-  - `incomplete_at: number`
+  - `incomplete_at: number or null`
 
     The Unix timestamp (in seconds) for when the message was marked as incomplete.
 
-  - `incomplete_details: object { reason }`
+  - `incomplete_details: object { reason }  or null`
 
     On an incomplete message, details about why the message is incomplete.
 
@@ -782,7 +782,7 @@ Returns a list of messages for a given thread.
 
       - `"run_failed"`
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -805,7 +805,7 @@ Returns a list of messages for a given thread.
 
     - `"assistant"`
 
-  - `run_id: string`
+  - `run_id: string or null`
 
     The ID of the [run](/docs/api-reference/runs) associated with the creation of this message. Value is `null` when messages are created manually using the create message or create thread endpoints.
 
@@ -973,11 +973,11 @@ Retrieve a message.
 
     The identifier, which can be referenced in API endpoints.
 
-  - `assistant_id: string`
+  - `assistant_id: string or null`
 
     If applicable, the ID of the [assistant](/docs/api-reference/assistants) that authored this message.
 
-  - `attachments: array of object { file_id, tools }`
+  - `attachments: array of object { file_id, tools }  or null`
 
     A list of files attached to the message, and the tools they were added to.
 
@@ -1005,7 +1005,7 @@ Retrieve a message.
 
           - `"file_search"`
 
-  - `completed_at: number`
+  - `completed_at: number or null`
 
     The Unix timestamp (in seconds) for when the message was completed.
 
@@ -1147,11 +1147,11 @@ Retrieve a message.
 
     The Unix timestamp (in seconds) for when the message was created.
 
-  - `incomplete_at: number`
+  - `incomplete_at: number or null`
 
     The Unix timestamp (in seconds) for when the message was marked as incomplete.
 
-  - `incomplete_details: object { reason }`
+  - `incomplete_details: object { reason }  or null`
 
     On an incomplete message, details about why the message is incomplete.
 
@@ -1169,7 +1169,7 @@ Retrieve a message.
 
       - `"run_failed"`
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -1192,7 +1192,7 @@ Retrieve a message.
 
     - `"assistant"`
 
-  - `run_id: string`
+  - `run_id: string or null`
 
     The ID of the [run](/docs/api-reference/runs) associated with the creation of this message. Value is `null` when messages are created manually using the create message or create thread endpoints.
 
@@ -1308,7 +1308,7 @@ Modifies a message.
 
 ### Body Parameters
 
-- `metadata: optional Metadata`
+- `metadata: optional Metadata or null`
 
   Set of 16 key-value pairs that can be attached to an object. This can be
   useful for storing additional information about the object in a structured
@@ -1327,11 +1327,11 @@ Modifies a message.
 
     The identifier, which can be referenced in API endpoints.
 
-  - `assistant_id: string`
+  - `assistant_id: string or null`
 
     If applicable, the ID of the [assistant](/docs/api-reference/assistants) that authored this message.
 
-  - `attachments: array of object { file_id, tools }`
+  - `attachments: array of object { file_id, tools }  or null`
 
     A list of files attached to the message, and the tools they were added to.
 
@@ -1359,7 +1359,7 @@ Modifies a message.
 
           - `"file_search"`
 
-  - `completed_at: number`
+  - `completed_at: number or null`
 
     The Unix timestamp (in seconds) for when the message was completed.
 
@@ -1501,11 +1501,11 @@ Modifies a message.
 
     The Unix timestamp (in seconds) for when the message was created.
 
-  - `incomplete_at: number`
+  - `incomplete_at: number or null`
 
     The Unix timestamp (in seconds) for when the message was marked as incomplete.
 
-  - `incomplete_details: object { reason }`
+  - `incomplete_details: object { reason }  or null`
 
     On an incomplete message, details about why the message is incomplete.
 
@@ -1523,7 +1523,7 @@ Modifies a message.
 
       - `"run_failed"`
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -1546,7 +1546,7 @@ Modifies a message.
 
     - `"assistant"`
 
-  - `run_id: string`
+  - `run_id: string or null`
 
     The ID of the [run](/docs/api-reference/runs) associated with the creation of this message. Value is `null` when messages are created manually using the create message or create thread endpoints.
 
@@ -1979,11 +1979,11 @@ curl https://api.openai.com/v1/threads/thread_abc123/messages/msg_abc123 \
 
     The identifier, which can be referenced in API endpoints.
 
-  - `assistant_id: string`
+  - `assistant_id: string or null`
 
     If applicable, the ID of the [assistant](/docs/api-reference/assistants) that authored this message.
 
-  - `attachments: array of object { file_id, tools }`
+  - `attachments: array of object { file_id, tools }  or null`
 
     A list of files attached to the message, and the tools they were added to.
 
@@ -2011,7 +2011,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/messages/msg_abc123 \
 
           - `"file_search"`
 
-  - `completed_at: number`
+  - `completed_at: number or null`
 
     The Unix timestamp (in seconds) for when the message was completed.
 
@@ -2153,11 +2153,11 @@ curl https://api.openai.com/v1/threads/thread_abc123/messages/msg_abc123 \
 
     The Unix timestamp (in seconds) for when the message was created.
 
-  - `incomplete_at: number`
+  - `incomplete_at: number or null`
 
     The Unix timestamp (in seconds) for when the message was marked as incomplete.
 
-  - `incomplete_details: object { reason }`
+  - `incomplete_details: object { reason }  or null`
 
     On an incomplete message, details about why the message is incomplete.
 
@@ -2175,7 +2175,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/messages/msg_abc123 \
 
       - `"run_failed"`
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -2198,7 +2198,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/messages/msg_abc123 \
 
     - `"assistant"`
 
-  - `run_id: string`
+  - `run_id: string or null`
 
     The ID of the [run](/docs/api-reference/runs) associated with the creation of this message. Value is `null` when messages are created manually using the create message or create thread endpoints.
 

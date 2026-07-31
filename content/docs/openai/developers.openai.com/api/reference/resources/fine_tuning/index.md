@@ -309,11 +309,11 @@ Run a grader.
 
       The sampling parameters for the model.
 
-      - `max_completions_tokens: optional number`
+      - `max_completions_tokens: optional number or null`
 
         The maximum number of tokens the grader model may generate in its response.
 
-      - `reasoning_effort: optional ReasoningEffort`
+      - `reasoning_effort: optional ReasoningEffort or null`
 
         Constrains effort on reasoning for reasoning models. Currently supported
         values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -337,15 +337,15 @@ Run a grader.
 
         - `"max"`
 
-      - `seed: optional number`
+      - `seed: optional number or null`
 
         A seed value to initialize the randomness, during sampling.
 
-      - `temperature: optional number`
+      - `temperature: optional number or null`
 
         A higher temperature increases randomness in the outputs.
 
-      - `top_p: optional number`
+      - `top_p: optional number or null`
 
         An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -516,17 +516,17 @@ Run a grader.
 
     - `model_grader_server_error: boolean`
 
-    - `model_grader_server_error_details: string`
+    - `model_grader_server_error_details: string or null`
 
     - `other_error: boolean`
 
     - `python_grader_runtime_error: boolean`
 
-    - `python_grader_runtime_error_details: string`
+    - `python_grader_runtime_error_details: string or null`
 
     - `python_grader_server_error: boolean`
 
-    - `python_grader_server_error_type: string`
+    - `python_grader_server_error_type: string or null`
 
     - `sample_parse_error: boolean`
 
@@ -538,11 +538,11 @@ Run a grader.
 
   - `name: string`
 
-  - `sampled_model_name: string`
+  - `sampled_model_name: string or null`
 
   - `scores: map[unknown]`
 
-  - `token_usage: number`
+  - `token_usage: number or null`
 
   - `type: string`
 
@@ -1078,11 +1078,11 @@ Validate a grader.
 
       The sampling parameters for the model.
 
-      - `max_completions_tokens: optional number`
+      - `max_completions_tokens: optional number or null`
 
         The maximum number of tokens the grader model may generate in its response.
 
-      - `reasoning_effort: optional ReasoningEffort`
+      - `reasoning_effort: optional ReasoningEffort or null`
 
         Constrains effort on reasoning for reasoning models. Currently supported
         values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -1106,15 +1106,15 @@ Validate a grader.
 
         - `"max"`
 
-      - `seed: optional number`
+      - `seed: optional number or null`
 
         A seed value to initialize the randomness, during sampling.
 
-      - `temperature: optional number`
+      - `temperature: optional number or null`
 
         A higher temperature increases randomness in the outputs.
 
-      - `top_p: optional number`
+      - `top_p: optional number or null`
 
         An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -1556,11 +1556,11 @@ Validate a grader.
 
       The sampling parameters for the model.
 
-      - `max_completions_tokens: optional number`
+      - `max_completions_tokens: optional number or null`
 
         The maximum number of tokens the grader model may generate in its response.
 
-      - `reasoning_effort: optional ReasoningEffort`
+      - `reasoning_effort: optional ReasoningEffort or null`
 
         Constrains effort on reasoning for reasoning models. Currently supported
         values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -1584,15 +1584,15 @@ Validate a grader.
 
         - `"max"`
 
-      - `seed: optional number`
+      - `seed: optional number or null`
 
         A seed value to initialize the randomness, during sampling.
 
-      - `temperature: optional number`
+      - `temperature: optional number or null`
 
         A higher temperature increases randomness in the outputs.
 
-      - `top_p: optional number`
+      - `top_p: optional number or null`
 
         An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -1817,17 +1817,17 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
       - `model_grader_server_error: boolean`
 
-      - `model_grader_server_error_details: string`
+      - `model_grader_server_error_details: string or null`
 
       - `other_error: boolean`
 
       - `python_grader_runtime_error: boolean`
 
-      - `python_grader_runtime_error_details: string`
+      - `python_grader_runtime_error_details: string or null`
 
       - `python_grader_server_error: boolean`
 
-      - `python_grader_server_error_type: string`
+      - `python_grader_server_error_type: string or null`
 
       - `sample_parse_error: boolean`
 
@@ -1839,11 +1839,11 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
     - `name: string`
 
-    - `sampled_model_name: string`
+    - `sampled_model_name: string or null`
 
     - `scores: map[unknown]`
 
-    - `token_usage: number`
+    - `token_usage: number or null`
 
     - `type: string`
 
@@ -2154,11 +2154,11 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
         The sampling parameters for the model.
 
-        - `max_completions_tokens: optional number`
+        - `max_completions_tokens: optional number or null`
 
           The maximum number of tokens the grader model may generate in its response.
 
-        - `reasoning_effort: optional ReasoningEffort`
+        - `reasoning_effort: optional ReasoningEffort or null`
 
           Constrains effort on reasoning for reasoning models. Currently supported
           values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -2182,15 +2182,15 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
           - `"max"`
 
-        - `seed: optional number`
+        - `seed: optional number or null`
 
           A seed value to initialize the randomness, during sampling.
 
-        - `temperature: optional number`
+        - `temperature: optional number or null`
 
           A higher temperature increases randomness in the outputs.
 
-        - `top_p: optional number`
+        - `top_p: optional number or null`
 
           An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -2383,9 +2383,9 @@ This enables organization owners to share fine-tuned models with other projects 
 
   - `"list"`
 
-- `first_id: optional string`
+- `first_id: optional string or null`
 
-- `last_id: optional string`
+- `last_id: optional string or null`
 
 ### Example
 
@@ -2573,9 +2573,9 @@ Organization owners can use this endpoint to view all permissions for a fine-tun
 
   - `"list"`
 
-- `first_id: optional string`
+- `first_id: optional string or null`
 
-- `last_id: optional string`
+- `last_id: optional string or null`
 
 ### Example
 
@@ -2697,9 +2697,9 @@ Organization owners can use this endpoint to view all permissions for a fine-tun
 
   - `"list"`
 
-- `first_id: optional string`
+- `first_id: optional string or null`
 
-- `last_id: optional string`
+- `last_id: optional string or null`
 
 ### Example
 
@@ -2857,9 +2857,9 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
     - `"list"`
 
-  - `first_id: optional string`
+  - `first_id: optional string or null`
 
-  - `last_id: optional string`
+  - `last_id: optional string or null`
 
 # Jobs
 
@@ -2887,7 +2887,7 @@ Immediately cancel a fine-tune job.
 
     The Unix timestamp (in seconds) for when the fine-tuning job was created.
 
-  - `error: object { code, message, param }`
+  - `error: object { code, message, param }  or null`
 
     For fine-tuning jobs that have `failed`, this will contain more information on the cause of the failure.
 
@@ -2899,15 +2899,15 @@ Immediately cancel a fine-tune job.
 
       A human-readable error message.
 
-    - `param: string`
+    - `param: string or null`
 
       The parameter that was invalid, usually `training_file` or `validation_file`. This field will be null if the failure was not parameter-specific.
 
-  - `fine_tuned_model: string`
+  - `fine_tuned_model: string or null`
 
     The name of the fine-tuned model that is being created. The value will be null if the fine-tuning job is still running.
 
-  - `finished_at: number`
+  - `finished_at: number or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.
 
@@ -2915,7 +2915,7 @@ Immediately cancel a fine-tune job.
 
     The hyperparameters used for the fine-tuning job. This value will only be returned when running `supervised` jobs.
 
-    - `batch_size: optional "auto" or number`
+    - `batch_size: optional "auto" or number or null`
 
       Number of examples in each batch. A larger batch size means that model parameters
       are updated less frequently, but with lower variance.
@@ -2986,7 +2986,7 @@ Immediately cancel a fine-tune job.
 
     - `"cancelled"`
 
-  - `trained_tokens: number`
+  - `trained_tokens: number or null`
 
     The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.
 
@@ -2994,15 +2994,15 @@ Immediately cancel a fine-tune job.
 
     The file ID used for training. You can retrieve the training data with the [Files API](/docs/api-reference/files/retrieve-contents).
 
-  - `validation_file: string`
+  - `validation_file: string or null`
 
     The file ID used for validation. You can retrieve the validation results with the [Files API](/docs/api-reference/files/retrieve-contents).
 
-  - `estimated_finish: optional number`
+  - `estimated_finish: optional number or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job is estimated to finish. The value will be null if the fine-tuning job is not running.
 
-  - `integrations: optional array of FineTuningJobWandbIntegrationObject`
+  - `integrations: optional array of FineTuningJobWandbIntegrationObject or null`
 
     A list of integrations to enable for this fine-tuning job.
 
@@ -3022,12 +3022,12 @@ Immediately cancel a fine-tune job.
 
         The name of the project that the new run will be created under.
 
-      - `entity: optional string`
+      - `entity: optional string or null`
 
         The entity to use for the run. This allows you to set the team or username of the WandB user that you would
         like associated with the run. If not set, the default entity for the registered WandB API key is used.
 
-      - `name: optional string`
+      - `name: optional string or null`
 
         A display name to set for the run. If not set, we will use the Job ID as the name.
 
@@ -3036,7 +3036,7 @@ Immediately cancel a fine-tune job.
         A list of tags to be attached to the newly created run. These tags are passed through directly to WandB. Some
         default tags are generated by OpenAI: "openai/finetune", "openai/{base-model}", "openai/{ftjob-abcdef}".
 
-  - `metadata: optional Metadata`
+  - `metadata: optional Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -3408,11 +3408,11 @@ Immediately cancel a fine-tune job.
 
             The sampling parameters for the model.
 
-            - `max_completions_tokens: optional number`
+            - `max_completions_tokens: optional number or null`
 
               The maximum number of tokens the grader model may generate in its response.
 
-            - `reasoning_effort: optional ReasoningEffort`
+            - `reasoning_effort: optional ReasoningEffort or null`
 
               Constrains effort on reasoning for reasoning models. Currently supported
               values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -3436,15 +3436,15 @@ Immediately cancel a fine-tune job.
 
               - `"max"`
 
-            - `seed: optional number`
+            - `seed: optional number or null`
 
               A seed value to initialize the randomness, during sampling.
 
-            - `temperature: optional number`
+            - `temperature: optional number or null`
 
               A higher temperature increases randomness in the outputs.
 
-            - `top_p: optional number`
+            - `top_p: optional number or null`
 
               An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -3900,7 +3900,7 @@ Response includes details of the enqueued job including job status and the name 
 
     - `number`
 
-- `integrations: optional array of object { type, wandb }`
+- `integrations: optional array of object { type, wandb }  or null`
 
   A list of integrations to enable for your fine-tuning job.
 
@@ -3920,12 +3920,12 @@ Response includes details of the enqueued job including job status and the name 
 
       The name of the project that the new run will be created under.
 
-    - `entity: optional string`
+    - `entity: optional string or null`
 
       The entity to use for the run. This allows you to set the team or username of the WandB user that you would
       like associated with the run. If not set, the default entity for the registered WandB API key is used.
 
-    - `name: optional string`
+    - `name: optional string or null`
 
       A display name to set for the run. If not set, we will use the Job ID as the name.
 
@@ -3934,7 +3934,7 @@ Response includes details of the enqueued job including job status and the name 
       A list of tags to be attached to the newly created run. These tags are passed through directly to WandB. Some
       default tags are generated by OpenAI: "openai/finetune", "openai/{base-model}", "openai/{ftjob-abcdef}".
 
-- `metadata: optional Metadata`
+- `metadata: optional Metadata or null`
 
   Set of 16 key-value pairs that can be attached to an object. This can be
   useful for storing additional information about the object in a structured
@@ -4306,11 +4306,11 @@ Response includes details of the enqueued job including job status and the name 
 
           The sampling parameters for the model.
 
-          - `max_completions_tokens: optional number`
+          - `max_completions_tokens: optional number or null`
 
             The maximum number of tokens the grader model may generate in its response.
 
-          - `reasoning_effort: optional ReasoningEffort`
+          - `reasoning_effort: optional ReasoningEffort or null`
 
             Constrains effort on reasoning for reasoning models. Currently supported
             values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -4334,15 +4334,15 @@ Response includes details of the enqueued job including job status and the name 
 
             - `"max"`
 
-          - `seed: optional number`
+          - `seed: optional number or null`
 
             A seed value to initialize the randomness, during sampling.
 
-          - `temperature: optional number`
+          - `temperature: optional number or null`
 
             A higher temperature increases randomness in the outputs.
 
-          - `top_p: optional number`
+          - `top_p: optional number or null`
 
             An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -4599,18 +4599,18 @@ Response includes details of the enqueued job including job status and the name 
 
         - `number`
 
-- `seed: optional number`
+- `seed: optional number or null`
 
   The seed controls the reproducibility of the job. Passing in the same seed and job parameters should produce the same results, but may differ in rare cases.
   If a seed is not specified, one will be generated for you.
 
-- `suffix: optional string`
+- `suffix: optional string or null`
 
   A string of up to 64 characters that will be added to your fine-tuned model name.
 
   For example, a `suffix` of "custom-model-name" would produce a model name like `ft:gpt-4o-mini:openai:custom-model-name:7p4lURel`.
 
-- `validation_file: optional string`
+- `validation_file: optional string or null`
 
   The ID of an uploaded file that contains validation data.
 
@@ -4637,7 +4637,7 @@ Response includes details of the enqueued job including job status and the name 
 
     The Unix timestamp (in seconds) for when the fine-tuning job was created.
 
-  - `error: object { code, message, param }`
+  - `error: object { code, message, param }  or null`
 
     For fine-tuning jobs that have `failed`, this will contain more information on the cause of the failure.
 
@@ -4649,15 +4649,15 @@ Response includes details of the enqueued job including job status and the name 
 
       A human-readable error message.
 
-    - `param: string`
+    - `param: string or null`
 
       The parameter that was invalid, usually `training_file` or `validation_file`. This field will be null if the failure was not parameter-specific.
 
-  - `fine_tuned_model: string`
+  - `fine_tuned_model: string or null`
 
     The name of the fine-tuned model that is being created. The value will be null if the fine-tuning job is still running.
 
-  - `finished_at: number`
+  - `finished_at: number or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.
 
@@ -4665,7 +4665,7 @@ Response includes details of the enqueued job including job status and the name 
 
     The hyperparameters used for the fine-tuning job. This value will only be returned when running `supervised` jobs.
 
-    - `batch_size: optional "auto" or number`
+    - `batch_size: optional "auto" or number or null`
 
       Number of examples in each batch. A larger batch size means that model parameters
       are updated less frequently, but with lower variance.
@@ -4736,7 +4736,7 @@ Response includes details of the enqueued job including job status and the name 
 
     - `"cancelled"`
 
-  - `trained_tokens: number`
+  - `trained_tokens: number or null`
 
     The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.
 
@@ -4744,15 +4744,15 @@ Response includes details of the enqueued job including job status and the name 
 
     The file ID used for training. You can retrieve the training data with the [Files API](/docs/api-reference/files/retrieve-contents).
 
-  - `validation_file: string`
+  - `validation_file: string or null`
 
     The file ID used for validation. You can retrieve the validation results with the [Files API](/docs/api-reference/files/retrieve-contents).
 
-  - `estimated_finish: optional number`
+  - `estimated_finish: optional number or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job is estimated to finish. The value will be null if the fine-tuning job is not running.
 
-  - `integrations: optional array of FineTuningJobWandbIntegrationObject`
+  - `integrations: optional array of FineTuningJobWandbIntegrationObject or null`
 
     A list of integrations to enable for this fine-tuning job.
 
@@ -4772,12 +4772,12 @@ Response includes details of the enqueued job including job status and the name 
 
         The name of the project that the new run will be created under.
 
-      - `entity: optional string`
+      - `entity: optional string or null`
 
         The entity to use for the run. This allows you to set the team or username of the WandB user that you would
         like associated with the run. If not set, the default entity for the registered WandB API key is used.
 
-      - `name: optional string`
+      - `name: optional string or null`
 
         A display name to set for the run. If not set, we will use the Job ID as the name.
 
@@ -4786,7 +4786,7 @@ Response includes details of the enqueued job including job status and the name 
         A list of tags to be attached to the newly created run. These tags are passed through directly to WandB. Some
         default tags are generated by OpenAI: "openai/finetune", "openai/{base-model}", "openai/{ftjob-abcdef}".
 
-  - `metadata: optional Metadata`
+  - `metadata: optional Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -5158,11 +5158,11 @@ Response includes details of the enqueued job including job status and the name 
 
             The sampling parameters for the model.
 
-            - `max_completions_tokens: optional number`
+            - `max_completions_tokens: optional number or null`
 
               The maximum number of tokens the grader model may generate in its response.
 
-            - `reasoning_effort: optional ReasoningEffort`
+            - `reasoning_effort: optional ReasoningEffort or null`
 
               Constrains effort on reasoning for reasoning models. Currently supported
               values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -5186,15 +5186,15 @@ Response includes details of the enqueued job including job status and the name 
 
               - `"max"`
 
-            - `seed: optional number`
+            - `seed: optional number or null`
 
               A seed value to initialize the randomness, during sampling.
 
-            - `temperature: optional number`
+            - `temperature: optional number or null`
 
               A higher temperature increases randomness in the outputs.
 
-            - `top_p: optional number`
+            - `top_p: optional number or null`
 
               An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -5917,7 +5917,7 @@ List your organization's fine-tuning jobs
 
   Number of fine-tuning jobs to retrieve.
 
-- `metadata: optional map[string]`
+- `metadata: optional map[string] or null`
 
   Optional metadata filter. To filter, use the syntax `metadata[k]=v`. Alternatively, set `metadata=null` to indicate no metadata.
 
@@ -5933,7 +5933,7 @@ List your organization's fine-tuning jobs
 
     The Unix timestamp (in seconds) for when the fine-tuning job was created.
 
-  - `error: object { code, message, param }`
+  - `error: object { code, message, param }  or null`
 
     For fine-tuning jobs that have `failed`, this will contain more information on the cause of the failure.
 
@@ -5945,15 +5945,15 @@ List your organization's fine-tuning jobs
 
       A human-readable error message.
 
-    - `param: string`
+    - `param: string or null`
 
       The parameter that was invalid, usually `training_file` or `validation_file`. This field will be null if the failure was not parameter-specific.
 
-  - `fine_tuned_model: string`
+  - `fine_tuned_model: string or null`
 
     The name of the fine-tuned model that is being created. The value will be null if the fine-tuning job is still running.
 
-  - `finished_at: number`
+  - `finished_at: number or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.
 
@@ -5961,7 +5961,7 @@ List your organization's fine-tuning jobs
 
     The hyperparameters used for the fine-tuning job. This value will only be returned when running `supervised` jobs.
 
-    - `batch_size: optional "auto" or number`
+    - `batch_size: optional "auto" or number or null`
 
       Number of examples in each batch. A larger batch size means that model parameters
       are updated less frequently, but with lower variance.
@@ -6032,7 +6032,7 @@ List your organization's fine-tuning jobs
 
     - `"cancelled"`
 
-  - `trained_tokens: number`
+  - `trained_tokens: number or null`
 
     The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.
 
@@ -6040,15 +6040,15 @@ List your organization's fine-tuning jobs
 
     The file ID used for training. You can retrieve the training data with the [Files API](/docs/api-reference/files/retrieve-contents).
 
-  - `validation_file: string`
+  - `validation_file: string or null`
 
     The file ID used for validation. You can retrieve the validation results with the [Files API](/docs/api-reference/files/retrieve-contents).
 
-  - `estimated_finish: optional number`
+  - `estimated_finish: optional number or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job is estimated to finish. The value will be null if the fine-tuning job is not running.
 
-  - `integrations: optional array of FineTuningJobWandbIntegrationObject`
+  - `integrations: optional array of FineTuningJobWandbIntegrationObject or null`
 
     A list of integrations to enable for this fine-tuning job.
 
@@ -6068,12 +6068,12 @@ List your organization's fine-tuning jobs
 
         The name of the project that the new run will be created under.
 
-      - `entity: optional string`
+      - `entity: optional string or null`
 
         The entity to use for the run. This allows you to set the team or username of the WandB user that you would
         like associated with the run. If not set, the default entity for the registered WandB API key is used.
 
-      - `name: optional string`
+      - `name: optional string or null`
 
         A display name to set for the run. If not set, we will use the Job ID as the name.
 
@@ -6082,7 +6082,7 @@ List your organization's fine-tuning jobs
         A list of tags to be attached to the newly created run. These tags are passed through directly to WandB. Some
         default tags are generated by OpenAI: "openai/finetune", "openai/{base-model}", "openai/{ftjob-abcdef}".
 
-  - `metadata: optional Metadata`
+  - `metadata: optional Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -6454,11 +6454,11 @@ List your organization's fine-tuning jobs
 
             The sampling parameters for the model.
 
-            - `max_completions_tokens: optional number`
+            - `max_completions_tokens: optional number or null`
 
               The maximum number of tokens the grader model may generate in its response.
 
-            - `reasoning_effort: optional ReasoningEffort`
+            - `reasoning_effort: optional ReasoningEffort or null`
 
               Constrains effort on reasoning for reasoning models. Currently supported
               values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -6482,15 +6482,15 @@ List your organization's fine-tuning jobs
 
               - `"max"`
 
-            - `seed: optional number`
+            - `seed: optional number or null`
 
               A seed value to initialize the randomness, during sampling.
 
-            - `temperature: optional number`
+            - `temperature: optional number or null`
 
               A higher temperature increases randomness in the outputs.
 
-            - `top_p: optional number`
+            - `top_p: optional number or null`
 
               An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -7042,7 +7042,7 @@ Pause a fine-tune job.
 
     The Unix timestamp (in seconds) for when the fine-tuning job was created.
 
-  - `error: object { code, message, param }`
+  - `error: object { code, message, param }  or null`
 
     For fine-tuning jobs that have `failed`, this will contain more information on the cause of the failure.
 
@@ -7054,15 +7054,15 @@ Pause a fine-tune job.
 
       A human-readable error message.
 
-    - `param: string`
+    - `param: string or null`
 
       The parameter that was invalid, usually `training_file` or `validation_file`. This field will be null if the failure was not parameter-specific.
 
-  - `fine_tuned_model: string`
+  - `fine_tuned_model: string or null`
 
     The name of the fine-tuned model that is being created. The value will be null if the fine-tuning job is still running.
 
-  - `finished_at: number`
+  - `finished_at: number or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.
 
@@ -7070,7 +7070,7 @@ Pause a fine-tune job.
 
     The hyperparameters used for the fine-tuning job. This value will only be returned when running `supervised` jobs.
 
-    - `batch_size: optional "auto" or number`
+    - `batch_size: optional "auto" or number or null`
 
       Number of examples in each batch. A larger batch size means that model parameters
       are updated less frequently, but with lower variance.
@@ -7141,7 +7141,7 @@ Pause a fine-tune job.
 
     - `"cancelled"`
 
-  - `trained_tokens: number`
+  - `trained_tokens: number or null`
 
     The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.
 
@@ -7149,15 +7149,15 @@ Pause a fine-tune job.
 
     The file ID used for training. You can retrieve the training data with the [Files API](/docs/api-reference/files/retrieve-contents).
 
-  - `validation_file: string`
+  - `validation_file: string or null`
 
     The file ID used for validation. You can retrieve the validation results with the [Files API](/docs/api-reference/files/retrieve-contents).
 
-  - `estimated_finish: optional number`
+  - `estimated_finish: optional number or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job is estimated to finish. The value will be null if the fine-tuning job is not running.
 
-  - `integrations: optional array of FineTuningJobWandbIntegrationObject`
+  - `integrations: optional array of FineTuningJobWandbIntegrationObject or null`
 
     A list of integrations to enable for this fine-tuning job.
 
@@ -7177,12 +7177,12 @@ Pause a fine-tune job.
 
         The name of the project that the new run will be created under.
 
-      - `entity: optional string`
+      - `entity: optional string or null`
 
         The entity to use for the run. This allows you to set the team or username of the WandB user that you would
         like associated with the run. If not set, the default entity for the registered WandB API key is used.
 
-      - `name: optional string`
+      - `name: optional string or null`
 
         A display name to set for the run. If not set, we will use the Job ID as the name.
 
@@ -7191,7 +7191,7 @@ Pause a fine-tune job.
         A list of tags to be attached to the newly created run. These tags are passed through directly to WandB. Some
         default tags are generated by OpenAI: "openai/finetune", "openai/{base-model}", "openai/{ftjob-abcdef}".
 
-  - `metadata: optional Metadata`
+  - `metadata: optional Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -7563,11 +7563,11 @@ Pause a fine-tune job.
 
             The sampling parameters for the model.
 
-            - `max_completions_tokens: optional number`
+            - `max_completions_tokens: optional number or null`
 
               The maximum number of tokens the grader model may generate in its response.
 
-            - `reasoning_effort: optional ReasoningEffort`
+            - `reasoning_effort: optional ReasoningEffort or null`
 
               Constrains effort on reasoning for reasoning models. Currently supported
               values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -7591,15 +7591,15 @@ Pause a fine-tune job.
 
               - `"max"`
 
-            - `seed: optional number`
+            - `seed: optional number or null`
 
               A seed value to initialize the randomness, during sampling.
 
-            - `temperature: optional number`
+            - `temperature: optional number or null`
 
               A higher temperature increases randomness in the outputs.
 
-            - `top_p: optional number`
+            - `top_p: optional number or null`
 
               An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -7997,7 +7997,7 @@ Resume a fine-tune job.
 
     The Unix timestamp (in seconds) for when the fine-tuning job was created.
 
-  - `error: object { code, message, param }`
+  - `error: object { code, message, param }  or null`
 
     For fine-tuning jobs that have `failed`, this will contain more information on the cause of the failure.
 
@@ -8009,15 +8009,15 @@ Resume a fine-tune job.
 
       A human-readable error message.
 
-    - `param: string`
+    - `param: string or null`
 
       The parameter that was invalid, usually `training_file` or `validation_file`. This field will be null if the failure was not parameter-specific.
 
-  - `fine_tuned_model: string`
+  - `fine_tuned_model: string or null`
 
     The name of the fine-tuned model that is being created. The value will be null if the fine-tuning job is still running.
 
-  - `finished_at: number`
+  - `finished_at: number or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.
 
@@ -8025,7 +8025,7 @@ Resume a fine-tune job.
 
     The hyperparameters used for the fine-tuning job. This value will only be returned when running `supervised` jobs.
 
-    - `batch_size: optional "auto" or number`
+    - `batch_size: optional "auto" or number or null`
 
       Number of examples in each batch. A larger batch size means that model parameters
       are updated less frequently, but with lower variance.
@@ -8096,7 +8096,7 @@ Resume a fine-tune job.
 
     - `"cancelled"`
 
-  - `trained_tokens: number`
+  - `trained_tokens: number or null`
 
     The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.
 
@@ -8104,15 +8104,15 @@ Resume a fine-tune job.
 
     The file ID used for training. You can retrieve the training data with the [Files API](/docs/api-reference/files/retrieve-contents).
 
-  - `validation_file: string`
+  - `validation_file: string or null`
 
     The file ID used for validation. You can retrieve the validation results with the [Files API](/docs/api-reference/files/retrieve-contents).
 
-  - `estimated_finish: optional number`
+  - `estimated_finish: optional number or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job is estimated to finish. The value will be null if the fine-tuning job is not running.
 
-  - `integrations: optional array of FineTuningJobWandbIntegrationObject`
+  - `integrations: optional array of FineTuningJobWandbIntegrationObject or null`
 
     A list of integrations to enable for this fine-tuning job.
 
@@ -8132,12 +8132,12 @@ Resume a fine-tune job.
 
         The name of the project that the new run will be created under.
 
-      - `entity: optional string`
+      - `entity: optional string or null`
 
         The entity to use for the run. This allows you to set the team or username of the WandB user that you would
         like associated with the run. If not set, the default entity for the registered WandB API key is used.
 
-      - `name: optional string`
+      - `name: optional string or null`
 
         A display name to set for the run. If not set, we will use the Job ID as the name.
 
@@ -8146,7 +8146,7 @@ Resume a fine-tune job.
         A list of tags to be attached to the newly created run. These tags are passed through directly to WandB. Some
         default tags are generated by OpenAI: "openai/finetune", "openai/{base-model}", "openai/{ftjob-abcdef}".
 
-  - `metadata: optional Metadata`
+  - `metadata: optional Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -8518,11 +8518,11 @@ Resume a fine-tune job.
 
             The sampling parameters for the model.
 
-            - `max_completions_tokens: optional number`
+            - `max_completions_tokens: optional number or null`
 
               The maximum number of tokens the grader model may generate in its response.
 
-            - `reasoning_effort: optional ReasoningEffort`
+            - `reasoning_effort: optional ReasoningEffort or null`
 
               Constrains effort on reasoning for reasoning models. Currently supported
               values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -8546,15 +8546,15 @@ Resume a fine-tune job.
 
               - `"max"`
 
-            - `seed: optional number`
+            - `seed: optional number or null`
 
               A seed value to initialize the randomness, during sampling.
 
-            - `temperature: optional number`
+            - `temperature: optional number or null`
 
               A higher temperature increases randomness in the outputs.
 
-            - `top_p: optional number`
+            - `top_p: optional number or null`
 
               An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -8954,7 +8954,7 @@ Get info about a fine-tuning job.
 
     The Unix timestamp (in seconds) for when the fine-tuning job was created.
 
-  - `error: object { code, message, param }`
+  - `error: object { code, message, param }  or null`
 
     For fine-tuning jobs that have `failed`, this will contain more information on the cause of the failure.
 
@@ -8966,15 +8966,15 @@ Get info about a fine-tuning job.
 
       A human-readable error message.
 
-    - `param: string`
+    - `param: string or null`
 
       The parameter that was invalid, usually `training_file` or `validation_file`. This field will be null if the failure was not parameter-specific.
 
-  - `fine_tuned_model: string`
+  - `fine_tuned_model: string or null`
 
     The name of the fine-tuned model that is being created. The value will be null if the fine-tuning job is still running.
 
-  - `finished_at: number`
+  - `finished_at: number or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.
 
@@ -8982,7 +8982,7 @@ Get info about a fine-tuning job.
 
     The hyperparameters used for the fine-tuning job. This value will only be returned when running `supervised` jobs.
 
-    - `batch_size: optional "auto" or number`
+    - `batch_size: optional "auto" or number or null`
 
       Number of examples in each batch. A larger batch size means that model parameters
       are updated less frequently, but with lower variance.
@@ -9053,7 +9053,7 @@ Get info about a fine-tuning job.
 
     - `"cancelled"`
 
-  - `trained_tokens: number`
+  - `trained_tokens: number or null`
 
     The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.
 
@@ -9061,15 +9061,15 @@ Get info about a fine-tuning job.
 
     The file ID used for training. You can retrieve the training data with the [Files API](/docs/api-reference/files/retrieve-contents).
 
-  - `validation_file: string`
+  - `validation_file: string or null`
 
     The file ID used for validation. You can retrieve the validation results with the [Files API](/docs/api-reference/files/retrieve-contents).
 
-  - `estimated_finish: optional number`
+  - `estimated_finish: optional number or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job is estimated to finish. The value will be null if the fine-tuning job is not running.
 
-  - `integrations: optional array of FineTuningJobWandbIntegrationObject`
+  - `integrations: optional array of FineTuningJobWandbIntegrationObject or null`
 
     A list of integrations to enable for this fine-tuning job.
 
@@ -9089,12 +9089,12 @@ Get info about a fine-tuning job.
 
         The name of the project that the new run will be created under.
 
-      - `entity: optional string`
+      - `entity: optional string or null`
 
         The entity to use for the run. This allows you to set the team or username of the WandB user that you would
         like associated with the run. If not set, the default entity for the registered WandB API key is used.
 
-      - `name: optional string`
+      - `name: optional string or null`
 
         A display name to set for the run. If not set, we will use the Job ID as the name.
 
@@ -9103,7 +9103,7 @@ Get info about a fine-tuning job.
         A list of tags to be attached to the newly created run. These tags are passed through directly to WandB. Some
         default tags are generated by OpenAI: "openai/finetune", "openai/{base-model}", "openai/{ftjob-abcdef}".
 
-  - `metadata: optional Metadata`
+  - `metadata: optional Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -9475,11 +9475,11 @@ Get info about a fine-tuning job.
 
             The sampling parameters for the model.
 
-            - `max_completions_tokens: optional number`
+            - `max_completions_tokens: optional number or null`
 
               The maximum number of tokens the grader model may generate in its response.
 
-            - `reasoning_effort: optional ReasoningEffort`
+            - `reasoning_effort: optional ReasoningEffort or null`
 
               Constrains effort on reasoning for reasoning models. Currently supported
               values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -9503,15 +9503,15 @@ Get info about a fine-tuning job.
 
               - `"max"`
 
-            - `seed: optional number`
+            - `seed: optional number or null`
 
               A seed value to initialize the randomness, during sampling.
 
-            - `temperature: optional number`
+            - `temperature: optional number or null`
 
               A higher temperature increases randomness in the outputs.
 
-            - `top_p: optional number`
+            - `top_p: optional number or null`
 
               An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -9922,7 +9922,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
     The Unix timestamp (in seconds) for when the fine-tuning job was created.
 
-  - `error: object { code, message, param }`
+  - `error: object { code, message, param }  or null`
 
     For fine-tuning jobs that have `failed`, this will contain more information on the cause of the failure.
 
@@ -9934,15 +9934,15 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
       A human-readable error message.
 
-    - `param: string`
+    - `param: string or null`
 
       The parameter that was invalid, usually `training_file` or `validation_file`. This field will be null if the failure was not parameter-specific.
 
-  - `fine_tuned_model: string`
+  - `fine_tuned_model: string or null`
 
     The name of the fine-tuned model that is being created. The value will be null if the fine-tuning job is still running.
 
-  - `finished_at: number`
+  - `finished_at: number or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.
 
@@ -9950,7 +9950,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
     The hyperparameters used for the fine-tuning job. This value will only be returned when running `supervised` jobs.
 
-    - `batch_size: optional "auto" or number`
+    - `batch_size: optional "auto" or number or null`
 
       Number of examples in each batch. A larger batch size means that model parameters
       are updated less frequently, but with lower variance.
@@ -10021,7 +10021,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
     - `"cancelled"`
 
-  - `trained_tokens: number`
+  - `trained_tokens: number or null`
 
     The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.
 
@@ -10029,15 +10029,15 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
     The file ID used for training. You can retrieve the training data with the [Files API](/docs/api-reference/files/retrieve-contents).
 
-  - `validation_file: string`
+  - `validation_file: string or null`
 
     The file ID used for validation. You can retrieve the validation results with the [Files API](/docs/api-reference/files/retrieve-contents).
 
-  - `estimated_finish: optional number`
+  - `estimated_finish: optional number or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job is estimated to finish. The value will be null if the fine-tuning job is not running.
 
-  - `integrations: optional array of FineTuningJobWandbIntegrationObject`
+  - `integrations: optional array of FineTuningJobWandbIntegrationObject or null`
 
     A list of integrations to enable for this fine-tuning job.
 
@@ -10057,12 +10057,12 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
         The name of the project that the new run will be created under.
 
-      - `entity: optional string`
+      - `entity: optional string or null`
 
         The entity to use for the run. This allows you to set the team or username of the WandB user that you would
         like associated with the run. If not set, the default entity for the registered WandB API key is used.
 
-      - `name: optional string`
+      - `name: optional string or null`
 
         A display name to set for the run. If not set, we will use the Job ID as the name.
 
@@ -10071,7 +10071,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
         A list of tags to be attached to the newly created run. These tags are passed through directly to WandB. Some
         default tags are generated by OpenAI: "openai/finetune", "openai/{base-model}", "openai/{ftjob-abcdef}".
 
-  - `metadata: optional Metadata`
+  - `metadata: optional Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -10443,11 +10443,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
             The sampling parameters for the model.
 
-            - `max_completions_tokens: optional number`
+            - `max_completions_tokens: optional number or null`
 
               The maximum number of tokens the grader model may generate in its response.
 
-            - `reasoning_effort: optional ReasoningEffort`
+            - `reasoning_effort: optional ReasoningEffort or null`
 
               Constrains effort on reasoning for reasoning models. Currently supported
               values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -10471,15 +10471,15 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
               - `"max"`
 
-            - `seed: optional number`
+            - `seed: optional number or null`
 
               A seed value to initialize the randomness, during sampling.
 
-            - `temperature: optional number`
+            - `temperature: optional number or null`
 
               A higher temperature increases randomness in the outputs.
 
-            - `top_p: optional number`
+            - `top_p: optional number or null`
 
               An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -10794,12 +10794,12 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
     The name of the project that the new run will be created under.
 
-  - `entity: optional string`
+  - `entity: optional string or null`
 
     The entity to use for the run. This allows you to set the team or username of the WandB user that you would
     like associated with the run. If not set, the default entity for the registered WandB API key is used.
 
-  - `name: optional string`
+  - `name: optional string or null`
 
     A display name to set for the run. If not set, we will use the Job ID as the name.
 
@@ -10828,12 +10828,12 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
       The name of the project that the new run will be created under.
 
-    - `entity: optional string`
+    - `entity: optional string or null`
 
       The entity to use for the run. This allows you to set the team or username of the WandB user that you would
       like associated with the run. If not set, the default entity for the registered WandB API key is used.
 
-    - `name: optional string`
+    - `name: optional string or null`
 
       A display name to set for the run. If not set, we will use the Job ID as the name.
 
@@ -10918,9 +10918,9 @@ List checkpoints for a fine-tuning job.
 
   - `"list"`
 
-- `first_id: optional string`
+- `first_id: optional string or null`
 
-- `last_id: optional string`
+- `last_id: optional string or null`
 
 ### Example
 
@@ -11536,11 +11536,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
         The sampling parameters for the model.
 
-        - `max_completions_tokens: optional number`
+        - `max_completions_tokens: optional number or null`
 
           The maximum number of tokens the grader model may generate in its response.
 
-        - `reasoning_effort: optional ReasoningEffort`
+        - `reasoning_effort: optional ReasoningEffort or null`
 
           Constrains effort on reasoning for reasoning models. Currently supported
           values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -11564,15 +11564,15 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
           - `"max"`
 
-        - `seed: optional number`
+        - `seed: optional number or null`
 
           A seed value to initialize the randomness, during sampling.
 
-        - `temperature: optional number`
+        - `temperature: optional number or null`
 
           A higher temperature increases randomness in the outputs.
 
-        - `top_p: optional number`
+        - `top_p: optional number or null`
 
           An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 

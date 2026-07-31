@@ -79,6 +79,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Evaluate agent workflows](https://developers.openai.com/api/docs/guides/agent-evals.md): Learn how to evaluate agent workflows with traces, graders, datasets, and evaluation runs on the OpenAI platform.
 - [Evaluate external models](https://developers.openai.com/api/docs/guides/external-models.md): Learn how to run evals on non-OpenAI models, using the OpenAI platform.
 - [Evaluation best practices](https://developers.openai.com/api/docs/guides/evaluation-best-practices.md): Learn best practices for designing evals to test and improve model performance in production.
+- [Fast mode](https://developers.openai.com/api/docs/guides/fast-mode.md): Get up to 2.5× faster speeds in the API while retaining flexible pay-as-you-go pricing.
 - [File inputs](https://developers.openai.com/api/docs/guides/file-inputs.md): Learn how to use files as file inputs in the OpenAI API.
 - [File search](https://developers.openai.com/api/docs/guides/tools-file-search.md): Allow models to search your files for relevant information before generating a response.
 - [File transcription](https://developers.openai.com/api/docs/guides/speech-to-text.md): Learn how to transcribe recorded audio files, stream file transcripts, and use specialized speech-to-text features.
@@ -116,7 +117,6 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Optimizing LLM Accuracy](https://developers.openai.com/api/docs/guides/optimizing-llm-accuracy.md): Learn strategies to enhance the accuracy of large language models using techniques like prompt engineering, retrieval-augmented generation, and fine-tuning.
 - [Orchestration and handoffs](https://developers.openai.com/api/docs/guides/agents/orchestration.md): Learn how to orchestrate multiple agents with handoffs and agents-as-tools in the OpenAI Agents SDK.
 - [Predicted Outputs](https://developers.openai.com/api/docs/guides/predicted-outputs.md): Understand how to reduce latency for model responses where much of the response is known ahead of time.
-- [Priority processing](https://developers.openai.com/api/docs/guides/priority-processing.md): Get faster processing in the API while retaining flexible pay-as-you-go pricing.
 - [Private Link](https://developers.openai.com/api/docs/guides/private-link.md): Configure Azure Private Link endpoints, DNS, health checks, and cross-region routing for the OpenAI API.
 - [Production best practices](https://developers.openai.com/api/docs/guides/production-best-practices.md): Explore best practices for transitioning your AI projects from prototype to production, including scaling, security, and cost management.
 - [Programmatic Tool Calling](https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling.md): Configure Programmatic Tool Calling, control which tools programs can invoke, and resume programs after client-owned function calls.

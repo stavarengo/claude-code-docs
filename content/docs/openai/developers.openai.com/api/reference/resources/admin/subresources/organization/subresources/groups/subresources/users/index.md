@@ -170,7 +170,7 @@ Lists the users assigned to a group.
 
     The identifier, which can be referenced in API endpoints
 
-  - `email: string`
+  - `email: string or null`
 
     The email address of the user.
 
@@ -182,7 +182,7 @@ Lists the users assigned to a group.
 
   Whether more users are available when paginating.
 
-- `next: string`
+- `next: string or null`
 
   Cursor to fetch the next page of results, or `null` when no further users are available.
 
@@ -259,11 +259,11 @@ Retrieves a user in a group.
 
   Identifier for the user.
 
-- `email: string`
+- `email: string or null`
 
   Email address of the user, or `null` for users without an email.
 
-- `is_service_account: boolean`
+- `is_service_account: boolean or null`
 
   Whether the user is a service account.
 
@@ -271,7 +271,7 @@ Retrieves a user in a group.
 
   Display name of the user.
 
-- `picture: string`
+- `picture: string or null`
 
   URL of the user's profile picture, if available.
 
@@ -336,7 +336,7 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/users/use
 
     The identifier, which can be referenced in API endpoints
 
-  - `email: string`
+  - `email: string or null`
 
     The email address of the user.
 
@@ -390,11 +390,11 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/users/use
 
     Identifier for the user.
 
-  - `email: string`
+  - `email: string or null`
 
     Email address of the user, or `null` for users without an email.
 
-  - `is_service_account: boolean`
+  - `is_service_account: boolean or null`
 
     Whether the user is a service account.
 
@@ -402,7 +402,7 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/users/use
 
     Display name of the user.
 
-  - `picture: string`
+  - `picture: string or null`
 
     URL of the user's profile picture, if available.
 

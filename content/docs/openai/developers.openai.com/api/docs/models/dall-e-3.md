@@ -2,39 +2,17 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-> Previous generation image generation model
+> Deprecated image generation model
 
 Model ID: `dall-e-3`
 
-DALL·E is an AI system that creates realistic images and art from a natural language description. DALL·E 3 currently supports the ability, given a prompt, to create a new image with a specific size.
+DALL·E 3 has been deprecated and removed from the API. We recommend [GPT Image 2](/api/docs/models/gpt-image-2) for current image generation and editing.
 
 ## Model details
 
 - Default snapshot: `dall-e-3`
 - Input modalities: text
 - Output modalities: image
-
-## Pricing
-
-Pricing is based on the number of tokens used, or other metrics based on the model type. For tool-specific models, like search and computer use, there’s a fee per tool call. See details in the [pricing page](/api/docs/pricing).
-
-### Image generation
-
-| Metric | Price | Unit |
-| --- | ---: | --- |
-| Quality | Standard | image |
-| 1024x1024 | $0.04 | image |
-| 1024x1536 | $0.08 | image |
-| 1536x1024 | $0.08 | image |
-
-### Image generation
-
-| Metric | Price | Unit |
-| --- | ---: | --- |
-| Quality | HD | image |
-| 1024x1024 | $0.08 | image |
-| 1024x1536 | $0.12 | image |
-| 1536x1024 | $0.12 | image |
 
 ## Endpoints
 
@@ -57,13 +35,6 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 | Translation | `v1/audio/translations` | Not supported |
 | Moderation | `v1/moderations` | Not supported |
 | Completions (legacy) | `v1/completions` | Not supported |
-
-## Quick comparison
-
-| Model | 1024x1024 | 1024x1536 | 1536x1024 |
-| --- | ---: | ---: | ---: |
-| DALL·E 3 | $0.04 | $0.08 | $0.08 |
-| DALL·E 2 | $0.016 | $0.018 | $0.02 |
 
 ## Snapshots
 

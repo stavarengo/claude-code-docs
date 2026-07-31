@@ -28,9 +28,9 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 | Metric | Price | Unit |
 | --- | ---: | --- |
-| Input | $1 | 1M tokens |
-| Cached input | $0.1 | 1M tokens |
-| Output | $6 | 1M tokens |
+| Input | $0.2 | 1M tokens |
+| Cached input | $0.02 | 1M tokens |
+| Output | $1.2 | 1M tokens |
 
 - Prompts with >272K input tokens are priced at 2x input and 1.5x output for the full request.
 - Cache writes are billed at 1.25x the uncached input token rate.
@@ -86,8 +86,8 @@ Tools supported by this model when using the Responses API.
 
 | Model | Input | Cached input | Output |
 | --- | ---: | ---: | ---: |
-| GPT-5.6 Luna | $1 | $0.1 | $6 |
-| GPT-5.6 Terra | $2.5 | $0.25 | $15 |
+| GPT-5.6 Luna | $0.2 | $0.02 | $1.2 |
+| GPT-5.6 Terra | $2 | $0.2 | $12 |
 | GPT-5.4 nano | $0.2 | $0.02 | $1.25 |
 
 ## Snapshots

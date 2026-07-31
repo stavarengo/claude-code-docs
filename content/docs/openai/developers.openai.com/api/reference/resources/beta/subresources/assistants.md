@@ -104,15 +104,15 @@ Create an assistant with a model and instructions.
 
     - `"gpt-3.5-turbo-16k-0613"`
 
-- `description: optional string`
+- `description: optional string or null`
 
   The description of the assistant. The maximum length is 512 characters.
 
-- `instructions: optional string`
+- `instructions: optional string or null`
 
   The system instructions that the assistant uses. The maximum length is 256,000 characters.
 
-- `metadata: optional Metadata`
+- `metadata: optional Metadata or null`
 
   Set of 16 key-value pairs that can be attached to an object. This can be
   useful for storing additional information about the object in a structured
@@ -121,11 +121,11 @@ Create an assistant with a model and instructions.
   Keys are strings with a maximum length of 64 characters. Values are strings
   with a maximum length of 512 characters.
 
-- `name: optional string`
+- `name: optional string or null`
 
   The name of the assistant. The maximum length is 256 characters.
 
-- `reasoning_effort: optional ReasoningEffort`
+- `reasoning_effort: optional ReasoningEffort or null`
 
   Constrains effort on reasoning for reasoning models. Currently supported
   values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -149,7 +149,7 @@ Create an assistant with a model and instructions.
 
   - `"max"`
 
-- `response_format: optional AssistantResponseFormatOption`
+- `response_format: optional AssistantResponseFormatOption or null`
 
   Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
 
@@ -212,7 +212,7 @@ Create an assistant with a model and instructions.
         The schema for the response format, described as a JSON Schema object.
         Learn how to build JSON schemas [here](https://json-schema.org/).
 
-      - `strict: optional boolean`
+      - `strict: optional boolean or null`
 
         Whether to enable strict schema adherence when generating the output.
         If set to true, the model will always follow the exact schema defined
@@ -226,11 +226,11 @@ Create an assistant with a model and instructions.
 
       - `"json_schema"`
 
-- `temperature: optional number`
+- `temperature: optional number or null`
 
   What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
 
-- `tool_resources: optional object { code_interpreter, file_search }`
+- `tool_resources: optional object { code_interpreter, file_search }  or null`
 
   A set of resources that are used by the assistant's tools. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
 
@@ -288,7 +288,7 @@ Create an assistant with a model and instructions.
 
         A list of [file](/docs/api-reference/files) IDs to add to the vector store. For vector stores created before Nov 2025, there can be a maximum of 10,000 files in a vector store. For vector stores created starting in Nov 2025, the limit is 100,000,000 files.
 
-      - `metadata: optional Metadata`
+      - `metadata: optional Metadata or null`
 
         Set of 16 key-value pairs that can be attached to an object. This can be
         useful for storing additional information about the object in a structured
@@ -363,7 +363,7 @@ Create an assistant with a model and instructions.
 
         Omitting `parameters` defines a function with an empty parameter list.
 
-      - `strict: optional boolean`
+      - `strict: optional boolean or null`
 
         Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
 
@@ -373,7 +373,7 @@ Create an assistant with a model and instructions.
 
       - `"function"`
 
-- `top_p: optional number`
+- `top_p: optional number or null`
 
   An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
 
@@ -393,15 +393,15 @@ Create an assistant with a model and instructions.
 
     The Unix timestamp (in seconds) for when the assistant was created.
 
-  - `description: string`
+  - `description: string or null`
 
     The description of the assistant. The maximum length is 512 characters.
 
-  - `instructions: string`
+  - `instructions: string or null`
 
     The system instructions that the assistant uses. The maximum length is 256,000 characters.
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -414,7 +414,7 @@ Create an assistant with a model and instructions.
 
     ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models) for descriptions of them.
 
-  - `name: string`
+  - `name: string or null`
 
     The name of the assistant. The maximum length is 256 characters.
 
@@ -490,7 +490,7 @@ Create an assistant with a model and instructions.
 
           Omitting `parameters` defines a function with an empty parameter list.
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
 
@@ -500,7 +500,7 @@ Create an assistant with a model and instructions.
 
         - `"function"`
 
-  - `response_format: optional AssistantResponseFormatOption`
+  - `response_format: optional AssistantResponseFormatOption or null`
 
     Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
 
@@ -563,7 +563,7 @@ Create an assistant with a model and instructions.
           The schema for the response format, described as a JSON Schema object.
           Learn how to build JSON schemas [here](https://json-schema.org/).
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the output.
           If set to true, the model will always follow the exact schema defined
@@ -577,11 +577,11 @@ Create an assistant with a model and instructions.
 
         - `"json_schema"`
 
-  - `temperature: optional number`
+  - `temperature: optional number or null`
 
     What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
 
-  - `tool_resources: optional object { code_interpreter, file_search }`
+  - `tool_resources: optional object { code_interpreter, file_search }  or null`
 
     A set of resources that are used by the assistant's tools. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
 
@@ -597,7 +597,7 @@ Create an assistant with a model and instructions.
 
         The ID of the [vector store](/docs/api-reference/vector-stores/object) attached to this assistant. There can be a maximum of 1 vector store attached to the assistant.
 
-  - `top_p: optional number`
+  - `top_p: optional number or null`
 
     An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
 
@@ -836,15 +836,15 @@ Returns a list of assistants.
 
     The Unix timestamp (in seconds) for when the assistant was created.
 
-  - `description: string`
+  - `description: string or null`
 
     The description of the assistant. The maximum length is 512 characters.
 
-  - `instructions: string`
+  - `instructions: string or null`
 
     The system instructions that the assistant uses. The maximum length is 256,000 characters.
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -857,7 +857,7 @@ Returns a list of assistants.
 
     ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models) for descriptions of them.
 
-  - `name: string`
+  - `name: string or null`
 
     The name of the assistant. The maximum length is 256 characters.
 
@@ -933,7 +933,7 @@ Returns a list of assistants.
 
           Omitting `parameters` defines a function with an empty parameter list.
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
 
@@ -943,7 +943,7 @@ Returns a list of assistants.
 
         - `"function"`
 
-  - `response_format: optional AssistantResponseFormatOption`
+  - `response_format: optional AssistantResponseFormatOption or null`
 
     Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
 
@@ -1006,7 +1006,7 @@ Returns a list of assistants.
           The schema for the response format, described as a JSON Schema object.
           Learn how to build JSON schemas [here](https://json-schema.org/).
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the output.
           If set to true, the model will always follow the exact schema defined
@@ -1020,11 +1020,11 @@ Returns a list of assistants.
 
         - `"json_schema"`
 
-  - `temperature: optional number`
+  - `temperature: optional number or null`
 
     What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
 
-  - `tool_resources: optional object { code_interpreter, file_search }`
+  - `tool_resources: optional object { code_interpreter, file_search }  or null`
 
     A set of resources that are used by the assistant's tools. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
 
@@ -1040,7 +1040,7 @@ Returns a list of assistants.
 
         The ID of the [vector store](/docs/api-reference/vector-stores/object) attached to this assistant. There can be a maximum of 1 vector store attached to the assistant.
 
-  - `top_p: optional number`
+  - `top_p: optional number or null`
 
     An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
 
@@ -1198,15 +1198,15 @@ Retrieves an assistant.
 
     The Unix timestamp (in seconds) for when the assistant was created.
 
-  - `description: string`
+  - `description: string or null`
 
     The description of the assistant. The maximum length is 512 characters.
 
-  - `instructions: string`
+  - `instructions: string or null`
 
     The system instructions that the assistant uses. The maximum length is 256,000 characters.
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -1219,7 +1219,7 @@ Retrieves an assistant.
 
     ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models) for descriptions of them.
 
-  - `name: string`
+  - `name: string or null`
 
     The name of the assistant. The maximum length is 256 characters.
 
@@ -1295,7 +1295,7 @@ Retrieves an assistant.
 
           Omitting `parameters` defines a function with an empty parameter list.
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
 
@@ -1305,7 +1305,7 @@ Retrieves an assistant.
 
         - `"function"`
 
-  - `response_format: optional AssistantResponseFormatOption`
+  - `response_format: optional AssistantResponseFormatOption or null`
 
     Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
 
@@ -1368,7 +1368,7 @@ Retrieves an assistant.
           The schema for the response format, described as a JSON Schema object.
           Learn how to build JSON schemas [here](https://json-schema.org/).
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the output.
           If set to true, the model will always follow the exact schema defined
@@ -1382,11 +1382,11 @@ Retrieves an assistant.
 
         - `"json_schema"`
 
-  - `temperature: optional number`
+  - `temperature: optional number or null`
 
     What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
 
-  - `tool_resources: optional object { code_interpreter, file_search }`
+  - `tool_resources: optional object { code_interpreter, file_search }  or null`
 
     A set of resources that are used by the assistant's tools. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
 
@@ -1402,7 +1402,7 @@ Retrieves an assistant.
 
         The ID of the [vector store](/docs/api-reference/vector-stores/object) attached to this assistant. There can be a maximum of 1 vector store attached to the assistant.
 
-  - `top_p: optional number`
+  - `top_p: optional number or null`
 
     An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
 
@@ -1497,15 +1497,15 @@ Modifies an assistant.
 
 ### Body Parameters
 
-- `description: optional string`
+- `description: optional string or null`
 
   The description of the assistant. The maximum length is 512 characters.
 
-- `instructions: optional string`
+- `instructions: optional string or null`
 
   The system instructions that the assistant uses. The maximum length is 256,000 characters.
 
-- `metadata: optional Metadata`
+- `metadata: optional Metadata or null`
 
   Set of 16 key-value pairs that can be attached to an object. This can be
   useful for storing additional information about the object in a structured
@@ -1608,11 +1608,11 @@ Modifies an assistant.
 
     - `"gpt-3.5-turbo-16k-0613"`
 
-- `name: optional string`
+- `name: optional string or null`
 
   The name of the assistant. The maximum length is 256 characters.
 
-- `reasoning_effort: optional ReasoningEffort`
+- `reasoning_effort: optional ReasoningEffort or null`
 
   Constrains effort on reasoning for reasoning models. Currently supported
   values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -1636,7 +1636,7 @@ Modifies an assistant.
 
   - `"max"`
 
-- `response_format: optional AssistantResponseFormatOption`
+- `response_format: optional AssistantResponseFormatOption or null`
 
   Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
 
@@ -1699,7 +1699,7 @@ Modifies an assistant.
         The schema for the response format, described as a JSON Schema object.
         Learn how to build JSON schemas [here](https://json-schema.org/).
 
-      - `strict: optional boolean`
+      - `strict: optional boolean or null`
 
         Whether to enable strict schema adherence when generating the output.
         If set to true, the model will always follow the exact schema defined
@@ -1713,11 +1713,11 @@ Modifies an assistant.
 
       - `"json_schema"`
 
-- `temperature: optional number`
+- `temperature: optional number or null`
 
   What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
 
-- `tool_resources: optional object { code_interpreter, file_search }`
+- `tool_resources: optional object { code_interpreter, file_search }  or null`
 
   A set of resources that are used by the assistant's tools. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
 
@@ -1799,7 +1799,7 @@ Modifies an assistant.
 
         Omitting `parameters` defines a function with an empty parameter list.
 
-      - `strict: optional boolean`
+      - `strict: optional boolean or null`
 
         Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
 
@@ -1809,7 +1809,7 @@ Modifies an assistant.
 
       - `"function"`
 
-- `top_p: optional number`
+- `top_p: optional number or null`
 
   An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
 
@@ -1829,15 +1829,15 @@ Modifies an assistant.
 
     The Unix timestamp (in seconds) for when the assistant was created.
 
-  - `description: string`
+  - `description: string or null`
 
     The description of the assistant. The maximum length is 512 characters.
 
-  - `instructions: string`
+  - `instructions: string or null`
 
     The system instructions that the assistant uses. The maximum length is 256,000 characters.
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -1850,7 +1850,7 @@ Modifies an assistant.
 
     ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models) for descriptions of them.
 
-  - `name: string`
+  - `name: string or null`
 
     The name of the assistant. The maximum length is 256 characters.
 
@@ -1926,7 +1926,7 @@ Modifies an assistant.
 
           Omitting `parameters` defines a function with an empty parameter list.
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
 
@@ -1936,7 +1936,7 @@ Modifies an assistant.
 
         - `"function"`
 
-  - `response_format: optional AssistantResponseFormatOption`
+  - `response_format: optional AssistantResponseFormatOption or null`
 
     Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
 
@@ -1999,7 +1999,7 @@ Modifies an assistant.
           The schema for the response format, described as a JSON Schema object.
           Learn how to build JSON schemas [here](https://json-schema.org/).
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the output.
           If set to true, the model will always follow the exact schema defined
@@ -2013,11 +2013,11 @@ Modifies an assistant.
 
         - `"json_schema"`
 
-  - `temperature: optional number`
+  - `temperature: optional number or null`
 
     What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
 
-  - `tool_resources: optional object { code_interpreter, file_search }`
+  - `tool_resources: optional object { code_interpreter, file_search }  or null`
 
     A set of resources that are used by the assistant's tools. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
 
@@ -2033,7 +2033,7 @@ Modifies an assistant.
 
         The ID of the [vector store](/docs/api-reference/vector-stores/object) attached to this assistant. There can be a maximum of 1 vector store attached to the assistant.
 
-  - `top_p: optional number`
+  - `top_p: optional number or null`
 
     An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
 
@@ -2147,15 +2147,15 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
     The Unix timestamp (in seconds) for when the assistant was created.
 
-  - `description: string`
+  - `description: string or null`
 
     The description of the assistant. The maximum length is 512 characters.
 
-  - `instructions: string`
+  - `instructions: string or null`
 
     The system instructions that the assistant uses. The maximum length is 256,000 characters.
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -2168,7 +2168,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
     ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models) for descriptions of them.
 
-  - `name: string`
+  - `name: string or null`
 
     The name of the assistant. The maximum length is 256 characters.
 
@@ -2244,7 +2244,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
           Omitting `parameters` defines a function with an empty parameter list.
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
 
@@ -2254,7 +2254,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         - `"function"`
 
-  - `response_format: optional AssistantResponseFormatOption`
+  - `response_format: optional AssistantResponseFormatOption or null`
 
     Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
 
@@ -2317,7 +2317,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
           The schema for the response format, described as a JSON Schema object.
           Learn how to build JSON schemas [here](https://json-schema.org/).
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the output.
           If set to true, the model will always follow the exact schema defined
@@ -2331,11 +2331,11 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         - `"json_schema"`
 
-  - `temperature: optional number`
+  - `temperature: optional number or null`
 
     What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
 
-  - `tool_resources: optional object { code_interpreter, file_search }`
+  - `tool_resources: optional object { code_interpreter, file_search }  or null`
 
     A set of resources that are used by the assistant's tools. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
 
@@ -2351,7 +2351,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         The ID of the [vector store](/docs/api-reference/vector-stores/object) attached to this assistant. There can be a maximum of 1 vector store attached to the assistant.
 
-  - `top_p: optional number`
+  - `top_p: optional number or null`
 
     An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
 
@@ -2409,7 +2409,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         The Unix timestamp (in seconds) for when the thread was created.
 
-      - `metadata: Metadata`
+      - `metadata: Metadata or null`
 
         Set of 16 key-value pairs that can be attached to an object. This can be
         useful for storing additional information about the object in a structured
@@ -2424,7 +2424,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         - `"thread"`
 
-      - `tool_resources: object { code_interpreter, file_search }`
+      - `tool_resources: object { code_interpreter, file_search }  or null`
 
         A set of resources that are made available to the assistant's tools in this thread. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
 
@@ -2464,11 +2464,11 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         The ID of the [assistant](/docs/api-reference/assistants) used for execution of this run.
 
-      - `cancelled_at: number`
+      - `cancelled_at: number or null`
 
         The Unix timestamp (in seconds) for when the run was cancelled.
 
-      - `completed_at: number`
+      - `completed_at: number or null`
 
         The Unix timestamp (in seconds) for when the run was completed.
 
@@ -2476,15 +2476,15 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         The Unix timestamp (in seconds) for when the run was created.
 
-      - `expires_at: number`
+      - `expires_at: number or null`
 
         The Unix timestamp (in seconds) for when the run will expire.
 
-      - `failed_at: number`
+      - `failed_at: number or null`
 
         The Unix timestamp (in seconds) for when the run failed.
 
-      - `incomplete_details: object { reason }`
+      - `incomplete_details: object { reason }  or null`
 
         Details on why the run is incomplete. Will be `null` if the run is not incomplete.
 
@@ -2500,7 +2500,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         The instructions that the [assistant](/docs/api-reference/assistants) used for this run.
 
-      - `last_error: object { code, message }`
+      - `last_error: object { code, message }  or null`
 
         The last error associated with this run. Will be `null` if there are no errors.
 
@@ -2518,15 +2518,15 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
           A human-readable description of the error.
 
-      - `max_completion_tokens: number`
+      - `max_completion_tokens: number or null`
 
         The maximum number of completion tokens specified to have been used over the course of the run.
 
-      - `max_prompt_tokens: number`
+      - `max_prompt_tokens: number or null`
 
         The maximum number of prompt tokens specified to have been used over the course of the run.
 
-      - `metadata: Metadata`
+      - `metadata: Metadata or null`
 
         Set of 16 key-value pairs that can be attached to an object. This can be
         useful for storing additional information about the object in a structured
@@ -2549,7 +2549,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         Whether to enable [parallel function calling](/docs/guides/function-calling#configuring-parallel-function-calling) during tool use.
 
-      - `required_action: object { submit_tool_outputs, type }`
+      - `required_action: object { submit_tool_outputs, type }  or null`
 
         Details on the action required to continue the run. Will be `null` if no action is required.
 
@@ -2589,7 +2589,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
           - `"submit_tool_outputs"`
 
-      - `response_format: AssistantResponseFormatOption`
+      - `response_format: AssistantResponseFormatOption or null`
 
         Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
 
@@ -2652,7 +2652,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
               The schema for the response format, described as a JSON Schema object.
               Learn how to build JSON schemas [here](https://json-schema.org/).
 
-            - `strict: optional boolean`
+            - `strict: optional boolean or null`
 
               Whether to enable strict schema adherence when generating the output.
               If set to true, the model will always follow the exact schema defined
@@ -2666,7 +2666,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
             - `"json_schema"`
 
-      - `started_at: number`
+      - `started_at: number or null`
 
         The Unix timestamp (in seconds) for when the run was started.
 
@@ -2696,7 +2696,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         The ID of the [thread](/docs/api-reference/threads) that was executed on as a part of this run.
 
-      - `tool_choice: AssistantToolChoiceOption`
+      - `tool_choice: AssistantToolChoiceOption or null`
 
         Controls which (if any) tool is called by the model.
         `none` means the model will not call any tools and instead generates a message.
@@ -2800,7 +2800,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
               Omitting `parameters` defines a function with an empty parameter list.
 
-            - `strict: optional boolean`
+            - `strict: optional boolean or null`
 
               Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
 
@@ -2810,7 +2810,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
             - `"function"`
 
-      - `truncation_strategy: object { type, last_messages }`
+      - `truncation_strategy: object { type, last_messages }  or null`
 
         Controls for how a thread will be truncated prior to the run. Use this to control the initial context window of the run.
 
@@ -2822,11 +2822,11 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
           - `"last_messages"`
 
-        - `last_messages: optional number`
+        - `last_messages: optional number or null`
 
           The number of most recent messages from the thread when constructing the context for the run.
 
-      - `usage: object { completion_tokens, prompt_tokens, total_tokens }`
+      - `usage: object { completion_tokens, prompt_tokens, total_tokens }  or null`
 
         Usage statistics related to the run. This value will be `null` if the run is not in a terminal state (i.e. `in_progress`, `queued`, etc.).
 
@@ -2842,11 +2842,11 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
           Total number of tokens used (prompt + completion).
 
-      - `temperature: optional number`
+      - `temperature: optional number or null`
 
         The sampling temperature used for this run. If not set, defaults to 1.
 
-      - `top_p: optional number`
+      - `top_p: optional number or null`
 
         The nucleus sampling value used for this run. If not set, defaults to 1.
 
@@ -2978,11 +2978,11 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         The ID of the [assistant](/docs/api-reference/assistants) associated with the run step.
 
-      - `cancelled_at: number`
+      - `cancelled_at: number or null`
 
         The Unix timestamp (in seconds) for when the run step was cancelled.
 
-      - `completed_at: number`
+      - `completed_at: number or null`
 
         The Unix timestamp (in seconds) for when the run step completed.
 
@@ -2990,15 +2990,15 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         The Unix timestamp (in seconds) for when the run step was created.
 
-      - `expired_at: number`
+      - `expired_at: number or null`
 
         The Unix timestamp (in seconds) for when the run step expired. A step is considered expired if the parent run is expired.
 
-      - `failed_at: number`
+      - `failed_at: number or null`
 
         The Unix timestamp (in seconds) for when the run step failed.
 
-      - `last_error: object { code, message }`
+      - `last_error: object { code, message }  or null`
 
         The last error associated with this run step. Will be `null` if there are no errors.
 
@@ -3014,7 +3014,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
           A human-readable description of the error.
 
-      - `metadata: Metadata`
+      - `metadata: Metadata or null`
 
         Set of 16 key-value pairs that can be attached to an object. This can be
         useful for storing additional information about the object in a structured
@@ -3209,7 +3209,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
                   The name of the function.
 
-                - `output: string`
+                - `output: string or null`
 
                   The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet.
 
@@ -3237,7 +3237,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         - `"tool_calls"`
 
-      - `usage: object { completion_tokens, prompt_tokens, total_tokens }`
+      - `usage: object { completion_tokens, prompt_tokens, total_tokens }  or null`
 
         Usage statistics related to the run step. This value will be `null` while the run step's status is `in_progress`.
 
@@ -3433,7 +3433,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
                     The name of the function.
 
-                  - `output: optional string`
+                  - `output: optional string or null`
 
                     The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet.
 
@@ -3507,11 +3507,11 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         The identifier, which can be referenced in API endpoints.
 
-      - `assistant_id: string`
+      - `assistant_id: string or null`
 
         If applicable, the ID of the [assistant](/docs/api-reference/assistants) that authored this message.
 
-      - `attachments: array of object { file_id, tools }`
+      - `attachments: array of object { file_id, tools }  or null`
 
         A list of files attached to the message, and the tools they were added to.
 
@@ -3533,7 +3533,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
               - `"file_search"`
 
-      - `completed_at: number`
+      - `completed_at: number or null`
 
         The Unix timestamp (in seconds) for when the message was completed.
 
@@ -3675,11 +3675,11 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         The Unix timestamp (in seconds) for when the message was created.
 
-      - `incomplete_at: number`
+      - `incomplete_at: number or null`
 
         The Unix timestamp (in seconds) for when the message was marked as incomplete.
 
-      - `incomplete_details: object { reason }`
+      - `incomplete_details: object { reason }  or null`
 
         On an incomplete message, details about why the message is incomplete.
 
@@ -3697,7 +3697,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
           - `"run_failed"`
 
-      - `metadata: Metadata`
+      - `metadata: Metadata or null`
 
         Set of 16 key-value pairs that can be attached to an object. This can be
         useful for storing additional information about the object in a structured
@@ -3720,7 +3720,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         - `"assistant"`
 
-      - `run_id: string`
+      - `run_id: string or null`
 
         The ID of the [run](/docs/api-reference/runs) associated with the creation of this message. Value is `null` when messages are created manually using the create message or create thread endpoints.
 
@@ -3980,11 +3980,11 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
     - `data: ErrorObject`
 
-      - `code: string`
+      - `code: string or null`
 
       - `message: string`
 
-      - `param: string`
+      - `param: string or null`
 
       - `type: string`
 
@@ -4072,7 +4072,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
       Omitting `parameters` defines a function with an empty parameter list.
 
-    - `strict: optional boolean`
+    - `strict: optional boolean or null`
 
       Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
 
@@ -4100,11 +4100,11 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         The identifier, which can be referenced in API endpoints.
 
-      - `assistant_id: string`
+      - `assistant_id: string or null`
 
         If applicable, the ID of the [assistant](/docs/api-reference/assistants) that authored this message.
 
-      - `attachments: array of object { file_id, tools }`
+      - `attachments: array of object { file_id, tools }  or null`
 
         A list of files attached to the message, and the tools they were added to.
 
@@ -4132,7 +4132,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
               - `"file_search"`
 
-      - `completed_at: number`
+      - `completed_at: number or null`
 
         The Unix timestamp (in seconds) for when the message was completed.
 
@@ -4274,11 +4274,11 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         The Unix timestamp (in seconds) for when the message was created.
 
-      - `incomplete_at: number`
+      - `incomplete_at: number or null`
 
         The Unix timestamp (in seconds) for when the message was marked as incomplete.
 
-      - `incomplete_details: object { reason }`
+      - `incomplete_details: object { reason }  or null`
 
         On an incomplete message, details about why the message is incomplete.
 
@@ -4296,7 +4296,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
           - `"run_failed"`
 
-      - `metadata: Metadata`
+      - `metadata: Metadata or null`
 
         Set of 16 key-value pairs that can be attached to an object. This can be
         useful for storing additional information about the object in a structured
@@ -4319,7 +4319,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         - `"assistant"`
 
-      - `run_id: string`
+      - `run_id: string or null`
 
         The ID of the [run](/docs/api-reference/runs) associated with the creation of this message. Value is `null` when messages are created manually using the create message or create thread endpoints.
 
@@ -4595,11 +4595,11 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         The ID of the [assistant](/docs/api-reference/assistants) associated with the run step.
 
-      - `cancelled_at: number`
+      - `cancelled_at: number or null`
 
         The Unix timestamp (in seconds) for when the run step was cancelled.
 
-      - `completed_at: number`
+      - `completed_at: number or null`
 
         The Unix timestamp (in seconds) for when the run step completed.
 
@@ -4607,15 +4607,15 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         The Unix timestamp (in seconds) for when the run step was created.
 
-      - `expired_at: number`
+      - `expired_at: number or null`
 
         The Unix timestamp (in seconds) for when the run step expired. A step is considered expired if the parent run is expired.
 
-      - `failed_at: number`
+      - `failed_at: number or null`
 
         The Unix timestamp (in seconds) for when the run step failed.
 
-      - `last_error: object { code, message }`
+      - `last_error: object { code, message }  or null`
 
         The last error associated with this run step. Will be `null` if there are no errors.
 
@@ -4631,7 +4631,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
           A human-readable description of the error.
 
-      - `metadata: Metadata`
+      - `metadata: Metadata or null`
 
         Set of 16 key-value pairs that can be attached to an object. This can be
         useful for storing additional information about the object in a structured
@@ -4826,7 +4826,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
                   The name of the function.
 
-                - `output: string`
+                - `output: string or null`
 
                   The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet.
 
@@ -4854,7 +4854,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         - `"tool_calls"`
 
-      - `usage: object { completion_tokens, prompt_tokens, total_tokens }`
+      - `usage: object { completion_tokens, prompt_tokens, total_tokens }  or null`
 
         Usage statistics related to the run step. This value will be `null` while the run step's status is `in_progress`.
 
@@ -5050,7 +5050,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
                     The name of the function.
 
-                  - `output: optional string`
+                  - `output: optional string or null`
 
                     The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet.
 
@@ -5134,11 +5134,11 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         The ID of the [assistant](/docs/api-reference/assistants) used for execution of this run.
 
-      - `cancelled_at: number`
+      - `cancelled_at: number or null`
 
         The Unix timestamp (in seconds) for when the run was cancelled.
 
-      - `completed_at: number`
+      - `completed_at: number or null`
 
         The Unix timestamp (in seconds) for when the run was completed.
 
@@ -5146,15 +5146,15 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         The Unix timestamp (in seconds) for when the run was created.
 
-      - `expires_at: number`
+      - `expires_at: number or null`
 
         The Unix timestamp (in seconds) for when the run will expire.
 
-      - `failed_at: number`
+      - `failed_at: number or null`
 
         The Unix timestamp (in seconds) for when the run failed.
 
-      - `incomplete_details: object { reason }`
+      - `incomplete_details: object { reason }  or null`
 
         Details on why the run is incomplete. Will be `null` if the run is not incomplete.
 
@@ -5170,7 +5170,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         The instructions that the [assistant](/docs/api-reference/assistants) used for this run.
 
-      - `last_error: object { code, message }`
+      - `last_error: object { code, message }  or null`
 
         The last error associated with this run. Will be `null` if there are no errors.
 
@@ -5188,15 +5188,15 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
           A human-readable description of the error.
 
-      - `max_completion_tokens: number`
+      - `max_completion_tokens: number or null`
 
         The maximum number of completion tokens specified to have been used over the course of the run.
 
-      - `max_prompt_tokens: number`
+      - `max_prompt_tokens: number or null`
 
         The maximum number of prompt tokens specified to have been used over the course of the run.
 
-      - `metadata: Metadata`
+      - `metadata: Metadata or null`
 
         Set of 16 key-value pairs that can be attached to an object. This can be
         useful for storing additional information about the object in a structured
@@ -5219,7 +5219,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         Whether to enable [parallel function calling](/docs/guides/function-calling#configuring-parallel-function-calling) during tool use.
 
-      - `required_action: object { submit_tool_outputs, type }`
+      - `required_action: object { submit_tool_outputs, type }  or null`
 
         Details on the action required to continue the run. Will be `null` if no action is required.
 
@@ -5259,7 +5259,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
           - `"submit_tool_outputs"`
 
-      - `response_format: AssistantResponseFormatOption`
+      - `response_format: AssistantResponseFormatOption or null`
 
         Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
 
@@ -5322,7 +5322,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
               The schema for the response format, described as a JSON Schema object.
               Learn how to build JSON schemas [here](https://json-schema.org/).
 
-            - `strict: optional boolean`
+            - `strict: optional boolean or null`
 
               Whether to enable strict schema adherence when generating the output.
               If set to true, the model will always follow the exact schema defined
@@ -5336,7 +5336,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
             - `"json_schema"`
 
-      - `started_at: number`
+      - `started_at: number or null`
 
         The Unix timestamp (in seconds) for when the run was started.
 
@@ -5366,7 +5366,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
         The ID of the [thread](/docs/api-reference/threads) that was executed on as a part of this run.
 
-      - `tool_choice: AssistantToolChoiceOption`
+      - `tool_choice: AssistantToolChoiceOption or null`
 
         Controls which (if any) tool is called by the model.
         `none` means the model will not call any tools and instead generates a message.
@@ -5470,7 +5470,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
               Omitting `parameters` defines a function with an empty parameter list.
 
-            - `strict: optional boolean`
+            - `strict: optional boolean or null`
 
               Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
 
@@ -5480,7 +5480,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
             - `"function"`
 
-      - `truncation_strategy: object { type, last_messages }`
+      - `truncation_strategy: object { type, last_messages }  or null`
 
         Controls for how a thread will be truncated prior to the run. Use this to control the initial context window of the run.
 
@@ -5492,11 +5492,11 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
           - `"last_messages"`
 
-        - `last_messages: optional number`
+        - `last_messages: optional number or null`
 
           The number of most recent messages from the thread when constructing the context for the run.
 
-      - `usage: object { completion_tokens, prompt_tokens, total_tokens }`
+      - `usage: object { completion_tokens, prompt_tokens, total_tokens }  or null`
 
         Usage statistics related to the run. This value will be `null` if the run is not in a terminal state (i.e. `in_progress`, `queued`, etc.).
 
@@ -5512,11 +5512,11 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
           Total number of tokens used (prompt + completion).
 
-      - `temperature: optional number`
+      - `temperature: optional number or null`
 
         The sampling temperature used for this run. If not set, defaults to 1.
 
-      - `top_p: optional number`
+      - `top_p: optional number or null`
 
         The nucleus sampling value used for this run. If not set, defaults to 1.
 
@@ -5650,7 +5650,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
       The Unix timestamp (in seconds) for when the thread was created.
 
-    - `metadata: Metadata`
+    - `metadata: Metadata or null`
 
       Set of 16 key-value pairs that can be attached to an object. This can be
       useful for storing additional information about the object in a structured
@@ -5665,7 +5665,7 @@ curl https://api.openai.com/v1/assistants/asst_abc123 \
 
       - `"thread"`
 
-    - `tool_resources: object { code_interpreter, file_search }`
+    - `tool_resources: object { code_interpreter, file_search }  or null`
 
       A set of resources that are made available to the assistant's tools in this thread. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
 

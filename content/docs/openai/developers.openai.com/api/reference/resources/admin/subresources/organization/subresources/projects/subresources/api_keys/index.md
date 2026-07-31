@@ -103,7 +103,7 @@ Returns a list of API keys in the project.
 
     The Unix timestamp (in seconds) of when the API key was created
 
-  - `last_used_at: number`
+  - `last_used_at: number or null`
 
     The Unix timestamp (in seconds) of when the API key was last used.
 
@@ -189,9 +189,9 @@ Returns a list of API keys in the project.
 
   - `"list"`
 
-- `first_id: optional string`
+- `first_id: optional string or null`
 
-- `last_id: optional string`
+- `last_id: optional string or null`
 
 ### Example
 
@@ -304,7 +304,7 @@ Retrieves an API key in the project.
 
     The Unix timestamp (in seconds) of when the API key was created
 
-  - `last_used_at: number`
+  - `last_used_at: number or null`
 
     The Unix timestamp (in seconds) of when the API key was last used.
 
@@ -481,7 +481,7 @@ curl https://api.openai.com/v1/organization/projects/proj_abc/api_keys/key_abc \
 
     The Unix timestamp (in seconds) of when the API key was created
 
-  - `last_used_at: number`
+  - `last_used_at: number or null`
 
     The Unix timestamp (in seconds) of when the API key was last used.
 

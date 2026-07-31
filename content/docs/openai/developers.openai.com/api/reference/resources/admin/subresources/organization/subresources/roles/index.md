@@ -16,7 +16,7 @@ Creates a custom role for the organization.
 
   Unique name for the role.
 
-- `description: optional string`
+- `description: optional string or null`
 
   Optional description of the role.
 
@@ -30,7 +30,7 @@ Creates a custom role for the organization.
 
     Identifier for the role.
 
-  - `description: string`
+  - `description: string or null`
 
     Optional description of the role.
 
@@ -215,7 +215,7 @@ Lists the roles configured for the organization.
 
     Identifier for the role.
 
-  - `description: string`
+  - `description: string or null`
 
     Optional description of the role.
 
@@ -245,7 +245,7 @@ Lists the roles configured for the organization.
 
   Whether more roles are available when paginating.
 
-- `next: string`
+- `next: string or null`
 
   Cursor to fetch the next page of results, or `null` when there are no additional roles.
 
@@ -337,7 +337,7 @@ Retrieves an organization role.
 
     Identifier for the role.
 
-  - `description: string`
+  - `description: string or null`
 
     Optional description of the role.
 
@@ -423,15 +423,15 @@ Updates an existing organization role.
 
 ### Body Parameters
 
-- `description: optional string`
+- `description: optional string or null`
 
   New description for the role.
 
-- `permissions: optional array of string`
+- `permissions: optional array of string or null`
 
   Updated set of permissions for the role.
 
-- `role_name: optional string`
+- `role_name: optional string or null`
 
   New name for the role.
 
@@ -445,7 +445,7 @@ Updates an existing organization role.
 
     Identifier for the role.
 
-  - `description: string`
+  - `description: string or null`
 
     Optional description of the role.
 
@@ -541,7 +541,7 @@ curl -X POST https://api.openai.com/v1/organization/roles/role_01J1F8ROLE01 \
 
     Identifier for the role.
 
-  - `description: string`
+  - `description: string or null`
 
     Optional description of the role.
 

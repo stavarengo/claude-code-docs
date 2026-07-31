@@ -42,7 +42,7 @@ Creates and executes a batch from an uploaded file of requests
 
   Your input file must be formatted as a [JSONL file](/docs/api-reference/batch/request-input), and must be uploaded with the purpose `batch`. The file can contain up to 50,000 requests, and can be up to 200 MB in size.
 
-- `metadata: optional Metadata`
+- `metadata: optional Metadata or null`
 
   Set of 16 key-value pairs that can be attached to an object. This can be
   useful for storing additional information about the object in a structured
@@ -137,7 +137,7 @@ Creates and executes a batch from an uploaded file of requests
 
         An error code identifying the error type.
 
-      - `line: optional number`
+      - `line: optional number or null`
 
         The line number of the input file where the error occurred, if applicable.
 
@@ -145,7 +145,7 @@ Creates and executes a batch from an uploaded file of requests
 
         A human-readable message providing more details about the error.
 
-      - `param: optional string`
+      - `param: optional string or null`
 
         The name of the parameter that caused the error, if applicable.
 
@@ -173,7 +173,7 @@ Creates and executes a batch from an uploaded file of requests
 
     The Unix timestamp (in seconds) for when the batch started processing.
 
-  - `metadata: optional Metadata`
+  - `metadata: optional Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured

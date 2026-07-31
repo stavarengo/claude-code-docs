@@ -34,7 +34,7 @@ List recently generated videos for the current project.
 
     Unique identifier for the video job.
 
-  - `completed_at: number`
+  - `completed_at: number or null`
 
     Unix timestamp (seconds) for when the job completed, if finished.
 
@@ -42,7 +42,7 @@ List recently generated videos for the current project.
 
     Unix timestamp (seconds) for when the job was created.
 
-  - `error: VideoCreateError`
+  - `error: VideoCreateError or null`
 
     Error payload that explains why generation failed, if applicable.
 
@@ -54,7 +54,7 @@ List recently generated videos for the current project.
 
       A human-readable description of the error that was returned.
 
-  - `expires_at: number`
+  - `expires_at: number or null`
 
     Unix timestamp (seconds) for when the downloadable assets expire, if set.
 
@@ -86,11 +86,11 @@ List recently generated videos for the current project.
 
     Approximate completion percentage for the generation task.
 
-  - `prompt: string`
+  - `prompt: string or null`
 
     The prompt that was used to generate the video.
 
-  - `remixed_from_video_id: string`
+  - `remixed_from_video_id: string or null`
 
     Identifier of the source video if this video is a remix.
 
@@ -122,7 +122,7 @@ List recently generated videos for the current project.
 
     - `"failed"`
 
-- `first_id: string`
+- `first_id: string or null`
 
   The ID of the first item in the list.
 
@@ -130,7 +130,7 @@ List recently generated videos for the current project.
 
   Whether there are more items available.
 
-- `last_id: string`
+- `last_id: string or null`
 
   The ID of the last item in the list.
 

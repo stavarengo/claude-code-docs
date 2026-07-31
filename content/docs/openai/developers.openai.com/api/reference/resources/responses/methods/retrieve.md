@@ -68,7 +68,7 @@ Retrieves a model response with the given ID.
 
     Unix timestamp (in seconds) of when this Response was created.
 
-  - `error: ResponseError`
+  - `error: ResponseError or null`
 
     An error object returned when the model fails to generate a Response.
 
@@ -120,7 +120,7 @@ Retrieves a model response with the given ID.
 
       A human-readable description of the error.
 
-  - `incomplete_details: object { reason }`
+  - `incomplete_details: object { reason }  or null`
 
     Details about why the response is incomplete.
 
@@ -132,7 +132,7 @@ Retrieves a model response with the given ID.
 
       - `"content_filter"`
 
-  - `instructions: string or array of EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 29 more`
+  - `instructions: string or array of EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 29 more or null`
 
     A system (or developer) message inserted into the model's context.
 
@@ -218,11 +218,11 @@ Retrieves a model response with the given ID.
 
                 - `"input_image"`
 
-              - `file_id: optional string`
+              - `file_id: optional string or null`
 
                 The ID of the file to be sent to the model.
 
-              - `image_url: optional string`
+              - `image_url: optional string or null`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
@@ -260,7 +260,7 @@ Retrieves a model response with the given ID.
 
                 The content of the file to be sent to the model.
 
-              - `file_id: optional string`
+              - `file_id: optional string or null`
 
                 The ID of the file to be sent to the model.
 
@@ -295,7 +295,7 @@ Retrieves a model response with the given ID.
 
           - `"developer"`
 
-        - `phase: optional "commentary" or "final_answer"`
+        - `phase: optional "commentary" or "final_answer" or null`
 
           Labels an `assistant` message as intermediate commentary (`commentary`) or the final answer (`final_answer`).
           For models like `gpt-5.3-codex` and beyond, when sending follow-up requests, preserve and resend
@@ -528,7 +528,7 @@ Retrieves a model response with the given ID.
 
           - `"message"`
 
-        - `phase: optional "commentary" or "final_answer"`
+        - `phase: optional "commentary" or "final_answer" or null`
 
           Labels an `assistant` message as intermediate commentary (`commentary`) or the final answer (`final_answer`).
           For models like `gpt-5.3-codex` and beyond, when sending follow-up requests, preserve and resend
@@ -572,11 +572,11 @@ Retrieves a model response with the given ID.
 
           - `"file_search_call"`
 
-        - `results: optional array of object { attributes, file_id, filename, 2 more }`
+        - `results: optional array of object { attributes, file_id, filename, 2 more }  or null`
 
           The results of the file search tool call.
 
-          - `attributes: optional map[string or number or boolean]`
+          - `attributes: optional map[string or number or boolean] or null`
 
             Set of 16 key-value pairs that can be attached to an object. This can be
             useful for storing additional information about the object in a structured
@@ -627,11 +627,11 @@ Retrieves a model response with the given ID.
 
             The ID of the pending safety check.
 
-          - `code: optional string`
+          - `code: optional string or null`
 
             The type of the pending safety check.
 
-          - `message: optional string`
+          - `message: optional string or null`
 
             Details about the pending safety check.
 
@@ -688,7 +688,7 @@ Retrieves a model response with the given ID.
 
               The y-coordinate where the click occurred.
 
-            - `keys: optional array of string`
+            - `keys: optional array of string or null`
 
               The keys being held while clicking.
 
@@ -696,7 +696,7 @@ Retrieves a model response with the given ID.
 
             A double click action.
 
-            - `keys: array of string`
+            - `keys: array of string or null`
 
               The keys being held while double-clicking.
 
@@ -743,7 +743,7 @@ Retrieves a model response with the given ID.
 
               - `"drag"`
 
-            - `keys: optional array of string`
+            - `keys: optional array of string or null`
 
               The keys being held while dragging the mouse.
 
@@ -779,7 +779,7 @@ Retrieves a model response with the given ID.
 
               The y-coordinate to move to.
 
-            - `keys: optional array of string`
+            - `keys: optional array of string or null`
 
               The keys being held while moving the mouse.
 
@@ -819,7 +819,7 @@ Retrieves a model response with the given ID.
 
               The y-coordinate where the scroll occurred.
 
-            - `keys: optional array of string`
+            - `keys: optional array of string or null`
 
               The keys being held while scrolling.
 
@@ -921,11 +921,11 @@ Retrieves a model response with the given ID.
 
           - `"computer_call_output"`
 
-        - `id: optional string`
+        - `id: optional string or null`
 
           The ID of the computer tool call output.
 
-        - `acknowledged_safety_checks: optional array of object { id, code, message }`
+        - `acknowledged_safety_checks: optional array of object { id, code, message }  or null`
 
           The safety checks reported by the API that have been acknowledged by the developer.
 
@@ -933,15 +933,15 @@ Retrieves a model response with the given ID.
 
             The ID of the pending safety check.
 
-          - `code: optional string`
+          - `code: optional string or null`
 
             The type of the pending safety check.
 
-          - `message: optional string`
+          - `message: optional string or null`
 
             Details about the pending safety check.
 
-        - `status: optional "in_progress" or "completed" or "incomplete"`
+        - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
           The status of the message input. One of `in_progress`, `completed`, or `incomplete`. Populated when input items are returned via API.
 
@@ -1007,7 +1007,7 @@ Retrieves a model response with the given ID.
 
               - `"open_page"`
 
-            - `url: optional string`
+            - `url: optional string or null`
 
               The URL opened by the model.
 
@@ -1074,7 +1074,7 @@ Retrieves a model response with the given ID.
 
           The unique ID of the function tool call.
 
-        - `caller: optional object { type }  or object { caller_id, type }`
+        - `caller: optional object { type }  or object { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -1109,7 +1109,7 @@ Retrieves a model response with the given ID.
 
           - `"incomplete"`
 
-      - `FunctionCallOutput object { call_id, output, type, 3 more }`
+      - `FunctionCallOutput object { call_id, output, type, 5 more }`
 
         The output of a function tool call.
 
@@ -1143,7 +1143,7 @@ Retrieves a model response with the given ID.
 
                 - `"input_text"`
 
-              - `prompt_cache_breakpoint: optional object { mode }`
+              - `prompt_cache_breakpoint: optional object { mode }  or null`
 
                 Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -1163,7 +1163,7 @@ Retrieves a model response with the given ID.
 
                 - `"input_image"`
 
-              - `detail: optional "low" or "high" or "auto" or "original"`
+              - `detail: optional "low" or "high" or "auto" or "original" or null`
 
                 The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -1175,15 +1175,15 @@ Retrieves a model response with the given ID.
 
                 - `"original"`
 
-              - `file_id: optional string`
+              - `file_id: optional string or null`
 
                 The ID of the file to be sent to the model.
 
-              - `image_url: optional string`
+              - `image_url: optional string or null`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
-              - `prompt_cache_breakpoint: optional object { mode }`
+              - `prompt_cache_breakpoint: optional object { mode }  or null`
 
                 Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -1213,23 +1213,23 @@ Retrieves a model response with the given ID.
 
                 - `"high"`
 
-              - `file_data: optional string`
+              - `file_data: optional string or null`
 
                 The base64-encoded data of the file to be sent to the model.
 
-              - `file_id: optional string`
+              - `file_id: optional string or null`
 
                 The ID of the file to be sent to the model.
 
-              - `file_url: optional string`
+              - `file_url: optional string or null`
 
                 The URL of the file to be sent to the model.
 
-              - `filename: optional string`
+              - `filename: optional string or null`
 
                 The name of the file to be sent to the model.
 
-              - `prompt_cache_breakpoint: optional object { mode }`
+              - `prompt_cache_breakpoint: optional object { mode }  or null`
 
                 Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -1245,11 +1245,11 @@ Retrieves a model response with the given ID.
 
           - `"function_call_output"`
 
-        - `id: optional string`
+        - `id: optional string or null`
 
           The unique ID of the function tool call output. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }`
+        - `caller: optional object { type }  or object { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -1273,7 +1273,15 @@ Retrieves a model response with the given ID.
 
               - `"program"`
 
-        - `status: optional "in_progress" or "completed" or "incomplete"`
+        - `name: optional string or null`
+
+          The name of the tool that produced the output.
+
+        - `namespace: optional string or null`
+
+          The namespace of the tool that produced the output.
+
+        - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
           The status of the item. One of `in_progress`, `completed`, or `incomplete`. Populated when items are returned via API.
 
@@ -1295,11 +1303,11 @@ Retrieves a model response with the given ID.
 
           - `"tool_search_call"`
 
-        - `id: optional string`
+        - `id: optional string or null`
 
           The unique ID of this tool search call.
 
-        - `call_id: optional string`
+        - `call_id: optional string or null`
 
           The unique ID of the tool search call generated by the model.
 
@@ -1311,7 +1319,7 @@ Retrieves a model response with the given ID.
 
           - `"client"`
 
-        - `status: optional "in_progress" or "completed" or "incomplete"`
+        - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
           The status of the tool search call.
 
@@ -1335,11 +1343,11 @@ Retrieves a model response with the given ID.
 
               The name of the function to call.
 
-            - `parameters: map[unknown]`
+            - `parameters: map[unknown] or null`
 
               A JSON schema object describing the parameters of the function.
 
-            - `strict: boolean`
+            - `strict: boolean or null`
 
               Whether strict parameter validation is enforced for this function tool.
 
@@ -1349,7 +1357,7 @@ Retrieves a model response with the given ID.
 
               - `"function"`
 
-            - `allowed_callers: optional array of "direct" or "programmatic"`
+            - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
 
@@ -1361,11 +1369,11 @@ Retrieves a model response with the given ID.
 
               Whether this function is deferred and loaded via tool search.
 
-            - `description: optional string`
+            - `description: optional string or null`
 
               A description of the function. Used by the model to determine whether or not to call the function.
 
-            - `output_schema: optional map[unknown]`
+            - `output_schema: optional map[unknown] or null`
 
               A JSON schema object describing the JSON value encoded in string outputs for this function.
 
@@ -1383,7 +1391,7 @@ Retrieves a model response with the given ID.
 
               The IDs of the vector stores to search.
 
-            - `filters: optional ComparisonFilter or CompoundFilter`
+            - `filters: optional ComparisonFilter or CompoundFilter or null`
 
               A filter to apply.
 
@@ -1549,11 +1557,11 @@ Retrieves a model response with the given ID.
 
               - `"web_search_2025_08_26"`
 
-            - `filters: optional object { allowed_domains }`
+            - `filters: optional object { allowed_domains }  or null`
 
               Filters for the search.
 
-              - `allowed_domains: optional array of string`
+              - `allowed_domains: optional array of string or null`
 
                 Allowed domains for the search. If not provided, all domains are allowed.
                 Subdomains of the provided domains are allowed as well.
@@ -1570,23 +1578,23 @@ Retrieves a model response with the given ID.
 
               - `"high"`
 
-            - `user_location: optional object { city, country, region, 2 more }`
+            - `user_location: optional object { city, country, region, 2 more }  or null`
 
               The approximate location of the user.
 
-              - `city: optional string`
+              - `city: optional string or null`
 
                 Free text input for the city of the user, e.g. `San Francisco`.
 
-              - `country: optional string`
+              - `country: optional string or null`
 
                 The two-letter [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1) of the user, e.g. `US`.
 
-              - `region: optional string`
+              - `region: optional string or null`
 
                 Free text input for the region of the user, e.g. `California`.
 
-              - `timezone: optional string`
+              - `timezone: optional string or null`
 
                 The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
@@ -1611,7 +1619,7 @@ Retrieves a model response with the given ID.
 
               - `"mcp"`
 
-            - `allowed_callers: optional array of "direct" or "programmatic"`
+            - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
 
@@ -1619,7 +1627,7 @@ Retrieves a model response with the given ID.
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }`
+            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -1684,12 +1692,12 @@ Retrieves a model response with the given ID.
 
               Whether this MCP tool is deferred and discovered via tool search.
 
-            - `headers: optional map[string]`
+            - `headers: optional map[string] or null`
 
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never"`
+            - `require_approval: optional object { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -1779,7 +1787,7 @@ Retrieves a model response with the given ID.
 
                   An optional list of uploaded files to make available to your code.
 
-                - `memory_limit: optional "1g" or "4g" or "16g" or "64g"`
+                - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
                   The memory limit for the code interpreter container.
 
@@ -1837,7 +1845,7 @@ Retrieves a model response with the given ID.
 
               - `"code_interpreter"`
 
-            - `allowed_callers: optional array of "direct" or "programmatic"`
+            - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
 
@@ -1884,7 +1892,7 @@ Retrieves a model response with the given ID.
 
               - `"auto"`
 
-            - `input_fidelity: optional "high" or "low"`
+            - `input_fidelity: optional "high" or "low" or null`
 
               Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
 
@@ -1999,7 +2007,7 @@ Retrieves a model response with the given ID.
 
               - `"shell"`
 
-            - `allowed_callers: optional array of "direct" or "programmatic"`
+            - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
 
@@ -2007,7 +2015,7 @@ Retrieves a model response with the given ID.
 
               - `"programmatic"`
 
-            - `environment: optional ContainerAuto or LocalEnvironment or ContainerReference`
+            - `environment: optional ContainerAuto or LocalEnvironment or ContainerReference or null`
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
@@ -2021,7 +2029,7 @@ Retrieves a model response with the given ID.
 
                   An optional list of uploaded files to make available to your code.
 
-                - `memory_limit: optional "1g" or "4g" or "16g" or "64g"`
+                - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
                   The memory limit for the container.
 
@@ -2147,7 +2155,7 @@ Retrieves a model response with the given ID.
 
               - `"custom"`
 
-            - `allowed_callers: optional array of "direct" or "programmatic"`
+            - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
 
@@ -2223,7 +2231,7 @@ Retrieves a model response with the given ID.
 
                   - `"function"`
 
-                - `allowed_callers: optional array of "direct" or "programmatic"`
+                - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
 
@@ -2235,15 +2243,15 @@ Retrieves a model response with the given ID.
 
                   Whether this function should be deferred and discovered via tool search.
 
-                - `description: optional string`
+                - `description: optional string or null`
 
-                - `output_schema: optional map[unknown]`
+                - `output_schema: optional map[unknown] or null`
 
                   A JSON Schema describing the JSON value encoded in string outputs for this function tool. This does not describe content-array outputs.
 
-                - `parameters: optional unknown`
+                - `parameters: optional unknown or null`
 
-                - `strict: optional boolean`
+                - `strict: optional boolean or null`
 
                   Whether to enforce strict parameter validation. If omitted, Responses attempts to use strict validation when the schema is compatible, and falls back to non-strict validation otherwise.
 
@@ -2261,7 +2269,7 @@ Retrieves a model response with the given ID.
 
                   - `"custom"`
 
-                - `allowed_callers: optional array of "direct" or "programmatic"`
+                - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
 
@@ -2297,7 +2305,7 @@ Retrieves a model response with the given ID.
 
               - `"tool_search"`
 
-            - `description: optional string`
+            - `description: optional string or null`
 
               Description shown to the model for a client-executed tool search tool.
 
@@ -2309,7 +2317,7 @@ Retrieves a model response with the given ID.
 
               - `"client"`
 
-            - `parameters: optional unknown`
+            - `parameters: optional unknown or null`
 
               Parameter schema for a client-executed tool search tool.
 
@@ -2341,7 +2349,7 @@ Retrieves a model response with the given ID.
 
               - `"high"`
 
-            - `user_location: optional object { type, city, country, 2 more }`
+            - `user_location: optional object { type, city, country, 2 more }  or null`
 
               The user's location.
 
@@ -2351,19 +2359,19 @@ Retrieves a model response with the given ID.
 
                 - `"approximate"`
 
-              - `city: optional string`
+              - `city: optional string or null`
 
                 Free text input for the city of the user, e.g. `San Francisco`.
 
-              - `country: optional string`
+              - `country: optional string or null`
 
                 The two-letter [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1) of the user, e.g. `US`.
 
-              - `region: optional string`
+              - `region: optional string or null`
 
                 Free text input for the region of the user, e.g. `California`.
 
-              - `timezone: optional string`
+              - `timezone: optional string or null`
 
                 The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
@@ -2377,7 +2385,7 @@ Retrieves a model response with the given ID.
 
               - `"apply_patch"`
 
-            - `allowed_callers: optional array of "direct" or "programmatic"`
+            - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
 
@@ -2391,11 +2399,11 @@ Retrieves a model response with the given ID.
 
           - `"tool_search_output"`
 
-        - `id: optional string`
+        - `id: optional string or null`
 
           The unique ID of this tool search output.
 
-        - `call_id: optional string`
+        - `call_id: optional string or null`
 
           The unique ID of the tool search call generated by the model.
 
@@ -2407,7 +2415,7 @@ Retrieves a model response with the given ID.
 
           - `"client"`
 
-        - `status: optional "in_progress" or "completed" or "incomplete"`
+        - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
           The status of the tool search output.
 
@@ -2437,11 +2445,11 @@ Retrieves a model response with the given ID.
 
               The name of the function to call.
 
-            - `parameters: map[unknown]`
+            - `parameters: map[unknown] or null`
 
               A JSON schema object describing the parameters of the function.
 
-            - `strict: boolean`
+            - `strict: boolean or null`
 
               Whether strict parameter validation is enforced for this function tool.
 
@@ -2451,7 +2459,7 @@ Retrieves a model response with the given ID.
 
               - `"function"`
 
-            - `allowed_callers: optional array of "direct" or "programmatic"`
+            - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
 
@@ -2463,11 +2471,11 @@ Retrieves a model response with the given ID.
 
               Whether this function is deferred and loaded via tool search.
 
-            - `description: optional string`
+            - `description: optional string or null`
 
               A description of the function. Used by the model to determine whether or not to call the function.
 
-            - `output_schema: optional map[unknown]`
+            - `output_schema: optional map[unknown] or null`
 
               A JSON schema object describing the JSON value encoded in string outputs for this function.
 
@@ -2485,7 +2493,7 @@ Retrieves a model response with the given ID.
 
               The IDs of the vector stores to search.
 
-            - `filters: optional ComparisonFilter or CompoundFilter`
+            - `filters: optional ComparisonFilter or CompoundFilter or null`
 
               A filter to apply.
 
@@ -2584,11 +2592,11 @@ Retrieves a model response with the given ID.
 
               - `"web_search_2025_08_26"`
 
-            - `filters: optional object { allowed_domains }`
+            - `filters: optional object { allowed_domains }  or null`
 
               Filters for the search.
 
-              - `allowed_domains: optional array of string`
+              - `allowed_domains: optional array of string or null`
 
                 Allowed domains for the search. If not provided, all domains are allowed.
                 Subdomains of the provided domains are allowed as well.
@@ -2605,23 +2613,23 @@ Retrieves a model response with the given ID.
 
               - `"high"`
 
-            - `user_location: optional object { city, country, region, 2 more }`
+            - `user_location: optional object { city, country, region, 2 more }  or null`
 
               The approximate location of the user.
 
-              - `city: optional string`
+              - `city: optional string or null`
 
                 Free text input for the city of the user, e.g. `San Francisco`.
 
-              - `country: optional string`
+              - `country: optional string or null`
 
                 The two-letter [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1) of the user, e.g. `US`.
 
-              - `region: optional string`
+              - `region: optional string or null`
 
                 Free text input for the region of the user, e.g. `California`.
 
-              - `timezone: optional string`
+              - `timezone: optional string or null`
 
                 The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
@@ -2646,7 +2654,7 @@ Retrieves a model response with the given ID.
 
               - `"mcp"`
 
-            - `allowed_callers: optional array of "direct" or "programmatic"`
+            - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
 
@@ -2654,7 +2662,7 @@ Retrieves a model response with the given ID.
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }`
+            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -2719,12 +2727,12 @@ Retrieves a model response with the given ID.
 
               Whether this MCP tool is deferred and discovered via tool search.
 
-            - `headers: optional map[string]`
+            - `headers: optional map[string] or null`
 
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never"`
+            - `require_approval: optional object { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -2814,7 +2822,7 @@ Retrieves a model response with the given ID.
 
                   An optional list of uploaded files to make available to your code.
 
-                - `memory_limit: optional "1g" or "4g" or "16g" or "64g"`
+                - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
                   The memory limit for the code interpreter container.
 
@@ -2840,7 +2848,7 @@ Retrieves a model response with the given ID.
 
               - `"code_interpreter"`
 
-            - `allowed_callers: optional array of "direct" or "programmatic"`
+            - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
 
@@ -2887,7 +2895,7 @@ Retrieves a model response with the given ID.
 
               - `"auto"`
 
-            - `input_fidelity: optional "high" or "low"`
+            - `input_fidelity: optional "high" or "low" or null`
 
               Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
 
@@ -3002,7 +3010,7 @@ Retrieves a model response with the given ID.
 
               - `"shell"`
 
-            - `allowed_callers: optional array of "direct" or "programmatic"`
+            - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
 
@@ -3010,7 +3018,7 @@ Retrieves a model response with the given ID.
 
               - `"programmatic"`
 
-            - `environment: optional ContainerAuto or LocalEnvironment or ContainerReference`
+            - `environment: optional ContainerAuto or LocalEnvironment or ContainerReference or null`
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
@@ -3032,7 +3040,7 @@ Retrieves a model response with the given ID.
 
               - `"custom"`
 
-            - `allowed_callers: optional array of "direct" or "programmatic"`
+            - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
 
@@ -3076,7 +3084,7 @@ Retrieves a model response with the given ID.
 
                   - `"function"`
 
-                - `allowed_callers: optional array of "direct" or "programmatic"`
+                - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
 
@@ -3088,15 +3096,15 @@ Retrieves a model response with the given ID.
 
                   Whether this function should be deferred and discovered via tool search.
 
-                - `description: optional string`
+                - `description: optional string or null`
 
-                - `output_schema: optional map[unknown]`
+                - `output_schema: optional map[unknown] or null`
 
                   A JSON Schema describing the JSON value encoded in string outputs for this function tool. This does not describe content-array outputs.
 
-                - `parameters: optional unknown`
+                - `parameters: optional unknown or null`
 
-                - `strict: optional boolean`
+                - `strict: optional boolean or null`
 
                   Whether to enforce strict parameter validation. If omitted, Responses attempts to use strict validation when the schema is compatible, and falls back to non-strict validation otherwise.
 
@@ -3114,7 +3122,7 @@ Retrieves a model response with the given ID.
 
                   - `"custom"`
 
-                - `allowed_callers: optional array of "direct" or "programmatic"`
+                - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
 
@@ -3150,7 +3158,7 @@ Retrieves a model response with the given ID.
 
               - `"tool_search"`
 
-            - `description: optional string`
+            - `description: optional string or null`
 
               Description shown to the model for a client-executed tool search tool.
 
@@ -3162,7 +3170,7 @@ Retrieves a model response with the given ID.
 
               - `"client"`
 
-            - `parameters: optional unknown`
+            - `parameters: optional unknown or null`
 
               Parameter schema for a client-executed tool search tool.
 
@@ -3194,7 +3202,7 @@ Retrieves a model response with the given ID.
 
               - `"high"`
 
-            - `user_location: optional object { type, city, country, 2 more }`
+            - `user_location: optional object { type, city, country, 2 more }  or null`
 
               The user's location.
 
@@ -3204,19 +3212,19 @@ Retrieves a model response with the given ID.
 
                 - `"approximate"`
 
-              - `city: optional string`
+              - `city: optional string or null`
 
                 Free text input for the city of the user, e.g. `San Francisco`.
 
-              - `country: optional string`
+              - `country: optional string or null`
 
                 The two-letter [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1) of the user, e.g. `US`.
 
-              - `region: optional string`
+              - `region: optional string or null`
 
                 Free text input for the region of the user, e.g. `California`.
 
-              - `timezone: optional string`
+              - `timezone: optional string or null`
 
                 The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
@@ -3230,7 +3238,7 @@ Retrieves a model response with the given ID.
 
               - `"apply_patch"`
 
-            - `allowed_callers: optional array of "direct" or "programmatic"`
+            - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
 
@@ -3244,7 +3252,7 @@ Retrieves a model response with the given ID.
 
           - `"additional_tools"`
 
-        - `id: optional string`
+        - `id: optional string or null`
 
           The unique ID of this additional tools item.
 
@@ -3293,7 +3301,7 @@ Retrieves a model response with the given ID.
 
             - `"reasoning_text"`
 
-        - `encrypted_content: optional string`
+        - `encrypted_content: optional string or null`
 
           The encrypted content of the reasoning item. This is populated by default
           for reasoning items returned by `POST /v1/responses` and WebSocket
@@ -3324,7 +3332,7 @@ Retrieves a model response with the given ID.
 
           - `"compaction"`
 
-        - `id: optional string`
+        - `id: optional string or null`
 
           The ID of the compaction item.
 
@@ -3336,7 +3344,7 @@ Retrieves a model response with the given ID.
 
           The unique ID of the image generation call.
 
-        - `result: string`
+        - `result: string or null`
 
           The generated image encoded in base64.
 
@@ -3366,7 +3374,7 @@ Retrieves a model response with the given ID.
 
           The unique ID of the code interpreter tool call.
 
-        - `code: string`
+        - `code: string or null`
 
           The code to run, or null if not available.
 
@@ -3374,7 +3382,7 @@ Retrieves a model response with the given ID.
 
           The ID of the container used to run the code.
 
-        - `outputs: array of object { logs, type }  or object { type, url }`
+        - `outputs: array of object { logs, type }  or object { type, url }  or null`
 
           The outputs generated by the code interpreter, such as logs or images.
           Can be null if no outputs are available.
@@ -3453,15 +3461,15 @@ Retrieves a model response with the given ID.
 
             - `"exec"`
 
-          - `timeout_ms: optional number`
+          - `timeout_ms: optional number or null`
 
             Optional timeout in milliseconds for the command.
 
-          - `user: optional string`
+          - `user: optional string or null`
 
             Optional user to run the command as.
 
-          - `working_directory: optional string`
+          - `working_directory: optional string or null`
 
             Optional working directory to run the command in.
 
@@ -3503,7 +3511,7 @@ Retrieves a model response with the given ID.
 
           - `"local_shell_call_output"`
 
-        - `status: optional "in_progress" or "completed" or "incomplete"`
+        - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
           The status of the item. One of `in_progress`, `completed`, or `incomplete`.
 
@@ -3525,11 +3533,11 @@ Retrieves a model response with the given ID.
 
             Ordered shell commands for the execution environment to run.
 
-          - `max_output_length: optional number`
+          - `max_output_length: optional number or null`
 
             Maximum number of UTF-8 characters to capture from combined stdout and stderr output.
 
-          - `timeout_ms: optional number`
+          - `timeout_ms: optional number or null`
 
             Maximum wall-clock time in milliseconds to allow the shell commands to run.
 
@@ -3543,11 +3551,11 @@ Retrieves a model response with the given ID.
 
           - `"shell_call"`
 
-        - `id: optional string`
+        - `id: optional string or null`
 
           The unique ID of the shell tool call. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }`
+        - `caller: optional object { type }  or object { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -3571,7 +3579,7 @@ Retrieves a model response with the given ID.
 
               - `"program"`
 
-        - `environment: optional LocalEnvironment or ContainerReference`
+        - `environment: optional LocalEnvironment or ContainerReference or null`
 
           The environment to execute the shell commands in.
 
@@ -3579,7 +3587,7 @@ Retrieves a model response with the given ID.
 
           - `ContainerReference object { container_id, type }`
 
-        - `status: optional "in_progress" or "completed" or "incomplete"`
+        - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
           The status of the shell call. One of `in_progress`, `completed`, or `incomplete`.
 
@@ -3643,11 +3651,11 @@ Retrieves a model response with the given ID.
 
           - `"shell_call_output"`
 
-        - `id: optional string`
+        - `id: optional string or null`
 
           The unique ID of the shell tool call output. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }`
+        - `caller: optional object { type }  or object { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -3671,11 +3679,11 @@ Retrieves a model response with the given ID.
 
               - `"program"`
 
-        - `max_output_length: optional number`
+        - `max_output_length: optional number or null`
 
           The maximum number of UTF-8 characters captured for this shell call's combined output.
 
-        - `status: optional "in_progress" or "completed" or "incomplete"`
+        - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
           The status of the shell call output.
 
@@ -3761,11 +3769,11 @@ Retrieves a model response with the given ID.
 
           - `"apply_patch_call"`
 
-        - `id: optional string`
+        - `id: optional string or null`
 
           The unique ID of the apply patch tool call. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }`
+        - `caller: optional object { type }  or object { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -3811,11 +3819,11 @@ Retrieves a model response with the given ID.
 
           - `"apply_patch_call_output"`
 
-        - `id: optional string`
+        - `id: optional string or null`
 
           The unique ID of the apply patch tool call output. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }`
+        - `caller: optional object { type }  or object { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -3839,7 +3847,7 @@ Retrieves a model response with the given ID.
 
               - `"program"`
 
-        - `output: optional string`
+        - `output: optional string or null`
 
           Optional human-readable log text from the apply patch tool (e.g., patch results or errors).
 
@@ -3867,11 +3875,11 @@ Retrieves a model response with the given ID.
 
             The name of the tool.
 
-          - `annotations: optional unknown`
+          - `annotations: optional unknown or null`
 
             Additional annotations about the tool.
 
-          - `description: optional string`
+          - `description: optional string or null`
 
             The description of the tool.
 
@@ -3881,7 +3889,7 @@ Retrieves a model response with the given ID.
 
           - `"mcp_list_tools"`
 
-        - `error: optional string`
+        - `error: optional string or null`
 
           Error message if the server could not list tools.
 
@@ -3929,11 +3937,11 @@ Retrieves a model response with the given ID.
 
           - `"mcp_approval_response"`
 
-        - `id: optional string`
+        - `id: optional string or null`
 
           The unique ID of the approval response
 
-        - `reason: optional string`
+        - `reason: optional string or null`
 
           Optional reason for the decision.
 
@@ -3963,16 +3971,16 @@ Retrieves a model response with the given ID.
 
           - `"mcp_call"`
 
-        - `approval_request_id: optional string`
+        - `approval_request_id: optional string or null`
 
           Unique identifier for the MCP tool call approval request.
           Include this value in a subsequent `mcp_approval_response` input to approve or reject the corresponding tool call.
 
-        - `error: optional string`
+        - `error: optional string or null`
 
           The error from the tool call, if any.
 
-        - `output: optional string`
+        - `output: optional string or null`
 
           The output from the tool call.
 
@@ -4033,7 +4041,7 @@ Retrieves a model response with the given ID.
 
           The unique ID of the custom tool call output in the OpenAI platform.
 
-        - `caller: optional object { type }  or object { caller_id, type }`
+        - `caller: optional object { type }  or object { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -4083,7 +4091,7 @@ Retrieves a model response with the given ID.
 
           The unique ID of the custom tool call in the OpenAI platform.
 
-        - `caller: optional object { type }  or object { caller_id, type }`
+        - `caller: optional object { type }  or object { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -4125,7 +4133,7 @@ Retrieves a model response with the given ID.
 
           The ID of the item to reference.
 
-        - `type: optional "item_reference"`
+        - `type: optional "item_reference" or null`
 
           The type of item to reference. Always `item_reference`.
 
@@ -4183,7 +4191,7 @@ Retrieves a model response with the given ID.
 
           - `"program_output"`
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -4450,11 +4458,11 @@ Retrieves a model response with the given ID.
 
         - `"file_search_call"`
 
-      - `results: optional array of object { attributes, file_id, filename, 2 more }`
+      - `results: optional array of object { attributes, file_id, filename, 2 more }  or null`
 
         The results of the file search tool call.
 
-        - `attributes: optional map[string or number or boolean]`
+        - `attributes: optional map[string or number or boolean] or null`
 
           Set of 16 key-value pairs that can be attached to an object. This can be
           useful for storing additional information about the object in a structured
@@ -4511,7 +4519,7 @@ Retrieves a model response with the given ID.
 
         The unique ID of the function tool call.
 
-      - `caller: optional object { type }  or object { caller_id, type }`
+      - `caller: optional object { type }  or object { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -4546,7 +4554,7 @@ Retrieves a model response with the given ID.
 
         - `"incomplete"`
 
-    - `FunctionCallOutput object { id, call_id, output, 4 more }`
+    - `FunctionCallOutput object { id, call_id, output, 6 more }`
 
       - `id: string`
 
@@ -4598,7 +4606,7 @@ Retrieves a model response with the given ID.
 
         - `"function_call_output"`
 
-      - `caller: optional object { type }  or object { caller_id, type }`
+      - `caller: optional object { type }  or object { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -4625,6 +4633,14 @@ Retrieves a model response with the given ID.
       - `created_by: optional string`
 
         The identifier of the actor that created the item.
+
+      - `name: optional string`
+
+        The name of the tool that produced the output.
+
+      - `namespace: optional string`
+
+        The namespace of the tool that produced the output.
 
     - `WebSearchCall object { id, action, status, type }`
 
@@ -4682,7 +4698,7 @@ Retrieves a model response with the given ID.
 
             - `"open_page"`
 
-          - `url: optional string`
+          - `url: optional string or null`
 
             The URL opened by the model.
 
@@ -4743,11 +4759,11 @@ Retrieves a model response with the given ID.
 
           The ID of the pending safety check.
 
-        - `code: optional string`
+        - `code: optional string or null`
 
           The type of the pending safety check.
 
-        - `message: optional string`
+        - `message: optional string or null`
 
           Details about the pending safety check.
 
@@ -4819,11 +4835,11 @@ Retrieves a model response with the given ID.
 
           The ID of the pending safety check.
 
-        - `code: optional string`
+        - `code: optional string or null`
 
           The type of the pending safety check.
 
-        - `message: optional string`
+        - `message: optional string or null`
 
           Details about the pending safety check.
 
@@ -4874,7 +4890,7 @@ Retrieves a model response with the given ID.
 
           - `"reasoning_text"`
 
-      - `encrypted_content: optional string`
+      - `encrypted_content: optional string or null`
 
         The encrypted content of the reasoning item. This is populated by default
         for reasoning items returned by `POST /v1/responses` and WebSocket
@@ -4953,7 +4969,7 @@ Retrieves a model response with the given ID.
 
         Arguments used for the tool search call.
 
-      - `call_id: string`
+      - `call_id: string or null`
 
         The unique ID of the tool search call generated by the model.
 
@@ -4991,7 +5007,7 @@ Retrieves a model response with the given ID.
 
         The unique ID of the tool search output item.
 
-      - `call_id: string`
+      - `call_id: string or null`
 
         The unique ID of the tool search call generated by the model.
 
@@ -5025,11 +5041,11 @@ Retrieves a model response with the given ID.
 
             The name of the function to call.
 
-          - `parameters: map[unknown]`
+          - `parameters: map[unknown] or null`
 
             A JSON schema object describing the parameters of the function.
 
-          - `strict: boolean`
+          - `strict: boolean or null`
 
             Whether strict parameter validation is enforced for this function tool.
 
@@ -5039,7 +5055,7 @@ Retrieves a model response with the given ID.
 
             - `"function"`
 
-          - `allowed_callers: optional array of "direct" or "programmatic"`
+          - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
 
@@ -5051,11 +5067,11 @@ Retrieves a model response with the given ID.
 
             Whether this function is deferred and loaded via tool search.
 
-          - `description: optional string`
+          - `description: optional string or null`
 
             A description of the function. Used by the model to determine whether or not to call the function.
 
-          - `output_schema: optional map[unknown]`
+          - `output_schema: optional map[unknown] or null`
 
             A JSON schema object describing the JSON value encoded in string outputs for this function.
 
@@ -5073,7 +5089,7 @@ Retrieves a model response with the given ID.
 
             The IDs of the vector stores to search.
 
-          - `filters: optional ComparisonFilter or CompoundFilter`
+          - `filters: optional ComparisonFilter or CompoundFilter or null`
 
             A filter to apply.
 
@@ -5172,11 +5188,11 @@ Retrieves a model response with the given ID.
 
             - `"web_search_2025_08_26"`
 
-          - `filters: optional object { allowed_domains }`
+          - `filters: optional object { allowed_domains }  or null`
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string`
+            - `allowed_domains: optional array of string or null`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
@@ -5193,23 +5209,23 @@ Retrieves a model response with the given ID.
 
             - `"high"`
 
-          - `user_location: optional object { city, country, region, 2 more }`
+          - `user_location: optional object { city, country, region, 2 more }  or null`
 
             The approximate location of the user.
 
-            - `city: optional string`
+            - `city: optional string or null`
 
               Free text input for the city of the user, e.g. `San Francisco`.
 
-            - `country: optional string`
+            - `country: optional string or null`
 
               The two-letter [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1) of the user, e.g. `US`.
 
-            - `region: optional string`
+            - `region: optional string or null`
 
               Free text input for the region of the user, e.g. `California`.
 
-            - `timezone: optional string`
+            - `timezone: optional string or null`
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
@@ -5234,7 +5250,7 @@ Retrieves a model response with the given ID.
 
             - `"mcp"`
 
-          - `allowed_callers: optional array of "direct" or "programmatic"`
+          - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
 
@@ -5242,7 +5258,7 @@ Retrieves a model response with the given ID.
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }`
+          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -5307,12 +5323,12 @@ Retrieves a model response with the given ID.
 
             Whether this MCP tool is deferred and discovered via tool search.
 
-          - `headers: optional map[string]`
+          - `headers: optional map[string] or null`
 
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never"`
+          - `require_approval: optional object { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -5402,7 +5418,7 @@ Retrieves a model response with the given ID.
 
                 An optional list of uploaded files to make available to your code.
 
-              - `memory_limit: optional "1g" or "4g" or "16g" or "64g"`
+              - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
                 The memory limit for the code interpreter container.
 
@@ -5428,7 +5444,7 @@ Retrieves a model response with the given ID.
 
             - `"code_interpreter"`
 
-          - `allowed_callers: optional array of "direct" or "programmatic"`
+          - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
 
@@ -5475,7 +5491,7 @@ Retrieves a model response with the given ID.
 
             - `"auto"`
 
-          - `input_fidelity: optional "high" or "low"`
+          - `input_fidelity: optional "high" or "low" or null`
 
             Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
 
@@ -5590,7 +5606,7 @@ Retrieves a model response with the given ID.
 
             - `"shell"`
 
-          - `allowed_callers: optional array of "direct" or "programmatic"`
+          - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
 
@@ -5598,7 +5614,7 @@ Retrieves a model response with the given ID.
 
             - `"programmatic"`
 
-          - `environment: optional ContainerAuto or LocalEnvironment or ContainerReference`
+          - `environment: optional ContainerAuto or LocalEnvironment or ContainerReference or null`
 
             - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
@@ -5620,7 +5636,7 @@ Retrieves a model response with the given ID.
 
             - `"custom"`
 
-          - `allowed_callers: optional array of "direct" or "programmatic"`
+          - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
 
@@ -5664,7 +5680,7 @@ Retrieves a model response with the given ID.
 
                 - `"function"`
 
-              - `allowed_callers: optional array of "direct" or "programmatic"`
+              - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
 
@@ -5676,15 +5692,15 @@ Retrieves a model response with the given ID.
 
                 Whether this function should be deferred and discovered via tool search.
 
-              - `description: optional string`
+              - `description: optional string or null`
 
-              - `output_schema: optional map[unknown]`
+              - `output_schema: optional map[unknown] or null`
 
                 A JSON Schema describing the JSON value encoded in string outputs for this function tool. This does not describe content-array outputs.
 
-              - `parameters: optional unknown`
+              - `parameters: optional unknown or null`
 
-              - `strict: optional boolean`
+              - `strict: optional boolean or null`
 
                 Whether to enforce strict parameter validation. If omitted, Responses attempts to use strict validation when the schema is compatible, and falls back to non-strict validation otherwise.
 
@@ -5702,7 +5718,7 @@ Retrieves a model response with the given ID.
 
                 - `"custom"`
 
-              - `allowed_callers: optional array of "direct" or "programmatic"`
+              - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
 
@@ -5738,7 +5754,7 @@ Retrieves a model response with the given ID.
 
             - `"tool_search"`
 
-          - `description: optional string`
+          - `description: optional string or null`
 
             Description shown to the model for a client-executed tool search tool.
 
@@ -5750,7 +5766,7 @@ Retrieves a model response with the given ID.
 
             - `"client"`
 
-          - `parameters: optional unknown`
+          - `parameters: optional unknown or null`
 
             Parameter schema for a client-executed tool search tool.
 
@@ -5782,7 +5798,7 @@ Retrieves a model response with the given ID.
 
             - `"high"`
 
-          - `user_location: optional object { type, city, country, 2 more }`
+          - `user_location: optional object { type, city, country, 2 more }  or null`
 
             The user's location.
 
@@ -5792,19 +5808,19 @@ Retrieves a model response with the given ID.
 
               - `"approximate"`
 
-            - `city: optional string`
+            - `city: optional string or null`
 
               Free text input for the city of the user, e.g. `San Francisco`.
 
-            - `country: optional string`
+            - `country: optional string or null`
 
               The two-letter [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1) of the user, e.g. `US`.
 
-            - `region: optional string`
+            - `region: optional string or null`
 
               Free text input for the region of the user, e.g. `California`.
 
-            - `timezone: optional string`
+            - `timezone: optional string or null`
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
@@ -5818,7 +5834,7 @@ Retrieves a model response with the given ID.
 
             - `"apply_patch"`
 
-          - `allowed_callers: optional array of "direct" or "programmatic"`
+          - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
 
@@ -5874,11 +5890,11 @@ Retrieves a model response with the given ID.
 
             The name of the function to call.
 
-          - `parameters: map[unknown]`
+          - `parameters: map[unknown] or null`
 
             A JSON schema object describing the parameters of the function.
 
-          - `strict: boolean`
+          - `strict: boolean or null`
 
             Whether strict parameter validation is enforced for this function tool.
 
@@ -5888,7 +5904,7 @@ Retrieves a model response with the given ID.
 
             - `"function"`
 
-          - `allowed_callers: optional array of "direct" or "programmatic"`
+          - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
 
@@ -5900,11 +5916,11 @@ Retrieves a model response with the given ID.
 
             Whether this function is deferred and loaded via tool search.
 
-          - `description: optional string`
+          - `description: optional string or null`
 
             A description of the function. Used by the model to determine whether or not to call the function.
 
-          - `output_schema: optional map[unknown]`
+          - `output_schema: optional map[unknown] or null`
 
             A JSON schema object describing the JSON value encoded in string outputs for this function.
 
@@ -5922,7 +5938,7 @@ Retrieves a model response with the given ID.
 
             The IDs of the vector stores to search.
 
-          - `filters: optional ComparisonFilter or CompoundFilter`
+          - `filters: optional ComparisonFilter or CompoundFilter or null`
 
             A filter to apply.
 
@@ -6021,11 +6037,11 @@ Retrieves a model response with the given ID.
 
             - `"web_search_2025_08_26"`
 
-          - `filters: optional object { allowed_domains }`
+          - `filters: optional object { allowed_domains }  or null`
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string`
+            - `allowed_domains: optional array of string or null`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
@@ -6042,23 +6058,23 @@ Retrieves a model response with the given ID.
 
             - `"high"`
 
-          - `user_location: optional object { city, country, region, 2 more }`
+          - `user_location: optional object { city, country, region, 2 more }  or null`
 
             The approximate location of the user.
 
-            - `city: optional string`
+            - `city: optional string or null`
 
               Free text input for the city of the user, e.g. `San Francisco`.
 
-            - `country: optional string`
+            - `country: optional string or null`
 
               The two-letter [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1) of the user, e.g. `US`.
 
-            - `region: optional string`
+            - `region: optional string or null`
 
               Free text input for the region of the user, e.g. `California`.
 
-            - `timezone: optional string`
+            - `timezone: optional string or null`
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
@@ -6083,7 +6099,7 @@ Retrieves a model response with the given ID.
 
             - `"mcp"`
 
-          - `allowed_callers: optional array of "direct" or "programmatic"`
+          - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
 
@@ -6091,7 +6107,7 @@ Retrieves a model response with the given ID.
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }`
+          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -6156,12 +6172,12 @@ Retrieves a model response with the given ID.
 
             Whether this MCP tool is deferred and discovered via tool search.
 
-          - `headers: optional map[string]`
+          - `headers: optional map[string] or null`
 
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never"`
+          - `require_approval: optional object { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -6251,7 +6267,7 @@ Retrieves a model response with the given ID.
 
                 An optional list of uploaded files to make available to your code.
 
-              - `memory_limit: optional "1g" or "4g" or "16g" or "64g"`
+              - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
                 The memory limit for the code interpreter container.
 
@@ -6277,7 +6293,7 @@ Retrieves a model response with the given ID.
 
             - `"code_interpreter"`
 
-          - `allowed_callers: optional array of "direct" or "programmatic"`
+          - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
 
@@ -6324,7 +6340,7 @@ Retrieves a model response with the given ID.
 
             - `"auto"`
 
-          - `input_fidelity: optional "high" or "low"`
+          - `input_fidelity: optional "high" or "low" or null`
 
             Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
 
@@ -6439,7 +6455,7 @@ Retrieves a model response with the given ID.
 
             - `"shell"`
 
-          - `allowed_callers: optional array of "direct" or "programmatic"`
+          - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
 
@@ -6447,7 +6463,7 @@ Retrieves a model response with the given ID.
 
             - `"programmatic"`
 
-          - `environment: optional ContainerAuto or LocalEnvironment or ContainerReference`
+          - `environment: optional ContainerAuto or LocalEnvironment or ContainerReference or null`
 
             - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
@@ -6469,7 +6485,7 @@ Retrieves a model response with the given ID.
 
             - `"custom"`
 
-          - `allowed_callers: optional array of "direct" or "programmatic"`
+          - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
 
@@ -6513,7 +6529,7 @@ Retrieves a model response with the given ID.
 
                 - `"function"`
 
-              - `allowed_callers: optional array of "direct" or "programmatic"`
+              - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
 
@@ -6525,15 +6541,15 @@ Retrieves a model response with the given ID.
 
                 Whether this function should be deferred and discovered via tool search.
 
-              - `description: optional string`
+              - `description: optional string or null`
 
-              - `output_schema: optional map[unknown]`
+              - `output_schema: optional map[unknown] or null`
 
                 A JSON Schema describing the JSON value encoded in string outputs for this function tool. This does not describe content-array outputs.
 
-              - `parameters: optional unknown`
+              - `parameters: optional unknown or null`
 
-              - `strict: optional boolean`
+              - `strict: optional boolean or null`
 
                 Whether to enforce strict parameter validation. If omitted, Responses attempts to use strict validation when the schema is compatible, and falls back to non-strict validation otherwise.
 
@@ -6551,7 +6567,7 @@ Retrieves a model response with the given ID.
 
                 - `"custom"`
 
-              - `allowed_callers: optional array of "direct" or "programmatic"`
+              - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
 
@@ -6587,7 +6603,7 @@ Retrieves a model response with the given ID.
 
             - `"tool_search"`
 
-          - `description: optional string`
+          - `description: optional string or null`
 
             Description shown to the model for a client-executed tool search tool.
 
@@ -6599,7 +6615,7 @@ Retrieves a model response with the given ID.
 
             - `"client"`
 
-          - `parameters: optional unknown`
+          - `parameters: optional unknown or null`
 
             Parameter schema for a client-executed tool search tool.
 
@@ -6631,7 +6647,7 @@ Retrieves a model response with the given ID.
 
             - `"high"`
 
-          - `user_location: optional object { type, city, country, 2 more }`
+          - `user_location: optional object { type, city, country, 2 more }  or null`
 
             The user's location.
 
@@ -6641,19 +6657,19 @@ Retrieves a model response with the given ID.
 
               - `"approximate"`
 
-            - `city: optional string`
+            - `city: optional string or null`
 
               Free text input for the city of the user, e.g. `San Francisco`.
 
-            - `country: optional string`
+            - `country: optional string or null`
 
               The two-letter [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1) of the user, e.g. `US`.
 
-            - `region: optional string`
+            - `region: optional string or null`
 
               Free text input for the region of the user, e.g. `California`.
 
-            - `timezone: optional string`
+            - `timezone: optional string or null`
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
@@ -6667,7 +6683,7 @@ Retrieves a model response with the given ID.
 
             - `"apply_patch"`
 
-          - `allowed_callers: optional array of "direct" or "programmatic"`
+          - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
 
@@ -6711,7 +6727,7 @@ Retrieves a model response with the given ID.
 
         The unique ID of the image generation call.
 
-      - `result: string`
+      - `result: string or null`
 
         The generated image encoded in base64.
 
@@ -6741,7 +6757,7 @@ Retrieves a model response with the given ID.
 
         The unique ID of the code interpreter tool call.
 
-      - `code: string`
+      - `code: string or null`
 
         The code to run, or null if not available.
 
@@ -6749,7 +6765,7 @@ Retrieves a model response with the given ID.
 
         The ID of the container used to run the code.
 
-      - `outputs: array of object { logs, type }  or object { type, url }`
+      - `outputs: array of object { logs, type }  or object { type, url }  or null`
 
         The outputs generated by the code interpreter, such as logs or images.
         Can be null if no outputs are available.
@@ -6828,15 +6844,15 @@ Retrieves a model response with the given ID.
 
           - `"exec"`
 
-        - `timeout_ms: optional number`
+        - `timeout_ms: optional number or null`
 
           Optional timeout in milliseconds for the command.
 
-        - `user: optional string`
+        - `user: optional string or null`
 
           Optional user to run the command as.
 
-        - `working_directory: optional string`
+        - `working_directory: optional string or null`
 
           Optional working directory to run the command in.
 
@@ -6878,7 +6894,7 @@ Retrieves a model response with the given ID.
 
         - `"local_shell_call_output"`
 
-      - `status: optional "in_progress" or "completed" or "incomplete"`
+      - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
         The status of the item. One of `in_progress`, `completed`, or `incomplete`.
 
@@ -6902,11 +6918,11 @@ Retrieves a model response with the given ID.
 
         - `commands: array of string`
 
-        - `max_output_length: number`
+        - `max_output_length: number or null`
 
           Optional maximum number of characters to return from each command.
 
-        - `timeout_ms: number`
+        - `timeout_ms: number or null`
 
           Optional timeout in milliseconds for the commands.
 
@@ -6914,7 +6930,7 @@ Retrieves a model response with the given ID.
 
         The unique ID of the shell tool call generated by the model.
 
-      - `environment: ResponseLocalEnvironment or ResponseContainerReference`
+      - `environment: ResponseLocalEnvironment or ResponseContainerReference or null`
 
         Represents the use of a local environment to perform shell actions.
 
@@ -6956,7 +6972,7 @@ Retrieves a model response with the given ID.
 
         - `"shell_call"`
 
-      - `caller: optional object { type }  or object { caller_id, type }`
+      - `caller: optional object { type }  or object { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -6992,7 +7008,7 @@ Retrieves a model response with the given ID.
 
         The unique ID of the shell tool call generated by the model.
 
-      - `max_output_length: number`
+      - `max_output_length: number or null`
 
         The maximum length of the shell command output. This is generated by the model and should be passed back with the raw output.
 
@@ -7056,7 +7072,7 @@ Retrieves a model response with the given ID.
 
         - `"shell_call_output"`
 
-      - `caller: optional object { type }  or object { caller_id, type }`
+      - `caller: optional object { type }  or object { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -7160,7 +7176,7 @@ Retrieves a model response with the given ID.
 
         - `"apply_patch_call"`
 
-      - `caller: optional object { type }  or object { caller_id, type }`
+      - `caller: optional object { type }  or object { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -7210,7 +7226,7 @@ Retrieves a model response with the given ID.
 
         - `"apply_patch_call_output"`
 
-      - `caller: optional object { type }  or object { caller_id, type }`
+      - `caller: optional object { type }  or object { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -7234,7 +7250,7 @@ Retrieves a model response with the given ID.
 
         The ID of the entity that created this tool call output.
 
-      - `output: optional string`
+      - `output: optional string or null`
 
         Optional textual output returned by the apply patch tool.
 
@@ -7264,16 +7280,16 @@ Retrieves a model response with the given ID.
 
         - `"mcp_call"`
 
-      - `approval_request_id: optional string`
+      - `approval_request_id: optional string or null`
 
         Unique identifier for the MCP tool call approval request.
         Include this value in a subsequent `mcp_approval_response` input to approve or reject the corresponding tool call.
 
-      - `error: optional string`
+      - `error: optional string or null`
 
         The error from the tool call, if any.
 
-      - `output: optional string`
+      - `output: optional string or null`
 
         The output from the tool call.
 
@@ -7315,11 +7331,11 @@ Retrieves a model response with the given ID.
 
           The name of the tool.
 
-        - `annotations: optional unknown`
+        - `annotations: optional unknown or null`
 
           Additional annotations about the tool.
 
-        - `description: optional string`
+        - `description: optional string or null`
 
           The description of the tool.
 
@@ -7329,7 +7345,7 @@ Retrieves a model response with the given ID.
 
         - `"mcp_list_tools"`
 
-      - `error: optional string`
+      - `error: optional string or null`
 
         Error message if the server could not list tools.
 
@@ -7381,7 +7397,7 @@ Retrieves a model response with the given ID.
 
         - `"mcp_approval_response"`
 
-      - `reason: optional string`
+      - `reason: optional string or null`
 
         Optional reason for the decision.
 
@@ -7411,7 +7427,7 @@ Retrieves a model response with the given ID.
 
         The unique ID of the custom tool call in the OpenAI platform.
 
-      - `caller: optional object { type }  or object { caller_id, type }`
+      - `caller: optional object { type }  or object { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -7487,7 +7503,7 @@ Retrieves a model response with the given ID.
 
         - `"custom_tool_call_output"`
 
-      - `caller: optional object { type }  or object { caller_id, type }`
+      - `caller: optional object { type }  or object { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -7519,7 +7535,7 @@ Retrieves a model response with the given ID.
 
     Whether to allow the model to run tool calls in parallel.
 
-  - `temperature: number`
+  - `temperature: number or null`
 
     What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
     We generally recommend altering this or `top_p` but not both.
@@ -7648,7 +7664,7 @@ Retrieves a model response with the given ID.
 
         - `"mcp"`
 
-      - `name: optional string`
+      - `name: optional string or null`
 
         The name of the tool to call on the server.
 
@@ -7722,11 +7738,11 @@ Retrieves a model response with the given ID.
 
         The name of the function to call.
 
-      - `parameters: map[unknown]`
+      - `parameters: map[unknown] or null`
 
         A JSON schema object describing the parameters of the function.
 
-      - `strict: boolean`
+      - `strict: boolean or null`
 
         Whether strict parameter validation is enforced for this function tool.
 
@@ -7736,7 +7752,7 @@ Retrieves a model response with the given ID.
 
         - `"function"`
 
-      - `allowed_callers: optional array of "direct" or "programmatic"`
+      - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
 
@@ -7748,11 +7764,11 @@ Retrieves a model response with the given ID.
 
         Whether this function is deferred and loaded via tool search.
 
-      - `description: optional string`
+      - `description: optional string or null`
 
         A description of the function. Used by the model to determine whether or not to call the function.
 
-      - `output_schema: optional map[unknown]`
+      - `output_schema: optional map[unknown] or null`
 
         A JSON schema object describing the JSON value encoded in string outputs for this function.
 
@@ -7770,7 +7786,7 @@ Retrieves a model response with the given ID.
 
         The IDs of the vector stores to search.
 
-      - `filters: optional ComparisonFilter or CompoundFilter`
+      - `filters: optional ComparisonFilter or CompoundFilter or null`
 
         A filter to apply.
 
@@ -7869,11 +7885,11 @@ Retrieves a model response with the given ID.
 
         - `"web_search_2025_08_26"`
 
-      - `filters: optional object { allowed_domains }`
+      - `filters: optional object { allowed_domains }  or null`
 
         Filters for the search.
 
-        - `allowed_domains: optional array of string`
+        - `allowed_domains: optional array of string or null`
 
           Allowed domains for the search. If not provided, all domains are allowed.
           Subdomains of the provided domains are allowed as well.
@@ -7890,23 +7906,23 @@ Retrieves a model response with the given ID.
 
         - `"high"`
 
-      - `user_location: optional object { city, country, region, 2 more }`
+      - `user_location: optional object { city, country, region, 2 more }  or null`
 
         The approximate location of the user.
 
-        - `city: optional string`
+        - `city: optional string or null`
 
           Free text input for the city of the user, e.g. `San Francisco`.
 
-        - `country: optional string`
+        - `country: optional string or null`
 
           The two-letter [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1) of the user, e.g. `US`.
 
-        - `region: optional string`
+        - `region: optional string or null`
 
           Free text input for the region of the user, e.g. `California`.
 
-        - `timezone: optional string`
+        - `timezone: optional string or null`
 
           The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
@@ -7931,7 +7947,7 @@ Retrieves a model response with the given ID.
 
         - `"mcp"`
 
-      - `allowed_callers: optional array of "direct" or "programmatic"`
+      - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
 
@@ -7939,7 +7955,7 @@ Retrieves a model response with the given ID.
 
         - `"programmatic"`
 
-      - `allowed_tools: optional array of string or object { read_only, tool_names }`
+      - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
 
         List of allowed tool names or a filter object.
 
@@ -8004,12 +8020,12 @@ Retrieves a model response with the given ID.
 
         Whether this MCP tool is deferred and discovered via tool search.
 
-      - `headers: optional map[string]`
+      - `headers: optional map[string] or null`
 
         Optional HTTP headers to send to the MCP server. Use for authentication
         or other purposes.
 
-      - `require_approval: optional object { always, never }  or "always" or "never"`
+      - `require_approval: optional object { always, never }  or "always" or "never" or null`
 
         Specify which of the MCP server's tools require approval.
 
@@ -8099,7 +8115,7 @@ Retrieves a model response with the given ID.
 
             An optional list of uploaded files to make available to your code.
 
-          - `memory_limit: optional "1g" or "4g" or "16g" or "64g"`
+          - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
             The memory limit for the code interpreter container.
 
@@ -8125,7 +8141,7 @@ Retrieves a model response with the given ID.
 
         - `"code_interpreter"`
 
-      - `allowed_callers: optional array of "direct" or "programmatic"`
+      - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
 
@@ -8172,7 +8188,7 @@ Retrieves a model response with the given ID.
 
         - `"auto"`
 
-      - `input_fidelity: optional "high" or "low"`
+      - `input_fidelity: optional "high" or "low" or null`
 
         Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
 
@@ -8287,7 +8303,7 @@ Retrieves a model response with the given ID.
 
         - `"shell"`
 
-      - `allowed_callers: optional array of "direct" or "programmatic"`
+      - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
 
@@ -8295,7 +8311,7 @@ Retrieves a model response with the given ID.
 
         - `"programmatic"`
 
-      - `environment: optional ContainerAuto or LocalEnvironment or ContainerReference`
+      - `environment: optional ContainerAuto or LocalEnvironment or ContainerReference or null`
 
         - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
@@ -8317,7 +8333,7 @@ Retrieves a model response with the given ID.
 
         - `"custom"`
 
-      - `allowed_callers: optional array of "direct" or "programmatic"`
+      - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
 
@@ -8361,7 +8377,7 @@ Retrieves a model response with the given ID.
 
             - `"function"`
 
-          - `allowed_callers: optional array of "direct" or "programmatic"`
+          - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
 
@@ -8373,15 +8389,15 @@ Retrieves a model response with the given ID.
 
             Whether this function should be deferred and discovered via tool search.
 
-          - `description: optional string`
+          - `description: optional string or null`
 
-          - `output_schema: optional map[unknown]`
+          - `output_schema: optional map[unknown] or null`
 
             A JSON Schema describing the JSON value encoded in string outputs for this function tool. This does not describe content-array outputs.
 
-          - `parameters: optional unknown`
+          - `parameters: optional unknown or null`
 
-          - `strict: optional boolean`
+          - `strict: optional boolean or null`
 
             Whether to enforce strict parameter validation. If omitted, Responses attempts to use strict validation when the schema is compatible, and falls back to non-strict validation otherwise.
 
@@ -8399,7 +8415,7 @@ Retrieves a model response with the given ID.
 
             - `"custom"`
 
-          - `allowed_callers: optional array of "direct" or "programmatic"`
+          - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
 
@@ -8435,7 +8451,7 @@ Retrieves a model response with the given ID.
 
         - `"tool_search"`
 
-      - `description: optional string`
+      - `description: optional string or null`
 
         Description shown to the model for a client-executed tool search tool.
 
@@ -8447,7 +8463,7 @@ Retrieves a model response with the given ID.
 
         - `"client"`
 
-      - `parameters: optional unknown`
+      - `parameters: optional unknown or null`
 
         Parameter schema for a client-executed tool search tool.
 
@@ -8479,7 +8495,7 @@ Retrieves a model response with the given ID.
 
         - `"high"`
 
-      - `user_location: optional object { type, city, country, 2 more }`
+      - `user_location: optional object { type, city, country, 2 more }  or null`
 
         The user's location.
 
@@ -8489,19 +8505,19 @@ Retrieves a model response with the given ID.
 
           - `"approximate"`
 
-        - `city: optional string`
+        - `city: optional string or null`
 
           Free text input for the city of the user, e.g. `San Francisco`.
 
-        - `country: optional string`
+        - `country: optional string or null`
 
           The two-letter [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1) of the user, e.g. `US`.
 
-        - `region: optional string`
+        - `region: optional string or null`
 
           Free text input for the region of the user, e.g. `California`.
 
-        - `timezone: optional string`
+        - `timezone: optional string or null`
 
           The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
@@ -8515,7 +8531,7 @@ Retrieves a model response with the given ID.
 
         - `"apply_patch"`
 
-      - `allowed_callers: optional array of "direct" or "programmatic"`
+      - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
 
@@ -8523,7 +8539,7 @@ Retrieves a model response with the given ID.
 
         - `"programmatic"`
 
-  - `top_p: number`
+  - `top_p: number or null`
 
     An alternative to sampling with temperature, called nucleus sampling,
     where the model considers the results of the tokens with top_p probability
@@ -8532,17 +8548,17 @@ Retrieves a model response with the given ID.
 
     We generally recommend altering this or `temperature` but not both.
 
-  - `background: optional boolean`
+  - `background: optional boolean or null`
 
     Whether to run the model response in the background.
     [Learn more](/docs/guides/background).
 
-  - `completed_at: optional number`
+  - `completed_at: optional number or null`
 
     Unix timestamp (in seconds) of when this Response was completed.
     Only present when the status is `completed`.
 
-  - `conversation: optional object { id }`
+  - `conversation: optional object { id }  or null`
 
     The conversation that this response belonged to. Input items and output items from this response were automatically added to this conversation.
 
@@ -8550,15 +8566,15 @@ Retrieves a model response with the given ID.
 
       The unique ID of the conversation that this response was associated with.
 
-  - `max_output_tokens: optional number`
+  - `max_output_tokens: optional number or null`
 
     An upper bound for the number of tokens that can be generated for a response, including visible output tokens and [reasoning tokens](/docs/guides/reasoning).
 
-  - `max_tool_calls: optional number`
+  - `max_tool_calls: optional number or null`
 
     The maximum number of total calls to built-in tools that can be processed in a response. This maximum number applies across all built-in tool calls, not per individual tool. Any further attempts to call a tool by the model will be ignored.
 
-  - `moderation: optional object { input, output }`
+  - `moderation: optional object { input, output }  or null`
 
     Moderation results for the response input and output, if moderated completions were requested.
 
@@ -8674,19 +8690,19 @@ Retrieves a model response with the given ID.
 
           - `"error"`
 
-  - `output_text: optional string`
+  - `output_text: optional string or null`
 
     SDK-only convenience property that contains the aggregated text output
     from all `output_text` items in the `output` array, if any are present.
     Supported in the Python and JavaScript SDKs.
 
-  - `previous_response_id: optional string`
+  - `previous_response_id: optional string or null`
 
     The unique ID of the previous response to the model. Use this to
     create multi-turn conversations. Learn more about
     [conversation state](/docs/guides/conversation-state). Cannot be used in conjunction with `conversation`.
 
-  - `prompt: optional ResponsePrompt`
+  - `prompt: optional ResponsePrompt or null`
 
     Reference to a prompt template and its variables.
     [Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).
@@ -8695,7 +8711,7 @@ Retrieves a model response with the given ID.
 
       The unique identifier of the prompt template to use.
 
-    - `variables: optional map[string or ResponseInputText or ResponseInputImage or ResponseInputFile]`
+    - `variables: optional map[string or ResponseInputText or ResponseInputImage or ResponseInputFile] or null`
 
       Optional map of values to substitute in for variables in your
       prompt. The substitution values can either be strings, or other
@@ -8715,11 +8731,11 @@ Retrieves a model response with the given ID.
 
         A file input to the model.
 
-    - `version: optional string`
+    - `version: optional string or null`
 
       Optional version of the prompt template.
 
-  - `prompt_cache_key: optional string`
+  - `prompt_cache_key: optional string or null`
 
     Used by OpenAI to cache responses for similar requests to optimize your cache hit rates. Replaces the `user` field. [Learn more](/docs/guides/prompt-caching).
 
@@ -8741,7 +8757,7 @@ Retrieves a model response with the given ID.
 
       - `"30m"`
 
-  - `prompt_cache_retention: optional "in_memory" or "24h"`
+  - `prompt_cache_retention: optional "in_memory" or "24h" or null`
 
     Deprecated. Use `prompt_cache_options.ttl` instead.
 
@@ -8760,14 +8776,14 @@ Retrieves a model response with the given ID.
 
     - `"24h"`
 
-  - `reasoning: optional Reasoning`
+  - `reasoning: optional Reasoning or null`
 
     **gpt-5 and o-series models only**
 
     Configuration options for
     [reasoning models](https://platform.openai.com/docs/guides/reasoning).
 
-    - `context: optional "auto" or "current_turn" or "all_turns"`
+    - `context: optional "auto" or "current_turn" or "all_turns" or null`
 
       Controls which reasoning items are rendered back to the model on later turns.
       If omitted or set to `auto`, the model determines the context mode. The
@@ -8783,7 +8799,7 @@ Retrieves a model response with the given ID.
 
       - `"all_turns"`
 
-    - `effort: optional ReasoningEffort`
+    - `effort: optional ReasoningEffort or null`
 
       Constrains effort on reasoning for reasoning models. Currently supported
       values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -8807,7 +8823,7 @@ Retrieves a model response with the given ID.
 
       - `"max"`
 
-    - `generate_summary: optional "auto" or "concise" or "detailed"`
+    - `generate_summary: optional "auto" or "concise" or "detailed" or null`
 
       **Deprecated:** use `summary` instead.
 
@@ -8839,7 +8855,7 @@ Retrieves a model response with the given ID.
 
         - `"pro"`
 
-    - `summary: optional "auto" or "concise" or "detailed"`
+    - `summary: optional "auto" or "concise" or "detailed" or null`
 
       A summary of the reasoning performed by the model. This can be
       useful for debugging and understanding the model's reasoning process.
@@ -8853,18 +8869,19 @@ Retrieves a model response with the given ID.
 
       - `"detailed"`
 
-  - `safety_identifier: optional string`
+  - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
     The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](/docs/guides/safety-best-practices#safety-identifiers).
 
-  - `service_tier: optional "auto" or "default" or "flex" or 2 more`
+  - `service_tier: optional "auto" or "default" or "flex" or 3 more or null`
 
     Specifies the processing type used for serving the request.
 
     - If set to 'auto', then the request will be processed with the service tier configured in the Project settings. Unless otherwise configured, the Project will use 'default'.
     - If set to 'default', then the request will be processed with the standard pricing and performance for the selected model.
-    - If set to '[flex](/docs/guides/flex-processing)' or '[priority](https://openai.com/api-priority-processing/)', then the request will be processed with the corresponding service tier.
+    - If set to '[flex](/docs/guides/flex-processing)', then the request will be processed with the Flex Processing service tier.
+    - To opt-in to [Fast mode](/api/docs/guides/fast-mode) at the request level, include the `service_tier=fast` or `service_tier=priority` parameter for Responses or Chat Completions. The response will show `service_tier=priority` regardless of if you specify `service_tier=fast` or `priority` in your request.
     - When not set, the default behavior is 'auto'.
 
     When the `service_tier` parameter is set, the response body will include the `service_tier` value based on the processing mode actually used to serve the request. This response value may be different from the value set in the parameter.
@@ -8878,6 +8895,8 @@ Retrieves a model response with the given ID.
     - `"scale"`
 
     - `"priority"`
+
+    - `"fast"`
 
   - `status: optional ResponseStatus`
 
@@ -8956,7 +8975,7 @@ Retrieves a model response with the given ID.
           A description of what the response format is for, used by the model to
           determine how to respond in the format.
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the output.
           If set to true, the model will always follow the exact schema defined
@@ -8977,7 +8996,7 @@ Retrieves a model response with the given ID.
 
           - `"json_object"`
 
-    - `verbosity: optional "low" or "medium" or "high"`
+    - `verbosity: optional "low" or "medium" or "high" or null`
 
       Constrains the verbosity of the model's response. Lower values will result in
       more concise responses, while higher values will result in more verbose responses.
@@ -8990,14 +9009,14 @@ Retrieves a model response with the given ID.
 
       - `"high"`
 
-  - `top_logprobs: optional number`
+  - `top_logprobs: optional number or null`
 
     An integer between 0 and 20 specifying the maximum number of most likely
     tokens to return at each token position, each with an associated log
     probability. In some cases, the number of returned tokens may be fewer than
     requested.
 
-  - `truncation: optional "auto" or "disabled"`
+  - `truncation: optional "auto" or "disabled" or null`
 
     The truncation strategy to use for the model response.
 

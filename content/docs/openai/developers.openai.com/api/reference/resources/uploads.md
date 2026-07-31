@@ -56,7 +56,7 @@ Returns the Upload object with status `cancelled`.
 
     - `"expired"`
 
-  - `file: optional FileObject`
+  - `file: optional FileObject or null`
 
     The `File` object represents a document that has been uploaded to OpenAI.
 
@@ -250,7 +250,7 @@ Returns the Upload object with status `completed`, including an additional `file
 
     - `"expired"`
 
-  - `file: optional FileObject`
+  - `file: optional FileObject or null`
 
     The `File` object represents a document that has been uploaded to OpenAI.
 
@@ -504,7 +504,7 @@ Returns the Upload object with status `pending`.
 
     - `"expired"`
 
-  - `file: optional FileObject`
+  - `file: optional FileObject or null`
 
     The `File` object represents a document that has been uploaded to OpenAI.
 
@@ -690,7 +690,7 @@ curl https://api.openai.com/v1/uploads \
 
     - `"expired"`
 
-  - `file: optional FileObject`
+  - `file: optional FileObject or null`
 
     The `File` object represents a document that has been uploaded to OpenAI.
 

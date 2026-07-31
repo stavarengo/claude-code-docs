@@ -12,7 +12,7 @@
 
     Identifier of the workflow backing the session.
 
-  - `state_variables: map[string or boolean or number]`
+  - `state_variables: map[string or boolean or number] or null`
 
     State variable key-value pairs applied when invoking the workflow. Defaults to null when no overrides were provided.
 
@@ -30,7 +30,7 @@
 
       Indicates whether tracing is enabled.
 
-  - `version: string`
+  - `version: string or null`
 
     Specific workflow version used for the session. Defaults to null when using the latest deployment.
 
@@ -78,11 +78,11 @@ Cancelling prevents new requests from using the issued client secret.
 
         Indicates if uploads are enabled for the session.
 
-      - `max_file_size: number`
+      - `max_file_size: number or null`
 
         Maximum upload size in megabytes.
 
-      - `max_files: number`
+      - `max_files: number or null`
 
         Maximum number of uploads allowed during the session.
 
@@ -94,7 +94,7 @@ Cancelling prevents new requests from using the issued client secret.
 
         Indicates if chat history is persisted for the session.
 
-      - `recent_threads: number`
+      - `recent_threads: number or null`
 
         Number of prior threads surfaced in history views. Defaults to null when all history is retained.
 
@@ -146,7 +146,7 @@ Cancelling prevents new requests from using the issued client secret.
 
       Identifier of the workflow backing the session.
 
-    - `state_variables: map[string or boolean or number]`
+    - `state_variables: map[string or boolean or number] or null`
 
       State variable key-value pairs applied when invoking the workflow. Defaults to null when no overrides were provided.
 
@@ -164,7 +164,7 @@ Cancelling prevents new requests from using the issued client secret.
 
         Indicates whether tracing is enabled.
 
-    - `version: string`
+    - `version: string or null`
 
       Specific workflow version used for the session. Defaults to null when using the latest deployment.
 
@@ -381,11 +381,11 @@ Create a ChatKit session.
 
         Indicates if uploads are enabled for the session.
 
-      - `max_file_size: number`
+      - `max_file_size: number or null`
 
         Maximum upload size in megabytes.
 
-      - `max_files: number`
+      - `max_files: number or null`
 
         Maximum number of uploads allowed during the session.
 
@@ -397,7 +397,7 @@ Create a ChatKit session.
 
         Indicates if chat history is persisted for the session.
 
-      - `recent_threads: number`
+      - `recent_threads: number or null`
 
         Number of prior threads surfaced in history views. Defaults to null when all history is retained.
 
@@ -449,7 +449,7 @@ Create a ChatKit session.
 
       Identifier of the workflow backing the session.
 
-    - `state_variables: map[string or boolean or number]`
+    - `state_variables: map[string or boolean or number] or null`
 
       State variable key-value pairs applied when invoking the workflow. Defaults to null when no overrides were provided.
 
@@ -467,7 +467,7 @@ Create a ChatKit session.
 
         Indicates whether tracing is enabled.
 
-    - `version: string`
+    - `version: string or null`
 
       Specific workflow version used for the session. Defaults to null when using the latest deployment.
 
@@ -686,7 +686,7 @@ List ChatKit threads with optional pagination and user filters.
 
       Indicates that a thread is locked and cannot accept new input.
 
-      - `reason: string`
+      - `reason: string or null`
 
         Reason that the thread was locked. Defaults to null when no reason is recorded.
 
@@ -700,7 +700,7 @@ List ChatKit threads with optional pagination and user filters.
 
       Indicates that a thread has been closed.
 
-      - `reason: string`
+      - `reason: string or null`
 
         Reason that the thread was closed. Defaults to null when no reason is recorded.
 
@@ -710,7 +710,7 @@ List ChatKit threads with optional pagination and user filters.
 
         - `"closed"`
 
-  - `title: string`
+  - `title: string or null`
 
     Optional human-readable title for the thread. Defaults to null when no title has been generated.
 
@@ -718,7 +718,7 @@ List ChatKit threads with optional pagination and user filters.
 
     Free-form string that identifies your end user who owns the thread.
 
-- `first_id: string`
+- `first_id: string or null`
 
   The ID of the first item in the list.
 
@@ -726,7 +726,7 @@ List ChatKit threads with optional pagination and user filters.
 
   Whether there are more items available.
 
-- `last_id: string`
+- `last_id: string or null`
 
   The ID of the last item in the list.
 
@@ -862,7 +862,7 @@ List items that belong to a ChatKit thread.
 
           Original display name for the attachment.
 
-        - `preview_url: string`
+        - `preview_url: string or null`
 
           Preview URL for rendering the attachment inline.
 
@@ -910,15 +910,15 @@ List items that belong to a ChatKit thread.
 
         Unix timestamp (in seconds) for when the item was created.
 
-      - `inference_options: object { model, tool_choice }`
+      - `inference_options: object { model, tool_choice }  or null`
 
         Inference overrides applied to the message. Defaults to null when unset.
 
-        - `model: string`
+        - `model: string or null`
 
           Model name that generated the response. Defaults to null when using the session default.
 
-        - `tool_choice: object { id }`
+        - `tool_choice: object { id }  or null`
 
           Preferred tool to invoke. Defaults to null when ChatKit should auto-select.
 
@@ -1096,7 +1096,7 @@ List items that belong to a ChatKit thread.
 
         - `"chatkit.thread_item"`
 
-      - `output: string`
+      - `output: string or null`
 
         JSON-encoded output captured from the tool. Defaults to null while execution is in progress.
 
@@ -1130,7 +1130,7 @@ List items that belong to a ChatKit thread.
 
         Unix timestamp (in seconds) for when the item was created.
 
-      - `heading: string`
+      - `heading: string or null`
 
         Optional heading for the task. Defaults to null when not provided.
 
@@ -1140,7 +1140,7 @@ List items that belong to a ChatKit thread.
 
         - `"chatkit.thread_item"`
 
-      - `summary: string`
+      - `summary: string or null`
 
         Optional summary that describes the task. Defaults to null when omitted.
 
@@ -1184,11 +1184,11 @@ List items that belong to a ChatKit thread.
 
         Tasks included in the group.
 
-        - `heading: string`
+        - `heading: string or null`
 
           Optional heading for the grouped task. Defaults to null when not provided.
 
-        - `summary: string`
+        - `summary: string or null`
 
           Optional summary that describes the grouped task. Defaults to null when omitted.
 
@@ -1210,7 +1210,7 @@ List items that belong to a ChatKit thread.
 
         - `"chatkit.task_group"`
 
-  - `first_id: string`
+  - `first_id: string or null`
 
     The ID of the first item in the list.
 
@@ -1218,7 +1218,7 @@ List items that belong to a ChatKit thread.
 
     Whether there are more items available.
 
-  - `last_id: string`
+  - `last_id: string or null`
 
     The ID of the last item in the list.
 
@@ -1367,7 +1367,7 @@ Retrieve a ChatKit thread by its identifier.
 
       Indicates that a thread is locked and cannot accept new input.
 
-      - `reason: string`
+      - `reason: string or null`
 
         Reason that the thread was locked. Defaults to null when no reason is recorded.
 
@@ -1381,7 +1381,7 @@ Retrieve a ChatKit thread by its identifier.
 
       Indicates that a thread has been closed.
 
-      - `reason: string`
+      - `reason: string or null`
 
         Reason that the thread was closed. Defaults to null when no reason is recorded.
 
@@ -1391,7 +1391,7 @@ Retrieve a ChatKit thread by its identifier.
 
         - `"closed"`
 
-  - `title: string`
+  - `title: string or null`
 
     Optional human-readable title for the thread. Defaults to null when no title has been generated.
 
@@ -1500,11 +1500,11 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         Indicates if uploads are enabled for the session.
 
-      - `max_file_size: number`
+      - `max_file_size: number or null`
 
         Maximum upload size in megabytes.
 
-      - `max_files: number`
+      - `max_files: number or null`
 
         Maximum number of uploads allowed during the session.
 
@@ -1516,7 +1516,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         Indicates if chat history is persisted for the session.
 
-      - `recent_threads: number`
+      - `recent_threads: number or null`
 
         Number of prior threads surfaced in history views. Defaults to null when all history is retained.
 
@@ -1568,7 +1568,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       Identifier of the workflow backing the session.
 
-    - `state_variables: map[string or boolean or number]`
+    - `state_variables: map[string or boolean or number] or null`
 
       State variable key-value pairs applied when invoking the workflow. Defaults to null when no overrides were provided.
 
@@ -1586,7 +1586,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         Indicates whether tracing is enabled.
 
-    - `version: string`
+    - `version: string or null`
 
       Specific workflow version used for the session. Defaults to null when using the latest deployment.
 
@@ -1622,11 +1622,11 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       Indicates if uploads are enabled for the session.
 
-    - `max_file_size: number`
+    - `max_file_size: number or null`
 
       Maximum upload size in megabytes.
 
-    - `max_files: number`
+    - `max_files: number or null`
 
       Maximum number of uploads allowed during the session.
 
@@ -1638,7 +1638,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       Indicates if chat history is persisted for the session.
 
-    - `recent_threads: number`
+    - `recent_threads: number or null`
 
       Number of prior threads surfaced in history views. Defaults to null when all history is retained.
 
@@ -1710,11 +1710,11 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     Indicates if uploads are enabled for the session.
 
-  - `max_file_size: number`
+  - `max_file_size: number or null`
 
     Maximum upload size in megabytes.
 
-  - `max_files: number`
+  - `max_files: number or null`
 
     Maximum number of uploads allowed during the session.
 
@@ -1728,7 +1728,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     Indicates if chat history is persisted for the session.
 
-  - `recent_threads: number`
+  - `recent_threads: number or null`
 
     Number of prior threads surfaced in history views. Defaults to null when all history is retained.
 
@@ -1812,7 +1812,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     Original display name for the attachment.
 
-  - `preview_url: string`
+  - `preview_url: string or null`
 
     Preview URL for rendering the attachment inline.
 
@@ -1930,7 +1930,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       Indicates that a thread is locked and cannot accept new input.
 
-      - `reason: string`
+      - `reason: string or null`
 
         Reason that the thread was locked. Defaults to null when no reason is recorded.
 
@@ -1944,7 +1944,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       Indicates that a thread has been closed.
 
-      - `reason: string`
+      - `reason: string or null`
 
         Reason that the thread was closed. Defaults to null when no reason is recorded.
 
@@ -1954,7 +1954,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         - `"closed"`
 
-  - `title: string`
+  - `title: string or null`
 
     Optional human-readable title for the thread. Defaults to null when no title has been generated.
 
@@ -2092,7 +2092,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
           Original display name for the attachment.
 
-        - `preview_url: string`
+        - `preview_url: string or null`
 
           Preview URL for rendering the attachment inline.
 
@@ -2140,15 +2140,15 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         Unix timestamp (in seconds) for when the item was created.
 
-      - `inference_options: object { model, tool_choice }`
+      - `inference_options: object { model, tool_choice }  or null`
 
         Inference overrides applied to the message. Defaults to null when unset.
 
-        - `model: string`
+        - `model: string or null`
 
           Model name that generated the response. Defaults to null when using the session default.
 
-        - `tool_choice: object { id }`
+        - `tool_choice: object { id }  or null`
 
           Preferred tool to invoke. Defaults to null when ChatKit should auto-select.
 
@@ -2326,7 +2326,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         - `"chatkit.thread_item"`
 
-      - `output: string`
+      - `output: string or null`
 
         JSON-encoded output captured from the tool. Defaults to null while execution is in progress.
 
@@ -2360,7 +2360,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         Unix timestamp (in seconds) for when the item was created.
 
-      - `heading: string`
+      - `heading: string or null`
 
         Optional heading for the task. Defaults to null when not provided.
 
@@ -2370,7 +2370,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         - `"chatkit.thread_item"`
 
-      - `summary: string`
+      - `summary: string or null`
 
         Optional summary that describes the task. Defaults to null when omitted.
 
@@ -2414,11 +2414,11 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         Tasks included in the group.
 
-        - `heading: string`
+        - `heading: string or null`
 
           Optional heading for the grouped task. Defaults to null when not provided.
 
-        - `summary: string`
+        - `summary: string or null`
 
           Optional summary that describes the grouped task. Defaults to null when omitted.
 
@@ -2440,7 +2440,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         - `"chatkit.task_group"`
 
-  - `first_id: string`
+  - `first_id: string or null`
 
     The ID of the first item in the list.
 
@@ -2448,7 +2448,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     Whether there are more items available.
 
-  - `last_id: string`
+  - `last_id: string or null`
 
     The ID of the last item in the list.
 
@@ -2484,7 +2484,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       Original display name for the attachment.
 
-    - `preview_url: string`
+    - `preview_url: string or null`
 
       Preview URL for rendering the attachment inline.
 
@@ -2532,15 +2532,15 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     Unix timestamp (in seconds) for when the item was created.
 
-  - `inference_options: object { model, tool_choice }`
+  - `inference_options: object { model, tool_choice }  or null`
 
     Inference overrides applied to the message. Defaults to null when unset.
 
-    - `model: string`
+    - `model: string or null`
 
       Model name that generated the response. Defaults to null when using the session default.
 
-    - `tool_choice: object { id }`
+    - `tool_choice: object { id }  or null`
 
       Preferred tool to invoke. Defaults to null when ChatKit should auto-select.
 

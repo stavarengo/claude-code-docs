@@ -56,11 +56,11 @@ Returns a list of run steps belonging to a run.
 
     The ID of the [assistant](/docs/api-reference/assistants) associated with the run step.
 
-  - `cancelled_at: number`
+  - `cancelled_at: number or null`
 
     The Unix timestamp (in seconds) for when the run step was cancelled.
 
-  - `completed_at: number`
+  - `completed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run step completed.
 
@@ -68,15 +68,15 @@ Returns a list of run steps belonging to a run.
 
     The Unix timestamp (in seconds) for when the run step was created.
 
-  - `expired_at: number`
+  - `expired_at: number or null`
 
     The Unix timestamp (in seconds) for when the run step expired. A step is considered expired if the parent run is expired.
 
-  - `failed_at: number`
+  - `failed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run step failed.
 
-  - `last_error: object { code, message }`
+  - `last_error: object { code, message }  or null`
 
     The last error associated with this run step. Will be `null` if there are no errors.
 
@@ -92,7 +92,7 @@ Returns a list of run steps belonging to a run.
 
       A human-readable description of the error.
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -287,7 +287,7 @@ Returns a list of run steps belonging to a run.
 
               The name of the function.
 
-            - `output: string`
+            - `output: string or null`
 
               The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet.
 
@@ -315,7 +315,7 @@ Returns a list of run steps belonging to a run.
 
     - `"tool_calls"`
 
-  - `usage: object { completion_tokens, prompt_tokens, total_tokens }`
+  - `usage: object { completion_tokens, prompt_tokens, total_tokens }  or null`
 
     Usage statistics related to the run step. This value will be `null` while the run step's status is `in_progress`.
 
@@ -478,11 +478,11 @@ Retrieves a run step.
 
     The ID of the [assistant](/docs/api-reference/assistants) associated with the run step.
 
-  - `cancelled_at: number`
+  - `cancelled_at: number or null`
 
     The Unix timestamp (in seconds) for when the run step was cancelled.
 
-  - `completed_at: number`
+  - `completed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run step completed.
 
@@ -490,15 +490,15 @@ Retrieves a run step.
 
     The Unix timestamp (in seconds) for when the run step was created.
 
-  - `expired_at: number`
+  - `expired_at: number or null`
 
     The Unix timestamp (in seconds) for when the run step expired. A step is considered expired if the parent run is expired.
 
-  - `failed_at: number`
+  - `failed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run step failed.
 
-  - `last_error: object { code, message }`
+  - `last_error: object { code, message }  or null`
 
     The last error associated with this run step. Will be `null` if there are no errors.
 
@@ -514,7 +514,7 @@ Retrieves a run step.
 
       A human-readable description of the error.
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -709,7 +709,7 @@ Retrieves a run step.
 
               The name of the function.
 
-            - `output: string`
+            - `output: string or null`
 
               The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet.
 
@@ -737,7 +737,7 @@ Retrieves a run step.
 
     - `"tool_calls"`
 
-  - `usage: object { completion_tokens, prompt_tokens, total_tokens }`
+  - `usage: object { completion_tokens, prompt_tokens, total_tokens }  or null`
 
     Usage statistics related to the run step. This value will be `null` while the run step's status is `in_progress`.
 
@@ -1110,7 +1110,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123/steps/step_
 
       The name of the function.
 
-    - `output: string`
+    - `output: string or null`
 
       The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet.
 
@@ -1150,7 +1150,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123/steps/step_
 
       The name of the function.
 
-    - `output: optional string`
+    - `output: optional string or null`
 
       The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet.
 
@@ -1186,11 +1186,11 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123/steps/step_
 
     The ID of the [assistant](/docs/api-reference/assistants) associated with the run step.
 
-  - `cancelled_at: number`
+  - `cancelled_at: number or null`
 
     The Unix timestamp (in seconds) for when the run step was cancelled.
 
-  - `completed_at: number`
+  - `completed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run step completed.
 
@@ -1198,15 +1198,15 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123/steps/step_
 
     The Unix timestamp (in seconds) for when the run step was created.
 
-  - `expired_at: number`
+  - `expired_at: number or null`
 
     The Unix timestamp (in seconds) for when the run step expired. A step is considered expired if the parent run is expired.
 
-  - `failed_at: number`
+  - `failed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run step failed.
 
-  - `last_error: object { code, message }`
+  - `last_error: object { code, message }  or null`
 
     The last error associated with this run step. Will be `null` if there are no errors.
 
@@ -1222,7 +1222,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123/steps/step_
 
       A human-readable description of the error.
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -1417,7 +1417,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123/steps/step_
 
               The name of the function.
 
-            - `output: string`
+            - `output: string or null`
 
               The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet.
 
@@ -1445,7 +1445,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123/steps/step_
 
     - `"tool_calls"`
 
-  - `usage: object { completion_tokens, prompt_tokens, total_tokens }`
+  - `usage: object { completion_tokens, prompt_tokens, total_tokens }  or null`
 
     Usage statistics related to the run step. This value will be `null` while the run step's status is `in_progress`.
 
@@ -1623,7 +1623,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123/steps/step_
 
                 The name of the function.
 
-              - `output: optional string`
+              - `output: optional string or null`
 
                 The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet.
 
@@ -1787,7 +1787,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123/steps/step_
 
           The name of the function.
 
-        - `output: optional string`
+        - `output: optional string or null`
 
           The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet.
 
@@ -1935,7 +1935,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123/steps/step_
 
           The name of the function.
 
-        - `output: string`
+        - `output: string or null`
 
           The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet.
 

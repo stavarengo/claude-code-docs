@@ -94,11 +94,11 @@ Create an invite for a user to the organization. The invite must be accepted by 
 
     - `"pending"`
 
-  - `accepted_at: optional number`
+  - `accepted_at: optional number or null`
 
     The Unix timestamp (in seconds) of when the invite was accepted.
 
-  - `expires_at: optional number`
+  - `expires_at: optional number or null`
 
     The Unix timestamp (in seconds) of when the invite expires.
 
@@ -312,11 +312,11 @@ Returns a list of invites in the organization.
 
     - `"pending"`
 
-  - `accepted_at: optional number`
+  - `accepted_at: optional number or null`
 
     The Unix timestamp (in seconds) of when the invite was accepted.
 
-  - `expires_at: optional number`
+  - `expires_at: optional number or null`
 
     The Unix timestamp (in seconds) of when the invite expires.
 
@@ -330,11 +330,11 @@ Returns a list of invites in the organization.
 
   - `"list"`
 
-- `first_id: optional string`
+- `first_id: optional string or null`
 
   The first `invite_id` in the retrieved `list`
 
-- `last_id: optional string`
+- `last_id: optional string or null`
 
   The last `invite_id` in the retrieved `list`
 
@@ -473,11 +473,11 @@ Retrieves an invite.
 
     - `"pending"`
 
-  - `accepted_at: optional number`
+  - `accepted_at: optional number or null`
 
     The Unix timestamp (in seconds) of when the invite was accepted.
 
-  - `expires_at: optional number`
+  - `expires_at: optional number or null`
 
     The Unix timestamp (in seconds) of when the invite expires.
 
@@ -592,11 +592,11 @@ curl https://api.openai.com/v1/organization/invites/invite-abc \
 
     - `"pending"`
 
-  - `accepted_at: optional number`
+  - `accepted_at: optional number or null`
 
     The Unix timestamp (in seconds) of when the invite was accepted.
 
-  - `expires_at: optional number`
+  - `expires_at: optional number or null`
 
     The Unix timestamp (in seconds) of when the invite expires.
 

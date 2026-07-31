@@ -94,7 +94,7 @@ Lists all of the users in the organization.
 
     - `"organization.user"`
 
-  - `api_key_last_used_at: optional number`
+  - `api_key_last_used_at: optional number or null`
 
     The Unix timestamp (in seconds) of the user's last API key usage.
 
@@ -102,11 +102,11 @@ Lists all of the users in the organization.
 
     The Unix timestamp (in seconds) of when the user was created.
 
-  - `developer_persona: optional string`
+  - `developer_persona: optional string or null`
 
     The developer persona metadata for the user.
 
-  - `email: optional string`
+  - `email: optional string or null`
 
     The email address of the user
 
@@ -114,7 +114,7 @@ Lists all of the users in the organization.
 
     Whether this is the organization's default user.
 
-  - `is_scale_tier_authorized_purchaser: optional boolean`
+  - `is_scale_tier_authorized_purchaser: optional boolean or null`
 
     Whether the user is an authorized purchaser for Scale Tier.
 
@@ -126,31 +126,31 @@ Lists all of the users in the organization.
 
     Whether the user is a service account.
 
-  - `name: optional string`
+  - `name: optional string or null`
 
     The name of the user
 
-  - `projects: optional object { data, object }`
+  - `projects: optional object { data, object }  or null`
 
     Projects associated with the user, if included.
 
     - `data: array of object { id, name, role }`
 
-      - `id: optional string`
+      - `id: optional string or null`
 
-      - `name: optional string`
+      - `name: optional string or null`
 
-      - `role: optional string`
+      - `role: optional string or null`
 
     - `object: "list"`
 
       - `"list"`
 
-  - `role: optional string`
+  - `role: optional string or null`
 
     `owner` or `reader`
 
-  - `technical_level: optional string`
+  - `technical_level: optional string or null`
 
     The technical level metadata for the user.
 
@@ -164,17 +164,17 @@ Lists all of the users in the organization.
 
       - `"user"`
 
-    - `banned: optional boolean`
+    - `banned: optional boolean or null`
 
-    - `banned_at: optional number`
+    - `banned_at: optional number or null`
 
-    - `email: optional string`
+    - `email: optional string or null`
 
-    - `enabled: optional boolean`
+    - `enabled: optional boolean or null`
 
-    - `name: optional string`
+    - `name: optional string or null`
 
-    - `picture: optional string`
+    - `picture: optional string or null`
 
 - `has_more: boolean`
 
@@ -182,9 +182,9 @@ Lists all of the users in the organization.
 
   - `"list"`
 
-- `first_id: optional string`
+- `first_id: optional string or null`
 
-- `last_id: optional string`
+- `last_id: optional string or null`
 
 ### Example
 
@@ -301,7 +301,7 @@ Retrieves a user by their identifier.
 
     - `"organization.user"`
 
-  - `api_key_last_used_at: optional number`
+  - `api_key_last_used_at: optional number or null`
 
     The Unix timestamp (in seconds) of the user's last API key usage.
 
@@ -309,11 +309,11 @@ Retrieves a user by their identifier.
 
     The Unix timestamp (in seconds) of when the user was created.
 
-  - `developer_persona: optional string`
+  - `developer_persona: optional string or null`
 
     The developer persona metadata for the user.
 
-  - `email: optional string`
+  - `email: optional string or null`
 
     The email address of the user
 
@@ -321,7 +321,7 @@ Retrieves a user by their identifier.
 
     Whether this is the organization's default user.
 
-  - `is_scale_tier_authorized_purchaser: optional boolean`
+  - `is_scale_tier_authorized_purchaser: optional boolean or null`
 
     Whether the user is an authorized purchaser for Scale Tier.
 
@@ -333,31 +333,31 @@ Retrieves a user by their identifier.
 
     Whether the user is a service account.
 
-  - `name: optional string`
+  - `name: optional string or null`
 
     The name of the user
 
-  - `projects: optional object { data, object }`
+  - `projects: optional object { data, object }  or null`
 
     Projects associated with the user, if included.
 
     - `data: array of object { id, name, role }`
 
-      - `id: optional string`
+      - `id: optional string or null`
 
-      - `name: optional string`
+      - `name: optional string or null`
 
-      - `role: optional string`
+      - `role: optional string or null`
 
     - `object: "list"`
 
       - `"list"`
 
-  - `role: optional string`
+  - `role: optional string or null`
 
     `owner` or `reader`
 
-  - `technical_level: optional string`
+  - `technical_level: optional string or null`
 
     The technical level metadata for the user.
 
@@ -371,17 +371,17 @@ Retrieves a user by their identifier.
 
       - `"user"`
 
-    - `banned: optional boolean`
+    - `banned: optional boolean or null`
 
-    - `banned_at: optional number`
+    - `banned_at: optional number or null`
 
-    - `email: optional string`
+    - `email: optional string or null`
 
-    - `enabled: optional boolean`
+    - `enabled: optional boolean or null`
 
-    - `name: optional string`
+    - `name: optional string or null`
 
-    - `picture: optional string`
+    - `picture: optional string or null`
 
 ### Example
 
@@ -464,19 +464,19 @@ Modifies a user's role in the organization.
 
 ### Body Parameters
 
-- `developer_persona: optional string`
+- `developer_persona: optional string or null`
 
   Developer persona metadata.
 
-- `role: optional string`
+- `role: optional string or null`
 
   `owner` or `reader`
 
-- `role_id: optional string`
+- `role_id: optional string or null`
 
   Role ID to assign to the user.
 
-- `technical_level: optional string`
+- `technical_level: optional string or null`
 
   Technical level metadata.
 
@@ -500,7 +500,7 @@ Modifies a user's role in the organization.
 
     - `"organization.user"`
 
-  - `api_key_last_used_at: optional number`
+  - `api_key_last_used_at: optional number or null`
 
     The Unix timestamp (in seconds) of the user's last API key usage.
 
@@ -508,11 +508,11 @@ Modifies a user's role in the organization.
 
     The Unix timestamp (in seconds) of when the user was created.
 
-  - `developer_persona: optional string`
+  - `developer_persona: optional string or null`
 
     The developer persona metadata for the user.
 
-  - `email: optional string`
+  - `email: optional string or null`
 
     The email address of the user
 
@@ -520,7 +520,7 @@ Modifies a user's role in the organization.
 
     Whether this is the organization's default user.
 
-  - `is_scale_tier_authorized_purchaser: optional boolean`
+  - `is_scale_tier_authorized_purchaser: optional boolean or null`
 
     Whether the user is an authorized purchaser for Scale Tier.
 
@@ -532,31 +532,31 @@ Modifies a user's role in the organization.
 
     Whether the user is a service account.
 
-  - `name: optional string`
+  - `name: optional string or null`
 
     The name of the user
 
-  - `projects: optional object { data, object }`
+  - `projects: optional object { data, object }  or null`
 
     Projects associated with the user, if included.
 
     - `data: array of object { id, name, role }`
 
-      - `id: optional string`
+      - `id: optional string or null`
 
-      - `name: optional string`
+      - `name: optional string or null`
 
-      - `role: optional string`
+      - `role: optional string or null`
 
     - `object: "list"`
 
       - `"list"`
 
-  - `role: optional string`
+  - `role: optional string or null`
 
     `owner` or `reader`
 
-  - `technical_level: optional string`
+  - `technical_level: optional string or null`
 
     The technical level metadata for the user.
 
@@ -570,17 +570,17 @@ Modifies a user's role in the organization.
 
       - `"user"`
 
-    - `banned: optional boolean`
+    - `banned: optional boolean or null`
 
-    - `banned_at: optional number`
+    - `banned_at: optional number or null`
 
-    - `email: optional string`
+    - `email: optional string or null`
 
-    - `enabled: optional boolean`
+    - `enabled: optional boolean or null`
 
-    - `name: optional string`
+    - `name: optional string or null`
 
-    - `picture: optional string`
+    - `picture: optional string or null`
 
 ### Example
 
@@ -678,7 +678,7 @@ curl -X POST https://api.openai.com/v1/organization/users/user_abc \
 
     - `"organization.user"`
 
-  - `api_key_last_used_at: optional number`
+  - `api_key_last_used_at: optional number or null`
 
     The Unix timestamp (in seconds) of the user's last API key usage.
 
@@ -686,11 +686,11 @@ curl -X POST https://api.openai.com/v1/organization/users/user_abc \
 
     The Unix timestamp (in seconds) of when the user was created.
 
-  - `developer_persona: optional string`
+  - `developer_persona: optional string or null`
 
     The developer persona metadata for the user.
 
-  - `email: optional string`
+  - `email: optional string or null`
 
     The email address of the user
 
@@ -698,7 +698,7 @@ curl -X POST https://api.openai.com/v1/organization/users/user_abc \
 
     Whether this is the organization's default user.
 
-  - `is_scale_tier_authorized_purchaser: optional boolean`
+  - `is_scale_tier_authorized_purchaser: optional boolean or null`
 
     Whether the user is an authorized purchaser for Scale Tier.
 
@@ -710,31 +710,31 @@ curl -X POST https://api.openai.com/v1/organization/users/user_abc \
 
     Whether the user is a service account.
 
-  - `name: optional string`
+  - `name: optional string or null`
 
     The name of the user
 
-  - `projects: optional object { data, object }`
+  - `projects: optional object { data, object }  or null`
 
     Projects associated with the user, if included.
 
     - `data: array of object { id, name, role }`
 
-      - `id: optional string`
+      - `id: optional string or null`
 
-      - `name: optional string`
+      - `name: optional string or null`
 
-      - `role: optional string`
+      - `role: optional string or null`
 
     - `object: "list"`
 
       - `"list"`
 
-  - `role: optional string`
+  - `role: optional string or null`
 
     `owner` or `reader`
 
-  - `technical_level: optional string`
+  - `technical_level: optional string or null`
 
     The technical level metadata for the user.
 
@@ -748,17 +748,17 @@ curl -X POST https://api.openai.com/v1/organization/users/user_abc \
 
       - `"user"`
 
-    - `banned: optional boolean`
+    - `banned: optional boolean or null`
 
-    - `banned_at: optional number`
+    - `banned_at: optional number or null`
 
-    - `email: optional string`
+    - `email: optional string or null`
 
-    - `enabled: optional boolean`
+    - `enabled: optional boolean or null`
 
-    - `name: optional string`
+    - `name: optional string or null`
 
-    - `picture: optional string`
+    - `picture: optional string or null`
 
 ### User Delete Response
 
@@ -806,7 +806,7 @@ Assigns an organization role to a user within the organization.
 
     Identifier for the role.
 
-  - `description: string`
+  - `description: string or null`
 
     Optional description of the role.
 
@@ -850,7 +850,7 @@ Assigns an organization role to a user within the organization.
 
     - `"organization.user"`
 
-  - `api_key_last_used_at: optional number`
+  - `api_key_last_used_at: optional number or null`
 
     The Unix timestamp (in seconds) of the user's last API key usage.
 
@@ -858,11 +858,11 @@ Assigns an organization role to a user within the organization.
 
     The Unix timestamp (in seconds) of when the user was created.
 
-  - `developer_persona: optional string`
+  - `developer_persona: optional string or null`
 
     The developer persona metadata for the user.
 
-  - `email: optional string`
+  - `email: optional string or null`
 
     The email address of the user
 
@@ -870,7 +870,7 @@ Assigns an organization role to a user within the organization.
 
     Whether this is the organization's default user.
 
-  - `is_scale_tier_authorized_purchaser: optional boolean`
+  - `is_scale_tier_authorized_purchaser: optional boolean or null`
 
     Whether the user is an authorized purchaser for Scale Tier.
 
@@ -882,31 +882,31 @@ Assigns an organization role to a user within the organization.
 
     Whether the user is a service account.
 
-  - `name: optional string`
+  - `name: optional string or null`
 
     The name of the user
 
-  - `projects: optional object { data, object }`
+  - `projects: optional object { data, object }  or null`
 
     Projects associated with the user, if included.
 
     - `data: array of object { id, name, role }`
 
-      - `id: optional string`
+      - `id: optional string or null`
 
-      - `name: optional string`
+      - `name: optional string or null`
 
-      - `role: optional string`
+      - `role: optional string or null`
 
     - `object: "list"`
 
       - `"list"`
 
-  - `role: optional string`
+  - `role: optional string or null`
 
     `owner` or `reader`
 
-  - `technical_level: optional string`
+  - `technical_level: optional string or null`
 
     The technical level metadata for the user.
 
@@ -920,17 +920,17 @@ Assigns an organization role to a user within the organization.
 
       - `"user"`
 
-    - `banned: optional boolean`
+    - `banned: optional boolean or null`
 
-    - `banned_at: optional number`
+    - `banned_at: optional number or null`
 
-    - `email: optional string`
+    - `email: optional string or null`
 
-    - `enabled: optional boolean`
+    - `enabled: optional boolean or null`
 
-    - `name: optional string`
+    - `name: optional string or null`
 
-    - `picture: optional string`
+    - `picture: optional string or null`
 
 ### Example
 
@@ -1131,7 +1131,7 @@ Lists the organization roles assigned to a user within the organization.
 
     Identifier for the role.
 
-  - `assignment_sources: array of object { principal_id, principal_type }`
+  - `assignment_sources: array of object { principal_id, principal_type }  or null`
 
     Principals from which the role assignment is inherited, when available.
 
@@ -1139,23 +1139,23 @@ Lists the organization roles assigned to a user within the organization.
 
     - `principal_type: string`
 
-  - `created_at: number`
+  - `created_at: number or null`
 
     When the role was created.
 
-  - `created_by: string`
+  - `created_by: string or null`
 
     Identifier of the actor who created the role.
 
-  - `created_by_user_obj: map[unknown]`
+  - `created_by_user_obj: map[unknown] or null`
 
     User details for the actor that created the role, when available.
 
-  - `description: string`
+  - `description: string or null`
 
     Description of the role.
 
-  - `metadata: map[unknown]`
+  - `metadata: map[unknown] or null`
 
     Arbitrary metadata stored on the role.
 
@@ -1175,7 +1175,7 @@ Lists the organization roles assigned to a user within the organization.
 
     Resource type the role applies to.
 
-  - `updated_at: number`
+  - `updated_at: number or null`
 
     When the role was last updated.
 
@@ -1183,7 +1183,7 @@ Lists the organization roles assigned to a user within the organization.
 
   Whether additional assignments are available when paginating.
 
-- `next: string`
+- `next: string or null`
 
   Cursor to fetch the next page of results, or `null` when there are no more assignments.
 
@@ -1295,7 +1295,7 @@ Retrieves an organization role assigned to a user.
 
   Identifier for the role.
 
-- `assignment_sources: array of object { principal_id, principal_type }`
+- `assignment_sources: array of object { principal_id, principal_type }  or null`
 
   Principals from which the role assignment is inherited, when available.
 
@@ -1303,23 +1303,23 @@ Retrieves an organization role assigned to a user.
 
   - `principal_type: string`
 
-- `created_at: number`
+- `created_at: number or null`
 
   When the role was created.
 
-- `created_by: string`
+- `created_by: string or null`
 
   Identifier of the actor who created the role.
 
-- `created_by_user_obj: map[unknown]`
+- `created_by_user_obj: map[unknown] or null`
 
   User details for the actor that created the role, when available.
 
-- `description: string`
+- `description: string or null`
 
   Description of the role.
 
-- `metadata: map[unknown]`
+- `metadata: map[unknown] or null`
 
   Arbitrary metadata stored on the role.
 
@@ -1339,7 +1339,7 @@ Retrieves an organization role assigned to a user.
 
   Resource type the role applies to.
 
-- `updated_at: number`
+- `updated_at: number or null`
 
   When the role was last updated.
 
@@ -1432,7 +1432,7 @@ curl https://api.openai.com/v1/organization/users/user_abc123/roles/role_01J1F8R
 
       Identifier for the role.
 
-    - `description: string`
+    - `description: string or null`
 
       Optional description of the role.
 
@@ -1476,7 +1476,7 @@ curl https://api.openai.com/v1/organization/users/user_abc123/roles/role_01J1F8R
 
       - `"organization.user"`
 
-    - `api_key_last_used_at: optional number`
+    - `api_key_last_used_at: optional number or null`
 
       The Unix timestamp (in seconds) of the user's last API key usage.
 
@@ -1484,11 +1484,11 @@ curl https://api.openai.com/v1/organization/users/user_abc123/roles/role_01J1F8R
 
       The Unix timestamp (in seconds) of when the user was created.
 
-    - `developer_persona: optional string`
+    - `developer_persona: optional string or null`
 
       The developer persona metadata for the user.
 
-    - `email: optional string`
+    - `email: optional string or null`
 
       The email address of the user
 
@@ -1496,7 +1496,7 @@ curl https://api.openai.com/v1/organization/users/user_abc123/roles/role_01J1F8R
 
       Whether this is the organization's default user.
 
-    - `is_scale_tier_authorized_purchaser: optional boolean`
+    - `is_scale_tier_authorized_purchaser: optional boolean or null`
 
       Whether the user is an authorized purchaser for Scale Tier.
 
@@ -1508,31 +1508,31 @@ curl https://api.openai.com/v1/organization/users/user_abc123/roles/role_01J1F8R
 
       Whether the user is a service account.
 
-    - `name: optional string`
+    - `name: optional string or null`
 
       The name of the user
 
-    - `projects: optional object { data, object }`
+    - `projects: optional object { data, object }  or null`
 
       Projects associated with the user, if included.
 
       - `data: array of object { id, name, role }`
 
-        - `id: optional string`
+        - `id: optional string or null`
 
-        - `name: optional string`
+        - `name: optional string or null`
 
-        - `role: optional string`
+        - `role: optional string or null`
 
       - `object: "list"`
 
         - `"list"`
 
-    - `role: optional string`
+    - `role: optional string or null`
 
       `owner` or `reader`
 
-    - `technical_level: optional string`
+    - `technical_level: optional string or null`
 
       The technical level metadata for the user.
 
@@ -1546,17 +1546,17 @@ curl https://api.openai.com/v1/organization/users/user_abc123/roles/role_01J1F8R
 
         - `"user"`
 
-      - `banned: optional boolean`
+      - `banned: optional boolean or null`
 
-      - `banned_at: optional number`
+      - `banned_at: optional number or null`
 
-      - `email: optional string`
+      - `email: optional string or null`
 
-      - `enabled: optional boolean`
+      - `enabled: optional boolean or null`
 
-      - `name: optional string`
+      - `name: optional string or null`
 
-      - `picture: optional string`
+      - `picture: optional string or null`
 
 ### Role Delete Response
 
@@ -1582,7 +1582,7 @@ curl https://api.openai.com/v1/organization/users/user_abc123/roles/role_01J1F8R
 
     Identifier for the role.
 
-  - `assignment_sources: array of object { principal_id, principal_type }`
+  - `assignment_sources: array of object { principal_id, principal_type }  or null`
 
     Principals from which the role assignment is inherited, when available.
 
@@ -1590,23 +1590,23 @@ curl https://api.openai.com/v1/organization/users/user_abc123/roles/role_01J1F8R
 
     - `principal_type: string`
 
-  - `created_at: number`
+  - `created_at: number or null`
 
     When the role was created.
 
-  - `created_by: string`
+  - `created_by: string or null`
 
     Identifier of the actor who created the role.
 
-  - `created_by_user_obj: map[unknown]`
+  - `created_by_user_obj: map[unknown] or null`
 
     User details for the actor that created the role, when available.
 
-  - `description: string`
+  - `description: string or null`
 
     Description of the role.
 
-  - `metadata: map[unknown]`
+  - `metadata: map[unknown] or null`
 
     Arbitrary metadata stored on the role.
 
@@ -1626,7 +1626,7 @@ curl https://api.openai.com/v1/organization/users/user_abc123/roles/role_01J1F8R
 
     Resource type the role applies to.
 
-  - `updated_at: number`
+  - `updated_at: number or null`
 
     When the role was last updated.
 
@@ -1640,7 +1640,7 @@ curl https://api.openai.com/v1/organization/users/user_abc123/roles/role_01J1F8R
 
     Identifier for the role.
 
-  - `assignment_sources: array of object { principal_id, principal_type }`
+  - `assignment_sources: array of object { principal_id, principal_type }  or null`
 
     Principals from which the role assignment is inherited, when available.
 
@@ -1648,23 +1648,23 @@ curl https://api.openai.com/v1/organization/users/user_abc123/roles/role_01J1F8R
 
     - `principal_type: string`
 
-  - `created_at: number`
+  - `created_at: number or null`
 
     When the role was created.
 
-  - `created_by: string`
+  - `created_by: string or null`
 
     Identifier of the actor who created the role.
 
-  - `created_by_user_obj: map[unknown]`
+  - `created_by_user_obj: map[unknown] or null`
 
     User details for the actor that created the role, when available.
 
-  - `description: string`
+  - `description: string or null`
 
     Description of the role.
 
-  - `metadata: map[unknown]`
+  - `metadata: map[unknown] or null`
 
     Arbitrary metadata stored on the role.
 
@@ -1684,6 +1684,6 @@ curl https://api.openai.com/v1/organization/users/user_abc123/roles/role_01J1F8R
 
     Resource type the role applies to.
 
-  - `updated_at: number`
+  - `updated_at: number or null`
 
     When the role was last updated.

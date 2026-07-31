@@ -168,7 +168,7 @@ You can still steer verbosity through prompting after setting it to `low` in the
 
 1M token context window was introduced with GPT-5.4, making it easier to analyze entire codebases, long document collections, or extended agent trajectories in a single request.
 
-We have separate standard pricing for requests under 272K and over 272K tokens, available in the [pricing docs](https://developers.openai.com/api/docs/pricing). If you use [priority processing](https://developers.openai.com/api/docs/guides/priority-processing), any prompt above 272K tokens is automatically processed at standard rates.
+We have separate standard pricing for requests under 272K and over 272K tokens, available in the [pricing docs](https://developers.openai.com/api/docs/pricing). If you use [Fast mode](https://developers.openai.com/api/docs/guides/fast-mode), any prompt above 272K tokens is automatically processed at standard rates.
 
 Long context pricing stacks with other pricing modifiers such as data residency and batch.
 
@@ -292,7 +292,7 @@ While the model should be close to a drop-in replacement for GPT-5.2, there are 
 
 Using GPT-5 models with the Responses API provides improved intelligence because of the API design. The Responses API can pass the previous turn's CoT to the model. This leads to fewer generated reasoning tokens, higher cache hit rates, and less latency. To learn more, see an [in-depth guide](https://developers.openai.com/cookbook/examples/responses_api/reasoning_items) on the benefits of the Responses API.
 
-When migrating to GPT-5.4 from an older OpenAI model, start by experimenting with reasoning levels and prompting strategies. Based on our testing, we recommend using our [prompt optimizer](https://platform.openai.com/chat/edit?models=gpt-5.4&optimize=true)—which automatically updates your prompts for GPT-5.4 based on our best practices—and following this model-specific guidance:
+When migrating to GPT-5.4 from an older OpenAI model, start by experimenting with reasoning levels and prompting strategies. Use the [prompt optimizer](https://platform.openai.com/chat/edit?models=gpt-5.4&optimize=true) to update your prompts for GPT-5.4 based on current best practices, then follow this model-specific guidance:
 
 - **`gpt-5.2`**: `gpt-5.4` with default settings is meant to be a drop-in replacement.
 - **o3**: `gpt-5.4` with `medium` or `high` reasoning. Start with `medium` reasoning with prompt tuning, then increase to `high` if you aren't getting the results you want.
@@ -381,7 +381,7 @@ The following parameters are **only supported** when using GPT-5.4 with reasonin
 - `top_p`
 - `logprobs`
 
-Requests to GPT-5.4 or GPT-5.2 with any other reasoning effort setting, or to older GPT-5 models—for example, `gpt-5`, `gpt-5-mini`, or `gpt-5-nano`—that include these fields will raise an error.
+Requests that include these fields will raise an error for GPT-5.4 or GPT-5.2 with any other reasoning effort setting, or for older GPT-5 models such as `gpt-5`, `gpt-5-mini`, or `gpt-5-nano`.
 
 To achieve similar results with reasoning effort set higher, or with another GPT-5 family model, try these alternative parameters:
 

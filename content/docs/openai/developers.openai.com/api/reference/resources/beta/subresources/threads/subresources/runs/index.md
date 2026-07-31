@@ -26,11 +26,11 @@ Cancels a run that is `in_progress`.
 
     The ID of the [assistant](/docs/api-reference/assistants) used for execution of this run.
 
-  - `cancelled_at: number`
+  - `cancelled_at: number or null`
 
     The Unix timestamp (in seconds) for when the run was cancelled.
 
-  - `completed_at: number`
+  - `completed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run was completed.
 
@@ -38,15 +38,15 @@ Cancels a run that is `in_progress`.
 
     The Unix timestamp (in seconds) for when the run was created.
 
-  - `expires_at: number`
+  - `expires_at: number or null`
 
     The Unix timestamp (in seconds) for when the run will expire.
 
-  - `failed_at: number`
+  - `failed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run failed.
 
-  - `incomplete_details: object { reason }`
+  - `incomplete_details: object { reason }  or null`
 
     Details on why the run is incomplete. Will be `null` if the run is not incomplete.
 
@@ -62,7 +62,7 @@ Cancels a run that is `in_progress`.
 
     The instructions that the [assistant](/docs/api-reference/assistants) used for this run.
 
-  - `last_error: object { code, message }`
+  - `last_error: object { code, message }  or null`
 
     The last error associated with this run. Will be `null` if there are no errors.
 
@@ -80,15 +80,15 @@ Cancels a run that is `in_progress`.
 
       A human-readable description of the error.
 
-  - `max_completion_tokens: number`
+  - `max_completion_tokens: number or null`
 
     The maximum number of completion tokens specified to have been used over the course of the run.
 
-  - `max_prompt_tokens: number`
+  - `max_prompt_tokens: number or null`
 
     The maximum number of prompt tokens specified to have been used over the course of the run.
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -111,7 +111,7 @@ Cancels a run that is `in_progress`.
 
     Whether to enable [parallel function calling](/docs/guides/function-calling#configuring-parallel-function-calling) during tool use.
 
-  - `required_action: object { submit_tool_outputs, type }`
+  - `required_action: object { submit_tool_outputs, type }  or null`
 
     Details on the action required to continue the run. Will be `null` if no action is required.
 
@@ -151,7 +151,7 @@ Cancels a run that is `in_progress`.
 
       - `"submit_tool_outputs"`
 
-  - `response_format: AssistantResponseFormatOption`
+  - `response_format: AssistantResponseFormatOption or null`
 
     Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
 
@@ -214,7 +214,7 @@ Cancels a run that is `in_progress`.
           The schema for the response format, described as a JSON Schema object.
           Learn how to build JSON schemas [here](https://json-schema.org/).
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the output.
           If set to true, the model will always follow the exact schema defined
@@ -228,7 +228,7 @@ Cancels a run that is `in_progress`.
 
         - `"json_schema"`
 
-  - `started_at: number`
+  - `started_at: number or null`
 
     The Unix timestamp (in seconds) for when the run was started.
 
@@ -258,7 +258,7 @@ Cancels a run that is `in_progress`.
 
     The ID of the [thread](/docs/api-reference/threads) that was executed on as a part of this run.
 
-  - `tool_choice: AssistantToolChoiceOption`
+  - `tool_choice: AssistantToolChoiceOption or null`
 
     Controls which (if any) tool is called by the model.
     `none` means the model will not call any tools and instead generates a message.
@@ -362,7 +362,7 @@ Cancels a run that is `in_progress`.
 
           Omitting `parameters` defines a function with an empty parameter list.
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
 
@@ -372,7 +372,7 @@ Cancels a run that is `in_progress`.
 
         - `"function"`
 
-  - `truncation_strategy: object { type, last_messages }`
+  - `truncation_strategy: object { type, last_messages }  or null`
 
     Controls for how a thread will be truncated prior to the run. Use this to control the initial context window of the run.
 
@@ -384,11 +384,11 @@ Cancels a run that is `in_progress`.
 
       - `"last_messages"`
 
-    - `last_messages: optional number`
+    - `last_messages: optional number or null`
 
       The number of most recent messages from the thread when constructing the context for the run.
 
-  - `usage: object { completion_tokens, prompt_tokens, total_tokens }`
+  - `usage: object { completion_tokens, prompt_tokens, total_tokens }  or null`
 
     Usage statistics related to the run. This value will be `null` if the run is not in a terminal state (i.e. `in_progress`, `queued`, etc.).
 
@@ -404,11 +404,11 @@ Cancels a run that is `in_progress`.
 
       Total number of tokens used (prompt + completion).
 
-  - `temperature: optional number`
+  - `temperature: optional number or null`
 
     The sampling temperature used for this run. If not set, defaults to 1.
 
-  - `top_p: optional number`
+  - `top_p: optional number or null`
 
     The nucleus sampling value used for this run. If not set, defaults to 1.
 
@@ -560,11 +560,11 @@ Create a run.
 
   The ID of the [assistant](/docs/api-reference/assistants) to use to execute this run.
 
-- `additional_instructions: optional string`
+- `additional_instructions: optional string or null`
 
   Appends additional instructions at the end of the instructions for the run. This is useful for modifying the behavior on a per-run basis without overriding other instructions.
 
-- `additional_messages: optional array of object { content, role, attachments, metadata }`
+- `additional_messages: optional array of object { content, role, attachments, metadata }  or null`
 
   Adds additional messages to the thread before creating the run.
 
@@ -657,7 +657,7 @@ Create a run.
 
     - `"assistant"`
 
-  - `attachments: optional array of object { file_id, tools }`
+  - `attachments: optional array of object { file_id, tools }  or null`
 
     A list of files attached to the message, and the tools they should be added to.
 
@@ -685,7 +685,7 @@ Create a run.
 
           - `"file_search"`
 
-  - `metadata: optional Metadata`
+  - `metadata: optional Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -694,19 +694,19 @@ Create a run.
     Keys are strings with a maximum length of 64 characters. Values are strings
     with a maximum length of 512 characters.
 
-- `instructions: optional string`
+- `instructions: optional string or null`
 
   Overrides the [instructions](/docs/api-reference/assistants/createAssistant) of the assistant. This is useful for modifying the behavior on a per-run basis.
 
-- `max_completion_tokens: optional number`
+- `max_completion_tokens: optional number or null`
 
   The maximum number of completion tokens that may be used over the course of the run. The run will make a best effort to use only the number of completion tokens specified, across multiple turns of the run. If the run exceeds the number of completion tokens specified, the run will end with status `incomplete`. See `incomplete_details` for more info.
 
-- `max_prompt_tokens: optional number`
+- `max_prompt_tokens: optional number or null`
 
   The maximum number of prompt tokens that may be used over the course of the run. The run will make a best effort to use only the number of prompt tokens specified, across multiple turns of the run. If the run exceeds the number of prompt tokens specified, the run will end with status `incomplete`. See `incomplete_details` for more info.
 
-- `metadata: optional Metadata`
+- `metadata: optional Metadata or null`
 
   Set of 16 key-value pairs that can be attached to an object. This can be
   useful for storing additional information about the object in a structured
@@ -715,7 +715,7 @@ Create a run.
   Keys are strings with a maximum length of 64 characters. Values are strings
   with a maximum length of 512 characters.
 
-- `model: optional string or "gpt-5" or "gpt-5-mini" or "gpt-5-nano" or 39 more`
+- `model: optional string or "gpt-5" or "gpt-5-mini" or "gpt-5-nano" or 39 more or null`
 
   The ID of the [Model](/docs/api-reference/models) to be used to execute this run. If a value is provided here, it will override the model associated with the assistant. If not, the model associated with the assistant will be used.
 
@@ -813,7 +813,7 @@ Create a run.
 
   Whether to enable [parallel function calling](/docs/guides/function-calling#configuring-parallel-function-calling) during tool use.
 
-- `reasoning_effort: optional ReasoningEffort`
+- `reasoning_effort: optional ReasoningEffort or null`
 
   Constrains effort on reasoning for reasoning models. Currently supported
   values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -837,7 +837,7 @@ Create a run.
 
   - `"max"`
 
-- `response_format: optional AssistantResponseFormatOption`
+- `response_format: optional AssistantResponseFormatOption or null`
 
   Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
 
@@ -900,7 +900,7 @@ Create a run.
         The schema for the response format, described as a JSON Schema object.
         Learn how to build JSON schemas [here](https://json-schema.org/).
 
-      - `strict: optional boolean`
+      - `strict: optional boolean or null`
 
         Whether to enable strict schema adherence when generating the output.
         If set to true, the model will always follow the exact schema defined
@@ -914,15 +914,15 @@ Create a run.
 
       - `"json_schema"`
 
-- `stream: optional boolean`
+- `stream: optional boolean or null`
 
   If `true`, returns a stream of events that happen during the Run as server-sent events, terminating when the Run enters a terminal state with a `data: [DONE]` message.
 
-- `temperature: optional number`
+- `temperature: optional number or null`
 
   What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
 
-- `tool_choice: optional AssistantToolChoiceOption`
+- `tool_choice: optional AssistantToolChoiceOption or null`
 
   Controls which (if any) tool is called by the model.
   `none` means the model will not call any tools and instead generates a message.
@@ -960,7 +960,7 @@ Create a run.
 
         The name of the function to call.
 
-- `tools: optional array of CodeInterpreterTool or FileSearchTool or FunctionTool`
+- `tools: optional array of CodeInterpreterTool or FileSearchTool or FunctionTool or null`
 
   Override the tools the assistant can use for this run. This is useful for modifying the behavior on a per-run basis.
 
@@ -1020,7 +1020,7 @@ Create a run.
 
         Omitting `parameters` defines a function with an empty parameter list.
 
-      - `strict: optional boolean`
+      - `strict: optional boolean or null`
 
         Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
 
@@ -1030,13 +1030,13 @@ Create a run.
 
       - `"function"`
 
-- `top_p: optional number`
+- `top_p: optional number or null`
 
   An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
 
   We generally recommend altering this or temperature but not both.
 
-- `truncation_strategy: optional object { type, last_messages }`
+- `truncation_strategy: optional object { type, last_messages }  or null`
 
   Controls for how a thread will be truncated prior to the run. Use this to control the initial context window of the run.
 
@@ -1048,7 +1048,7 @@ Create a run.
 
     - `"last_messages"`
 
-  - `last_messages: optional number`
+  - `last_messages: optional number or null`
 
     The number of most recent messages from the thread when constructing the context for the run.
 
@@ -1066,11 +1066,11 @@ Create a run.
 
     The ID of the [assistant](/docs/api-reference/assistants) used for execution of this run.
 
-  - `cancelled_at: number`
+  - `cancelled_at: number or null`
 
     The Unix timestamp (in seconds) for when the run was cancelled.
 
-  - `completed_at: number`
+  - `completed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run was completed.
 
@@ -1078,15 +1078,15 @@ Create a run.
 
     The Unix timestamp (in seconds) for when the run was created.
 
-  - `expires_at: number`
+  - `expires_at: number or null`
 
     The Unix timestamp (in seconds) for when the run will expire.
 
-  - `failed_at: number`
+  - `failed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run failed.
 
-  - `incomplete_details: object { reason }`
+  - `incomplete_details: object { reason }  or null`
 
     Details on why the run is incomplete. Will be `null` if the run is not incomplete.
 
@@ -1102,7 +1102,7 @@ Create a run.
 
     The instructions that the [assistant](/docs/api-reference/assistants) used for this run.
 
-  - `last_error: object { code, message }`
+  - `last_error: object { code, message }  or null`
 
     The last error associated with this run. Will be `null` if there are no errors.
 
@@ -1120,15 +1120,15 @@ Create a run.
 
       A human-readable description of the error.
 
-  - `max_completion_tokens: number`
+  - `max_completion_tokens: number or null`
 
     The maximum number of completion tokens specified to have been used over the course of the run.
 
-  - `max_prompt_tokens: number`
+  - `max_prompt_tokens: number or null`
 
     The maximum number of prompt tokens specified to have been used over the course of the run.
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -1151,7 +1151,7 @@ Create a run.
 
     Whether to enable [parallel function calling](/docs/guides/function-calling#configuring-parallel-function-calling) during tool use.
 
-  - `required_action: object { submit_tool_outputs, type }`
+  - `required_action: object { submit_tool_outputs, type }  or null`
 
     Details on the action required to continue the run. Will be `null` if no action is required.
 
@@ -1191,7 +1191,7 @@ Create a run.
 
       - `"submit_tool_outputs"`
 
-  - `response_format: AssistantResponseFormatOption`
+  - `response_format: AssistantResponseFormatOption or null`
 
     Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
 
@@ -1254,7 +1254,7 @@ Create a run.
           The schema for the response format, described as a JSON Schema object.
           Learn how to build JSON schemas [here](https://json-schema.org/).
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the output.
           If set to true, the model will always follow the exact schema defined
@@ -1268,7 +1268,7 @@ Create a run.
 
         - `"json_schema"`
 
-  - `started_at: number`
+  - `started_at: number or null`
 
     The Unix timestamp (in seconds) for when the run was started.
 
@@ -1298,7 +1298,7 @@ Create a run.
 
     The ID of the [thread](/docs/api-reference/threads) that was executed on as a part of this run.
 
-  - `tool_choice: AssistantToolChoiceOption`
+  - `tool_choice: AssistantToolChoiceOption or null`
 
     Controls which (if any) tool is called by the model.
     `none` means the model will not call any tools and instead generates a message.
@@ -1402,7 +1402,7 @@ Create a run.
 
           Omitting `parameters` defines a function with an empty parameter list.
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
 
@@ -1412,7 +1412,7 @@ Create a run.
 
         - `"function"`
 
-  - `truncation_strategy: object { type, last_messages }`
+  - `truncation_strategy: object { type, last_messages }  or null`
 
     Controls for how a thread will be truncated prior to the run. Use this to control the initial context window of the run.
 
@@ -1424,11 +1424,11 @@ Create a run.
 
       - `"last_messages"`
 
-    - `last_messages: optional number`
+    - `last_messages: optional number or null`
 
       The number of most recent messages from the thread when constructing the context for the run.
 
-  - `usage: object { completion_tokens, prompt_tokens, total_tokens }`
+  - `usage: object { completion_tokens, prompt_tokens, total_tokens }  or null`
 
     Usage statistics related to the run. This value will be `null` if the run is not in a terminal state (i.e. `in_progress`, `queued`, etc.).
 
@@ -1444,11 +1444,11 @@ Create a run.
 
       Total number of tokens used (prompt + completion).
 
-  - `temperature: optional number`
+  - `temperature: optional number or null`
 
     The sampling temperature used for this run. If not set, defaults to 1.
 
-  - `top_p: optional number`
+  - `top_p: optional number or null`
 
     The nucleus sampling value used for this run. If not set, defaults to 1.
 
@@ -1773,11 +1773,11 @@ Returns a list of runs belonging to a thread.
 
     The ID of the [assistant](/docs/api-reference/assistants) used for execution of this run.
 
-  - `cancelled_at: number`
+  - `cancelled_at: number or null`
 
     The Unix timestamp (in seconds) for when the run was cancelled.
 
-  - `completed_at: number`
+  - `completed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run was completed.
 
@@ -1785,15 +1785,15 @@ Returns a list of runs belonging to a thread.
 
     The Unix timestamp (in seconds) for when the run was created.
 
-  - `expires_at: number`
+  - `expires_at: number or null`
 
     The Unix timestamp (in seconds) for when the run will expire.
 
-  - `failed_at: number`
+  - `failed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run failed.
 
-  - `incomplete_details: object { reason }`
+  - `incomplete_details: object { reason }  or null`
 
     Details on why the run is incomplete. Will be `null` if the run is not incomplete.
 
@@ -1809,7 +1809,7 @@ Returns a list of runs belonging to a thread.
 
     The instructions that the [assistant](/docs/api-reference/assistants) used for this run.
 
-  - `last_error: object { code, message }`
+  - `last_error: object { code, message }  or null`
 
     The last error associated with this run. Will be `null` if there are no errors.
 
@@ -1827,15 +1827,15 @@ Returns a list of runs belonging to a thread.
 
       A human-readable description of the error.
 
-  - `max_completion_tokens: number`
+  - `max_completion_tokens: number or null`
 
     The maximum number of completion tokens specified to have been used over the course of the run.
 
-  - `max_prompt_tokens: number`
+  - `max_prompt_tokens: number or null`
 
     The maximum number of prompt tokens specified to have been used over the course of the run.
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -1858,7 +1858,7 @@ Returns a list of runs belonging to a thread.
 
     Whether to enable [parallel function calling](/docs/guides/function-calling#configuring-parallel-function-calling) during tool use.
 
-  - `required_action: object { submit_tool_outputs, type }`
+  - `required_action: object { submit_tool_outputs, type }  or null`
 
     Details on the action required to continue the run. Will be `null` if no action is required.
 
@@ -1898,7 +1898,7 @@ Returns a list of runs belonging to a thread.
 
       - `"submit_tool_outputs"`
 
-  - `response_format: AssistantResponseFormatOption`
+  - `response_format: AssistantResponseFormatOption or null`
 
     Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
 
@@ -1961,7 +1961,7 @@ Returns a list of runs belonging to a thread.
           The schema for the response format, described as a JSON Schema object.
           Learn how to build JSON schemas [here](https://json-schema.org/).
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the output.
           If set to true, the model will always follow the exact schema defined
@@ -1975,7 +1975,7 @@ Returns a list of runs belonging to a thread.
 
         - `"json_schema"`
 
-  - `started_at: number`
+  - `started_at: number or null`
 
     The Unix timestamp (in seconds) for when the run was started.
 
@@ -2005,7 +2005,7 @@ Returns a list of runs belonging to a thread.
 
     The ID of the [thread](/docs/api-reference/threads) that was executed on as a part of this run.
 
-  - `tool_choice: AssistantToolChoiceOption`
+  - `tool_choice: AssistantToolChoiceOption or null`
 
     Controls which (if any) tool is called by the model.
     `none` means the model will not call any tools and instead generates a message.
@@ -2109,7 +2109,7 @@ Returns a list of runs belonging to a thread.
 
           Omitting `parameters` defines a function with an empty parameter list.
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
 
@@ -2119,7 +2119,7 @@ Returns a list of runs belonging to a thread.
 
         - `"function"`
 
-  - `truncation_strategy: object { type, last_messages }`
+  - `truncation_strategy: object { type, last_messages }  or null`
 
     Controls for how a thread will be truncated prior to the run. Use this to control the initial context window of the run.
 
@@ -2131,11 +2131,11 @@ Returns a list of runs belonging to a thread.
 
       - `"last_messages"`
 
-    - `last_messages: optional number`
+    - `last_messages: optional number or null`
 
       The number of most recent messages from the thread when constructing the context for the run.
 
-  - `usage: object { completion_tokens, prompt_tokens, total_tokens }`
+  - `usage: object { completion_tokens, prompt_tokens, total_tokens }  or null`
 
     Usage statistics related to the run. This value will be `null` if the run is not in a terminal state (i.e. `in_progress`, `queued`, etc.).
 
@@ -2151,11 +2151,11 @@ Returns a list of runs belonging to a thread.
 
       Total number of tokens used (prompt + completion).
 
-  - `temperature: optional number`
+  - `temperature: optional number or null`
 
     The sampling temperature used for this run. If not set, defaults to 1.
 
-  - `top_p: optional number`
+  - `top_p: optional number or null`
 
     The nucleus sampling value used for this run. If not set, defaults to 1.
 
@@ -2391,11 +2391,11 @@ Retrieves a run.
 
     The ID of the [assistant](/docs/api-reference/assistants) used for execution of this run.
 
-  - `cancelled_at: number`
+  - `cancelled_at: number or null`
 
     The Unix timestamp (in seconds) for when the run was cancelled.
 
-  - `completed_at: number`
+  - `completed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run was completed.
 
@@ -2403,15 +2403,15 @@ Retrieves a run.
 
     The Unix timestamp (in seconds) for when the run was created.
 
-  - `expires_at: number`
+  - `expires_at: number or null`
 
     The Unix timestamp (in seconds) for when the run will expire.
 
-  - `failed_at: number`
+  - `failed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run failed.
 
-  - `incomplete_details: object { reason }`
+  - `incomplete_details: object { reason }  or null`
 
     Details on why the run is incomplete. Will be `null` if the run is not incomplete.
 
@@ -2427,7 +2427,7 @@ Retrieves a run.
 
     The instructions that the [assistant](/docs/api-reference/assistants) used for this run.
 
-  - `last_error: object { code, message }`
+  - `last_error: object { code, message }  or null`
 
     The last error associated with this run. Will be `null` if there are no errors.
 
@@ -2445,15 +2445,15 @@ Retrieves a run.
 
       A human-readable description of the error.
 
-  - `max_completion_tokens: number`
+  - `max_completion_tokens: number or null`
 
     The maximum number of completion tokens specified to have been used over the course of the run.
 
-  - `max_prompt_tokens: number`
+  - `max_prompt_tokens: number or null`
 
     The maximum number of prompt tokens specified to have been used over the course of the run.
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -2476,7 +2476,7 @@ Retrieves a run.
 
     Whether to enable [parallel function calling](/docs/guides/function-calling#configuring-parallel-function-calling) during tool use.
 
-  - `required_action: object { submit_tool_outputs, type }`
+  - `required_action: object { submit_tool_outputs, type }  or null`
 
     Details on the action required to continue the run. Will be `null` if no action is required.
 
@@ -2516,7 +2516,7 @@ Retrieves a run.
 
       - `"submit_tool_outputs"`
 
-  - `response_format: AssistantResponseFormatOption`
+  - `response_format: AssistantResponseFormatOption or null`
 
     Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
 
@@ -2579,7 +2579,7 @@ Retrieves a run.
           The schema for the response format, described as a JSON Schema object.
           Learn how to build JSON schemas [here](https://json-schema.org/).
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the output.
           If set to true, the model will always follow the exact schema defined
@@ -2593,7 +2593,7 @@ Retrieves a run.
 
         - `"json_schema"`
 
-  - `started_at: number`
+  - `started_at: number or null`
 
     The Unix timestamp (in seconds) for when the run was started.
 
@@ -2623,7 +2623,7 @@ Retrieves a run.
 
     The ID of the [thread](/docs/api-reference/threads) that was executed on as a part of this run.
 
-  - `tool_choice: AssistantToolChoiceOption`
+  - `tool_choice: AssistantToolChoiceOption or null`
 
     Controls which (if any) tool is called by the model.
     `none` means the model will not call any tools and instead generates a message.
@@ -2727,7 +2727,7 @@ Retrieves a run.
 
           Omitting `parameters` defines a function with an empty parameter list.
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
 
@@ -2737,7 +2737,7 @@ Retrieves a run.
 
         - `"function"`
 
-  - `truncation_strategy: object { type, last_messages }`
+  - `truncation_strategy: object { type, last_messages }  or null`
 
     Controls for how a thread will be truncated prior to the run. Use this to control the initial context window of the run.
 
@@ -2749,11 +2749,11 @@ Retrieves a run.
 
       - `"last_messages"`
 
-    - `last_messages: optional number`
+    - `last_messages: optional number or null`
 
       The number of most recent messages from the thread when constructing the context for the run.
 
-  - `usage: object { completion_tokens, prompt_tokens, total_tokens }`
+  - `usage: object { completion_tokens, prompt_tokens, total_tokens }  or null`
 
     Usage statistics related to the run. This value will be `null` if the run is not in a terminal state (i.e. `in_progress`, `queued`, etc.).
 
@@ -2769,11 +2769,11 @@ Retrieves a run.
 
       Total number of tokens used (prompt + completion).
 
-  - `temperature: optional number`
+  - `temperature: optional number or null`
 
     The sampling temperature used for this run. If not set, defaults to 1.
 
-  - `top_p: optional number`
+  - `top_p: optional number or null`
 
     The nucleus sampling value used for this run. If not set, defaults to 1.
 
@@ -2929,7 +2929,7 @@ When a run has the `status: "requires_action"` and `required_action.type` is `su
 
     The ID of the tool call in the `required_action` object within the run object the output is being submitted for.
 
-- `stream: optional boolean`
+- `stream: optional boolean or null`
 
   If `true`, returns a stream of events that happen during the Run as server-sent events, terminating when the Run enters a terminal state with a `data: [DONE]` message.
 
@@ -2947,11 +2947,11 @@ When a run has the `status: "requires_action"` and `required_action.type` is `su
 
     The ID of the [assistant](/docs/api-reference/assistants) used for execution of this run.
 
-  - `cancelled_at: number`
+  - `cancelled_at: number or null`
 
     The Unix timestamp (in seconds) for when the run was cancelled.
 
-  - `completed_at: number`
+  - `completed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run was completed.
 
@@ -2959,15 +2959,15 @@ When a run has the `status: "requires_action"` and `required_action.type` is `su
 
     The Unix timestamp (in seconds) for when the run was created.
 
-  - `expires_at: number`
+  - `expires_at: number or null`
 
     The Unix timestamp (in seconds) for when the run will expire.
 
-  - `failed_at: number`
+  - `failed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run failed.
 
-  - `incomplete_details: object { reason }`
+  - `incomplete_details: object { reason }  or null`
 
     Details on why the run is incomplete. Will be `null` if the run is not incomplete.
 
@@ -2983,7 +2983,7 @@ When a run has the `status: "requires_action"` and `required_action.type` is `su
 
     The instructions that the [assistant](/docs/api-reference/assistants) used for this run.
 
-  - `last_error: object { code, message }`
+  - `last_error: object { code, message }  or null`
 
     The last error associated with this run. Will be `null` if there are no errors.
 
@@ -3001,15 +3001,15 @@ When a run has the `status: "requires_action"` and `required_action.type` is `su
 
       A human-readable description of the error.
 
-  - `max_completion_tokens: number`
+  - `max_completion_tokens: number or null`
 
     The maximum number of completion tokens specified to have been used over the course of the run.
 
-  - `max_prompt_tokens: number`
+  - `max_prompt_tokens: number or null`
 
     The maximum number of prompt tokens specified to have been used over the course of the run.
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -3032,7 +3032,7 @@ When a run has the `status: "requires_action"` and `required_action.type` is `su
 
     Whether to enable [parallel function calling](/docs/guides/function-calling#configuring-parallel-function-calling) during tool use.
 
-  - `required_action: object { submit_tool_outputs, type }`
+  - `required_action: object { submit_tool_outputs, type }  or null`
 
     Details on the action required to continue the run. Will be `null` if no action is required.
 
@@ -3072,7 +3072,7 @@ When a run has the `status: "requires_action"` and `required_action.type` is `su
 
       - `"submit_tool_outputs"`
 
-  - `response_format: AssistantResponseFormatOption`
+  - `response_format: AssistantResponseFormatOption or null`
 
     Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
 
@@ -3135,7 +3135,7 @@ When a run has the `status: "requires_action"` and `required_action.type` is `su
           The schema for the response format, described as a JSON Schema object.
           Learn how to build JSON schemas [here](https://json-schema.org/).
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the output.
           If set to true, the model will always follow the exact schema defined
@@ -3149,7 +3149,7 @@ When a run has the `status: "requires_action"` and `required_action.type` is `su
 
         - `"json_schema"`
 
-  - `started_at: number`
+  - `started_at: number or null`
 
     The Unix timestamp (in seconds) for when the run was started.
 
@@ -3179,7 +3179,7 @@ When a run has the `status: "requires_action"` and `required_action.type` is `su
 
     The ID of the [thread](/docs/api-reference/threads) that was executed on as a part of this run.
 
-  - `tool_choice: AssistantToolChoiceOption`
+  - `tool_choice: AssistantToolChoiceOption or null`
 
     Controls which (if any) tool is called by the model.
     `none` means the model will not call any tools and instead generates a message.
@@ -3283,7 +3283,7 @@ When a run has the `status: "requires_action"` and `required_action.type` is `su
 
           Omitting `parameters` defines a function with an empty parameter list.
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
 
@@ -3293,7 +3293,7 @@ When a run has the `status: "requires_action"` and `required_action.type` is `su
 
         - `"function"`
 
-  - `truncation_strategy: object { type, last_messages }`
+  - `truncation_strategy: object { type, last_messages }  or null`
 
     Controls for how a thread will be truncated prior to the run. Use this to control the initial context window of the run.
 
@@ -3305,11 +3305,11 @@ When a run has the `status: "requires_action"` and `required_action.type` is `su
 
       - `"last_messages"`
 
-    - `last_messages: optional number`
+    - `last_messages: optional number or null`
 
       The number of most recent messages from the thread when constructing the context for the run.
 
-  - `usage: object { completion_tokens, prompt_tokens, total_tokens }`
+  - `usage: object { completion_tokens, prompt_tokens, total_tokens }  or null`
 
     Usage statistics related to the run. This value will be `null` if the run is not in a terminal state (i.e. `in_progress`, `queued`, etc.).
 
@@ -3325,11 +3325,11 @@ When a run has the `status: "requires_action"` and `required_action.type` is `su
 
       Total number of tokens used (prompt + completion).
 
-  - `temperature: optional number`
+  - `temperature: optional number or null`
 
     The sampling temperature used for this run. If not set, defaults to 1.
 
-  - `top_p: optional number`
+  - `top_p: optional number or null`
 
     The nucleus sampling value used for this run. If not set, defaults to 1.
 
@@ -3573,7 +3573,7 @@ Modifies a run.
 
 ### Body Parameters
 
-- `metadata: optional Metadata`
+- `metadata: optional Metadata or null`
 
   Set of 16 key-value pairs that can be attached to an object. This can be
   useful for storing additional information about the object in a structured
@@ -3596,11 +3596,11 @@ Modifies a run.
 
     The ID of the [assistant](/docs/api-reference/assistants) used for execution of this run.
 
-  - `cancelled_at: number`
+  - `cancelled_at: number or null`
 
     The Unix timestamp (in seconds) for when the run was cancelled.
 
-  - `completed_at: number`
+  - `completed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run was completed.
 
@@ -3608,15 +3608,15 @@ Modifies a run.
 
     The Unix timestamp (in seconds) for when the run was created.
 
-  - `expires_at: number`
+  - `expires_at: number or null`
 
     The Unix timestamp (in seconds) for when the run will expire.
 
-  - `failed_at: number`
+  - `failed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run failed.
 
-  - `incomplete_details: object { reason }`
+  - `incomplete_details: object { reason }  or null`
 
     Details on why the run is incomplete. Will be `null` if the run is not incomplete.
 
@@ -3632,7 +3632,7 @@ Modifies a run.
 
     The instructions that the [assistant](/docs/api-reference/assistants) used for this run.
 
-  - `last_error: object { code, message }`
+  - `last_error: object { code, message }  or null`
 
     The last error associated with this run. Will be `null` if there are no errors.
 
@@ -3650,15 +3650,15 @@ Modifies a run.
 
       A human-readable description of the error.
 
-  - `max_completion_tokens: number`
+  - `max_completion_tokens: number or null`
 
     The maximum number of completion tokens specified to have been used over the course of the run.
 
-  - `max_prompt_tokens: number`
+  - `max_prompt_tokens: number or null`
 
     The maximum number of prompt tokens specified to have been used over the course of the run.
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -3681,7 +3681,7 @@ Modifies a run.
 
     Whether to enable [parallel function calling](/docs/guides/function-calling#configuring-parallel-function-calling) during tool use.
 
-  - `required_action: object { submit_tool_outputs, type }`
+  - `required_action: object { submit_tool_outputs, type }  or null`
 
     Details on the action required to continue the run. Will be `null` if no action is required.
 
@@ -3721,7 +3721,7 @@ Modifies a run.
 
       - `"submit_tool_outputs"`
 
-  - `response_format: AssistantResponseFormatOption`
+  - `response_format: AssistantResponseFormatOption or null`
 
     Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
 
@@ -3784,7 +3784,7 @@ Modifies a run.
           The schema for the response format, described as a JSON Schema object.
           Learn how to build JSON schemas [here](https://json-schema.org/).
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the output.
           If set to true, the model will always follow the exact schema defined
@@ -3798,7 +3798,7 @@ Modifies a run.
 
         - `"json_schema"`
 
-  - `started_at: number`
+  - `started_at: number or null`
 
     The Unix timestamp (in seconds) for when the run was started.
 
@@ -3828,7 +3828,7 @@ Modifies a run.
 
     The ID of the [thread](/docs/api-reference/threads) that was executed on as a part of this run.
 
-  - `tool_choice: AssistantToolChoiceOption`
+  - `tool_choice: AssistantToolChoiceOption or null`
 
     Controls which (if any) tool is called by the model.
     `none` means the model will not call any tools and instead generates a message.
@@ -3932,7 +3932,7 @@ Modifies a run.
 
           Omitting `parameters` defines a function with an empty parameter list.
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
 
@@ -3942,7 +3942,7 @@ Modifies a run.
 
         - `"function"`
 
-  - `truncation_strategy: object { type, last_messages }`
+  - `truncation_strategy: object { type, last_messages }  or null`
 
     Controls for how a thread will be truncated prior to the run. Use this to control the initial context window of the run.
 
@@ -3954,11 +3954,11 @@ Modifies a run.
 
       - `"last_messages"`
 
-    - `last_messages: optional number`
+    - `last_messages: optional number or null`
 
       The number of most recent messages from the thread when constructing the context for the run.
 
-  - `usage: object { completion_tokens, prompt_tokens, total_tokens }`
+  - `usage: object { completion_tokens, prompt_tokens, total_tokens }  or null`
 
     Usage statistics related to the run. This value will be `null` if the run is not in a terminal state (i.e. `in_progress`, `queued`, etc.).
 
@@ -3974,11 +3974,11 @@ Modifies a run.
 
       Total number of tokens used (prompt + completion).
 
-  - `temperature: optional number`
+  - `temperature: optional number or null`
 
     The sampling temperature used for this run. If not set, defaults to 1.
 
-  - `top_p: optional number`
+  - `top_p: optional number or null`
 
     The nucleus sampling value used for this run. If not set, defaults to 1.
 
@@ -4170,11 +4170,11 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123 \
 
     The ID of the [assistant](/docs/api-reference/assistants) used for execution of this run.
 
-  - `cancelled_at: number`
+  - `cancelled_at: number or null`
 
     The Unix timestamp (in seconds) for when the run was cancelled.
 
-  - `completed_at: number`
+  - `completed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run was completed.
 
@@ -4182,15 +4182,15 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123 \
 
     The Unix timestamp (in seconds) for when the run was created.
 
-  - `expires_at: number`
+  - `expires_at: number or null`
 
     The Unix timestamp (in seconds) for when the run will expire.
 
-  - `failed_at: number`
+  - `failed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run failed.
 
-  - `incomplete_details: object { reason }`
+  - `incomplete_details: object { reason }  or null`
 
     Details on why the run is incomplete. Will be `null` if the run is not incomplete.
 
@@ -4206,7 +4206,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123 \
 
     The instructions that the [assistant](/docs/api-reference/assistants) used for this run.
 
-  - `last_error: object { code, message }`
+  - `last_error: object { code, message }  or null`
 
     The last error associated with this run. Will be `null` if there are no errors.
 
@@ -4224,15 +4224,15 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123 \
 
       A human-readable description of the error.
 
-  - `max_completion_tokens: number`
+  - `max_completion_tokens: number or null`
 
     The maximum number of completion tokens specified to have been used over the course of the run.
 
-  - `max_prompt_tokens: number`
+  - `max_prompt_tokens: number or null`
 
     The maximum number of prompt tokens specified to have been used over the course of the run.
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -4255,7 +4255,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123 \
 
     Whether to enable [parallel function calling](/docs/guides/function-calling#configuring-parallel-function-calling) during tool use.
 
-  - `required_action: object { submit_tool_outputs, type }`
+  - `required_action: object { submit_tool_outputs, type }  or null`
 
     Details on the action required to continue the run. Will be `null` if no action is required.
 
@@ -4295,7 +4295,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123 \
 
       - `"submit_tool_outputs"`
 
-  - `response_format: AssistantResponseFormatOption`
+  - `response_format: AssistantResponseFormatOption or null`
 
     Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
 
@@ -4358,7 +4358,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123 \
           The schema for the response format, described as a JSON Schema object.
           Learn how to build JSON schemas [here](https://json-schema.org/).
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the output.
           If set to true, the model will always follow the exact schema defined
@@ -4372,7 +4372,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123 \
 
         - `"json_schema"`
 
-  - `started_at: number`
+  - `started_at: number or null`
 
     The Unix timestamp (in seconds) for when the run was started.
 
@@ -4402,7 +4402,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123 \
 
     The ID of the [thread](/docs/api-reference/threads) that was executed on as a part of this run.
 
-  - `tool_choice: AssistantToolChoiceOption`
+  - `tool_choice: AssistantToolChoiceOption or null`
 
     Controls which (if any) tool is called by the model.
     `none` means the model will not call any tools and instead generates a message.
@@ -4506,7 +4506,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123 \
 
           Omitting `parameters` defines a function with an empty parameter list.
 
-        - `strict: optional boolean`
+        - `strict: optional boolean or null`
 
           Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
 
@@ -4516,7 +4516,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123 \
 
         - `"function"`
 
-  - `truncation_strategy: object { type, last_messages }`
+  - `truncation_strategy: object { type, last_messages }  or null`
 
     Controls for how a thread will be truncated prior to the run. Use this to control the initial context window of the run.
 
@@ -4528,11 +4528,11 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123 \
 
       - `"last_messages"`
 
-    - `last_messages: optional number`
+    - `last_messages: optional number or null`
 
       The number of most recent messages from the thread when constructing the context for the run.
 
-  - `usage: object { completion_tokens, prompt_tokens, total_tokens }`
+  - `usage: object { completion_tokens, prompt_tokens, total_tokens }  or null`
 
     Usage statistics related to the run. This value will be `null` if the run is not in a terminal state (i.e. `in_progress`, `queued`, etc.).
 
@@ -4548,11 +4548,11 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123 \
 
       Total number of tokens used (prompt + completion).
 
-  - `temperature: optional number`
+  - `temperature: optional number or null`
 
     The sampling temperature used for this run. If not set, defaults to 1.
 
-  - `top_p: optional number`
+  - `top_p: optional number or null`
 
     The nucleus sampling value used for this run. If not set, defaults to 1.
 
@@ -4612,11 +4612,11 @@ Returns a list of run steps belonging to a run.
 
     The ID of the [assistant](/docs/api-reference/assistants) associated with the run step.
 
-  - `cancelled_at: number`
+  - `cancelled_at: number or null`
 
     The Unix timestamp (in seconds) for when the run step was cancelled.
 
-  - `completed_at: number`
+  - `completed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run step completed.
 
@@ -4624,15 +4624,15 @@ Returns a list of run steps belonging to a run.
 
     The Unix timestamp (in seconds) for when the run step was created.
 
-  - `expired_at: number`
+  - `expired_at: number or null`
 
     The Unix timestamp (in seconds) for when the run step expired. A step is considered expired if the parent run is expired.
 
-  - `failed_at: number`
+  - `failed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run step failed.
 
-  - `last_error: object { code, message }`
+  - `last_error: object { code, message }  or null`
 
     The last error associated with this run step. Will be `null` if there are no errors.
 
@@ -4648,7 +4648,7 @@ Returns a list of run steps belonging to a run.
 
       A human-readable description of the error.
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -4843,7 +4843,7 @@ Returns a list of run steps belonging to a run.
 
               The name of the function.
 
-            - `output: string`
+            - `output: string or null`
 
               The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet.
 
@@ -4871,7 +4871,7 @@ Returns a list of run steps belonging to a run.
 
     - `"tool_calls"`
 
-  - `usage: object { completion_tokens, prompt_tokens, total_tokens }`
+  - `usage: object { completion_tokens, prompt_tokens, total_tokens }  or null`
 
     Usage statistics related to the run step. This value will be `null` while the run step's status is `in_progress`.
 
@@ -5034,11 +5034,11 @@ Retrieves a run step.
 
     The ID of the [assistant](/docs/api-reference/assistants) associated with the run step.
 
-  - `cancelled_at: number`
+  - `cancelled_at: number or null`
 
     The Unix timestamp (in seconds) for when the run step was cancelled.
 
-  - `completed_at: number`
+  - `completed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run step completed.
 
@@ -5046,15 +5046,15 @@ Retrieves a run step.
 
     The Unix timestamp (in seconds) for when the run step was created.
 
-  - `expired_at: number`
+  - `expired_at: number or null`
 
     The Unix timestamp (in seconds) for when the run step expired. A step is considered expired if the parent run is expired.
 
-  - `failed_at: number`
+  - `failed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run step failed.
 
-  - `last_error: object { code, message }`
+  - `last_error: object { code, message }  or null`
 
     The last error associated with this run step. Will be `null` if there are no errors.
 
@@ -5070,7 +5070,7 @@ Retrieves a run step.
 
       A human-readable description of the error.
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -5265,7 +5265,7 @@ Retrieves a run step.
 
               The name of the function.
 
-            - `output: string`
+            - `output: string or null`
 
               The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet.
 
@@ -5293,7 +5293,7 @@ Retrieves a run step.
 
     - `"tool_calls"`
 
-  - `usage: object { completion_tokens, prompt_tokens, total_tokens }`
+  - `usage: object { completion_tokens, prompt_tokens, total_tokens }  or null`
 
     Usage statistics related to the run step. This value will be `null` while the run step's status is `in_progress`.
 
@@ -5666,7 +5666,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123/steps/step_
 
       The name of the function.
 
-    - `output: string`
+    - `output: string or null`
 
       The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet.
 
@@ -5706,7 +5706,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123/steps/step_
 
       The name of the function.
 
-    - `output: optional string`
+    - `output: optional string or null`
 
       The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet.
 
@@ -5742,11 +5742,11 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123/steps/step_
 
     The ID of the [assistant](/docs/api-reference/assistants) associated with the run step.
 
-  - `cancelled_at: number`
+  - `cancelled_at: number or null`
 
     The Unix timestamp (in seconds) for when the run step was cancelled.
 
-  - `completed_at: number`
+  - `completed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run step completed.
 
@@ -5754,15 +5754,15 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123/steps/step_
 
     The Unix timestamp (in seconds) for when the run step was created.
 
-  - `expired_at: number`
+  - `expired_at: number or null`
 
     The Unix timestamp (in seconds) for when the run step expired. A step is considered expired if the parent run is expired.
 
-  - `failed_at: number`
+  - `failed_at: number or null`
 
     The Unix timestamp (in seconds) for when the run step failed.
 
-  - `last_error: object { code, message }`
+  - `last_error: object { code, message }  or null`
 
     The last error associated with this run step. Will be `null` if there are no errors.
 
@@ -5778,7 +5778,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123/steps/step_
 
       A human-readable description of the error.
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -5973,7 +5973,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123/steps/step_
 
               The name of the function.
 
-            - `output: string`
+            - `output: string or null`
 
               The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet.
 
@@ -6001,7 +6001,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123/steps/step_
 
     - `"tool_calls"`
 
-  - `usage: object { completion_tokens, prompt_tokens, total_tokens }`
+  - `usage: object { completion_tokens, prompt_tokens, total_tokens }  or null`
 
     Usage statistics related to the run step. This value will be `null` while the run step's status is `in_progress`.
 
@@ -6179,7 +6179,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123/steps/step_
 
                 The name of the function.
 
-              - `output: optional string`
+              - `output: optional string or null`
 
                 The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet.
 
@@ -6343,7 +6343,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123/steps/step_
 
           The name of the function.
 
-        - `output: optional string`
+        - `output: optional string or null`
 
           The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet.
 
@@ -6491,7 +6491,7 @@ curl https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123/steps/step_
 
           The name of the function.
 
-        - `output: string`
+        - `output: string or null`
 
           The output of the function. This will be `null` if the outputs have not been [submitted](/docs/api-reference/runs/submitToolOutputs) yet.
 

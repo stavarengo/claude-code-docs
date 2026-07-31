@@ -208,7 +208,7 @@ Lists all groups in the organization.
 
   Whether additional groups are available when paginating.
 
-- `next: string`
+- `next: string or null`
 
   Cursor to fetch the next page of results, or `null` if there are no more results.
 
@@ -562,7 +562,7 @@ Assigns an organization role to a group within the organization.
 
     Identifier for the role.
 
-  - `description: string`
+  - `description: string or null`
 
     Optional description of the role.
 
@@ -757,7 +757,7 @@ Lists the organization roles assigned to a group within the organization.
 
     Identifier for the role.
 
-  - `assignment_sources: array of object { principal_id, principal_type }`
+  - `assignment_sources: array of object { principal_id, principal_type }  or null`
 
     Principals from which the role assignment is inherited, when available.
 
@@ -765,23 +765,23 @@ Lists the organization roles assigned to a group within the organization.
 
     - `principal_type: string`
 
-  - `created_at: number`
+  - `created_at: number or null`
 
     When the role was created.
 
-  - `created_by: string`
+  - `created_by: string or null`
 
     Identifier of the actor who created the role.
 
-  - `created_by_user_obj: map[unknown]`
+  - `created_by_user_obj: map[unknown] or null`
 
     User details for the actor that created the role, when available.
 
-  - `description: string`
+  - `description: string or null`
 
     Description of the role.
 
-  - `metadata: map[unknown]`
+  - `metadata: map[unknown] or null`
 
     Arbitrary metadata stored on the role.
 
@@ -801,7 +801,7 @@ Lists the organization roles assigned to a group within the organization.
 
     Resource type the role applies to.
 
-  - `updated_at: number`
+  - `updated_at: number or null`
 
     When the role was last updated.
 
@@ -809,7 +809,7 @@ Lists the organization roles assigned to a group within the organization.
 
   Whether additional assignments are available when paginating.
 
-- `next: string`
+- `next: string or null`
 
   Cursor to fetch the next page of results, or `null` when there are no more assignments.
 
@@ -921,7 +921,7 @@ Retrieves an organization role assigned to a group.
 
   Identifier for the role.
 
-- `assignment_sources: array of object { principal_id, principal_type }`
+- `assignment_sources: array of object { principal_id, principal_type }  or null`
 
   Principals from which the role assignment is inherited, when available.
 
@@ -929,23 +929,23 @@ Retrieves an organization role assigned to a group.
 
   - `principal_type: string`
 
-- `created_at: number`
+- `created_at: number or null`
 
   When the role was created.
 
-- `created_by: string`
+- `created_by: string or null`
 
   Identifier of the actor who created the role.
 
-- `created_by_user_obj: map[unknown]`
+- `created_by_user_obj: map[unknown] or null`
 
   User details for the actor that created the role, when available.
 
-- `description: string`
+- `description: string or null`
 
   Description of the role.
 
-- `metadata: map[unknown]`
+- `metadata: map[unknown] or null`
 
   Arbitrary metadata stored on the role.
 
@@ -965,7 +965,7 @@ Retrieves an organization role assigned to a group.
 
   Resource type the role applies to.
 
-- `updated_at: number`
+- `updated_at: number or null`
 
   When the role was last updated.
 
@@ -1084,7 +1084,7 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/roles/rol
 
       Identifier for the role.
 
-    - `description: string`
+    - `description: string or null`
 
       Optional description of the role.
 
@@ -1134,7 +1134,7 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/roles/rol
 
     Identifier for the role.
 
-  - `assignment_sources: array of object { principal_id, principal_type }`
+  - `assignment_sources: array of object { principal_id, principal_type }  or null`
 
     Principals from which the role assignment is inherited, when available.
 
@@ -1142,23 +1142,23 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/roles/rol
 
     - `principal_type: string`
 
-  - `created_at: number`
+  - `created_at: number or null`
 
     When the role was created.
 
-  - `created_by: string`
+  - `created_by: string or null`
 
     Identifier of the actor who created the role.
 
-  - `created_by_user_obj: map[unknown]`
+  - `created_by_user_obj: map[unknown] or null`
 
     User details for the actor that created the role, when available.
 
-  - `description: string`
+  - `description: string or null`
 
     Description of the role.
 
-  - `metadata: map[unknown]`
+  - `metadata: map[unknown] or null`
 
     Arbitrary metadata stored on the role.
 
@@ -1178,7 +1178,7 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/roles/rol
 
     Resource type the role applies to.
 
-  - `updated_at: number`
+  - `updated_at: number or null`
 
     When the role was last updated.
 
@@ -1192,7 +1192,7 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/roles/rol
 
     Identifier for the role.
 
-  - `assignment_sources: array of object { principal_id, principal_type }`
+  - `assignment_sources: array of object { principal_id, principal_type }  or null`
 
     Principals from which the role assignment is inherited, when available.
 
@@ -1200,23 +1200,23 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/roles/rol
 
     - `principal_type: string`
 
-  - `created_at: number`
+  - `created_at: number or null`
 
     When the role was created.
 
-  - `created_by: string`
+  - `created_by: string or null`
 
     Identifier of the actor who created the role.
 
-  - `created_by_user_obj: map[unknown]`
+  - `created_by_user_obj: map[unknown] or null`
 
     User details for the actor that created the role, when available.
 
-  - `description: string`
+  - `description: string or null`
 
     Description of the role.
 
-  - `metadata: map[unknown]`
+  - `metadata: map[unknown] or null`
 
     Arbitrary metadata stored on the role.
 
@@ -1236,7 +1236,7 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/roles/rol
 
     Resource type the role applies to.
 
-  - `updated_at: number`
+  - `updated_at: number or null`
 
     When the role was last updated.
 
@@ -1412,7 +1412,7 @@ Lists the users assigned to a group.
 
     The identifier, which can be referenced in API endpoints
 
-  - `email: string`
+  - `email: string or null`
 
     The email address of the user.
 
@@ -1424,7 +1424,7 @@ Lists the users assigned to a group.
 
   Whether more users are available when paginating.
 
-- `next: string`
+- `next: string or null`
 
   Cursor to fetch the next page of results, or `null` when no further users are available.
 
@@ -1501,11 +1501,11 @@ Retrieves a user in a group.
 
   Identifier for the user.
 
-- `email: string`
+- `email: string or null`
 
   Email address of the user, or `null` for users without an email.
 
-- `is_service_account: boolean`
+- `is_service_account: boolean or null`
 
   Whether the user is a service account.
 
@@ -1513,7 +1513,7 @@ Retrieves a user in a group.
 
   Display name of the user.
 
-- `picture: string`
+- `picture: string or null`
 
   URL of the user's profile picture, if available.
 
@@ -1578,7 +1578,7 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/users/use
 
     The identifier, which can be referenced in API endpoints
 
-  - `email: string`
+  - `email: string or null`
 
     The email address of the user.
 
@@ -1632,11 +1632,11 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/users/use
 
     Identifier for the user.
 
-  - `email: string`
+  - `email: string or null`
 
     Email address of the user, or `null` for users without an email.
 
-  - `is_service_account: boolean`
+  - `is_service_account: boolean or null`
 
     Whether the user is a service account.
 
@@ -1644,7 +1644,7 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/users/use
 
     Display name of the user.
 
-  - `picture: string`
+  - `picture: string or null`
 
     URL of the user's profile picture, if available.
 

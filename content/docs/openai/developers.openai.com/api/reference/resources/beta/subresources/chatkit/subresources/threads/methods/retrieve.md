@@ -48,7 +48,7 @@ Retrieve a ChatKit thread by its identifier.
 
       Indicates that a thread is locked and cannot accept new input.
 
-      - `reason: string`
+      - `reason: string or null`
 
         Reason that the thread was locked. Defaults to null when no reason is recorded.
 
@@ -62,7 +62,7 @@ Retrieve a ChatKit thread by its identifier.
 
       Indicates that a thread has been closed.
 
-      - `reason: string`
+      - `reason: string or null`
 
         Reason that the thread was closed. Defaults to null when no reason is recorded.
 
@@ -72,7 +72,7 @@ Retrieve a ChatKit thread by its identifier.
 
         - `"closed"`
 
-  - `title: string`
+  - `title: string or null`
 
     Optional human-readable title for the thread. Defaults to null when no title has been generated.
 

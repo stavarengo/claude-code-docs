@@ -22,11 +22,11 @@ Retrieve a message.
 
     The identifier, which can be referenced in API endpoints.
 
-  - `assistant_id: string`
+  - `assistant_id: string or null`
 
     If applicable, the ID of the [assistant](/docs/api-reference/assistants) that authored this message.
 
-  - `attachments: array of object { file_id, tools }`
+  - `attachments: array of object { file_id, tools }  or null`
 
     A list of files attached to the message, and the tools they were added to.
 
@@ -54,7 +54,7 @@ Retrieve a message.
 
           - `"file_search"`
 
-  - `completed_at: number`
+  - `completed_at: number or null`
 
     The Unix timestamp (in seconds) for when the message was completed.
 
@@ -196,11 +196,11 @@ Retrieve a message.
 
     The Unix timestamp (in seconds) for when the message was created.
 
-  - `incomplete_at: number`
+  - `incomplete_at: number or null`
 
     The Unix timestamp (in seconds) for when the message was marked as incomplete.
 
-  - `incomplete_details: object { reason }`
+  - `incomplete_details: object { reason }  or null`
 
     On an incomplete message, details about why the message is incomplete.
 
@@ -218,7 +218,7 @@ Retrieve a message.
 
       - `"run_failed"`
 
-  - `metadata: Metadata`
+  - `metadata: Metadata or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -241,7 +241,7 @@ Retrieve a message.
 
     - `"assistant"`
 
-  - `run_id: string`
+  - `run_id: string or null`
 
     The ID of the [run](/docs/api-reference/runs) associated with the creation of this message. Value is `null` when messages are created manually using the create message or create thread endpoints.
 

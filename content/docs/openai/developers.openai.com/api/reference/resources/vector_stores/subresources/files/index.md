@@ -30,7 +30,7 @@ Retrieve the parsed contents of a vector store file.
 
   Indicates if there are more content pages to fetch.
 
-- `next_page: string`
+- `next_page: string or null`
 
   The token for the next page, if any.
 
@@ -102,7 +102,7 @@ Create a vector store file by attaching a [File](/docs/api-reference/files) to a
 
   A [File](/docs/api-reference/files) ID that the vector store should use. Useful for tools like `file_search` that can access files. For multi-file ingestion, we recommend [`file_batches`](/docs/api-reference/vector-stores-file-batches/createBatch) to minimize per-vector-store write requests.
 
-- `attributes: optional map[string or number or boolean]`
+- `attributes: optional map[string or number or boolean] or null`
 
   Set of 16 key-value pairs that can be attached to an object. This can be
   useful for storing additional information about the object in a structured
@@ -166,7 +166,7 @@ Create a vector store file by attaching a [File](/docs/api-reference/files) to a
 
     The Unix timestamp (in seconds) for when the vector store file was created.
 
-  - `last_error: object { code, message }`
+  - `last_error: object { code, message }  or null`
 
     The last error associated with this vector store file. Will be `null` if there are no errors.
 
@@ -210,7 +210,7 @@ Create a vector store file by attaching a [File](/docs/api-reference/files) to a
 
     The ID of the [vector store](/docs/api-reference/vector-stores/object) that the [File](/docs/api-reference/files) is attached to.
 
-  - `attributes: optional map[string or number or boolean]`
+  - `attributes: optional map[string or number or boolean] or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -442,7 +442,7 @@ Returns a list of vector store files.
 
     The Unix timestamp (in seconds) for when the vector store file was created.
 
-  - `last_error: object { code, message }`
+  - `last_error: object { code, message }  or null`
 
     The last error associated with this vector store file. Will be `null` if there are no errors.
 
@@ -486,7 +486,7 @@ Returns a list of vector store files.
 
     The ID of the [vector store](/docs/api-reference/vector-stores/object) that the [File](/docs/api-reference/files) is attached to.
 
-  - `attributes: optional map[string or number or boolean]`
+  - `attributes: optional map[string or number or boolean] or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -645,7 +645,7 @@ Retrieves a vector store file.
 
     The Unix timestamp (in seconds) for when the vector store file was created.
 
-  - `last_error: object { code, message }`
+  - `last_error: object { code, message }  or null`
 
     The last error associated with this vector store file. Will be `null` if there are no errors.
 
@@ -689,7 +689,7 @@ Retrieves a vector store file.
 
     The ID of the [vector store](/docs/api-reference/vector-stores/object) that the [File](/docs/api-reference/files) is attached to.
 
-  - `attributes: optional map[string or number or boolean]`
+  - `attributes: optional map[string or number or boolean] or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -808,7 +808,7 @@ Update attributes on a vector store file.
 
 ### Body Parameters
 
-- `attributes: map[string or number or boolean]`
+- `attributes: map[string or number or boolean] or null`
 
   Set of 16 key-value pairs that can be attached to an object. This can be
   useful for storing additional information about the object in a structured
@@ -836,7 +836,7 @@ Update attributes on a vector store file.
 
     The Unix timestamp (in seconds) for when the vector store file was created.
 
-  - `last_error: object { code, message }`
+  - `last_error: object { code, message }  or null`
 
     The last error associated with this vector store file. Will be `null` if there are no errors.
 
@@ -880,7 +880,7 @@ Update attributes on a vector store file.
 
     The ID of the [vector store](/docs/api-reference/vector-stores/object) that the [File](/docs/api-reference/files) is attached to.
 
-  - `attributes: optional map[string or number or boolean]`
+  - `attributes: optional map[string or number or boolean] or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
@@ -1022,7 +1022,7 @@ curl https://api.openai.com/v1/vector_stores/{vector_store_id}/files/{file_id} \
 
     The Unix timestamp (in seconds) for when the vector store file was created.
 
-  - `last_error: object { code, message }`
+  - `last_error: object { code, message }  or null`
 
     The last error associated with this vector store file. Will be `null` if there are no errors.
 
@@ -1066,7 +1066,7 @@ curl https://api.openai.com/v1/vector_stores/{vector_store_id}/files/{file_id} \
 
     The ID of the [vector store](/docs/api-reference/vector-stores/object) that the [File](/docs/api-reference/files) is attached to.
 
-  - `attributes: optional map[string or number or boolean]`
+  - `attributes: optional map[string or number or boolean] or null`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured

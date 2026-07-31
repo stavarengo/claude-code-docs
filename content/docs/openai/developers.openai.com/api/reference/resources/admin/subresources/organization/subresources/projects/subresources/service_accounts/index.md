@@ -16,7 +16,7 @@ Creates a new service account in the project. By default, this also returns an u
 
   The name of the service account being created.
 
-- `create_service_account_only: optional boolean`
+- `create_service_account_only: optional boolean or null`
 
   Create the service account without default roles or an API key.
 
@@ -24,7 +24,7 @@ Creates a new service account in the project. By default, this also returns an u
 
 - `id: string`
 
-- `api_key: object { id, created_at, name, 2 more }`
+- `api_key: object { id, created_at, name, 2 more }  or null`
 
   - `id: string`
 
@@ -235,9 +235,9 @@ Returns a list of service accounts in the project.
 
   - `"list"`
 
-- `first_id: optional string`
+- `first_id: optional string or null`
 
-- `last_id: optional string`
+- `last_id: optional string or null`
 
 ### Example
 
@@ -526,7 +526,7 @@ curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/service_ac
 
   - `id: string`
 
-  - `api_key: object { id, created_at, name, 2 more }`
+  - `api_key: object { id, created_at, name, 2 more }  or null`
 
     - `id: string`
 
