@@ -23,6 +23,10 @@ The OpenAI API accepts bearer credentials from API keys or from short-lived acce
 
 **Remember that your API key is a secret.** Don't share it with others or expose it in any client-side code such as browsers or apps. Load API keys from an environment variable or key management service on the server.
 
+Revocations of an API key take effect within a few seconds. Most updates that
+  affect authentication results of an API key propagate within 15 minutes, but
+  can potentially take longer.
+
 Provide API credentials with [HTTP Bearer authentication](https://swagger.io/docs/specification/v3_0/authentication/bearer-authentication/).
 
 ```bash
