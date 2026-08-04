@@ -1036,7 +1036,7 @@ If you are using the [Agents SDK](https://developers.openai.com/api/docs/guides/
 
 Use local shell with Agents SDK
 
-```javascript
+```typescript
 import {
   Agent,
   run,

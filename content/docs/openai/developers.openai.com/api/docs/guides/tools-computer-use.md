@@ -1775,7 +1775,7 @@ If you want visual interaction in this setup, make sure your harness can capture
 
 ### Code-execution harness examples
 
-These minimal JavaScript and Python implementations demonstrate a code-execution harness. They give the model a code-execution tool, keep Playwright objects available to the runtime, return text and screenshots back to the model, and let the model ask the user clarifying questions when it gets blocked.
+These minimal TypeScript and Python implementations demonstrate a code-execution harness. They give the model a code-execution tool, keep Playwright objects available to the runtime, return text and screenshots back to the model, and let the model ask the user clarifying questions when it gets blocked.
 
 Run model-generated code only inside a disposable, least-privilege container or VM with resource and network limits. Language-level sandboxes such as Node.js `vm` and restricted Python global variables are not security boundaries. Keep the sandbox in a separate process and security boundary from the API client, with no shared credentials or host mounts. Enforce time and resource limits inside the sandbox, and terminate the runtime when it exceeds them.
 
@@ -1783,11 +1783,11 @@ The examples below do not run generated code in the API client. They send each a
 
 
 
-JavaScript
+TypeScript
 
     Code-execution harness
 
-```javascript
+```typescript
 // Run with:
 //   pnpm example -- tools/cua/015-code-execution-harness-example.ts
 // Override the user prompt with:

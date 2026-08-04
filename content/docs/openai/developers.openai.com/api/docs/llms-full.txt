@@ -888,14 +888,15 @@ assistant = client.beta.assistants.create(
 ```javascript
 const assistant = await openai.beta.assistants.create({
   name: "Data visualizer",
-  description: "You are great at creating beautiful data visualizations. You analyze data present in .csv files, understand trends, and come up with data visualizations relevant to those trends. You also share a brief text summary of the trends observed.",
+  description:
+    "You are great at creating beautiful data visualizations. You analyze data present in .csv files, understand trends, and come up with data visualizations relevant to those trends. You also share a brief text summary of the trends observed.",
   model: "gpt-4o",
-  tools: [{"type": "code_interpreter"}],
+  tools: [{ type: "code_interpreter" }],
   tool_resources: {
-    "code_interpreter": {
-      "file_ids": [file.id]
-    }
-  }
+    code_interpreter: {
+      file_ids: [file.id],
+    },
+  },
 });
 ```
 
@@ -946,16 +947,16 @@ thread = client.beta.threads.create(
 const thread = await openai.beta.threads.create({
   messages: [
     {
-      "role": "user",
-      "content": "Create 3 data visualizations based on the trends in this file.",
-      "attachments": [
+      role: "user",
+      content: "Create 3 data visualizations based on the trends in this file.",
+      attachments: [
         {
           file_id: file.id,
-          tools: [{type: "code_interpreter"}]
-        }
-      ]
-    }
-  ]
+          tools: [{ type: "code_interpreter" }],
+        },
+      ],
+    },
+  ],
 });
 ```
 
@@ -1023,23 +1024,25 @@ const file = await openai.files.create({
 const thread = await openai.beta.threads.create({
   messages: [
     {
-      "role": "user",
-      "content": [
+      role: "user",
+      content: [
         {
-          "type": "text",
-          "text": "What is the difference between these images?"
+          type: "text",
+          text: "What is the difference between these images?",
         },
         {
-          "type": "image_url",
-          "image_url": {"url": "https://openai-documentation.vercel.app/images/cat_and_otter.png"}
+          type: "image_url",
+          image_url: {
+            url: "https://openai-documentation.vercel.app/images/cat_and_otter.png",
+          },
         },
         {
-          "type": "image_file",
-          "image_file": {"file_id": file.id}
+          type: "image_file",
+          image_file: { file_id: file.id },
         },
-      ]
-    }
-  ]
+      ],
+    },
+  ],
 });
 ```
 
@@ -1111,22 +1114,22 @@ thread = client.beta.threads.create(
 const thread = await openai.beta.threads.create({
   messages: [
     {
-      "role": "user",
-      "content": [
-          {
-            "type": "text",
-            "text": "What is this an image of?"
+      role: "user",
+      content: [
+        {
+          type: "text",
+          text: "What is this an image of?",
+        },
+        {
+          type: "image_url",
+          image_url: {
+            url: "https://openai-documentation.vercel.app/images/cat_and_otter.png",
+            detail: "high",
           },
-          {
-            "type": "image_url",
-            "image_url": {
-              "url": "https://openai-documentation.vercel.app/images/cat_and_otter.png",
-              "detail": "high"
-            }
-          },
-      ]
-    }
-  ]
+        },
+      ],
+    },
+  ],
 });
 ```
 
@@ -1249,10 +1252,9 @@ run = client.beta.threads.runs.create(
 ```
 
 ```javascript
-const run = await openai.beta.threads.runs.create(
-  thread.id,
-  { assistant_id: assistant.id }
-);
+const run = await openai.beta.threads.runs.create(thread.id, {
+  assistant_id: assistant.id,
+});
 ```
 
 ```bash
@@ -1279,15 +1281,12 @@ run = client.beta.threads.runs.create(
 ```
 
 ```javascript
-const run = await openai.beta.threads.runs.create(
-  thread.id,
-  {
-    assistant_id: assistant.id,
-    model: "gpt-4o",
-    instructions: "New instructions that override the Assistant instructions",
-    tools: [{"type": "code_interpreter"}, {"type": "file_search"}]
-  }
-);
+const run = await openai.beta.threads.runs.create(thread.id, {
+  assistant_id: assistant.id,
+  model: "gpt-4o",
+  instructions: "New instructions that override the Assistant instructions",
+  tools: [{ type: "code_interpreter" }, { type: "file_search" }],
+});
 ```
 
 ```bash
@@ -1434,9 +1433,10 @@ assistant = client.beta.assistants.create(
 
 ```javascript
 const assistant = await openai.beta.assistants.create({
-  instructions: "You are a personal math tutor. When asked a math question, write and run code to answer the question.",
+  instructions:
+    "You are a personal math tutor. When asked a math question, write and run code to answer the question.",
   model: "gpt-4o",
-  tools: [{"type": "code_interpreter"}]
+  tools: [{ type: "code_interpreter" }],
 });
 ```
 
@@ -1483,14 +1483,15 @@ const file = await openai.files.create({
 
 // Create an assistant using the file ID
 const assistant = await openai.beta.assistants.create({
-  instructions: "You are a personal math tutor. When asked a math question, write and run code to answer the question.",
+  instructions:
+    "You are a personal math tutor. When asked a math question, write and run code to answer the question.",
   model: "gpt-4o",
-  tools: [{"type": "code_interpreter"}],
+  tools: [{ type: "code_interpreter" }],
   tool_resources: {
-    "code_interpreter": {
-      "file_ids": [file.id]
-    }
-  }
+    code_interpreter: {
+      file_ids: [file.id],
+    },
+  },
 });
 ```
 
@@ -1539,16 +1540,16 @@ thread = client.beta.threads.create(
 const thread = await openai.beta.threads.create({
   messages: [
     {
-      "role": "user",
-      "content": "I need to solve the equation `3x + 11 = 14`. Can you help me?",
-      "attachments": [
+      role: "user",
+      content: "I need to solve the equation `3x + 11 = 14`. Can you help me?",
+      attachments: [
         {
           file_id: file.id,
-          tools: [{type: "code_interpreter"}]
-        }
-      ]
-    }
-  ]
+          tools: [{ type: "code_interpreter" }],
+        },
+      ],
+    },
+  ],
 });
 ```
 
@@ -1690,10 +1691,9 @@ run_steps = client.beta.threads.runs.steps.list(
 ```
 
 ```javascript
-const runSteps = await openai.beta.threads.runs.steps.list(
-  thread.id,
-  run.id
-);
+const runSteps = await openai.beta.threads.runs.steps.list(run.id, {
+  thread_id: thread.id,
+});
 ```
 
 ```bash
@@ -1803,12 +1803,13 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 async function main() {
-const assistant = await openai.beta.assistants.create({
-name: "Financial Analyst Assistant",
-instructions: "You are an expert financial analyst. Use you knowledge base to answer questions about audited financial statements.",
-model: "gpt-4o",
-tools: [{ type: "file_search" }],
-});
+  const assistant = await openai.beta.assistants.create({
+    name: "Financial Analyst Assistant",
+    instructions:
+      "You are an expert financial analyst. Use you knowledge base to answer questions about audited financial statements.",
+    model: "gpt-4o",
+    tools: [{ type: "file_search" }],
+  });
 }
 
 main();
@@ -1861,16 +1862,19 @@ print(file_batch.file_counts)
 ```
 
 ```javascript
-const fileStreams = ["edgar/goog-10k.pdf", "edgar/brka-10k.txt"].map((path) =>
-fs.createReadStream(path),
-);
+const fileStreams = [
+  fs.createReadStream("edgar/goog-10k.pdf"),
+  fs.createReadStream("edgar/brka-10k.txt"),
+];
 
 // Create a vector store including our two files.
 let vectorStore = await openai.vectorStores.create({
-name: "Financial Statement",
+  name: "Financial Statement",
 });
 
-await openai.vectorStores.fileBatches.uploadAndPoll(vectorStore.id, fileStreams)
+await openai.vectorStores.fileBatches.uploadAndPoll(vectorStore.id, {
+  files: fileStreams,
+});
 ```
 
 
@@ -1926,20 +1930,20 @@ print(thread.tool_resources.file_search)
 ```javascript
 // A user wants to attach a file to a specific message, let's upload it.
 const aapl10k = await openai.files.create({
-file: fs.createReadStream("edgar/aapl-10k.pdf"),
-purpose: "assistants",
+  file: fs.createReadStream("edgar/aapl-10k.pdf"),
+  purpose: "assistants",
 });
 
 const thread = await openai.beta.threads.create({
-messages: [
-{
-role: "user",
-content:
-"How many shares of AAPL were outstanding at the end of of October 2023?",
-// Attach the new file to the message.
-attachments: [{ file_id: aapl10k.id, tools: [{ type: "file_search" }] }],
-},
-],
+  messages: [
+    {
+      role: "user",
+      content:
+        "How many shares of AAPL were outstanding at the end of October 2023?",
+      // Attach the new file to the message.
+      attachments: [{ file_id: aapl10k.id, tools: [{ type: "file_search" }] }],
+    },
+  ],
 });
 
 // The thread now has a vector store in its tool resources.
@@ -2004,26 +2008,27 @@ with client.beta.threads.runs.stream(
     stream.until_done()
 ```
 
-```javascript
+```typescript
 const stream = openai.beta.threads.runs
-.stream(thread.id, {
-assistant_id: assistant.id,
-})
-.on("textCreated", () => console.log("assistant >"))
-.on("toolCallCreated", (event) => console.log("assistant " + event.type))
-.on("messageDone", async (event) => {
-if (event.content[0].type === "text") {
-const { text } = event.content[0];
-const { annotations } = text;
-const citations: string[] = [];
+  .stream(thread.id, {
+    assistant_id: assistant.id,
+  })
+  .on("textCreated", () => console.log("assistant >"))
+  .on("toolCallCreated", (event) => console.log("assistant " + event.type))
+  .on("messageDone", async (event) => {
+    if (event.content[0].type === "text") {
+      const { text } = event.content[0];
+      const { annotations } = text;
+      const citations: string[] = [];
 
       let index = 0;
-      for (let annotation of annotations) {
-        text.value = text.value.replace(annotation.text, "[" + index + "]");
-        const { file_citation } = annotation;
-        if (file_citation) {
-          const citedFile = await openai.files.retrieve(file_citation.file_id);
-          citations.push("[" + index + "]" + citedFile.filename);
+      for (const annotation of annotations) {
+        text.value = text.value.replace(annotation.text, `[${index}]`);
+        if (annotation.type === "file_citation") {
+          const citedFile = await openai.files.retrieve(
+            annotation.file_citation.file_id
+          );
+          citations.push(`[${index}]${citedFile.filename}`);
         }
         index++;
       }
@@ -2031,6 +2036,7 @@ const citations: string[] = [];
       console.log(text.value);
       console.log(citations.join("\n"));
     }
+  });
 ```
 
   
@@ -2068,34 +2074,35 @@ print(message_content.value)
 print("\n".join(citations))
 ```
 
-```javascript
+```typescript
 const run = await openai.beta.threads.runs.createAndPoll(thread.id, {
-assistant_id: assistant.id,
+  assistant_id: assistant.id,
 });
 
 const messages = await openai.beta.threads.messages.list(thread.id, {
-run_id: run.id,
+  run_id: run.id,
 });
 
 const message = messages.data.pop()!;
 if (message.content[0].type === "text") {
-const { text } = message.content[0];
-const { annotations } = text;
-const citations: string[] = [];
+  const { text } = message.content[0];
+  const { annotations } = text;
+  const citations: string[] = [];
 
-let index = 0;
-for (let annotation of annotations) {
-text.value = text.value.replace(annotation.text, "[" + index + "]");
-const { file_citation } = annotation;
-if (file_citation) {
-const citedFile = await openai.files.retrieve(file_citation.file_id);
-citations.push("[" + index + "]" + citedFile.filename);
-}
-index++;
-}
+  let index = 0;
+  for (const annotation of annotations) {
+    text.value = text.value.replace(annotation.text, `[${index}]`);
+    if (annotation.type === "file_citation") {
+      const citedFile = await openai.files.retrieve(
+        annotation.file_citation.file_id
+      );
+      citations.push(`[${index}]${citedFile.filename}`);
+    }
+    index++;
+  }
 
-console.log(text.value);
-console.log(citations.join("\n"));
+  console.log(text.value);
+  console.log(citations.join("\n"));
 }
 ```
 
@@ -2158,7 +2165,13 @@ vector_store = client.vector_stores.create(
 ```javascript
 const vectorStore = await openai.vectorStores.create({
   name: "Product Documentation",
-  file_ids: ['file_1', 'file_2', 'file_3', 'file_4', 'file_5']
+  file_ids: [
+    "file_1",
+    "file_2",
+    "file_3",
+    "file_4",
+    "file_5",
+  ],
 });
 ```
 
@@ -2178,7 +2191,9 @@ file = client.vector_stores.files.create_and_poll(
 ```javascript
 const file = await openai.vectorStores.files.createAndPoll(
   "vs_abc123",
-  { file_id: "file-abc123" }
+  {
+    file_id: "file-abc123",
+  }
 );
 ```
 
@@ -2219,12 +2234,14 @@ const batch = await openai.vectorStores.fileBatches.createAndPoll(
         file_id: "file_2",
         chunking_strategy: {
           type: "static",
-          max_chunk_size_tokens: 1000,
-          chunk_overlap_tokens: 200,
+          static: {
+            max_chunk_size_tokens: 1000,
+            chunk_overlap_tokens: 200,
+          },
         },
       },
     ],
-  },
+  }
 );
 ```
 
@@ -2258,23 +2275,24 @@ thread = client.beta.threads.create(
 
 ```javascript
 const assistant = await openai.beta.assistants.create({
-instructions: "You are a helpful product support assistant and you answer questions based on the files provided to you.",
-model: "gpt-4o",
-tools: [{"type": "file_search"}],
-tool_resources: {
-"file_search": {
-"vector_store_ids": ["vs_1"]
-}
-}
+  instructions:
+    "You are a helpful product support assistant and you answer questions based on the files provided to you.",
+  model: "gpt-4o",
+  tools: [{ type: "file_search" }],
+  tool_resources: {
+    file_search: {
+      vector_store_ids: ["vs_1"],
+    },
+  },
 });
 
 const thread = await openai.beta.threads.create({
-messages: [ { role: "user", content: "How do I cancel my subscription?"} ],
-tool_resources: {
-"file_search": {
-"vector_store_ids": ["vs_2"]
-}
-}
+  messages: [{ role: "user", content: "How do I cancel my subscription?" }],
+  tool_resources: {
+    file_search: {
+      vector_store_ids: ["vs_2"],
+    },
+  },
 });
 ```
 
@@ -2342,14 +2360,11 @@ import OpenAI from "openai";
 
 const openai = new OpenAI();
 
-const runStep = await openai.beta.threads.runs.steps.retrieve(
-"thread_abc123",
-"run_abc123",
-"step_abc123",
-{
-include: ["step_details.tool_calls[*].file_search.results[*].content"]
-}
-);
+const runStep = await openai.beta.threads.runs.steps.retrieve("step_abc123", {
+  thread_id: "thread_abc123",
+  run_id: "run_abc123",
+  include: ["step_details.tool_calls[*].file_search.results[*].content"],
+});
 
 console.log(runStep);
 ```
@@ -2402,11 +2417,17 @@ vector_store = client.vector_stores.create(
 ```javascript
 let vectorStore = await openai.vectorStores.create({
   name: "rag-store",
-  file_ids: ['file_1', 'file_2', 'file_3', 'file_4', 'file_5'],
+  file_ids: [
+    "file_1",
+    "file_2",
+    "file_3",
+    "file_4",
+    "file_5",
+  ],
   expires_after: {
     anchor: "last_active_at",
-    days: 7
-  }
+    days: 7,
+  },
 });
 ```
 
@@ -2436,22 +2457,22 @@ for file_batch in chunked(all_files, 100):
 ```javascript
 const fileIds = [];
 for await (const file of openai.vectorStores.files.list(
-"vs_expired",
+  "vs_expired"
 )) {
-fileIds.push(file.id);
+  fileIds.push(file.id);
 }
 
 const vectorStore = await openai.vectorStores.create({
-name: "rag-store",
+  name: "rag-store",
 });
 await openai.beta.threads.update("thread_abc123", {
-tool_resources: { file_search: { vector_store_ids: [vectorStore.id] } },
+  tool_resources: { file_search: { vector_store_ids: [vectorStore.id] } },
 });
 
 for (const fileBatch of _.chunk(fileIds, 100)) {
-await openai.vectorStores.fileBatches.create(vectorStore.id, {
-file_ids: fileBatch,
-});
+  await openai.vectorStores.fileBatches.create(vectorStore.id, {
+    file_ids: fileBatch,
+  });
 }
 ```
 
@@ -2571,51 +2592,51 @@ assistant = client.beta.assistants.create(
 
 ```javascript
 const assistant = await client.beta.assistants.create({
-model: "gpt-4o",
-instructions:
-"You are a weather bot. Use the provided functions to answer questions.",
-tools: [
-{
-type: "function",
-function: {
-name: "getCurrentTemperature",
-description: "Get the current temperature for a specific location",
-parameters: {
-type: "object",
-properties: {
-location: {
-type: "string",
-description: "The city and state, e.g., San Francisco, CA",
-},
-unit: {
-type: "string",
-enum: ["Celsius", "Fahrenheit"],
-description:
-"The temperature unit to use. Infer this from the user's location.",
-},
-},
-required: ["location", "unit"],
-},
-},
-},
-{
-type: "function",
-function: {
-name: "getRainProbability",
-description: "Get the probability of rain for a specific location",
-parameters: {
-type: "object",
-properties: {
-location: {
-type: "string",
-description: "The city and state, e.g., San Francisco, CA",
-},
-},
-required: ["location"],
-},
-},
-},
-],
+  model: "gpt-4o",
+  instructions:
+    "You are a weather bot. Use the provided functions to answer questions.",
+  tools: [
+    {
+      type: "function",
+      function: {
+        name: "getCurrentTemperature",
+        description: "Get the current temperature for a specific location",
+        parameters: {
+          type: "object",
+          properties: {
+            location: {
+              type: "string",
+              description: "The city and state, e.g., San Francisco, CA",
+            },
+            unit: {
+              type: "string",
+              enum: ["Celsius", "Fahrenheit"],
+              description:
+                "The temperature unit to use. Infer this from the user's location.",
+            },
+          },
+          required: ["location", "unit"],
+        },
+      },
+    },
+    {
+      type: "function",
+      function: {
+        name: "getRainProbability",
+        description: "Get the probability of rain for a specific location",
+        parameters: {
+          type: "object",
+          properties: {
+            location: {
+              type: "string",
+              description: "The city and state, e.g., San Francisco, CA",
+            },
+          },
+          required: ["location"],
+        },
+      },
+    },
+  ],
 });
 ```
 
@@ -2637,7 +2658,8 @@ message = client.beta.threads.messages.create(
 const thread = await client.beta.threads.create();
 const message = client.beta.threads.messages.create(thread.id, {
   role: "user",
-  content: "What's the weather in San Francisco today and the likelihood it'll rain?",
+  content:
+    "What's the weather in San Francisco today and the likelihood it'll rain?",
 });
 ```
 
@@ -2756,74 +2778,71 @@ class EventHandler extends EventEmitter {
     this.client = client;
   }
 
-async onEvent(event) {
-try {
-console.log(event);
-// Retrieve events that are denoted with 'requires_action'
-// since these will have our tool_calls
-if (event.event === "thread.run.requires_action") {
-await this.handleRequiresAction(
-event.data,
-event.data.id,
-event.data.thread_id,
-);
-}
-} catch (error) {
-console.error("Error handling event:", error);
-}
-}
+  async onEvent(event) {
+    try {
+      console.log(event);
+      // Retrieve events that are denoted with 'requires_action'
+      // since these will have our tool_calls
+      if (event.event === "thread.run.requires_action") {
+        await this.handleRequiresAction(
+          event.data,
+          event.data.id,
+          event.data.thread_id
+        );
+      }
+    } catch (error) {
+      console.error("Error handling event:", error);
+    }
+  }
 
-async handleRequiresAction(data, runId, threadId) {
-try {
-const toolOutputs =
-data.required_action.submit_tool_outputs.tool_calls.map((toolCall) => {
-if (toolCall.function.name === "getCurrentTemperature") {
-return {
-tool_call_id: toolCall.id,
-output: "57",
-};
-} else if (toolCall.function.name === "getRainProbability") {
-return {
-tool_call_id: toolCall.id,
-output: "0.06",
-};
-}
-});
-// Submit all the tool outputs at the same time
-await this.submitToolOutputs(toolOutputs, runId, threadId);
-} catch (error) {
-console.error("Error processing required action:", error);
-}
-}
+  async handleRequiresAction(data, runId, threadId) {
+    try {
+      const toolOutputs =
+        data.required_action.submit_tool_outputs.tool_calls.map((toolCall) => {
+          if (toolCall.function.name === "getCurrentTemperature") {
+            return {
+              tool_call_id: toolCall.id,
+              output: "57",
+            };
+          } else if (toolCall.function.name === "getRainProbability") {
+            return {
+              tool_call_id: toolCall.id,
+              output: "0.06",
+            };
+          }
+        });
+      // Submit all the tool outputs at the same time
+      await this.submitToolOutputs(toolOutputs, runId, threadId);
+    } catch (error) {
+      console.error("Error processing required action:", error);
+    }
+  }
 
-async submitToolOutputs(toolOutputs, runId, threadId) {
-try {
-// Use the submitToolOutputsStream helper
-const stream = this.client.beta.threads.runs.submitToolOutputsStream(
-threadId,
-runId,
-{ tool_outputs: toolOutputs },
-);
-for await (const event of stream) {
-this.emit("event", event);
-}
-} catch (error) {
-console.error("Error submitting tool outputs:", error);
-}
-}
+  async submitToolOutputs(toolOutputs, runId, threadId) {
+    try {
+      // Use the submitToolOutputsStream helper
+      const stream = this.client.beta.threads.runs.submitToolOutputsStream(
+        runId,
+        { thread_id: threadId, tool_outputs: toolOutputs }
+      );
+      for await (const event of stream) {
+        this.emit("event", event);
+      }
+    } catch (error) {
+      console.error("Error submitting tool outputs:", error);
+    }
+  }
 }
 
 const eventHandler = new EventHandler(client);
 eventHandler.on("event", eventHandler.onEvent.bind(eventHandler));
 
-const stream = await client.beta.threads.runs.stream(
-threadId,
-{ assistant_id: assistantId },
-eventHandler,
-);
+const stream = await client.beta.threads.runs.stream(threadId, {
+  assistant_id: assistantId,
+});
 
 for await (const event of stream) {
-eventHandler.emit("event", event);
+  eventHandler.emit("event", event);
 }
 ```
 
@@ -2907,16 +2926,15 @@ const handleRequiresAction = async (run) => {
             output: "0.06",
           };
         }
-      },
+      }
     );
 
     // Submit all tool outputs at once after collecting them in a list
     if (toolOutputs.length > 0) {
-      run = await client.beta.threads.runs.submitToolOutputsAndPoll(
-        thread.id,
-        run.id,
-        { tool_outputs: toolOutputs },
-      );
+      run = await client.beta.threads.runs.submitToolOutputsAndPoll(run.id, {
+        thread_id: thread.id,
+        tool_outputs: toolOutputs,
+      });
       console.log("Tool outputs submitted successfully.");
     } else {
       console.log("No tool outputs to submit.");
@@ -2924,27 +2942,26 @@ const handleRequiresAction = async (run) => {
 
     // Check status after submitting tool outputs
     return handleRunStatus(run);
-
-}
+  }
 };
 
 const handleRunStatus = async (run) => {
-// Check if the run is completed
-if (run.status === "completed") {
-let messages = await client.beta.threads.messages.list(thread.id);
-console.log(messages.data);
-return messages.data;
-} else if (run.status === "requires_action") {
-console.log(run.status);
-return await handleRequiresAction(run);
-} else {
-console.error("Run did not complete:", run);
-}
+  // Check if the run is completed
+  if (run.status === "completed") {
+    let messages = await client.beta.threads.messages.list(thread.id);
+    console.log(messages.data);
+    return messages.data;
+  } else if (run.status === "requires_action") {
+    console.log(run.status);
+    return await handleRequiresAction(run);
+  } else {
+    console.error("Run did not complete:", run);
+  }
 };
 
 // Create and poll run
 let run = await client.beta.threads.runs.createAndPoll(thread.id, {
-assistant_id: assistant.id,
+  assistant_id: assistant.id,
 });
 
 handleRunStatus(run);
@@ -3022,63 +3039,63 @@ assistant = client.beta.assistants.create(
 
 ```javascript
 const assistant = await client.beta.assistants.create({
-model: "gpt-4o-2024-08-06",
-instructions:
-"You are a weather bot. Use the provided functions to answer questions.",
-tools: [
-{
-type: "function",
-function: {
-name: "getCurrentTemperature",
-description: "Get the current temperature for a specific location",
-parameters: {
-type: "object",
-properties: {
-location: {
-type: "string",
-description: "The city and state, e.g., San Francisco, CA",
-},
-unit: {
-type: "string",
-enum: ["Celsius", "Fahrenheit"],
-description:
-"The temperature unit to use. Infer this from the user's location.",
-},
-},
-required: ["location", "unit"],
-// highlight-start
-additionalProperties: false
-// highlight-end
-},
-// highlight-start
-strict: true
-// highlight-end
-},
-},
-{
-type: "function",
-function: {
-name: "getRainProbability",
-description: "Get the probability of rain for a specific location",
-parameters: {
-type: "object",
-properties: {
-location: {
-type: "string",
-description: "The city and state, e.g., San Francisco, CA",
-},
-},
-required: ["location"],
-// highlight-start
-additionalProperties: false
-// highlight-end
-},
-// highlight-start
-strict: true
-// highlight-end
-},
-},
-],
+  model: "gpt-4o-2024-08-06",
+  instructions:
+    "You are a weather bot. Use the provided functions to answer questions.",
+  tools: [
+    {
+      type: "function",
+      function: {
+        name: "getCurrentTemperature",
+        description: "Get the current temperature for a specific location",
+        parameters: {
+          type: "object",
+          properties: {
+            location: {
+              type: "string",
+              description: "The city and state, e.g., San Francisco, CA",
+            },
+            unit: {
+              type: "string",
+              enum: ["Celsius", "Fahrenheit"],
+              description:
+                "The temperature unit to use. Infer this from the user's location.",
+            },
+          },
+          required: ["location", "unit"],
+          // highlight-start
+          additionalProperties: false,
+          // highlight-end
+        },
+        // highlight-start
+        strict: true,
+        // highlight-end
+      },
+    },
+    {
+      type: "function",
+      function: {
+        name: "getRainProbability",
+        description: "Get the probability of rain for a specific location",
+        parameters: {
+          type: "object",
+          properties: {
+            location: {
+              type: "string",
+              description: "The city and state, e.g., San Francisco, CA",
+            },
+          },
+          required: ["location"],
+          // highlight-start
+          additionalProperties: false,
+          // highlight-end
+        },
+        // highlight-start
+        strict: true,
+        // highlight-end
+      },
+    },
+  ],
 });
 ```
 
@@ -4090,12 +4107,13 @@ button = Button(
 
 Actions can also be sent imperatively by your frontend with `sendAction()`. This is probably most useful when you need ChatKit to respond to interaction happening outside ChatKit, but it can also be used to chain actions when you need to respond on both the client and the server (more on that below).
 
-```tsx
+```typescript
 await chatKit.sendAction({
   type: "example",
   payload: { id: 123 },
 });
 ```
+
 
 ## Handling actions
 
@@ -4150,25 +4168,26 @@ button = Button(
 
 Then, when the action is triggered, it will then be passed to a callback that you provide when instantiating ChatKit.
 
-```ts
-async function handleWidgetAction(action: {type: string, Record<string, unknown>}) {
+```typescript
+async function handleWidgetAction(action: WidgetAction) {
   if (action.type === "example") {
-    const res = await doSomething(action)
+    const res = await doSomething(action);
 
     // You can fire off actions to your server from here as well.
-    // e.g. if you want to stream new thread items or update a widget.
+    // For example, stream new thread items or update a widget.
     await chatKit.sendAction({
       type: "example_complete",
-      payload: res
-    })
+      payload: res,
+    });
   }
 }
 
 chatKit.setOptions({
-  // other options...
-  widgets: { onAction: handleWidgetAction }
-})
+  // Other options...
+  widgets: { onAction: handleWidgetAction },
+});
 ```
+
 
 ## Strongly typed actions
 
@@ -5010,7 +5029,7 @@ Use the following resources and reference to complete your integration.
 
 ChatKit emits `CustomEvent` instances from the Web Component. The payload shapes are:
 
-```ts
+```typescript
 type Events = {
   "chatkit.error": CustomEvent<{ error: Error }>;
   "chatkit.response.start": CustomEvent<void>;
@@ -5019,6 +5038,7 @@ type Events = {
   "chatkit.log": CustomEvent<{ name: string; data?: Record<string, unknown> }>;
 };
 ```
+
 
 ### Options reference
 
@@ -6823,7 +6843,7 @@ Alternatively, you can use the [Agents SDK](https://developers.openai.com/api/do
 
 Use the apply patch tool with the Agents SDK
 
-```javascript
+```typescript
 import {
   applyDiff,
   Agent,
@@ -7109,11 +7129,11 @@ For build-path guidance, see the [Realtime and audio overview](https://developer
 
 Models such as [`gpt-realtime-2.1`](https://developers.openai.com/api/docs/models/gpt-realtime-2.1) and [`gpt-audio-1.5`](https://developers.openai.com/api/docs/models/gpt-audio-1.5) are natively multimodal, meaning they can understand and generate audio and text as input and output.
 
-For live browser speech-to-speech interactions, start with a realtime session in the JavaScript SDK:
+For live browser speech-to-speech interactions, start with a realtime session in the TypeScript Agents SDK:
 
 Start a realtime voice session
 
-```javascript
+```typescript
 import { RealtimeAgent, RealtimeSession } from "@openai/agents/realtime";
 
 const agent = new RealtimeAgent({
@@ -7131,7 +7151,7 @@ await session.connect({
 ```
 
 
-This example uses JavaScript because browser voice agents connect with WebRTC from the client. For Python voice workflows, use the [Voice agents guide](https://developers.openai.com/api/docs/guides/voice-agents), which covers chained voice pipelines.
+This TypeScript example uses the Agents SDK to connect browser voice agents with WebRTC from the client. For Python voice workflows, use the [Voice agents guide](https://developers.openai.com/api/docs/guides/voice-agents), which covers chained voice pipelines.
 
 If you already have a text-based LLM application with the [Chat Completions endpoint](https://developers.openai.com/api/reference/resources/chat), you may want to add audio capabilities. For example, if your chat application supports text input, you can add audio input and output: include `audio` in the `modalities` array and use an audio model, like [`gpt-audio-1.5`](https://developers.openai.com/api/docs/models/gpt-audio-1.5).
 
@@ -7677,7 +7697,7 @@ curl https://api.openai.com/v1/files \
   -F file="@batchinput.jsonl"
 ```
 
-```cli
+```bash
 openai files create \
   --file batchinput.jsonl \
   --purpose batch
@@ -7724,7 +7744,7 @@ curl https://api.openai.com/v1/batches \
   }'
 ```
 
-```cli
+```bash
 openai batches create \
   --input-file-id file-abc123 \
   --endpoint /v1/chat/completions \
@@ -7785,7 +7805,7 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
   -H "Content-Type: application/json"
 ```
 
-```cli
+```bash
 openai batches retrieve \
   --batch-id batch_abc123
 ```
@@ -7837,7 +7857,7 @@ curl https://api.openai.com/v1/files/file-xyz123/content \
   -H "Authorization: Bearer $OPENAI_API_KEY" > batch_output.jsonl
 ```
 
-```cli
+```bash
 openai files content \
   --file-id file-xyz123 \
   --output batch_output.jsonl
@@ -7892,7 +7912,7 @@ curl https://api.openai.com/v1/batches/batch_abc123/cancel \
   -X POST
 ```
 
-```cli
+```bash
 openai batches cancel \
   --batch-id batch_abc123
 ```
@@ -7929,7 +7949,7 @@ curl https://api.openai.com/v1/batches?limit=10 \
   -H "Content-Type: application/json"
 ```
 
-```cli
+```bash
 openai batches list \
   --limit 10
 ```
@@ -8362,7 +8382,7 @@ Widget actions allow users to trigger logic from the UI. Actions can be bound to
 
 Capture widget events with the `onAction` callback from `WidgetsOption` or equivalent React hook. Forward the action payload to your backend to handle actions.
 
-```ts
+```typescript
 chatkit.setOptions({
   widgets: {
     async onAction(action, item) {
@@ -8375,6 +8395,7 @@ chatkit.setOptions({
   },
 });
 ```
+
 
 Looking for a full server example? See the [ChatKit Python SDK
   docs](https://openai.github.io/chatkit-python-sdk/guides/widget-actions) for
@@ -9013,7 +9034,7 @@ function extractCitations(text, { families = ["cite"] } = {}) {
     .join("|");
 
   const tokenRe = new RegExp(
-    `\uE200(?<family>${familyPattern})\uE202(?<body>[\\s\\S]*?)\uE201`,
+    `${CITATION_START}(?<family>${familyPattern})${CITATION_DELIMITER}(?<body>[\\s\\S]*?)${CITATION_STOP}`,
     "g"
   );
 
@@ -9066,7 +9087,8 @@ function stripCitations(text, citations) {
   );
 
   for (const citation of sortedCitations) {
-    cleanText = cleanText.slice(0, citation.start) + cleanText.slice(citation.end);
+    cleanText =
+      cleanText.slice(0, citation.start) + cleanText.slice(citation.end);
   }
 
   return cleanText;
@@ -9791,8 +9813,8 @@ response = client.completions.create(
 
 ```javascript
 const completion = await openai.completions.create({
-model: 'gpt-3.5-turbo-instruct',
-prompt: 'Write a tagline for an ice cream shop.'
+  model: "gpt-3.5-turbo-instruct",
+  prompt: "Write a tagline for an ice cream shop.",
 });
 ```
 
@@ -11702,7 +11724,7 @@ If you want visual interaction in this setup, make sure your harness can capture
 
 ### Code-execution harness examples
 
-These minimal JavaScript and Python implementations demonstrate a code-execution harness. They give the model a code-execution tool, keep Playwright objects available to the runtime, return text and screenshots back to the model, and let the model ask the user clarifying questions when it gets blocked.
+These minimal TypeScript and Python implementations demonstrate a code-execution harness. They give the model a code-execution tool, keep Playwright objects available to the runtime, return text and screenshots back to the model, and let the model ask the user clarifying questions when it gets blocked.
 
 Run model-generated code only inside a disposable, least-privilege container or VM with resource and network limits. Language-level sandboxes such as Node.js `vm` and restricted Python global variables are not security boundaries. Keep the sandbox in a separate process and security boundary from the API client, with no shared credentials or host mounts. Enforce time and resource limits inside the sandbox, and terminate the runtime when it exceeds them.
 
@@ -11710,11 +11732,11 @@ The examples below do not run generated code in the API client. They send each a
 
 
 
-JavaScript
+TypeScript
 
     Code-execution harness
 
-```javascript
+```typescript
 // Run with:
 //   pnpm example -- tools/cua/015-code-execution-harness-example.ts
 // Override the user prompt with:
@@ -17846,7 +17868,7 @@ curl https://api.openai.com/v1/responses/input_tokens \
   }'
 ```
 
-```cli
+```bash
 openai responses:input-tokens count \
   --model gpt-5.6 \
   --input "Tell me a joke." \
@@ -17906,7 +17928,7 @@ curl https://api.openai.com/v1/responses/input_tokens \
   }'
 ```
 
-```cli
+```bash
 openai responses:input-tokens count \
   --raw-output \
   --transform input_tokens <<'YAML'
@@ -17964,7 +17986,7 @@ curl https://api.openai.com/v1/responses/input_tokens \
   }'
 ```
 
-```cli
+```bash
 openai responses:input-tokens count \
   --raw-output \
   --transform input_tokens <<'YAML'
@@ -18046,7 +18068,7 @@ curl https://api.openai.com/v1/responses/input_tokens \
   }'
 ```
 
-```cli
+```bash
 openai responses:input-tokens count \
   --raw-output \
   --transform input_tokens <<'YAML'
@@ -18141,7 +18163,7 @@ curl https://api.openai.com/v1/responses/input_tokens \
   }'
 ```
 
-```cli
+```bash
 openai responses:input-tokens count \
   --raw-output \
   --transform input_tokens <<'YAML'
@@ -21612,7 +21634,7 @@ transcription = client.audio.transcriptions.create(
 print(transcription.text)
 ```
 
-```cli
+```bash
 openai audio:transcriptions create \
   --model gpt-transcribe \
   --file /path/to/file/audio.mp3 \
@@ -24706,7 +24728,7 @@ curl -X POST "https://api.openai.com/v1/images/generations" \
     }' | jq -r '.data[0].b64_json' | base64 --decode > otter.png
 ```
 
-```cli
+```bash
 openai images generate \
   --model gpt-image-2 \
   --prompt "A children's book drawing of a veterinarian using a stethoscope to listen to the heartbeat of a baby otter." \
@@ -25588,7 +25610,7 @@ curl -s -D >(grep -i x-request-id >&2) \
   -F 'prompt=Generate a photorealistic image of a gift basket on a white background labeled "Relax & Unwind" with a ribbon and handwriting-like font, containing all the items in the reference pictures'
 ```
 
-```cli
+```bash
 openai images edit \
   --model gpt-image-2 \
   --image body-lotion.png \
@@ -25795,7 +25817,7 @@ curl -s -D >(grep -i x-request-id >&2) \
   -F 'prompt=A sunlit indoor lounge area with a pool containing a flamingo'
 ```
 
-```cli
+```bash
 openai images edit \
   --model gpt-image-2 \
   --image sunlit_lounge.png \
@@ -26799,7 +26821,7 @@ if image_data:
         f.write(base64.b64decode(image_base64))
 ```
 
-```cli
+```bash
 openai responses create \
   --model gpt-5.6 \
   --raw-output \
@@ -26943,7 +26965,7 @@ curl https://api.openai.com/v1/responses \
   }'
 ```
 
-```cli
+```bash
 openai responses create \
   --model gpt-5.6 \
   --raw-output \
@@ -28088,12 +28110,13 @@ Combined query contextualization and retrieval check prompt
 
 **What changed?** Before, we had one prompt to re-write the query and one to determine whether this requires doing a retrieval lookup. Now, this combined prompt does both. Specifically, notice the updated instruction in the first line of the prompt, and the updated output JSON:
 
-```jsx
+```javascript
 {
-  query:"[contextualized query]",
-  retrieval:"[true/false - whether retrieval is required]"
+  query: "[contextualized query]",
+  retrieval: "[true/false - whether retrieval is required]",
 }
 ```
+
 
 ```example-chat
 SYSTEM: Given the previous conversation, re-write the last user query so it contains
@@ -28141,19 +28164,20 @@ However, let's pretend we have run some tests and discovered that splitting the 
 
 **Could we use a fine-tuned GPT-3.5 instead of GPT-4?** Maybe – but in general, open-ended responses from assistants are best left to GPT-4 so it can better handle a greater range of cases. That being said, looking at the reasoning steps themselves, they may not all require GPT-4 level reasoning to produce. The well defined, limited scope nature makes them and **good potential candidates for fine-tuning**.
 
-```jsx
+```javascript
 {
-  "message_is_conversation_continuation": "True", // <-
-  "number_of_messages_in_conversation_so_far": "1", // <-
-  "user_sentiment": "Aggravated", // <-
-  "query_type": "Hardware Issue", // <-
-  "response_tone": "Validating and solution-oriented", // <-
-  "response_requirements": "Propose options for repair or replacement.", // <-
-  "user_requesting_to_talk_to_human": "False", // <-
-  "enough_information_in_context": "True", // <-
-  "response": "..." // X -- benefits from GPT-4
+  message_is_conversation_continuation: "True", // <-
+  number_of_messages_in_conversation_so_far: "1", // <-
+  user_sentiment: "Aggravated", // <-
+  query_type: "Hardware Issue", // <-
+  response_tone: "Validating and solution-oriented", // <-
+  response_requirements: "Propose options for repair or replacement.", // <-
+  user_requesting_to_talk_to_human: "False", // <-
+  enough_information_in_context: "True", // <-
+  response: "...", // X -- benefits from GPT-4
 }
 ```
+
 
 This opens up the possibility of a trade-off. Do we keep this as a **single request entirely generated by GPT-4**, or **split it into two sequential requests** and use GPT-3.5 for all but the final response? We have a case of conflicting principles: the first option lets us [make fewer requests](#make-fewer-requests), but the second may let us [process tokens faster](#process-tokens-faster).
 
@@ -28244,31 +28268,33 @@ Let's take another look at the reasoning prompt.
 
 Taking a closer look at the reasoning JSON you may notice the field names themselves are quite long.
 
-```jsx
+```javascript
 {
-  "message_is_conversation_continuation": "True", // <-
-  "number_of_messages_in_conversation_so_far": "1", // <-
-  "user_sentiment": "Aggravated", // <-
-  "query_type": "Hardware Issue", // <-
-  "response_tone": "Validating and solution-oriented", // <-
-  "response_requirements": "Propose options for repair or replacement.", // <-
-  "user_requesting_to_talk_to_human": "False", // <-
+  message_is_conversation_continuation: "True", // <-
+  number_of_messages_in_conversation_so_far: "1", // <-
+  user_sentiment: "Aggravated", // <-
+  query_type: "Hardware Issue", // <-
+  response_tone: "Validating and solution-oriented", // <-
+  response_requirements: "Propose options for repair or replacement.", // <-
+  user_requesting_to_talk_to_human: "False", // <-
 }
 ```
+
 
 By making them shorter and moving explanations to the comments we can [generate fewer tokens](#generate-fewer-tokens).
 
-```jsx
+```javascript
 {
-  "cont": "True", // whether last message is a continuation
-  "n_msg": "1", // number of messages in the continued conversation
-  "tone_in": "Aggravated", // sentiment of user query
-  "type": "Hardware Issue", // type of the user query
-  "tone_out": "Validating and solution-oriented", // desired tone for response
-  "reqs": "Propose options for repair or replacement.", // response requirements
-  "human": "False", // whether user is expressing want to talk to human
+  cont: "True", // whether last message is a continuation
+  n_msg: "1", // number of messages in the continued conversation
+  tone_in: "Aggravated", // sentiment of user query
+  type: "Hardware Issue", // type of the user query
+  tone_out: "Validating and solution-oriented", // desired tone for response
+  reqs: "Propose options for repair or replacement.", // response requirements
+  human: "False", // whether user is expressing want to talk to human
 }
 ```
+
 
 ![Assistants object architecture diagram](https://cdn.openai.com/API/docs/images/diagram-latency-customer-service-8b.png)
 
@@ -31451,7 +31477,7 @@ The Responses API function example on the right is functionally equivalent to th
 
 #### Chat Completions API
 
-```javascript
+```json
 {
     "type": "function",
     "function": {
@@ -31462,8 +31488,8 @@ The Responses API function example on the right is functionally equivalent to th
         "type": "object",
         "properties": {
           "location": {
-            "type": "string",
-          },
+            "type": "string"
+          }
         },
         "additionalProperties": false,
         "required": [
@@ -31476,7 +31502,7 @@ The Responses API function example on the right is functionally equivalent to th
 
 #### Responses API
 
-```javascript
+```json
 {
     "type": "function",
     "name": "get_weather",
@@ -31485,8 +31511,8 @@ The Responses API function example on the right is functionally equivalent to th
       "type": "object",
       "properties": {
         "location": {
-          "type": "string",
-        },
+          "type": "string"
+        }
       },
       "additionalProperties": false,
       "required": [
@@ -34831,6 +34857,7 @@ class User {
 export default User;
 ```
 
+
 Most of the file will be unchanged, except for line 4 above. If you use the current text of the code file as your prediction, you can regenerate the entire file with lower latency. These time savings add up quickly for larger files.
 
 Below is an example of using the `prediction` parameter in our SDKs to predict that the final output of the model will be very similar to our original code file, which we use as the prediction text.
@@ -34938,28 +34965,27 @@ curl https://api.openai.com/v1/chat/completions \
 ```
 
 
-In addition to the refactored code, the model response will contain data that looks something like this:
+In addition to the refactored code, an abridged model response without the `choices` field contains usage data like this:
 
-```javascript
+```json
 {
-  id: 'chatcmpl-xxx',
-  object: 'chat.completion',
-  created: 1730918466,
-  model: 'gpt-4o-2024-08-06',
-  choices: [ /* ...actual text response here... */],
-  usage: {
-    prompt_tokens: 81,
-    completion_tokens: 39,
-    total_tokens: 120,
-    prompt_tokens_details: { cached_tokens: 0, audio_tokens: 0 },
-    completion_tokens_details: {
-      reasoning_tokens: 0,
-      audio_tokens: 0,
-      accepted_prediction_tokens: 18,
-      rejected_prediction_tokens: 10
+  "id": "chatcmpl-xxx",
+  "object": "chat.completion",
+  "created": 1730918466,
+  "model": "gpt-4o-2024-08-06",
+  "usage": {
+    "prompt_tokens": 81,
+    "completion_tokens": 39,
+    "total_tokens": 120,
+    "prompt_tokens_details": { "cached_tokens": 0, "audio_tokens": 0 },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 18,
+      "rejected_prediction_tokens": 10
     }
   },
-  system_fingerprint: 'fp_159d8341cc'
+  "system_fingerprint": "fp_159d8341cc"
 }
 ```
 
@@ -35062,9 +35088,9 @@ for chunk in stream:
 When providing prediction text, your prediction can appear anywhere within the generated response, and still provide latency reduction for the response. Let's say your predicted text is the simple [Hono](https://hono.dev/) server shown below:
 
 ```typescript
-
-
-
+import { serve } from "@hono/node-server";
+import { serveStatic } from "@hono/node-server/serve-static";
+import { Hono } from "hono";
 
 const app = new Hono();
 
@@ -35072,7 +35098,7 @@ app.get("/api", (c) => {
   return c.text("Hello Hono!");
 });
 
-// You will need to build the client code first `pnpm run ui:build`
+// You will need to build the client code first: `pnpm run ui:build`.
 app.use(
   "/*",
   serveStatic({
@@ -35088,6 +35114,7 @@ serve({
   port,
 });
 ```
+
 
 You could prompt the model to regenerate the file with a prompt like:
 
@@ -35101,9 +35128,9 @@ markdown formatting.
 The response to the prompt might look something like this:
 
 ```typescript
-
-
-
+import { serve } from "@hono/node-server";
+import { serveStatic } from "@hono/node-server/serve-static";
+import { Hono } from "hono";
 
 const app = new Hono();
 
@@ -35115,7 +35142,7 @@ app.get("/hello", (c) => {
   return c.text("hello world");
 });
 
-// You will need to build the client code first `pnpm run ui:build`
+// You will need to build the client code first: `pnpm run ui:build`.
 app.use(
   "/*",
   serveStatic({
@@ -35132,28 +35159,28 @@ serve({
 });
 ```
 
-You would still see accepted prediction tokens in the response, even though the prediction text appeared both before and after the new content added to the response:
 
-```javascript
+An abridged model response without the `choices` field would still show accepted prediction tokens, even though the prediction text appeared both before and after the new content added to the response:
+
+```json
 {
-  id: 'chatcmpl-xxx',
-  object: 'chat.completion',
-  created: 1731014771,
-  model: 'gpt-4o-2024-08-06',
-  choices: [ /* completion here... */],
-  usage: {
-    prompt_tokens: 203,
-    completion_tokens: 159,
-    total_tokens: 362,
-    prompt_tokens_details: { cached_tokens: 0, audio_tokens: 0 },
-    completion_tokens_details: {
-      reasoning_tokens: 0,
-      audio_tokens: 0,
-      accepted_prediction_tokens: 60,
-      rejected_prediction_tokens: 0
+  "id": "chatcmpl-xxx",
+  "object": "chat.completion",
+  "created": 1731014771,
+  "model": "gpt-4o-2024-08-06",
+  "usage": {
+    "prompt_tokens": 203,
+    "completion_tokens": 159,
+    "total_tokens": 362,
+    "prompt_tokens_details": { "cached_tokens": 0, "audio_tokens": 0 },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 60,
+      "rejected_prediction_tokens": 0
     }
   },
-  system_fingerprint: 'fp_9ee9e968ea'
+  "system_fingerprint": "fp_9ee9e968ea"
 }
 ```
 
@@ -36404,7 +36431,7 @@ response = client.responses.create(
 print(response.output_text)
 ```
 
-```cli
+```bash
 openai responses create \
   --model "gpt-5.6" \
   --input "Write a one-sentence bedtime story about a unicorn." \
@@ -45426,14 +45453,16 @@ client.vector_stores.files.upload_and_poll(        # Upload file
 import OpenAI from "openai";
 const client = new OpenAI();
 
-const vector_store = await client.vectorStores.create({   // Create vector store
-    name: "Support FAQ",
+const vector_store = await client.vectorStores.create({
+  // Create vector store
+  name: "Support FAQ",
 });
 
-await client.vector_stores.files.upload_and_poll({         // Upload file
-    vector_store_id: vector_store.id,
-    file: fs.createReadStream("customer_policies.txt"),
-});
+await client.vectorStores.files.uploadAndPoll(
+  vector_store.id,
+  // Upload file
+  fs.createReadStream("customer_policies.txt")
+);
 ```
 
 
@@ -45455,9 +45484,8 @@ results = client.vector_stores.search(
 ```javascript
 const userQuery = "What is the return policy?";
 
-const results = await client.vectorStores.search({
-    vector_store_id: vector_store.id,
-    query: userQuery,
+const results = await client.vectorStores.search(vector_store.id, {
+  query: userQuery,
 });
 ```
 
@@ -45497,9 +45525,8 @@ results = client.vector_stores.search(
 ```
 
 ```javascript
-const results = await client.vectorStores.search({
-    vector_store_id: vector_store.id,
-    query: "How many woodchucks are allowed per passenger?",
+const results = await client.vectorStores.search(vector_store.id, {
+  query: "How many woodchucks are allowed per passenger?",
 });
 ```
 
@@ -45762,9 +45789,9 @@ client.vector_stores.create(
 ```
 
 ```javascript
-await client.vector_stores.create({
-    name: "Support FAQ",
-    file_ids: ["file_123"]
+await client.vectorStores.create({
+  name: "Support FAQ",
+  file_ids: ["file_123"],
 });
 ```
 
@@ -45784,9 +45811,7 @@ client.vector_stores.retrieve(
 ```
 
 ```javascript
-await client.vector_stores.retrieve({
-    vector_store_id: "vs_123"
-});
+await client.vectorStores.retrieve("vs_123");
 ```
 
   
@@ -45806,9 +45831,8 @@ client.vector_stores.update(
 ```
 
 ```javascript
-await client.vector_stores.update({
-    vector_store_id: "vs_123",
-    name: "Support FAQ Updated"
+await client.vectorStores.update("vs_123", {
+  name: "Support FAQ Updated",
 });
 ```
 
@@ -45828,9 +45852,7 @@ client.vector_stores.delete(
 ```
 
 ```javascript
-await client.vector_stores.delete({
-    vector_store_id: "vs_123"
-});
+await client.vectorStores.delete("vs_123");
 ```
 
   
@@ -45847,7 +45869,7 @@ client.vector_stores.list()
 ```
 
 ```javascript
-await client.vector_stores.list();
+await client.vectorStores.list();
 ```
 
 
@@ -45872,9 +45894,8 @@ client.vector_stores.files.create_and_poll(
 ```
 
 ```javascript
-await client.vector_stores.files.create_and_poll({
-    vector_store_id: "vs_123",
-    file_id: "file_123"
+await client.vectorStores.files.createAndPoll("vs_123", {
+  file_id: "file_123",
 });
 ```
 
@@ -45895,10 +45916,10 @@ client.vector_stores.files.upload_and_poll(
 ```
 
 ```javascript
-await client.vector_stores.files.upload_and_poll({
-    vector_store_id: "vs_123",
-    file: fs.createReadStream("customer_policies.txt"),
-});
+await client.vectorStores.files.uploadAndPoll(
+  "vs_123",
+  fs.createReadStream("customer_policies.txt")
+);
 ```
 
   
@@ -45918,9 +45939,8 @@ client.vector_stores.files.retrieve(
 ```
 
 ```javascript
-await client.vector_stores.files.retrieve({
-    vector_store_id: "vs_123",
-    file_id: "file_123"
+await client.vectorStores.files.retrieve("file_123", {
+  vector_store_id: "vs_123",
 });
 ```
 
@@ -45942,10 +45962,9 @@ client.vector_stores.files.update(
 ```
 
 ```javascript
-await client.vector_stores.files.update({
-    vector_store_id: "vs_123",
-    file_id: "file_123",
-    attributes: { key: "value" }
+await client.vectorStores.files.update("file_123", {
+  vector_store_id: "vs_123",
+  attributes: { key: "value" },
 });
 ```
 
@@ -45966,9 +45985,8 @@ client.vector_stores.files.delete(
 ```
 
 ```javascript
-await client.vector_stores.files.delete({
-    vector_store_id: "vs_123",
-    file_id: "file_123"
+await client.vectorStores.files.delete("file_123", {
+  vector_store_id: "vs_123",
 });
 ```
 
@@ -45988,9 +46006,7 @@ client.vector_stores.files.list(
 ```
 
 ```javascript
-await client.vector_stores.files.list({
-    vector_store_id: "vs_123"
-});
+await client.vectorStores.files.list("vs_123");
 ```
 
 
@@ -46024,22 +46040,23 @@ client.vector_stores.file_batches.create_and_poll(
 ```
 
 ```javascript
-await client.vector_stores.file_batches.create_and_poll({
-    vector_store_id: "vs_123",
-    files: [
-        {
-            file_id: "file_123",
-            attributes: { department: "finance" }
+await client.vectorStores.fileBatches.createAndPoll("vs_123", {
+  files: [
+    {
+      file_id: "file_123",
+      attributes: { department: "finance" },
+    },
+    {
+      file_id: "file_456",
+      chunking_strategy: {
+        type: "static",
+        static: {
+          max_chunk_size_tokens: 1200,
+          chunk_overlap_tokens: 200,
         },
-        {
-            file_id: "file_456",
-            chunking_strategy: {
-                type: "static",
-                max_chunk_size_tokens: 1200,
-                chunk_overlap_tokens: 200
-            }
-        }
-    ]
+      },
+    },
+  ],
 });
 ```
 
@@ -46060,9 +46077,8 @@ client.vector_stores.file_batches.retrieve(
 ```
 
 ```javascript
-await client.vector_stores.file_batches.retrieve({
-    vector_store_id: "vs_123",
-    batch_id: "vsfb_123"
+await client.vectorStores.fileBatches.retrieve("vsfb_123", {
+  vector_store_id: "vs_123",
 });
 ```
 
@@ -46083,9 +46099,8 @@ client.vector_stores.file_batches.cancel(
 ```
 
 ```javascript
-await client.vector_stores.file_batches.cancel({
-    vector_store_id: "vs_123",
-    batch_id: "vsfb_123"
+await client.vectorStores.fileBatches.cancel("vsfb_123", {
+  vector_store_id: "vs_123",
 });
 ```
 
@@ -46107,7 +46122,7 @@ client.vector_stores.file_batches.list_files(
 
 ```javascript
 await client.vectorStores.fileBatches.listFiles("vsfb_123", {
-    vector_store_id: "vs_123"
+  vector_store_id: "vs_123",
 });
 ```
 
@@ -46136,13 +46151,13 @@ client.vector_stores.files.create(
 ```
 
 ```javascript
-await client.vector_stores.files.create(<vector_store_id>, {
-    file_id: "file_123",
-    attributes: {
-        region: "US",
-        category: "Marketing",
-        date: 1672531200, // Jan 1, 2023
-    },
+await client.vectorStores.files.create("<vector_store_id>", {
+  file_id: "file_123",
+  attributes: {
+    region: "US",
+    category: "Marketing",
+    date: 1672531200, // Jan 1, 2023
+  },
 });
 ```
 
@@ -46164,12 +46179,11 @@ client.vector_stores.update(
 ```
 
 ```javascript
-await client.vector_stores.update({
-    vector_store_id: "vs_123",
-    expires_after: {
-        anchor: "last_active_at",
-        days: 7,
-    },
+await client.vectorStores.update("vs_123", {
+  expires_after: {
+    anchor: "last_active_at",
+    days: 7,
+  },
 });
 ```
 
@@ -46244,9 +46258,8 @@ const client = new OpenAI();
 
 const userQuery = "What is the return policy?";
 
-const results = await client.vectorStores.search({
-    vector_store_id: vector_store.id,
-    query: userQuery,
+const results = await client.vectorStores.search(vector_store.id, {
+  query: userQuery,
 });
 ```
 
@@ -46278,20 +46291,23 @@ print(completion.choices[0].message.content)
 ```javascript
 const formattedResults = formatResults(results.data);
 // Join the text content of all results
-const textSources = results.data.map(result => result.content.map(c => c.text).join('\n')).join('\n');
+const textSources = results.data
+  .map((result) => result.content.map((c) => c.text).join("\n"))
+  .join("\n");
 
 const completion = await client.chat.completions.create({
-    model: "gpt-5.6",
-    messages: [
-        {
-            role: "developer",
-            content: "Produce a concise answer to the query based on the provided sources."
-        },
-        {
-            role: "user",
-            content: `Sources: ${formattedResults}\n\nQuery: 'What is the return policy?'`
-        }
-    ],
+  model: "gpt-5.6",
+  messages: [
+    {
+      role: "developer",
+      content:
+        "Produce a concise answer to the query based on the provided sources.",
+    },
+    {
+      role: "user",
+      content: `Sources: ${formattedResults}\n\nQuery: '${userQuery}'`,
+    },
+  ],
 });
 
 console.log(completion.choices[0].message.content);
@@ -46322,15 +46338,15 @@ def format_results(results):
 
 ```javascript
 function formatResults(results) {
-    let formattedResults = '';
-    for (const result of results.data) {
-        let formattedResult = `<result file_id='${result.file_id}' file_name='${result.file_name}'>`;
-        for (const part of result.content) {
-            formattedResult += `<content>${part.text}</content>`;
-        }
-        formattedResults += formattedResult + "</result>";
+  let formattedResults = "";
+  for (const result of results.data) {
+    let formattedResult = `<result file_id='${result.file_id}' file_name='${result.file_name}'>`;
+    for (const part of result.content) {
+      formattedResult += `<content>${part.text}</content>`;
     }
-    return `<sources>${formattedResults}</sources>`;
+    formattedResults += formattedResult + "</result>";
+  }
+  return `<sources>${formattedResults}</sources>`;
 }
 ```
 
@@ -48899,7 +48915,7 @@ If you are using the [Agents SDK](https://developers.openai.com/api/docs/guides/
 
 Use local shell with Agents SDK
 
-```javascript
+```typescript
 import {
   Agent,
   run,
@@ -52493,7 +52509,7 @@ response = client.responses.create(
 print(response.output_text)
 ```
 
-```cli
+```bash
 openai responses create \
   --model "gpt-5.6" \
   --input "Write a one-sentence bedtime story about a unicorn." \
@@ -52976,7 +52992,7 @@ curl https://api.openai.com/v1/audio/speech \
   --output speech.mp3
 ```
 
-```cli
+```bash
 openai audio:speech create \
   --model gpt-4o-mini-tts \
   --voice coral \
@@ -53237,6 +53253,7 @@ const sessionConfig = JSON.stringify({
 });
 ```
 
+
 ## Related guides
 
 [Realtime and audio overview
@@ -53311,15 +53328,15 @@ Match the look and feel of your product by specifying colors, typography, and mo
 
 For all theming options, see the [API reference](https://openai.github.io/chatkit-js/api/openai/chatkit/type-aliases/themeoption/).
 
-```jsx
+```typescript
 const options: Partial<ChatKitOptions> = {
   theme: {
     colorScheme: "dark",
     color: {
       accent: {
         primary: "#2D8CFF",
-        level: 2
-      }
+        level: 2,
+      },
     },
     radius: "round",
     density: "compact",
@@ -53328,11 +53345,12 @@ const options: Partial<ChatKitOptions> = {
 };
 ```
 
+
 ## Customize the start screen text
 
 Let users know what to ask or guide their first input by changing the composer’s placeholder text.
 
-```jsx
+```typescript
 const options: Partial<ChatKitOptions> = {
   composer: {
     placeholder: "Ask anything about your data…",
@@ -53343,11 +53361,12 @@ const options: Partial<ChatKitOptions> = {
 };
 ```
 
+
 ## Show starter prompts for new threads
 
 Guide users on what to ask or do by suggesting prompt ideas when starting a conversation.
 
-```js
+```typescript
 const options: Partial<ChatKitOptions> = {
   startScreen: {
     greeting: "What can I help you build today?",
@@ -53355,23 +53374,24 @@ const options: Partial<ChatKitOptions> = {
       {
         name: "Check on the status of a ticket",
         prompt: "Can you help me check on the status of a ticket?",
-        icon: "search"
+        icon: "search",
       },
       {
         name: "Create Ticket",
         prompt: "Can you help me create a new support ticket?",
-        icon: "write"
+        icon: "write",
       },
     ],
   },
 };
 ```
 
+
 ## Add custom buttons to the header
 
 Custom header buttons help you add navigation, context, or actions relevant to your integration.
 
-```jsx
+```typescript
 const options: Partial<ChatKitOptions> = {
   header: {
     customButtonLeft: {
@@ -53386,6 +53406,7 @@ const options: Partial<ChatKitOptions> = {
 };
 ```
 
+
 ## Enable file attachments
 
 Attachments are disabled by default. To enable them, add attachments configuration.
@@ -53394,18 +53415,19 @@ See the Python SDK docs for more information on other upload strategies work wit
 
 You can also control the number, size, and types of files that users can attach to messages.
 
-```jsx
+```typescript
 const options: Partial<ChatKitOptions> = {
   composer: {
     attachments: {
-      uploadStrategy: { type: 'hosted' },
-      maxSize: 20 * 1024 * 1024, // 20MB per file
+      uploadStrategy: { type: "hosted" },
+      maxSize: 20 * 1024 * 1024, // 20 MB per file
       maxCount: 3,
       accept: { "application/pdf": [".pdf"], "image/*": [".png", ".jpg"] },
     },
   },
-}
+};
 ```
+
 
 ## Enable @mentions in the composer with entity tags
 
@@ -53414,10 +53436,11 @@ Let users tag custom “entities” with @-mentions. This enables richer convers
 - Use `onTagSearch` to return a list of entities based on the input query.
 - Use `onClick` to handle the click event of an entity.
 
-```jsx
+```typescript
 const options: Partial<ChatKitOptions> = {
   entities: {
-    async onTagSearch(query) {
+    async onTagSearch(query: string) {
+      void query;
       return [
         {
           id: "user_123",
@@ -53431,14 +53454,15 @@ const options: Partial<ChatKitOptions> = {
           group: "Documents",
           interactive: true,
         },
-      ]
+      ];
     },
-    onClick: (entity) => {
+    onClick: (entity: { id: string }) => {
       navigateToEntity(entity.id);
     },
   },
 };
 ```
+
 
 ## Customize how entity tags appear
 
@@ -53450,11 +53474,13 @@ You can customize the appearance of entity tags on mouseover using widgets. Show
 
       Browse available widgets.](https://widgets.chatkit.studio)
 
-```jsx
+```typescript
 const options: Partial<ChatKitOptions> = {
   entities: {
-    async onTagSearch() { /* ... */ },
-    onRequestPreview: async (entity) => ({
+    async onTagSearch() {
+      return [];
+    },
+    onRequestPreview: async (entity: { title: string }) => ({
       preview: {
         type: "Card",
         children: [
@@ -53467,19 +53493,20 @@ const options: Partial<ChatKitOptions> = {
 };
 ```
 
+
 ## Add custom tools to the composer
 
 Enhance productivity by letting users trigger app-specific actions from the composer bar. The selected tool
 will be sent to the model as a tool preference.
 
-```jsx
+```typescript
 const options: Partial<ChatKitOptions> = {
   composer: {
     tools: [
       {
-        id: 'add-note',
-        label: 'Add Note',
-        icon: 'write',
+        id: "add-note",
+        label: "Add Note",
+        icon: "write",
         pinned: true,
       },
     ],
@@ -53487,24 +53514,26 @@ const options: Partial<ChatKitOptions> = {
 };
 ```
 
+
 ## Toggle UI regions and features
 
 Disable major UI regions and features if you need more customization over the options available in the header and want to implement your own instead. Disabling history can be useful when the concept of threads and history doesn't make sense for your use case—e.g., in a support chatbot.
 
-```jsx
+```typescript
 const options: Partial<ChatKitOptions> = {
   history: { enabled: false },
   header: { enabled: false },
 };
 ```
 
+
 ## Override the locale
 
 Override the default locale if you have an app-wide language setting. By default, the locale is set to the browser's locale.
 
-```jsx
+```typescript
 const options: Partial<ChatKitOptions> = {
-  locale: 'de-DE',
+  locale: "de-DE",
 };
 ```
 
@@ -62812,7 +62841,7 @@ curl "https://api.openai.com/v1/responses" \
 }'
 ```
 
-```cli
+```bash
 openai responses create \
   --model gpt-5.6 \
   --raw-output \
@@ -65156,7 +65185,7 @@ curl "https://api.openai.com/v1/responses" \
 }'
 ```
 
-```cli
+```bash
 openai responses create \
   --model gpt-5.6 \
   --raw-output \
@@ -69870,7 +69899,7 @@ curl "https://api.openai.com/v1/responses" \
 }'
 ```
 
-```cli
+```bash
 openai responses create \
   --model gpt-5.6 \
   --raw-output \
@@ -70426,7 +70455,7 @@ curl "https://api.openai.com/v1/responses" \
 }'
 ```
 
-```cli
+```bash
 openai responses create \
   --model gpt-5.6 \
   --raw-output \

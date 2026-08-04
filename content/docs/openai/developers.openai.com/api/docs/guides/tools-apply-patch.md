@@ -199,7 +199,7 @@ Alternatively, you can use the [Agents SDK](https://developers.openai.com/api/do
 
 Use the apply patch tool with the Agents SDK
 
-```javascript
+```typescript
 import {
   applyDiff,
   Agent,
