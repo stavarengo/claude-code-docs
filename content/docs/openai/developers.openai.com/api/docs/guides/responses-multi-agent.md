@@ -46,6 +46,41 @@ Enable Multi-agent in your Responses API request with `multi_agent.enabled`. Whe
 
 Review a pull request with subagents
 
+```typescript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+
+async function reviewPullRequest(diff: string): Promise<string> {
+  const response = await client.beta.responses.create({
+    model: "gpt-5.6-sol",
+    input:
+      "Review the pull-request diff below with three agents: one for " +
+      "correctness, one for security, and one for missing tests. " +
+      "Reconcile duplicate or conflicting findings, then return a " +
+      "prioritized review with file and line references.\n\n" +
+      `<diff>\n${diff}\n</diff>`,
+    multi_agent: {
+      enabled: true,
+      max_concurrent_subagents: 3,
+    },
+    betas: ["responses_multi_agent=v1"],
+  });
+
+  return response.output
+    .flatMap((item) =>
+      item.type === "message" &&
+      item.agent?.agent_name === "/root" &&
+      item.phase === "final_answer"
+        ? item.content
+        : []
+    )
+    .filter((part) => part.type === "output_text")
+    .map((part) => part.text)
+    .join("");
+}
+```
+
 ```python
 from openai import OpenAI
 
@@ -81,41 +116,6 @@ def review_pull_request(diff: str) -> str:
         for part in item.content
         if part.type == "output_text"
     )
-```
-
-```typescript
-import OpenAI from "openai";
-
-const client = new OpenAI();
-
-async function reviewPullRequest(diff: string): Promise<string> {
-  const response = await client.beta.responses.create({
-    model: "gpt-5.6-sol",
-    input:
-      "Review the pull-request diff below with three agents: one for " +
-      "correctness, one for security, and one for missing tests. " +
-      "Reconcile duplicate or conflicting findings, then return a " +
-      "prioritized review with file and line references.\n\n" +
-      `<diff>\n${diff}\n</diff>`,
-    multi_agent: {
-      enabled: true,
-      max_concurrent_subagents: 3,
-    },
-    betas: ["responses_multi_agent=v1"],
-  });
-
-  return response.output
-    .flatMap((item) =>
-      item.type === "message" &&
-      item.agent?.agent_name === "/root" &&
-      item.phase === "final_answer"
-        ? item.content
-        : []
-    )
-    .filter((part) => part.type === "output_text")
-    .map((part) => part.text)
-    .join("");
-}
 ```
 
 
@@ -185,123 +185,6 @@ These examples require beta SDK builds that expose the beta Responses API. For H
 Example client-side code:
 
 Handle HTTP streaming tool calls
-
-```python
-from __future__ import annotations
-
-import json
-import sys
-
-from openai import OpenAI
-from openai.types.beta import BetaResponseOutputItem
-
-client = OpenAI()
-ROOT = "/root"
-PROPOSALS = {
-    "alpha": {"estimated_weeks": 6, "risk": "medium"},
-    "beta": {"estimated_weeks": 8, "risk": "low"},
-}
-tools = [
-    {
-        "type": "function",
-        "name": "get_proposal",
-        "description": "Return details for a proposal that the agents should compare.",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "proposal": {
-                    "type": "string",
-                    "enum": ["alpha", "beta"],
-                }
-            },
-            "required": ["proposal"],
-            "additionalProperties": False,
-        },
-        "strict": True,
-    }
-]
-history = [
-    {
-        "role": "user",
-        "content": "Compare proposal alpha and proposal beta.",
-    }
-]
-
-
-def agent_name(item: BetaResponseOutputItem) -> str:
-    return item.agent.agent_name if item.agent else ROOT
-
-
-def render_to_user(delta: str) -> None:
-    print(delta, end="", flush=True)
-
-
-def log_subagent_text(agent: str, delta: str) -> None:
-    print(f"[{agent}] {delta}", end="", file=sys.stderr, flush=True)
-
-
-def process_tool_call(name: str, arguments: str) -> str:
-    if name != "get_proposal":
-        raise ValueError(f"Unknown tool: {name}")
-    parsed_arguments = json.loads(arguments)
-    return json.dumps(PROPOSALS[parsed_arguments["proposal"]])
-
-
-while True:
-    output_items = []
-    pending_calls = []
-    item_agents: dict[int, str] = {}
-
-    stream = client.beta.responses.create(
-        model="gpt-5.6-sol",
-        input=history,
-        tools=tools,
-        store=False,
-        multi_agent={
-            "enabled": True,
-            "max_concurrent_subagents": 3,
-        },
-        stream=True,
-        betas=["responses_multi_agent=v1"],
-    )
-    for event in stream:
-        if event.type == "response.output_item.added":
-            item_agents[event.output_index] = agent_name(event.item)
-        elif event.type == "response.output_text.delta":
-            agent = item_agents.get(event.output_index, ROOT)
-            if agent == ROOT:
-                render_to_user(event.delta)
-            else:
-                log_subagent_text(agent, event.delta)
-        elif event.type == "response.output_item.done":
-            output_items.append(event.item)
-            if event.item.type == "function_call":
-                # Handle function calls from both the root agent and subagents.
-                pending_calls.append(event.item)
-        elif event.type == "response.completed":
-            print(f"\nUsage: {event.response.usage}", file=sys.stderr)
-            break
-        elif event.type in {
-            "error",
-            "response.failed",
-            "response.incomplete",
-        }:
-            raise RuntimeError(event)
-
-    history.extend(output_items)
-
-    for call in pending_calls:
-        history.append(
-            {
-                "type": "function_call_output",
-                "call_id": call.call_id,
-                "output": process_tool_call(call.name, call.arguments),
-            }
-        )
-
-    if not pending_calls:
-        break
-```
 
 ```typescript
 import OpenAI from "openai";
@@ -420,6 +303,123 @@ while (true) {
 }
 ```
 
+```python
+from __future__ import annotations
+
+import json
+import sys
+
+from openai import OpenAI
+from openai.types.beta import BetaResponseOutputItem
+
+client = OpenAI()
+ROOT = "/root"
+PROPOSALS = {
+    "alpha": {"estimated_weeks": 6, "risk": "medium"},
+    "beta": {"estimated_weeks": 8, "risk": "low"},
+}
+tools = [
+    {
+        "type": "function",
+        "name": "get_proposal",
+        "description": "Return details for a proposal that the agents should compare.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "proposal": {
+                    "type": "string",
+                    "enum": ["alpha", "beta"],
+                }
+            },
+            "required": ["proposal"],
+            "additionalProperties": False,
+        },
+        "strict": True,
+    }
+]
+history = [
+    {
+        "role": "user",
+        "content": "Compare proposal alpha and proposal beta.",
+    }
+]
+
+
+def agent_name(item: BetaResponseOutputItem) -> str:
+    return item.agent.agent_name if item.agent else ROOT
+
+
+def render_to_user(delta: str) -> None:
+    print(delta, end="", flush=True)
+
+
+def log_subagent_text(agent: str, delta: str) -> None:
+    print(f"[{agent}] {delta}", end="", file=sys.stderr, flush=True)
+
+
+def process_tool_call(name: str, arguments: str) -> str:
+    if name != "get_proposal":
+        raise ValueError(f"Unknown tool: {name}")
+    parsed_arguments = json.loads(arguments)
+    return json.dumps(PROPOSALS[parsed_arguments["proposal"]])
+
+
+while True:
+    output_items = []
+    pending_calls = []
+    item_agents: dict[int, str] = {}
+
+    stream = client.beta.responses.create(
+        model="gpt-5.6-sol",
+        input=history,
+        tools=tools,
+        store=False,
+        multi_agent={
+            "enabled": True,
+            "max_concurrent_subagents": 3,
+        },
+        stream=True,
+        betas=["responses_multi_agent=v1"],
+    )
+    for event in stream:
+        if event.type == "response.output_item.added":
+            item_agents[event.output_index] = agent_name(event.item)
+        elif event.type == "response.output_text.delta":
+            agent = item_agents.get(event.output_index, ROOT)
+            if agent == ROOT:
+                render_to_user(event.delta)
+            else:
+                log_subagent_text(agent, event.delta)
+        elif event.type == "response.output_item.done":
+            output_items.append(event.item)
+            if event.item.type == "function_call":
+                # Handle function calls from both the root agent and subagents.
+                pending_calls.append(event.item)
+        elif event.type == "response.completed":
+            print(f"\nUsage: {event.response.usage}", file=sys.stderr)
+            break
+        elif event.type in {
+            "error",
+            "response.failed",
+            "response.incomplete",
+        }:
+            raise RuntimeError(event)
+
+    history.extend(output_items)
+
+    for call in pending_calls:
+        history.append(
+            {
+                "type": "function_call_output",
+                "call_id": call.call_id,
+                "output": process_tool_call(call.name, call.arguments),
+            }
+        )
+
+    if not pending_calls:
+        break
+```
+
 
 If one or more agents call developer-defined functions, execute every pending call and create a continuation request containing their outputs.
 
@@ -480,139 +480,6 @@ The Python beta SDK exposes WebSocket mode through `client.beta.responses.connec
 Save the response ID from the `response.created` event and include it in every `response.inject` event you send for that response. After sending an injection item, continue reading from the WebSocket until the response has completed and every injection has produced either a `response.inject.created` or `response.inject.failed` event.
 
 Inject tool outputs over WebSocket
-
-```python
-from __future__ import annotations
-
-import json
-
-from openai import OpenAI
-
-client = OpenAI()
-PROPOSALS = {
-    "alpha": {"estimated_weeks": 6, "risk": "medium"},
-    "beta": {"estimated_weeks": 8, "risk": "low"},
-}
-tools = [
-    {
-        "type": "function",
-        "name": "get_proposal",
-        "description": "Return details for a proposal that the agents should compare.",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "proposal": {
-                    "type": "string",
-                    "enum": ["alpha", "beta"],
-                }
-            },
-            "required": ["proposal"],
-            "additionalProperties": False,
-        },
-        "strict": True,
-    }
-]
-
-
-def process_tool_call(name: str, arguments: str) -> str:
-    if name != "get_proposal":
-        raise ValueError(f"Unknown tool: {name}")
-    parsed_arguments = json.loads(arguments)
-    return json.dumps(PROPOSALS[parsed_arguments["proposal"]])
-
-
-def run_multi_agent(connection):
-    previous_response_id: str | None = None
-    pending_input: list[dict[str, object]] = [{"role": "user", "content": input()}]
-
-    while pending_input:
-        request = {
-            "type": "response.create",
-            "model": "gpt-5.6-sol",
-            "store": True,
-            "multi_agent": {"enabled": True},
-            "tools": tools,
-            "input": pending_input,
-        }
-        if previous_response_id is not None:
-            request["previous_response_id"] = previous_response_id
-
-        connection.send(request)
-
-        next_input: list[dict[str, object]] = []
-        completed_response = None
-        response_id: str | None = None
-        pending_injections = 0
-
-        for event in connection:
-            event_type = event.type
-
-            if event_type == "response.created":
-                response_id = event.response.id
-
-            elif event_type == "response.output_item.done":
-                item = event.item
-
-                if item.type == "function_call":
-                    if response_id is None:
-                        raise RuntimeError(
-                            "Received a function call before response.created"
-                        )
-
-                    output = {
-                        "type": "function_call_output",
-                        "call_id": item.call_id,
-                        "output": process_tool_call(item.name, item.arguments),
-                    }
-                    pending_injections += 1
-
-                    connection.send(
-                        {
-                            "type": "response.inject",
-                            "response_id": response_id,
-                            "input": [output],
-                        }
-                    )
-
-            elif event_type == "response.inject.created":
-                pending_injections -= 1
-
-            elif event_type == "response.inject.failed":
-                pending_injections -= 1
-
-                if event.error.code != "response_already_completed":
-                    raise RuntimeError(event.error)
-
-                next_input.extend(item.model_dump(mode="json") for item in event.input)
-
-            elif event_type == "response.completed":
-                completed_response = event.response
-
-            elif event_type in {
-                "error",
-                "response.failed",
-                "response.incomplete",
-            }:
-                raise RuntimeError(event)
-
-            if completed_response is not None and pending_injections == 0:
-                break
-
-        if completed_response is None:
-            raise RuntimeError("Connection ended before response.completed")
-
-        if not next_input:
-            return completed_response
-
-        previous_response_id = completed_response.id
-        pending_input = next_input
-
-
-with client.beta.responses.connect(
-    extra_headers={"OpenAI-Beta": "responses_multi_agent=v1"},
-) as connection:
-    run_multi_agent(connection)
-```
 
 ```typescript
 import OpenAI from "openai";
@@ -746,6 +613,139 @@ try {
 } finally {
   ws.close();
 }
+```
+
+```python
+from __future__ import annotations
+
+import json
+
+from openai import OpenAI
+
+client = OpenAI()
+PROPOSALS = {
+    "alpha": {"estimated_weeks": 6, "risk": "medium"},
+    "beta": {"estimated_weeks": 8, "risk": "low"},
+}
+tools = [
+    {
+        "type": "function",
+        "name": "get_proposal",
+        "description": "Return details for a proposal that the agents should compare.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "proposal": {
+                    "type": "string",
+                    "enum": ["alpha", "beta"],
+                }
+            },
+            "required": ["proposal"],
+            "additionalProperties": False,
+        },
+        "strict": True,
+    }
+]
+
+
+def process_tool_call(name: str, arguments: str) -> str:
+    if name != "get_proposal":
+        raise ValueError(f"Unknown tool: {name}")
+    parsed_arguments = json.loads(arguments)
+    return json.dumps(PROPOSALS[parsed_arguments["proposal"]])
+
+
+def run_multi_agent(connection):
+    previous_response_id: str | None = None
+    pending_input: list[dict[str, object]] = [{"role": "user", "content": input()}]
+
+    while pending_input:
+        request = {
+            "type": "response.create",
+            "model": "gpt-5.6-sol",
+            "store": True,
+            "multi_agent": {"enabled": True},
+            "tools": tools,
+            "input": pending_input,
+        }
+        if previous_response_id is not None:
+            request["previous_response_id"] = previous_response_id
+
+        connection.send(request)
+
+        next_input: list[dict[str, object]] = []
+        completed_response = None
+        response_id: str | None = None
+        pending_injections = 0
+
+        for event in connection:
+            event_type = event.type
+
+            if event_type == "response.created":
+                response_id = event.response.id
+
+            elif event_type == "response.output_item.done":
+                item = event.item
+
+                if item.type == "function_call":
+                    if response_id is None:
+                        raise RuntimeError(
+                            "Received a function call before response.created"
+                        )
+
+                    output = {
+                        "type": "function_call_output",
+                        "call_id": item.call_id,
+                        "output": process_tool_call(item.name, item.arguments),
+                    }
+                    pending_injections += 1
+
+                    connection.send(
+                        {
+                            "type": "response.inject",
+                            "response_id": response_id,
+                            "input": [output],
+                        }
+                    )
+
+            elif event_type == "response.inject.created":
+                pending_injections -= 1
+
+            elif event_type == "response.inject.failed":
+                pending_injections -= 1
+
+                if event.error.code != "response_already_completed":
+                    raise RuntimeError(event.error)
+
+                next_input.extend(item.model_dump(mode="json") for item in event.input)
+
+            elif event_type == "response.completed":
+                completed_response = event.response
+
+            elif event_type in {
+                "error",
+                "response.failed",
+                "response.incomplete",
+            }:
+                raise RuntimeError(event)
+
+            if completed_response is not None and pending_injections == 0:
+                break
+
+        if completed_response is None:
+            raise RuntimeError("Connection ended before response.completed")
+
+        if not next_input:
+            return completed_response
+
+        previous_response_id = completed_response.id
+        pending_input = next_input
+
+
+with client.beta.responses.connect(
+    extra_headers={"OpenAI-Beta": "responses_multi_agent=v1"},
+) as connection:
+    run_multi_agent(connection)
 ```
 
 

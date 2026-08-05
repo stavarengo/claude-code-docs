@@ -55,3 +55,17 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT Transcribe.
 
 - `gpt-transcribe`
+
+## Rate limits
+
+Rate limits ensure fair and reliable access to the API by placing specific caps on requests, tokens, audio duration, or other usage within a given time period. Your usage tier determines how high these limits are set and automatically increases as you send more requests and spend more on the API.
+
+### default
+
+| Tier | RPM | TPM |
+| --- | ---: | ---: |
+| Tier 1 | 500 | 200,000 |
+| Tier 2 | 5,000 | 2,000,000 |
+| Tier 3 | 5,000 | 4,000,000 |
+| Tier 4 | 10,000 | 10,000,000 |
+| Tier 5 | 30,000 | 150,000,000 |

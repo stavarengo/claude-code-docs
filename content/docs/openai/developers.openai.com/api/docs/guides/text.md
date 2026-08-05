@@ -33,52 +33,6 @@ response = client.responses.create(
 print(response.output_text)
 ```
 
-```bash
-openai responses create \
-  --model "gpt-5.6" \
-  --input "Write a one-sentence bedtime story about a unicorn." \
-  --raw-output \
-  --transform 'output.#(type=="message").content.0.text'
-```
-
-```csharp
-using OpenAI.Responses;
-#pragma warning disable OPENAI001
-
-string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-ResponsesClient client = new(key);
-
-ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
-    "Say 'this is a test.'"
-);
-
-Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}");
-```
-
-```java
-import com.openai.client.OpenAIClient;
-import com.openai.client.okhttp.OpenAIOkHttpClient;
-import com.openai.models.responses.Response;
-import com.openai.models.responses.ResponseCreateParams;
-
-public class Main {
-  public static void main(String[] args) {
-    OpenAIClient client = OpenAIOkHttpClient.fromEnv();
-
-    ResponseCreateParams params =
-        ResponseCreateParams.builder().input("Say this is a test").model("gpt-5.6").build();
-
-    Response response = client.responses().create(params);
-    response.output().stream()
-        .flatMap(item -> item.message().stream())
-        .flatMap(message -> message.content().stream())
-        .flatMap(content -> content.outputText().stream())
-        .forEach(outputText -> System.out.println(outputText.text()));
-  }
-}
-```
-
 ```go
 package main
 
@@ -108,6 +62,44 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.Response;
+import com.openai.models.responses.ResponseCreateParams;
+
+public class Main {
+  public static void main(String[] args) {
+    OpenAIClient client = OpenAIOkHttpClient.fromEnv();
+
+    ResponseCreateParams params =
+        ResponseCreateParams.builder().input("Say this is a test").model("gpt-5.6").build();
+
+    Response response = client.responses().create(params);
+    response.output().stream()
+        .flatMap(item -> item.message().stream())
+        .flatMap(message -> message.content().stream())
+        .flatMap(content -> content.outputText().stream())
+        .forEach(outputText -> System.out.println(outputText.text()));
+  }
+}
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+ResponseResult response = await client.CreateResponseAsync(
+    "gpt-5.6",
+    "Say 'this is a test.'"
+);
+
+Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}");
+```
+
 ```ruby
 require "openai"
 
@@ -119,6 +111,14 @@ response = openai.responses.create(
 )
 
 puts(response.output_text)
+```
+
+```bash
+openai responses create \
+  --model "gpt-5.6" \
+  --input "Write a one-sentence bedtime story about a unicorn." \
+  --raw-output \
+  --transform 'output.#(type=="message").content.0.text'
 ```
 
 ```bash
@@ -198,6 +198,21 @@ const response = await client.responses.create({
 console.log(response.output_text);
 ```
 
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+response = client.responses.create(
+    model="gpt-5.6",
+    reasoning={"effort": "low"},
+    instructions="Talk like a pirate.",
+    input="Are semicolons optional in JavaScript?",
+)
+
+print(response.output_text)
+```
+
 ```go
 package main
 
@@ -228,21 +243,6 @@ func main() {
 
 	fmt.Println(response.OutputText())
 }
-```
-
-```python
-from openai import OpenAI
-
-client = OpenAI()
-
-response = client.responses.create(
-    model="gpt-5.6",
-    reasoning={"effort": "low"},
-    instructions="Talk like a pirate.",
-    input="Are semicolons optional in JavaScript?",
-)
-
-print(response.output_text)
 ```
 
 ```bash
@@ -284,6 +284,23 @@ const response = await client.responses.create({
 console.log(response.output_text);
 ```
 
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+response = client.responses.create(
+    model="gpt-5.6",
+    reasoning={"effort": "low"},
+    input=[
+        {"role": "developer", "content": "Talk like a pirate."},
+        {"role": "user", "content": "Are semicolons optional in JavaScript?"},
+    ],
+)
+
+print(response.output_text)
+```
+
 ```go
 package main
 
@@ -322,23 +339,6 @@ func main() {
 
 	fmt.Println(response.OutputText())
 }
-```
-
-```python
-from openai import OpenAI
-
-client = OpenAI()
-
-response = client.responses.create(
-    model="gpt-5.6",
-    reasoning={"effort": "low"},
-    input=[
-        {"role": "developer", "content": "Talk like a pirate."},
-        {"role": "user", "content": "Are semicolons optional in JavaScript?"},
-    ],
-)
-
-print(response.output_text)
 ```
 
 ```bash

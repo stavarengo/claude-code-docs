@@ -27,17 +27,6 @@ The token counting API handles all of these. Use the same payload you would send
 
 Simple text input
 
-```python
-from openai import OpenAI
-
-client = OpenAI()
-
-response = client.responses.input_tokens.count(
-    model="gpt-5.6", input="Tell me a joke."
-)
-print(response.input_tokens)
-```
-
 ```javascript
 import OpenAI from "openai";
 
@@ -49,6 +38,17 @@ const response = await client.responses.inputTokens.count({
 });
 
 console.log(response.input_tokens);
+```
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+response = client.responses.input_tokens.count(
+    model="gpt-5.6", input="Tell me a joke."
+)
+print(response.input_tokens)
 ```
 
 ```bash
@@ -74,22 +74,6 @@ openai responses:input-tokens count \
 
 Multi-turn conversation
 
-```python
-from openai import OpenAI
-
-client = OpenAI()
-
-response = client.responses.input_tokens.count(
-    model="gpt-5.6",
-    input=[
-        {"role": "user", "content": "What is 2 + 2?"},
-        {"role": "assistant", "content": "2 + 2 equals 4."},
-        {"role": "user", "content": "What about 3 + 3?"},
-    ],
-)
-print(response.input_tokens)
-```
-
 ```javascript
 import OpenAI from "openai";
 
@@ -105,6 +89,22 @@ const response = await client.responses.inputTokens.count({
 });
 
 console.log(response.input_tokens);
+```
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+response = client.responses.input_tokens.count(
+    model="gpt-5.6",
+    input=[
+        {"role": "user", "content": "What is 2 + 2?"},
+        {"role": "assistant", "content": "2 + 2 equals 4."},
+        {"role": "user", "content": "What about 3 + 3?"},
+    ],
+)
+print(response.input_tokens)
 ```
 
 ```bash
@@ -141,19 +141,6 @@ YAML
 
 Input with system instructions
 
-```python
-from openai import OpenAI
-
-client = OpenAI()
-
-response = client.responses.input_tokens.count(
-    model="gpt-5.6",
-    instructions="You are a helpful assistant that explains concepts simply.",
-    input="Explain quantum computing in one sentence.",
-)
-print(response.input_tokens)
-```
-
 ```javascript
 import OpenAI from "openai";
 
@@ -166,6 +153,19 @@ const response = await client.responses.inputTokens.count({
 });
 
 console.log(response.input_tokens);
+```
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+response = client.responses.input_tokens.count(
+    model="gpt-5.6",
+    instructions="You are a helpful assistant that explains concepts simply.",
+    input="Explain quantum computing in one sentence.",
+)
+print(response.input_tokens)
 ```
 
 ```bash
@@ -196,30 +196,6 @@ Images consume tokens based on size and detail level. The token counting API ret
 
 Input with an image
 
-```python
-from openai import OpenAI
-
-client = OpenAI()
-
-# Use file_id from uploaded file, or image_url for a URL
-response = client.responses.input_tokens.count(
-    model="gpt-5.6",
-    input=[
-        {
-            "role": "user",
-            "content": [
-                {
-                    "type": "input_image",
-                    "image_url": "https://example.com/chart.png",
-                },
-                {"type": "input_text", "text": "Summarize this chart."},
-            ],
-        }
-    ],
-)
-print(response.input_tokens)
-```
-
 ```javascript
 import OpenAI from "openai";
 
@@ -243,6 +219,30 @@ const response = await client.responses.inputTokens.count({
 });
 
 console.log(response.input_tokens);
+```
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+# Use file_id from uploaded file, or image_url for a URL
+response = client.responses.input_tokens.count(
+    model="gpt-5.6",
+    input=[
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "input_image",
+                    "image_url": "https://example.com/chart.png",
+                },
+                {"type": "input_text", "text": "Summarize this chart."},
+            ],
+        }
+    ],
+)
+print(response.input_tokens)
 ```
 
 ```bash
@@ -285,30 +285,6 @@ Tool definitions (function schemas, MCP servers, etc.) add tokens to the context
 
 Input with function tools
 
-```python
-from openai import OpenAI
-
-client = OpenAI()
-
-response = client.responses.input_tokens.count(
-    model="gpt-5.6",
-    tools=[
-        {
-            "type": "function",
-            "name": "get_weather",
-            "description": "Get the current weather in a location",
-            "parameters": {
-                "type": "object",
-                "properties": {"location": {"type": "string"}},
-                "required": ["location"],
-            },
-        }
-    ],
-    input="What is the weather in San Francisco?",
-)
-print(response.input_tokens)
-```
-
 ```javascript
 import OpenAI from "openai";
 
@@ -334,6 +310,30 @@ const response = await client.responses.inputTokens.count({
 });
 
 console.log(response.input_tokens);
+```
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+response = client.responses.input_tokens.count(
+    model="gpt-5.6",
+    tools=[
+        {
+            "type": "function",
+            "name": "get_weather",
+            "description": "Get the current weather in a location",
+            "parameters": {
+                "type": "object",
+                "properties": {"location": {"type": "string"}},
+                "required": ["location"],
+            },
+        }
+    ],
+    input="What is the weather in San Francisco?",
+)
+print(response.input_tokens)
 ```
 
 ```bash

@@ -297,12 +297,6 @@ writeFileSync("video.mp4", buffer);
 console.log("Wrote video.mp4");
 ```
 
-```bash
-curl -L "https://api.openai.com/v1/videos/video_abc123/content" \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  --output video.mp4
-```
-
 ```python
 from openai import OpenAI
 import sys
@@ -350,6 +344,12 @@ content = openai.videos.download_content(video.id, variant="video")
 content.write_to_file("video.mp4")
 
 print("Wrote video.mp4")
+```
+
+```bash
+curl -L "https://api.openai.com/v1/videos/video_abc123/content" \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  --output video.mp4
 ```
 
 

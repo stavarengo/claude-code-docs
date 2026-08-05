@@ -898,21 +898,6 @@ curl -L 'https://api.openai.com/v1/responses' \
   }'
 ```
 
-```python
-from openai import OpenAI
-
-client = OpenAI()
-
-response = client.responses.create(
-    model="gpt-5.6",
-    instructions="The local bash shell environment is on Mac.",
-    input="find me the largest pdf file in ~/Documents",
-    tools=[{"type": "shell", "environment": {"type": "local"}}],
-)
-
-print(response)
-```
-
 ```javascript
 import OpenAI from "openai";
 
@@ -928,6 +913,21 @@ const response = await client.responses.create({
 console.log(response);
 ```
 
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+response = client.responses.create(
+    model="gpt-5.6",
+    instructions="The local bash shell environment is on Mac.",
+    input="find me the largest pdf file in ~/Documents",
+    tools=[{"type": "shell", "environment": {"type": "local"}}],
+)
+
+print(response)
+```
+
 
 When you receive `shell_call` output items:
 
@@ -936,37 +936,6 @@ When you receive `shell_call` output items:
 - Return results as `shell_call_output` in the next request.
 
 Local shell executor example
-
-```python
-@dataclass
-class CmdResult:
-    stdout: str
-    stderr: str
-    exit_code: int | None
-    timed_out: bool
-
-
-class ShellExecutor:
-    def __init__(self, default_timeout: float = 60):
-        self.default_timeout = default_timeout
-
-    def run(self, cmd: str, timeout: float | None = None) -> CmdResult:
-        t = timeout or self.default_timeout
-        p = subprocess.Popen(
-            cmd,
-            shell=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-        )
-        try:
-            out, err = p.communicate(timeout=t)
-            return CmdResult(out, err, p.returncode, False)
-        except subprocess.TimeoutExpired:
-            p.kill()
-            out, err = p.communicate()
-            return CmdResult(out, err, p.returncode, True)
-```
 
 ```javascript
 import { exec as execCallback } from "node:child_process";
@@ -997,6 +966,37 @@ class ShellExecutor {
     }
   }
 }
+```
+
+```python
+@dataclass
+class CmdResult:
+    stdout: str
+    stderr: str
+    exit_code: int | None
+    timed_out: bool
+
+
+class ShellExecutor:
+    def __init__(self, default_timeout: float = 60):
+        self.default_timeout = default_timeout
+
+    def run(self, cmd: str, timeout: float | None = None) -> CmdResult:
+        t = timeout or self.default_timeout
+        p = subprocess.Popen(
+            cmd,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        try:
+            out, err = p.communicate(timeout=t)
+            return CmdResult(out, err, p.returncode, False)
+        except subprocess.TimeoutExpired:
+            p.kill()
+            out, err = p.communicate()
+            return CmdResult(out, err, p.returncode, True)
 ```
 
 

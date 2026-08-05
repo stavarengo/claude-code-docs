@@ -24,41 +24,6 @@ Follow these steps to create a vector store and upload a file to it. You can use
 
 Upload a file
 
-```python
-from io import BytesIO
-
-import requests
-from openai import OpenAI
-
-client = OpenAI()
-
-
-def create_file(client, file_path):
-    if file_path.startswith(("http://", "https://")):
-        response = requests.get(file_path, timeout=30)
-        response.raise_for_status()
-        file_content = BytesIO(response.content)
-        file_name = file_path.rsplit("/", 1)[-1]
-        result = client.files.create(
-            file=(file_name, file_content),
-            purpose="assistants",
-        )
-    else:
-        with open(file_path, "rb") as file_content:
-            result = client.files.create(
-                file=file_content,
-                purpose="assistants",
-            )
-    return result.id
-
-
-file_id = create_file(
-    client,
-    "https://cdn.openai.com/API/docs/deep_research_blog.pdf",
-)
-print(file_id)
-```
-
 ```javascript
 import fs from "fs";
 import OpenAI from "openai";
@@ -96,15 +61,45 @@ const fileId = await createFile(
 console.log(fileId);
 ```
 
+```python
+from io import BytesIO
+
+import requests
+from openai import OpenAI
+
+client = OpenAI()
+
+
+def create_file(client, file_path):
+    if file_path.startswith(("http://", "https://")):
+        response = requests.get(file_path, timeout=30)
+        response.raise_for_status()
+        file_content = BytesIO(response.content)
+        file_name = file_path.rsplit("/", 1)[-1]
+        result = client.files.create(
+            file=(file_name, file_content),
+            purpose="assistants",
+        )
+    else:
+        with open(file_path, "rb") as file_content:
+            result = client.files.create(
+                file=file_content,
+                purpose="assistants",
+            )
+    return result.id
+
+
+file_id = create_file(
+    client,
+    "https://cdn.openai.com/API/docs/deep_research_blog.pdf",
+)
+print(file_id)
+```
+
 
 #### Create a vector store
 
 Create a vector store
-
-```python
-vector_store = client.vector_stores.create(name="knowledge_base")
-print(vector_store.id)
-```
 
 ```javascript
 const vectorStore = await openai.vectorStores.create({
@@ -113,10 +108,21 @@ const vectorStore = await openai.vectorStores.create({
 console.log(vectorStore.id);
 ```
 
+```python
+vector_store = client.vector_stores.create(name="knowledge_base")
+print(vector_store.id)
+```
+
 
 #### Add the file to the vector store
 
 Add a file to a vector store
+
+```javascript
+await openai.vectorStores.files.create(vectorStore.id, {
+  file_id: fileId,
+});
+```
 
 ```python
 result = client.vector_stores.files.create(
@@ -126,12 +132,6 @@ result = client.vector_stores.files.create(
 print(result)
 ```
 
-```javascript
-await openai.vectorStores.files.create(vectorStore.id, {
-  file_id: fileId,
-});
-```
-
 
 #### Check status
 
@@ -139,33 +139,20 @@ Run this code until the file is ready to be used (i.e., when the status is `comp
 
 Check status
 
-```python
-result = client.vector_stores.files.list(vector_store_id=vector_store.id)
-print(result)
-```
-
 ```javascript
 const result = await openai.vectorStores.files.list(vectorStore.id);
 console.log(result);
+```
+
+```python
+result = client.vector_stores.files.list(vector_store_id=vector_store.id)
+print(result)
 ```
 
 
 Once your knowledge base is set up, you can include the `file_search` tool in the list of tools available to the model, along with the list of vector stores in which to search.
 
 File search tool
-
-```python
-from openai import OpenAI
-
-client = OpenAI()
-
-response = client.responses.create(
-    model="gpt-5.6",
-    input="What is deep research by OpenAI?",
-    tools=[{"type": "file_search", "vector_store_ids": ["<vector_store_id>"]}],
-)
-print(response)
-```
 
 ```javascript
 import OpenAI from "openai";
@@ -182,6 +169,19 @@ const response = await openai.responses.create({
   ],
 });
 console.log(response);
+```
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+response = client.responses.create(
+    model="gpt-5.6",
+    input="What is deep research by OpenAI?",
+    tools=[{"type": "file_search", "vector_store_ids": ["<vector_store_id>"]}],
+)
+print(response)
 ```
 
 ```csharp
@@ -291,23 +291,6 @@ Using the file search tool with the Responses API, you can customize the number 
 
 Limit the number of results
 
-```python
-response = client.responses.create(
-    model="gpt-5.6",
-    input="What is deep research by OpenAI?",
-    tools=[
-        {
-            "type": "file_search",
-            "vector_store_ids": ["<vector_store_id>"],
-            # highlight-start
-            "max_num_results": 2,
-            # highlight-end
-        }
-    ],
-)
-print(response)
-```
-
 ```javascript
 const response = await openai.responses.create({
   model: "gpt-5.6",
@@ -325,15 +308,6 @@ const response = await openai.responses.create({
 console.log(response);
 ```
 
-
-### Include search results in the response
-
-While you can see annotations (references to files) in the output text, the file search call will not return search results by default.
-
-To include search results in the response, you can use the `include` parameter when creating the response.
-
-Include search results
-
 ```python
 response = client.responses.create(
     model="gpt-5.6",
@@ -342,14 +316,23 @@ response = client.responses.create(
         {
             "type": "file_search",
             "vector_store_ids": ["<vector_store_id>"],
+            # highlight-start
+            "max_num_results": 2,
+            # highlight-end
         }
     ],
-    # highlight-start
-    include=["file_search_call.results"],
-    # highlight-end
 )
 print(response)
 ```
+
+
+### Include search results in the response
+
+While you can see annotations (references to files) in the output text, the file search call will not return search results by default.
+
+To include search results in the response, you can use the `include` parameter when creating the response.
+
+Include search results
 
 ```javascript
 const response = await openai.responses.create({
@@ -368,6 +351,23 @@ const response = await openai.responses.create({
 console.log(response);
 ```
 
+```python
+response = client.responses.create(
+    model="gpt-5.6",
+    input="What is deep research by OpenAI?",
+    tools=[
+        {
+            "type": "file_search",
+            "vector_store_ids": ["<vector_store_id>"],
+        }
+    ],
+    # highlight-start
+    include=["file_search_call.results"],
+    # highlight-end
+)
+print(response)
+```
+
 
 ### Metadata filtering
 
@@ -377,27 +377,6 @@ You can filter the search results based on the metadata of the files. For more d
 - How to [define filters](https://developers.openai.com/api/docs/guides/retrieval#attribute-filtering)
 
 Metadata filtering
-
-```python
-response = client.responses.create(
-    model="gpt-5.6",
-    input="What is deep research by OpenAI?",
-    tools=[
-        {
-            "type": "file_search",
-            "vector_store_ids": ["<vector_store_id>"],
-            # highlight-start
-            "filters": {
-                "type": "in",
-                "key": "category",
-                "value": ["blog", "announcement"],
-            },
-            # highlight-end
-        }
-    ],
-)
-print(response)
-```
 
 ```javascript
 const response = await openai.responses.create({
@@ -418,6 +397,27 @@ const response = await openai.responses.create({
   ],
 });
 console.log(response);
+```
+
+```python
+response = client.responses.create(
+    model="gpt-5.6",
+    input="What is deep research by OpenAI?",
+    tools=[
+        {
+            "type": "file_search",
+            "vector_store_ids": ["<vector_store_id>"],
+            # highlight-start
+            "filters": {
+                "type": "in",
+                "key": "category",
+                "value": ["blog", "announcement"],
+            },
+            # highlight-end
+        }
+    ],
+)
+print(response)
 ```
 
 

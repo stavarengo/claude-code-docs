@@ -708,21 +708,6 @@ With the Responses API, you can provide input images in 3 different ways:
 
 Create a File
 
-```python
-from openai import OpenAI
-
-client = OpenAI()
-
-
-def create_file(file_path):
-    with open(file_path, "rb") as file_content:
-        result = client.files.create(
-            file=file_content,
-            purpose="vision",
-        )
-        return result.id
-```
-
 ```javascript
 import fs from "fs";
 import OpenAI from "openai";
@@ -739,10 +724,34 @@ async function createFile(filePath) {
 }
 ```
 
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+
+def create_file(file_path):
+    with open(file_path, "rb") as file_content:
+        result = client.files.create(
+            file=file_content,
+            purpose="vision",
+        )
+        return result.id
+```
+
 
 #### Create a base64 encoded image
 
 Create a base64 encoded image
+
+```javascript
+import fs from "fs";
+
+function encodeImage(filePath) {
+  const base64Image = fs.readFileSync(filePath, "base64");
+  return base64Image;
+}
+```
 
 ```python
 import base64
@@ -754,87 +763,8 @@ def encode_image(file_path):
     return base64_image
 ```
 
-```javascript
-import fs from "fs";
-
-function encodeImage(filePath) {
-  const base64Image = fs.readFileSync(filePath, "base64");
-  return base64Image;
-}
-```
-
 
 Edit an image
-
-```python
-from openai import OpenAI
-import base64
-
-client = OpenAI()
-
-
-def encode_image(file_path):
-    with open(file_path, "rb") as image_file:
-        return base64.b64encode(image_file.read()).decode("utf-8")
-
-
-def create_file(file_path):
-    with open(file_path, "rb") as file_content:
-        result = client.files.create(file=file_content, purpose="vision")
-    return result.id
-
-
-prompt = """Generate a photorealistic image of a gift basket on a white background
-labeled 'Relax & Unwind' with a ribbon and handwriting-like font,
-containing all the items in the reference pictures."""
-
-base64_image1 = encode_image("body-lotion.png")
-base64_image2 = encode_image("soap.png")
-file_id1 = create_file("bath-bomb.png")
-file_id2 = create_file("incense-kit.png")
-
-response = client.responses.create(
-    model="gpt-5.6",
-    input=[
-        {
-            "role": "user",
-            "content": [
-                {"type": "input_text", "text": prompt},
-                {
-                    "type": "input_image",
-                    "image_url": f"data:image/png;base64,{base64_image1}",
-                },
-                {
-                    "type": "input_image",
-                    "image_url": f"data:image/png;base64,{base64_image2}",
-                },
-                {
-                    "type": "input_image",
-                    "file_id": file_id1,
-                },
-                {
-                    "type": "input_image",
-                    "file_id": file_id2,
-                },
-            ],
-        }
-    ],
-    tools=[{"type": "image_generation"}],
-)
-
-image_generation_calls = [
-    output for output in response.output if output.type == "image_generation_call"
-]
-
-image_data = [output.result for output in image_generation_calls]
-
-if image_data:
-    image_base64 = image_data[0]
-    with open("gift-basket.png", "wb") as f:
-        f.write(base64.b64decode(image_base64))
-else:
-    print(response.output_text)
-```
 
 ```javascript
 import fs from "fs";
@@ -908,6 +838,76 @@ if (imageData.length > 0) {
 }
 ```
 
+```python
+from openai import OpenAI
+import base64
+
+client = OpenAI()
+
+
+def encode_image(file_path):
+    with open(file_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode("utf-8")
+
+
+def create_file(file_path):
+    with open(file_path, "rb") as file_content:
+        result = client.files.create(file=file_content, purpose="vision")
+    return result.id
+
+
+prompt = """Generate a photorealistic image of a gift basket on a white background
+labeled 'Relax & Unwind' with a ribbon and handwriting-like font,
+containing all the items in the reference pictures."""
+
+base64_image1 = encode_image("body-lotion.png")
+base64_image2 = encode_image("soap.png")
+file_id1 = create_file("bath-bomb.png")
+file_id2 = create_file("incense-kit.png")
+
+response = client.responses.create(
+    model="gpt-5.6",
+    input=[
+        {
+            "role": "user",
+            "content": [
+                {"type": "input_text", "text": prompt},
+                {
+                    "type": "input_image",
+                    "image_url": f"data:image/png;base64,{base64_image1}",
+                },
+                {
+                    "type": "input_image",
+                    "image_url": f"data:image/png;base64,{base64_image2}",
+                },
+                {
+                    "type": "input_image",
+                    "file_id": file_id1,
+                },
+                {
+                    "type": "input_image",
+                    "file_id": file_id2,
+                },
+            ],
+        }
+    ],
+    tools=[{"type": "image_generation"}],
+)
+
+image_generation_calls = [
+    output for output in response.output if output.type == "image_generation_call"
+]
+
+image_data = [output.result for output in image_generation_calls]
+
+if image_data:
+    image_base64 = image_data[0]
+    with open("gift-basket.png", "wb") as f:
+        f.write(base64.b64decode(image_base64))
+else:
+    print(response.output_text)
+```
+
 
   
 
@@ -917,37 +917,6 @@ if (imageData.length > 0) {
 Image API
 
     Edit an image
-
-```python
-import base64
-from openai import OpenAI
-
-client = OpenAI()
-
-prompt = """
-Generate a photorealistic image of a gift basket on a white background
-labeled 'Relax & Unwind' with a ribbon and handwriting-like font,
-containing all the items in the reference pictures.
-"""
-
-result = client.images.edit(
-    model="gpt-image-2",
-    image=[
-        open("body-lotion.png", "rb"),
-        open("bath-bomb.png", "rb"),
-        open("incense-kit.png", "rb"),
-        open("soap.png", "rb"),
-    ],
-    prompt=prompt,
-)
-
-image_base64 = result.data[0].b64_json
-image_bytes = base64.b64decode(image_base64)
-
-# Save the image to a file
-with open("gift-basket.png", "wb") as f:
-    f.write(image_bytes)
-```
 
 ```javascript
 import fs from "fs";
@@ -987,6 +956,37 @@ const response = await client.images.edit({
 const image_base64 = response.data[0].b64_json;
 const image_bytes = Buffer.from(image_base64, "base64");
 fs.writeFileSync("basket.png", image_bytes);
+```
+
+```python
+import base64
+from openai import OpenAI
+
+client = OpenAI()
+
+prompt = """
+Generate a photorealistic image of a gift basket on a white background
+labeled 'Relax & Unwind' with a ribbon and handwriting-like font,
+containing all the items in the reference pictures.
+"""
+
+result = client.images.edit(
+    model="gpt-image-2",
+    image=[
+        open("body-lotion.png", "rb"),
+        open("bath-bomb.png", "rb"),
+        open("incense-kit.png", "rb"),
+        open("soap.png", "rb"),
+    ],
+    prompt=prompt,
+)
+
+image_base64 = result.data[0].b64_json
+image_bytes = base64.b64decode(image_base64)
+
+# Save the image to a file
+with open("gift-basket.png", "wb") as f:
+    f.write(image_bytes)
 ```
 
 ```bash
@@ -1032,62 +1032,6 @@ If you provide multiple input images, the mask will be applied to the first imag
 Responses API
 
     Edit an image with a mask
-
-```python
-from openai import OpenAI
-import base64
-
-client = OpenAI()
-
-
-def create_file(file_path):
-    with open(file_path, "rb") as file_content:
-        result = client.files.create(file=file_content, purpose="vision")
-    return result.id
-
-
-fileId = create_file("sunlit_lounge.png")
-maskId = create_file("mask.png")
-
-response = client.responses.create(
-    model="gpt-5.6",
-    input=[
-        {
-            "role": "user",
-            "content": [
-                {
-                    "type": "input_text",
-                    "text": "generate an image of the same sunlit indoor lounge area with a pool but the pool should contain a flamingo",
-                },
-                {
-                    "type": "input_image",
-                    "file_id": fileId,
-                },
-            ],
-        },
-    ],
-    tools=[
-        {
-            "type": "image_generation",
-            "quality": "high",
-            "input_image_mask": {
-                "file_id": maskId,
-            },
-        },
-    ],
-)
-
-image_data = [
-    output.result
-    for output in response.output
-    if output.type == "image_generation_call"
-]
-
-if image_data:
-    image_base64 = image_data[0]
-    with open("lounge.png", "wb") as f:
-        f.write(base64.b64decode(image_base64))
-```
 
 ```javascript
 import fs from "fs";
@@ -1145,6 +1089,62 @@ if (imageData.length > 0) {
 }
 ```
 
+```python
+from openai import OpenAI
+import base64
+
+client = OpenAI()
+
+
+def create_file(file_path):
+    with open(file_path, "rb") as file_content:
+        result = client.files.create(file=file_content, purpose="vision")
+    return result.id
+
+
+fileId = create_file("sunlit_lounge.png")
+maskId = create_file("mask.png")
+
+response = client.responses.create(
+    model="gpt-5.6",
+    input=[
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "input_text",
+                    "text": "generate an image of the same sunlit indoor lounge area with a pool but the pool should contain a flamingo",
+                },
+                {
+                    "type": "input_image",
+                    "file_id": fileId,
+                },
+            ],
+        },
+    ],
+    tools=[
+        {
+            "type": "image_generation",
+            "quality": "high",
+            "input_image_mask": {
+                "file_id": maskId,
+            },
+        },
+    ],
+)
+
+image_data = [
+    output.result
+    for output in response.output
+    if output.type == "image_generation_call"
+]
+
+if image_data:
+    image_base64 = image_data[0]
+    with open("lounge.png", "wb") as f:
+        f.write(base64.b64decode(image_base64))
+```
+
   
 
   
@@ -1153,27 +1153,6 @@ if (imageData.length > 0) {
 Image API
 
     Edit an image with a mask
-
-```python
-from openai import OpenAI
-import base64
-
-client = OpenAI()
-
-result = client.images.edit(
-    model="gpt-image-2",
-    image=open("sunlit_lounge.png", "rb"),
-    mask=open("mask.png", "rb"),
-    prompt="A sunlit indoor lounge area with a pool containing a flamingo",
-)
-
-image_base64 = result.data[0].b64_json
-image_bytes = base64.b64decode(image_base64)
-
-# Save the image to a file
-with open("composition.png", "wb") as f:
-    f.write(image_bytes)
-```
 
 ```javascript
 import fs from "fs";
@@ -1196,6 +1175,27 @@ const rsp = await client.images.edit({
 const image_base64 = rsp.data[0].b64_json;
 const image_bytes = Buffer.from(image_base64, "base64");
 fs.writeFileSync("lounge.png", image_bytes);
+```
+
+```python
+from openai import OpenAI
+import base64
+
+client = OpenAI()
+
+result = client.images.edit(
+    model="gpt-image-2",
+    image=open("sunlit_lounge.png", "rb"),
+    mask=open("mask.png", "rb"),
+    prompt="A sunlit indoor lounge area with a pool containing a flamingo",
+)
+
+image_base64 = result.data[0].b64_json
+image_bytes = base64.b64decode(image_base64)
+
+# Save the image to a file
+with open("composition.png", "wb") as f:
+    f.write(image_bytes)
 ```
 
 ```bash

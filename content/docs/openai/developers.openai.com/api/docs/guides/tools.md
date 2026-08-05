@@ -37,28 +37,6 @@ response = client.responses.create(
 print(response.output_text)
 ```
 
-```bash
-curl "https://api.openai.com/v1/responses" \
-    -H "Content-Type: application/json" \
-    -H "Authorization: Bearer $OPENAI_API_KEY" \
-    -d '{
-        "model": "gpt-5.6",
-        "tools": [{"type": "web_search"}],
-        "input": "what was a positive news story from today?"
-}'
-```
-
-```bash
-openai responses create \
-  --model gpt-5.6 \
-  --raw-output \
-  --transform 'output.#(type=="message").content.0.text' <<'YAML'
-tools:
-  - type: web_search
-input: What was a positive news story from today?
-YAML
-```
-
 ```csharp
 using OpenAI.Responses;
 #pragma warning disable OPENAI001
@@ -91,6 +69,28 @@ response = openai.responses.create(
 puts(response.output_text)
 ```
 
+```bash
+curl "https://api.openai.com/v1/responses" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $OPENAI_API_KEY" \
+    -d '{
+        "model": "gpt-5.6",
+        "tools": [{"type": "web_search"}],
+        "input": "what was a positive news story from today?"
+}'
+```
+
+```bash
+openai responses create \
+  --model gpt-5.6 \
+  --raw-output \
+  --transform 'output.#(type=="message").content.0.text' <<'YAML'
+tools:
+  - type: web_search
+input: What was a positive news story from today?
+YAML
+```
+
   
 
   
@@ -99,19 +99,6 @@ puts(response.output_text)
 File search
 
     Search your files in a response
-
-```python
-from openai import OpenAI
-
-client = OpenAI()
-
-response = client.responses.create(
-    model="gpt-5.6",
-    input="What is deep research by OpenAI?",
-    tools=[{"type": "file_search", "vector_store_ids": ["<vector_store_id>"]}],
-)
-print(response)
-```
 
 ```javascript
 import OpenAI from "openai";
@@ -128,6 +115,19 @@ const response = await openai.responses.create({
   ],
 });
 console.log(response);
+```
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+response = client.responses.create(
+    model="gpt-5.6",
+    input="What is deep research by OpenAI?",
+    tools=[{"type": "file_search", "vector_store_ids": ["<vector_store_id>"]}],
+)
+print(response)
 ```
 
 ```csharp
@@ -177,6 +177,61 @@ puts(response)
 Tool search
 
     Load deferred tools at runtime
+
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+
+/** @type {OpenAI.Responses.NamespaceTool} */
+const crmNamespace = {
+  type: "namespace",
+  name: "crm",
+  description: "CRM tools for customer lookup and order management.",
+  tools: [
+    {
+      type: "function",
+      name: "get_customer_profile",
+      description: "Fetch a customer profile by customer ID.",
+      parameters: {
+        type: "object",
+        properties: {
+          customer_id: { type: "string" },
+        },
+        required: ["customer_id"],
+        additionalProperties: false,
+      },
+    },
+    {
+      type: "function",
+      name: "list_open_orders",
+      description: "List open orders for a customer ID.",
+      // highlight-start:subtle
+      defer_loading: true,
+      // highlight-end
+      parameters: {
+        type: "object",
+        properties: {
+          customer_id: { type: "string" },
+        },
+        required: ["customer_id"],
+        additionalProperties: false,
+      },
+    },
+  ],
+};
+
+const response = await client.responses.create({
+  model: "gpt-5.6",
+  input: "List open orders for customer CUST-12345.",
+  // highlight-start:subtle
+  tools: [crmNamespace, { type: "tool_search" }],
+  // highlight-end
+  parallel_tool_calls: false,
+});
+
+console.log(response.output);
+```
 
 ```python
 from openai import OpenAI
@@ -233,61 +288,6 @@ response = client.responses.create(
 )
 
 print(response.output)
-```
-
-```javascript
-import OpenAI from "openai";
-
-const client = new OpenAI();
-
-/** @type {OpenAI.Responses.NamespaceTool} */
-const crmNamespace = {
-  type: "namespace",
-  name: "crm",
-  description: "CRM tools for customer lookup and order management.",
-  tools: [
-    {
-      type: "function",
-      name: "get_customer_profile",
-      description: "Fetch a customer profile by customer ID.",
-      parameters: {
-        type: "object",
-        properties: {
-          customer_id: { type: "string" },
-        },
-        required: ["customer_id"],
-        additionalProperties: false,
-      },
-    },
-    {
-      type: "function",
-      name: "list_open_orders",
-      description: "List open orders for a customer ID.",
-      // highlight-start:subtle
-      defer_loading: true,
-      // highlight-end
-      parameters: {
-        type: "object",
-        properties: {
-          customer_id: { type: "string" },
-        },
-        required: ["customer_id"],
-        additionalProperties: false,
-      },
-    },
-  ],
-};
-
-const response = await client.responses.create({
-  model: "gpt-5.6",
-  input: "List open orders for customer CUST-12345.",
-  // highlight-start:subtle
-  tools: [crmNamespace, { type: "tool_search" }],
-  // highlight-end
-  parallel_tool_calls: false,
-});
-
-console.log(response.output);
 ```
 
   
@@ -420,37 +420,6 @@ Console.WriteLine(
 );
 ```
 
-```bash
-curl -X POST https://api.openai.com/v1/responses \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "gpt-5.6",
-    "input": [
-      {"role": "user", "content": "What is the weather like in Paris today?"}
-    ],
-    "tools": [
-      {
-        "type": "function",
-        "name": "get_weather",
-        "description": "Get current temperature for a given location.",
-        "parameters": {
-          "type": "object",
-          "properties": {
-            "location": {
-              "type": "string",
-              "description": "City and country e.g. Bogotá, Colombia"
-            }
-          },
-          "required": ["location"],
-          "additionalProperties": false
-        },
-        "strict": true
-      }
-    ]
-  }'
-```
-
 ```ruby
 require "openai"
 
@@ -485,6 +454,37 @@ response = openai.responses.create(
 )
 
 puts(response.output.first.to_json)
+```
+
+```bash
+curl -X POST https://api.openai.com/v1/responses \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-5.6",
+    "input": [
+      {"role": "user", "content": "What is the weather like in Paris today?"}
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "name": "get_weather",
+        "description": "Get current temperature for a given location.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "location": {
+              "type": "string",
+              "description": "City and country e.g. Bogotá, Colombia"
+            }
+          },
+          "required": ["location"],
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    ]
+  }'
 ```
 
   

@@ -197,95 +197,6 @@ Post-processor examples
 
 Citation parsing helpers
 
-```python
-import re
-from typing import Iterable, TypedDict
-
-CITATION_START = "\ue200"
-CITATION_DELIMITER = "\ue202"
-CITATION_STOP = "\ue201"
-
-SOURCE_ID_RE = re.compile(r"^[A-Za-z0-9_-]+$")
-LINE_LOCATOR_RE = re.compile(r"^L\d+(?:-L\d+)?$")
-
-
-class Citation(TypedDict):
-    raw: str
-    family: str
-    source_ids: list[str]
-    locator: str | None
-    start: int
-    end: int
-
-
-def extract_citations(
-    text: str,
-    *,
-    families: tuple[str, ...] = ("cite",),
-) -> list[Citation]:
-    """
-    Extract citations such as:
-
-      {CITATION_START}cite{CITATION_DELIMITER}turn0file0{CITATION_STOP}
-      {CITATION_START}cite{CITATION_DELIMITER}turn0file0{CITATION_DELIMITER}L8-L13{CITATION_STOP}
-      {CITATION_START}cite{CITATION_DELIMITER}turn0search0{CITATION_DELIMITER}turn1news2{CITATION_STOP}
-    """
-    if not families:
-        return []
-
-    family_pattern = "|".join(re.escape(family) for family in families)
-    token_re = re.compile(
-        rf"{re.escape(CITATION_START)}"
-        rf"(?P<family>{family_pattern})"
-        rf"{re.escape(CITATION_DELIMITER)}"
-        rf"(?P<body>.*?)"
-        rf"{re.escape(CITATION_STOP)}",
-        re.DOTALL,
-    )
-
-    citations: list[Citation] = []
-
-    for match in token_re.finditer(text):
-        parts = [part.strip() for part in match.group("body").split(CITATION_DELIMITER)]
-        parts = [part for part in parts if part]
-
-        if not parts:
-            continue
-
-        locator = None
-        if LINE_LOCATOR_RE.fullmatch(parts[-1]):
-            locator = parts.pop()
-
-        if not parts or any(not SOURCE_ID_RE.fullmatch(part) for part in parts):
-            continue
-
-        citations.append(
-            {
-                "raw": match.group(0),
-                "family": match.group("family"),
-                "source_ids": parts,
-                "locator": locator,
-                "start": match.start(),
-                "end": match.end(),
-            }
-        )
-
-    return citations
-
-
-def strip_citations(text: str, citations: Iterable[Citation]) -> str:
-    """
-    Remove raw citation markers from text using offsets returned by
-    extract_citations().
-    """
-    clean_text = text
-
-    for citation in sorted(citations, key=lambda item: item["start"], reverse=True):
-        clean_text = clean_text[: citation["start"]] + clean_text[citation["end"] :]
-
-    return clean_text
-```
-
 ```javascript
 const CITATION_START = "\uE200";
 const CITATION_DELIMITER = "\uE202";
@@ -384,6 +295,95 @@ function stripCitations(text, citations) {
 
   return cleanText;
 }
+```
+
+```python
+import re
+from typing import Iterable, TypedDict
+
+CITATION_START = "\ue200"
+CITATION_DELIMITER = "\ue202"
+CITATION_STOP = "\ue201"
+
+SOURCE_ID_RE = re.compile(r"^[A-Za-z0-9_-]+$")
+LINE_LOCATOR_RE = re.compile(r"^L\d+(?:-L\d+)?$")
+
+
+class Citation(TypedDict):
+    raw: str
+    family: str
+    source_ids: list[str]
+    locator: str | None
+    start: int
+    end: int
+
+
+def extract_citations(
+    text: str,
+    *,
+    families: tuple[str, ...] = ("cite",),
+) -> list[Citation]:
+    """
+    Extract citations such as:
+
+      {CITATION_START}cite{CITATION_DELIMITER}turn0file0{CITATION_STOP}
+      {CITATION_START}cite{CITATION_DELIMITER}turn0file0{CITATION_DELIMITER}L8-L13{CITATION_STOP}
+      {CITATION_START}cite{CITATION_DELIMITER}turn0search0{CITATION_DELIMITER}turn1news2{CITATION_STOP}
+    """
+    if not families:
+        return []
+
+    family_pattern = "|".join(re.escape(family) for family in families)
+    token_re = re.compile(
+        rf"{re.escape(CITATION_START)}"
+        rf"(?P<family>{family_pattern})"
+        rf"{re.escape(CITATION_DELIMITER)}"
+        rf"(?P<body>.*?)"
+        rf"{re.escape(CITATION_STOP)}",
+        re.DOTALL,
+    )
+
+    citations: list[Citation] = []
+
+    for match in token_re.finditer(text):
+        parts = [part.strip() for part in match.group("body").split(CITATION_DELIMITER)]
+        parts = [part for part in parts if part]
+
+        if not parts:
+            continue
+
+        locator = None
+        if LINE_LOCATOR_RE.fullmatch(parts[-1]):
+            locator = parts.pop()
+
+        if not parts or any(not SOURCE_ID_RE.fullmatch(part) for part in parts):
+            continue
+
+        citations.append(
+            {
+                "raw": match.group(0),
+                "family": match.group("family"),
+                "source_ids": parts,
+                "locator": locator,
+                "start": match.start(),
+                "end": match.end(),
+            }
+        )
+
+    return citations
+
+
+def strip_citations(text: str, citations: Iterable[Citation]) -> str:
+    """
+    Remove raw citation markers from text using offsets returned by
+    extract_citations().
+    """
+    clean_text = text
+
+    for citation in sorted(citations, key=lambda item: item["start"], reverse=True):
+        clean_text = clean_text[: citation["start"]] + clean_text[citation["end"] :]
+
+    return clean_text
 ```
 
 

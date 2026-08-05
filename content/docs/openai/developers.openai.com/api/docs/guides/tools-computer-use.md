@@ -125,28 +125,6 @@ Create a helper for shelling into the container:
 
 Execute commands on the container
 
-```python
-import subprocess
-
-
-def docker_exec(cmd: str, container_name: str, decode: bool = True):
-    safe_cmd = cmd.replace('"', '\\"')
-    docker_cmd = f'docker exec {container_name} sh -c "{safe_cmd}"'
-    output = subprocess.check_output(docker_cmd, shell=True)
-    if decode:
-        return output.decode("utf-8", errors="ignore")
-    return output
-
-
-class VM:
-    def __init__(self, display: str, container_name: str):
-        self.display = display
-        self.container_name = container_name
-
-
-vm = VM(display=":99", container_name="cua-image")
-```
-
 ```javascript
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
@@ -184,6 +162,28 @@ const vm = {
   display: ":99",
   containerName: "cua-image",
 };
+```
+
+```python
+import subprocess
+
+
+def docker_exec(cmd: str, container_name: str, decode: bool = True):
+    safe_cmd = cmd.replace('"', '\\"')
+    docker_cmd = f'docker exec {container_name} sh -c "{safe_cmd}"'
+    output = subprocess.check_output(docker_cmd, shell=True)
+    if decode:
+        return output.decode("utf-8", errors="ignore")
+    return output
+
+
+class VM:
+    def __init__(self, display: str, container_name: str):
+        self.display = display
+        self.container_name = container_name
+
+
+vm = VM(display=":99", container_name="cua-image")
 ```
 
 

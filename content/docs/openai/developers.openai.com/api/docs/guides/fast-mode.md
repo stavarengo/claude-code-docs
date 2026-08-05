@@ -17,17 +17,6 @@ To opt in to Fast mode for an individual request, set the [`service_tier` parame
 
 Create a response with Fast mode
 
-```bash
-curl https://api.openai.com/v1/responses \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "gpt-5.6-sol",
-    "input": "What does 'fit check for my napalm era' mean?",
-    "service_tier": "fast"
-  }'
-```
-
 ```javascript
 import OpenAI from "openai";
 
@@ -53,6 +42,17 @@ response = client.responses.create(
     service_tier="fast",
 )
 print(response)
+```
+
+```bash
+curl https://api.openai.com/v1/responses \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-5.6-sol",
+    "input": "What does 'fit check for my napalm era' mean?",
+    "service_tier": "fast"
+  }'
 ```
 
 

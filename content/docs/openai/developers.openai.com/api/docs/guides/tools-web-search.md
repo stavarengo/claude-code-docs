@@ -51,28 +51,6 @@ response = client.responses.create(
 print(response.output_text)
 ```
 
-```bash
-curl "https://api.openai.com/v1/responses" \
-    -H "Content-Type: application/json" \
-    -H "Authorization: Bearer $OPENAI_API_KEY" \
-    -d '{
-        "model": "gpt-5.6",
-        "tools": [{"type": "web_search"}],
-        "input": "what was a positive news story from today?"
-}'
-```
-
-```bash
-openai responses create \
-  --model gpt-5.6 \
-  --raw-output \
-  --transform 'output.#(type=="message").content.0.text' <<'YAML'
-tools:
-  - type: web_search
-input: What was a positive news story from today?
-YAML
-```
-
 ```csharp
 using OpenAI.Responses;
 #pragma warning disable OPENAI001
@@ -103,6 +81,28 @@ response = openai.responses.create(
 )
 
 puts(response.output_text)
+```
+
+```bash
+curl "https://api.openai.com/v1/responses" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $OPENAI_API_KEY" \
+    -d '{
+        "model": "gpt-5.6",
+        "tools": [{"type": "web_search"}],
+        "input": "what was a positive news story from today?"
+}'
+```
+
+```bash
+openai responses create \
+  --model gpt-5.6 \
+  --raw-output \
+  --transform 'output.#(type=="message").content.0.text' <<'YAML'
+tools:
+  - type: web_search
+input: What was a positive news story from today?
+YAML
 ```
 
 
@@ -179,6 +179,23 @@ When displaying web results or information contained in web results to end
 
 Set search context size
 
+```javascript
+import OpenAI from "openai";
+const openai = new OpenAI();
+
+const response = await openai.responses.create({
+  model: "gpt-5.6",
+  tools: [
+    {
+      type: "web_search",
+      search_context_size: "low",
+    },
+  ],
+  input: "What movie won best picture in 2025?",
+});
+console.log(response.output_text);
+```
+
 ```python
 from openai import OpenAI
 
@@ -220,23 +237,6 @@ ResponseResult response = await client.CreateResponseAsync(options);
 Console.WriteLine(response.GetOutputText());
 ```
 
-```javascript
-import OpenAI from "openai";
-const openai = new OpenAI();
-
-const response = await openai.responses.create({
-  model: "gpt-5.6",
-  tools: [
-    {
-      type: "web_search",
-      search_context_size: "low",
-    },
-  ],
-  input: "What movie won best picture in 2025?",
-});
-console.log(response.output_text);
-```
-
 ```bash
 curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
@@ -270,23 +270,6 @@ This parameter applies only to the hosted Responses API `web_search` tool with G
 
 
 Run longer web searches
-
-```bash
-curl "https://api.openai.com/v1/responses" \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -d '{
-    "model": "gpt-5.6",
-    "reasoning": { "effort": "xhigh" },
-    "tools": [
-      {
-        "type": "web_search",
-        "return_token_budget": "unlimited"
-      }
-    ],
-    "input": "Research the economic impact of semaglutide on global healthcare systems.\n\nDo:\n- Include specific figures, trends, statistics, and measurable outcomes.\n- Prioritize reliable, up-to-date sources: peer-reviewed research, health organizations (e.g., WHO, CDC), regulatory agencies, or pharmaceutical earnings reports.\n- Include inline citations and return all source metadata.\n\nBe analytical, avoid generalities, and ensure that each section supports data-backed reasoning that could inform healthcare policy or financial modeling."
-  }'
-```
 
 ```javascript
 import OpenAI from "openai";
@@ -343,6 +326,23 @@ Be analytical, avoid generalities, and ensure that each section supports data-ba
 print(response.output_text)
 ```
 
+```bash
+curl "https://api.openai.com/v1/responses" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -d '{
+    "model": "gpt-5.6",
+    "reasoning": { "effort": "xhigh" },
+    "tools": [
+      {
+        "type": "web_search",
+        "return_token_budget": "unlimited"
+      }
+    ],
+    "input": "Research the economic impact of semaglutide on global healthcare systems.\n\nDo:\n- Include specific figures, trends, statistics, and measurable outcomes.\n- Prioritize reliable, up-to-date sources: peer-reviewed research, health organizations (e.g., WHO, CDC), regulatory agencies, or pharmaceutical earnings reports.\n- Include inline citations and return all source metadata.\n\nBe analytical, avoid generalities, and ensure that each section supports data-backed reasoning that could inform healthcare policy or financial modeling."
+  }'
+```
+
 
 
 
@@ -358,38 +358,6 @@ To view all URLs retrieved during a web search, use the `sources` field. Unlike 
 The number of sources is often greater than the number of citations. Real-time third-party feeds are also surfaced here and are labeled as `oai-sports`, `oai-weather`, or `oai-finance`. The sources field is available with both the `web_search` and `web_search_preview` tools.
 
 List sources
-
-```bash
-curl "https://api.openai.com/v1/responses" \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -d '{
-    "model": "gpt-5.6",
-    "reasoning": { "effort": "low" },
-    "tools": [
-      {
-        "type": "web_search",
-        "filters": {
-          "allowed_domains": [
-            "pubmed.ncbi.nlm.nih.gov",
-            "clinicaltrials.gov",
-            "www.who.int",
-            "www.cdc.gov",
-            "www.fda.gov"
-          ],
-          "blocked_domains": [
-            "reddit.com",
-            "quora.com",
-            "wikipedia.org"
-          ]
-        }
-      }
-    ],
-    "tool_choice": "auto",
-    "include": ["web_search_call.action.sources"],
-    "input": "Please perform a web search on how semaglutide is used in the treatment of diabetes."
-  }'
-```
 
 ```javascript
 import OpenAI from "openai";
@@ -457,6 +425,38 @@ response = client.responses.create(
 print(response.output_text)
 ```
 
+```bash
+curl "https://api.openai.com/v1/responses" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -d '{
+    "model": "gpt-5.6",
+    "reasoning": { "effort": "low" },
+    "tools": [
+      {
+        "type": "web_search",
+        "filters": {
+          "allowed_domains": [
+            "pubmed.ncbi.nlm.nih.gov",
+            "clinicaltrials.gov",
+            "www.who.int",
+            "www.cdc.gov",
+            "www.fda.gov"
+          ],
+          "blocked_domains": [
+            "reddit.com",
+            "quora.com",
+            "wikipedia.org"
+          ]
+        }
+      }
+    ],
+    "tool_choice": "auto",
+    "include": ["web_search_call.action.sources"],
+    "input": "Please perform a web search on how semaglutide is used in the treatment of diabetes."
+  }'
+```
+
 
 
 
@@ -476,28 +476,6 @@ Use `image_settings` to control image-specific behavior:
 To inspect raw image results, include `web_search_call.results` in the request and read `web_search_call.results[]` from the response. Image results are returned separately from the assistant message, so parse the `web_search_call` item directly when your application needs the URLs or metadata.
 
 Search for images
-
-```bash
-curl "https://api.openai.com/v1/responses" \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -d '{
-    "model": "gpt-5.6",
-    "reasoning": { "effort": "low" },
-    "tools": [
-      {
-        "type": "web_search",
-        "search_content_types": ["image", "text"],
-        "image_settings": {
-          "max_results": 3,
-          "caption": true
-        }
-      }
-    ],
-    "include": ["web_search_call.results"],
-    "input": "Search for recent images and supporting text sources about the Golden Gate Bridge at sunset."
-  }'
-```
 
 ```javascript
 import OpenAI from "openai";
@@ -549,6 +527,28 @@ response = client.responses.create(
 print(response.output)
 ```
 
+```bash
+curl "https://api.openai.com/v1/responses" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -d '{
+    "model": "gpt-5.6",
+    "reasoning": { "effort": "low" },
+    "tools": [
+      {
+        "type": "web_search",
+        "search_content_types": ["image", "text"],
+        "image_settings": {
+          "max_results": 3,
+          "caption": true
+        }
+      }
+    ],
+    "include": ["web_search_call.results"],
+    "input": "Search for recent images and supporting text sources about the Golden Gate Bridge at sunset."
+  }'
+```
+
 
 Each `image_result` includes:
 
@@ -593,6 +593,28 @@ Note that user location is not supported for deep research models using web
 
 
 Customizing user location
+
+```javascript
+import OpenAI from "openai";
+const openai = new OpenAI();
+
+const response = await openai.responses.create({
+  model: "gpt-5.6",
+  tools: [
+    {
+      type: "web_search",
+      user_location: {
+        type: "approximate",
+        country: "GB",
+        city: "London",
+        region: "London",
+      },
+    },
+  ],
+  input: "What are the best restaurants near me?",
+});
+console.log(response.output_text);
+```
 
 ```python
 from openai import OpenAI
@@ -642,28 +664,6 @@ options.InputItems.Add(
 ResponseResult response = await client.CreateResponseAsync(options);
 
 Console.WriteLine(response.GetOutputText());
-```
-
-```javascript
-import OpenAI from "openai";
-const openai = new OpenAI();
-
-const response = await openai.responses.create({
-  model: "gpt-5.6",
-  tools: [
-    {
-      type: "web_search",
-      user_location: {
-        type: "approximate",
-        country: "GB",
-        city: "London",
-        region: "London",
-      },
-    },
-  ],
-  input: "What are the best restaurants near me?",
-});
-console.log(response.output_text);
 ```
 
 ```bash

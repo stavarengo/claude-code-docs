@@ -56,20 +56,6 @@ With reasoning effort set to `none`, prompting is important. To improve the mode
 
 Reasoning effort set to none
 
-```bash
-curl --request POST \
-  --url https://api.openai.com/v1/responses \
-  --header "Authorization: Bearer $OPENAI_API_KEY" \
-  --header 'Content-type: application/json' \
-  --data '{
-        "model": "gpt-5.2",
-        "input": "Think carefully and outline your steps before answering. How much gold would it take to coat the Statue of Liberty in a 1mm layer?",
-        "reasoning": {
-                "effort": "none"
-        }
-}'
-```
-
 ```javascript
 import OpenAI from "openai";
 const openai = new OpenAI();
@@ -100,6 +86,20 @@ response = client.responses.create(
 print(response)
 ```
 
+```bash
+curl --request POST \
+  --url https://api.openai.com/v1/responses \
+  --header "Authorization: Bearer $OPENAI_API_KEY" \
+  --header 'Content-type: application/json' \
+  --data '{
+        "model": "gpt-5.2",
+        "input": "Think carefully and outline your steps before answering. How much gold would it take to coat the Statue of Liberty in a 1mm layer?",
+        "reasoning": {
+                "effort": "none"
+        }
+}'
+```
+
 
 ### Verbosity
 
@@ -113,20 +113,6 @@ GPT-5 made this option configurable as one of `high`, `medium`, or `low`. With G
 When generating code with GPT-5.2, `medium` and `high` verbosity levels yield longer, more structured code with inline explanations, while `low` verbosity produces shorter, more concise code with minimal commentary.
 
 Control verbosity
-
-```bash
-curl --request POST \
-  --url https://api.openai.com/v1/responses \
-  --header "Authorization: Bearer $OPENAI_API_KEY" \
-  --header 'Content-type: application/json' \
-  --data '{
-  "model": "gpt-5.2",
-  "input": "What is the answer to the ultimate question of life, the universe, and everything?",
-  "text": {
-    "verbosity": "low"
-  }
-}'
-```
 
 ```javascript
 import OpenAI from "openai";
@@ -156,6 +142,20 @@ response = client.responses.create(
 )
 
 print(response)
+```
+
+```bash
+curl --request POST \
+  --url https://api.openai.com/v1/responses \
+  --header "Authorization: Bearer $OPENAI_API_KEY" \
+  --header 'Content-type: application/json' \
+  --data '{
+  "model": "gpt-5.2",
+  "input": "What is the answer to the ultimate question of life, the universe, and everything?",
+  "text": {
+    "verbosity": "low"
+  }
+}'
 ```
 
 

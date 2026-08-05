@@ -23,17 +23,17 @@ To get started, creating an Assistant only requires specifying the `model` to us
 
 For example, to create an Assistant that can create data visualization based on a `.csv` file, first upload a file.
 
-```python
-file = client.files.create(
-    file=open("revenue-forecast.csv", "rb"), purpose="assistants"
-)
-```
-
 ```javascript
 const file = await openai.files.create({
   file: fs.createReadStream("revenue-forecast.csv"),
   purpose: "assistants",
 });
+```
+
+```python
+file = client.files.create(
+    file=open("revenue-forecast.csv", "rb"), purpose="assistants"
+)
 ```
 
 ```bash
@@ -45,16 +45,6 @@ curl https://api.openai.com/v1/files \
 
 
 Then, create the Assistant with the `code_interpreter` tool enabled and provide the file as a resource to the tool.
-
-```python
-assistant = client.beta.assistants.create(
-    name="Data visualizer",
-    description="You are great at creating beautiful data visualizations. You analyze data present in .csv files, understand trends, and come up with data visualizations relevant to those trends. You also share a brief text summary of the trends observed.",
-    model="gpt-4o",
-    tools=[{"type": "code_interpreter"}],
-    tool_resources={"code_interpreter": {"file_ids": [file.id]}},
-)
-```
 
 ```javascript
 const assistant = await openai.beta.assistants.create({
@@ -69,6 +59,16 @@ const assistant = await openai.beta.assistants.create({
     },
   },
 });
+```
+
+```python
+assistant = client.beta.assistants.create(
+    name="Data visualizer",
+    description="You are great at creating beautiful data visualizations. You analyze data present in .csv files, understand trends, and come up with data visualizations relevant to those trends. You also share a brief text summary of the trends observed.",
+    model="gpt-4o",
+    tools=[{"type": "code_interpreter"}],
+    tool_resources={"code_interpreter": {"file_ids": [file.id]}},
+)
 ```
 
 ```bash
@@ -100,20 +100,6 @@ Threads and Messages represent a conversation session between an Assistant and a
 
 You can create a Thread with an initial list of Messages like this:
 
-```python
-thread = client.beta.threads.create(
-    messages=[
-        {
-            "role": "user",
-            "content": "Create 3 data visualizations based on the trends in this file.",
-            "attachments": [
-                {"file_id": file.id, "tools": [{"type": "code_interpreter"}]}
-            ],
-        }
-    ]
-)
-```
-
 ```javascript
 const thread = await openai.beta.threads.create({
   messages: [
@@ -129,6 +115,20 @@ const thread = await openai.beta.threads.create({
     },
   ],
 });
+```
+
+```python
+thread = client.beta.threads.create(
+    messages=[
+        {
+            "role": "user",
+            "content": "Create 3 data visualizations based on the trends in this file.",
+            "attachments": [
+                {"file_id": file.id, "tools": [{"type": "code_interpreter"}]}
+            ],
+        }
+    ]
+)
 ```
 
 ```bash
@@ -161,30 +161,6 @@ Message content can contain either external image URLs or File IDs uploaded via 
 
 Tools cannot access image content unless specified. To pass image files to Code Interpreter, add the file ID in the message `attachments` list to allow the tool to read and analyze the input. Image URLs cannot be downloaded in Code Interpreter today.
 
-```python
-file = client.files.create(file=open("myimage.png", "rb"), purpose="vision")
-thread = client.beta.threads.create(
-    messages=[
-        {
-            "role": "user",
-            "content": [
-                {
-                    "type": "text",
-                    "text": "What is the difference between these images?",
-                },
-                {
-                    "type": "image_url",
-                    "image_url": {
-                        "url": "https://openai-documentation.vercel.app/images/cat_and_otter.png"
-                    },
-                },
-                {"type": "image_file", "image_file": {"file_id": file.id}},
-            ],
-        }
-    ]
-)
-```
-
 ```javascript
 import fs from "fs";
 
@@ -215,6 +191,30 @@ const thread = await openai.beta.threads.create({
     },
   ],
 });
+```
+
+```python
+file = client.files.create(file=open("myimage.png", "rb"), purpose="vision")
+thread = client.beta.threads.create(
+    messages=[
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "What is the difference between these images?",
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": "https://openai-documentation.vercel.app/images/cat_and_otter.png"
+                    },
+                },
+                {"type": "image_file", "image_file": {"file_id": file.id}},
+            ],
+        }
+    ]
+)
 ```
 
 ```bash
@@ -261,26 +261,6 @@ By controlling the `detail` parameter, which has three options, `low`, `high`, o
 - `low` will enable the "low res" mode. The model will receive a low-res 512px x 512px version of the image, and represent the image with a budget of 85 tokens. This allows the API to return faster responses and consume fewer input tokens for use cases that do not require high detail.
 - `high` will enable "high res" mode, which first allows the model to see the low res image and then creates detailed crops of input images based on the input image size. Use the [pricing calculator](https://openai.com/api/pricing/) to see token counts for various image sizes.
 
-```python
-thread = client.beta.threads.create(
-    messages=[
-        {
-            "role": "user",
-            "content": [
-                {"type": "text", "text": "What is this an image of?"},
-                {
-                    "type": "image_url",
-                    "image_url": {
-                        "url": "https://openai-documentation.vercel.app/images/cat_and_otter.png",
-                        "detail": "high",
-                    },
-                },
-            ],
-        }
-    ]
-)
-```
-
 ```javascript
 const thread = await openai.beta.threads.create({
   messages: [
@@ -302,6 +282,26 @@ const thread = await openai.beta.threads.create({
     },
   ],
 });
+```
+
+```python
+thread = client.beta.threads.create(
+    messages=[
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": "What is this an image of?"},
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": "https://openai-documentation.vercel.app/images/cat_and_otter.png",
+                        "detail": "high",
+                    },
+                },
+            ],
+        }
+    ]
+)
 ```
 
 ```bash
@@ -415,17 +415,17 @@ message_content.value += "\n" + "\n".join(citations)
 
 When you have all the context you need from your user in the Thread, you can run the Thread with an Assistant of your choice.
 
+```javascript
+const run = await openai.beta.threads.runs.create(thread.id, {
+  assistant_id: assistant.id,
+});
+```
+
 ```python
 run = client.beta.threads.runs.create(
     thread_id=thread.id,
     assistant_id=assistant.id,
 )
-```
-
-```javascript
-const run = await openai.beta.threads.runs.create(thread.id, {
-  assistant_id: assistant.id,
-});
 ```
 
 ```bash
@@ -441,6 +441,15 @@ curl https://api.openai.com/v1/threads/THREAD_ID/runs \
 
 By default, a Run will use the `model` and `tools` configuration specified in Assistant object, but you can override most of these when creating the Run for added flexibility:
 
+```javascript
+const run = await openai.beta.threads.runs.create(thread.id, {
+  assistant_id: assistant.id,
+  model: "gpt-4o",
+  instructions: "New instructions that override the Assistant instructions",
+  tools: [{ type: "code_interpreter" }, { type: "file_search" }],
+});
+```
+
 ```python
 run = client.beta.threads.runs.create(
     thread_id=thread.id,
@@ -449,15 +458,6 @@ run = client.beta.threads.runs.create(
     instructions="New instructions that override the Assistant instructions",
     tools=[{"type": "code_interpreter"}, {"type": "file_search"}],
 )
-```
-
-```javascript
-const run = await openai.beta.threads.runs.create(thread.id, {
-  assistant_id: assistant.id,
-  model: "gpt-4o",
-  instructions: "New instructions that override the Assistant instructions",
-  tools: [{ type: "code_interpreter" }, { type: "file_search" }],
-});
 ```
 
 ```bash

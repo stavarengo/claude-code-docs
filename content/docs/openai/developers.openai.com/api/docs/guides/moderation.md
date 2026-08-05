@@ -27,36 +27,6 @@ Set `moderation.model` when you create a response:
 
 Generate a response with moderation scores
 
-```python
-from openai import OpenAI
-
-client = OpenAI()
-
-response = client.responses.create(
-    model="gpt-5.6",
-    input=[
-        {
-            "role": "user",
-            "content": (
-                "A user asks for instructions to make a harmful weapon. "
-                "Draft a brief refusal and offer a safer alternative."
-            ),
-        }
-    ],
-    moderation={"model": "omni-moderation-latest"},
-)
-
-input_moderation = response.moderation.input
-output_moderation = response.moderation.output
-if input_moderation.type == "error":
-    raise RuntimeError(input_moderation.message)
-if output_moderation.type == "error":
-    raise RuntimeError(output_moderation.message)
-
-print(input_moderation.flagged)
-print(output_moderation.flagged)
-```
-
 ```javascript
 import OpenAI from "openai";
 
@@ -87,6 +57,36 @@ console.log(inputModeration.flagged);
 console.log(outputModeration.flagged);
 ```
 
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+response = client.responses.create(
+    model="gpt-5.6",
+    input=[
+        {
+            "role": "user",
+            "content": (
+                "A user asks for instructions to make a harmful weapon. "
+                "Draft a brief refusal and offer a safer alternative."
+            ),
+        }
+    ],
+    moderation={"model": "omni-moderation-latest"},
+)
+
+input_moderation = response.moderation.input
+output_moderation = response.moderation.output
+if input_moderation.type == "error":
+    raise RuntimeError(input_moderation.message)
+if output_moderation.type == "error":
+    raise RuntimeError(output_moderation.message)
+
+print(input_moderation.flagged)
+print(output_moderation.flagged)
+```
+
 
 The Responses API returns an input `moderation_result` object at `response.moderation.input` and an output `moderation_result` object at `response.moderation.output`.
 
@@ -114,6 +114,18 @@ Moderate text inputs
 
 Get classification information for a text input
 
+```javascript
+import OpenAI from "openai";
+const openai = new OpenAI();
+
+const moderation = await openai.moderations.create({
+  model: "omni-moderation-latest",
+  input: "...text to classify goes here...",
+});
+
+console.log(moderation);
+```
+
 ```python
 from openai import OpenAI
 
@@ -125,18 +137,6 @@ response = client.moderations.create(
 )
 
 print(response)
-```
-
-```javascript
-import OpenAI from "openai";
-const openai = new OpenAI();
-
-const moderation = await openai.moderations.create({
-  model: "omni-moderation-latest",
-  input: "...text to classify goes here...",
-});
-
-console.log(moderation);
 ```
 
 ```bash
@@ -162,6 +162,28 @@ Moderate images and text
 
 Get classification information for image and text input
 
+```javascript
+import OpenAI from "openai";
+const openai = new OpenAI();
+
+const moderation = await openai.moderations.create({
+  model: "omni-moderation-latest",
+  input: [
+    { type: "text", text: "...text to classify goes here..." },
+    {
+      type: "image_url",
+      image_url: {
+        url: "https://example.com/image.png",
+        // You can also use a Base64 encoded image URL.
+        // url: "data:image/jpeg;base64,abcdefg...",
+      },
+    },
+  ],
+});
+
+console.log(moderation);
+```
+
 ```python
 from openai import OpenAI
 
@@ -183,28 +205,6 @@ response = client.moderations.create(
 )
 
 print(response)
-```
-
-```javascript
-import OpenAI from "openai";
-const openai = new OpenAI();
-
-const moderation = await openai.moderations.create({
-  model: "omni-moderation-latest",
-  input: [
-    { type: "text", text: "...text to classify goes here..." },
-    {
-      type: "image_url",
-      image_url: {
-        url: "https://example.com/image.png",
-        // You can also use a Base64 encoded image URL.
-        // url: "data:image/jpeg;base64,abcdefg...",
-      },
-    },
-  ],
-});
-
-console.log(moderation);
 ```
 
 ```bash

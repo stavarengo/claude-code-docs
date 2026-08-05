@@ -151,29 +151,6 @@ If you are not using functions or multimodal inputs, simple message inputs are c
 
 Reuse simple message input
 
-```bash
-INPUT='[
-  { "role": "system", "content": "You are a helpful assistant." },
-  { "role": "user", "content": "Hello!" }
-]'
-
-curl -s https://api.openai.com/v1/chat/completions \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -d "{
-    \"model\": \"gpt-5.6\",
-    \"messages\": $INPUT
-  }"
-
-curl -s https://api.openai.com/v1/responses \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -d "{
-    \"model\": \"gpt-5.6\",
-    \"input\": $INPUT
-  }"
-```
-
 ```javascript
 /** @type {OpenAI.ChatCompletionMessageParam[] & OpenAI.Responses.ResponseInput} */
 const context = [
@@ -201,6 +178,29 @@ context = [
 completion = client.chat.completions.create(model="gpt-5.6", messages=context)
 
 response = client.responses.create(model="gpt-5.6", input=context)
+```
+
+```bash
+INPUT='[
+  { "role": "system", "content": "You are a helpful assistant." },
+  { "role": "user", "content": "Hello!" }
+]'
+
+curl -s https://api.openai.com/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -d "{
+    \"model\": \"gpt-5.6\",
+    \"messages\": $INPUT
+  }"
+
+curl -s https://api.openai.com/v1/responses \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -d "{
+    \"model\": \"gpt-5.6\",
+    \"input\": $INPUT
+  }"
 ```
 
 
@@ -380,25 +380,6 @@ Responses
     input of another.
     Multi-turn conversation
 
-```python
-context = [{"role": "user", "content": "What is the capital of France?"}]
-res1 = client.responses.create(
-    model="gpt-5.6",
-    input=context,
-)
-
-# Append the first response's output to context
-context += res1.output
-
-# Add the next user message
-context += [{"role": "user", "content": "And its population?"}]
-
-res2 = client.responses.create(
-    model="gpt-5.6",
-    input=context,
-)
-```
-
 ```javascript
 /** @type {OpenAI.Responses.ResponseInput} */
 let context = [{ role: "user", content: "What is the capital of France?" }];
@@ -418,6 +399,25 @@ const res2 = await client.responses.create({
   model: "gpt-5.6",
   input: context,
 });
+```
+
+```python
+context = [{"role": "user", "content": "What is the capital of France?"}]
+res1 = client.responses.create(
+    model="gpt-5.6",
+    input=context,
+)
+
+# Append the first response's output to context
+context += res1.output
+
+# Add the next user message
+context += [{"role": "user", "content": "And its population?"}]
+
+res2 = client.responses.create(
+    model="gpt-5.6",
+    input=context,
+)
 ```
 
     You can also use `previous_response_id` to reference the previous response
@@ -545,6 +545,75 @@ Chat Completions
 
     Structured Outputs
 
+```javascript
+const completion = await openai.chat.completions.create({
+  model: "gpt-5.6",
+  messages: [
+    {
+      role: "user",
+      content: "Jane, 54 years old",
+    },
+  ],
+  response_format: {
+    type: "json_schema",
+    json_schema: {
+      name: "person",
+      strict: true,
+      schema: {
+        type: "object",
+        properties: {
+          name: {
+            type: "string",
+            minLength: 1,
+          },
+          age: {
+            type: "number",
+            minimum: 0,
+            maximum: 130,
+          },
+        },
+        required: ["name", "age"],
+        additionalProperties: false,
+      },
+    },
+  },
+  reasoning_effort: "medium",
+});
+```
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+response = client.chat.completions.create(
+    model="gpt-5.6",
+    messages=[
+        {
+            "role": "user",
+            "content": "Jane, 54 years old",
+        }
+    ],
+    response_format={
+        "type": "json_schema",
+        "json_schema": {
+            "name": "person",
+            "strict": True,
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string", "minLength": 1},
+                    "age": {"type": "number", "minimum": 0, "maximum": 130},
+                },
+                "required": ["name", "age"],
+                "additionalProperties": False,
+            },
+        },
+    },
+    reasoning_effort="medium",
+)
+```
+
 ```bash
 curl https://api.openai.com/v1/chat/completions \
   -H "Content-Type: application/json" \
@@ -587,51 +656,22 @@ curl https://api.openai.com/v1/chat/completions \
 }'
 ```
 
-```python
-from openai import OpenAI
+  
 
-client = OpenAI()
+  
 
-response = client.chat.completions.create(
-    model="gpt-5.6",
-    messages=[
-        {
-            "role": "user",
-            "content": "Jane, 54 years old",
-        }
-    ],
-    response_format={
-        "type": "json_schema",
-        "json_schema": {
-            "name": "person",
-            "strict": True,
-            "schema": {
-                "type": "object",
-                "properties": {
-                    "name": {"type": "string", "minLength": 1},
-                    "age": {"type": "number", "minimum": 0, "maximum": 130},
-                },
-                "required": ["name", "age"],
-                "additionalProperties": False,
-            },
-        },
-    },
-    reasoning_effort="medium",
-)
-```
+    
+Responses
+
+    Structured Outputs
 
 ```javascript
-const completion = await openai.chat.completions.create({
+const response = await openai.responses.create({
   model: "gpt-5.6",
-  messages: [
-    {
-      role: "user",
-      content: "Jane, 54 years old",
-    },
-  ],
-  response_format: {
-    type: "json_schema",
-    json_schema: {
+  input: "Jane, 54 years old",
+  text: {
+    format: {
+      type: "json_schema",
       name: "person",
       strict: true,
       schema: {
@@ -652,18 +692,31 @@ const completion = await openai.chat.completions.create({
       },
     },
   },
-  reasoning_effort: "medium",
 });
 ```
 
-  
-
-  
-
-    
-Responses
-
-    Structured Outputs
+```python
+response = client.responses.create(
+    model="gpt-5.6",
+    input="Jane, 54 years old",
+    text={
+        "format": {
+            "type": "json_schema",
+            "name": "person",
+            "strict": True,
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string", "minLength": 1},
+                    "age": {"type": "number", "minimum": 0, "maximum": 130},
+                },
+                "required": ["name", "age"],
+                "additionalProperties": False,
+            },
+        }
+    },
+)
+```
 
 ```bash
 curl https://api.openai.com/v1/responses \
@@ -699,59 +752,6 @@ curl https://api.openai.com/v1/responses \
     }
   }
 }'
-```
-
-```python
-response = client.responses.create(
-    model="gpt-5.6",
-    input="Jane, 54 years old",
-    text={
-        "format": {
-            "type": "json_schema",
-            "name": "person",
-            "strict": True,
-            "schema": {
-                "type": "object",
-                "properties": {
-                    "name": {"type": "string", "minLength": 1},
-                    "age": {"type": "number", "minimum": 0, "maximum": 130},
-                },
-                "required": ["name", "age"],
-                "additionalProperties": False,
-            },
-        }
-    },
-)
-```
-
-```javascript
-const response = await openai.responses.create({
-  model: "gpt-5.6",
-  input: "Jane, 54 years old",
-  text: {
-    format: {
-      type: "json_schema",
-      name: "person",
-      strict: true,
-      schema: {
-        type: "object",
-        properties: {
-          name: {
-            type: "string",
-            minLength: 1,
-          },
-          age: {
-            type: "number",
-            minimum: 0,
-            maximum: 130,
-          },
-        },
-        required: ["name", "age"],
-        additionalProperties: false,
-      },
-    },
-  },
-});
 ```
 
 

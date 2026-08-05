@@ -77,6 +77,61 @@ Hosted tool search is the simplest path when you already know the full inventory
 
 Configure hosted tool search
 
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+
+/** @type {OpenAI.Responses.NamespaceTool} */
+const crmNamespace = {
+  type: "namespace",
+  name: "crm",
+  description: "CRM tools for customer lookup and order management.",
+  tools: [
+    {
+      type: "function",
+      name: "get_customer_profile",
+      description: "Fetch a customer profile by customer ID.",
+      parameters: {
+        type: "object",
+        properties: {
+          customer_id: { type: "string" },
+        },
+        required: ["customer_id"],
+        additionalProperties: false,
+      },
+    },
+    {
+      type: "function",
+      name: "list_open_orders",
+      description: "List open orders for a customer ID.",
+      // highlight-start:subtle
+      defer_loading: true,
+      // highlight-end
+      parameters: {
+        type: "object",
+        properties: {
+          customer_id: { type: "string" },
+        },
+        required: ["customer_id"],
+        additionalProperties: false,
+      },
+    },
+  ],
+};
+
+const response = await client.responses.create({
+  model: "gpt-5.6",
+  input: "List open orders for customer CUST-12345.",
+  // highlight-start:subtle
+  tools: [crmNamespace, { type: "tool_search" }],
+  // highlight-end
+  parallel_tool_calls: false,
+});
+
+console.log(response.output);
+```
+
 ```python
 from openai import OpenAI
 
@@ -132,61 +187,6 @@ response = client.responses.create(
 )
 
 print(response.output)
-```
-
-```javascript
-import OpenAI from "openai";
-
-const client = new OpenAI();
-
-/** @type {OpenAI.Responses.NamespaceTool} */
-const crmNamespace = {
-  type: "namespace",
-  name: "crm",
-  description: "CRM tools for customer lookup and order management.",
-  tools: [
-    {
-      type: "function",
-      name: "get_customer_profile",
-      description: "Fetch a customer profile by customer ID.",
-      parameters: {
-        type: "object",
-        properties: {
-          customer_id: { type: "string" },
-        },
-        required: ["customer_id"],
-        additionalProperties: false,
-      },
-    },
-    {
-      type: "function",
-      name: "list_open_orders",
-      description: "List open orders for a customer ID.",
-      // highlight-start:subtle
-      defer_loading: true,
-      // highlight-end
-      parameters: {
-        type: "object",
-        properties: {
-          customer_id: { type: "string" },
-        },
-        required: ["customer_id"],
-        additionalProperties: false,
-      },
-    },
-  ],
-};
-
-const response = await client.responses.create({
-  model: "gpt-5.6",
-  input: "List open orders for customer CUST-12345.",
-  // highlight-start:subtle
-  tools: [crmNamespace, { type: "tool_search" }],
-  // highlight-end
-  parallel_tool_calls: false,
-});
-
-console.log(response.output);
 ```
 
 
@@ -264,76 +264,6 @@ Configure the `tool_search` tool with `execution: "client"` and a schema for the
 
 Configure client-executed tool search
 
-```python
-from openai import OpenAI
-
-client = OpenAI()
-
-first_response = client.responses.create(
-    model="gpt-5.6",
-    input="Find the shipping ETA tool first, then use it for order_42.",
-    tools=[
-        {
-            "type": "tool_search",
-            # highlight-start:subtle
-            "execution": "client",
-            # highlight-end
-            "description": "Find the project-specific tools needed to continue the task.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "goal": {"type": "string"},
-                },
-                "required": ["goal"],
-                "additionalProperties": False,
-            },
-        }
-    ],
-    parallel_tool_calls=False,
-)
-
-search_call = next(
-    item for item in first_response.output if item.type == "tool_search_call"
-)
-
-loaded_tools = [
-    {
-        "type": "function",
-        "name": "get_shipping_eta",
-        "description": "Look up shipping ETA details for an order.",
-        "defer_loading": True,
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "order_id": {"type": "string"},
-            },
-            "required": ["order_id"],
-            "additionalProperties": False,
-        },
-    }
-]
-
-second_response = client.responses.create(
-    model="gpt-5.6",
-    input=[
-        *first_response.output,
-        {
-            # highlight-start:subtle
-            "type": "tool_search_output",
-            # highlight-end
-            "execution": "client",
-            "call_id": search_call.call_id,
-            "status": "completed",
-            # highlight-start:subtle
-            "tools": loaded_tools,
-            # highlight-end
-        },
-    ],
-)
-
-print(second_response.output)
-```
-
 ```javascript
 import OpenAI from "openai";
 
@@ -410,6 +340,76 @@ const secondResponse = await client.responses.create({
 });
 
 console.log(secondResponse.output);
+```
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+first_response = client.responses.create(
+    model="gpt-5.6",
+    input="Find the shipping ETA tool first, then use it for order_42.",
+    tools=[
+        {
+            "type": "tool_search",
+            # highlight-start:subtle
+            "execution": "client",
+            # highlight-end
+            "description": "Find the project-specific tools needed to continue the task.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "goal": {"type": "string"},
+                },
+                "required": ["goal"],
+                "additionalProperties": False,
+            },
+        }
+    ],
+    parallel_tool_calls=False,
+)
+
+search_call = next(
+    item for item in first_response.output if item.type == "tool_search_call"
+)
+
+loaded_tools = [
+    {
+        "type": "function",
+        "name": "get_shipping_eta",
+        "description": "Look up shipping ETA details for an order.",
+        "defer_loading": True,
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "order_id": {"type": "string"},
+            },
+            "required": ["order_id"],
+            "additionalProperties": False,
+        },
+    }
+]
+
+second_response = client.responses.create(
+    model="gpt-5.6",
+    input=[
+        *first_response.output,
+        {
+            # highlight-start:subtle
+            "type": "tool_search_output",
+            # highlight-end
+            "execution": "client",
+            "call_id": search_call.call_id,
+            "status": "completed",
+            # highlight-start:subtle
+            "tools": loaded_tools,
+            # highlight-end
+        },
+    ],
+)
+
+print(second_response.output)
 ```
 
 
