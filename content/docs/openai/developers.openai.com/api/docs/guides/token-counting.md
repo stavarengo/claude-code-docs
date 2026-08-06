@@ -51,6 +51,30 @@ response = client.responses.input_tokens.count(
 print(response.input_tokens)
 ```
 
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient()
+	count, err := client.Responses.InputTokens.Count(context.Background(), responses.InputTokenCountParams{
+		Model: openai.String("gpt-5.6"),
+		Input: responses.InputTokenCountParamsInputUnion{OfString: openai.String("Tell me a joke.")},
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(count.InputTokens)
+}
+```
+
 ```bash
 curl https://api.openai.com/v1/responses/input_tokens \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -105,6 +129,35 @@ response = client.responses.input_tokens.count(
     ],
 )
 print(response.input_tokens)
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient()
+	input := []responses.ResponseInputItemUnionParam{
+		responses.ResponseInputItemParamOfMessage("What is 2 + 2?", responses.EasyInputMessageRoleUser),
+		responses.ResponseInputItemParamOfMessage("2 + 2 equals 4.", responses.EasyInputMessageRoleAssistant),
+		responses.ResponseInputItemParamOfMessage("What about 3 + 3?", responses.EasyInputMessageRoleUser),
+	}
+	count, err := client.Responses.InputTokens.Count(context.Background(), responses.InputTokenCountParams{
+		Model: openai.String("gpt-5.6"),
+		Input: responses.InputTokenCountParamsInputUnion{OfResponseInputItemArray: input},
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(count.InputTokens)
+}
 ```
 
 ```bash
@@ -166,6 +219,31 @@ response = client.responses.input_tokens.count(
     input="Explain quantum computing in one sentence.",
 )
 print(response.input_tokens)
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient()
+	count, err := client.Responses.InputTokens.Count(context.Background(), responses.InputTokenCountParams{
+		Model:        openai.String("gpt-5.6"),
+		Instructions: openai.String("You are a helpful assistant that explains concepts simply."),
+		Input:        responses.InputTokenCountParamsInputUnion{OfString: openai.String("Explain quantum computing in one sentence.")},
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(count.InputTokens)
+}
 ```
 
 ```bash
@@ -243,6 +321,39 @@ response = client.responses.input_tokens.count(
     ],
 )
 print(response.input_tokens)
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient()
+	input := []responses.ResponseInputItemUnionParam{
+		responses.ResponseInputItemParamOfMessage(
+			responses.ResponseInputMessageContentListParam{
+				{OfInputImage: &responses.ResponseInputImageParam{ImageURL: openai.String("https://example.com/chart.png"), Detail: responses.ResponseInputImageDetailAuto}},
+				{OfInputText: &responses.ResponseInputTextParam{Text: "Summarize this chart."}},
+			},
+			responses.EasyInputMessageRoleUser,
+		),
+	}
+	count, err := client.Responses.InputTokens.Count(context.Background(), responses.InputTokenCountParams{
+		Model: openai.String("gpt-5.6"),
+		Input: responses.InputTokenCountParamsInputUnion{OfResponseInputItemArray: input},
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(count.InputTokens)
+}
 ```
 
 ```bash
@@ -334,6 +445,41 @@ response = client.responses.input_tokens.count(
     input="What is the weather in San Francisco?",
 )
 print(response.input_tokens)
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient()
+	parameters := map[string]any{
+		"type": "object",
+		"properties": map[string]any{
+			"location": map[string]any{"type": "string"},
+		},
+		"required":             []string{"location"},
+		"additionalProperties": false,
+	}
+	tool := responses.ToolParamOfFunction("get_weather", parameters, true)
+	tool.OfFunction.Description = openai.String("Get the current weather in a location")
+	count, err := client.Responses.InputTokens.Count(context.Background(), responses.InputTokenCountParams{
+		Model: openai.String("gpt-5.6"),
+		Input: responses.InputTokenCountParamsInputUnion{OfString: openai.String("What is the weather in San Francisco?")},
+		Tools: []responses.ToolUnionParam{tool},
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(count.InputTokens)
+}
 ```
 
 ```bash

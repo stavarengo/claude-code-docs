@@ -46,6 +46,18 @@ assistant = client.beta.assistants.create(
 )
 ```
 
+```go
+assistant, err := client.Beta.Assistants.New(context.Background(), openai.BetaAssistantNewParams{
+	Name:         openai.String("Financial Analyst Assistant"),
+	Instructions: openai.String("You are an expert financial analyst. Use your knowledge base to answer questions about audited financial statements."),
+	Model:        shared.ChatModelGPT4o,
+	Tools:        []openai.AssistantToolUnionParam{{OfFileSearch: &openai.FileSearchToolParam{}}},
+})
+if err != nil {
+	panic(err)
+}
+```
+
 ```bash
 curl https://api.openai.com/v1/assistants \
 -H "Content-Type: application/json" \
@@ -124,6 +136,19 @@ assistant = client.beta.assistants.update(
     assistant_id=assistant.id,
     tool_resources={"file_search": {"vector_store_ids": [vector_store.id]}},
 )
+```
+
+```go
+_, err := client.Beta.Assistants.Update(context.Background(), "asst_abc123", openai.BetaAssistantUpdateParams{
+	ToolResources: openai.BetaAssistantUpdateParamsToolResources{
+		FileSearch: openai.BetaAssistantUpdateParamsToolResourcesFileSearch{
+			VectorStoreIDs: []string{"vs_abc123"},
+		},
+	},
+})
+if err != nil {
+	panic(err)
+}
 ```
 
 
@@ -406,6 +431,16 @@ vector_store = client.vector_stores.create(
 )
 ```
 
+```go
+vectorStore, err := client.VectorStores.New(context.Background(), openai.VectorStoreNewParams{
+	Name:    openai.String("Product Documentation"),
+	FileIDs: []string{"file_1", "file_2", "file_3", "file_4", "file_5"},
+})
+if err != nil {
+	panic(err)
+}
+```
+
 
 Adding files to vector stores is an async operation. To ensure the operation is complete, we recommend that you use the 'create and poll' helpers in our official SDKs. If you're not using the SDKs, you can retrieve the `vector_store` object and monitor its [`file_counts`](https://developers.openai.com/api/reference/resources/vector_stores#vector-stores/object-file_counts) property to see the result of the file ingestion operation.
 
@@ -426,6 +461,15 @@ const file = await openai.vectorStores.files.createAndPoll(
 file = client.vector_stores.files.create_and_poll(
     vector_store_id="vs_abc123", file_id="file-abc123"
 )
+```
+
+```go
+_, err := client.VectorStores.Files.NewAndPoll(context.Background(), "vs_abc123", openai.VectorStoreFileNewParams{
+	FileID: "file-abc123",
+}, 1000)
+if err != nil {
+	panic(err)
+}
 ```
 
 
@@ -474,6 +518,28 @@ batch = client.vector_stores.file_batches.create_and_poll(
         },
     ],
 )
+```
+
+```go
+_, err := client.VectorStores.FileBatches.NewAndPoll(context.Background(), "vs_abc123", openai.VectorStoreFileBatchNewParams{
+	Files: []openai.VectorStoreFileBatchNewParamsFile{
+		{
+			FileID: "file_1",
+			Attributes: map[string]openai.VectorStoreFileBatchNewParamsFileAttributeUnion{
+				"category": {OfString: openai.String("finance")},
+			},
+		},
+		{
+			FileID: "file_2",
+			ChunkingStrategy: openai.FileChunkingStrategyParamUnion{OfStatic: &openai.StaticFileChunkingStrategyObjectParam{
+				Static: openai.StaticFileChunkingStrategyParam{MaxChunkSizeTokens: 1000, ChunkOverlapTokens: 200},
+			}},
+		},
+	},
+}, 1000)
+if err != nil {
+	panic(err)
+}
 ```
 
 
@@ -525,6 +591,32 @@ thread = client.beta.threads.create(
     messages=[{"role": "user", "content": "How do I cancel my subscription?"}],
     tool_resources={"file_search": {"vector_store_ids": ["vs_2"]}},
 )
+```
+
+```go
+assistant, err := client.Beta.Assistants.New(context.Background(), openai.BetaAssistantNewParams{
+	Instructions: openai.String("You are a helpful product support assistant and you answer questions based on the files provided to you."),
+	Model:        shared.ChatModelGPT4o,
+	Tools:        []openai.AssistantToolUnionParam{{OfFileSearch: &openai.FileSearchToolParam{}}},
+	ToolResources: openai.BetaAssistantNewParamsToolResources{
+		FileSearch: openai.BetaAssistantNewParamsToolResourcesFileSearch{VectorStoreIDs: []string{"vs_1"}},
+	},
+})
+if err != nil {
+	panic(err)
+}
+thread, err := client.Beta.Threads.New(context.Background(), openai.BetaThreadNewParams{
+	Messages: []openai.BetaThreadNewParamsMessage{{
+		Role:    "user",
+		Content: openai.BetaThreadNewParamsMessageContentUnion{OfString: openai.String("How do I cancel my subscription?")},
+	}},
+	ToolResources: openai.BetaThreadNewParamsToolResources{
+		FileSearch: openai.BetaThreadNewParamsToolResourcesFileSearch{VectorStoreIDs: []string{"vs_2"}},
+	},
+})
+if err != nil {
+	panic(err)
+}
 ```
 
 
@@ -600,6 +692,22 @@ run_step = client.beta.threads.runs.steps.retrieve(
 print(run_step)
 ```
 
+```go
+runStep, err := client.Beta.Threads.Runs.Steps.Get(
+	context.Background(),
+	"thread_abc123",
+	"run_abc123",
+	"step_abc123",
+	openai.BetaThreadRunStepGetParams{Include: []openai.RunStepInclude{
+		openai.RunStepIncludeStepDetailsToolCallsFileSearchResultsContent,
+	}},
+)
+if err != nil {
+	panic(err)
+}
+fmt.Println(runStep)
+```
+
 ```bash
 curl -g https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123/steps/step_abc123?include[]=step_details.tool_calls[*].file_search.results[*].content \
 -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -662,6 +770,17 @@ vector_store = client.vector_stores.create(
 )
 ```
 
+```go
+vectorStore, err := client.VectorStores.New(context.Background(), openai.VectorStoreNewParams{
+	Name:         openai.String("Product Documentation"),
+	FileIDs:      []string{"file_1", "file_2", "file_3", "file_4", "file_5"},
+	ExpiresAfter: openai.VectorStoreNewParamsExpiresAfter{Days: 7},
+})
+if err != nil {
+	panic(err)
+}
+```
+
 
 **Thread vector stores have default expiration policies**
 
@@ -705,6 +824,39 @@ for file_batch in chunked(all_files, 100):
         vector_store_id=vector_store.id,
         file_ids=[file.id for file in file_batch],
     )
+```
+
+```go
+pager := client.VectorStores.Files.ListAutoPaging(context.Background(), "vs_expired", openai.VectorStoreFileListParams{})
+fileIDs := make([]string, 0)
+for pager.Next() {
+	fileIDs = append(fileIDs, pager.Current().ID)
+}
+if err := pager.Err(); err != nil {
+	panic(err)
+}
+vectorStore, err := client.VectorStores.New(context.Background(), openai.VectorStoreNewParams{
+	Name: openai.String("rag-store"),
+})
+if err != nil {
+	panic(err)
+}
+_, err = client.Beta.Threads.Update(context.Background(), "thread_abc123", openai.BetaThreadUpdateParams{
+	ToolResources: openai.BetaThreadUpdateParamsToolResources{
+		FileSearch: openai.BetaThreadUpdateParamsToolResourcesFileSearch{VectorStoreIDs: []string{vectorStore.ID}},
+	},
+})
+if err != nil {
+	panic(err)
+}
+for start := 0; start < len(fileIDs); start += 100 {
+	end := min(start+100, len(fileIDs))
+	if _, err := client.VectorStores.FileBatches.NewAndPoll(context.Background(), vectorStore.ID, openai.VectorStoreFileBatchNewParams{
+		FileIDs: fileIDs[start:end],
+	}, 1000); err != nil {
+		panic(err)
+	}
+}
 ```
 
 

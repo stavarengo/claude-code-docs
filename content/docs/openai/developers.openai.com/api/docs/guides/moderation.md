@@ -87,6 +87,53 @@ print(input_moderation.flagged)
 print(output_moderation.flagged)
 ```
 
+```go
+package main
+
+import (
+	"context"
+	"errors"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient()
+
+	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+		Model: "gpt-5.6",
+		Input: responses.ResponseNewParamsInputUnion{
+			OfString: openai.String("A user asks for instructions to make a harmful weapon. Draft a brief refusal and offer a safer alternative."),
+		},
+		Moderation: responses.ResponseNewParamsModeration{
+			Model: "omni-moderation-latest",
+		},
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	switch inputModeration := response.Moderation.Input.AsAny().(type) {
+	case responses.ResponseModerationInputModerationResult:
+		fmt.Println(inputModeration.Flagged)
+	case responses.ResponseModerationInputError:
+		panic(errors.New(inputModeration.Message))
+	default:
+		panic("unexpected input moderation result")
+	}
+	switch outputModeration := response.Moderation.Output.AsAny().(type) {
+	case responses.ResponseModerationOutputModerationResult:
+		fmt.Println(outputModeration.Flagged)
+	case responses.ResponseModerationOutputError:
+		panic(errors.New(outputModeration.Message))
+	default:
+		panic("unexpected output moderation result")
+	}
+}
+```
+
 
 The Responses API returns an input `moderation_result` object at `response.moderation.input` and an output `moderation_result` object at `response.moderation.output`.
 
@@ -137,6 +184,33 @@ response = client.moderations.create(
 )
 
 print(response)
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	client := openai.NewClient()
+
+	moderation, err := client.Moderations.New(context.Background(), openai.ModerationNewParams{
+		Model: openai.ModerationModelOmniModerationLatest,
+		Input: openai.ModerationNewParamsInputUnion{
+			OfString: openai.String("Text to classify goes here."),
+		},
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(moderation.Results[0].Flagged)
+}
 ```
 
 ```bash
@@ -205,6 +279,38 @@ response = client.moderations.create(
 )
 
 print(response)
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	client := openai.NewClient()
+
+	moderation, err := client.Moderations.New(context.Background(), openai.ModerationNewParams{
+		Model: openai.ModerationModelOmniModerationLatest,
+		Input: openai.ModerationNewParamsInputUnion{
+			OfModerationMultiModalArray: []openai.ModerationMultiModalInputUnionParam{
+				openai.ModerationMultiModalInputParamOfText("Text to classify goes here."),
+				openai.ModerationMultiModalInputParamOfImageURL(openai.ModerationImageURLInputImageURLParam{
+					URL: "https://api.nga.gov/iiif/a2e6da57-3cd1-4235-b20e-95dcaefed6c8/full/!800,800/0/default.jpg",
+				}),
+			},
+		},
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(moderation.Results[0].Flagged)
+}
 ```
 
 ```bash

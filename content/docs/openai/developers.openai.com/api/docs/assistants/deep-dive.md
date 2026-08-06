@@ -36,6 +36,21 @@ file = client.files.create(
 )
 ```
 
+```go
+input, err := os.Open("revenue-forecast.csv")
+if err != nil {
+	panic(err)
+}
+defer input.Close()
+file, err := client.Files.New(context.Background(), openai.FileNewParams{
+	File:    input,
+	Purpose: openai.FilePurposeAssistants,
+})
+if err != nil {
+	panic(err)
+}
+```
+
 ```bash
 curl https://api.openai.com/v1/files \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -69,6 +84,21 @@ assistant = client.beta.assistants.create(
     tools=[{"type": "code_interpreter"}],
     tool_resources={"code_interpreter": {"file_ids": [file.id]}},
 )
+```
+
+```go
+assistant, err := client.Beta.Assistants.New(context.Background(), openai.BetaAssistantNewParams{
+	Name:        openai.String("Data visualizer"),
+	Description: openai.String("You are great at creating beautiful data visualizations. You analyze data present in .csv files, understand trends, and come up with data visualizations relevant to those trends. You also share a brief text summary of the trends observed."),
+	Model:       shared.ChatModelGPT4o,
+	Tools:       []openai.AssistantToolUnionParam{{OfCodeInterpreter: &openai.CodeInterpreterToolParam{}}},
+	ToolResources: openai.BetaAssistantNewParamsToolResources{
+		CodeInterpreter: openai.BetaAssistantNewParamsToolResourcesCodeInterpreter{FileIDs: []string{"file-BK7bzQj3FfZFXr7DbL6xJwfo"}},
+	},
+})
+if err != nil {
+	panic(err)
+}
 ```
 
 ```bash
@@ -129,6 +159,24 @@ thread = client.beta.threads.create(
         }
     ]
 )
+```
+
+```go
+thread, err := client.Beta.Threads.New(context.Background(), openai.BetaThreadNewParams{
+	Messages: []openai.BetaThreadNewParamsMessage{{
+		Role: "user",
+		Content: openai.BetaThreadNewParamsMessageContentUnion{
+			OfString: openai.String("Create 3 data visualizations based on the trends in this file."),
+		},
+		Attachments: []openai.BetaThreadNewParamsMessageAttachment{{
+			FileID: openai.String("file-ACq8OjcLQm2eIG0BvRM4z5qX"),
+			Tools:  []openai.BetaThreadNewParamsMessageAttachmentToolUnion{{OfCodeInterpreter: &openai.CodeInterpreterToolParam{}}},
+		}},
+	}},
+})
+if err != nil {
+	panic(err)
+}
 ```
 
 ```bash
@@ -217,6 +265,34 @@ thread = client.beta.threads.create(
 )
 ```
 
+```go
+image, err := os.Open("myimage.png")
+if err != nil {
+	panic(err)
+}
+defer image.Close()
+file, err := client.Files.New(context.Background(), openai.FileNewParams{
+	File:    image,
+	Purpose: openai.FilePurposeVision,
+})
+if err != nil {
+	panic(err)
+}
+thread, err := client.Beta.Threads.New(context.Background(), openai.BetaThreadNewParams{
+	Messages: []openai.BetaThreadNewParamsMessage{{
+		Role: "user",
+		Content: openai.BetaThreadNewParamsMessageContentUnion{OfArrayOfContentParts: []openai.MessageContentPartParamUnion{
+			openai.MessageContentPartParamOfText("What is the difference between these images?"),
+			openai.MessageContentPartParamOfImageURL(openai.ImageURLParam{URL: "https://openai-documentation.vercel.app/images/cat_and_otter.png"}),
+			openai.MessageContentPartParamOfImageFile(openai.ImageFileParam{FileID: file.ID}),
+		}},
+	}},
+})
+if err != nil {
+	panic(err)
+}
+```
+
 ```bash
 # Upload a file with an "vision" purpose
 curl https://api.openai.com/v1/files \
@@ -302,6 +378,24 @@ thread = client.beta.threads.create(
         }
     ]
 )
+```
+
+```go
+thread, err := client.Beta.Threads.New(context.Background(), openai.BetaThreadNewParams{
+	Messages: []openai.BetaThreadNewParamsMessage{{
+		Role: "user",
+		Content: openai.BetaThreadNewParamsMessageContentUnion{OfArrayOfContentParts: []openai.MessageContentPartParamUnion{
+			openai.MessageContentPartParamOfText("What is this an image of?"),
+			openai.MessageContentPartParamOfImageURL(openai.ImageURLParam{
+				URL:    "https://openai-documentation.vercel.app/images/cat_and_otter.png",
+				Detail: openai.ImageURLDetailHigh,
+			}),
+		}},
+	}},
+})
+if err != nil {
+	panic(err)
+}
 ```
 
 ```bash
@@ -410,6 +504,59 @@ for index, annotation in enumerate(annotations):
 message_content.value += "\n" + "\n".join(citations)
 ```
 
+```go
+message, err := client.Beta.Threads.Messages.Get(context.Background(), "thread_abc123", "msg_abc123")
+if err != nil {
+	panic(err)
+}
+if len(message.Content) == 0 || message.Content[0].Type != "text" {
+	panic("message does not contain text")
+}
+messageContent := message.Content[0].AsText().Text
+citations := make([]string, 0, len(messageContent.Annotations))
+for index, annotation := range messageContent.Annotations {
+	messageContent.Value = strings.ReplaceAll(messageContent.Value, annotation.Text, fmt.Sprintf(" [%d]", index))
+	switch annotation.Type {
+	case "file_citation":
+		citation := annotation.AsFileCitation()
+		file, err := client.Files.Get(context.Background(), citation.FileCitation.FileID)
+		if err != nil {
+			panic(err)
+		}
+		citations = append(citations, fmt.Sprintf("[%d] %s", index, file.Filename))
+	case "file_path":
+		filePath := annotation.AsFilePath()
+		file, err := client.Files.Get(context.Background(), filePath.FilePath.FileID)
+		if err != nil {
+			panic(err)
+		}
+		response, err := client.Files.Content(context.Background(), filePath.FilePath.FileID)
+		if err != nil {
+			panic(err)
+		}
+		defer response.Body.Close()
+		if err := os.MkdirAll("downloads", 0o755); err != nil {
+			panic(err)
+		}
+		outputPath := filepath.Join("downloads", filepath.Base(file.Filename))
+		output, err := os.Create(outputPath)
+		if err != nil {
+			panic(err)
+		}
+		if _, err := io.Copy(output, response.Body); err != nil {
+			output.Close()
+			panic(err)
+		}
+		if err := output.Close(); err != nil {
+			panic(err)
+		}
+		citations = append(citations, fmt.Sprintf("[%d] Downloaded %s", index, outputPath))
+	}
+}
+messageContent.Value += "\n" + strings.Join(citations, "\n")
+fmt.Println(messageContent.Value)
+```
+
 
 ## Runs and Run Steps
 
@@ -426,6 +573,15 @@ run = client.beta.threads.runs.create(
     thread_id=thread.id,
     assistant_id=assistant.id,
 )
+```
+
+```go
+_, err := client.Beta.Threads.Runs.New(context.Background(), "thread_abc123", openai.BetaThreadRunNewParams{
+	AssistantID: "asst_ToSF7Gb04YMj8AMMm50ZLLtY",
+})
+if err != nil {
+	panic(err)
+}
 ```
 
 ```bash
@@ -458,6 +614,21 @@ run = client.beta.threads.runs.create(
     instructions="New instructions that override the Assistant instructions",
     tools=[{"type": "code_interpreter"}, {"type": "file_search"}],
 )
+```
+
+```go
+_, err := client.Beta.Threads.Runs.New(context.Background(), "thread_abc123", openai.BetaThreadRunNewParams{
+	AssistantID:  "asst_ToSF7Gb04YMj8AMMm50ZLLtY",
+	Model:        shared.ChatModelGPT4o,
+	Instructions: openai.String("New instructions that override the Assistant instructions"),
+	Tools: []openai.AssistantToolUnionParam{
+		{OfCodeInterpreter: &openai.CodeInterpreterToolParam{}},
+		{OfFileSearch: &openai.FileSearchToolParam{}},
+	},
+})
+if err != nil {
+	panic(err)
+}
 ```
 
 ```bash

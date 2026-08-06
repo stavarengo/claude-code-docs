@@ -131,6 +131,35 @@ resp = client.responses.create(
 print(resp.status)
 ```
 
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient()
+
+	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+		Model:      "gpt-5.6",
+		Background: openai.Bool(true),
+		Input: responses.ResponseNewParamsInputUnion{
+			OfString: openai.String("Write a very long novel about otters in space."),
+		},
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(response.Status)
+}
+```
+
 
 In this guide, you will learn how to create webook endpoints in the dashboard, set up server-side code to handle them, and verify that inbound requests originated from OpenAI.
 

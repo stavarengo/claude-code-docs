@@ -5,12 +5,7 @@ description: Here you can find all the components available in the library. We a
 
 ## New Components
 
-- [Attachment](https://ui.shadcn.com/docs/components/attachment): Displays a file or image attachment with media, metadata, upload state, and actions.
-- [Bubble](https://ui.shadcn.com/docs/components/bubble): Displays conversational content in a message bubble. Supports variants, alignment, grouping, reactions, and collapsible content.
-- [Marker](https://ui.shadcn.com/docs/components/marker): Displays an inline status, system note, bordered row, or labeled separator in a conversation.
-- [Message](https://ui.shadcn.com/docs/components/message): Displays a message in a conversation, with optional avatar, header, footer, and alignment.
-- [Message Scroller](https://ui.shadcn.com/docs/components/message-scroller): A chat scroll container that anchors turns, opens saved transcripts, follows streamed responses, loads history without jumping, and jumps to any message.
-- [Toast](https://ui.shadcn.com/docs/components/toast): A succinct message that is displayed temporarily.
+- [Questionnaire](https://ui.shadcn.com/docs/components/questionnaire): A multi-step questionnaire with single-choice, multiple-choice, freeform, and skippable questions.
 
 ## All Components
 
@@ -58,6 +53,7 @@ description: Here you can find all the components available in the library. We a
 - [Pagination](https://ui.shadcn.com/docs/components/pagination): Pagination with page navigation, next and previous links.
 - [Popover](https://ui.shadcn.com/docs/components/popover): Displays rich content in a portal, triggered by a button.
 - [Progress](https://ui.shadcn.com/docs/components/progress): Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.
+- [Questionnaire](https://ui.shadcn.com/docs/components/questionnaire): A multi-step questionnaire with single-choice, multiple-choice, freeform, and skippable questions.
 - [Radio Group](https://ui.shadcn.com/docs/components/radio-group): A set of checkable buttons—known as radio buttons—where no more than one of the buttons can be checked at a time.
 - [Resizable](https://ui.shadcn.com/docs/components/resizable): Accessible resizable panel groups and layouts with keyboard support.
 - [Scroll Area](https://ui.shadcn.com/docs/components/scroll-area): Augments native scroll functionality for custom, cross-browser styling.

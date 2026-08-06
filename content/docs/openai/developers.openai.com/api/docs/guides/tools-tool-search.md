@@ -189,6 +189,50 @@ response = client.responses.create(
 print(response.output)
 ```
 
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient()
+	parameters := map[string]any{
+		"type":                 "object",
+		"properties":           map[string]any{"customer_id": map[string]any{"type": "string"}},
+		"required":             []string{"customer_id"},
+		"additionalProperties": false,
+	}
+	namespace := responses.ToolParamOfNamespace(
+		"CRM tools for customer lookup and order management.",
+		"crm",
+		[]responses.NamespaceToolToolUnionParam{
+			{OfFunction: &responses.NamespaceToolToolFunctionParam{
+				Name: "get_customer_profile", Description: openai.String("Fetch a customer profile by customer ID."), Parameters: parameters,
+			}},
+			{OfFunction: &responses.NamespaceToolToolFunctionParam{
+				Name: "list_open_orders", Description: openai.String("List open orders for a customer ID."), DeferLoading: openai.Bool(true), Parameters: parameters,
+			}},
+		},
+	)
+	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+		Model:             "gpt-5.6",
+		Input:             responses.ResponseNewParamsInputUnion{OfString: openai.String("List open orders for customer CUST-12345.")},
+		Tools:             []responses.ToolUnionParam{namespace, {OfToolSearch: &responses.ToolSearchToolParam{}}},
+		ParallelToolCalls: openai.Bool(false),
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(response.Output)
+}
+```
+
 
 If the model decides it needs a deferred tool, the response includes two additional output items before the eventual function call:
 
@@ -410,6 +454,74 @@ second_response = client.responses.create(
 )
 
 print(second_response.output)
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient()
+	searchTool := responses.ToolUnionParam{OfToolSearch: &responses.ToolSearchToolParam{
+		Execution:   responses.ToolSearchToolExecutionClient,
+		Description: openai.String("Find the project-specific tools needed to continue the task."),
+		Parameters: map[string]any{
+			"type":                 "object",
+			"properties":           map[string]any{"goal": map[string]any{"type": "string"}},
+			"required":             []string{"goal"},
+			"additionalProperties": false,
+		},
+	}}
+	first, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+		Model:             "gpt-5.6",
+		Input:             responses.ResponseNewParamsInputUnion{OfString: openai.String("Find the shipping ETA tool first, then use it for order_42.")},
+		Tools:             []responses.ToolUnionParam{searchTool},
+		ParallelToolCalls: openai.Bool(false),
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	callID := ""
+	for _, item := range first.Output {
+		if item.Type == "tool_search_call" {
+			callID = item.CallID
+			break
+		}
+	}
+	if callID == "" {
+		panic("the response did not include a tool search call")
+	}
+	loadedTool := responses.ToolParamOfFunction("get_shipping_eta", map[string]any{
+		"type":                 "object",
+		"properties":           map[string]any{"order_id": map[string]any{"type": "string"}},
+		"required":             []string{"order_id"},
+		"additionalProperties": false,
+	}, true)
+	loadedTool.OfFunction.Description = openai.String("Look up shipping ETA details for an order.")
+	loadedTool.OfFunction.DeferLoading = openai.Bool(true)
+	searchOutput := responses.ResponseInputItemParamOfToolSearchOutput([]responses.ToolUnionParam{loadedTool})
+	searchOutput.OfToolSearchOutput.CallID = openai.String(callID)
+	searchOutput.OfToolSearchOutput.Execution = responses.ResponseToolSearchOutputItemParamExecutionClient
+	searchOutput.OfToolSearchOutput.Status = responses.ResponseToolSearchOutputItemParamStatusCompleted
+
+	second, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+		Model:              "gpt-5.6",
+		PreviousResponseID: openai.String(first.ID),
+		Input:              responses.ResponseNewParamsInputUnion{OfInputItemList: responses.ResponseInputParam{searchOutput}},
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(second.Output)
+}
 ```
 
 

@@ -51,6 +51,33 @@ response = client.responses.create(
 print(response.output_text)
 ```
 
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient()
+	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+		Model: "gpt-5.6",
+		Tools: []responses.ToolUnionParam{
+			responses.ToolParamOfWebSearch(responses.WebSearchToolTypeWebSearch),
+		},
+		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("What was a positive news story from today?")},
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(response.OutputText())
+}
+```
+
 ```csharp
 using OpenAI.Responses;
 #pragma warning disable OPENAI001
@@ -215,6 +242,33 @@ response = client.responses.create(
 print(response.output_text)
 ```
 
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient()
+	tool := responses.ToolParamOfWebSearch(responses.WebSearchToolTypeWebSearch)
+	tool.OfWebSearch.SearchContextSize = responses.WebSearchToolSearchContextSizeLow
+	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+		Model: "gpt-5.6",
+		Tools: []responses.ToolUnionParam{tool},
+		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("What movie won best picture in 2025?")},
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(response.OutputText())
+}
+```
+
 ```csharp
 using OpenAI.Responses;
 #pragma warning disable OPENAI001
@@ -326,6 +380,46 @@ Be analytical, avoid generalities, and ensure that each section supports data-ba
 print(response.output_text)
 ```
 
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"strings"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+	"github.com/openai/openai-go/v3/shared"
+)
+
+func main() {
+	client := openai.NewClient()
+	tool := responses.ToolParamOfWebSearch(responses.WebSearchToolTypeWebSearch)
+	tool.OfWebSearch.SetExtraFields(map[string]any{"return_token_budget": "unlimited"})
+	input := strings.Join([]string{
+		"Research the economic impact of semaglutide on global healthcare systems.",
+		"",
+		"Do:",
+		"- Include specific figures, trends, statistics, and measurable outcomes.",
+		"- Prioritize reliable, up-to-date sources: peer-reviewed research, health organizations, regulatory agencies, or pharmaceutical earnings reports.",
+		"- Include inline citations and return all source metadata.",
+		"",
+		"Be analytical, avoid generalities, and ensure that each section supports data-backed reasoning that could inform healthcare policy or financial modeling.",
+	}, "\n")
+	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+		Model:     "gpt-5.6",
+		Reasoning: shared.ReasoningParam{Effort: shared.ReasoningEffortXhigh},
+		Tools:     []responses.ToolUnionParam{tool},
+		Input:     responses.ResponseNewParamsInputUnion{OfString: openai.String(input)},
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(response.OutputText())
+}
+```
+
 ```bash
 curl "https://api.openai.com/v1/responses" \
   -H "Content-Type: application/json" \
@@ -423,6 +517,39 @@ response = client.responses.create(
 )
 
 print(response.output_text)
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+	"github.com/openai/openai-go/v3/shared"
+)
+
+func main() {
+	client := openai.NewClient()
+	tool := responses.ToolParamOfWebSearch(responses.WebSearchToolTypeWebSearch)
+	tool.OfWebSearch.Filters = responses.WebSearchToolFiltersParam{
+		AllowedDomains: []string{"pubmed.ncbi.nlm.nih.gov", "clinicaltrials.gov", "www.who.int", "www.cdc.gov", "www.fda.gov"},
+	}
+	tool.OfWebSearch.Filters.SetExtraFields(map[string]any{"blocked_domains": []string{"reddit.com", "quora.com", "wikipedia.org"}})
+	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+		Model:     "gpt-5.6",
+		Reasoning: shared.ReasoningParam{Effort: shared.ReasoningEffortLow},
+		Tools:     []responses.ToolUnionParam{tool},
+		Include:   []responses.ResponseIncludable{responses.ResponseIncludableWebSearchCallActionSources},
+		Input:     responses.ResponseNewParamsInputUnion{OfString: openai.String("Please perform a web search on how semaglutide is used in the treatment of diabetes.")},
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(response.OutputText())
+}
 ```
 
 ```bash
@@ -525,6 +652,39 @@ response = client.responses.create(
 )
 
 print(response.output)
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+	"github.com/openai/openai-go/v3/shared"
+)
+
+func main() {
+	client := openai.NewClient()
+	tool := responses.ToolParamOfWebSearch(responses.WebSearchToolTypeWebSearch)
+	tool.OfWebSearch.SetExtraFields(map[string]any{
+		"search_content_types": []string{"image", "text"},
+		"image_settings":       map[string]any{"max_results": 3, "caption": true},
+	})
+	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+		Model:     "gpt-5.6",
+		Reasoning: shared.ReasoningParam{Effort: shared.ReasoningEffortLow},
+		Tools:     []responses.ToolUnionParam{tool},
+		Include:   []responses.ResponseIncludable{responses.ResponseIncludableWebSearchCallResults},
+		Input:     responses.ResponseNewParamsInputUnion{OfString: openai.String("Search for recent images and supporting text sources about the Golden Gate Bridge at sunset.")},
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(response.Output)
+}
 ```
 
 ```bash
@@ -640,6 +800,38 @@ response = client.responses.create(
 print(response.output_text)
 ```
 
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient()
+	tool := responses.ToolParamOfWebSearch(responses.WebSearchToolTypeWebSearch)
+	tool.OfWebSearch.UserLocation = responses.WebSearchToolUserLocationParam{
+		Type:    "approximate",
+		Country: openai.String("GB"),
+		City:    openai.String("London"),
+		Region:  openai.String("London"),
+	}
+	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+		Model: "gpt-5.6",
+		Tools: []responses.ToolUnionParam{tool},
+		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("What are the best restaurants near me?")},
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(response.OutputText())
+}
+```
+
 ```csharp
 using OpenAI.Responses;
 #pragma warning disable OPENAI001
@@ -742,6 +934,33 @@ resp = client.responses.create(
     input="Find when the Eiffel Tower opened to the public and cite the source.",
 )
 print(resp.output_text)
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient()
+	tool := responses.ToolParamOfWebSearch(responses.WebSearchToolTypeWebSearch)
+	tool.OfWebSearch.SetExtraFields(map[string]any{"external_web_access": false})
+	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+		Model: "gpt-5.6",
+		Tools: []responses.ToolUnionParam{tool},
+		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Find when the Eiffel Tower opened to the public and cite the source.")},
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(response.OutputText())
+}
 ```
 
 

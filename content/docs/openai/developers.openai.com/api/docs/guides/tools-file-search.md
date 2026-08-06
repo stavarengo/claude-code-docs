@@ -96,6 +96,36 @@ file_id = create_file(
 print(file_id)
 ```
 
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	file, err := os.Open("customer_policies.txt")
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	client := openai.NewClient()
+	result, err := client.Files.New(context.Background(), openai.FileNewParams{
+		File:    openai.File(file, "customer_policies.txt", "text/plain"),
+		Purpose: openai.FilePurposeAssistants,
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(result.ID)
+}
+```
+
 
 #### Create a vector store
 
@@ -111,6 +141,28 @@ console.log(vectorStore.id);
 ```python
 vector_store = client.vector_stores.create(name="knowledge_base")
 print(vector_store.id)
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	client := openai.NewClient()
+	vectorStore, err := client.VectorStores.New(context.Background(), openai.VectorStoreNewParams{
+		Name: openai.String("knowledge_base"),
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(vectorStore.ID)
+}
 ```
 
 
@@ -132,6 +184,28 @@ result = client.vector_stores.files.create(
 print(result)
 ```
 
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	client := openai.NewClient()
+	file, err := client.VectorStores.Files.New(context.Background(), "<vector_store_id>", openai.VectorStoreFileNewParams{
+		FileID: "file_abc123",
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(file.ID)
+}
+```
+
 
 #### Check status
 
@@ -147,6 +221,26 @@ console.log(result);
 ```python
 result = client.vector_stores.files.list(vector_store_id=vector_store.id)
 print(result)
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	client := openai.NewClient()
+	files, err := client.VectorStores.Files.List(context.Background(), "<vector_store_id>", openai.VectorStoreFileListParams{})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(files.Data)
+}
 ```
 
 
@@ -182,6 +276,31 @@ response = client.responses.create(
     tools=[{"type": "file_search", "vector_store_ids": ["<vector_store_id>"]}],
 )
 print(response)
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient()
+	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+		Model: "gpt-5.6",
+		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("What is deep research by OpenAI?")},
+		Tools: []responses.ToolUnionParam{responses.ToolParamOfFileSearch([]string{"<vector_store_id>"})},
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(response)
+}
 ```
 
 ```csharp
@@ -325,6 +444,33 @@ response = client.responses.create(
 print(response)
 ```
 
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient()
+	tool := responses.ToolParamOfFileSearch([]string{"<vector_store_id>"})
+	tool.OfFileSearch.MaxNumResults = openai.Int(2)
+	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+		Model: "gpt-5.6",
+		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("What is deep research by OpenAI?")},
+		Tools: []responses.ToolUnionParam{tool},
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(response)
+}
+```
+
 
 ### Include search results in the response
 
@@ -366,6 +512,32 @@ response = client.responses.create(
     # highlight-end
 )
 print(response)
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient()
+	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+		Model:   "gpt-5.6",
+		Input:   responses.ResponseNewParamsInputUnion{OfString: openai.String("What is deep research by OpenAI?")},
+		Tools:   []responses.ToolUnionParam{responses.ToolParamOfFileSearch([]string{"<vector_store_id>"})},
+		Include: []responses.ResponseIncludable{responses.ResponseIncludableFileSearchCallResults},
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(response)
+}
 ```
 
 
@@ -418,6 +590,43 @@ response = client.responses.create(
     ],
 )
 print(response)
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+	"github.com/openai/openai-go/v3/shared"
+)
+
+func main() {
+	client := openai.NewClient()
+	tool := responses.ToolParamOfFileSearch([]string{"<vector_store_id>"})
+	tool.OfFileSearch.Filters = responses.FileSearchToolFiltersUnionParam{
+		OfComparisonFilter: &shared.ComparisonFilterParam{
+			Type: shared.ComparisonFilterTypeIn,
+			Key:  "category",
+			Value: shared.ComparisonFilterValueUnionParam{OfComparisonFilterValueArray: []shared.ComparisonFilterValueArrayItemUnionParam{
+				{OfString: openai.String("blog")},
+				{OfString: openai.String("announcement")},
+			}},
+		},
+	}
+	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+		Model: "gpt-5.6",
+		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("What is deep research by OpenAI?")},
+		Tools: []responses.ToolUnionParam{tool},
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(response)
+}
 ```
 
 

@@ -250,6 +250,31 @@ response = client.responses.create(
 print(response.output)
 ```
 
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient()
+	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+		Model: "gpt-5.6",
+		Tools: []responses.ToolUnionParam{{OfComputer: &responses.ComputerToolParam{}}},
+		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Check whether the Filters panel is open. If it is not open, click Show filters. Then type penguin in the search box. Use the computer tool for UI interaction.")},
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(response.Output)
+}
+```
+
 
 The first turn often asks for a screenshot before the model commits to UI actions. That's normal.
 
@@ -1637,6 +1662,42 @@ def send_computer_screenshot(response, call_id, screenshot_base64):
     )
 ```
 
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient()
+	response, err := sendComputerScreenshot(client, "resp_abc123", "call_abc123", "<base64 bytes here>")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(response.Output)
+}
+
+func sendComputerScreenshot(client openai.Client, responseID string, callID string, screenshotBase64 string) (*responses.Response, error) {
+	screenshot := responses.ResponseComputerToolCallOutputScreenshotParam{
+		ImageURL: openai.String("data:image/png;base64," + screenshotBase64),
+	}
+	screenshot.SetExtraFields(map[string]any{"detail": "original"})
+	return client.Responses.New(context.Background(), responses.ResponseNewParams{
+		Model:              "gpt-5.6",
+		Tools:              []responses.ToolUnionParam{{OfComputer: &responses.ComputerToolParam{}}},
+		PreviousResponseID: openai.String(responseID),
+		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: responses.ResponseInputParam{
+			responses.ResponseInputItemParamOfComputerCallOutput(callID, screenshot),
+		}},
+	})
+}
+```
+
 
 ### 5. Repeat until the tool stops calling
 
@@ -2519,6 +2580,32 @@ response = client.responses.create(
     input="Check whether the Filters panel is open.",
     truncation="auto",
 )
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient()
+	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+		Model:      "computer-use-preview",
+		Tools:      []responses.ToolUnionParam{responses.ToolParamOfComputerUsePreview(768, 1024, responses.ComputerUsePreviewToolEnvironmentBrowser)},
+		Input:      responses.ResponseNewParamsInputUnion{OfString: openai.String("Check whether the Filters panel is open.")},
+		Truncation: responses.ResponseNewParamsTruncationAuto,
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(response.Output)
+}
 ```
 
 

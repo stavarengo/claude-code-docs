@@ -89,6 +89,23 @@ patch_calls = [
 ]
 ```
 
+```go
+response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+	Model: "gpt-5.6",
+	Input: responses.ResponseNewParamsInputUnion{OfString: openai.String(responseInput)},
+	Tools: []responses.ToolUnionParam{{OfApplyPatch: &responses.ApplyPatchToolParam{}}},
+})
+if err != nil {
+	panic(err)
+}
+patchCalls := make([]responses.ResponseOutputItemUnion, 0)
+for _, item := range response.Output {
+	if item.Type == "apply_patch_call" {
+		patchCalls = append(patchCalls, item)
+	}
+}
+```
+
 
 **Example `apply_patch_call` object**
 
@@ -143,6 +160,29 @@ followup = client.responses.create(
     input=results,
     tools=[{"type": "apply_patch"}],
 )
+```
+
+```go
+results := make(responses.ResponseInputParam, 0, len(patchCalls))
+for _, call := range patchCalls {
+	success, logOutput := applyOperation(call.Operation)
+	status := "completed"
+	if !success {
+		status = "failed"
+	}
+	result := responses.ResponseInputItemParamOfApplyPatchCallOutput(call.CallID, status)
+	result.OfApplyPatchCallOutput.Output = openai.String(logOutput)
+	results = append(results, result)
+}
+_, err = client.Responses.New(context.Background(), responses.ResponseNewParams{
+	Model:              "gpt-5.6",
+	PreviousResponseID: openai.String(response.ID),
+	Input:              responses.ResponseNewParamsInputUnion{OfInputItemList: results},
+	Tools:              []responses.ToolUnionParam{{OfApplyPatch: &responses.ApplyPatchToolParam{}}},
+})
+if err != nil {
+	panic(err)
+}
 ```
 
 

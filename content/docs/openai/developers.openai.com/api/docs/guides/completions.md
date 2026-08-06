@@ -23,6 +23,29 @@ response = client.completions.create(
 )
 ```
 
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	client := openai.NewClient()
+	response, err := client.Completions.New(context.Background(), openai.CompletionNewParams{
+		Model:  "gpt-3.5-turbo-instruct",
+		Prompt: openai.CompletionNewParamsPromptUnion{OfString: openai.String("Write a tagline for an ice cream shop.")},
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(response.Choices[0].Text)
+}
+```
+
 
 See the full [API reference documentation](https://platform.openai.com/docs/api-reference/completions) to learn more.
 
