@@ -61,6 +61,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Compaction](https://developers.openai.com/api/docs/guides/compaction.md): Manage long-running conversations with server-side and standalone compaction.
 - [Completions API](https://developers.openai.com/api/docs/guides/completions.md)
 - [Computer use](https://developers.openai.com/api/docs/guides/tools-computer-use.md): Use the Responses API computer tool to click, type, scroll, and inspect screenshots.
+- [Configure workload identity federation with X.509 certificates (beta)](https://developers.openai.com/api/docs/guides/workload-identity-federation/x509.md): Configure an X.509 workload identity provider and exchange a TLS client certificate for a short-lived OpenAI access token.
 - [Configuring workload identity federation for AWS](https://developers.openai.com/api/docs/guides/workload-identity-federation/aws.md): Configure AWS outbound identity federation or Amazon EKS as a workload identity federation token provider.
 - [Configuring workload identity federation for GitHub Actions](https://developers.openai.com/api/docs/guides/workload-identity-federation/github-actions.md): Configure GitHub Actions as a workload identity federation token provider.
 - [Configuring workload identity federation for Google Cloud](https://developers.openai.com/api/docs/guides/workload-identity-federation/google-cloud.md): Configure Google workload identity or GKE as a workload identity federation token provider.

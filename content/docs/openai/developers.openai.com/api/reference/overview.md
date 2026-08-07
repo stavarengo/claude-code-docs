@@ -44,6 +44,18 @@ curl https://api.openai.com/v1/models \
 
 Usage from these API requests counts as usage for the specified organization and project. Find organization and project IDs in your [dashboard settings](https://platform.openai.com/settings/organization/general).
 
+## Request headers
+
+For reliable behavior across API paths and HTTP versions, keep the total size
+of an API request's headers under 64 KiB. This budget includes the names and
+values of all headers, including common headers such as `Authorization`,
+`Content-Type`, and `User-Agent`, as well as any custom headers.
+
+To leave room for required headers and headers added by intermediaries, keep
+any individual custom header value and the total size of all custom header
+values at 60 KiB or less. Requests with larger headers may fail before they
+reach the API, so you may not receive a response or an `x-request-id`.
+
 ## Debugging requests
 
 [Error codes](https://developers.openai.com/api/docs/guides/error-codes) describe failures returned from API responses. Inspect HTTP response headers for the unique ID of a request and rate limit details. Common response headers include:

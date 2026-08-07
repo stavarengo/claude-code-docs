@@ -406,7 +406,7 @@ export function TableActions() {
 
 ## Data Table
 
-You can use the `<Table />` component to build more complex data tables. Combine it with [@tanstack/react-table](https://tanstack.com/table/v8) to create tables with sorting, filtering and pagination.
+You can use the `<Table />` component to build more complex data tables. Combine it with [@tanstack/react-table](https://tanstack.com/table/latest) to create tables with sorting, filtering and pagination.
 
 See the [Data Table](/docs/components/data-table) documentation for more information.
 
