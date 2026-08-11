@@ -97,6 +97,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Images and vision](https://developers.openai.com/api/docs/guides/images-vision.md): Learn how to understand or generate images with the OpenAI API.
 - [Import and reconcile OpenAI resources](https://developers.openai.com/api/docs/guides/terraform/import-and-reconcile.md): Import existing OpenAI resources into Terraform, inspect current state, reconcile drift, and understand removal behavior.
 - [Integrations and observability](https://developers.openai.com/api/docs/guides/agents/integrations-observability.md): Learn how to integrate MCP into Agents SDK workflows and how to trace and debug runs.
+- [IP allowlist](https://developers.openai.com/api/docs/guides/ip-allowlist.md): Configure organization- or project-level IP allowlists for OpenAI API requests.
 - [IP egress ranges](https://developers.openai.com/api/docs/guides/ip-addresses.md): Find the published IP egress ranges used by OpenAI products.
 - [Latency optimization](https://developers.openai.com/api/docs/guides/latency-optimization.md): Improve latency across a wide variety of LLM-related use cases.
 - [Local shell](https://developers.openai.com/api/docs/guides/tools-local-shell.md): Enable agents to run commands in a local shell.
