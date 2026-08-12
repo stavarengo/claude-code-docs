@@ -122,6 +122,7 @@ The full documentation is available in the following languages on https://platfo
 - [Access GitHub](https://platform.claude.com/docs/en/managed-agents/github.md) - Accessing GitHub
 - [Attach and download files](https://platform.claude.com/docs/en/managed-agents/files.md) - Adding files
 - [Authenticate with vaults](https://platform.claude.com/docs/en/managed-agents/vaults.md)
+- [Build in Console](https://platform.claude.com/docs/en/managed-agents/onboarding.md)
 - [Cloud environment setup](https://platform.claude.com/docs/en/managed-agents/environments.md)
 - [Cloud sandbox reference](https://platform.claude.com/docs/en/managed-agents/cloud-sandboxes-reference.md)
 - [Define outcomes](https://platform.claude.com/docs/en/managed-agents/define-outcomes.md)
@@ -131,7 +132,6 @@ The full documentation is available in the following languages on https://platfo
 - [Migration](https://platform.claude.com/docs/en/managed-agents/migration.md)
 - [Multiagent orchestration](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration.md)
 - [Permission policies](https://platform.claude.com/docs/en/managed-agents/permission-policies.md)
-- [Prototype in Console](https://platform.claude.com/docs/en/managed-agents/onboarding.md)
 - [Managed Agents reference](https://platform.claude.com/docs/en/managed-agents/reference.md) - Reference
 - [Scheduled deployments](https://platform.claude.com/docs/en/managed-agents/scheduled-deployments.md)
 - [Security model](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-security.md)

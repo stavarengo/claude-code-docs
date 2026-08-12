@@ -8,6 +8,7 @@ Model ID: `gpt-5.6-luna`
 
 GPT-5.6 Luna is designed for cost-sensitive, high-volume workloads. It
 roughly corresponds to the nano model tier used in earlier GPT-5 families.
+Reasoning.effort supports: none, low, medium (default), high, xhigh, and max.
 
 ## Model details
 

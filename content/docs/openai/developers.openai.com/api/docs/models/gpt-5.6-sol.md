@@ -9,6 +9,7 @@ Model ID: `gpt-5.6-sol`
 GPT-5.6 Sol is the frontier model in the GPT-5.6 family. It roughly
 corresponds to the unsuffixed model tier used in earlier GPT-5 families.
 The `gpt-5.6` alias routes requests to GPT-5.6 Sol.
+Reasoning.effort supports: none, low, medium (default), high, xhigh, and max.
 
 ## Model details
 

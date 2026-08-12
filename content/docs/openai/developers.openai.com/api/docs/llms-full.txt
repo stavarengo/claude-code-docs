@@ -4226,15 +4226,6 @@ On June 2, 2026, we notified developers using older GPT Image models of their de
 | Dec 1, 2026   | `gpt-image-1.5`        | `gpt-image-2`           |
 | Dec 1, 2026   | `chatgpt-image-latest` | `gpt-image-2`           |
 
-### 2026-05-08: gpt-5.2-chat-latest and gpt-5.3-chat-latest model snapshots
-
-On May 8th, 2026, we notified developers using `gpt-5.2-chat-latest` and `gpt-5.3-chat-latest` model snapshots of their deprecation and removal from the API.
-
-| Shutdown date | Model / system        | Recommended replacement |
-| ------------- | --------------------- | ----------------------- |
-| Aug 10, 2026  | `gpt-5.2-chat-latest` | `gpt-5.6-sol`           |
-| Aug 10, 2026  | `gpt-5.3-chat-latest` | `gpt-5.6-sol`           |
-
 ### Update to OpenAI’s self-serve fine-tuning
 
 On May 7th, 2026, we notified developers using OpenAI’s self-serve fine-tuning platform of updates to availability.
@@ -4315,6 +4306,15 @@ See the Assistants to Conversations [migration guide](https://developers.openai.
 ## Past deprecations
 
 Past deprecations are listed below, with the most recent announcements at the top.
+
+### 2026-05-08: gpt-5.2-chat-latest and gpt-5.3-chat-latest model snapshots
+
+On May 8th, 2026, we notified developers using `gpt-5.2-chat-latest` and `gpt-5.3-chat-latest` model snapshots of their deprecation and removal from the API.
+
+| Shutdown date | Model / system        | Recommended replacement |
+| ------------- | --------------------- | ----------------------- |
+| Aug 10, 2026  | `gpt-5.2-chat-latest` | `gpt-5.6-sol`           |
+| Aug 10, 2026  | `gpt-5.3-chat-latest` | `gpt-5.6-sol`           |
 
 ### 2026-04-22: Legacy GPT model snapshots (July 2026 shutdown)
 
@@ -20524,6 +20524,10 @@ If you select a region that supports regional processing, as specifically identi
 
 Data residency does not apply to system data, which may be processed and stored outside the selected region. System data means account data, metadata, and usage data that do not contain Customer Content, which are collected by the services and used to manage and operate the services, such as account information or profiles of end users that directly access the services (for example, your personnel), analytics, usage statistics, billing information, support requests, and structured output schema.
 
+### Sub-processors and regional request processing
+
+OpenAI uses [sub-processors](https://openai.com/policies/sub-processor-list/) to provide its services. For requests sent to `us.api.openai.com` or `eu.api.openai.com`, OpenAI uses [Cloudflare Regional Services](https://developers.cloudflare.com/data-localization/regional-services/) so that TLS termination and HTTPS decryption occur within the selected processing region.
+
 ### Limitations
 
 Data residency does not apply to: (1) any transmission or storage of Customer Content outside of the selected region caused by the location of an End User or Customer’s infrastructure when accessing the services; (2) products, services, or content offered by parties other than OpenAI through the Services; or (3) any data other than Customer Content, such as system data.
@@ -27911,8 +27915,9 @@ Responses API and Agents SDK applications don't automatically inherit
 [Codex Auto-review](https://developers.openai.com/codex/sandboxing/auto-review). Add review and enforcement
 to your own harness. The
 [open-source Codex reviewer policy](https://github.com/openai/codex/blob/main/codex-rs/core/src/guardian/policy.md)
-illustrates one approach; [Cyber Safety](https://developers.openai.com/codex/cyber-safety) explains approved
-model access and safe engagement setup.
+illustrates one approach. Review [Models and Trusted Access](https://developers.openai.com/codex/cyber-safety)
+for approved model access and [Recommended configuration](https://developers.openai.com/codex/cyber-safety/recommended-configuration)
+for safe engagement setup.
 
 ## Streaming and delayed review use the same state model
 
@@ -53266,7 +53271,7 @@ To help ensure safety in your use of the OpenAI API and tools, we run safety che
 Learn more:
 
 - [Model evaluations hub](https://openai.com/safety/evaluations-hub)
-- [Cyber Safety](https://developers.openai.com/codex/cyber-safety)
+- [Cyber safety models](https://developers.openai.com/codex/cyber-safety)
 - [Fine-tuning safety](https://developers.openai.com/api/docs/guides/supervised-fine-tuning#safety-checks)
 - [Safety checks in computer use](https://developers.openai.com/api/docs/guides/tools-computer-use#handle-user-confirmation-and-consent)
 
@@ -75763,9 +75768,10 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.0.0</version>
+  <version>4.50.0</version>
 </dependency>
 ```
+
 
 A simple API request to [Responses API](https://developers.openai.com/api/reference/resources/responses) would look like this:
 
@@ -77615,8 +77621,6 @@ Standard
 | Category | Model | Input | Cached input | Output |
 | --- | --- | --- | --- | --- |
 | ChatGPT | chat-latest | $5.00 | $0.50 | $30.00 |
-| ChatGPT | gpt-5.3-chat-latest | $1.75 | $0.175 | $14.00 |
-| ChatGPT | gpt-5.2-chat-latest | $1.75 | $0.175 | $14.00 |
 | Codex | gpt-5.3-codex | $1.75 | $0.175 | $14.00 |
 | Search | gpt-5-search-api | $1.25 | $0.125 | $10.00 |
 | Embedding | text-embedding-3-small | $0.02 | - | - |
@@ -77911,9 +77915,10 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.0.0</version>
+  <version>4.50.0</version>
 </dependency>
 ```
+
 
 A simple API request to [Responses API](https://developers.openai.com/api/reference/resources/responses) would look like this:
 

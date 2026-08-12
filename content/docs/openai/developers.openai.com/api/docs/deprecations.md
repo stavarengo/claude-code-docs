@@ -109,15 +109,6 @@ On June 2, 2026, we notified developers using older GPT Image models of their de
 | Dec 1, 2026   | `gpt-image-1.5`        | `gpt-image-2`           |
 | Dec 1, 2026   | `chatgpt-image-latest` | `gpt-image-2`           |
 
-### 2026-05-08: gpt-5.2-chat-latest and gpt-5.3-chat-latest model snapshots
-
-On May 8th, 2026, we notified developers using `gpt-5.2-chat-latest` and `gpt-5.3-chat-latest` model snapshots of their deprecation and removal from the API.
-
-| Shutdown date | Model / system        | Recommended replacement |
-| ------------- | --------------------- | ----------------------- |
-| Aug 10, 2026  | `gpt-5.2-chat-latest` | `gpt-5.6-sol`           |
-| Aug 10, 2026  | `gpt-5.3-chat-latest` | `gpt-5.6-sol`           |
-
 ### Update to OpenAI’s self-serve fine-tuning
 
 On May 7th, 2026, we notified developers using OpenAI’s self-serve fine-tuning platform of updates to availability.
@@ -198,6 +189,15 @@ See the Assistants to Conversations [migration guide](https://developers.openai.
 ## Past deprecations
 
 Past deprecations are listed below, with the most recent announcements at the top.
+
+### 2026-05-08: gpt-5.2-chat-latest and gpt-5.3-chat-latest model snapshots
+
+On May 8th, 2026, we notified developers using `gpt-5.2-chat-latest` and `gpt-5.3-chat-latest` model snapshots of their deprecation and removal from the API.
+
+| Shutdown date | Model / system        | Recommended replacement |
+| ------------- | --------------------- | ----------------------- |
+| Aug 10, 2026  | `gpt-5.2-chat-latest` | `gpt-5.6-sol`           |
+| Aug 10, 2026  | `gpt-5.3-chat-latest` | `gpt-5.6-sol`           |
 
 ### 2026-04-22: Legacy GPT model snapshots (July 2026 shutdown)
 

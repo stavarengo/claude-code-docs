@@ -8,6 +8,7 @@ Model ID: `gpt-5.6-terra`
 
 GPT-5.6 Terra is designed for workloads that balance intelligence and cost.
 It roughly corresponds to the mini model tier used in earlier GPT-5 families.
+Reasoning.effort supports: none, low, medium (default), high, xhigh, and max.
 
 ## Model details
 

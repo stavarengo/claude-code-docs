@@ -97,12 +97,24 @@ Snapshots let you lock in a specific version of the model so that performance an
 
 Rate limits ensure fair and reliable access to the API by placing specific caps on requests, tokens, audio duration, or other usage within a given time period. Your usage tier determines how high these limits are set and automatically increases as you send more requests and spend more on the API.
 
-### default
+### Standard
 
 | Tier | RPM | TPM | Batch queue limit |
 | --- | ---: | ---: | ---: |
-| Tier 1 | 500 | 30,000 | 90,000 |
-| Tier 2 | 5,000 | 450,000 | 1,350,000 |
-| Tier 3 | 5,000 | 800,000 | 50,000,000 |
-| Tier 4 | 10,000 | 2,000,000 | 200,000,000 |
-| Tier 5 | 10,000 | 30,000,000 | 5,000,000,000 |
+| Tier 1 | 50 | 50,000 | 900,000 |
+| Tier 2 | 500 | 100,000 | 1,350,000 |
+| Tier 3 | 500 | 200,000 | 100,000,000 |
+| Tier 4 | 1,000 | 400,000 | 200,000,000 |
+| Tier 5 | 1,500 | 4,000,000 | 15,000,000,000 |
+
+### Long Context
+
+> 272K input tokens
+
+| Tier | RPM | TPM | Batch queue limit |
+| --- | ---: | ---: | ---: |
+| Tier 1 | 20 | 40,000 | 2,000,000 |
+| Tier 2 | 50 | 100,000 | 20,000,000 |
+| Tier 3 | 100 | 200,000 | 40,000,000 |
+| Tier 4 | 200 | 1,000,000 | 100,000,000 |
+| Tier 5 | 800 | 2,000,000 | 1,000,000,000 |
