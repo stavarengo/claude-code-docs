@@ -12,22 +12,26 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 553 pages - /docs - Content included below
-- German (Deutsch) (de) - 201 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 201 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 201 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 201 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 201 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 201 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 201 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 201 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 201 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 201 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 201 pages - /docs/id - Visit website for content
+- English (en) - 554 pages - /docs - Content included below
+- German (Deutsch) (de) - 206 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 206 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 206 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 206 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 206 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 206 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 206 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 206 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 206 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 206 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 206 pages - /docs/id - Visit website for content
 
 ---
 
 ## English
+
+### Docs home
+
+- [Documentation](https://platform.claude.com/docs/en/home.md)
 
 ### Messages
 
@@ -136,6 +140,7 @@ The full documentation is available in the following languages on https://platfo
 - [Scheduled deployments](https://platform.claude.com/docs/en/managed-agents/scheduled-deployments.md)
 - [Security model](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-security.md)
 - [Integration guide](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes.md) - Self-hosted sandboxes
+- [Session budgets](https://platform.claude.com/docs/en/managed-agents/budgets.md)
 - [Session event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming.md)
 - [Session operations](https://platform.claude.com/docs/en/managed-agents/session-operations.md)
 - [Agent Skills](https://platform.claude.com/docs/en/managed-agents/skills.md) - Skills
@@ -169,7 +174,7 @@ The full documentation is available in the following languages on https://platfo
 - [Manage WIF via API](https://platform.claude.com/docs/en/manage-claude/wif-admin-api.md) - Manage WIF with the Admin API
 - [Activity Feed](https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed.md) - Query the Activity Feed
 - [Rate Limits API](https://platform.claude.com/docs/en/manage-claude/rate-limits-api.md)
-- [Chats, files, and projects](https://platform.claude.com/docs/en/manage-claude/compliance-content-data.md) - Retrieve and delete chats, files, and projects
+- [Chats, files, projects, and sessions](https://platform.claude.com/docs/en/manage-claude/compliance-content-data.md) - Retrieve and delete chats, files, projects, and sessions
 - [Set up the Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api-access.md)
 - [Spend Limits API](https://platform.claude.com/docs/en/manage-claude/spend-limits-api.md)
 - [Usage and Cost API](https://platform.claude.com/docs/en/manage-claude/usage-cost-api.md)
@@ -613,7 +618,6 @@ The full documentation is available in the following languages on https://platfo
 ### Other pages
 
 - [API usage primer for Claude](https://platform.claude.com/docs/en/claude_api_primer.md)
-- [Classification](https://platform.claude.com/docs/en/about-claude/use-case-guides/classification.md)
 
 ---
 

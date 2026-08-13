@@ -7,10 +7,10 @@ claude/code.claude.com/docs/en:{accessibility.md,admin-setup.md,advisor.md,agent
 claude/code.claude.com/docs/en/agent-sdk:{agent-loop.md,claude-code-features.md,cost-tracking.md,custom-tools.md,examples.md,file-checkpointing.md,hooks.md,hosting.md,mcp.md,migration-guide.md,modifying-system-prompts.md,observability.md,overview.md,permissions.md,plugins.md,python.md,quickstart.md,secure-deployment.md,session-storage.md,sessions.md,skills.md,slash-commands.md,streaming-output.md,streaming-vs-single-mode.md,structured-outputs.md,subagents.md,todo-tracking.md,tool-search.md,troubleshooting.md,typescript-v2-preview.md,typescript.md,user-input.md}
 claude/code.claude.com/docs/en/whats-new:{2026-w13.md,2026-w14.md,2026-w15.md,2026-w16.md,2026-w17.md,2026-w18.md,2026-w19.md,2026-w20.md,2026-w21.md,2026-w22.md,2026-w23.md,2026-w24.md,2026-w25.md,2026-w26.md,2026-w27.md,2026-w28.md,2026-w29.md,2026-w30.md,2026-w32.md,index.md}
 claude/platform.claude.com:{llms.txt}
-claude/platform.claude.com/docs/en:{claude_api_primer.md,get-api-key.md,get-started.md,intro.md}
+claude/platform.claude.com/docs/en:{claude_api_primer.md,get-api-key.md,get-started.md,home.md,intro.md}
 claude/platform.claude.com/docs/en/about-claude:{glossary.md,model-deprecations.md,pricing.md}
 claude/platform.claude.com/docs/en/about-claude/models:{choosing-a-model.md,introducing-claude-fable-5-and-claude-mythos-5.md,migration-guide.md,model-ids-and-versions.md,overview.md,whats-new-opus-5.md,whats-new-sonnet-5.md}
-claude/platform.claude.com/docs/en/about-claude/use-case-guides:{classification.md,content-moderation.md,customer-support-chat.md,legal-summarization.md,overview.md,ticket-routing.md}
+claude/platform.claude.com/docs/en/about-claude/use-case-guides:{content-moderation.md,customer-support-chat.md,legal-summarization.md,overview.md,ticket-routing.md}
 claude/platform.claude.com/docs/en/agents-and-tools:{mcp-connector.md,remote-mcp-servers.md}
 claude/platform.claude.com/docs/en/agents-and-tools/agent-skills:{best-practices.md,claude-api-skill.md,enterprise.md,overview.md,quickstart.md}
 claude/platform.claude.com/docs/en/agents-and-tools/mcp-tunnels:{concepts.md,console.md,deploy-compose.md,deploy-helm.md,overview.md,quickstart.md,reference.md,security.md,troubleshooting.md}
