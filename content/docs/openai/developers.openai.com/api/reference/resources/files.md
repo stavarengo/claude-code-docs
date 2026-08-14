@@ -6,7 +6,7 @@
 
 **get** `/files/{file_id}/content`
 
-Returns the contents of the specified file.
+Returns a response containing the contents of the specified file.
 
 ### Path Parameters
 

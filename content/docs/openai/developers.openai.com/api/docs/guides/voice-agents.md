@@ -15,9 +15,9 @@ Voice workflows are an SDK-first surface. If you're migrating a related Agent Bu
 
 ## Recommended starting points
 
-The examples below are intentionally different architectures, not matching language tabs. The TypeScript and Python libraries expose different voice helpers today:
+The examples below are intentionally different architectures, not matching language tabs. The JavaScript and Python libraries expose different voice helpers today:
 
-- In TypeScript, the fastest path to a browser-based voice assistant is a `RealtimeAgent` and `RealtimeSession`.
+- In JavaScript, the fastest path to a browser-based voice assistant is a `RealtimeAgent` and `RealtimeSession`.
 - In Python, the simplest path to extending an existing text agent into voice is a chained `VoicePipeline`.
 
 
@@ -37,7 +37,7 @@ The usual browser flow is:
 
 Start a realtime voice session
 
-```typescript
+```javascript
 import { RealtimeAgent, RealtimeSession } from "@openai/agents/realtime";
 
 const agent = new RealtimeAgent({

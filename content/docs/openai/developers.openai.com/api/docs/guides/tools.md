@@ -861,7 +861,7 @@ In the Agents SDK, the tool semantics stay the same, but the wiring moves into t
 
 Wrap local logic as a function tool
 
-```typescript
+```javascript
 import { tool } from "@openai/agents";
 import { z } from "zod";
 
@@ -888,7 +888,7 @@ def get_weather(city: str) -> str:
 
 Expose a specialist as a tool
 
-```typescript
+```javascript
 import { Agent } from "@openai/agents";
 
 const summarizer = new Agent({

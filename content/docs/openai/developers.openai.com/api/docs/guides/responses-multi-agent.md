@@ -36,7 +36,7 @@ Note that adding subagents can increase token usage, and may not be as beneficia
 
 ## Quickstart
 
-The Python and TypeScript examples use the beta Responses SDK. For HTTP
+The Python and JavaScript examples use the beta Responses SDK. For HTTP
   requests, use `client.beta.responses` and pass `responses_multi_agent=v1` in
   the `betas` argument. For raw HTTP requests and WebSocket connections, pass
   `OpenAI-Beta: responses_multi_agent=v1` in the request or connection headers.
@@ -46,12 +46,12 @@ Enable Multi-agent in your Responses API request with `multi_agent.enabled`. Whe
 
 Review a pull request with subagents
 
-```typescript
+```javascript
 import OpenAI from "openai";
 
 const client = new OpenAI();
 
-async function reviewPullRequest(diff: string): Promise<string> {
+async function reviewPullRequest(diff) {
   const response = await client.beta.responses.create({
     model: "gpt-5.6-sol",
     input:
@@ -186,14 +186,8 @@ Example client-side code:
 
 Handle HTTP streaming tool calls
 
-```typescript
+```javascript
 import OpenAI from "openai";
-import type {
-  BetaResponseInput,
-  BetaResponseInputItem,
-  BetaResponseOutputItem,
-  BetaTool,
-} from "openai/resources/beta/responses/responses";
 
 const client = new OpenAI();
 const ROOT = "/root";
@@ -201,7 +195,8 @@ const proposals = {
   alpha: { estimated_weeks: 6, risk: "medium" },
   beta: { estimated_weeks: 8, risk: "low" },
 };
-const tools: BetaTool[] = [
+/** @type {import("openai/resources/beta/responses").BetaTool[]} */
+const tools = [
   {
     type: "function",
     name: "get_proposal",
@@ -221,39 +216,44 @@ const tools: BetaTool[] = [
     strict: true,
   },
 ];
-const history: Array<BetaResponseInputItem | BetaResponseOutputItem> = [
+/**
+ * @type {Array<
+ *   import("openai/resources/beta/responses").BetaResponseInputItem |
+ *   import("openai/resources/beta/responses").BetaResponseOutputItem
+ * >}
+ */
+const history = [
   {
     role: "user",
     content: "Compare proposal alpha and proposal beta.",
   },
 ];
 
-function agentName(item: BetaResponseOutputItem): string {
+function agentName(item) {
   return item.agent?.agent_name ?? ROOT;
 }
 
-function processToolCall(name: string, argumentsJson: string): string {
+function processToolCall(name, argumentsJson) {
   if (name !== "get_proposal") {
     throw new Error(`Unknown tool: ${name}`);
   }
-  const { proposal } = JSON.parse(argumentsJson) as {
-    proposal: keyof typeof proposals;
-  };
+  const { proposal } = JSON.parse(argumentsJson);
+
   return JSON.stringify(proposals[proposal]);
 }
 
 while (true) {
-  const outputItems: BetaResponseOutputItem[] = [];
-  const pendingCalls: Extract<
-    BetaResponseOutputItem,
-    { type: "function_call" }
-  >[] = [];
-  const itemAgents = new Map<number, string>();
+  const outputItems = [];
+  const pendingCalls = [];
+  const itemAgents = new Map();
 
   const stream = await client.beta.responses.create({
     model: "gpt-5.6-sol",
     // Beta output items can be replayed as input on the next request.
-    input: history as BetaResponseInput,
+    input:
+      /** @type {import("openai/resources/beta/responses").BetaResponseInput} */ (
+        history
+      ),
     tools,
     store: false,
     multi_agent: {
@@ -481,9 +481,9 @@ Save the response ID from the `response.created` event and include it in every `
 
 Inject tool outputs over WebSocket
 
-```typescript
+```javascript
 import OpenAI from "openai";
-import type { BetaResponseInput } from "openai/resources/beta/responses/responses";
+
 import { ResponsesWS } from "openai/resources/beta/responses/ws";
 
 const client = new OpenAI();
@@ -493,7 +493,7 @@ const proposals = {
 };
 const tools = [
   {
-    type: "function" as const,
+    type: "function",
     name: "get_proposal",
     description:
       "Return details for a proposal that the agents should compare.",
@@ -512,19 +512,18 @@ const tools = [
   },
 ];
 
-function processToolCall(name: string, argumentsJson: string): string {
+function processToolCall(name, argumentsJson) {
   if (name !== "get_proposal") {
     throw new Error(`Unknown tool: ${name}`);
   }
-  const { proposal } = JSON.parse(argumentsJson) as {
-    proposal: keyof typeof proposals;
-  };
+  const { proposal } = JSON.parse(argumentsJson);
+
   return JSON.stringify(proposals[proposal]);
 }
 
-async function runMultiAgent(ws: ResponsesWS) {
-  let previousResponseId: string | undefined;
-  let pendingInput: BetaResponseInput = [
+async function runMultiAgent(ws) {
+  let previousResponseId;
+  let pendingInput = [
     { role: "user", content: process.argv.slice(2).join(" ") },
   ];
 
@@ -542,9 +541,9 @@ async function runMultiAgent(ws: ResponsesWS) {
       previous_response_id: previousResponseId,
     });
 
-    const nextInput: BetaResponseInput = [];
-    let completedResponseId: string | undefined;
-    let responseId: string | undefined;
+    const nextInput = [];
+    let completedResponseId;
+    let responseId;
     let pendingInjections = 0;
 
     for await (const message of ws) {

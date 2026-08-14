@@ -84,7 +84,7 @@ claude/platform.claude.com/docs/en/api/cli/messages:{create.md}
 claude/platform.claude.com/docs/en/api/completions:{create.md}
 claude/platform.claude.com/docs/en/api/compliance:{activities.md,apps.md,code.md,groups.md,organizations.md}
 claude/platform.claude.com/docs/en/api/compliance/activities:{list.md}
-claude/platform.claude.com/docs/en/api/compliance/apps:{artifacts.md,chats.md,projects.md}
+claude/platform.claude.com/docs/en/api/compliance/apps:{artifacts.md,chats.md,projects.md,sessions.md}
 claude/platform.claude.com/docs/en/api/compliance/apps/artifacts:{download.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/compliance/apps/chats:{delete.md,files.md,generated_files.md,list.md,messages.md}
 claude/platform.claude.com/docs/en/api/compliance/apps/chats/files:{delete.md,download.md,retrieve.md}
@@ -94,6 +94,11 @@ claude/platform.claude.com/docs/en/api/compliance/apps/projects:{attachments.md,
 claude/platform.claude.com/docs/en/api/compliance/apps/projects/attachments:{list.md}
 claude/platform.claude.com/docs/en/api/compliance/apps/projects/collaborators:{list.md}
 claude/platform.claude.com/docs/en/api/compliance/apps/projects/documents:{delete.md,metadata.md,retrieve.md}
+claude/platform.claude.com/docs/en/api/compliance/apps/sessions:{local.md,remote.md}
+claude/platform.claude.com/docs/en/api/compliance/apps/sessions/local:{list.md,messages.md,retrieve.md}
+claude/platform.claude.com/docs/en/api/compliance/apps/sessions/local/messages:{list.md}
+claude/platform.claude.com/docs/en/api/compliance/apps/sessions/remote:{list.md,messages.md}
+claude/platform.claude.com/docs/en/api/compliance/apps/sessions/remote/messages:{list.md}
 claude/platform.claude.com/docs/en/api/compliance/code:{artifacts.md}
 claude/platform.claude.com/docs/en/api/compliance/code/artifacts:{delete.md,list.md,retrieve_version.md}
 claude/platform.claude.com/docs/en/api/compliance/groups:{list.md,members.md,retrieve.md}
@@ -112,7 +117,7 @@ claude/platform.claude.com/docs/en/cli-sdks-libraries:{middleware.md,overview.md
 claude/platform.claude.com/docs/en/cli-sdks-libraries/cli:{authentication.md,quickstart.md,scripting.md,using.md}
 claude/platform.claude.com/docs/en/cli-sdks-libraries/libraries:{apple-foundation-models.md,openai-sdk.md}
 claude/platform.claude.com/docs/en/cli-sdks-libraries/sdks:{csharp.md,go.md,java.md,php.md,python.md,ruby.md,typescript.md}
-claude/platform.claude.com/docs/en/manage-claude:{access-transparency.md,admin-api-keys.md,admin-api.md,analytics-api.md,api-and-data-retention.md,app-attest.md,authentication.md,claude-code-analytics-api.md,cmek-aws-kms.md,cmek-azure-key-vault.md,cmek-google-cloud-kms.md,cmek.md,compliance-activity-feed.md,compliance-api-access.md,compliance-api.md,compliance-content-data.md,compliance-errors.md,compliance-faq.md,compliance-integration-patterns.md,compliance-org-data.md,data-residency.md,inference-hooks-configuration.md,inference-hooks-endpoint.md,inference-hooks.md,rate-limits-api.md,spend-limits-api.md,usage-cost-api.md,user-management.md,wif-admin-api.md,wif-reference.md,workload-identity-federation.md,workspaces.md}
+claude/platform.claude.com/docs/en/manage-claude:{access-transparency.md,admin-api-keys.md,admin-api.md,analytics-api.md,api-and-data-retention.md,app-attest.md,authentication.md,claude-code-analytics-api.md,cmek-aws-kms.md,cmek-azure-key-vault.md,cmek-google-cloud-kms.md,cmek.md,compliance-activity-feed.md,compliance-api-access.md,compliance-api.md,compliance-content-data.md,compliance-errors.md,compliance-faq.md,compliance-integration-patterns.md,compliance-org-data.md,compliance-sessions.md,data-residency.md,inference-hooks-configuration.md,inference-hooks-endpoint.md,inference-hooks.md,rate-limits-api.md,spend-limits-api.md,usage-cost-api.md,user-management.md,wif-admin-api.md,wif-reference.md,workload-identity-federation.md,workspaces.md}
 claude/platform.claude.com/docs/en/manage-claude/wif-providers:{aws.md,azure.md,gcp.md,github-actions.md,kubernetes.md,okta.md,spiffe.md}
 claude/platform.claude.com/docs/en/managed-agents:{agent-setup.md,budgets.md,cloud-sandboxes-reference.md,define-outcomes.md,dreams.md,environments.md,events-and-streaming.md,files.md,github.md,mcp-connector.md,memory.md,migration.md,multiagent-orchestration.md,onboarding.md,overview.md,permission-policies.md,quickstart.md,reference.md,scheduled-deployments.md,self-hosted-sandboxes-security.md,self-hosted-sandboxes.md,session-operations.md,sessions.md,skills.md,tools.md,vaults.md,webhooks.md}
 claude/platform.claude.com/docs/en/release-notes:{overview.md,system-prompts.md}

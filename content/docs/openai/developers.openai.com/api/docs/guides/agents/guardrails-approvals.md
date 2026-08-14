@@ -22,7 +22,7 @@ Use input guardrails when you want a fast validation step to run before the expe
 
 Block a request with an input guardrail
 
-```typescript
+```javascript
 import { Agent, InputGuardrailTripwireTriggered, run } from "@openai/agents";
 import { z } from "zod";
 
@@ -130,7 +130,7 @@ Approvals are the human-in-the-loop path for tool calls. The model can still dec
 
 Pause for approval before a sensitive action
 
-```typescript
+```javascript
 import { Agent, run, tool } from "@openai/agents";
 import { z } from "zod";
 

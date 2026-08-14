@@ -22,7 +22,7 @@ Widget actions allow users to trigger logic from the UI. Actions can be bound to
 
 Capture widget events with the `onAction` callback from `WidgetsOption` or equivalent React hook. Forward the action payload to your backend to handle actions.
 
-```typescript
+```javascript
 chatkit.setOptions({
   widgets: {
     async onAction(action, item) {
