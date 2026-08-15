@@ -255,6 +255,19 @@ response = client.responses.create(
 response.to_dict()["output"]
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-4.1",
+  instructions: "Act as a coding agent. Inspect the reported failure, identify the smallest correct change, and explain how you would verify it.",
+  input: "The parser rejects an empty optional field even though the schema permits it. Diagnose the likely validation bug."
+)
+
+puts(response.output_text)
+```
+
 
 ```text
 [{'id': 'msg_67fe92df26ac819182ffafce9ff4e4fc07c7e06242e51f8b',
@@ -466,6 +479,19 @@ response = client.responses.create(
 )
 
 response.to_dict()["output"]
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-4.1",
+  instructions: "You are a customer service assistant. Confirm the customer's goal, use only supplied account facts, and clearly explain the next action.",
+  input: "A customer says a replacement order still has not shipped. Draft a concise response."
+)
+
+puts(response.output_text)
 ```
 
 

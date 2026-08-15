@@ -433,11 +433,12 @@ Console.WriteLine(response.GetOutputText());
 
 ```ruby
 require "openai"
+require "pathname"
 
 openai = OpenAI::Client.new
 
 file = openai.files.create(
-  file: File.open("draconomicon.pdf", "rb"),
+  file: Pathname("draconomicon.pdf"),
   purpose: "user_data"
 )
 
@@ -613,6 +614,30 @@ func main() {
 
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "base64"
+require "openai"
+
+client = OpenAI::Client.new
+pdf_data = Base64.strict_encode64(File.binread("draconomicon.pdf"))
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: [{
+    role: :user,
+    content: [
+      {
+        type: :input_file,
+        filename: "document.pdf",
+        file_data: "data:application/pdf;base64,#{pdf_data}"
+      },
+      {type: :input_text, text: "Summarize this document."}
+    ]
+  }]
+)
+
+puts(response.output_text)
 ```
 
 ```bash

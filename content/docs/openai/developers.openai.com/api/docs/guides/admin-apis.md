@@ -463,7 +463,7 @@ page.data().forEach(auditLog -> System.out.println(auditLog.id()));
 ```ruby
 audit_logs = openai.admin.organization.audit_logs.list(limit: 10)
 
-audit_logs.data.each do |audit_log|
+(audit_logs.data || []).each do |audit_log|
   puts(audit_log.id)
 end
 ```

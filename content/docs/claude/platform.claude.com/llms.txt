@@ -12,7 +12,7 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 565 pages - /docs - Content included below
+- English (en) - 566 pages - /docs - Content included below
 - German (Deutsch) (de) - 206 pages - /docs/de - Visit website for content
 - Spanish (Español) (es) - 206 pages - /docs/es - Visit website for content
 - French (Français) (fr) - 206 pages - /docs/fr - Visit website for content
@@ -221,6 +221,7 @@ The full documentation is available in the following languages on https://platfo
 - [Upgrade between model versions](https://platform.claude.com/docs/en/about-claude/models/migration-guide.md) - Migration guide
 - [Model deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations.md)
 - [Model IDs and versioning](https://platform.claude.com/docs/en/about-claude/models/model-ids-and-versions.md)
+- [Optimizing for cost and intelligence](https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence.md)
 - [Pricing](https://platform.claude.com/docs/en/about-claude/pricing.md)
 - [System prompts](https://platform.claude.com/docs/en/release-notes/system-prompts.md) - System Prompts
 - [What's new in Claude Opus 5](https://platform.claude.com/docs/en/about-claude/models/whats-new-opus-5.md)

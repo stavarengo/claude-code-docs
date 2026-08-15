@@ -880,6 +880,16 @@ if err != nil {
 }
 ```
 
+```ruby
+require "openai"
+require "pathname"
+
+client = OpenAI::Client.new
+file = Pathname("revenue-forecast.csv")
+uploaded = client.files.create(file: file, purpose: :assistants)
+puts(uploaded.id)
+```
+
 ```bash
 curl https://api.openai.com/v1/files \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -928,6 +938,22 @@ assistant, err := client.Beta.Assistants.New(context.Background(), openai.BetaAs
 if err != nil {
 	panic(err)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+assistant = client.beta.assistants.create(
+  name: "Data visualizer",
+  model: "gpt-4o",
+  instructions: "Analyze CSV data, create relevant visualizations, and summarize the trends.",
+  tools: [{type: :code_interpreter}],
+  tool_resources: {
+    code_interpreter: {file_ids: ["file-BK7bzQj3FfZFXr7DbL6xJwfo"]}
+  }
+)
+puts(assistant.id)
 ```
 
 ```bash
@@ -1006,6 +1032,23 @@ thread, err := client.Beta.Threads.New(context.Background(), openai.BetaThreadNe
 if err != nil {
 	panic(err)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+thread = client.beta.threads.create(
+  messages: [{
+    role: :user,
+    content: "Create 3 data visualizations based on the trends in this file.",
+    attachments: [{
+      file_id: "file-ACq8OjcLQm2eIG0BvRM4z5qX",
+      tools: [{type: :code_interpreter}]
+    }]
+  }]
+)
+puts(thread.id)
 ```
 
 ```bash
@@ -1122,6 +1165,31 @@ if err != nil {
 }
 ```
 
+```ruby
+require "openai"
+require "pathname"
+
+client = OpenAI::Client.new
+file = client.files.create(
+  file: Pathname("myimage.png"),
+  purpose: :vision
+)
+thread = client.beta.threads.create(
+  messages: [{
+    role: :user,
+    content: [
+      {type: :text, text: "What is the difference between these images?"},
+      {
+        type: :image_url,
+        image_url: {url: "https://openai-documentation.vercel.app/images/cat_and_otter.png"}
+      },
+      {type: :image_file, image_file: {file_id: file.id}}
+    ]
+  }]
+)
+puts(thread.id)
+```
+
 ```bash
 # Upload a file with an "vision" purpose
 curl https://api.openai.com/v1/files \
@@ -1225,6 +1293,28 @@ thread, err := client.Beta.Threads.New(context.Background(), openai.BetaThreadNe
 if err != nil {
 	panic(err)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+thread = client.beta.threads.create(
+  messages: [{
+    role: :user,
+    content: [
+      {type: :text, text: "What is this an image of?"},
+      {
+        type: :image_url,
+        image_url: {
+          url: "https://openai-documentation.vercel.app/images/cat_and_otter.png",
+          detail: :high
+        }
+      }
+    ]
+  }]
+)
+puts(thread.id)
 ```
 
 ```bash
@@ -1386,6 +1476,43 @@ messageContent.Value += "\n" + strings.Join(citations, "\n")
 fmt.Println(messageContent.Value)
 ```
 
+```ruby
+require "openai"
+require "pathname"
+
+client = OpenAI::Client.new
+message = client.beta.threads.messages.retrieve(
+  "msg_abc123",
+  thread_id: "thread_abc123"
+)
+text_block = message.content.find do |content|
+  content.is_a?(OpenAI::Models::Beta::Threads::TextContentBlock)
+end
+unless text_block.is_a?(OpenAI::Models::Beta::Threads::TextContentBlock)
+  raise "No text content returned"
+end
+text = text_block.text
+downloads = Pathname("downloads")
+references = text.annotations.each_with_index.filter_map do |annotation, index|
+  text.value = text.value.sub(annotation.text, " [#{index}]")
+
+  case annotation
+  when OpenAI::Models::Beta::Threads::FileCitationAnnotation
+    file = client.files.retrieve(annotation.file_citation.file_id)
+    "[#{index}] #{file.filename}"
+  when OpenAI::Models::Beta::Threads::FilePathAnnotation
+    file_id = annotation.file_path.file_id
+    file = client.files.retrieve(file_id)
+    downloads.mkpath
+    output_path = downloads.join(Pathname(file.filename).basename)
+    output_path.binwrite(client.files.content(file_id).read)
+    "[#{index}] Downloaded #{output_path}"
+  end
+end
+
+puts(([text.value] + references).join("\n"))
+```
+
 
 ## Runs and Run Steps
 
@@ -1411,6 +1538,14 @@ _, err := client.Beta.Threads.Runs.New(context.Background(), "thread_abc123", op
 if err != nil {
 	panic(err)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+run = client.beta.threads.runs.create("thread_abc123", assistant_id: "asst_ToSF7Gb04YMj8AMMm50ZLLtY")
+puts(run.id)
 ```
 
 ```bash
@@ -1458,6 +1593,20 @@ _, err := client.Beta.Threads.Runs.New(context.Background(), "thread_abc123", op
 if err != nil {
 	panic(err)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+run = client.beta.threads.runs.create(
+  "thread_abc123",
+  assistant_id: "asst_ToSF7Gb04YMj8AMMm50ZLLtY",
+  model: "gpt-4o",
+  instructions: "New instructions that override the Assistant instructions",
+  tools: [{type: :code_interpreter}, {type: :file_search}]
+)
+puts(run.id)
 ```
 
 ```bash
@@ -1622,6 +1771,17 @@ if err != nil {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+assistant = client.beta.assistants.create(
+  model: "gpt-4o",
+  tools: [{type: :code_interpreter}]
+)
+puts(assistant.id)
+```
+
 ```bash
 curl https://api.openai.com/v1/assistants \
   -u :$OPENAI_API_KEY \
@@ -1703,6 +1863,26 @@ if err != nil {
 }
 ```
 
+```ruby
+require "openai"
+require "pathname"
+
+client = OpenAI::Client.new
+file = client.files.create(
+  file: Pathname("revenue-forecast.csv"),
+  purpose: :assistants
+)
+assistant = client.beta.assistants.create(
+  model: "gpt-4o",
+  instructions: "When asked a math question, write and run code to answer it.",
+  tools: [{type: :code_interpreter}],
+  tool_resources: {
+    code_interpreter: {file_ids: [file.id]}
+  }
+)
+puts(assistant.id)
+```
+
 ```bash
 # Upload a file with an "assistants" purpose
 curl https://api.openai.com/v1/files \
@@ -1775,6 +1955,23 @@ thread, err := client.Beta.Threads.New(context.Background(), openai.BetaThreadNe
 if err != nil {
 	panic(err)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+thread = client.beta.threads.create(
+  messages: [{
+    role: :user,
+    content: "I need to solve the equation `3x + 11 = 14`. Can you help me?",
+    attachments: [{
+      file_id: "file-ACq8OjcLQm2eIG0BvRM4z5qX",
+      tools: [{type: :code_interpreter}]
+    }]
+  }]
+)
+puts(thread.id)
 ```
 
 ```bash
@@ -1883,6 +2080,14 @@ if err := output.Close(); err != nil {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+image = client.files.content("file-abc123")
+File.binwrite("my-image.png", image.read)
+```
+
 ```bash
 curl https://api.openai.com/v1/files/file-abc123/content \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -1945,6 +2150,17 @@ if err != nil {
 	panic(err)
 }
 fmt.Println(runSteps.Data)
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+steps = client.beta.threads.runs.steps.list(
+  "run_abc123",
+  thread_id: "thread_abc123"
+)
+puts(steps.data)
 ```
 
 ```bash
@@ -2078,6 +2294,19 @@ if err != nil {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+assistant = client.beta.assistants.create(
+  model: "gpt-4o",
+  name: "Financial Analyst Assistant",
+  instructions: "Use the knowledge base to answer questions about audited financial statements.",
+  tools: [{type: :file_search}]
+)
+puts(assistant.id)
+```
+
 ```bash
 curl https://api.openai.com/v1/assistants \
 -H "Content-Type: application/json" \
@@ -2169,6 +2398,19 @@ _, err := client.Beta.Assistants.Update(context.Background(), "asst_abc123", ope
 if err != nil {
 	panic(err)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+assistant = client.beta.assistants.update(
+  "asst_abc123",
+  tool_resources: {
+    file_search: {vector_store_ids: ["vs_abc123"]}
+  }
+)
+puts(assistant.id)
 ```
 
 
@@ -2461,6 +2703,23 @@ if err != nil {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+store = client.vector_stores.create(
+  name: "Product Documentation",
+  file_ids: [
+    "file_1",
+    "file_2",
+    "file_3",
+    "file_4",
+    "file_5"
+  ]
+)
+puts(store.id)
+```
+
 
 Adding files to vector stores is an async operation. To ensure the operation is complete, we recommend that you use the 'create and poll' helpers in our official SDKs. If you're not using the SDKs, you can retrieve the `vector_store` object and monitor its [`file_counts`](https://developers.openai.com/api/reference/resources/vector_stores#vector-stores/object-file_counts) property to see the result of the file ingestion operation.
 
@@ -2490,6 +2749,24 @@ _, err := client.VectorStores.Files.NewAndPoll(context.Background(), "vs_abc123"
 if err != nil {
 	panic(err)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+file = client.vector_stores.files.create(
+  "vs_abc123",
+  file_id: "file-abc123"
+)
+until [:completed, :failed, :cancelled].include?(file.status)
+  sleep(1)
+  file = client.vector_stores.files.retrieve(
+    file.id,
+    vector_store_id: "vs_abc123"
+  )
+end
+puts(file.status)
 ```
 
 
@@ -2560,6 +2837,34 @@ _, err := client.VectorStores.FileBatches.NewAndPoll(context.Background(), "vs_a
 if err != nil {
 	panic(err)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+batch = client.vector_stores.file_batches.create(
+  "vs_abc123",
+  files: [
+    {file_id: "file_1", attributes: {category: "finance"}},
+    {
+      file_id: "file_2",
+      chunking_strategy: {
+        type: :static,
+        max_chunk_size_tokens: 1_000,
+        chunk_overlap_tokens: 200
+      }
+    }
+  ]
+)
+until [:completed, :failed, :cancelled].include?(batch.status)
+  sleep(1)
+  batch = client.vector_stores.file_batches.retrieve(
+    batch.id,
+    vector_store_id: "vs_abc123"
+  )
+end
+puts(batch.status)
 ```
 
 
@@ -2637,6 +2942,27 @@ thread, err := client.Beta.Threads.New(context.Background(), openai.BetaThreadNe
 if err != nil {
 	panic(err)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+assistant = client.beta.assistants.create(
+  instructions: "Answer product support questions using the provided files.",
+  model: "gpt-4o",
+  tools: [{type: :file_search}],
+  tool_resources: {
+    file_search: {vector_store_ids: ["vs_1"]}
+  }
+)
+thread = client.beta.threads.create(
+  messages: [{role: :user, content: "How do I cancel my subscription?"}],
+  tool_resources: {
+    file_search: {vector_store_ids: ["vs_2"]}
+  }
+)
+puts([assistant.id, thread.id])
 ```
 
 
@@ -2728,6 +3054,19 @@ if err != nil {
 fmt.Println(runStep)
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+step = client.beta.threads.runs.steps.retrieve(
+  "step_abc123",
+  thread_id: "thread_abc123",
+  run_id: "run_abc123",
+  include: ["step_details.tool_calls[*].file_search.results[*].content"]
+)
+puts(step)
+```
+
 ```bash
 curl -g https://api.openai.com/v1/threads/thread_abc123/runs/run_abc123/steps/step_abc123?include[]=step_details.tool_calls[*].file_search.results[*].content \
 -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -2799,6 +3138,24 @@ vectorStore, err := client.VectorStores.New(context.Background(), openai.VectorS
 if err != nil {
 	panic(err)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+store = client.vector_stores.create(
+  name: "Product Documentation",
+  file_ids: [
+    "file_1",
+    "file_2",
+    "file_3",
+    "file_4",
+    "file_5"
+  ],
+  expires_after: {anchor: :last_active_at, days: 7}
+)
+puts(store.id)
 ```
 
 
@@ -2877,6 +3234,34 @@ for start := 0; start < len(fileIDs); start += 100 {
 		panic(err)
 	}
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+files = client.vector_stores.files.list("vs_expired")
+store = client.vector_stores.create(name: "rag-store")
+client.beta.threads.update(
+  "thread_abc123",
+  tool_resources: {file_search: {vector_store_ids: [store.id]}}
+)
+file_ids = []
+files.auto_paging_each { |file| file_ids << file.id }
+file_ids.each_slice(100) do |batch_ids|
+  batch = client.vector_stores.file_batches.create(store.id, file_ids: batch_ids)
+  while batch.status == OpenAI::VectorStores::VectorStoreFileBatch::Status::IN_PROGRESS
+    sleep(2)
+    batch = client.vector_stores.file_batches.retrieve(
+      batch.id,
+      vector_store_id: store.id
+    )
+  end
+  unless batch.status == OpenAI::VectorStores::VectorStoreFileBatch::Status::COMPLETED
+    raise "File batch ended with status: #{batch.status}"
+  end
+end
+puts(store.id)
 ```
 
 
@@ -3083,6 +3468,46 @@ func weatherTools(strict bool) []openai.AssistantToolUnionParam {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+assistant = client.beta.assistants.create(
+  model: "gpt-4o",
+  instructions: "Use the provided functions to answer weather questions.",
+  tools: [
+    {
+      type: :function,
+      function: {
+        name: "get_current_temperature",
+        description: "Get the current temperature for a location",
+        parameters: {
+          type: :object,
+          properties: {
+            location: {type: :string},
+            unit: {type: :string, enum: ["Celsius", "Fahrenheit"]}
+          },
+          required: ["location", "unit"]
+        }
+      }
+    },
+    {
+      type: :function,
+      function: {
+        name: "get_rain_probability",
+        description: "Get the probability of rain for a location",
+        parameters: {
+          type: :object,
+          properties: {location: {type: :string}},
+          required: ["location"]
+        }
+      }
+    }
+  ]
+)
+puts(assistant.id)
+```
+
 
 ### Step 2: Create a Thread and add Messages
 
@@ -3120,6 +3545,19 @@ _, err = client.Beta.Threads.Messages.New(context.Background(), thread.ID, opena
 if err != nil {
 	panic(err)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+thread = client.beta.threads.create
+message = client.beta.threads.messages.create(
+  thread.id,
+  role: :user,
+  content: "What's the weather in San Francisco today, and will it rain?"
+)
+puts(message.id)
 ```
 
 
@@ -3469,6 +3907,54 @@ func pollRun(client openai.Client, threadID string, run *openai.Run) *openai.Run
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+thread_id = ENV.fetch("OPENAI_THREAD_ID")
+assistant_id = ENV.fetch("OPENAI_ASSISTANT_ID")
+
+poll_run = lambda do |run|
+  while [
+    OpenAI::Beta::Threads::RunStatus::QUEUED,
+    OpenAI::Beta::Threads::RunStatus::IN_PROGRESS
+  ].include?(run.status)
+    sleep(2)
+    run = client.beta.threads.runs.retrieve(run.id, thread_id: thread_id)
+  end
+  run
+end
+
+run = client.beta.threads.runs.create(thread_id, assistant_id: assistant_id)
+run = poll_run.call(run)
+
+if run.status == OpenAI::Beta::Threads::RunStatus::REQUIRES_ACTION
+  required_action = run.required_action or raise "Run has no required action"
+  tool_outputs = required_action.submit_tool_outputs.tool_calls.filter_map do |tool_call|
+    output = case tool_call.function.name
+    when "get_current_temperature" then "57"
+    when "get_rain_probability" then "0.06"
+    end
+    {tool_call_id: tool_call.id, output: output} if output
+  end
+  raise "No supported tool calls were requested" if tool_outputs.empty?
+
+  run = client.beta.threads.runs.submit_tool_outputs(
+    run.id,
+    thread_id: thread_id,
+    tool_outputs: tool_outputs
+  )
+  run = poll_run.call(run)
+end
+
+if run.status == OpenAI::Beta::Threads::RunStatus::COMPLETED
+  messages = client.beta.threads.messages.list(thread_id)
+  messages.auto_paging_each { |message| puts(message.content) }
+else
+  warn("Run ended with status: #{run.status}")
+end
+```
+
 
 
 ### Using Structured Outputs
@@ -3642,6 +4128,18 @@ func weatherTools() []openai.AssistantToolUnionParam {
 		}),
 	}
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+assistant = client.beta.assistants.create(
+  model: "gpt-4o",
+  name: "Weather assistant",
+  tools: [{type: :function, function: {name: "get_weather", description: "Get weather", parameters: {type: :object, properties: {city: {type: :string}}, required: ["city"], additionalProperties: false}, strict: true}}]
+)
+puts(assistant.id)
 ```
 
 ---
@@ -3969,6 +4467,39 @@ for m in messages:
 conversation = openai.conversations.create(items=items)
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+thread_id = ENV.fetch("OPENAI_THREAD_ID")
+messages = client.beta.threads.messages.list(thread_id, order: :asc)
+items = []
+messages.auto_paging_each do |message|
+  content = message.content.filter_map do |part|
+    case part
+    when OpenAI::Models::Beta::Threads::TextContentBlock
+      type = if message.role == OpenAI::Models::Beta::Threads::Message::Role::USER
+        :input_text
+      else
+        :output_text
+      end
+      {type: type, text: part.text.value}
+    when OpenAI::Models::Beta::Threads::ImageURLContentBlock
+      {
+        type: :input_image,
+        image_url: part.image_url.url,
+        detail: part.image_url.detail
+      }
+    end
+  end
+  items << {role: message.role, content: content}
+end
+conversation = client.conversations.create(
+  items: items
+)
+puts(conversation.id)
+```
+
 
 ## Comparing full examples
 
@@ -4017,6 +4548,48 @@ async def message(message: Message):
     return {"content": messages.data[0].content}
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+assistant_id = ENV.fetch("OPENAI_ASSISTANT_ID")
+threads_by_session = {}
+
+handle_message = lambda do |session_id:, content:|
+  thread_id = threads_by_session[session_id]
+  unless thread_id
+    thread_id = client.beta.threads.create.id
+    threads_by_session[session_id] = thread_id
+  end
+
+  client.beta.threads.messages.create(
+    thread_id,
+    role: :user,
+    content: content
+  )
+  run = client.beta.threads.runs.create(
+    thread_id,
+    assistant_id: assistant_id
+  )
+  while [:queued, :in_progress].include?(run.status)
+    sleep(1)
+    run = client.beta.threads.runs.retrieve(run.id, thread_id: thread_id)
+  end
+
+  messages = client.beta.threads.messages.list(
+    thread_id,
+    order: :desc,
+    limit: 1
+  )
+  {content: messages.data&.first&.content}
+end
+
+puts(handle_message.call(
+  session_id: "example-session",
+  content: "What are the five Ds of dodgeball?"
+))
+```
+
 
   
 
@@ -4043,6 +4616,33 @@ async def message(message: Message):
     )
 
     return {"content": response.output_text}
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+conversations_by_session = {}
+
+handle_message = lambda do |session_id:, content:|
+  conversation_id = conversations_by_session[session_id]
+  unless conversation_id
+    conversation_id = client.conversations.create.id
+    conversations_by_session[session_id] = conversation_id
+  end
+
+  response = client.responses.create(
+    prompt: {id: ENV.fetch("OPENAI_PROMPT_ID")},
+    input: [{role: :user, content: content}],
+    conversation: conversation_id
+  )
+  {content: response.output_text}
+end
+
+puts(handle_message.call(
+  session_id: "example-session",
+  content: "What are the five Ds of dodgeball?"
+))
 ```
 
 ---
@@ -5368,7 +5968,7 @@ page.data().forEach(auditLog -> System.out.println(auditLog.id()));
 ```ruby
 audit_logs = openai.admin.organization.audit_logs.list(limit: 10)
 
-audit_logs.data.each do |audit_log|
+(audit_logs.data || []).each do |audit_log|
   puts(audit_log.id)
 end
 ```
@@ -6392,6 +6992,28 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+prompt = <<~PROMPT
+  Our CI job started failing after a dependency bump.
+
+  Error:
+  TypeError: Timeout.__init__() got an unexpected keyword argument 'connect'
+
+  Identify the likeliest root cause and the smallest safe fix.
+PROMPT
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  reasoning: {effort: :xhigh, mode: :pro},
+  input: prompt
+)
+
+puts(response.output_text)
+```
+
 
 ## Set up `text.verbosity`
 
@@ -6485,6 +7107,27 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+incident = <<~INCIDENT
+  Summarize this incident for the next on-call engineer.
+  - checkout latency spiked from 220 ms to 4.8 s
+  - only us-east-1 was affected
+  - rollback is complete
+  - likely trigger: cache stampede after deploy
+INCIDENT
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  text: {verbosity: :low},
+  input: incident
+)
+
+puts(response.output_text)
 ```
 
 
@@ -6752,6 +7395,57 @@ func namespaceTool(namespace, namespaceDescription, name, description, argument 
 }
 ```
 
+```ruby
+require "openai"
+
+def namespace_tool(name, description, function_name, function_description, argument)
+  {
+    type: :namespace,
+    name: name,
+    description: description,
+    tools: [
+      {
+        type: :function,
+        name: function_name,
+        description: function_description,
+        defer_loading: true,
+        strict: true,
+        parameters: {
+          type: "object",
+          properties: {argument => {type: "string"}},
+          required: [argument],
+          additionalProperties: false
+        }
+      }
+    ]
+  }
+end
+
+client = OpenAI::Client.new
+billing = namespace_tool(
+  "billing",
+  "Billing tools for invoices, payments, taxes, and credits.",
+  "lookup_invoice",
+  "Look up invoice state, taxes, credits, and payment attempts.",
+  "invoice_id"
+)
+crm = namespace_tool(
+  "crm",
+  "CRM tools for account ownership, plans, health, and payment history.",
+  "get_account",
+  "Fetch account owner, plan, health, and payment history.",
+  "account_id"
+)
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Find the right billing tool and explain why invoice INV-1043 still shows overdue after a payment yesterday.",
+  tools: [billing, crm, {type: :tool_search}]
+)
+
+puts(response.output)
+```
+
 
 ## Use Programmatic Tool Calling
 
@@ -6982,6 +7676,36 @@ func outputAsInput(output []responses.ResponseOutputItemUnion) []responses.Respo
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+long_window = [
+  {
+    role: :user,
+    content: "Find the cache invalidation bug in this debugging session."
+  }
+]
+
+compacted = client.responses.compact(
+  model: "gpt-5.6",
+  input: long_window
+)
+input = compacted.output.map(&:to_h)
+input << {
+  role: :user,
+  content: "We found the bad cache invalidation path. Write the fix plan and the verification checklist."
+}
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  store: false,
+  input: input
+)
+
+puts(response.output_text)
+```
+
 
 ## Use `prompt_cache_key`
 
@@ -7086,6 +7810,26 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+instructions = <<~INSTRUCTIONS
+  You are the support agent for Acme.
+  Follow the Acme support policy and escalation rubric.
+  Use the same tone, safety rules, and tool plan for each ticket.
+INSTRUCTIONS
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  prompt_cache_key: "tenant-acme-support-agent",
+  instructions: instructions,
+  input: "Summarize the current escalation for the on-call lead."
+)
+
+puts(response.output_text)
 ```
 
 
@@ -7245,6 +7989,40 @@ func outputAsInput(output []responses.ResponseOutputItemUnion) []responses.Respo
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+history = [
+  {
+    role: :user,
+    content: "Investigate why invoice INV-1043 has mismatched tax totals."
+  }
+]
+
+first = client.responses.create(
+  model: "gpt-5.6",
+  store: false,
+  reasoning: {effort: :medium, context: :current_turn},
+  include: ["reasoning.encrypted_content"],
+  input: history
+)
+history.concat(first.output.map(&:to_h))
+history << {
+  role: :user,
+  content: "Now write the customer-facing explanation in plain English."
+}
+
+second = client.responses.create(
+  model: "gpt-5.6",
+  store: false,
+  reasoning: {effort: :medium, context: :all_turns},
+  input: history
+)
+
+puts(second.output_text)
+```
+
 
 ## Set image detail intentionally
 
@@ -7376,6 +8154,32 @@ func main() {
 	}
 	fmt.Println(job.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+job = client.responses.create(
+  model: "gpt-5.6",
+  background: true,
+  store: false,
+  input: "Analyze this large log bundle and cluster the primary failure modes.",
+  tools: [
+    {
+      type: :code_interpreter,
+      container: {type: :auto, file_ids: ["file_abc123"]}
+    }
+  ]
+)
+
+while [:queued, :in_progress].include?(job.status)
+  sleep(2)
+  job = client.responses.retrieve(job.id)
+end
+
+puts(job.output_text)
 ```
 
 
@@ -7623,6 +8427,20 @@ for _, item := range response.Output {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Rename fib() to fibonacci() in lib/fib.py and update run.py to use the new name.",
+  tools: [{type: :apply_patch}]
+)
+
+patch_calls = response.output.select { |item| item.type == :apply_patch_call }
+puts(patch_calls)
+```
+
 
 **Example `apply_patch_call` object**
 
@@ -7700,6 +8518,27 @@ _, err = client.Responses.New(context.Background(), responses.ResponseNewParams{
 if err != nil {
 	panic(err)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response_id = ENV.fetch("OPENAI_RESPONSE_ID")
+patch_call_id = ENV.fetch("OPENAI_APPLY_PATCH_CALL_ID")
+response = client.responses.create(
+  model: "gpt-5.6",
+  previous_response_id: response_id,
+  input: [{
+    type: :apply_patch_call_output,
+    call_id: patch_call_id,
+    status: :completed,
+    output: "Patch applied successfully."
+  }],
+  tools: [{type: :apply_patch}]
+)
+
+puts(response.output_text)
 ```
 
 
@@ -8155,6 +8994,23 @@ func main() {
 }
 ```
 
+```ruby
+require "base64"
+require "openai"
+
+client = OpenAI::Client.new
+completion = client.chat.completions.create(
+  model: "gpt-audio-1.5",
+  messages: [{role: :user, content: "Is a golden retriever a good family dog?"}],
+  modalities: [:text, :audio],
+  audio: {voice: :alloy, format: :wav},
+  store: true
+)
+
+audio = completion.choices.fetch(0).message.audio or raise "No audio returned"
+File.binwrite("dog.wav", Base64.strict_decode64(audio.data))
+```
+
 ```bash
 curl "https://api.openai.com/v1/chat/completions" \
     -H "Content-Type: application/json" \
@@ -8288,6 +9144,29 @@ func main() {
 }
 ```
 
+```ruby
+require "base64"
+require "openai"
+
+client = OpenAI::Client.new
+audio = Base64.strict_encode64(File.binread("audio.wav"))
+completion = client.chat.completions.create(
+  model: "gpt-audio-1.5",
+  messages: [{
+    role: :user,
+    content: [
+      {type: :text, text: "What is in this recording?"},
+      {type: :input_audio, input_audio: {data: audio, format: :wav}}
+    ]
+  }],
+  modalities: [:text, :audio],
+  audio: {voice: :alloy, format: :wav},
+  store: true
+)
+
+puts(completion.choices.fetch(0).message.content)
+```
+
 ```bash
 curl "https://api.openai.com/v1/chat/completions" \
     -H "Content-Type: application/json" \
@@ -8395,6 +9274,19 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Write a detailed market analysis.",
+  background: true
+)
+
+puts(response.status)
+```
+
 
 ## Polling background responses
 
@@ -8486,6 +9378,26 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Write a very long novel about otters in space.",
+  background: true
+)
+
+while [:queued, :in_progress].include?(response.status)
+  puts("Current status: #{response.status}")
+  sleep(2)
+  response = client.responses.retrieve(response.id)
+end
+
+puts("Final status: #{response.status}")
+puts(response.output_text)
+```
+
 
 ## Cancelling a background response
 
@@ -8541,6 +9453,14 @@ func main() {
 
 	fmt.Println(canceled.Status)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.cancel("resp_123")
+puts(response.status)
 ```
 
 
@@ -8665,6 +9585,34 @@ func main() {
 	// 	fmt.Println(resumed.Current().Type)
 	// }
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+stream = client.responses.stream(
+  model: "gpt-5.6",
+  input: "Write a very long novel about otters in space.",
+  background: true
+)
+
+last_sequence_number = -1
+response_id = ""
+stream.each do |event|
+  puts(event.type)
+  last_sequence_number = event.sequence_number
+  if event.is_a?(OpenAI::Models::Responses::ResponseCreatedEvent)
+    response_id = event.response.id
+  end
+end
+
+puts("Response #{response_id}; last sequence number #{last_sequence_number}")
+
+# If the connection drops, resume from the last sequence number:
+# client.responses.stream(response_id: response_id, starting_after: last_sequence_number).each do |event|
+#   puts(event.type)
+# end
 ```
 
 
@@ -8837,6 +9785,16 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+require "pathname"
+
+client = OpenAI::Client.new
+file = Pathname("batchinput.jsonl")
+uploaded = client.files.create(file: file, purpose: :batch)
+puts(uploaded.id)
+```
+
 ```bash
 curl https://api.openai.com/v1/files \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -8902,6 +9860,14 @@ func main() {
 	}
 	fmt.Println(batch.ID)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+batch = client.batches.create(input_file_id: "file-abc123", endpoint: "/v1/responses", completion_window: "24h")
+puts(batch.id)
 ```
 
 ```bash
@@ -8990,6 +9956,14 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+batch = client.batches.retrieve("batch_abc123")
+puts(batch.status)
+```
+
 ```bash
 curl https://api.openai.com/v1/batches/batch_abc123 \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -9069,6 +10043,14 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+content = client.files.content("file-xyz123")
+puts(content.read)
+```
+
 ```bash
 curl https://api.openai.com/v1/files/file-xyz123/content \
   -H "Authorization: Bearer $OPENAI_API_KEY" > batch_output.jsonl
@@ -9142,6 +10124,14 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+batch = client.batches.cancel("batch_abc123")
+puts(batch.status)
+```
+
 ```bash
 curl https://api.openai.com/v1/batches/batch_abc123/cancel \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -9200,6 +10190,15 @@ func main() {
 		panic(err)
 	}
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+client.batches.list(limit: 10).auto_paging_each do |batch|
+  puts(batch.id)
+end
 ```
 
 ```bash
@@ -10613,6 +11612,26 @@ print(display_name(None))`)},
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+code = <<~PYTHON
+  def display_name(user):
+      return user.profile.name
+
+  print(display_name(None))
+PYTHON
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Find the null pointer exception in this code:\n\n#{code}",
+  reasoning: {effort: :high}
+)
+
+puts(response.output_text)
+```
+
 ```bash
 curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
@@ -10743,6 +11762,26 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  instructions: "You are a personal math tutor. Write and run Python code to answer each math question.",
+  input: "I need to solve the equation 3x + 11 = 14. Can you help me?",
+  tools: [
+    {
+      type: :code_interpreter,
+      container: {type: :auto, memory_limit: "4g"}
+    }
+  ]
+)
+
+puts(response.output)
+```
+
 
 While we call this tool Code Interpreter, the model knows it as the "python
   tool". Models usually understand prompts that refer to the code interpreter
@@ -10863,6 +11902,20 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+container = client.containers.create(name: "analysis", memory_limit: "4g")
+response = client.responses.create(
+  model: "gpt-5.6",
+  tools: [{type: :code_interpreter, container: container.id}],
+  tool_choice: :required,
+  input: "Calculate 4 * 3.82, then take the square root twice."
+)
+puts(response.output_text)
 ```
 
 
@@ -11140,6 +12193,37 @@ func outputAsInput(output []responses.ResponseOutputItemUnion) []responses.Respo
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+conversation = [{
+  type: :message,
+  role: :user,
+  content: "Let's begin a long coding task."
+}]
+
+response = client.responses.create(
+  model: "gpt-5.3-codex",
+  input: conversation,
+  store: false,
+  context_management: [{type: :compaction, compact_threshold: 200_000}]
+)
+conversation.concat(response.output)
+conversation << {
+  type: :message,
+  role: :user,
+  content: "Now implement the next step."
+}
+next_response = client.responses.create(
+  model: "gpt-5.3-codex",
+  input: conversation,
+  store: false,
+  context_management: [{type: :compaction, compact_threshold: 200_000}]
+)
+puts(next_response.output_text)
+```
+
 
 ## Standalone compact endpoint
 
@@ -11262,6 +12346,27 @@ func outputAsInput(output []responses.ResponseOutputItemUnion) []responses.Respo
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+long_input = [{role: :user, content: "Plan a trip to Kyoto."}]
+compaction = client.responses.compact(
+  model: "gpt-5.6",
+  input: long_input
+)
+next_input = [
+  *compaction.output,
+  {type: :message, role: :user, content: "Add restaurant recommendations."}
+]
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: next_input,
+  store: false
+)
+puts(response.output_text)
+```
+
 ---
 
 # Completions API
@@ -11308,6 +12413,14 @@ func main() {
 	}
 	fmt.Println(response.Choices[0].Text)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+completion = client.completions.create(model: "gpt-3.5-turbo-instruct", prompt: "Write a tagline for a bakery.", max_tokens: 24)
+puts(completion.choices.fetch(0).text)
 ```
 
 
@@ -11714,6 +12827,19 @@ func main() {
 	}
 	fmt.Println(response.Output)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Open the Filters panel if needed, then search for penguin. Use the computer tool for UI interaction.",
+  tools: [{type: :computer}]
+)
+
+puts(response.output)
 ```
 
 
@@ -13139,6 +14265,28 @@ func sendComputerScreenshot(client openai.Client, responseID string, callID stri
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  previous_response_id: "resp_abc123",
+  input: [{
+    type: :computer_call_output,
+    call_id: "call_abc123",
+    output: {
+      type: :computer_screenshot,
+      image_url: "data:image/png;base64,<base64 bytes here>",
+      detail: :original
+    }
+  }],
+  tools: [{type: :computer}]
+)
+
+puts(response.output)
+```
+
 
 ### 5. Repeat until the tool stops calling
 
@@ -14033,6 +15181,25 @@ func main() {
 	}
 	fmt.Println(response.Output)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "computer-use-preview",
+  input: "Check whether the Filters panel is open.",
+  truncation: :auto,
+  tools: [{
+    type: :computer_use_preview,
+    display_width: 1024,
+    display_height: 768,
+    environment: :browser
+  }]
+)
+
+puts(response.output)
 ```
 
 
@@ -19248,6 +20415,23 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {role: :user, content: "Knock knock."},
+    {role: :assistant, content: "Who's there?"},
+    {role: :user, content: "Orange."}
+  ]
+)
+
+puts(response.output_text)
+```
+
 
 
 By using alternating `user` and `assistant` messages, you capture the previous state of a conversation in one request to the model.
@@ -19383,6 +20567,30 @@ func outputAsInput(output []responses.ResponseOutputItemUnion) []responses.Respo
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+history = [{role: :user, content: "Tell me a joke."}]
+
+first = client.responses.create(
+  model: "gpt-5.6",
+  input: history,
+  store: false
+)
+puts(first.output_text)
+
+history.concat(first.output.map(&:to_h))
+history << {role: :user, content: "Tell me another."}
+
+second = client.responses.create(
+  model: "gpt-5.6",
+  input: history,
+  store: false
+)
+puts(second.output_text)
+```
+
 
 
 ## OpenAI APIs for conversation state
@@ -19412,6 +20620,10 @@ if err != nil {
 }
 ```
 
+```ruby
+conversation = client.conversations.create
+```
+
 
 In a multi-turn interaction, you can pass the `conversation` into subsequent responses to persist state and share context across subsequent responses, rather than having to chain multiple response items together.
 
@@ -19439,6 +20651,16 @@ if err != nil {
 	panic(err)
 }
 fmt.Println(response.OutputText())
+```
+
+```ruby
+response = client.responses.create(
+  model: "gpt-5.6",
+  conversation: conversation.id,
+  input: "What are the five Ds of dodgeball?"
+)
+
+puts(response.output_text)
 ```
 
 
@@ -19529,6 +20751,25 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+first = client.responses.create(
+  model: "gpt-5.6",
+  input: "Tell me a joke."
+)
+puts(first.output_text)
+
+second = client.responses.create(
+  model: "gpt-5.6",
+  previous_response_id: first.id,
+  input: "Explain why this is funny."
+)
+puts(second.output_text)
+```
+
 
 In the following example, we ask the model to tell a joke. Separately, we ask the model to explain why it's funny, and the model has all necessary context to deliver a good response.
 
@@ -19614,6 +20855,25 @@ func main() {
 	}
 	fmt.Println(second.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+first = client.responses.create(
+  model: "gpt-5.6",
+  input: "Tell me a joke."
+)
+puts(first.output_text)
+
+second = client.responses.create(
+  model: "gpt-5.6",
+  previous_response_id: first.id,
+  input: "Explain why this is funny."
+)
+puts(second.output_text)
 ```
 
 
@@ -19803,6 +21063,19 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+count = client.responses.input_tokens.count(
+  model: "gpt-5.6",
+  input: "Tell me a joke."
+)
+
+puts(count.input_tokens)
+```
+
 ```bash
 curl https://api.openai.com/v1/responses/input_tokens \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -19886,6 +21159,24 @@ func main() {
 	}
 	fmt.Println(count.InputTokens)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+conversation = [
+  {role: :user, content: "What is 2 + 2?"},
+  {role: :assistant, content: "2 + 2 equals 4."},
+  {role: :user, content: "What about 3 + 3?"}
+]
+
+count = client.responses.input_tokens.count(
+  model: "gpt-5.6",
+  input: conversation
+)
+
+puts(count.input_tokens)
 ```
 
 ```bash
@@ -19972,6 +21263,20 @@ func main() {
 	}
 	fmt.Println(count.InputTokens)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+count = client.responses.input_tokens.count(
+  model: "gpt-5.6",
+  instructions: "You are a helpful assistant that explains concepts simply.",
+  input: "Explain quantum computing in one sentence."
+)
+
+puts(count.input_tokens)
 ```
 
 ```bash
@@ -20082,6 +21387,31 @@ func main() {
 	}
 	fmt.Println(count.InputTokens)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+count = client.responses.input_tokens.count(
+  model: "gpt-5.6",
+  input: [
+    {
+      role: :user,
+      content: [
+        {
+          type: :input_image,
+          image_url: "https://api.nga.gov/iiif/a2e6da57-3cd1-4235-b20e-95dcaefed6c8/full/!800,800/0/default.jpg",
+          detail: :auto
+        },
+        {type: :input_text, text: "Summarize this chart."}
+      ]
+    }
+  ]
+)
+
+puts(count.input_tokens)
 ```
 
 ```bash
@@ -20208,6 +21538,33 @@ func main() {
 	}
 	fmt.Println(count.InputTokens)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+count = client.responses.input_tokens.count(
+  model: "gpt-5.6",
+  input: "What is the weather in San Francisco?",
+  tools: [
+    {
+      type: :function,
+      name: "get_weather",
+      description: "Get the current weather in a location",
+      strict: true,
+      parameters: {
+        type: "object",
+        properties: {location: {type: "string"}},
+        required: ["location"],
+        additionalProperties: false
+      }
+    }
+  ]
+)
+
+puts(count.input_tokens)
 ```
 
 ```bash
@@ -20720,6 +22077,36 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+vector_store_id = ENV.fetch("OPENAI_VECTOR_STORE_ID")
+response = client.responses.create(
+  model: "o3-deep-research",
+  input: "Research the economic impact of semaglutide on global healthcare systems. Include measurable outcomes and cite primary sources.",
+  tools: [
+    {type: :web_search_preview},
+    {type: :file_search, vector_store_ids: [vector_store_id]},
+    {type: :code_interpreter, container: {type: :auto}}
+  ],
+  background: true
+)
+
+while [
+  OpenAI::Responses::ResponseStatus::QUEUED,
+  OpenAI::Responses::ResponseStatus::IN_PROGRESS
+].include?(response.status)
+  sleep(2)
+  response = client.responses.retrieve(response.id)
+end
+unless response.status == OpenAI::Responses::ResponseStatus::COMPLETED
+  raise "Research ended with status: #{response.status}"
+end
+
+puts(response.output_text)
+```
+
 ```bash
 curl https://api.openai.com/v1/responses \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -20907,6 +22294,19 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  instructions: "Ask concise questions to gather all missing requirements. Do not conduct the research yet.",
+  input: "Research surfboards for me. I'm interested in ..."
+)
+
+puts(response.output_text)
 ```
 
 ```bash
@@ -21177,6 +22577,19 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  instructions: "Rewrite the user's request as detailed research instructions. Preserve all stated preferences, identify open-ended dimensions, request primary sources, and specify a clear report format. Do not perform the research.",
+  input: "Research surfboards for me. I'm interested in ..."
+)
+
+puts(response.output_text)
+```
+
 ```bash
 curl https://api.openai.com/v1/responses \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -21329,6 +22742,39 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+mcp_server_url = ENV.fetch("OPENAI_MCP_SERVER_URL")
+response = client.responses.create(
+  model: "o3-deep-research",
+  input: "What patterns appear in our closed-lost Salesforce opportunities?",
+  instructions: "Produce a source-backed deep research report.",
+  reasoning: {summary: :auto},
+  tools: [{
+    type: :mcp,
+    server_label: "mycompany_mcp_server",
+    server_url: mcp_server_url,
+    require_approval: :never
+  }],
+  background: true
+)
+
+while [
+  OpenAI::Responses::ResponseStatus::QUEUED,
+  OpenAI::Responses::ResponseStatus::IN_PROGRESS
+].include?(response.status)
+  sleep(2)
+  response = client.responses.retrieve(response.id)
+end
+unless response.status == OpenAI::Responses::ResponseStatus::COMPLETED
+  raise "Research ended with status: #{response.status}"
+end
+
+puts(response.output_text)
 ```
 
 
@@ -21611,6 +23057,21 @@ func main() {
 	}
 	fmt.Println(job.ID)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+job = client.fine_tuning.jobs.create(
+  model: "gpt-4.1-mini-2025-04-14",
+  training_file: "file-all-about-the-weather",
+  method_: {
+    type: :dpo,
+    dpo: {hyperparameters: {beta: 0.1}}
+  }
+)
+puts(job.id)
 ```
 
 
@@ -21968,6 +23429,18 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+begin
+  response = client.responses.create(model: "gpt-5.6", input: "Say hello.")
+  puts(response.output_text)
+rescue OpenAI::Errors::APIError => error
+  warn(error.message)
+end
 ```
 
 ---
@@ -22682,6 +24155,20 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.responses.create(
+  model: "gpt-5.6-sol",
+  service_tier: :fast,
+  input: "What does 'fit check for my napalm era' mean?"
+)
+
+puts(response.output_text)
+```
+
 ```bash
 curl https://api.openai.com/v1/responses \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -23191,11 +24678,12 @@ Console.WriteLine(response.GetOutputText());
 
 ```ruby
 require "openai"
+require "pathname"
 
 openai = OpenAI::Client.new
 
 file = openai.files.create(
-  file: File.open("draconomicon.pdf", "rb"),
+  file: Pathname("draconomicon.pdf"),
   purpose: "user_data"
 )
 
@@ -23371,6 +24859,30 @@ func main() {
 
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "base64"
+require "openai"
+
+client = OpenAI::Client.new
+pdf_data = Base64.strict_encode64(File.binread("draconomicon.pdf"))
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: [{
+    role: :user,
+    content: [
+      {
+        type: :input_file,
+        filename: "document.pdf",
+        file_data: "data:application/pdf;base64,#{pdf_data}"
+      },
+      {type: :input_text, text: "Summarize this document."}
+    ]
+  }]
+)
+
+puts(response.output_text)
 ```
 
 ```bash
@@ -23595,6 +25107,16 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+require "pathname"
+
+client = OpenAI::Client.new
+file = Pathname("customer_policies.txt")
+uploaded = client.files.create(file: file, purpose: :user_data)
+puts(uploaded.id)
+```
+
 
 #### Create a vector store
 
@@ -23632,6 +25154,14 @@ func main() {
 	}
 	fmt.Println(vectorStore.ID)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+store = client.vector_stores.create(name: "Product docs")
+puts(store.id)
 ```
 
 
@@ -23675,6 +25205,14 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+file = client.vector_stores.files.create("<vector_store_id>", file_id: "file_abc123")
+puts(file.id)
+```
+
 
 #### Check status
 
@@ -23710,6 +25248,14 @@ func main() {
 	}
 	fmt.Println(files.Data)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+files = client.vector_stores.files.list("<vector_store_id>")
+puts(files.data&.map(&:status))
 ```
 
 
@@ -23940,6 +25486,26 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "What is deep research by OpenAI?",
+  tools: [
+    {
+      type: :file_search,
+      vector_store_ids: ["<vector_store_id>"],
+      max_num_results: 2
+    }
+  ]
+)
+
+puts(response)
+```
+
 
 ### Include search results in the response
 
@@ -24007,6 +25573,23 @@ func main() {
 	}
 	fmt.Println(response)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "What is deep research by OpenAI?",
+  include: ["file_search_call.results"],
+  tools: [
+    {type: :file_search, vector_store_ids: ["<vector_store_id>"]}
+  ]
+)
+
+puts(response)
 ```
 
 
@@ -24096,6 +25679,30 @@ func main() {
 	}
 	fmt.Println(response)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "What is deep research by OpenAI?",
+  tools: [
+    {
+      type: :file_search,
+      vector_store_ids: ["<vector_store_id>"],
+      filters: {
+        type: :in,
+        key: "category",
+        value: ["blog", "announcement"]
+      }
+    }
+  ]
+)
+
+puts(response)
 ```
 
 
@@ -24261,6 +25868,19 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+require "pathname"
+
+client = OpenAI::Client.new
+audio = Pathname("audio.wav")
+transcript = client.audio.transcriptions.create(
+  file: audio,
+  model: "gpt-transcribe"
+)
+puts(transcript.text)
+```
+
 ```bash
 openai audio:transcriptions create \
   --model gpt-transcribe \
@@ -24372,6 +25992,20 @@ func main() {
 	}
 	fmt.Println(transcription.Text)
 }
+```
+
+```ruby
+require "openai"
+require "pathname"
+
+client = OpenAI::Client.new
+audio = Pathname("audio.wav")
+transcript = client.audio.transcriptions.create(
+  file: audio,
+  model: "gpt-transcribe",
+  keywords: ["OpenAI", "Responses API", "Codex"]
+)
+puts(transcript.text)
 ```
 
 ```bash
@@ -24523,6 +26157,34 @@ func main() {
 }
 ```
 
+```ruby
+require "base64"
+require "openai"
+require "pathname"
+
+client = OpenAI::Client.new
+audio = Pathname("meeting.wav")
+speaker_reference = Base64.strict_encode64(File.binread("agent.wav"))
+transcript = client.audio.transcriptions.create(
+  file: audio,
+  model: "gpt-4o-transcribe-diarize",
+  response_format: :diarized_json,
+  chunking_strategy: :auto,
+  known_speaker_names: ["agent"],
+  known_speaker_references: ["data:audio/wav;base64,#{speaker_reference}"]
+)
+segments = Array(transcript.to_h.fetch(:segments) do
+  raise "The transcription did not include speaker segments"
+end)
+segments.each do |segment|
+  segment = Hash.try_convert(segment) or raise "Invalid speaker segment"
+  puts(
+    "#{segment.fetch(:speaker)}: #{segment.fetch(:text)} " \
+      "(#{segment.fetch(:start)}-#{segment.fetch(:end)})"
+  )
+end
+```
+
 ```bash
 curl --request POST \
   --url https://api.openai.com/v1/audio/transcriptions \
@@ -24604,6 +26266,16 @@ func main() {
 	}
 	fmt.Println(translation.Text)
 }
+```
+
+```ruby
+require "openai"
+require "pathname"
+
+client = OpenAI::Client.new
+audio = Pathname("german.wav")
+translation = client.audio.translations.create(file: audio, model: "whisper-1")
+puts(translation.text)
 ```
 
 ```bash
@@ -24704,6 +26376,22 @@ func main() {
 	}
 	fmt.Println(transcription.Words)
 }
+```
+
+```ruby
+require "openai"
+require "pathname"
+require "pp"
+
+client = OpenAI::Client.new
+audio = Pathname("audio.wav")
+transcript = client.audio.transcriptions.create(
+  file: audio,
+  model: "whisper-1",
+  response_format: :verbose_json,
+  timestamp_granularities: [:word]
+)
+pp(transcript[:words])
 ```
 
 ```bash
@@ -24843,6 +26531,20 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+require "pathname"
+
+client = OpenAI::Client.new
+audio = Pathname("speech.wav")
+stream = client.audio.transcriptions.create_streaming(
+  file: audio,
+  model: "gpt-transcribe"
+)
+
+stream.each { |event| puts(event.type) }
+```
+
 ```bash
 curl --request POST \
   --url https://api.openai.com/v1/audio/transcriptions \
@@ -24951,6 +26653,20 @@ func main() {
 	}
 	fmt.Println(string(transcription))
 }
+```
+
+```ruby
+require "openai"
+require "pathname"
+
+client = OpenAI::Client.new
+audio = Pathname("speech.wav")
+transcript = client.audio.transcriptions.create(
+  file: audio,
+  model: "whisper-1",
+  prompt: "The speaker says OpenAI and Responses API"
+)
+puts(transcript.text)
 ```
 
 ```bash
@@ -25084,6 +26800,24 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+require "pathname"
+
+client = OpenAI::Client.new
+audio = Pathname("speech.wav")
+transcript = client.audio.transcriptions.create(
+  file: audio,
+  model: "gpt-4o-mini-transcribe"
+)
+
+response = client.responses.create(
+  model: "gpt-4.1",
+  input: "Add punctuation and paragraph breaks without changing the words:\n#{transcript.text}"
+)
+puts(response.output_text)
+```
+
 
 A text model can correct misspellings and handle longer terminology lists than Whisper's 224-token prompt window. Evaluate corrections against the original audio to avoid changing what the speaker said.
 
@@ -25205,6 +26939,21 @@ func main() {
 	}
 	fmt.Println(job.ID)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+job = client.fine_tuning.jobs.create(
+  model: "gpt-4.1-mini-2025-04-14",
+  training_file: "file-abc123",
+  method_: {
+    type: :supervised,
+    supervised: {hyperparameters: {n_epochs: 2}}
+  }
+)
+puts(job.id)
 ```
 
 
@@ -25342,6 +27091,21 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new(timeout: 900.0)
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  service_tier: :flex,
+  instructions: "List and describe all the metaphors used in this book.",
+  input: "<very long text of book here>"
+)
+
+puts(response.output_text)
 ```
 
 ```bash
@@ -25728,6 +27492,53 @@ func getHoroscope(sign string) string {
 }
 ```
 
+```ruby
+require "json"
+require "openai"
+
+client = OpenAI::Client.new
+tools = [{
+  type: :function,
+  name: "get_horoscope",
+  description: "Get today's horoscope for an astrological sign.",
+  parameters: {
+    type: :object,
+    properties: {sign: {type: :string}},
+    required: ["sign"],
+    additionalProperties: false
+  },
+  strict: true
+}]
+
+first_response = client.responses.create(
+  model: "gpt-5.6",
+  input: "What is my horoscope? I am an Aquarius.",
+  tools: tools
+)
+function_call = first_response.output.find do |item|
+  item.is_a?(OpenAI::Models::Responses::ResponseFunctionToolCall) &&
+    item.name == "get_horoscope"
+end
+unless function_call.is_a?(OpenAI::Models::Responses::ResponseFunctionToolCall)
+  raise "The model did not call get_horoscope"
+end
+
+arguments = JSON.parse(function_call.arguments, symbolize_names: true)
+sign = arguments.fetch(:sign)
+response = client.responses.create(
+  model: "gpt-5.6",
+  previous_response_id: first_response.id,
+  input: [{
+    type: :function_call_output,
+    call_id: function_call.call_id,
+    output: "#{sign}: Embrace an unexpected opportunity today."
+  }],
+  tools: tools
+)
+
+puts(response.output_text)
+```
+
 
 
 Note that for reasoning models like GPT-5 or o4-mini, any reasoning items
@@ -25955,6 +27766,23 @@ for _, output := range response.Output {
 }
 ```
 
+```ruby
+input.concat(response.output)
+
+response.output.each do |tool_call|
+  next unless tool_call.is_a?(OpenAI::Models::Responses::ResponseFunctionToolCall)
+
+  arguments = JSON.parse(tool_call.arguments)
+  result = call_function(tool_call.name, arguments)
+
+  input << {
+    type: :function_call_output,
+    call_id: tool_call.call_id,
+    output: JSON.generate(result)
+  }
+end
+```
+
 
 
 In the example above, we have a hypothetical `call_function` to route each call. Here’s a possible implementation:
@@ -25993,6 +27821,25 @@ func callFunction(name string, arguments functionArguments) (string, error) {
 		return "", fmt.Errorf("unknown function: %s", name)
 	}
 }
+```
+
+```ruby
+def call_function(name, arguments)
+  case name
+  when "get_weather"
+    FunctionCallingExample.get_weather(
+      arguments.fetch("latitude"),
+      arguments.fetch("longitude")
+    )
+  when "send_email"
+    FunctionCallingExample.send_email(
+      arguments.fetch("to"),
+      arguments.fetch("body")
+    )
+  else
+    raise ArgumentError, "Unknown function: #{name}"
+  end
+end
 ```
 
 
@@ -26039,6 +27886,45 @@ response, err = client.Responses.New(context.Background(), responses.ResponseNew
 if err != nil {
 	panic(err)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+input = [
+  {role: :user, content: "What is the weather like in Paris?"},
+  {
+    type: :function_call,
+    call_id: "call_weather",
+    name: "get_weather",
+    arguments: '{"city":"Paris"}'
+  },
+  {
+    type: :function_call_output,
+    call_id: "call_weather",
+    output: '{"city":"Paris","temperature_c":18}'
+  }
+]
+tools = [{
+  type: :function,
+  name: "get_weather",
+  description: "Get the weather for a city",
+  parameters: {
+    type: :object,
+    properties: {city: {type: :string}},
+    required: ["city"],
+    additionalProperties: false
+  },
+  strict: true
+}]
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: input,
+  tools: tools
+)
+
+puts(response.output_text)
 ```
 
 
@@ -26323,6 +28209,19 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+stream = client.responses.stream(
+  model: "gpt-5.6",
+  input: "What is the weather in Paris?",
+  tools: [{type: :function, name: "get_weather", description: "Get the weather for a city", parameters: {type: :object, properties: {city: {type: :string}}, required: ["city"], additionalProperties: false}, strict: true}]
+)
+
+stream.each { |event| puts(event.type) }
+```
+
 
 Output events
 
@@ -26447,6 +28346,49 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+stream = client.responses.stream(
+  model: "gpt-5.6",
+  input: "What is the weather in Paris?",
+  tools: [{
+    type: :function,
+    name: "get_weather",
+    parameters: {
+      type: :object,
+      properties: {location: {type: :string}},
+      required: ["location"],
+      additionalProperties: false
+    },
+    strict: true
+  }]
+)
+
+final_tool_calls = {}
+stream.each do |event|
+  case event
+  when OpenAI::Models::Responses::ResponseOutputItemAddedEvent
+    item = event.item
+    next unless item.is_a?(OpenAI::Models::Responses::ResponseFunctionToolCall)
+
+    final_tool_calls[event.output_index] = {
+      id: item.id,
+      call_id: item.call_id,
+      name: item.name,
+      type: item.type,
+      arguments: item.arguments.dup
+    }
+  when OpenAI::Models::Responses::ResponseFunctionCallArgumentsDeltaEvent
+    tool_call = final_tool_calls[event.output_index]
+    tool_call[:arguments] << event.delta if tool_call
+  end
+end
+
+puts(final_tool_calls.sort.to_h.values)
+```
+
 
 Accumulated final_tool_calls[0]
 
@@ -26543,6 +28485,23 @@ func main() {
 	}
 	fmt.Println(response.Output)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Use code_exec to print hello world.",
+  tools: [{
+    type: :custom,
+    name: "code_exec",
+    description: "Executes arbitrary Python code."
+  }]
+)
+
+puts(response.output)
 ```
 
 
@@ -26689,6 +28648,32 @@ MUL: "*"
 	}
 	fmt.Println(response.Output)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+grammar = <<~LARK
+  start: expr
+  expr: term (SP ADD SP term)*
+  term: INT
+  SP: " "
+  ADD: "+"
+  %import common.INT
+LARK
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Use math_exp to add four plus four.",
+  tools: [{
+    type: :custom,
+    name: "math_exp",
+    description: "Creates valid mathematical expressions.",
+    format: {type: :grammar, syntax: :lark, definition: grammar}
+  }]
+)
+
+puts(response.output)
 ```
 
 
@@ -26885,6 +28870,25 @@ func main() {
 	}
 	fmt.Println(response.Output)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+grammar = "^(January|February|March|April|May|June|July|August|September|October|November|December) \\d{1,2}(st|nd|rd|th)? \\d{4} at (0?[1-9]|1[0-2])(AM|PM)$"
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Use timestamp to save August 7th 2025 at 10AM.",
+  tools: [{
+    type: :custom,
+    name: "timestamp",
+    description: "Saves a timestamp in date and time format.",
+    format: {type: :grammar, syntax: :regex, definition: grammar}
+  }]
+)
+
+puts(response.output)
 ```
 
 
@@ -28044,6 +30048,22 @@ func main() {
 }
 ```
 
+```ruby
+require "base64"
+require "openai"
+
+client = OpenAI::Client.new
+result = client.images.generate(
+  model: "gpt-image-2",
+  prompt: "A watercolor robot reading in a library"
+)
+generated_image = result.data&.first or raise "No image returned"
+File.binwrite(
+  "generated-image.png",
+  Base64.strict_decode64(generated_image.b64_json)
+)
+```
+
 ```bash
 curl -X POST "https://api.openai.com/v1/images/generations" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -28164,6 +30184,28 @@ func saveFirstGeneratedImage(response *responses.Response, filename string) {
 }
 ```
 
+```ruby
+require "base64"
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
+  tools: [{type: :image_generation}]
+)
+
+image_call = response.output.find do |item|
+  item.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+end
+unless image_call.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+  raise "No image generation call returned"
+end
+
+encoded_image = image_call.result or raise "No image returned"
+File.binwrite("otter.png", Base64.strict_decode64(encoded_image))
+```
+
 
 
 ### Multi-turn image generation
@@ -28262,6 +30304,30 @@ func main() {
 	}
 	panic("response did not include an image generation call")
 }
+```
+
+```ruby
+require "base64"
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
+  tools: [{type: :image_generation, action: :generate}]
+)
+
+image_call = response.output.find do |item|
+  item.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+end
+unless image_call.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+  raise "No image generation call returned"
+end
+
+encoded_image = image_call.result or raise "No image returned"
+output_path = ENV.fetch("OPENAI_EXAMPLE_OUTPUT_PATH", "otter.png")
+File.binwrite(output_path, Base64.decode64(encoded_image))
+puts(output_path)
 ```
 
 
@@ -28419,6 +30485,45 @@ func saveFirstGeneratedImage(response *responses.Response, filename string) {
 	}
 	panic("response did not include an image generation call")
 }
+```
+
+```ruby
+require "base64"
+require "openai"
+
+client = OpenAI::Client.new
+first = client.responses.create(
+  model: "gpt-5.6",
+  input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
+  tools: [{type: :image_generation}]
+)
+
+first_image = first.output.find do |item|
+  item.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+end
+unless first_image.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+  raise "No image generation call returned"
+end
+
+encoded_image = first_image.result or raise "No image returned"
+File.binwrite("cat_and_otter.png", Base64.strict_decode64(encoded_image))
+
+follow_up = client.responses.create(
+  model: "gpt-5.6",
+  input: "Now make it look realistic.",
+  previous_response_id: first.id,
+  tools: [{type: :image_generation}]
+)
+
+follow_up_image = follow_up.output.find do |item|
+  item.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+end
+unless follow_up_image.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+  raise "No follow-up image generation call returned"
+end
+
+encoded_image = follow_up_image.result or raise "No follow-up image returned"
+File.binwrite("cat_and_otter_realistic.png", Base64.strict_decode64(encoded_image))
 ```
 
   
@@ -28612,6 +30717,50 @@ func saveImage(filename, encoded string) {
 }
 ```
 
+```ruby
+require "base64"
+require "openai"
+
+client = OpenAI::Client.new
+first = client.responses.create(
+  model: "gpt-5.6",
+  input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
+  tools: [{type: :image_generation}]
+)
+
+first_image = first.output.find do |item|
+  item.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+end
+unless first_image.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+  raise "No image generation call returned"
+end
+
+encoded_image = first_image.result or raise "No image returned"
+File.binwrite("cat_and_otter.png", Base64.strict_decode64(encoded_image))
+
+follow_up = client.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {
+      role: :user,
+      content: [{type: :input_text, text: "Now make it look realistic."}]
+    },
+    {type: :image_generation_call, id: first_image.id}
+  ],
+  tools: [{type: :image_generation}]
+)
+
+follow_up_image = follow_up.output.find do |item|
+  item.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+end
+unless follow_up_image.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+  raise "No follow-up image generation call returned"
+end
+
+encoded_image = follow_up_image.result or raise "No follow-up image returned"
+File.binwrite("cat_and_otter_realistic.png", Base64.strict_decode64(encoded_image))
+```
+
 
 
 #### Result
@@ -28790,6 +30939,36 @@ func saveImage(filename, encoded string) {
 }
 ```
 
+```ruby
+require "base64"
+require "openai"
+
+client = OpenAI::Client.new
+stream = client.responses.stream(
+  model: "gpt-5.6",
+  input: "Generate an image of a river made of white owl feathers.",
+  tools: [{type: :image_generation, partial_images: 2}]
+)
+
+stream.each do |event|
+  case event
+  when OpenAI::Models::Responses::ResponseImageGenCallPartialImageEvent
+    image = Base64.strict_decode64(event.partial_image_b64)
+    File.binwrite("river-partial-#{event.partial_image_index}.png", image)
+  when OpenAI::Models::Responses::ResponseCompletedEvent
+    image_call = event.response.output.find do |item|
+      item.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+    end
+    next unless image_call.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+
+    File.binwrite(
+      "river-final.png",
+      Base64.strict_decode64(image_call.result)
+    )
+  end
+end
+```
+
   
 
   
@@ -28887,6 +31066,25 @@ func saveImage(filename, encoded string) {
 		panic(err)
 	}
 }
+```
+
+```ruby
+require "base64"
+require "openai"
+
+client = OpenAI::Client.new
+stream = client.images.generate_stream_raw(
+  model: "gpt-image-2",
+  prompt: "A river made of white owl feathers in a winter landscape",
+  partial_images: 2
+)
+
+stream.each do |event|
+  next unless event.is_a?(OpenAI::Models::ImageGenPartialImageEvent)
+
+  image = Base64.strict_decode64(event.b64_json)
+  File.binwrite("river#{event.partial_image_index}.png", image)
+end
 ```
 
 
@@ -29018,6 +31216,18 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+require "pathname"
+
+client = OpenAI::Client.new
+file = client.files.create(
+  file: Pathname("image.png"),
+  purpose: OpenAI::Models::FilePurpose::VISION
+)
+puts(file.id)
+```
+
 
 #### Create a base64 encoded image
 
@@ -29058,6 +31268,13 @@ func main() {
 	}
 	fmt.Println(base64.StdEncoding.EncodeToString(image))
 }
+```
+
+```ruby
+require "base64"
+
+image = File.binread("image.png")
+puts(Base64.strict_encode64(image))
 ```
 
 
@@ -29283,6 +31500,51 @@ func saveFirstGeneratedImage(response *responses.Response, filename string) {
 }
 ```
 
+```ruby
+require "base64"
+require "openai"
+require "pathname"
+
+client = OpenAI::Client.new
+base64_images = ["body-lotion.png", "soap.png"].map do |path|
+  Base64.strict_encode64(File.binread(path))
+end
+file_ids = [
+  client.files.create(file: Pathname("bath-bomb.png"), purpose: :vision).id,
+  client.files.create(file: Pathname("incense-kit.png"), purpose: :vision).id
+]
+prompt = <<~PROMPT
+  Generate a photorealistic image of a gift basket on a white background
+  labeled 'Relax & Unwind' with a ribbon and handwriting-like font,
+  containing all the items in the reference pictures.
+PROMPT
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: [{
+    role: :user,
+    content: [
+      {type: :input_text, text: prompt},
+      *base64_images.map do |image|
+        {type: :input_image, image_url: "data:image/png;base64,#{image}"}
+      end,
+      *file_ids.map do |file_id|
+        {type: :input_image, file_id: file_id}
+      end
+    ]
+  }],
+  tools: [{type: :image_generation}]
+)
+
+image_call = response.output.find do |item|
+  item.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+end
+unless image_call.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+  raise "No image generation call returned"
+end
+
+File.binwrite("gift-basket.png", Base64.strict_decode64(image_call.result))
+```
+
 
   
 
@@ -29430,6 +31692,28 @@ func saveImage(filename, encoded string) {
 		panic(err)
 	}
 }
+```
+
+```ruby
+require "base64"
+require "openai"
+require "pathname"
+
+client = OpenAI::Client.new
+images = %w[body-lotion.png bath-bomb.png incense-kit.png soap.png].map do |path|
+  Pathname(path)
+end
+result = client.images.edit(
+  image: images,
+  model: "gpt-image-2",
+  prompt: <<~PROMPT
+    Generate a photorealistic image of a gift basket on a white background
+    labeled 'Relax & Unwind' with a ribbon and handwriting-like font,
+    containing all the items in the reference pictures.
+  PROMPT
+)
+generated_image = result.data&.first or raise "No image returned"
+File.binwrite("gift-basket.png", Base64.strict_decode64(generated_image.b64_json))
 ```
 
 ```bash
@@ -29657,6 +31941,39 @@ func saveFirstGeneratedImage(response *responses.Response, filename string) {
 }
 ```
 
+```ruby
+require "base64"
+require "openai"
+require "pathname"
+
+client = OpenAI::Client.new
+image = client.files.create(file: Pathname("sunlit_lounge.png"), purpose: :vision)
+mask = client.files.create(file: Pathname("mask.png"), purpose: :vision)
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: [{
+    role: :user,
+    content: [
+      {type: :input_text, text: "Add a flamingo to the pool."},
+      {type: :input_image, file_id: image.id}
+    ]
+  }],
+  tools: [{
+    type: :image_generation,
+    input_image_mask: {file_id: mask.id}
+  }]
+)
+
+image_call = response.output.find do |item|
+  item.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+end
+unless image_call.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+  raise "No image generation call returned"
+end
+
+File.binwrite("lounge.png", Base64.strict_decode64(image_call.result))
+```
+
   
 
   
@@ -29751,6 +32068,24 @@ func main() {
 		panic(err)
 	}
 }
+```
+
+```ruby
+require "openai"
+require "pathname"
+require "base64"
+
+client = OpenAI::Client.new
+image = Pathname("sunlit_lounge.png")
+mask = Pathname("mask.png")
+result = client.images.edit(
+  image: image,
+  mask: mask,
+  model: "gpt-image-2",
+  prompt: "A sunlit indoor lounge area with a pool containing a flamingo"
+)
+generated_image = result.data&.first or raise "No image returned"
+File.binwrite("lounge.png", Base64.strict_decode64(generated_image.b64_json))
 ```
 
 ```bash
@@ -30186,6 +32521,36 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+begin
+  client.images.generate(
+    model: "gpt-image-2",
+    prompt: "Create a poster humiliating my coworker with insulting captions"
+  )
+rescue OpenAI::Errors::BadRequestError => error
+  raise unless error.code == "moderation_blocked"
+
+  body = Hash.try_convert(error.body) || {}
+  moderation_details = body[:moderation_details] || body["moderation_details"] || {}
+  categories = moderation_details[:categories] || moderation_details["categories"] || []
+  stage = moderation_details[:moderation_stage] || moderation_details["moderation_stage"]
+
+  hint = "This request did not meet safety requirements."
+  if categories.include?("harassment")
+    hint = "Remove abusive or targeting language and focus on neutral visual details."
+  elsif stage == "input"
+    hint = "Revise the prompt or input images, then submit the request again."
+  elsif stage == "output"
+    hint = "Change the prompt and generate again; the generated result was blocked."
+  end
+
+  warn("Image generation blocked (#{error.code}): #{hint}")
+end
+```
+
 
 ### Supported models
 
@@ -30459,6 +32824,28 @@ func saveFirstGeneratedImage(response *responses.Response, filename string) {
 }
 ```
 
+```ruby
+require "base64"
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
+  tools: [{type: :image_generation}]
+)
+
+image_call = response.output.find do |item|
+  item.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+end
+unless image_call.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+  raise "No image generation call returned"
+end
+
+encoded_image = image_call.result or raise "No image returned"
+File.binwrite("otter.png", Base64.strict_decode64(encoded_image))
+```
+
 
 You can [provide input images](https://developers.openai.com/api/docs/guides/image-generation?image-generation-model=gpt-image#edit-images) using file IDs or base64 data.
 
@@ -30663,6 +33050,45 @@ func saveFirstGeneratedImage(response *responses.Response, filename string) {
 }
 ```
 
+```ruby
+require "base64"
+require "openai"
+
+client = OpenAI::Client.new
+first = client.responses.create(
+  model: "gpt-5.6",
+  input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
+  tools: [{type: :image_generation}]
+)
+
+first_image = first.output.find do |item|
+  item.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+end
+unless first_image.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+  raise "No image generation call returned"
+end
+
+encoded_image = first_image.result or raise "No image returned"
+File.binwrite("cat_and_otter.png", Base64.strict_decode64(encoded_image))
+
+follow_up = client.responses.create(
+  model: "gpt-5.6",
+  input: "Now make it look realistic.",
+  previous_response_id: first.id,
+  tools: [{type: :image_generation}]
+)
+
+follow_up_image = follow_up.output.find do |item|
+  item.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+end
+unless follow_up_image.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+  raise "No follow-up image generation call returned"
+end
+
+encoded_image = follow_up_image.result or raise "No follow-up image returned"
+File.binwrite("cat_and_otter_realistic.png", Base64.strict_decode64(encoded_image))
+```
+
   
 
   
@@ -30854,6 +33280,50 @@ func saveImage(filename, encoded string) {
 }
 ```
 
+```ruby
+require "base64"
+require "openai"
+
+client = OpenAI::Client.new
+first = client.responses.create(
+  model: "gpt-5.6",
+  input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
+  tools: [{type: :image_generation}]
+)
+
+first_image = first.output.find do |item|
+  item.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+end
+unless first_image.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+  raise "No image generation call returned"
+end
+
+encoded_image = first_image.result or raise "No image returned"
+File.binwrite("cat_and_otter.png", Base64.strict_decode64(encoded_image))
+
+follow_up = client.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {
+      role: :user,
+      content: [{type: :input_text, text: "Now make it look realistic."}]
+    },
+    {type: :image_generation_call, id: first_image.id}
+  ],
+  tools: [{type: :image_generation}]
+)
+
+follow_up_image = follow_up.output.find do |item|
+  item.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+end
+unless follow_up_image.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+  raise "No follow-up image generation call returned"
+end
+
+encoded_image = follow_up_image.result or raise "No follow-up image returned"
+File.binwrite("cat_and_otter_realistic.png", Base64.strict_decode64(encoded_image))
+```
+
 
 
 ## Streaming
@@ -30983,6 +33453,36 @@ func saveImage(filename, encoded string) {
 		panic(err)
 	}
 }
+```
+
+```ruby
+require "base64"
+require "openai"
+
+client = OpenAI::Client.new
+stream = client.responses.stream(
+  model: "gpt-5.6",
+  input: "Generate an image of a river made of white owl feathers.",
+  tools: [{type: :image_generation, partial_images: 2}]
+)
+
+stream.each do |event|
+  case event
+  when OpenAI::Models::Responses::ResponseImageGenCallPartialImageEvent
+    image = Base64.strict_decode64(event.partial_image_b64)
+    File.binwrite("river-partial-#{event.partial_image_index}.png", image)
+  when OpenAI::Models::Responses::ResponseCompletedEvent
+    image_call = event.response.output.find do |item|
+      item.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+    end
+    next unless image_call.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+
+    File.binwrite(
+      "river-final.png",
+      Base64.strict_decode64(image_call.result)
+    )
+  end
+end
 ```
 
 
@@ -31137,6 +33637,30 @@ func main() {
 
 	panic("response did not include an image generation call")
 }
+```
+
+```ruby
+require "base64"
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Generate an image of a gray tabby cat hugging an otter with an orange scarf.",
+  tools: [{type: :image_generation}]
+)
+
+image_call = response.output.find do |item|
+  item.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+end
+unless image_call.is_a?(OpenAI::Models::Responses::ResponseOutputItem::ImageGenerationCall)
+  raise "No image generation call returned"
+end
+
+File.binwrite(
+  "cat_and_otter.png",
+  Base64.strict_decode64(image_call.result)
+)
 ```
 
 ```bash
@@ -31299,6 +33823,31 @@ ResponseResult response = await client.CreateResponseAsync(
 );
 
 Console.WriteLine(response.GetOutputText());
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {
+      role: :user,
+      content: [
+        {type: :input_text, text: "What's in this image?"},
+        {
+          type: :input_image,
+          detail: :auto,
+          image_url: "https://api.nga.gov/iiif/a2e6da57-3cd1-4235-b20e-95dcaefed6c8/full/!800,800/0/default.jpg"
+        }
+      ]
+    }
+  ]
+)
+
+puts(response.output_text)
 ```
 
 ```bash
@@ -31510,6 +34059,33 @@ ResponseResult response2 = await client.CreateResponseAsync(
 Console.WriteLine($"From byte array: {response2.GetOutputText()}");
 ```
 
+```ruby
+require "base64"
+require "openai"
+
+client = OpenAI::Client.new
+image = Base64.strict_encode64(File.binread("image.png"))
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {
+      role: :user,
+      content: [
+        {type: :input_text, text: "What's in this image?"},
+        {
+          type: :input_image,
+          detail: :auto,
+          image_url: "data:image/png;base64,#{image}"
+        }
+      ]
+    }
+  ]
+)
+
+puts(response.output_text)
+```
+
   
 
   
@@ -31688,6 +34264,32 @@ ResponseResult response = await client.CreateResponseAsync(
 );
 
 Console.WriteLine(response.GetOutputText());
+```
+
+```ruby
+require "openai"
+require "pathname"
+
+client = OpenAI::Client.new
+uploaded = client.files.create(
+  file: Pathname("image.png"),
+  purpose: :vision
+)
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {
+      role: :user,
+      content: [
+        {type: :input_text, text: "What's in this image?"},
+        {type: :input_image, detail: :auto, file_id: uploaded.id}
+      ]
+    }
+  ]
+)
+
+puts(response.output_text)
 ```
 
 
@@ -32391,9 +34993,9 @@ Each JSON file includes a `creationTime` and a `prefixes` array. The ranges can 
 
 # Latency optimization
 
-This guide covers the core set of principles you can apply to improve latency across a wide variety of LLM-related use cases. These techniques come from working with a wide range of customers and developers on production applications, so they should apply regardless of what you're building – from a granular workflow to an end-to-end chatbot.
+This guide covers the core set of principles you can apply to improve latency across a wide variety of LLM-related use cases. These techniques come from working with a wide range of customers and developers on production applications, so they should apply regardless of what you're building—from a granular workflow to an end-to-end chat application.
 
-While there's many individual techniques, we'll be grouping them into **seven principles** meant to represent a high-level taxonomy of approaches for improving latency.
+Although there are many individual techniques, this guide groups them into **seven principles** that represent a high-level taxonomy of approaches for improving latency.
 
 At the end, we'll walk through an [example](#example) to see how they can be applied.
 
@@ -32411,7 +35013,7 @@ At the end, we'll walk through an [example](#example) to see how they can be app
 
 **Inference speed** is probably the first thing that comes to mind when addressing latency (but as you'll see soon, it's far from the only one). This refers to the actual **rate at which the LLM processes tokens**, and is often measured in TPM (tokens per minute) or TPS (tokens per second).
 
-The main factor that influences inference speed is **model size** – smaller models usually run faster (and cheaper), and when used correctly can even outperform larger models. To maintain high quality performance with smaller models you can explore:
+The main factor that influences inference speed is **model size**—smaller models usually run faster (and cheaper), and when used correctly can even outperform larger models. To maintain high-quality performance with smaller models, you can explore:
 
 - using a longer, [more detailed prompt](https://developers.openai.com/api/docs/guides/prompt-engineering#prompt-engineering),
 - adding (more) [few-shot examples](https://developers.openai.com/api/docs/guides/prompt-engineering#few-shot-learning), or
@@ -32437,9 +35039,9 @@ Other factors that affect inference speed are the amount of
 
 ## Generate fewer tokens
 
-Generating tokens is almost always the highest latency step when using an LLM: as a general heuristic, **cutting 50% of your output tokens may cut ~50% your latency**. The way you reduce your output size will depend on output type:
+Generating tokens is almost always the highest latency step when using an LLM: as a general heuristic, **cutting 50% of your output tokens may cut ~50% of your latency**. The way you reduce your output size will depend on output type:
 
-If you're generating **natural language**, simply **asking the model to be more concise** ("under 20 words" or "be very brief") may help. You can also use few shot examples and/or fine-tuning to teach the model shorter responses.
+If you're generating **natural language**, **asking the model to be more concise** ("under 20 words" or "be brief") may help. You can also use few-shot examples and/or fine-tuning to teach the model shorter responses.
 
 If you're generating **structured output**, try to **minimize your output syntax** where possible: shorten function names, omit named arguments, coalesce parameters, etc.
 
@@ -32449,13 +35051,13 @@ Always remember: an output token cut is a (milli)second earned!
 
 ## Use fewer input tokens
 
-While reducing the number of input tokens does result in lower latency, this is not usually a significant factor – **cutting 50% of your prompt may only result in a 1-5% latency improvement**. Unless you're working with truly massive context sizes (documents, images), you may want to spend your efforts elsewhere.
+While reducing the number of input tokens does result in lower latency, this is not usually a significant factor—**cutting 50% of your prompt may only result in a 1–5% latency improvement**. Unless you're working with truly massive context sizes (documents, images), you may want to spend your efforts elsewhere.
 
 That being said, if you _are_ working with massive contexts (or you're set on squeezing every last bit of performance _and_ you've exhausted all other options) you can use the following techniques to reduce your input tokens:
 
 - **Fine-tuning the model**, to replace the need for lengthy instructions / examples.
 - **Filtering context input**, like pruning RAG results, cleaning HTML, etc.
-- **Maximize shared prompt prefix**, by putting dynamic portions (e.g. RAG results, history, etc) later in the prompt. This makes your request more [KV cache](https://medium.com/@joaolages/kv-caching-explained-276520203249)-friendly (which most LLM providers use) and means fewer input tokens are processed on each request.
+- **Maximize shared prompt prefix**, by putting dynamic portions (for example, RAG results and history) later in the prompt. This makes your request more [KV cache](https://medium.com/@joaolages/kv-caching-explained-276520203249)-friendly (which most LLM providers use) and means fewer input tokens are processed on each request.
 
 Check out our docs to learn more about how [prompt
   caching](https://developers.openai.com/api/docs/guides/prompt-engineering#save-on-cost-and-latency-with-prompt-caching)
@@ -32463,21 +35065,21 @@ Check out our docs to learn more about how [prompt
 
 ## Make fewer requests
 
-Each time you make a request you incur some round-trip latency – this can start to add up.
+Each time you make a request, you incur some round-trip latency—this can start to add up.
 
 If you have sequential steps for the LLM to perform, instead of firing off one request per step consider **putting them in a single prompt and getting them all in a single response**. You'll avoid the additional round-trip latency, and potentially also reduce complexity of processing multiple responses.
 
-An approach to doing this is by collecting your steps in an enumerated list in the combined prompt, and then requesting the model to return the results in named fields in a JSON. This way you can easily parse out and reference each result!
+An approach to doing this is by collecting your steps in an enumerated list in the combined prompt, and then requesting the model to return the results in named fields in a JSON object. This way, you can parse and reference each result.
 
 ## Parallelize
 
-Parallelization can be very powerful when performing multiple steps with an LLM.
+Parallel processing can be powerful when performing multiple steps with an LLM.
 
 If the steps **are _not_ strictly sequential**, you can **split them out into parallel calls**. Two shirts take just as long to dry as one.
 
-If the steps **_are_ strictly sequential**, however, you might still be able to **leverage speculative execution**. This is particularly effective for classification steps where one outcome is more likely than the others (e.g. moderation).
+If the steps **_are_ strictly sequential**, however, you might still be able to **leverage speculative execution**. This is particularly effective for classification steps where one outcome is more likely than the others (for example, moderation).
 
-1. Start step 1 & step 2 simultaneously (e.g. input moderation & story generation)
+1. Start step 1 and step 2 simultaneously (for example, input moderation and story generation)
 2. Verify the result of step 1
 3. If result was not the expected, cancel step 2 (and retry if necessary)
 
@@ -32485,10 +35087,10 @@ If your guess for step 1 is right, then you essentially got to run it with zero 
 
 ## Make your users wait less
 
-There's a huge difference between **waiting** and **watching progress happen** – make sure your users experience the latter. Here are a few techniques:
+There's a huge difference between **waiting** and **watching progress happen**—make sure your users experience the latter. Here are a few techniques:
 
 - **Streaming**: The single most effective approach, as it cuts the _waiting_ time to a second or less. (ChatGPT would feel pretty different if you saw nothing until each response was done.)
-- **Chunking**: If your output needs further processing before being shown to the user (moderation, translation) consider **processing it in chunks** instead of all at once. Do this by streaming to your backend, then sending processed chunks to your frontend.
+- **Chunking**: If your output needs further processing before being shown to the user (moderation, translation), consider **processing it in chunks** instead of all at once. Do this by streaming to your back end, then sending processed chunks to your front end.
 - **Show your steps**: If you're taking multiple steps or using tools, surface this to the user. The more real progress you can show, the better.
 - **Loading states**: Spinners and progress bars go a long way.
 
@@ -32499,12 +35101,12 @@ sooner.
 
 ## Don't default to an LLM
 
-LLMs are extremely powerful and versatile, and are therefore sometimes used in cases where a **faster classical method** would be more appropriate. Identifying such cases may allow you to cut your latency significantly. Consider the following examples:
+Language models are powerful and versatile, and are therefore sometimes used in cases where a **faster classical method** would be more appropriate. Identifying such cases may allow you to cut your latency significantly. Consider the following examples:
 
 - **Hard-coding:** If your **output** is highly constrained, you may not need an LLM to generate it. Action confirmations, refusal messages, and requests for standard input are all great candidates to be hard-coded. (You can even use the age-old method of coming up with a few variations for each.)
-- **Pre-computing:** If your **input** is constrained (e.g. category selection) you can generate multiple responses in advance, and just make sure you never show the same one to a user twice.
+- **Pre-computing:** If your **input** is constrained (for example, category selection), you can generate multiple responses in advance, and just make sure you never show the same one to a user twice.
 - **Leveraging UI:** Summarized metrics, reports, or search results are sometimes better conveyed with classical, bespoke UI components rather than LLM-generated text.
-- **Traditional optimization techniques:** An LLM application is still an application; binary search, caching, hash maps, and runtime complexity are all _still_ useful in a world of LLMs.
+- **Traditional optimization techniques:** An LLM application is still an application; binary search, caching, hash maps, and runtime complexity are all _still_ useful in a world of language models.
 
 ## Example
 
@@ -32632,6 +35234,15 @@ Combined query contextualization and retrieval check prompt
 }
 ```
 
+```ruby
+combined_query = {
+  query: "[contextualized query]",
+  retrieval: "[true/false - whether retrieval is required]"
+}
+
+puts(combined_query)
+```
+
 
 ```example-chat
 SYSTEM: Given the previous conversation, re-write the last user query so it contains
@@ -32665,19 +35276,19 @@ USER: [JSON-formatted input conversation here]
 
 
 
-Actually, adding context and determining whether to retrieve are very straightforward and well defined tasks, so we can likely use a **smaller, fine-tuned model** instead. Switching to GPT-3.5 will let us [process tokens faster](#process-tokens-faster).
+Actually, adding context and determining whether to retrieve are straightforward and well-defined tasks, so we can likely use a **smaller, fine-tuned model** instead. Switching to GPT-3.5 will let us [process tokens faster](#process-tokens-faster).
 
 ![Assistants object architecture diagram](https://cdn.openai.com/API/docs/images/diagram-latency-customer-service-4.png)
 
 #### Part 2: Analyzing the assistant prompt
 
-Let's now direct our attention to the Assistant prompt. There seem to be many distinct steps happening as it fills the JSON fields – this could indicate an opportunity to [parallelize](#parallelize).
+Let's now direct our attention to the Assistant prompt. There seem to be many distinct steps happening as it fills the JSON fields—this could indicate an opportunity to [parallelize](#parallelize).
 
 ![Assistants object architecture diagram](https://cdn.openai.com/API/docs/images/diagram-latency-customer-service-5.png)
 
 However, let's pretend we have run some tests and discovered that splitting the reasoning steps in the JSON produces worse responses, so we need to explore different solutions.
 
-**Could we use a fine-tuned GPT-3.5 instead of GPT-4?** Maybe – but in general, open-ended responses from assistants are best left to GPT-4 so it can better handle a greater range of cases. That being said, looking at the reasoning steps themselves, they may not all require GPT-4 level reasoning to produce. The well defined, limited scope nature makes them and **good potential candidates for fine-tuning**.
+**Could we use a fine-tuned GPT-3.5 instead of GPT-4?** Maybe—but in general, open-ended responses from assistants are best left to GPT-4 so it can better handle a greater range of cases. That being said, looking at the reasoning steps themselves, they may not all require GPT-4-level reasoning to produce. Their well-defined, limited scope makes them **good potential candidates for fine-tuning**.
 
 ```javascript
 {
@@ -32693,6 +35304,22 @@ However, let's pretend we have run some tests and discovered that splitting the 
 }
 ```
 
+```ruby
+assistant_response = {
+  message_is_conversation_continuation: "True", # <-
+  number_of_messages_in_conversation_so_far: "1", # <-
+  user_sentiment: "Aggravated", # <-
+  query_type: "Hardware Issue", # <-
+  response_tone: "Validating and solution-oriented", # <-
+  response_requirements: "Propose options for repair or replacement.", # <-
+  user_requesting_to_talk_to_human: "False", # <-
+  enough_information_in_context: "True", # <-
+  response: "..." # X -- benefits from GPT-4
+}
+
+puts(assistant_response)
+```
+
 
 This opens up the possibility of a trade-off. Do we keep this as a **single request entirely generated by GPT-4**, or **split it into two sequential requests** and use GPT-3.5 for all but the final response? We have a case of conflicting principles: the first option lets us [make fewer requests](#make-fewer-requests), but the second may let us [process tokens faster](#process-tokens-faster).
 
@@ -32702,7 +35329,7 @@ As with many optimization tradeoffs, the answer will depend on the details. For 
 - The average latency decrease from processing most fields faster.
 - The average latency _increase_ from doing two requests instead of one.
 
-The conclusion will vary by case, and the best way to make the determiation is by testing this with production examples. In this case let's pretend the tests indicated it's favorable to split the prompt in two to [process tokens faster](#process-tokens-faster).
+The conclusion will vary by case, and the best way to make the determination is by testing this with production examples. In this case, let's pretend the tests indicated it's favorable to split the prompt in two to [process tokens faster](#process-tokens-faster).
 
 ![Assistants object architecture diagram](https://cdn.openai.com/API/docs/images/diagram-latency-customer-service-6.png)
 
@@ -32795,6 +35422,20 @@ Taking a closer look at the reasoning JSON you may notice the field names themse
 }
 ```
 
+```ruby
+reasoning = {
+  message_is_conversation_continuation: "True", # <-
+  number_of_messages_in_conversation_so_far: "1", # <-
+  user_sentiment: "Aggravated", # <-
+  query_type: "Hardware Issue", # <-
+  response_tone: "Validating and solution-oriented", # <-
+  response_requirements: "Propose options for repair or replacement.", # <-
+  user_requesting_to_talk_to_human: "False" # <-
+}
+
+puts(reasoning)
+```
+
 
 By making them shorter and moving explanations to the comments we can [generate fewer tokens](#generate-fewer-tokens).
 
@@ -32808,6 +35449,20 @@ By making them shorter and moving explanations to the comments we can [generate 
   reqs: "Propose options for repair or replacement.", // response requirements
   human: "False", // whether user is expressing want to talk to human
 }
+```
+
+```ruby
+reasoning = {
+  cont: "True", # whether last message is a continuation
+  n_msg: "1", # number of messages in the continued conversation
+  tone_in: "Aggravated", # sentiment of user query
+  type: "Hardware Issue", # type of the user query
+  tone_out: "Validating and solution-oriented", # desired tone for response
+  reqs: "Propose options for repair or replacement.", # response requirements
+  human: "False" # whether user wants to talk to a human
+}
+
+puts(reasoning)
 ```
 
 
@@ -34147,6 +36802,25 @@ ResponseResult response = await client.CreateResponseAsync(options);
 Console.WriteLine(response.GetOutputText());
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Summarize the Q2 earnings report.",
+  tools: [{
+    type: :mcp,
+    server_label: "Dropbox",
+    connector_id: "connector_dropbox",
+    authorization: "<oauth access token>",
+    require_approval: :never
+  }]
+)
+
+puts(response.output_text)
+```
+
 
 
 The API will return new items in the `output` array of the model response. If the model decides to use a Connector or MCP server, it will first make a request to list available tools from the server, which will create a `mcp_list_tools` output item. From the simple remote MCP server example above, it contains only one tool definition:
@@ -34364,6 +37038,29 @@ ResponseResult response = await client.CreateResponseAsync(options);
 Console.WriteLine(response.GetOutputText());
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Roll 2d4+1",
+  tools: [
+    {
+      type: :mcp,
+      server_label: "dmcp",
+      server_description: "A Dungeons and Dragons MCP server to assist with dice rolling.",
+      server_url: "https://dmcp-server.deno.dev/mcp",
+      require_approval: :never,
+      allowed_tools: ["roll"]
+    }
+  ]
+)
+
+puts(response.output_text)
+```
+
 
 ### Step 2: Calling tools
 
@@ -34554,6 +37251,30 @@ ResponseResult response2 = await client.CreateResponseAsync(options);
 Console.WriteLine(response2.GetOutputText());
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  previous_response_id: "resp_682d498bdefc81918b4a6aa477bfafd904ad1e533afccbfa",
+  input: [{
+    type: :mcp_approval_response,
+    approval_request_id: "mcpr_682d498e3bd4819196a0ce1664f8e77b04ad1e533afccbfa",
+    approve: true
+  }],
+  tools: [{
+    type: :mcp,
+    server_label: "dmcp",
+    server_url: "https://dmcp-server.deno.dev/mcp",
+    server_description: "A Dungeons and Dragons MCP server.",
+    require_approval: :always
+  }]
+)
+
+puts(response.output_text)
+```
+
 
 Here we're using the `previous_response_id` parameter to chain this new Response, with the previous Response that generated the approval request. But you can also pass back the [outputs from one response, as inputs into another](https://developers.openai.com/api/docs/guides/conversation-state#manually-manage-conversation-state) for maximum control over what enter's the model's context.
 
@@ -34698,6 +37419,29 @@ ResponseResult response = await client.CreateResponseAsync(options);
 Console.WriteLine(response.GetOutputText());
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "What transport protocols does the 2025-03-26 version of the MCP spec support?",
+  tools: [
+    {
+      type: :mcp,
+      server_label: "deepwiki",
+      server_url: "https://mcp.deepwiki.com/mcp",
+      require_approval: {
+        never: {tool_names: ["ask_question", "read_wiki_structure"]}
+      }
+    }
+  ]
+)
+
+puts(response.output_text)
+```
+
 
 ## Authentication
 
@@ -34824,6 +37568,24 @@ options.InputItems.Add(
 ResponseResult response = await client.CreateResponseAsync(options);
 
 Console.WriteLine(response.GetOutputText());
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Create a payment link for $20.",
+  tools: [{
+    type: :mcp,
+    server_label: "stripe",
+    server_url: "https://mcp.stripe.com",
+    authorization: ENV.fetch("STRIPE_OAUTH_ACCESS_TOKEN")
+  }]
+)
+
+puts(response.output_text)
 ```
 
 
@@ -34985,6 +37747,25 @@ options.InputItems.Add(
 ResponseResult response = await client.CreateResponseAsync(options);
 
 Console.WriteLine(response.GetOutputText());
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "What's on my Google Calendar for today?",
+  tools: [{
+    type: :mcp,
+    server_label: "google_calendar",
+    connector_id: "connector_googlecalendar",
+    authorization: "<oauth access token>",
+    require_approval: :never
+  }]
+)
+
+puts(response.output_text)
 ```
 
 
@@ -35596,6 +38377,25 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.responses.create(
+  prompt: {
+    id: "pmpt_123",
+    version: "1",
+    variables: {
+      customer_name: "Acme",
+      issue: "billing question"
+    }
+  }
+)
+
+puts(response.output_text)
+```
+
 ```bash
 curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
@@ -35688,6 +38488,28 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {
+      role: :system,
+      content: "You are a helpful support assistant. Be concise, accurate, and friendly."
+    },
+    {
+      role: :user,
+      content: "Customer name: Acme. Issue: billing question. Write a response to the customer."
+    }
+  ]
+)
+
+puts(response.output_text)
 ```
 
 ```bash
@@ -35818,6 +38640,32 @@ func buildSupportPrompt(customerName string, issue string) responses.ResponseInp
 		responses.ResponseInputItemParamOfMessage(fmt.Sprintf("Customer name: %s. Issue: %s. Write a response to the customer.", customerName, issue), responses.EasyInputMessageRoleUser),
 	}
 }
+```
+
+```ruby
+require "openai"
+
+def build_support_prompt(customer_name, issue)
+  [
+    {
+      role: :system,
+      content: "You are a helpful support assistant. Be concise, accurate, and friendly. Do not invent policy details."
+    },
+    {
+      role: :user,
+      content: "Customer name: #{customer_name}. Issue: #{issue}. Write a response to the customer."
+    }
+  ]
+end
+
+client = OpenAI::Client.new
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: build_support_prompt("Acme", "billing question")
+)
+
+puts(response.output_text)
 ```
 
 
@@ -36049,6 +38897,28 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+messages = [
+  {role: :system, content: "You are a helpful assistant."},
+  {role: :user, content: "Hello!"}
+]
+
+completion = client.chat.completions.create(
+  model: "gpt-5.6",
+  messages: messages
+)
+puts(completion.choices.fetch(0).message.content)
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: messages
+)
+puts(response.output_text)
+```
+
 ```bash
 INPUT='[
   { "role": "system", "content": "You are a helpful assistant." },
@@ -36137,6 +39007,22 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+completion = client.chat.completions.create(
+  model: "gpt-5.6",
+  messages: [
+    {role: :system, content: "You are a helpful assistant."},
+    {role: :user, content: "Hello!"}
+  ]
+)
+
+puts(completion.choices.fetch(0).message.content)
+```
+
 ```bash
 curl https://api.openai.com/v1/chat/completions \
   -H "Content-Type: application/json" \
@@ -36210,6 +39096,20 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  instructions: "You are a helpful assistant.",
+  input: "Hello!"
+)
+
+puts(response.output_text)
 ```
 
 ```bash
@@ -36321,6 +39221,30 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+messages = [
+  {role: :system, content: "You are a helpful assistant."},
+  {role: :user, content: "What is the capital of France?"}
+]
+
+first = client.chat.completions.create(
+  model: "gpt-5.6",
+  messages: messages
+)
+messages << {role: :assistant, content: first.choices.fetch(0).message.content}
+messages << {role: :user, content: "And its population?"}
+
+second = client.chat.completions.create(
+  model: "gpt-5.6",
+  messages: messages
+)
+
+puts(second.choices.fetch(0).message.content)
+```
+
 
   
 
@@ -36422,6 +39346,27 @@ func outputAsInput(output []responses.ResponseOutputItemUnion) []responses.Respo
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+context = [{role: :user, content: "What is the capital of France?"}]
+
+first = client.responses.create(
+  model: "gpt-5.6",
+  input: context
+)
+context.concat(first.output.map(&:to_h))
+context << {role: :user, content: "And its population?"}
+
+second = client.responses.create(
+  model: "gpt-5.6",
+  input: context
+)
+
+puts(second.output_text)
+```
+
     You can also use `previous_response_id` to reference the previous response
     and create response chains or forks.
     Multi-turn conversation
@@ -36488,6 +39433,27 @@ func main() {
 	}
 	fmt.Println(second.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+first = client.responses.create(
+  model: "gpt-5.6",
+  input: "What is the capital of France?",
+  store: true
+)
+
+second = client.responses.create(
+  model: "gpt-5.6",
+  previous_response_id: first.id,
+  input: "And its population?",
+  store: true
+)
+
+puts(second.output_text)
 ```
 
 
@@ -36694,6 +39660,33 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+schema = {
+  type: "object",
+  properties: {
+    name: {type: "string", minLength: 1},
+    age: {type: "number", minimum: 0, maximum: 130}
+  },
+  required: ["name", "age"],
+  additionalProperties: false
+}
+
+completion = client.chat.completions.create(
+  model: "gpt-5.6",
+  reasoning_effort: :medium,
+  messages: [{role: :user, content: "Jane, 54 years old"}],
+  response_format: {
+    type: :json_schema,
+    json_schema: {name: "person", strict: true, schema: schema}
+  }
+)
+
+puts(completion.choices.fetch(0).message.content)
+```
+
 ```bash
 curl https://api.openai.com/v1/chat/completions \
   -H "Content-Type: application/json" \
@@ -36833,6 +39826,36 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+schema = {
+  type: "object",
+  properties: {
+    name: {type: "string", minLength: 1},
+    age: {type: "number", minimum: 0, maximum: 130}
+  },
+  required: ["name", "age"],
+  additionalProperties: false
+}
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Jane, 54 years old",
+  text: {
+    format: {
+      type: :json_schema,
+      name: "person",
+      strict: true,
+      schema: schema
+    }
+  }
+)
+
+puts(response.output_text)
 ```
 
 ```bash
@@ -36991,6 +40014,34 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+completion = client.chat.completions.create(
+  model: "gpt-5.6",
+  reasoning_effort: :none,
+  messages: [
+    {role: :system, content: "You are a helpful assistant."},
+    {role: :user, content: "Who is the current president of France?"}
+  ],
+  functions: [
+    {
+      name: "web_search",
+      description: "Search the web for information",
+      parameters: {
+        type: "object",
+        properties: {query: {type: "string"}},
+        required: ["query"]
+      }
+    }
+  ]
+)
+
+puts(completion.choices.fetch(0).message)
+```
+
 ```bash
 curl https://api.example.com/search \
   -G \
@@ -37053,6 +40104,20 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Who is the current president of France?",
+  tools: [{type: :web_search}]
+)
+
+puts(response.output_text)
 ```
 
 ```bash
@@ -37932,6 +40997,20 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "A user asks for instructions to make a harmful weapon. Draft a brief refusal and offer a safer alternative.",
+  moderation: {model: "omni-moderation-latest"}
+)
+
+puts(response.moderation)
+```
+
 
 The Responses API returns an input `moderation_result` object at `response.moderation.input` and an output `moderation_result` object at `response.moderation.output`.
 
@@ -38009,6 +41088,19 @@ func main() {
 
 	fmt.Println(moderation.Results[0].Flagged)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+moderation = client.moderations.create(
+  model: OpenAI::Models::ModerationModel::OMNI_MODERATION_LATEST,
+  input: "Text to classify goes here."
+)
+
+puts(moderation.results.fetch(0).flagged)
 ```
 
 ```bash
@@ -38109,6 +41201,27 @@ func main() {
 
 	fmt.Println(moderation.Results[0].Flagged)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+moderation = client.moderations.create(
+  model: OpenAI::Models::ModerationModel::OMNI_MODERATION_LATEST,
+  input: [
+    {type: :text, text: "Text to classify goes here."},
+    {
+      type: :image_url,
+      image_url: {
+        url: "https://api.nga.gov/iiif/a2e6da57-3cd1-4235-b20e-95dcaefed6c8/full/!800,800/0/default.jpg"
+      }
+    }
+  ]
+)
+
+puts(moderation.results.fetch(0).flagged)
 ```
 
 ```bash
@@ -40280,6 +43393,36 @@ with code, and with no markdown formatting.
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+code = <<~CODE
+  class User {
+    firstName: string = "";
+    lastName: string = "";
+    username: string = "";
+  }
+
+  export default User;
+CODE
+refactor_prompt = <<~PROMPT
+  Replace the "username" property with an "email" property. Respond only
+  with code, and with no markdown formatting.
+PROMPT
+completion = client.chat.completions.create(
+  model: "gpt-4.1",
+  messages: [
+    {role: :user, content: refactor_prompt},
+    {role: :user, content: code}
+  ],
+  prediction: {type: :content, content: code},
+  store: true
+)
+
+puts(completion.choices.fetch(0).message.content)
+```
+
 ```bash
 curl https://api.openai.com/v1/chat/completions \
   -H "Content-Type: application/json" \
@@ -40468,6 +43611,36 @@ with code, and with no markdown formatting.
 		panic(err)
 	}
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+code = <<~CODE
+  class User {
+    firstName: string = "";
+    lastName: string = "";
+    username: string = "";
+  }
+
+  export default User;
+CODE
+refactor_prompt = <<~PROMPT
+  Replace the "username" property with an "email" property. Respond only
+  with code, and with no markdown formatting.
+PROMPT
+stream = client.chat.completions.stream(
+  model: "gpt-4.1",
+  messages: [
+    {role: :user, content: refactor_prompt},
+    {role: :user, content: code}
+  ],
+  prediction: {type: :content, content: code},
+  store: true
+)
+
+stream.text.each { |text| print(text) }
 ```
 
 
@@ -42228,6 +45401,20 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  instructions: "Talk like a pirate.",
+  reasoning: {effort: :low},
+  input: "Are semicolons optional in JavaScript?"
+)
+
+puts(response.output_text)
+```
+
 ```bash
 curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
@@ -42322,6 +45509,22 @@ func main() {
 
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  reasoning: {effort: :low},
+  input: [
+    {role: :developer, content: "Talk like a pirate."},
+    {role: :user, content: "Are semicolons optional in JavaScript?"}
+  ]
+)
+
+puts(response.output_text)
 ```
 
 ```bash
@@ -42507,6 +45710,20 @@ func main() {
 
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+instructions = File.read(File.join(__dir__, "prompt.txt"))
+response = client.responses.create(
+  model: "gpt-5.6",
+  instructions: instructions,
+  input: "How would I declare a variable for a last name?"
+)
+
+puts(response.output_text)
 ```
 
 ```bash
@@ -48487,6 +51704,24 @@ format '[1,2],[3,4],[5,6]' and prints the transpose in the same format.`
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+prompt = <<~PROMPT
+  Write a bash script that takes a matrix represented as a string with format
+  '[1,2],[3,4],[5,6]' and prints the transpose in the same format.
+PROMPT
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  reasoning: {effort: :low},
+  input: prompt
+)
+
+puts(response.output_text)
+```
+
 ```bash
 curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
@@ -48702,6 +51937,28 @@ format '[1,2],[3,4],[5,6]' and prints the transpose in the same format.`
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+prompt = <<~PROMPT
+  Write a bash script that takes a matrix represented as a string with format
+  '[1,2],[3,4],[5,6]' and prints the transpose in the same format.
+PROMPT
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  max_output_tokens: 300,
+  reasoning: {effort: :medium},
+  input: prompt
+)
+
+if response.status == OpenAI::Responses::ResponseStatus::INCOMPLETE
+  puts("Ran out of tokens")
+  puts("Partial output: #{response.output_text}") unless response.output_text.empty?
+end
+```
+
 
 ### Keeping reasoning items in context
 
@@ -48827,6 +52084,27 @@ func main() {
 
 	fmt.Println(second.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+first = client.responses.create(
+  model: "gpt-5.6",
+  input: "Inspect this repository and identify the likely bug.",
+  reasoning: {context: :current_turn}
+)
+
+second = client.responses.create(
+  model: "gpt-5.6",
+  previous_response_id: first.id,
+  input: "Now patch the bug and explain the change.",
+  reasoning: {context: :all_turns}
+)
+
+puts(second.output_text)
 ```
 
 
@@ -48991,6 +52269,33 @@ func outputAsInput(output []responses.ResponseOutputItemUnion) []responses.Respo
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+history = [
+  {role: :user, content: "Inspect this repository and identify the likely bug."}
+]
+
+first = client.responses.create(
+  model: "gpt-5.6",
+  store: false,
+  input: history,
+  reasoning: {context: :current_turn}
+)
+history.concat(first.output.map(&:to_h))
+history << {role: :user, content: "Now patch the bug and explain the change."}
+
+second = client.responses.create(
+  model: "gpt-5.6",
+  store: false,
+  input: history,
+  reasoning: {context: :all_turns}
+)
+
+puts(second.output_text)
+```
+
 
 ## Reasoning summaries
 
@@ -49064,6 +52369,20 @@ func main() {
 
 	fmt.Println(response.Output)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "What is the capital of France?",
+  reasoning: {effort: :low, summary: :auto}
+)
+
+puts(response.output)
 ```
 
 ```bash
@@ -49223,6 +52542,34 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {
+      role: :assistant,
+      phase: :commentary,
+      content: "I'll inspect the logs and then summarize root cause and remediation."
+    },
+    {
+      role: :assistant,
+      phase: :final_answer,
+      content: "Root cause: cache invalidation race."
+    },
+    {
+      role: :user,
+      content: "Great—now give me a rollout-safe fix plan."
+    }
+  ]
+)
+
+puts(response.output_text)
+```
+
 
 ## Advice on prompting
 
@@ -49379,6 +52726,31 @@ const books = [
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+prompt = <<~PROMPT
+  Instructions:
+  - Given the React component below, change it so that nonfiction books have red text.
+  - Return only the code in your reply.
+  - Do not include any additional formatting, such as markdown code blocks.
+
+  const books = [
+    { title: 'Dune', category: 'fiction', id: 1 },
+    { title: 'Frankenstein', category: 'fiction', id: 2 },
+    { title: 'Moneyball', category: 'nonfiction', id: 3 },
+  ];
+PROMPT
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: prompt
+)
+
+puts(response.output_text)
+```
+
 
   
 
@@ -49485,6 +52857,25 @@ directory structure you will need, then return each file in full.`
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+prompt = <<~PROMPT
+  I want to build a Python app that looks up user questions in a database where
+  they are mapped to answers. If there is a close match, it retrieves the answer.
+  Otherwise, it asks the user for an answer and stores the question and answer.
+  Plan the directory structure, then return each file in full.
+PROMPT
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: prompt
+)
+
+puts(response.output_text)
+```
+
 
   
 
@@ -49572,6 +52963,23 @@ research into new antibiotics? Why should we consider them?`
 
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+prompt = <<~PROMPT
+  What are three compounds we should consider investigating to advance research
+  into new antibiotics? Why should we consider them?
+PROMPT
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: prompt
+)
+
+puts(response.output_text)
 ```
 
 
@@ -51432,6 +54840,23 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+require "pathname"
+
+client = OpenAI::Client.new
+store = client.vector_stores.create(name: "Support FAQ")
+source = Pathname("customer_policies.txt")
+uploaded = client.files.create(file: source, purpose: :assistants)
+file = client.vector_stores.files.create(store.id, file_id: uploaded.id)
+until [:completed, :failed, :cancelled].include?(file.status)
+  sleep(1)
+  file = client.vector_stores.files.retrieve(file.id, vector_store_id: store.id)
+end
+
+puts(store.id)
+```
+
 
 <li className={s.StandaloneLi} data-number={2}>
   **Send search query** to get relevant results.
@@ -51476,6 +54901,14 @@ func main() {
 	}
 	fmt.Println(results.Data)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+results = client.vector_stores.search("vs_123", query: "What is the return policy?")
+puts(results.data&.first&.content)
 ```
 
 
@@ -51539,6 +54972,17 @@ func main() {
 	}
 	fmt.Println(results.Data)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+results = client.vector_stores.search(
+  "vs_123",
+  query: "How many woodchucks are allowed per passenger?"
+)
+puts(results.data&.first&.content)
 ```
 
 
@@ -51829,6 +55273,17 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+store = client.vector_stores.create(
+  name: "Support FAQ",
+  file_ids: ["file_123"]
+)
+puts(store.id)
+```
+
   
 
   
@@ -51866,6 +55321,14 @@ func main() {
 	}
 	fmt.Println(vectorStore.ID)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+store = client.vector_stores.retrieve("vs_123")
+puts(store.id)
 ```
 
   
@@ -51912,6 +55375,14 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+store = client.vector_stores.update("vs_123", name: "Updated knowledge base")
+puts(store.name)
+```
+
   
 
   
@@ -51951,6 +55422,14 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+deleted = client.vector_stores.delete("vs_123")
+puts(deleted.deleted)
+```
+
   
 
   
@@ -51986,6 +55465,14 @@ func main() {
 	}
 	fmt.Println(vectorStores.Data)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+stores = client.vector_stores.list(limit: 10)
+puts((stores.data || []).length)
 ```
 
 
@@ -52035,6 +55522,14 @@ func main() {
 	}
 	fmt.Println(file.ID)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+file = client.vector_stores.files.create("vs_123", file_id: "file_123")
+puts(file.id)
 ```
 
   
@@ -52089,6 +55584,27 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+require "pathname"
+
+client = OpenAI::Client.new
+file = Pathname("customer_policies.txt")
+uploaded = client.files.create(file: file, purpose: :assistants)
+vector_store_file = client.vector_stores.files.create(
+  "vs_123",
+  file_id: uploaded.id
+)
+until [:completed, :failed, :cancelled].include?(vector_store_file.status)
+  sleep(1)
+  vector_store_file = client.vector_stores.files.retrieve(
+    vector_store_file.id,
+    vector_store_id: "vs_123"
+  )
+end
+puts(vector_store_file.id)
+```
+
   
 
   
@@ -52129,6 +55645,14 @@ func main() {
 	}
 	fmt.Println(file.ID)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+file = client.vector_stores.files.retrieve("file_123", vector_store_id: "vs_123")
+puts(file.id)
 ```
 
   
@@ -52179,6 +55703,14 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+file = client.vector_stores.files.update("file_123", vector_store_id: "vs_123", attributes: {category: "policy"})
+puts(file.id)
+```
+
   
 
   
@@ -52221,6 +55753,14 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+deleted = client.vector_stores.files.delete("file_123", vector_store_id: "vs_123")
+puts(deleted.deleted)
+```
+
   
 
   
@@ -52258,6 +55798,14 @@ func main() {
 	}
 	fmt.Println(files.Data)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+files = client.vector_stores.files.list("vs_123")
+puts((files.data || []).length)
 ```
 
 
@@ -52346,6 +55894,34 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+batch = client.vector_stores.file_batches.create(
+  "vs_123",
+  files: [
+    {file_id: "file_123", attributes: {department: "finance"}},
+    {
+      file_id: "file_456",
+      chunking_strategy: {
+        type: :static,
+        max_chunk_size_tokens: 1_200,
+        chunk_overlap_tokens: 200
+      }
+    }
+  ]
+)
+until [:completed, :failed, :cancelled].include?(batch.status)
+  sleep(1)
+  batch = client.vector_stores.file_batches.retrieve(
+    batch.id,
+    vector_store_id: "vs_123"
+  )
+end
+puts(batch.status)
+```
+
   
 
   
@@ -52386,6 +55962,17 @@ func main() {
 	}
 	fmt.Println(batch.ID)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+batch = client.vector_stores.file_batches.retrieve(
+  "vsfb_123",
+  vector_store_id: "vs_123"
+)
+puts(batch.status)
 ```
 
   
@@ -52430,6 +56017,17 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+batch = client.vector_stores.file_batches.cancel(
+  "vsfb_123",
+  vector_store_id: "vs_123"
+)
+puts(batch.status)
+```
+
   
 
   
@@ -52470,6 +56068,17 @@ func main() {
 	}
 	fmt.Println(files.Data)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+files = client.vector_stores.file_batches.list_files(
+  "vsfb_123",
+  vector_store_id: "vs_123"
+)
+puts((files.data || []).length)
 ```
 
 
@@ -52534,6 +56143,14 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+file = client.vector_stores.files.create("<vector_store_id>", file_id: "file_123", attributes: {category: "policy"})
+puts(file.id)
+```
+
 
 ### Expiration policies
 
@@ -52580,6 +56197,17 @@ func main() {
 	}
 	fmt.Println(vectorStore.ExpiresAfter)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+store = client.vector_stores.update(
+  "vs_123",
+  expires_after: {anchor: :last_active_at, days: 7}
+)
+puts(store.expires_after)
 ```
 
 
@@ -52678,6 +56306,17 @@ func main() {
 	}
 	fmt.Println(results.Data)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+results = client.vector_stores.search(
+  "vs_123",
+  query: "What is the return policy?"
+)
+puts(results.data)
 ```
 
 
@@ -52779,6 +56418,30 @@ func formatResults(results []openai.VectorStoreSearchResponse) string {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+query = "What is the return policy?"
+results = client.vector_stores.search("vs_123", query: query)
+sources = (results.data || []).map do |result|
+  content = result.content.map { |part| "<content>#{part.text}</content>" }.join
+  "<result file_id='#{result.file_id}' file_name='#{result.filename}'>#{content}</result>"
+end.join
+
+completion = client.chat.completions.create(
+  model: "gpt-5.6",
+  messages: [
+    {
+      role: :developer,
+      content: "Answer the query concisely using only the provided sources."
+    },
+    {role: :user, content: "Sources: <sources>#{sources}</sources>\n\nQuery: #{query}"}
+  ]
+)
+puts(completion.choices.fetch(0).message.content)
+```
+
 
 ```json
 "Our return policy allows returns within 30 days of purchase."
@@ -52848,6 +56511,23 @@ func formatResults(results []openai.VectorStoreSearchResponse) string {
 	sources.WriteString("</sources>")
 	return sources.String()
 }
+```
+
+```ruby
+results = [
+  {
+    file_id: "file-12345",
+    filename: "woodchuck_policy.txt",
+    content: [{text: "Each passenger may carry up to two woodchucks."}]
+  }
+]
+
+sources = results.map do |result|
+  content = result.fetch(:content).map { |part| "<content>#{part.fetch(:text)}</content>" }.join
+  "<result file_id=\"#{result.fetch(:file_id)}\" file_name=\"#{result.fetch(:filename)}\">#{content}</result>"
+end
+
+puts("<sources>#{sources.join}</sources>")
 ```
 
 ---
@@ -53200,6 +56880,19 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+completion = client.chat.completions.create(
+  model: "gpt-5.6",
+  messages: [{role: :user, content: "Help me plan a study schedule."}],
+  safety_identifier: "user_1234"
+)
+
+puts(completion.choices.fetch(0).message.content)
+```
+
 ```bash
 curl https://api.openai.com/v1/chat/completions \
 -H "Content-Type: application/json" \
@@ -53306,6 +56999,19 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6-terra",
+  input: "Help me plan a study schedule.",
+  safety_identifier: "user_1234"
+)
+
+puts(response.output_text)
+```
+
 ```bash
 curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \
@@ -53360,6 +57066,19 @@ func main() {
 	}
 	fmt.Println(response.Choices[0].Message.Content)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+completion = client.chat.completions.create(
+  model: "gpt-5.6-terra",
+  messages: [{role: :user, content: "Help me plan a study schedule."}],
+  safety_identifier: "user_1234"
+)
+
+puts(completion.choices.fetch(0).message.content)
 ```
 
 ```bash
@@ -54578,6 +58297,19 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Run ls -lah /mnt/data, then show the Python and Node.js versions.",
+  tools: [{type: :shell, environment: {type: :container_auto}}]
+)
+
+puts(response.output_text)
+```
+
 
 ## Hosted runtime details
 
@@ -54671,6 +58403,14 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+container = client.containers.create(name: "analysis", expires_after: {anchor: :last_active_at, minutes: 20})
+puts(container.id)
+```
+
 
 ### 2. Reference the container in Responses
 
@@ -54761,6 +58501,22 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "List files in the container and show disk usage.",
+  tools: [{
+    type: :shell,
+    environment: {type: :container_reference, container_id: "cntr_08f3d96c87a585390069118b594f7481a088b16cda7d9415fe"}
+  }]
+)
+
+puts(response.output_text)
 ```
 
 
@@ -54858,6 +58614,25 @@ func main() {
 	}
 	fmt.Println(container.ID)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+container = client.containers.create(
+  name: "skill-container",
+  skills: [
+    {type: :skill_reference, skill_id: "skill_4db6f1a2c9e73508b41f9da06e2c7b5f"},
+    {
+      type: :skill_reference,
+      skill_id: "openai-spreadsheets",
+      version: "latest"
+    }
+  ]
+)
+
+puts(container.id)
 ```
 
 
@@ -54998,6 +58773,29 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Fetch release pages and write /mnt/data/release_digest.md.",
+  tool_choice: :required,
+  tools: [{
+    type: :shell,
+    environment: {
+      type: :container_auto,
+      network_policy: {
+        type: :allowlist,
+        allowed_domains: ["pypi.org", "files.pythonhosted.org", "github.com"]
+      }
+    }
+  }]
+)
+
+puts(response.output_text)
 ```
 
 
@@ -55262,6 +59060,14 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+client.containers.delete("container_id")
+puts("Deleted container_id")
+```
+
 
 ## Domain secrets
 
@@ -55433,6 +59239,35 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Use curl to call https://httpbin.org/headers with an " \
+    '"Authorization: Bearer $API_KEY" header.',
+  tool_choice: :required,
+  tools: [{
+    type: :shell,
+    environment: {
+      type: :container_auto,
+      network_policy: {
+        type: :allowlist,
+        allowed_domains: ["httpbin.org"],
+        domain_secrets: [{
+          domain: "httpbin.org",
+          name: "API_KEY",
+          value: "debug-secret-123"
+        }]
+      }
+    }
+  }]
+)
+
+puts(response.output_text)
+```
+
 
 ## Multi-turn workflows
 
@@ -55536,6 +59371,23 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Read /mnt/data/top5.csv and report the top candidate.",
+  previous_response_id: "resp_2a8e5c9174d63b0f18a4c572de9f64a1b3c76d508e12f9ab47",
+  tools: [{
+    type: :shell,
+    environment: {type: :container_reference, container_id: "cntr_f19c2b51e4a06793d82d54a7be0fc9154d3361ab28ce7f6041"}
+  }]
+)
+
+puts(response.output_text)
+```
+
 
 ## Shell output in Responses
 
@@ -55637,6 +59489,20 @@ func main() {
 	}
 	fmt.Println(response.Output)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  instructions: "The local shell environment is macOS.",
+  input: "Find the largest PDF in ~/Documents.",
+  tools: [{type: :shell, environment: {type: :local}}]
+)
+
+puts(response.output)
 ```
 
 
@@ -55766,6 +59632,49 @@ func main() {
 	executor := shellExecutor{DefaultTimeout: time.Minute}
 	fmt.Println(executor.run("printf shell-executor-ready", 0))
 }
+```
+
+```ruby
+require "open3"
+
+class ShellExecutor
+  Result = Data.define(:stdout, :stderr, :exit_code, :timed_out)
+
+  def initialize(default_timeout: 60)
+    @default_timeout = default_timeout
+  end
+
+  def run(command, timeout: @default_timeout)
+    Open3.popen3("sh", "-c", command, pgroup: true) do |stdin, stdout, stderr, wait_thread|
+      stdin.close
+      stdout_reader = Thread.new { stdout.read }
+      stderr_reader = Thread.new { stderr.read }
+      finished = wait_thread.join(timeout)
+      terminate_process_group(wait_thread) unless finished
+
+      Result.new(
+        stdout: stdout_reader.value,
+        stderr: stderr_reader.value,
+        exit_code: wait_thread.value.exitstatus || -1,
+        timed_out: finished.nil?
+      )
+    end
+  end
+
+  private
+
+  def terminate_process_group(wait_thread)
+    Process.kill("TERM", -wait_thread.pid)
+    wait_thread.join(1)
+    Process.kill("KILL", -wait_thread.pid)
+  rescue Errno::ESRCH
+    nil
+  ensure
+    wait_thread.join
+  end
+end
+
+puts(ShellExecutor.new.run("printf shell-executor-ready"))
 ```
 
 
@@ -56119,6 +60028,28 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Use the skills to add 144 and 377, then compute a triangle area with base 9 and height 13.",
+  tools: [{
+    type: :shell,
+    environment: {
+      type: :container_auto,
+      skills: [
+        {type: :skill_reference, skill_id: "<skill_id>"},
+        {type: :skill_reference, skill_id: "<skill_id>", version: "2"}
+      ]
+    }
+  }]
+)
+
+puts(response.output_text)
+```
+
 
 ### Prompting behavior
 
@@ -56245,6 +60176,29 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Use the csv-insights skill to summarize today's CSV reports.",
+  tools: [{
+    type: :shell,
+    environment: {
+      type: :local,
+      skills: [{
+        name: "csv-insights",
+        description: "Summarize CSV files and produce a Markdown report.",
+        path: "<path-to-skill-folder>"
+      }]
+    }
+  }]
+)
+
+puts(response.output_text)
 ```
 
 
@@ -56624,6 +60578,14 @@ StreamingEvent = (
 type StreamingEvent = responses.ResponseStreamEventUnion
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+stream = client.responses.stream(model: "gpt-5.5", input: "Say hello.")
+stream.each { |event| puts(event) }
+```
+
 
 
 
@@ -56787,6 +60749,40 @@ func main() {
 
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+event_schema = {
+  type: :object,
+  properties: {
+    name: {type: :string},
+    date: {type: :string},
+    participants: {type: :array, items: {type: :string}}
+  },
+  required: %w[name date participants],
+  additionalProperties: false
+}
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {role: :system, content: "Extract the event information."},
+    {role: :user, content: "Alice and Bob are going to a science fair on Friday."}
+  ],
+  text: {
+    format: {
+      type: :json_schema,
+      name: "event",
+      strict: true,
+      schema: event_schema
+    }
+  }
+)
+
+puts(response.output_text)
 ```
 
 
@@ -56998,6 +60994,51 @@ func main() {
 
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+step_schema = {
+  type: :object,
+  properties: {
+    explanation: {type: :string},
+    output: {type: :string}
+  },
+  required: %w[explanation output],
+  additionalProperties: false
+}
+math_schema = {
+  type: :object,
+  properties: {
+    steps: {type: :array, items: step_schema},
+    final_answer: {type: :string}
+  },
+  required: %w[steps final_answer],
+  additionalProperties: false
+}
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {
+      role: :system,
+      content: "You are a helpful math tutor. Guide the user through the solution step by step."
+    },
+    {role: :user, content: "How can I solve 8x + 7 = -23?"}
+  ],
+  text: {
+    format: {
+      type: :json_schema,
+      name: "math_reasoning",
+      strict: true,
+      schema: math_schema
+    }
+  }
+)
+
+puts(response.output_text)
 ```
 
 ```bash
@@ -57220,6 +61261,51 @@ func main() {
 
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+research_paper = <<~TEXT
+  Attention Is All You Need by Ashish Vaswani, Noam Shazeer, Niki Parmar,
+  Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser, and Illia
+  Polosukhin. We propose the Transformer, a sequence transduction architecture
+  based entirely on attention. Keywords: transformers, attention, sequence
+  transduction.
+TEXT
+paper_schema = {
+  type: :object,
+  properties: {
+    title: {type: :string},
+    authors: {type: :array, items: {type: :string}},
+    abstract: {type: :string},
+    keywords: {type: :array, items: {type: :string}}
+  },
+  required: %w[title authors abstract keywords],
+  additionalProperties: false
+}
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {
+      role: :system,
+      content: "Extract structured data from the supplied research paper text."
+    },
+    {role: :user, content: research_paper}
+  ],
+  text: {
+    format: {
+      type: :json_schema,
+      name: "research_paper_extraction",
+      strict: true,
+      schema: paper_schema
+    }
+  }
+)
+
+puts(response.output_text)
 ```
 
 ```bash
@@ -57445,6 +61531,56 @@ func main() {
 
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+ui_schema = {
+  type: :object,
+  properties: {
+    type: {
+      type: :string,
+      enum: %w[div button header section field form]
+    },
+    label: {type: :string},
+    children: {type: :array, items: {"$ref" => "#"}},
+    attributes: {
+      type: :array,
+      items: {
+        type: :object,
+        properties: {
+          name: {type: :string},
+          value: {type: :string}
+        },
+        required: %w[name value],
+        additionalProperties: false
+      }
+    }
+  },
+  required: %w[type label children attributes],
+  additionalProperties: false
+}
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {role: :system, content: "Convert the user request into a UI definition."},
+    {role: :user, content: "Make a user profile form."}
+  ],
+  text: {
+    format: {
+      type: :json_schema,
+      name: "ui",
+      description: "A dynamically generated UI",
+      strict: true,
+      schema: ui_schema
+    }
+  }
+)
+
+puts(response.output_text)
 ```
 
 ```bash
@@ -57729,6 +61865,54 @@ func contentComplianceSchema() map[string]any {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+compliance_schema = {
+  type: :object,
+  properties: {
+    is_violating: {
+      type: :boolean,
+      description: "Whether the content violates the guidelines"
+    },
+    category: {
+      type: %i[string null],
+      enum: ["violence", "sexual", "self_harm", nil],
+      description: "The violation category, or null when the content is allowed"
+    },
+    explanation_if_violating: {
+      type: %i[string null],
+      description: "Why the content violates the guidelines, or null"
+    }
+  },
+  required: %w[is_violating category explanation_if_violating],
+  additionalProperties: false
+}
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {
+      role: :system,
+      content: "Determine whether the user input violates the guidelines and explain any violation."
+    },
+    {role: :user, content: "How do I prepare for a job interview?"}
+  ],
+  text: {
+    format: {
+      type: :json_schema,
+      name: "content_compliance",
+      description: "Determines whether content violates moderation rules",
+      strict: true,
+      schema: compliance_schema
+    }
+  }
+)
+
+puts(response.output_text)
+```
+
 ```bash
 curl https://api.openai.com/v1/responses \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -57963,6 +62147,53 @@ func mathSchema() map[string]any {
 		"additionalProperties": false,
 	}
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+math_schema = {
+  type: :object,
+  properties: {
+    steps: {
+      type: :array,
+      items: {
+        type: :object,
+        properties: {
+          explanation: {type: :string},
+          output: {type: :string}
+        },
+        required: %w[explanation output],
+        additionalProperties: false
+      }
+    },
+    final_answer: {type: :string}
+  },
+  required: %w[steps final_answer],
+  additionalProperties: false
+}
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {
+      role: :system,
+      content: "You are a helpful math tutor. Guide the user through the solution step by step."
+    },
+    {role: :user, content: "How can I solve 8x + 7 = -23?"}
+  ],
+  text: {
+    format: {
+      type: :json_schema,
+      name: "math_response",
+      strict: true,
+      schema: math_schema
+    }
+  }
+)
+
+puts(response.output_text)
 ```
 
 ```bash
@@ -58237,6 +62468,68 @@ func mathSchema() map[string]any {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+step_schema = {
+  type: :object,
+  properties: {
+    explanation: {type: :string},
+    output: {type: :string}
+  },
+  required: %w[explanation output],
+  additionalProperties: false
+}
+math_schema = {
+  type: :object,
+  properties: {
+    steps: {type: :array, items: step_schema},
+    final_answer: {type: :string}
+  },
+  required: %w[steps final_answer],
+  additionalProperties: false
+}
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {
+      role: :system,
+      content: "You are a helpful math tutor. Guide the user through the solution step by step."
+    },
+    {role: :user, content: "How can I solve 8x + 7 = -23?"}
+  ],
+  max_output_tokens: 1_024,
+  text: {
+    format: {
+      type: :json_schema,
+      name: "math_response",
+      strict: true,
+      schema: math_schema
+    }
+  }
+)
+
+if response.status == OpenAI::Responses::ResponseStatus::INCOMPLETE
+  raise "Incomplete response"
+end
+
+message = response.output.find do |item|
+  item.is_a?(OpenAI::Models::Responses::ResponseOutputMessage)
+end
+unless message.is_a?(OpenAI::Models::Responses::ResponseOutputMessage)
+  raise "No response message"
+end
+
+content = message.content.fetch(0)
+if content.is_a?(OpenAI::Models::Responses::ResponseOutputRefusal)
+  puts(content.refusal)
+else
+  puts(content.text)
+end
+```
+
 
 
 
@@ -58398,6 +62691,64 @@ func mathSchema() map[string]any {
 		"additionalProperties": false,
 	}
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+math_schema = {
+  type: :object,
+  properties: {
+    steps: {
+      type: :array,
+      items: {
+        type: :object,
+        properties: {
+          explanation: {type: :string},
+          output: {type: :string}
+        },
+        required: %w[explanation output],
+        additionalProperties: false
+      }
+    },
+    final_answer: {type: :string}
+  },
+  required: %w[steps final_answer],
+  additionalProperties: false
+}
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {
+      role: :system,
+      content: "You are a helpful math tutor. Guide the user through the solution step by step."
+    },
+    {role: :user, content: "How can I solve 8x + 7 = -23?"}
+  ],
+  text: {
+    format: {
+      type: :json_schema,
+      name: "math_response",
+      strict: true,
+      schema: math_schema
+    }
+  }
+)
+
+response.output.each do |item|
+  next unless item.is_a?(OpenAI::Models::Responses::ResponseOutputMessage)
+
+  item.content.each do |content|
+    case content
+    when OpenAI::Models::Responses::ResponseOutputRefusal
+      puts(content.refusal)
+    when OpenAI::Models::Responses::ResponseOutputText
+      puts(content.text)
+    end
+  end
+end
 ```
 
 
@@ -59259,6 +63610,39 @@ func main() {
 		fmt.Println(value)
 	}
 }
+```
+
+```ruby
+require "json"
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {role: :system, content: "You are a helpful assistant designed to output JSON."},
+    {
+      role: :user,
+      content: "Who won the World Series in 2020? Respond in the format {winner: ...}."
+    }
+  ],
+  text: {format: {type: :json_object}}
+)
+
+if response.status == OpenAI::Responses::ResponseStatus::INCOMPLETE
+  warn("The JSON response is incomplete.")
+else
+  refusal = response.output
+    .grep(OpenAI::Models::Responses::ResponseOutputMessage)
+    .flat_map(&:content)
+    .find { |content| content.is_a?(OpenAI::Models::Responses::ResponseOutputRefusal) }
+
+  if refusal.is_a?(OpenAI::Models::Responses::ResponseOutputRefusal)
+    puts(refusal.refusal)
+  elsif response.status == OpenAI::Responses::ResponseStatus::COMPLETED
+    puts(JSON.pretty_generate(JSON.parse(response.output_text)))
+  end
+end
 ```
 
 ## Resources
@@ -60189,6 +64573,20 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  instructions: "Talk like a pirate.",
+  reasoning: {effort: :low},
+  input: "Are semicolons optional in JavaScript?"
+)
+
+puts(response.output_text)
+```
+
 ```bash
 curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
@@ -60283,6 +64681,22 @@ func main() {
 
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  reasoning: {effort: :low},
+  input: [
+    {role: :developer, content: "Talk like a pirate."},
+    {role: :user, content: "Are semicolons optional in JavaScript?"}
+  ]
+)
+
+puts(response.output_text)
 ```
 
 ```bash
@@ -60484,6 +64898,19 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+audio = client.audio.speech.create(
+  model: "gpt-4o-mini-tts",
+  voice: "coral",
+  input: "Today is a wonderful day to build something people love!",
+  instructions: "Speak in a cheerful and positive tone."
+)
+File.binwrite("speech.mp3", audio.read)
+```
+
 ```bash
 curl https://api.openai.com/v1/audio/speech \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -60622,6 +65049,22 @@ func main() {
 		panic(err)
 	}
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+audio = client.audio.speech.create(
+  model: "gpt-4o-mini-tts",
+  voice: "alloy",
+  input: "Welcome to the OpenAI API.",
+  response_format: :pcm,
+  stream_format: :audio
+)
+while (chunk = audio.read(1_024))
+  puts(chunk.bytesize)
+end
 ```
 
 ```bash
@@ -61307,6 +65750,48 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+parameters = {
+  type: :object,
+  properties: {customer_id: {type: :string}},
+  required: ["customer_id"],
+  additionalProperties: false
+}
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "List open orders for customer CUST-12345.",
+  parallel_tool_calls: false,
+  tools: [
+    {
+      type: :namespace,
+      name: "crm",
+      description: "CRM tools for customer lookup and order management.",
+      tools: [
+        {
+          type: :function,
+          name: "get_customer_profile",
+          description: "Fetch a customer profile by customer ID.",
+          parameters: parameters
+        },
+        {
+          type: :function,
+          name: "list_open_orders",
+          description: "List open orders for a customer ID.",
+          defer_loading: true,
+          parameters: parameters
+        }
+      ]
+    },
+    {type: :tool_search}
+  ]
+)
+
+puts(response.output)
+```
+
 
 If the model decides it needs a deferred tool, the response includes two additional output items before the eventual function call:
 
@@ -61596,6 +66081,67 @@ func main() {
 	}
 	fmt.Println(second.Output)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+search = client.responses.create(
+  model: "gpt-5.6",
+  input: "Find the shipping ETA tool, then use it for order_42.",
+  parallel_tool_calls: false,
+  tools: [{
+    type: :tool_search,
+    execution: :client,
+    description: "Find the project tools needed to continue the task.",
+    parameters: {
+      type: :object,
+      properties: {goal: {type: :string}},
+      required: ["goal"],
+      additionalProperties: false
+    }
+  }]
+)
+call = search.output.find do |item|
+  item.is_a?(OpenAI::Models::Responses::ResponseToolSearchCall)
+end
+unless call.is_a?(OpenAI::Models::Responses::ResponseToolSearchCall)
+  raise "No tool search call returned"
+end
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  previous_response_id: search.id,
+  input: [{
+    type: :tool_search_output,
+    call_id: call.call_id,
+    execution: :client,
+    status: :completed,
+    tools: [{
+      type: :function,
+      name: "get_shipping_eta",
+      description: "Look up shipping details for an order.",
+      defer_loading: true,
+      strict: true,
+      parameters: {
+        type: :object,
+        properties: {order_id: {type: :string}},
+        required: ["order_id"],
+        additionalProperties: false
+      }
+    }]
+  }]
+)
+
+function_calls = response.output.grep(
+  OpenAI::Models::Responses::ResponseFunctionToolCall
+)
+raise "No loaded function call returned" if function_calls.empty?
+
+function_calls.each do |function_call|
+  puts("#{function_call.name}(#{function_call.arguments})")
+end
 ```
 
 
@@ -62928,6 +67474,19 @@ response = client.responses.create(
 response.to_dict()["output"]
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-4.1",
+  instructions: "Act as a coding agent. Inspect the reported failure, identify the smallest correct change, and explain how you would verify it.",
+  input: "The parser rejects an empty optional field even though the schema permits it. Diagnose the likely validation bug."
+)
+
+puts(response.output_text)
+```
+
 
 ```text
 [{'id': 'msg_67fe92df26ac819182ffafce9ff4e4fc07c7e06242e51f8b',
@@ -63139,6 +67698,19 @@ response = client.responses.create(
 )
 
 response.to_dict()["output"]
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-4.1",
+  instructions: "You are a customer service assistant. Confirm the customer's goal, use only supplied account facts, and clearly explain the next action.",
+  input: "A customer says a replacement order still has not shipped. Draft a concise response."
+)
+
+puts(response.output_text)
 ```
 
 
@@ -65173,6 +69745,18 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.2",
+  reasoning: {effort: :minimal},
+  input: "Explain the bug and propose a fix."
+)
+puts(response.output_text)
+```
+
 ```bash
 curl --request POST \
   --url https://api.openai.com/v1/responses \
@@ -65254,6 +69838,18 @@ func main() {
 	}
 	fmt.Println(response)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.2",
+  text: {verbosity: :low},
+  input: "Explain the bug and propose a fix."
+)
+puts(response.output_text)
 ```
 
 ```bash
@@ -65739,6 +70335,25 @@ compacted_response = client.responses.compact(
 
 
 print(json.dumps(compacted_response.model_dump(), indent=2))
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.2",
+  input: [{role: :user, content: "Write a very long poem about a dog."}]
+)
+compaction = client.responses.compact(
+  model: "gpt-5.2",
+  input: [
+    {role: :user, content: "Write a very long poem about a dog."},
+    *response.output.map(&:to_h)
+  ]
+)
+
+puts(compaction.output)
 ```
 
 
@@ -66820,6 +71435,18 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.4",
+  reasoning: {effort: :minimal},
+  input: "Explain the bug and propose a fix."
+)
+puts(response.output_text)
+```
+
 ```bash
 curl --request POST \
   --url https://api.openai.com/v1/responses \
@@ -66901,6 +71528,18 @@ func main() {
 	}
 	fmt.Println(response)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.4",
+  text: {verbosity: :low},
+  input: "Explain the bug and propose a fix."
+)
+puts(response.output_text)
 ```
 
 ```bash
@@ -67165,6 +71804,18 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.4",
+  reasoning: {effort: :medium},
+  input: "Explain the bug and propose a fix."
+)
+puts(response.output_text)
 ```
 
 
@@ -70967,6 +75618,48 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+parameters = {
+  type: :object,
+  properties: {customer_id: {type: :string}},
+  required: ["customer_id"],
+  additionalProperties: false
+}
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "List open orders for customer CUST-12345.",
+  parallel_tool_calls: false,
+  tools: [
+    {
+      type: :namespace,
+      name: "crm",
+      description: "CRM tools for customer lookup and order management.",
+      tools: [
+        {
+          type: :function,
+          name: "get_customer_profile",
+          description: "Fetch a customer profile by customer ID.",
+          parameters: parameters
+        },
+        {
+          type: :function,
+          name: "list_open_orders",
+          description: "List open orders for a customer ID.",
+          defer_loading: true,
+          parameters: parameters
+        }
+      ]
+    },
+    {type: :tool_search}
+  ]
+)
+
+puts(response.output)
+```
+
   
 
   
@@ -71171,7 +75864,7 @@ response = openai.responses.create(
   tools: tools
 )
 
-puts(response.output.first.to_json)
+puts(response.output.fetch(0).to_json)
 ```
 
 ```bash
@@ -71585,6 +76278,19 @@ func main() {
 
 	fmt.Println(len(embedding.Data[0].Embedding))
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.embeddings.create(
+  model: "text-embedding-3-small",
+  input: "The food was delicious and the waiter..."
+)
+
+puts(response.data.fetch(0).embedding)
 ```
 
 ```bash
@@ -72183,6 +76889,14 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+video = client.videos.create(model: "sora-2", prompt: "A paper airplane flying over a forest")
+puts(video.id)
+```
+
 ```bash
 curl -X POST "https://api.openai.com/v1/videos" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -72329,6 +77043,24 @@ func main() {
 	}
 	fmt.Println("Video creation failed. Status:", video.Status)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+video = client.videos.create(model: "sora-2", prompt: "A paper airplane flying over a forest")
+
+while [:queued, :in_progress].include?(video.status)
+  sleep(2)
+  video = client.videos.retrieve(video.id)
+end
+
+unless video.status == OpenAI::Models::Video::Status::COMPLETED
+  raise "Video creation failed. Status: #{video.status}"
+end
+
+puts("Video successfully completed: #{video.id}")
 ```
 
 
@@ -72518,6 +77250,29 @@ func main() {
 	}
 	fmt.Println("Wrote video.mp4")
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+video = client.videos.create(
+  model: "sora-2",
+  prompt: "A video of the words 'Thank you' in sparkling letters"
+)
+pending_statuses = [
+  OpenAI::Models::Video::Status::QUEUED,
+  OpenAI::Models::Video::Status::IN_PROGRESS
+]
+while pending_statuses.include?(video.status)
+  sleep(2)
+  video = client.videos.retrieve(video.id)
+end
+raise "Video generation failed" if video.status == OpenAI::Models::Video::Status::FAILED
+
+content = client.videos.download_content(video.id)
+File.binwrite("video.mp4", content.read)
+puts("Wrote video.mp4")
 ```
 
 ```bash
@@ -73490,6 +78245,20 @@ ResponseResult response = await client.CreateResponseAsync(options);
 Console.WriteLine(response.GetOutputText());
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "What movie won best picture in 2025?",
+  tools: [{type: :web_search, search_context_size: :low}]
+)
+
+puts(response.output_text)
+```
+
 ```bash
 curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
@@ -73617,6 +78386,20 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Research the economic impact of semaglutide on global healthcare systems. Include current figures and citations.",
+  reasoning: {effort: :xhigh},
+  tools: [{type: :web_search, return_token_budget: :unlimited}]
+)
+
+puts(response.output_text)
 ```
 
 ```bash
@@ -73749,6 +78532,46 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  reasoning: {effort: :low},
+  input: "Search for how semaglutide is used in the treatment of diabetes.",
+  include: ["web_search_call.action.sources"],
+  tools: [
+    {
+      type: :web_search,
+      filters: {
+        allowed_domains: [
+          "pubmed.ncbi.nlm.nih.gov",
+          "clinicaltrials.gov",
+          "www.who.int",
+          "www.cdc.gov",
+          "www.fda.gov"
+        ],
+        blocked_domains: ["reddit.com", "quora.com", "wikipedia.org"]
+      }
+    }
+  ]
+)
+
+puts(response.output_text)
+response.output
+  .grep(OpenAI::Models::Responses::ResponseFunctionWebSearch)
+  .each do |search_call|
+    action = search_call.action
+    next unless action.is_a?(
+      OpenAI::Models::Responses::ResponseFunctionWebSearch::Action::Search
+    )
+
+    Array(action.sources).each { |source| puts(source.url) }
+  end
 ```
 
 ```bash
@@ -73884,6 +78707,28 @@ func main() {
 	}
 	fmt.Println(response.Output)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  reasoning: {effort: :low},
+  input: "Search for recent images and supporting text sources about the Golden Gate Bridge at sunset.",
+  include: ["web_search_call.results"],
+  tools: [
+    {
+      type: :web_search,
+      search_content_types: ["image", "text"],
+      image_settings: {max_results: 3, caption: true}
+    }
+  ]
+)
+
+puts(response.output)
 ```
 
 ```bash
@@ -74057,6 +78902,30 @@ ResponseResult response = await client.CreateResponseAsync(options);
 Console.WriteLine(response.GetOutputText());
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "What are the best restaurants near me?",
+  tools: [
+    {
+      type: :web_search,
+      user_location: {
+        type: :approximate,
+        country: "GB",
+        city: "London",
+        region: "London"
+      }
+    }
+  ]
+)
+
+puts(response.output_text)
+```
+
 ```bash
 curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
@@ -74160,6 +79029,20 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Find when the Eiffel Tower opened to the public and cite the source.",
+  tools: [{type: :web_search, external_web_access: false}]
+)
+
+puts(response.output_text)
 ```
 
 
@@ -74400,6 +79283,19 @@ func main() {
 
 	fmt.Println(response.Status)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: "Write a detailed market analysis.",
+  background: true
+)
+
+puts(response.status)
 ```
 
 
@@ -74939,6 +79835,25 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+instructions = <<~INSTRUCTIONS
+  You are an expert in categorizing IT support tickets. Given the support
+  ticket below, categorize the request as Hardware, Software, or Other.
+  Respond with only one of those words.
+INSTRUCTIONS
+response = client.responses.create(
+  model: "gpt-5.6",
+  input: [
+    {role: :developer, content: instructions},
+    {role: :user, content: "My monitor won't turn on - help!"}
+  ]
+)
+puts(response.output_text)
+```
+
 ```bash
 curl https://api.openai.com/v1/responses \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -75032,6 +79947,18 @@ eval_obj = client.evals.create(
 )
 
 print(eval_obj)
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+evaluation = client.evals.create(
+  name: "Support answer quality",
+  data_source_config: {type: :custom, item_schema: {type: :object, properties: {input: {type: :string}}, required: ["input"]}},
+  testing_criteria: [{type: :string_check, name: "mentions_refund", input: "{{sample.output_text}}", operation: :contains, reference: "refund"}]
+)
+puts(evaluation.id)
 ```
 
 ```bash
@@ -75209,6 +80136,16 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+require "pathname"
+
+client = OpenAI::Client.new
+file = Pathname("tickets.jsonl")
+uploaded = client.files.create(file: file, purpose: :evals)
+puts(uploaded.id)
+```
+
 ```bash
 curl https://api.openai.com/v1/files \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -75295,6 +80232,32 @@ run = client.evals.runs.create(
 )
 
 print(run)
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+run = client.evals.runs.create(
+  "YOUR_EVAL_ID",
+  name: "Categorization text run",
+  data_source: {
+    type: :responses,
+    source: {type: :file_id, id: "YOUR_FILE_ID"},
+    input_messages: {
+      type: :template,
+      template: [
+        {
+          role: :developer,
+          content: "Categorize the ticket as Hardware, Software, or Other."
+        },
+        {role: :user, content: "{{ item.ticket_text }}"}
+      ]
+    },
+    model: "gpt-5.6"
+  }
+)
+puts(run.id)
 ```
 
 ```bash
@@ -75404,6 +80367,14 @@ client = OpenAI()
 
 run = client.evals.runs.retrieve("YOUR_RUN_ID", eval_id="YOUR_EVAL_ID")
 print(run)
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+run = client.evals.runs.retrieve("YOUR_RUN_ID", eval_id: "YOUR_EVAL_ID")
+puts(run.id)
 ```
 
 ```bash
@@ -75914,7 +80885,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.50.0</version>
+  <version>4.51.0</version>
 </dependency>
 ```
 
@@ -78070,7 +83041,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.50.0</version>
+  <version>4.51.0</version>
 </dependency>
 ```
 
@@ -78803,11 +83774,12 @@ Console.WriteLine(response.GetOutputText());
 
 ```ruby
 require "openai"
+require "pathname"
 
 openai = OpenAI::Client.new
 
 file = openai.files.create(
-  file: File.open("draconomicon.pdf", "rb"),
+  file: Pathname("draconomicon.pdf"),
   purpose: "user_data"
 )
 
@@ -79404,7 +84376,7 @@ response = openai.responses.create(
   tools: tools
 )
 
-puts(response.output.first.to_json)
+puts(response.output.fetch(0).to_json)
 ```
 
 ```bash

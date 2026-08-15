@@ -115,6 +115,18 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.4",
+  reasoning: {effort: :minimal},
+  input: "Explain the bug and propose a fix."
+)
+puts(response.output_text)
+```
+
 ```bash
 curl --request POST \
   --url https://api.openai.com/v1/responses \
@@ -196,6 +208,18 @@ func main() {
 	}
 	fmt.Println(response)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.4",
+  text: {verbosity: :low},
+  input: "Explain the bug and propose a fix."
+)
+puts(response.output_text)
 ```
 
 ```bash
@@ -460,6 +484,18 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.4",
+  reasoning: {effort: :medium},
+  input: "Explain the bug and propose a fix."
+)
+puts(response.output_text)
 ```
 
 

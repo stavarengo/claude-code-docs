@@ -86,6 +86,10 @@ Lists the currently available models, and provides basic information about each 
 
     The organization that owns the model.
 
+  - `shutdown_date: optional string or null`
+
+    The date when the model will shut down, or null if not announced.
+
 - `object: "list"`
 
   - `"list"`
@@ -106,7 +110,8 @@ curl https://api.openai.com/v1/models \
       "id": "id",
       "created": 0,
       "object": "model",
-      "owned_by": "owned_by"
+      "owned_by": "owned_by",
+      "shutdown_date": "2019-12-27"
     }
   ],
   "object": "list"
@@ -130,19 +135,22 @@ curl https://api.openai.com/v1/models \
       "id": "model-id-0",
       "object": "model",
       "created": 1686935002,
-      "owned_by": "organization-owner"
+      "owned_by": "organization-owner",
+      "shutdown_date": null
     },
     {
       "id": "model-id-1",
       "object": "model",
       "created": 1686935002,
       "owned_by": "organization-owner",
+      "shutdown_date": null
     },
     {
       "id": "model-id-2",
       "object": "model",
       "created": 1686935002,
-      "owned_by": "openai"
+      "owned_by": "openai",
+      "shutdown_date": "2026-10-23"
     },
   ]
 }
@@ -160,7 +168,7 @@ Retrieves a model instance, providing basic information about the model such as 
 
 ### Returns
 
-- `Model object { id, created, object, owned_by }`
+- `Model object { id, created, object, 2 more }`
 
   Describes an OpenAI model offering that can be used with the API.
 
@@ -182,6 +190,10 @@ Retrieves a model instance, providing basic information about the model such as 
 
     The organization that owns the model.
 
+  - `shutdown_date: optional string or null`
+
+    The date when the model will shut down, or null if not announced.
+
 ### Example
 
 ```http
@@ -196,7 +208,8 @@ curl https://api.openai.com/v1/models/$MODEL \
   "id": "id",
   "created": 0,
   "object": "model",
-  "owned_by": "owned_by"
+  "owned_by": "owned_by",
+  "shutdown_date": "2019-12-27"
 }
 ```
 
@@ -214,7 +227,8 @@ curl https://api.openai.com/v1/models/VAR_chat_model_id \
   "id": "VAR_chat_model_id",
   "object": "model",
   "created": 1686935002,
-  "owned_by": "openai"
+  "owned_by": "openai",
+  "shutdown_date": "2026-10-23"
 }
 ```
 
@@ -222,7 +236,7 @@ curl https://api.openai.com/v1/models/VAR_chat_model_id \
 
 ### Model
 
-- `Model object { id, created, object, owned_by }`
+- `Model object { id, created, object, 2 more }`
 
   Describes an OpenAI model offering that can be used with the API.
 
@@ -243,6 +257,10 @@ curl https://api.openai.com/v1/models/VAR_chat_model_id \
   - `owned_by: string`
 
     The organization that owns the model.
+
+  - `shutdown_date: optional string or null`
+
+    The date when the model will shut down, or null if not announced.
 
 ### Model Deleted
 

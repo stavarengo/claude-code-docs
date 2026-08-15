@@ -9,7 +9,7 @@ claude/code.claude.com/docs/en/whats-new:{2026-w13.md,2026-w14.md,2026-w15.md,20
 claude/platform.claude.com:{llms.txt}
 claude/platform.claude.com/docs/en:{claude_api_primer.md,get-api-key.md,get-started.md,home.md,intro.md}
 claude/platform.claude.com/docs/en/about-claude:{glossary.md,model-deprecations.md,pricing.md}
-claude/platform.claude.com/docs/en/about-claude/models:{choosing-a-model.md,introducing-claude-fable-5-and-claude-mythos-5.md,migration-guide.md,model-ids-and-versions.md,overview.md,whats-new-opus-5.md,whats-new-sonnet-5.md}
+claude/platform.claude.com/docs/en/about-claude/models:{choosing-a-model.md,introducing-claude-fable-5-and-claude-mythos-5.md,migration-guide.md,model-ids-and-versions.md,optimizing-for-cost-and-intelligence.md,overview.md,whats-new-opus-5.md,whats-new-sonnet-5.md}
 claude/platform.claude.com/docs/en/about-claude/use-case-guides:{content-moderation.md,customer-support-chat.md,legal-summarization.md,overview.md,ticket-routing.md}
 claude/platform.claude.com/docs/en/agents-and-tools:{mcp-connector.md,remote-mcp-servers.md}
 claude/platform.claude.com/docs/en/agents-and-tools/agent-skills:{best-practices.md,claude-api-skill.md,enterprise.md,overview.md,quickstart.md}

@@ -112,6 +112,18 @@ func main() {
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.2",
+  reasoning: {effort: :minimal},
+  input: "Explain the bug and propose a fix."
+)
+puts(response.output_text)
+```
+
 ```bash
 curl --request POST \
   --url https://api.openai.com/v1/responses \
@@ -193,6 +205,18 @@ func main() {
 	}
 	fmt.Println(response)
 }
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.2",
+  text: {verbosity: :low},
+  input: "Explain the bug and propose a fix."
+)
+puts(response.output_text)
 ```
 
 ```bash
@@ -678,6 +702,25 @@ compacted_response = client.responses.compact(
 
 
 print(json.dumps(compacted_response.model_dump(), indent=2))
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.2",
+  input: [{role: :user, content: "Write a very long poem about a dog."}]
+)
+compaction = client.responses.compact(
+  model: "gpt-5.2",
+  input: [
+    {role: :user, content: "Write a very long poem about a dog."},
+    *response.output.map(&:to_h)
+  ]
+)
+
+puts(compaction.output)
 ```
 
 
