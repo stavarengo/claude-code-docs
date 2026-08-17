@@ -27338,36 +27338,21 @@ Schema name: `RealtimeServerEventSessionCreated`
     "key": "detail",
     "docstring": "The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.",
     "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/InputImageContent/properties/detail",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "low"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "high"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "auto"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "original"
-        }
-      ]
+      "kind": "HttpTypeReference",
+      "ident": "ImageDetail",
+      "$ref": "(resource) responses > (model) image_detail > (schema)"
     },
     "optional": false,
     "nullable": false,
+    "modelImplicit": false,
     "schemaType": "enum",
+    "modelPath": "(resource) responses > (model) image_detail",
     "childrenParentSchema": "enum",
     "children": [
-      "(resource) responses > (model) response_input_image > (schema) > (property) detail > (member) 0",
-      "(resource) responses > (model) response_input_image > (schema) > (property) detail > (member) 1",
-      "(resource) responses > (model) response_input_image > (schema) > (property) detail > (member) 2",
-      "(resource) responses > (model) response_input_image > (schema) > (property) detail > (member) 3"
+      "(resource) responses > (model) image_detail > (schema) > (member) 0",
+      "(resource) responses > (model) image_detail > (schema) > (member) 1",
+      "(resource) responses > (model) image_detail > (schema) > (member) 2",
+      "(resource) responses > (model) image_detail > (schema) > (member) 3"
     ]
   },
   "(resource) responses > (model) response_input_image > (schema) > (property) type": {
@@ -28521,33 +28506,67 @@ Schema name: `RealtimeServerEventSessionCreated`
       "(resource) responses > (model) response_input_text > (schema) > (property) prompt_cache_breakpoint > (property) mode > (member) 0"
     ]
   },
-  "(resource) responses > (model) response_input_image > (schema) > (property) detail > (member) 0": {
+  "(resource) responses > (model) image_detail > (schema) > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "low"
     }
   },
-  "(resource) responses > (model) response_input_image > (schema) > (property) detail > (member) 1": {
+  "(resource) responses > (model) image_detail > (schema) > (member) 1": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "high"
     }
   },
-  "(resource) responses > (model) response_input_image > (schema) > (property) detail > (member) 2": {
+  "(resource) responses > (model) image_detail > (schema) > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
-  "(resource) responses > (model) response_input_image > (schema) > (property) detail > (member) 3": {
+  "(resource) responses > (model) image_detail > (schema) > (member) 3": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "original"
     }
+  },
+  "(resource) responses > (model) image_detail > (schema)": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/DetailEnum",
+    "ident": "ImageDetail",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/DetailEnum",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "low"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "high"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "original"
+        }
+      ]
+    },
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) image_detail > (schema) > (member) 0",
+      "(resource) responses > (model) image_detail > (schema) > (member) 1",
+      "(resource) responses > (model) image_detail > (schema) > (member) 2",
+      "(resource) responses > (model) image_detail > (schema) > (member) 3"
+    ]
   },
   "(resource) responses > (model) response_input_image > (schema) > (property) type > (member) 0": {
     "kind": "HttpDeclReference",
@@ -32672,36 +32691,21 @@ Schema name: `RealtimeServerEventSessionUpdated`
     "key": "detail",
     "docstring": "The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.",
     "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/InputImageContent/properties/detail",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "low"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "high"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "auto"
-        },
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "original"
-        }
-      ]
+      "kind": "HttpTypeReference",
+      "ident": "ImageDetail",
+      "$ref": "(resource) responses > (model) image_detail > (schema)"
     },
     "optional": false,
     "nullable": false,
+    "modelImplicit": false,
     "schemaType": "enum",
+    "modelPath": "(resource) responses > (model) image_detail",
     "childrenParentSchema": "enum",
     "children": [
-      "(resource) responses > (model) response_input_image > (schema) > (property) detail > (member) 0",
-      "(resource) responses > (model) response_input_image > (schema) > (property) detail > (member) 1",
-      "(resource) responses > (model) response_input_image > (schema) > (property) detail > (member) 2",
-      "(resource) responses > (model) response_input_image > (schema) > (property) detail > (member) 3"
+      "(resource) responses > (model) image_detail > (schema) > (member) 0",
+      "(resource) responses > (model) image_detail > (schema) > (member) 1",
+      "(resource) responses > (model) image_detail > (schema) > (member) 2",
+      "(resource) responses > (model) image_detail > (schema) > (member) 3"
     ]
   },
   "(resource) responses > (model) response_input_image > (schema) > (property) type": {
@@ -33855,33 +33859,67 @@ Schema name: `RealtimeServerEventSessionUpdated`
       "(resource) responses > (model) response_input_text > (schema) > (property) prompt_cache_breakpoint > (property) mode > (member) 0"
     ]
   },
-  "(resource) responses > (model) response_input_image > (schema) > (property) detail > (member) 0": {
+  "(resource) responses > (model) image_detail > (schema) > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "low"
     }
   },
-  "(resource) responses > (model) response_input_image > (schema) > (property) detail > (member) 1": {
+  "(resource) responses > (model) image_detail > (schema) > (member) 1": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "high"
     }
   },
-  "(resource) responses > (model) response_input_image > (schema) > (property) detail > (member) 2": {
+  "(resource) responses > (model) image_detail > (schema) > (member) 2": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "auto"
     }
   },
-  "(resource) responses > (model) response_input_image > (schema) > (property) detail > (member) 3": {
+  "(resource) responses > (model) image_detail > (schema) > (member) 3": {
     "kind": "HttpDeclReference",
     "type": {
       "kind": "HttpTypeLiteral",
       "literal": "original"
     }
+  },
+  "(resource) responses > (model) image_detail > (schema)": {
+    "kind": "HttpDeclTypeAlias",
+    "oasRef": "#/components/schemas/DetailEnum",
+    "ident": "ImageDetail",
+    "type": {
+      "kind": "HttpTypeUnion",
+      "oasRef": "#/components/schemas/DetailEnum",
+      "types": [
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "low"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "high"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "auto"
+        },
+        {
+          "kind": "HttpTypeLiteral",
+          "literal": "original"
+        }
+      ]
+    },
+    "childrenParentSchema": "enum",
+    "children": [
+      "(resource) responses > (model) image_detail > (schema) > (member) 0",
+      "(resource) responses > (model) image_detail > (schema) > (member) 1",
+      "(resource) responses > (model) image_detail > (schema) > (member) 2",
+      "(resource) responses > (model) image_detail > (schema) > (member) 3"
+    ]
   },
   "(resource) responses > (model) response_input_image > (schema) > (property) type > (member) 0": {
     "kind": "HttpDeclReference",

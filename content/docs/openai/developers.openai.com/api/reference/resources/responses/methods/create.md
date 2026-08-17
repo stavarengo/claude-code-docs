@@ -148,7 +148,7 @@ as input for the model's response.
 
             An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-            - `detail: "low" or "high" or "auto" or "original"`
+            - `detail: ImageDetail`
 
               The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -1107,17 +1107,9 @@ as input for the model's response.
 
               - `"input_image"`
 
-            - `detail: optional "low" or "high" or "auto" or "original" or null`
+            - `detail: optional ImageDetail or null`
 
               The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
-
-              - `"low"`
-
-              - `"high"`
-
-              - `"auto"`
-
-              - `"original"`
 
             - `file_id: optional string or null`
 
@@ -4637,7 +4629,7 @@ as input for the model's response.
   A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
   The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](/docs/guides/safety-best-practices#safety-identifiers).
 
-- `service_tier: optional "auto" or "default" or "flex" or 4 more or null`
+- `service_tier: optional ServiceTier or null`
 
   Specifies the processing type used for serving the request.
 
@@ -5972,7 +5964,7 @@ as input for the model's response.
 
               An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-              - `detail: "low" or "high" or "auto" or "original"`
+              - `detail: ImageDetail`
 
                 The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -6931,17 +6923,9 @@ as input for the model's response.
 
                 - `"input_image"`
 
-              - `detail: optional "low" or "high" or "auto" or "original" or null`
+              - `detail: optional ImageDetail or null`
 
                 The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
-
-                - `"low"`
-
-                - `"high"`
-
-                - `"auto"`
-
-                - `"original"`
 
               - `file_id: optional string or null`
 
@@ -14720,7 +14704,7 @@ as input for the model's response.
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
     The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](/docs/guides/safety-best-practices#safety-identifiers).
 
-  - `service_tier: optional "auto" or "default" or "flex" or 4 more or null`
+  - `service_tier: optional ServiceTier or null`
 
     Specifies the processing type used for serving the request.
 

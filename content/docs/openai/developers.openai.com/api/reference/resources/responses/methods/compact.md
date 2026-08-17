@@ -286,7 +286,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-            - `detail: "low" or "high" or "auto" or "original"`
+            - `detail: ImageDetail`
 
               The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -1245,17 +1245,9 @@ Learn when and how to compact long-running conversations in the [conversation st
 
               - `"input_image"`
 
-            - `detail: optional "low" or "high" or "auto" or "original" or null`
+            - `detail: optional ImageDetail or null`
 
               The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
-
-              - `"low"`
-
-              - `"high"`
-
-              - `"auto"`
-
-              - `"original"`
 
             - `file_id: optional string or null`
 
@@ -4617,7 +4609,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
           An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-          - `detail: "low" or "high" or "auto" or "original"`
+          - `detail: ImageDetail`
 
             The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -4657,17 +4649,9 @@ Learn when and how to compact long-running conversations in the [conversation st
 
           A screenshot of a computer.
 
-          - `detail: "low" or "high" or "auto" or "original"`
+          - `detail: ImageDetail`
 
             The detail level of the screenshot image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
-
-            - `"low"`
-
-            - `"high"`
-
-            - `"auto"`
-
-            - `"original"`
 
           - `file_id: string or null`
 

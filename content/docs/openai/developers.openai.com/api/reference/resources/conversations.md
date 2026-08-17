@@ -64,7 +64,7 @@ Create a conversation.
 
           An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-          - `detail: "low" or "high" or "auto" or "original"`
+          - `detail: ImageDetail`
 
             The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -1023,17 +1023,9 @@ Create a conversation.
 
             - `"input_image"`
 
-          - `detail: optional "low" or "high" or "auto" or "original" or null`
+          - `detail: optional ImageDetail or null`
 
             The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
-
-            - `"low"`
-
-            - `"high"`
-
-            - `"auto"`
-
-            - `"original"`
 
           - `file_id: optional string or null`
 
@@ -4401,7 +4393,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
   A screenshot of a computer.
 
-  - `detail: "low" or "high" or "auto" or "original"`
+  - `detail: ImageDetail`
 
     The detail level of the screenshot image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -4708,7 +4700,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-      - `detail: "low" or "high" or "auto" or "original"`
+      - `detail: ImageDetail`
 
         The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -4748,17 +4740,9 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       A screenshot of a computer.
 
-      - `detail: "low" or "high" or "auto" or "original"`
+      - `detail: ImageDetail`
 
         The detail level of the screenshot image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
-
-        - `"low"`
-
-        - `"high"`
-
-        - `"auto"`
-
-        - `"original"`
 
       - `file_id: string or null`
 
@@ -4993,7 +4977,7 @@ Create items in a conversation with the given ID.
 
           An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-          - `detail: "low" or "high" or "auto" or "original"`
+          - `detail: ImageDetail`
 
             The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -5952,17 +5936,9 @@ Create items in a conversation with the given ID.
 
             - `"input_image"`
 
-          - `detail: optional "low" or "high" or "auto" or "original" or null`
+          - `detail: optional ImageDetail or null`
 
             The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
-
-            - `"low"`
-
-            - `"high"`
-
-            - `"auto"`
-
-            - `"original"`
 
           - `file_id: optional string or null`
 
@@ -9258,7 +9234,7 @@ Create items in a conversation with the given ID.
 
           An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-          - `detail: "low" or "high" or "auto" or "original"`
+          - `detail: ImageDetail`
 
             The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -9298,17 +9274,9 @@ Create items in a conversation with the given ID.
 
           A screenshot of a computer.
 
-          - `detail: "low" or "high" or "auto" or "original"`
+          - `detail: ImageDetail`
 
             The detail level of the screenshot image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
-
-            - `"low"`
-
-            - `"high"`
-
-            - `"auto"`
-
-            - `"original"`
 
           - `file_id: string or null`
 
@@ -13537,7 +13505,7 @@ List all items for a conversation with the given ID.
 
           An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-          - `detail: "low" or "high" or "auto" or "original"`
+          - `detail: ImageDetail`
 
             The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -13577,17 +13545,9 @@ List all items for a conversation with the given ID.
 
           A screenshot of a computer.
 
-          - `detail: "low" or "high" or "auto" or "original"`
+          - `detail: ImageDetail`
 
             The detail level of the screenshot image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
-
-            - `"low"`
-
-            - `"high"`
-
-            - `"auto"`
-
-            - `"original"`
 
           - `file_id: string or null`
 
@@ -17677,7 +17637,7 @@ Get a single item from a conversation with the given IDs.
 
         An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-        - `detail: "low" or "high" or "auto" or "original"`
+        - `detail: ImageDetail`
 
           The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -17717,17 +17677,9 @@ Get a single item from a conversation with the given IDs.
 
         A screenshot of a computer.
 
-        - `detail: "low" or "high" or "auto" or "original"`
+        - `detail: ImageDetail`
 
           The detail level of the screenshot image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
-
-          - `"low"`
-
-          - `"high"`
-
-          - `"auto"`
-
-          - `"original"`
 
         - `file_id: string or null`
 
@@ -21750,7 +21702,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-        - `detail: "low" or "high" or "auto" or "original"`
+        - `detail: ImageDetail`
 
           The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -21790,17 +21742,9 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         A screenshot of a computer.
 
-        - `detail: "low" or "high" or "auto" or "original"`
+        - `detail: ImageDetail`
 
           The detail level of the screenshot image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
-
-          - `"low"`
-
-          - `"high"`
-
-          - `"auto"`
-
-          - `"original"`
 
         - `file_id: string or null`
 
@@ -25776,7 +25720,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-          - `detail: "low" or "high" or "auto" or "original"`
+          - `detail: ImageDetail`
 
             The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -25816,17 +25760,9 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           A screenshot of a computer.
 
-          - `detail: "low" or "high" or "auto" or "original"`
+          - `detail: ImageDetail`
 
             The detail level of the screenshot image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
-
-            - `"low"`
-
-            - `"high"`
-
-            - `"auto"`
-
-            - `"original"`
 
           - `file_id: string or null`
 

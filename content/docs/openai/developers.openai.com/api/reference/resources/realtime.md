@@ -4899,7 +4899,7 @@
 
             An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-            - `detail: "low" or "high" or "auto" or "original"`
+            - `detail: ImageDetail`
 
               The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -8032,7 +8032,7 @@
 
         An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-        - `detail: "low" or "high" or "auto" or "original"`
+        - `detail: ImageDetail`
 
           The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -10667,7 +10667,7 @@
 
               An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-              - `detail: "low" or "high" or "auto" or "original"`
+              - `detail: ImageDetail`
 
                 The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -11843,7 +11843,7 @@
 
         An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-        - `detail: "low" or "high" or "auto" or "original"`
+        - `detail: ImageDetail`
 
           The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -12559,7 +12559,7 @@
 
         An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-        - `detail: "low" or "high" or "auto" or "original"`
+        - `detail: ImageDetail`
 
           The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -16230,7 +16230,7 @@
 
           An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-          - `detail: "low" or "high" or "auto" or "original"`
+          - `detail: ImageDetail`
 
             The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -19604,7 +19604,7 @@
 
             An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-            - `detail: "low" or "high" or "auto" or "original"`
+            - `detail: ImageDetail`
 
               The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -20583,7 +20583,7 @@
 
             An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-            - `detail: "low" or "high" or "auto" or "original"`
+            - `detail: ImageDetail`
 
               The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -21563,7 +21563,7 @@
 
             An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-            - `detail: "low" or "high" or "auto" or "original"`
+            - `detail: ImageDetail`
 
               The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -22805,7 +22805,7 @@ handle it.
 
       An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-      - `detail: "low" or "high" or "auto" or "original"`
+      - `detail: ImageDetail`
 
         The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -23807,7 +23807,7 @@ Returns the created client secret and the effective session object. The client s
 
           An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-          - `detail: "low" or "high" or "auto" or "original"`
+          - `detail: ImageDetail`
 
             The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -24772,7 +24772,7 @@ Returns the created client secret and the effective session object. The client s
 
           An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-          - `detail: "low" or "high" or "auto" or "original"`
+          - `detail: ImageDetail`
 
             The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -25883,7 +25883,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
             An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-            - `detail: "low" or "high" or "auto" or "original"`
+            - `detail: ImageDetail`
 
               The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -26823,7 +26823,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
         An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-        - `detail: "low" or "high" or "auto" or "original"`
+        - `detail: ImageDetail`
 
           The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
@@ -27549,7 +27549,7 @@ Returns the created Realtime session object, plus an ephemeral key.
 
       An image input to the model. Learn about [image inputs](/docs/guides/vision).
 
-      - `detail: "low" or "high" or "auto" or "original"`
+      - `detail: ImageDetail`
 
         The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
 
