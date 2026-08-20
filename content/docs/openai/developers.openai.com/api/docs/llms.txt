@@ -73,6 +73,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Conversation state](https://developers.openai.com/api/docs/guides/conversation-state.md): Learn how to manage conversation state during a model interaction with the OpenAI API.
 - [Cost optimization](https://developers.openai.com/api/docs/guides/cost-optimization.md): Lower your OpenAI model costs by trying our tools and strategies.
 - [Counting tokens](https://developers.openai.com/api/docs/guides/token-counting.md): Use the Responses API to count input tokens for text, images, files, tools, and more—without estimation or tiktoken.
+- [CSAM guidance](https://developers.openai.com/api/docs/guides/csam-guidance.md): Learn practical guidance for addressing CSAM risks in products built with OpenAI.
 - [Cybersecurity checks](https://developers.openai.com/api/docs/guides/safety-checks/cybersecurity.md)
 - [Data controls in the OpenAI platform](https://developers.openai.com/api/docs/guides/your-data.md): Your data is your data. An overview of how OpenAI uses your data, including retention and usage policies.
 - [Deep research](https://developers.openai.com/api/docs/guides/deep-research.md): Use deep research models for complex analysis and research tasks.
@@ -188,7 +189,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Web search](https://developers.openai.com/api/docs/guides/tools-web-search.md): Allow models to search the web for the latest information before generating a response.
 - [Webhooks](https://developers.openai.com/api/docs/guides/webhooks.md): Use webhooks to receive real-time updates from the OpenAI API.
 - [Webhooks and server-side controls](https://developers.openai.com/api/docs/guides/realtime-server-controls.md): Learn how to use webhooks and server-side controls with the Realtime API.
-- [WebSocket Mode](https://developers.openai.com/api/docs/guides/websocket-mode.md): Learn how to use Responses API WebSocket mode with response.create and previous_response_id.
+- [WebSocket Mode](https://developers.openai.com/api/docs/guides/websocket-mode.md): Learn how to use Responses API WebSocket mode with response creation, continuation, and multiplexing.
 - [Working with evals](https://developers.openai.com/api/docs/guides/evals.md): Learn how to test and improve AI model outputs through evaluations.
 - [Workload identity federation](https://developers.openai.com/api/docs/guides/workload-identity-federation.md): Authenticate to OpenAI APIs with short-lived credentials through workload identity federation instead of storing static long-lived API keys.
 

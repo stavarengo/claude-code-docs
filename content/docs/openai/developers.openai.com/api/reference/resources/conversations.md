@@ -1773,21 +1773,29 @@ Create a conversation.
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-          The image generation model to use. Default: `gpt-image-1`.
+          The image generation model to use. One of `gpt-image-1`,
+          `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+          `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            The image generation model to use. Default: `gpt-image-1`.
+            The image generation model to use. One of `gpt-image-1`,
+            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+            `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
             - `"gpt-image-1"`
 
             - `"gpt-image-1-mini"`
 
             - `"gpt-image-1.5"`
+
+            - `"gpt-image-2"`
+
+            - `"gpt-image-2-2026-04-21"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -2780,21 +2788,29 @@ Create a conversation.
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-          The image generation model to use. Default: `gpt-image-1`.
+          The image generation model to use. One of `gpt-image-1`,
+          `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+          `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            The image generation model to use. Default: `gpt-image-1`.
+            The image generation model to use. One of `gpt-image-1`,
+            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+            `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
             - `"gpt-image-1"`
 
             - `"gpt-image-1-mini"`
 
             - `"gpt-image-1.5"`
+
+            - `"gpt-image-2"`
+
+            - `"gpt-image-2-2026-04-21"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -6686,21 +6702,29 @@ Create items in a conversation with the given ID.
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-          The image generation model to use. Default: `gpt-image-1`.
+          The image generation model to use. One of `gpt-image-1`,
+          `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+          `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            The image generation model to use. Default: `gpt-image-1`.
+            The image generation model to use. One of `gpt-image-1`,
+            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+            `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
             - `"gpt-image-1"`
 
             - `"gpt-image-1-mini"`
 
             - `"gpt-image-1.5"`
+
+            - `"gpt-image-2"`
+
+            - `"gpt-image-2-2026-04-21"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -7693,21 +7717,29 @@ Create items in a conversation with the given ID.
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-          The image generation model to use. Default: `gpt-image-1`.
+          The image generation model to use. One of `gpt-image-1`,
+          `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+          `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            The image generation model to use. Default: `gpt-image-1`.
+            The image generation model to use. One of `gpt-image-1`,
+            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+            `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
             - `"gpt-image-1"`
 
             - `"gpt-image-1-mini"`
 
             - `"gpt-image-1.5"`
+
+            - `"gpt-image-2"`
+
+            - `"gpt-image-2-2026-04-21"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -10744,21 +10776,29 @@ Create items in a conversation with the given ID.
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            The image generation model to use. Default: `gpt-image-1`.
+            The image generation model to use. One of `gpt-image-1`,
+            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+            `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              The image generation model to use. Default: `gpt-image-1`.
+              The image generation model to use. One of `gpt-image-1`,
+              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+              `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
               - `"gpt-image-1"`
 
               - `"gpt-image-1-mini"`
 
               - `"gpt-image-1.5"`
+
+              - `"gpt-image-2"`
+
+              - `"gpt-image-2-2026-04-21"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -11747,21 +11787,29 @@ Create items in a conversation with the given ID.
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            The image generation model to use. Default: `gpt-image-1`.
+            The image generation model to use. One of `gpt-image-1`,
+            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+            `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              The image generation model to use. Default: `gpt-image-1`.
+              The image generation model to use. One of `gpt-image-1`,
+              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+              `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
               - `"gpt-image-1"`
 
               - `"gpt-image-1-mini"`
 
               - `"gpt-image-1.5"`
+
+              - `"gpt-image-2"`
+
+              - `"gpt-image-2-2026-04-21"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -15015,21 +15063,29 @@ List all items for a conversation with the given ID.
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            The image generation model to use. Default: `gpt-image-1`.
+            The image generation model to use. One of `gpt-image-1`,
+            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+            `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              The image generation model to use. Default: `gpt-image-1`.
+              The image generation model to use. One of `gpt-image-1`,
+              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+              `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
               - `"gpt-image-1"`
 
               - `"gpt-image-1-mini"`
 
               - `"gpt-image-1.5"`
+
+              - `"gpt-image-2"`
+
+              - `"gpt-image-2-2026-04-21"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -16018,21 +16074,29 @@ List all items for a conversation with the given ID.
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            The image generation model to use. Default: `gpt-image-1`.
+            The image generation model to use. One of `gpt-image-1`,
+            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+            `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              The image generation model to use. Default: `gpt-image-1`.
+              The image generation model to use. One of `gpt-image-1`,
+              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+              `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
               - `"gpt-image-1"`
 
               - `"gpt-image-1-mini"`
 
               - `"gpt-image-1.5"`
+
+              - `"gpt-image-2"`
+
+              - `"gpt-image-2-2026-04-21"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -19147,21 +19211,29 @@ Get a single item from a conversation with the given IDs.
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-          The image generation model to use. Default: `gpt-image-1`.
+          The image generation model to use. One of `gpt-image-1`,
+          `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+          `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            The image generation model to use. Default: `gpt-image-1`.
+            The image generation model to use. One of `gpt-image-1`,
+            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+            `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
             - `"gpt-image-1"`
 
             - `"gpt-image-1-mini"`
 
             - `"gpt-image-1.5"`
+
+            - `"gpt-image-2"`
+
+            - `"gpt-image-2-2026-04-21"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -20150,21 +20222,29 @@ Get a single item from a conversation with the given IDs.
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-          The image generation model to use. Default: `gpt-image-1`.
+          The image generation model to use. One of `gpt-image-1`,
+          `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+          `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            The image generation model to use. Default: `gpt-image-1`.
+            The image generation model to use. One of `gpt-image-1`,
+            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+            `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
             - `"gpt-image-1"`
 
             - `"gpt-image-1-mini"`
 
             - `"gpt-image-1.5"`
+
+            - `"gpt-image-2"`
+
+            - `"gpt-image-2-2026-04-21"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -23212,21 +23292,29 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-          The image generation model to use. Default: `gpt-image-1`.
+          The image generation model to use. One of `gpt-image-1`,
+          `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+          `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            The image generation model to use. Default: `gpt-image-1`.
+            The image generation model to use. One of `gpt-image-1`,
+            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+            `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
             - `"gpt-image-1"`
 
             - `"gpt-image-1-mini"`
 
             - `"gpt-image-1.5"`
+
+            - `"gpt-image-2"`
+
+            - `"gpt-image-2-2026-04-21"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -24215,21 +24303,29 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-          The image generation model to use. Default: `gpt-image-1`.
+          The image generation model to use. One of `gpt-image-1`,
+          `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+          `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            The image generation model to use. Default: `gpt-image-1`.
+            The image generation model to use. One of `gpt-image-1`,
+            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+            `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
             - `"gpt-image-1"`
 
             - `"gpt-image-1-mini"`
 
             - `"gpt-image-1.5"`
+
+            - `"gpt-image-2"`
+
+            - `"gpt-image-2-2026-04-21"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -27230,21 +27326,29 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            The image generation model to use. Default: `gpt-image-1`.
+            The image generation model to use. One of `gpt-image-1`,
+            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+            `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              The image generation model to use. Default: `gpt-image-1`.
+              The image generation model to use. One of `gpt-image-1`,
+              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+              `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
               - `"gpt-image-1"`
 
               - `"gpt-image-1-mini"`
 
               - `"gpt-image-1.5"`
+
+              - `"gpt-image-2"`
+
+              - `"gpt-image-2-2026-04-21"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -28233,21 +28337,29 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-            The image generation model to use. Default: `gpt-image-1`.
+            The image generation model to use. One of `gpt-image-1`,
+            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+            `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5"`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
 
-              The image generation model to use. Default: `gpt-image-1`.
+              The image generation model to use. One of `gpt-image-1`,
+              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, or
+              `gpt-image-2-2026-04-21`. Default: `gpt-image-1`.
 
               - `"gpt-image-1"`
 
               - `"gpt-image-1-mini"`
 
               - `"gpt-image-1.5"`
+
+              - `"gpt-image-2"`
+
+              - `"gpt-image-2-2026-04-21"`
 
           - `moderation: optional "auto" or "low"`
 
