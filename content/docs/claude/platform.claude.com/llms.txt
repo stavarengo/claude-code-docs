@@ -12,7 +12,7 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 567 pages - /docs - Content included below
+- English (en) - 584 pages - /docs - Content included below
 - German (Deutsch) (de) - 206 pages - /docs/de - Visit website for content
 - Spanish (Español) (es) - 206 pages - /docs/es - Visit website for content
 - French (Français) (fr) - 206 pages - /docs/fr - Visit website for content
@@ -48,6 +48,7 @@ The full documentation is available in the following languages on https://platfo
 - [Authentication](https://platform.claude.com/docs/en/manage-claude/authentication.md)
 - [Bash tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/bash-tool.md)
 - [Batch processing](https://platform.claude.com/docs/en/build-with-claude/batch-processing.md)
+- [Browser use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool.md)
 - [Build an orchestration mode](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-effort-example.md)
 - [Cache diagnostics (beta)](https://platform.claude.com/docs/en/build-with-claude/cache-diagnostics.md) - Cache diagnostics
 - [Citations](https://platform.claude.com/docs/en/build-with-claude/citations.md)
@@ -186,7 +187,7 @@ The full documentation is available in the following languages on https://platfo
 - [Microsoft Entra ID](https://platform.claude.com/docs/en/manage-claude/wif-providers/azure.md) - Use WIF with Microsoft Entra ID
 - [Okta](https://platform.claude.com/docs/en/manage-claude/wif-providers/okta.md) - Use WIF with Okta
 - [SPIFFE](https://platform.claude.com/docs/en/manage-claude/wif-providers/spiffe.md) - Use WIF with SPIFFE
-- [User management (beta)](https://platform.claude.com/docs/en/manage-claude/user-management.md) - User management
+- [User management](https://platform.claude.com/docs/en/manage-claude/user-management.md)
 - [WIF reference](https://platform.claude.com/docs/en/manage-claude/wif-reference.md)
 - [Workload Identity Federation](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation.md)
 - [Workspaces](https://platform.claude.com/docs/en/manage-claude/workspaces.md)
@@ -341,7 +342,9 @@ The full documentation is available in the following languages on https://platfo
 - [Create Service Account](https://platform.claude.com/docs/en/api/admin/service_accounts/create.md)
 - [Create Service Account Workspace Member](https://platform.claude.com/docs/en/api/admin/workspaces/service_accounts/create.md)
 - [Create Session (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/create.md)
+- [Create Skill](https://platform.claude.com/docs/en/api/skills/create.md)
 - [Create Skill (Beta)](https://platform.claude.com/docs/en/api/beta/skills/create.md)
+- [Create Skill Version](https://platform.claude.com/docs/en/api/skills/versions/create.md)
 - [Create Skill Version (Beta)](https://platform.claude.com/docs/en/api/beta/skills/versions/create.md)
 - [Create Tunnel (Beta)](https://platform.claude.com/docs/en/api/beta/tunnels/create.md)
 - [Create Tunnel Certificate](https://platform.claude.com/docs/en/api/admin/mcp_tunnels/tunnel_certificates/create.md)
@@ -361,6 +364,7 @@ The full documentation is available in the following languages on https://platfo
 - [Delete Environment (Beta)](https://platform.claude.com/docs/en/api/beta/environments/delete.md)
 - [Delete External Key](https://platform.claude.com/docs/en/api/admin/external_keys/delete.md)
 - [Delete file](https://platform.claude.com/docs/en/api/compliance/apps/chats/files/delete.md)
+- [Delete File](https://platform.claude.com/docs/en/api/files/delete.md)
 - [Delete File (Beta)](https://platform.claude.com/docs/en/api/beta/files/delete.md)
 - [Delete Invite](https://platform.claude.com/docs/en/api/admin/invites/delete.md)
 - [Delete project](https://platform.claude.com/docs/en/api/compliance/apps/projects/delete.md)
@@ -369,7 +373,9 @@ The full documentation is available in the following languages on https://platfo
 - [Delete Service Account Workspace Member](https://platform.claude.com/docs/en/api/admin/workspaces/service_accounts/delete.md)
 - [Delete Session (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/delete.md)
 - [Delete Session Resource (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/resources/delete.md)
+- [Delete Skill](https://platform.claude.com/docs/en/api/skills/delete.md)
 - [Delete Skill (Beta)](https://platform.claude.com/docs/en/api/beta/skills/delete.md)
+- [Delete Skill Version](https://platform.claude.com/docs/en/api/skills/versions/delete.md)
 - [Delete Skill Version (Beta)](https://platform.claude.com/docs/en/api/beta/skills/versions/delete.md)
 - [Delete Spend Limit](https://platform.claude.com/docs/en/api/admin/spend_limits/delete.md)
 - [Delete Vault (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/delete.md)
@@ -381,6 +387,7 @@ The full documentation is available in the following languages on https://platfo
 - [Download a Claude-generated file](https://platform.claude.com/docs/en/api/compliance/apps/chats/generated_files/download.md)
 - [Download artifact content](https://platform.claude.com/docs/en/api/compliance/apps/artifacts/download.md)
 - [Download Code Artifact Version Content](https://platform.claude.com/docs/en/api/compliance/code/artifacts/retrieve_version.md)
+- [Download File](https://platform.claude.com/docs/en/api/files/download.md)
 - [Download File (Beta)](https://platform.claude.com/docs/en/api/beta/files/download.md)
 - [Download file content](https://platform.claude.com/docs/en/api/compliance/apps/chats/files/download.md)
 - [Download Skill Version Content (Beta)](https://platform.claude.com/docs/en/api/beta/skills/versions/download.md)
@@ -391,6 +398,7 @@ The full documentation is available in the following languages on https://platfo
 - [External Keys](https://platform.claude.com/docs/en/api/admin/external_keys.md)
 - [Federation Issuers](https://platform.claude.com/docs/en/api/admin/federation_issuers.md)
 - [Federation Rules](https://platform.claude.com/docs/en/api/admin/federation_rules.md)
+- [Files](https://platform.claude.com/docs/en/api/files.md)
 - [Files](https://platform.claude.com/docs/en/api/compliance/apps/chats/files.md)
 - [Files (Beta)](https://platform.claude.com/docs/en/api/beta/files.md)
 - [Generated Files](https://platform.claude.com/docs/en/api/compliance/apps/chats/generated_files.md)
@@ -420,6 +428,7 @@ The full documentation is available in the following languages on https://platfo
 - [Get Federation Issuer](https://platform.claude.com/docs/en/api/admin/federation_issuers/retrieve.md)
 - [Get Federation Rule](https://platform.claude.com/docs/en/api/admin/federation_rules/retrieve.md)
 - [Get file metadata](https://platform.claude.com/docs/en/api/compliance/apps/chats/files/retrieve.md)
+- [Get File Metadata](https://platform.claude.com/docs/en/api/files/retrieve_metadata.md)
 - [Get File Metadata (Beta)](https://platform.claude.com/docs/en/api/beta/files/retrieve_metadata.md)
 - [Get Invite](https://platform.claude.com/docs/en/api/admin/invites/retrieve.md)
 - [Get Messages Usage Report](https://platform.claude.com/docs/en/api/admin/usage_report/retrieve_messages.md)
@@ -437,8 +446,10 @@ The full documentation is available in the following languages on https://platfo
 - [Get Session (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/retrieve.md)
 - [Get Session Resource (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/resources/retrieve.md)
 - [Get Session Thread (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/threads/retrieve.md)
+- [Get Skill](https://platform.claude.com/docs/en/api/skills/retrieve.md)
 - [Get Skill (Beta)](https://platform.claude.com/docs/en/api/beta/skills/retrieve.md)
 - [Get Skill Usage](https://platform.claude.com/docs/en/api/admin/analytics/skills/list.md)
+- [Get Skill Version](https://platform.claude.com/docs/en/api/skills/versions/retrieve.md)
 - [Get Skill Version (Beta)](https://platform.claude.com/docs/en/api/beta/skills/versions/retrieve.md)
 - [Get Spend Limit](https://platform.claude.com/docs/en/api/admin/spend_limits/retrieve.md)
 - [Get Spend Limit Increase Request](https://platform.claude.com/docs/en/api/admin/spend_limits/increase_requests/retrieve.md)
@@ -476,6 +487,7 @@ The full documentation is available in the following languages on https://platfo
 - [List Federation Issuers](https://platform.claude.com/docs/en/api/admin/federation_issuers/list.md)
 - [List Federation Rule Workspaces](https://platform.claude.com/docs/en/api/admin/federation_rules/workspaces/list.md)
 - [List Federation Rules](https://platform.claude.com/docs/en/api/admin/federation_rules/list.md)
+- [List Files](https://platform.claude.com/docs/en/api/files/list.md)
 - [List Files (Beta)](https://platform.claude.com/docs/en/api/beta/files/list.md)
 - [List Invites](https://platform.claude.com/docs/en/api/admin/invites/list.md)
 - [List local sessions](https://platform.claude.com/docs/en/api/compliance/apps/sessions/local/list.md)
@@ -503,7 +515,9 @@ The full documentation is available in the following languages on https://platfo
 - [List Session Thread Events (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/threads/events/list.md)
 - [List Session Threads (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/threads/list.md)
 - [List Sessions (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/list.md)
+- [List Skill Versions](https://platform.claude.com/docs/en/api/skills/versions/list.md)
 - [List Skill Versions (Beta)](https://platform.claude.com/docs/en/api/beta/skills/versions/list.md)
+- [List Skills](https://platform.claude.com/docs/en/api/skills/list.md)
 - [List Skills (Beta)](https://platform.claude.com/docs/en/api/beta/skills/list.md)
 - [List Spend Limit Increase Requests](https://platform.claude.com/docs/en/api/admin/spend_limits/increase_requests/list.md)
 - [List Tunnel Certificates](https://platform.claude.com/docs/en/api/admin/mcp_tunnels/tunnel_certificates/list.md)
@@ -579,6 +593,7 @@ The full documentation is available in the following languages on https://platfo
 - [Sessions (Beta)](https://platform.claude.com/docs/en/api/beta/sessions.md)
 - [Set Spend Limit](https://platform.claude.com/docs/en/api/admin/spend_limits/create.md)
 - [Settings](https://platform.claude.com/docs/en/api/compliance/organizations/settings.md)
+- [Skills](https://platform.claude.com/docs/en/api/skills.md)
 - [Skills](https://platform.claude.com/docs/en/api/admin/analytics/skills.md)
 - [Skills (Beta)](https://platform.claude.com/docs/en/api/beta/skills.md)
 - [Spend Limits](https://platform.claude.com/docs/en/api/admin/spend_limits.md)
@@ -610,6 +625,7 @@ The full documentation is available in the following languages on https://platfo
 - [Update Work Item (Beta)](https://platform.claude.com/docs/en/api/beta/environments/work/update.md)
 - [Update Workspace](https://platform.claude.com/docs/en/api/admin/workspaces/update.md)
 - [Update Workspace Member](https://platform.claude.com/docs/en/api/admin/workspaces/members/update.md)
+- [Upload File](https://platform.claude.com/docs/en/api/files/upload.md)
 - [Upload File (Beta)](https://platform.claude.com/docs/en/api/beta/files/upload.md)
 - [Usage](https://platform.claude.com/docs/en/api/admin/analytics/usage.md)
 - [Usage Report](https://platform.claude.com/docs/en/api/admin/usage_report.md)
@@ -620,6 +636,7 @@ The full documentation is available in the following languages on https://platfo
 - [Validate Credential (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/credentials/mcp_oauth_validate.md)
 - [Validate External Key](https://platform.claude.com/docs/en/api/admin/external_keys/validate.md)
 - [Vaults (Beta)](https://platform.claude.com/docs/en/api/beta/vaults.md)
+- [Versions](https://platform.claude.com/docs/en/api/skills/versions.md)
 - [Versions (Beta)](https://platform.claude.com/docs/en/api/beta/agents/versions.md)
 - [Versions (Beta)](https://platform.claude.com/docs/en/api/beta/skills/versions.md)
 - [Webhooks (Beta)](https://platform.claude.com/docs/en/api/beta/webhooks.md)

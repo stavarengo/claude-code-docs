@@ -88,7 +88,7 @@ Learn more about the Messages API in our [user guide](https://platform.claude.co
 
   Body param: Top-level cache control automatically applies a cache_control marker to the last cacheable block in the request.
 
-- `--container: optional string`
+- `--container: optional ContainerParams or string`
 
   Body param: Container identifier for reuse across requests.
 
@@ -238,7 +238,7 @@ Learn more about the Messages API in our [user guide](https://platform.claude.co
 
     The format and length of IDs may change over time.
 
-  - `container: object { id, expires_at }`
+  - `container: object { id, expires_at, skills }`
 
     Information about the container used in the request (for the code execution tool)
 
@@ -249,6 +249,26 @@ Learn more about the Messages API in our [user guide](https://platform.claude.co
     - `expires_at: string`
 
       The time at which the container will expire.
+
+    - `skills: array of ContainerSkill`
+
+      Skills loaded in the container
+
+      - `skill_id: string`
+
+        Skill ID
+
+      - `type: "anthropic" or "custom"`
+
+        Type of skill - either 'anthropic' (built-in) or 'custom' (user-defined)
+
+        - `"anthropic"`
+
+        - `"custom"`
+
+      - `version: string`
+
+        Skill version or 'latest' for most recent version
 
   - `content: array of ContentBlock`
 
@@ -419,7 +439,7 @@ Learn more about the Messages API in our [user guide](https://platform.claude.co
 
       - `type: "redacted_thinking"`
 
-    - `tool_use_block: object { id, caller, input, 2 more }`
+    - `tool_use_block: object { id, caller, input, 3 more }`
 
       - `id: string`
 
@@ -452,6 +472,10 @@ Learn more about the Messages API in our [user guide](https://platform.claude.co
       - `name: string`
 
       - `type: "tool_use"`
+
+      - `toolset_name: optional string`
+
+        For a toolset member tool_use, the toolset family.
 
     - `server_tool_use_block: object { id, caller, input, 2 more }`
 
@@ -1082,7 +1106,7 @@ ant messages create \
   --api-key my-anthropic-api-key \
   --max-tokens 1024 \
   --message '{content: [{text: x, type: text}], role: user}' \
-  --model claude-opus-4-6
+  --model claude-opus-5
 ```
 
 #### Response
@@ -1092,7 +1116,14 @@ ant messages create \
   "id": "msg_013Zva2CMHLNnXjNJJKqJ2EF",
   "container": {
     "id": "container_011CpZohnwH4vuy7gazohgSP",
-    "expires_at": "2019-12-27T18:11:19.117Z"
+    "expires_at": "2019-12-27T18:11:19.117Z",
+    "skills": [
+      {
+        "skill_id": "pdf",
+        "type": "anthropic",
+        "version": "latest"
+      }
+    ]
   },
   "content": [
     {
@@ -1111,7 +1142,7 @@ ant messages create \
       "type": "text"
     }
   ],
-  "model": "claude-opus-4-6",
+  "model": "claude-opus-5",
   "role": "assistant",
   "stop_details": {
     "category": "cyber",
