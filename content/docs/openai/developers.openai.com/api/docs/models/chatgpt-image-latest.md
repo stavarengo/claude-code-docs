@@ -6,7 +6,7 @@
 
 Model ID: `chatgpt-image-latest`
 
-This points to the Image snapshot previously used in ChatGPT. We recommend [GPT Image 2](/api/docs/models/gpt-image-2) for API use.
+This points to the Image snapshot previously used in ChatGPT. We recommend [GPT-Image-2](/api/docs/models/gpt-image-2) for API use.
 
 ## Model details
 

@@ -6,7 +6,7 @@
 
 Model ID: `dall-e-3`
 
-DALL·E 3 has been deprecated and removed from the API. We recommend [GPT Image 2](/api/docs/models/gpt-image-2) for current image generation and editing.
+DALL·E 3 has been deprecated and removed from the API. We recommend [GPT-Image-2](/api/docs/models/gpt-image-2) for current image generation and editing.
 
 ## Model details
 

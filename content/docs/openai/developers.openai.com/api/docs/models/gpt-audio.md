@@ -1,4 +1,4 @@
-# gpt-audio
+# GPT-Audio
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
@@ -65,7 +65,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 ## Snapshots
 
-Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for gpt-audio.
+Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-Audio.
 
 - `gpt-audio-2025-08-28`
 

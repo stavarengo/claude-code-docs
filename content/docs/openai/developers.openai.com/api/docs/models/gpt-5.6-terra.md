@@ -88,7 +88,7 @@ Tools supported by this model when using the Responses API.
 | Model | Input | Cached input | Output |
 | --- | ---: | ---: | ---: |
 | GPT-5.6 Terra | $2 | $0.2 | $12 |
-| GPT-5.6 Sol | $5 | $0.5 | $30 |
+| GPT-5.6 Sol | $4 | $0.4 | $20 |
 | GPT-5.4 mini | $0.75 | $0.075 | $4.5 |
 
 ## Snapshots
