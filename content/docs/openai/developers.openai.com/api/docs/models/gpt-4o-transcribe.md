@@ -56,7 +56,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 | Model | Input | Output |
 | --- | ---: | ---: |
 | GPT-4o Transcribe | $2.5 | $10 |
-| GPT-4o mini Transcribe | $1.25 | $5 |
+| GPT-4o Mini Transcribe | $1.25 | $5 |
 
 ## Snapshots
 

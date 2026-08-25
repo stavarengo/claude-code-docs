@@ -2,13 +2,13 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-> Fast, cost-efficient reasoning model, succeeded by GPT-5 mini
+> Fast, cost-efficient reasoning model, succeeded by GPT-5 Mini
 
 Model ID: `o4-mini`
 
 o4-mini is our latest small o-series model. It's optimized for fast, 
 effective reasoning with exceptionally efficient performance in coding and 
-visual tasks. It's succeeded by [GPT-5 mini](/api/docs/models/gpt-5-mini).
+visual tasks. It's succeeded by [GPT-5 Mini](/api/docs/models/gpt-5-mini).
 
 Learn more about how to use our reasoning models in our 
 [reasoning](/api/docs/guides/reasoning?api-mode=responses) guide.

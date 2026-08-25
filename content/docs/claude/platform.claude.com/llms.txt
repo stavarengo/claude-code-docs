@@ -12,18 +12,18 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 584 pages - /docs - Content included below
-- German (Deutsch) (de) - 209 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 209 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 209 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 209 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 209 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 209 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 209 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 209 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 209 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 209 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 209 pages - /docs/id - Visit website for content
+- English (en) - 612 pages - /docs - Content included below
+- German (Deutsch) (de) - 205 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 205 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 205 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 205 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 205 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 205 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 205 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 205 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 205 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 205 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 205 pages - /docs/id - Visit website for content
 
 ---
 
@@ -216,18 +216,46 @@ The full documentation is available in the following languages on https://platfo
 
 ### Models & pricing
 
-- [Introducing Claude Fable 5 and Claude Mythos 5](https://platform.claude.com/docs/en/about-claude/models/introducing-claude-fable-5-and-claude-mythos-5.md)
+- [Claude Fable 5](https://platform.claude.com/docs/en/models/fable-5/overview.md)
+- [Claude Haiku 4.5](https://platform.claude.com/docs/en/models/haiku-4-5/overview.md)
+- [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview.md)
+- [Claude Opus 4.5](https://platform.claude.com/docs/en/models/opus-4-5/overview.md)
+- [Claude Opus 4.6](https://platform.claude.com/docs/en/models/opus-4-6/overview.md)
+- [Claude Opus 4.7](https://platform.claude.com/docs/en/models/opus-4-7/overview.md)
+- [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview.md)
+- [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview.md)
+- [Claude Sonnet 4.5](https://platform.claude.com/docs/en/models/sonnet-4-5/overview.md)
+- [Claude Sonnet 4.6](https://platform.claude.com/docs/en/models/sonnet-4-6/overview.md)
+- [Claude Sonnet 5](https://platform.claude.com/docs/en/models/sonnet-5/overview.md)
+- [What's new](https://platform.claude.com/docs/en/models/fable-5/introducing-claude-fable-5-and-claude-mythos-5.md) - Introducing Claude Fable 5 and Claude Mythos 5
 - [Model cards](https://platform.claude.com/docs/en/resources/overview.md)
-- [Models overview](https://platform.claude.com/docs/en/about-claude/models/overview.md)
+- [Models overview](https://platform.claude.com/docs/en/models/overview.md)
+- [Overview](https://platform.claude.com/docs/en/release-notes/system-prompts/overview.md) - System prompts
 - [Choosing a model](https://platform.claude.com/docs/en/about-claude/models/choosing-a-model.md) - Choosing the right model
+- [Claude Fable 5](https://platform.claude.com/docs/en/release-notes/system-prompts/claude-fable-5.md) - Claude Fable 5 system prompts
+- [Claude Haiku 3](https://platform.claude.com/docs/en/release-notes/system-prompts/claude-haiku-3.md) - Claude Haiku 3 system prompts
+- [Claude Haiku 3.5](https://platform.claude.com/docs/en/release-notes/system-prompts/claude-haiku-3-5.md) - Claude Haiku 3.5 system prompts
+- [Claude Haiku 4.5](https://platform.claude.com/docs/en/release-notes/system-prompts/claude-haiku-4-5.md) - Claude Haiku 4.5 system prompts
+- [Claude Opus 3](https://platform.claude.com/docs/en/release-notes/system-prompts/claude-opus-3.md) - Claude Opus 3 system prompts
+- [Claude Opus 4](https://platform.claude.com/docs/en/release-notes/system-prompts/claude-opus-4.md) - Claude Opus 4 system prompts
+- [Claude Opus 4.1](https://platform.claude.com/docs/en/release-notes/system-prompts/claude-opus-4-1.md) - Claude Opus 4.1 system prompts
+- [Claude Opus 4.5](https://platform.claude.com/docs/en/release-notes/system-prompts/claude-opus-4-5.md) - Claude Opus 4.5 system prompts
+- [Claude Opus 4.6](https://platform.claude.com/docs/en/release-notes/system-prompts/claude-opus-4-6.md) - Claude Opus 4.6 system prompts
+- [Claude Opus 4.7](https://platform.claude.com/docs/en/release-notes/system-prompts/claude-opus-4-7.md) - Claude Opus 4.7 system prompts
+- [Claude Opus 4.8](https://platform.claude.com/docs/en/release-notes/system-prompts/claude-opus-4-8.md) - Claude Opus 4.8 system prompts
+- [Claude Opus 5](https://platform.claude.com/docs/en/release-notes/system-prompts/claude-opus-5.md) - Claude Opus 5 system prompts
+- [Claude Sonnet 3.5](https://platform.claude.com/docs/en/release-notes/system-prompts/claude-sonnet-3-5.md) - Claude Sonnet 3.5 system prompts
+- [Claude Sonnet 3.7](https://platform.claude.com/docs/en/release-notes/system-prompts/claude-sonnet-3-7.md) - Claude Sonnet 3.7 system prompts
+- [Claude Sonnet 4](https://platform.claude.com/docs/en/release-notes/system-prompts/claude-sonnet-4.md) - Claude Sonnet 4 system prompts
+- [Claude Sonnet 4.5](https://platform.claude.com/docs/en/release-notes/system-prompts/claude-sonnet-4-5.md) - Claude Sonnet 4.5 system prompts
+- [Claude Sonnet 4.6](https://platform.claude.com/docs/en/release-notes/system-prompts/claude-sonnet-4-6.md) - Claude Sonnet 4.6 system prompts
 - [Upgrade between model versions](https://platform.claude.com/docs/en/about-claude/models/migration-guide.md) - Migration guide
 - [Model deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations.md)
 - [Model IDs and versioning](https://platform.claude.com/docs/en/about-claude/models/model-ids-and-versions.md)
 - [Optimizing for cost and intelligence](https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence.md)
 - [Pricing](https://platform.claude.com/docs/en/about-claude/pricing.md)
-- [System prompts](https://platform.claude.com/docs/en/release-notes/system-prompts.md) - System Prompts
-- [What's new in Claude Opus 5](https://platform.claude.com/docs/en/about-claude/models/whats-new-opus-5.md)
-- [What's new in Claude Sonnet 5](https://platform.claude.com/docs/en/about-claude/models/whats-new-sonnet-5.md)
+- [What's new](https://platform.claude.com/docs/en/models/opus-5/whats-new-opus-5.md) - What's new in Claude Opus 5
+- [What's new](https://platform.claude.com/docs/en/models/sonnet-5/whats-new-sonnet-5.md) - What's new in Claude Sonnet 5
 
 ### CLI, SDKs, and libraries
 

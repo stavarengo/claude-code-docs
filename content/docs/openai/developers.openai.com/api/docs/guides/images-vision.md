@@ -158,6 +158,37 @@ String imageResult =
 Files.write(Path.of("cat_and_otter.png"), Base64.getDecoder().decode(imageResult));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        "Generate an image of a gray tabby cat hugging an otter with an orange scarf."
+    )
+);
+options.Tools.Add(
+    ResponseTool.CreateImageGenerationTool(model: "gpt-image-2")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+ImageGenerationCallResponseItem image = response
+    .OutputItems.OfType<ImageGenerationCallResponseItem>()
+    .FirstOrDefault()
+    ?? throw new InvalidOperationException("No generated image was returned.");
+await File.WriteAllBytesAsync(
+    "cat_and_otter.png",
+    image.ImageResultBytes.ToArray()
+);
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -1131,10 +1162,14 @@ D. Apply a multiplier based on the model to get the total tokens:
 
 | Model           | Multiplier |
 | --------------- | ---------- |
-| `gpt-5.4-mini`  | 1.62       |
-| `gpt-5.4-nano`  | 2.46       |
-| `gpt-5-mini`    | 1.62       |
-| `gpt-5-nano`    | 2.46       |
+| `gpt-5.6-sol`   | 1.2        |
+| `gpt-5.6-terra` | 1.2        |
+| `gpt-5.6-luna`  | 1.2        |
+| `gpt-5.5`       | 1.2        |
+| `gpt-5.4-mini`  | 1.2        |
+| `gpt-5.4-nano`  | 1.2        |
+| `gpt-5-mini`    | 1.2        |
+| `gpt-5-nano`    | 1.5        |
 | `gpt-4.1-mini*` | 1.62       |
 | `gpt-4.1-nano*` | 2.46       |
 | `o4-mini`       | 1.72       |

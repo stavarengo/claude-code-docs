@@ -1,4 +1,4 @@
-# GPT-4o mini Search Preview
+# GPT-4o Mini Search Preview
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
@@ -6,7 +6,7 @@
 
 Model ID: `gpt-4o-mini-search-preview`
 
-GPT-4o mini Search Preview is a specialized model trained to understand and execute [web search](/api/docs/guides/tools-web-search?api-mode=chat) queries with the Chat Completions API. In addition to token fees, web search queries have a fee per tool call. Learn more in the [pricing](/api/docs/pricing) page.
+GPT-4o Mini Search Preview is a specialized model trained to understand and execute [web search](/api/docs/guides/tools-web-search?api-mode=chat) queries with the Chat Completions API. In addition to token fees, web search queries have a fee per tool call. Learn more in the [pricing](/api/docs/pricing) page.
 
 ## Model details
 
@@ -60,13 +60,13 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 | Model | Input | Cached input | Output |
 | --- | ---: | ---: | ---: |
-| GPT-4o mini Search Preview | $0.15 | - | $0.6 |
+| GPT-4o Mini Search Preview | $0.15 | - | $0.6 |
 | GPT-4o | $2.5 | $1.25 | $10 |
-| GPT-4o mini | $0.15 | $0.075 | $0.6 |
+| GPT-4o Mini | $0.15 | $0.075 | $0.6 |
 
 ## Snapshots
 
-Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4o mini Search Preview.
+Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4o Mini Search Preview.
 
 - `gpt-4o-mini-search-preview-2025-03-11`
 

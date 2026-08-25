@@ -84,7 +84,7 @@ Tools supported by this model when using the Responses API.
 | --- | ---: | ---: | ---: |
 | GPT-5.2 | $1.75 | $0.175 | $14 |
 | GPT-5.4 | $2.5 | $0.25 | $15 |
-| GPT-5 mini | $0.25 | $0.025 | $2 |
+| GPT-5 Mini | $0.25 | $0.025 | $2 |
 
 ## Snapshots
 

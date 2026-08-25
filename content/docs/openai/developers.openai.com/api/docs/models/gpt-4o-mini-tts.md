@@ -1,12 +1,12 @@
-# GPT-4o mini TTS
+# GPT-4o Mini TTS
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-> Text-to-speech model powered by GPT-4o mini
+> Text-to-speech model powered by GPT-4o Mini
 
 Model ID: `gpt-4o-mini-tts`
 
-GPT-4o mini TTS is a text-to-speech model built on GPT-4o mini, a fast and powerful language model. Use it to convert text to natural sounding spoken text. The maximum number of input tokens is 2000.
+GPT-4o Mini TTS is a text-to-speech model built on GPT-4o Mini, a fast and powerful language model. Use it to convert text to natural sounding spoken text. The maximum number of input tokens is 2000.
 
 ## Model details
 
@@ -56,13 +56,13 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 | Model | Input | Cached input | Output |
 | --- | ---: | ---: | ---: |
-| GPT-4o mini TTS | $0.6 | - | - |
-| GPT-4o mini Realtime | $0.6 | $0.3 | $2.4 |
+| GPT-4o Mini TTS | $0.6 | - | - |
+| GPT-4o Mini Realtime | $0.6 | $0.3 | $2.4 |
 | GPT-4o Realtime | $5 | $2.5 | $20 |
 
 ## Snapshots
 
-Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4o mini TTS.
+Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4o Mini TTS.
 
 - `gpt-4o-mini-tts-2025-03-20`
 - `gpt-4o-mini-tts-2025-12-15`

@@ -10331,6 +10331,34 @@ Files.write(Path.of("dog.wav"), Base64.getDecoder().decode(audio.data()));
 message.content().ifPresent(System.out::println);
 ```
 
+```csharp
+using OpenAI.Chat;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ChatClient client = new("gpt-audio-1.5", key);
+
+ChatCompletionOptions options = new()
+{
+    ResponseModalities = ChatResponseModalities.Text | ChatResponseModalities.Audio,
+    AudioOptions = new(ChatOutputAudioVoice.Alloy, ChatOutputAudioFormat.Wav),
+    StoredOutputEnabled = true,
+};
+
+ChatCompletion completion = await client.CompleteChatAsync(
+    [new UserChatMessage("Is a golden retriever a good family dog?")],
+    options
+);
+
+if (completion.OutputAudio is not ChatOutputAudio audio)
+{
+    throw new InvalidOperationException("No audio output was returned.");
+}
+
+Console.WriteLine(audio.Transcript);
+await File.WriteAllBytesAsync("dog.wav", audio.AudioBytes.ToArray());
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -10536,6 +10564,42 @@ ChatCompletionCreateParams params =
 client.chat().completions().create(params).choices().stream()
     .flatMap(choice -> choice.message().content().stream())
     .forEach(System.out::println);
+```
+
+```csharp
+using OpenAI.Chat;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ChatClient client = new("gpt-audio-1.5", key);
+
+BinaryData audio = BinaryData.FromBytes(
+    await File.ReadAllBytesAsync("audio.wav")
+);
+UserChatMessage message = new(
+    [
+        ChatMessageContentPart.CreateTextPart("What is in this recording?"),
+        ChatMessageContentPart.CreateInputAudioPart(
+            audio,
+            ChatInputAudioFormat.Wav
+        ),
+    ]
+);
+ChatCompletionOptions options = new()
+{
+    ResponseModalities = ChatResponseModalities.Text | ChatResponseModalities.Audio,
+    AudioOptions = new(ChatOutputAudioVoice.Alloy, ChatOutputAudioFormat.Wav),
+    StoredOutputEnabled = true,
+};
+
+ChatCompletion completion = await client.CompleteChatAsync([message], options);
+
+if (completion.OutputAudio is not ChatOutputAudio audioOutput)
+{
+    throw new InvalidOperationException("No audio output was returned.");
+}
+
+Console.WriteLine(audioOutput.Transcript);
 ```
 
 ```ruby
@@ -12620,7 +12684,11 @@ The model cannot cite material that has not been presented clearly. Whether mate
 - Readable Text: Clearly formatted source material.
 - Metadata (optional): URLs, timestamps, titles, and similar context.
 
-Example citable material
+
+
+### Example citable material
+
+
 
 ```text
 Citation Marker: {CITATION_START}cite{CITATION_DELIMITER}file0{CITATION_STOP}
@@ -12632,6 +12700,10 @@ Updated: 2026-03-01
 [L2] Additional remote days require manager approval.
 [L3] Exceptions may apply for approved accommodations.
 ```
+
+
+
+
 
 **Source IDs vs. locators:** A source ID is a stable,
   model-generated identifier such as `block1`. A locator is the
@@ -12703,7 +12775,11 @@ If you want to define your own prompt, define:
 - what formats are forbidden.
 - what to do when support is missing.
 
-Recommended prompt instructions
+
+
+### Recommended prompt instructions
+
+
 
 Clearly instruct the model using the following format:
 
@@ -12738,7 +12814,15 @@ You *must* cite any results you use from this tool using the:
 - Do not attempt to cite items without a corresponding citation marker, as they are not meant to be cited.
 - You MUST include line ranges in your citations.
 
-Optional instructions for higher-quality grounding
+
+
+
+
+
+
+### Optional instructions for higher-quality grounding
+
+
 
 The following rules are often worth including when you need higher-quality grounding behavior. Adapt this section based on your use case requirements.
 
@@ -12758,6 +12842,10 @@ Remember, the quality of a domain/source depends on the context.
 </extra_considerations_for_citations>
 ```
 
+
+
+
+
 ## Parse citations
 
 Once the model emits citations, you need to extract them from the response text
@@ -12771,7 +12859,10 @@ locators while preserving character offsets in the original text.
 This example supports line locators only and should be adapted if your system
 uses a different locator format.
 
-Post-processor examples
+
+
+### Post-processor examples
+
 
 Citation parsing helpers
 
@@ -12965,6 +13056,10 @@ def strip_citations(text: str, citations: Iterable[Citation]) -> str:
 ```
 
 
+
+
+
+
 If your source IDs use a different shape, update `SOURCE_ID_RE` to match your
 system.
 
@@ -12985,7 +13080,11 @@ You should choose the citable units based on the precision required for your use
 
 The examples below show a few recommended tool output formats. The underlying tool may vary by application, but what matters most is that the output is presented in a clear, stable structure like these examples.
 
-Line-level example
+
+
+##### Line-level example
+
+
 
 The following is an example of the tool call output:
 
@@ -13001,7 +13100,15 @@ Citation Marker: {CITATION_START}cite{CITATION_DELIMITER}turn0file1{CITATION_STO
 
 Here, `turn0file0` is the stable source ID. The line numbers are the locators.
 
-Block-level example
+
+
+
+
+
+
+##### Block-level example
+
+
 
 The following is an example of the tool call output:
 
@@ -13018,6 +13125,10 @@ Citation Marker: {CITATION_START}cite{CITATION_DELIMITER}turn0file1{CITATION_STO
 ```
 
 If you want block-level citations instead of line-level citations, the recommended option is to make each retrieved block its own stable source ID and still cite it with the same two-field cite shape, for example `{CITATION_START}cite{CITATION_DELIMITER}turn0file0{CITATION_STOP}`, rather than inventing a completely different citation family.
+
+
+
+
 
 #### Write prompt instructions
 
@@ -14599,7 +14710,11 @@ Run Computer use in an isolated browser or VM, keep a human in the loop for high
 
 Before you begin, prepare an environment that can capture screenshots and run the returned actions. Use an isolated environment whenever possible, and decide up front which sites, accounts, and actions the agent is allowed to reach.
 
-Set up a local browsing environment
+
+
+### Set up a local browsing environment
+
+
 
 If you want the fastest path to a working prototype, start with a browser automation framework such as [Playwright](https://playwright.dev/) or [Selenium](https://www.selenium.dev/).
 
@@ -14647,7 +14762,15 @@ with sync_playwright() as p:
 ```
 
 
-Set up a local virtual machine
+
+
+
+
+
+
+### Set up a local virtual machine
+
+
 
 If you need a fuller desktop environment, run the model against a local VM or container and translate actions into OS-level input events.
 
@@ -14770,6 +14893,10 @@ class VM:
 
 vm = VM(display=":99", container_name="cua-image")
 ```
+
+
+
+
 
 
 Whether you use a browser or VM, treat screenshots, page text, tool outputs, PDFs, emails, chats, and other third-party content as untrusted input. Only direct instructions from the user count as permission.
@@ -14923,7 +15050,11 @@ Later turns can batch actions into the same `computer_call`. Run them in order b
 
 If your runtime uses different names for special keys such as `CTRL`, `META`, or `ARROWLEFT`, or if you want to validate drag paths before executing them, add a small normalization helper once and reuse it in your action handlers.
 
-Add normalization helpers
+
+
+#### Add normalization helpers
+
+
 
 
 
@@ -15294,6 +15425,10 @@ def normalize_drag_path(path):
             )
     return normalized
 ```
+
+
+
+
 
 
 
@@ -15685,7 +15820,11 @@ def handle_computer_actions(vm, actions):
 
 For modifier-assisted mouse actions such as `Ctrl`+click or `Shift`+drag, see the examples below.
 
-Add modifier-key mouse actions
+
+
+#### Add modifier-key mouse actions
+
+
 
 Mouse actions can include an optional `keys` array for modifier-assisted workflows such as `Ctrl`+click to open a link in a new tab or `Shift`+click to extend a selection. When `keys` is present on `click`, `double_click`, `drag`, `move`, or `scroll`, hold those modifiers for the duration of the mouse action, then release them before continuing to the next action.
 
@@ -16166,6 +16305,10 @@ def handle_computer_actions(vm, actions):
             case _:
                 raise ValueError(f"Unsupported action: {action.type}")
 ```
+
+
+
+
 
 
 
@@ -17580,17 +17723,15 @@ To see end-to-end examples in many environments, use the sample app:
 
 ---
 
-# Configure workload identity federation with X.509 certificates (beta)
+# Configure workload identity federation with X.509 certificates
 
 X.509 workload identity federation lets a workload exchange an identity from a TLS client certificate for a short-lived OpenAI access token. The workload then calls the OpenAI API with both the access token and an accepted client certificate. This flow replaces the API key, not the client certificate.
 
-X.509 workload identity federation is available in beta for the OpenAI API;
-  Codex does not support it. If X.509 doesn't appear as a provider type, contact
-  your system administrator. For Codex, use an OIDC token or SPIFFE JWT-SVID and
-  follow the [Codex workload identity
-  guide](https://developers.openai.com/codex/enterprise/workload-identity).
+X.509 workload identity federation is available for the OpenAI API. Codex does
+  not support it. For Codex, use an OIDC token or SPIFFE JWT-SVID and follow the
+  [Codex workload identity guide](https://developers.openai.com/codex/enterprise/workload-identity).
 
-For token exchange request and response details, see the [workload identity token exchange reference](https://developers.openai.com/api/reference/workload-identity-federation#exchange-an-x509-certificate). For Mutual TLS certificate requirements and supported API endpoints, see the [OpenAI Mutual TLS Beta Program](https://help.openai.com/en/articles/10876024-openai-mutual-tls-beta-program).
+For token exchange request and response details, see the [workload identity token exchange reference](https://developers.openai.com/api/reference/workload-identity-federation#exchange-an-x509-certificate). For Mutual TLS permissions, certificate requirements, activation, mTLS hosts, and rotation, see the [Mutual TLS guide](https://developers.openai.com/api/docs/guides/mutual-tls).
 
 ## How it works
 
@@ -17608,7 +17749,6 @@ The bearer token and the certificate are authorized independently on the API req
 
 You need:
 
-- Access to the X.509 workload identity federation beta for your organization.
 - Permission to manage Mutual TLS certificates and Workload Identity Providers for your organization.
 - A project and service account for the workload.
 - A client certificate, its private key, and any intermediate certificates required to build a path to your trusted root.
@@ -17620,13 +17760,18 @@ Keep private keys outside source control and restrict access to the workload tha
 
 X.509 Workload Identity Providers reuse your organization's existing Mutual TLS certificate configuration. They don't upload certificates or maintain a separate certificate trust store.
 
-Follow the [OpenAI Mutual TLS Beta Program](https://help.openai.com/en/articles/10876024-openai-mutual-tls-beta-program) to review CA certificate requirements, supported endpoints, certificate activation behavior, and client configuration. Then open [Organization settings > Security > Mutual TLS](https://platform.openai.com/settings/organization/security/mtls), upload the trusted CA certificate in PEM format, and activate it for the organization or for each project that will use X.509 workload identity federation.
+Follow the [Mutual TLS guide](https://developers.openai.com/api/docs/guides/mutual-tls) to review certificate
+requirements, mTLS hosts, certificate activation behavior, CEL filters, and
+client configuration. Then open [Organization settings > Security > Mutual
+TLS](https://platform.openai.com/settings/organization/security/mtls), upload
+the trusted certificate in PEM format, and activate it for the organization or
+for each project that will use X.509 workload identity federation.
 
-If your client certificate chains through an intermediate certificate, configure the stable trust anchor and present the leaf followed by the current intermediate certificates during the TLS handshake. OpenAI uses intermediates provided by the request and doesn't retrieve missing intermediates from certificate URLs. The Mutual TLS beta article documents the current chain-support and endpoint restrictions.
+If your client certificate chains through an intermediate certificate, configure the stable trust anchor and present the leaf followed by the current intermediate certificates during the TLS handshake. OpenAI uses intermediates provided by the request and doesn't retrieve missing intermediates from certificate URLs.
 
 ## Configure an X.509 provider
 
-After X.509 workload identity federation is enabled for your organization:
+To configure an X.509 provider:
 
 1. Open [Organization settings > Security > Workload Identity Provider](https://platform.openai.com/settings/organization/security/workload-identity-provider), then select **Create identity provider**.
 2. Choose **X.509** for **Provider type**, then enter a name and optional description. X.509 providers don't use OIDC issuer, audience, discovery, or JWKS settings. You can't change the provider type after you create it.
@@ -17661,7 +17806,7 @@ assertion.subject.organizational_unit == "Production"
 
 1. From the X.509 provider details page, select **Create mapping**.
 2. Select the target project and service account, and grant only the API permissions the workload needs.
-3. In the **Key** and **Value** fields, require an exact `openai.subject` value. X.509 mappings support either no assertions, represented as an empty object (`{}`), or assertions whose keys start with `openai.`. During the beta, don't leave the assertions empty.
+3. In the **Key** and **Value** fields, require an exact `openai.subject` value. X.509 mappings support either no assertions, represented as an empty object (`{}`), or assertions whose keys start with `openai.`.
 4. Select **Create**.
 
 For example:
@@ -17748,12 +17893,12 @@ Rotating an intermediate certificate doesn't require changing the configured roo
 
 X.509 token exchange returns generic OAuth errors and doesn't expose certificate, root, provider, or mapping details.
 
-| Result                  | Typical causes                                                                                                                                                                                            |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| HTTP `403`              | The request used a method or path other than exact `POST /oauth/token` on `mtls.auth.openai.com`.                                                                                                         |
-| `invalid_subject_token` | The TLS client certificate is missing or invalid, the presented chain can't reach an active root, the certificate is outside its validity period, or a Mutual TLS certificate-admission rule rejects it.  |
-| `invalid_grant`         | The X.509 flow isn't enabled, the provider or mapping is invalid or disabled, a provider **Attribute conditions** expression rejects the identity, no applicable roots are active, or no mapping matches. |
-| Server error            | OpenAI returned a temporary server error. Retry according to your normal transient-error policy.                                                                                                          |
+| Result                  | Typical causes                                                                                                                                                                                           |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| HTTP `403`              | The request used a method or path other than exact `POST /oauth/token` on `mtls.auth.openai.com`.                                                                                                        |
+| `invalid_subject_token` | The TLS client certificate is missing or invalid, the presented chain can't reach an active root, the certificate is outside its validity period, or a Mutual TLS certificate-admission rule rejects it. |
+| `invalid_grant`         | The provider or mapping is invalid or disabled, a provider **Attribute conditions** expression rejects the identity, no applicable roots are active, or no mapping matches.                              |
+| Server error            | OpenAI returned a temporary server error. Retry according to your normal transient-error policy.                                                                                                         |
 
 An X.509 exchange never falls back to an OIDC or ordinary OAuth flow.
 
@@ -22835,6 +22980,25 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+ResponseResult response = await client.CreateResponseAsync(
+    "gpt-5.6",
+    [
+        ResponseItem.CreateUserMessageItem("Knock knock."),
+        ResponseItem.CreateAssistantMessageItem("Who's there?"),
+        ResponseItem.CreateUserMessageItem("Orange."),
+    ]
+);
+
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -23042,6 +23206,44 @@ client
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+List<ResponseItem> history =
+[
+    ResponseItem.CreateUserMessageItem("Tell me a joke."),
+];
+
+CreateResponseOptions options = new("gpt-5.6", history)
+{
+    StoredOutputEnabled = false,
+    IncludedProperties =
+    {
+        IncludedResponseProperty.ReasoningEncryptedContent,
+    },
+};
+ResponseResult first = await client.CreateResponseAsync(options);
+Console.WriteLine(first.GetOutputText());
+
+history.AddRange(first.OutputItems);
+history.Add(ResponseItem.CreateUserMessageItem("Tell me another."));
+
+options = new("gpt-5.6", history)
+{
+    StoredOutputEnabled = false,
+    IncludedProperties =
+    {
+        IncludedResponseProperty.ReasoningEncryptedContent,
+    },
+};
+ResponseResult second = await client.CreateResponseAsync(options);
+Console.WriteLine(second.GetOutputText());
 ```
 
 ```ruby
@@ -23294,6 +23496,27 @@ second.output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+ResponseResult first = await client.CreateResponseAsync(
+    "gpt-5.6",
+    "Tell me a joke."
+);
+Console.WriteLine(first.GetOutputText());
+
+ResponseResult second = await client.CreateResponseAsync(
+    "gpt-5.6",
+    "Explain why this is funny.",
+    previousResponseId: first.Id
+);
+Console.WriteLine(second.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -23433,6 +23656,27 @@ second.output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+ResponseResult first = await client.CreateResponseAsync(
+    "gpt-5.6",
+    "Tell me a joke."
+);
+Console.WriteLine(first.GetOutputText());
+
+ResponseResult second = await client.CreateResponseAsync(
+    "gpt-5.6",
+    "Explain why this is funny.",
+    previousResponseId: first.Id
+);
+Console.WriteLine(second.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -23461,9 +23705,12 @@ The connection-local cache keeps recent previous responses in memory for low-lat
 
 
 
-  Data retention for model responses
+  
 
-Response objects are saved for 30 days by default. They can be viewed in the dashboard 
+##### Data retention for model responses
+
+
+      Response objects are saved for 30 days by default. They can be viewed in the dashboard 
       [logs](https://platform.openai.com/logs?api=responses) page or 
       [retrieved](https://developers.openai.com/api/reference/resources/responses/methods/retrieve) via the API. 
       You can disable this behavior by setting `store` to `false`
@@ -23472,6 +23719,9 @@ Response objects are saved for 30 days by default. They can be viewed in the das
       Conversation objects and items in them are not subject to the 30 day TTL. Any response attached to a conversation will have its items persisted with no 30 day TTL.
 
       OpenAI does not use data sent via API to train our models without your explicit consent—[learn more](https://developers.openai.com/api/docs/guides/your-data).
+  
+
+
 
 
 
@@ -26301,7 +26551,11 @@ A recommended workflow is as follows:
 
 Before launching in production, review and follow the following safety information.
 
-How we assess for safety
+
+
+### How we assess for safety
+
+
 
 Once a fine-tuning job is completed, we assess the resulting model’s behavior across 13 distinct safety categories. Each category represents a critical area where AI outputs could potentially cause harm if not properly controlled.
 
@@ -26323,11 +26577,23 @@ Once a fine-tuning job is completed, we assess the resulting model’s behavior 
 
 Each category has a predefined pass threshold; if too many evaluated examples in a given category fail, OpenAI blocks the fine-tuned model from deployment. If your fine-tuned model does not pass the safety checks, OpenAI sends a message in the fine-tuning job explaining which categories don't meet the required thresholds. You can view the results in the moderation checks section of the fine-tuning job.
 
-How to pass safety checks
+
+
+
+
+
+
+### How to pass safety checks
+
+
 
 In addition to reviewing any failed safety checks in the fine-tuning job object, you can retrieve details about which categories failed by querying the [fine-tuning API events endpoint](https://platform.openai.com/docs/api-reference/fine-tuning/list-events). Look for events of type `moderation_checks` for details about category results and enforcement. This information can help you narrow down which categories to target for retraining and improvement. The [model spec](https://cdn.openai.com/spec/model-spec-2024-05-08.html#overview) has rules and examples that can help identify areas for additional training data.
 
 While these evaluations cover a broad range of safety categories, conduct your own evaluations of the fine-tuned model to ensure it's appropriate for your use case.
+
+
+
+
 
 ## Next steps
 
@@ -26361,6 +26627,7 @@ This guide includes an overview on error codes you might see from both the [API]
 
 | Code                                                             | Overview                                                                                                                                                                                                                                                                                          |
 | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 400 - Invalid `service_tier` argument                            | **Cause:** The requested or resolved service tier is not allowed for the project. <br /> **Solution:** Set `service_tier` to a tier allowed for the project, or update the allowed service tiers in [project settings](https://platform.openai.com/settings/).                                    |
 | 401 - Invalid Authentication                                     | **Cause:** Invalid Authentication <br /> **Solution:** Ensure the correct [API key](https://platform.openai.com/settings/organization/api-keys) and requesting organization are being used.                                                                                                       |
 | 401 - Incorrect API key provided                                 | **Cause:** The requesting API key is not correct. <br /> **Solution:** Ensure the API key used is correct, clear your browser cache, or [generate a new one](https://platform.openai.com/settings/organization/api-keys).                                                                         |
 | 401 - You must be a member of an organization to use the API     | **Cause:** Your account is not part of an organization. <br /> **Solution:** Contact us to get added to a new organization or ask your organization manager to [invite you to an organization](https://platform.openai.com/settings/organization/people).                                         |
@@ -26386,7 +26653,29 @@ If you are using [the Responses API WebSocket mode](https://developers.openai.co
 - `previous_response_not_found`: The `previous_response_id` cannot be resolved from available state. Retry with full input context and `previous_response_id` set to `null`.
 - `websocket_connection_limit_reached`: The connection hit the 60-minute limit. Open a new WebSocket connection and continue.
 
-401 - Invalid Authentication
+
+
+### 400 - Invalid service_tier argument
+
+
+The API returns the message "Invalid service_tier argument: The requested service tier is not allowed for this project." as an `invalid_request_error` with `error.param` set to `service_tier` when a request selects or resolves to a service tier that is not allowed for the project.
+
+Project restrictions apply to the `default`, `flex`, and `priority` service tiers. The `fast` service tier is evaluated as `priority`. Requests that omit `service_tier` or set it to `auto` can also return this error if they resolve to a disallowed tier. Scale Tier remains outside this project policy.
+
+To resolve this error:
+
+- Check the allowed service tiers in [project settings](https://platform.openai.com/settings/).
+- Set `service_tier` to a tier allowed for the project.
+- If the request uses `auto` or omits `service_tier`, update the project settings so the resolved tier is allowed.
+
+
+
+
+
+
+
+### 401 - Invalid Authentication
+
 
 This error message indicates that your authentication credentials are invalid. This could happen for several reasons, such as:
 
@@ -26399,7 +26688,14 @@ To resolve this error, please follow these steps:
 - Check that you are using the correct API key and organization ID in your request header. You can find your API key and organization ID in [your account settings](https://platform.openai.com/settings/organization/api-keys) or your can find specific project related keys under [General settings](https://platform.openai.com/settings/organization/general) by selecting the desired project.
 - If you are unsure whether your API key is valid, you can [generate a new one](https://platform.openai.com/settings/organization/api-keys). Make sure to replace your old API key with the new one in your requests and follow our [best practices guide](https://help.openai.com/en/articles/5112595-best-practices-for-api-key-safety).
 
-401 - Incorrect API key provided
+
+
+
+
+
+
+### 401 - Incorrect API key provided
+
 
 This error message indicates that the API key you are using in your request is not correct. This could happen for several reasons, such as:
 
@@ -26414,7 +26710,14 @@ To resolve this error, please follow these steps:
 - Check that you are using the correct API key in your request header.
 - If you are unsure whether your API key is correct, you can [generate a new one](https://platform.openai.com/settings/organization/api-keys). Make sure to replace your old API key in your codebase and follow our [best practices guide](https://help.openai.com/en/articles/5112595-best-practices-for-api-key-safety).
 
-401 - You must be a member of an organization to use the API
+
+
+
+
+
+
+### 401 - You must be a member of an organization to use the API
+
 
 This error message indicates that your account is not part of an organization. This could happen for several reasons, such as:
 
@@ -26429,13 +26732,27 @@ To resolve this error, please follow these steps:
 - Existing organization owners can invite you to join their organization via the [Team page](https://platform.openai.com/settings/organization/people) or can create a new project from the [Settings page](https://platform.openai.com/settings/organization/general).
 - If you have left or been removed from a previous project, you can ask your organization or project owner to add you to it, or create a new one.
 
-429 - Credit balance exhausted
+
+
+
+
+
+
+### 429 - Credit balance exhausted
+
 
 The `credit_balance_exhausted` error indicates that your organization's prepaid credit balance is depleted.
 
 To restore API access, [add credits in your billing settings](https://platform.openai.com/settings/organization/billing).
 
-429 - Rate limit reached for requests
+
+
+
+
+
+
+### 429 - Rate limit reached for requests
+
 
 This error message indicates that you have hit your assigned rate limit for the API. This means that you have submitted too many tokens or requests in a short period of time and have exceeded the number of requests allowed. This could happen for several reasons, such as:
 
@@ -26452,25 +26769,53 @@ To resolve this error, please follow these steps:
 - If you are using a free or low-tier plan, consider upgrading to a pay-as-you-go plan that offers a higher rate limit. You can compare the restrictions of each plan in our [rate limit guide](https://developers.openai.com/api/docs/guides/rate-limits).
 - Reach out to your organization owner to increase the rate limits on your project
 
-429 - Organization spend limit reached
+
+
+
+
+
+
+### 429 - Organization spend limit reached
+
 
 The `organization_spend_limit_exceeded` error indicates that your organization reached its enforced monthly [spend limit](https://developers.openai.com/api/docs/guides/spend-limits). The limit applies to API traffic across all projects in the organization.
 
 To restore API access, increase or remove the limit in your [organization limit settings](https://platform.openai.com/settings/organization/limits). Otherwise, access resumes after the monthly limit resets.
 
-429 - Project spend limit reached
+
+
+
+
+
+
+### 429 - Project spend limit reached
+
 
 The `project_spend_limit_exceeded` error indicates that your project reached its enforced monthly [spend limit](https://developers.openai.com/api/docs/guides/spend-limits). Other projects can continue unless their own limit or the organization limit is also reached.
 
 To restore API access, increase or remove the limit in your [project settings](https://platform.openai.com/settings/). Otherwise, access resumes after the monthly limit resets.
 
-429 - Organization usage limit reached
+
+
+
+
+
+
+### 429 - Organization usage limit reached
+
 
 The `organization_usage_limit_exceeded` error indicates that your organization reached its OpenAI-assigned monthly [usage limit](https://developers.openai.com/api/docs/guides/rate-limits#usage-tiers). This limit is separate from organization and project spend limits that you configure.
 
 To restore API access, request a higher [approved usage limit](https://platform.openai.com/settings/organization/limits) or [contact support](https://help.openai.com/).
 
-503 - The engine is currently overloaded, please try again later
+
+
+
+
+
+
+### 503 - The engine is currently overloaded, please try again later
+
 
 This error message indicates that our servers are experiencing high traffic and are unable to process your request at the moment. This could happen for several reasons, such as:
 
@@ -26484,7 +26829,14 @@ To resolve this error, please follow these steps:
 - Check our [status page](https://status.openai.com/) for any updates or announcements regarding our services and servers.
 - If you are still getting this error after a reasonable amount of time, please contact us for further assistance. We apologize for any inconvenience and appreciate your patience and understanding.
 
-503 - Slow Down
+
+
+
+
+
+
+### 503 - Slow Down
+
 
 This error can occur with Pay-As-You-Go models, which are shared across all OpenAI users. It indicates that your traffic has significantly increased, overloading the model and triggering temporary throttling to maintain service stability.
 
@@ -26493,6 +26845,10 @@ To resolve this error, please follow these steps:
 - Reduce your request rate to its original level, keep it stable for at least 15 minutes, and then gradually ramp it up.
 - Maintain a consistent traffic pattern to minimize the likelihood of throttling. You should rarely encounter this error if your request volume remains steady.
 - Consider upgrading to the [Scale Tier](https://openai.com/api-scale-tier/) for guaranteed capacity and performance, ensuring more reliable access during peak demand periods.
+
+
+
+
 
 ## Python library error types
 
@@ -26509,7 +26865,10 @@ To resolve this error, please follow these steps:
 | RateLimitError           | **Cause:** You have hit your assigned rate limit. <br /> **Solution:** Pace your requests and follow `Retry-After` when it's present. Each official SDK already honors this header for eligible retries. Read more in our [Rate limit guide](https://developers.openai.com/api/docs/guides/rate-limits).                                                                                                                                                              |
 | UnprocessableEntityError | **Cause:** Unable to process the request despite the format being correct. <br /> **Solution:** Please try the request again.                                                                                                                                                                                                                                                                                                            |
 
-APIConnectionError
+
+
+### APIConnectionError
+
 
 An `APIConnectionError` indicates that your request could not reach our servers or establish a secure connection. This could be due to a network issue, a proxy configuration, an SSL certificate, or a firewall rule.
 
@@ -26522,7 +26881,14 @@ If you encounter an `APIConnectionError`, please try the following steps:
 - If appropriate, check that your container has the correct permissions to send and receive traffic.
 - If the issue persists, check out our persistent errors next steps section.
 
-APITimeoutError
+
+
+
+
+
+
+### APITimeoutError
+
 
 A `APITimeoutError` error indicates that your request took too long to complete and our server closed the connection. This could be due to a network issue, a heavy load on our services, or a complex request that requires more processing time.
 
@@ -26532,7 +26898,14 @@ If you encounter a `APITimeoutError` error, please try the following steps:
 - Check your network settings and make sure you have a stable and fast internet connection. You may need to switch to a different network, use a wired connection, or reduce the number of devices or applications using your bandwidth.
 - If the issue persists, check out our persistent errors next steps section.
 
-AuthenticationError
+
+
+
+
+
+
+### AuthenticationError
+
 
 An `AuthenticationError` indicates that your API key or token was invalid, expired, or revoked. This could be due to a typo, a formatting error, or a security breach.
 
@@ -26541,7 +26914,15 @@ If you encounter an `AuthenticationError`, please try the following steps:
 - Check your API key or token and make sure it is correct and active. You may need to generate a new key from the API Key dashboard, ensure there are no extra spaces or characters, or use a different key or token if you have multiple ones.
 - Ensure that you have followed the correct formatting.
 
-BadRequestError
+
+
+
+
+
+
+### BadRequestError
+
+
 
 An `BadRequestError` (formerly `InvalidRequestError`) indicates that your request was malformed or missing some required parameters, such as a token or an input. This could be due to a typo, a formatting error, or a logic error in your code.
 
@@ -26553,7 +26934,14 @@ If you encounter an `BadRequestError`, please try the following steps:
 - Test your request using a tool like Postman or curl and make sure it works as expected. You may need to debug your code and fix any errors or inconsistencies in your request logic.
 - If the issue persists, check out our persistent errors next steps section.
 
-InternalServerError
+
+
+
+
+
+
+### InternalServerError
+
 
 An `InternalServerError` indicates that something went wrong on our side when processing your request. This could be due to a temporary error, a bug, or a system outage.
 
@@ -26567,7 +26955,14 @@ If you encounter an `InternalServerError`, please try the following steps:
 
 Our support team will investigate the issue and get back to you as soon as possible. Note that our support queue times may be long due to high demand. You can also [post in our Community Forum](https://community.openai.com) but be sure to omit any sensitive information.
 
-RateLimitError
+
+
+
+
+
+
+### RateLimitError
+
 
 A `RateLimitError` indicates that you have hit your assigned rate limit. This means that you have sent too many tokens or requests in a given period of time, and our services have temporarily blocked you from sending more.
 
@@ -26578,6 +26973,10 @@ If you encounter a `RateLimitError`, please try the following steps:
 - Send fewer tokens or requests or slow down. You may need to reduce the frequency or volume of your requests, batch your tokens, or use exponential backoff when `Retry-After` isn't present. You can read our [Rate limit guide](https://developers.openai.com/api/docs/guides/rate-limits) for more details.
 - When `Retry-After` is present, wait at least as long as it specifies before retrying. The official Python library already honors this header for eligible retries.
 - You can also check your API usage statistics from your account dashboard.
+
+
+
+
 
 ### Persistent errors
 
@@ -28369,7 +28768,10 @@ When the model decides to use it, it will automatically call the tool, retrieve 
 
 Prior to using file search with the Responses API, you need to have set up a knowledge base in a vector store and uploaded files to it.
 
-Create a vector store and upload a file
+
+
+### Create a vector store and upload a file
+
 
 Follow these steps to create a vector store and upload a file to it. You can use [this example file](https://cdn.openai.com/API/docs/deep_research_blog.pdf) or upload your own.
 
@@ -28690,6 +29092,10 @@ puts(files.data&.map(&:status))
 ```
 
 
+
+
+
+
 Once your knowledge base is set up, you can include the `file_search` tool in the list of tools available to the model, along with the list of vector stores in which to search.
 
 File search tool
@@ -28776,11 +29182,12 @@ using OpenAI.Responses;
 #pragma warning disable OPENAI001
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string vectorStoreId = "<vector_store_id>";
 ResponsesClient client = new(key);
 
 CreateResponseOptions options = new() { Model = "gpt-5.6" };
 options.Tools.Add(
-    ResponseTool.CreateFileSearchTool(["<vector_store_id>"])
+    ResponseTool.CreateFileSearchTool([vectorStoreId])
 );
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem("What is deep research by OpenAI?")
@@ -29425,6 +29832,22 @@ var result =
 System.out.println(result.asTranscription().text());
 ```
 
+```csharp
+using OpenAI.Audio;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-transcribe";
+AudioClient client = new(model, key);
+
+await using FileStream audio = File.OpenRead("audio.wav");
+AudioTranscription transcription = await client.TranscribeAudioAsync(
+    audio,
+    "audio.wav"
+);
+
+Console.WriteLine(transcription.Text);
+```
+
 ```ruby
 require "openai"
 require "pathname"
@@ -29918,6 +30341,21 @@ var result =
 System.out.println(result.asTranslation().text());
 ```
 
+```csharp
+using OpenAI.Audio;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+AudioClient client = new("whisper-1", key);
+
+await using FileStream audio = File.OpenRead("german.wav");
+AudioTranslation translation = await client.TranslateAudioAsync(
+    audio,
+    "german.wav"
+);
+
+Console.WriteLine(translation.Text);
+```
+
 ```ruby
 require "openai"
 require "pathname"
@@ -30258,7 +30696,11 @@ For live audio from a microphone, call, or media stream, use the [Realtime trans
 
 If you use `whisper-1` for timestamps, subtitles, or translation, these techniques can improve recognition of uncommon words and acronyms. For new general-purpose transcription, start with `gpt-transcribe` and use [transcription context](#add-transcription-context) instead.
 
-Using the prompt parameter
+
+
+### Using the prompt parameter
+
+
 
 The first method involves using the optional prompt parameter to pass a dictionary of the correct spellings.
 
@@ -30388,7 +30830,15 @@ curl --request POST \
 
 While it increases reliability, this technique is limited to 224 tokens, so your list of SKUs needs to be relatively small for this to be a scalable solution.
 
-Post-processing with a text model
+
+
+
+
+
+
+### Post-processing with a text model
+
+
 
 The second method uses a text model to post-process the transcript.
 
@@ -31003,7 +31453,11 @@ If your application has many functions or large schemas, you can pair function c
 
 Let's begin by understanding a few key terms about tool calling. After we have a shared vocabulary for tool calling, we'll show you how it's done with some practical examples.
 
-Tools - functionality we give the model
+
+
+### Tools - functionality we give the model
+
+
 
 A **function** or **tool** refers in the abstract to a piece of functionality that we tell the model it has access to. As a model generates a response to a prompt, it may decide that it needs data or functionality provided by a tool to follow the prompt's instructions.
 
@@ -31017,13 +31471,29 @@ Or anything else you'd like the model to be able to know or do as it responds to
 
 When we make an API request to the model with a prompt, we can include a list of tools the model could consider using. For example, if we wanted the model to be able to answer questions about the current weather somewhere in the world, we might give it access to a `get_weather` tool that takes `location` as an argument.
 
-Tool calls - requests from the model to use tools
+
+
+
+
+
+
+### Tool calls - requests from the model to use tools
+
+
 
 A **function call** or **tool call** refers to a special kind of response we can get from the model if it examines a prompt, and then determines that in order to follow the instructions in the prompt, it needs to call one of the tools we made available to it.
 
 If the model receives a prompt like "what is the weather in Paris?" in an API request, it could respond to that prompt with a tool call for the `get_weather` tool, with `Paris` as the `location` argument.
 
-Tool call outputs - output we generate for the model
+
+
+
+
+
+
+### Tool call outputs - output we generate for the model
+
+
 
 A **function call output** or **tool call output** refers to the response a tool generates using the input from a model's tool call. The tool call output can either be structured JSON or plain text, and it should contain a reference to a specific model tool call (referenced by `call_id` in the examples to come).
 To complete our weather example:
@@ -31038,11 +31508,23 @@ We then send all of the tool definition, the original prompt, the model's tool c
 The weather in Paris today is 25C.
 ```
 
-Functions versus tools
+
+
+
+
+
+
+### Functions versus tools
+
+
 
 - A function is a specific kind of tool, defined by a JSON schema. A function definition allows the model to pass data to your application, where your code can access data or take actions suggested by the model.
 - In addition to function tools, there are custom tools (described in this guide) that work with free text inputs and outputs.
 - There are also [built-in tools](https://developers.openai.com/api/docs/guides/tools) that are part of the OpenAI platform. These tools enable the model to [search the web](https://developers.openai.com/api/docs/guides/tools-web-search), [execute code](https://developers.openai.com/api/docs/guides/tools-code-interpreter), access the functionality of an [MCP server](https://developers.openai.com/api/docs/guides/tools-connectors-mcp), and more.
+
+
+
+
 
 ### The tool calling flow
 
@@ -33351,7 +33833,11 @@ The sample namespace will be populated with variables from the model sampling st
 
 For example, to access the model output content as a string, `{{ sample.output_text }}` can be used within the grader.
 
-Details on grading tool calls
+
+
+#### Details on grading tool calls
+
+
 
 When training a model to improve tool-calling behavior, you will need to write your grader to operate over the `sample.output_tools` variable. The contents of this variable will be the same as the contents of the `response.choices[0].message.tool_calls` ([see function calling docs](https://developers.openai.com/api/docs/guides/function-calling?api-mode=chat)).
 
@@ -33383,6 +33869,10 @@ A common way of grading tool calls is to use two graders, one that checks the na
 This is a `multi` grader that combined two simple `string_check` graders, the first checks the name of the tool called via the `sample.output_tools[0].function.name` variable, and the second checks the arguments of the called function via the `sample.output_tools[0].function.arguments` variable. The `calculate_output` field is used to combine the two scores into a single score.
 
 The `arguments` grader is prone to under-rewarding the model if the function arguments are subtly incorrect, like if `1` is submitted instead of the floating point `1.0`, or if a state name is given as an abbreviation instead of spelling it out. To avoid this, you can use a `text_similarity` grader instead of a `string_check` grader, or a `score_model` grader to have a LLM check for semantic similarity.
+
+
+
+
 
 ## String check graders
 
@@ -34253,6 +34743,21 @@ var images =
 Files.write(
     Path.of("generated-image.png"),
     Base64.getDecoder().decode(images.data().orElseThrow().get(0).b64Json().orElseThrow()));
+```
+
+```csharp
+using OpenAI.Images;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-image-2";
+ImageClient client = new(model, key);
+
+GeneratedImage image = await client.GenerateImageAsync(
+    "A children's book drawing of a veterinarian using a stethoscope to "
+        + "listen to the heartbeat of a baby otter."
+);
+
+await File.WriteAllBytesAsync("otter.png", image.ImageBytes.ToArray());
 ```
 
 ```ruby
@@ -38604,6 +39109,37 @@ String imageResult =
 Files.write(Path.of("cat_and_otter.png"), Base64.getDecoder().decode(imageResult));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        "Generate an image of a gray tabby cat hugging an otter with an orange scarf."
+    )
+);
+options.Tools.Add(
+    ResponseTool.CreateImageGenerationTool(model: "gpt-image-2")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+ImageGenerationCallResponseItem image = response
+    .OutputItems.OfType<ImageGenerationCallResponseItem>()
+    .FirstOrDefault()
+    ?? throw new InvalidOperationException("No generated image was returned.");
+await File.WriteAllBytesAsync(
+    "cat_and_otter.png",
+    image.ImageResultBytes.ToArray()
+);
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -39577,10 +40113,14 @@ D. Apply a multiplier based on the model to get the total tokens:
 
 | Model           | Multiplier |
 | --------------- | ---------- |
-| `gpt-5.4-mini`  | 1.62       |
-| `gpt-5.4-nano`  | 2.46       |
-| `gpt-5-mini`    | 1.62       |
-| `gpt-5-nano`    | 2.46       |
+| `gpt-5.6-sol`   | 1.2        |
+| `gpt-5.6-terra` | 1.2        |
+| `gpt-5.6-luna`  | 1.2        |
+| `gpt-5.5`       | 1.2        |
+| `gpt-5.4-mini`  | 1.2        |
+| `gpt-5.4-nano`  | 1.2        |
+| `gpt-5-mini`    | 1.2        |
+| `gpt-5-nano`    | 1.5        |
 | `gpt-4.1-mini*` | 1.62       |
 | `gpt-4.1-nano*` | 2.46       |
 | `o4-mini`       | 1.72       |
@@ -40224,7 +40764,11 @@ Below are the prompts used in each part of the diagram. While they are still onl
 Places where you see placeholders like "**[user input here]**" represent
   dynamic portions, that would be replaced by actual data at runtime.
 
-Query contextualization prompt
+
+
+#### Query contextualization prompt
+
+
 
 Re-writes user query to be a self-contained search query.
 
@@ -40246,7 +40790,14 @@ Response: "How long does the return policy cover?"
 USER: [JSON-formatted input conversation here]
 ```
 
-Retrieval check prompt
+
+
+
+
+
+
+#### Retrieval check prompt
+
 
 Determines whether a query requires performing retrieval to respond.
 
@@ -40264,7 +40815,14 @@ Response: "false"
 USER: [input user query here]
 ```
 
-Assistant prompt
+
+
+
+
+
+
+#### Assistant prompt
+
 
 Fills the fields of a JSON to reason through a pre-defined set of steps to produce a final response given a user conversation and relevant retrieved information.
 
@@ -40298,6 +40856,10 @@ USER: # Relevant Information
 USER: [input user query here]
 ```
 
+
+
+
+
 ### Analysis and optimizations
 
 #### Part 1: Looking at retrieval prompts
@@ -40310,7 +40872,11 @@ In this case, since the check for retrieval requires the contextualized query, l
 
 ![Assistants object architecture diagram](https://cdn.openai.com/API/docs/images/diagram-latency-customer-service-3.png)
 
-Combined query contextualization and retrieval check prompt
+
+
+##### Combined query contextualization and retrieval check prompt
+
+
 
 **What changed?** Before, we had one prompt to re-write the query and one to determine whether this requires doing a retrieval lookup. Now, this combined prompt does both. Specifically, notice the updated instruction in the first line of the prompt, and the updated output JSON:
 
@@ -40360,6 +40926,10 @@ Response: {query: "Thank you!", retrieval: "false"}
 
 USER: [JSON-formatted input conversation here]
 ```
+
+
+
+
 
 
 
@@ -40422,7 +40992,11 @@ The conclusion will vary by case, and the best way to make the determination is 
 
 **Note:** We'll be grouping `response` and `enough_information_in_context` together in the second prompt to avoid passing the retrieved context to both new prompts.
 
-Assistants prompt - reasoning
+
+
+##### Assistants prompt - reasoning
+
+
 
 This prompt will be passed to GPT-3.5 and can be fine-tuned on curated examples.
 
@@ -40449,7 +41023,15 @@ Assistant Response:
   "user_requesting_to_talk_to_human": "False",
 }
 ```
-Assistants prompt - response
+
+
+
+
+
+
+##### Assistants prompt - response
+
+
 
 This prompt will be processed by GPT-4 and will receive the reasoning steps determined in the prior prompt, as well as the results from retrieval.
 
@@ -40481,6 +41063,10 @@ USER: # Relevant Information
 [retrieved context]
 ` ` `
 ```
+
+
+
+
 
 
 
@@ -42793,14 +43379,14 @@ options.Tools.Add(
     )
 );
 
-// STEP 1: Create a response that requests tool-call approval.
+// Step 1: Create a response that requests tool-call approval.
 options.InputItems.Add(ResponseItem.CreateUserMessageItem("Roll 2d4+1"));
 ResponseResult response1 = await client.CreateResponseAsync(options);
 
 McpToolCallApprovalRequestItem approvalRequest =
     response1.OutputItems.OfType<McpToolCallApprovalRequestItem>().Single();
 
-// STEP 2: Approve the tool call and get the final response.
+// Step 2: Approve the tool call and get the final response.
 options.PreviousResponseId = response1.Id;
 options.InputItems.Clear();
 options.InputItems.Add(
@@ -43435,9 +44021,12 @@ An MCP tool call from a Connector will look the same as an MCP tool call from a 
 
 The available tools depend on which scopes your OAuth token has available to it. Expand the tables below to see what tools you can use when connecting to each application.
 
-Dropbox
 
-<table>
+
+#### Dropbox
+
+
+  <table>
     <tr>
       <th>Tool</th>
       <th>Description</th>
@@ -43475,9 +44064,15 @@ Dropbox
     </tr>
   </table>
 
-Gmail
 
-<table>
+
+
+
+
+#### Gmail
+
+
+  <table>
     <tr>
       <th>Tool</th>
       <th>Description</th>
@@ -43515,9 +44110,15 @@ Gmail
     </tr>
   </table>
 
-Google Calendar
 
-<table>
+
+
+
+
+#### Google Calendar
+
+
+  <table>
     <tr>
       <th>Tool</th>
       <th>Description</th>
@@ -43550,9 +44151,15 @@ Google Calendar
     </tr>
   </table>
 
-Google Drive
 
-<table>
+
+
+
+
+#### Google Drive
+
+
+  <table>
     <tr>
       <th>Tool</th>
       <th>Description</th>
@@ -43585,9 +44192,15 @@ Google Drive
     </tr>
   </table>
 
-Microsoft Teams
 
-<table>
+
+
+
+
+#### Microsoft Teams
+
+
+  <table>
     <tr>
       <th>Tool</th>
       <th>Description</th>
@@ -43615,9 +44228,15 @@ Microsoft Teams
     </tr>
   </table>
 
-Outlook Calendar
 
-<table>
+
+
+
+
+#### Outlook Calendar
+
+
+  <table>
     <tr>
       <th>Tool</th>
       <th>Description</th>
@@ -43650,9 +44269,15 @@ Outlook Calendar
     </tr>
   </table>
 
-Outlook Email
 
-<table>
+
+
+
+
+#### Outlook Email
+
+
+  <table>
     <tr>
       <th>Tool</th>
       <th>Description</th>
@@ -43690,9 +44315,15 @@ Outlook Email
     </tr>
   </table>
 
-Sharepoint
 
-<table>
+
+
+
+
+#### Sharepoint
+
+
+  <table>
     <tr>
       <th>Tool</th>
       <th>Description</th>
@@ -43724,6 +44355,9 @@ Sharepoint
       <td>User.Read</td>
     </tr>
   </table>
+
+
+
 
 ## Defer loading tools in an MCP server
 
@@ -44698,6 +45332,36 @@ response.output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Chat;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-5.6";
+
+ChatClient chat = new(model, key);
+
+ChatCompletion completion = await chat.CompleteChatAsync(
+    [
+        new SystemChatMessage("You are a helpful assistant."),
+        new UserChatMessage("Hello!"),
+    ]
+);
+Console.WriteLine(completion.Content[0].Text);
+
+ResponsesClient responses = new(key);
+
+ResponseResult response = await responses.CreateResponseAsync(
+    model,
+    [
+        ResponseItem.CreateSystemMessageItem("You are a helpful assistant."),
+        ResponseItem.CreateUserMessageItem("Hello!"),
+    ]
+);
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -44825,6 +45489,23 @@ client.chat().completions().create(params).choices().stream()
     .forEach(System.out::println);
 ```
 
+```csharp
+using OpenAI.Chat;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-5.6";
+ChatClient client = new(model, key);
+
+ChatCompletion completion = await client.CompleteChatAsync(
+    [
+        new SystemChatMessage("You are a helpful assistant."),
+        new UserChatMessage("Hello!"),
+    ]
+);
+
+Console.WriteLine(completion.Content[0].Text);
+```
+
 ```ruby
 require "openai"
 
@@ -44933,6 +45614,25 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    Instructions = "You are a helpful assistant.",
+};
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("Hello!"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby
@@ -45083,6 +45783,27 @@ var second =
 second.choices().stream()
     .flatMap(choice -> choice.message().content().stream())
     .forEach(System.out::println);
+```
+
+```csharp
+using OpenAI.Chat;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-5.6";
+ChatClient client = new(model, key);
+
+List<ChatMessage> messages =
+[
+    new SystemChatMessage("You are a helpful assistant."),
+    new UserChatMessage("What is the capital of France?"),
+];
+ChatCompletion first = await client.CompleteChatAsync(messages);
+
+messages.Add(new AssistantChatMessage(first));
+messages.Add(new UserChatMessage("And its population?"));
+ChatCompletion second = await client.CompleteChatAsync(messages);
+
+Console.WriteLine(second.Content[0].Text);
 ```
 
 ```ruby
@@ -45374,6 +46095,26 @@ second.output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+ResponseResult first = await client.CreateResponseAsync(
+    "gpt-5.6",
+    "What is the capital of France?"
+);
+ResponseResult second = await client.CreateResponseAsync(
+    "gpt-5.6",
+    "And its population?",
+    previousResponseId: first.Id
+);
+
+Console.WriteLine(second.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -45646,6 +46387,45 @@ client.chat().completions().create(params).choices().stream()
     .forEach(System.out::println);
 ```
 
+```csharp
+using OpenAI.Chat;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-5.6";
+ChatClient client = new(model, key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "age": { "type": "number", "minimum": 0, "maximum": 130 }
+      },
+      "required": ["name", "age"],
+      "additionalProperties": false
+    }
+    """
+);
+ChatCompletionOptions options = new()
+{
+    ReasoningEffortLevel = ChatReasoningEffortLevel.Medium,
+    ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
+        "person",
+        schema,
+        jsonSchemaIsStrict: true
+    ),
+};
+
+ChatCompletion completion = await client.CompleteChatAsync(
+    [new UserChatMessage("Jane, 54 years old")],
+    options
+);
+
+Console.WriteLine(completion.Content[0].Text);
+```
+
 ```ruby
 require "openai"
 
@@ -45861,6 +46641,47 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "age": { "type": "number", "minimum": 0, "maximum": 130 }
+      },
+      "required": ["name", "age"],
+      "additionalProperties": false
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "person",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Jane, 54 years old")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby
@@ -47241,6 +48062,23 @@ var moderation =
 System.out.println(moderation.results().get(0).flagged());
 ```
 
+```csharp
+using OpenAI.Moderations;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "omni-moderation-latest";
+ModerationClient client = new(model, key);
+
+ModerationResult result = await client.ClassifyTextAsync(
+    "Text to classify goes here."
+);
+
+Console.WriteLine($"Flagged: {result.Flagged}");
+Console.WriteLine(
+    $"Violence: {result.Violence.Flagged}; score: {result.Violence.Score:F3}"
+);
+```
+
 ```ruby
 require "openai"
 
@@ -47386,6 +48224,31 @@ var moderation =
                 .build());
 
 System.out.println(moderation.results().get(0).flagged());
+```
+
+```csharp
+using OpenAI.Moderations;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "omni-moderation-latest";
+ModerationClient client = new(model, key);
+
+ModerationResult result = await client.ClassifyInputsAsync(
+    [
+        ModerationInputPart.CreateTextPart("Text to classify goes here."),
+        ModerationInputPart.CreateImagePart(
+            new Uri(
+                "https://api.nga.gov/iiif/a2e6da57-3cd1-4235-b20e-95dcaefed6c8/full/!800,800/0/default.jpg"
+            )
+        ),
+    ]
+);
+
+Console.WriteLine($"Flagged: {result.Flagged}");
+Console.WriteLine(
+    $"Violence: {result.Violence.Flagged}; score: {result.Violence.Score:F3}; inputs: {result.Violence.ApplicableInputKinds}"
+);
 ```
 
 ```ruby
@@ -48571,6 +49434,253 @@ There are {max_concurrent_subagents + 1} available concurrency slots, meaning th
 
 ---
 
+# Mutual TLS
+
+Mutual TLS (mTLS) adds TLS client certificate verification to OpenAI API
+requests. After you activate a trusted certificate for an organization or
+project, requests in that scope must present an accepted client certificate in
+addition to their normal bearer credential.
+
+Use mTLS when a workload can securely hold a client private key and you want
+OpenAI to verify its certificate identity before authorizing an API request.
+mTLS does not replace API keys, service-account credentials, or workload
+identity access tokens.
+
+X.509 workload identity federation uses the same active mTLS trust anchors.
+  The certificate exchange returns a short-lived bearer token, and later API
+  calls still send that bearer token plus an accepted API mTLS certificate. See
+  [Configure workload identity federation with X.509
+  certificates](https://developers.openai.com/api/docs/guides/workload-identity-federation/x509).
+
+## Before you configure mTLS
+
+Any API organization can manage mTLS through normal role-based access control
+(RBAC):
+
+- `api.mtls.read` lets a principal list, view, and test certificate settings.
+- `api.mtls.write` lets a principal upload, update, activate, deactivate, and
+  delete certificates.
+
+The organization owner role includes these permissions, but you can grant them
+through a custom role. For more information, see [Manage permissions in the
+OpenAI platform](https://developers.openai.com/api/docs/guides/rbac).
+
+Prepare:
+
+- A client certificate and its private key for each workload.
+- Any intermediate certificates needed to build a path from the client
+  certificate to your trust anchor.
+- A stable PEM-encoded trust anchor that you can activate at the organization
+  or project level.
+- A non-critical project and a tested recovery path before you enable mTLS for
+  production traffic.
+
+Keep private keys outside source control. Do not log private keys, certificate
+contents, or bearer credentials.
+
+## Upload and activate trust
+
+Upload stores a certificate but does not enforce mTLS. Activation is the step
+that changes request behavior.
+
+1. Open [Organization settings > Security > Mutual
+   TLS](https://platform.openai.com/settings/organization/security/mtls).
+2. Upload one PEM-encoded trust anchor for each certificate object. Give it a
+   name that identifies the authority and rotation generation.
+3. Optionally, add a [CEL filter](#filter-client-certificates-with-cel) that
+   constrains which verified client certificates that anchor can accept.
+4. Activate the certificate for a non-critical project first. Send
+   representative requests through an [mTLS API host](#use-an-mtls-host) from
+   every expected workload.
+5. Activate the certificate for other projects or for the organization
+   after validation succeeds.
+
+You can also manage certificates through the API:
+
+| Task                                        | Endpoint                                                                                                                                                                                                 |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Upload a certificate                        | `POST /v1/organization/certificates`                                                                                                                                                                     |
+| List organization certificates              | `GET /v1/organization/certificates`                                                                                                                                                                      |
+| Retrieve, update, or delete a certificate   | `GET`, `POST`, or `DELETE /v1/organization/certificates/{certificate_id}`                                                                                                                                |
+| Activate or deactivate for an organization  | `POST /v1/organization/certificates/activate` or `POST /v1/organization/certificates/deactivate`                                                                                                         |
+| List, activate, or deactivate for a project | `GET /v1/organization/projects/{project_id}/certificates`, `POST /v1/organization/projects/{project_id}/certificates/activate`, or `POST /v1/organization/projects/{project_id}/certificates/deactivate` |
+
+Use a credential with the required `api.mtls.read` or `api.mtls.write`
+permission. For request and response schemas, see the [organization
+certificates API reference](https://developers.openai.com/api/reference/resources/admin/subresources/organization).
+
+## Certificate requirements
+
+Use one PEM-encoded trust anchor per certificate object. The upload must
+contain a valid certificate that expires more than one day after upload. The
+client certificate must include an Authority Key Identifier (AKI) for request
+verification.
+
+For a request to pass mTLS:
+
+- The client certificate must be valid at request time and suitable for TLS
+  client authentication.
+- The client certificate must build a valid path to an active organization- or
+  project-level trust anchor.
+- If the path includes intermediate certificates, the client must present them
+  during the TLS handshake.
+- The configured trust anchor and the client chain must pass standard X.509
+  client-certificate path validation.
+
+If an upload contains more than one PEM-encoded certificate, request-chain
+verification uses only the first configured certificate as the anchor; do not
+rely on PEM-bundle semantics.
+
+OpenAI does not fetch missing intermediates from Authority Information Access
+(AIA) URLs and does not perform certificate revocation list (CRL) or Online
+Certificate Status Protocol (OCSP) checks. Present the complete required chain
+and manage incident response through certificate rotation, deactivation, and
+your own certificate lifecycle controls.
+
+## Understand verification order
+
+OpenAI checks active project-level certificates before active
+organization-level certificates. If neither scope has an active certificate,
+mTLS does not add a certificate check to the request.
+
+When an active certificate exists, OpenAI verifies client identity in this
+order:
+
+1. OpenAI first attempts the existing direct path, which verifies the client
+   certificate directly against an active anchor without request
+   intermediates.
+2. After an ordinary direct-path no-match, OpenAI tries request-chain
+   verification with the client certificate and the intermediate certificates
+   presented by the TLS connection.
+3. If a path verifies, OpenAI evaluates the active certificate's CEL filter, if
+   present, against the verified client certificate.
+
+Request-chain verification is available by default.
+
+The request-chain path is a fallback after an ordinary no-match, not a recovery
+path for every direct-path error. Missing or malformed certificate material, a
+missing AKI, or a deterministic error after the direct path selects an
+anchor can fail the request without trying the presented chain.
+
+## Filter client certificates with CEL
+
+Attach an optional Common Expression Language (CEL) filter to an uploaded
+certificate to constrain the verified client certificates that anchor accepts.
+The expression must evaluate to a boolean and runs against the verified client
+certificate on both the direct and request-chain paths.
+
+CEL exposes these fields:
+
+- `subject.common_name`, `subject.country_code`, `subject.organization`,
+  `subject.organizational_unit`, `subject.locality`, `subject.province`,
+  `subject.street_address`, and `subject.postal_code`.
+- `subject_alt_names`, a list whose entries expose `type`, `value`, and `oid`.
+  Supported SAN type identifiers are `DNS`, `EMAIL`, `IP_ADDRESS`, `URI`, and
+  `CUSTOM`.
+
+For example, require a production organizational unit and a DNS SAN in a
+specific namespace:
+
+```text
+subject.organizational_unit == "Production" &&
+subject_alt_names.exists(san, san.type == DNS && san.value.endsWith(".example.com"))
+```
+
+A certificate that verifies but does not match the filter fails with
+`certificate_attribute_verification_failed`. OpenAI rejects a policy that does not pass validation when you save it.
+
+## Use an mTLS host
+
+Send API traffic to an mTLS host instead of `api.openai.com`:
+
+| Host                     | Use                                   |
+| ------------------------ | ------------------------------------- |
+| `mtls.api.openai.com`    | Default API mTLS host.                |
+| `mtls-us.api.openai.com` | United States regional API mTLS host. |
+| `mtls-eu.api.openai.com` | EU regional API mTLS host.            |
+
+mTLS is host-based. Use the same `/v1` route you would call on the
+corresponding API surface, and test each API and model that your workload
+uses. Route and model availability can differ across regional hosts.
+
+For example, send a normal bearer credential and a client certificate to the
+default mTLS host:
+
+```bash
+export OPENAI_MTLS_CERT_CHAIN="/path/to/client-chain.pem"
+export OPENAI_MTLS_KEY="/path/to/client-key.pem"
+
+curl https://mtls.api.openai.com/v1/models \
+  --cert "$OPENAI_MTLS_CERT_CHAIN" \
+  --key "$OPENAI_MTLS_KEY" \
+  --header "Authorization: Bearer $OPENAI_API_KEY"
+```
+
+The certificate-chain file should contain the client certificate first,
+followed by any required intermediates. Do not send certificate material in
+HTTP headers or request bodies.
+
+X.509 workload identity federation uses a separate exact exchange endpoint:
+`POST https://mtls.auth.openai.com/oauth/token`. That exchange produces a
+short-lived bearer token; it does not provide certificate-only API authentication. For
+the complete request shape, see the [workload identity token exchange
+reference](https://developers.openai.com/api/reference/workload-identity-federation#exchange-an-x509-certificate).
+
+## Rotate certificates
+
+Rotate trust anchors with overlap so existing workloads keep working:
+
+1. Upload the new trust anchor without deactivating the old one.
+2. Activate the new anchor in each intended project or at the organization
+   level.
+3. Update workloads to present client certificates that chain to the new
+   anchor, then test each mTLS host and API surface they use.
+4. Deactivate the old anchor after all workloads have moved.
+5. Delete the old certificate only after you deactivate it for the organization
+   and every project.
+
+You can rotate intermediates without changing the configured trust anchor.
+Present the new complete chain on later requests.
+
+## Troubleshoot requests
+
+Use stable error codes to distinguish configuration errors from temporary
+service errors:
+
+| Error code                                  | What to check                                                                                                                           |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `certificate_required`                      | An active certificate applies, but the request did not present required client certificate material.                                    |
+| `invalid_certificate`                       | OpenAI cannot decode or parse the client certificate, or the certificate lacks the AKI required for verification.                       |
+| `certificate_verification_failed`           | The client certificate or presented chain does not reach an active trust anchor.                                                        |
+| `certificate_attribute_verification_failed` | The certificate path verified, but the CEL filter rejected the verified client certificate.                                             |
+| `authentication_temporarily_unavailable`    | A verifier timeout, internal dependency error, or CEL evaluator error caused HTTP `503`. Retry with your normal transient-error policy. |
+
+For management requests, `mtls_certificate_invalid` means the uploaded PEM
+did not pass validation, `expired_certificate` means it expires too soon or has
+expired, `mtls_cel_policy_invalid` means the filter does not pass validation, and
+`certificate_in_use` means you must deactivate the certificate before deleting
+it.
+
+## Current limitations
+
+- An organization can upload up to 50 certificate objects.
+- mTLS adds certificate verification to normal API authentication; it does not provide
+  certificate-only API authorization.
+- OpenAI does not fetch AIA intermediates and does not perform CRL or OCSP
+  checks.
+- Private Link is not compatible with mTLS. See [Private
+  Link](https://developers.openai.com/api/docs/guides/private-link) when you need a private Azure network
+  path instead.
+- The supported API mTLS hosts are `mtls.api.openai.com`,
+  `mtls-us.api.openai.com`, and `mtls-eu.api.openai.com`. Do not assume every
+  other regional API host has an mTLS counterpart.
+- X.509 workload identity federation does not return a refresh token and does
+  not use DPoP, a `cnf` claim, or a certificate-bound bearer token. See
+  [Configure workload identity federation with X.509
+  certificates](https://developers.openai.com/api/docs/guides/workload-identity-federation/x509).
+
+---
+
 # Node reference
 
 [Agent Builder](https://platform.openai.com/agent-builder) is a visual canvas for composing agentic workflows. Workflows are made up of nodes and connections that control the sequence and flow. Insert nodes, then configure and connect them to define the process you want your agents to follow.
@@ -49029,7 +50139,11 @@ To optimize your prompts, I’ll mostly lean on strategies from the [Prompt Engi
 
 These can be a little difficult to visualize, so we’ll run through an example where we test these out with a practical example. Let’s use gpt-4-turbo to correct Icelandic sentences to see how this can work.
 
-Prompt engineering for language corrections 
+
+
+##### Prompt engineering for language corrections 
+
+
 
 The [Icelandic Errors Corpus](https://repository.clarin.is/repository/xmlui/handle/20.500.12537/105) contains combinations of an Icelandic sentence with errors, and the corrected version of that sentence. We’ll use the baseline GPT-4 model to try to solve this task, and then apply different optimization techniques to see how we can improve the model’s performance.
 
@@ -49070,6 +50184,10 @@ The overall translation quality is better, showing an improvement to a Bleu scor
 This tells us that it is the **behavior** of the model that we need to optimize - it already has the knowledge that it needs to solve the problem, so providing many more examples may be the optimization we need.
 
 We’ll revisit this later in the paper to test how our more advanced optimization methods play with this use case.
+
+
+
+
 
 We’ve seen that prompt engineering is a great place to start, and that with the right tuning methods we can push the performance pretty far.
 
@@ -49183,7 +50301,11 @@ These techniques stack on top of each other - if your early evals show issues wi
 - **Teaching complex behavior** using extensive fine-tuning
 - Using RAG to **inject context**, more recent content or any other specialized context required for your use cases
 
-Using these tools to improve language translation
+
+
+#### Using these tools to improve language translation
+
+
 
 We’ll continue building on the Icelandic correction example we used above. We’ll test out the following approaches:
 
@@ -49224,6 +50346,10 @@ RAG actually **decreased** accuracy, dropping four points from our GPT-4 fine-tu
 This illustrates the point that you use the right optimization tool for the right job - each offers benefits and risks that we manage with evaluations and iterative changes. The behavior we witnessed in our evals and from what we know about this question told us that this is a behavior optimization problem where additional context will not necessarily help the model. This was borne out in practice - RAG actually confounded the model by giving it extra noise when it had already learned the task effectively through fine-tuning.
 
 We now have a model that should be close to production-ready, and if we want to optimize further we can consider a wider diversity and quantity of training examples.
+
+
+
+
 
 Now you should have an appreciation for RAG and fine-tuning, and when each is appropriate. The last thing you should appreciate with these tools is that once you introduce them there is a trade-off here in our speed to iterate:
 
@@ -50929,215 +52055,556 @@ Measure:
 
 # Prompt caching
 
-## Prompt caching fundamentals
+## Why prompt caching matters
 
-Model prompts often contain repetitive content, like system prompts and common instructions. OpenAI routes API requests to servers that recently processed the same prompt, making it faster and less expensive to reuse an exact prompt prefix than to process it from scratch. Prompt Caching works automatically for eligible requests, with no code changes required. It is enabled for all recent [models](https://developers.openai.com/api/docs/models), `gpt-4o` and newer.
+Prompt caching reuses work when requests share the same prompt prefix. This provides three main benefits:
 
-This guide describes how prompt caching works in detail, so that you can optimize your prompts for lower latency and cost.
+- **Compute-efficient:** Avoid recalculating a prompt prefix that the model has already processed.
+- **Cheaper input tokens:** Pay the model's reduced cached-input rate for reused tokens, discounted up to 90%.
+- **Faster:** Reduce the time spent processing input before the response starts.
 
-### Caching best practices
+Prompt caching is enabled by default for supported OpenAI models. Use the [Prompt Caching Dashboard](https://platform.openai.com/usage?usage_section=prompt-caching) to monitor cache read hit rates.
 
-Cache hits are only possible for exact prefix matches within a prompt. To realize caching benefits, place static content like instructions and examples at the beginning of your prompt, and put variable content, such as user-specific information, at the end. This also applies to images and tools, which must be identical between requests.
+## What is the prompt cache?
 
-- Keep instructions, tools, schemas, and shared context stable. Place request-specific content after the reusable prefix.
-- Set [`prompt_cache_key`](https://developers.openai.com/api/reference/resources/responses/methods/create#responses-create-prompt_cache_key) on requests that share long, common prompt prefixes. Reuse the same key for those requests to help improve cache hit rates.
-- Monitor cache reads with `cached_tokens`. On GPT-5.6 and later, use `cache_write_tokens` to compare cache-write costs with later cache reads.
+As the model processes input tokens, it calculates intermediate key-value (KV) states. These states let the model refer back to earlier tokens while processing new input and generating a response.
 
-![Prompt comparison showing a cache hit when prefixes match and a cache miss when early content differs](https://openaidevs.retool.com/api/file/8593d9bb-4edb-4eb6-bed9-62bfb98db5ee)
+Prompt caching preserves that state for a reusable prefix. When a later request has the same prefix and finds a matching cache entry, the model can reuse the saved state instead of processing those tokens again. It still needs to process any new input to generate a new response.
 
-### How prompt caching works
-
-By default, caching is enabled automatically for prompts that are 1,024 tokens or longer. When you make an API request, the following steps occur:
-
-1. **Cache routing**
-
-   Requests are routed to a machine based on `prompt_cache_key`, with a hash of the initial prefix of the prompt as a secondary key.
-
-2. **Cache lookup**
-
-   The system checks whether the initial portion (prefix) of your prompt exists in the cache on the selected machine.
-
-3. **Cache hit**
-
-   If a matching prefix is found, the system uses the cached result. This decreases latency and bills those tokens at the cached-input rate.
-
-4. **Cache miss**
-
-   If no matching prefix is found, the system processes your full prompt. When automatic caching is enabled, it may write an eligible prefix to cache on that machine for future requests.
-
-For GPT-5.6 and later, 1,024 tokens is a strict minimum. For earlier models,
-  the minimum varies by model from 1,024 to 2,048 tokens, so prompts just above
-  1,024 tokens may not cache consistently.
-
-### How caching differs by model
-
-| Behavior                   | GPT-5.6 and later                                       | Earlier models                                                      |
-| -------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------- |
-| Cache matching             | Exact matching at eligible cache breakpoints            | Automatic best-effort reuse of matching prefixes                    |
-| Explicit cache breakpoints | Supported. Implicit caching is also available.          | Not supported. Caching is automatic.                                |
-| Minimum cacheable prefix   | 1,024 tokens                                            | 1,024 to 2,048 tokens, depending on the model                       |
-| Cache write charges        | 1.25× the uncached input token rate                     | No additional cache-write fee                                       |
-| Cache lifetime             | 30-minute exact TTL set with `prompt_cache_options.ttl` | Model-dependent maximum retention set with `prompt_cache_retention` |
-
-For GPT-5.6 and later models, see [Prompt caching for GPT-5.6 and later models](#prompt-caching-for-gpt-56-and-later-models). For earlier models, see [Prompt caching for earlier models](#prompt-caching-for-earlier-models).
-
-## Prompt caching for GPT-5.6 and later models
-
-GPT-5.6 and later model families cache exact prompt prefixes at cache breakpoints. By default, the service places an implicit breakpoint at the latest user or tool message. Unlike earlier models, it does not automatically fall back to the longest matching unmarked prefix before that breakpoint.
-
-To improve cache reuse, identify the prompt content that stays the same across requests. Then choose a breakpoint that ends after that content and use a consistent `prompt_cache_key`.
-
-### How cache breakpoints work
-
-A cache breakpoint marks the end of a reusable prompt prefix. The prefix includes the marked content block and all prompt content rendered before it. Content after the breakpoint can change without invalidating that prefix.
-
-For a prefix to be eligible for caching, it must contain at least 1,024 tokens through the breakpoint. The minimum applies to the complete rendered prefix, not just the marked content block.
-
-**Cache writes and cache reads**
-
-A cache write creates an entry for an eligible prompt prefix. A cache read reuses an entry that an earlier request wrote.
-
-1. The first request writes an eligible prefix at a cache breakpoint.
-2. A later request can read that prefix when the content through an eligible breakpoint matches the earlier cache entry and the two requests share the same `prompt_cache_key`.
-3. A change before the breakpoint changes the prefix and will prevent a cache hit.
-4. A change after the breakpoint does not invalidate the earlier cached prefix.
-
-Repeated prompt content alone does not guarantee a cache hit. If no matching entry was written at an eligible breakpoint, the system cannot read that prefix from the cache.
-
-**When the default breakpoint works**
-
-Implicit caching works well when a conversation grows by appending new messages and the earlier conversation history stays the same.
-
-```text
-Request 1: Instructions → User message 1 [implicit breakpoint]
-Request 2: Instructions → User message 1 → Assistant message 1 → User message 2 [implicit breakpoint]
-```
-
-The first request can write the prefix through user message 1. On the next request, that earlier breakpoint can provide a cache read. The newly appended content can then be written at the latest implicit breakpoint.
-
-**When changing content prevents reuse**
-
-Some applications send separate requests that share the same instructions but have different timestamps and user messages. Unlike successive turns in a conversation, these requests do not share conversation history.
-
-```text
-Request 1: Stable instructions → Timestamp 1 → User message 1 [implicit breakpoint]
-Request 2: Stable instructions → Timestamp 2 → User message 2 [implicit breakpoint]
-```
-
-The first request writes a prefix that includes timestamp 1 and user message 1. On the second request, timestamp 2 and user message 2 change the prefix at the breakpoint. If no earlier matching entry exists, `cached_tokens` can be `0` and the service can write the changing prefix again.
-
-Add an explicit breakpoint at the end of the stable content to make that content reusable:
-
-```text
-Stable instructions [explicit breakpoint] → Timestamp → User message
-```
-
-The first request writes the stable prefix. Later requests with the same prefix and `prompt_cache_key` can read that entry, even when the timestamp and user message change.
-
-### Choose a caching mode
-
-Use `prompt_cache_options.mode` to set the request-wide caching policy.
-
-**Implicit caching**
-
-- `implicit` is the default. OpenAI places a cache breakpoint on the latest user or tool message and also uses any explicit breakpoints you provide.
-- Use implicit caching when the prompt grows by appending reusable content. Earlier eligible breakpoints can provide cache reads, while the latest message creates a new checkpoint for future requests.
-
-**Explicit breakpoints with implicit caching**
-
-- You can add an explicit breakpoint without changing the default caching mode. This lets requests read a stable prefix while the implicit breakpoint continues to cache the latest eligible message.
-- This approach is useful when both the shared prefix and the growing conversation history are likely to be reused. However, the latest implicit breakpoint can still write a changing suffix to the cache.
-
-**Explicit-only caching**
-
-- Set `prompt_cache_options.mode` to `explicit` to disable the implicit breakpoint. Only explicit breakpoints are used for cache reads and writes.
-- Use explicit-only mode when the prompt has a stable prefix followed by request-specific content that is unlikely to be reused. This caches the reusable prefix without creating a new cache write for the changing suffix.
-- Adding an explicit breakpoint does not automatically switch a request to explicit-only mode. If you set `mode` to `explicit` but provide no explicit breakpoints, the request does not use prompt caching or incur cache-write charges.
-
-### Add explicit cache breakpoints
-
-Add `prompt_cache_breakpoint: { "mode": "explicit" }` to the last supported content block in the reusable prefix. The breakpoint includes that block and all prompt content rendered before it.
-
-The following examples are abbreviated to show the request shape. In a real request, the rendered prefix through the marked breakpoint must contain at least 1,024 tokens.
+The prompt cache stores key-value (KV) tensors, not the tokens themselves.
 
 
 
-Responses API
+Ask ChatGPT for a deeper explanation
 
 
-    This request places an explicit breakpoint after stable developer instructions. Explicit-only mode prevents the changing user message from creating an additional implicit cache write.
+
+OpenAI caches the model's full rendered context including OpenAI-provided instructions, [developer messages](https://developers.openai.com/api/docs/guides/prompt-engineering#message-roles-and-instruction-following), [tool definitions](https://developers.openai.com/api/docs/guides/function-calling), and [conversation history](https://developers.openai.com/api/docs/guides/conversation-state) containing [text](https://developers.openai.com/api/docs/guides/text), [images](https://developers.openai.com/api/docs/guides/images-vision), [documents](https://developers.openai.com/api/docs/guides/file-inputs), and supported [audio](https://developers.openai.com/api/docs/guides/audio).
+
+Cache reuse requires the entire rendered prefix to match. If content or a relevant setting changes before a breakpoint, the prefix after that change cannot match the existing cache entry.
+
+### Which settings affect the cached prefix?
+
+
+
+Changing a request does not necessarily discard an existing cache entry. What matters is whether a subsequent request has the same prefix and can find an eligible matching breakpoint. The main settings to check are:
+
+| Setting                                                                                                                                                                                                                                                                             | Impact                                                                                                                     |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| [`model`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20model%20%3E%20%28schema%29)                                                                       | A different model can use different weights and caching behavior.                                                          |
+| [`tools`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20tools%20%3E%20%28schema%29)                                                                       | Changes tool names, descriptions, schemas, ordering, or tool-specific instructions.                                        |
+| [`parallel_tool_calls`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20parallel_tool_calls%20%3E%20%28schema%29)                                           | Can change instructions about calling multiple tools in one turn.                                                          |
+| [`text.format`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20text%20%3E%20%28schema%29) ([Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs))      | Adds output-format instructions and the requested schema.                                                                  |
+| [`reasoning.effort`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20reasoning%20%3E%20%28schema%29)                                                        | Can change model-side reasoning instructions.                                                                              |
+| [`text.verbosity`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20text%20%3E%20%28schema%29)                                                               | Can change instructions about response detail.                                                                             |
+| [`context_management`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20context_management%20%3E%20%28schema%29) ([Compaction](https://developers.openai.com/api/docs/guides/compaction)) | Replaces earlier conversation content with a compacted context that can prevent reuse from the first changed token onward. |
+
+
+
+
+
+## How caching works
+
+A **cache breakpoint** marks the end of a prompt prefix that OpenAI can save to the cache and reuse in later requests. The first request writes an eligible prefix to the cache and a later request looks for the longest matching cached prefix available, working backward through eligible breakpoints until it finds a match.
+
+A prompt prefix must meet the model's **minimum cacheable token length** before it can be cached. Tokens in the OpenAI-provided hidden system content do not count toward this minimum. The minimum cacheable prompt length is 1,024 tokens for GPT-5.6 and later and 2,048 tokens for models older than GPT-5.6. You may occasionally get cache hits below 2,048 tokens for some earlier models. See the [model comparison](#summary-of-model-differences) for other differences.
+
+After the minimum cacheable token length, you can choose where to place cache breakpoints explicitly, or let OpenAI choose their locations implicitly. The available options depend on the model.
+
+
+
+### GPT-5.6 and later
+
+
+
+For GPT-5.6 and later, cache writes cost 1.25× the standard, uncached input-token rate. It is worth incurring this charge when a prefix will be reused, because subsequent reads cost only 0.1× that rate. Writing a prefix once and fully reusing it once costs 1.35× its ordinary input cost, compared with 2× for processing it twice without caching. The savings grow with each additional cache read: across ten requests, one write and nine full reads cost 2.15×, compared with 10× without caching.
+
+Both implicit and explicit caching are supported, where explicit caching gives you more control over which context is written to cache.
+
+**Explicit mode:** You choose where to place cache breakpoints based on your context management.
+
+- Set `prompt_cache_options.mode` to `explicit` to use only developer-selected breakpoints and mark each desired breakpoint by adding `prompt_cache_breakpoint: { "mode": "explicit" }` to a supported content block inside an input message.
+- When no explicit breakpoints are placed, the request does not use prompt caching or create cache writes.
+- Explicit-only mode lets you choose where cache writes end. Content after the last selected breakpoint is processed at the uncached input-token rate without a cache-write charge, so you can avoid writing changing content that is unlikely to be reused.
+- Multiple explicit breakpoints can preserve prefixes that change at different rates. Each request can create up to four cache writes.
+- For cache reads, OpenAI considers up to the latest 50 breakpoints in the conversation and reuses the longest matching cached prefix.
+
+Top-level `instructions` cannot contain an explicit breakpoint. To mark reusable developer instructions, place them in an `input_text` block inside a developer message.
+
+**Implicit mode:** OpenAI chooses breakpoint locations out of the box that work well for most use cases.
+
+- When `prompt_cache_options.mode` is `implicit`, OpenAI places a breakpoint at the end of the latest eligible message.
+- You can add explicit breakpoints without turning off the implicit breakpoint; an implicit breakpoint uses one of the four cache write slots to leave three usable explicit cache write slots.
+- The implicit breakpoint creates a cache write through the latest eligible message.
+
+
+
+
+
+
+
+### Earlier models
+
+
+
+Only implicit caching is supported. OpenAI places implicit breakpoints at [model-dependent intervals](#summary-of-model-differences), counted from the beginning of the hidden OpenAI system message. Only breakpoints at or beyond the minimum cacheable length (counted from the end of the hidden context) are eligible.
+
+Reported `cached_tokens` is calculated by subtracting the hidden system tokens from the last matched breakpoint, then rounding down to the nearest multiple of 128.
+
+
+
+
+
+## Cache lifetime
+
+Cache entries are not stored indefinitely. A later request can reuse a cached prefix only while its entry remains available, and reusing the prefix refreshes its lifetime without another cache-write charge. The lifetime and retention settings [depend on the model](#summary-of-model-differences).
+
+<a id="prompt-cache-retention"></a>
+
+
+
+### GPT-5.6 and later
+
+
+
+Use `prompt_cache_options.ttl` to control the minimum cache lifetime. The only supported value, `30m`, is also the default. A cached prefix remains eligible for reuse for 30 minutes after its most recent write or reuse, though OpenAI may retain it longer.
+
+
+
+
+
+<a id="extended-prompt-cache-retention"></a>
+
+
+
+### Earlier models
+
+
+
+Use `prompt_cache_retention`, with supported values that depend on the model:
+
+- `in_memory`: Entries typically remain active for around 5 to 10 minutes of inactivity, up to one hour.
+- `24h`: Extended retention typically keeps entries available for around 30 minutes and can retain them for up to 24 hours.
+
+**Retention defaults and Zero Data Retention**
+
+Prompt caching may store encrypted key/value tensors in GPU-local storage as application state. For models that support both `in_memory` and `24h`, the default depends on your organization's data retention policy:
+
+- Organizations _without_ Zero Data Retention enabled default to `24h`.
+- Organizations _with_ Zero Data Retention enabled default to `in_memory`.
+
+Verify the available retention policies for your model and organization before selecting a value.
+
+
+
+
+
+<a id="where-caching-happens-and-how-long-it-lasts"></a>
+
+<a id="cache-location-and-duration"></a>
+
+<a id="cache-location-and-lifetime"></a>
+
+## Cache location
+
+Cached states live on individual machines, where traffic above 15 requests per minute can lead to overflow routing. A request can reuse a cached prefix only if it reaches a machine holding a matching entry that has not expired. Routing requests to the right machine is therefore important for cache reuse.
+
+Caches are not shared across organizations and cannot be reused across [regional processing boundaries](https://developers.openai.com/api/docs/guides/your-data#data-residency-controls).
+
+OpenAI handles routing automatically. Within an organization and processing region, routing for a given model depends on:
+
+- Current machine load and available capacity.
+- A hash of the initial tokens after the hidden OpenAI content, including tool definitions when present. The number of tokens hashed varies by model.
+- The optionally supplied [`prompt_cache_key`](#prompt-cache-keys) that controls grouping and distribution during higher-volume traffic, to mitigate request overflow to other machines and, therefore, cache misses.
+
+<a id="prompt-cache-keys"></a>
+
+
+
+### Prompt cache keys
+
+
+
+When traffic exceeds a machine's available capacity, requests may overflow to another machine. If that machine does not have a matching cache entry, the initial overflow request incurs a cache miss.
+
+Set [`prompt_cache_key`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20prompt_cache_key%20%3E%20%28schema%29) to help requests with the same prefix reach the same cache. Keys influence routing; they do not pin requests to a machine or guarantee a cache read hit. See [how to tune prompt cache keys](#prompt-cache-key-best-practices).
+
+
+
+
+
+<a id="model-differences-at-a-glance"></a>
+
+## Summary of model differences
+
+| Behavior                   | GPT-5.6 and later                                       | GPT-5.5 and GPT-5.5 Pro                                            | Other earlier models                                                            |
+| -------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| Implicit breakpoints       | At the end of the latest eligible user or tool message. | Spaced at regular 2,048-token intervals.                           | Spaced at regular, model-dependent intervals.                                   |
+| Explicit breakpoints       | Supported                                               | Not supported                                                      | Not supported                                                                   |
+| Minimum cacheable prefix   | 1,024 visible input tokens                              | 2,048 visible input tokens; some models may cache shorter prefixes | 2,048 visible input tokens; some models may cache shorter prefixes              |
+| Cached-token reporting     | Exact eligible boundary, excluding hidden tokens        | Excludes hidden tokens and rounds down to a multiple of 128        | Excludes hidden tokens and rounds down to a multiple of 128                     |
+| Cache read charge          | 0.1× the uncached input-token rate                      | Model-dependent cached-input rate                                  | Model-dependent cached-input rate                                               |
+| Cache write charge         | 1.25× the uncached input-token rate                     | No additional cache-write charge                                   | No additional cache-write charge                                                |
+| Cache lifetime control     | `prompt_cache_options.ttl`                              | `prompt_cache_retention`                                           | `prompt_cache_retention`                                                        |
+| Supported retention values | `"30m"`                                                 | `"24h"` only                                                       | `"in_memory"` or `"24h"`<sup>[\*](#extended-retention-models)</sup>             |
+| Cache lifetime             | At least 30 minutes after the latest write or reuse     | Typically around 30 minutes, up to 24 hours                        | Typically 5 to 10 minutes inactive for `in_memory`, or up to 24 hours for `24h` |
+
+<a id="extended-retention-models"></a>
+
+
+
+
+\* Extended retention is supported by `gpt-5.5`, `gpt-5.5-pro`, `gpt-5.4`, `gpt-5.2`, `gpt-5.1-codex-max`, `gpt-5.1`, `gpt-5.1-codex`, `gpt-5.1-codex-mini`, `gpt-5.1-chat-latest`, `gpt-5`, `gpt-5-codex`, and `gpt-4.1`.
+
+
+
+
+<a id="best-practices"></a>
+
+## How to optimize prompt caching
+
+Focus on [preserving conversation history](#preserve-conversation-history), [keeping tool definitions stable](#tools), and understanding the three main cache controls. Use [`prompt_cache_options.mode` and `prompt_cache_breakpoint`](#choose-a-caching-mode) to choose where caching occurs, and [`prompt_cache_key`](#prompt-cache-key-best-practices) to help related requests reach the same cache.
+
+
+
+Ask ChatGPT to optimize my prompt caching
+
+
+
+<a id="preserve-conversation-history"></a>
+
+
+
+### Preserve conversation history
+
+
+
+In multi-turn applications, reusing the growing conversation history can save more input tokens than caching only the initial instructions. Preserve earlier messages and tool results so later turns can reuse the full shared prefix.
+
+- **Keep the prefix stable.** Put stable developer instructions and shared reference material first. If developer instructions or shared material contain timestamps, user-specific content, or other dynamic content, place those at the end rather than the beginning, or move them into later conversation messages.
+- **Preserve conversation history.** Append new messages rather than rewriting earlier turns. Summarization, compaction, or context truncation can change the prefix and reset cache reuse.
+
+Keep changing content after the breakpoint
 
 ```json
 {
   "model": "gpt-5.6",
-  "prompt_cache_key": "support:knowledge-base-v1",
-  "prompt_cache_options": {
-    "mode": "explicit"
-  },
+  "reasoning": { "effort": "low", "context": "all_turns" },
+  "text": { "verbosity": "medium" },
+  "prompt_cache_options": { "mode": "explicit" },
   "input": [
     {
-      "type": "message",
       "role": "developer",
       "content": [
         {
           "type": "input_text",
-          "text": "Follow the shared support policies and reference material...",
-          "prompt_cache_breakpoint": {
-            "mode": "explicit"
-          }
+          "text": "Stable instructions and shared reference material...",
+          "prompt_cache_breakpoint": { "mode": "explicit" }
         }
       ]
     },
     {
-      "type": "message",
+      "role": "developer",
+      "content": "Dynamic developer instructions, such as user-specific content and timestamps..."
+    },
+    {
       "role": "user",
+      "content": "The user's current question..."
+    }
+  ]
+}
+```
+
+
+
+
+
+
+<a id="tools"></a>
+
+
+
+### Manage tools with append-only updates
+
+
+
+When the tools your application needs vary between requests, change which tools are callable while keeping their definitions stable to preserve reusable prefixes.
+
+- **Keep tools consistent.** Preserve tool definitions, ordering, and schemas.
+- **Disable tool use for a request.** Set [`tool_choice`](https://developers.openai.com/api/docs/guides/function-calling#tool-choice) to `"none"` instead of removing the tool definitions.
+- **Enable only selected tools.** Use [`allowed_tools`](https://developers.openai.com/api/docs/guides/function-calling#tool-choice) to restrict which tools are callable while keeping the supplied `tools` list stable.
+- **Load tools when needed.** Use [tool search](https://developers.openai.com/api/docs/guides/tools-tool-search) with `defer_loading: true` to reduce input tokens spent on tool definitions in early requests of multi-turn threads. Discovered tools are appended at the end of context, preserving earlier reusable content.
+- **Preserve tool-loading history.** Use a developer-role [`additional_tools` input item](https://developers.openai.com/api/docs/guides/tools-tool-search#add-tools-at-a-specific-point-in-the-input) to add tools during a thread according to your application's logic.
+
+
+
+
+
+<a id="choose-a-caching-mode"></a>
+
+
+
+### Choose a caching mode
+
+
+
+On GPT-5.6 and later, two controls determine where cache breakpoints are placed: `prompt_cache_options.mode` selects implicit or explicit-only caching, and `prompt_cache_breakpoint` marks a boundary you choose.
+
+- **Place breakpoints automatically.** Use implicit caching to place a breakpoint at the end of the latest eligible message. This is convenient for multi-turn threads that append to existing context.
+- **Choose breakpoints deliberately.** Place explicit markers at the end of stable content. Use explicit-only mode to avoid unnecessary cache writes for changing suffixes.
+
+
+
+> Illustration: In explicit-only mode, tools and schemas precede a stable developer-message prefix and breakpoint 1. One branch adds a variable developer suffix and more conversation turns before breakpoint 2, then splits into new user inputs. Another branch has an unselected variable suffix. Content after each branch's last selected breakpoint is charged at the uncached input rate without a cache-write charge.
+
+
+
+
+
+
+
+<a id="prompt-cache-key-best-practices"></a>
+
+
+
+### Tune prompt cache keys
+
+
+
+- **Group related requests.** Combine a prompt version with a stable user, workspace, session, or thread ID that matches how your application reuses context. For example:
+  - `prompt_name_v1:user_123` groups a user's related requests that share a prompt version.
+  - `prompt_name_v1:session_456` groups requests within one session.
+  - `prompt_name_v1:workspace_acme:shard_3` groups requests within a stable shard of a workspace.
+- **Keep keys stable.** Reuse the key while its prefix remains useful; do not generate a new key for every request.
+- **Split busy groups.** If a group receives high traffic and cache read hits decline, distribute it across more keys with a stable, deterministic mapping. Keep related requests on the same shard so they can reuse its cache.
+
+Create stable cache keys
+
+```javascript
+import { createHash } from "node:crypto";
+
+const tenantId = "acme";
+const sessionId = "session-42";
+const promptVersion = "support-v3";
+// Tune for peak traffic per tenant and reusable prompt group; monitor cache hits.
+const shardCount = 16;
+
+const digest = createHash("sha256")
+  .update(`${tenantId}:${sessionId}`)
+  .digest("hex");
+const shard = Number.parseInt(digest.slice(0, 8), 16) % shardCount;
+const promptCacheKey = `${promptVersion}:${tenantId}:shard-${shard}`;
+```
+
+```python
+import hashlib
+
+tenant_id = "acme"
+session_id = "session-42"
+prompt_version = "support-v3"
+# Tune for peak traffic per tenant and reusable prompt group; monitor cache hits.
+shard_count = 16
+
+digest = hashlib.sha256(f"{tenant_id}:{session_id}".encode()).hexdigest()
+shard = int(digest[:8], 16) % shard_count
+prompt_cache_key = f"{prompt_version}:{tenant_id}:shard-{shard}"
+```
+
+```java
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.HexFormat;
+
+String tenantId = "acme";
+String sessionId = "session-42";
+String promptVersion = "support-v3";
+int shardCount = 16;
+
+String digest =
+    HexFormat.of()
+        .formatHex(
+            MessageDigest.getInstance("SHA-256")
+                .digest((tenantId + ":" + sessionId).getBytes(StandardCharsets.UTF_8)));
+long shard = Long.parseLong(digest.substring(0, 8), 16) % shardCount;
+String promptCacheKey = promptVersion + ":" + tenantId + ":shard-" + shard;
+```
+
+
+
+
+
+
+<a id="choose-a-cache-lifetime"></a>
+
+
+
+### Configure cache retention
+
+
+
+For earlier models, prefer setting `prompt_cache_retention` to `"24h"` for extended retention when the model and your data-retention requirements allow it. See [Cache lifetime](#cache-lifetime) for supported settings and defaults.
+
+
+
+
+
+<a id="a-shared-prefix-just-below-the-caching-minimum"></a>
+
+
+
+### Escape the minimum cacheable length cost trap
+
+
+
+If many requests reuse the same developer instructions and tool definitions, but that shared prefix falls below the model's [minimum cacheable length](#summary-of-model-differences), consider shortening it or expanding it with useful, stable instructions, examples, or reference material. Measure whether cache reuse offsets the additional input tokens and any cache-write charges, and ensure evaluations and behaviour remain stable.
+
+The chart highlights the minimum cacheable length cost trap where short prefix lengths can cost more uncached than expanding to the minimum cacheable token length.
+
+#### Mathematical details
+
+
+
+For a cost-only comparison, let $$M$$ be the minimum cacheable length, $$L < M$$ the original prefix length, $$r$$ the cache-read multiplier, $$w$$ the cache-write multiplier, and $$N$$ the total number of requests. Assume the expanded prefix is exactly $$M$$ tokens, is written once, and is fully reused on every later request. In uncached-input-token equivalents, keeping the original prefix costs $$N \times L$$, while expanding it costs $$M \left[w + (N - 1)r\right]$$. The break-even original length is:
+
+$$
+L_{\mathrm{break\text{-}even}} = M\left(r + \frac{w-r}{N}\right)
+$$
+
+Expand when $$L > L_{\mathrm{break\text{-}even}}$$; keeping the shorter prefix costs less when $$L < L_{\mathrm{break\text{-}even}}$$. At equality, the costs are the same. The smallest whole-token length for which expansion is cheaper is $$\left\lfloor L_{\mathrm{break\text{-}even}} \right\rfloor + 1$$. Conversely, shrinking a cacheable prefix below $$M$$ loses caching: under the same assumptions, the shorter uncached prefix must fall below $$L_{\mathrm{break\text{-}even}}$$ to cost less than caching $$M$$ tokens. There is no universal maximum-cost prompt length; the crossover depends on reuse and pricing.
+
+For example, with $$M = 1{,}024$$, $$r = 0.1$$, and $$w = 1.25$$, the crossover is $$102.4 + \frac{1{,}177.6}{N}$$ tokens. Across 10 requests, expanding an original prefix of at least 221 tokens to 1,024 tokens is cheaper. As reuse grows, the crossover approaches 102.4 tokens. A 103-token prefix needs at least 1,963 total requests to benefit; a prefix of 102 tokens or fewer never does under these assumptions. This comparison excludes performance, output tokens, and unchanged request costs. Additional misses, writes, or different model rates change the result.
+
+
+
+
+
+
+
+
+
+<a id="monitor-cache-performance"></a>
+
+
+
+### Monitor cache performance
+
+
+
+- **Measure actual cache performance.** Track `usage.input_tokens_details.cached_tokens`, `usage.input_tokens_details.cache_write_tokens`, input-token counts, latency, and realized cost. Track the token cache-hit rate by dividing total cached tokens by total input tokens, aggregating both counts by user, workspace, day, or another useful grouping.
+- **Calculate input cost.** Use the token counts in `response.usage` and the model's [prices per million tokens](https://developers.openai.com/api/docs/pricing).
+- **Use the prompt caching dashboard.** Monitor cache hit rates in the [Prompt Caching Dashboard](https://platform.openai.com/usage?usage_section=prompt-caching).
+
+Calculate input cost
+
+```javascript
+function calculateInputCost(
+  usage,
+  inputPricePerMillion,
+  cacheInputMultiplier = 0.1,
+  cacheWriteMultiplier = 1.25
+) {
+  const inputTokens = usage.input_tokens;
+  const cachedTokens = usage.input_tokens_details.cached_tokens;
+  const cacheWriteTokens = usage.input_tokens_details.cache_write_tokens;
+  const ordinaryInputTokens = inputTokens - cachedTokens - cacheWriteTokens;
+
+  const weightedInputTokens =
+    ordinaryInputTokens +
+    cachedTokens * cacheInputMultiplier +
+    cacheWriteTokens * cacheWriteMultiplier;
+  const inputCost = (weightedInputTokens * inputPricePerMillion) / 1_000_000;
+  return inputCost;
+}
+```
+
+```python
+from openai.types.responses import ResponseUsage
+
+
+def calculate_input_cost(
+    usage: ResponseUsage,
+    input_price_per_million: float,
+    cache_input_multiplier: float = 0.1,
+    cache_write_multiplier: float = 1.25,
+) -> float:
+    input_tokens = usage.input_tokens
+    cached_tokens = usage.input_tokens_details.cached_tokens
+    cache_write_tokens = usage.input_tokens_details.cache_write_tokens
+    ordinary_input_tokens = input_tokens - cached_tokens - cache_write_tokens
+
+    weighted_input_tokens = (
+        ordinary_input_tokens
+        + cached_tokens * cache_input_multiplier
+        + cache_write_tokens * cache_write_multiplier
+    )
+    input_cost = weighted_input_tokens * input_price_per_million / 1_000_000
+    return input_cost
+```
+
+
+
+
+
+
+
+
+### Migrate prompt caching from an earlier model to GPT-5.6 and later
+
+
+
+- Keep existing stable prefixes.
+- Keep existing `prompt_cache_key` values.
+- Replace `prompt_cache_retention` with `prompt_cache_options.ttl`.
+- Confirm that reusable prefixes meet the model's [minimum cacheable length](#summary-of-model-differences).
+- If the default breakpoint includes content that changes between requests, add an explicit breakpoint after the stable prefix.
+- Use `prompt_cache_options.mode: "explicit"` when later content is not worth writing.
+- Compare `cached_tokens`, `cache_write_tokens`, latency, and total cost before and after migration.
+
+
+
+
+
+## Examples
+
+<a id="single-turn-llm-as-a-judge"></a>
+
+
+
+### Single-turn LLM-as-a-Judge
+
+
+
+Consider a single-turn LLM judge that determines whether a completed interaction shows evidence that the user is satisfied after an interaction with a chatbot. Each request uses the same grading rubric and labeled few-shot examples to evaluate a different interaction.
+
+- **Preserving the prefix:** The fixed rubric and examples come first. Their combined length is deliberately kept just above the model's [minimum cacheable length](#summary-of-model-differences), using material that helps calibrate the judge. The interaction being evaluated comes last.
+- **Prompt cache key:** A stable `prompt_cache_key`, such as `satisfaction_judge_v1`, groups requests using the same rubric version.
+- **Caching mode and breakpoint:** Explicit-only caching is enabled, with a breakpoint after the fixed rubric and examples. The user–chatbot conversation being evaluated comes after that breakpoint and is not written to the cache, avoiding a cache-write charge for content that is unlikely to be reused.
+
+For illustration, a deployment using these principles might achieve a **token cache-hit rate of around 70%**. This is a hypothetical figure, not a measured deployment result. Actual cache-hit rates depend on your context and application usage.
+
+Responses API request for a single-turn judge
+
+```json
+{
+  "model": "gpt-5.6-sol",
+  "reasoning": { "effort": "medium", "context": "all_turns" },
+  "text": { "verbosity": "low" },
+  "prompt_cache_key": "satisfaction_judge_v1",
+  "prompt_cache_options": { "mode": "explicit" },
+  "input": [
+    {
+      "role": "developer",
       "content": [
         {
           "type": "input_text",
-          "text": "Where is order 1234?"
-        }
-      ]
-    }
-  ]
-}
-```
-
-
-    Top-level `instructions` cannot contain a `prompt_cache_breakpoint`. To mark reusable developer instructions, place them in an `input_text` block inside a developer message, as shown above.
-
-  
-
-  
-
-    
-Chat Completions API
-
-
-    This request marks the system-message prefix. Explicit-only mode limits cache reads and writes to the marked stable content.
-
-```json
-{
-  "model": "gpt-5.6",
-  "prompt_cache_key": "support:knowledge-base-v1",
-  "prompt_cache_options": {
-    "mode": "explicit"
-  },
-  "messages": [
-    {
-      "role": "system",
-      "content": [
-        {
-          "type": "text",
-          "text": "You are a support assistant. Follow the shared policies...",
-          "prompt_cache_breakpoint": {
-            "mode": "explicit"
-          }
+          "text": "Judge whether the completed interaction provides evidence that the user is satisfied. Return true or false. Full grading rubric and labeled few-shot examples...",
+          "prompt_cache_breakpoint": { "mode": "explicit" }
         }
       ]
     },
     {
       "role": "user",
-      "content": "What should I do next?"
+      "content": "Completed interaction to evaluate..."
     }
   ]
 }
@@ -51145,263 +52612,197 @@ Chat Completions API
 
 
 
-To combine an explicit breakpoint with the default implicit breakpoint, omit `prompt_cache_options.mode` or set it to `implicit`.
 
-**Supported content blocks**
 
-The Responses API supports breakpoints on `input_text`, `input_image`, and `input_file` blocks. The Chat Completions API supports them on `text`, `image_url`, `input_audio`, `file`, and `refusal` blocks.
 
-Only `explicit` is valid for `prompt_cache_breakpoint.mode`. A marker on an unsupported or non-cacheable block returns a `400 invalid_request_error`.
+<a id="customer-support-agent"></a>
 
-Tool definitions, structured output schemas, messages, images, and files can contribute to the rendered prefix. Keep the content, order, and relevant settings identical across requests that should share a cache.
 
-### Use multiple cache breakpoints
 
-Use multiple explicit breakpoints when parts of a prompt change at different rates. For example, shared instructions can stay stable while reference material is updated more often. Separate breakpoints let requests reuse the longest eligible prefix that remains unchanged.
+### Multi-turn agent
 
-Each request can create up to four new cache writes. Breakpoints from earlier conversation turns are read-only: they can match the cache, but the request does not write them again. If more than four breakpoints are set, only the last four are written.
 
-In `implicit` mode, the breakpoint on the latest message uses one write slot. Up to the latest three explicit breakpoints can use the remaining slots. In `explicit` mode, up to the latest four explicit breakpoints can create new cache writes.
 
-For cache reads, OpenAI considers up to the latest 50 breakpoints in the conversation. When several breakpoints match cached content, the service reads from the longest matching prefix.
+Consider a multi-turn agent with long, shared developer instructions and frequent tool calls. Typical usage sees users running multiple sessions with the agent at once, and often forking the threads.
 
-### Improve cache matching with a prompt cache key
+- **Preserving the prefix**: Each turn appends new messages, tool calls, and results without rewriting earlier context, so the reusable prefix grows over time.
+- **Prompt cache key:** The `prompt_cache_key` is defined for each user-agent pair, shared across that user's sessions with the agent. For example, `agent_123_v1:user_456` groups user 456's sessions and forks with agent 123. The session and thread IDs are kept out of the key when those sessions should share the same reusable prefix.
+- **Implicit caching mode:** Implicit caching is enabled so the latest eligible user or tool message provides a breakpoint.
+- **Explicit breakpoints:** A breakpoint is added after each tool result to preserve earlier reusable prefixes and improve cache efficiency of forking.
 
-Set `prompt_cache_key` on requests that share long, common prompt prefixes. Reuse the same key for those requests to help route them to the same cache and improve cache hit rates. Common values for `prompt_cache_key` include session IDs and user IDs.
+An example deployment using these principles reported a **token cache-hit rate >90%**. This figure illustrates a possible outcome. Actual cache-hit rate ceilings will depend upon your own context and application usage.
 
-For GPT-5.6, you must set `prompt_cache_key` to use the more reliable matching for both implicit and explicit caching. At each breakpoint, the service matches the key with the exact prompt prefix. Without a key, requests may still receive automatic cache hits, but they do not use the improved matching.
-
-Keep the total traffic across all prefixes for each key to approximately 15 requests per minute. If a key receives a higher rate, some requests may miss the cache. For higher-volume workloads, partition traffic across more keys and use a stable mapping so requests with the same key continue to share prefixes.
-
-### Measure cache reads and writes
-
-Monitor `cached_tokens` and `cache_write_tokens` to understand whether your breakpoint placement produces cache reuse or repeated cache writes.
-
-`cached_tokens` is the number of input tokens read from the cache. `cache_write_tokens` is the number of input tokens newly written to the cache.
-
-For the Responses API, both fields appear in `usage.input_tokens_details`. For the Chat Completions API, they appear in `usage.prompt_tokens_details`.
+Responses API request for a multi-turn agent
 
 ```json
 {
-  "usage": {
-    "input_tokens": 2600,
-    "input_tokens_details": {
-      "cached_tokens": 2000,
-      "cache_write_tokens": 400
+  "model": "gpt-5.6-sol",
+  "reasoning": { "effort": "medium", "context": "all_turns" },
+  "text": { "verbosity": "medium" },
+  "prompt_cache_key": "agent_123_v1:user_456",
+  "prompt_cache_options": { "mode": "implicit" },
+  "tools": [
+    {
+      "type": "function",
+      "name": "function_name",
+      "description": "Function description",
+      "parameters": { "...": "..." }
     }
-  }
+  ],
+  "input": [
+    {
+      "role": "developer",
+      "content": "Stable developer instructions and reference material..."
+    },
+    { "role": "user", "content": "Can you do...?" },
+    {
+      "type": "function_call",
+      "call_id": "call_123",
+      "name": "function_name",
+      "arguments": "..."
+    },
+    {
+      "type": "function_call_output",
+      "call_id": "call_123",
+      "output": [
+        {
+          "type": "input_text",
+          "text": "Tool result...",
+          "prompt_cache_breakpoint": { "mode": "explicit" }
+        }
+      ]
+    },
+    { "role": "assistant", "content": "Assistant response..." },
+    { "role": "user", "content": "Can you also do...?" }
+  ]
 }
 ```
 
-In this example, 2,000 tokens were read from the cache and 400 additional tokens were written. The remaining 200 input tokens were neither read nor written. A longer cache write does not bill the already cached 2,000 tokens again.
 
-**Understand cache-write pricing**
 
-Cache reads, cache writes, and ordinary input tokens are separate billing categories.
 
-1. Cached input tokens are billed at 0.1× the uncached input token rate.
-2. Tokens written to the cache are billed at 1.25× the uncached input token rate.
-3. Tokens that are neither read nor written are billed at the uncached input token rate.
 
-The 1.25× cache-write rate is the total rate for written tokens. It is not an additional charge on top of another full input-token charge. A breakpoint does not create a charge by itself. Charges apply to tokens that are actually written to the cache.
 
-Repeated writes increase cost when the resulting cache entries are not reused. If `cache_write_tokens` stays high while `cached_tokens` remains low, check whether an implicit breakpoint includes content that changes between requests.
+<a id="troubleshooting"></a>
 
-### Set cache lifetime
+## Gotchas
 
-Use `prompt_cache_options.ttl` to set the lifetime of all breakpoints written by a request. The only supported value is `30m`, which is also the default.
 
-The 30-minute lifetime begins when the prefix is written and refreshes whenever the prefix is reused. A cached prefix remains eligible for reuse for 30 minutes after its most recent write or reuse, though OpenAI may retain it longer.
 
-Reusing a cached prefix refreshes its lifetime without creating another cache-write charge.
+### A shared prefix is not always a cached prefix
 
-### Troubleshoot common caching issues
 
-- **`cached_tokens` is zero:** Check that the rendered prefix through the breakpoint contains at least 1,024 tokens. Confirm that an earlier request wrote the same prefix and that related requests use the same `prompt_cache_key`.
 
-- **Cache writes repeat on every request:** Check whether a timestamp, changing user input, tool-call history, or other request-specific content appears before the eligible breakpoint. Move the explicit breakpoint to the end of the stable prefix.
+This is particularly prevalent when migrating from earlier models to GPT-5.6 or later due to the change in implicit caching behaviour. If requests share a long prefix but have different suffixes, caching the first complete request implicitly-only does not make the shorter shared prefix reusable.
 
-- **Cache reads and writes are both nonzero:** In implicit mode, a request can read an earlier cached prefix and write newly appended content at the latest breakpoint. Use explicit-only mode if that new content should not be cached.
+Consider a static developer message followed by a dynamic user message in each request. This request writes through the dynamic content. Changing that content in the next request does not match the longer cached prefix, and there is no separate breakpoint after the static content.
 
-- **Explicit mode produces no cache hits:** Confirm that at least one supported content block has `prompt_cache_breakpoint: { "mode": "explicit" }` and that the rendered prefix through the marker meets the 1,024-token minimum.
-
-- **Cache hits decrease at higher request volumes:** Keep traffic for each `prompt_cache_key` to approximately 15 requests per minute. Use stable, deterministic keys to partition larger workloads.
-
-- **A previously cached prompt no longer matches:** Check whether tool definitions, tool ordering, structured output schemas, images, prompt content, or request settings changed before the breakpoint.
-
-- **A breakpoint is rejected:** Attach the marker to a supported content block and use `explicit` as its mode. Do not attach a breakpoint to top-level Responses API `instructions`.
-
-## Prompt caching for earlier models
-
-Earlier models use automatic prompt caching to reuse matching prompt prefixes. When an eligible request is routed to a machine that recently processed the same prefix, the service can reuse the cached result instead of processing that content again.
-
-Prompt caching works automatically for supported models. A consistent `prompt_cache_key`, stable prompt structure, and an appropriate `prompt_cache_retention` setting can improve cache reuse.
-
-### How automatic prompt caching works
-
-Cache hits are only possible for exact prefix matches within a prompt. When a request arrives, the service checks whether an eligible initial portion of the prompt already exists in the cache on the selected machine.
-
-If a matching prefix is available, the service can reuse an eligible matching prefix and report those tokens in `cached_tokens`. If no match is available, the service processes the full prompt and may cache eligible content for future requests.
-
-Cache reuse is best-effort. A cache hit depends on the prompt prefix remaining identical, the cached content still being available, and the request reaching a machine that holds the matching entry.
-
-For example, separate requests can reuse shared instructions and reference material while the user message changes:
-
-```text
-Request 1: Shared instructions → Shared reference material → User message 1
-Request 2: Shared instructions → Shared reference material → User message 2
-```
-
-When the shared prefix is eligible and available, the second request can reuse that content without requiring additional request-specific cache configuration.
-
-**Minimum cacheable prefix**
-
-The minimum cacheable prefix length varies by model and can range from 1,024 to 2,048 tokens. Prompts just above 1,024 tokens may not be cached consistently.
-
-Cache hits occur in increments of 128 tokens. The number of cached tokens can therefore be smaller than the full length of the shared prompt content.
-
-Make sure the repeated portion of the prompt meets the minimum for the model. A request can exceed the minimum overall and still fail to produce a cache hit if its matching prefix is too short.
-
-### Structure prompts for reuse
-
-Cache hits are only possible for exact prefix matches within a prompt. To realize caching benefits, place static content like instructions and examples at the beginning of your prompt, and put variable content, such as user-specific information, at the end. This also applies to images and tools, which must be identical between requests.
-
-Keep system or developer instructions, shared reference material, examples, tool definitions, and structured output schemas stable. Put user input, request identifiers, timestamps, and other changing content after the reusable prefix.
-
-If a dynamic value is needed only for logging or debugging, consider placing it in request metadata instead of inserting it into the prompt.
-
-**Keep tools and schemas identical**
-
-Tool definitions, tool ordering, and structured output schemas contribute to the prompt prefix. Changes to tool descriptions, parameter schemas, schema keys, or ordering can reduce cache reuse.
-
-When you need to restrict which tools are available on a particular request, keep the underlying `tools` array unchanged and use `allowed_tools` where supported.
-
-**Preserve conversation history**
-
-For multi-turn conversations, append new user and assistant messages instead of rewriting earlier messages. Changing, deleting, or reordering earlier content changes the prefix and can cause a cache miss.
-
-Context truncation, summarization, and compaction can reduce prompt size, but they can also reset the reusable prefix. Balance the savings from shorter prompts against the loss of existing cache reuse.
-
-### Improve cache hit rates with a prompt cache key
-
-Set `prompt_cache_key` on requests that share long, common prompt prefixes. Reuse the same key for those requests to help route them to the same cache and improve cache hit rates.
-
-Requests are routed based on the initial prompt prefix. When you provide `prompt_cache_key`, it is combined with the prefix hash, allowing you to influence routing. This is especially beneficial when many requests share long, common prefixes.
-
-Keep the total traffic across all prefixes for each key to approximately 15 requests per minute. If a key receives a higher rate, some requests may miss the cache. For higher-volume workloads, partition traffic across more keys and use a stable mapping so requests with the same key continue to share prefixes.
-
-A cache key improves routing but does not make different prompt prefixes match. Keep the prefix and the cache key consistent across requests that should share cached content.
-
-<a id="prompt-cache-retention"></a>
-
-### Configure prompt cache retention
-
-Use `prompt_cache_retention` to select the retention policy for a supported Responses API or Chat Completions request. Available values depend on the model.
-
-For models that support both in-memory and extended retention, prompt cache pricing is the same for both policies.
-
-**In-memory prompt cache retention**
-
-In-memory prompt cache retention is available for models that accept `prompt_cache_retention: "in_memory"`.
-
-When using the in-memory policy, cached prefixes generally remain active for 5 to 10 minutes of inactivity, up to a maximum of one hour. In-memory cached prefixes are held only in volatile memory.
-
-<a id="extended-prompt-cache-retention"></a>
-
-**Extended prompt cache retention**
-
-Extended prompt cache retention keeps cached prefixes active for longer, up to a maximum of 24 hours.
-
-The 24-hour period is a maximum, not a guarantee that every request will receive a cache hit. Reuse still depends on an exact matching prefix, cache availability, and request routing.
-
-**Models that support extended retention**
-
-Extended prompt cache retention is available for the following models:
-
-- `gpt-5.5`
-- `gpt-5.5-pro`
-- `gpt-5.4`
-- `gpt-5.2`
-- `gpt-5.1-codex-max`
-- `gpt-5.1`
-- `gpt-5.1-codex`
-- `gpt-5.1-codex-mini`
-- `gpt-5.1-chat-latest`
-- `gpt-5`
-- `gpt-5-codex`
-- `gpt-4.1`
-
-**Retention defaults and Zero Data Retention**
-
-For `gpt-5.5` and `gpt-5.5-pro`, only `24h` is supported through `prompt_cache_retention`.
-
-For models that support both `in_memory` and `24h`, the default depends on your organization's data retention policy:
-
-- Organizations without Zero Data Retention enabled default to `24h`.
-- Organizations with Zero Data Retention enabled default to `in_memory` when `prompt_cache_retention` is not specified.
-
-Verify the available retention policies for your model and organization before selecting a value.
-
-### Measure cache hits and costs
-
-Use `cached_tokens` to see how many input tokens were read from the cache. The field is present even when no tokens were cached.
-
-For the Responses API, the field appears in `usage.input_tokens_details.cached_tokens`. For the Chat Completions API, it appears in `usage.prompt_tokens_details.cached_tokens`.
-
-The following Chat Completions usage example shows a request that reused 1,920 of its 2,006 prompt tokens:
+Without a breakpoint after the static content
 
 ```json
 {
-  "usage": {
-    "prompt_tokens": 2006,
-    "completion_tokens": 300,
-    "total_tokens": 2306,
-    "prompt_tokens_details": {
-      "cached_tokens": 1920
-    }
-  }
+  "model": "gpt-5.6-sol",
+  "reasoning": { "effort": "medium", "context": "all_turns" },
+  "text": { "verbosity": "low" },
+  "prompt_cache_key": "prompt_name_v1",
+  "prompt_cache_options": { "mode": "implicit" },
+  "input": [
+    { "role": "developer", "content": "Static content..." },
+    { "role": "user", "content": "Dynamic content..." }
+  ]
 }
 ```
 
-In this example, the remaining 86 prompt tokens were not read from the cache. Monitor cached-token usage across requests to identify changes in prompt structure, traffic patterns, or cache availability.
 
-**Pricing and rate limits**
+To remediate, place an explicit breakpoint after the static content in both requests. The first request writes the reusable prefix; the next can reuse it even when the dynamic content changes. This example uses explicit-only mode to avoid writing the dynamic content to cache.
 
-Creating a cache entry has no additional fee. Cached input is billed at the cached-input rate when the model offers one. Rates and discounts vary by model.
+With a breakpoint after the static content
 
-Cached input tokens still count toward tokens-per-minute rate limits. Prompt caching does not change rate-limit calculations or guarantee identical model outputs.
+```json
+{
+  "model": "gpt-5.6-sol",
+  "reasoning": { "effort": "medium", "context": "all_turns" },
+  "text": { "verbosity": "low" },
+  "prompt_cache_key": "prompt_name_v1",
+  "prompt_cache_options": { "mode": "explicit" },
+  "input": [
+    {
+      "role": "developer",
+      "content": [{
+        "type": "input_text",
+        "text": "Static content...",
+        "prompt_cache_breakpoint": { "mode": "explicit" }
+      }]
+    },
+    { "role": "user", "content": "Dynamic content..." }
+  ]
+}
+```
 
-### What can be cached
 
-- **Messages:** System, developer, user, and assistant messages can contribute to a reusable prompt prefix.
-- **Images:** Image inputs can be cached when the images, their order, and their detail settings remain the same.
-- **Tools:** Tool definitions, descriptions, parameter schemas, and tool ordering can contribute to the prefix.
-- **Structured outputs:** A structured output schema can be included in the reusable prompt prefix.
-- **Audio:** Supported audio inputs can contribute to cacheable prompt content.
 
-All reusable content must remain identical across requests. Changes earlier in the prompt can invalidate reuse for the content that follows.
+
+
+
+
+
+### Minimum cacheable length varies by model
+
+
+
+A prefix that qualifies for caching on one model may be too short on another. Check the [model comparison](#summary-of-model-differences) and measure the reusable prefix with the model and settings you actually use. When changing models, repeat that check rather than assuming the previous model's threshold still applies.
+
+
+
+
+
+
+
+### Compaction can reduce cache reuse
+
+
+
+[Compaction](https://developers.openai.com/api/docs/guides/compaction) replaces earlier conversation context with a shorter representation. That can change the prefix, so the first request after compaction may reuse less of the previous cache even when the conversation is logically the same.
+
+Keep reusable instructions and reference material stable where possible, then let subsequent turns build on the compacted context. Compare total input cost before and after compaction: fewer input tokens can still save money even when the cache-hit rate falls.
+
+
+
+
 
 ## Frequently asked questions
 
-1. **How is data privacy maintained for caches?**
 
-   Prompt caches are not shared between organizations. Only members of the same organization can access caches of identical prompts. Cache data handling depends on the model and retention policy. See the [Your data](https://developers.openai.com/api/docs/guides/your-data) guide for the current application-state, Zero Data Retention, and data residency details.
 
-2. **Does Prompt Caching affect output token generation or the final response of the API?**
+### Does prompt caching affect output generation?
 
-   Prompt Caching does not change how the model generates output tokens. The model computes a new response from the cached prompt prefix, so otherwise identical nondeterministic requests are not guaranteed to return identical output.
 
-3. **Is there a way to manually clear the cache?**
 
-   Manual cache clearing is not currently available. For models before the GPT-5.6 family that use in-memory retention, typical cache evictions occur after 5-10 minutes of inactivity, though entries can remain for up to one hour during off-peak periods. For GPT-5.6 models and later model families, cached prefixes remain eligible for reuse for 30 minutes and may be retained longer.
+No. Prompt caching does not change how the model generates output tokens. The model generates a new response using the cached prefix, so identical requests are not guaranteed to produce identical outputs.
 
-4. **Will I be expected to pay extra for writing to Prompt Caching?**
 
-   Cache writes have no additional fee on models before the GPT-5.6 family. On GPT-5.6 models and later model families, cache writes are billed at 1.25× the uncached input token rate and reported in `cache_write_tokens`. Cache reads continue to be reported in `cached_tokens`.
 
-5. **Do cached prompts contribute to TPM rate limits?**
 
-   Yes, as caching does not affect rate limits.
+
+
+
+### Can I manually clear the cache?
+
+
+
+No. Manual cache clearing is not currently available. Cache entries expire according to the model's [cache lifetime](#cache-lifetime) and retention settings.
+
+
+
+
+
+
+
+### Do cached prompts count toward rate limits?
+
+
+
+Yes. Cached input tokens still count toward tokens-per-minute limits. Prompt caching does not change how [rate limits](https://developers.openai.com/api/docs/guides/rate-limits) are calculated.
 
 ---
 
@@ -51685,6 +53086,31 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    Instructions = "Talk like a pirate.",
+    ReasoningOptions = new ResponseReasoningOptions
+    {
+        ReasoningEffortLevel = ResponseReasoningEffortLevel.Low,
+    },
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Are semicolons optional in JavaScript?")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -51833,6 +53259,33 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    ReasoningOptions = new ResponseReasoningOptions
+    {
+        ReasoningEffortLevel = ResponseReasoningEffortLevel.Low,
+    },
+};
+options.InputItems.Add(
+    ResponseItem.CreateDeveloperMessageItem("Talk like a pirate.")
+);
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Are semicolons optional in JavaScript?")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby
@@ -52161,7 +53614,11 @@ GPT models like [`gpt-5.6`](https://developers.openai.com/api/docs/models/gpt-5.
 
 For the full current treatment, use the [latest GPT-5 prompting best practices](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices). The practical reminders below still apply.
 
-Coding
+
+
+#### Coding
+
+
 
 #### Coding
 
@@ -52181,7 +53638,15 @@ Guide the model to generate clean, semantically correct markdown using inline co
 
 For detailed guidance and prompt samples specific to coding, see the [latest GPT-5 prompting best practices](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices).
 
-Front-end engineering
+
+
+
+
+
+
+#### Front-end engineering
+
+
 
 [GPT-5.6](https://developers.openai.com/api/docs/models/gpt-5.6-sol)
 performs well at building front ends from scratch as well as contributing to
@@ -52218,7 +53683,15 @@ For front-end engineering work in larger codebases, we've found that adding thes
 
 For detailed guidance and prompt samples specific to frontend development, see the [latest GPT-5 prompting best practices](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices).
 
-Agentic tasks
+
+
+
+
+
+
+#### Agentic tasks
+
+
 
 For agentic and long-running rollouts with `gpt-5.6`, focus your prompts on three core practices: plan tasks thoroughly to ensure complete resolution, provide clear preambles for major tool usage decisions, and use a TODO tool to track workflow and progress in an organized manner.
 
@@ -52255,6 +53728,10 @@ Before you call a tool explain why you are calling it
 Use a TODO list tool or rubric to enforce structured planning and avoid missed steps.
 
 For detailed guidance and prompt samples specific to building agents, see the [latest GPT-5 prompting best practices](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices).
+
+
+
+
 
 ## Prompting reasoning models
 
@@ -54815,7 +56292,11 @@ Note that unsuccessful requests contribute to your per-minute limit, so continuo
 
 Below are a few example solutions **for Python** that use exponential backoff.
 
-Example 1: Using the Tenacity library
+
+
+##### Example 1: Using the Tenacity library
+
+
 
 Tenacity is an Apache 2.0 licensed general-purpose retrying library, written in Python, to simplify the task of adding retry behavior to just about anything.
 To add exponential backoff to your requests, you can use the `tenacity.retry` decorator. The below example uses the `tenacity.wait_random_exponential` function to add random exponential backoff to a request.
@@ -54848,7 +56329,15 @@ completion_with_backoff(
 Note that the Tenacity library is a third-party tool, and OpenAI makes no guarantees about
 its reliability or security.
 
-Example 2: Using the backoff library
+
+
+
+
+
+
+##### Example 2: Using the backoff library
+
+
 
 Another python library that provides function decorators for backoff and retry is [backoff](https://pypi.org/project/backoff/):
 
@@ -54876,7 +56365,14 @@ completions_with_backoff(
 
 Like Tenacity, the backoff library is a third-party tool, and OpenAI makes no guarantees about its reliability or security.
 
-Example 3: Manual backoff implementation
+
+
+
+
+
+
+##### Example 3: Manual backoff implementation
+
 
 If you don't want to use third-party libraries, you can implement your own backoff logic following this example:
 Using manual backoff implementation
@@ -54944,6 +56440,10 @@ def completions_with_backoff(**kwargs):
 ```
 
 Again, OpenAI makes no guarantees on the security or efficiency of this solution but it can be a good starting place for your own solution.
+
+
+
+
 
 #### Reduce the `max_tokens` to match the size of your completions
 
@@ -58905,6 +60405,33 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+string prompt =
+    """
+    Write a bash script that takes a matrix represented as a string with format
+    '[1,2],[3,4],[5,6]' and prints the transpose in the same format.
+    """;
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    ReasoningOptions = new ResponseReasoningOptions
+    {
+        ReasoningEffortLevel = ResponseReasoningEffortLevel.Low,
+    },
+};
+options.InputItems.Add(ResponseItem.CreateUserMessageItem(prompt));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -59226,6 +60753,10 @@ The [GPT-5.6 model family](https://developers.openai.com/api/docs/guides/latest-
 The response's `reasoning.context` field contains the effective mode, either `current_turn` or `all_turns`. Check this field on each response to confirm which mode the model used. The setting does not create reasoning items that are not already available.
 
 `all_turns` has an effect only when the request has access to earlier response items. Use `previous_response_id`, attach the response to a conversation, or manually replay the complete response history. On the first request, `current_turn` and `all_turns` behave the same because no earlier reasoning exists.
+
+Persisted reasoning can be reused only within the same model family. For example, `gpt-5.6-sol`, `gpt-5.6-terra`, and `gpt-5.6-luna` can reuse each other's reasoning, but reasoning does not carry between the GPT-5.6 and GPT-5.5 families.
+
+When you switch model families, the API omits incompatible reasoning from the model's context, even when `reasoning.context` is `all_turns`.
 
 ### Continue reasoning with stored responses
 
@@ -60312,6 +61843,26 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+string prompt =
+    """
+    I want to build a Python app that looks up user questions in a database where
+    they are mapped to answers. If there is a close match, it retrieves the answer.
+    Otherwise, it asks the user for an answer and stores the question and answer.
+    Plan the directory structure, then return each file in full.
+    Only supply your reasoning at the beginning and end, not throughout the code.
+    """;
+ResponseResult response = await client.CreateResponseAsync("gpt-5.6", prompt);
+
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -60560,7 +62111,11 @@ This optimization lets you align the model with nuanced objectives like style, s
 
 During training, the platform cycles through the dataset, samples several responses per prompt, scores them with the grader, and applies policy-gradient updates based on those rewards. The loop continues until we hit the end of your training data or you stop the job at a chosen checkpoint, producing a model optimized for the metric that matters to you.
 
-When should I use reinforcement fine-tuning?
+
+
+## When should I use reinforcement fine-tuning?
+
+
 
 It's useful to understand the strengths and weaknesses of reinforcement fine-tuning to identify opportunities and to avoid wasted effort.
 
@@ -60572,11 +62127,23 @@ It's useful to understand the strengths and weaknesses of reinforcement fine-tun
 
 See common use cases, specific implementations, and grader examples in the [reinforcement fine-tuning use case guide](https://developers.openai.com/api/docs/guides/rft-use-cases).
 
-What is reinforcement learning?
+
+
+
+
+
+
+## What is reinforcement learning?
+
+
 
 Reinforcement learning is a branch of machine learning in which a model learns by acting, receiving feedback, and readjusting itself to maximise future feedback. Instead of memorising one “right” answer per example, the model explores many possible answers, observes a numeric reward for each, and gradually shifts its behaviour so the high-reward answers become more likely and the low-reward ones disappear. Over repeated rounds, the model converges on a policy—a rule for choosing outputs—that best satisfies the reward signal you define.
 
 In reinforcement fine-tuning (RFT), that reward signal comes from a custom grader that you define for your task. For every prompt in your dataset, the platform samples multiple candidate answers, runs your grader to score them, and applies a policy-gradient update that nudges the model toward answers with higher scores. This cycle—sample, grade, update—continues across the dataset (and successive epochs) until the model reliably optimizes for your grader’s understanding of quality. The grader encodes whatever you care about—accuracy, style, safety, or any metric—so the resulting fine-tuned model reflects those priorities and you don't have to manage reinforcement learning infrastructure.
+
+
+
+
 
 Reinforcement fine-tuning is supported on o-series reasoning models only, and
   currently only for [o4-mini](https://developers.openai.com/api/docs/models/o4-mini).
@@ -60797,13 +62364,21 @@ Below, find some JSONL data you can use for both training and testing when you c
 {"messages":[{"role":"user","content":"Do you enforce multi-factor authentication (MFA) internally?"}],"compliant":"yes","explanation":"The policy explicitly mentions role-based authentication with multi-factor security."}
 ```
 
-How much training data is needed?
+
+
+### How much training data is needed?
+
+
 
 Start small—between several dozen and a few hundred examples—to determine the usefulness of RFT before investing in a large dataset. For product safety reasons, the training set must first pass through an automated screening process. Large datasets take longer to process. This screening process begins when you start a fine-tuning job with a file, not upon initial file upload. Once a file has successfully completed screening, you can use it repeatedly without delay.
 
 Dozens of examples can be meaningful as long as they're high quality. After screening, more data is better, as long as it remains high quality. With larger datasets, you can use a higher batch size, which tends to improve training stability.
 
 Your training file can contain a maximum of 50,000 examples. Test datasets can contain a maximum of 1,000 examples. Test datasets also go through automated screening.
+
+
+
+
 
 ### Upload your files
 
@@ -60845,7 +62420,11 @@ If you're fine-tuning a model to return [Structured Outputs](https://developers.
 }
 ```
 
-Generating a JSON schema from a Pydantic model
+
+
+#### Generating a JSON schema from a Pydantic model
+
+
 
 To simplify JSON schema generation, start from a [Pydantic BaseModel](https://docs.pydantic.dev/latest/api/base_model/) class:
 
@@ -60873,6 +62452,10 @@ response_format = dict(
     json_schema=dict(name=MyCustomClass.__name__, strict=True, schema=schema),
 )
 ```
+
+
+
+
 
 
 ### Create a job with the API
@@ -61079,7 +62662,11 @@ Each checkpoint specifies:
 
 Before launching in production, review and follow the following safety information.
 
-How we assess for safety
+
+
+### How we assess for safety
+
+
 
 Once a fine-tuning job is completed, we assess the resulting model’s behavior across 13 distinct safety categories. Each category represents a critical area where AI outputs could potentially cause harm if not properly controlled.
 
@@ -61101,11 +62688,23 @@ Once a fine-tuning job is completed, we assess the resulting model’s behavior 
 
 Each category has a predefined pass threshold; if too many evaluated examples in a given category fail, OpenAI blocks the fine-tuned model from deployment. If your fine-tuned model does not pass the safety checks, OpenAI sends a message in the fine-tuning job explaining which categories don't meet the required thresholds. You can view the results in the moderation checks section of the fine-tuning job.
 
-How to pass safety checks
+
+
+
+
+
+
+### How to pass safety checks
+
+
 
 In addition to reviewing any failed safety checks in the fine-tuning job object, you can retrieve details about which categories failed by querying the [fine-tuning API events endpoint](https://developers.openai.com/api/reference/resources/fine_tuning/subresources/jobs/methods/list). Look for events of type `moderation_checks` for details about category results and enforcement. This information can help you narrow down which categories to target for retraining and improvement. The [model spec](https://cdn.openai.com/spec/model-spec-2024-05-08.html#overview) has rules and examples that can help identify areas for additional training data.
 
 While these evaluations cover a broad range of safety categories, conduct your own evaluations of the fine-tuned model to ensure it's appropriate for your use case.
+
+
+
+
 
 ## Next steps
 
@@ -61137,7 +62736,11 @@ Reinforcement fine-tuning jobs publish per-step training metrics as [fine-tuning
 
 Learn more about training metrics below.
 
-Full example training metrics
+
+
+#### Full example training metrics
+
+
 
 Below is an example metric event from a real reinforcement fine-tuning job. The various fields in this payload will be discussed in the following sections.
 
@@ -61244,7 +62847,15 @@ Below is an example metric event from a real reinforcement fine-tuning job. The 
     },
 ```
 
-Score metrics
+
+
+
+
+
+
+#### Score metrics
+
+
 
 The top-level metrics to watch are `train_reward_mean` and `valid_reward_mean`, which indicate the average reward assigned by your graders across all samples in the training and validation datasets, respectively.
 
@@ -61254,7 +62865,15 @@ From the fine-tuning dashboard, the individual grader metrics will be displayed 
 
 ![Per-Grader Reward Metric Graph](https://cdn.openai.com/API/images/guides/RFT_MultiReward_Chart.png)
 
-Usage metrics
+
+
+
+
+
+
+#### Usage metrics
+
+
 
 An important characteristic of a reasoning model is the number of reasoning tokens it uses before responding to a prompt. Often, during training, the model will drastically change the average number of reasoning tokens it uses to respond to a prompt. This is a sign that the model is changing its behavior in response to the reward signal. The model may learn to use fewer reasoning tokens to achieve the same reward, or it may learn to use more reasoning tokens to achieve a higher reward.
 
@@ -61273,7 +62892,15 @@ The `_mean` metrics represent the average number of tokens used by the grader to
 
 ![Model Grader Token Usage](https://cdn.openai.com/API/images/guides/RFT_ModelGraderTokenUsage.png)
 
-Timing metrics
+
+
+
+
+
+
+#### Timing metrics
+
+
 
 We include various metrics that help you understand how long each step of the training process is taking and how different parts of the training process are contributing to the per-step timing.
 
@@ -61293,6 +62920,10 @@ The step timing metrics are also displayed on the fine-tuning dashboard under th
 The `graders` field contains timing information that details the time taken to execute each grader for the current step. Each grader will have its own timing under the `train_execution_latency_mean` and `valid_execution_latency_mean` metrics, which represent the average time taken to execute the grader on the training and validation datasets, respectively.
 
 Graders are executed in parallel with a concurrency limit, so it is not always clear how individual grader latency adds up to the total time taken for grading. However, it is generally true that graders which take longer to execute individually will cause a job to execute more slowly. This means that slower model graders will cause the job to take longer to complete, and more expensive python code will do the same. The fastest graders generally are `string_check` and `text_similarity` as those are executed local to the training loop.
+
+
+
+
 
 ### Evals integration details
 
@@ -61331,7 +62962,11 @@ Reinforcement fine-tuning is a complex process with many moving parts, and there
 
 The error metrics are available under the `event.data.errors` object, and are aggregated into counts and rates rolled up per-grader. We also display rates and counts of errors on the fine-tuning dashboard.
 
-Grader errors
+
+
+#### Grader errors
+
+
 
 #### Generic grading errors
 
@@ -64129,7 +65764,11 @@ You can adjust this by setting [`chunking_strategy`](https://developers.openai.c
 - `max_chunk_size_tokens` must be between 100 and 4096 inclusive.
 - `chunk_overlap_tokens` must be non-negative and should not exceed `max_chunk_size_tokens / 2`.
 
-Supported file types
+
+
+#### Supported file types
+
+
 
 _For `text/` MIME types, the encoding must be one of `utf-8`, `utf-16`, or `ascii`._
 
@@ -64159,6 +65798,10 @@ _For `text/` MIME types, the encoding must be one of `utf-8`, `utf-16`, or `asci
 | `.tex`      | `text/x-tex`                                                                |
 | `.ts`       | `application/typescript`                                                    |
 | `.txt`      | `text/plain`                                                                |
+
+
+
+
 
 ## Synthesizing responses
 
@@ -64912,6 +66555,12 @@ If you believe an API key has been exposed, misused, or otherwise compromised,
 revoke it promptly and replace it with a new key. Go to your [Security
 settings](https://platform.openai.com/settings/profile/security) to view all API
 keys and revoke any compromised keys.
+
+### CSAM guidance
+
+OpenAI has worked with child safety experts, including NCMEC and Thorn, to offer
+developers practical guidance for protecting children. [Read the CSAM
+guidance](https://developers.openai.com/api/docs/guides/csam-guidance).
 
 ---
 
@@ -69179,6 +70828,56 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "date": { "type": "string" },
+        "participants": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["name", "date", "participants"],
+      "additionalProperties": false
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "event",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(
+    ResponseItem.CreateSystemMessageItem("Extract the event information.")
+);
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        "Alice and Bob are going to a science fair on Friday."
+    )
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -70727,7 +72426,9 @@ text.format
 
 
 
-Step 1: Define your schema
+## Step 1: Define your schema
+
+
 
 First you must design the JSON Schema that the model should be constrained to follow. See the [examples](https://developers.openai.com/api/docs/guides/structured-outputs#examples) at the top of this guide for reference.
 
@@ -70741,7 +72442,17 @@ To maximize the quality of model generations, we recommend the following:
 - Create clear titles and descriptions for important keys in your structure
 - Create and use evals to determine the structure that works best for your use case
 
-Step 2: Supply your schema in the API call
+
+
+
+
+
+
+## Step 2: Supply your schema in the API call
+
+
+
+
 
 To use Structured Outputs, simply specify
 
@@ -71064,7 +72775,17 @@ curl https://api.openai.com/v1/responses \
 
 **Note:** the first request you make with any schema will have additional latency as our API processes the schema, but subsequent requests with the same schema will not have additional latency.
 
-Step 3: Handle edge cases
+
+
+
+
+
+
+## Step 3: Handle edge cases
+
+
+
+
 
 In some cases, the model might not generate a valid response that matches the provided JSON schema.
 
@@ -72518,7 +74239,13 @@ Important notes:
 - JSON mode will not guarantee the output matches any specific schema, only that it is valid and parses without errors. You should use Structured Outputs to ensure it matches your schema, or if that is not possible, you should use a validation library and potentially retries to ensure that the output matches your desired schema.
 - Your application must detect and handle the edge cases that can result in the model output not being a complete JSON object (see below)
 
-Handling edge cases
+
+
+### Handling edge cases
+
+
+
+
 
 ```javascript
 const we_did_not_specify_stop_tokens = true;
@@ -72793,6 +74520,12 @@ else
   end
 end
 ```
+
+
+
+
+
+
 
 ## Resources
 
@@ -73336,7 +75069,11 @@ Currently, only the checkpoints for the last three epochs of the job are saved a
 
 Before launching in production, review and follow the following safety information.
 
-How we assess for safety
+
+
+### How we assess for safety
+
+
 
 Once a fine-tuning job is completed, we assess the resulting model’s behavior across 13 distinct safety categories. Each category represents a critical area where AI outputs could potentially cause harm if not properly controlled.
 
@@ -73358,11 +75095,23 @@ Once a fine-tuning job is completed, we assess the resulting model’s behavior 
 
 Each category has a predefined pass threshold; if too many evaluated examples in a given category fail, OpenAI blocks the fine-tuned model from deployment. If your fine-tuned model does not pass the safety checks, OpenAI sends a message in the fine-tuning job explaining which categories don't meet the required thresholds. You can view the results in the moderation checks section of the fine-tuning job.
 
-How to pass safety checks
+
+
+
+
+
+
+### How to pass safety checks
+
+
 
 In addition to reviewing any failed safety checks in the fine-tuning job object, you can retrieve details about which categories failed by querying the [fine-tuning API events endpoint](https://developers.openai.com/api/reference/resources/fine_tuning/subresources/jobs/methods/list). Look for events of type `moderation_checks` for details about category results and enforcement. This information can help you narrow down which categories to target for retraining and improvement. The [model spec](https://cdn.openai.com/spec/model-spec-2024-05-08.html#overview) has rules and examples that can help identify areas for additional training data.
 
 While these evaluations cover a broad range of safety categories, conduct your own evaluations of the fine-tuned model to ensure it's appropriate for your use case.
+
+
+
+
 
 ## Next steps
 
@@ -73748,6 +75497,31 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    Instructions = "Talk like a pirate.",
+    ReasoningOptions = new ResponseReasoningOptions
+    {
+        ReasoningEffortLevel = ResponseReasoningEffortLevel.Low,
+    },
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Are semicolons optional in JavaScript?")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -73896,6 +75670,33 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    ReasoningOptions = new ResponseReasoningOptions
+    {
+        ReasoningEffortLevel = ResponseReasoningEffortLevel.Low,
+    },
+};
+options.InputItems.Add(
+    ResponseItem.CreateDeveloperMessageItem("Talk like a pirate.")
+);
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Are semicolons optional in JavaScript?")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby
@@ -74136,6 +75937,26 @@ try (HttpResponse audio =
                 .build())) {
   Files.copy(audio.body(), Path.of("speech.mp3"), StandardCopyOption.REPLACE_EXISTING);
 }
+```
+
+```csharp
+using OpenAI.Audio;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-4o-mini-tts";
+AudioClient client = new(model, key);
+
+BinaryData audio = await client.GenerateSpeechAsync(
+    "Today is a wonderful day to build something people love!",
+    GeneratedSpeechVoice.Coral,
+    new SpeechGenerationOptions
+    {
+        Instructions = "Speak in a cheerful and positive tone.",
+    }
+);
+
+await File.WriteAllBytesAsync("speech.mp3", audio.ToArray());
 ```
 
 ```ruby
@@ -83465,7 +85286,11 @@ response.output[0].phase: "commentary"
 response.output[1].phase: "final_answer"
 ```
 
-Example response phases
+
+
+### Example response phases
+
+
 
 User prompt:
 
@@ -83500,6 +85325,10 @@ Shortened API response:
   }
 }
 ```
+
+
+
+
 
 ## Handle unclear audio
 
@@ -83661,7 +85490,11 @@ Example:
 
 ### Entity collection workflow
 
-Example Entity collection workflow
+
+
+#### Example Entity collection workflow
+
+
 
 Use this full workflow when a task requires exact values before any tool call.
 
@@ -83720,6 +85553,10 @@ Assistant: Could you spell that email address character by character so I can ma
 Never call tools with guessed, partial, ambiguous, or unconfirmed exact values.
 ```
 
+
+
+
+
 ## Avoid literal instruction traps
 
 `gpt-realtime-2` follows instructions more literally than earlier realtime models. Prompts that worked well on older models may need tuning.
@@ -83744,7 +85581,11 @@ The broad version may cause unnecessary confirmations before harmless read-only 
 
 ### Literal interpretation example
 
-Example literal interpretation trap
+
+
+#### Example literal interpretation trap
+
+
 
 This prompt is too narrow:
 
@@ -83765,6 +85606,10 @@ Safer rewrite:
 ```text
 When the user provides an exact identifier, including confirmation codes, order IDs, ticket IDs, reset PINs, claim numbers, tracking numbers, or account numbers, repeat the captured value and wait for confirmation before using it in a tool call.
 ```
+
+
+
+
 
 General prompting recommendations:
 
@@ -83881,7 +85726,11 @@ For long-context use cases, `gpt-realtime-2` performs best when it can tell what
 
 Use a structured pattern when starting a session with a large amount of context, such as retrieved records, prior conversation history, policies, summaries, account notes, or background documents.
 
-Example long-session context template
+
+
+### Example long-session context template
+
+
 
 ```text
 ## Context
@@ -83914,6 +85763,10 @@ Example long-session context template
 
 - [potentially useful but non-authoritative background]
 ```
+
+
+
+
 
 ## Migrate from earlier realtime models
 
@@ -85350,11 +87203,12 @@ using OpenAI.Responses;
 #pragma warning disable OPENAI001
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string vectorStoreId = "<vector_store_id>";
 ResponsesClient client = new(key);
 
 CreateResponseOptions options = new() { Model = "gpt-5.6" };
 options.Tools.Add(
-    ResponseTool.CreateFileSearchTool(["<vector_store_id>"])
+    ResponseTool.CreateFileSearchTool([vectorStoreId])
 );
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem("What is deep research by OpenAI?")
@@ -85814,10 +87668,7 @@ client.responses().create(params).output().forEach(System.out::println);
 ```
 
 ```csharp
-using System.Text.Json;
-using System.Text.Json.Serialization.Metadata;
 using OpenAI.Responses;
-#pragma warning disable CA1869
 #pragma warning disable OPENAI001
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
@@ -85850,16 +87701,30 @@ options.InputItems.Add(
     ResponseItem.CreateUserMessageItem("What is the weather like in Paris today?")
 );
 
-ResponseResult response = client.CreateResponse(options);
-Console.WriteLine(
-    JsonSerializer.Serialize(
-        response.OutputItems[0],
-        new JsonSerializerOptions
+ResponseResult response = await client.CreateResponseAsync(options);
+foreach (ResponseItem outputItem in response.OutputItems)
+{
+    if (outputItem is FunctionCallResponseItem functionCall)
+    {
+        Console.WriteLine(
+            $"{functionCall.FunctionName}({functionCall.FunctionArguments})"
+        );
+    }
+    else if (outputItem is MessageResponseItem message)
+    {
+        foreach (ResponseContentPart content in message.Content)
         {
-            TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
+            if (content.Kind == ResponseContentPartKind.OutputText)
+            {
+                Console.WriteLine(content.Text);
+            }
+            else if (content.Kind == ResponseContentPartKind.Refusal)
+            {
+                Console.WriteLine(content.Refusal);
+            }
         }
-    )
-);
+    }
+}
 ```
 
 ```ruby
@@ -86355,6 +88220,20 @@ var embedding =
 System.out.println(embedding.data().get(0).embedding());
 ```
 
+```csharp
+using OpenAI.Embeddings;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "text-embedding-3-small";
+EmbeddingClient client = new(model, key);
+
+OpenAIEmbedding embedding = await client.GenerateEmbeddingAsync(
+    "The food was delicious and the waiter was friendly."
+);
+
+Console.WriteLine($"Dimensions: {embedding.ToFloats().Length}");
+```
+
 ```ruby
 require "openai"
 
@@ -86504,7 +88383,11 @@ df["ada_embedding"] = df.ada_embedding.apply(eval).apply(np.array)
 ```
 
 
-Reducing embedding dimensions
+
+
+#### Reducing embedding dimensions
+
+
 
 Using larger embeddings, for example storing them in a vector store for retrieval, generally costs more and consumes more compute, memory and storage than using smaller embeddings.
 
@@ -86566,10 +88449,41 @@ List<Float> shortened = embedding.data().get(0).embedding().subList(0, 256);
 System.out.println(normalizeL2(shortened));
 ```
 
+```csharp
+using OpenAI.Embeddings;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "text-embedding-3-small";
+EmbeddingClient client = new(model, key);
+
+OpenAIEmbedding embedding = await client.GenerateEmbeddingAsync("Testing 123");
+
+float[] shortened = embedding.ToFloats().Span[..256].ToArray();
+double magnitude = Math.Sqrt(shortened.Sum(value => value * value));
+float[] normalized =
+    magnitude == 0
+        ? shortened
+        : shortened.Select(value => (float)(value / magnitude)).ToArray();
+
+Console.WriteLine($"Dimensions: {normalized.Length}");
+Console.WriteLine($"First value: {normalized[0]:F6}");
+Console.WriteLine(
+    $"L2 norm: {Math.Sqrt(normalized.Sum(value => value * value)):F3}"
+);
+```
+
 
 Dynamically changing the dimensions enables very flexible usage. For example, when using a vector data store that only supports embeddings up to 1024 dimensions long, developers can now still use our best embedding model `text-embedding-3-large` and specify a value of 1024 for the `dimensions` API parameter, which will shorten the embedding down from 3072 dimensions, trading off some accuracy in exchange for the smaller vector size.
 
-Question answering using embeddings-based search
+
+
+
+
+
+
+#### Question answering using embeddings-based search
+
+
 
 
 
@@ -86631,7 +88545,15 @@ client.chat().completions().create(params).choices().stream()
 ```
 
 
-Text search using embeddings
+
+
+
+
+
+
+#### Text search using embeddings
+
+
 
 
 
@@ -86700,7 +88622,15 @@ IntStream.range(0, reviews.size())
 ```
 
 
-Code search using embeddings
+
+
+
+
+
+
+#### Code search using embeddings
+
+
 
 
 
@@ -86772,7 +88702,15 @@ IntStream.range(0, functions.size())
 ```
 
 
-Recommendations using embeddings
+
+
+
+
+
+
+#### Recommendations using embeddings
+
+
 
 
 
@@ -86857,7 +88795,15 @@ System.out.println(nearestNeighbors);
 ```
 
 
-Data visualization in 2D
+
+
+
+
+
+
+#### Data visualization in 2D
+
+
 
 
 
@@ -86903,7 +88849,15 @@ plt.title("Amazon ratings visualized in language using t-SNE")
 ```
 
 
-Embedding as a text feature encoder for ML algorithms
+
+
+
+
+
+
+#### Embedding as a text feature encoder for ML algorithms
+
+
 
 
 
@@ -86940,7 +88894,15 @@ preds = rfr.predict(X_test)
 ```
 
 
-Classification using the embedding features
+
+
+
+
+
+
+#### Classification using the embedding features
+
+
 
 
 
@@ -86961,7 +88923,15 @@ preds = clf.predict(X_test)
 ```
 
 
-Zero-shot classification
+
+
+
+
+
+
+#### Zero-shot classification
+
+
 
 
 
@@ -87014,7 +88984,15 @@ System.out.println(positive > negative ? "positive" : "negative");
 ```
 
 
-Obtaining user and product embeddings for cold-start recommendation
+
+
+
+
+
+
+#### Obtaining user and product embeddings for cold-start recommendation
+
+
 
 
 
@@ -87031,7 +89009,15 @@ prod_embeddings = df.groupby("ProductId").ada_embedding.apply(np.mean)
 ```
 
 
-Clustering
+
+
+
+
+
+
+#### Clustering
+
+
 
 
 
@@ -87053,6 +89039,10 @@ kmeans = KMeans(n_clusters=n_clusters, init="k-means++", random_state=42)
 kmeans.fit(matrix)
 df["Cluster"] = kmeans.labels_
 ```
+
+
+
+
 
 
 ## FAQ
@@ -88035,7 +90025,11 @@ To control the fidelity of image understanding, set the `detail` parameter of `i
 
 Before launching in production, review and follow the following safety information.
 
-How we assess for safety
+
+
+### How we assess for safety
+
+
 
 Once a fine-tuning job is completed, we assess the resulting model’s behavior across 13 distinct safety categories. Each category represents a critical area where AI outputs could potentially cause harm if not properly controlled.
 
@@ -88057,11 +90051,23 @@ Once a fine-tuning job is completed, we assess the resulting model’s behavior 
 
 Each category has a predefined pass threshold; if too many evaluated examples in a given category fail, OpenAI blocks the fine-tuned model from deployment. If your fine-tuned model does not pass the safety checks, OpenAI sends a message in the fine-tuning job explaining which categories don't meet the required thresholds. You can view the results in the moderation checks section of the fine-tuning job.
 
-How to pass safety checks
+
+
+
+
+
+
+### How to pass safety checks
+
+
 
 In addition to reviewing any failed safety checks in the fine-tuning job object, you can retrieve details about which categories failed by querying the [fine-tuning API events endpoint](https://platform.openai.com/docs/api-reference/fine-tuning/list-events). Look for events of type `moderation_checks` for details about category results and enforcement. This information can help you narrow down which categories to target for retraining and improvement. The [model spec](https://cdn.openai.com/spec/model-spec-2024-05-08.html#overview) has rules and examples that can help identify areas for additional training data.
 
 While these evaluations cover a broad range of safety categories, conduct your own evaluations of the fine-tuned model to ensure it's appropriate for your use case.
+
+
+
+
 
 ## Next steps
 
@@ -90832,7 +92838,11 @@ curl https://api.openai.com/v1/evals \
 ```
 
 
-Explanation: data_source_config parameter
+
+
+### Explanation: data_source_config parameter
+
+
 
 Running this eval will require a test data set that represents the type of data you expect your prompt to work with (more on creating the test data set later in this guide). In our `data_source_config` parameter, we specify that each **item** in the data set will conform to a [JSON schema](https://json-schema.org/) with two properties:
 
@@ -90856,7 +92866,15 @@ Since we will be referencing a **sample** in our test criteria (the output gener
 }
 ```
 
-Explanation: testing_criteria parameter
+
+
+
+
+
+
+### Explanation: testing_criteria parameter
+
+
 
 In our `testing_criteria`, we define how we will conclude if the model output satisfies our requirements for each item in the data set. In this case, we just want the model to output one of three category strings based on the input ticket. The string it outputs should exactly match the human-labeled `correct_label` field in our test data. So in this case, we will want to use a `string_check` grader to evaluate the output.
 
@@ -90874,6 +92892,10 @@ In the test configuration, we will introduce template syntax, represented by the
   "reference": "{{ item.category }}"
 }
 ```
+
+
+
+
 
 After creating the eval, it will be assigned a UUID that you will need to address it later when kicking off a run.
 
@@ -91365,7 +93387,7 @@ presents a short-lived token from your identity provider, and OpenAI exchanges
 it for a short-lived OpenAI access token.
 
 OpenAI API workloads can also exchange a verified certificate identity through
-the X.509 workload identity federation beta.
+X.509 workload identity federation.
 
 You can use workload identity federation with the OpenAI API or Codex:
 
@@ -91426,7 +93448,7 @@ Choose the guide for the environment where your workload runs:
 
 
 
-  - **[X.509 certificates (beta)](https://developers.openai.com/api/docs/guides/workload-identity-federation/x509)**: Configure certificate-backed exchange with the X.509 beta.
+  - **[X.509 certificates](https://developers.openai.com/api/docs/guides/workload-identity-federation/x509)**: Configure certificate-backed exchange for OpenAI API workloads.
 - **[Kubernetes](https://developers.openai.com/api/docs/guides/workload-identity-federation/kubernetes)**: Use projected service account tokens in self-managed clusters.
 - **[AWS](https://developers.openai.com/api/docs/guides/workload-identity-federation/aws)**: Use outbound identity federation or Amazon EKS projected tokens.
 - **[Microsoft Azure](https://developers.openai.com/api/docs/guides/workload-identity-federation/microsoft-azure)**: Use managed identity tokens or AKS projected service account tokens.
@@ -91450,22 +93472,24 @@ federation supports the OpenAI API path only.
 
 ## Use workload identity with the OpenAI API
 
-Use this path when your workload calls the OpenAI API directly. You must be an
-organization owner to configure it.
+Use this path when your workload calls the OpenAI API directly. You need
+permission to manage Workload Identity Providers and service account mappings
+for the organization.
 
 Go to [Organization Settings > Security > Workload Identity Provider](https://platform.openai.com/settings/organization/security/workload-identity-provider).
 Create the provider first, then configure its service account mappings from the
 provider details page.
 
-### X.509 providers (beta)
-
-X.509 workload identity federation is available in beta. If X.509 doesn't
-  appear as a provider type, contact your system administrator. Your
-  administrator can work with OpenAI to enable the beta for your organization.
+### X.509 providers
 
 An X.509 provider derives workload identity attributes from a client certificate that OpenAI verifies against your organization's existing Mutual TLS configuration. It doesn't store certificates or maintain a separate trust store.
 
-Before creating the provider, configure and activate the trusted CA certificate that anchors your client certificate in [Organization Settings > Security > Mutual TLS](https://platform.openai.com/settings/organization/security/mtls). The [OpenAI Mutual TLS Beta Program](https://help.openai.com/en/articles/10876024-openai-mutual-tls-beta-program) explains certificate requirements, activation scope, supported API endpoints, certificate-chain behavior, and client configuration restrictions.
+Before creating the provider, configure and activate the trusted certificate
+that anchors your client certificate in [Organization Settings > Security >
+Mutual TLS](https://platform.openai.com/settings/organization/security/mtls).
+The [Mutual TLS guide](https://developers.openai.com/api/docs/guides/mutual-tls) explains permissions,
+certificate requirements, activation scope, mTLS hosts, certificate-chain
+behavior, CEL filters, and rotation.
 
 Next, create the X.509 provider, derive one non-empty `openai.subject` value, and map that identity to a project service account with only the permissions the workload needs. The workload presents its certificate to the X.509 token endpoint to obtain a short-lived bearer token, then sends the bearer token and an accepted client certificate to the API mTLS endpoint.
 
@@ -92976,7 +95000,11 @@ You can try this example MCP server in a [browser-based development environment]
 
 A full implementation of both the `search` and `fetch` tools in FastMCP is below also for convenience.
 
-Full implementation - FastMCP server
+
+
+#### Full implementation - FastMCP server
+
+
 
 ```python
 """
@@ -93192,7 +95220,15 @@ if __name__ == "__main__":
 ```
 
 
-Replit setup
+
+
+
+
+
+
+#### Replit setup
+
+
 
 On Replit, you will need to configure two environment variables in the "Secrets" UI:
 
@@ -93208,6 +95244,10 @@ In the long dev URL, ensure it ends with `/sse/`, which is the server-sent event
 ```
 https://777xxx.janeway.replit.dev/sse/
 ```
+
+
+
+
 
 ## Test and connect your MCP server
 
@@ -95232,11 +97272,12 @@ using OpenAI.Responses;
 #pragma warning disable OPENAI001
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string vectorStoreId = "<vector_store_id>";
 ResponsesClient client = new(key);
 
 CreateResponseOptions options = new() { Model = "gpt-5.6" };
 options.Tools.Add(
-    ResponseTool.CreateFileSearchTool(["<vector_store_id>"])
+    ResponseTool.CreateFileSearchTool([vectorStoreId])
 );
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem("What is deep research by OpenAI?")
@@ -95560,10 +97601,7 @@ client.responses().create(params).output().forEach(System.out::println);
 ```
 
 ```csharp
-using System.Text.Json;
-using System.Text.Json.Serialization.Metadata;
 using OpenAI.Responses;
-#pragma warning disable CA1869
 #pragma warning disable OPENAI001
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
@@ -95596,16 +97634,30 @@ options.InputItems.Add(
     ResponseItem.CreateUserMessageItem("What is the weather like in Paris today?")
 );
 
-ResponseResult response = client.CreateResponse(options);
-Console.WriteLine(
-    JsonSerializer.Serialize(
-        response.OutputItems[0],
-        new JsonSerializerOptions
+ResponseResult response = await client.CreateResponseAsync(options);
+foreach (ResponseItem outputItem in response.OutputItems)
+{
+    if (outputItem is FunctionCallResponseItem functionCall)
+    {
+        Console.WriteLine(
+            $"{functionCall.FunctionName}({functionCall.FunctionArguments})"
+        );
+    }
+    else if (outputItem is MessageResponseItem message)
+    {
+        foreach (ResponseContentPart content in message.Content)
         {
-            TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
+            if (content.Kind == ResponseContentPartKind.OutputText)
+            {
+                Console.WriteLine(content.Text);
+            }
+            else if (content.Kind == ResponseContentPartKind.Refusal)
+            {
+                Console.WriteLine(content.Refusal);
+            }
         }
-    )
-);
+    }
+}
 ```
 
 ```ruby
@@ -96082,11 +98134,13 @@ Accessing or offering access to our services outside of the countries and territ
 - Albania
 - Algeria
 - Afghanistan
+- Aland Islands
 - Andorra
 - Angola
 - Antigua and Barbuda
 - Argentina
 - Armenia
+- Aruba
 - Australia
 - Austria
 - Azerbaijan
@@ -96096,6 +98150,7 @@ Accessing or offering access to our services outside of the countries and territ
 - Barbados
 - Belgium
 - Belize
+- Bermuda
 - Benin
 - Bhutan
 - Bolivia
@@ -96110,6 +98165,7 @@ Accessing or offering access to our services outside of the countries and territ
 - Cambodia
 - Cameroon
 - Canada
+- Cayman Islands
 - Central African Republic
 - Chad
 - Chile
@@ -96134,9 +98190,13 @@ Accessing or offering access to our services outside of the countries and territ
 - Estonia
 - Eswatini (Swaziland)
 - Ethiopia
+- Faroe Islands
 - Fiji
 - Finland
 - France
+- French Guiana
+- French Polynesia
+- French Southern Territories
 - Gabon
 - Gambia
 - Georgia
@@ -96144,7 +98204,9 @@ Accessing or offering access to our services outside of the countries and territ
 - Ghana
 - Greece
 - Grenada
+- Greenland
 - Guatemala
+- Guadeloupe
 - Guinea
 - Guinea-Bissau
 - Guyana
@@ -96183,8 +98245,10 @@ Accessing or offering access to our services outside of the countries and territ
 - Mali
 - Malta
 - Marshall Islands
+- Martinique
 - Mauritania
 - Mauritius
+- Mayotte
 - Mexico
 - Micronesia
 - Moldova
@@ -96198,6 +98262,7 @@ Accessing or offering access to our services outside of the countries and territ
 - Nauru
 - Nepal
 - Netherlands
+- New Caledonia
 - New Zealand
 - Nicaragua
 - Niger
@@ -96216,10 +98281,15 @@ Accessing or offering access to our services outside of the countries and territ
 - Poland
 - Portugal
 - Qatar
+- Réunion
 - Romania
 - Rwanda
+- Saint Barthelemy
+- Saint Helena
 - Saint Kitts and Nevis
 - Saint Lucia
+- Saint Martin (French part)
+- Saint Pierre and Miquelon
 - Saint Vincent and the Grenadines
 - Samoa
 - San Marino
@@ -96243,6 +98313,7 @@ Accessing or offering access to our services outside of the countries and territ
 - Sweden
 - Switzerland
 - Sudan
+- Svalbard and Jan Mayen
 - Taiwan
 - Tajikistan
 - Tanzania
@@ -96264,6 +98335,7 @@ Accessing or offering access to our services outside of the countries and territ
 - Uzbekistan
 - Vanuatu
 - Vietnam
+- Wallis and Futuna
 - Yemen
 - Zambia
 - Zimbabwe
@@ -96535,7 +98607,11 @@ pip install -r requirements.txt
 
 The primary focus of this tutorial is the OpenAI API so if you prefer, you can skip the context on how to create a web crawler and just [download the source code](https://github.com/openai/web-crawl-q-and-a-example). Otherwise, expand the section below to work through the scraping mechanism implementation.
 
-Learn how to build a web crawler
+
+
+### Learn how to build a web crawler
+
+
 
 
 
@@ -96724,6 +98800,10 @@ crawl(full_url)
 
 
 The last line of the above example runs the crawler which goes through all the accessible links and turns those pages into text files. This will take a few minutes to run depending on the size and complexity of your site.
+
+
+
+
 
 ## Building an embeddings index
 

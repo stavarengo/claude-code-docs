@@ -1,4 +1,4 @@
-# GPT-4o mini Audio
+# GPT-4o Mini Audio
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
@@ -6,7 +6,7 @@
 
 Model ID: `gpt-4o-mini-audio-preview`
 
-This is a preview release of the smaller GPT-4o Audio mini model. It's designed to input audio or create audio outputs via the REST API.
+This is a preview release of the smaller GPT-4o Audio Mini model. It's designed to input audio or create audio outputs via the REST API.
 
 ## Model details
 
@@ -73,7 +73,7 @@ Tools supported by this model when using the Responses API.
 
 ## Snapshots
 
-Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4o mini Audio.
+Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4o Mini Audio.
 
 - `gpt-4o-mini-audio-preview-2024-12-17`
 

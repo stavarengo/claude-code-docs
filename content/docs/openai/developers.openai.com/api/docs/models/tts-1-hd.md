@@ -53,7 +53,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 | --- | ---: |
 | TTS-1 HD | $30 |
 | TTS-1 | $15 |
-| GPT-4o mini Realtime | - |
+| GPT-4o Mini Realtime | - |
 
 ## Snapshots
 

@@ -1,4 +1,4 @@
-# GPT-5 mini
+# GPT-5 Mini
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
@@ -6,7 +6,7 @@
 
 Model ID: `gpt-5-mini`
 
-GPT-5 mini is a faster, more cost-efficient version of GPT-5. It's great for
+GPT-5 Mini is a faster, more cost-efficient version of GPT-5. It's great for
 well-defined tasks and precise prompts. For most new low-latency,
 high-volume workloads, we recommend starting with
 [GPT-5.6 Terra](/api/docs/models/gpt-5.6-terra).
@@ -80,13 +80,13 @@ Tools supported by this model when using the Responses API.
 
 | Model | Input | Cached input | Output |
 | --- | ---: | ---: | ---: |
-| GPT-5 mini | $0.25 | $0.025 | $2 |
-| GPT-5.4 mini | $0.75 | $0.075 | $4.5 |
+| GPT-5 Mini | $0.25 | $0.025 | $2 |
+| GPT-5.4 Mini | $0.75 | $0.075 | $4.5 |
 | GPT-5.4 nano | $0.2 | $0.02 | $1.25 |
 
 ## Snapshots
 
-Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-5 mini.
+Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-5 Mini.
 
 - `gpt-5-mini-2025-08-07`
 

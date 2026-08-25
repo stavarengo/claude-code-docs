@@ -1,4 +1,4 @@
-# GPT-4.1 mini
+# GPT-4.1 Mini
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
@@ -6,10 +6,10 @@
 
 Model ID: `gpt-4.1-mini`
 
-GPT-4.1 mini excels at instruction following and tool calling. It features a 
+GPT-4.1 Mini excels at instruction following and tool calling. It features a
 1M token context window, and low latency without a reasoning step.
 
-Note that we recommend starting with [GPT-5 mini](/api/docs/models/gpt-5-mini) for 
+Note that we recommend starting with [GPT-5 Mini](/api/docs/models/gpt-5-mini) for
 more complex tasks.
 
 ## Model details
@@ -81,13 +81,13 @@ Tools supported by this model when using the Responses API.
 
 | Model | Input | Cached input | Output |
 | --- | ---: | ---: | ---: |
-| GPT-4.1 mini | $0.4 | $0.1 | $1.6 |
-| GPT-4o mini | $0.15 | $0.075 | $0.6 |
-| GPT-5 mini | $0.25 | $0.025 | $2 |
+| GPT-4.1 Mini | $0.4 | $0.1 | $1.6 |
+| GPT-4o Mini | $0.15 | $0.075 | $0.6 |
+| GPT-5 Mini | $0.25 | $0.025 | $2 |
 
 ## Snapshots
 
-Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4.1 mini.
+Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4.1 Mini.
 
 - `gpt-4.1-mini-2025-04-14`
 

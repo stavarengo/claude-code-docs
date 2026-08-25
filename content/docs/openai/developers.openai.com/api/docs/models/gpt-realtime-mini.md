@@ -1,4 +1,4 @@
-# GPT-Realtime mini
+# GPT-Realtime Mini
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
@@ -6,7 +6,7 @@
 
 Model ID: `gpt-realtime-mini`
 
-GPT-Realtime mini is capable of responding to audio and text inputs in realtime over WebRTC, WebSocket, or SIP connections.
+GPT-Realtime Mini is capable of responding to audio and text inputs in realtime over WebRTC, WebSocket, or SIP connections.
 
 ## Model details
 
@@ -60,12 +60,12 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 | Model | Input | Cached input | Output |
 | --- | ---: | ---: | ---: |
-| GPT-Realtime mini | $0.6 | $0.06 | $2.4 |
+| GPT-Realtime Mini | $0.6 | $0.06 | $2.4 |
 | GPT-5 | $1.25 | $0.125 | $10 |
 
 ## Snapshots
 
-Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-Realtime mini.
+Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-Realtime Mini.
 
 - `gpt-realtime-mini-2025-10-06`
 - `gpt-realtime-mini-2025-12-15`

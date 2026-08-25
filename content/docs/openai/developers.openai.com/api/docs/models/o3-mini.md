@@ -75,7 +75,7 @@ Tools supported by this model when using the Responses API.
 | Model | Input | Cached input | Output |
 | --- | ---: | ---: | ---: |
 | o3-mini | $1.1 | $0.55 | $4.4 |
-| GPT-4o mini | $0.15 | $0.075 | $0.6 |
+| GPT-4o Mini | $0.15 | $0.075 | $0.6 |
 | o1-mini | $1.1 | $0.55 | $4.4 |
 
 ## Snapshots

@@ -82,7 +82,7 @@ Tools supported by this model when using the Responses API.
 | Model | Input | Cached input | Output |
 | --- | ---: | ---: | ---: |
 | GPT-4.1 nano | $0.1 | $0.025 | $0.4 |
-| GPT-4.1 mini | $0.4 | $0.1 | $1.6 |
+| GPT-4.1 Mini | $0.4 | $0.1 | $1.6 |
 | GPT-5 nano | $0.05 | $0.005 | $0.4 |
 
 ## Snapshots

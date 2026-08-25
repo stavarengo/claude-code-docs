@@ -1,4 +1,4 @@
-# GPT-4o mini Realtime
+# GPT-4o Mini Realtime
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
@@ -6,7 +6,7 @@
 
 Model ID: `gpt-4o-mini-realtime-preview`
 
-This is a preview release of the GPT-4o-mini Realtime model, capable of responding to audio and text inputs in realtime over WebRTC or a WebSocket interface.
+This is a preview release of the GPT-4o-Mini Realtime model, capable of responding to audio and text inputs in realtime over WebRTC or a WebSocket interface.
 
 ## Model details
 
@@ -66,7 +66,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 ## Snapshots
 
-Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4o mini Realtime.
+Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4o Mini Realtime.
 
 - `gpt-4o-mini-realtime-preview-2024-12-17`
 

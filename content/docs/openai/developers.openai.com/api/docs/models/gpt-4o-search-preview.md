@@ -61,7 +61,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 | Model | Input | Cached input | Output |
 | --- | ---: | ---: | ---: |
 | GPT-4o Search Preview | $2.5 | - | $10 |
-| GPT-4o mini | $0.15 | $0.075 | $0.6 |
+| GPT-4o Mini | $0.15 | $0.075 | $0.6 |
 | GPT-4o | $2.5 | $1.25 | $10 |
 
 ## Snapshots

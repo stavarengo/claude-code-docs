@@ -1,4 +1,4 @@
-# GPT-Realtime-2.1 mini
+# GPT-Realtime-2.1 Mini
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
@@ -6,7 +6,7 @@
 
 Model ID: `gpt-realtime-2.1-mini`
 
-GPT-Realtime-2.1 mini is a distilled reasoning model for faster, lower-cost realtime voice interactions. It supports audio and text inputs over WebRTC, WebSocket, or SIP connections and improves alphanumeric recognition over GPT-Realtime-2.
+GPT-Realtime-2.1 Mini is a distilled reasoning model for faster, lower-cost realtime voice interactions. It supports audio and text inputs over WebRTC, WebSocket, or SIP connections and improves alphanumeric recognition over GPT-Realtime-2.
 
 ## Model details
 
@@ -76,12 +76,12 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 | Model | Input | Cached input | Output |
 | --- | ---: | ---: | ---: |
-| GPT-Realtime-2.1 mini | $0.6 | $0.06 | $2.4 |
-| GPT-Realtime mini | $0.6 | $0.06 | $2.4 |
+| GPT-Realtime-2.1 Mini | $0.6 | $0.06 | $2.4 |
+| GPT-Realtime Mini | $0.6 | $0.06 | $2.4 |
 
 ## Snapshots
 
-Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-Realtime-2.1 mini.
+Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-Realtime-2.1 Mini.
 
 - `gpt-realtime-2.1-mini`
 

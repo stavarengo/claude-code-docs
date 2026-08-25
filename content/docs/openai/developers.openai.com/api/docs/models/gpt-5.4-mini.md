@@ -1,4 +1,4 @@
-# GPT-5.4 mini
+# GPT-5.4 Mini
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
@@ -6,7 +6,7 @@
 
 Model ID: `gpt-5.4-mini`
 
-GPT-5.4 mini brings the strengths of GPT-5.4 to a faster, more efficient
+GPT-5.4 Mini brings the strengths of GPT-5.4 to a faster, more efficient
 model designed for high-volume workloads. Learn more in our
 [Model guidance](/api/docs/guides/latest-model) page. Reasoning.effort supports: none (default), low, medium, high and xhigh.
 
@@ -33,7 +33,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 | Cached input | $0.075 | 1M tokens |
 | Output | $4.5 | 1M tokens |
 
-- Regional processing (data residency) endpoints are charged a 10% uplift for GPT-5.4 mini.
+- Regional processing (data residency) endpoints are charged a 10% uplift for GPT-5.4 Mini.
 
 ## Endpoints
 
@@ -88,13 +88,13 @@ Tools supported by this model when using the Responses API.
 
 | Model | Input | Cached input | Output |
 | --- | ---: | ---: | ---: |
-| GPT-5.4 mini | $0.75 | $0.075 | $4.5 |
+| GPT-5.4 Mini | $0.75 | $0.075 | $4.5 |
 | GPT-5.4 | $2.5 | $0.25 | $15 |
 | GPT-5.4 nano | $0.2 | $0.02 | $1.25 |
 
 ## Snapshots
 
-Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-5.4 mini.
+Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-5.4 Mini.
 
 - `gpt-5.4-mini-2026-03-17`
 

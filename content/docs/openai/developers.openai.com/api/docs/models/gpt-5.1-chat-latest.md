@@ -77,7 +77,7 @@ Tools supported by this model when using the Responses API.
 | --- | ---: | ---: | ---: |
 | GPT-5.1 Chat | $1.25 | $0.125 | $10 |
 | GPT-5 | $1.25 | $0.125 | $10 |
-| GPT-5.4 mini | $0.75 | $0.075 | $4.5 |
+| GPT-5.4 Mini | $0.75 | $0.075 | $4.5 |
 
 ## Snapshots
 
