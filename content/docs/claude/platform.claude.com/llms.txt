@@ -12,7 +12,7 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 612 pages - /docs - Content included below
+- English (en) - 616 pages - /docs - Content included below
 - German (Deutsch) (de) - 205 pages - /docs/de - Visit website for content
 - Spanish (Español) (es) - 205 pages - /docs/es - Visit website for content
 - French (Français) (fr) - 205 pages - /docs/fr - Visit website for content
@@ -249,7 +249,11 @@ The full documentation is available in the following languages on https://platfo
 - [Claude Sonnet 4](https://platform.claude.com/docs/en/release-notes/system-prompts/claude-sonnet-4.md) - Claude Sonnet 4 system prompts
 - [Claude Sonnet 4.5](https://platform.claude.com/docs/en/release-notes/system-prompts/claude-sonnet-4-5.md) - Claude Sonnet 4.5 system prompts
 - [Claude Sonnet 4.6](https://platform.claude.com/docs/en/release-notes/system-prompts/claude-sonnet-4-6.md) - Claude Sonnet 4.6 system prompts
-- [Upgrade between model versions](https://platform.claude.com/docs/en/about-claude/models/migration-guide.md) - Migration guide
+- [Migration guide](https://platform.claude.com/docs/en/models/haiku-4-5/migration-guide.md) - Migrating to Claude Haiku 4.5
+- [Migration guide](https://platform.claude.com/docs/en/models/fable-5/migration-guide.md) - Migrating to Claude Mythos 5 and Claude Fable 5
+- [Migration guide](https://platform.claude.com/docs/en/models/opus-5/migration-guide.md) - Migrating to Claude Opus 5
+- [Migration guide](https://platform.claude.com/docs/en/models/sonnet-5/migration-guide.md) - Migrating to Claude Sonnet 5
+- [Upgrade between model versions](https://platform.claude.com/docs/en/about-claude/models/migration-guide.md) - Migration guides
 - [Model deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations.md)
 - [Model IDs and versioning](https://platform.claude.com/docs/en/about-claude/models/model-ids-and-versions.md)
 - [Optimizing for cost and intelligence](https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence.md)
