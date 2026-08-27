@@ -8965,6 +8965,27 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    PromptCacheKey = "tenant-acme-support-agent",
+    Instructions = "Follow the Acme support policy and escalation rubric.",
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Summarize the current escalation for the on-call lead.")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -10756,6 +10777,26 @@ var response = client.responses().create(params);
 System.out.println(response.status().orElseThrow());
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    BackgroundModeEnabled = true,
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Write a very long novel about otters in space.")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.Status);
+```
+
 ```ruby
 require "openai"
 
@@ -10888,6 +10929,37 @@ response.output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    BackgroundModeEnabled = true,
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Write a very long novel about otters in space.")
+);
+
+ResponseResult created = await client.CreateResponseAsync(options);
+ResponseResult response = await client.GetResponseAsync(created.Id);
+while (response.Status is ResponseStatus.Queued or ResponseStatus.InProgress)
+{
+    await Task.Delay(TimeSpan.FromSeconds(1));
+    response = await client.GetResponseAsync(response.Id);
+}
+if (response.Status != ResponseStatus.Completed)
+{
+    throw new InvalidOperationException($"Background response ended with status: {response.Status}");
+}
+Console.WriteLine($"Status: {response.Status}");
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -10974,6 +11046,19 @@ String responseId = "resp_123";
 var response = client.responses().cancel(responseId);
 
 System.out.println(response.status());
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+string responseId = "resp_123";
+
+ResponseResult response = await client.CancelResponseAsync(responseId);
+Console.WriteLine(response.Status);
 ```
 
 ```ruby
@@ -11174,6 +11259,91 @@ if (!streamCompleted.get()) {
             event ->
                 event.outputTextDelta().ifPresent(delta -> System.out.println(delta.delta())));
   }
+}
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    BackgroundModeEnabled = true,
+    StreamingEnabled = true,
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Write a very long novel about otters in space.")
+);
+
+string? responseId = null;
+int lastSequenceNumber = -1;
+bool completed = false;
+
+void HandleUpdate(StreamingResponseUpdate update)
+{
+    lastSequenceNumber = update.SequenceNumber;
+    switch (update)
+    {
+        case StreamingResponseCreatedUpdate created:
+            responseId = created.Response.Id;
+            break;
+        case StreamingResponseOutputTextDeltaUpdate text:
+            Console.Write(text.Delta);
+            break;
+        case StreamingResponseCompletedUpdate:
+            completed = true;
+            break;
+        case StreamingResponseFailedUpdate:
+            throw new InvalidOperationException("The background response failed.");
+        case StreamingResponseIncompleteUpdate:
+            throw new InvalidOperationException("The background response was incomplete.");
+        case StreamingResponseErrorUpdate error:
+            throw new InvalidOperationException($"The response stream failed: {error.Message}");
+    }
+}
+
+try
+{
+    await foreach (
+        StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options)
+    )
+    {
+        HandleUpdate(update);
+    }
+}
+catch (Exception error)
+    when (error is HttpRequestException or IOException && responseId is not null)
+{
+    // The background response continues after its streaming connection is interrupted.
+}
+
+if (!completed)
+{
+    if (responseId is null)
+    {
+        throw new InvalidOperationException("The response stream ended before providing its ID.");
+    }
+
+    GetResponseOptions resumeOptions = new(responseId)
+    {
+        StartingAfter = lastSequenceNumber,
+        StreamingEnabled = true,
+    };
+    await foreach (StreamingResponseUpdate update in client.GetResponseStreamingAsync(resumeOptions))
+    {
+        HandleUpdate(update);
+    }
+
+    if (!completed)
+    {
+        throw new InvalidOperationException(
+            "The resumed response stream ended before the background response completed."
+        );
+    }
 }
 ```
 
@@ -13364,6 +13534,38 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    ReasoningOptions = new ResponseReasoningOptions
+    {
+        ReasoningEffortLevel = ResponseReasoningEffortLevel.High,
+    },
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        """
+        Find the null pointer exception in this code:
+
+        def display_name(user):
+            return user.profile.name
+
+        print(display_name(None))
+        """
+    )
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby
@@ -25363,6 +25565,56 @@ response.output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CodeInterpreterToolContainer container = new(
+    CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration([])
+);
+CreateResponseOptions options = new()
+{
+    Model = "o3-deep-research",
+    BackgroundModeEnabled = true,
+};
+options.Tools.Add(ResponseTool.CreateWebSearchPreviewTool());
+string vectorStoreId = Environment.GetEnvironmentVariable("OPENAI_EXAMPLE_VECTOR_STORE_ID")
+    ?? throw new InvalidOperationException("Set OPENAI_EXAMPLE_VECTOR_STORE_ID to search your research documents.");
+options.Tools.Add(ResponseTool.CreateFileSearchTool([vectorStoreId]));
+options.Tools.Add(ResponseTool.CreateCodeInterpreterTool(container));
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        """
+        Research the economic impact of semaglutide on global healthcare systems.
+        Do:
+        - Include specific figures, trends, statistics, and measurable outcomes.
+        - Prioritize reliable, up-to-date sources: peer-reviewed research, health
+          organizations (e.g., WHO, CDC), regulatory agencies, or pharmaceutical
+          earnings reports.
+        - Include inline citations and return all source metadata.
+
+        Be analytical, avoid generalities, and ensure that each section supports
+        data-backed reasoning that could inform healthcare policy or financial modeling.
+        """
+    )
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+while (response.Status is ResponseStatus.Queued or ResponseStatus.InProgress)
+{
+    await Task.Delay(TimeSpan.FromSeconds(1));
+    response = await client.GetResponseAsync(response.Id);
+}
+if (response.Status != ResponseStatus.Completed)
+{
+    throw new InvalidOperationException($"Research ended with status: {response.Status}");
+}
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -25600,6 +25852,38 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    Instructions =
+        """
+        You are talking to a user who is asking for a research task to be conducted.
+        Your job is to gather more information to successfully complete the task.
+
+        GUIDELINES:
+        - Gather all necessary information concisely and in a well-structured manner.
+        - Use bullet points or numbered lists when they improve clarity.
+        - Do not ask for unnecessary information or repeat details the user already provided.
+
+        IMPORTANT: Do NOT conduct any research yourself. Gather information that a
+        researcher will use to complete the task.
+        """,
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Research surfboards for me.")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby
@@ -25969,6 +26253,45 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    Instructions =
+        """
+        You will receive a research task from a user. Produce instructions for the
+        researcher who will complete it. Do NOT conduct the research yourself.
+
+        GUIDELINES:
+        1. Maximize specificity and detail. Include every stated preference and all
+           attributes or dimensions the user identifies.
+        2. Treat unstated but necessary dimensions as open-ended. Do not assume an
+           unstated preference or invent details the user did not provide.
+        3. Phrase the research request in the first person, from the user's perspective.
+        4. Request tables whenever they clarify comparisons, project tracking, budgets,
+           competitive analysis, or other structured information.
+        5. Describe the expected output format, including report headers and other
+           formatting needed to keep the research clear and well organized.
+        6. Respond in the user's language unless they explicitly request another one.
+        7. Prioritize reliable primary sources. Prefer official brand or manufacturer
+           websites for products, original papers and journals for scientific questions,
+           and sources published in the language of the user's request.
+        """,
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Research surfboards for me.")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -26175,6 +26498,51 @@ response.output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "o3-deep-research",
+    BackgroundModeEnabled = true,
+    Instructions = "Analyze the Salesforce opportunity notes carefully.",
+    ReasoningOptions = new ResponseReasoningOptions
+    {
+        ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Auto,
+    },
+};
+string serverUrl = Environment.GetEnvironmentVariable("OPENAI_MCP_SERVER_URL")
+    ?? throw new InvalidOperationException("Set OPENAI_MCP_SERVER_URL to connect your research data source.");
+options.Tools.Add(
+    ResponseTool.CreateMcpTool(
+        "mycompany_mcp_server",
+        new Uri(serverUrl),
+        toolCallApprovalPolicy: GlobalMcpToolCallApprovalPolicy.NeverRequireApproval
+    )
+);
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        "What similarities appear in notes for closed or lost Salesforce opportunities?"
+    )
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+while (response.Status is ResponseStatus.Queued or ResponseStatus.InProgress)
+{
+    await Task.Delay(TimeSpan.FromSeconds(1));
+    response = await client.GetResponseAsync(response.Id);
+}
+if (response.Status != ResponseStatus.Completed)
+{
+    throw new InvalidOperationException($"Research ended with status: {response.Status}");
+}
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby
@@ -28632,6 +29000,35 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData fileBytes = BinaryData.FromBytes(await File.ReadAllBytesAsync("draconomicon.pdf"));
+ResponseResult response = await client.CreateResponseAsync(
+    "gpt-5.6",
+    [
+        ResponseItem.CreateUserMessageItem(
+            [
+                ResponseContentPart.CreateInputFilePart(
+                    fileBytes,
+                    "application/pdf",
+                    "draconomicon.pdf"
+                ),
+                ResponseContentPart.CreateInputTextPart(
+                    "What is the first dragon in the book?"
+                ),
+            ]
+        ),
+    ]
+);
+
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -29369,6 +29766,26 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string vectorStoreId = "<vector_store_id>";
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new() { Model = "gpt-5.6" };
+options.Tools.Add(
+    ResponseTool.CreateFileSearchTool([vectorStoreId], maxResultCount: 2)
+);
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("What is deep research by OpenAI?")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -29480,6 +29897,31 @@ client.responses().create(params).output().stream()
     .flatMap(call -> call.results().stream())
     .flatMap(List::stream)
     .forEach(System.out::println);
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string vectorStoreId = "<vector_store_id>";
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new() { Model = "gpt-5.6" };
+options.Tools.Add(ResponseTool.CreateFileSearchTool([vectorStoreId]));
+options.IncludedProperties.Add(IncludedResponseProperty.FileSearchCallResults);
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("What is deep research by OpenAI?")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+foreach (FileSearchCallResponseItem search in response.OutputItems.OfType<FileSearchCallResponseItem>())
+{
+    foreach (FileSearchCallResult result in search.Results)
+    {
+        Console.WriteLine($"{result.Filename}: {result.Text}");
+    }
+}
 ```
 
 ```ruby
@@ -29624,6 +30066,31 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string vectorStoreId = "<vector_store_id>";
+ResponsesClient client = new(key);
+
+BinaryData filters = BinaryData.FromString(
+    """
+    { "type": "in", "key": "category", "value": ["blog", "announcement"] }
+    """
+);
+CreateResponseOptions options = new() { Model = "gpt-5.6" };
+options.Tools.Add(
+    ResponseTool.CreateFileSearchTool([vectorStoreId], filters: filters)
+);
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("What is deep research by OpenAI?")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby
@@ -30493,6 +30960,33 @@ result
         word -> System.out.println(word.word() + ": " + word.start() + " - " + word.end()));
 ```
 
+```csharp
+using OpenAI.Audio;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "whisper-1";
+AudioClient client = new(model, key);
+
+await using FileStream audio = File.OpenRead("speech.wav");
+AudioTranscriptionOptions options = new()
+{
+    ResponseFormat = AudioTranscriptionFormat.Verbose,
+    TimestampGranularities = AudioTimestampGranularities.Word,
+};
+AudioTranscription transcription = await client.TranscribeAudioAsync(
+    audio,
+    "speech.wav",
+    options
+);
+
+foreach (TranscribedWord word in transcription.Words)
+{
+    Console.WriteLine(
+        $"{word.Word}: {word.StartTime.TotalSeconds:0.00}s - {word.EndTime.TotalSeconds:0.00}s"
+    );
+}
+```
+
 ```ruby
 require "openai"
 require "pathname"
@@ -30803,6 +31297,28 @@ try (HttpResponse result =
 }
 ```
 
+```csharp
+using OpenAI.Audio;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "whisper-1";
+AudioClient client = new(model, key);
+
+await using FileStream audio = File.OpenRead("speech.wav");
+AudioTranscriptionOptions options = new()
+{
+    ResponseFormat = AudioTranscriptionFormat.Text,
+    Prompt = "ZyntriQix, Digique Plus, CynapseFive, VortiQore V8, EchoNix Array, OrbitalLink Seven, DigiFractal Matrix, PULSE, RAPT, B.R.I.C.K., Q.U.A.R.T.Z., F.L.I.N.T.",
+};
+AudioTranscription transcription = await client.TranscribeAudioAsync(
+    audio,
+    "speech.wav",
+    options
+);
+
+Console.WriteLine(transcription.Text);
+```
+
 ```ruby
 require "openai"
 require "pathname"
@@ -30999,6 +31515,41 @@ var completion =
 completion.choices().stream()
     .flatMap(choice -> choice.message().content().stream())
     .forEach(System.out::println);
+```
+
+```csharp
+using OpenAI.Audio;
+using OpenAI.Chat;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-4.1";
+ChatClient client = new(model, key);
+
+string transcriptionModel = "gpt-4o-transcribe";
+AudioClient audio = new(transcriptionModel, key);
+
+await using FileStream source = File.OpenRead("speech.wav");
+AudioTranscription transcription = await audio.TranscribeAudioAsync(source, "speech.wav");
+
+string systemPrompt =
+    """
+    You are a helpful assistant for the company ZyntriQix. Correct any
+    spelling discrepancies in the transcribed text. Make sure the names
+    of these products are spelled correctly: ZyntriQix, Digique Plus,
+    CynapseFive, VortiQore V8, EchoNix Array, OrbitalLink Seven,
+    DigiFractal Matrix, PULSE, RAPT, B.R.I.C.K., Q.U.A.R.T.Z., F.L.I.N.T.
+    Only add necessary punctuation such as periods, commas, and
+    capitalization, and use only the context provided.
+    """;
+ChatCompletionOptions correctionOptions = new() { Temperature = 0 };
+ChatCompletion completion = await client.CompleteChatAsync(
+    [
+        new SystemChatMessage(systemPrompt),
+        new UserChatMessage(transcription.Text),
+    ],
+    correctionOptions
+);
+Console.WriteLine(completion.Content[0].Text);
 ```
 
 ```ruby
@@ -31346,6 +31897,28 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using System.ClientModel;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClientOptions clientOptions = new() { NetworkTimeout = TimeSpan.FromMinutes(15) };
+ResponsesClient client = new(new ApiKeyCredential(key), clientOptions);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    Instructions = "List and describe all the metaphors used in this book.",
+    ServiceTier = ResponseServiceTier.Flex,
+};
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("<very long text of book here>"));
+
+using CancellationTokenSource timeout = new(TimeSpan.FromMinutes(15));
+ResponseResult response = await client.CreateResponseAsync(options, timeout.Token);
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby
@@ -34922,6 +35495,29 @@ String encoded =
 Files.write(Path.of("otter.png"), Base64.getDecoder().decode(encoded));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new() { Model = "gpt-5.6" };
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        "Generate an image of a gray tabby cat hugging an otter with an orange scarf."
+    )
+);
+options.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+ImageGenerationCallResponseItem image = response
+    .OutputItems.OfType<ImageGenerationCallResponseItem>()
+    .FirstOrDefault()
+    ?? throw new InvalidOperationException("No generated image was returned.");
+await File.WriteAllBytesAsync("otter.png", image.ImageResultBytes.ToArray());
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -35071,6 +35667,34 @@ String imageResult =
 Path output = Path.of(System.getenv().getOrDefault("OPENAI_EXAMPLE_OUTPUT_PATH", "otter.png"));
 Files.write(output, Base64.getDecoder().decode(imageResult));
 System.out.println(output);
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new() { Model = "gpt-5.6" };
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        "Generate an image of a gray tabby cat hugging an otter with an orange scarf."
+    )
+);
+options.Tools.Add(
+    ResponseTool.CreateImageGenerationTool(
+        model: "gpt-image-2",
+        action: ImageGenerationToolAction.Generate
+    )
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+ImageGenerationCallResponseItem image = response
+    .OutputItems.OfType<ImageGenerationCallResponseItem>()
+    .FirstOrDefault()
+    ?? throw new InvalidOperationException("No generated image was returned.");
+await File.WriteAllBytesAsync("otter.png", image.ImageResultBytes.ToArray());
 ```
 
 ```ruby
@@ -35309,6 +35933,45 @@ Files.write(
             secondImage
                 .result()
                 .orElseThrow(() -> new IllegalStateException("No follow-up image returned"))));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new() { Model = "gpt-5.6" };
+options.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        "Generate an image of a gray tabby cat hugging an otter with an orange scarf."
+    )
+);
+
+ResponseResult first = await client.CreateResponseAsync(options);
+ImageGenerationCallResponseItem initialImage = first
+    .OutputItems.OfType<ImageGenerationCallResponseItem>()
+    .First();
+await File.WriteAllBytesAsync("cat_and_otter.png", initialImage.ImageResultBytes.ToArray());
+
+CreateResponseOptions followUp = new()
+{
+    Model = "gpt-5.6",
+    PreviousResponseId = first.Id,
+};
+followUp.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+followUp.InputItems.Add(ResponseItem.CreateUserMessageItem("Now make it look realistic."));
+
+ResponseResult second = await client.CreateResponseAsync(followUp);
+ImageGenerationCallResponseItem updatedImage = second
+    .OutputItems.OfType<ImageGenerationCallResponseItem>()
+    .First();
+await File.WriteAllBytesAsync(
+    "cat_and_otter_realistic.png",
+    updatedImage.ImageResultBytes.ToArray()
+);
 ```
 
 ```ruby
@@ -35608,6 +36271,42 @@ Files.write(
             secondImage
                 .result()
                 .orElseThrow(() -> new IllegalStateException("No follow-up image returned"))));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new() { Model = "gpt-5.6" };
+options.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        "Generate an image of a gray tabby cat hugging an otter with an orange scarf."
+    )
+);
+
+ResponseResult first = await client.CreateResponseAsync(options);
+ImageGenerationCallResponseItem initialImage = first
+    .OutputItems.OfType<ImageGenerationCallResponseItem>()
+    .First();
+await File.WriteAllBytesAsync("cat_and_otter.png", initialImage.ImageResultBytes.ToArray());
+
+CreateResponseOptions followUp = new() { Model = "gpt-5.6" };
+followUp.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+followUp.InputItems.Add(ResponseItem.CreateUserMessageItem("Now make it look realistic."));
+followUp.InputItems.Add(ResponseItem.CreateReferenceItem(initialImage.Id));
+
+ResponseResult second = await client.CreateResponseAsync(followUp);
+ImageGenerationCallResponseItem updatedImage = second
+    .OutputItems.OfType<ImageGenerationCallResponseItem>()
+    .First();
+await File.WriteAllBytesAsync(
+    "cat_and_otter_realistic.png",
+    updatedImage.ImageResultBytes.ToArray()
+);
 ```
 
 ```ruby
@@ -38094,6 +38793,29 @@ String encoded =
 Files.write(Path.of("otter.png"), Base64.getDecoder().decode(encoded));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new() { Model = "gpt-5.6" };
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        "Generate an image of a gray tabby cat hugging an otter with an orange scarf."
+    )
+);
+options.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+ImageGenerationCallResponseItem image = response
+    .OutputItems.OfType<ImageGenerationCallResponseItem>()
+    .FirstOrDefault()
+    ?? throw new InvalidOperationException("No generated image was returned.");
+await File.WriteAllBytesAsync("otter.png", image.ImageResultBytes.ToArray());
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -38375,6 +39097,45 @@ Files.write(
             secondImage
                 .result()
                 .orElseThrow(() -> new IllegalStateException("No follow-up image returned"))));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new() { Model = "gpt-5.6" };
+options.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        "Generate an image of a gray tabby cat hugging an otter with an orange scarf."
+    )
+);
+
+ResponseResult first = await client.CreateResponseAsync(options);
+ImageGenerationCallResponseItem initialImage = first
+    .OutputItems.OfType<ImageGenerationCallResponseItem>()
+    .First();
+await File.WriteAllBytesAsync("cat_and_otter.png", initialImage.ImageResultBytes.ToArray());
+
+CreateResponseOptions followUp = new()
+{
+    Model = "gpt-5.6",
+    PreviousResponseId = first.Id,
+};
+followUp.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+followUp.InputItems.Add(ResponseItem.CreateUserMessageItem("Now make it look realistic."));
+
+ResponseResult second = await client.CreateResponseAsync(followUp);
+ImageGenerationCallResponseItem updatedImage = second
+    .OutputItems.OfType<ImageGenerationCallResponseItem>()
+    .First();
+await File.WriteAllBytesAsync(
+    "cat_and_otter_realistic.png",
+    updatedImage.ImageResultBytes.ToArray()
+);
 ```
 
 ```ruby
@@ -38676,6 +39437,42 @@ Files.write(
                 .orElseThrow(() -> new IllegalStateException("No follow-up image returned"))));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new() { Model = "gpt-5.6" };
+options.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        "Generate an image of a gray tabby cat hugging an otter with an orange scarf."
+    )
+);
+
+ResponseResult first = await client.CreateResponseAsync(options);
+ImageGenerationCallResponseItem initialImage = first
+    .OutputItems.OfType<ImageGenerationCallResponseItem>()
+    .First();
+await File.WriteAllBytesAsync("cat_and_otter.png", initialImage.ImageResultBytes.ToArray());
+
+CreateResponseOptions followUp = new() { Model = "gpt-5.6" };
+followUp.Tools.Add(ResponseTool.CreateImageGenerationTool(model: "gpt-image-2"));
+followUp.InputItems.Add(ResponseItem.CreateUserMessageItem("Now make it look realistic."));
+followUp.InputItems.Add(ResponseItem.CreateReferenceItem(initialImage.Id));
+
+ResponseResult second = await client.CreateResponseAsync(followUp);
+ImageGenerationCallResponseItem updatedImage = second
+    .OutputItems.OfType<ImageGenerationCallResponseItem>()
+    .First();
+await File.WriteAllBytesAsync(
+    "cat_and_otter_realistic.png",
+    updatedImage.ImageResultBytes.ToArray()
+);
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -38948,6 +39745,27 @@ The following models support the image generation tool:
 - `gpt-4o-mini`
 
 The model used for the image generation process is always a GPT Image model, including `gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`, and `gpt-image-1-mini`, but these models aren't valid values for the `model` field in the Responses API. Use a text-capable mainline model (for example, `gpt-5.5` or `gpt-5`) with the hosted `image_generation` tool.
+
+---
+
+# Image input token and cost calculator
+
+Estimate the input tokens and cost of sending an image to an OpenAI vision model. Select a model, enter your image dimensions, and choose a detail level.
+
+For GPT Image generation and editing costs, use the [image generation calculator](https://developers.openai.com/api/docs/guides/image-generation#calculating-costs).
+
+## Use the calculator
+
+1. Select the vision model you plan to use.
+2. Enter the original image width and height in pixels. The calculator applies the model's resizing rules.
+3. Select an image detail level supported by the model.
+4. Read the image input tokens and estimated cost. Expand **Calculation details** to see the resized dimensions and token calculation.
+
+## Understand the estimate
+
+The estimate covers one image at standard input rates. It excludes other prompt tokens, model output, caching, long-context pricing, and data-residency adjustments. Billing can differ by one token due to rounding.
+
+For the resizing and tokenization rules, see [image input cost calculations](https://developers.openai.com/api/docs/guides/images-vision#calculating-costs). For current model rates and other charges, see [API pricing](https://developers.openai.com/api/docs/pricing).
 
 ---
 
@@ -39952,7 +40770,7 @@ For tasks that require fine visual detail or precise coordinates, such as optica
 
 ### Model sizing behavior
 
-The following table covers the general-purpose vision models available in the [image input cost calculator](#image-input-cost-calculator). Other models and specialized variants can use different limits. All resizing preserves aspect ratio without enlarging smaller images.
+The following table covers the general-purpose vision models available in the [image input cost calculator](https://developers.openai.com/api/docs/guides/image-cost-calculator). Other models and specialized variants can use different limits. All resizing preserves aspect ratio without enlarging smaller images.
 
 <table>
   <tr>
@@ -40040,13 +40858,13 @@ The following table covers the general-purpose vision models available in the [i
 
 ## Calculating costs
 
-Vision models convert image inputs into billable input tokens. The calculator and patch/tile rules in this section cover vision-model inputs, not GPT Image generation or editing. See [GPT Image model inputs](#gpt-image-model-inputs) for that separate pricing.
+Vision models convert image inputs into billable input tokens. The [image input cost calculator](https://developers.openai.com/api/docs/guides/image-cost-calculator) and patch/tile rules in this section cover vision-model inputs, not GPT Image generation or editing. See [GPT Image model inputs](#gpt-image-model-inputs) for that separate pricing.
 
 Image tokens also count toward your [tokens per minute (TPM) limits](https://developers.openai.com/api/docs/guides/rate-limits). The calculator estimates one image at standard input rates; it does not include the rest of your prompt or model output.
 
 ### Image input cost calculator
 
-Estimate input tokens and cost for one image.
+Use the [image input cost calculator](https://developers.openai.com/api/docs/guides/image-cost-calculator) to estimate input tokens and cost for one image by model, image size, and detail level.
 
 ### Patch-based image tokenization
 
@@ -44797,6 +45615,28 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+ResponseResult response = await client.CreateResponseAsync(
+    "gpt-5.6",
+    [
+        ResponseItem.CreateSystemMessageItem(
+            "You are a helpful support assistant. Be concise, accurate, and friendly."
+        ),
+        ResponseItem.CreateUserMessageItem(
+            "Customer name: Acme. Issue: billing question. Write a response to the customer."
+        ),
+    ]
+);
+
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -44988,6 +45828,30 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+static ResponseItem[] BuildSupportPrompt(string customerName, string issue) =>
+[
+    ResponseItem.CreateSystemMessageItem(
+        "You are a helpful support assistant. Be concise, accurate, and friendly. Do not invent policy details."
+    ),
+    ResponseItem.CreateUserMessageItem(
+        $"Customer name: {customerName}. Issue: {issue}. Write a response to the customer."
+    ),
+];
+
+ResponseResult response = await client.CreateResponseAsync(
+    "gpt-5.6",
+    BuildSupportPrompt("Acme", "billing question")
+);
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby
@@ -45934,6 +46798,26 @@ client
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+List<ResponseItem> history =
+[
+    ResponseItem.CreateUserMessageItem("What is the capital of France?"),
+];
+
+ResponseResult first = await client.CreateResponseAsync("gpt-5.6", history);
+history.AddRange(first.OutputItems);
+history.Add(ResponseItem.CreateUserMessageItem("And its population?"));
+
+ResponseResult second = await client.CreateResponseAsync("gpt-5.6", history);
+Console.WriteLine(second.GetOutputText());
 ```
 
 ```ruby
@@ -46978,6 +47862,23 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new() { Model = "gpt-5.6" };
+options.Tools.Add(ResponseTool.CreateWebSearchTool());
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Who is the current president of France?")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby
@@ -50699,6 +51600,41 @@ client.chat().completions().create(params).choices().stream()
     .forEach(System.out::println);
 ```
 
+```csharp
+using OpenAI.Chat;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-4.1";
+ChatClient client = new(model, key);
+
+string code =
+    """
+    class User {
+      firstName = "";
+      lastName = "";
+      username = "";
+    }
+
+    export default User;
+    """;
+ChatCompletionOptions options = new()
+{
+    OutputPrediction = ChatOutputPrediction.CreateStaticContentPrediction(code),
+};
+ChatCompletion completion = await client.CompleteChatAsync(
+    [
+        new UserChatMessage(
+            "Replace the username property with an email property. Respond only with code, and with no markdown formatting."
+        ),
+        new UserChatMessage(code),
+    ],
+    options
+);
+
+Console.WriteLine(completion.Content[0].Text);
+```
+
 ```ruby
 require "openai"
 
@@ -50956,6 +51892,48 @@ try (StreamResponse<ChatCompletionChunk> stream =
       .flatMap(chunk -> chunk.choices().stream())
       .flatMap(choice -> choice.delta().content().stream())
       .forEach(System.out::print);
+}
+```
+
+```csharp
+using OpenAI.Chat;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-4.1";
+ChatClient client = new(model, key);
+
+string code =
+    """
+    class User {
+      firstName = "";
+      lastName = "";
+      username = "";
+    }
+
+    export default User;
+    """;
+ChatCompletionOptions options = new()
+{
+    OutputPrediction = ChatOutputPrediction.CreateStaticContentPrediction(code),
+};
+
+await foreach (
+    StreamingChatCompletionUpdate update in client.CompleteChatStreamingAsync(
+        [
+            new UserChatMessage(
+                "Replace the username property with an email property. Respond only with code, and with no markdown formatting."
+            ),
+            new UserChatMessage(code),
+        ],
+        options
+    )
+)
+{
+    foreach (ChatMessageContentPart part in update.ContentUpdate)
+    {
+        Console.Write(part.Text);
+    }
 }
 ```
 
@@ -53469,6 +54447,27 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+string instructions = await File.ReadAllTextAsync("prompt.txt");
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    Instructions = instructions,
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("How would I declare a variable for a last name?")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby
@@ -60662,6 +61661,57 @@ if (response.status().filter(ResponseStatus.INCOMPLETE::equals).isPresent()
 }
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    MaxOutputTokenCount = 300,
+    ReasoningOptions = new ResponseReasoningOptions
+    {
+        ReasoningEffortLevel = ResponseReasoningEffortLevel.Medium,
+    },
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Write a bash script that transposes a matrix.")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+if (
+    response.Status == ResponseStatus.Incomplete
+    && response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.MaxOutputTokens
+)
+{
+    Console.WriteLine("The response ended before all output tokens were generated.");
+    string partialOutput = response.GetOutputText();
+    Console.WriteLine(
+        string.IsNullOrWhiteSpace(partialOutput)
+            ? "Ran out of tokens during reasoning."
+            : $"Partial output: {partialOutput}"
+    );
+}
+else if (
+    response.Status == ResponseStatus.Incomplete
+    && response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.ContentFilter
+)
+{
+    Console.WriteLine("The response was interrupted by the content filter.");
+}
+else if (response.Status == ResponseStatus.Completed)
+{
+    Console.WriteLine(response.GetOutputText());
+}
+else
+{
+    throw new InvalidOperationException($"The response ended with status: {response.Status}");
+}
+```
+
 ```ruby
 require "openai"
 
@@ -61225,6 +62275,32 @@ client.responses().create(params).output().stream()
     .forEach(summary -> System.out.println(summary.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    ReasoningOptions = new ResponseReasoningOptions
+    {
+        ReasoningEffortLevel = ResponseReasoningEffortLevel.Low,
+        ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Auto,
+    },
+};
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("What is the capital of France?"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+foreach (ReasoningResponseItem reasoning in response.OutputItems.OfType<ReasoningResponseItem>())
+{
+    Console.WriteLine(reasoning.GetSummaryText());
+}
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -61650,6 +62726,47 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+string prompt =
+    """
+    Instructions:
+    - Given the React component below, make nonfiction book titles red.
+    - Return only the updated component code in your reply.
+    - Do not include any additional formatting, such as markdown code blocks.
+    - For formatting, use four space tabs, and do not allow any lines of code to
+      exceed 80 columns.
+
+    const books = [
+      { title: 'Dune', category: 'fiction', id: 1 },
+      { title: 'Frankenstein', category: 'fiction', id: 2 },
+      { title: 'Moneyball', category: 'nonfiction', id: 3 },
+    ];
+
+    export default function BookList() {
+      const listItems = books.map(book =>
+        <li>
+          {book.title}
+        </li>
+      );
+
+      return (
+        <ul>{listItems}</ul>
+      );
+    }
+    """;
+ResponseResult response = await client.CreateResponseAsync(
+    "gpt-5.6",
+    [ResponseItem.CreateUserMessageItem(prompt)]
+);
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -61953,6 +63070,25 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+string prompt =
+    """
+    What are three compounds we should investigate to advance research into
+    new antibiotics? Why should we consider them?
+    """;
+ResponseResult response = await client.CreateResponseAsync(
+    "gpt-5.6",
+    [ResponseItem.CreateUserMessageItem(prompt)]
+);
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby
@@ -71161,6 +72297,58 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using System.Text.Json;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "explanation": { "type": "string" },
+              "output": { "type": "string" }
+            },
+            "required": ["explanation", "output"],
+            "additionalProperties": false
+          }
+        },
+        "final_answer": { "type": "string" }
+      },
+      "required": ["steps", "final_answer"],
+      "additionalProperties": false
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "math_response",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(ResponseItem.CreateSystemMessageItem("You are a helpful math tutor. Guide the user through the solution step by step."));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("How can I solve 8x + 7 = -23?"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+using JsonDocument parsed = JsonDocument.Parse(response.GetOutputText());
+Console.WriteLine(parsed.RootElement);
+```
+
 ```ruby
 require "openai"
 
@@ -71498,6 +72686,60 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using System.Text.Json;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "authors": { "type": "array", "items": { "type": "string" } },
+        "abstract": { "type": "string" },
+        "keywords": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["title", "authors", "abstract", "keywords"],
+      "additionalProperties": false
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "research_paper",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(ResponseItem.CreateSystemMessageItem("Extract the title, authors, abstract, and keywords from the research paper."));
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        """
+        Attention Is All You Need by Ashish Vaswani, Noam Shazeer,
+        Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez,
+        Łukasz Kaiser, and Illia Polosukhin. We propose the
+        Transformer, a sequence transduction architecture based
+        entirely on attention. Keywords: transformers, attention,
+        sequence transduction.
+        """
+    )
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+using JsonDocument parsed = JsonDocument.Parse(response.GetOutputText());
+Console.WriteLine(parsed.RootElement);
 ```
 
 ```ruby
@@ -71858,6 +73100,67 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using System.Text.Json;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "ui": { "$ref": "#/$defs/component" }
+      },
+      "required": ["ui"],
+      "additionalProperties": false,
+      "$defs": {
+        "component": {
+          "type": "object",
+          "properties": {
+            "type": { "type": "string", "enum": ["div", "button", "header", "section", "field", "form"] },
+            "label": { "type": "string" },
+            "children": { "type": "array", "items": { "$ref": "#/$defs/component" } },
+            "attributes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": { "name": { "type": "string" }, "value": { "type": "string" } },
+                "required": ["name", "value"],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": ["type", "label", "children", "attributes"],
+          "additionalProperties": false
+        }
+      }
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "ui",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(ResponseItem.CreateSystemMessageItem("You are a UI generator. Convert the user request into a component tree."));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("Make a User Profile Form"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+using JsonDocument parsed = JsonDocument.Parse(response.GetOutputText());
+Console.WriteLine(parsed.RootElement);
 ```
 
 ```ruby
@@ -72268,6 +73571,51 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using System.Text.Json;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "is_violating": { "type": "boolean" },
+        "category": {
+          "type": ["string", "null"],
+          "enum": ["violence", "sexual", "self_harm", null]
+        },
+        "explanation_if_violating": { "type": ["string", "null"] }
+      },
+      "required": ["is_violating", "category", "explanation_if_violating"],
+      "additionalProperties": false
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "content_compliance",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(ResponseItem.CreateSystemMessageItem("Determine whether the user input violates content guidelines."));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("How do I prepare for a job interview?"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+using JsonDocument parsed = JsonDocument.Parse(response.GetOutputText());
+Console.WriteLine(parsed.RootElement);
+```
+
 ```ruby
 require "openai"
 
@@ -72638,6 +73986,58 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using System.Text.Json;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "explanation": { "type": "string" },
+              "output": { "type": "string" }
+            },
+            "required": ["explanation", "output"],
+            "additionalProperties": false
+          }
+        },
+        "final_answer": { "type": "string" }
+      },
+      "required": ["steps", "final_answer"],
+      "additionalProperties": false
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "math_response",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(ResponseItem.CreateSystemMessageItem("You are a helpful math tutor. Guide the user through the solution step by step."));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("How can I solve 8x + 7 = -23?"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+using JsonDocument parsed = JsonDocument.Parse(response.GetOutputText());
+Console.WriteLine(parsed.RootElement);
 ```
 
 ```ruby
@@ -73065,6 +74465,77 @@ if (content.refusal().isPresent()) {
 }
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "explanation": { "type": "string" },
+              "output": { "type": "string" }
+            },
+            "required": ["explanation", "output"],
+            "additionalProperties": false
+          }
+        },
+        "final_answer": { "type": "string" }
+      },
+      "required": ["steps", "final_answer"],
+      "additionalProperties": false
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    MaxOutputTokenCount = 300,
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "math_response",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(ResponseItem.CreateSystemMessageItem("You are a helpful math tutor. Guide the user through the solution step by step."));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("How can I solve 8x + 7 = -23?"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+if (
+    response.Status == ResponseStatus.Incomplete
+    && response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.MaxOutputTokens
+)
+{
+    throw new InvalidOperationException("The structured response was incomplete.");
+}
+if (
+    response.Status == ResponseStatus.Incomplete
+    && response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.ContentFilter
+)
+{
+    throw new InvalidOperationException("The structured response was interrupted by the content filter.");
+}
+MessageResponseItem message = response.OutputItems.OfType<MessageResponseItem>().FirstOrDefault()
+    ?? throw new InvalidOperationException("The response did not include an output message.");
+ResponseContentPart content = message.Content.FirstOrDefault()
+    ?? throw new InvalidOperationException("The response did not include output content.");
+Console.WriteLine(
+    content.Kind == ResponseContentPartKind.Refusal ? content.Refusal : content.Text
+);
+```
+
 ```ruby
 require "openai"
 
@@ -73369,6 +74840,64 @@ for (var output : response.output()) {
       content.outputText().ifPresent(text -> System.out.println(text.text()));
     }
   }
+}
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+BinaryData schema = BinaryData.FromString(
+    """
+    {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "explanation": { "type": "string" },
+              "output": { "type": "string" }
+            },
+            "required": ["explanation", "output"],
+            "additionalProperties": false
+          }
+        },
+        "final_answer": { "type": "string" }
+      },
+      "required": ["steps", "final_answer"],
+      "additionalProperties": false
+    }
+    """
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
+            "math_response",
+            schema,
+            jsonSchemaIsStrict: true
+        ),
+    },
+};
+options.InputItems.Add(ResponseItem.CreateSystemMessageItem("You are a helpful math tutor. Guide the user through the solution step by step."));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("How can I solve 8x + 7 = -23?"));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+foreach (MessageResponseItem message in response.OutputItems.OfType<MessageResponseItem>())
+{
+    foreach (ResponseContentPart content in message.Content)
+    {
+        Console.WriteLine(
+            content.Kind == ResponseContentPartKind.Refusal ? content.Refusal : content.Text
+        );
+    }
 }
 ```
 
@@ -74447,6 +75976,55 @@ try {
   }
 } catch (OpenAIServiceException error) {
   System.out.println("Request failed: " + error.getMessage());
+}
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    TextOptions = new ResponseTextOptions
+    {
+        TextFormat = ResponseTextFormat.CreateJsonObjectFormat(),
+    },
+};
+options.InputItems.Add(ResponseItem.CreateSystemMessageItem("You are a helpful assistant designed to output JSON."));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("Who won the World Series in 2020? Respond with the winner in JSON."));
+
+ResponseResult response = await client.CreateResponseAsync(options);
+if (
+    response.Status == ResponseStatus.Incomplete
+    && response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.MaxOutputTokens
+)
+{
+    Console.WriteLine("The response was truncated before the JSON completed.");
+}
+else if (
+    response.Status == ResponseStatus.Incomplete
+    && response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.ContentFilter
+)
+{
+    Console.WriteLine("The response was interrupted by the content filter.");
+}
+else if (response.Status == ResponseStatus.Completed)
+{
+    MessageResponseItem message = response.OutputItems.OfType<MessageResponseItem>().FirstOrDefault()
+        ?? throw new InvalidOperationException("The response did not include an output message.");
+    ResponseContentPart content = message.Content.FirstOrDefault()
+        ?? throw new InvalidOperationException("The response did not include output content.");
+    Console.WriteLine(
+        content.Kind == ResponseContentPartKind.Refusal ? content.Refusal : content.Text
+    );
+}
+else
+{
+    throw new InvalidOperationException($"The response ended with status: {response.Status}");
 }
 ```
 
@@ -81300,6 +82878,31 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.2",
+    ReasoningOptions = new ResponseReasoningOptions
+    {
+        ReasoningEffortLevel = ResponseReasoningEffortLevel.None,
+    },
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        "Think carefully and outline your steps before answering. How much gold would it take to coat the Statue of Liberty in a 1mm layer?"
+    )
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -83064,6 +84667,31 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.4",
+    ReasoningOptions = new ResponseReasoningOptions
+    {
+        ReasoningEffortLevel = ResponseReasoningEffortLevel.None,
+    },
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        "Think carefully and outline your steps before answering. How much gold would it take to coat the Statue of Liberty in a 1mm layer?"
+    )
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby
@@ -91877,6 +93505,26 @@ var response = client.responses().create(params);
 System.out.println(response.status().orElseThrow());
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    BackgroundModeEnabled = true,
+};
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Write a very long novel about otters in space.")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.Status);
+```
+
 ```ruby
 require "openai"
 
@@ -92641,6 +94289,26 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+ResponseResult response = await client.CreateResponseAsync(
+    "gpt-5.6",
+    [
+        ResponseItem.CreateDeveloperMessageItem(
+            "Categorize the IT support ticket as Hardware, Software, or Other. Respond with only one of those words."
+        ),
+        ResponseItem.CreateUserMessageItem("My monitor will not turn on. Help!"),
+    ]
+);
+
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby
@@ -93923,7 +95591,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.52.0</version>
+  <version>4.54.0</version>
 </dependency>
 ```
 
@@ -95554,6 +97222,8 @@ Multimodal models
 
 
 
+To estimate vision model input costs, use the [image input cost
+calculator](https://developers.openai.com/api/docs/guides/image-cost-calculator).
 
 
   
@@ -96094,7 +97764,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.52.0</version>
+  <version>4.54.0</version>
 </dependency>
 ```
 
@@ -97362,6 +99032,32 @@ client.responses().create(params).output().stream()
     .flatMap(message -> message.content().stream())
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CodeInterpreterToolContainer container = new(
+    CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration([])
+);
+CreateResponseOptions options = new()
+{
+    Model = "gpt-5.6",
+    Instructions = "You are a personal math tutor. Write and run code to answer math questions.",
+};
+options.Tools.Add(ResponseTool.CreateCodeInterpreterTool(container));
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem(
+        "I need to solve the equation 3x + 11 = 14. Can you help me?"
+    )
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby

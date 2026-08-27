@@ -96,6 +96,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Guardrails and human review](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals.md): Learn how to use guardrails and human review in the OpenAI Agents SDK for safer, more controlled workflows.
 - [Image generation](https://developers.openai.com/api/docs/guides/image-generation.md): Learn how to generate or edit images with the OpenAI API and image generation models.
 - [Image generation](https://developers.openai.com/api/docs/guides/tools-image-generation.md): Allow models to generate or edit images.
+- [Image input token and cost calculator](https://developers.openai.com/api/docs/guides/image-cost-calculator.md): Estimate image input tokens and API costs for OpenAI vision models by model, image dimensions, and detail level.
 - [Images and vision](https://developers.openai.com/api/docs/guides/images-vision.md): Learn how to understand or generate images with the OpenAI API.
 - [Import and reconcile OpenAI resources](https://developers.openai.com/api/docs/guides/terraform/import-and-reconcile.md): Import existing OpenAI resources into Terraform, inspect current state, reconcile drift, and understand removal behavior.
 - [Integrations and observability](https://developers.openai.com/api/docs/guides/agents/integrations-observability.md): Learn how to integrate MCP into Agents SDK workflows and how to trace and debug runs.

@@ -1859,7 +1859,7 @@ class ClaudeSDKError(Exception):
     """Base error for Claude SDK."""
 ```
 
-When a single-shot `query()` ends with an error result, for example a turn-limit error, the SDK raises a plain `Exception` after yielding the final result message, not a `ClaudeSDKError` subclass.
+When a single-shot `query()` ends with an error result, for example a turn-limit error, the SDK raises a [`ResultError`](#resulterror) after yielding the final result message. Python Agent SDK versions before 0.2.140 raised a plain `Exception` that wasn't a `ClaudeSDKError` subclass.
 
 ### `CLINotFoundError`
 
@@ -1898,6 +1898,23 @@ class ProcessError(ClaudeSDKError):
         self.exit_code = exit_code
         self.stderr = stderr
 ```
+
+### `ResultError`
+
+Raised after the final [`ResultMessage`](#resultmessage) when the Claude Code process exits because the run ended with an error result, such as a turn-limit error or an API error. `ResultError` subclasses `ProcessError`, so an existing `except ProcessError` handler also catches it. Its attributes carry the fields of that result message, so you can branch on why the run failed without parsing the message text. Requires Python Agent SDK 0.2.140 or later.
+
+```python theme={null}
+class ResultError(ProcessError):
+    subtype: str | None  # "error_max_turns", "error_during_execution", ...; "success" when the run ended on a failed request
+    errors: list[str]  # an empty list when the result message reported none
+    result: str | None
+    api_error_status: int | None
+    terminal_reason: str | None  # "max_turns", "api_error", ...; check this before subtype
+    session_id: str | None
+    data: dict[str, Any]  # the raw result message payload
+```
+
+To tell failures apart, check `terminal_reason` before `subtype`. When the final request fails, such as on an API error, Claude Code reports `subtype` `"success"` with the cause in `terminal_reason`, for example `"api_error"`; when a limit you set ends the run, such as `max_turns` or `max_budget_usd`, it reports an `error_*` subtype.
 
 ### `CLIJSONDecodeError`
 
@@ -3351,10 +3368,18 @@ asyncio.run(create_project())
 
 ### Error handling
 
+This example catches [`ResultError`](#resulterror), which requires Python Agent SDK 0.2.140 or later.
+
 ```python theme={null}
 import asyncio
 
-from claude_agent_sdk import query, CLINotFoundError, ProcessError, CLIJSONDecodeError
+from claude_agent_sdk import (
+    query,
+    CLINotFoundError,
+    ProcessError,
+    ResultError,
+    CLIJSONDecodeError,
+)
 
 
 async def main():
@@ -3365,13 +3390,18 @@ async def main():
         print(
             "Claude Code CLI not found. Try reinstalling: pip install --force-reinstall claude-agent-sdk"
         )
+    # Catch ResultError before ProcessError, which it subclasses. Its message
+    # carries the error text. A failed final request, such as an API error,
+    # arrives with subtype "success", so branch on terminal_reason first.
+    except ResultError as e:
+        if e.terminal_reason == "api_error":
+            print(f"API request failed: {e}")
+        else:
+            print(f"Query ended with an error result ({e.terminal_reason or e.subtype}): {e}")
     except ProcessError as e:
         print(f"Process failed with exit code: {e.exit_code}")
     except CLIJSONDecodeError as e:
         print(f"Failed to parse response: {e}")
-    # A single-shot query() raises a plain Exception after yielding an error result
-    except Exception as e:
-        print(f"Query ended with an error result: {e}")
 
 
 asyncio.run(main())
