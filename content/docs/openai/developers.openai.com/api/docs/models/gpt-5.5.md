@@ -6,7 +6,7 @@
 
 Model ID: `gpt-5.5`
 
-GPT-5.5 is our newest frontier model for the most complex professional work.
+GPT-5.5 is a flagship model for the most complex professional work.
 Learn more in our [GPT-5.5 model guidance](/api/docs/guides/latest-model?model=gpt-5.5). Reasoning.effort supports: none, low, medium (default), high and xhigh.
 
 ## Model details

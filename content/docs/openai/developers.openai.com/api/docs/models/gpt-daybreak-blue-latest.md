@@ -2,11 +2,11 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-> An alias for frontier general-purpose models with safeguards for defensive cybersecurity work.
+> An alias for flagship general-purpose models with safeguards for defensive cybersecurity work.
 
-Model ID: `daybreak-blue-latest`
+Model ID: `gpt-daybreak-blue-latest`
 
-An alias for our frontier general-purpose models, with safeguards calibrated
+An alias for our flagship general-purpose models, with safeguards calibrated
 for defensive cybersecurity work.
 
 This model requires separate approval and provisioning, you can apply to join the Daybreak program [here](https://openai.com/daybreak/). More details on pricing [here](https://developers.openai.com/api/docs/pricing).

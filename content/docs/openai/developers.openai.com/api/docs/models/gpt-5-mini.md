@@ -2,7 +2,7 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-> Near-frontier intelligence for cost sensitive, low latency, high volume workloads
+> Strong intelligence for cost sensitive, low latency, high volume workloads
 
 Model ID: `gpt-5-mini`
 

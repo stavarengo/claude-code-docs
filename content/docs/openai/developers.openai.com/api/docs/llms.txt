@@ -17,12 +17,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Sending and returning files with GPT Actions](https://developers.openai.com/api/docs/actions/sending-files.md): Learn how to send and return files using GPT Actions in the OpenAI API.
 
 ## Assistants
-- [Assistants API deep dive](https://developers.openai.com/api/docs/assistants/deep-dive.md): A detailed guide to creating and managing assistants with the Assistants API on the OpenAI platform.
-- [Assistants API tools](https://developers.openai.com/api/docs/assistants/tools.md): Learn about the tools available for OpenAI Assistants, including file search, code interpreter, and function calling.
-- [Assistants Code Interpreter](https://developers.openai.com/api/docs/assistants/tools/code-interpreter.md): Allow assistants to run Python code with the Code Interpreter tool.
-- [Assistants File Search](https://developers.openai.com/api/docs/assistants/tools/file-search.md): Use File Search as a built-in RAG tool for assistants.
-- [Assistants Function Calling](https://developers.openai.com/api/docs/assistants/tools/function-calling.md): Use function calling to extend assistants with your own tools.
-- [Assistants migration guide](https://developers.openai.com/api/docs/assistants/migration.md): Guidance for migrating from the Assistants API to the Responses API, including side-by-side comparisons and updated patterns.
+- [Assistants migration guide](https://developers.openai.com/api/docs/assistants/migration.md): Migrate from the retired Assistants API to the Responses API, with side-by-side comparisons and updated patterns.
 
 ## Bots
 - [Overview of OpenAI Crawlers](https://developers.openai.com/api/docs/bots.md)

@@ -4,7 +4,7 @@
 
 > An alias for advanced cybersecurity models for authorized vulnerability research and security testing.
 
-Model ID: `daybreak-red-latest`
+Model ID: `gpt-daybreak-red-latest`
 
 An alias for our most advanced purpose-trained cybersecurity models, for
 approved defenders conducting advanced, authorized vulnerability research,

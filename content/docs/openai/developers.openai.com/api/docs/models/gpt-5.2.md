@@ -2,11 +2,11 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-> Previous frontier model for professional work with configurable reasoning effort
+> Previous flagship model for professional work with configurable reasoning effort
 
 Model ID: `gpt-5.2`
 
-GPT-5.2 is our previous frontier model for complex professional work.
+GPT-5.2 is our previous flagship model for complex professional work.
 We recommend using the latest [GPT-5.6](/api/docs/models/gpt-5.6-sol). Learn more on the [Model guidance](/api/docs/guides/latest-model) page. Reasoning.effort supports: none (default), low, medium, high and xhigh.
 
 ## Model details

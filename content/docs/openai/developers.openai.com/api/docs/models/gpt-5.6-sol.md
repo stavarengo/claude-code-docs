@@ -2,11 +2,11 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-> Frontier model for complex professional work
+> Flagship model for complex professional work
 
 Model ID: `gpt-5.6-sol`
 
-GPT-5.6 Sol is the frontier model in the GPT-5.6 family. It roughly
+GPT-5.6 Sol is a flagship model in the GPT-5.6 family. It roughly
 corresponds to the unsuffixed model tier used in earlier GPT-5 families.
 The `gpt-5.6` alias routes requests to GPT-5.6 Sol.
 Reasoning.effort supports: none, low, medium (default), high, xhigh, and max.

@@ -6,7 +6,7 @@
 
 Model ID: `gpt-5.4`
 
-GPT-5.4 is our frontier model for complex professional work.
+GPT-5.4 is a flagship model for complex professional work.
 Learn more in our [GPT-5.4 model guidance](/api/docs/guides/latest-model?model=gpt-5.4). Reasoning.effort supports: none (default), low, medium, high and xhigh.
 
 ## Model details
