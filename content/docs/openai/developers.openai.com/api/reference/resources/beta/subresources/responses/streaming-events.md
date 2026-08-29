@@ -590,9 +590,6 @@ Schema name: `BetaResponseCreatedEvent`
                   },
                   {
                     "ident": "agent"
-                  },
-                  {
-                    "ident": "prompt_cache_breakpoint"
                   }
                 ]
               },
@@ -3272,9 +3269,6 @@ Schema name: `BetaResponseCreatedEvent`
               },
               {
                 "ident": "agent"
-              },
-              {
-                "ident": "prompt_cache_breakpoint"
               }
             ]
           },
@@ -5025,9 +5019,6 @@ Schema name: `BetaResponseCreatedEvent`
         },
         {
           "ident": "agent"
-        },
-        {
-          "ident": "prompt_cache_breakpoint"
         }
       ]
     },
@@ -5037,8 +5028,7 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) role",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) type",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) agent",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) agent"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 16": {
@@ -6072,9 +6062,6 @@ Schema name: `BetaResponseCreatedEvent`
             },
             {
               "ident": "agent"
-            },
-            {
-              "ident": "prompt_cache_breakpoint"
             }
           ]
         },
@@ -8951,9 +8938,6 @@ Schema name: `BetaResponseCreatedEvent`
         },
         {
           "ident": "agent"
-        },
-        {
-          "ident": "prompt_cache_breakpoint"
         }
       ]
     },
@@ -8963,8 +8947,7 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) type",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) id",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) agent",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) agent"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15": {
@@ -13913,29 +13896,6 @@ Schema name: `BetaResponseCreatedEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) agent > (property) agent_name"
-    ]
-  },
-  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaAdditionalTools/properties/prompt_cache_breakpoint",
-    "deprecated": false,
-    "key": "prompt_cache_breakpoint",
-    "docstring": "Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.",
-    "title": "Prompt cache breakpoint",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "mode"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 16 > (property) id": {
@@ -22129,29 +22089,6 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) agent > (property) agent_name"
     ]
   },
-  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaAdditionalToolsItemParam/properties/prompt_cache_breakpoint",
-    "deprecated": false,
-    "key": "prompt_cache_breakpoint",
-    "docstring": "An explicit cache breakpoint after these tool definitions. Requires a non-empty tools list.",
-    "title": "Prompt cache breakpoint",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "mode"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint > (property) mode"
-    ]
-  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) id": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaReasoningItem/properties/id",
@@ -28301,31 +28238,6 @@ Schema name: `BetaResponseCreatedEvent`
     "schemaType": "string",
     "children": []
   },
-  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaPromptCacheBreakpointConfig/properties/mode",
-    "deprecated": false,
-    "key": "mode",
-    "docstring": "The breakpoint mode. Always `explicit`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaPromptCacheBreakpointConfig/properties/mode",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "explicit"
-        }
-      ]
-    },
-    "default": "explicit",
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode > (member) 0"
-    ]
-  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 16 > (property) type > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -34417,31 +34329,6 @@ Schema name: `BetaResponseCreatedEvent`
     "nullable": false,
     "schemaType": "string",
     "children": []
-  },
-  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint > (property) mode": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaPromptCacheBreakpointParam/properties/mode",
-    "deprecated": false,
-    "key": "mode",
-    "docstring": "The breakpoint mode. Always `explicit`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaPromptCacheBreakpointParam/properties/mode",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "explicit"
-        }
-      ]
-    },
-    "default": "explicit",
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint > (property) mode > (member) 0"
-    ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) summary > (items) > (property) text": {
     "kind": "HttpDeclProperty",
@@ -41529,13 +41416,6 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 1"
     ]
-  },
-  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "explicit"
-    }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 18 > (property) outputs > (items) > (variant) 0 > (property) logs": {
     "kind": "HttpDeclProperty",
@@ -48803,13 +48683,6 @@ Schema name: `BetaResponseCreatedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 1"
     ]
-  },
-  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint > (property) mode > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "explicit"
-    }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) summary > (items) > (property) type > (member) 0": {
     "kind": "HttpDeclReference",
@@ -64943,9 +64816,6 @@ Schema name: `BetaResponseInProgressEvent`
                   },
                   {
                     "ident": "agent"
-                  },
-                  {
-                    "ident": "prompt_cache_breakpoint"
                   }
                 ]
               },
@@ -67625,9 +67495,6 @@ Schema name: `BetaResponseInProgressEvent`
               },
               {
                 "ident": "agent"
-              },
-              {
-                "ident": "prompt_cache_breakpoint"
               }
             ]
           },
@@ -69378,9 +69245,6 @@ Schema name: `BetaResponseInProgressEvent`
         },
         {
           "ident": "agent"
-        },
-        {
-          "ident": "prompt_cache_breakpoint"
         }
       ]
     },
@@ -69390,8 +69254,7 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) role",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) type",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) agent",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) agent"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 16": {
@@ -70425,9 +70288,6 @@ Schema name: `BetaResponseInProgressEvent`
             },
             {
               "ident": "agent"
-            },
-            {
-              "ident": "prompt_cache_breakpoint"
             }
           ]
         },
@@ -73304,9 +73164,6 @@ Schema name: `BetaResponseInProgressEvent`
         },
         {
           "ident": "agent"
-        },
-        {
-          "ident": "prompt_cache_breakpoint"
         }
       ]
     },
@@ -73316,8 +73173,7 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) type",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) id",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) agent",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) agent"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15": {
@@ -78266,29 +78122,6 @@ Schema name: `BetaResponseInProgressEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) agent > (property) agent_name"
-    ]
-  },
-  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaAdditionalTools/properties/prompt_cache_breakpoint",
-    "deprecated": false,
-    "key": "prompt_cache_breakpoint",
-    "docstring": "Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.",
-    "title": "Prompt cache breakpoint",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "mode"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 16 > (property) id": {
@@ -86482,29 +86315,6 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) agent > (property) agent_name"
     ]
   },
-  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaAdditionalToolsItemParam/properties/prompt_cache_breakpoint",
-    "deprecated": false,
-    "key": "prompt_cache_breakpoint",
-    "docstring": "An explicit cache breakpoint after these tool definitions. Requires a non-empty tools list.",
-    "title": "Prompt cache breakpoint",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "mode"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint > (property) mode"
-    ]
-  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) id": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaReasoningItem/properties/id",
@@ -92654,31 +92464,6 @@ Schema name: `BetaResponseInProgressEvent`
     "schemaType": "string",
     "children": []
   },
-  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaPromptCacheBreakpointConfig/properties/mode",
-    "deprecated": false,
-    "key": "mode",
-    "docstring": "The breakpoint mode. Always `explicit`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaPromptCacheBreakpointConfig/properties/mode",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "explicit"
-        }
-      ]
-    },
-    "default": "explicit",
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode > (member) 0"
-    ]
-  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 16 > (property) type > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -98770,31 +98555,6 @@ Schema name: `BetaResponseInProgressEvent`
     "nullable": false,
     "schemaType": "string",
     "children": []
-  },
-  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint > (property) mode": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaPromptCacheBreakpointParam/properties/mode",
-    "deprecated": false,
-    "key": "mode",
-    "docstring": "The breakpoint mode. Always `explicit`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaPromptCacheBreakpointParam/properties/mode",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "explicit"
-        }
-      ]
-    },
-    "default": "explicit",
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint > (property) mode > (member) 0"
-    ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) summary > (items) > (property) text": {
     "kind": "HttpDeclProperty",
@@ -105882,13 +105642,6 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 1"
     ]
-  },
-  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "explicit"
-    }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 18 > (property) outputs > (items) > (variant) 0 > (property) logs": {
     "kind": "HttpDeclProperty",
@@ -113156,13 +112909,6 @@ Schema name: `BetaResponseInProgressEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 1"
     ]
-  },
-  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint > (property) mode > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "explicit"
-    }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) summary > (items) > (property) type > (member) 0": {
     "kind": "HttpDeclReference",
@@ -129296,9 +129042,6 @@ Schema name: `BetaResponseCompletedEvent`
                   },
                   {
                     "ident": "agent"
-                  },
-                  {
-                    "ident": "prompt_cache_breakpoint"
                   }
                 ]
               },
@@ -131978,9 +131721,6 @@ Schema name: `BetaResponseCompletedEvent`
               },
               {
                 "ident": "agent"
-              },
-              {
-                "ident": "prompt_cache_breakpoint"
               }
             ]
           },
@@ -133731,9 +133471,6 @@ Schema name: `BetaResponseCompletedEvent`
         },
         {
           "ident": "agent"
-        },
-        {
-          "ident": "prompt_cache_breakpoint"
         }
       ]
     },
@@ -133743,8 +133480,7 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) role",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) type",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) agent",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) agent"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 16": {
@@ -134778,9 +134514,6 @@ Schema name: `BetaResponseCompletedEvent`
             },
             {
               "ident": "agent"
-            },
-            {
-              "ident": "prompt_cache_breakpoint"
             }
           ]
         },
@@ -137657,9 +137390,6 @@ Schema name: `BetaResponseCompletedEvent`
         },
         {
           "ident": "agent"
-        },
-        {
-          "ident": "prompt_cache_breakpoint"
         }
       ]
     },
@@ -137669,8 +137399,7 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) type",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) id",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) agent",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) agent"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15": {
@@ -142619,29 +142348,6 @@ Schema name: `BetaResponseCompletedEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) agent > (property) agent_name"
-    ]
-  },
-  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaAdditionalTools/properties/prompt_cache_breakpoint",
-    "deprecated": false,
-    "key": "prompt_cache_breakpoint",
-    "docstring": "Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.",
-    "title": "Prompt cache breakpoint",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "mode"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 16 > (property) id": {
@@ -150835,29 +150541,6 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) agent > (property) agent_name"
     ]
   },
-  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaAdditionalToolsItemParam/properties/prompt_cache_breakpoint",
-    "deprecated": false,
-    "key": "prompt_cache_breakpoint",
-    "docstring": "An explicit cache breakpoint after these tool definitions. Requires a non-empty tools list.",
-    "title": "Prompt cache breakpoint",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "mode"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint > (property) mode"
-    ]
-  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) id": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaReasoningItem/properties/id",
@@ -157007,31 +156690,6 @@ Schema name: `BetaResponseCompletedEvent`
     "schemaType": "string",
     "children": []
   },
-  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaPromptCacheBreakpointConfig/properties/mode",
-    "deprecated": false,
-    "key": "mode",
-    "docstring": "The breakpoint mode. Always `explicit`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaPromptCacheBreakpointConfig/properties/mode",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "explicit"
-        }
-      ]
-    },
-    "default": "explicit",
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode > (member) 0"
-    ]
-  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 16 > (property) type > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -163123,31 +162781,6 @@ Schema name: `BetaResponseCompletedEvent`
     "nullable": false,
     "schemaType": "string",
     "children": []
-  },
-  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint > (property) mode": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaPromptCacheBreakpointParam/properties/mode",
-    "deprecated": false,
-    "key": "mode",
-    "docstring": "The breakpoint mode. Always `explicit`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaPromptCacheBreakpointParam/properties/mode",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "explicit"
-        }
-      ]
-    },
-    "default": "explicit",
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint > (property) mode > (member) 0"
-    ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) summary > (items) > (property) text": {
     "kind": "HttpDeclProperty",
@@ -170235,13 +169868,6 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 1"
     ]
-  },
-  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "explicit"
-    }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 18 > (property) outputs > (items) > (variant) 0 > (property) logs": {
     "kind": "HttpDeclProperty",
@@ -177509,13 +177135,6 @@ Schema name: `BetaResponseCompletedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 1"
     ]
-  },
-  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint > (property) mode > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "explicit"
-    }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) summary > (items) > (property) type > (member) 0": {
     "kind": "HttpDeclReference",
@@ -193666,9 +193285,6 @@ Schema name: `BetaResponseFailedEvent`
                   },
                   {
                     "ident": "agent"
-                  },
-                  {
-                    "ident": "prompt_cache_breakpoint"
                   }
                 ]
               },
@@ -196348,9 +195964,6 @@ Schema name: `BetaResponseFailedEvent`
               },
               {
                 "ident": "agent"
-              },
-              {
-                "ident": "prompt_cache_breakpoint"
               }
             ]
           },
@@ -198101,9 +197714,6 @@ Schema name: `BetaResponseFailedEvent`
         },
         {
           "ident": "agent"
-        },
-        {
-          "ident": "prompt_cache_breakpoint"
         }
       ]
     },
@@ -198113,8 +197723,7 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) role",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) type",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) agent",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) agent"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 16": {
@@ -199148,9 +198757,6 @@ Schema name: `BetaResponseFailedEvent`
             },
             {
               "ident": "agent"
-            },
-            {
-              "ident": "prompt_cache_breakpoint"
             }
           ]
         },
@@ -202027,9 +201633,6 @@ Schema name: `BetaResponseFailedEvent`
         },
         {
           "ident": "agent"
-        },
-        {
-          "ident": "prompt_cache_breakpoint"
         }
       ]
     },
@@ -202039,8 +201642,7 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) type",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) id",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) agent",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) agent"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15": {
@@ -206989,29 +206591,6 @@ Schema name: `BetaResponseFailedEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) agent > (property) agent_name"
-    ]
-  },
-  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaAdditionalTools/properties/prompt_cache_breakpoint",
-    "deprecated": false,
-    "key": "prompt_cache_breakpoint",
-    "docstring": "Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.",
-    "title": "Prompt cache breakpoint",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "mode"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 16 > (property) id": {
@@ -215205,29 +214784,6 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) agent > (property) agent_name"
     ]
   },
-  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaAdditionalToolsItemParam/properties/prompt_cache_breakpoint",
-    "deprecated": false,
-    "key": "prompt_cache_breakpoint",
-    "docstring": "An explicit cache breakpoint after these tool definitions. Requires a non-empty tools list.",
-    "title": "Prompt cache breakpoint",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "mode"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint > (property) mode"
-    ]
-  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) id": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaReasoningItem/properties/id",
@@ -221377,31 +220933,6 @@ Schema name: `BetaResponseFailedEvent`
     "schemaType": "string",
     "children": []
   },
-  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaPromptCacheBreakpointConfig/properties/mode",
-    "deprecated": false,
-    "key": "mode",
-    "docstring": "The breakpoint mode. Always `explicit`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaPromptCacheBreakpointConfig/properties/mode",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "explicit"
-        }
-      ]
-    },
-    "default": "explicit",
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode > (member) 0"
-    ]
-  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 16 > (property) type > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -227493,31 +227024,6 @@ Schema name: `BetaResponseFailedEvent`
     "nullable": false,
     "schemaType": "string",
     "children": []
-  },
-  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint > (property) mode": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaPromptCacheBreakpointParam/properties/mode",
-    "deprecated": false,
-    "key": "mode",
-    "docstring": "The breakpoint mode. Always `explicit`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaPromptCacheBreakpointParam/properties/mode",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "explicit"
-        }
-      ]
-    },
-    "default": "explicit",
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint > (property) mode > (member) 0"
-    ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) summary > (items) > (property) text": {
     "kind": "HttpDeclProperty",
@@ -234605,13 +234111,6 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 1"
     ]
-  },
-  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "explicit"
-    }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 18 > (property) outputs > (items) > (variant) 0 > (property) logs": {
     "kind": "HttpDeclProperty",
@@ -241879,13 +241378,6 @@ Schema name: `BetaResponseFailedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 1"
     ]
-  },
-  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint > (property) mode > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "explicit"
-    }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) summary > (items) > (property) type > (member) 0": {
     "kind": "HttpDeclReference",
@@ -258017,9 +257509,6 @@ Schema name: `BetaResponseIncompleteEvent`
                   },
                   {
                     "ident": "agent"
-                  },
-                  {
-                    "ident": "prompt_cache_breakpoint"
                   }
                 ]
               },
@@ -260699,9 +260188,6 @@ Schema name: `BetaResponseIncompleteEvent`
               },
               {
                 "ident": "agent"
-              },
-              {
-                "ident": "prompt_cache_breakpoint"
               }
             ]
           },
@@ -262452,9 +261938,6 @@ Schema name: `BetaResponseIncompleteEvent`
         },
         {
           "ident": "agent"
-        },
-        {
-          "ident": "prompt_cache_breakpoint"
         }
       ]
     },
@@ -262464,8 +261947,7 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) role",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) type",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) agent",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) agent"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 16": {
@@ -263499,9 +262981,6 @@ Schema name: `BetaResponseIncompleteEvent`
             },
             {
               "ident": "agent"
-            },
-            {
-              "ident": "prompt_cache_breakpoint"
             }
           ]
         },
@@ -266378,9 +265857,6 @@ Schema name: `BetaResponseIncompleteEvent`
         },
         {
           "ident": "agent"
-        },
-        {
-          "ident": "prompt_cache_breakpoint"
         }
       ]
     },
@@ -266390,8 +265866,7 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) type",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) id",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) agent",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) agent"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15": {
@@ -271340,29 +270815,6 @@ Schema name: `BetaResponseIncompleteEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) agent > (property) agent_name"
-    ]
-  },
-  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaAdditionalTools/properties/prompt_cache_breakpoint",
-    "deprecated": false,
-    "key": "prompt_cache_breakpoint",
-    "docstring": "Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.",
-    "title": "Prompt cache breakpoint",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "mode"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 16 > (property) id": {
@@ -279556,29 +279008,6 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) agent > (property) agent_name"
     ]
   },
-  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaAdditionalToolsItemParam/properties/prompt_cache_breakpoint",
-    "deprecated": false,
-    "key": "prompt_cache_breakpoint",
-    "docstring": "An explicit cache breakpoint after these tool definitions. Requires a non-empty tools list.",
-    "title": "Prompt cache breakpoint",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "mode"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint > (property) mode"
-    ]
-  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) id": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaReasoningItem/properties/id",
@@ -285728,31 +285157,6 @@ Schema name: `BetaResponseIncompleteEvent`
     "schemaType": "string",
     "children": []
   },
-  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaPromptCacheBreakpointConfig/properties/mode",
-    "deprecated": false,
-    "key": "mode",
-    "docstring": "The breakpoint mode. Always `explicit`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaPromptCacheBreakpointConfig/properties/mode",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "explicit"
-        }
-      ]
-    },
-    "default": "explicit",
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode > (member) 0"
-    ]
-  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 16 > (property) type > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -291844,31 +291248,6 @@ Schema name: `BetaResponseIncompleteEvent`
     "nullable": false,
     "schemaType": "string",
     "children": []
-  },
-  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint > (property) mode": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaPromptCacheBreakpointParam/properties/mode",
-    "deprecated": false,
-    "key": "mode",
-    "docstring": "The breakpoint mode. Always `explicit`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaPromptCacheBreakpointParam/properties/mode",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "explicit"
-        }
-      ]
-    },
-    "default": "explicit",
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint > (property) mode > (member) 0"
-    ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) summary > (items) > (property) text": {
     "kind": "HttpDeclProperty",
@@ -298956,13 +298335,6 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 1"
     ]
-  },
-  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "explicit"
-    }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 18 > (property) outputs > (items) > (variant) 0 > (property) logs": {
     "kind": "HttpDeclProperty",
@@ -306230,13 +305602,6 @@ Schema name: `BetaResponseIncompleteEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 1"
     ]
-  },
-  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint > (property) mode > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "explicit"
-    }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) summary > (items) > (property) type > (member) 0": {
     "kind": "HttpDeclReference",
@@ -322578,9 +321943,6 @@ Schema name: `BetaResponseOutputItemAddedEvent`
         },
         {
           "ident": "agent"
-        },
-        {
-          "ident": "prompt_cache_breakpoint"
         }
       ]
     },
@@ -322590,8 +321952,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) role",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) type",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) agent",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) agent"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 16": {
@@ -323625,9 +322986,6 @@ Schema name: `BetaResponseOutputItemAddedEvent`
             },
             {
               "ident": "agent"
-            },
-            {
-              "ident": "prompt_cache_breakpoint"
             }
           ]
         },
@@ -327461,29 +326819,6 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) agent > (property) agent_name"
-    ]
-  },
-  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaAdditionalTools/properties/prompt_cache_breakpoint",
-    "deprecated": false,
-    "key": "prompt_cache_breakpoint",
-    "docstring": "Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.",
-    "title": "Prompt cache breakpoint",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "mode"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 16 > (property) id": {
@@ -333195,31 +332530,6 @@ Schema name: `BetaResponseOutputItemAddedEvent`
     "nullable": false,
     "schemaType": "string",
     "children": []
-  },
-  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaPromptCacheBreakpointConfig/properties/mode",
-    "deprecated": false,
-    "key": "mode",
-    "docstring": "The breakpoint mode. Always `explicit`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaPromptCacheBreakpointConfig/properties/mode",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "explicit"
-        }
-      ]
-    },
-    "default": "explicit",
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode > (member) 0"
-    ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 16 > (property) type > (member) 0": {
     "kind": "HttpDeclReference",
@@ -340530,13 +339840,6 @@ Schema name: `BetaResponseOutputItemAddedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 1"
     ]
-  },
-  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "explicit"
-    }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 18 > (property) outputs > (items) > (variant) 0 > (property) logs": {
     "kind": "HttpDeclProperty",
@@ -350173,9 +349476,6 @@ Schema name: `BetaResponseOutputItemDoneEvent`
         },
         {
           "ident": "agent"
-        },
-        {
-          "ident": "prompt_cache_breakpoint"
         }
       ]
     },
@@ -350185,8 +349485,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) role",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) type",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) agent",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) agent"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 16": {
@@ -351220,9 +350519,6 @@ Schema name: `BetaResponseOutputItemDoneEvent`
             },
             {
               "ident": "agent"
-            },
-            {
-              "ident": "prompt_cache_breakpoint"
             }
           ]
         },
@@ -355056,29 +354352,6 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) agent > (property) agent_name"
-    ]
-  },
-  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaAdditionalTools/properties/prompt_cache_breakpoint",
-    "deprecated": false,
-    "key": "prompt_cache_breakpoint",
-    "docstring": "Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.",
-    "title": "Prompt cache breakpoint",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "mode"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 16 > (property) id": {
@@ -360790,31 +360063,6 @@ Schema name: `BetaResponseOutputItemDoneEvent`
     "nullable": false,
     "schemaType": "string",
     "children": []
-  },
-  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaPromptCacheBreakpointConfig/properties/mode",
-    "deprecated": false,
-    "key": "mode",
-    "docstring": "The breakpoint mode. Always `explicit`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaPromptCacheBreakpointConfig/properties/mode",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "explicit"
-        }
-      ]
-    },
-    "default": "explicit",
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode > (member) 0"
-    ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 16 > (property) type > (member) 0": {
     "kind": "HttpDeclReference",
@@ -368125,13 +367373,6 @@ Schema name: `BetaResponseOutputItemDoneEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 1"
     ]
-  },
-  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "explicit"
-    }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 18 > (property) outputs > (items) > (variant) 0 > (property) logs": {
     "kind": "HttpDeclProperty",
@@ -387578,9 +386819,6 @@ Schema name: `BetaResponseQueuedEvent`
                   },
                   {
                     "ident": "agent"
-                  },
-                  {
-                    "ident": "prompt_cache_breakpoint"
                   }
                 ]
               },
@@ -390260,9 +389498,6 @@ Schema name: `BetaResponseQueuedEvent`
               },
               {
                 "ident": "agent"
-              },
-              {
-                "ident": "prompt_cache_breakpoint"
               }
             ]
           },
@@ -392013,9 +391248,6 @@ Schema name: `BetaResponseQueuedEvent`
         },
         {
           "ident": "agent"
-        },
-        {
-          "ident": "prompt_cache_breakpoint"
         }
       ]
     },
@@ -392025,8 +391257,7 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) role",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) type",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) agent",
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint"
+      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) agent"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 16": {
@@ -393060,9 +392291,6 @@ Schema name: `BetaResponseQueuedEvent`
             },
             {
               "ident": "agent"
-            },
-            {
-              "ident": "prompt_cache_breakpoint"
             }
           ]
         },
@@ -395939,9 +395167,6 @@ Schema name: `BetaResponseQueuedEvent`
         },
         {
           "ident": "agent"
-        },
-        {
-          "ident": "prompt_cache_breakpoint"
         }
       ]
     },
@@ -395951,8 +395176,7 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) type",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) id",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) agent",
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint"
+      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) agent"
     ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15": {
@@ -400901,29 +400125,6 @@ Schema name: `BetaResponseQueuedEvent`
     "childrenParentSchema": "object",
     "children": [
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) agent > (property) agent_name"
-    ]
-  },
-  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaAdditionalTools/properties/prompt_cache_breakpoint",
-    "deprecated": false,
-    "key": "prompt_cache_breakpoint",
-    "docstring": "Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.",
-    "title": "Prompt cache breakpoint",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "mode"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": false,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode"
     ]
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 16 > (property) id": {
@@ -409117,29 +408318,6 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) agent > (property) agent_name"
     ]
   },
-  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaAdditionalToolsItemParam/properties/prompt_cache_breakpoint",
-    "deprecated": false,
-    "key": "prompt_cache_breakpoint",
-    "docstring": "An explicit cache breakpoint after these tool definitions. Requires a non-empty tools list.",
-    "title": "Prompt cache breakpoint",
-    "type": {
-      "kind": "HttpTypeObject",
-      "members": [
-        {
-          "ident": "mode"
-        }
-      ]
-    },
-    "optional": true,
-    "nullable": true,
-    "schemaType": "object",
-    "childrenParentSchema": "object",
-    "children": [
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint > (property) mode"
-    ]
-  },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) id": {
     "kind": "HttpDeclProperty",
     "oasRef": "#/components/schemas/BetaReasoningItem/properties/id",
@@ -415289,31 +414467,6 @@ Schema name: `BetaResponseQueuedEvent`
     "schemaType": "string",
     "children": []
   },
-  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaPromptCacheBreakpointConfig/properties/mode",
-    "deprecated": false,
-    "key": "mode",
-    "docstring": "The breakpoint mode. Always `explicit`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaPromptCacheBreakpointConfig/properties/mode",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "explicit"
-        }
-      ]
-    },
-    "default": "explicit",
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode > (member) 0"
-    ]
-  },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 16 > (property) type > (member) 0": {
     "kind": "HttpDeclReference",
     "type": {
@@ -421405,31 +420558,6 @@ Schema name: `BetaResponseQueuedEvent`
     "nullable": false,
     "schemaType": "string",
     "children": []
-  },
-  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint > (property) mode": {
-    "kind": "HttpDeclProperty",
-    "oasRef": "#/components/schemas/BetaPromptCacheBreakpointParam/properties/mode",
-    "deprecated": false,
-    "key": "mode",
-    "docstring": "The breakpoint mode. Always `explicit`.",
-    "type": {
-      "kind": "HttpTypeUnion",
-      "oasRef": "#/components/schemas/BetaPromptCacheBreakpointParam/properties/mode",
-      "types": [
-        {
-          "kind": "HttpTypeLiteral",
-          "literal": "explicit"
-        }
-      ]
-    },
-    "default": "explicit",
-    "optional": false,
-    "nullable": false,
-    "schemaType": "enum",
-    "childrenParentSchema": "enum",
-    "children": [
-      "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint > (property) mode > (member) 0"
-    ]
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) summary > (items) > (property) text": {
     "kind": "HttpDeclProperty",
@@ -428517,13 +427645,6 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 0",
       "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 1"
     ]
-  },
-  "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 15 > (property) prompt_cache_breakpoint > (property) mode > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "explicit"
-    }
   },
   "(resource) beta.responses > (model) beta_response_output_item > (schema) > (variant) 18 > (property) outputs > (items) > (variant) 0 > (property) logs": {
     "kind": "HttpDeclProperty",
@@ -435791,13 +434912,6 @@ Schema name: `BetaResponseQueuedEvent`
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 0",
       "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) tools > (items) > (variant) 15 > (property) allowed_callers > (items) > (member) 1"
     ]
-  },
-  "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 14 > (property) prompt_cache_breakpoint > (property) mode > (member) 0": {
-    "kind": "HttpDeclReference",
-    "type": {
-      "kind": "HttpTypeLiteral",
-      "literal": "explicit"
-    }
   },
   "(resource) beta.responses > (model) beta_response > (schema) > (property) instructions > (variant) 1 > (items) > (variant) 15 > (property) summary > (items) > (property) type > (member) 0": {
     "kind": "HttpDeclReference",

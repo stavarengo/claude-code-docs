@@ -817,7 +817,7 @@ compaction = client.responses.compact(
   model: "gpt-5.2",
   input: [
     {role: :user, content: "Write a very long poem about a dog."},
-    *response.output.map(&:to_h)
+    *response.output
   ]
 )
 

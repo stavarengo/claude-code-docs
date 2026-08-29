@@ -1018,7 +1018,7 @@ compacted = client.responses.compact(
   model: "gpt-5.6",
   input: long_window
 )
-input = compacted.output.map(&:to_h)
+input = compacted.output.dup
 input << {
   role: :user,
   content: "We found the bad cache invalidation path. Write the fix plan and the verification checklist."
@@ -1443,7 +1443,7 @@ first = client.responses.create(
   include: ["reasoning.encrypted_content"],
   input: history
 )
-history.concat(first.output.map(&:to_h))
+history.concat(first.output)
 history << {
   role: :user,
   content: "Now write the customer-facing explanation in plain English."
