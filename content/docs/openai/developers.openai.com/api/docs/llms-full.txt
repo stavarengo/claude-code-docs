@@ -7226,7 +7226,7 @@ last_sequence_number = -1
 response_id = ""
 stream.each do |event|
   puts(event.type)
-  last_sequence_number = event.sequence_number
+  last_sequence_number = event.sequence_number || last_sequence_number
   if event.is_a?(OpenAI::Models::Responses::ResponseCreatedEvent)
     response_id = event.response.id
   end
@@ -13945,7 +13945,7 @@ X.509 mappings use derived `openai.*` attributes. They don't match raw JWT claim
 
 The provider list displays the provider ID, and the mapping details display the selected service account and its service account ID. Record both identifiers; the workload sends them during token exchange.
 
-## Exchange the certificate for an access token
+## Use X.509 workload identity with an SDK
 
 Set environment variables for the certificate chain, private key, provider, and service account:
 
@@ -13957,6 +13957,264 @@ export OPENAI_SERVICE_ACCOUNT_ID="svc_acct_example"
 ```
 
 The certificate-chain file should contain the leaf certificate first, followed by any intermediate certificates. Don't include certificate material or a `subject_token` in the request body.
+
+Configure an OpenAI SDK client with these values. The SDK presents the client certificate during token exchange and API requests, routes API requests to the mTLS endpoint, and renews short-lived access tokens automatically.
+
+Authenticate with an X.509 client certificate
+
+```javascript
+import { readFile } from "node:fs/promises";
+
+import OpenAI from "openai";
+import { workloadIdentity } from "openai/auth/x509-transport";
+
+const certificatePath = process.env.OPENAI_MTLS_CERT_CHAIN;
+const privateKeyPath = process.env.OPENAI_MTLS_KEY;
+const identityProviderId = process.env.OPENAI_IDENTITY_PROVIDER_ID;
+const serviceAccountId = process.env.OPENAI_SERVICE_ACCOUNT_ID;
+
+if (
+  !certificatePath ||
+  !privateKeyPath ||
+  !identityProviderId ||
+  !serviceAccountId
+) {
+  throw new Error(
+    "Set OPENAI_MTLS_CERT_CHAIN, OPENAI_MTLS_KEY, OPENAI_IDENTITY_PROVIDER_ID, and OPENAI_SERVICE_ACCOUNT_ID"
+  );
+}
+
+const credential = workloadIdentity.fromX509({
+  certificateChain: await readFile(certificatePath, "utf8"),
+  privateKey: await readFile(privateKeyPath, "utf8"),
+  identityProviderId,
+  serviceAccountId,
+});
+
+try {
+  const client = new OpenAI({ credential });
+  const response = await client.responses.create({
+    model: "gpt-5.6-terra",
+    input: "Say hello from X.509 workload identity federation.",
+  });
+
+  console.log(response.output_text);
+} finally {
+  await credential.close();
+}
+```
+
+```python
+import os
+import ssl
+
+from openai import DefaultHttpx2Client, OpenAI
+from openai.auth import x509_workload_identity
+
+tls_context = ssl.create_default_context()
+tls_context.load_cert_chain(
+    certfile=os.environ["OPENAI_MTLS_CERT_CHAIN"],
+    keyfile=os.environ["OPENAI_MTLS_KEY"],
+)
+
+with OpenAI(
+    base_url="https://mtls.api.openai.com/v1",
+    workload_identity=x509_workload_identity(
+        identity_provider_id=os.environ["OPENAI_IDENTITY_PROVIDER_ID"],
+        service_account_id=os.environ["OPENAI_SERVICE_ACCOUNT_ID"],
+    ),
+    http_client=DefaultHttpx2Client(verify=tls_context, follow_redirects=False),
+) as client:
+    response = client.responses.create(
+        model="gpt-5.6-terra",
+        input="Say hello from X.509 workload identity federation.",
+    )
+
+    print(response.output_text)
+```
+
+```go
+package main
+
+import (
+	"context"
+	"crypto/tls"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/auth"
+	"github.com/openai/openai-go/v3/option"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	certificate, err := tls.LoadX509KeyPair(
+		os.Getenv("OPENAI_MTLS_CERT_CHAIN"),
+		os.Getenv("OPENAI_MTLS_KEY"),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	transport, err := auth.NewX509Transport(&http.Transport{
+		TLSClientConfig: &tls.Config{
+			Certificates: []tls.Certificate{certificate},
+			MinVersion:   tls.VersionTLS12,
+		},
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer transport.Close()
+
+	client := openai.NewClient(
+		option.WithX509WorkloadIdentity(auth.X509WorkloadIdentity{
+			IdentityProviderID: os.Getenv("OPENAI_IDENTITY_PROVIDER_ID"),
+			ServiceAccountID:   os.Getenv("OPENAI_SERVICE_ACCOUNT_ID"),
+			Transport:          transport,
+		}),
+	)
+
+	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+		Model: "gpt-5.6-terra",
+		Input: responses.ResponseNewParamsInputUnion{
+			OfString: openai.String("Say hello from X.509 workload identity federation."),
+		},
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(response.OutputText())
+}
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.client.okhttp.X509Transport;
+import com.openai.client.okhttp.X509WorkloadIdentity;
+import com.openai.models.responses.ResponseCreateParams;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.KeyStore;
+import java.time.Duration;
+import java.util.Arrays;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509ExtendedKeyManager;
+import javax.net.ssl.X509TrustManager;
+
+char[] password = System.getenv("OPENAI_X509_KEYSTORE_PASSWORD").toCharArray();
+try {
+  KeyStore keyStore = KeyStore.getInstance("PKCS12");
+  try (InputStream input =
+      Files.newInputStream(Paths.get(System.getenv("OPENAI_X509_KEYSTORE_PATH")))) {
+    keyStore.load(input, password);
+  }
+
+  KeyManagerFactory keyManagers =
+      KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+  keyManagers.init(keyStore, password);
+  X509ExtendedKeyManager keyManager =
+      Arrays.stream(keyManagers.getKeyManagers())
+          .filter(X509ExtendedKeyManager.class::isInstance)
+          .map(X509ExtendedKeyManager.class::cast)
+          .findFirst()
+          .orElseThrow(() -> new IllegalStateException("No X.509 key manager available"));
+
+  TrustManagerFactory trustManagers =
+      TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+  trustManagers.init((KeyStore) null);
+  X509TrustManager trustManager =
+      Arrays.stream(trustManagers.getTrustManagers())
+          .filter(X509TrustManager.class::isInstance)
+          .map(X509TrustManager.class::cast)
+          .findFirst()
+          .orElseThrow(() -> new IllegalStateException("No X.509 trust manager available"));
+
+  X509Transport transport =
+      X509Transport.builder()
+          .keyManager(keyManager)
+          .certificateAlias(System.getenv("OPENAI_X509_CERTIFICATE_ALIAS"))
+          .trustManager(trustManager)
+          .build();
+  X509WorkloadIdentity identity =
+      X509WorkloadIdentity.builder()
+          .identityProviderId(System.getenv("OPENAI_IDENTITY_PROVIDER_ID"))
+          .serviceAccountId(System.getenv("OPENAI_SERVICE_ACCOUNT_ID"))
+          .transport(transport)
+          .refreshBuffer(Duration.ofMinutes(10))
+          .build();
+
+  OpenAIClient client = OpenAIOkHttpClient.builder().x509WorkloadIdentity(identity).build();
+  try {
+    ResponseCreateParams params =
+        ResponseCreateParams.builder()
+            .model("gpt-5.6-terra")
+            .input("Say hello from X.509 workload identity federation.")
+            .build();
+
+    client.responses().create(params).output().stream()
+        .flatMap(item -> item.message().stream())
+        .flatMap(message -> message.content().stream())
+        .flatMap(content -> content.outputText().stream())
+        .forEach(outputText -> System.out.println(outputText.text()));
+  } finally {
+    client.close();
+  }
+} finally {
+  Arrays.fill(password, '\0');
+}
+```
+
+```ruby
+require "openai"
+require "openssl"
+
+certificate_chain = OpenSSL::X509::Certificate.load(
+  File.binread(ENV.fetch("OPENAI_MTLS_CERT_CHAIN"))
+)
+certificate, *intermediates = certificate_chain
+private_key = OpenSSL::PKey.read(File.binread(ENV.fetch("OPENAI_MTLS_KEY")))
+
+http_client = OpenAI::NetHTTPClient.new do |connection|
+  connection.cert = certificate
+  connection.extra_chain_cert = intermediates
+  connection.key = private_key
+end
+
+workload_identity = OpenAI::Auth::X509WorkloadIdentity.new(
+  identity_provider_id: ENV.fetch("OPENAI_IDENTITY_PROVIDER_ID"),
+  service_account_id: ENV.fetch("OPENAI_SERVICE_ACCOUNT_ID"),
+  http_client: http_client
+)
+
+begin
+  client = OpenAI::Client.new(api_key: nil, workload_identity: workload_identity)
+  response = client.responses.create(
+    model: "gpt-5.6-terra",
+    input: "Say hello from X.509 workload identity federation."
+  )
+
+  puts(response.output_text)
+ensure
+  http_client.close
+end
+```
+
+
+These examples require OpenAI SDK versions that support the X.509 configuration shown here: JavaScript 7.8.0 or later with the `undici` peer dependency installed, Python 3.6.0 or later, Go 3.54.0 or later, Java 4.55.0 or later, and Ruby 0.83.0 or later.
+
+The Java example loads a PKCS12 keystore to construct its `X509ExtendedKeyManager` and uses the platform default trust store to construct its `X509TrustManager`. Set `OPENAI_X509_KEYSTORE_PATH`, `OPENAI_X509_KEYSTORE_PASSWORD`, and `OPENAI_X509_CERTIFICATE_ALIAS` for this example. You can instead supply PEM-backed or hardware-backed managers to the SDK.
+
+## Exchange the certificate manually
+
+To inspect or implement the token exchange protocol directly, present the certificate to the X.509 token endpoint:
 
 ```bash
 curl --cert "$OPENAI_MTLS_CERT_CHAIN" \
@@ -13991,7 +14249,7 @@ The `expires_in` value of `3600` is illustrative. The returned lifetime can be s
 
 Read the `access_token` value from the successful response into your application's credential store or an environment variable such as `OPENAI_WIF_ACCESS_TOKEN`. Treat it as a secret and don't print, log, or commit it.
 
-## Call the OpenAI API
+## Call the OpenAI API manually
 
 Set `OPENAI_MODEL` to `gpt-5.6`, the current default, or another model available to the target project. Then send the bearer token and an accepted client certificate to the API mTLS endpoint:
 
@@ -21427,7 +21685,7 @@ The complete, unfiltered regional support table follows. Model snapshots for eac
 
 | Endpoint or feature                                                  | Service          | Storage regions                           | Processing regions                                              | Supported models and snapshots                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Regional processing snapshot exceptions                                                                    | Notes                                                                                                       |
 | -------------------------------------------------------------------- | ---------------- | ----------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `/v1/audio/transcriptions, /v1/audio/translations, /v1/audio/speech` | Audio            | All listed regions                        | United States, Europe (EEA + Switzerland)                       | `tts-1`, `whisper-1`, `gpt-4o-tts`, `gpt-4o-transcribe`, `gpt-4o-mini-transcribe`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | None                                                                                                       | —                                                                                                           |
+| `/v1/audio/transcriptions, /v1/audio/translations, /v1/audio/speech` | Audio            | All listed regions                        | United States, Europe (EEA + Switzerland)                       | `tts-1`, `whisper-1`, `gpt-4o-tts`, `gpt-4o-transcribe`, `gpt-4o-mini-transcribe`, `gpt-transcribe`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | None                                                                                                       | —                                                                                                           |
 | `/v1/batches`                                                        | Batches          | All listed regions                        | United States, Europe (EEA + Switzerland)                       | `gpt-5.5-pro-2026-04-23`, `gpt-5.4-pro-2026-03-05`, `gpt-5.2-pro-2025-12-11`, `gpt-5-pro-2025-10-06`, `gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-5.6-luna`, `gpt-5.5-2026-04-23`, `gpt-5.4-2026-03-05`, `gpt-5-2025-08-07`, `gpt-5.4-mini-2026-03-17`, `gpt-5.4-nano-2026-03-17`, `gpt-5.2-2025-12-11`, `gpt-5.1-2025-11-13`, `gpt-5-mini-2025-08-07`, `gpt-5-nano-2025-08-07`, `gpt-4.1-2025-04-14`, `gpt-4.1-mini-2025-04-14`, `gpt-4.1-nano-2025-04-14`, `o3-2025-04-16`, `o4-mini-2025-04-16`, `o1-pro`, `o1-pro-2025-03-19`, `o3-mini-2025-01-31`, `o1-2024-12-17`, `gpt-4o-2024-11-20`, `gpt-4o-2024-08-06`, `gpt-4o-mini-2024-07-18`, `gpt-4-turbo-2024-04-09`, `gpt-4-0613`, `gpt-3.5-turbo-0125` | None                                                                                                       | —                                                                                                           |
 | `/v1/chat/completions`                                               | Chat Completions | All listed regions                        | United States, Europe (EEA + Switzerland), United Arab Emirates | `gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-5.6-luna`, `gpt-5.5-2026-04-23`, `gpt-5.4-2026-03-05`, `gpt-5.4-mini-2026-03-17`, `gpt-5.4-nano-2026-03-17`, `gpt-5.2-2025-12-11`, `gpt-5.1-2025-11-13`, `gpt-5-2025-08-07`, `gpt-5-mini-2025-08-07`, `gpt-5-nano-2025-08-07`, `gpt-4.1-2025-04-14`, `gpt-4.1-mini-2025-04-14`, `gpt-4.1-nano-2025-04-14`, `o3-mini-2025-01-31`, `o3-2025-04-16`, `o4-mini-2025-04-16`, `o1-2024-12-17`, `gpt-4o-2024-11-20`, `gpt-4o-2024-08-06`, `gpt-4o-mini-2024-07-18`, `gpt-4-turbo-2024-04-09`, `gpt-4-0613`, `gpt-3.5-turbo-0125`                                                                                                                                      | United Arab Emirates: `gpt-5.6-luna`, `gpt-5.5-2026-04-23`, `gpt-5.2-2025-12-11`                           | —                                                                                                           |
 | `/v1/embeddings`                                                     | Embeddings       | All listed regions                        | United States, Europe (EEA + Switzerland), United Arab Emirates | `text-embedding-3-small`, `text-embedding-3-large`, `text-embedding-ada-002`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | United Arab Emirates: `text-embedding-3-large`                                                             | —                                                                                                           |
@@ -21438,7 +21696,7 @@ The complete, unfiltered regional support table follows. Model snapshots for eac
 | `/v1/images/generations`                                             | Images           | All listed regions                        | United States, Europe (EEA + Switzerland)                       | `gpt-image-2`, `gpt-image-1`, `gpt-image-1.5`, `gpt-image-1-mini`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | None                                                                                                       | —                                                                                                           |
 | `/v1/moderations`                                                    | Moderation       | All listed regions                        | United States, Europe (EEA + Switzerland)                       | `omni-moderation-latest`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | None                                                                                                       | —                                                                                                           |
 | `/v1/realtime`                                                       | Realtime         | United States, Europe (EEA + Switzerland) | United States, Europe (EEA + Switzerland)                       | `gpt-realtime`, `gpt-realtime-1.5`, `gpt-realtime-mini`, `gpt-realtime-2`, `gpt-realtime-2.1`, `gpt-realtime-2.1-mini`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | None                                                                                                       | —                                                                                                           |
-| `/v1/realtime/transcription_sessions`                                | Realtime         | United States, Europe (EEA + Switzerland) | United States, Europe (EEA + Switzerland)                       | `gpt-realtime-whisper`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | None                                                                                                       | —                                                                                                           |
+| `/v1/realtime/transcription_sessions`                                | Realtime         | United States, Europe (EEA + Switzerland) | United States, Europe (EEA + Switzerland)                       | `gpt-realtime-whisper`, `gpt-live-transcribe`, `gpt-transcribe`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | None                                                                                                       | —                                                                                                           |
 | `/v1/realtime/translations`                                          | Realtime         | United States, Europe (EEA + Switzerland) | United States, Europe (EEA + Switzerland)                       | `gpt-realtime-translate`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | None                                                                                                       | —                                                                                                           |
 | `/v1/responses`                                                      | Responses        | All listed regions                        | United States, Europe (EEA + Switzerland), United Arab Emirates | `gpt-5.5-pro-2026-04-23`, `gpt-5.4-pro-2026-03-05`, `gpt-5.2-pro-2025-12-11`, `gpt-5-pro-2025-10-06`, `gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-5.6-luna`, `gpt-5.5-2026-04-23`, `gpt-5.4-2026-03-05`, `gpt-5-2025-08-07`, `gpt-5.4-mini-2026-03-17`, `gpt-5.4-nano-2026-03-17`, `gpt-5.2-2025-12-11`, `gpt-5.1-2025-11-13`, `gpt-5-mini-2025-08-07`, `gpt-5-nano-2025-08-07`, `gpt-4.1-2025-04-14`, `gpt-4.1-mini-2025-04-14`, `gpt-4.1-nano-2025-04-14`, `o3-2025-04-16`, `o4-mini-2025-04-16`, `o1-pro`, `o1-pro-2025-03-19`, `o3-mini-2025-01-31`, `o1-2024-12-17`, `gpt-4o-2024-11-20`, `gpt-4o-2024-08-06`, `gpt-4o-mini-2024-07-18`, `gpt-4-turbo-2024-04-09`, `gpt-4-0613`, `gpt-3.5-turbo-0125` | United Arab Emirates: `gpt-5.5-pro-2026-04-23`, `gpt-5.6-luna`, `gpt-5.5-2026-04-23`, `gpt-5.2-2025-12-11` | —                                                                                                           |
 | `/v1/responses File Search`                                          | Responses        | All listed regions                        | United States, Europe (EEA + Switzerland)                       | Service-level support                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | None                                                                                                       | —                                                                                                           |
@@ -28429,7 +28687,8 @@ func main() {
 		if err := json.Unmarshal([]byte(call.Arguments), &arguments); err != nil {
 			panic(err)
 		}
-		functionOutput = responses.ResponseInputItemParamOfFunctionCallOutput(call.CallID, getHoroscope(arguments.Sign))
+		functionOutput = responses.ResponseInputItemParamOfFunctionCallOutput(getHoroscope(arguments.Sign))
+		functionOutput.OfFunctionCallOutput.CallID = openai.String(call.CallID)
 	}
 	if functionOutput.OfFunctionCallOutput == nil {
 		panic("the model did not call get_horoscope")
@@ -28811,7 +29070,9 @@ for _, output := range response.Output {
 	if err != nil {
 		panic(err)
 	}
-	input = append(input, responses.ResponseInputItemParamOfFunctionCallOutput(toolCall.CallID, result))
+	toolOutput := responses.ResponseInputItemParamOfFunctionCallOutput(result)
+	toolOutput.OfFunctionCallOutput.CallID = openai.String(toolCall.CallID)
+	input = append(input, toolOutput)
 }
 ```
 
@@ -44916,27 +45177,31 @@ ResponseCreateParams params =
         .build();
 
 var response = client.responses().create(params);
-JsonValue moderation = response._additionalProperties().get("moderation");
-if (moderation == null) {
-  throw new IllegalStateException("The response did not include moderation results");
-}
-Map<?, ?> results = moderation.convert(Map.class);
+var moderation =
+    response
+        .moderation()
+        .orElseThrow(
+            () -> new IllegalStateException("The response did not include moderation results"));
 List<Boolean> flags = new ArrayList<>();
-for (String side : List.of("input", "output")) {
-  if (!(results.get(side) instanceof Map<?, ?> result)) {
-    throw new IllegalStateException("Missing " + side + " moderation result");
-  }
-  if ("error".equals(result.get("type"))) {
-    throw new IllegalStateException(String.valueOf(result.get("message")));
-  }
-  if (!"moderation_result".equals(result.get("type"))) {
-    throw new IllegalStateException("Unexpected " + side + " moderation result type");
-  }
-  if (!(result.get("flagged") instanceof Boolean flagged)) {
-    throw new IllegalStateException("Missing " + side + " moderation flag");
-  }
-  flags.add(flagged);
+
+var input = moderation.input();
+if (input.isError()) {
+  throw new IllegalStateException(input.asError().message());
 }
+if (!input.isModerationResult()) {
+  throw new IllegalStateException("Missing input moderation flag");
+}
+flags.add(input.asModerationResult().flagged());
+
+var output = moderation.output();
+if (output.isError()) {
+  throw new IllegalStateException(output.asError().message());
+}
+if (!output.isModerationResult()) {
+  throw new IllegalStateException("Missing output moderation flag");
+}
+flags.add(output.asModerationResult().flagged());
+
 flags.forEach(System.out::println);
 ```
 

@@ -66,8 +66,9 @@ claude/platform.claude.com/docs/en/api/beta/memory_stores/memory_versions:{list.
 claude/platform.claude.com/docs/en/api/beta/messages:{batches.md,count_tokens.md,create.md}
 claude/platform.claude.com/docs/en/api/beta/messages/batches:{cancel.md,create.md,delete.md,list.md,results.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/beta/models:{list.md,retrieve.md}
-claude/platform.claude.com/docs/en/api/beta/organization:{api_keys.md,external_keys.md,federation.md,invites.md,rate_limits.md,retrieve.md,service_accounts.md,users.md,workspaces.md}
+claude/platform.claude.com/docs/en/api/beta/organization:{api_keys.md,compliance_settings.md,external_keys.md,federation.md,invites.md,rate_limits.md,retrieve.md,service_accounts.md,users.md,workspaces.md}
 claude/platform.claude.com/docs/en/api/beta/organization/api_keys:{list.md,retrieve.md,update.md}
+claude/platform.claude.com/docs/en/api/beta/organization/compliance_settings:{retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/beta/organization/external_keys:{create.md,delete.md,list.md,retrieve.md,update.md,validate.md}
 claude/platform.claude.com/docs/en/api/beta/organization/federation:{issuers.md,rules.md}
 claude/platform.claude.com/docs/en/api/beta/organization/federation/issuers:{archive.md,create.md,list.md,retrieve.md,update.md}
@@ -130,8 +131,8 @@ claude/platform.claude.com/docs/en/api/messages/batches:{cancel.md,create.md,del
 claude/platform.claude.com/docs/en/api/models:{list.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/skills:{create.md,delete.md,list.md,retrieve.md,versions.md}
 claude/platform.claude.com/docs/en/api/skills/versions:{create.md,delete.md,list.md,retrieve.md}
-claude/platform.claude.com/docs/en/build-with-claude:{batch-processing.md,cache-diagnostics.md,citations.md,claude-in-amazon-bedrock.md,claude-in-microsoft-foundry.md,claude-on-amazon-bedrock-legacy.md,claude-on-vertex-ai.md,claude-platform-on-aws.md,compaction.md,context-editing.md,context-windows.md,effort.md,embeddings.md,extended-thinking.md,fallback-credit.md,fast-mode.md,files.md,handling-stop-reasons.md,mid-conversation-effort-example.md,mid-conversation-system-messages.md,multilingual-support.md,overview.md,pdf-support.md,prompt-caching.md,refusals-and-fallback.md,search-results.md,skills-guide.md,streaming.md,structured-outputs.md,task-budgets.md,thinking-steering-and-cost.md,thinking-tool-workflows.md,thinking-troubleshooting.md,thinking.md,token-counting.md,vision-coordinates.md,vision.md,working-with-messages.md}
-claude/platform.claude.com/docs/en/build-with-claude/prompt-engineering:{claude-prompting-best-practices.md,overview.md,prompting-claude-fable-5.md,prompting-claude-opus-4-8.md,prompting-claude-opus-5.md,prompting-claude-sonnet-5.md}
+claude/platform.claude.com/docs/en/build-with-claude:{batch-processing.md,cache-diagnostics.md,citations.md,claude-in-amazon-bedrock.md,claude-in-microsoft-foundry.md,claude-on-amazon-bedrock-legacy.md,claude-on-vertex-ai.md,claude-platform-on-aws.md,compaction.md,context-editing.md,context-windows.md,effort.md,embeddings.md,extended-thinking.md,fallback-credit.md,fast-mode.md,files.md,handling-stop-reasons.md,mid-conversation-effort-example.md,mid-conversation-system-messages.md,multilingual-support.md,overview.md,pdf-support.md,preserved-thinking.md,prompt-caching.md,refusals-and-fallback.md,search-results.md,skills-guide.md,streaming.md,structured-outputs.md,task-budgets.md,thinking-steering-and-cost.md,thinking-tool-workflows.md,thinking-troubleshooting.md,thinking.md,token-counting.md,vision-coordinates.md,vision.md,working-with-messages.md}
+claude/platform.claude.com/docs/en/build-with-claude/prompt-engineering:{claude-prompting-best-practices.md,overview.md,prompting-claude-fable-5-1.md,prompting-claude-fable-5.md,prompting-claude-opus-4-8.md,prompting-claude-opus-5.md,prompting-claude-sonnet-5.md}
 claude/platform.claude.com/docs/en/cli-sdks-libraries:{middleware.md,overview.md}
 claude/platform.claude.com/docs/en/cli-sdks-libraries/cli:{authentication.md,quickstart.md,scripting.md,using.md}
 claude/platform.claude.com/docs/en/cli-sdks-libraries/libraries:{apple-foundation-models.md,openai-sdk.md}
@@ -141,8 +142,10 @@ claude/platform.claude.com/docs/en/manage-claude/wif-providers:{aws.md,azure.md,
 claude/platform.claude.com/docs/en/managed-agents:{agent-setup.md,budgets.md,cloud-sandboxes-reference.md,define-outcomes.md,dreams.md,environments.md,events-and-streaming.md,files.md,github.md,mcp-connector.md,memory.md,migration.md,multiagent-orchestration.md,onboarding.md,overview.md,permission-policies.md,quickstart.md,reference.md,scheduled-deployments.md,self-hosted-sandboxes-security.md,self-hosted-sandboxes.md,session-operations.md,sessions.md,skills.md,tools.md,vaults.md,webhooks.md}
 claude/platform.claude.com/docs/en/models:{overview.md}
 claude/platform.claude.com/docs/en/models/fable-5:{introducing-claude-fable-5-and-claude-mythos-5.md,migration-guide.md,overview.md}
+claude/platform.claude.com/docs/en/models/fable-5-1:{migration-guide.md,overview.md,whats-new-fable-5-1.md}
 claude/platform.claude.com/docs/en/models/haiku-4-5:{migration-guide.md,overview.md}
 claude/platform.claude.com/docs/en/models/mythos-5:{overview.md}
+claude/platform.claude.com/docs/en/models/mythos-5-1:{overview.md}
 claude/platform.claude.com/docs/en/models/opus-4-5:{overview.md}
 claude/platform.claude.com/docs/en/models/opus-4-6:{overview.md}
 claude/platform.claude.com/docs/en/models/opus-4-7:{overview.md}
@@ -152,7 +155,7 @@ claude/platform.claude.com/docs/en/models/sonnet-4-5:{overview.md}
 claude/platform.claude.com/docs/en/models/sonnet-4-6:{overview.md}
 claude/platform.claude.com/docs/en/models/sonnet-5:{migration-guide.md,overview.md,whats-new-sonnet-5.md}
 claude/platform.claude.com/docs/en/release-notes:{overview.md}
-claude/platform.claude.com/docs/en/release-notes/system-prompts:{claude-fable-5.md,claude-haiku-3-5.md,claude-haiku-3.md,claude-haiku-4-5.md,claude-opus-3.md,claude-opus-4-1.md,claude-opus-4-5.md,claude-opus-4-6.md,claude-opus-4-7.md,claude-opus-4-8.md,claude-opus-4.md,claude-opus-5.md,claude-sonnet-3-5.md,claude-sonnet-3-7.md,claude-sonnet-4-5.md,claude-sonnet-4-6.md,claude-sonnet-4.md,overview.md}
+claude/platform.claude.com/docs/en/release-notes/system-prompts:{claude-fable-5-1.md,claude-fable-5.md,claude-haiku-3-5.md,claude-haiku-3.md,claude-haiku-4-5.md,claude-opus-3.md,claude-opus-4-1.md,claude-opus-4-5.md,claude-opus-4-6.md,claude-opus-4-7.md,claude-opus-4-8.md,claude-opus-4.md,claude-opus-5.md,claude-sonnet-3-5.md,claude-sonnet-3-7.md,claude-sonnet-4-5.md,claude-sonnet-4-6.md,claude-sonnet-4.md,overview.md}
 claude/platform.claude.com/docs/en/resources:{overview.md}
 claude/platform.claude.com/docs/en/test-and-evaluate:{develop-tests.md}
 claude/platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails:{handle-streaming-refusals.md,increase-consistency.md,mitigate-jailbreaks.md,reduce-hallucinations.md,reduce-latency.md,reduce-prompt-leak.md}
