@@ -23342,22 +23342,22 @@ This guide includes an overview on error codes you might see from both the [API]
 
 ## API errors
 
-| Code                                                             | Overview                                                                                                                                                                                                                                                                                          |
-| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 400 - Invalid `service_tier` argument                            | **Cause:** The requested or resolved service tier is not allowed for the project. <br /> **Solution:** Set `service_tier` to a tier allowed for the project, or update the allowed service tiers in [project settings](https://platform.openai.com/settings/).                                    |
-| 401 - Invalid Authentication                                     | **Cause:** Invalid Authentication <br /> **Solution:** Ensure the correct [API key](https://platform.openai.com/settings/organization/api-keys) and requesting organization are being used.                                                                                                       |
-| 401 - Incorrect API key provided                                 | **Cause:** The requesting API key is not correct. <br /> **Solution:** Ensure the API key used is correct, clear your browser cache, or [generate a new one](https://platform.openai.com/settings/organization/api-keys).                                                                         |
-| 401 - You must be a member of an organization to use the API     | **Cause:** Your account is not part of an organization. <br /> **Solution:** Contact us to get added to a new organization or ask your organization manager to [invite you to an organization](https://platform.openai.com/settings/organization/people).                                         |
-| 401 - IP not authorized                                          | **Cause:** Your request IP does not match the configured IP allowlist for your project or organization. <br /> **Solution:** Send the request from the correct IP, or update your [IP allowlist settings](https://platform.openai.com/settings/organization/security/ip-allowlist).               |
-| 403 - Country, region, or territory not supported                | **Cause:** You are accessing the API from an unsupported country, region, or territory. <br /> **Solution:** Please see [this page](https://developers.openai.com/api/docs/supported-countries) for more information.                                                                                                          |
-| 429 - Credit balance exhausted                                   | **Code:** `credit_balance_exhausted` <br /> **Cause:** Your organization has no prepaid credits remaining. <br /> **Solution:** [Add credits](https://platform.openai.com/settings/organization/billing) to continue using the API.                                                               |
-| 429 - Rate limit reached for requests                            | **Cause:** You are sending requests too quickly. <br /> **Solution:** Pace your requests and follow the `Retry-After` header when it's present. Read the [Rate limit guide](https://developers.openai.com/api/docs/guides/rate-limits).                                                                                        |
-| 429 - Organization spend limit reached                           | **Code:** `organization_spend_limit_exceeded` <br /> **Cause:** Your organization reached its enforced spend limit. <br /> **Solution:** Increase or remove your [organization spend limit](https://platform.openai.com/settings/organization/limits).                                            |
-| 429 - Project spend limit reached                                | **Code:** `project_spend_limit_exceeded` <br /> **Cause:** Your project reached its enforced spend limit. <br /> **Solution:** Increase or remove the spend limit in your [project settings](https://platform.openai.com/settings/).                                                              |
-| 429 - Organization usage limit reached                           | **Code:** `organization_usage_limit_exceeded` <br /> **Cause:** Your organization reached its OpenAI-assigned usage limit. <br /> **Solution:** Request a higher [approved usage limit](https://platform.openai.com/settings/organization/limits) or [contact support](https://help.openai.com/). |
-| 500 - The server had an error while processing your request      | **Cause:** Issue on our servers. <br /> **Solution:** Retry your request after a brief wait and contact us if the issue persists. Check the [status page](https://status.openai.com/).                                                                                                            |
-| 503 - The engine is currently overloaded, please try again later | **Cause:** Our servers are experiencing high traffic. <br /> **Solution:** Please retry your requests after a brief wait.                                                                                                                                                                         |
-| 503 - Slow Down                                                  | **Cause:** A sudden increase in your request rate is impacting service reliability. <br /> **Solution:** Please reduce your request rate to its original level, maintain a consistent rate for at least 15 minutes, and then gradually increase it.                                               |
+| Code                                                         | Overview                                                                                                                                                                                                                                                                                          |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 400 - Invalid `service_tier` argument                        | **Cause:** The requested or resolved service tier is not allowed for the project. <br /> **Solution:** Set `service_tier` to a tier allowed for the project, or update the allowed service tiers in [project settings](https://platform.openai.com/settings/).                                    |
+| 401 - Invalid Authentication                                 | **Cause:** Invalid Authentication <br /> **Solution:** Ensure the correct [API key](https://platform.openai.com/settings/organization/api-keys) and requesting organization are being used.                                                                                                       |
+| 401 - Incorrect API key provided                             | **Cause:** The requesting API key is not correct. <br /> **Solution:** Ensure the API key used is correct, clear your browser cache, or [generate a new one](https://platform.openai.com/settings/organization/api-keys).                                                                         |
+| 401 - You must be a member of an organization to use the API | **Cause:** Your account is not part of an organization. <br /> **Solution:** Contact us to get added to a new organization or ask your organization manager to [invite you to an organization](https://platform.openai.com/settings/organization/people).                                         |
+| 401 - IP not authorized                                      | **Cause:** Your request IP does not match the configured IP allowlist for your project or organization. <br /> **Solution:** Send the request from the correct IP, or update your [IP allowlist settings](https://platform.openai.com/settings/organization/security/ip-allowlist).               |
+| 403 - Country, region, or territory not supported            | **Cause:** You are accessing the API from an unsupported country, region, or territory. <br /> **Solution:** Please see [this page](https://developers.openai.com/api/docs/supported-countries) for more information.                                                                                                          |
+| 429 - Credit balance exhausted                               | **Code:** `credit_balance_exhausted` <br /> **Cause:** Your organization has no prepaid credits remaining. <br /> **Solution:** [Add credits](https://platform.openai.com/settings/organization/billing) to continue using the API.                                                               |
+| 429 - Rate limit reached for requests                        | **Cause:** You are sending requests too quickly. <br /> **Solution:** Pace your requests and follow the `Retry-After` header when it's present. Read the [Rate limit guide](https://developers.openai.com/api/docs/guides/rate-limits).                                                                                        |
+| 429 - Slow down                                              | **Type:** `rate_limit_error` <br /> **Code:** `slow_down` <br /> **Cause:** Your request rate increased too quickly. <br /> **Solution:** Follow the `Retry-After` header when it's present, reduce your request rate, and increase it gradually.                                                 |
+| 429 - Organization spend limit reached                       | **Code:** `organization_spend_limit_exceeded` <br /> **Cause:** Your organization reached its enforced spend limit. <br /> **Solution:** Increase or remove your [organization spend limit](https://platform.openai.com/settings/organization/limits).                                            |
+| 429 - Project spend limit reached                            | **Code:** `project_spend_limit_exceeded` <br /> **Cause:** Your project reached its enforced spend limit. <br /> **Solution:** Increase or remove the spend limit in your [project settings](https://platform.openai.com/settings/).                                                              |
+| 429 - Organization usage limit reached                       | **Code:** `organization_usage_limit_exceeded` <br /> **Cause:** Your organization reached its OpenAI-assigned usage limit. <br /> **Solution:** Request a higher [approved usage limit](https://platform.openai.com/settings/organization/limits) or [contact support](https://help.openai.com/). |
+| 500 - The server had an error while processing your request  | **Cause:** Issue on our servers. <br /> **Solution:** Retry your request after a brief wait and contact us if the issue persists. Check the [status page](https://status.openai.com/).                                                                                                            |
+| 503 - Model temporarily overloaded                           | **Type:** `service_unavailable_error` <br /> **Code:** `server_is_overloaded` <br /> **Cause:** The requested model is temporarily overloaded. <br /> **Solution:** Follow the `Retry-After` header when it's present, then retry your request.                                                   |
 
 For billing-related errors, inspect `error.code` to identify the specific cause. The broader `error.type` can still be `insufficient_quota`.
 
@@ -23492,6 +23492,27 @@ To resolve this error, please follow these steps:
 
 
 
+### 429 - Slow down
+
+
+A `429` response with the `rate_limit_error` type and `slow_down` code indicates that your request rate increased faster than the service can safely handle. It can occur even when your traffic is within its requests-per-minute and tokens-per-minute limits.
+
+As a rule of thumb, once your traffic reaches 1 million input tokens per minute (TPM), increase it by no more than 50% every 15 minutes. The exact point at which the ramp-rate limit applies can vary by model and traffic conditions.
+
+To resolve this error:
+
+- If a `Retry-After` header is present, wait at least as long as it specifies before retrying. If it's missing, increase the delay between retries and add a small random delay.
+- Reduce your request rate, then increase it gradually.
+- Keep your traffic pattern steady to reduce the chance of another `slow_down` error.
+
+Enterprise customers whose pay-as-you-go traffic routinely hits ramp-rate limits can consider [Scale Tier](https://openai.com/api-scale-tier/) for more predictable capacity on eligible models. For GPT-5.6 and later models, see [Reserved Tier](https://openai.com/api-reserved-tier/). These capacity options don't replace the recovery steps above: continue to follow `Retry-After` when it's present and ramp traffic gradually.
+
+
+
+
+
+
+
 ### 429 - Organization spend limit reached
 
 
@@ -23531,37 +23552,12 @@ To restore API access, request a higher [approved usage limit](https://platform.
 
 
 
-### 503 - The engine is currently overloaded, please try again later
+### 503 - Model temporarily overloaded
 
 
-This error message indicates that our servers are experiencing high traffic and are unable to process your request at the moment. This could happen for several reasons, such as:
+A `503` response with the `service_unavailable_error` type and `server_is_overloaded` code indicates that the requested model does not have enough capacity to process your request at the moment.
 
-- There is a sudden spike or surge in demand for our services.
-- There is scheduled or unscheduled maintenance or update on our servers.
-- There is an unexpected or unavoidable outage or incident on our servers.
-
-To resolve this error, please follow these steps:
-
-- Retry your request after a brief wait. We recommend using an exponential backoff strategy or a retry logic that respects the response headers and the rate limit. You can read more about our rate limit [best practices](https://help.openai.com/en/articles/6891753-rate-limit-advice).
-- Check our [status page](https://status.openai.com/) for any updates or announcements regarding our services and servers.
-- If you are still getting this error after a reasonable amount of time, please contact us for further assistance. We apologize for any inconvenience and appreciate your patience and understanding.
-
-
-
-
-
-
-
-### 503 - Slow Down
-
-
-This error can occur with Pay-As-You-Go models, which are shared across all OpenAI users. It indicates that your traffic has significantly increased, overloading the model and triggering temporary throttling to maintain service stability.
-
-To resolve this error, please follow these steps:
-
-- Reduce your request rate to its original level, keep it stable for at least 15 minutes, and then gradually ramp it up.
-- Maintain a consistent traffic pattern to minimize the likelihood of throttling. You should rarely encounter this error if your request volume remains steady.
-- Consider upgrading to the [Scale Tier](https://openai.com/api-scale-tier/) for guaranteed capacity and performance, ensuring more reliable access during peak demand periods.
+If a `Retry-After` header is present, wait at least as long as it specifies before retrying. If it's missing, increase the delay between retries. If the error continues, check the [status page](https://status.openai.com/) for an active incident.
 
 
 
@@ -24588,7 +24584,7 @@ Fast mode consumption counts toward rate limits the same way as Standard process
 
 **Ramp rate limit**
 
-If your traffic ramps too fast, the system may downgrade some Fast mode requests to standard speeds and charge standard rates. When this happens, the response contains `service_tier: "default"`. The ramp rate limit may apply if you send at least 1 million tokens per minute (TPM) and increase TPM by more than 50% within 15 minutes.
+If your traffic ramps too fast, the system may downgrade some Fast mode requests to standard speeds and charge standard rates. When this happens, the response contains `service_tier: "default"`. As a rule of thumb, once your traffic reaches 1 million input tokens per minute (TPM), increase it by no more than 50% every 15 minutes. The exact point at which the ramp-rate limit applies can vary by model and traffic conditions.
 
 To avoid triggering the ramp rate limit:
 
@@ -51360,6 +51356,74 @@ client.chat().completions().create(params).choices().stream()
     .forEach(System.out::println);
 ````
 
+````ruby
+require "openai"
+
+client = OpenAI::Client.new
+meta_prompt = <<~PROMPT
+  Given a task description or existing prompt, produce a detailed system prompt to guide a language model in completing the task effectively.
+
+  # Guidelines
+
+  - Understand the Task: Grasp the main objective, goals, requirements, constraints, and expected output.
+  - Minimal Changes: If an existing prompt is provided, improve it only if it's simple. For complex prompts, enhance clarity and add missing elements without altering the original structure.
+  - Reasoning Before Conclusions**: Encourage reasoning steps before any conclusions are reached. ATTENTION! If the user provides examples where the reasoning happens afterward, REVERSE the order! NEVER START EXAMPLES WITH CONCLUSIONS!
+      - Reasoning Order: Call out reasoning portions of the prompt and conclusion parts (specific fields by name). For each, determine the ORDER in which this is done, and whether it needs to be reversed.
+      - Conclusion, classifications, or results should ALWAYS appear last.
+  - Examples: Include high-quality examples if helpful, using placeholders [in brackets] for complex elements.
+     - What kinds of examples may need to be included, how many, and whether they are complex enough to benefit from placeholders.
+  - Clarity and Conciseness: Use clear, specific language. Avoid unnecessary instructions or bland statements.
+  - Formatting: Use markdown features for readability. DO NOT USE ``` CODE BLOCKS UNLESS SPECIFICALLY REQUESTED.
+  - Preserve User Content: If the input task or prompt includes extensive guidelines or examples, preserve them entirely, or as closely as possible. If they are vague, consider breaking down into sub-steps. Keep any details, guidelines, examples, variables, or placeholders provided by the user.
+  - Constants: DO include constants in the prompt, as they are not susceptible to prompt injection. Such as guides, rubrics, and examples.
+  - Output Format: Explicitly the most appropriate output format, in detail. This should include length and syntax (e.g. short sentence, paragraph, JSON, etc.)
+      - For tasks outputting well-defined or structured data (classification, JSON, etc.) bias toward outputting a JSON.
+      - JSON should never be wrapped in code blocks (```) unless explicitly requested.
+
+  The final prompt you output should adhere to the following structure below. Do not include any additional commentary, only output the completed system prompt. SPECIFICALLY, do not include any additional messages at the start or end of the prompt. (e.g. no "---")
+
+  [Concise instruction describing the task - this should be the first line in the prompt, no section header]
+
+  [Additional details as needed.]
+
+  [Optional sections with headings or bullet points for detailed steps.]
+
+  # Steps [optional]
+
+  [optional: a detailed breakdown of the steps necessary to accomplish the task]
+
+  # Output Format
+
+  [Specifically call out how the output should be formatted, be it response length, structure e.g. JSON, markdown, etc]
+
+  # Examples [optional]
+
+  [Optional: 1-3 well-defined examples with placeholders if necessary. Clearly mark where examples start and end, and what the input and output are. User placeholders as necessary.]
+  [If the examples are shorter than what a realistic example is expected to be, make a reference with () explaining how real examples should be longer / shorter / different. AND USE PLACEHOLDERS! ]
+
+  # Notes [optional]
+
+  [optional: edge cases, details, and an area to call or repeat out specific important considerations]
+PROMPT
+
+def generate_prompt(client, meta_prompt, task_or_prompt)
+  completion = client.chat.completions.create(
+    model: "gpt-5.6",
+    messages: [
+      {role: :system, content: meta_prompt},
+      {
+        role: :user,
+        content: "Task, Goal, or Current Prompt:\n#{task_or_prompt}"
+      }
+    ]
+  )
+
+  completion.choices.fetch(0).message.content
+end
+
+puts(generate_prompt(client, meta_prompt, "Write a concise product launch announcement."))
+````
+
   
 
   
@@ -51546,6 +51610,65 @@ ChatCompletionCreateParams params =
 client.chat().completions().create(params).choices().stream()
     .flatMap(choice -> choice.message().content().stream())
     .forEach(System.out::println);
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+meta_prompt = <<~PROMPT
+  Given a task description or existing prompt, produce a detailed system prompt to guide a realtime audio output language model in completing the task effectively.
+
+  # Guidelines
+
+  - Understand the Task: Grasp the main objective, goals, requirements, constraints, and expected output.
+  - Tone: Make sure to specifically call out the tone. By default it should be emotive and friendly, and speak quickly to avoid keeping the user just waiting.
+  - Audio Output Constraints: Because the model is outputting audio, the responses should be short and conversational.
+  - Minimal Changes: If an existing prompt is provided, improve it only if it's simple. For complex prompts, enhance clarity and add missing elements without altering the original structure.
+  - Examples: Include high-quality examples if helpful, using placeholders [in brackets] for complex elements.
+     - What kinds of examples may need to be included, how many, and whether they are complex enough to benefit from placeholders.
+    - It is very important that any examples included reflect the short, conversational output responses of the model.
+  Keep the sentences very short by default. Instead of 3 sentences in a row by the assistant, it should be split up with a back and forth with the user instead.
+    - By default each sentence should be a few words only (5-20ish words). However, if the user specifically asks for "short" responses, then the examples should truly have 1-10 word responses max.
+    - Make sure the examples are multi-turn (at least 4 back-forth-back-forth per example), not just one questions an response. They should reflect an organic conversation.
+  - Clarity and Conciseness: Use clear, specific language. Avoid unnecessary instructions or bland statements.
+  - Preserve User Content: If the input task or prompt includes extensive guidelines or examples, preserve them entirely, or as closely as possible. If they are vague, consider breaking down into sub-steps. Keep any details, guidelines, examples, variables, or placeholders provided by the user.
+  - Constants: DO include constants in the prompt, as they are not susceptible to prompt injection. Such as guides, rubrics, and examples.
+
+  The final prompt you output should adhere to the following structure below. Do not include any additional commentary, only output the completed system prompt. SPECIFICALLY, do not include any additional messages at the start or end of the prompt. (e.g. no "---")
+
+  [Concise instruction describing the task - this should be the first line in the prompt, no section header]
+
+  [Additional details as needed.]
+
+  [Optional sections with headings or bullet points for detailed steps.]
+
+  # Examples [optional]
+
+  [Optional: 1-3 well-defined examples with placeholders if necessary. Clearly mark where examples start and end, and what the input and output are. User placeholders as necessary.]
+  [If the examples are shorter than what a realistic example is expected to be, make a reference with () explaining how real examples should be longer / shorter / different. AND USE PLACEHOLDERS! ]
+
+  # Notes [optional]
+
+  [optional: edge cases, details, and an area to call or repeat out specific important considerations]
+PROMPT
+
+def generate_prompt(client, meta_prompt, task_or_prompt)
+  completion = client.chat.completions.create(
+    model: "gpt-5.6",
+    messages: [
+      {role: :system, content: meta_prompt},
+      {
+        role: :user,
+        content: "Task, Goal, or Current Prompt:\n#{task_or_prompt}"
+      }
+    ]
+  )
+
+  completion.choices.fetch(0).message.content
+end
+
+puts(generate_prompt(client, meta_prompt, "Create a friendly voice assistant for a bike shop."))
 ```
 
 
@@ -51822,6 +51945,93 @@ client.chat().completions().create(params).choices().stream()
     .forEach(System.out::println);
 ````
 
+````ruby
+require "openai"
+
+client = OpenAI::Client.new
+meta_prompt = <<~PROMPT
+  Given a current prompt and a change description, produce a detailed system prompt to guide a language model in completing the task effectively.
+
+  Your final output will be the full corrected prompt verbatim. However, before that, at the very beginning of your response, use <reasoning> tags to analyze the prompt and determine the following, explicitly:
+  <reasoning>
+  - Simple Change: (yes/no) Is the change description explicit and simple? (If so, skip the rest of these questions.)
+  - Reasoning: (yes/no) Does the current prompt use reasoning, analysis, or chain of thought?
+      - Identify: (max 10 words) if so, which section(s) utilize reasoning?
+      - Conclusion: (yes/no) is the chain of thought used to determine a conclusion?
+      - Ordering: (before/after) is the chain of though located before or after
+  - Structure: (yes/no) does the input prompt have a well defined structure
+  - Examples: (yes/no) does the input prompt have few-shot examples
+      - Representative: (1-5) if present, how representative are the examples?
+  - Complexity: (1-5) how complex is the input prompt?
+      - Task: (1-5) how complex is the implied task?
+      - Necessity: ()
+  - Specificity: (1-5) how detailed and specific is the prompt? (not to be confused with length)
+  - Prioritization: (list) what 1-3 categories are the MOST important to address.
+  - Conclusion: (max 30 words) given the previous assessment, give a very concise, imperative description of what should be changed and how. this does not have to adhere strictly to only the categories listed
+  </reasoning>
+
+  # Guidelines
+
+  - Understand the Task: Grasp the main objective, goals, requirements, constraints, and expected output.
+  - Minimal Changes: If an existing prompt is provided, improve it only if it's simple. For complex prompts, enhance clarity and add missing elements without altering the original structure.
+  - Reasoning Before Conclusions**: Encourage reasoning steps before any conclusions are reached. ATTENTION! If the user provides examples where the reasoning happens afterward, REVERSE the order! NEVER START EXAMPLES WITH CONCLUSIONS!
+      - Reasoning Order: Call out reasoning portions of the prompt and conclusion parts (specific fields by name). For each, determine the ORDER in which this is done, and whether it needs to be reversed.
+      - Conclusion, classifications, or results should ALWAYS appear last.
+  - Examples: Include high-quality examples if helpful, using placeholders [in brackets] for complex elements.
+     - What kinds of examples may need to be included, how many, and whether they are complex enough to benefit from placeholders.
+  - Clarity and Conciseness: Use clear, specific language. Avoid unnecessary instructions or bland statements.
+  - Formatting: Use markdown features for readability. DO NOT USE ``` CODE BLOCKS UNLESS SPECIFICALLY REQUESTED.
+  - Preserve User Content: If the input task or prompt includes extensive guidelines or examples, preserve them entirely, or as closely as possible. If they are vague, consider breaking down into sub-steps. Keep any details, guidelines, examples, variables, or placeholders provided by the user.
+  - Constants: DO include constants in the prompt, as they are not susceptible to prompt injection. Such as guides, rubrics, and examples.
+  - Output Format: Explicitly the most appropriate output format, in detail. This should include length and syntax (e.g. short sentence, paragraph, JSON, etc.)
+      - For tasks outputting well-defined or structured data (classification, JSON, etc.) bias toward outputting a JSON.
+      - JSON should never be wrapped in code blocks (```) unless explicitly requested.
+
+  The final prompt you output should adhere to the following structure below. Do not include any additional commentary, only output the completed system prompt. SPECIFICALLY, do not include any additional messages at the start or end of the prompt. (e.g. no "---")
+
+  [Concise instruction describing the task - this should be the first line in the prompt, no section header]
+
+  [Additional details as needed.]
+
+  [Optional sections with headings or bullet points for detailed steps.]
+
+  # Steps [optional]
+
+  [optional: a detailed breakdown of the steps necessary to accomplish the task]
+
+  # Output Format
+
+  [Specifically call out how the output should be formatted, be it response length, structure e.g. JSON, markdown, etc]
+
+  # Examples [optional]
+
+  [Optional: 1-3 well-defined examples with placeholders if necessary. Clearly mark where examples start and end, and what the input and output are. User placeholders as necessary.]
+  [If the examples are shorter than what a realistic example is expected to be, make a reference with () explaining how real examples should be longer / shorter / different. AND USE PLACEHOLDERS! ]
+
+  # Notes [optional]
+
+  [optional: edge cases, details, and an area to call or repeat out specific important considerations]
+  [NOTE: you must start with a <reasoning> section. the immediate next token you produce should be <reasoning>]
+PROMPT
+
+def generate_prompt(client, meta_prompt, task_or_prompt)
+  completion = client.chat.completions.create(
+    model: "gpt-5.6",
+    messages: [
+      {role: :system, content: meta_prompt},
+      {
+        role: :user,
+        content: "Task, Goal, or Current Prompt:\n#{task_or_prompt}"
+      }
+    ]
+  )
+
+  completion.choices.fetch(0).message.content
+end
+
+puts(generate_prompt(client, meta_prompt, "Make this support prompt more concise and empathetic."))
+````
+
   
 
   
@@ -52066,6 +52276,84 @@ ChatCompletionCreateParams params =
 client.chat().completions().create(params).choices().stream()
     .flatMap(choice -> choice.message().content().stream())
     .forEach(System.out::println);
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+meta_prompt = <<~PROMPT
+  Given a current prompt and a change description, produce a detailed system prompt to guide a realtime audio output language model in completing the task effectively.
+
+  Your final output will be the full corrected prompt verbatim. However, before that, at the very beginning of your response, use <reasoning> tags to analyze the prompt and determine the following, explicitly:
+  <reasoning>
+  - Simple Change: (yes/no) Is the change description explicit and simple? (If so, skip the rest of these questions.)
+  - Reasoning: (yes/no) Does the current prompt use reasoning, analysis, or chain of thought?
+      - Identify: (max 10 words) if so, which section(s) utilize reasoning?
+      - Conclusion: (yes/no) is the chain of thought used to determine a conclusion?
+      - Ordering: (before/after) is the chain of though located before or after
+  - Structure: (yes/no) does the input prompt have a well defined structure
+  - Examples: (yes/no) does the input prompt have few-shot examples
+      - Representative: (1-5) if present, how representative are the examples?
+  - Complexity: (1-5) how complex is the input prompt?
+      - Task: (1-5) how complex is the implied task?
+      - Necessity: ()
+  - Specificity: (1-5) how detailed and specific is the prompt? (not to be confused with length)
+  - Prioritization: (list) what 1-3 categories are the MOST important to address.
+  - Conclusion: (max 30 words) given the previous assessment, give a very concise, imperative description of what should be changed and how. this does not have to adhere strictly to only the categories listed
+  </reasoning>
+
+  # Guidelines
+
+  - Understand the Task: Grasp the main objective, goals, requirements, constraints, and expected output.
+  - Tone: Make sure to specifically call out the tone. By default it should be emotive and friendly, and speak quickly to avoid keeping the user just waiting.
+  - Audio Output Constraints: Because the model is outputting audio, the responses should be short and conversational.
+  - Minimal Changes: If an existing prompt is provided, improve it only if it's simple. For complex prompts, enhance clarity and add missing elements without altering the original structure.
+  - Examples: Include high-quality examples if helpful, using placeholders [in brackets] for complex elements.
+     - What kinds of examples may need to be included, how many, and whether they are complex enough to benefit from placeholders.
+    - It is very important that any examples included reflect the short, conversational output responses of the model.
+  Keep the sentences very short by default. Instead of 3 sentences in a row by the assistant, it should be split up with a back and forth with the user instead.
+    - By default each sentence should be a few words only (5-20ish words). However, if the user specifically asks for "short" responses, then the examples should truly have 1-10 word responses max.
+    - Make sure the examples are multi-turn (at least 4 back-forth-back-forth per example), not just one questions an response. They should reflect an organic conversation.
+  - Clarity and Conciseness: Use clear, specific language. Avoid unnecessary instructions or bland statements.
+  - Preserve User Content: If the input task or prompt includes extensive guidelines or examples, preserve them entirely, or as closely as possible. If they are vague, consider breaking down into sub-steps. Keep any details, guidelines, examples, variables, or placeholders provided by the user.
+  - Constants: DO include constants in the prompt, as they are not susceptible to prompt injection. Such as guides, rubrics, and examples.
+
+  The final prompt you output should adhere to the following structure below. Do not include any additional commentary, only output the completed system prompt. SPECIFICALLY, do not include any additional messages at the start or end of the prompt. (e.g. no "---")
+
+  [Concise instruction describing the task - this should be the first line in the prompt, no section header]
+
+  [Additional details as needed.]
+
+  [Optional sections with headings or bullet points for detailed steps.]
+
+  # Examples [optional]
+
+  [Optional: 1-3 well-defined examples with placeholders if necessary. Clearly mark where examples start and end, and what the input and output are. User placeholders as necessary.]
+  [If the examples are shorter than what a realistic example is expected to be, make a reference with () explaining how real examples should be longer / shorter / different. AND USE PLACEHOLDERS! ]
+
+  # Notes [optional]
+
+  [optional: edge cases, details, and an area to call or repeat out specific important considerations]
+  [NOTE: you must start with a <reasoning> section. the immediate next token you produce should be <reasoning>]
+PROMPT
+
+def generate_prompt(client, meta_prompt, task_or_prompt)
+  completion = client.chat.completions.create(
+    model: "gpt-5.6",
+    messages: [
+      {role: :system, content: meta_prompt},
+      {
+        role: :user,
+        content: "Task, Goal, or Current Prompt:\n#{task_or_prompt}"
+      }
+    ]
+  )
+
+  completion.choices.fetch(0).message.content
+end
+
+puts(generate_prompt(client, meta_prompt, "Make this voice assistant prompt warmer and more direct."))
 ```
 
 
@@ -54439,6 +54727,23 @@ curl https://api.openai.com/v1/fine_tuning/model_limits \
 
 
 ## Error mitigation
+
+### Handle rapid traffic increases and model overload
+
+The API can return `slow_down` when your request rate increases too quickly, or `server_is_overloaded` when the requested model is temporarily overloaded. Check the HTTP status and `error.code` to tell these conditions apart:
+
+| HTTP status | Error type                  | Error code             | What it means                                  | What to do                                                                                                             |
+| ----------- | --------------------------- | ---------------------- | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `429`       | `rate_limit_error`          | `slow_down`            | Your request rate increased too quickly.       | Follow `Retry-After` when it's present, reduce your request rate, and then increase it gradually.                      |
+| `503`       | `service_unavailable_error` | `server_is_overloaded` | The requested model is temporarily overloaded. | Follow `Retry-After` when it's present, then retry. If the error continues, increase the delay between retry attempts. |
+
+If `Retry-After` is missing, increase the delay between retries and add a small random delay.
+
+A `slow_down` error can occur even when your traffic is within its requests-per-minute and tokens-per-minute limits. It reflects how quickly traffic increased, not whether you exhausted those limits.
+
+As a rule of thumb, once your traffic reaches 1 million input tokens per minute (TPM), increase it by no more than 50% every 15 minutes. The exact point at which the ramp-rate limit applies can vary by model and traffic conditions.
+
+Enterprise customers whose pay-as-you-go traffic routinely hits ramp-rate limits can consider [Scale Tier](https://openai.com/api-scale-tier/) for more predictable capacity on eligible models. For GPT-5.6 and later models, see [Reserved Tier](https://openai.com/api-reserved-tier/). Capacity tiers don't change how you should handle a `slow_down` response: follow `Retry-After` when it's present, reduce traffic, and ramp gradually.
 
 ### What are some steps I can take to mitigate this?
 
@@ -72892,6 +73197,53 @@ try (StreamResponse<ResponseStreamEvent> stream = client.responses().createStrea
 }
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+entities_schema = {
+  type: :object,
+  properties: {
+    attributes: {type: :array, items: {type: :string}},
+    colors: {type: :array, items: {type: :string}},
+    animals: {type: :array, items: {type: :string}}
+  },
+  required: %w[attributes colors animals],
+  additionalProperties: false
+}
+
+stream = client.responses.stream(
+  model: "gpt-5.6",
+  input: [
+    {role: :system, content: "Extract entities from the input text."},
+    {
+      role: :user,
+      content: "The quick brown fox jumps over the lazy dog with piercing blue eyes."
+    }
+  ],
+  text: {
+    format: {
+      type: :json_schema,
+      name: "entities",
+      strict: true,
+      schema: entities_schema
+    }
+  }
+)
+
+stream.each do |event|
+  case event
+  when OpenAI::Models::Responses::ResponseRefusalDeltaEvent,
+       OpenAI::Models::Responses::ResponseTextDeltaEvent
+    print(event.delta)
+  when OpenAI::Models::Responses::ResponseErrorEvent
+    warn(event.message)
+  when OpenAI::Models::Responses::ResponseCompletedEvent
+    puts("\nCompleted")
+  end
+end
+```
+
 
 
 ## Supported schemas
@@ -87667,6 +88019,28 @@ try (var writer = Files.newBufferedWriter(output)) {
 System.out.println(output);
 ```
 
+```ruby
+require "fileutils"
+require "json"
+require "openai"
+
+client = OpenAI::Client.new
+reviews = ["A rich cup of coffee.", "A bright herbal tea."]
+
+response = client.embeddings.create(
+  model: "text-embedding-3-small",
+  input: reviews.map { |review| review.tr("\n", " ") }
+)
+
+csv_field = ->(value) { %("#{value.gsub('"', '""')}") }
+rows = response.data.map.with_index do |embedding, index|
+  [csv_field.call(reviews.fetch(index)), csv_field.call(JSON.generate(embedding.embedding))].join(",")
+end
+
+FileUtils.mkdir_p("output")
+File.write("output/embedded_1k_reviews.csv", (["combined,ada_embedding"] + rows).join("\n") + "\n")
+```
+
 
 To load the data from a saved file, you can run the following:
 
@@ -87787,6 +88161,24 @@ Console.WriteLine(
 );
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+response = client.embeddings.create(
+  model: "text-embedding-3-small",
+  input: "Testing 123",
+  encoding_format: :float
+)
+
+shortened = response.data.fetch(0).embedding.first(256)
+magnitude = Math.sqrt(shortened.sum { |value| value**2 })
+normalized = shortened.map { |value| magnitude.zero? ? 0 : value / magnitude }
+
+puts(normalized)
+```
+
 
 Dynamically changing the dimensions enables very flexible usage. For example, when using a vector data store that only supports embeddings up to 1024 dimensions long, developers can now still use our best embedding model `text-embedding-3-large` and specify a value of 1024 for the `dimensions` API parameter, which will shorten the embedding down from 3072 dimensions, trading off some accuracy in exchange for the smaller vector size.
 
@@ -87885,6 +88277,35 @@ ChatCompletionCreateParams params =
 client.chat().completions().create(params).choices().stream()
     .flatMap(choice -> choice.message().content().stream())
     .forEach(System.out::println);
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+article = "At the 2022 Winter Olympics, Great Britain won women's curling and Sweden won men's curling."
+question = <<~QUESTION
+  Use the article below to answer the question. If the answer cannot be found, say "I don't know."
+
+  Article:
+  #{article}
+
+  Question: Which athletes won the gold medal in curling at the 2022 Winter Olympics?
+QUESTION
+
+response = client.chat.completions.create(
+  model: "gpt-4.1-mini",
+  messages: [
+    {
+      role: :system,
+      content: "You answer questions about the 2022 Winter Olympics."
+    },
+    {role: :user, content: question}
+  ],
+  temperature: 0
+)
+
+puts(response.choices.fetch(0).message.content)
 ```
 
 
@@ -87999,6 +88420,39 @@ IntStream.range(0, reviews.size())
     .forEach(System.out::println);
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+reviews = [
+  "A rich cup of coffee.",
+  "Smooth beans in tomato sauce.",
+  "Dark chocolate with orange."
+]
+
+response = client.embeddings.create(
+  model: "text-embedding-3-small",
+  input: reviews + ["delicious beans"]
+)
+
+query = response.data.fetch(-1).embedding
+similarity = lambda do |embedding|
+  dot_product = embedding.zip(query).sum { |value, query_value| value * query_value }
+  magnitude = Math.sqrt(embedding.sum { |value| value**2 })
+  query_magnitude = Math.sqrt(query.sum { |value| value**2 })
+  dot_product / (magnitude * query_magnitude)
+end
+
+results = reviews.map.with_index do |review, index|
+  {
+    review: review,
+    score: similarity.call(response.data.fetch(index).embedding)
+  }
+end.sort_by { |result| -result.fetch(:score) }.first(3)
+
+puts(results)
+```
+
 
 
 
@@ -88110,6 +88564,38 @@ IntStream.range(0, functions.size())
             .reversed())
     .map(functions::get)
     .forEach(System.out::println);
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+functions = [
+  "function add(a, b) { return a + b; }",
+  "function complete(prompt) { return prompt; }"
+]
+
+response = client.embeddings.create(
+  model: "text-embedding-3-small",
+  input: functions + ["Completions API tests"]
+)
+
+query = response.data.fetch(-1).embedding
+similarity = lambda do |embedding|
+  dot_product = embedding.zip(query).sum { |value, query_value| value * query_value }
+  magnitude = Math.sqrt(embedding.sum { |value| value**2 })
+  query_magnitude = Math.sqrt(query.sum { |value| value**2 })
+  dot_product / (magnitude * query_magnitude)
+end
+
+results = functions.map.with_index do |source, index|
+  {
+    source: source,
+    score: similarity.call(response.data.fetch(index).embedding)
+  }
+end.sort_by { |result| -result.fetch(:score) }
+
+puts(results)
 ```
 
 
@@ -88234,6 +88720,40 @@ var nearestNeighbors =
         .toList();
 
 System.out.println(nearestNeighbors);
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+strings = [
+  "A cheetah is a fast land animal.",
+  "A peregrine falcon is a fast bird.",
+  "A tortoise moves slowly."
+]
+
+response = client.embeddings.create(
+  model: "text-embedding-3-small",
+  input: strings
+)
+
+query = response.data.fetch(0).embedding
+similarity = lambda do |embedding|
+  dot_product = embedding.zip(query).sum { |value, query_value| value * query_value }
+  magnitude = Math.sqrt(embedding.sum { |value| value**2 })
+  query_magnitude = Math.sqrt(query.sum { |value| value**2 })
+  dot_product / (magnitude * query_magnitude)
+end
+
+recommendations = response.data.map.with_index do |embedding, index|
+  {
+    index: index,
+    text: strings.fetch(index),
+    similarity: similarity.call(embedding.embedding)
+  }
+end.sort_by { |recommendation| -recommendation.fetch(:similarity) }
+
+puts(recommendations)
 ```
 
 
@@ -88447,6 +88967,31 @@ List<Float> review = embeddings.get(2).embedding();
 double negative = cosineSimilarity(review, embeddings.get(0).embedding());
 double positive = cosineSimilarity(review, embeddings.get(1).embedding());
 System.out.println(positive > negative ? "positive" : "negative");
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+labels = ["negative", "positive"]
+
+response = client.embeddings.create(
+  model: "text-embedding-3-small",
+  input: labels + ["The coffee arrived quickly and tastes great."]
+)
+
+review = response.data.fetch(-1).embedding
+similarity = lambda do |embedding|
+  dot_product = embedding.zip(review).sum { |value, review_value| value * review_value }
+  magnitude = Math.sqrt(embedding.sum { |value| value**2 })
+  review_magnitude = Math.sqrt(review.sum { |value| value**2 })
+  dot_product / (magnitude * review_magnitude)
+end
+
+negative, positive = response.data.first(2).map do |embedding|
+  similarity.call(embedding.embedding)
+end
+puts((positive > negative) ? "positive" : "negative")
 ```
 
 
@@ -93563,7 +94108,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.55.0</version>
+  <version>4.56.0</version>
 </dependency>
 ```
 
@@ -95736,7 +96281,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.55.0</version>
+  <version>4.56.0</version>
 </dependency>
 ```
 
