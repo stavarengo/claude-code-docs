@@ -57,7 +57,7 @@ Returns a list of input items for a given response.
 
   A list of Response items.
 
-  - `data: array of ResponseInputMessageItem or ResponseOutputMessage or object { id, queries, status, 2 more }  or 26 more`
+  - `data: array of ResponseInputMessageItem or ResponseOutputMessage or object { id, queries, status, 2 more }  or 27 more`
 
     A list of items used to generate this response.
 
@@ -895,7 +895,7 @@ Returns a list of input items for a given response.
 
             The URL of the page searched for the pattern.
 
-      - `status: "in_progress" or "searching" or "completed" or "failed"`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
 
         The status of the web search tool call.
 
@@ -907,13 +907,15 @@ Returns a list of input items for a given response.
 
         - `"failed"`
 
+        - `"incomplete"`
+
       - `type: "web_search_call"`
 
         The type of the web search tool call. Always `web_search_call`.
 
         - `"web_search_call"`
 
-    - `FunctionCall object { id, arguments, call_id, 6 more }`
+    - `FunctionCall object { id, arguments, call_id, 7 more }`
 
       - `id: string`
 
@@ -947,6 +949,10 @@ Returns a list of input items for a given response.
         The type of the function tool call. Always `function_call`.
 
         - `"function_call"`
+
+      - `async: optional boolean`
+
+        Whether the function tool call runs asynchronously.
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -1134,11 +1140,11 @@ Returns a list of input items for a given response.
 
         - `"incomplete"`
 
-      - `tools: array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
         The loaded tool definitions returned by tool search.
 
-        - `Function object { name, parameters, strict, 5 more }`
+        - `Function object { name, parameters, strict, 6 more }`
 
           Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
 
@@ -1167,6 +1173,8 @@ Returns a list of input items for a given response.
             - `"direct"`
 
             - `"programmatic"`
+
+          - `async: optional boolean`
 
           - `defer_loading: optional boolean`
 
@@ -1961,7 +1969,7 @@ Returns a list of input items for a given response.
 
                 - `"container_reference"`
 
-        - `Custom object { name, type, allowed_callers, 3 more }`
+        - `Custom object { name, type, allowed_callers, 4 more }`
 
           A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
 
@@ -1982,6 +1990,10 @@ Returns a list of input items for a given response.
             - `"direct"`
 
             - `"programmatic"`
+
+          - `async: optional boolean`
+
+            Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
           - `defer_loading: optional boolean`
 
@@ -2039,11 +2051,11 @@ Returns a list of input items for a given response.
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
+          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
-            - `Function object { name, type, allowed_callers, 5 more }`
+            - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
@@ -2058,6 +2070,10 @@ Returns a list of input items for a given response.
                 - `"direct"`
 
                 - `"programmatic"`
+
+              - `async: optional boolean`
+
+                Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
               - `defer_loading: optional boolean`
 
@@ -2075,7 +2091,7 @@ Returns a list of input items for a given response.
 
                 Whether to enforce strict parameter validation. If omitted, Responses attempts to use strict validation when the schema is compatible, and falls back to non-strict validation otherwise.
 
-            - `Custom object { name, type, allowed_callers, 3 more }`
+            - `Custom object { name, type, allowed_callers, 4 more }`
 
               A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
 
@@ -2096,6 +2112,10 @@ Returns a list of input items for a given response.
                 - `"direct"`
 
                 - `"programmatic"`
+
+              - `async: optional boolean`
+
+                Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
               - `defer_loading: optional boolean`
 
@@ -2249,11 +2269,11 @@ Returns a list of input items for a given response.
 
         - `"tool"`
 
-      - `tools: array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
         The additional tool definitions made available at this item.
 
-        - `Function object { name, parameters, strict, 5 more }`
+        - `Function object { name, parameters, strict, 6 more }`
 
           Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
 
@@ -2282,6 +2302,8 @@ Returns a list of input items for a given response.
             - `"direct"`
 
             - `"programmatic"`
+
+          - `async: optional boolean`
 
           - `defer_loading: optional boolean`
 
@@ -2859,7 +2881,7 @@ Returns a list of input items for a given response.
 
             - `ContainerReference object { container_id, type }`
 
-        - `Custom object { name, type, allowed_callers, 3 more }`
+        - `Custom object { name, type, allowed_callers, 4 more }`
 
           A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
 
@@ -2880,6 +2902,10 @@ Returns a list of input items for a given response.
             - `"direct"`
 
             - `"programmatic"`
+
+          - `async: optional boolean`
+
+            Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
           - `defer_loading: optional boolean`
 
@@ -2905,11 +2931,11 @@ Returns a list of input items for a given response.
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
+          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
-            - `Function object { name, type, allowed_callers, 5 more }`
+            - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
@@ -2924,6 +2950,10 @@ Returns a list of input items for a given response.
                 - `"direct"`
 
                 - `"programmatic"`
+
+              - `async: optional boolean`
+
+                Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
               - `defer_loading: optional boolean`
 
@@ -2941,7 +2971,7 @@ Returns a list of input items for a given response.
 
                 Whether to enforce strict parameter validation. If omitted, Responses attempts to use strict validation when the schema is compatible, and falls back to non-strict validation otherwise.
 
-            - `Custom object { name, type, allowed_callers, 3 more }`
+            - `Custom object { name, type, allowed_callers, 4 more }`
 
               A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
 
@@ -2962,6 +2992,10 @@ Returns a list of input items for a given response.
                 - `"direct"`
 
                 - `"programmatic"`
+
+              - `async: optional boolean`
+
+                Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
               - `defer_loading: optional boolean`
 
@@ -3084,6 +3118,44 @@ Returns a list of input items for a given response.
         The type of the item. Always `additional_tools`.
 
         - `"additional_tools"`
+
+    - `ConfigurationUpdate object { id, type, reasoning }`
+
+      A configuration update that applies to subsequent responses until it is
+      replaced by another configuration update.
+
+      - `id: string`
+
+        The unique ID of the configuration update item.
+
+      - `type: "configuration_update"`
+
+        The item type. Always `configuration_update`.
+
+        - `"configuration_update"`
+
+      - `reasoning: optional object { effort }`
+
+        The reasoning configuration applied by this update.
+
+        - `effort: optional ReasoningEffort or null`
+
+          The reasoning effort used for subsequent responses until another
+          configuration update replaces it.
+
+          - `"none"`
+
+          - `"minimal"`
+
+          - `"low"`
+
+          - `"medium"`
+
+          - `"high"`
+
+          - `"xhigh"`
+
+          - `"max"`
 
     - `Reasoning object { id, summary, type, 3 more }`
 
@@ -3937,7 +4009,7 @@ Returns a list of input items for a given response.
 
         - `"failed"`
 
-    - `CustomToolCall object { id, call_id, input, 6 more }`
+    - `CustomToolCall object { id, call_id, input, 7 more }`
 
       - `id: string`
 
@@ -3971,6 +4043,10 @@ Returns a list of input items for a given response.
         The type of the custom tool call. Always `custom_tool_call`.
 
         - `"custom_tool_call"`
+
+      - `async: optional boolean`
+
+        Whether the custom tool call runs asynchronously.
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 

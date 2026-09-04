@@ -842,8 +842,7 @@ A chart tooltip contains a label, name, indicator and value. You can use a combi
 "use client"
 
 import * as React from "react"
-
-import { cn } from "@/lib/utils"
+import { cn } from "cn"
 
 export function ChartTooltipDemo() {
   return (

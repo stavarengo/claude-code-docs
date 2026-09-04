@@ -7,7 +7,7 @@
 Model ID: `gpt-5`
 
 GPT-5 is our previous model for coding, reasoning, and agentic tasks across domains.
-We recommend using the latest [GPT-5.6](/api/docs/models/gpt-5.6-sol). Learn more on the [Model guidance](/api/docs/guides/latest-model) page. Reasoning.effort supports: minimal, low, medium, and high.
+We recommend using the latest [GPT-6 Astra](/api/docs/models/gpt-6-astra). Learn more on the [Model guidance](/api/docs/guides/latest-model) page. Reasoning.effort supports: minimal, low, medium, and high.
 
 ## Model details
 

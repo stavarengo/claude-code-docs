@@ -6,7 +6,7 @@
 
 Model ID: `chatgpt-4o-latest`
 
-ChatGPT-4o was a model alias for the GPT-4o snapshot used in ChatGPT. It has been deprecated and removed from the API. We recommend using [GPT-5.6](/api/docs/models/gpt-5.6-sol) for most API integrations.
+ChatGPT-4o was a model alias for the GPT-4o snapshot used in ChatGPT. It has been deprecated and removed from the API. We recommend using [GPT-6 Astra](/api/docs/models/gpt-6-astra) for most API integrations.
 
 ## Model details
 

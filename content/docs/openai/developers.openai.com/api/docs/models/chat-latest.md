@@ -7,7 +7,7 @@
 Model ID: `chat-latest`
 
 chat-latest points to the latest Instant model currently used in ChatGPT.
-We recommend leveraging [GPT-5.6](/api/docs/models/gpt-5.6-sol) for production API usage. Learn more on the [Model guidance](/api/docs/guides/latest-model) page. The underlying model snapshot will be regularly updated.
+We recommend leveraging [GPT-6 Astra](/api/docs/models/gpt-6-astra) for production API usage. Learn more on the [Model guidance](/api/docs/guides/latest-model) page. The underlying model snapshot will be regularly updated.
 
 ## Model details
 

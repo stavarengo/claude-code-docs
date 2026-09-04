@@ -8,13 +8,15 @@ Learn when and how to compact long-running conversations in the [conversation st
 
 ### Body Parameters
 
-- `model: "gpt-5.6-sol" or "gpt-5.6-terra" or "gpt-5.6-luna" or 99 more or string or null`
+- `model: "gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 100 more or string or null`
 
-  Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI offers a wide range of models with different capabilities, performance characteristics, and price points. Refer to the [model guide](/docs/models) to browse and compare available models.
+  Model ID used to generate the response, like `gpt-6-astra`. OpenAI offers a wide range of models with different capabilities, performance characteristics, and price points. Refer to the [model guide](/docs/models) to browse and compare available models.
 
-  - `"gpt-5.6-sol" or "gpt-5.6-terra" or "gpt-5.6-luna" or 99 more`
+  - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 100 more`
 
-    Model ID used to generate the response, like `gpt-5.6-sol`. OpenAI offers a wide range of models with different capabilities, performance characteristics, and price points. Refer to the [model guide](/docs/models) to browse and compare available models.
+    Model ID used to generate the response, like `gpt-6-astra`. OpenAI offers a wide range of models with different capabilities, performance characteristics, and price points. Refer to the [model guide](/docs/models) to browse and compare available models.
+
+    - `"gpt-6-astra"`
 
     - `"gpt-5.6-sol"`
 
@@ -222,7 +224,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
   - `string`
 
-- `input: optional string or array of EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 29 more or null`
+- `input: optional string or array of EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 30 more or null`
 
   Text, image, or file inputs to the model, used to generate a response
 
@@ -230,7 +232,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
     A text input to the model, equivalent to a text input with the `user` role.
 
-  - `array of EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 29 more`
+  - `array of EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 30 more`
 
     A list of one or many input items to the model, containing different content types.
 
@@ -1113,7 +1115,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             The URL of the page searched for the pattern.
 
-      - `status: "in_progress" or "searching" or "completed" or "failed"`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
 
         The status of the web search tool call.
 
@@ -1125,13 +1127,15 @@ Learn when and how to compact long-running conversations in the [conversation st
 
         - `"failed"`
 
+        - `"incomplete"`
+
       - `type: "web_search_call"`
 
         The type of the web search tool call. Always `web_search_call`.
 
         - `"web_search_call"`
 
-    - `FunctionCall object { arguments, call_id, name, 5 more }`
+    - `FunctionCall object { arguments, call_id, name, 6 more }`
 
       A tool call to run a function. See the
       [function calling guide](/docs/guides/function-calling) for more information.
@@ -1157,6 +1161,10 @@ Learn when and how to compact long-running conversations in the [conversation st
       - `id: optional string`
 
         The unique ID of the function tool call.
+
+      - `async: optional boolean`
+
+        Whether the function tool call runs asynchronously.
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -1407,11 +1415,11 @@ Learn when and how to compact long-running conversations in the [conversation st
 
     - `ToolSearchOutput object { tools, type, id, 3 more }`
 
-      - `tools: array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
         The loaded tool definitions returned by the tool search output.
 
-        - `Function object { name, parameters, strict, 5 more }`
+        - `Function object { name, parameters, strict, 6 more }`
 
           Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
 
@@ -1440,6 +1448,8 @@ Learn when and how to compact long-running conversations in the [conversation st
             - `"direct"`
 
             - `"programmatic"`
+
+          - `async: optional boolean`
 
           - `defer_loading: optional boolean`
 
@@ -2234,7 +2244,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
                 - `"container_reference"`
 
-        - `Custom object { name, type, allowed_callers, 3 more }`
+        - `Custom object { name, type, allowed_callers, 4 more }`
 
           A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
 
@@ -2255,6 +2265,10 @@ Learn when and how to compact long-running conversations in the [conversation st
             - `"direct"`
 
             - `"programmatic"`
+
+          - `async: optional boolean`
+
+            Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
           - `defer_loading: optional boolean`
 
@@ -2312,11 +2326,11 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
+          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
-            - `Function object { name, type, allowed_callers, 5 more }`
+            - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
@@ -2331,6 +2345,10 @@ Learn when and how to compact long-running conversations in the [conversation st
                 - `"direct"`
 
                 - `"programmatic"`
+
+              - `async: optional boolean`
+
+                Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
               - `defer_loading: optional boolean`
 
@@ -2348,7 +2366,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
                 Whether to enforce strict parameter validation. If omitted, Responses attempts to use strict validation when the schema is compatible, and falls back to non-strict validation otherwise.
 
-            - `Custom object { name, type, allowed_callers, 3 more }`
+            - `Custom object { name, type, allowed_callers, 4 more }`
 
               A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
 
@@ -2369,6 +2387,10 @@ Learn when and how to compact long-running conversations in the [conversation st
                 - `"direct"`
 
                 - `"programmatic"`
+
+              - `async: optional boolean`
+
+                Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
               - `defer_loading: optional boolean`
 
@@ -2526,11 +2548,11 @@ Learn when and how to compact long-running conversations in the [conversation st
 
         - `"developer"`
 
-      - `tools: array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
         A list of additional tools made available at this item.
 
-        - `Function object { name, parameters, strict, 5 more }`
+        - `Function object { name, parameters, strict, 6 more }`
 
           Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
 
@@ -2559,6 +2581,8 @@ Learn when and how to compact long-running conversations in the [conversation st
             - `"direct"`
 
             - `"programmatic"`
+
+          - `async: optional boolean`
 
           - `defer_loading: optional boolean`
 
@@ -3136,7 +3160,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             - `ContainerReference object { container_id, type }`
 
-        - `Custom object { name, type, allowed_callers, 3 more }`
+        - `Custom object { name, type, allowed_callers, 4 more }`
 
           A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
 
@@ -3157,6 +3181,10 @@ Learn when and how to compact long-running conversations in the [conversation st
             - `"direct"`
 
             - `"programmatic"`
+
+          - `async: optional boolean`
+
+            Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
           - `defer_loading: optional boolean`
 
@@ -3182,11 +3210,11 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
+          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
-            - `Function object { name, type, allowed_callers, 5 more }`
+            - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
@@ -3201,6 +3229,10 @@ Learn when and how to compact long-running conversations in the [conversation st
                 - `"direct"`
 
                 - `"programmatic"`
+
+              - `async: optional boolean`
+
+                Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
               - `defer_loading: optional boolean`
 
@@ -3218,7 +3250,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
                 Whether to enforce strict parameter validation. If omitted, Responses attempts to use strict validation when the schema is compatible, and falls back to non-strict validation otherwise.
 
-            - `Custom object { name, type, allowed_callers, 3 more }`
+            - `Custom object { name, type, allowed_callers, 4 more }`
 
               A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
 
@@ -3239,6 +3271,10 @@ Learn when and how to compact long-running conversations in the [conversation st
                 - `"direct"`
 
                 - `"programmatic"`
+
+              - `async: optional boolean`
+
+                Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
               - `defer_loading: optional boolean`
 
@@ -3365,6 +3401,45 @@ Learn when and how to compact long-running conversations in the [conversation st
       - `id: optional string or null`
 
         The unique ID of this additional tools item.
+
+    - `ConfigurationUpdate object { type, id, reasoning }`
+
+      An update to the conversation's response configuration. The configuration
+      remains in effect for subsequent responses until it is replaced by another
+      configuration update.
+
+      - `type: "configuration_update"`
+
+        The item type. Always `configuration_update`.
+
+        - `"configuration_update"`
+
+      - `id: optional string or null`
+
+        The unique ID of the configuration update item.
+
+      - `reasoning: optional object { effort }`
+
+        Updates to reasoning configuration. Only effort is supported.
+
+        - `effort: optional ReasoningEffort or null`
+
+          The reasoning effort to use for subsequent responses until another
+          configuration update replaces it.
+
+          - `"none"`
+
+          - `"minimal"`
+
+          - `"low"`
+
+          - `"medium"`
+
+          - `"high"`
+
+          - `"xhigh"`
+
+          - `"max"`
 
     - `Reasoning object { id, summary, type, 3 more }`
 
@@ -4209,7 +4284,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             - `"program"`
 
-    - `CustomToolCall object { call_id, input, name, 4 more }`
+    - `CustomToolCall object { call_id, input, name, 5 more }`
 
       A call to a custom tool created by the model.
 
@@ -4234,6 +4309,10 @@ Learn when and how to compact long-running conversations in the [conversation st
       - `id: optional string`
 
         The unique ID of the custom tool call in the OpenAI platform.
+
+      - `async: optional boolean`
+
+        Whether the custom tool call runs asynchronously.
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -4380,7 +4459,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
 - `service_tier: optional "auto" or "default" or "fast" or 2 more or null`
 
-  Specifies the processing type used for serving the request.   - If set to 'auto', then the request will be processed with the service tier configured in the Project settings. Unless otherwise configured, the Project will use 'default'.   - If set to 'default', then the request will be processed with the standard pricing and performance for the selected model.   - If set to '[flex](/docs/guides/flex-processing)', then the request will be processed with the Flex Processing service tier.   - To opt-in to [Fast mode](/api/docs/guides/fast-mode) at the request level, include the `service_tier=fast` or `service_tier=priority` parameter for Responses or Chat Completions. The response will show `service_tier=priority` regardless of if you specify `service_tier=fast` or `priority` in your request.   - When not set, the default behavior is 'auto'.
+  Specifies the processing type used for serving the request.   - If set to 'auto', then the request will be processed with the service tier configured in the Project settings. Unless otherwise configured, the Project will use 'default'.   - If set to 'default', then the request will be processed with the standard pricing and performance for the selected model.   - If set to '[flex](/docs/guides/flex-processing)', then the request will be processed with the Flex Processing service tier.   - To opt-in to [Fast mode](/api/docs/guides/fast-mode) at the request level, include the `service_tier=fast` or `service_tier=priority` parameter for Responses or Chat Completions. For models with a dedicated Fast tier, either value resolves to `service_tier=fast`; for other models, either value resolves to `service_tier=priority`.   - When not set, the default behavior is 'auto'.
   When the `service_tier` parameter is set, the response body will include the `service_tier` value based on the processing mode actually used to serve the request. This response value may be different from the value set in the parameter.
 
   - `"auto"`
@@ -4847,7 +4926,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
         - `"program_output"`
 
-    - `FunctionCall object { arguments, call_id, name, 5 more }`
+    - `FunctionCall object { arguments, call_id, name, 6 more }`
 
       A tool call to run a function. See the
       [function calling guide](/docs/guides/function-calling) for more information.
@@ -4873,6 +4952,10 @@ Learn when and how to compact long-running conversations in the [conversation st
       - `id: optional string`
 
         The unique ID of the function tool call.
+
+      - `async: optional boolean`
+
+        Whether the function tool call runs asynchronously.
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -4979,11 +5062,11 @@ Learn when and how to compact long-running conversations in the [conversation st
 
         - `"incomplete"`
 
-      - `tools: array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
         The loaded tool definitions returned by tool search.
 
-        - `Function object { name, parameters, strict, 5 more }`
+        - `Function object { name, parameters, strict, 6 more }`
 
           Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
 
@@ -5012,6 +5095,8 @@ Learn when and how to compact long-running conversations in the [conversation st
             - `"direct"`
 
             - `"programmatic"`
+
+          - `async: optional boolean`
 
           - `defer_loading: optional boolean`
 
@@ -5806,7 +5891,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
                 - `"container_reference"`
 
-        - `Custom object { name, type, allowed_callers, 3 more }`
+        - `Custom object { name, type, allowed_callers, 4 more }`
 
           A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
 
@@ -5827,6 +5912,10 @@ Learn when and how to compact long-running conversations in the [conversation st
             - `"direct"`
 
             - `"programmatic"`
+
+          - `async: optional boolean`
+
+            Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
           - `defer_loading: optional boolean`
 
@@ -5884,11 +5973,11 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
+          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
-            - `Function object { name, type, allowed_callers, 5 more }`
+            - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
@@ -5903,6 +5992,10 @@ Learn when and how to compact long-running conversations in the [conversation st
                 - `"direct"`
 
                 - `"programmatic"`
+
+              - `async: optional boolean`
+
+                Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
               - `defer_loading: optional boolean`
 
@@ -5920,7 +6013,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
                 Whether to enforce strict parameter validation. If omitted, Responses attempts to use strict validation when the schema is compatible, and falls back to non-strict validation otherwise.
 
-            - `Custom object { name, type, allowed_callers, 3 more }`
+            - `Custom object { name, type, allowed_callers, 4 more }`
 
               A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
 
@@ -5941,6 +6034,10 @@ Learn when and how to compact long-running conversations in the [conversation st
                 - `"direct"`
 
                 - `"programmatic"`
+
+              - `async: optional boolean`
+
+                Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
               - `defer_loading: optional boolean`
 
@@ -6094,11 +6191,11 @@ Learn when and how to compact long-running conversations in the [conversation st
 
         - `"tool"`
 
-      - `tools: array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
         The additional tool definitions made available at this item.
 
-        - `Function object { name, parameters, strict, 5 more }`
+        - `Function object { name, parameters, strict, 6 more }`
 
           Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
 
@@ -6127,6 +6224,8 @@ Learn when and how to compact long-running conversations in the [conversation st
             - `"direct"`
 
             - `"programmatic"`
+
+          - `async: optional boolean`
 
           - `defer_loading: optional boolean`
 
@@ -6704,7 +6803,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             - `ContainerReference object { container_id, type }`
 
-        - `Custom object { name, type, allowed_callers, 3 more }`
+        - `Custom object { name, type, allowed_callers, 4 more }`
 
           A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
 
@@ -6725,6 +6824,10 @@ Learn when and how to compact long-running conversations in the [conversation st
             - `"direct"`
 
             - `"programmatic"`
+
+          - `async: optional boolean`
+
+            Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
           - `defer_loading: optional boolean`
 
@@ -6750,11 +6853,11 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
+          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
-            - `Function object { name, type, allowed_callers, 5 more }`
+            - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
@@ -6769,6 +6872,10 @@ Learn when and how to compact long-running conversations in the [conversation st
                 - `"direct"`
 
                 - `"programmatic"`
+
+              - `async: optional boolean`
+
+                Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
               - `defer_loading: optional boolean`
 
@@ -6786,7 +6893,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
                 Whether to enforce strict parameter validation. If omitted, Responses attempts to use strict validation when the schema is compatible, and falls back to non-strict validation otherwise.
 
-            - `Custom object { name, type, allowed_callers, 3 more }`
+            - `Custom object { name, type, allowed_callers, 4 more }`
 
               A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
 
@@ -6807,6 +6914,10 @@ Learn when and how to compact long-running conversations in the [conversation st
                 - `"direct"`
 
                 - `"programmatic"`
+
+              - `async: optional boolean`
+
+                Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
               - `defer_loading: optional boolean`
 
@@ -7163,7 +7274,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             The URL of the page searched for the pattern.
 
-      - `status: "in_progress" or "searching" or "completed" or "failed"`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
 
         The status of the web search tool call.
 
@@ -7174,6 +7285,8 @@ Learn when and how to compact long-running conversations in the [conversation st
         - `"completed"`
 
         - `"failed"`
+
+        - `"incomplete"`
 
       - `type: "web_search_call"`
 
@@ -8330,7 +8443,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
         - `"failed"`
 
-    - `CustomToolCall object { call_id, input, name, 4 more }`
+    - `CustomToolCall object { call_id, input, name, 5 more }`
 
       A call to a custom tool created by the model.
 
@@ -8355,6 +8468,10 @@ Learn when and how to compact long-running conversations in the [conversation st
       - `id: optional string`
 
         The unique ID of the custom tool call in the OpenAI platform.
+
+      - `async: optional boolean`
+
+        Whether the custom tool call runs asynchronously.
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -8491,7 +8608,7 @@ curl https://api.openai.com/v1/responses/compact \
     -H 'Content-Type: application/json' \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-          "model": "gpt-5.6-sol",
+          "model": "gpt-6-astra",
           "previous_response_id": "resp_123"
         }'
 ```
@@ -8543,7 +8660,7 @@ curl -X POST https://api.openai.com/v1/responses/compact \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-      "model": "gpt-5.6-sol",
+      "model": "gpt-6-astra",
       "input": [
         {
           "role": "user",

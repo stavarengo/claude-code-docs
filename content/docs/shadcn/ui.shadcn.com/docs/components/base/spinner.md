@@ -85,9 +85,8 @@ import { Spinner } from "@/components/ui/spinner"
 You can replace the default spinner icon with any other icon by editing the `Spinner` component.
 
 ```tsx
+import { cn } from "cn"
 import { LoaderIcon } from "lucide-react"
-
-import { cn } from "@/lib/utils"
 
 function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
   return (
@@ -111,9 +110,8 @@ export function SpinnerCustom() {
 ```
 
 ```tsx showLineNumbers title="components/ui/spinner.tsx"
+import { cn } from "cn"
 import { LoaderIcon } from "lucide-react"
-
-import { cn } from "@/lib/utils"
 
 function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
   return (

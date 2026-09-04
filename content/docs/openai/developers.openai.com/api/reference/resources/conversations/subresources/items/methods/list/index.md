@@ -448,7 +448,7 @@ List all items for a conversation with the given ID.
 
         - `"final_answer"`
 
-    - `FunctionCall object { id, arguments, call_id, 6 more }`
+    - `FunctionCall object { id, arguments, call_id, 7 more }`
 
       - `id: string`
 
@@ -482,6 +482,10 @@ List all items for a conversation with the given ID.
         The type of the function tool call. Always `function_call`.
 
         - `"function_call"`
+
+      - `async: optional boolean`
+
+        Whether the function tool call runs asynchronously.
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
@@ -745,7 +749,7 @@ List all items for a conversation with the given ID.
 
             The URL of the page searched for the pattern.
 
-      - `status: "in_progress" or "searching" or "completed" or "failed"`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
 
         The status of the web search tool call.
 
@@ -756,6 +760,8 @@ List all items for a conversation with the given ID.
         - `"completed"`
 
         - `"failed"`
+
+        - `"incomplete"`
 
       - `type: "web_search_call"`
 
@@ -1214,11 +1220,11 @@ List all items for a conversation with the given ID.
 
         - `"incomplete"`
 
-      - `tools: array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
         The loaded tool definitions returned by tool search.
 
-        - `Function object { name, parameters, strict, 5 more }`
+        - `Function object { name, parameters, strict, 6 more }`
 
           Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
 
@@ -1247,6 +1253,8 @@ List all items for a conversation with the given ID.
             - `"direct"`
 
             - `"programmatic"`
+
+          - `async: optional boolean`
 
           - `defer_loading: optional boolean`
 
@@ -2041,7 +2049,7 @@ List all items for a conversation with the given ID.
 
                 - `"container_reference"`
 
-        - `Custom object { name, type, allowed_callers, 3 more }`
+        - `Custom object { name, type, allowed_callers, 4 more }`
 
           A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
 
@@ -2062,6 +2070,10 @@ List all items for a conversation with the given ID.
             - `"direct"`
 
             - `"programmatic"`
+
+          - `async: optional boolean`
+
+            Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
           - `defer_loading: optional boolean`
 
@@ -2119,11 +2131,11 @@ List all items for a conversation with the given ID.
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
+          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
-            - `Function object { name, type, allowed_callers, 5 more }`
+            - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
@@ -2138,6 +2150,10 @@ List all items for a conversation with the given ID.
                 - `"direct"`
 
                 - `"programmatic"`
+
+              - `async: optional boolean`
+
+                Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
               - `defer_loading: optional boolean`
 
@@ -2155,7 +2171,7 @@ List all items for a conversation with the given ID.
 
                 Whether to enforce strict parameter validation. If omitted, Responses attempts to use strict validation when the schema is compatible, and falls back to non-strict validation otherwise.
 
-            - `Custom object { name, type, allowed_callers, 3 more }`
+            - `Custom object { name, type, allowed_callers, 4 more }`
 
               A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
 
@@ -2176,6 +2192,10 @@ List all items for a conversation with the given ID.
                 - `"direct"`
 
                 - `"programmatic"`
+
+              - `async: optional boolean`
+
+                Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
               - `defer_loading: optional boolean`
 
@@ -2329,11 +2349,11 @@ List all items for a conversation with the given ID.
 
         - `"tool"`
 
-      - `tools: array of object { name, parameters, strict, 5 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
         The additional tool definitions made available at this item.
 
-        - `Function object { name, parameters, strict, 5 more }`
+        - `Function object { name, parameters, strict, 6 more }`
 
           Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
 
@@ -2362,6 +2382,8 @@ List all items for a conversation with the given ID.
             - `"direct"`
 
             - `"programmatic"`
+
+          - `async: optional boolean`
 
           - `defer_loading: optional boolean`
 
@@ -2939,7 +2961,7 @@ List all items for a conversation with the given ID.
 
             - `ContainerReference object { container_id, type }`
 
-        - `Custom object { name, type, allowed_callers, 3 more }`
+        - `Custom object { name, type, allowed_callers, 4 more }`
 
           A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
 
@@ -2960,6 +2982,10 @@ List all items for a conversation with the given ID.
             - `"direct"`
 
             - `"programmatic"`
+
+          - `async: optional boolean`
+
+            Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
           - `defer_loading: optional boolean`
 
@@ -2985,11 +3011,11 @@ List all items for a conversation with the given ID.
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 5 more }  or object { name, type, allowed_callers, 3 more }`
+          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
-            - `Function object { name, type, allowed_callers, 5 more }`
+            - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
@@ -3004,6 +3030,10 @@ List all items for a conversation with the given ID.
                 - `"direct"`
 
                 - `"programmatic"`
+
+              - `async: optional boolean`
+
+                Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
               - `defer_loading: optional boolean`
 
@@ -3021,7 +3051,7 @@ List all items for a conversation with the given ID.
 
                 Whether to enforce strict parameter validation. If omitted, Responses attempts to use strict validation when the schema is compatible, and falls back to non-strict validation otherwise.
 
-            - `Custom object { name, type, allowed_callers, 3 more }`
+            - `Custom object { name, type, allowed_callers, 4 more }`
 
               A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
 
@@ -3042,6 +3072,10 @@ List all items for a conversation with the given ID.
                 - `"direct"`
 
                 - `"programmatic"`
+
+              - `async: optional boolean`
+
+                Whether the tool response can be returned asynchronously versus immediately returned on next response creation.
 
               - `defer_loading: optional boolean`
 
@@ -3164,6 +3198,44 @@ List all items for a conversation with the given ID.
         The type of the item. Always `additional_tools`.
 
         - `"additional_tools"`
+
+    - `ConfigurationUpdate object { id, type, reasoning }`
+
+      A configuration update that applies to subsequent responses until it is
+      replaced by another configuration update.
+
+      - `id: string`
+
+        The unique ID of the configuration update item.
+
+      - `type: "configuration_update"`
+
+        The item type. Always `configuration_update`.
+
+        - `"configuration_update"`
+
+      - `reasoning: optional object { effort }`
+
+        The reasoning configuration applied by this update.
+
+        - `effort: optional ReasoningEffort or null`
+
+          The reasoning effort used for subsequent responses until another
+          configuration update replaces it.
+
+          - `"none"`
+
+          - `"minimal"`
+
+          - `"low"`
+
+          - `"medium"`
+
+          - `"high"`
+
+          - `"xhigh"`
+
+          - `"max"`
 
     - `Reasoning object { id, summary, type, 3 more }`
 
@@ -3985,7 +4057,7 @@ List all items for a conversation with the given ID.
 
         - `"failed"`
 
-    - `CustomToolCall object { call_id, input, name, 4 more }`
+    - `CustomToolCall object { call_id, input, name, 5 more }`
 
       A call to a custom tool created by the model.
 
@@ -4010,6 +4082,10 @@ List all items for a conversation with the given ID.
       - `id: optional string`
 
         The unique ID of the custom tool call in the OpenAI platform.
+
+      - `async: optional boolean`
+
+        Whether the custom tool call runs asynchronously.
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 

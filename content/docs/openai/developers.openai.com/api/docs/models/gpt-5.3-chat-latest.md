@@ -6,7 +6,7 @@
 
 Model ID: `gpt-5.3-chat-latest`
 
-GPT-5.3 Chat points to the GPT-5.3 Instant snapshot used in ChatGPT. This model has been deprecated. We recommend [GPT-5.6](/api/docs/models/gpt-5.6-sol) for most API usage.
+GPT-5.3 Chat points to the GPT-5.3 Instant snapshot used in ChatGPT. This model has been deprecated. We recommend [GPT-6 Astra](/api/docs/models/gpt-6-astra) for most API usage.
 
 ## Model details
 
