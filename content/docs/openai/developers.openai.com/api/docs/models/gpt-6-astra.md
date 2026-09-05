@@ -6,8 +6,6 @@
 
 Model ID: `gpt-6-astra`
 
-GPT‑6 Astra is rolling out today for enterprises in our [Trusted Access Program⁠](https://openai.com/form/enterprise-trusted-access-for-cyber/), with access through API and our Plus, Pro, Business and Enterprise plans coming in the coming days.
-
 GPT-6 Astra is our most capable model, built for the hardest end-to-end work.
 Use it for complex reasoning, coding, computer use, research, and document creation.
 `reasoning.effort` supports `low`, `medium`, `high`, `xhigh`, and `max`.

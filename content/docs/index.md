@@ -256,6 +256,7 @@ openai/developers.openai.com/api/reference/resources/admin/subresources/organiza
 openai/developers.openai.com/api/reference/resources/audio:{index.md}
 openai/developers.openai.com/api/reference/resources/audio/subresources/speech/methods:{create.md}
 openai/developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create:{index.md}
+openai/developers.openai.com/api/reference/resources/audio/subresources/transcriptions:{streaming-events.md}
 openai/developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods:{create.md}
 openai/developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create:{index.md}
 openai/developers.openai.com/api/reference/resources/audio/subresources/translations/methods:{create.md}

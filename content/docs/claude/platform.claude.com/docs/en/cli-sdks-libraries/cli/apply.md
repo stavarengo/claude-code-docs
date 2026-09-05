@@ -6,7 +6,7 @@ description: Declare agents, environments, skills, memory stores, and deployment
 
 `ant apply` creates and updates Claude API resources from files: agents, environments, skills, memory stores, and deployments. They live in your repository and change through the same review as your code. You describe each resource in a file, run `ant apply`, and approve the plan it shows. Then you commit the `claude-lock.json` it writes, so the next run updates the same resources instead of creating new ones.
 
-To install and authenticate the CLI, see the [CLI quickstart](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/quickstart).
+To install and authenticate the CLI, see the [CLI quickstart](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/quickstart). `ant apply` requires CLI version 1.30.0 or later.
 
 ## Apply your first agent
 

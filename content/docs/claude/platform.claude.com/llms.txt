@@ -12,7 +12,7 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 698 pages - /docs - Content included below
+- English (en) - 699 pages - /docs - Content included below
 - German (Deutsch) (de) - 249 pages - /docs/de - Visit website for content
 - Spanish (Español) (es) - 249 pages - /docs/es - Visit website for content
 - French (Français) (fr) - 249 pages - /docs/fr - Visit website for content
@@ -276,6 +276,7 @@ The full documentation is available in the following languages on https://platfo
 - [Scripting and automation](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/scripting.md) - CLI scripting and automation
 - [Go](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/go.md) - Go SDK
 - [Java](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/java.md) - Java SDK
+- [Manage resources as code](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/apply.md) - Manage resources as code with ant apply
 - [OpenAI SDK compatibility](https://platform.claude.com/docs/en/cli-sdks-libraries/libraries/openai-sdk.md)
 - [PHP](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/php.md) - PHP SDK
 - [Python](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/python.md) - Python SDK
