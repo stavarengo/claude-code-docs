@@ -62,7 +62,7 @@ Create a conversation.
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          An image input to the model. Learn about [image inputs](/docs/guides/vision).
+          An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
           - `detail: ImageDetail`
 
@@ -405,7 +405,7 @@ Create a conversation.
   - `FileSearchCall object { id, queries, status, 2 more }`
 
     The results of a file search tool call. See the
-    [file search guide](/docs/guides/tools-file-search) for more information.
+    [file search guide](/api/docs/guides/tools-file-search) for more information.
 
     - `id: string`
 
@@ -473,7 +473,7 @@ Create a conversation.
   - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
     A tool call to a computer use tool. See the
-    [computer use guide](/docs/guides/tools-computer-use) for more information.
+    [computer use guide](/api/docs/guides/tools-computer-use) for more information.
 
     - `id: string`
 
@@ -818,7 +818,7 @@ Create a conversation.
   - `WebSearchCall object { id, action, status, type }`
 
     The results of a web search tool call. See the
-    [web search guide](/docs/guides/tools-web-search) for more information.
+    [web search guide](/api/docs/guides/tools-web-search) for more information.
 
     - `id: string`
 
@@ -916,7 +916,7 @@ Create a conversation.
   - `FunctionCall object { arguments, call_id, name, 6 more }`
 
     A tool call to run a function. See the
-    [function calling guide](/docs/guides/function-calling) for more information.
+    [function calling guide](/api/docs/guides/function-calling) for more information.
 
     - `arguments: string`
 
@@ -1021,7 +1021,7 @@ Create a conversation.
 
         - `ResponseInputImageContent object { type, detail, file_id, 2 more }`
 
-          An image input to the model. Learn about [image inputs](/docs/guides/vision)
+          An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision)
 
           - `type: "input_image"`
 
@@ -1199,7 +1199,7 @@ Create a conversation.
 
       - `Function object { name, parameters, strict, 6 more }`
 
-        Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+        Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
         - `name: string`
 
@@ -1243,7 +1243,7 @@ Create a conversation.
 
       - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-        A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+        A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
         - `type: "file_search"`
 
@@ -1368,7 +1368,7 @@ Create a conversation.
 
       - `Computer object { type }`
 
-        A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
         - `type: "computer"`
 
@@ -1378,7 +1378,7 @@ Create a conversation.
 
       - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-        A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
         - `display_height: number`
 
@@ -1411,7 +1411,7 @@ Create a conversation.
       - `WebSearch object { type, external_web_access, filters, 2 more }`
 
         Search the Internet for sources related to the prompt. Learn more about the
-        [web search tool](/docs/guides/tools-web-search).
+        [web search tool](/api/docs/guides/tools-web-search).
 
         - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -1475,7 +1475,7 @@ Create a conversation.
       - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
         Give the model access to additional tools via remote Model Context Protocol
-        (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+        (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
         - `server_label: string`
 
@@ -1527,7 +1527,7 @@ Create a conversation.
 
           Identifier for service connectors, like those available in ChatGPT. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-          about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+          about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
           Currently supported `connector_id` values are:
 
@@ -1751,11 +1751,13 @@ Create a conversation.
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          Set the background of the generated image. One of `transparent`,
-          `opaque`, or `auto`. Transparent backgrounds are available for
-          supported GPT Image models. For `gpt-image-2` and
-          `gpt-image-2-2026-04-21`, this support is in preview. When using
-          `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+          Set the background of the generated image. One of `transparent`, `opaque`,
+          or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+          their `2026-09-08` snapshots, support `opaque` and `transparent`
+          backgrounds. Transparent backgrounds are available for supported GPT Image
+          models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+          preview. When using `transparent`, set the output format to `png` or `webp`.
+          Default: `auto`.
 
           - `"transparent"`
 
@@ -1784,20 +1786,24 @@ Create a conversation.
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
           The image generation model to use. One of `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-          `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+          `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
           `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `"gpt-image-1"`
@@ -1809,6 +1815,14 @@ Create a conversation.
             - `"gpt-image-2"`
 
             - `"gpt-image-2-2026-04-21"`
+
+            - `"gpt-image-2.5-sunburst"`
+
+            - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+            - `"gpt-image-2.5-flare"`
+
+            - `"gpt-image-2.5-flare-2026-09-08"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -1837,10 +1851,12 @@ Create a conversation.
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or "auto"`
+        - `quality: optional "low" or "medium" or "high" or 3 more`
 
-          The quality of the generated image. One of `low`, `medium`, `high`,
-          or `auto`. Default: `auto`.
+          The quality of the generated image. The GPT image models support `low`,
+          `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+          including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+          Default: `auto`.
 
           - `"low"`
 
@@ -1848,17 +1864,21 @@ Create a conversation.
 
           - `"high"`
 
+          - `"xhigh"`
+
+          - `"max"`
+
           - `"auto"`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `"1024x1024"`
 
@@ -2024,7 +2044,7 @@ Create a conversation.
 
       - `Custom object { name, type, allowed_callers, 4 more }`
 
-        A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+        A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
         - `name: string`
 
@@ -2146,7 +2166,7 @@ Create a conversation.
 
           - `Custom object { name, type, allowed_callers, 4 more }`
 
-            A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+            A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -2216,7 +2236,7 @@ Create a conversation.
 
       - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-        This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+        This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
         - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -2332,7 +2352,7 @@ Create a conversation.
 
       - `Function object { name, parameters, strict, 6 more }`
 
-        Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+        Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
         - `name: string`
 
@@ -2376,7 +2396,7 @@ Create a conversation.
 
       - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-        A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+        A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
         - `type: "file_search"`
 
@@ -2434,7 +2454,7 @@ Create a conversation.
 
       - `Computer object { type }`
 
-        A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
         - `type: "computer"`
 
@@ -2444,7 +2464,7 @@ Create a conversation.
 
       - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-        A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
         - `display_height: number`
 
@@ -2477,7 +2497,7 @@ Create a conversation.
       - `WebSearch object { type, external_web_access, filters, 2 more }`
 
         Search the Internet for sources related to the prompt. Learn more about the
-        [web search tool](/docs/guides/tools-web-search).
+        [web search tool](/api/docs/guides/tools-web-search).
 
         - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -2541,7 +2561,7 @@ Create a conversation.
       - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
         Give the model access to additional tools via remote Model Context Protocol
-        (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+        (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
         - `server_label: string`
 
@@ -2593,7 +2613,7 @@ Create a conversation.
 
           Identifier for service connectors, like those available in ChatGPT. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-          about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+          about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
           Currently supported `connector_id` values are:
 
@@ -2785,11 +2805,13 @@ Create a conversation.
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          Set the background of the generated image. One of `transparent`,
-          `opaque`, or `auto`. Transparent backgrounds are available for
-          supported GPT Image models. For `gpt-image-2` and
-          `gpt-image-2-2026-04-21`, this support is in preview. When using
-          `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+          Set the background of the generated image. One of `transparent`, `opaque`,
+          or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+          their `2026-09-08` snapshots, support `opaque` and `transparent`
+          backgrounds. Transparent backgrounds are available for supported GPT Image
+          models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+          preview. When using `transparent`, set the output format to `png` or `webp`.
+          Default: `auto`.
 
           - `"transparent"`
 
@@ -2818,20 +2840,24 @@ Create a conversation.
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
           The image generation model to use. One of `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-          `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+          `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
           `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `"gpt-image-1"`
@@ -2843,6 +2869,14 @@ Create a conversation.
             - `"gpt-image-2"`
 
             - `"gpt-image-2-2026-04-21"`
+
+            - `"gpt-image-2.5-sunburst"`
+
+            - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+            - `"gpt-image-2.5-flare"`
+
+            - `"gpt-image-2.5-flare-2026-09-08"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -2871,10 +2905,12 @@ Create a conversation.
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or "auto"`
+        - `quality: optional "low" or "medium" or "high" or 3 more`
 
-          The quality of the generated image. One of `low`, `medium`, `high`,
-          or `auto`. Default: `auto`.
+          The quality of the generated image. The GPT image models support `low`,
+          `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+          including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+          Default: `auto`.
 
           - `"low"`
 
@@ -2882,17 +2918,21 @@ Create a conversation.
 
           - `"high"`
 
+          - `"xhigh"`
+
+          - `"max"`
+
           - `"auto"`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `"1024x1024"`
 
@@ -2940,7 +2980,7 @@ Create a conversation.
 
       - `Custom object { name, type, allowed_callers, 4 more }`
 
-        A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+        A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
         - `name: string`
 
@@ -3030,7 +3070,7 @@ Create a conversation.
 
           - `Custom object { name, type, allowed_callers, 4 more }`
 
-            A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+            A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -3100,7 +3140,7 @@ Create a conversation.
 
       - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-        This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+        This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
         - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -3224,7 +3264,7 @@ Create a conversation.
     A description of the chain of thought used by a reasoning model while generating
     a response. Be sure to include these items in your `input` to the Responses API
     for subsequent turns of a conversation if you are manually
-    [managing context](/docs/guides/conversation-state).
+    [managing context](/api/docs/guides/conversation-state).
 
     - `id: string`
 
@@ -3289,7 +3329,7 @@ Create a conversation.
 
   - `Compaction object { encrypted_content, type, id }`
 
-    A compaction item generated by the [`v1/responses/compact` API](/docs/api-reference/responses/compact).
+    A compaction item generated by the [`v1/responses/compact` API](/api/reference/resources/responses/methods/compact).
 
     - `encrypted_content: string`
 
@@ -3305,7 +3345,7 @@ Create a conversation.
 
       The ID of the compaction item.
 
-  - `ImageGenerationCall object { id, result, status, type }`
+  - `ImageGenerationCall object { id, result, status, 3 more }`
 
     An image generation request made by the model.
 
@@ -3334,6 +3374,38 @@ Create a conversation.
       The type of the image generation call. Always `image_generation_call`.
 
       - `"image_generation_call"`
+
+    - `quality: optional "low" or "medium" or "high" or 3 more or null`
+
+      The quality of the image generated by the image generation tool call. One of `low`, `medium`, `high`, `xhigh`, `max`, or `auto`.
+
+      - `"low"`
+
+      - `"medium"`
+
+      - `"high"`
+
+      - `"xhigh"`
+
+      - `"max"`
+
+      - `"auto"`
+
+    - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or null`
+
+      The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+      - `string`
+
+      - `"1024x1024" or "1024x1536" or "1536x1024"`
+
+        The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+        - `"1024x1024"`
+
+        - `"1024x1536"`
+
+        - `"1536x1024"`
 
   - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -4022,7 +4094,7 @@ Create a conversation.
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          An image input to the model. Learn about [image inputs](/docs/guides/vision).
+          An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -4805,7 +4877,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-      An image input to the model. Learn about [image inputs](/docs/guides/vision).
+      An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
       - `detail: ImageDetail`
 
@@ -5010,7 +5082,7 @@ Create items in a conversation with the given ID.
 - `include: optional array of ResponseIncludable`
 
   Additional fields to include in the response. See the `include`
-  parameter for [listing Conversation items above](/docs/api-reference/conversations/list-items#conversations_list_items-include) for more information.
+  parameter for [listing Conversation items above](/api/reference/resources/conversations/subresources/items/methods/list#%28resource%29%20conversations.items%20%3E%20%28method%29%20list%20%3E%20%28params%29%20default%20%3E%20%28param%29%20include%20%3E%20%28schema%29) for more information.
 
   - `"file_search_call.results"`
 
@@ -5082,7 +5154,7 @@ Create items in a conversation with the given ID.
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          An image input to the model. Learn about [image inputs](/docs/guides/vision).
+          An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
           - `detail: ImageDetail`
 
@@ -5425,7 +5497,7 @@ Create items in a conversation with the given ID.
   - `FileSearchCall object { id, queries, status, 2 more }`
 
     The results of a file search tool call. See the
-    [file search guide](/docs/guides/tools-file-search) for more information.
+    [file search guide](/api/docs/guides/tools-file-search) for more information.
 
     - `id: string`
 
@@ -5493,7 +5565,7 @@ Create items in a conversation with the given ID.
   - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
     A tool call to a computer use tool. See the
-    [computer use guide](/docs/guides/tools-computer-use) for more information.
+    [computer use guide](/api/docs/guides/tools-computer-use) for more information.
 
     - `id: string`
 
@@ -5838,7 +5910,7 @@ Create items in a conversation with the given ID.
   - `WebSearchCall object { id, action, status, type }`
 
     The results of a web search tool call. See the
-    [web search guide](/docs/guides/tools-web-search) for more information.
+    [web search guide](/api/docs/guides/tools-web-search) for more information.
 
     - `id: string`
 
@@ -5936,7 +6008,7 @@ Create items in a conversation with the given ID.
   - `FunctionCall object { arguments, call_id, name, 6 more }`
 
     A tool call to run a function. See the
-    [function calling guide](/docs/guides/function-calling) for more information.
+    [function calling guide](/api/docs/guides/function-calling) for more information.
 
     - `arguments: string`
 
@@ -6041,7 +6113,7 @@ Create items in a conversation with the given ID.
 
         - `ResponseInputImageContent object { type, detail, file_id, 2 more }`
 
-          An image input to the model. Learn about [image inputs](/docs/guides/vision)
+          An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision)
 
           - `type: "input_image"`
 
@@ -6219,7 +6291,7 @@ Create items in a conversation with the given ID.
 
       - `Function object { name, parameters, strict, 6 more }`
 
-        Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+        Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
         - `name: string`
 
@@ -6263,7 +6335,7 @@ Create items in a conversation with the given ID.
 
       - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-        A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+        A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
         - `type: "file_search"`
 
@@ -6388,7 +6460,7 @@ Create items in a conversation with the given ID.
 
       - `Computer object { type }`
 
-        A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
         - `type: "computer"`
 
@@ -6398,7 +6470,7 @@ Create items in a conversation with the given ID.
 
       - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-        A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
         - `display_height: number`
 
@@ -6431,7 +6503,7 @@ Create items in a conversation with the given ID.
       - `WebSearch object { type, external_web_access, filters, 2 more }`
 
         Search the Internet for sources related to the prompt. Learn more about the
-        [web search tool](/docs/guides/tools-web-search).
+        [web search tool](/api/docs/guides/tools-web-search).
 
         - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -6495,7 +6567,7 @@ Create items in a conversation with the given ID.
       - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
         Give the model access to additional tools via remote Model Context Protocol
-        (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+        (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
         - `server_label: string`
 
@@ -6547,7 +6619,7 @@ Create items in a conversation with the given ID.
 
           Identifier for service connectors, like those available in ChatGPT. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-          about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+          about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
           Currently supported `connector_id` values are:
 
@@ -6771,11 +6843,13 @@ Create items in a conversation with the given ID.
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          Set the background of the generated image. One of `transparent`,
-          `opaque`, or `auto`. Transparent backgrounds are available for
-          supported GPT Image models. For `gpt-image-2` and
-          `gpt-image-2-2026-04-21`, this support is in preview. When using
-          `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+          Set the background of the generated image. One of `transparent`, `opaque`,
+          or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+          their `2026-09-08` snapshots, support `opaque` and `transparent`
+          backgrounds. Transparent backgrounds are available for supported GPT Image
+          models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+          preview. When using `transparent`, set the output format to `png` or `webp`.
+          Default: `auto`.
 
           - `"transparent"`
 
@@ -6804,20 +6878,24 @@ Create items in a conversation with the given ID.
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
           The image generation model to use. One of `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-          `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+          `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
           `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `"gpt-image-1"`
@@ -6829,6 +6907,14 @@ Create items in a conversation with the given ID.
             - `"gpt-image-2"`
 
             - `"gpt-image-2-2026-04-21"`
+
+            - `"gpt-image-2.5-sunburst"`
+
+            - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+            - `"gpt-image-2.5-flare"`
+
+            - `"gpt-image-2.5-flare-2026-09-08"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -6857,10 +6943,12 @@ Create items in a conversation with the given ID.
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or "auto"`
+        - `quality: optional "low" or "medium" or "high" or 3 more`
 
-          The quality of the generated image. One of `low`, `medium`, `high`,
-          or `auto`. Default: `auto`.
+          The quality of the generated image. The GPT image models support `low`,
+          `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+          including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+          Default: `auto`.
 
           - `"low"`
 
@@ -6868,17 +6956,21 @@ Create items in a conversation with the given ID.
 
           - `"high"`
 
+          - `"xhigh"`
+
+          - `"max"`
+
           - `"auto"`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `"1024x1024"`
 
@@ -7044,7 +7136,7 @@ Create items in a conversation with the given ID.
 
       - `Custom object { name, type, allowed_callers, 4 more }`
 
-        A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+        A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
         - `name: string`
 
@@ -7166,7 +7258,7 @@ Create items in a conversation with the given ID.
 
           - `Custom object { name, type, allowed_callers, 4 more }`
 
-            A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+            A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -7236,7 +7328,7 @@ Create items in a conversation with the given ID.
 
       - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-        This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+        This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
         - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -7352,7 +7444,7 @@ Create items in a conversation with the given ID.
 
       - `Function object { name, parameters, strict, 6 more }`
 
-        Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+        Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
         - `name: string`
 
@@ -7396,7 +7488,7 @@ Create items in a conversation with the given ID.
 
       - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-        A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+        A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
         - `type: "file_search"`
 
@@ -7454,7 +7546,7 @@ Create items in a conversation with the given ID.
 
       - `Computer object { type }`
 
-        A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
         - `type: "computer"`
 
@@ -7464,7 +7556,7 @@ Create items in a conversation with the given ID.
 
       - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-        A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
         - `display_height: number`
 
@@ -7497,7 +7589,7 @@ Create items in a conversation with the given ID.
       - `WebSearch object { type, external_web_access, filters, 2 more }`
 
         Search the Internet for sources related to the prompt. Learn more about the
-        [web search tool](/docs/guides/tools-web-search).
+        [web search tool](/api/docs/guides/tools-web-search).
 
         - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -7561,7 +7653,7 @@ Create items in a conversation with the given ID.
       - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
         Give the model access to additional tools via remote Model Context Protocol
-        (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+        (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
         - `server_label: string`
 
@@ -7613,7 +7705,7 @@ Create items in a conversation with the given ID.
 
           Identifier for service connectors, like those available in ChatGPT. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-          about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+          about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
           Currently supported `connector_id` values are:
 
@@ -7805,11 +7897,13 @@ Create items in a conversation with the given ID.
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          Set the background of the generated image. One of `transparent`,
-          `opaque`, or `auto`. Transparent backgrounds are available for
-          supported GPT Image models. For `gpt-image-2` and
-          `gpt-image-2-2026-04-21`, this support is in preview. When using
-          `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+          Set the background of the generated image. One of `transparent`, `opaque`,
+          or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+          their `2026-09-08` snapshots, support `opaque` and `transparent`
+          backgrounds. Transparent backgrounds are available for supported GPT Image
+          models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+          preview. When using `transparent`, set the output format to `png` or `webp`.
+          Default: `auto`.
 
           - `"transparent"`
 
@@ -7838,20 +7932,24 @@ Create items in a conversation with the given ID.
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
           The image generation model to use. One of `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-          `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+          `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
           `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `"gpt-image-1"`
@@ -7863,6 +7961,14 @@ Create items in a conversation with the given ID.
             - `"gpt-image-2"`
 
             - `"gpt-image-2-2026-04-21"`
+
+            - `"gpt-image-2.5-sunburst"`
+
+            - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+            - `"gpt-image-2.5-flare"`
+
+            - `"gpt-image-2.5-flare-2026-09-08"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -7891,10 +7997,12 @@ Create items in a conversation with the given ID.
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or "auto"`
+        - `quality: optional "low" or "medium" or "high" or 3 more`
 
-          The quality of the generated image. One of `low`, `medium`, `high`,
-          or `auto`. Default: `auto`.
+          The quality of the generated image. The GPT image models support `low`,
+          `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+          including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+          Default: `auto`.
 
           - `"low"`
 
@@ -7902,17 +8010,21 @@ Create items in a conversation with the given ID.
 
           - `"high"`
 
+          - `"xhigh"`
+
+          - `"max"`
+
           - `"auto"`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `"1024x1024"`
 
@@ -7960,7 +8072,7 @@ Create items in a conversation with the given ID.
 
       - `Custom object { name, type, allowed_callers, 4 more }`
 
-        A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+        A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
         - `name: string`
 
@@ -8050,7 +8162,7 @@ Create items in a conversation with the given ID.
 
           - `Custom object { name, type, allowed_callers, 4 more }`
 
-            A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+            A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -8120,7 +8232,7 @@ Create items in a conversation with the given ID.
 
       - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-        This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+        This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
         - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -8244,7 +8356,7 @@ Create items in a conversation with the given ID.
     A description of the chain of thought used by a reasoning model while generating
     a response. Be sure to include these items in your `input` to the Responses API
     for subsequent turns of a conversation if you are manually
-    [managing context](/docs/guides/conversation-state).
+    [managing context](/api/docs/guides/conversation-state).
 
     - `id: string`
 
@@ -8309,7 +8421,7 @@ Create items in a conversation with the given ID.
 
   - `Compaction object { encrypted_content, type, id }`
 
-    A compaction item generated by the [`v1/responses/compact` API](/docs/api-reference/responses/compact).
+    A compaction item generated by the [`v1/responses/compact` API](/api/reference/resources/responses/methods/compact).
 
     - `encrypted_content: string`
 
@@ -8325,7 +8437,7 @@ Create items in a conversation with the given ID.
 
       The ID of the compaction item.
 
-  - `ImageGenerationCall object { id, result, status, type }`
+  - `ImageGenerationCall object { id, result, status, 3 more }`
 
     An image generation request made by the model.
 
@@ -8354,6 +8466,38 @@ Create items in a conversation with the given ID.
       The type of the image generation call. Always `image_generation_call`.
 
       - `"image_generation_call"`
+
+    - `quality: optional "low" or "medium" or "high" or 3 more or null`
+
+      The quality of the image generated by the image generation tool call. One of `low`, `medium`, `high`, `xhigh`, `max`, or `auto`.
+
+      - `"low"`
+
+      - `"medium"`
+
+      - `"high"`
+
+      - `"xhigh"`
+
+      - `"max"`
+
+      - `"auto"`
+
+    - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or null`
+
+      The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+      - `string`
+
+      - `"1024x1024" or "1024x1536" or "1536x1024"`
+
+        The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+        - `"1024x1024"`
+
+        - `"1024x1536"`
+
+        - `"1536x1024"`
 
   - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -9042,7 +9186,7 @@ Create items in a conversation with the given ID.
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          An image input to the model. Learn about [image inputs](/docs/guides/vision).
+          An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -9446,7 +9590,7 @@ Create items in a conversation with the given ID.
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          An image input to the model. Learn about [image inputs](/docs/guides/vision).
+          An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
           - `detail: ImageDetail`
 
@@ -9698,7 +9842,7 @@ Create items in a conversation with the given ID.
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            An image input to the model. Learn about [image inputs](/docs/guides/vision).
+            An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
           - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -9764,7 +9908,7 @@ Create items in a conversation with the given ID.
     - `FileSearchCall object { id, queries, status, 2 more }`
 
       The results of a file search tool call. See the
-      [file search guide](/docs/guides/tools-file-search) for more information.
+      [file search guide](/api/docs/guides/tools-file-search) for more information.
 
       - `id: string`
 
@@ -9832,7 +9976,7 @@ Create items in a conversation with the given ID.
     - `WebSearchCall object { id, action, status, type }`
 
       The results of a web search tool call. See the
-      [web search guide](/docs/guides/tools-web-search) for more information.
+      [web search guide](/api/docs/guides/tools-web-search) for more information.
 
       - `id: string`
 
@@ -9927,7 +10071,7 @@ Create items in a conversation with the given ID.
 
         - `"web_search_call"`
 
-    - `ImageGenerationCall object { id, result, status, type }`
+    - `ImageGenerationCall object { id, result, status, 3 more }`
 
       An image generation request made by the model.
 
@@ -9957,10 +10101,42 @@ Create items in a conversation with the given ID.
 
         - `"image_generation_call"`
 
+      - `quality: optional "low" or "medium" or "high" or 3 more or null`
+
+        The quality of the image generated by the image generation tool call. One of `low`, `medium`, `high`, `xhigh`, `max`, or `auto`.
+
+        - `"low"`
+
+        - `"medium"`
+
+        - `"high"`
+
+        - `"xhigh"`
+
+        - `"max"`
+
+        - `"auto"`
+
+      - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or null`
+
+        The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+        - `string`
+
+        - `"1024x1024" or "1024x1536" or "1536x1024"`
+
+          The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+          - `"1024x1024"`
+
+          - `"1024x1536"`
+
+          - `"1536x1024"`
+
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
       A tool call to a computer use tool. See the
-      [computer use guide](/docs/guides/tools-computer-use) for more information.
+      [computer use guide](/api/docs/guides/tools-computer-use) for more information.
 
       - `id: string`
 
@@ -10384,7 +10560,7 @@ Create items in a conversation with the given ID.
 
         - `Function object { name, parameters, strict, 6 more }`
 
-          Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+          Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
           - `name: string`
 
@@ -10428,7 +10604,7 @@ Create items in a conversation with the given ID.
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
@@ -10553,7 +10729,7 @@ Create items in a conversation with the given ID.
 
         - `Computer object { type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
@@ -10563,7 +10739,7 @@ Create items in a conversation with the given ID.
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
@@ -10596,7 +10772,7 @@ Create items in a conversation with the given ID.
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
           Search the Internet for sources related to the prompt. Learn more about the
-          [web search tool](/docs/guides/tools-web-search).
+          [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -10660,7 +10836,7 @@ Create items in a conversation with the given ID.
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
           Give the model access to additional tools via remote Model Context Protocol
-          (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+          (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
           - `server_label: string`
 
@@ -10712,7 +10888,7 @@ Create items in a conversation with the given ID.
 
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-            about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+            about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
             Currently supported `connector_id` values are:
 
@@ -10936,11 +11112,13 @@ Create items in a conversation with the given ID.
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -10969,20 +11147,24 @@ Create items in a conversation with the given ID.
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -10994,6 +11176,14 @@ Create items in a conversation with the given ID.
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -11022,10 +11212,12 @@ Create items in a conversation with the given ID.
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -11033,17 +11225,21 @@ Create items in a conversation with the given ID.
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -11209,7 +11405,7 @@ Create items in a conversation with the given ID.
 
         - `Custom object { name, type, allowed_callers, 4 more }`
 
-          A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+          A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -11331,7 +11527,7 @@ Create items in a conversation with the given ID.
 
             - `Custom object { name, type, allowed_callers, 4 more }`
 
-              A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+              A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
               - `name: string`
 
@@ -11401,7 +11597,7 @@ Create items in a conversation with the given ID.
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -11513,7 +11709,7 @@ Create items in a conversation with the given ID.
 
         - `Function object { name, parameters, strict, 6 more }`
 
-          Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+          Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
           - `name: string`
 
@@ -11557,7 +11753,7 @@ Create items in a conversation with the given ID.
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
@@ -11615,7 +11811,7 @@ Create items in a conversation with the given ID.
 
         - `Computer object { type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
@@ -11625,7 +11821,7 @@ Create items in a conversation with the given ID.
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
@@ -11658,7 +11854,7 @@ Create items in a conversation with the given ID.
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
           Search the Internet for sources related to the prompt. Learn more about the
-          [web search tool](/docs/guides/tools-web-search).
+          [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -11722,7 +11918,7 @@ Create items in a conversation with the given ID.
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
           Give the model access to additional tools via remote Model Context Protocol
-          (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+          (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
           - `server_label: string`
 
@@ -11774,7 +11970,7 @@ Create items in a conversation with the given ID.
 
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-            about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+            about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
             Currently supported `connector_id` values are:
 
@@ -11966,11 +12162,13 @@ Create items in a conversation with the given ID.
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -11999,20 +12197,24 @@ Create items in a conversation with the given ID.
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -12024,6 +12226,14 @@ Create items in a conversation with the given ID.
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -12052,10 +12262,12 @@ Create items in a conversation with the given ID.
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -12063,17 +12275,21 @@ Create items in a conversation with the given ID.
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -12121,7 +12337,7 @@ Create items in a conversation with the given ID.
 
         - `Custom object { name, type, allowed_callers, 4 more }`
 
-          A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+          A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -12211,7 +12427,7 @@ Create items in a conversation with the given ID.
 
             - `Custom object { name, type, allowed_callers, 4 more }`
 
-              A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+              A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
               - `name: string`
 
@@ -12281,7 +12497,7 @@ Create items in a conversation with the given ID.
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -12400,7 +12616,7 @@ Create items in a conversation with the given ID.
       A description of the chain of thought used by a reasoning model while generating
       a response. Be sure to include these items in your `input` to the Responses API
       for subsequent turns of a conversation if you are manually
-      [managing context](/docs/guides/conversation-state).
+      [managing context](/api/docs/guides/conversation-state).
 
       - `id: string`
 
@@ -12515,7 +12731,7 @@ Create items in a conversation with the given ID.
 
     - `Compaction object { id, encrypted_content, type, created_by }`
 
-      A compaction item generated by the [`v1/responses/compact` API](/docs/api-reference/responses/compact).
+      A compaction item generated by the [`v1/responses/compact` API](/api/reference/resources/responses/methods/compact).
 
       - `id: string`
 
@@ -13296,7 +13512,7 @@ Create items in a conversation with the given ID.
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            An image input to the model. Learn about [image inputs](/docs/guides/vision).
+            An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
           - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -13819,7 +14035,7 @@ List all items for a conversation with the given ID.
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          An image input to the model. Learn about [image inputs](/docs/guides/vision).
+          An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
           - `detail: ImageDetail`
 
@@ -14071,7 +14287,7 @@ List all items for a conversation with the given ID.
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            An image input to the model. Learn about [image inputs](/docs/guides/vision).
+            An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
           - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -14137,7 +14353,7 @@ List all items for a conversation with the given ID.
     - `FileSearchCall object { id, queries, status, 2 more }`
 
       The results of a file search tool call. See the
-      [file search guide](/docs/guides/tools-file-search) for more information.
+      [file search guide](/api/docs/guides/tools-file-search) for more information.
 
       - `id: string`
 
@@ -14205,7 +14421,7 @@ List all items for a conversation with the given ID.
     - `WebSearchCall object { id, action, status, type }`
 
       The results of a web search tool call. See the
-      [web search guide](/docs/guides/tools-web-search) for more information.
+      [web search guide](/api/docs/guides/tools-web-search) for more information.
 
       - `id: string`
 
@@ -14300,7 +14516,7 @@ List all items for a conversation with the given ID.
 
         - `"web_search_call"`
 
-    - `ImageGenerationCall object { id, result, status, type }`
+    - `ImageGenerationCall object { id, result, status, 3 more }`
 
       An image generation request made by the model.
 
@@ -14330,10 +14546,42 @@ List all items for a conversation with the given ID.
 
         - `"image_generation_call"`
 
+      - `quality: optional "low" or "medium" or "high" or 3 more or null`
+
+        The quality of the image generated by the image generation tool call. One of `low`, `medium`, `high`, `xhigh`, `max`, or `auto`.
+
+        - `"low"`
+
+        - `"medium"`
+
+        - `"high"`
+
+        - `"xhigh"`
+
+        - `"max"`
+
+        - `"auto"`
+
+      - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or null`
+
+        The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+        - `string`
+
+        - `"1024x1024" or "1024x1536" or "1536x1024"`
+
+          The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+          - `"1024x1024"`
+
+          - `"1024x1536"`
+
+          - `"1536x1024"`
+
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
       A tool call to a computer use tool. See the
-      [computer use guide](/docs/guides/tools-computer-use) for more information.
+      [computer use guide](/api/docs/guides/tools-computer-use) for more information.
 
       - `id: string`
 
@@ -14757,7 +15005,7 @@ List all items for a conversation with the given ID.
 
         - `Function object { name, parameters, strict, 6 more }`
 
-          Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+          Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
           - `name: string`
 
@@ -14801,7 +15049,7 @@ List all items for a conversation with the given ID.
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
@@ -14926,7 +15174,7 @@ List all items for a conversation with the given ID.
 
         - `Computer object { type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
@@ -14936,7 +15184,7 @@ List all items for a conversation with the given ID.
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
@@ -14969,7 +15217,7 @@ List all items for a conversation with the given ID.
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
           Search the Internet for sources related to the prompt. Learn more about the
-          [web search tool](/docs/guides/tools-web-search).
+          [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -15033,7 +15281,7 @@ List all items for a conversation with the given ID.
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
           Give the model access to additional tools via remote Model Context Protocol
-          (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+          (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
           - `server_label: string`
 
@@ -15085,7 +15333,7 @@ List all items for a conversation with the given ID.
 
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-            about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+            about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
             Currently supported `connector_id` values are:
 
@@ -15309,11 +15557,13 @@ List all items for a conversation with the given ID.
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -15342,20 +15592,24 @@ List all items for a conversation with the given ID.
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -15367,6 +15621,14 @@ List all items for a conversation with the given ID.
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -15395,10 +15657,12 @@ List all items for a conversation with the given ID.
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -15406,17 +15670,21 @@ List all items for a conversation with the given ID.
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -15582,7 +15850,7 @@ List all items for a conversation with the given ID.
 
         - `Custom object { name, type, allowed_callers, 4 more }`
 
-          A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+          A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -15704,7 +15972,7 @@ List all items for a conversation with the given ID.
 
             - `Custom object { name, type, allowed_callers, 4 more }`
 
-              A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+              A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
               - `name: string`
 
@@ -15774,7 +16042,7 @@ List all items for a conversation with the given ID.
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -15886,7 +16154,7 @@ List all items for a conversation with the given ID.
 
         - `Function object { name, parameters, strict, 6 more }`
 
-          Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+          Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
           - `name: string`
 
@@ -15930,7 +16198,7 @@ List all items for a conversation with the given ID.
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
@@ -15988,7 +16256,7 @@ List all items for a conversation with the given ID.
 
         - `Computer object { type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
@@ -15998,7 +16266,7 @@ List all items for a conversation with the given ID.
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
@@ -16031,7 +16299,7 @@ List all items for a conversation with the given ID.
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
           Search the Internet for sources related to the prompt. Learn more about the
-          [web search tool](/docs/guides/tools-web-search).
+          [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -16095,7 +16363,7 @@ List all items for a conversation with the given ID.
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
           Give the model access to additional tools via remote Model Context Protocol
-          (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+          (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
           - `server_label: string`
 
@@ -16147,7 +16415,7 @@ List all items for a conversation with the given ID.
 
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-            about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+            about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
             Currently supported `connector_id` values are:
 
@@ -16339,11 +16607,13 @@ List all items for a conversation with the given ID.
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -16372,20 +16642,24 @@ List all items for a conversation with the given ID.
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -16397,6 +16671,14 @@ List all items for a conversation with the given ID.
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -16425,10 +16707,12 @@ List all items for a conversation with the given ID.
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -16436,17 +16720,21 @@ List all items for a conversation with the given ID.
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -16494,7 +16782,7 @@ List all items for a conversation with the given ID.
 
         - `Custom object { name, type, allowed_callers, 4 more }`
 
-          A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+          A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -16584,7 +16872,7 @@ List all items for a conversation with the given ID.
 
             - `Custom object { name, type, allowed_callers, 4 more }`
 
-              A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+              A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
               - `name: string`
 
@@ -16654,7 +16942,7 @@ List all items for a conversation with the given ID.
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -16773,7 +17061,7 @@ List all items for a conversation with the given ID.
       A description of the chain of thought used by a reasoning model while generating
       a response. Be sure to include these items in your `input` to the Responses API
       for subsequent turns of a conversation if you are manually
-      [managing context](/docs/guides/conversation-state).
+      [managing context](/api/docs/guides/conversation-state).
 
       - `id: string`
 
@@ -16888,7 +17176,7 @@ List all items for a conversation with the given ID.
 
     - `Compaction object { id, encrypted_content, type, created_by }`
 
-      A compaction item generated by the [`v1/responses/compact` API](/docs/api-reference/responses/compact).
+      A compaction item generated by the [`v1/responses/compact` API](/api/reference/resources/responses/methods/compact).
 
       - `id: string`
 
@@ -17669,7 +17957,7 @@ List all items for a conversation with the given ID.
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            An image input to the model. Learn about [image inputs](/docs/guides/vision).
+            An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
           - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -17809,7 +18097,7 @@ Get a single item from a conversation with the given IDs.
 - `include: optional array of ResponseIncludable`
 
   Additional fields to include in the response. See the `include`
-  parameter for [listing Conversation items above](/docs/api-reference/conversations/list-items#conversations_list_items-include) for more information.
+  parameter for [listing Conversation items above](/api/reference/resources/conversations/subresources/items/methods/list#%28resource%29%20conversations.items%20%3E%20%28method%29%20list%20%3E%20%28params%29%20default%20%3E%20%28param%29%20include%20%3E%20%28schema%29) for more information.
 
   - `"file_search_call.results"`
 
@@ -17831,7 +18119,7 @@ Get a single item from a conversation with the given IDs.
 
 - `ConversationItem = Message or object { id, arguments, call_id, 7 more }  or object { id, output, status, 6 more }  or 26 more`
 
-  A single item within a conversation. The set of possible types are the same as the `output` type of a [Response object](/docs/api-reference/responses/object#responses/object-output).
+  A single item within a conversation. The set of possible types are the same as the `output` type of a [Response object](/api/reference/resources/responses#%28resource%29%20responses%20%3E%20%28model%29%20response%20%3E%20%28schema%29%20%3E%20%28property%29%20output).
 
   - `Message object { id, content, role, 3 more }`
 
@@ -18053,7 +18341,7 @@ Get a single item from a conversation with the given IDs.
 
       - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-        An image input to the model. Learn about [image inputs](/docs/guides/vision).
+        An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
         - `detail: ImageDetail`
 
@@ -18305,7 +18593,7 @@ Get a single item from a conversation with the given IDs.
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          An image input to the model. Learn about [image inputs](/docs/guides/vision).
+          An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -18371,7 +18659,7 @@ Get a single item from a conversation with the given IDs.
   - `FileSearchCall object { id, queries, status, 2 more }`
 
     The results of a file search tool call. See the
-    [file search guide](/docs/guides/tools-file-search) for more information.
+    [file search guide](/api/docs/guides/tools-file-search) for more information.
 
     - `id: string`
 
@@ -18439,7 +18727,7 @@ Get a single item from a conversation with the given IDs.
   - `WebSearchCall object { id, action, status, type }`
 
     The results of a web search tool call. See the
-    [web search guide](/docs/guides/tools-web-search) for more information.
+    [web search guide](/api/docs/guides/tools-web-search) for more information.
 
     - `id: string`
 
@@ -18534,7 +18822,7 @@ Get a single item from a conversation with the given IDs.
 
       - `"web_search_call"`
 
-  - `ImageGenerationCall object { id, result, status, type }`
+  - `ImageGenerationCall object { id, result, status, 3 more }`
 
     An image generation request made by the model.
 
@@ -18564,10 +18852,42 @@ Get a single item from a conversation with the given IDs.
 
       - `"image_generation_call"`
 
+    - `quality: optional "low" or "medium" or "high" or 3 more or null`
+
+      The quality of the image generated by the image generation tool call. One of `low`, `medium`, `high`, `xhigh`, `max`, or `auto`.
+
+      - `"low"`
+
+      - `"medium"`
+
+      - `"high"`
+
+      - `"xhigh"`
+
+      - `"max"`
+
+      - `"auto"`
+
+    - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or null`
+
+      The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+      - `string`
+
+      - `"1024x1024" or "1024x1536" or "1536x1024"`
+
+        The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+        - `"1024x1024"`
+
+        - `"1024x1536"`
+
+        - `"1536x1024"`
+
   - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
     A tool call to a computer use tool. See the
-    [computer use guide](/docs/guides/tools-computer-use) for more information.
+    [computer use guide](/api/docs/guides/tools-computer-use) for more information.
 
     - `id: string`
 
@@ -18991,7 +19311,7 @@ Get a single item from a conversation with the given IDs.
 
       - `Function object { name, parameters, strict, 6 more }`
 
-        Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+        Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
         - `name: string`
 
@@ -19035,7 +19355,7 @@ Get a single item from a conversation with the given IDs.
 
       - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-        A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+        A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
         - `type: "file_search"`
 
@@ -19160,7 +19480,7 @@ Get a single item from a conversation with the given IDs.
 
       - `Computer object { type }`
 
-        A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
         - `type: "computer"`
 
@@ -19170,7 +19490,7 @@ Get a single item from a conversation with the given IDs.
 
       - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-        A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
         - `display_height: number`
 
@@ -19203,7 +19523,7 @@ Get a single item from a conversation with the given IDs.
       - `WebSearch object { type, external_web_access, filters, 2 more }`
 
         Search the Internet for sources related to the prompt. Learn more about the
-        [web search tool](/docs/guides/tools-web-search).
+        [web search tool](/api/docs/guides/tools-web-search).
 
         - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -19267,7 +19587,7 @@ Get a single item from a conversation with the given IDs.
       - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
         Give the model access to additional tools via remote Model Context Protocol
-        (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+        (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
         - `server_label: string`
 
@@ -19319,7 +19639,7 @@ Get a single item from a conversation with the given IDs.
 
           Identifier for service connectors, like those available in ChatGPT. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-          about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+          about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
           Currently supported `connector_id` values are:
 
@@ -19543,11 +19863,13 @@ Get a single item from a conversation with the given IDs.
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          Set the background of the generated image. One of `transparent`,
-          `opaque`, or `auto`. Transparent backgrounds are available for
-          supported GPT Image models. For `gpt-image-2` and
-          `gpt-image-2-2026-04-21`, this support is in preview. When using
-          `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+          Set the background of the generated image. One of `transparent`, `opaque`,
+          or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+          their `2026-09-08` snapshots, support `opaque` and `transparent`
+          backgrounds. Transparent backgrounds are available for supported GPT Image
+          models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+          preview. When using `transparent`, set the output format to `png` or `webp`.
+          Default: `auto`.
 
           - `"transparent"`
 
@@ -19576,20 +19898,24 @@ Get a single item from a conversation with the given IDs.
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
           The image generation model to use. One of `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-          `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+          `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
           `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `"gpt-image-1"`
@@ -19601,6 +19927,14 @@ Get a single item from a conversation with the given IDs.
             - `"gpt-image-2"`
 
             - `"gpt-image-2-2026-04-21"`
+
+            - `"gpt-image-2.5-sunburst"`
+
+            - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+            - `"gpt-image-2.5-flare"`
+
+            - `"gpt-image-2.5-flare-2026-09-08"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -19629,10 +19963,12 @@ Get a single item from a conversation with the given IDs.
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or "auto"`
+        - `quality: optional "low" or "medium" or "high" or 3 more`
 
-          The quality of the generated image. One of `low`, `medium`, `high`,
-          or `auto`. Default: `auto`.
+          The quality of the generated image. The GPT image models support `low`,
+          `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+          including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+          Default: `auto`.
 
           - `"low"`
 
@@ -19640,17 +19976,21 @@ Get a single item from a conversation with the given IDs.
 
           - `"high"`
 
+          - `"xhigh"`
+
+          - `"max"`
+
           - `"auto"`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `"1024x1024"`
 
@@ -19816,7 +20156,7 @@ Get a single item from a conversation with the given IDs.
 
       - `Custom object { name, type, allowed_callers, 4 more }`
 
-        A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+        A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
         - `name: string`
 
@@ -19938,7 +20278,7 @@ Get a single item from a conversation with the given IDs.
 
           - `Custom object { name, type, allowed_callers, 4 more }`
 
-            A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+            A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -20008,7 +20348,7 @@ Get a single item from a conversation with the given IDs.
 
       - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-        This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+        This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
         - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -20120,7 +20460,7 @@ Get a single item from a conversation with the given IDs.
 
       - `Function object { name, parameters, strict, 6 more }`
 
-        Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+        Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
         - `name: string`
 
@@ -20164,7 +20504,7 @@ Get a single item from a conversation with the given IDs.
 
       - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-        A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+        A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
         - `type: "file_search"`
 
@@ -20222,7 +20562,7 @@ Get a single item from a conversation with the given IDs.
 
       - `Computer object { type }`
 
-        A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
         - `type: "computer"`
 
@@ -20232,7 +20572,7 @@ Get a single item from a conversation with the given IDs.
 
       - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-        A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
         - `display_height: number`
 
@@ -20265,7 +20605,7 @@ Get a single item from a conversation with the given IDs.
       - `WebSearch object { type, external_web_access, filters, 2 more }`
 
         Search the Internet for sources related to the prompt. Learn more about the
-        [web search tool](/docs/guides/tools-web-search).
+        [web search tool](/api/docs/guides/tools-web-search).
 
         - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -20329,7 +20669,7 @@ Get a single item from a conversation with the given IDs.
       - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
         Give the model access to additional tools via remote Model Context Protocol
-        (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+        (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
         - `server_label: string`
 
@@ -20381,7 +20721,7 @@ Get a single item from a conversation with the given IDs.
 
           Identifier for service connectors, like those available in ChatGPT. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-          about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+          about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
           Currently supported `connector_id` values are:
 
@@ -20573,11 +20913,13 @@ Get a single item from a conversation with the given IDs.
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          Set the background of the generated image. One of `transparent`,
-          `opaque`, or `auto`. Transparent backgrounds are available for
-          supported GPT Image models. For `gpt-image-2` and
-          `gpt-image-2-2026-04-21`, this support is in preview. When using
-          `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+          Set the background of the generated image. One of `transparent`, `opaque`,
+          or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+          their `2026-09-08` snapshots, support `opaque` and `transparent`
+          backgrounds. Transparent backgrounds are available for supported GPT Image
+          models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+          preview. When using `transparent`, set the output format to `png` or `webp`.
+          Default: `auto`.
 
           - `"transparent"`
 
@@ -20606,20 +20948,24 @@ Get a single item from a conversation with the given IDs.
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
           The image generation model to use. One of `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-          `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+          `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
           `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `"gpt-image-1"`
@@ -20631,6 +20977,14 @@ Get a single item from a conversation with the given IDs.
             - `"gpt-image-2"`
 
             - `"gpt-image-2-2026-04-21"`
+
+            - `"gpt-image-2.5-sunburst"`
+
+            - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+            - `"gpt-image-2.5-flare"`
+
+            - `"gpt-image-2.5-flare-2026-09-08"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -20659,10 +21013,12 @@ Get a single item from a conversation with the given IDs.
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or "auto"`
+        - `quality: optional "low" or "medium" or "high" or 3 more`
 
-          The quality of the generated image. One of `low`, `medium`, `high`,
-          or `auto`. Default: `auto`.
+          The quality of the generated image. The GPT image models support `low`,
+          `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+          including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+          Default: `auto`.
 
           - `"low"`
 
@@ -20670,17 +21026,21 @@ Get a single item from a conversation with the given IDs.
 
           - `"high"`
 
+          - `"xhigh"`
+
+          - `"max"`
+
           - `"auto"`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `"1024x1024"`
 
@@ -20728,7 +21088,7 @@ Get a single item from a conversation with the given IDs.
 
       - `Custom object { name, type, allowed_callers, 4 more }`
 
-        A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+        A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
         - `name: string`
 
@@ -20818,7 +21178,7 @@ Get a single item from a conversation with the given IDs.
 
           - `Custom object { name, type, allowed_callers, 4 more }`
 
-            A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+            A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -20888,7 +21248,7 @@ Get a single item from a conversation with the given IDs.
 
       - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-        This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+        This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
         - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -21007,7 +21367,7 @@ Get a single item from a conversation with the given IDs.
     A description of the chain of thought used by a reasoning model while generating
     a response. Be sure to include these items in your `input` to the Responses API
     for subsequent turns of a conversation if you are manually
-    [managing context](/docs/guides/conversation-state).
+    [managing context](/api/docs/guides/conversation-state).
 
     - `id: string`
 
@@ -21122,7 +21482,7 @@ Get a single item from a conversation with the given IDs.
 
   - `Compaction object { id, encrypted_content, type, created_by }`
 
-    A compaction item generated by the [`v1/responses/compact` API](/docs/api-reference/responses/compact).
+    A compaction item generated by the [`v1/responses/compact` API](/api/reference/resources/responses/methods/compact).
 
     - `id: string`
 
@@ -21903,7 +22263,7 @@ Get a single item from a conversation with the given IDs.
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          An image input to the model. Learn about [image inputs](/docs/guides/vision).
+          An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -21998,7 +22358,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
 - `ConversationItem = Message or object { id, arguments, call_id, 7 more }  or object { id, output, status, 6 more }  or 26 more`
 
-  A single item within a conversation. The set of possible types are the same as the `output` type of a [Response object](/docs/api-reference/responses/object#responses/object-output).
+  A single item within a conversation. The set of possible types are the same as the `output` type of a [Response object](/api/reference/resources/responses#%28resource%29%20responses%20%3E%20%28model%29%20response%20%3E%20%28schema%29%20%3E%20%28property%29%20output).
 
   - `Message object { id, content, role, 3 more }`
 
@@ -22220,7 +22580,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-        An image input to the model. Learn about [image inputs](/docs/guides/vision).
+        An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
         - `detail: ImageDetail`
 
@@ -22472,7 +22832,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          An image input to the model. Learn about [image inputs](/docs/guides/vision).
+          An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -22538,7 +22898,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
   - `FileSearchCall object { id, queries, status, 2 more }`
 
     The results of a file search tool call. See the
-    [file search guide](/docs/guides/tools-file-search) for more information.
+    [file search guide](/api/docs/guides/tools-file-search) for more information.
 
     - `id: string`
 
@@ -22606,7 +22966,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
   - `WebSearchCall object { id, action, status, type }`
 
     The results of a web search tool call. See the
-    [web search guide](/docs/guides/tools-web-search) for more information.
+    [web search guide](/api/docs/guides/tools-web-search) for more information.
 
     - `id: string`
 
@@ -22701,7 +23061,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `"web_search_call"`
 
-  - `ImageGenerationCall object { id, result, status, type }`
+  - `ImageGenerationCall object { id, result, status, 3 more }`
 
     An image generation request made by the model.
 
@@ -22731,10 +23091,42 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `"image_generation_call"`
 
+    - `quality: optional "low" or "medium" or "high" or 3 more or null`
+
+      The quality of the image generated by the image generation tool call. One of `low`, `medium`, `high`, `xhigh`, `max`, or `auto`.
+
+      - `"low"`
+
+      - `"medium"`
+
+      - `"high"`
+
+      - `"xhigh"`
+
+      - `"max"`
+
+      - `"auto"`
+
+    - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or null`
+
+      The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+      - `string`
+
+      - `"1024x1024" or "1024x1536" or "1536x1024"`
+
+        The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+        - `"1024x1024"`
+
+        - `"1024x1536"`
+
+        - `"1536x1024"`
+
   - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
     A tool call to a computer use tool. See the
-    [computer use guide](/docs/guides/tools-computer-use) for more information.
+    [computer use guide](/api/docs/guides/tools-computer-use) for more information.
 
     - `id: string`
 
@@ -23158,7 +23550,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `Function object { name, parameters, strict, 6 more }`
 
-        Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+        Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
         - `name: string`
 
@@ -23202,7 +23594,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-        A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+        A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
         - `type: "file_search"`
 
@@ -23327,7 +23719,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `Computer object { type }`
 
-        A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
         - `type: "computer"`
 
@@ -23337,7 +23729,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-        A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
         - `display_height: number`
 
@@ -23370,7 +23762,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
       - `WebSearch object { type, external_web_access, filters, 2 more }`
 
         Search the Internet for sources related to the prompt. Learn more about the
-        [web search tool](/docs/guides/tools-web-search).
+        [web search tool](/api/docs/guides/tools-web-search).
 
         - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -23434,7 +23826,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
       - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
         Give the model access to additional tools via remote Model Context Protocol
-        (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+        (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
         - `server_label: string`
 
@@ -23486,7 +23878,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           Identifier for service connectors, like those available in ChatGPT. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-          about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+          about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
           Currently supported `connector_id` values are:
 
@@ -23710,11 +24102,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          Set the background of the generated image. One of `transparent`,
-          `opaque`, or `auto`. Transparent backgrounds are available for
-          supported GPT Image models. For `gpt-image-2` and
-          `gpt-image-2-2026-04-21`, this support is in preview. When using
-          `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+          Set the background of the generated image. One of `transparent`, `opaque`,
+          or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+          their `2026-09-08` snapshots, support `opaque` and `transparent`
+          backgrounds. Transparent backgrounds are available for supported GPT Image
+          models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+          preview. When using `transparent`, set the output format to `png` or `webp`.
+          Default: `auto`.
 
           - `"transparent"`
 
@@ -23743,20 +24137,24 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
           The image generation model to use. One of `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-          `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+          `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
           `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `"gpt-image-1"`
@@ -23768,6 +24166,14 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
             - `"gpt-image-2"`
 
             - `"gpt-image-2-2026-04-21"`
+
+            - `"gpt-image-2.5-sunburst"`
+
+            - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+            - `"gpt-image-2.5-flare"`
+
+            - `"gpt-image-2.5-flare-2026-09-08"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -23796,10 +24202,12 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or "auto"`
+        - `quality: optional "low" or "medium" or "high" or 3 more`
 
-          The quality of the generated image. One of `low`, `medium`, `high`,
-          or `auto`. Default: `auto`.
+          The quality of the generated image. The GPT image models support `low`,
+          `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+          including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+          Default: `auto`.
 
           - `"low"`
 
@@ -23807,17 +24215,21 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `"high"`
 
+          - `"xhigh"`
+
+          - `"max"`
+
           - `"auto"`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `"1024x1024"`
 
@@ -23983,7 +24395,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `Custom object { name, type, allowed_callers, 4 more }`
 
-        A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+        A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
         - `name: string`
 
@@ -24105,7 +24517,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `Custom object { name, type, allowed_callers, 4 more }`
 
-            A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+            A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -24175,7 +24587,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-        This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+        This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
         - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -24287,7 +24699,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `Function object { name, parameters, strict, 6 more }`
 
-        Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+        Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
         - `name: string`
 
@@ -24331,7 +24743,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-        A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+        A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
         - `type: "file_search"`
 
@@ -24389,7 +24801,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `Computer object { type }`
 
-        A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
         - `type: "computer"`
 
@@ -24399,7 +24811,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-        A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+        A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
         - `display_height: number`
 
@@ -24432,7 +24844,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
       - `WebSearch object { type, external_web_access, filters, 2 more }`
 
         Search the Internet for sources related to the prompt. Learn more about the
-        [web search tool](/docs/guides/tools-web-search).
+        [web search tool](/api/docs/guides/tools-web-search).
 
         - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -24496,7 +24908,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
       - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
         Give the model access to additional tools via remote Model Context Protocol
-        (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+        (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
         - `server_label: string`
 
@@ -24548,7 +24960,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           Identifier for service connectors, like those available in ChatGPT. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-          about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+          about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
           Currently supported `connector_id` values are:
 
@@ -24740,11 +25152,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          Set the background of the generated image. One of `transparent`,
-          `opaque`, or `auto`. Transparent backgrounds are available for
-          supported GPT Image models. For `gpt-image-2` and
-          `gpt-image-2-2026-04-21`, this support is in preview. When using
-          `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+          Set the background of the generated image. One of `transparent`, `opaque`,
+          or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+          their `2026-09-08` snapshots, support `opaque` and `transparent`
+          backgrounds. Transparent backgrounds are available for supported GPT Image
+          models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+          preview. When using `transparent`, set the output format to `png` or `webp`.
+          Default: `auto`.
 
           - `"transparent"`
 
@@ -24773,20 +25187,24 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
           The image generation model to use. One of `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-          `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+          `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
           `gpt-image-1`.
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `"gpt-image-1"`
@@ -24798,6 +25216,14 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
             - `"gpt-image-2"`
 
             - `"gpt-image-2-2026-04-21"`
+
+            - `"gpt-image-2.5-sunburst"`
+
+            - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+            - `"gpt-image-2.5-flare"`
+
+            - `"gpt-image-2.5-flare-2026-09-08"`
 
         - `moderation: optional "auto" or "low"`
 
@@ -24826,10 +25252,12 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or "auto"`
+        - `quality: optional "low" or "medium" or "high" or 3 more`
 
-          The quality of the generated image. One of `low`, `medium`, `high`,
-          or `auto`. Default: `auto`.
+          The quality of the generated image. The GPT image models support `low`,
+          `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+          including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+          Default: `auto`.
 
           - `"low"`
 
@@ -24837,17 +25265,21 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `"high"`
 
+          - `"xhigh"`
+
+          - `"max"`
+
           - `"auto"`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `"1024x1024"`
 
@@ -24895,7 +25327,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `Custom object { name, type, allowed_callers, 4 more }`
 
-        A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+        A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
         - `name: string`
 
@@ -24985,7 +25417,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `Custom object { name, type, allowed_callers, 4 more }`
 
-            A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+            A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -25055,7 +25487,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-        This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+        This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
         - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -25174,7 +25606,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
     A description of the chain of thought used by a reasoning model while generating
     a response. Be sure to include these items in your `input` to the Responses API
     for subsequent turns of a conversation if you are manually
-    [managing context](/docs/guides/conversation-state).
+    [managing context](/api/docs/guides/conversation-state).
 
     - `id: string`
 
@@ -25289,7 +25721,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
   - `Compaction object { id, encrypted_content, type, created_by }`
 
-    A compaction item generated by the [`v1/responses/compact` API](/docs/api-reference/responses/compact).
+    A compaction item generated by the [`v1/responses/compact` API](/api/reference/resources/responses/methods/compact).
 
     - `id: string`
 
@@ -26070,7 +26502,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          An image input to the model. Learn about [image inputs](/docs/guides/vision).
+          An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -26340,7 +26772,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          An image input to the model. Learn about [image inputs](/docs/guides/vision).
+          An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
           - `detail: ImageDetail`
 
@@ -26592,7 +27024,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            An image input to the model. Learn about [image inputs](/docs/guides/vision).
+            An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
           - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -26658,7 +27090,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
     - `FileSearchCall object { id, queries, status, 2 more }`
 
       The results of a file search tool call. See the
-      [file search guide](/docs/guides/tools-file-search) for more information.
+      [file search guide](/api/docs/guides/tools-file-search) for more information.
 
       - `id: string`
 
@@ -26726,7 +27158,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
     - `WebSearchCall object { id, action, status, type }`
 
       The results of a web search tool call. See the
-      [web search guide](/docs/guides/tools-web-search) for more information.
+      [web search guide](/api/docs/guides/tools-web-search) for more information.
 
       - `id: string`
 
@@ -26821,7 +27253,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `"web_search_call"`
 
-    - `ImageGenerationCall object { id, result, status, type }`
+    - `ImageGenerationCall object { id, result, status, 3 more }`
 
       An image generation request made by the model.
 
@@ -26851,10 +27283,42 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `"image_generation_call"`
 
+      - `quality: optional "low" or "medium" or "high" or 3 more or null`
+
+        The quality of the image generated by the image generation tool call. One of `low`, `medium`, `high`, `xhigh`, `max`, or `auto`.
+
+        - `"low"`
+
+        - `"medium"`
+
+        - `"high"`
+
+        - `"xhigh"`
+
+        - `"max"`
+
+        - `"auto"`
+
+      - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or null`
+
+        The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+        - `string`
+
+        - `"1024x1024" or "1024x1536" or "1536x1024"`
+
+          The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+          - `"1024x1024"`
+
+          - `"1024x1536"`
+
+          - `"1536x1024"`
+
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
       A tool call to a computer use tool. See the
-      [computer use guide](/docs/guides/tools-computer-use) for more information.
+      [computer use guide](/api/docs/guides/tools-computer-use) for more information.
 
       - `id: string`
 
@@ -27278,7 +27742,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Function object { name, parameters, strict, 6 more }`
 
-          Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+          Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
           - `name: string`
 
@@ -27322,7 +27786,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
@@ -27447,7 +27911,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Computer object { type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
@@ -27457,7 +27921,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
@@ -27490,7 +27954,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
           Search the Internet for sources related to the prompt. Learn more about the
-          [web search tool](/docs/guides/tools-web-search).
+          [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -27554,7 +28018,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
           Give the model access to additional tools via remote Model Context Protocol
-          (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+          (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
           - `server_label: string`
 
@@ -27606,7 +28070,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-            about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+            about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
             Currently supported `connector_id` values are:
 
@@ -27830,11 +28294,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -27863,20 +28329,24 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -27888,6 +28358,14 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -27916,10 +28394,12 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -27927,17 +28407,21 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -28103,7 +28587,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Custom object { name, type, allowed_callers, 4 more }`
 
-          A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+          A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -28225,7 +28709,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `Custom object { name, type, allowed_callers, 4 more }`
 
-              A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+              A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
               - `name: string`
 
@@ -28295,7 +28779,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -28407,7 +28891,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Function object { name, parameters, strict, 6 more }`
 
-          Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+          Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
           - `name: string`
 
@@ -28451,7 +28935,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
@@ -28509,7 +28993,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Computer object { type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
@@ -28519,7 +29003,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
@@ -28552,7 +29036,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
           Search the Internet for sources related to the prompt. Learn more about the
-          [web search tool](/docs/guides/tools-web-search).
+          [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -28616,7 +29100,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
           Give the model access to additional tools via remote Model Context Protocol
-          (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+          (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
           - `server_label: string`
 
@@ -28668,7 +29152,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-            about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+            about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
             Currently supported `connector_id` values are:
 
@@ -28860,11 +29344,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -28893,20 +29379,24 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -28918,6 +29408,14 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -28946,10 +29444,12 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -28957,17 +29457,21 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -29015,7 +29519,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Custom object { name, type, allowed_callers, 4 more }`
 
-          A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+          A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -29105,7 +29609,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `Custom object { name, type, allowed_callers, 4 more }`
 
-              A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+              A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
               - `name: string`
 
@@ -29175,7 +29679,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -29294,7 +29798,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
       A description of the chain of thought used by a reasoning model while generating
       a response. Be sure to include these items in your `input` to the Responses API
       for subsequent turns of a conversation if you are manually
-      [managing context](/docs/guides/conversation-state).
+      [managing context](/api/docs/guides/conversation-state).
 
       - `id: string`
 
@@ -29409,7 +29913,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `Compaction object { id, encrypted_content, type, created_by }`
 
-      A compaction item generated by the [`v1/responses/compact` API](/docs/api-reference/responses/compact).
+      A compaction item generated by the [`v1/responses/compact` API](/api/reference/resources/responses/methods/compact).
 
       - `id: string`
 
@@ -30190,7 +30694,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            An image input to the model. Learn about [image inputs](/docs/guides/vision).
+            An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
           - `ResponseInputFile object { type, detail, file_data, 4 more }`
 

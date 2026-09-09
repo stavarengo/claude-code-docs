@@ -6,7 +6,7 @@
 
 Cancels a model response with the given ID. Only responses created with
 the `background` parameter set to `true` can be cancelled.
-[Learn more](/docs/guides/background).
+[Learn more](/api/docs/guides/background).
 
 ### Path Parameters
 
@@ -195,7 +195,7 @@ the `background` parameter set to `true` can be cancelled.
 
             - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-              An image input to the model. Learn about [image inputs](/docs/guides/vision).
+              An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
               - `detail: ImageDetail`
 
@@ -538,7 +538,7 @@ the `background` parameter set to `true` can be cancelled.
       - `FileSearchCall object { id, queries, status, 2 more }`
 
         The results of a file search tool call. See the
-        [file search guide](/docs/guides/tools-file-search) for more information.
+        [file search guide](/api/docs/guides/tools-file-search) for more information.
 
         - `id: string`
 
@@ -606,7 +606,7 @@ the `background` parameter set to `true` can be cancelled.
       - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
         A tool call to a computer use tool. See the
-        [computer use guide](/docs/guides/tools-computer-use) for more information.
+        [computer use guide](/api/docs/guides/tools-computer-use) for more information.
 
         - `id: string`
 
@@ -951,7 +951,7 @@ the `background` parameter set to `true` can be cancelled.
       - `WebSearchCall object { id, action, status, type }`
 
         The results of a web search tool call. See the
-        [web search guide](/docs/guides/tools-web-search) for more information.
+        [web search guide](/api/docs/guides/tools-web-search) for more information.
 
         - `id: string`
 
@@ -1049,7 +1049,7 @@ the `background` parameter set to `true` can be cancelled.
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
         A tool call to run a function. See the
-        [function calling guide](/docs/guides/function-calling) for more information.
+        [function calling guide](/api/docs/guides/function-calling) for more information.
 
         - `arguments: string`
 
@@ -1154,7 +1154,7 @@ the `background` parameter set to `true` can be cancelled.
 
             - `ResponseInputImageContent object { type, detail, file_id, 2 more }`
 
-              An image input to the model. Learn about [image inputs](/docs/guides/vision)
+              An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision)
 
               - `type: "input_image"`
 
@@ -1332,7 +1332,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `Function object { name, parameters, strict, 6 more }`
 
-            Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+            Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
             - `name: string`
 
@@ -1376,7 +1376,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-            A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+            A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
             - `type: "file_search"`
 
@@ -1501,7 +1501,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `Computer object { type }`
 
-            A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+            A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
             - `type: "computer"`
 
@@ -1511,7 +1511,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-            A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+            A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
             - `display_height: number`
 
@@ -1544,7 +1544,7 @@ the `background` parameter set to `true` can be cancelled.
           - `WebSearch object { type, external_web_access, filters, 2 more }`
 
             Search the Internet for sources related to the prompt. Learn more about the
-            [web search tool](/docs/guides/tools-web-search).
+            [web search tool](/api/docs/guides/tools-web-search).
 
             - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -1608,7 +1608,7 @@ the `background` parameter set to `true` can be cancelled.
           - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
             Give the model access to additional tools via remote Model Context Protocol
-            (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+            (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
             - `server_label: string`
 
@@ -1660,7 +1660,7 @@ the `background` parameter set to `true` can be cancelled.
 
               Identifier for service connectors, like those available in ChatGPT. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-              about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+              about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
               Currently supported `connector_id` values are:
 
@@ -1884,11 +1884,13 @@ the `background` parameter set to `true` can be cancelled.
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              Set the background of the generated image. One of `transparent`,
-              `opaque`, or `auto`. Transparent backgrounds are available for
-              supported GPT Image models. For `gpt-image-2` and
-              `gpt-image-2-2026-04-21`, this support is in preview. When using
-              `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+              Set the background of the generated image. One of `transparent`, `opaque`,
+              or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+              their `2026-09-08` snapshots, support `opaque` and `transparent`
+              backgrounds. Transparent backgrounds are available for supported GPT Image
+              models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+              preview. When using `transparent`, set the output format to `png` or `webp`.
+              Default: `auto`.
 
               - `"transparent"`
 
@@ -1917,20 +1919,24 @@ the `background` parameter set to `true` can be cancelled.
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -1942,6 +1948,14 @@ the `background` parameter set to `true` can be cancelled.
                 - `"gpt-image-2"`
 
                 - `"gpt-image-2-2026-04-21"`
+
+                - `"gpt-image-2.5-sunburst"`
+
+                - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                - `"gpt-image-2.5-flare"`
+
+                - `"gpt-image-2.5-flare-2026-09-08"`
 
             - `moderation: optional "auto" or "low"`
 
@@ -1970,10 +1984,12 @@ the `background` parameter set to `true` can be cancelled.
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or "auto"`
+            - `quality: optional "low" or "medium" or "high" or 3 more`
 
-              The quality of the generated image. One of `low`, `medium`, `high`,
-              or `auto`. Default: `auto`.
+              The quality of the generated image. The GPT image models support `low`,
+              `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+              including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+              Default: `auto`.
 
               - `"low"`
 
@@ -1981,17 +1997,21 @@ the `background` parameter set to `true` can be cancelled.
 
               - `"high"`
 
+              - `"xhigh"`
+
+              - `"max"`
+
               - `"auto"`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -2157,7 +2177,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `Custom object { name, type, allowed_callers, 4 more }`
 
-            A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+            A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -2279,7 +2299,7 @@ the `background` parameter set to `true` can be cancelled.
 
               - `Custom object { name, type, allowed_callers, 4 more }`
 
-                A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+                A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
                 - `name: string`
 
@@ -2349,7 +2369,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-            This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+            This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
             - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -2465,7 +2485,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `Function object { name, parameters, strict, 6 more }`
 
-            Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+            Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
             - `name: string`
 
@@ -2509,7 +2529,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-            A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+            A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
             - `type: "file_search"`
 
@@ -2567,7 +2587,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `Computer object { type }`
 
-            A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+            A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
             - `type: "computer"`
 
@@ -2577,7 +2597,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-            A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+            A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
             - `display_height: number`
 
@@ -2610,7 +2630,7 @@ the `background` parameter set to `true` can be cancelled.
           - `WebSearch object { type, external_web_access, filters, 2 more }`
 
             Search the Internet for sources related to the prompt. Learn more about the
-            [web search tool](/docs/guides/tools-web-search).
+            [web search tool](/api/docs/guides/tools-web-search).
 
             - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -2674,7 +2694,7 @@ the `background` parameter set to `true` can be cancelled.
           - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
             Give the model access to additional tools via remote Model Context Protocol
-            (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+            (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
             - `server_label: string`
 
@@ -2726,7 +2746,7 @@ the `background` parameter set to `true` can be cancelled.
 
               Identifier for service connectors, like those available in ChatGPT. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-              about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+              about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
               Currently supported `connector_id` values are:
 
@@ -2918,11 +2938,13 @@ the `background` parameter set to `true` can be cancelled.
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              Set the background of the generated image. One of `transparent`,
-              `opaque`, or `auto`. Transparent backgrounds are available for
-              supported GPT Image models. For `gpt-image-2` and
-              `gpt-image-2-2026-04-21`, this support is in preview. When using
-              `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+              Set the background of the generated image. One of `transparent`, `opaque`,
+              or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+              their `2026-09-08` snapshots, support `opaque` and `transparent`
+              backgrounds. Transparent backgrounds are available for supported GPT Image
+              models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+              preview. When using `transparent`, set the output format to `png` or `webp`.
+              Default: `auto`.
 
               - `"transparent"`
 
@@ -2951,20 +2973,24 @@ the `background` parameter set to `true` can be cancelled.
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
                 The image generation model to use. One of `gpt-image-1`,
                 `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-                `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+                `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
                 `gpt-image-1`.
 
                 - `"gpt-image-1"`
@@ -2976,6 +3002,14 @@ the `background` parameter set to `true` can be cancelled.
                 - `"gpt-image-2"`
 
                 - `"gpt-image-2-2026-04-21"`
+
+                - `"gpt-image-2.5-sunburst"`
+
+                - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+                - `"gpt-image-2.5-flare"`
+
+                - `"gpt-image-2.5-flare-2026-09-08"`
 
             - `moderation: optional "auto" or "low"`
 
@@ -3004,10 +3038,12 @@ the `background` parameter set to `true` can be cancelled.
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or "auto"`
+            - `quality: optional "low" or "medium" or "high" or 3 more`
 
-              The quality of the generated image. One of `low`, `medium`, `high`,
-              or `auto`. Default: `auto`.
+              The quality of the generated image. The GPT image models support `low`,
+              `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+              including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+              Default: `auto`.
 
               - `"low"`
 
@@ -3015,17 +3051,21 @@ the `background` parameter set to `true` can be cancelled.
 
               - `"high"`
 
+              - `"xhigh"`
+
+              - `"max"`
+
               - `"auto"`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -3073,7 +3113,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `Custom object { name, type, allowed_callers, 4 more }`
 
-            A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+            A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
@@ -3163,7 +3203,7 @@ the `background` parameter set to `true` can be cancelled.
 
               - `Custom object { name, type, allowed_callers, 4 more }`
 
-                A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+                A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
                 - `name: string`
 
@@ -3233,7 +3273,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-            This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+            This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
             - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -3357,7 +3397,7 @@ the `background` parameter set to `true` can be cancelled.
         A description of the chain of thought used by a reasoning model while generating
         a response. Be sure to include these items in your `input` to the Responses API
         for subsequent turns of a conversation if you are manually
-        [managing context](/docs/guides/conversation-state).
+        [managing context](/api/docs/guides/conversation-state).
 
         - `id: string`
 
@@ -3422,7 +3462,7 @@ the `background` parameter set to `true` can be cancelled.
 
       - `Compaction object { encrypted_content, type, id }`
 
-        A compaction item generated by the [`v1/responses/compact` API](/docs/api-reference/responses/compact).
+        A compaction item generated by the [`v1/responses/compact` API](/api/reference/resources/responses/methods/compact).
 
         - `encrypted_content: string`
 
@@ -3438,7 +3478,7 @@ the `background` parameter set to `true` can be cancelled.
 
           The ID of the compaction item.
 
-      - `ImageGenerationCall object { id, result, status, type }`
+      - `ImageGenerationCall object { id, result, status, 3 more }`
 
         An image generation request made by the model.
 
@@ -3467,6 +3507,38 @@ the `background` parameter set to `true` can be cancelled.
           The type of the image generation call. Always `image_generation_call`.
 
           - `"image_generation_call"`
+
+        - `quality: optional "low" or "medium" or "high" or 3 more or null`
+
+          The quality of the image generated by the image generation tool call. One of `low`, `medium`, `high`, `xhigh`, `max`, or `auto`.
+
+          - `"low"`
+
+          - `"medium"`
+
+          - `"high"`
+
+          - `"xhigh"`
+
+          - `"max"`
+
+          - `"auto"`
+
+        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or null`
+
+          The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+          - `string`
+
+          - `"1024x1024" or "1024x1536" or "1536x1024"`
+
+            The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+            - `"1024x1024"`
+
+            - `"1024x1536"`
+
+            - `"1536x1024"`
 
       - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -4155,7 +4227,7 @@ the `background` parameter set to `true` can be cancelled.
 
             - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-              An image input to the model. Learn about [image inputs](/docs/guides/vision).
+              An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
             - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -4342,7 +4414,7 @@ the `background` parameter set to `true` can be cancelled.
 
     Model ID used to generate the response, like `gpt-6-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
-    characteristics, and price points. Refer to the [model guide](/docs/models)
+    characteristics, and price points. Refer to the [model guide](/api/docs/models)
     to browse and compare available models.
 
     - `string`
@@ -4581,7 +4653,7 @@ the `background` parameter set to `true` can be cancelled.
     - `FileSearchCall object { id, queries, status, 2 more }`
 
       The results of a file search tool call. See the
-      [file search guide](/docs/guides/tools-file-search) for more information.
+      [file search guide](/api/docs/guides/tools-file-search) for more information.
 
       - `id: string`
 
@@ -4649,7 +4721,7 @@ the `background` parameter set to `true` can be cancelled.
     - `FunctionCall object { arguments, call_id, name, 6 more }`
 
       A tool call to run a function. See the
-      [function calling guide](/docs/guides/function-calling) for more information.
+      [function calling guide](/api/docs/guides/function-calling) for more information.
 
       - `arguments: string`
 
@@ -4737,7 +4809,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            An image input to the model. Learn about [image inputs](/docs/guides/vision).
+            An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
           - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -4803,7 +4875,7 @@ the `background` parameter set to `true` can be cancelled.
     - `WebSearchCall object { id, action, status, type }`
 
       The results of a web search tool call. See the
-      [web search guide](/docs/guides/tools-web-search) for more information.
+      [web search guide](/api/docs/guides/tools-web-search) for more information.
 
       - `id: string`
 
@@ -4901,7 +4973,7 @@ the `background` parameter set to `true` can be cancelled.
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
       A tool call to a computer use tool. See the
-      [computer use guide](/docs/guides/tools-computer-use) for more information.
+      [computer use guide](/api/docs/guides/tools-computer-use) for more information.
 
       - `id: string`
 
@@ -5012,7 +5084,7 @@ the `background` parameter set to `true` can be cancelled.
       A description of the chain of thought used by a reasoning model while generating
       a response. Be sure to include these items in your `input` to the Responses API
       for subsequent turns of a conversation if you are manually
-      [managing context](/docs/guides/conversation-state).
+      [managing context](/api/docs/guides/conversation-state).
 
       - `id: string`
 
@@ -5201,7 +5273,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `Function object { name, parameters, strict, 6 more }`
 
-          Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+          Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
           - `name: string`
 
@@ -5245,7 +5317,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
@@ -5303,7 +5375,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `Computer object { type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
@@ -5313,7 +5385,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
@@ -5346,7 +5418,7 @@ the `background` parameter set to `true` can be cancelled.
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
           Search the Internet for sources related to the prompt. Learn more about the
-          [web search tool](/docs/guides/tools-web-search).
+          [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -5410,7 +5482,7 @@ the `background` parameter set to `true` can be cancelled.
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
           Give the model access to additional tools via remote Model Context Protocol
-          (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+          (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
           - `server_label: string`
 
@@ -5462,7 +5534,7 @@ the `background` parameter set to `true` can be cancelled.
 
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-            about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+            about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
             Currently supported `connector_id` values are:
 
@@ -5654,11 +5726,13 @@ the `background` parameter set to `true` can be cancelled.
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -5687,20 +5761,24 @@ the `background` parameter set to `true` can be cancelled.
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -5712,6 +5790,14 @@ the `background` parameter set to `true` can be cancelled.
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -5740,10 +5826,12 @@ the `background` parameter set to `true` can be cancelled.
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -5751,17 +5839,21 @@ the `background` parameter set to `true` can be cancelled.
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -5809,7 +5901,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `Custom object { name, type, allowed_callers, 4 more }`
 
-          A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+          A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -5899,7 +5991,7 @@ the `background` parameter set to `true` can be cancelled.
 
             - `Custom object { name, type, allowed_callers, 4 more }`
 
-              A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+              A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
               - `name: string`
 
@@ -5969,7 +6061,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -6081,7 +6173,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `Function object { name, parameters, strict, 6 more }`
 
-          Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+          Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
           - `name: string`
 
@@ -6125,7 +6217,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+          A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
@@ -6183,7 +6275,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `Computer object { type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
@@ -6193,7 +6285,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+          A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
@@ -6226,7 +6318,7 @@ the `background` parameter set to `true` can be cancelled.
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
           Search the Internet for sources related to the prompt. Learn more about the
-          [web search tool](/docs/guides/tools-web-search).
+          [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -6290,7 +6382,7 @@ the `background` parameter set to `true` can be cancelled.
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
           Give the model access to additional tools via remote Model Context Protocol
-          (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+          (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
           - `server_label: string`
 
@@ -6342,7 +6434,7 @@ the `background` parameter set to `true` can be cancelled.
 
             Identifier for service connectors, like those available in ChatGPT. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-            about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+            about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
             Currently supported `connector_id` values are:
 
@@ -6534,11 +6626,13 @@ the `background` parameter set to `true` can be cancelled.
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            Set the background of the generated image. One of `transparent`,
-            `opaque`, or `auto`. Transparent backgrounds are available for
-            supported GPT Image models. For `gpt-image-2` and
-            `gpt-image-2-2026-04-21`, this support is in preview. When using
-            `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+            Set the background of the generated image. One of `transparent`, `opaque`,
+            or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+            their `2026-09-08` snapshots, support `opaque` and `transparent`
+            backgrounds. Transparent backgrounds are available for supported GPT Image
+            models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+            preview. When using `transparent`, set the output format to `png` or `webp`.
+            Default: `auto`.
 
             - `"transparent"`
 
@@ -6567,20 +6661,24 @@ the `background` parameter set to `true` can be cancelled.
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
             The image generation model to use. One of `gpt-image-1`,
             `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-            `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+            `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
             `gpt-image-1`.
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
               The image generation model to use. One of `gpt-image-1`,
               `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-              `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+              `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
               `gpt-image-1`.
 
               - `"gpt-image-1"`
@@ -6592,6 +6690,14 @@ the `background` parameter set to `true` can be cancelled.
               - `"gpt-image-2"`
 
               - `"gpt-image-2-2026-04-21"`
+
+              - `"gpt-image-2.5-sunburst"`
+
+              - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+              - `"gpt-image-2.5-flare"`
+
+              - `"gpt-image-2.5-flare-2026-09-08"`
 
           - `moderation: optional "auto" or "low"`
 
@@ -6620,10 +6726,12 @@ the `background` parameter set to `true` can be cancelled.
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or "auto"`
+          - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            The quality of the generated image. One of `low`, `medium`, `high`,
-            or `auto`. Default: `auto`.
+            The quality of the generated image. The GPT image models support `low`,
+            `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+            including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+            Default: `auto`.
 
             - `"low"`
 
@@ -6631,17 +6739,21 @@ the `background` parameter set to `true` can be cancelled.
 
             - `"high"`
 
+            - `"xhigh"`
+
+            - `"max"`
+
             - `"auto"`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
               - `"1024x1024"`
 
@@ -6689,7 +6801,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `Custom object { name, type, allowed_callers, 4 more }`
 
-          A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+          A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -6779,7 +6891,7 @@ the `background` parameter set to `true` can be cancelled.
 
             - `Custom object { name, type, allowed_callers, 4 more }`
 
-              A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+              A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
               - `name: string`
 
@@ -6849,7 +6961,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+          This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -6927,7 +7039,7 @@ the `background` parameter set to `true` can be cancelled.
 
     - `Compaction object { id, encrypted_content, type, created_by }`
 
-      A compaction item generated by the [`v1/responses/compact` API](/docs/api-reference/responses/compact).
+      A compaction item generated by the [`v1/responses/compact` API](/api/reference/resources/responses/methods/compact).
 
       - `id: string`
 
@@ -6947,7 +7059,7 @@ the `background` parameter set to `true` can be cancelled.
 
         The identifier of the actor that created the item.
 
-    - `ImageGenerationCall object { id, result, status, type }`
+    - `ImageGenerationCall object { id, result, status, 3 more }`
 
       An image generation request made by the model.
 
@@ -6976,6 +7088,38 @@ the `background` parameter set to `true` can be cancelled.
         The type of the image generation call. Always `image_generation_call`.
 
         - `"image_generation_call"`
+
+      - `quality: optional "low" or "medium" or "high" or 3 more or null`
+
+        The quality of the image generated by the image generation tool call. One of `low`, `medium`, `high`, `xhigh`, `max`, or `auto`.
+
+        - `"low"`
+
+        - `"medium"`
+
+        - `"high"`
+
+        - `"xhigh"`
+
+        - `"max"`
+
+        - `"auto"`
+
+      - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or null`
+
+        The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+        - `string`
+
+        - `"1024x1024" or "1024x1536" or "1536x1024"`
+
+          The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+
+          - `"1024x1024"`
+
+          - `"1024x1536"`
+
+          - `"1536x1024"`
 
     - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -7712,7 +7856,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            An image input to the model. Learn about [image inputs](/docs/guides/vision).
+            An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
           - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -7835,12 +7979,12 @@ the `background` parameter set to `true` can be cancelled.
     - `ToolChoiceTypes object { type }`
 
       Indicates that the model should use a built-in tool to generate a response.
-      [Learn more about built-in tools](/docs/guides/tools).
+      [Learn more about built-in tools](/api/docs/guides/tools).
 
       - `type: "file_search" or "web_search_preview" or "computer" or 5 more`
 
         The type of hosted tool the model should to use. Learn more about
-        [built-in tools](/docs/guides/tools).
+        [built-in tools](/api/docs/guides/tools).
 
         Allowed values are:
 
@@ -7950,21 +8094,21 @@ the `background` parameter set to `true` can be cancelled.
     We support the following categories of tools:
 
     - **Built-in tools**: Tools that are provided by OpenAI that extend the
-      model's capabilities, like [web search](/docs/guides/tools-web-search)
-      or [file search](/docs/guides/tools-file-search). Learn more about
-      [built-in tools](/docs/guides/tools).
+      model's capabilities, like [web search](/api/docs/guides/tools-web-search)
+      or [file search](/api/docs/guides/tools-file-search). Learn more about
+      [built-in tools](/api/docs/guides/tools).
     - **MCP Tools**: Integrations with third-party systems via custom MCP servers
       or predefined connectors such as Google Drive and SharePoint. Learn more about
-      [MCP Tools](/docs/guides/tools-connectors-mcp).
+      [MCP Tools](/api/docs/guides/tools-connectors-mcp).
     - **Function calls (custom tools)**: Functions that are defined by you,
       enabling the model to call your own code with strongly typed arguments
       and outputs. Learn more about
-      [function calling](/docs/guides/function-calling). You can also use
+      [function calling](/api/docs/guides/function-calling). You can also use
       custom tools to call your own code.
 
     - `Function object { name, parameters, strict, 6 more }`
 
-      Defines a function in your own code the model can choose to call. Learn more about [function calling](https://platform.openai.com/docs/guides/function-calling).
+      Defines a function in your own code the model can choose to call. Learn more about [function calling](/api/docs/guides/function-calling).
 
       - `name: string`
 
@@ -8008,7 +8152,7 @@ the `background` parameter set to `true` can be cancelled.
 
     - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-      A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://platform.openai.com/docs/guides/tools-file-search).
+      A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
       - `type: "file_search"`
 
@@ -8066,7 +8210,7 @@ the `background` parameter set to `true` can be cancelled.
 
     - `Computer object { type }`
 
-      A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+      A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
       - `type: "computer"`
 
@@ -8076,7 +8220,7 @@ the `background` parameter set to `true` can be cancelled.
 
     - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-      A tool that controls a virtual computer. Learn more about the [computer tool](https://platform.openai.com/docs/guides/tools-computer-use).
+      A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
       - `display_height: number`
 
@@ -8109,7 +8253,7 @@ the `background` parameter set to `true` can be cancelled.
     - `WebSearch object { type, external_web_access, filters, 2 more }`
 
       Search the Internet for sources related to the prompt. Learn more about the
-      [web search tool](/docs/guides/tools-web-search).
+      [web search tool](/api/docs/guides/tools-web-search).
 
       - `type: "web_search" or "web_search_2025_08_26"`
 
@@ -8173,7 +8317,7 @@ the `background` parameter set to `true` can be cancelled.
     - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
       Give the model access to additional tools via remote Model Context Protocol
-      (MCP) servers. [Learn more about MCP](/docs/guides/tools-remote-mcp).
+      (MCP) servers. [Learn more about MCP](/api/docs/guides/tools-connectors-mcp).
 
       - `server_label: string`
 
@@ -8225,7 +8369,7 @@ the `background` parameter set to `true` can be cancelled.
 
         Identifier for service connectors, like those available in ChatGPT. One of
         `server_url`, `connector_id`, or `tunnel_id` must be provided. Learn more
-        about service connectors [here](/docs/guides/tools-remote-mcp#connectors).
+        about service connectors [here](/api/docs/guides/tools-connectors-mcp#connectors).
 
         Currently supported `connector_id` values are:
 
@@ -8417,11 +8561,13 @@ the `background` parameter set to `true` can be cancelled.
 
       - `background: optional "transparent" or "opaque" or "auto"`
 
-        Set the background of the generated image. One of `transparent`,
-        `opaque`, or `auto`. Transparent backgrounds are available for
-        supported GPT Image models. For `gpt-image-2` and
-        `gpt-image-2-2026-04-21`, this support is in preview. When using
-        `transparent`, set the output format to `png` or `webp`. Default: `auto`.
+        Set the background of the generated image. One of `transparent`, `opaque`,
+        or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
+        their `2026-09-08` snapshots, support `opaque` and `transparent`
+        backgrounds. Transparent backgrounds are available for supported GPT Image
+        models. For `gpt-image-2` and `gpt-image-2-2026-04-21`, this support is in
+        preview. When using `transparent`, set the output format to `png` or `webp`.
+        Default: `auto`.
 
         - `"transparent"`
 
@@ -8450,20 +8596,24 @@ the `background` parameter set to `true` can be cancelled.
 
           Base64-encoded mask image.
 
-      - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+      - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
         The image generation model to use. One of `gpt-image-1`,
         `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-        `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+        `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+        `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+        `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
         `gpt-image-1`.
 
         - `string`
 
-        - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 2 more`
+        - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
           The image generation model to use. One of `gpt-image-1`,
           `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
-          `gpt-image-2-2026-04-21`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
+          `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
+          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
           `gpt-image-1`.
 
           - `"gpt-image-1"`
@@ -8475,6 +8625,14 @@ the `background` parameter set to `true` can be cancelled.
           - `"gpt-image-2"`
 
           - `"gpt-image-2-2026-04-21"`
+
+          - `"gpt-image-2.5-sunburst"`
+
+          - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+          - `"gpt-image-2.5-flare"`
+
+          - `"gpt-image-2.5-flare-2026-09-08"`
 
       - `moderation: optional "auto" or "low"`
 
@@ -8503,10 +8661,12 @@ the `background` parameter set to `true` can be cancelled.
 
         Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-      - `quality: optional "low" or "medium" or "high" or "auto"`
+      - `quality: optional "low" or "medium" or "high" or 3 more`
 
-        The quality of the generated image. One of `low`, `medium`, `high`,
-        or `auto`. Default: `auto`.
+        The quality of the generated image. The GPT image models support `low`,
+        `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
+        including their `2026-09-08` snapshots, also support `xhigh` and `max`.
+        Default: `auto`.
 
         - `"low"`
 
@@ -8514,17 +8674,21 @@ the `background` parameter set to `true` can be cancelled.
 
         - `"high"`
 
+        - `"xhigh"`
+
+        - `"max"`
+
         - `"auto"`
 
       - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
         - `string`
 
         - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2` and `gpt-image-2-2026-04-21`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
 
           - `"1024x1024"`
 
@@ -8572,7 +8736,7 @@ the `background` parameter set to `true` can be cancelled.
 
     - `Custom object { name, type, allowed_callers, 4 more }`
 
-      A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+      A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
       - `name: string`
 
@@ -8662,7 +8826,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `Custom object { name, type, allowed_callers, 4 more }`
 
-          A custom tool that processes input using a specified format. Learn more about   [custom tools](/docs/guides/function-calling#custom-tools)
+          A custom tool that processes input using a specified format. Learn more about   [custom tools](/api/docs/guides/function-calling#custom-tools)
 
           - `name: string`
 
@@ -8732,7 +8896,7 @@ the `background` parameter set to `true` can be cancelled.
 
     - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-      This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search).
+      This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
       - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -8814,7 +8978,7 @@ the `background` parameter set to `true` can be cancelled.
   - `background: optional boolean or null`
 
     Whether to run the model response in the background.
-    [Learn more](/docs/guides/background).
+    [Learn more](/api/docs/guides/background).
 
   - `completed_at: optional number or null`
 
@@ -8831,7 +8995,7 @@ the `background` parameter set to `true` can be cancelled.
 
   - `max_output_tokens: optional number or null`
 
-    An upper bound for the number of tokens that can be generated for a response, including visible output tokens and [reasoning tokens](/docs/guides/reasoning).
+    An upper bound for the number of tokens that can be generated for a response, including visible output tokens and [reasoning tokens](/api/docs/guides/reasoning).
 
   - `max_tool_calls: optional number or null`
 
@@ -8963,12 +9127,12 @@ the `background` parameter set to `true` can be cancelled.
 
     The unique ID of the previous response to the model. Use this to
     create multi-turn conversations. Learn more about
-    [conversation state](/docs/guides/conversation-state). Cannot be used in conjunction with `conversation`.
+    [conversation state](/api/docs/guides/conversation-state). Cannot be used in conjunction with `conversation`.
 
   - `prompt: optional ResponsePrompt or null`
 
     Reference to a prompt template and its variables.
-    [Learn more](/docs/guides/text?api-mode=responses#reusable-prompts).
+    [Learn more](/api/docs/guides/text?api-mode=responses#version-prompts-in-code).
 
     - `id: string`
 
@@ -8988,7 +9152,7 @@ the `background` parameter set to `true` can be cancelled.
 
       - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-        An image input to the model. Learn about [image inputs](/docs/guides/vision).
+        An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision).
 
       - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -9058,7 +9222,7 @@ the `background` parameter set to `true` can be cancelled.
 
   - `prompt_cache_key: optional string or null`
 
-    Used by OpenAI to cache responses for similar requests to optimize your cache hit rates. Replaces the `user` field. [Learn more](/docs/guides/prompt-caching).
+    Used by OpenAI to cache responses for similar requests to optimize your cache hit rates. Replaces the `user` field. [Learn more](/api/docs/guides/prompt-caching).
 
   - `prompt_cache_options: optional object { mode, ttl, comparison_response_id }`
 
@@ -9086,7 +9250,7 @@ the `background` parameter set to `true` can be cancelled.
 
     Deprecated. Use `prompt_cache_options.ttl` instead.
 
-    The retention policy for the prompt cache. Set to `24h` to enable extended prompt caching, which keeps cached prefixes active for longer, up to a maximum of 24 hours. [Learn more](/docs/guides/prompt-caching#prompt-cache-retention).
+    The retention policy for the prompt cache. Set to `24h` to enable extended prompt caching, which keeps cached prefixes active for longer, up to a maximum of 24 hours. [Learn more](/api/docs/guides/prompt-caching#prompt-cache-retention).
     This field expresses a maximum retention policy, while
     `prompt_cache_options.ttl` expresses a minimum cache lifetime. The two
     fields are independent and do not interact.
@@ -9104,7 +9268,7 @@ the `background` parameter set to `true` can be cancelled.
   - `reasoning: optional Reasoning or null`
 
     Configuration options for
-    [reasoning models](https://platform.openai.com/docs/guides/reasoning).
+    [reasoning models](/api/docs/guides/reasoning).
 
     - `context: optional "auto" or "current_turn" or "all_turns" or null`
 
@@ -9129,7 +9293,7 @@ the `background` parameter set to `true` can be cancelled.
       Reducing reasoning effort can result in faster responses and fewer tokens
       used on reasoning in a response. Not all reasoning models support every
       value. See the
-      [reasoning guide](https://platform.openai.com/docs/guides/reasoning)
+      [reasoning guide](/api/docs/guides/reasoning)
       for model-specific support.
 
     - `generate_summary: optional "auto" or "concise" or "detailed" or null`
@@ -9181,7 +9345,7 @@ the `background` parameter set to `true` can be cancelled.
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](/docs/guides/safety-best-practices#safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional ServiceTier or null`
 
@@ -9189,7 +9353,7 @@ the `background` parameter set to `true` can be cancelled.
 
     - If set to 'auto', then the request will be processed with the service tier configured in the Project settings. Unless otherwise configured, the Project will use 'default'.
     - If set to 'default', then the request will be processed with the standard pricing and performance for the selected model.
-    - If set to '[flex](/docs/guides/flex-processing)', then the request will be processed with the Flex Processing service tier.
+    - If set to '[flex](/api/docs/guides/flex-processing)', then the request will be processed with the Flex Processing service tier.
     - To opt-in to [Fast mode](/api/docs/guides/fast-mode) at the request level, include the `service_tier=fast` or `service_tier=priority` parameter for Responses or Chat Completions. The response will show `service_tier=priority` regardless of if you specify `service_tier=fast` or `priority` in your request.
     - If set to 'ultrafast', then the request will be processed with the access-controlled Ultrafast Processing service tier. This tier is currently available for `gpt-5.6-sol`; a response served through it will show `service_tier=ultrafast`.
     - When not set, the default behavior is 'auto'.
@@ -9232,8 +9396,8 @@ the `background` parameter set to `true` can be cancelled.
     Configuration options for a text response from the model. Can be plain
     text or structured JSON data. Learn more:
 
-    - [Text inputs and outputs](/docs/guides/text)
-    - [Structured Outputs](/docs/guides/structured-outputs)
+    - [Text inputs and outputs](/api/docs/guides/text)
+    - [Structured Outputs](/api/docs/guides/structured-outputs)
 
     - `format: optional ResponseFormatTextConfig`
 
@@ -9241,7 +9405,7 @@ the `background` parameter set to `true` can be cancelled.
 
       Configuring `{ "type": "json_schema" }` enables Structured Outputs,
       which ensures the model will match your supplied JSON schema. Learn more in the
-      [Structured Outputs guide](/docs/guides/structured-outputs).
+      [Structured Outputs guide](/api/docs/guides/structured-outputs).
 
       The default format is `{ "type": "text" }` with no additional options.
 
@@ -9264,7 +9428,7 @@ the `background` parameter set to `true` can be cancelled.
       - `ResponseFormatTextJSONSchemaConfig object { name, schema, type, 2 more }`
 
         JSON Schema response format. Used to generate structured JSON responses.
-        Learn more about [Structured Outputs](/docs/guides/structured-outputs).
+        Learn more about [Structured Outputs](/api/docs/guides/structured-outputs).
 
         - `name: string`
 
@@ -9293,7 +9457,7 @@ the `background` parameter set to `true` can be cancelled.
           If set to true, the model will always follow the exact schema defined
           in the `schema` field. Only a subset of JSON Schema is supported when
           `strict` is `true`. To learn more, read the [Structured Outputs
-          guide](/docs/guides/structured-outputs).
+          guide](/api/docs/guides/structured-outputs).
 
       - `ResponseFormatJSONObject object { type }`
 
@@ -9362,7 +9526,7 @@ the `background` parameter set to `true` can be cancelled.
       - `cached_tokens: number`
 
         The number of tokens that were retrieved from the cache.
-        [More on prompt caching](/docs/guides/prompt-caching).
+        [More on prompt caching](/api/docs/guides/prompt-caching).
 
     - `output_tokens: number`
 
@@ -9384,7 +9548,7 @@ the `background` parameter set to `true` can be cancelled.
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
-    Used to boost cache hit rates by better bucketing similar requests and  to help OpenAI detect and prevent abuse. [Learn more](/docs/guides/safety-best-practices#safety-identifiers).
+    Used to boost cache hit rates by better bucketing similar requests and  to help OpenAI detect and prevent abuse. [Learn more](/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
 ### Example
 
