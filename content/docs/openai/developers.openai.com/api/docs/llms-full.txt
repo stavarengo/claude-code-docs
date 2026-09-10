@@ -3173,12 +3173,16 @@ They work by directly modifying the logits (un-normalized log-probabilities) wit
 mu[j] = mu[j] - c[j] * alpha_frequency - float(c[j] > 0) * alpha_presence
 ```
 
+```ruby
+mu[j] = mu[j] - c[j] * alpha_frequency - ((c[j] > 0) ? alpha_presence : 0.0)
+```
+
 
 Where:
 
 - `mu[j]` is the logits of the j-th token
 - `c[j]` is how often that token was sampled prior to the current position
-- `float(c[j] > 0)` is 1 if `c[j] > 0` and 0 otherwise
+- The presence penalty subtracts `alpha_presence` if `c[j] > 0` and 0 otherwise
 - `alpha_frequency` is the frequency penalty coefficient
 - `alpha_presence` is the presence penalty coefficient
 
@@ -3644,7 +3648,7 @@ For example, an Agents SDK workflow might investigate a support request, hand it
 | [Use Multi-agent for parallel work](#use-multi-agent-for-parallel-work)         | Quality, cost, latency              |
 | [Leverage built-in tools](#leverage-built-in-tools)                             | Quality                             |
 | [Leverage compaction](#leverage-compaction)                                     | Cost                                |
-| [Use `prompt_cache_key`](#use-promptcachekey)                                   | Latency, cost                       |
+| [Optimize prompt caching](#optimize-prompt-caching)                             | Latency, cost                       |
 | [Use `reasoning.encrypted_content`](#use-reasoningencryptedcontent)             | Quality, latency                    |
 | [Set image detail intentionally](#set-image-detail-intentionally)               | Quality, cost, latency              |
 | [Send a safety identifier](#send-a-safety-identifier)                           | Safety, reliability                 |
@@ -4664,36 +4668,39 @@ puts(response.output_text)
 ```
 
 
-## Use `prompt_cache_key`
+<a id="use-promptcachekey"></a>
+
+<a id="separate-prompts-with-promptcachekey"></a>
+
+## Optimize prompt caching
 
 [Prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching) automatically reduces latency
-and cost when requests reuse the same long prefix. For high-volume workflows,
-set
-[`prompt_cache_key`](https://developers.openai.com/api/reference/resources/responses/methods/create#responses-create-prompt_cache_key)
-consistently for requests that share the same stable prefix. The service
-combines the key with the prompt prefix hash to help route similar requests to
-the same cache without changing the model input. Keep the key stable for
-genuinely shared prefixes, choose a granularity that avoids sending too much
-traffic to one key, and keep total traffic across the prefixes for each key to
-about 15 requests per minute. Partition higher-volume traffic across more keys
-with a stable mapping.
+and cost when requests reuse the same long prefix. Put stable instructions,
+examples, and reference material first, followed by dynamic user-specific
+content. Keep tool definitions and ordering stable, and append new conversation
+turns without rewriting earlier context.
 
 GPT-5.6 introduced explicit prompt caching. Implicit caching remains the
 default, but GPT-5.6 models and later model families also support explicit
-cache breakpoints and request-wide cache policy. On those models, set
-`prompt_cache_key` to use the more reliable matching for both implicit caching
-and explicit breakpoints. If a changing suffix comes after a stable prefix, add
-an explicit `prompt_cache_breakpoint` at the reusable boundary. Set
+cache breakpoints and request-wide cache policy. If a changing suffix comes
+after a stable prefix, add an explicit `prompt_cache_breakpoint` at the reusable boundary. Set
 `prompt_cache_options.mode` to `explicit` only when the request should use only
 the breakpoints you provide and no implicit breakpoint. Earlier models continue
 to use automatic prompt caching only.
 
 On GPT-5.6 models and later model families, cache writes cost 1.25× the
 uncached input token rate. Log `cached_tokens` and `cache_write_tokens`, then
-compare write volume with later cache reads to measure net cost and tune key
-granularity and breakpoint placement.
+compare write volume with later cache reads to measure net cost and tune
+breakpoint placement.
 
-Route related requests to the same prompt cache
+Use an optional `prompt_cache_key` to maintain separate cache accounting for
+customers, users, or workspaces. This can make cached token usage and billing
+easier to explain for each group. Assign a distinct key to each customer and
+keep it stable across that customer's related requests. Separate keys also help
+prevent cache-hit probing across customers. See [Separate cache accounting with
+keys](https://developers.openai.com/api/docs/guides/prompt-caching#separate-prompts-with-cache-keys).
+
+Maintain separate cache accounting for a customer
 
 ```javascript
 import OpenAI from "openai";
@@ -5328,6 +5335,7 @@ only stored in memory.
 
 The Python sample uses `pip install "openai[realtime]>=3.8.0"`.
 The JavaScript sample uses `npm install openai@^7.10.0 ws`.
+The Ruby sample uses `gem install async-websocket`.
 
 Start a Responses API WebSocket session
 
@@ -5406,6 +5414,52 @@ with client.responses.connect() as connection:
     )
     first_event = connection.recv()
     print(first_event.type)
+```
+
+```ruby
+require "async"
+require "async/http/endpoint"
+require "async/websocket/client"
+require "json"
+
+def wait_for_response(connection)
+  while (message = connection.read)
+    event = JSON.parse(message.to_str)
+    case event.fetch("type")
+    when "response.completed" then return event.fetch("response")
+    when "response.failed", "response.incomplete", "error"
+      raise "Response failed: #{JSON.generate(event)}"
+    end
+  end
+  raise "Connection closed before the response finished"
+end
+
+test_log_tool = {
+  type: "function", name: "search_test_logs", description: "Search test logs.",
+  parameters: {type: "object", properties: {query: {type: "string"}}, required: ["query"], additionalProperties: false},
+  strict: true
+}
+code_search_tool = {
+  type: "function", name: "search_code", description: "Search source code.",
+  parameters: {type: "object", properties: {query: {type: "string"}}, required: ["query"], additionalProperties: false},
+  strict: true
+}
+
+endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/responses", timeout: 10, alpn_protocols: ["http/1.1"])
+headers = {"Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}"}
+Sync do |task|
+  task.with_timeout(120) do
+    Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|
+      connection.write(JSON.generate(
+        type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
+        input: [{role: "user", content: "Find the flaky test in this run, call the tools you need, and keep going until you can explain the root cause."}],
+        tools: [test_log_tool, code_search_tool]
+      ))
+      connection.flush
+      puts(JSON.pretty_generate(wait_for_response(connection).fetch("output")))
+    end
+  end
+end
 ```
 
 
@@ -8658,9 +8712,7 @@ authenticate your application's users and pass a unique identifier for them in t
 
 1. On your server, generate a client token.
 
-   This snippet spins up a FastAPI service whose sole job is to create a new ChatKit session through the OpenAI API and hand back the session's client secret:
-
-   server.py
+   This example starts a service that creates a ChatKit session through the OpenAI API and returns the session's client secret:
 
 ```python
 import hmac
@@ -8724,6 +8776,66 @@ def create_chatkit_session(
     return {"client_secret": session.client_secret}
 ```
 
+```ruby
+require "json"
+require "net/http"
+require "openssl"
+require "webrick"
+
+api_key = ENV.fetch("OPENAI_API_KEY")
+workflow_id = ENV.fetch("OPENAI_CHATKIT_WORKFLOW_ID")
+# Demo authentication mapping. Replace this with your application's session authentication.
+authenticated_users = JSON.parse(ENV.fetch("CHATKIT_AUTHENTICATED_USERS"))
+server = WEBrick::HTTPServer.new(
+  BindAddress: "127.0.0.1", Port: Integer(ENV.fetch("PORT", "8000")),
+  AccessLog: [], Logger: WEBrick::Log.new($stderr, WEBrick::BasicLog::WARN)
+)
+server.mount_proc("/api/chatkit/session") do |request, response|
+  response["Content-Type"] = "application/json"
+  response["Cache-Control"] = "no-store"
+  unless request.path == "/api/chatkit/session" && request.request_method == "POST"
+    response.status = 405
+    response.body = JSON.generate(error: "Use POST /api/chatkit/session")
+    next
+  end
+  token = request["Authorization"].to_s.delete_prefix("Bearer ")
+  user = authenticated_users.find do |credential, _id|
+    request["Authorization"].to_s.start_with?("Bearer ") &&
+      OpenSSL.secure_compare(credential, token)
+  end
+  unless user
+    response.status = 401
+    response.body = JSON.generate(error: "Invalid authentication token")
+    next
+  end
+  uri = URI("https://api.openai.com/v1/chatkit/sessions")
+  upstream = Net::HTTP::Post.new(uri)
+  upstream["Authorization"] = "Bearer #{api_key}"
+  upstream["Content-Type"] = "application/json"
+  upstream["OpenAI-Beta"] = "chatkit_beta=v1"
+  upstream.body = JSON.generate(workflow: {id: workflow_id}, user: user.fetch(1))
+  begin
+    result = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true, open_timeout: 10, read_timeout: 30) do |http|
+      http.request(upstream)
+    end
+    result.value
+    secret = JSON.parse(result.body).fetch("client_secret")
+    raise "Missing session secret" unless secret.is_a?(String) && !secret.empty?
+    response.body = JSON.generate(client_secret: secret)
+  rescue
+    response.status = 502
+    response.body = JSON.generate(error: "Unable to create a ChatKit session")
+  end
+end
+trap("INT") { server.shutdown }
+trap("TERM") { server.shutdown }
+puts("http://127.0.0.1:#{server.config[:Port]}/api/chatkit/session")
+$stdout.flush
+server.start
+```
+
+
+   For Ruby, install WEBrick with `gem install webrick`.
 
    Before starting the service, set `OPENAI_API_KEY`, `OPENAI_CHATKIT_WORKFLOW_ID`, and `CHATKIT_AUTHENTICATED_USERS`. The last value is a JSON map from your application's bearer tokens to stable user IDs. In production, replace this environment-backed map with your application's authentication or session lookup.
 
@@ -11506,7 +11618,7 @@ Use the app's README for installation, desktop permissions, and supported enviro
 
 ### Connect your own runtime
 
-The following example shows the API loop for a runtime you provide. Python uses PyAutoGUI to operate a desktop; JavaScript uses Playwright to operate a browser. Both expose an ordinary function tool and return text or images with the original `call_id`.
+The following example shows the API loop for a runtime you provide. Python and Ruby send Python code to a desktop runtime that uses PyAutoGUI; JavaScript uses Playwright to operate a browser. Each client exposes an ordinary function tool and returns text or images with the original `call_id`.
 
 The `execute_in_sandbox` or `executeInSandbox` helper sends code to your execution environment and returns its observations. It must preserve the browser or desktop session, enforce execution limits, and apply your permission rules. These are integration examples, separate from running the sample app.
 
@@ -11675,6 +11787,56 @@ text with console.log(). The context viewport is 1440x900.`,
     previousResponseId = response.id;
   }
 }
+```
+
+  
+
+  
+
+    
+Ruby
+
+    Run computer use with code execution
+
+```ruby
+require "json"
+require "openai"
+require "securerandom"
+
+def run_computer_use(endpoint, prompt)
+  client = OpenAI::Client.new
+  session_id = SecureRandom.uuid
+  tools = [{
+    type: :function, name: "exec_py",
+    description: "Run Python in a persistent desktop. Variables persist across calls. PyAutoGUI operations are synchronous. Available: pyautogui, time, log(value), and display(PIL_image). Inspect the screen with display(pyautogui.screenshot()) before acting. Use screenshot coordinates and check the screen after a short group of actions. Keep screenshots in memory and PyAutoGUI's fail-safe enabled.",
+    parameters: {type: :object, properties: {code: {type: :string}}, required: ["code"], additionalProperties: false},
+    strict: true
+  }]
+  next_input = []
+  next_input << {role: :user, content: prompt}
+  history = {}
+  20.times do |turn|
+    response = client.responses.create(
+      model: "gpt-6-astra", tools: tools, input: next_input, previous_response_id: history[:id]
+    )
+    raise "Response stopped with status: #{response.status}" unless response.status == OpenAI::Responses::ResponseStatus::COMPLETED
+    calls = response.output.grep(OpenAI::Responses::ResponseFunctionToolCall)
+    if calls.empty? && response.output.any? { |item| item.is_a?(OpenAI::Responses::ResponseOutputMessage) && item.phase != :commentary }
+      puts(response.output_text)
+      return response
+    end
+    raise "The task reached the 20-response limit" if turn == 19
+    next_input.clear
+    calls.each do |call|
+      raise "Unexpected tool: #{call.name}" unless call.name == "exec_py"
+      code = JSON.parse(call.arguments).fetch("code")
+      raise "Expected Python source text" unless code.is_a?(String)
+      output = execute_in_sandbox(code, session_id, endpoint)
+      next_input << {type: :function_call_output, call_id: call.call_id, output: output}
+    end
+    history[:id] = response.id
+  end
+end
 ```
 
 
@@ -14058,6 +14220,41 @@ def execute_in_sandbox(
             continue
         raise ValueError("Expected input_text or an input_image with original detail.")
     return observations
+```
+
+```ruby
+require "net/http"
+
+def execute_in_sandbox(code, session_id, endpoint)
+  puts(code)
+  print("Run this code in the isolated runtime? Type yes: ")
+  unless $stdin.gets&.strip == "yes"
+    return [{type: "input_text", text: "The user declined this execution."}]
+  end
+  uri = URI(endpoint)
+  request = Net::HTTP::Post.new(uri)
+  request["Content-Type"] = "application/json"
+  token = ENV["OPENAI_EXAMPLE_CODE_EXECUTION_TOKEN"]
+  request["Authorization"] = "Bearer #{token}" if token
+  request.body = JSON.generate(session_id: session_id, language: "python", code: code)
+  response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == "https", open_timeout: 10, read_timeout: 30) do |http|
+    http.request(request)
+  end
+  response.value
+  payload = JSON.parse(response.body)
+  output = payload.is_a?(Hash) && payload["output"]
+  raise "The execution service returned no observations" unless output.is_a?(Array) && !output.empty?
+  output.map do |item|
+    raise "Invalid execution-service output item" unless item.is_a?(Hash)
+    if item["type"] == "input_text" && item["text"].is_a?(String)
+      {type: "input_text", text: item["text"]}
+    elsif item["type"] == "input_image" && item["image_url"].is_a?(String) && item["detail"] == "original"
+      {type: "input_image", image_url: item["image_url"], detail: "original"}
+    else
+      raise "Expected input_text or input_image with original detail"
+    end
+  end
+end
 ```
 
 
@@ -34310,6 +34507,36 @@ response = requests.post(
 print("run response:", response.text)
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+grader = {
+  "type" => "score_model",
+  "name" => "my_score_model",
+  "input" => [{
+    "role" => "system",
+    "content" => "You are an expert grader. If the reference and model answer are exact matches, output a score of 1. If they are somewhat similar in meaning, output a score in 0.5. Otherwise, give a score of 0."
+  }, {
+    "role" => "user",
+    "content" => "Reference: {{ item.reference_answer }}. Model answer: {{ sample.output_text }}"
+  }],
+  "pass_threshold" => 0.5,
+  "model" => "o4-mini-2025-04-16",
+  "range" => [0, 1],
+  "sampling_params" => {
+    "max_completions_tokens" => 32768,
+    "top_p" => 1,
+    "reasoning_effort" => "medium"
+  }
+}
+item = {reference_answer: 1.0}
+model_sample = "0.9"
+
+pp(client.fine_tuning.alpha.graders.validate(grader: grader))
+pp(client.fine_tuning.alpha.graders.run(grader: grader, item: item, model_sample: model_sample))
+```
+
 
 #### Score model grader outputs
 
@@ -34419,7 +34646,7 @@ The second argument supplied is a dictionary populated with input grading contex
 }
 ```
 
-Here's a working example:
+Here's a working example. For Ruby, save the `grade` function shown above, including its import, as `grader.py`. Set `OPENAI_GRADER_SOURCE_PATH` to that file's path before running the example. The supplied function returns `1.0`; replace its body with your grading logic.
 
 ```python
 import os
@@ -34464,6 +34691,19 @@ response = requests.post(
 )
 print("run request_id:", response.headers["x-request-id"])
 print("run response:", response.text)
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+# Set OPENAI_GRADER_SOURCE_PATH to the Python grader file to upload.
+grader = {type: :python, source: File.read(ENV.fetch("OPENAI_GRADER_SOURCE_PATH"))}
+item = {reference_answer: "fuzzy wuzzy had no hair"}
+model_sample = "fuzzy wuzzy was a bear"
+
+pp(client.fine_tuning.alpha.graders.validate(grader: grader))
+pp(client.fine_tuning.alpha.graders.run(grader: grader, item: item, model_sample: model_sample))
 ```
 
 
@@ -40869,11 +41109,11 @@ Example outputs:
 
 This runnable example remains pinned to `gpt-image-2`. Use it as a baseline, then choose an available model and its supported request settings for your evaluation.
 
-The Python example below generates four logo variations and extracts a product onto a transparent background. Install the [OpenAI Python SDK](https://developers.openai.com/api/docs/libraries#install-an-official-sdk), set `OPENAI_API_KEY`, and save the [product photograph](https://developers.openai.com/images/platform/guides/image-prompting/shampoo.webp) as `input_images/shampoo.webp`. Live requests incur API usage charges.
+The examples below generate four logo variations and extract a product onto a transparent background. Install the [OpenAI SDK](https://developers.openai.com/api/docs/libraries#install-an-official-sdk) with `pip install openai` for Python or `gem install openai` for Ruby. Set `OPENAI_API_KEY` and save the [product photograph](https://developers.openai.com/images/platform/guides/image-prompting/shampoo.webp) as `input_images/shampoo.webp`. Live requests incur API usage charges.
 
 
 
-### View the Python example
+### View the complete example
 
 
   Generate and edit transparent assets
@@ -40934,6 +41174,28 @@ result = client.images.edit(
 Path("extract-product-gpt-image-2.png").write_bytes(
     base64.b64decode(result.data[0].b64_json)
 )
+```
+
+```ruby
+require "base64"
+require "openai"
+require "pathname"
+
+client = OpenAI::Client.new
+result = client.images.generate(
+  model: "gpt-image-2",
+  prompt: "Create an original logo for Field & Flour, a local bakery. Use warm, simple shapes on a fully transparent background, with clean alpha edges and no shadow or checkerboard.",
+  size: "1024x1536", quality: :medium, background: :transparent, output_format: :png, n: 4
+)
+Array(result.data).each_with_index do |item, index|
+  File.binwrite("logo-generation-#{index + 1}-gpt-image-2.png", Base64.strict_decode64(item.b64_json || raise("No PNG returned")))
+end
+result = client.images.edit(
+  model: "gpt-image-2", image: OpenAI::FilePart.new(Pathname("input_images/shampoo.webp"), content_type: "image/webp"),
+  prompt: "Extract the product onto a fully transparent background. Preserve its geometry and label, with clean edges and no shadow or restyling.",
+  size: "1024x1536", quality: :medium, background: :transparent, output_format: :png
+)
+File.binwrite("extract-product-gpt-image-2.png", Base64.strict_decode64(Array(result.data).fetch(0).b64_json || raise("No PNG returned")))
 ```
 
 
@@ -47596,6 +47858,60 @@ async Task<JsonDocument> ReceiveAsync()
 }
 ```
 
+```ruby
+require "async"
+require "async/http/endpoint"
+require "async/websocket/client"
+require "json"
+
+endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/responses", timeout: 10, alpn_protocols: ["http/1.1"])
+headers = {"Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}"}
+Sync do |task|
+  task.with_timeout(120) do
+    Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|
+      connection.write(JSON.generate(
+        type: "response.create", model: "gpt-6-astra", reasoning: {effort: "medium"},
+        input: "Draft a project plan for building a task-tracking app."
+      ))
+      connection.flush
+      state = {}
+      while (message = connection.read)
+        event = JSON.parse(message.to_str)
+        response = event["response"]
+        case event.fetch("type")
+        when "response.created"
+          if !state[:initial_id]
+            state[:initial_id] = response.fetch("id")
+            connection.write(JSON.generate(
+              type: "response.steer", previous_response_id: state[:initial_id],
+              input: "Keep the scope small enough for one developer to finish in two weeks."
+            ))
+            connection.flush
+          else
+            state[:successor_id] = response.fetch("id")
+          end
+        when "response.steer.failed", "response.failed", "error"
+          raise "Steering failed: #{JSON.generate(event)}"
+        when "response.incomplete"
+          unless response.fetch("id") == state[:initial_id] && response.dig("incomplete_details", "reason") == "steered"
+            raise "Response incomplete: #{JSON.generate(event)}"
+          end
+        when "response.completed"
+          next unless state[:successor_id] && response.fetch("id") == state[:successor_id]
+          response.fetch("output").each do |item|
+            next unless item["type"] == "message"
+            item.fetch("content").each { |part| puts(part.fetch("text")) if part["type"] == "output_text" }
+          end
+          state[:completed] = true
+          break
+        end
+      end
+      raise "Connection closed before the steered response finished" unless state[:completed]
+    end
+  end
+end
+```
+
 
 The example sends the update after the first `response.created` event. In your application, send it when a user supplies an update. Use the continuation's ID for new steering once its `response.created` event arrives.
 
@@ -48376,6 +48692,68 @@ of model actions. A `message` is a type of Item, as is a `function_call` or `fun
 many concerns are glued together into one object, Items are distinct from one another and better represent the basic unit of model context.
 
 Additionally, Chat Completions can return multiple parallel generations as `choices`, using the `n` param. In Responses, we've removed this param, leaving only one generation.
+
+
+
+  Chat Completions API
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+completion = client.chat.completions.create(
+    model="gpt-6-astra",
+    messages=[
+        {
+            "role": "user",
+            "content": "Write a one-sentence bedtime story about a unicorn.",
+        }
+    ],
+)
+
+print(completion.choices[0].message.content)
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+completion = client.chat.completions.create(
+  model: "gpt-6-astra",
+  messages: [{role: :user, content: "Write a one-sentence bedtime story about a unicorn."}]
+)
+puts(completion.choices.fetch(0).message.content)
+```
+
+  Responses API
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+response = client.responses.create(
+    model="gpt-6-astra",
+    input="Write a one-sentence bedtime story about a unicorn.",
+)
+
+print(response.output_text)
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-6-astra",
+  input: "Write a one-sentence bedtime story about a unicorn."
+)
+puts(response.output_text)
+```
+
+
+
 
 When you get a response back from the Responses API, the fields differ slightly.
 Instead of a `message`, you receive a typed `response` object with its own `id`.
@@ -53220,59 +53598,51 @@ Define global variables for use across the workflow. Useful for when an agent ta
 
 # OpenAI models in Amazon Bedrock
 
-Amazon Bedrock makes supported OpenAI models available through AWS-managed
-infrastructure. This deployment path is useful when your organization wants to
-keep procurement, identity, regional controls, and related cloud operations in
-AWS.
+Amazon Bedrock runs supported OpenAI models on AWS-managed infrastructure.
+Use this guide to compare [OpenAI API feature support](#responses-api-feature-availability)
+and connect with the OpenAI SDK. For deployment configuration, use the
+[AWS documentation](#availability-and-operations) linked from this page.
 
-Amazon Bedrock availability differs from the OpenAI API. Confirm the supported
-  model, AWS Region, feature set, and pricing path for your workload before you
-  deploy.
+Model capabilities and API compatibility determine what your application can
+  do. AWS manages model access, regional availability, routing, billing, and
+  operational controls for your Bedrock deployment.
 
 ## How Bedrock availability works
 
-OpenAI models in Amazon Bedrock run through an AWS-managed deployment path with
-Responses API compatibility for supported models and capabilities.
-Your application still uses OpenAI model behavior, but AWS owns the surrounding
-cloud control plane, including account access, regional availability, and
-billing.
+OpenAI models are available through two Amazon Bedrock endpoints:
+`bedrock-runtime` and `bedrock-mantle`. Both support the OpenAI-compatible
+Responses and Chat Completions APIs for supported models, but their feature
+coverage differs.
 
-Use Bedrock when you need:
+Choose your endpoint based on the capabilities your application needs. For
+example, hosted web search currently requires Mantle. See the
+[endpoint differences](#endpoint-differences) on this page and the AWS [endpoint comparison](https://docs.aws.amazon.com/bedrock/latest/userguide/endpoints.html) for Bedrock-specific capabilities and endpoint selection.
 
-- AWS-native procurement and billing.
-- AWS-managed identity, access, and account controls.
-- Deployment in supported AWS Regions for customers with cloud-location
-  requirements.
+GPT-6 Astra is available through Bedrock Runtime and through Mantle in
+  `us-west-2` (Oregon). The examples in this guide use GPT-5.6 Sol in
+  `us-east-2`; select Astra's supported Region before changing the model.
 
-Use the OpenAI API directly when you need the broadest feature coverage, the
-latest first-party platform capabilities, or functionality unavailable in
-Bedrock.
+For access and setup, see the AWS [GPT-6 Astra announcement](https://aws.amazon.com/blogs/machine-learning/take-on-your-most-ambitious-work-with-gpt-6-astra-on-amazon-bedrock/) and [Runtime endpoint instructions](https://docs.aws.amazon.com/bedrock/latest/userguide/bedrock-mantle.html).
 
 ## Make Responses API requests
 
-To send OpenAI SDK requests through Amazon Bedrock, configure your client for
-the AWS Region and model ID for your deployment:
+These examples use the OpenAI SDK with the Mantle endpoint. Select the AWS
+Region and model ID for your deployment:
 
 - Client libraries with a Bedrock provider derive a regional Mantle base URL
   from the AWS Region. The JavaScript, Python, Go, and Java providers use
   `https://bedrock-mantle.us-east-2.api.aws/openai/v1` for this guide's
   `us-east-2` examples. The Ruby examples configure this `/openai/v1`
   endpoint directly because the provider's default `/v1` route doesn't
-  support this model. The .NET SDK also configures the endpoint directly
-  because it doesn't include a Bedrock provider.
+  support this model.
 - Use a Bedrock model ID with the `openai.` prefix, such as
   `openai.gpt-5.6-sol`.
 
-This example uses `openai.gpt-5.6-sol` in `us-east-2`. Use a supported model and
-AWS Region combination for your Bedrock deployment.
+The examples use `openai.gpt-5.6-sol` in `us-east-2`. For Runtime, follow the AWS [Responses API endpoint instructions](https://docs.aws.amazon.com/bedrock/latest/userguide/bedrock-mantle.html) to select the base URL and inference profile. Do not reuse a Mantle model ID
+without checking the Runtime requirements.
 
 The following example uses a Bedrock API key stored as
-`AWS_BEARER_TOKEN_BEDROCK`. See
-[Amazon Bedrock API keys](https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys.html)
-for information about generating and using a Bedrock API key. Each example
-passes the token from your environment to its language's Bedrock provider, or
-for .NET, to the regional OpenAI-compatible endpoint. The .NET SDK doesn't
-currently include a Bedrock provider.
+`AWS_BEARER_TOKEN_BEDROCK`. See [Amazon Bedrock API keys](https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys.html) for information about generating and using a Bedrock API key.
 
 Install the optional Java Bedrock provider before using either Java example:
 
@@ -53602,145 +53972,132 @@ puts(response.output_text)
 ```
 
 
+## Responses API feature availability
+
+Use this matrix to identify differences from the OpenAI API. Availability is
+specific to the model and endpoint; a supported API does not imply support for
+every tool or response mode.
+
+| Capability                | OpenAI API                    | Amazon Bedrock                |
+| ------------------------- | ----------------------------- | ----------------------------- |
+| Text generation           | Available                     | Available                     |
+| Image input               | Available                     | Available                     |
+| File input                | Available                     | Available                     |
+| Structured outputs        | Available                     | Available                     |
+| Function calling          | Available                     | Available                     |
+| Asynchronous tool calling | Available on supported models | Not available                 |
+| Streaming responses       | Available                     | Available                     |
+| WebSocket connections     | Available                     | Not available                 |
+| Mid-turn steering         | Available on supported models | Not available                 |
+| Context window            | Model-dependent               | Model-dependent               |
+| Reasoning effort          | Available                     | Available                     |
+| Reasoning updates         | Available on supported models | Not available                 |
+| Pro mode                  | Available on supported models | Not available                 |
+| Persisted reasoning       | Available on supported models | Available on supported models |
+| Prompt caching            | Available                     | Available                     |
+| Programmatic Tool Calling | Available on supported models | Not available                 |
+| Multi-agent               | Beta on supported models      | Not available                 |
+| Custom tools              | Available                     | Available                     |
+| Client-side `tool_search` | Available                     | Available                     |
+| Hosted web search         | Available                     | Mantle only                   |
+| Hosted file search        | Available                     | Not available                 |
+| Computer use              | Available                     | Available                     |
+| Shell tool                | Available                     | Not available                 |
+| Image generation tool     | Available                     | Not available                 |
+| Remote MCP servers        | Available                     | Not available                 |
+
+Asynchronous tool calling (`async: true`) and reasoning updates
+(`configuration_update` input items) are not supported on Amazon Bedrock.
+Mid-turn steering requires WebSockets and is not available through either
+Bedrock endpoint.
+
+Client-side `tool_search` is distinct from hosted tools and remote MCP server
+support. Hosted web search is available through Mantle; hosted file search and
+remote MCP servers are unavailable.
+
+Computer use is available on Runtime and Mantle for supported models. Your
+application executes computer actions and returns results to the model; this
+capability does not require a Bedrock-hosted execution environment.
+
+On Amazon Bedrock, GPT-5.4 and GPT-5.5 support a 1-million-token context window;
+GPT-5.6 Sol, Terra, Luna, and GPT-6 Astra support 1,050,000 tokens. Check the AWS [OpenAI model cards](https://docs.aws.amazon.com/bedrock/latest/userguide/model-cards-openai.html) for model-specific limits.
+
+### Endpoint differences
+
+These Responses API differences apply when choosing between Runtime and Mantle:
+
+| Capability                             | Bedrock Runtime                  | Mantle                                                                      |
+| -------------------------------------- | -------------------------------- | --------------------------------------------------------------------------- |
+| GPT-6 Astra                            | Available                        | Available in `us-west-2` (Oregon)                                           |
+| Computer use                           | Available on supported models    | Available on supported models                                               |
+| Streaming responses                    | Available                        | Available                                                                   |
+| Background mode (`background: true`)   | Not available                    | Available, subject to [data retention settings](#data-access-and-retention) |
+| Hosted web search                      | Not available                    | Available on supported models                                               |
+| Continuing with `previous_response_id` | Include `model` on every request | The model can be inherited from the previous response                       |
+
+Runtime requires `model` even when you supply `previous_response_id`. Background
+mode is separate from streaming and does not describe asynchronous function
+calling. Use the AWS [Responses API documentation](https://docs.aws.amazon.com/bedrock/latest/userguide/bedrock-mantle.html) for the complete endpoint contract. For web search permissions and
+configuration, see the AWS [web search guide](https://docs.aws.amazon.com/bedrock/latest/userguide/web-search.html).
+
 ## Availability and operations
 
-Availability depends on AWS Region and model. The initial launch scope is more
-limited than the OpenAI API, so check [model support by AWS
-Region](https://docs.aws.amazon.com/bedrock/latest/userguide/models-region-compatibility.html)
-before rollout.
+AWS maintains the deployment options and availability for Amazon Bedrock. Use
+these references to select and configure your deployment:
 
-Amazon Bedrock provides Responses API-compatible inference for supported OpenAI
-models in supported AWS Regions. AWS manages authentication, account access,
-procurement, and billing.
+| AWS-managed concern                           | AWS documentation                                                                                                                                                                                                                                                                                                                          |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Model IDs and supported APIs                  | [OpenAI model cards](https://docs.aws.amazon.com/bedrock/latest/userguide/model-cards-openai.html)                                                                                                                                                                                    |
+| Model and endpoint availability by AWS Region | [Model availability](https://docs.aws.amazon.com/bedrock/latest/userguide/models-region-compatibility.html) and [endpoint availability](https://docs.aws.amazon.com/bedrock/latest/userguide/endpoints-region-availability.html) |
+| Geographic and global request routing         | [Cross-Region inference](https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html)                                                                                                                                                                            |
+| Account quotas and increase requests          | [Amazon Bedrock quotas](https://docs.aws.amazon.com/bedrock/latest/userguide/quotas.html)                                                                                                                                                                                             |
 
-AWS Regions are physical deployment locations, which differ from OpenAI data
-residency jurisdictions. Teams with residency requirements should evaluate the
-Bedrock Region itself and the corresponding AWS terms.
+An AWS Region is not an OpenAI data residency jurisdiction. If your workload has
+location requirements, review the destination Regions of your inference profile
+and the applicable AWS terms, not only the Region in your endpoint URL.
 
 ## Data access and retention
 
 Amazon Bedrock uses separate controls for operator access and data retention:
 
-- **[Zero operator access (ZOA)](https://aws.amazon.com/blogs/machine-learning/exploring-the-zero-operator-access-design-of-mantle/)**
-  means AWS operators have no technical mechanism to sign in to Mantle's
-  underlying compute systems or access customer data, including inference
-  prompts and completions.
-- **[Zero data retention (ZDR)](https://docs.aws.amazon.com/bedrock/latest/userguide/data-retention.html)**
-  means AWS does not write model inputs or outputs to durable storage when the
-  effective retention mode is `none`.
+- **Zero operator access (ZOA)** means AWS operators have no technical mechanism
+  to sign in to Mantle's underlying compute systems or access customer data
+  there. See the AWS [ZOA design](https://aws.amazon.com/blogs/machine-learning/exploring-the-zero-operator-access-design-of-mantle/).
+- **Zero data retention (ZDR)** means AWS does not write request or response data
+  to durable storage when the effective retention mode is `none`.
+
+Setting `store: false` does not guarantee ZDR. For Responses API requests with an
+effective retention mode of `none`, AWS rejects `store: true`, and background
+mode is unavailable.
 
 For OpenAI models in Amazon Bedrock, AWS does not share request or response
 content with OpenAI when the effective retention mode is `default` or `none`.
-
-[Configure Bedrock data
-retention](https://docs.aws.amazon.com/bedrock/latest/userguide/data-retention.html#data-retention-configuration)
-for your AWS account or project.
-
-Under the `default` retention mode, retention depends on the model and request
-settings. For specific OpenAI GPT models, AWS retains classifier-flagged traffic
-for up to 30 days for automated offline abuse detection. Responses API requests
-use `store: true` by default. AWS retains the response, including its input and
-output, for 30 days so you can retrieve it or reference it in a later request.
-See [Amazon Bedrock abuse
-detection](https://docs.aws.amazon.com/bedrock/latest/userguide/abuse-detection.html)
-for the current model list and retention details.
-
-If you need full ZDR for a model that requires retention, contact your AWS
-account manager to discuss eligibility. AWS evaluates ZDR access for each account
-and model. If AWS approves access, confirm that `none` appears in the model's
-`allowed_modes`, then set the account or project retention mode to `none`.
-Setting `store: false` does not guarantee ZDR. When the effective retention mode
-is `none`, AWS rejects `store: true`, and background mode is unavailable.
+Use the AWS [data retention documentation](https://docs.aws.amazon.com/bedrock/latest/userguide/data-retention.html) for available modes, eligibility, and account or project configuration. See [Amazon Bedrock abuse detection](https://docs.aws.amazon.com/bedrock/latest/userguide/abuse-detection.html) for model-specific retention requirements and exceptions.
 
 If AWS detects apparent CSAM in an image input, AWS may move the flagged input
   or output outside the ZOA environment and store and review it only to
   determine whether it is CSAM. AWS may also file a report with national
   authorities.
 
-## Responses API feature availability
-
-Amazon Bedrock supports a subset of Responses API capabilities available
-through the OpenAI API. This table describes feature availability as of the
-date below. It excludes transient availability and service status.
-
-The information below represents feature availability as of July 13, 2026.
-  Model and Region availability can also change. For the latest information, see
-  the [AWS documentation for OpenAI models in Amazon
-  Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-cards-openai.html)
-  and [model support by AWS
-  Region](https://docs.aws.amazon.com/bedrock/latest/userguide/models-region-compatibility.html).
-
-| Capability                | OpenAI API                    | Amazon Bedrock                                    |
-| ------------------------- | ----------------------------- | ------------------------------------------------- |
-| Text generation           | Available                     | Available                                         |
-| Image input               | Available                     | Available                                         |
-| File input                | Available                     | Available for supported file types                |
-| Structured outputs        | Available                     | Available                                         |
-| Function calling          | Available                     | Available                                         |
-| Streaming responses       | Available                     | Available                                         |
-| WebSocket connections     | Available                     | Not available                                     |
-| Context window            | Model-dependent               | 272,000 tokens for GPT-5.4 and GPT-5.5            |
-| Context window            | Model-dependent               | 1,050,000 tokens for GPT-5.6 Sol, Terra, and Luna |
-| Reasoning effort          | Available                     | Available, including `max` on supported models    |
-| Pro mode                  | Available on supported models | Not available                                     |
-| Persisted reasoning       | Available on supported models | Available on supported models                     |
-| Prompt caching            | Available                     | Implicit and explicit caching on supported models |
-| Programmatic Tool Calling | Available on supported models | Not available                                     |
-| Multi-agent               | Beta on supported models      | Not available                                     |
-| Custom tools              | Available                     | Available                                         |
-| Client-side `tool_search` | Available                     | Available                                         |
-| Hosted web search         | Available                     | Available                                         |
-| Hosted file search        | Available                     | Not available                                     |
-| Computer use              | Available                     | Not available                                     |
-| Shell tool                | Available                     | Not available                                     |
-| Image generation tool     | Available                     | Not available                                     |
-| Remote MCP servers        | Available                     | Not available                                     |
-| Service tiers             | Available where supported     | On-demand inference only                          |
-
-Client-side `tool_search` is distinct from hosted tools and remote MCP server
-support. Hosted web search is available on Amazon Bedrock, but hosted file
-search and remote MCP servers are unavailable.
-
-GPT-5.4 and GPT-5.5 have a 272,000-token context window on Amazon Bedrock.
-GPT-5.6 Sol, Terra, and Luna have a 1,050,000-token context window. Amazon
-Bedrock rejects requests that exceed the applicable model limit. See the AWS
-model cards for current model-specific limits.
-
-Treat feature parity as workload-specific. If your application depends on a
-specific tool, response mode, or service tier, test that behavior through
-Bedrock before you commit to the deployment path.
-
 ## Authentication and operations
 
-Amazon Bedrock uses AWS-managed access controls. Your AWS administrator controls
-which accounts, roles, or temporary credentials can reach the supported model
-deployment. The exact authentication flow depends on the Bedrock configuration
-your organization uses.
-
-Plan for AWS-owned operational checks such as:
-
-- Account and model access configuration.
-- Region-specific deployment approval.
-- Temporary credential or token validity.
-- AWS quota, logging, and support workflows.
+Your AWS administrator controls account, model, and feature access. Use the AWS [API key documentation](https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys.html) for credential creation and lifecycle, and the [IAM documentation](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam.html) for identities and permissions. The OpenAI SDK examples on this page show how to
+supply those credentials; they do not configure AWS permissions.
 
 ## Pricing
 
-AWS bills Amazon Bedrock usage. Bedrock-specific pricing can differ from direct
-OpenAI API pricing, including regional processing premiums or other AWS-specific
-commercial terms.
+Amazon Bedrock usage is billed through AWS. Bedrock pricing in commercial regions
+matches OpenAI direct pricing for equivalent services. Note that using a
+region-specific service in Bedrock will be priced at the same rate as Regional
+processing in the OpenAI API. Amazon commercial terms apply to Bedrock usage.
 
 See [API pricing](https://developers.openai.com/api/docs/pricing) for direct OpenAI API pricing. For Bedrock
-pricing, use the AWS pricing materials published for the Bedrock deployment you
-plan to use.
+rates, supported service tiers, and billing options, use [Amazon Bedrock pricing](https://aws.amazon.com/bedrock/pricing/) and the applicable model card.
 
 ## Next steps
 
-- Confirm your supported model and AWS Region in Amazon Bedrock.
-- Verify the exact API features your workload needs.
-- Compare Bedrock pricing and direct API pricing before launch.
-- For setup in ChatGPT Work and Codex, see
-  [Use ChatGPT Work and Codex with Amazon Bedrock](https://developers.openai.com/codex/amazon-bedrock).
+For setup in ChatGPT Work and Codex, see
+[Use ChatGPT Work and Codex with Amazon Bedrock](https://developers.openai.com/codex/amazon-bedrock).
 
 ---
 
@@ -55056,6 +55413,12 @@ client = OpenAI(
 )
 ```
 
+```ruby
+client = OpenAI::Client.new(
+  base_url: "https://southcentralus.privatelink.api.openai.com/v1"
+)
+```
+
 
 The SDK reads `OPENAI_API_KEY` from your environment.
 
@@ -56109,20 +56472,21 @@ Prompt cache diagnostics help explain why a request reused fewer tokens than exp
 
 Diagnostics are available in the Responses API for GPT-5.6 and later supported models. Use them to investigate individual requests, and use the [Prompt Caching Dashboard](https://platform.openai.com/usage?usage_section=prompt-caching) to monitor cache performance across your application.
 
-## Compare with an earlier response
+<a id="compare-with-an-earlier-response"></a>
 
-Set `comparison_response_id` in `prompt_cache_options` to the ID of a recent, completed response from the same organization. Choose a response whose prompt prefix you expected the current request to reuse, such as the preceding conversation turn.
+## How it works
 
-The two response IDs serve different purposes:
+Prompt cache diagnostics compare your current request with an earlier response to help explain why an expected prompt prefix wasn’t reused. A prefix is the content at the beginning of a prompt. Reuse requires an exact prefix match and compatible request settings, including the model, service tier, and tools.
 
-- `previous_response_id` carries earlier conversation context into the request. It does not request diagnostics.
-- `comparison_response_id` in `prompt_cache_options` selects a response as the diagnostic baseline. It does not load that response's conversation content or restrict which matching cache the request can use. The request can still reuse matching cached content from other requests.
+1. **Choose a baseline response.** Use a recent completed response from the same organization whose prefix you expect the current request to reuse, such as the preceding conversation turn.
+2. **Request a comparison.** Set `prompt_cache_options.comparison_response_id` to the baseline response’s `id`.
+3. **Read the result.** Check `prompt_cache_diagnostics` on the current response. If diagnostics identify a cache miss, the result includes a reason to help you investigate. Use `usage.input_tokens_details.cached_tokens` to measure actual cache reuse.
 
-The IDs can refer to the same response or different responses. If you manage history yourself, send it in `input` and set only the comparison ID.
+Setting `comparison_response_id` only requests diagnostics. It does not load the earlier conversation or change caching behavior. The current request can still reuse matching cache entries from other requests.
 
-Diagnostic records are retained for a short period. If the record has expired, the comparison returns `comparison_response_not_found`, even if the response itself is still available through the API.
+### Example usage
 
-The following example continues a conversation using `previous_response_id` and requests a cache comparison against the same response. It uses a different `prompt_cache_key` for each request to demonstrate how changing the key can prevent reuse.
+The following example sends two requests with the same model, instructions, and input, but changes a function tool's name from `get_time` to `get_date`. The second request compares cache reuse against the first.
 
 Use your own policy document in `support-policy.txt`. The reusable prefix must meet the model's [minimum cacheable length](https://developers.openai.com/api/docs/guides/prompt-caching#summary-of-model-differences), which is 1,024 tokens for GPT-5.6 and later.
 
@@ -56134,24 +56498,21 @@ from pathlib import Path
 from openai import OpenAI
 
 client = OpenAI()
-policy = Path("support-policy.txt").read_text()
+policy = Path("support-policy.txt").read_text()  # At least 1,024 tokens.
 
 first = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     instructions=policy,
-    input="Summarize the refund policy.",
-    prompt_cache_key="support-policy:request-1",
+    input="Reply with exactly OK.",
+    tools=[{"type": "function", "name": "get_time"}],
 )
 
 second = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     instructions=policy,
-    previous_response_id=first.id,
-    input="Does the policy also apply to sale items?",
-    prompt_cache_key="support-policy:request-2",
-    prompt_cache_options={
-        "comparison_response_id": first.id,
-    },
+    input="Reply with exactly OK.",
+    tools=[{"type": "function", "name": "get_date"}],
+    prompt_cache_options={"comparison_response_id": first.id},
 )
 
 diagnostics = second.prompt_cache_diagnostics
@@ -56162,22 +56523,20 @@ if diagnostics is not None and diagnostics.type == "cache_miss":
 ```
 
 
-If the key change causes a miss, the result may look like this. Token counts vary with the input.
+If the tool change causes a miss, the result may look like this. Token counts vary with the input.
 
 ```json
 {
   "prompt_cache_diagnostics": {
     "type": "cache_miss",
-    "reason": "prompt_cache_key_changed",
-    "comparison_reusable_tokens": 1280,
-    "cache_missed_tokens": 1280
+    "reason": "tools_changed",
+    "comparison_reusable_tokens": 5629,
+    "cache_missed_tokens": 5629
   }
 }
 ```
 
-To preserve reuse, use the same key for both requests, such as `support-policy:session-42`. See [Tune prompt cache keys](https://developers.openai.com/api/docs/guides/prompt-caching#prompt-cache-key-best-practices).
-
-See [Conversation state](https://developers.openai.com/api/docs/guides/conversation-state#passing-context-from-the-previous-response) for continuation examples. Top-level `instructions` do not carry over through `previous_response_id`, so the example supplies the same instructions on both requests.
+To preserve reuse, keep tool definitions and ordering unchanged between requests. See [Manage tools with append-only updates](https://developers.openai.com/api/docs/guides/prompt-caching#manage-tools-with-append-only-updates).
 
 ### Multi-turn conversations
 
@@ -56189,38 +56548,57 @@ When testing a fix, keep the comparison ID set to the baseline response.
 
 When `stream=True`, read `prompt_cache_diagnostics` from `event.response` in the [`response.completed` event](https://developers.openai.com/api/reference/resources/responses/streaming-events#response.completed).
 
-## Understand the result
+## Understand the response
 
 Read `prompt_cache_diagnostics.type` to determine the comparison outcome.
+
+
+
 
 | Type                            | Meaning                                                                                                                                                        | What to do                                                                                        |
 | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | `cache_hit`                     | No cache miss was detected for the comparison.                                                                                                                 | Check `usage.input_tokens_details.cached_tokens` to measure actual reuse.                         |
 | `cache_miss`                    | A difference prevented reuse of the expected prefix. The result includes `reason` and `cache_missed_tokens`. It may also include `comparison_reusable_tokens`. | Find the reason and suggested fix in [Fix a cache miss](#fix-a-cache-miss).                       |
-| `comparison_response_not_found` | No usable diagnostic record is available for the comparison response. It may be missing or expired.                                                            | Select another recent, completed response from the same organization.                             |
+| `comparison_response_not_found` | No usable diagnostic record is available for the comparison response. It may be missing or expired.                                                            | Select another recent completed response from the same organization.                              |
 | `unavailable`                   | The comparison could not produce a conclusive result, or the model does not support diagnostics.                                                               | Confirm model support and try another recent comparison. You can still use the response normally. |
 
-A request with 2,500 input tokens can report `cache_hit` if it reuses the comparison response's 2,000-token prefix. The remaining 500 tokens are new and still need processing.
 
-For a cache miss, `comparison_reusable_tokens`, when present, is the comparison response's `cached_tokens + cache_write_tokens`. `cache_missed_tokens` estimates how many of the comparison response's reusable tokens were not reused. Use the current response's usage fields for actual cache usage and billing.
 
-Diagnostics report the first classified reason, not every difference between requests. After addressing that reason, repeat the comparison to check for other causes.
+
+### Interpret token counts
+
+A `cache_hit` means no cache miss was detected for the comparison. New input can still require processing. For example, a request with 2,500 input tokens can report `cache_hit` when it reuses the comparison response’s 2,000-token prefix and processes 500 new tokens.
+
+For a `cache_miss`:
+
+- `comparison_reusable_tokens`, when present, is the raw token count of the comparison response’s reusable prefix.
+- `cache_missed_tokens` estimates how many of those tokens were not reused.
+
+These diagnostic counts can differ from usage counts. Use the current response’s usage fields to measure reported cache reuse and billing.
 
 ## Fix a cache miss
 
+Use `prompt_cache_diagnostics.reason` to find the cause of a cache miss and a suggested fix in the following table.
+
 Some changes, such as switching models or compacting a conversation, are intentional. You may choose to keep them even if they reduce cache reuse.
+
+
+
 
 | Reason                     | What changed                                                                                                                                        | How to improve reuse                                                                                                                                                                                                                                                                                                                                                                                                       |
 | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `model_changed`            | A different model processed the request, for example because routing, an A/B test, or a fallback selected another model.                            | Check model selection for unintended switches. Use the same model for requests intended to share a cached prefix. See [cache-affecting settings](https://developers.openai.com/api/docs/guides/prompt-caching#cache-affecting-settings).                                                                                                                                                                                                                |
-| `prompt_cache_key_changed` | The key changed between requests, for example because it includes a unique request ID or timestamp.                                                 | Choose a stable key for related requests and reuse it while the prefix remains useful. See [Tune prompt cache keys](https://developers.openai.com/api/docs/guides/prompt-caching#prompt-cache-key-best-practices).                                                                                                                                                                                                                                      |
+| `model_changed`            | A different model processed the request, for example because routing, an A/B test, or a fallback selected another model.                            | Check model selection for unintended switches. Use the same model for requests intended to share a cached prefix. See [cache-affecting settings](https://developers.openai.com/api/docs/guides/prompt-caching#which-settings-affect-the-cached-prefix).                                                                                                                                                                                                 |
+| `prompt_cache_key_changed` | The supplied key changed between requests. This can be reported as a cache miss in response `usage` without a physical cache miss.                  | Omit `prompt_cache_key` unless your application needs separate cache accounting for customers or users. If you use keys, keep a stable key within each group. See [Separate cache accounting with keys](https://developers.openai.com/api/docs/guides/prompt-caching#separate-prompts-with-cache-keys).                                                                                                                                                 |
 | `service_tier_changed`     | The service tier used to process the request changed.                                                                                               | Keep the service tier consistent for requests expected to share a prefix. Check the returned `service_tier`, which can differ from the requested value. See [`service_tier`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20service_tier%20%3E%20%28schema%29) for supported values and behavior. |
-| `tools_changed`            | Tools were added, removed, or reordered, or their descriptions, schemas, or configuration changed.                                                  | Keep tool definitions and ordering stable. Use `tool_choice: "none"` to disable tools or `allowed_tools` to restrict which tools can run without changing the supplied tool list. See [Manage tools with append-only updates](https://developers.openai.com/api/docs/guides/prompt-caching#tools).                                                                                                                                                      |
+| `tools_changed`            | Tools were added, removed, or reordered, or their descriptions, schemas, or configuration changed.                                                  | Keep tool definitions and ordering stable. Use `tool_choice: "none"` to disable tools or `allowed_tools` to restrict which tools can run without changing the supplied tool list. See [Manage tools with append-only updates](https://developers.openai.com/api/docs/guides/prompt-caching#manage-tools-with-append-only-updates).                                                                                                                      |
 | `text_format_changed`      | The output format or its schema changed.                                                                                                            | Keep `text.format` and the schema consistent when the required output structure is unchanged. See [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs).                                                                                                                                                                                                                                                               |
-| `reasoning_effort_changed` | The reasoning effort changed.                                                                                                                       | Keep `reasoning.effort` consistent across requests intended to share a prefix. See [cache-affecting settings](https://developers.openai.com/api/docs/guides/prompt-caching#cache-affecting-settings).                                                                                                                                                                                                                                                   |
-| `verbosity_changed`        | The response verbosity changed.                                                                                                                     | Keep `text.verbosity` consistent across requests intended to share a prefix. See [cache-affecting settings](https://developers.openai.com/api/docs/guides/prompt-caching#cache-affecting-settings).                                                                                                                                                                                                                                                     |
+| `reasoning_effort_changed` | The reasoning effort changed.                                                                                                                       | Keep `reasoning.effort` consistent across requests intended to share a prefix. See [cache-affecting settings](https://developers.openai.com/api/docs/guides/prompt-caching#which-settings-affect-the-cached-prefix).                                                                                                                                                                                                                                    |
+| `verbosity_changed`        | The response verbosity changed.                                                                                                                     | Keep `text.verbosity` consistent across requests intended to share a prefix. See [cache-affecting settings](https://developers.openai.com/api/docs/guides/prompt-caching#which-settings-affect-the-cached-prefix).                                                                                                                                                                                                                                      |
 | `context_compacted`        | Compaction replaced earlier conversation content.                                                                                                   | Preserve stable instructions and let later turns build on the compacted context. Compare total input cost: fewer input tokens can still save money despite lower cache reuse. See [Compaction](https://developers.openai.com/api/docs/guides/compaction).                                                                                                                                                                                               |
 | `input_changed`            | Earlier input changed, for example because instructions contain a timestamp or request ID, or previous messages were edited, reordered, or removed. | Move changing content after the reusable prefix and its cache breakpoint. Preserve earlier messages and tool results, and append new turns. See [Preserve conversation history](https://developers.openai.com/api/docs/guides/prompt-caching#preserve-conversation-history).                                                                                                                                                                            |
+
+
+
 
 ## Confirm the improvement
 
@@ -56244,11 +56622,11 @@ Setting `comparison_response_id` does not retrieve or persist the earlier respon
 
 ## Limitations
 
-Diagnostics are available in the Responses API for GPT-5.6 and later supported models.
-
-Diagnostics are best effort and may not classify every cache miss. An `unavailable` result does not indicate whether a cache hit or miss occurred.
-
-Diagnostics never block or fail your request. They do not change how the model generates output. If the comparison is not ready, the response returns `unavailable`.
+- Diagnostics are available in the Responses API for GPT-5.6 and later supported models.
+- Diagnostic records expire after a short period. An expired record returns `comparison_response_not_found`, even if the response is still available through the API.
+- Diagnostics report the first classified reason. Address it, then repeat the comparison to check for other causes.
+- Diagnostics are best effort and may not classify every miss. An `unavailable` result does not indicate a hit or miss and is returned if the comparison is not ready.
+- Diagnostics never block or fail your request or change how the model generates output.
 
 ---
 
@@ -56445,7 +56823,7 @@ OpenAI handles routing automatically. Within an organization and processing regi
 
 - Current machine load and available capacity.
 - A hash of the initial tokens after the hidden OpenAI content, including tool definitions when present. The number of tokens hashed varies by model.
-- The optionally supplied [`prompt_cache_key`](#prompt-cache-keys) that controls grouping and distribution during higher-volume traffic, to mitigate request overflow to other machines and, therefore, cache misses.
+- An optional [`prompt_cache_key`](#prompt-cache-keys), which separates cache reuse between groups of requests.
 
 
 
@@ -56457,9 +56835,9 @@ OpenAI handles routing automatically. Within an organization and processing regi
 
 
 
-When traffic exceeds a machine's available capacity, requests may overflow to another machine. If that machine does not have a matching cache entry, the initial overflow request incurs a cache miss.
+[`prompt_cache_key`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20prompt_cache_key%20%3E%20%28schema%29) is an optional control for maintaining separate cache accounting for customers or users within your application. OpenAI handles cache routing automatically; you can omit the key for normal caching.
 
-Set [`prompt_cache_key`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20prompt_cache_key%20%3E%20%28schema%29) to help requests with the same prefix reach the same cache. Keys influence routing; they do not pin requests to a machine or guarantee a cache read hit. See [how to tune prompt cache keys](#tune-prompt-cache-keys).
+Using separate keys can make cached token usage and billing easier to explain for each customer or user. For example, separate keys help prevent cache-hit probing across users: submitting candidate prompts and observing cache hits to learn whether matching content was previously cached. See [Separate cache accounting with keys](#separate-prompts-with-cache-keys).
 
 
 
@@ -56497,7 +56875,7 @@ For models before GPT-5.6, the minimum cacheable input length varies with reques
 
 ## How to optimize prompt caching
 
-Focus on [preserving conversation history](#preserve-conversation-history), [keeping tool definitions stable](#manage-tools-with-append-only-updates), and understanding the three main cache controls. Use [`prompt_cache_options.mode` and `prompt_cache_breakpoint`](#choose-a-caching-mode) to choose where caching occurs, and [`prompt_cache_key`](#tune-prompt-cache-keys) to help related requests reach the same cache.
+Focus on [preserving conversation history](#preserve-conversation-history), [keeping tool definitions stable](#manage-tools-with-append-only-updates), and choosing where caching occurs. Use [`prompt_cache_options.mode` and `prompt_cache_breakpoint`](#choose-a-caching-mode) to control cache breakpoints. If your application needs separate cache accounting for customers, you can also use an optional [`prompt_cache_key`](#separate-prompts-with-cache-keys).
 
 
 
@@ -56632,88 +57010,27 @@ On GPT-5.6 and later, two controls determine where cache breakpoints are placed:
 
 
 
-
+<a id="prompt-cache-key-best-practices"></a>
 
 <a id="tune-prompt-cache-keys"></a>
 
-
-
-### Tune prompt cache keys
+<a id="separate-prompts-with-cache-keys"></a>
 
 
 
-- **Group related requests.** Combine a prompt version with a stable user, workspace, session, or thread ID that matches how your application reuses context. For example:
-  - `prompt_name_v1:user_123` groups a user's related requests that share a prompt version.
-  - `prompt_name_v1:session_456` groups requests within one session.
-  - `prompt_name_v1:workspace_acme:shard_3` groups requests within a stable shard of a workspace.
-- **Keep keys stable.** Reuse the key while its prefix remains useful; do not generate a new key for every request.
-- **Split busy groups.** If a group receives high traffic and cache read hits decline, distribute it across more keys with a stable, deterministic mapping. Keep related requests on the same shard so they can reuse its cache.
+<a id="separate-cache-accounting-with-keys"></a>
 
-Create stable cache keys
 
-```javascript
-import { createHash } from "node:crypto";
 
-const tenantId = "acme";
-const sessionId = "session-42";
-const promptVersion = "support-v3";
-// Tune for peak traffic per tenant and reusable prompt group; monitor cache hits.
-const shardCount = 16;
+### Separate cache accounting with keys
 
-const digest = createHash("sha256")
-  .update(`${tenantId}:${sessionId}`)
-  .digest("hex");
-const shard = Number.parseInt(digest.slice(0, 8), 16) % shardCount;
-const promptCacheKey = `${promptVersion}:${tenantId}:shard-${shard}`;
-```
 
-```python
-import hashlib
 
-tenant_id = "acme"
-session_id = "session-42"
-prompt_version = "support-v3"
-# Tune for peak traffic per tenant and reusable prompt group; monitor cache hits.
-shard_count = 16
+Use `prompt_cache_key` when you want to maintain separate cache accounting for customers, users, or workspaces within your application. This can make cached token usage and billing easier to explain within each group. The key is optional and is not needed to optimize caching.
 
-digest = hashlib.sha256(f"{tenant_id}:{session_id}".encode()).hexdigest()
-shard = int(digest[:8], 16) % shard_count
-prompt_cache_key = f"{prompt_version}:{tenant_id}:shard-{shard}"
-```
-
-```java
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.util.HexFormat;
-
-String tenantId = "acme";
-String sessionId = "session-42";
-String promptVersion = "support-v3";
-int shardCount = 16;
-
-String digest =
-    HexFormat.of()
-        .formatHex(
-            MessageDigest.getInstance("SHA-256")
-                .digest((tenantId + ":" + sessionId).getBytes(StandardCharsets.UTF_8)));
-long shard = Long.parseLong(digest.substring(0, 8), 16) % shardCount;
-String promptCacheKey = promptVersion + ":" + tenantId + ":shard-" + shard;
-```
-
-```ruby
-require "digest"
-
-tenant_id = "acme"
-session_id = "session-42"
-prompt_version = "support-v3"
-# Tune for peak traffic per tenant and reusable prompt group; monitor cache hits.
-shard_count = 16
-
-digest = Digest::SHA256.hexdigest("#{tenant_id}:#{session_id}")
-shard = digest.slice(0, 8).to_s.to_i(16) % shard_count
-prompt_cache_key = "#{prompt_version}:#{tenant_id}:shard-#{shard}"
-```
-
+- **Choose how to separate cache accounting.** Assign a distinct key to each customer or user whose cache accounting should remain separate. For example, `support:customer_123` and `support:customer_456` maintain separate cache accounting for two customers, even when their requests contain the same prefix.
+- **Keep keys stable within each group.** Reuse the same key for a customer's related requests. Generate a separate key for a session or thread only when it needs its own cache accounting.
+- **Apply keys consistently.** Use the customer's key across their requests to maintain separate cache accounting. This also helps prevent cache-hit probing across customers.
 
 
 
@@ -56877,7 +57194,7 @@ end
 
 
 - Keep existing stable prefixes.
-- Keep existing `prompt_cache_key` values.
+- If you use `prompt_cache_key`, keep existing values to preserve separate cache accounting for customers or users.
 - Replace `prompt_cache_retention` with `prompt_cache_options.ttl`.
 - Confirm that reusable prefixes meet the model's [minimum cacheable length](#summary-of-model-differences).
 - If the default breakpoint includes content that changes between requests, add an explicit breakpoint after the stable prefix.
@@ -56903,7 +57220,6 @@ end
 Consider a single-turn LLM judge that determines whether a completed interaction shows evidence that the user is satisfied after an interaction with a chatbot. Each request uses the same grading rubric and labeled few-shot examples to evaluate a different interaction.
 
 - **Preserving the prefix:** The fixed rubric and examples come first. Their combined length is deliberately kept just above the model's [minimum cacheable length](#summary-of-model-differences), using material that helps calibrate the judge. The interaction being evaluated comes last.
-- **Prompt cache key:** A stable `prompt_cache_key`, such as `satisfaction_judge_v1`, groups requests using the same rubric version.
 - **Caching mode and breakpoint:** Explicit-only caching is enabled, with a breakpoint after the fixed rubric and examples. The user–chatbot conversation being evaluated comes after that breakpoint and is not written to the cache, avoiding a cache-write charge for content that is unlikely to be reused.
 
 An example deployment using these principles reported a **token cache-hit rate of ~70%**. This figure illustrates a possible outcome. Actual cache-hit rate ceilings will depend upon your context and application usage.
@@ -56915,7 +57231,6 @@ Responses API request for a single-turn judge
   "model": "gpt-5.6-sol",
   "reasoning": { "effort": "medium", "context": "all_turns" },
   "text": { "verbosity": "low" },
-  "prompt_cache_key": "satisfaction_judge_v1",
   "prompt_cache_options": { "mode": "explicit" },
   "input": [
     {
@@ -56954,7 +57269,7 @@ Responses API request for a single-turn judge
 Consider a multi-turn agent with long, shared developer instructions and frequent tool calls. Typical usage sees users running multiple sessions with the agent at once, and often forking the threads.
 
 - **Preserving the prefix**: Each turn appends new messages, tool calls, and results without rewriting earlier context, so the reusable prefix grows over time.
-- **Prompt cache key:** The `prompt_cache_key` is defined for each user-agent pair, shared across that user's sessions with the agent. For example, `agent_123_v1:user_456` groups user 456's sessions and forks with agent 123. The session and thread IDs are kept out of the key when those sessions should share the same reusable prefix.
+- **Optional prompt cache key:** This example uses `agent_123_v1:user_456` to maintain separate cache accounting for user 456, making their cached token usage and billing easier to explain. This also helps prevent cache-hit probing across users. The key stays the same across that user's sessions and forks with the agent. Omit it if your application does not need this separation.
 - **Implicit caching mode:** Implicit caching is enabled so the latest eligible user or tool message provides a breakpoint.
 - **Explicit breakpoints:** A breakpoint is added after each tool result to preserve earlier reusable prefixes and improve cache efficiency of forking.
 
@@ -57036,7 +57351,6 @@ Without a breakpoint after the static content
   "model": "gpt-5.6-sol",
   "reasoning": { "effort": "medium", "context": "all_turns" },
   "text": { "verbosity": "low" },
-  "prompt_cache_key": "prompt_name_v1",
   "prompt_cache_options": { "mode": "implicit" },
   "input": [
     { "role": "developer", "content": "Static content..." },
@@ -57055,7 +57369,6 @@ With a breakpoint after the static content
   "model": "gpt-5.6-sol",
   "reasoning": { "effort": "medium", "context": "all_turns" },
   "text": { "verbosity": "low" },
-  "prompt_cache_key": "prompt_name_v1",
   "prompt_cache_options": { "mode": "explicit" },
   "input": [
     {
@@ -60409,6 +60722,292 @@ client.chat().completions().create(params).choices().stream()
     .forEach(System.out::println);
 ```
 
+```ruby
+require "openai"
+require "json"
+
+META_SCHEMA = {
+  "name" => "metaschema",
+  "schema" => {
+    "type" => "object",
+    "properties" => {
+      "name" => {
+        "type" => "string",
+        "description" => "The name of the schema"
+      },
+      "type" => {
+        "type" => "string",
+        "enum" => ["object", "array", "string", "number", "boolean", "null"]
+      },
+      "properties" => {
+        "type" => "object",
+        "additionalProperties" => {
+          "$ref" => "#/$defs/schema_definition"
+        }
+      },
+      "items" => {
+        "anyOf" => [{
+          "$ref" => "#/$defs/schema_definition"
+        }, {
+          "type" => "array",
+          "items" => {
+            "$ref" => "#/$defs/schema_definition"
+          }
+        }]
+      },
+      "required" => {
+        "type" => "array",
+        "items" => {
+          "type" => "string"
+        }
+      },
+      "additionalProperties" => {
+        "type" => "boolean"
+      }
+    },
+    "required" => ["type"],
+    "additionalProperties" => false,
+    "if" => {
+      "properties" => {
+        "type" => {
+          "const" => "object"
+        }
+      }
+    },
+    "then" => {
+      "required" => ["properties"]
+    },
+    "$defs" => {
+      "schema_definition" => {
+        "type" => "object",
+        "properties" => {
+          "type" => {
+            "type" => "string",
+            "enum" => ["object", "array", "string", "number", "boolean", "null"]
+          },
+          "properties" => {
+            "type" => "object",
+            "additionalProperties" => {
+              "$ref" => "#/$defs/schema_definition"
+            }
+          },
+          "items" => {
+            "anyOf" => [{
+              "$ref" => "#/$defs/schema_definition"
+            }, {
+              "type" => "array",
+              "items" => {
+                "$ref" => "#/$defs/schema_definition"
+              }
+            }]
+          },
+          "required" => {
+            "type" => "array",
+            "items" => {
+              "type" => "string"
+            }
+          },
+          "additionalProperties" => {
+            "type" => "boolean"
+          }
+        },
+        "required" => ["type"],
+        "additionalProperties" => false,
+        "if" => {
+          "properties" => {
+            "type" => {
+              "const" => "object"
+            }
+          }
+        },
+        "then" => {
+          "required" => ["properties"]
+        }
+      }
+    }
+  }
+}
+
+META_PROMPT = <<~PROMPT.strip
+  # Instructions
+  Return a valid schema for the described JSON.
+
+  You must also make sure:
+  - all fields in an object are set as required
+  - I REPEAT, ALL FIELDS MUST BE MARKED AS REQUIRED
+  - all objects must have additionalProperties set to false
+      - because of this, some cases like "attributes" or "metadata" properties that would normally allow additional properties should instead have a fixed set of properties
+  - all objects must have properties defined
+  - field order matters. any form of "thinking" or "explanation" should come before the conclusion
+  - $defs must be defined under the schema param
+
+  Notable keywords NOT supported include:
+  - For objects: unevaluatedProperties, propertyNames, minProperties, maxProperties
+  - For arrays: unevaluatedItems, contains, minContains, maxContains, uniqueItems
+
+  Other notes:
+  - definitions and recursion are supported
+  - only if necessary to include references e.g. "$defs", it must be inside the "schema" object
+
+  # Examples
+  Input: Generate a math reasoning schema with steps and a final answer.
+  Output: {
+      "name": "math_reasoning",
+      "type": "object",
+      "properties": {
+          "steps": {
+              "type": "array",
+              "description": "A sequence of steps involved in solving the math problem.",
+              "items": {
+                  "type": "object",
+                  "properties": {
+                      "explanation": {
+                          "type": "string",
+                          "description": "Description of the reasoning or method used in this step."
+                      },
+                      "output": {
+                          "type": "string",
+                          "description": "Result or outcome of this specific step."
+                      }
+                  },
+                  "required": [
+                      "explanation",
+                      "output"
+                  ],
+                  "additionalProperties": false
+              }
+          },
+          "final_answer": {
+              "type": "string",
+              "description": "The final solution or answer to the math problem."
+          }
+      },
+      "required": [
+          "steps",
+          "final_answer"
+      ],
+      "additionalProperties": false
+  }
+
+  Input: Give me a linked list
+  Output: {
+      "name": "linked_list",
+      "type": "object",
+      "properties": {
+          "linked_list": {
+              "$ref": "#/$defs/linked_list_node",
+              "description": "The head node of the linked list."
+          }
+      },
+      "$defs": {
+          "linked_list_node": {
+              "type": "object",
+              "description": "Defines a node in a singly linked list.",
+              "properties": {
+                  "value": {
+                      "type": "number",
+                      "description": "The value stored in this node."
+                  },
+                  "next": {
+                      "anyOf": [
+                          {
+                              "$ref": "#/$defs/linked_list_node"
+                          },
+                          {
+                              "type": "null"
+                          }
+                      ],
+                      "description": "Reference to the next node; null if it is the last node."
+                  }
+              },
+              "required": [
+                  "value",
+                  "next"
+              ],
+              "additionalProperties": false
+          }
+      },
+      "required": [
+          "linked_list"
+      ],
+      "additionalProperties": false
+  }
+
+  Input: Dynamically generated UI
+  Output: {
+      "name": "ui",
+      "type": "object",
+      "properties": {
+          "type": {
+              "type": "string",
+              "description": "The type of the UI component",
+              "enum": [
+                  "div",
+                  "button",
+                  "header",
+                  "section",
+                  "field",
+                  "form"
+              ]
+          },
+          "label": {
+              "type": "string",
+              "description": "The label of the UI component, used for buttons or form fields"
+          },
+          "children": {
+              "type": "array",
+              "description": "Nested UI components",
+              "items": {
+                  "$ref": "#"
+              }
+          },
+          "attributes": {
+              "type": "array",
+              "description": "Arbitrary attributes for the UI component, suitable for any element",
+              "items": {
+                  "type": "object",
+                  "properties": {
+                      "name": {
+                          "type": "string",
+                          "description": "The name of the attribute, for example onClick or className"
+                      },
+                      "value": {
+                          "type": "string",
+                          "description": "The value of the attribute"
+                      }
+                  },
+                  "required": [
+                      "name",
+                      "value"
+                  ],
+                  "additionalProperties": false
+              }
+          }
+      },
+      "required": [
+          "type",
+          "label",
+          "children",
+          "attributes"
+      ],
+      "additionalProperties": false
+  }
+PROMPT
+
+client = OpenAI::Client.new
+completion = client.chat.completions.create(
+  model: "gpt-5.6-terra",
+  response_format: {type: :json_schema, json_schema: META_SCHEMA},
+  messages: [
+    {role: :system, content: META_PROMPT},
+    {role: :user, content: "Description: Schedule a meeting with a title and start time."}
+  ]
+)
+message = completion.choices.fetch(0).message
+raise "Schema generation refused: #{message.refusal}" if message.refusal
+puts(JSON.pretty_generate(JSON.parse(message.content || raise("No schema returned"))))
+```
+
   
 
   
@@ -61067,6 +61666,222 @@ ChatCompletionCreateParams params =
 client.chat().completions().create(params).choices().stream()
     .flatMap(choice -> choice.message().content().stream())
     .forEach(System.out::println);
+```
+
+```ruby
+require "openai"
+require "json"
+
+META_SCHEMA = {
+  "name" => "function-metaschema",
+  "schema" => {
+    "type" => "object",
+    "properties" => {
+      "name" => {
+        "type" => "string",
+        "description" => "The name of the function"
+      },
+      "description" => {
+        "type" => "string",
+        "description" => "A description of what the function does"
+      },
+      "parameters" => {
+        "$ref" => "#/$defs/schema_definition",
+        "description" => "A JSON schema that defines the function's parameters"
+      }
+    },
+    "required" => ["name", "description", "parameters"],
+    "additionalProperties" => false,
+    "$defs" => {
+      "schema_definition" => {
+        "type" => "object",
+        "properties" => {
+          "type" => {
+            "type" => "string",
+            "enum" => ["object", "array", "string", "number", "boolean", "null"]
+          },
+          "properties" => {
+            "type" => "object",
+            "additionalProperties" => {
+              "$ref" => "#/$defs/schema_definition"
+            }
+          },
+          "items" => {
+            "anyOf" => [{
+              "$ref" => "#/$defs/schema_definition"
+            }, {
+              "type" => "array",
+              "items" => {
+                "$ref" => "#/$defs/schema_definition"
+              }
+            }]
+          },
+          "required" => {
+            "type" => "array",
+            "items" => {
+              "type" => "string"
+            }
+          },
+          "additionalProperties" => {
+            "type" => "boolean"
+          }
+        },
+        "required" => ["type"],
+        "additionalProperties" => false,
+        "if" => {
+          "properties" => {
+            "type" => {
+              "const" => "object"
+            }
+          }
+        },
+        "then" => {
+          "required" => ["properties"]
+        }
+      }
+    }
+  }
+}
+
+META_PROMPT = <<~PROMPT.strip
+  # Instructions
+  Return a valid schema for the described function.
+
+  Pay special attention to making sure that "required" and "type" are always at the correct level of nesting. For example, "required" should be at the same level as "properties", not inside it.
+  Make sure that every property, no matter how short, has a type and description correctly nested inside it.
+
+  # Examples
+  Input: Assign values to NN hyperparameters
+  Output: {
+      "name": "set_hyperparameters",
+      "description": "Assign values to NN hyperparameters",
+      "parameters": {
+          "type": "object",
+          "required": [
+              "learning_rate",
+              "epochs"
+          ],
+          "properties": {
+              "epochs": {
+                  "type": "number",
+                  "description": "Number of complete passes through dataset"
+              },
+              "learning_rate": {
+                  "type": "number",
+                  "description": "Speed of model learning"
+              }
+          }
+      }
+  }
+
+  Input: Plans a motion path for the robot
+  Output: {
+      "name": "plan_motion",
+      "description": "Plans a motion path for the robot",
+      "parameters": {
+          "type": "object",
+          "required": [
+              "start_position",
+              "end_position"
+          ],
+          "properties": {
+              "end_position": {
+                  "type": "object",
+                  "properties": {
+                      "x": {
+                          "type": "number",
+                          "description": "End X coordinate"
+                      },
+                      "y": {
+                          "type": "number",
+                          "description": "End Y coordinate"
+                      }
+                  }
+              },
+              "obstacles": {
+                  "type": "array",
+                  "description": "Array of obstacle coordinates",
+                  "items": {
+                      "type": "object",
+                      "properties": {
+                          "x": {
+                              "type": "number",
+                              "description": "Obstacle X coordinate"
+                          },
+                          "y": {
+                              "type": "number",
+                              "description": "Obstacle Y coordinate"
+                          }
+                      }
+                  }
+              },
+              "start_position": {
+                  "type": "object",
+                  "properties": {
+                      "x": {
+                          "type": "number",
+                          "description": "Start X coordinate"
+                      },
+                      "y": {
+                          "type": "number",
+                          "description": "Start Y coordinate"
+                      }
+                  }
+              }
+          }
+      }
+  }
+
+  Input: Calculates various technical indicators
+  Output: {
+      "name": "technical_indicator",
+      "description": "Calculates various technical indicators",
+      "parameters": {
+          "type": "object",
+          "required": [
+              "ticker",
+              "indicators"
+          ],
+          "properties": {
+              "indicators": {
+                  "type": "array",
+                  "description": "List of technical indicators to calculate",
+                  "items": {
+                      "type": "string",
+                      "description": "Technical indicator",
+                      "enum": [
+                          "RSI",
+                          "MACD",
+                          "Bollinger_Bands",
+                          "Stochastic_Oscillator"
+                      ]
+                  }
+              },
+              "period": {
+                  "type": "number",
+                  "description": "Time period for the analysis"
+              },
+              "ticker": {
+                  "type": "string",
+                  "description": "Stock ticker symbol"
+              }
+          }
+      }
+  }
+PROMPT
+
+client = OpenAI::Client.new
+completion = client.chat.completions.create(
+  model: "gpt-5.6-terra",
+  response_format: {type: :json_schema, json_schema: META_SCHEMA},
+  messages: [
+    {role: :system, content: META_PROMPT},
+    {role: :user, content: "Description: Schedule a meeting with a title and start time."}
+  ]
+)
+message = completion.choices.fetch(0).message
+raise "Schema generation refused: #{message.refusal}" if message.refusal
+puts(JSON.pretty_generate(JSON.parse(message.content || raise("No schema returned"))))
 ```
 
 ---
@@ -65026,7 +65841,7 @@ await pc.setRemoteDescription({
 
 Connect to the dedicated translation endpoint and select the model in the URL:
 
-Install the `ws` package for Node.js or the `websocket-client` package for Python before running this example.
+Before running this example, install `ws` for Node.js, `websocket-client` for Python, or `async-websocket` for Ruby (`gem install async-websocket`).
 
 Connect to a translation session
 
@@ -65058,6 +65873,28 @@ ws.connect(
 )
 ```
 
+```ruby
+require "async"
+require "async/http/endpoint"
+require "async/websocket/client"
+require "json"
+
+endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/realtime/translations?model=gpt-realtime-translate", timeout: 10, alpn_protocols: ["http/1.1"])
+headers = {"Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}", "OpenAI-Safety-Identifier" => "hashed-user-id"}
+Sync do |task|
+  task.with_timeout(120) do
+    Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|
+      message = connection.read or raise "Connection closed before session creation"
+      event = JSON.parse(message.to_str)
+      raise "Expected session.created: #{event}" unless event["type"] == "session.created"
+      puts(event.fetch("type"))
+    end
+  end
+end
+```
+
+
+For Ruby, insert the following configuration and audio-append snippets inside the `Async::WebSocket::Client.connect` block, after the session-created check and before the block ends. Keep the connection open while sending audio and receiving translation events.
 
 Configure the target language after the socket opens:
 
@@ -65099,6 +65936,11 @@ ws.send(
 )
 ```
 
+```ruby
+connection.write(JSON.generate(type: "session.update", session: {audio: {output: {language: "es"}}}))
+connection.flush
+```
+
 
 Then append audio continuously:
 
@@ -65122,6 +65964,17 @@ ws.send(
         }
     )
 )
+```
+
+```ruby
+require "base64"
+
+File.open("speech.pcm", "rb") do |audio|
+  while (chunk = audio.read(4_800))
+    connection.write(JSON.generate(type: "session.input_audio_buffer.append", audio: Base64.strict_encode64(chunk)))
+    connection.flush
+  end
+end
 ```
 
 
@@ -75258,6 +76111,33 @@ response = client.responses.create(
 print(response.output_text)
 ```
 
+```ruby
+require "base64"
+require "openai"
+
+client = OpenAI::Client.new
+inline_zip = Base64.strict_encode64(File.binread("csv_insights.zip"))
+base64_string = Base64.strict_encode64(File.binread("report.csv"))
+container = client.containers.create(
+  name: "inline-skill-container",
+  skills: [{
+    type: :inline,
+    name: "csv-insights",
+    description: "Summarize CSV files and produce a markdown report.",
+    source: {type: :base64, media_type: "application/zip", data: inline_zip}
+  }]
+)
+response = client.responses.create(
+  model: "gpt-6-astra",
+  tools: [{type: :shell, environment: {type: :container_reference, container_id: container.id}}],
+  input: [{role: :user, content: [
+    {type: :input_file, filename: "report.csv", file_data: "data:text/csv;base64,#{base64_string}"},
+    {type: :input_text, text: "Use the csv-insights skill to summarize report.csv."}
+  ]}]
+)
+puts(response.output_text)
+```
+
 
 For follow-up requests, pass the same `container_id` with `container_reference`. The mounted skills and existing container files remain available while the container is active.
 
@@ -83285,6 +84165,8 @@ curl https://api.openai.com/v1/audio/speech \
 
 **Realtime API example**
 
+For Ruby, set `OPENAI_VOICE_ID` to your custom voice ID before running the example.
+
 ```javascript
 const sessionConfig = JSON.stringify({
   session: {
@@ -83297,6 +84179,19 @@ const sessionConfig = JSON.stringify({
     },
   },
 });
+```
+
+```ruby
+require "json"
+
+session_config = JSON.generate(
+  session: {
+    type: "realtime",
+    model: "gpt-realtime-2",
+    audio: {output: {voice: {id: ENV.fetch("OPENAI_VOICE_ID")}}}
+  }
+)
+puts(session_config)
 ```
 
 
@@ -86382,6 +87277,79 @@ APPLY_PATCH_TOOL = {
 }
 ```
 
+```ruby
+require "json"
+
+APPLY_PATCH_TOOL_DESC = <<~PROMPT
+  This is a custom utility that makes it more convenient to add, remove, move, or edit code files. `apply_patch` effectively allows you to execute a diff/patch against a file, but the format of the diff specification is unique to this task, so pay careful attention to these instructions. To use the `apply_patch` command, you should pass a message of the following structure as "input":
+
+  %%bash
+  apply_patch <<"EOF"
+  *** Begin Patch
+  [YOUR_PATCH]
+  *** End Patch
+  EOF
+
+  Where [YOUR_PATCH] is the actual content of your patch, specified in the following V4A diff format.
+
+  *** [ACTION] File: [path/to/file] -> ACTION can be one of Add, Update, or Delete.
+  For each snippet of code that needs to be changed, repeat the following:
+  [context_before] -> See below for further instructions on context.
+  - [old_code] -> Precede the old code with a minus sign.
+  + [new_code] -> Precede the new, replacement code with a plus sign.
+  [context_after] -> See below for further instructions on context.
+
+  For instructions on [context_before] and [context_after]:
+  - By default, show 3 lines of code immediately above and 3 lines immediately below each change. If a change is within 3 lines of a previous change, do NOT duplicate the first change’s [context_after] lines in the second change’s [context_before] lines.
+  - If 3 lines of context is insufficient to uniquely identify the snippet of code within the file, use the @@ operator to indicate the class or function to which the snippet belongs. For instance, we might have:
+  @@ class BaseClass
+  [3 lines of pre-context]
+  - [old_code]
+  + [new_code]
+  [3 lines of post-context]
+
+  - If a code block is repeated so many times in a class or function such that even a single @@ statement and 3 lines of context cannot uniquely identify the snippet of code, you can use multiple `@@` statements to jump to the right context. For instance:
+
+  @@ class BaseClass
+  @@ 	def method():
+  [3 lines of pre-context]
+  - [old_code]
+  + [new_code]
+  [3 lines of post-context]
+
+  Note, then, that we do not use line numbers in this diff format, as the context is enough to uniquely identify code. An example of a message that you might pass as "input" to this function, in order to apply a patch, is shown below.
+
+  %%bash
+  apply_patch <<"EOF"
+  *** Begin Patch
+  *** Update File: pygorithm/searching/binary_search.py
+  @@ class BaseClass
+  @@     def search():
+  -          pass
+  +          raise NotImplementedError()
+
+  @@ class Subclass
+  @@     def search():
+  -          pass
+  +          raise NotImplementedError()
+
+  *** End Patch
+  EOF
+
+PROMPT
+
+tool = {
+  name: "apply_patch",
+  description: APPLY_PATCH_TOOL_DESC,
+  parameters: {
+    type: "object",
+    properties: {input: {type: "string", description: "The apply_patch command to execute."}},
+    required: ["input"]
+  }
+}
+puts(JSON.generate(tool))
+```
+
 
 ### Reference Implementation: apply_patch.py
 
@@ -87896,6 +88864,12 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```ruby
+response = client.responses.create(
+  model: "gpt-5.1", input: response_input, tools: [{type: :apply_patch}]
+)
+```
+
 
 When the model decides to execute an apply_patch tool, you will receive an apply_patch_call function type within the response stream. Within the operation object, you’ll receive a type field (with one of `create_file`, `update_file`, or `delete_file`) and the diff to implement.
 
@@ -87932,6 +88906,15 @@ When the model decides to execute an apply_patch tool, you will receive an apply
 }
 ```
 
+```ruby
+output = {
+  type: :apply_patch_call_output,
+  call_id: call_id,
+  status: success ? :completed : :failed,
+  output: log_output
+}
+```
+
 
 #### Using the shell tool
 
@@ -87941,6 +88924,10 @@ The shell tool is invoked in the same way as apply_patch: include it as a tool o
 
 ```python
 tools = [{"type": "shell"}]
+```
+
+```ruby
+tools = [{type: :shell}]
 ```
 
 
@@ -89627,6 +90614,62 @@ for item in response_cfg.output:
         # *** End Patch
 ```
 
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+input = <<~PROMPT
+  Add a cancel button next to the save button in app/page.tsx.
+  Current file contents:
+  export default function Page() { return <button>Save</button>; }
+PROMPT
+response = client.responses.create(
+  model: "gpt-5.3-codex", input: input,
+  tools: [{type: :apply_patch}], parallel_tool_calls: false
+)
+response.output.each do |item|
+  pp(item.operation) if item.is_a?(OpenAI::Responses::ResponseApplyPatchToolCall)
+end
+
+APPLY_PATCH_GRAMMAR = <<~GRAMMAR
+
+  start: begin_patch hunk+ end_patch
+  begin_patch: "*** Begin Patch" LF
+  end_patch: "*** End Patch" LF?
+
+  hunk: add_hunk | delete_hunk | update_hunk
+  add_hunk: "*** Add File: " filename LF add_line+
+  delete_hunk: "*** Delete File: " filename LF
+  update_hunk: "*** Update File: " filename LF change_move? change?
+
+  filename: /(.+)/
+  add_line: "+" /(.*)/ LF -> line
+
+  change_move: "*** Move to: " filename LF
+  change: (change_context | change_line)+ eof_line?
+  change_context: ("@@" | "@@ " /(.+)/) LF
+  change_line: ("+" | "-" | " ") /(.*)/ LF
+  eof_line: "*** End of File" LF
+
+  %import common.LF
+
+GRAMMAR
+
+response = client.responses.create(
+  model: "gpt-5.3-codex", input: input,
+  tools: [{
+    type: :custom, name: "apply_patch",
+    description: "Apply a patch to update files.",
+    format: {type: :grammar, syntax: :lark, definition: APPLY_PATCH_GRAMMAR}
+  }],
+  parallel_tool_calls: false
+)
+response.output.each do |item|
+  puts(item.input) if item.is_a?(OpenAI::Responses::ResponseCustomToolCall)
+end
+```
+
 
 Patches objects the Responses API tool can be implemented by following this [example](https://github.com/openai/openai-agents-python/blob/main/examples/tools/apply_patch.py) and patches from the freeform tool can be applied with the logic in our canonical GPT-5 [apply_patch.py](https://github.com/openai/openai-cookbook/blob/main/examples/gpt-5/apply_patch.py%20) implementation.
 
@@ -89790,6 +90833,37 @@ PROMPT_TOOL_USE_DIRECTIVE = (
     "- Strictly avoid raw `cmd`/terminal for Git operations. Use the dedicated "
     "`git` tool instead."
 )
+```
+
+```ruby
+require "json"
+
+GIT_TOOL = {
+  "type" => "function",
+  "name" => "git",
+  "description" => "Execute a git command in the repository root. Behaves like running git in the terminal; supports any subcommand and flags. The command can be provided as a full git invocation (e.g., `git status -sb`) or just the arguments after git (e.g., `status -sb`).",
+  "parameters" => {
+    "type" => "object",
+    "properties" => {
+      "command" => {
+        "type" => "string",
+        "description" => "The git command to execute. Accepts either a full git invocation or only the subcommand/args."
+      },
+      "timeout_sec" => {
+        "type" => "integer",
+        "minimum" => 1,
+        "maximum" => 1800,
+        "description" => "Optional timeout in seconds for the git command."
+      }
+    },
+    "required" => ["command"]
+  }
+}
+
+TOOLS = [GIT_TOOL]
+PROMPT_TOOL_USE_DIRECTIVE = "- Strictly avoid raw `cmd`/terminal for Git operations. Use the dedicated `git` tool instead."
+puts(JSON.generate(TOOLS))
+puts(PROMPT_TOOL_USE_DIRECTIVE)
 ```
 
 
@@ -91408,7 +92482,7 @@ Teams can overlook these features because they sit partly in API configuration a
 - **Reasoning effort:** Use `reasoning.effort` to choose between `low`, `medium`, `high`, or `xhigh`. The default is `medium`, but many workloads will perform well with `low`. Reserve `none` for use cases where low latency is more important than intelligence. See [Reasoning Models](https://developers.openai.com/api/docs/guides/reasoning) for detailed recommendations.
 - **Verbosity:** Use `text.verbosity` to control output length. Treat final answer length as separate from reasoning quality; specify word budgets, section counts, table widths, or JSON-only output where needed.
 - **Structured Outputs:** Avoid describing the expected output schema in the prompt. Use [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs) for automatic validation and increased accuracy.
-- **Prompt caching:** [Prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching) works automatically for eligible long prompts and can reduce latency and input-token cost. To maximize cache hits, keep stable content at the beginning of the request. Put dynamic user-specific context near the end. For repeated traffic with common prefixes, use `prompt_cache_key` consistently and track `usage.prompt_tokens_details.cached_tokens`.
+- **Prompt caching:** [Prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching) works automatically for eligible long prompts and can reduce latency and input-token cost. To maximize cache hits, keep stable content at the beginning of the request. Put dynamic user-specific context near the end. Track `usage.prompt_tokens_details.cached_tokens` to measure reuse. Use an optional [`prompt_cache_key`](https://developers.openai.com/api/docs/guides/prompt-caching#separate-prompts-with-cache-keys) to maintain separate cache accounting for customers or users, making cached token usage and billing easier to explain for each group. This also helps prevent cache-hit probing across users.
 - **Tool calling:** GPT-5.5 supports the same tool-calling patterns as GPT-5.4, including function tools and tool-heavy agent workflows. Put most tool-specific guidance in the tool descriptions themselves: what the tool does, when to use it, required inputs, side effects, retry safety, and common error modes. Add tool-specific context to system instructions only when it applies across tools or materially changes the agent's operating policy.
 - **Hosted tools and tool search:** Prefer [OpenAI-hosted tools](https://developers.openai.com/api/docs/guides/tools) where they fit the workflow, such as web search, file search, code interpreter, image generation, and computer use. Hosted tools reduce custom orchestration burden and keep common tool patterns aligned with the Responses API and Agents SDK. Use custom function tools when you need to call your own systems, enforce domain-specific side effects, or expose internal business workflows. For large tool catalogs, consider using [tool search](https://developers.openai.com/api/docs/guides/tools-tool-search) to defer tool definitions and load only the relevant subset.
 - **Tool preambles:** Preambles can improve chat UX because the user sees an initial, useful status update before the model generates the final response. They also make tool use easier to follow: the model can state what it's about to check or do, then continue from that same assistant state after tool results arrive.
@@ -99854,7 +100928,7 @@ Because the connection stays open and each turn sends only incremental input, We
 
 ## Connect and create responses
 
-Install the WebSocket dependencies with `pip install "openai[realtime]>=3.8.0"` for Python or `npm install openai@^7.10.0 ws` for JavaScript.
+Install the WebSocket dependencies with `pip install "openai[realtime]>=3.8.0"` for Python, `npm install openai@^7.10.0 ws` for JavaScript, or `gem install openai async-websocket` for Ruby.
 
 In WebSocket mode, start each turn by sending a `response.create` event from the client. The payload mirrors the normal [Responses create body](https://developers.openai.com/api/reference/resources/responses/methods/create), except that transport-specific fields like `stream` and `background` are not used.
 
@@ -99929,6 +101003,47 @@ with client.responses.connect() as connection:
             break
         if event.type in {"response.failed", "response.incomplete", "error"}:
             raise RuntimeError(event.to_json())
+```
+
+```ruby
+require "async"
+require "async/http/endpoint"
+require "async/websocket/client"
+require "json"
+
+def wait_for_response(connection)
+  while (message = connection.read)
+    event = JSON.parse(message.to_str)
+    case event.fetch("type")
+    when "response.completed" then return event.fetch("response")
+    when "response.failed", "response.incomplete", "error"
+      raise "Response failed: #{JSON.generate(event)}"
+    end
+  end
+  raise "Connection closed before the response finished"
+end
+
+def print_response(response)
+  response.fetch("output").each do |item|
+    next unless item["type"] == "message"
+    item.fetch("content").each { |part| puts(part.fetch("text")) if part["type"] == "output_text" }
+  end
+end
+
+endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/responses", timeout: 10, alpn_protocols: ["http/1.1"])
+headers = {"Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}"}
+Sync do |task|
+  task.with_timeout(120) do
+    Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|
+      connection.write(JSON.generate(
+        type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
+        input: [{role: "user", content: "Find fizz_buzz()"}], tools: []
+      ))
+      connection.flush
+      print_response(wait_for_response(connection))
+    end
+  end
+end
 ```
 
 
@@ -100103,6 +101218,70 @@ with client.responses.connect() as connection:
     print(wait_for_response(connection).output_text)
 ```
 
+```ruby
+require "async"
+require "async/http/endpoint"
+require "async/websocket/client"
+require "json"
+
+def wait_for_response(connection)
+  while (message = connection.read)
+    event = JSON.parse(message.to_str)
+    case event.fetch("type")
+    when "response.completed" then return event.fetch("response")
+    when "response.failed", "response.incomplete", "error"
+      raise "Response failed: #{JSON.generate(event)}"
+    end
+  end
+  raise "Connection closed before the response finished"
+end
+
+def print_response(response)
+  response.fetch("output").each do |item|
+    next unless item["type"] == "message"
+    item.fetch("content").each { |part| puts(part.fetch("text")) if part["type"] == "output_text" }
+  end
+end
+
+tools = [{
+  type: "function", name: "get_test_results", description: "Read the demo test results.",
+  parameters: {type: "object", properties: {}, required: [], additionalProperties: false}, strict: true
+}]
+
+endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/responses", timeout: 10, alpn_protocols: ["http/1.1"])
+headers = {"Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}"}
+Sync do |task|
+  task.with_timeout(120) do
+    Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|
+      connection.write(JSON.generate(
+        type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
+        input: "Find the failing test and suggest a fix.", tools: tools,
+        tool_choice: {type: "function", name: "get_test_results"}, parallel_tool_calls: false
+      ))
+      connection.flush
+      response = wait_for_response(connection)
+      call = response.fetch("output").find { |item| item["type"] == "function_call" }
+      unless call && call["name"] == "get_test_results" && JSON.parse(call.fetch("arguments")) == {}
+        raise "Expected a get_test_results call with no arguments"
+      end
+      # Demo data. Replace this with your test runner.
+      result = {test: "test_fizz_buzz", failure: 'Expected "FizzBuzz" for 15, got "Fizz".'}
+      connection.write(JSON.generate(
+        type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
+        previous_response_id: response.fetch("id"),
+        input: [
+          {type: "function_call_output", call_id: call.fetch("call_id"), output: JSON.generate(result)},
+          {role: "user", content: "Now optimize it."}
+        ],
+        tools: tools, tool_choice: "none"
+      ))
+      connection.flush
+      print_response(wait_for_response(connection))
+    end
+  end
+end
+```
+
 
 ## How continuation works
 
@@ -100219,6 +101398,57 @@ with client.responses.connect() as connection:
             break
         if event.type in {"response.failed", "response.incomplete", "error"}:
             raise RuntimeError(event.to_json())
+```
+
+```ruby
+require "async"
+require "async/http/endpoint"
+require "async/websocket/client"
+require "json"
+
+require "openai"
+
+def wait_for_response(connection)
+  while (message = connection.read)
+    event = JSON.parse(message.to_str)
+    case event.fetch("type")
+    when "response.completed" then return event.fetch("response")
+    when "response.failed", "response.incomplete", "error"
+      raise "Response failed: #{JSON.generate(event)}"
+    end
+  end
+  raise "Connection closed before the response finished"
+end
+
+def print_response(response)
+  response.fetch("output").each do |item|
+    next unless item["type"] == "message"
+    item.fetch("content").each { |part| puts(part.fetch("text")) if part["type"] == "output_text" }
+  end
+end
+
+client = OpenAI::Client.new
+compacted = client.responses.compact(
+  model: "gpt-6-astra",
+  input: [{role: :user, content: "Find the failing test."}]
+)
+next_input = compacted.output.map(&:to_h)
+next_input << {role: :user, content: "Continue from here."}
+
+endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/responses", timeout: 10, alpn_protocols: ["http/1.1"])
+headers = {"Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}"}
+Sync do |task|
+  task.with_timeout(120) do
+    Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|
+      connection.write(JSON.generate(
+        type: "response.create", stream_id: "main", model: "gpt-6-astra", store: false,
+        input: next_input, tools: []
+      ))
+      connection.flush
+      print_response(wait_for_response(connection))
+    end
+  end
+end
 ```
 
 
@@ -100505,6 +101735,66 @@ with client.responses.connect() as connection:
         previous_response_id=planner_response_id,
     )
     drain_until_complete(connection, {"critic", "planner"})
+```
+
+```ruby
+require "async"
+require "async/http/endpoint"
+require "async/websocket/client"
+require "json"
+
+def send_create(connection, stream_id, text, previous_response_id = nil)
+  payload = {
+    type: "response.create", stream_id: stream_id, model: "gpt-6-astra", store: false,
+    input: [{role: "user", content: text}]
+  }
+  payload[:previous_response_id] = previous_response_id if previous_response_id
+  connection.write(JSON.generate(payload))
+  connection.flush
+end
+
+def read_event(connection)
+  message = connection.read or raise "Connection closed before all responses finished"
+  event = JSON.parse(message.to_str)
+  if ["response.failed", "response.incomplete", "error"].include?(event["type"])
+    raise "Response failed: #{JSON.generate(event)}"
+  end
+  event
+end
+
+def drain_responses(connection, lanes, latest_ids)
+  remaining = lanes.dup
+  until remaining.empty?
+    event = read_event(connection)
+    lane = event["stream_id"]
+    next unless remaining.include?(lane) && event["type"] == "response.completed"
+    latest_ids[lane] = event.fetch("response").fetch("id")
+    remaining.delete(lane)
+  end
+end
+
+endpoint = Async::HTTP::Endpoint.parse("wss://api.openai.com/v1/responses", timeout: 10, alpn_protocols: ["http/1.1"])
+headers = {"Authorization" => "Bearer #{ENV.fetch("OPENAI_API_KEY")}"}
+Sync do |task|
+  task.with_timeout(120) do
+    Async::WebSocket::Client.connect(endpoint, headers: headers) do |connection|
+      latest_ids = {}
+      send_create(connection, "planner", "Draft a deployment plan for a stateless API service.")
+      send_create(connection, "research", "List common deployment risks for a stateless API service.")
+      drain_responses(connection, ["planner", "research"], latest_ids)
+      parent_id = latest_ids.fetch("planner")
+      send_create(connection, "critic", "Find gaps in this deployment plan.", parent_id)
+      # Let the fork load its parent before advancing the original lane's cache.
+      loop do
+        event = read_event(connection)
+        break if event["type"] == "response.in_progress" && event["stream_id"] == "critic"
+      end
+      send_create(connection, "planner", "Add rollback and monitoring steps.", parent_id)
+      drain_responses(connection, ["critic", "planner"], latest_ids)
+      puts(JSON.generate(latest_ids))
+    end
+  end
+end
 ```
 
 
@@ -102044,7 +103334,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.60.0</version>
+  <version>4.61.0</version>
 </dependency>
 ```
 
@@ -103508,7 +104798,7 @@ Standard
 | davinci-002 | $2.00 | - | - | $2.00 | - | - | - | - |
 | babbage-002 | $0.40 | - | - | $0.40 | - | - | - | - |
 
-Regional processing (data residency) endpoints are charged a 10% uplift for models released on or after March 5, 2026, that are eligible for data residency. See our [Your data](https://developers.openai.com/api/docs/guides/your-data) guide for supported regions and processing details. [OpenAI models in Amazon Bedrock](https://developers.openai.com/api/docs/guides/amazon-bedrock) are billed through AWS and may differ from direct OpenAI pricing. Priority processing was renamed Fast mode on July 30, 2026. You can use either `service_tier: "priority"` or `service_tier: "fast"` in your API requests. [Learn more about Fast mode](https://developers.openai.com/api/docs/guides/fast-mode). GPT-5.6 Sol’s promotional pricing is available at least through November 21, 2026.
+Regional processing (data residency) endpoints are charged a 10% uplift for models released on or after March 5, 2026, that are eligible for data residency. See our [Your data](https://developers.openai.com/api/docs/guides/your-data) guide for supported regions and processing details. [OpenAI models in Amazon Bedrock](https://developers.openai.com/api/docs/guides/amazon-bedrock) are billed through AWS. Bedrock pricing in commercial regions matches OpenAI direct pricing for equivalent services. Priority processing was renamed Fast mode on July 30, 2026. You can use either `service_tier: "priority"` or `service_tier: "fast"` in your API requests. [Learn more about Fast mode](https://developers.openai.com/api/docs/guides/fast-mode). GPT-5.6 Sol’s promotional pricing is available at least through November 21, 2026.
 
     
 
@@ -104225,7 +105515,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.60.0</version>
+  <version>4.61.0</version>
 </dependency>
 ```
 

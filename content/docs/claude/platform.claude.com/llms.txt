@@ -12,7 +12,7 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 699 pages - /docs - Content included below
+- English (en) - 700 pages - /docs - Content included below
 - German (Deutsch) (de) - 249 pages - /docs/de - Visit website for content
 - Spanish (Español) (es) - 249 pages - /docs/es - Visit website for content
 - French (Français) (fr) - 249 pages - /docs/fr - Visit website for content
@@ -198,6 +198,7 @@ The full documentation is available in the following languages on https://platfo
 - [Overview](https://platform.claude.com/docs/en/about-claude/use-case-guides/overview.md) - Guides to common use cases
 - [Overview](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview.md) - Prompt engineering overview
 - [Additional resources](https://platform.claude.com/docs/en/about-claude/additional-resources.md)
+- [Commerce agent](https://platform.claude.com/docs/en/about-claude/use-case-guides/commerce-agents.md)
 - [Content moderation](https://platform.claude.com/docs/en/about-claude/use-case-guides/content-moderation.md)
 - [Customer support agent](https://platform.claude.com/docs/en/about-claude/use-case-guides/customer-support-chat.md)
 - [Define success and build evaluations](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests.md) - Define success criteria and build evaluations

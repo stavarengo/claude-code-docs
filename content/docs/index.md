@@ -10,7 +10,7 @@ claude/platform.claude.com:{llms.txt}
 claude/platform.claude.com/docs/en:{claude_api_primer.md,get-api-key.md,get-started.md,home.md,intro.md}
 claude/platform.claude.com/docs/en/about-claude:{additional-resources.md,glossary.md,model-deprecations.md,pricing.md}
 claude/platform.claude.com/docs/en/about-claude/models:{choosing-a-model.md,migration-guide.md,model-ids-and-versions.md,optimizing-for-cost-and-intelligence.md}
-claude/platform.claude.com/docs/en/about-claude/use-case-guides:{content-moderation.md,customer-support-chat.md,legal-summarization.md,overview.md,ticket-routing.md}
+claude/platform.claude.com/docs/en/about-claude/use-case-guides:{commerce-agents.md,content-moderation.md,customer-support-chat.md,legal-summarization.md,overview.md,ticket-routing.md}
 claude/platform.claude.com/docs/en/agents-and-tools:{mcp-connector.md,remote-mcp-servers.md}
 claude/platform.claude.com/docs/en/agents-and-tools/agent-skills:{best-practices.md,claude-api-skill.md,enterprise.md,overview.md,quickstart.md}
 claude/platform.claude.com/docs/en/agents-and-tools/mcp-tunnels:{concepts.md,console.md,deploy-compose.md,deploy-helm.md,overview.md,quickstart.md,reference.md,security.md,troubleshooting.md}
