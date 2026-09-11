@@ -30,6 +30,7 @@ Landscape: 1280x720 | $0.1 | second |
 
 | Endpoint | Route | Support |
 | --- | --- | --- |
+| Live | `v1/live/sessions` | Not supported |
 | Chat Completions | `v1/chat/completions` | Not supported |
 | Responses | `v1/responses` | Not supported |
 | Realtime | `v1/realtime` | Not supported |

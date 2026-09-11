@@ -18,6 +18,7 @@ GPT Image 2 is our state-of-the-art image generation model for fast, high-qualit
 
 | Endpoint | Route | Support |
 | --- | --- | --- |
+| Live | `v1/live/sessions` | Not supported |
 | Chat Completions | `v1/chat/completions` | Not supported |
 | Responses | `v1/responses` | Not supported |
 | Realtime | `v1/realtime` | Not supported |

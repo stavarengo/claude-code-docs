@@ -20,6 +20,7 @@ Moderation models are free models designed to detect harmful content. This is ou
 
 | Endpoint | Route | Support |
 | --- | --- | --- |
+| Live | `v1/live/sessions` | Not supported |
 | Chat Completions | `v1/chat/completions` | Not supported |
 | Responses | `v1/responses` | Not supported |
 | Realtime | `v1/realtime` | Not supported |

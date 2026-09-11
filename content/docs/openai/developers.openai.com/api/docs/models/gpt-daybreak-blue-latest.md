@@ -26,6 +26,7 @@ This model requires separate approval and provisioning, you can apply to join th
 
 | Endpoint | Route | Support |
 | --- | --- | --- |
+| Live | `v1/live/sessions` | Not supported |
 | Chat Completions | `v1/chat/completions` | Not supported |
 | Responses | `v1/responses` | Supported |
 | Realtime | `v1/realtime` | Not supported |

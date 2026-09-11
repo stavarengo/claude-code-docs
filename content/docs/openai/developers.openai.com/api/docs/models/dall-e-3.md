@@ -18,6 +18,7 @@ DALL·E 3 has been deprecated and removed from the API. We recommend [GPT-Image-
 
 | Endpoint | Route | Support |
 | --- | --- | --- |
+| Live | `v1/live/sessions` | Not supported |
 | Chat Completions | `v1/chat/completions` | Not supported |
 | Responses | `v1/responses` | Not supported |
 | Realtime | `v1/realtime` | Not supported |

@@ -33,6 +33,7 @@ H100 GPU (117B parameters with 5.1B active parameters).
 
 | Endpoint | Route | Support |
 | --- | --- | --- |
+| Live | `v1/live/sessions` | Not supported |
 | Chat Completions | `v1/chat/completions` | Not supported |
 | Responses | `v1/responses` | Supported |
 | Realtime | `v1/realtime` | Not supported |
