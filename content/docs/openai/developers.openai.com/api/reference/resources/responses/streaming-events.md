@@ -7,6 +7,14 @@ When you [create a Response](https://developers.openai.com/api/reference/resourc
 client as the Response is generated. This section contains the events that
 are emitted by the server.
 
+When processing a `compaction_trigger`, `response.compaction.compacting`
+reports newly sampled summary output at most once every 30 seconds. It
+carries no summary content and does not modify the compaction output item.
+The existing `response.output_item.added` and `response.output_item.done`
+events mark that item's lifecycle; `response.output_item.done` carries its
+final encrypted content. A short compaction may finish without emitting a
+progress event.
+
 [Learn more about streaming responses](https://developers.openai.com/api/docs/guides/streaming-responses).
 
 <a id="response.created"></a>
@@ -68738,6 +68746,45 @@ Schema name: `ResponseAudioTranscriptDoneEvent`
   "type": "response.audio.transcript.done",
   "response_id": "resp_123",
   "sequence_number": 1
+}
+```
+
+<a id="response.compaction.compacting"></a>
+
+## response.compaction.compacting
+
+Emitted when new summary content is sampled for a compaction trigger. Contains no summary content.
+
+### Schema
+
+Schema name: `ResponseCompactionCompactingStreamingEvent`
+
+- `item_id: string`
+
+  The ID of the compaction output item.
+
+- `output_index: number`
+
+  The index of the compaction output item.
+
+- `sequence_number: number`
+
+  The sequence number of the event that was emitted.
+
+- `type: "response.compaction.compacting"`
+
+  The type of the event, always `response.compaction.compacting`.
+
+  - `"response.compaction.compacting"`
+
+### Example
+
+```json
+{
+  "type": "response.compaction.compacting",
+  "sequence_number": 0,
+  "output_index": 0,
+  "item_id": "item_id"
 }
 ```
 

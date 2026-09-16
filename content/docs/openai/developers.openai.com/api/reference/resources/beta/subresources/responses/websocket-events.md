@@ -18377,6 +18377,8 @@ Schema name: `BetaResponseInjectFailedEvent`
 
 These events use the same payloads over WebSocket and
 [HTTP streaming](https://developers.openai.com/api/reference/resources/responses/streaming-events).
+Compaction progress follows the same cadence and output-item lifecycle
+described in HTTP streaming.
 
 <a id="response.created"></a>
 
@@ -99797,6 +99799,62 @@ Schema name: `BetaResponseAudioTranscriptDoneEvent`
   "type": "response.audio.transcript.done",
   "response_id": "resp_123",
   "sequence_number": 1
+}
+```
+
+<a id="response.compaction.compacting"></a>
+
+### response.compaction.compacting
+
+Emitted when new summary content is sampled for a compaction trigger. Contains no summary content.
+
+#### Schema
+
+Schema name: `BetaResponseCompactionCompactingStreamingEvent`
+
+- `item_id: string`
+
+  The ID of the compaction output item.
+
+- `output_index: number`
+
+  The index of the compaction output item.
+
+- `sequence_number: number`
+
+  The sequence number of the event that was emitted.
+
+- `type: "response.compaction.compacting"`
+
+  The type of the event, always `response.compaction.compacting`.
+
+  - `"response.compaction.compacting"`
+
+- `agent: optional object { agent_name }`
+
+  The agent that owns this multi-agent streaming event.
+
+  - `agent_name: string`
+
+    The canonical name of the agent that produced this item.
+
+- `stream_id: optional string`
+
+  The WebSocket lane that emitted this event. This field is present
+  when the originating `response.create` event supplied a
+  `stream_id`.
+
+#### Example
+
+```json
+{
+  "type": "response.compaction.compacting",
+  "sequence_number": 0,
+  "agent": {
+    "agent_name": "agent_name"
+  },
+  "output_index": 0,
+  "item_id": "item_id"
 }
 ```
 
