@@ -16705,9 +16705,21 @@ puts result
 
 Each session has its own conversation and work. See the [Agents API reference](https://developers.openai.com/api/reference/resources/beta/subresources/agents) to list, retrieve, update, or delete saved agents. Credentials stay in [vaults](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults), separate from the saved configuration.
 
+## Update a saved agent
+
+Saved-agent updates apply only to new sessions. Each session copies the saved configuration when you create it and keeps those settings for later turns. To change an existing session, [update its settings](#update-settings-for-an-existing-session).
+
+When updating a saved agent:
+
+- Omitted fields keep their saved values. Changing only `model` preserves `reasoning`, `service_tier`, and `text`.
+- Supplied objects replace the whole field. Supplying `reasoning` with only `effort` also clears the saved `summary`.
+- `null` resets fields that accept it. For example, `reasoning: null` restores the model's default effort.
+
+Change or reset any settings the new model does not support in the same request.
+
 ## Override settings for one session
 
-Include both `agent_id` and `agent` to customize a session that uses a saved agent. The session inherits omitted settings, including the model.
+Include both `agent_id` and `agent` when creating a session to customize a saved agent's configuration. The session copies omitted settings, including the model, from the saved agent at creation time.
 
 Replace the illustrative `agent_123` value with the saved agent's ID before running this example:
 
@@ -16856,6 +16868,33 @@ puts result
 Overrides apply only to that session. They do not change the saved agent or other sessions. Supplied objects and arrays replace the entire field rather than merging with the saved value. For example, supplying `tools` replaces the saved tool list.
 
 See the [Create session reference](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/methods/create) for request fields.
+
+## Update settings for an existing session
+
+Send `POST /v1/agents/sessions/{session_id}` with an `agent` object to change `model`, `reasoning.effort`, or `service_tier` for one session. These settings are available in the beta and GA API contracts. You can update `metadata` in the same request.
+
+Changes apply to new turns started by messages sent after the update completes. Messages already in flight can use the previous settings. An active turn keeps its settings, including when you send a steering message. The session keeps its conversation history. The selected model must support the resulting settings, or the update fails.
+
+- The `agent` and `reasoning` objects merge supplied fields into the current settings. Omitted fields stay unchanged, including reasoning summary. Changing only `model` preserves the session's reasoning effort and service tier.
+- `reasoning.effort: null` resets effort to the selected model's default.
+- `service_tier: null` restores automatic tier selection.
+- A model must remain set, so you cannot supply `model: null`. The `agent` and `reasoning` objects also reject `null`.
+- `metadata` replaces the full map. Omit it to preserve metadata, or pass `null` or `{}` to clear it.
+
+For example, this request changes reasoning effort and lets the API select the service tier automatically:
+
+```json
+{
+  "agent": {
+    "reasoning": { "effort": "low" },
+    "service_tier": null
+  }
+}
+```
+
+Updating a session does not change the saved agent or other sessions. Later saved-agent updates do not change the session.
+
+You cannot update `reasoning.summary`, `text`, `tools`, `instructions`, or `multi_agent` through this endpoint. Create a new session to change those settings.
 
 ## Environment settings
 
@@ -28988,7 +29027,7 @@ options.Tools.Add(
     ResponseTool.CreateMcpTool(
         "mycompany_mcp_server",
         new Uri(serverUrl),
-        toolCallApprovalPolicy: GlobalMcpToolCallApprovalPolicy.NeverRequireApproval
+        toolCallApprovalPolicy: DefaultMcpToolCallApprovalPolicy.NeverRequireApproval
     )
 );
 options.InputItems.Add(
@@ -51088,7 +51127,7 @@ options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "dmcp",
         serverUri: new Uri("https://dmcp-server.deno.dev/mcp"),
-        toolCallApprovalPolicy: GlobalMcpToolCallApprovalPolicy.NeverRequireApproval
+        toolCallApprovalPolicy: DefaultMcpToolCallApprovalPolicy.NeverRequireApproval
     )
 );
 options.InputItems.Add(ResponseItem.CreateUserMessageItem("Roll 2d4+1"));
@@ -51280,7 +51319,7 @@ options.Tools.Add(
         serverLabel: "Dropbox",
         connectorId: McpToolConnectorId.Dropbox,
         authorizationToken: dropboxToken,
-        toolCallApprovalPolicy: GlobalMcpToolCallApprovalPolicy.NeverRequireApproval
+        toolCallApprovalPolicy: DefaultMcpToolCallApprovalPolicy.NeverRequireApproval
     )
 );
 options.InputItems.Add(
@@ -51549,7 +51588,7 @@ options.Tools.Add(
         serverLabel: "dmcp",
         serverUri: new Uri("https://dmcp-server.deno.dev/mcp"),
         allowedTools: new McpToolFilter() { ToolNames = { "roll" } },
-        toolCallApprovalPolicy: GlobalMcpToolCallApprovalPolicy.NeverRequireApproval
+        toolCallApprovalPolicy: DefaultMcpToolCallApprovalPolicy.NeverRequireApproval
     )
 );
 options.InputItems.Add(ResponseItem.CreateUserMessageItem("Roll 2d4+1"));
@@ -51790,7 +51829,7 @@ options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "dmcp",
         serverUri: new Uri("https://dmcp-server.deno.dev/mcp"),
-        toolCallApprovalPolicy: GlobalMcpToolCallApprovalPolicy.AlwaysRequireApproval
+        toolCallApprovalPolicy: DefaultMcpToolCallApprovalPolicy.AlwaysRequireApproval
     )
 );
 
@@ -52391,7 +52430,7 @@ options.Tools.Add(
         serverLabel: "google_calendar",
         connectorId: McpToolConnectorId.GoogleCalendar,
         authorizationToken: authToken,
-        toolCallApprovalPolicy: GlobalMcpToolCallApprovalPolicy.NeverRequireApproval
+        toolCallApprovalPolicy: DefaultMcpToolCallApprovalPolicy.NeverRequireApproval
     )
 );
 options.InputItems.Add(
@@ -62952,6 +62991,8 @@ This is a relatively straightforward way to control access, but you must be vigi
 We strongly recommend setting an expiration date when you create a project API key and establishing a regular key rotation process. Before a key expires, create a replacement, update your applications to use it, and revoke the old key once you've verified that the replacement works.
 
 Administrators can enforce a maximum API key lifetime at the organization or project level in [Platform settings](https://platform.openai.com/settings/organization/general). New keys must expire within the configured limit, preventing them from remaining valid indefinitely. Project limits cannot exceed the organization limit.
+
+The **API Key Governance** section in Platform settings lets organization and project administrators restrict the types of API keys that can be created. Administrators can allow only service-account keys, allow only user-owned project keys, or disable all new API key creation. Organization-level restrictions always take precedence: project settings can add restrictions but cannot loosen organization-level restrictions. These controls apply only to new key creation; existing API keys are unaffected.
 
 API key usage can be monitored on the [Usage page](https://platform.openai.com/usage) once tracking is enabled. If you are using an API key generated prior to Dec 20, 2023 tracking will not be enabled by default. You can enable tracking going forward on the [API key management dashboard](https://platform.openai.com/api-keys). All API keys generated past Dec 20, 2023 have tracking enabled. Any previous untracked usage will be displayed as `Untracked` in the dashboard.
 
@@ -82380,6 +82421,8 @@ See [Events and Items](https://developers.openai.com/api/docs/guides/agents-api/
 ## Continue or steer the work
 
 Send another `agent.session.input.message` to the same session. If the agent is working, the message steers the active turn. If the session is idle, it starts a new turn with the existing conversation.
+
+Saved-agent updates apply only to new sessions. To change the model, reasoning effort, or service tier for later turns in this session, [update its settings](https://developers.openai.com/api/docs/guides/agents-api/configuration#update-settings-for-an-existing-session).
 
 Use the conversation's session ID to send input. Subscribe to its [event stream](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/subresources/events/methods/stream) before sending the message so your application receives the turn's early events.
 
@@ -105399,7 +105442,7 @@ options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "dmcp",
         serverUri: new Uri("https://dmcp-server.deno.dev/mcp"),
-        toolCallApprovalPolicy: GlobalMcpToolCallApprovalPolicy.NeverRequireApproval
+        toolCallApprovalPolicy: DefaultMcpToolCallApprovalPolicy.NeverRequireApproval
     )
 );
 options.InputItems.Add(ResponseItem.CreateUserMessageItem("Roll 2d4+1"));
@@ -118403,7 +118446,7 @@ options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "dmcp",
         serverUri: new Uri("https://dmcp-server.deno.dev/mcp"),
-        toolCallApprovalPolicy: GlobalMcpToolCallApprovalPolicy.NeverRequireApproval
+        toolCallApprovalPolicy: DefaultMcpToolCallApprovalPolicy.NeverRequireApproval
     )
 );
 options.InputItems.Add(ResponseItem.CreateUserMessageItem("Roll 2d4+1"));

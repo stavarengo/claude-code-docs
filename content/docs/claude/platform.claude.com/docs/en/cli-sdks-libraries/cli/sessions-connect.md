@@ -6,7 +6,7 @@ description: Attach the ant CLI to a Claude Managed Agents session to follow its
 
 `ant beta:sessions connect` attaches your terminal to an existing Claude Managed Agents [session](https://platform.claude.com/docs/en/managed-agents/sessions). It loads the session's transcript and follows it live as the agent works. You can also step in: send a message, interrupt the agent, or allow or deny a tool call that is waiting for approval. With `--web`, it opens the session in the Claude Console's session viewer in your browser instead.
 
-To install or update the CLI and authenticate, see the [CLI quickstart](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/quickstart).
+The command requires version 1.32.0 or later of the CLI. To install or update the CLI and authenticate, see the [CLI quickstart](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/quickstart).
 
 ## Connect to a session
 
