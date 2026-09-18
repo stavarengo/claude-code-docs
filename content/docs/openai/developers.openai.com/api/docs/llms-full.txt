@@ -3635,11 +3635,11 @@ Try these complete examples:
 
 Explore complete applications:
 
-- [Incident response agent](https://developers.openai.com/showcase/agents-api-sev-bot): investigate alerts and request approval for recovery actions.
-- [Slack bot](https://developers.openai.com/showcase/agents-api-slack-bot): investigate requests using connected workplace tools.
-- [Data analyst](https://developers.openai.com/showcase/agents-api-data-analyst): answer warehouse questions with read-only SQL.
-- [GitHub issue investigator](https://developers.openai.com/showcase/agents-api-github-issues): reproduce reported bugs and share findings on GitHub.
-- [Document reviewer](https://developers.openai.com/showcase/agents-api-document-review): review documents with policy skills and specialist agents.
+- [Incident response agent](https://developers.openai.com/cookbook/examples/agents_api/apps/sev_bot/readme): investigate alerts and request approval for recovery actions.
+- [Slack bot](https://developers.openai.com/cookbook/examples/agents_api/apps/slack_bot/readme): investigate requests using connected workplace tools.
+- [Data analyst](https://developers.openai.com/cookbook/examples/agents_api/apps/data_analyst/readme): answer warehouse questions with read-only SQL.
+- Use the [GitHub issue investigator](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/apps/github_issues) to reproduce reported bugs and share findings on GitHub.
+- Use the [document reviewer](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/apps/document_review) to review documents with policy skills and specialist agents.
 
 ## Core concepts
 
@@ -26990,15 +26990,7 @@ The response includes `input_tokens` (integer) and `object: "response.input_toke
 
 # CSAM guidance
 
-{/* This guide necessarily discusses sexual abuse, so these profanity heuristics don't apply. */}
-{/* vale alex.ProfanityMaybe = NO */}
-{/* vale alex.ProfanityUnlikely = NO */}
-{/* "Potentially" preserves uncertainty in classifier and policy language. */}
-{/* vale Microsoft.Adverbs = NO */}
-
-
-
-    {"OpenAI developed this resource with expert input from the "}
+{"OpenAI developed this resource with expert input from the "}
     {", "}
     {", the "}
     {", and the "}
@@ -29247,9 +29239,6 @@ Compare latency, task success, and cost on your own workload when [evaluating yo
 
 Choose the mode when you create the session; to change modes, start a new session.
 
-{/* prettier-ignore */}
-
-
 ## Configure Responses delegation
 
 Add this delegation configuration when [creating your Live session](https://developers.openai.com/api/docs/guides/live). Choose the Responses model independently of the voice model:
@@ -29471,6 +29460,9 @@ Use `session.thinking.append` to add information to the model's internal reasoni
 
 Repeated result appends can continue the same client delegation. An appended acknowledgment arrives after estimated context injection; it is not proof that the model has consumed or spoken the result, or that an external action succeeded.
 
+  
+
+
 
 
 ## Start with your existing backend prompt
@@ -29646,7 +29638,9 @@ In either delegation mode, use `session.thinking.append` with `delegation_id: nu
 
 If a caller types an exact value, such as an order number, pass it to the backend that handles the task. A voice-only application does not need this path. Keep the typed value as user data rather than a live-model instruction.
 
-{/* prettier-ignore */}
+
+
+  
 
 
 With Responses delegation, queue a user message for the backend:
@@ -29700,13 +29694,18 @@ Send `response.create` when ready to run or continue the backend. If it is waiti
 
 With client delegation, send the typed value directly to the backend that handles the conversation. If it corrects a running task, update that task instead of starting the same work again. You can mirror a short factual summary into the live session with `session.thinking.append`, or use `session.commentary.append` for a result the user should hear.
 
+  
+
+
 
 
 ## Add images and visual context
 
 To help a caller discuss a photo or screen, send the image and relevant context from your application to a vision-capable backend. The backend interprets the image and returns relevant text for GPT-Live to use in conversation. The Live audio frontend does not accept images directly.
 
-{/* prettier-ignore */}
+
+
+  
 
 
 With Responses delegation, configure a vision-capable backend model. Queue a supported Responses image input item with `response.item.create`, then send `response.create` to run or resume backend work. Return all required pending function results before continuing. See [Handle Responses delegation](https://developers.openai.com/api/docs/guides/live-delegation?delegation-mode=responses#handle-responses-delegation).
@@ -29718,6 +29717,9 @@ With Responses delegation, configure a vision-capable backend model. Queue a sup
 
 With client delegation, send visual input to the backend that handles delegated requests, alongside the relevant conversation and application state. Return concise findings using the [client result flow](https://developers.openai.com/api/docs/guides/live-delegation?delegation-mode=client#receive-a-client-delegation).
 
+  
+
+
 
 
 Keep backend image input separate from `session.input`, which seeds the Live frontend with text history at startup. See [Images and vision](https://developers.openai.com/api/docs/guides/images-vision) for supported image formats and model limitations.
@@ -29726,7 +29728,9 @@ Keep backend image input separate from `session.input`, which seeds the Live fro
 
 Reduce the time between a request for backend work and a useful result for the conversation. Measure [latency at each stage](https://developers.openai.com/api/docs/guides/voice-agents#measure-latency) to locate delays. Compare useful spoken response time and task success on the same scenarios, and see the [voice agent evaluation Cookbook](https://developers.openai.com/cookbook/examples/audio/voice_agent_evaluation) for evaluation guidance.
 
-{/* prettier-ignore */}
+
+
+  
 
 
 ### Responses delegation
@@ -29757,6 +29761,9 @@ Your application owns the path from delegation receipt to returning a result. Pr
 - **Avoid unnecessary buffering.** Forward a useful result as soon as it is ready. Buffer only enough to classify the output and form a coherent chunk. Prefer structured phase metadata; if you use text prefixes to distinguish progress from results, wait for the complete prefix before forwarding text.
 
 Measure the first useful spoken answer when comparing this path with Responses delegation.
+
+  
+
 
 
 
@@ -32183,11 +32190,19 @@ Fast mode is compatible with data residency, Zero Data Retention, and a Business
 
 # File inputs
 
-OpenAI models can accept files as `input_file` items. In the Responses API, you can send a file as Base64-encoded data, a file ID returned by the Files API (`/v1/files`), or an external URL.
+File input support depends on the API endpoint. The Responses API accepts the file types listed below as `input_file` items. Chat Completions accepts only PDF files as `file` content parts.
+
+| Input method                           | Responses API                     | Chat Completions |
+| -------------------------------------- | --------------------------------- | ---------------- |
+| Base64-encoded file data (`file_data`) | Supported file types listed below | PDF only         |
+| Uploaded file ID (`file_id`)           | Supported file types listed below | PDF only         |
+| External file URL (`file_url`)         | Supported file types listed below | Not supported    |
+
+Use the Responses API for non-PDF file inputs. To use text from a file in Chat Completions, read the file in your application and send its contents as a `text` content part.
 
 ## How it works
 
-`input_file` processing depends on the file type:
+In the Responses API, `input_file` processing depends on the file type:
 
 - **PDF files**: On models with vision capabilities, such as `gpt-4o` and later models, the API extracts both text and page images and sends both to the model.
 - **Non-PDF document and text files** (for example, `.docx`, `.pptx`, `.txt`, and code files): the API extracts text only.
@@ -32200,8 +32215,8 @@ Use these related tools when they better match your task:
 
 ## Non-PDF image and chart limitations
 
-For non-PDF files, the API doesn't extract embedded images or charts into the
-model context.
+For non-PDF files, the Responses API doesn't extract embedded images or charts
+into the model context.
 
 To preserve chart and diagram fidelity, convert the file to PDF first, then
 send the PDF as `input_file`.
@@ -32209,7 +32224,7 @@ send the PDF as `input_file`.
 ## How spreadsheet augmentation works
 
 For spreadsheet-like files (such as `.xlsx`, `.xls`, `.csv`, `.tsv`, and
-`.iif`), `input_file` uses a spreadsheet-specific augmentation process.
+`.iif`), the Responses API uses a spreadsheet-specific augmentation process.
 
 Instead of passing entire sheets to the model, the API parses up to the first
 1,000 rows per sheet and adds model-generated summary and header metadata so the
@@ -32254,8 +32269,10 @@ A minimal Responses API request body with explicit high detail looks like this:
 
 ## Accepted file types
 
-The following table lists common file types accepted in `input_file`. The full
-list of extensions and MIME types appears later on this page.
+The following table lists common file types accepted by the Responses API as
+`input_file` items. The full list of extensions and MIME types appears later on
+this page. Chat Completions supports only `.pdf` (`application/pdf`) for both
+`file_data` and `file_id`.
 
 | Category       | Common extensions                                   |
 | -------------- | --------------------------------------------------- |
@@ -33016,6 +33033,9 @@ Keep these constraints in mind when you use file inputs:
 - **File upload purpose:** You can upload files with any supported [purpose](https://developers.openai.com/api/reference/resources/files/methods/create#files-create-purpose), but use `user_data` for files you plan to pass as model inputs.
 
 ## Full list of accepted file types
+
+This list applies to the Responses API. Chat Completions supports only `.pdf`
+(`application/pdf`) for both `file_data` and `file_id`.
 
 | Category       | Extensions                                                                                                                                                                                                                                                                                                                                                 | MIME types                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -34052,8 +34072,6 @@ puts(response)
 ## Supported files
 
 _For `text/` MIME types, the encoding must be one of `utf-8`, `utf-16`, or `ascii`._
-
-{/* Keep this table in sync with RETRIEVAL_SUPPORTED_EXTENSIONS in the agentapi service */}
 
 | File format | MIME type                                                                   |
 | ----------- | --------------------------------------------------------------------------- |
@@ -47509,7 +47527,7 @@ The practical split is:
 - Use **hosted MCP** for public remote servers that fit the platform trust model.
 - Use **local or private MCP** when your runtime should own connectivity, filtering, or approvals.
 
-For the platform-wide concept, trust model, and product support story, keep [MCP and Connectors](https://developers.openai.com/api/docs/guides/tools-connectors-mcp) as the canonical reference.
+For the platform-wide concept, trust model, and product support story, keep [MCP servers](https://developers.openai.com/api/docs/guides/tools-connectors-mcp) as the canonical reference.
 
 ## Tracing
 
@@ -50964,14 +50982,226 @@ If a stored session is available, [fork it](#store-and-fork-a-session) to start 
 
 ---
 
-# MCP and Connectors
+# MCP connections
 
-In addition to tools you make available to the model with [function calling](https://developers.openai.com/api/docs/guides/function-calling), you can give models new capabilities using **connectors** and **remote MCP servers**. These tools give the model the ability to connect to and control external services when needed to respond to a user's prompt. These tool calls can either be allowed automatically, or restricted with explicit approval required by you as the developer.
+An MCP server publishes tool definitions and runs tool calls. The Agents API discovers the tools, calls the server, and returns results to the agent. Your application does not need to handle each call.
 
-- **Connectors** are OpenAI-maintained MCP wrappers for popular services like Google Workspace or Dropbox, like the connectors available in [ChatGPT](https://chatgpt.com).
+Choose where the connection runs based on where the server is reachable:
+
+| Connection                                         | Where it runs                           | Requires an environment |
+| -------------------------------------------------- | --------------------------------------- | ----------------------- |
+| HTTP with `connection_origin: "service"` (default) | OpenAI                                  | No                      |
+| HTTP with `connection_origin: "environment"`       | Your session's environment              | Yes                     |
+| stdio                                              | A process in your session's environment | Yes                     |
+
+
+
+
+
+
+## Connect from OpenAI
+
+Add an HTTP MCP server to `agent.tools`. The server must be reachable from OpenAI. This works with or without a session environment.
+
+For example, the OpenAI documentation MCP allows anonymous access:
+
+```json
+{
+  "type": "mcp",
+  "server_label": "openai_docs",
+  "transport": {
+    "type": "http",
+    "server_url": "https://developers.openai.com/mcp"
+  },
+  "connection_origin": "service",
+  "required": true
+}
+```
+
+<picture>
+  <source
+    media="(max-width: 640px)"
+    srcSet="/images/api/agents-api/remote-mcps-1-mobile.webp"
+    width="680"
+    height="956"
+  />
+  <img src="https://developers.openai.com/images/api/agents-api/remote-mcps-1.webp"
+    width="1400"
+    height="624"
+    alt="The Agents API service connects to a remote MCP server and exchanges calls and results. An optional attached vault supplies a credential matched to the server URL."
+    loading="lazy"
+  />
+</picture>
+
+
+
+
+
+
+## Connect from your environment
+
+An executor MCP connects from the session's environment. Use it for servers on a private network or software installed in that environment.
+
+Set the session's `environment.type` to `self_hosted` or `openai_hosted`. For a self-hosted environment, [connect the executor](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted) before the agent uses its tools.
+
+### Connect over HTTP
+
+Use HTTP for a server that is already running. Add this entry to `agent.tools`, replacing the URL with an address your environment can reach:
+
+```json
+{
+  "type": "mcp",
+  "server_label": "internal_search",
+  "transport": {
+    "type": "http",
+    "server_url": "https://mcp.internal.example.com/search"
+  },
+  "connection_origin": "environment",
+  "required": true
+}
+```
+
+Here, a localhost URL refers to the session's environment. If you omit `connection_origin`, OpenAI makes the connection instead.
+
+
+
+
+
+
+### Start a server over stdio
+
+Use stdio to let the executor start a server process. Install the server and its dependencies in the environment first.
+
+For this customer lookup example, install the MCP SDK:
+
+```bash
+python3 -m venv /workspace/mcp-demo
+/workspace/mcp-demo/bin/python -m pip install 'mcp==1.26.0'
+```
+
+Save the server as `/workspace/lookup_mcp.py`:
+
+Run a customer lookup MCP server
+
+```python
+import sys
+
+from mcp.server.fastmcp import FastMCP
+
+server = FastMCP("customer-lookup", host="127.0.0.1", port=8765, stateless_http=True)
+
+
+@server.tool()
+def get_customer(customer_id: str) -> dict:
+    """Look up a customer in the example data."""
+    customers = {"123": {"name": "Example Customer", "plan": "pro"}}
+    return {"customer": customers.get(customer_id)}
+
+
+if __name__ == "__main__":
+    transport = sys.argv[1] if len(sys.argv) > 1 else "streamable-http"
+    server.run(transport=transport)
+```
+
+
+Add the server to `agent.tools`. The `stdio` argument selects the script's transport:
+
+```json
+{
+  "type": "mcp",
+  "server_label": "customer_lookup",
+  "transport": {
+    "type": "stdio",
+    "command": "/workspace/mcp-demo/bin/python",
+    "args": ["/workspace/lookup_mcp.py", "stdio"],
+    "cwd": "/workspace"
+  },
+  "required": true
+}
+```
+
+For stdio, `command` and an absolute `cwd` are required; `args` is optional. Omit `connection_origin`.
+
+Send a message asking the agent to look up customer `123`. The tool returns `Example Customer` on the `pro` plan.
+
+For OpenAI-hosted stdio MCPs, omit the network policy or set it to `enabled`. The `disabled` and `restricted` network policies are not supported for these connections.
+
+
+
+
+
+
+
+
+
+
+
+
+## Add authentication
+
+For a server that allows anonymous access, omit authentication fields and `vault_ids`. Otherwise, choose the credential source for your connection:
+
+- **HTTP credentials for one session:** Set `transport.authorization` or `transport.headers` when creating the session. The Agents API encrypts these values and omits them from the returned session resource.
+- **Reusable HTTP credentials:** Store credentials in a [vault](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults) and attach it through `vault_ids`. Vaults apply only to connections from OpenAI. Credentials match the server URL; use `credential_id` to select one when several match.
+- **Stdio credentials:** Supply values in the environment and list their names in `transport.env_vars`. These values can be read by code running in the environment. Self-hosted sessions do not accept inline values in `transport.env`.
+
+For example, an HTTP transport can include a bearer token and another header:
+
+```json
+{
+  "type": "http",
+  "server_url": "https://mcp.example.com/mcp",
+  "authorization": "Bearer YOUR_MCP_ACCESS_TOKEN",
+  "headers": { "X-Tenant-ID": "tenant_123" }
+}
+```
+
+Use one source for `Authorization`: inline configuration or a matching vault credential. Other headers can accompany vault authentication. Environment-origin HTTP does not use vault credentials; use inline authentication or a trusted proxy.
+
+Keep secrets out of reusable agent definitions, plugin archives, and logs. To keep credentials inaccessible to agent-generated code, use a [trusted proxy or server](https://developers.openai.com/api/docs/guides/agents-api/environments/security#broker-third-party-access) that supplies them outside the environment.
+
+
+
+
+## Control tool access and startup
+
+Set `allowed_tools` to limit which tools the agent can discover and call. Set `required: true` to fail the turn if the server cannot initialize. Initialization is optional by default.
+
+See the [Create session reference](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/methods/create) for all MCP configuration fields.
+
+
+
+
+
+
+## Troubleshoot connections
+
+If a required server cannot initialize, inspect the error in `agent.session.turn.failed`. For stdio servers, also check the MCP process logs.
+
+- **Network access:** Check the URL and `connection_origin`. For environment connections, check that the executor is connected and its network can reach the server.
+- **Credentials:** Check the token or headers. For a vault, check that the credential matches the server URL.
+- **Executable and dependencies:** Check that the configured command runs inside the environment.
+- **Working directory:** Use an existing absolute `cwd` for an inline stdio configuration.
+
+
+
+
+## Related guides
+
+- [Plugins](https://developers.openai.com/api/docs/guides/agents-api/tools/plugins) package MCP configuration and skills for reuse across sessions.
+- [Tool search](https://developers.openai.com/api/docs/guides/tools-tool-search#agents-api) explains automatic MCP tool discovery on supported models and providers.
+
+---
+
+# MCP servers
+
+In addition to tools you make available to the model with [function calling](https://developers.openai.com/api/docs/guides/function-calling), you can give models new capabilities using **remote MCP servers** or **Secure MCP Tunnel**. These tools give the model the ability to connect to and control external services when needed to respond to a user's prompt. These tool calls can either be allowed automatically, or restricted with explicit approval required by you as the developer.
+
 - **Remote MCP servers** can be any server on the public Internet that implements a remote [Model Context Protocol](https://modelcontextprotocol.io/introduction) (MCP) server.
 
-This guide will show how to use both remote MCP servers and connectors with the Responses API. For Agents API sessions, see [MCP connections](https://developers.openai.com/api/docs/guides/agents-api/tools/mcp), which covers connections from the managed service or from your sandbox.
+- **Secure MCP Tunnel** connects a local or private MCP server without exposing it to the public internet.
+
+This guide shows how to use MCP tools with the Responses API. Built-in connectors remain supported for existing models; see [Legacy connectors](#connectors) for the deprecation policy and compatibility examples. For Agents API sessions, see [MCP connections](https://developers.openai.com/api/docs/guides/agents-api/tools/mcp), which covers connections from the managed service or from your sandbox.
 
 ## Secure MCP Tunnel
 
@@ -50979,21 +51209,9 @@ If your MCP server is private, on-premises, or behind a firewall, use [Secure MC
 
 ## Quickstart
 
-Check out the examples below to see how remote MCP servers and connectors work through the [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create). Both connectors and remote MCP servers can be used with the `mcp` built-in tool type.
+Use the `mcp` tool type in the [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create). Set `server_url` for a remote MCP server, or use `tunnel_id` for a local MCP server through [Secure MCP Tunnel](https://developers.openai.com/api/docs/guides/secure-mcp-tunnels). Depending on the server, you may also need an OAuth access token in the `authorization` parameter.
 
-
-
-Using remote MCP servers
-
-    
-
-        Remote MCP servers require a `server_url`. Depending on the server,
-        you may also need an OAuth `authorization` parameter containing an
-        access token.
-    
-
-
-    Using a remote MCP server in the Responses API
+Using a remote MCP server in the Responses API
 
 ```bash
 curl https://api.openai.com/v1/responses \ 
@@ -51160,201 +51378,12 @@ puts(response.output_text)
 ```
 
 
-    It is very important that developers trust any remote MCP server they use with
-        the Responses API. A malicious server can exfiltrate sensitive data from
-        anything that enters the model's context. Carefully review the 
-        **Risks and Safety** section below before using this tool.
+It is very important that developers trust any remote MCP server they use with
+  the Responses API. A malicious server can exfiltrate sensitive data from
+  anything that enters the model's context. Carefully review the 
+  **Risks and Safety** section below before using this tool.
 
-  
-
-  
-
-    
-Using connectors
-
-    
-
-        Connectors require a `connector_id` parameter, and an OAuth access
-        token provided by your application in the `authorization` parameter.
-    
-
-
-    Using connectors in the Responses API
-
-```bash
-curl https://api.openai.com/v1/responses \
--H "Content-Type: application/json" \
--H "Authorization: Bearer $OPENAI_API_KEY" \
--d '{
-    "model": "gpt-6-astra",
-    "tools": [
-      {
-        "type": "mcp",
-        "server_label": "Dropbox",
-        "connector_id": "connector_dropbox",
-        "authorization": "<oauth access token>",
-        "require_approval": "never"
-      }
-    ],
-    "input": "Summarize the Q2 earnings report."
-  }'
-```
-
-```javascript
-import OpenAI from "openai";
-const client = new OpenAI();
-
-const resp = await client.responses.create({
-  model: "gpt-6-astra",
-  tools: [
-    {
-      type: "mcp",
-      server_label: "Dropbox",
-      connector_id: "connector_dropbox",
-      authorization: "<oauth access token>",
-      require_approval: "never",
-    },
-  ],
-  input: "Summarize the Q2 earnings report.",
-});
-
-console.log(resp.output_text);
-```
-
-```python
-import os
-
-from openai import OpenAI
-
-client = OpenAI()
-connector_authorization = os.environ["OPENAI_CONNECTOR_AUTHORIZATION"]
-
-resp = client.responses.create(
-    model="gpt-6-astra",
-    tools=[
-        {
-            "type": "mcp",
-            "server_label": "Dropbox",
-            "connector_id": "connector_dropbox",
-            "authorization": connector_authorization,
-            "require_approval": "never",
-        },
-    ],
-    input="Summarize the Q2 earnings report.",
-)
-
-print(resp.output_text)
-```
-
-```go
-package main
-
-import (
-	"context"
-	"fmt"
-
-	"github.com/openai/openai-go/v3"
-	"github.com/openai/openai-go/v3/responses"
-)
-
-func main() {
-	client := openai.NewClient()
-	tool := responses.ToolParamOfMcp("Dropbox")
-	tool.OfMcp.ConnectorID = "connector_dropbox"
-	tool.OfMcp.Authorization = openai.String("<oauth access token>")
-	tool.OfMcp.RequireApproval = responses.ToolMcpRequireApprovalUnionParam{OfMcpToolApprovalSetting: openai.String("never")}
-
-	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-6-astra",
-		Tools: []responses.ToolUnionParam{tool},
-		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Summarize the Q2 earnings report.")},
-	})
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(response.OutputText())
-}
-```
-
-```java
-import com.openai.client.OpenAIClient;
-import com.openai.client.okhttp.OpenAIOkHttpClient;
-import com.openai.models.responses.ResponseCreateParams;
-import com.openai.models.responses.Tool;
-
-String oauthAccessToken = "<oauth access token>";
-
-ResponseCreateParams params =
-    ResponseCreateParams.builder()
-        .model("gpt-6-astra")
-        .input("Summarize the Q2 earnings report.")
-        .addTool(
-            Tool.Mcp.builder()
-                .serverLabel("Dropbox")
-                .connectorId(Tool.Mcp.ConnectorId.of("connector_dropbox"))
-                .authorization(oauthAccessToken)
-                .requireApproval(Tool.Mcp.RequireApproval.McpToolApprovalSetting.NEVER)
-                .build())
-        .build();
-
-client.responses().create(params).output().stream()
-    .flatMap(item -> item.message().stream())
-    .flatMap(message -> message.content().stream())
-    .flatMap(content -> content.outputText().stream())
-    .forEach(text -> System.out.println(text.text()));
-```
-
-```csharp
-using OpenAI.Responses;
-#pragma warning disable OPENAI001
-
-string dropboxToken =
-    Environment.GetEnvironmentVariable("DROPBOX_OAUTH_ACCESS_TOKEN")!;
-string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-ResponsesClient client = new(key);
-
-CreateResponseOptions options = new() { Model = "gpt-6-astra" };
-options.Tools.Add(
-    ResponseTool.CreateMcpTool(
-        serverLabel: "Dropbox",
-        connectorId: McpToolConnectorId.Dropbox,
-        authorizationToken: dropboxToken,
-        toolCallApprovalPolicy: DefaultMcpToolCallApprovalPolicy.NeverRequireApproval
-    )
-);
-options.InputItems.Add(
-    ResponseItem.CreateUserMessageItem("Summarize the Q2 earnings report.")
-);
-
-ResponseResult response = await client.CreateResponseAsync(options);
-
-Console.WriteLine(response.GetOutputText());
-```
-
-```ruby
-require "openai"
-
-client = OpenAI::Client.new
-response = client.responses.create(
-  model: "gpt-6-astra",
-  input: "Summarize the Q2 earnings report.",
-  tools: [
-    {
-      type: :mcp,
-      server_label: "Dropbox",
-      connector_id: "connector_dropbox",
-      authorization: "<oauth access token>",
-      require_approval: :never
-    }
-  ]
-)
-
-puts(response.output_text)
-```
-
-
-
-The API will return new items in the `output` array of the model response. If the model decides to use a Connector or MCP server, it will first make a request to list available tools from the server, which will create a `mcp_list_tools` output item. From the remote MCP server example above, it contains only one tool definition:
+The API will return new items in the `output` array of the model response. If the model decides to use an MCP server, it will first make a request to list available tools from the server, which will create a `mcp_list_tools` output item. From the remote MCP server example above, it contains only one tool definition:
 
 ```json
 {
@@ -51401,7 +51430,7 @@ Read on in the guide below to learn more about how the MCP tool works, how to fi
 
 ## How it works
 
-The MCP tool (for both remote MCP servers and connectors) is available in the [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create) in most recent models. Check MCP tool compatibility for your model [here](https://developers.openai.com/api/docs/models). When you're using the MCP tool, you only pay for [tokens](https://developers.openai.com/api/docs/pricing) used when importing tool definitions or making tool calls. No additional fees apply per tool call.
+The MCP tool is available in the [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create) in most recent models. Check MCP tool compatibility for your model [here](https://developers.openai.com/api/docs/models). When you're using the MCP tool, you only pay for [tokens](https://developers.openai.com/api/docs/pricing) used when importing tool definitions or making tool calls. No additional fees apply per tool call.
 
 Below, we'll step through the process the API takes when calling an MCP tool.
 
@@ -52256,11 +52285,196 @@ puts(response.output_text)
 
 To prevent the leakage of sensitive tokens, the Responses API does not store the value you provide in the `authorization` field. This value will also not be visible in the Response object created. Because of this, you must send the `authorization` value in every Responses API creation request you make.
 
-## Connectors
+<a id="connectors"></a>
+
+## Legacy connectors
+
+`connector_id` is deprecated for models released after September 1,
+  2026. Use `server_url` to connect to a remote MCP server, or 
+  `tunnel_id` to connect to a local MCP server through 
+  [Secure MCP Tunnel](https://developers.openai.com/api/docs/guides/secure-mcp-tunnels). Existing
+  models retain connector support. The examples in this section use
+  `gpt-5.2`, which predates the cutoff.
 
 The Responses API has built-in support for a limited set of connectors to third-party services. These connectors let you pull in context from popular applications, like Dropbox and Gmail, to allow the model to interact with popular services.
 
 Connectors can be used in the same way as remote MCP servers. Both let an OpenAI model access additional third-party tools in an API request. However, instead of passing a `server_url` as you would to call a remote MCP server, you pass a `connector_id` which uniquely identifies a connector available in the API.
+
+Connectors require an OAuth access token provided by your application in the `authorization` parameter.
+
+Use a legacy connector with GPT-5.2
+
+```bash
+curl https://api.openai.com/v1/responses \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer $OPENAI_API_KEY" \
+-d '{
+    "model": "gpt-5.2",
+    "tools": [
+      {
+        "type": "mcp",
+        "server_label": "Dropbox",
+        "connector_id": "connector_dropbox",
+        "authorization": "<oauth access token>",
+        "require_approval": "never"
+      }
+    ],
+    "input": "Summarize the Q2 earnings report."
+  }'
+```
+
+```javascript
+import OpenAI from "openai";
+const client = new OpenAI();
+
+const resp = await client.responses.create({
+  model: "gpt-5.2",
+  tools: [
+    {
+      type: "mcp",
+      server_label: "Dropbox",
+      connector_id: "connector_dropbox",
+      authorization: "<oauth access token>",
+      require_approval: "never",
+    },
+  ],
+  input: "Summarize the Q2 earnings report.",
+});
+
+console.log(resp.output_text);
+```
+
+```python
+import os
+
+from openai import OpenAI
+
+client = OpenAI()
+connector_authorization = os.environ["OPENAI_CONNECTOR_AUTHORIZATION"]
+
+resp = client.responses.create(
+    model="gpt-5.2",
+    tools=[
+        {
+            "type": "mcp",
+            "server_label": "Dropbox",
+            "connector_id": "connector_dropbox",
+            "authorization": connector_authorization,
+            "require_approval": "never",
+        },
+    ],
+    input="Summarize the Q2 earnings report.",
+)
+
+print(resp.output_text)
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient()
+	tool := responses.ToolParamOfMcp("Dropbox")
+	tool.OfMcp.ConnectorID = "connector_dropbox"
+	tool.OfMcp.Authorization = openai.String("<oauth access token>")
+	tool.OfMcp.RequireApproval = responses.ToolMcpRequireApprovalUnionParam{OfMcpToolApprovalSetting: openai.String("never")}
+
+	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+		Model: "gpt-5.2",
+		Tools: []responses.ToolUnionParam{tool},
+		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Summarize the Q2 earnings report.")},
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(response.OutputText())
+}
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.Tool;
+
+String oauthAccessToken = "<oauth access token>";
+
+ResponseCreateParams params =
+    ResponseCreateParams.builder()
+        .model("gpt-5.2")
+        .input("Summarize the Q2 earnings report.")
+        .addTool(
+            Tool.Mcp.builder()
+                .serverLabel("Dropbox")
+                .connectorId(Tool.Mcp.ConnectorId.of("connector_dropbox"))
+                .authorization(oauthAccessToken)
+                .requireApproval(Tool.Mcp.RequireApproval.McpToolApprovalSetting.NEVER)
+                .build())
+        .build();
+
+client.responses().create(params).output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string dropboxToken =
+    Environment.GetEnvironmentVariable("DROPBOX_OAUTH_ACCESS_TOKEN")!;
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new() { Model = "gpt-5.2" };
+options.Tools.Add(
+    ResponseTool.CreateMcpTool(
+        serverLabel: "Dropbox",
+        connectorId: McpToolConnectorId.Dropbox,
+        authorizationToken: dropboxToken,
+        toolCallApprovalPolicy: DefaultMcpToolCallApprovalPolicy.NeverRequireApproval
+    )
+);
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Summarize the Q2 earnings report.")
+);
+
+ResponseResult response = await client.CreateResponseAsync(options);
+
+Console.WriteLine(response.GetOutputText());
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+response = client.responses.create(
+  model: "gpt-5.2",
+  input: "Summarize the Q2 earnings report.",
+  tools: [
+    {
+      type: :mcp,
+      server_label: "Dropbox",
+      connector_id: "connector_dropbox",
+      authorization: "<oauth access token>",
+      require_approval: :never
+    }
+  ]
+)
+
+puts(response.output_text)
+```
+
 
 ### Available connectors
 
@@ -52298,7 +52512,7 @@ curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-6-astra",
+    "model": "gpt-5.2",
     "tools": [
       {
         "type": "mcp",
@@ -52317,7 +52531,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const resp = await client.responses.create({
-  model: "gpt-6-astra",
+  model: "gpt-5.2",
   tools: [
     {
       type: "mcp",
@@ -52341,7 +52555,7 @@ client = OpenAI()
 authorization = os.environ["GOOGLE_CALENDAR_OAUTH_ACCESS_TOKEN"]
 
 resp = client.responses.create(
-    model="gpt-6-astra",
+    model="gpt-5.2",
     tools=[
         {
             "type": "mcp",
@@ -52376,7 +52590,7 @@ func main() {
 	tool.OfMcp.RequireApproval = responses.ToolMcpRequireApprovalUnionParam{OfMcpToolApprovalSetting: openai.String("never")}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-6-astra",
+		Model: "gpt-5.2",
 		Tools: []responses.ToolUnionParam{tool},
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("What's on my Google Calendar for today?")},
 	})
@@ -52397,7 +52611,7 @@ String oauthAccessToken = "<oauth access token>";
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-6-astra")
+        .model("gpt-5.2")
         .input("What's on my Google Calendar for today?")
         .addTool(
             Tool.Mcp.builder()
@@ -52424,7 +52638,7 @@ string authToken =
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-6-astra" };
+CreateResponseOptions options = new() { Model = "gpt-5.2" };
 options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "google_calendar",
@@ -52447,7 +52661,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-6-astra",
+  model: "gpt-5.2",
   input: "What's on my Google Calendar for today?",
   tools: [
     {
@@ -52939,217 +53153,6 @@ In other words, if you're an organization with Data Residency in Europe, OpenAI 
 
 </tbody>
 </table>
-
----
-
-# MCP connections
-
-An MCP server publishes tool definitions and runs tool calls. The Agents API discovers the tools, calls the server, and returns results to the agent. Your application does not need to handle each call.
-
-Choose where the connection runs based on where the server is reachable:
-
-| Connection                                         | Where it runs                           | Requires an environment |
-| -------------------------------------------------- | --------------------------------------- | ----------------------- |
-| HTTP with `connection_origin: "service"` (default) | OpenAI                                  | No                      |
-| HTTP with `connection_origin: "environment"`       | Your session's environment              | Yes                     |
-| stdio                                              | A process in your session's environment | Yes                     |
-
-
-
-
-
-
-## Connect from OpenAI
-
-Add an HTTP MCP server to `agent.tools`. The server must be reachable from OpenAI. This works with or without a session environment.
-
-For example, the OpenAI documentation MCP allows anonymous access:
-
-```json
-{
-  "type": "mcp",
-  "server_label": "openai_docs",
-  "transport": {
-    "type": "http",
-    "server_url": "https://developers.openai.com/mcp"
-  },
-  "connection_origin": "service",
-  "required": true
-}
-```
-
-<picture>
-  <source
-    media="(max-width: 640px)"
-    srcSet="/images/api/agents-api/remote-mcps-1-mobile.webp"
-    width="680"
-    height="956"
-  />
-  <img src="https://developers.openai.com/images/api/agents-api/remote-mcps-1.webp"
-    width="1400"
-    height="624"
-    alt="The Agents API service connects to a remote MCP server and exchanges calls and results. An optional attached vault supplies a credential matched to the server URL."
-    loading="lazy"
-  />
-</picture>
-
-
-
-
-
-
-## Connect from your environment
-
-An executor MCP connects from the session's environment. Use it for servers on a private network or software installed in that environment.
-
-Set the session's `environment.type` to `self_hosted` or `openai_hosted`. For a self-hosted environment, [connect the executor](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted) before the agent uses its tools.
-
-### Connect over HTTP
-
-Use HTTP for a server that is already running. Add this entry to `agent.tools`, replacing the URL with an address your environment can reach:
-
-```json
-{
-  "type": "mcp",
-  "server_label": "internal_search",
-  "transport": {
-    "type": "http",
-    "server_url": "https://mcp.internal.example.com/search"
-  },
-  "connection_origin": "environment",
-  "required": true
-}
-```
-
-Here, a localhost URL refers to the session's environment. If you omit `connection_origin`, OpenAI makes the connection instead.
-
-
-
-
-
-
-### Start a server over stdio
-
-Use stdio to let the executor start a server process. Install the server and its dependencies in the environment first.
-
-For this customer lookup example, install the MCP SDK:
-
-```bash
-python3 -m venv /workspace/mcp-demo
-/workspace/mcp-demo/bin/python -m pip install 'mcp==1.26.0'
-```
-
-Save the server as `/workspace/lookup_mcp.py`:
-
-Run a customer lookup MCP server
-
-```python
-import sys
-
-from mcp.server.fastmcp import FastMCP
-
-server = FastMCP("customer-lookup", host="127.0.0.1", port=8765, stateless_http=True)
-
-
-@server.tool()
-def get_customer(customer_id: str) -> dict:
-    """Look up a customer in the example data."""
-    customers = {"123": {"name": "Example Customer", "plan": "pro"}}
-    return {"customer": customers.get(customer_id)}
-
-
-if __name__ == "__main__":
-    transport = sys.argv[1] if len(sys.argv) > 1 else "streamable-http"
-    server.run(transport=transport)
-```
-
-
-Add the server to `agent.tools`. The `stdio` argument selects the script's transport:
-
-```json
-{
-  "type": "mcp",
-  "server_label": "customer_lookup",
-  "transport": {
-    "type": "stdio",
-    "command": "/workspace/mcp-demo/bin/python",
-    "args": ["/workspace/lookup_mcp.py", "stdio"],
-    "cwd": "/workspace"
-  },
-  "required": true
-}
-```
-
-For stdio, `command` and an absolute `cwd` are required; `args` is optional. Omit `connection_origin`.
-
-Send a message asking the agent to look up customer `123`. The tool returns `Example Customer` on the `pro` plan.
-
-For OpenAI-hosted stdio MCPs, omit the network policy or set it to `enabled`. The `disabled` and `restricted` network policies are not supported for these connections.
-
-
-
-
-
-
-
-
-
-
-
-
-## Add authentication
-
-For a server that allows anonymous access, omit authentication fields and `vault_ids`. Otherwise, choose the credential source for your connection:
-
-- **HTTP credentials for one session:** Set `transport.authorization` or `transport.headers` when creating the session. The Agents API encrypts these values and omits them from the returned session resource.
-- **Reusable HTTP credentials:** Store credentials in a [vault](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults) and attach it through `vault_ids`. Vaults apply only to connections from OpenAI. Credentials match the server URL; use `credential_id` to select one when several match.
-- **Stdio credentials:** Supply values in the environment and list their names in `transport.env_vars`. These values can be read by code running in the environment. Self-hosted sessions do not accept inline values in `transport.env`.
-
-For example, an HTTP transport can include a bearer token and another header:
-
-```json
-{
-  "type": "http",
-  "server_url": "https://mcp.example.com/mcp",
-  "authorization": "Bearer YOUR_MCP_ACCESS_TOKEN",
-  "headers": { "X-Tenant-ID": "tenant_123" }
-}
-```
-
-Use one source for `Authorization`: inline configuration or a matching vault credential. Other headers can accompany vault authentication. Environment-origin HTTP does not use vault credentials; use inline authentication or a trusted proxy.
-
-Keep secrets out of reusable agent definitions, plugin archives, and logs. To keep credentials inaccessible to agent-generated code, use a [trusted proxy or server](https://developers.openai.com/api/docs/guides/agents-api/environments/security#broker-third-party-access) that supplies them outside the environment.
-
-
-
-
-## Control tool access and startup
-
-Set `allowed_tools` to limit which tools the agent can discover and call. Set `required: true` to fail the turn if the server cannot initialize. Initialization is optional by default.
-
-See the [Create session reference](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/methods/create) for all MCP configuration fields.
-
-
-
-
-
-
-## Troubleshoot connections
-
-If a required server cannot initialize, inspect the error in `agent.session.turn.failed`. For stdio servers, also check the MCP process logs.
-
-- **Network access:** Check the URL and `connection_origin`. For environment connections, check that the executor is connected and its network can reach the server.
-- **Credentials:** Check the token or headers. For a vault, check that the credential matches the server URL.
-- **Executable and dependencies:** Check that the configured command runs inside the environment.
-- **Working directory:** Use an existing absolute `cwd` for an inline stdio configuration.
-
-
-
-
-## Related guides
-
-- [Plugins](https://developers.openai.com/api/docs/guides/agents-api/tools/plugins) package MCP configuration and skills for reuse across sessions.
-- [Tool search](https://developers.openai.com/api/docs/guides/tools-tool-search#agents-api) explains automatic MCP tool discovery on supported models and providers.
 
 ---
 
@@ -59907,7 +59910,7 @@ Guardrails are pass/fail by default, meaning they test the output from a previou
 
 Call third-party tools and services. Connect with OpenAI connectors or third-party servers, or add your own server. MCP connections are helpful in a workflow that needs to read or search data in another application, like Gmail or Zapier.
 
-Browse options in the Agent Builder. To learn more about MCP, see the [connectors and MCP documentation](https://developers.openai.com/api/docs/guides/tools-connectors-mcp).
+Browse options in the Agent Builder. To learn more about MCP, see the [MCP documentation](https://developers.openai.com/api/docs/guides/tools-connectors-mcp).
 
 ### Logic nodes
 
@@ -59939,7 +59942,7 @@ Data nodes let you define and manipulate data in your workflow. Reshape outputs 
 
 #### Transform
 
-Reshape outputs (e.g., object → array). Useful for enforcing types to adhere to your schema or reshaping outputs for agents to read and understand as inputs.
+Reshape outputs (for example, object → array). Useful for enforcing types to adhere to your schema or reshaping outputs for agents to read and understand as inputs.
 
 #### Set state
 
@@ -59962,7 +59965,7 @@ Go to [platform.openai.com/logs?api=agents](https://platform.openai.com/logs?api
 
 Search for a session by ID to inspect its turns, tool calls, and subagents.
 
-Use the [Tracing guide](https://developers.openai.com/api/docs/guides/agents-api/tracing) to inspect recorded model responses, tool calls, and subagent activity in the dashboard. Trace retrieval and external trace exporters are not part of the public beta API.
+Use the [Tracing guide](https://developers.openai.com/api/docs/guides/agents-api/tracing) to inspect recorded model responses, tool calls, and subagent activity in the dashboard, or [export session traces](https://developers.openai.com/api/docs/guides/agents-api/tracing#export-session-traces) as OTLP JSON through the public API.
 
 ## Follow events and inspect session history
 
@@ -60344,8 +60347,7 @@ Command items contain `turn_id`. Retrieve that turn and read `subagent_id` to id
 ## Inspect a turn trace
 
 Use the Platform dashboard to inspect a completed turn and its agent activity.
-Detailed trace retrieval is not available through an ordinary project API key. Dashboard trace endpoints require separate access and are not a
-supported customer API.
+To retrieve recorded traces through the public API, use the [session trace export endpoint](https://developers.openai.com/api/docs/guides/agents-api/tracing#export-session-traces) with a project API key. Dashboard trace endpoints remain separate from the supported customer API.
 
 Turn resources include best-effort `usage` and a `subagent_id` that identifies delegated work. Usage can be `null` when unknown and may change. See [Inspect subagent token usage](#inspect-subagent-token-usage).
 
@@ -63894,15 +63896,11 @@ For stateless reasoning-model requests, replay every returned reasoning item. Ea
 - Give tools specific names and descriptions so the model can compose them correctly.
 - Require application-level approval before high-impact actions, regardless of the caller.
 
-{/* vale Vale.Terms = NO */}
-
 ## Evaluate Programmatic Tool Calling
 
 Programmatic Tool Calling can reduce the amount of intermediate tool output added to model context, but the effect depends on the task and tool responses. Start with direct tool calling as a baseline, then compare both approaches on representative tasks.
 
 Define the final-answer quality bar and required evidence before measuring efficiency. Evaluate token use and tool calls alongside correctness, completeness, and evidence coverage, and make any accepted quality tradeoff explicit.
-
-{/* vale Vale.Terms = YES */}
 
 Measure:
 
@@ -75010,7 +75008,7 @@ If your use case depends on exact names or domain terms, build a golden set befo
 
 You can attach tools to a Realtime session so the model can look up data, take actions, or call services during a live conversation. Tool configuration uses the same event surface whether your client is using a [WebRTC data channel](https://developers.openai.com/api/docs/guides/voice-webrtc?api=realtime) or a [WebSocket](https://developers.openai.com/api/docs/guides/voice-websockets?api=realtime).
 
-Use function tools when your application should execute the tool and return the result. Use MCP tools or built-in connectors when the Realtime API should connect to a remote tool server for you.
+Use function tools when your application should execute the tool and return the result. Use MCP tools when the Realtime API should connect to a remote tool server for you.
 
 ## Choose a tool type
 
@@ -75018,7 +75016,7 @@ Use function tools when your application should execute the tool and return the 
 | ------------------------- | ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
 | `function`                | Your application owns the business logic, approval checks, or private system access. | Your client or server receives a function call and returns `function_call_output`. |
 | `mcp` with `server_url`   | You want the model to call tools exposed by a remote MCP server.                     | The Realtime API calls the remote MCP server.                                      |
-| `mcp` with `connector_id` | You want to use a built-in connector such as Google Calendar.                        | The Realtime API calls the connector with the authorization you provide.           |
+| `mcp` with `connector_id` | You use a legacy built-in connector with an existing model.                          | The Realtime API calls the connector with the authorization you provide.           |
 
 Add tools in **one of two places**:
 
@@ -75171,7 +75169,7 @@ For a full event-by-event walkthrough of function calling, see [Managing convers
 
 ## Configure an MCP tool
 
-MCP tools are useful when the tool already exists behind a remote MCP server, or when you want to use an OpenAI-managed connector. Unlike function tools, MCP tools are executed by the Realtime API itself.
+MCP tools are useful when the tool already exists behind a remote MCP server, or when an existing model uses a legacy built-in connector. Unlike function tools, MCP tools are executed by the Realtime API itself.
 
 In Realtime, the MCP tool shape is:
 
@@ -75249,6 +75247,15 @@ connection.session.update(
 ```
 
 
+### Legacy connectors
+
+`connector_id` is deprecated for models released after September 1,
+  2026. Use `server_url` to connect to a remote MCP server, or 
+  `tunnel_id` to connect to a local MCP server through 
+  [Secure MCP Tunnel](https://developers.openai.com/api/docs/guides/secure-mcp-tunnels). Existing
+  models retain connector support. The example below uses
+  `gpt-realtime-1.5`, which predates the cutoff.
+
 Built-in connectors use the same MCP tool shape, but pass `connector_id`
 instead of `server_url`. For example, Google Calendar uses
 `connector_googlecalendar`. In Realtime, use these built-in connectors for read
@@ -75263,7 +75270,7 @@ const event = {
   type: "session.update",
   session: {
     type: "realtime",
-    model: "gpt-realtime-2.1",
+    model: "gpt-realtime-1.5",
     output_modalities: ["text"],
     tools: [
       {
@@ -75290,7 +75297,7 @@ event = {
     "type": "session.update",
     "session": {
         "type": "realtime",
-        "model": "gpt-realtime-2.1",
+        "model": "gpt-realtime-1.5",
         "output_modalities": ["text"],
         "tools": [
             {
@@ -75313,7 +75320,7 @@ access_token = ENV.fetch("OPENAI_MCP_ACCESS_TOKEN")
 
 connection.session.update(
   type: :realtime,
-  model: "gpt-realtime-2.1",
+  model: "gpt-realtime-1.5",
   output_modalities: [:text],
   tools: [
     {
@@ -81860,8 +81867,6 @@ You can adjust this by setting [`chunking_strategy`](https://developers.openai.c
 
 _For `text/` MIME types, the encoding must be one of `utf-8`, `utf-16`, or `ascii`._
 
-{/* Keep this table in sync with RETRIEVAL_SUPPORTED_EXTENSIONS in the agentapi service */}
-
 | File format | MIME type                                                                   |
 | ----------- | --------------------------------------------------------------------------- |
 | `.c`        | `text/x-c`                                                                  |
@@ -84497,7 +84502,7 @@ Secure MCP Tunnel keeps the MCP server private while giving supported OpenAI pro
 - Your MCP server runs on a private network, on-premises, on a developer machine, or behind existing access controls.
 - You want ChatGPT, Codex, the Responses API, or another supported OpenAI surface to use that server without making the MCP server public.
 - Your network allows the host running `tunnel-client` to make outbound HTTPS requests to `api.openai.com:443` by default, or `mtls.api.openai.com:443` when control-plane mTLS is configured, and reach the private MCP server.
-- Start with the [MCP and Connectors guide](https://developers.openai.com/api/docs/guides/tools-connectors-mcp) for general MCP concepts.
+- Start with the [MCP servers guide](https://developers.openai.com/api/docs/guides/tools-connectors-mcp) for general MCP concepts.
 
 ## How it works
 
@@ -84666,7 +84671,7 @@ Secure MCP Tunnel separates tunnel transport from app-level product logging:
 - Tunnel metadata changes are exposed through the API Platform [Audit logs](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/audit_logs) surface as `tunnel.created`, `tunnel.updated`, and `tunnel.deleted`.
 - When ChatGPT reaches a custom app through Secure MCP Tunnel, the tunnel remains only the transport path. Normal app-level compliance logging still applies on the app path, including app invocation logs and app auth lifecycle logs such as `APP_AUTH_LOG` when the app is linked or unlinked.
 
-## Advanced: allowlisted HTTP callouts
+## Advanced: Allowlisted HTTP callouts
 
 Secure MCP Tunnel can also support narrowly scoped HTTP callouts from supported agent or API flows into a customer network. `tunnel-client` includes an embedded MCP server, Harpoon, that exposes configured HTTP targets by label and lets callers invoke them through the tunnel with bounded request/response limits.
 
@@ -96589,7 +96594,7 @@ The [tracing dashboard](https://platform.openai.com/logs?api=agents) shows what 
 
 For session status, live events, saved output, and usage through the API, start with [Observability](https://developers.openai.com/api/docs/guides/agents-api/observability).
 
-Tracing is enabled by default for new sessions. The public beta API does not expose tracing configuration or external trace exporters.
+Tracing is enabled by default for new sessions. You can inspect traces in the dashboard or export them through the API.
 
 ## Open a trace
 
@@ -96668,6 +96673,54 @@ Usage can arrive after the turn ends. A blank value or `null` means the count is
 Traces are built after a turn ends. The agent's answer can appear before its trace or token usage is ready.
 
 [Live session events](https://developers.openai.com/api/docs/guides/agents-api/sessions/events) show progress while the agent is still working.
+
+## Export session traces
+
+Download session traces to inspect them in another tracing tool. The endpoint `GET /v1/agents/sessions/{session_id}/traces` returns a page of traces containing OpenTelemetry Protocol (OTLP) JSON.
+
+Trace export must be enabled for your organization. Use an API key for the
+  session's project with either traces read permission (`api.traces.read`) or
+  the broader agents read permission (`api.agents.read`).
+
+Set `OPENAI_API_KEY` and replace `sess_123` with your session ID. This example uses cURL and `jq` to save one page as `traces.otlp.json`:
+
+Download a page of session traces
+
+```bash
+curl --fail-with-body \
+  "https://api.openai.com/v1/agents/sessions/sess_123/traces?limit=20&order=asc" \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -H "OpenAI-Beta: agents=v1" \
+  --output trace-page.json && \
+jq '{resourceSpans: [.data[].otlp.resourceSpans[]]}' trace-page.json > traces.otlp.json
+```
+
+
+The command combines the traces from that page into one OTLP payload. Send it to your tracing provider's OTLP/HTTP endpoint using the provider's authentication.
+
+To export the whole session, check `trace-page.json`. When `has_more` is `true`, request the next page with `last_id` as `after`, keeping the same `order`. Save or upload each page before fetching the next, and repeat until `has_more` is `false`.
+
+Exports include only traces available when you make each request. For a historical export, wait for the session's turns to finish and allow time for traces to appear. Exporting does not set up automatic delivery of future traces.
+
+### Export traces for an agent
+
+To export traces across an agent's sessions, first [list sessions](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage#find-sessions) with the `agent_id` filter. Replace `agent_123` with your agent's ID:
+
+Find sessions for an agent
+
+```bash
+curl --fail-with-body \
+  "https://api.openai.com/v1/agents/sessions?agent_id=agent_123&limit=100&order=asc" \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -H "OpenAI-Beta: agents=v1"
+```
+
+
+1. For each session in `data`, use its `id` to export every page of session traces as described above.
+2. When the session list has `has_more: true`, pass that list's `last_id` as `after` to fetch the next page. Keep the same `agent_id` and `order`.
+3. Repeat until the session list has `has_more: false`.
+
+The filter matches the session's root agent. Keep the session-list cursor separate from each session's trace cursor.
 
 ## Example: One turn with two subagents
 
@@ -97694,7 +97747,6 @@ Please read on for prompt examples you can use as a reference, and remember that
 - The family supports the Responses API and Chat Completions API.
 - GPT-4.1 and GPT-4.1 mini support supervised fine-tuning.
 - Supported tools include function calling, web search, file search, image generation, code interpreter, and remote MCP.
-
 
 ## Prompting best practices
 
@@ -99294,7 +99346,6 @@ We’ve seen significant gains from applying these best practices and adopting o
 - GPT-5 introduced custom tools that accept freeform input and can constrain outputs with a context-free grammar.
 - The model supports function calling and OpenAI-hosted tools, including web search, file search, image generation, code interpreter, and remote MCP.
 
-
 ## Prompting best practices
 
 ### Agentic workflow predictability
@@ -99891,7 +99942,6 @@ We also released GPT-5.1-Codex. That model behaves differently from GPT-5.1; see
 - `reasoning.effort` supports `none` (the default), `low`, `medium`, and `high`.
 - The model supports function calling and OpenAI-hosted tools, including web search, file search, image generation, code interpreter, and apply patch.
 - GPT-5.1-Codex variants are optimized separately for agentic coding workflows.
-
 
 ## Prompting best practices
 
@@ -101075,7 +101125,6 @@ curl --request POST \
 
 
 
-
 ## Prompting best practices
 
 ### 2. Key behavioral differences
@@ -101546,7 +101595,6 @@ First deliver what you can (safe partial answers, verified material, or a closel
 If something cannot be verified, say so plainly, explain what you did verify, what remains unknown, and the best next step to resolve it (without asking the user a question).
 ```
 
-
 ## Further reading
 
 [GPT-5.2-Codex prompting guide](https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide)
@@ -101613,7 +101661,6 @@ Key steps to migrate your harness to codex-cli:
 - It is available in the Responses API.
 - `reasoning.effort` supports `low`, `medium`, `high`, and `xhigh`.
 - Supported tools include function calling, web search, hosted shell, and skills.
-
 
 ## Prompting best practices
 
@@ -103143,7 +103190,6 @@ curl --request POST \
 
 
 
-
 ## Prompting best practices
 
 When troubleshooting cases where GPT-5.4 treats an intermediate update as the
@@ -103739,7 +103785,6 @@ GPT-5.4 performs especially well when the task requires multi-step evidence gath
 - Review [Model, API, and feature updates](#model-api-and-feature-updates) for model capabilities, parameters, and API compatibility details.
 - Read [Prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering) for broader prompting strategies that apply across model families.
 - Read [Compaction](https://developers.openai.com/api/docs/guides/compaction) if you are building long-running GPT-5.4 sessions in the Responses API.
-
 
 ## Further reading
 
@@ -114474,7 +114519,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.63.3</version>
+  <version>4.64.0</version>
 </dependency>
 ```
 
@@ -116676,7 +116721,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.63.3</version>
+  <version>4.64.0</version>
 </dependency>
 ```
 
@@ -116843,7 +116888,6 @@ StatsigClient.logEvent("quickstart_add_credits_billing_click", null, null)
   Go to billing
 
 
-{/* prettier-ignore */}
 
 Congrats on running a free test API request! Start building real applications with higher limits and use [our models](https://developers.openai.com/api/docs/models) to generate text, audio, images, videos and more.
 
