@@ -12078,11 +12078,6 @@ identities. To accept a set of subjects in one rule, use a trailing-prefix
 subject or a CEL condition. You can also create more than one rule for the same
 principal.
 
-For the setup procedure, see [Use workload identity with
-Codex](https://developers.openai.com/codex/enterprise/workload-identity). To manage rules with code, see the
-[workload identity Admin
-API](https://developers.openai.com/api/docs/guides/workload-identity-federation/admin-api).
-
 ## Rule model
 
 | Part                  | Purpose                                                         |
@@ -15977,8 +15972,7 @@ Keep the preview path only to maintain older integrations. For a new integration
 X.509 workload identity federation lets a workload exchange an identity from a TLS client certificate for a short-lived OpenAI access token. The workload then calls the OpenAI API with both the access token and an accepted client certificate. This flow replaces the API key, not the client certificate.
 
 X.509 workload identity federation is available for the OpenAI API. Codex does
-  not support it. For Codex, use an OIDC token or SPIFFE JWT-SVID and follow the
-  [Codex workload identity guide](https://developers.openai.com/codex/enterprise/workload-identity).
+  not support it. For Codex, use an OIDC token or SPIFFE JWT-SVID.
 
 For token exchange request and response details, see the [workload identity token exchange reference](https://developers.openai.com/api/reference/workload-identity-federation#exchange-an-x509-certificate). For Mutual TLS permissions, certificate requirements, activation, mTLS hosts, and rotation, see the [Mutual TLS guide](https://developers.openai.com/api/docs/guides/mutual-tls).
 
@@ -16925,8 +16919,6 @@ Use AWS as a Workload Identity Provider in either of these scenarios:
 
 - **AWS outbound identity federation:** Exchange an AWS STS-issued OIDC JWT from `GetWebIdentityToken` for a short-lived OpenAI access token.
 - **Amazon EKS:** Exchange a projected Amazon EKS service account token for a short-lived OpenAI access token.
-
-For Codex, use this page to get and inspect the AWS token. Then [configure Codex workload identity](https://developers.openai.com/codex/enterprise/workload-identity) to write that token to a file and point Codex to it. The service-account mapping and SDK examples on this page apply to the OpenAI API.
 
 OpenAI supports AWS-issued OIDC JWTs from outbound identity federation and
   Kubernetes projected service account tokens issued by Amazon EKS. OpenAI does
@@ -18435,8 +18427,6 @@ puts(response.output_text)
 
 Use GitHub Actions as a Workload Identity Provider by exchanging a GitHub-issued OIDC token for a short-lived OpenAI access token. This lets workflows authenticate to the OpenAI API without storing a long-lived API key in GitHub secrets.
 
-For Codex, use this page to get and inspect the GitHub token. Then [configure Codex workload identity](https://developers.openai.com/codex/enterprise/workload-identity) to write that token to a file and point Codex to it. The service-account mapping and SDK examples on this page apply to the OpenAI API.
-
 GitHub can mint a signed OIDC JWT for a workflow job that has `id-token: write` permission and requests an identity token. OpenAI validates the token issuer, audience, signature, and mapping attributes before issuing an OpenAI access token.
 
 ## Setting up GitHub Actions
@@ -19337,8 +19327,6 @@ Use Google Cloud as a Workload Identity Provider in either of these scenarios:
 
 - **Google workload identity:** Exchange a Google-signed OIDC token issued to an attached Google service account for a short-lived OpenAI access token.
 - **Google Kubernetes Engine:** Exchange a projected GKE service account token for a short-lived OpenAI access token.
-
-For Codex, use this page to get and inspect the Google token. Then [configure Codex workload identity](https://developers.openai.com/codex/enterprise/workload-identity) to write that token to a file and point Codex to it. The service-account mapping and SDK examples on this page apply to the OpenAI API.
 
 
 
@@ -20872,8 +20860,6 @@ puts(response.output_text)
 
 Use Kubernetes as a Workload Identity Provider by exchanging a projected Kubernetes service account token for a short-lived OpenAI access token.
 
-For Codex, use this page to get and inspect the projected token. Then [configure Codex workload identity](https://developers.openai.com/codex/enterprise/workload-identity) to point Codex to the mounted token file. The service-account mapping and SDK examples on this page apply to the OpenAI API.
-
 ## Setting up Kubernetes
 
 This guide assumes Kubernetes service account token projection is enabled, which is available by default in modern Kubernetes releases. OpenAI workload identity federation requires OIDC-compatible projected service account tokens. Legacy Kubernetes service account tokens stored in Secrets are not supported.
@@ -21596,8 +21582,6 @@ Use Microsoft Azure as a Workload Identity Provider in either of these scenarios
 - **Azure managed identity:** Exchange a Microsoft Entra ID access token issued for a managed identity for a short-lived OpenAI access token.
 - **AKS:** Exchange a projected Azure Kubernetes Service (AKS) service account token for a short-lived OpenAI access token.
 
-For Codex, use this page to get and inspect the Microsoft Entra token. Then [configure Codex workload identity](https://developers.openai.com/codex/enterprise/workload-identity) to write that token to a file and point Codex to it. The service-account mapping and SDK examples on this page apply to the OpenAI API.
-
 
 
 ## Azure managed identity
@@ -21962,8 +21946,6 @@ Microsoft documents [variable access-token
 lifetimes](https://learn.microsoft.com/en-us/entra/identity-platform/access-tokens#token-lifetime)
 and does not support [configuring managed-identity token
 lifetimes](https://learn.microsoft.com/en-us/entra/identity-platform/configurable-token-lifetimes).
-See the [Admin API provider
-example](https://developers.openai.com/api/docs/guides/workload-identity-federation/admin-api#create-an-oidc-provider).
 
 Managed identity tokens can also contain claims such as `azp`, `oid`, `sub`, or `xms_mirid`. Use the decoded token as the source of truth, and choose claims that identify the exact managed identity and resource boundary you trust.
 
@@ -23175,8 +23157,6 @@ puts(response.output_text)
 
 Use Oracle Cloud Infrastructure (OCI) as a Workload Identity Provider by exchanging an Oracle Identity Cloud Service (IDCS) access token for a short-lived OpenAI access token. An OCI instance principal signs a token exchange request to an identity domain in the same tenancy. OpenAI validates the resulting token and authorizes the OCI workload to act as a mapped OpenAI service account.
 
-For Codex, use this page to get and inspect the Oracle token. Then [configure Codex workload identity](https://developers.openai.com/codex/enterprise/workload-identity) to write that token to a file and point Codex to it. The service-account mapping and SDK examples on this page apply to the OpenAI API.
-
 This setup does not require an OpenAI API key, a custom Oracle OAuth resource application, or dynamic group grants to a custom application.
 
 ## Set up the OCI workload
@@ -23774,8 +23754,6 @@ The subject token provider requests a fresh Oracle token when the OpenAI SDK nee
 # Configuring workload identity federation for SPIFFE
 
 Use SPIFFE as a Workload Identity Provider by exchanging a SPIFFE JWT-SVID for a short-lived OpenAI access token. This lets workloads authenticated by SPIRE or another SPIFFE-compatible identity provider call the OpenAI API without storing long-lived API keys.
-
-For Codex, use this page to get and inspect the JWT-SVID. Then [configure Codex workload identity](https://developers.openai.com/codex/enterprise/workload-identity) to write that token to a file and point Codex to it. The service-account mapping and SDK examples on this page apply to the OpenAI API.
 
 OpenAI supports SPIFFE JWT-SVIDs that can be validated as JWT subject tokens with an issuer, audience, expiration, issued-at timestamp, and JWKS-backed signature. OpenAI doesn't support SPIFFE X.509-SVIDs as workload identity federation subject tokens.
 
@@ -25942,6 +25920,8 @@ With client delegation, your backend worker can keep running while the voice
 session is open or closed. Save the task state and conversation context before
 [closing the voice session](https://developers.openai.com/api/docs/guides/live-conversations#usage-and-graceful-close).
 
+For the inactivity timeout, restart trigger, and context restoration workflow, see [Close idle sessions and resume](https://developers.openai.com/api/docs/guides/live-conversations#close-idle-sessions-and-resume).
+
 For an ambient agent, close the voice session while the backend handles a
 long-running task, such as coding in goal mode. Offer a button labeled
 **Resume conversation** to start a new voice session when the user returns, or use a backend
@@ -27263,6 +27243,7 @@ Refer to the Text-to-Speech Supplemental Agreement for additional terms of use.
 
 The consent audio recording must only include one of the following phrases. Any divergence from the script will lead to a failure.
 
+
 | Language | Phrase                                                                                                                                                |
 | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `de`     | Ich bin der Eigentümer dieser Stimme und bin damit einverstanden, dass OpenAI diese Stimme zur Erstellung eines synthetischen Stimmmodells verwendet. |
@@ -27388,8 +27369,7 @@ The consent recording and reference sample must come from the same person. The
 sample needs at least five seconds of actual speech and at least 15 transcribed
 text tokens; silence does not count. Use a 10–30-second
 recording with several complete sentences. Each upload is limited to 10 MiB.
-The service extracts the reference transcript; do not upload transcript tokens,
-configure a decoder, or add custom request headers.
+The service extracts the reference transcript from your recording.
 
 Browser recorders may label audio `audio/webm;codecs=opus`, which the upload
 endpoint rejects. When constructing an upload, use the supported base MIME type
@@ -27398,8 +27378,8 @@ creation requests above, then save the returned voice ID.
 
 ### Select the voice at session creation
 
-Pass a custom voice as the object `{ "id": "voice_123" }`, not the string
-`"voice_123"`. Named voices such as `"marin"` use strings.
+Pass a custom voice as an object, such as `{ "id": "voice_123" }`. Named voices
+such as `"marin"` use strings.
 
 `gpt-live-1` supports custom voices with English accents. To use an accent, also
 specify it in `session.instructions`, such as "Speak British English" or "Speak
@@ -27416,22 +27396,18 @@ Include the following configuration in the initial session:
 }
 ```
 
-For [WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc?api=live), the trusted session broker
-places this configuration in the JSON `session` field alongside `transport`.
-The Live endpoint requires JSON, not multipart or raw SDP. Read the created
-session ID from `session.id` and the SDP answer from `transport.sdp`. Authenticate
-hosted broker requests with application credentials; never expose the OpenAI
-API key to the browser.
+For [WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc?api=live), have your application server
+place this configuration in the JSON `session` field alongside `transport`.
+Authenticate requests to your server with application credentials, and keep the
+OpenAI API key on the server.
 
 For [WebSockets](https://developers.openai.com/api/docs/guides/voice-websockets?api=live), put the configuration
-in the first `session.start` event. Connect without query parameters and wait
-for `session.started` before streaming audio. Send audio with
-`session.input_audio.append`. After sending `session.close`, keep receiving until
-`session.closed` supplies final usage.
+in the first `session.start` event. Follow the connection guide for streaming
+audio and closing the session.
 
 ### Handle access and lifecycle failures
 
-- The output voice cannot be changed after the Live session starts. Start a new session to use a different voice.
+- Choose the voice at session creation. Start a new session to use a different voice.
 - A deleted or revoked voice, a consent from another project, or missing custom-voice access can appear as a `404`.
 - Malformed audio, a mismatched speaker, or a non-project-scoped key is rejected.
 
@@ -29205,6 +29181,8 @@ GPT-Live delegates reasoning and tool use to a backend while it manages the spok
 
 Read more about [steering the live model for delegation and tools](https://developers.openai.com/api/docs/guides/live-prompting#delegation) in the prompting guide.
 
+The event examples on this page use `connection`, a connected primary Live WebSocket or sideband from the [connection guides](https://developers.openai.com/api/docs/guides/voice-websockets?api=live). On a primary connection, wait for `session.started` before calling an event helper. An attached sideband already belongs to a running session.
+
 
 
 
@@ -29213,7 +29191,7 @@ Read more about [steering the live model for delegation and tools](https://devel
 
 With **[Responses delegation](https://developers.openai.com/api/docs/guides/live-delegation?delegation-mode=responses#configure-responses-delegation)**, GPT-Live calls the Responses model you choose, supplies conversation context, and returns backend results to the live conversation. With **[client delegation](https://developers.openai.com/api/docs/guides/live-delegation?delegation-mode=client#configure-client-delegation)**, your application prepares the context, runs an agent or workflow, and sends results back to GPT-Live.
 
-Start with Responses delegation when its managed workflow fits. Choose client delegation when you need more control over backend context, execution, or the results returned to GPT-Live.
+Start with Responses delegation if you want GPT-Live to manage requests. Choose client delegation when you need to run your own workflow or review results before sending them to GPT-Live.
 
 
 
@@ -29231,7 +29209,7 @@ Start with Responses delegation when its managed workflow fits. Choose client de
 
 For example, a travel assistant can send flight-status questions to an airline service and itinerary changes to a separate planning agent. The application chooses which backend to call and what verified result to return to GPT-Live.
 
-In both modes, your application manages task state and enforces permissions and required confirmations before running its custom tools. Reviewing backend results is a separate decision: it does not approve every word GPT-Live speaks or guarantee silence while validation runs. See [Control playback when needed](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#control-playback-when-needed).
+In both modes, your application tracks task progress and checks permissions and required user confirmations before running custom tools. GPT-Live can continue speaking while your application reviews a backend result. If your application must control when the user hears audio, add [playback controls](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#control-playback-when-needed).
 
 Client delegation also requires your application to [maintain conversation context](https://developers.openai.com/api/docs/guides/live-delegation?delegation-mode=client#keep-the-conversation-context-in-your-application). The delegation event contains metadata, not task text; use transcript events and application state to prepare the backend request.
 
@@ -29264,13 +29242,17 @@ session: SessionConfigParam = {
 
 Start with [GPT-5.6 Terra](https://developers.openai.com/api/docs/models/gpt-5.6-terra), or try [GPT-5.6 Luna](https://developers.openai.com/api/docs/models/gpt-5.6-luna) for cost-sensitive workloads. Compare answer quality and latency on your tasks before choosing a backend model.
 
-Register supported tools in `delegation.responses.tools`. Use `delegation.responses.tool_choice` to control which tools the backend can use: `"auto"` lets it choose, `"required"` requires a tool call, and `"none"` prevents one. You can also select a named function. Set `delegation.responses.parallel_tool_calls` to `true` to allow independent lookups together, or `false` when calls must run sequentially. Your application still executes its custom functions and enforces dependencies and approvals. These settings do not force the live model to delegate.
+Register supported tools in `delegation.responses.tools`. Set `delegation.responses.tool_choice` to `"auto"` to let the backend choose a tool, `"required"` to require a tool call, or `"none"` to disable tool calls. You can also select a named function.
+
+Set `delegation.responses.parallel_tool_calls` to `true` to allow multiple tool calls in a response, or `false` for sequential calls. Your application executes custom functions and checks their dependencies and required approvals. These settings apply after GPT-Live delegates; use the [live prompt](https://developers.openai.com/api/docs/guides/live-prompting#delegation) to guide when it should delegate.
 
 The Responses configuration requires a backend `model` at creation. It supports `function` definitions and `web_search` entries in `tools`. It also exposes `max_output_tokens` (at least 16 when set), `service_tier`, and the `reasoning` and `text` settings supported by the selected backend model. See [Reduce backend latency](#reduce-backend-latency) for settings you can tune.
 
 If [Fast mode](https://developers.openai.com/api/docs/guides/fast-mode) is available for your model and project, consider it for latency-sensitive calls. For GPT-Live, select it with `delegation.responses.service_tier: "priority"`.
 
-As the conversation changes, send `session.update` with changes in `session.delegation.responses` to update the backend model, instructions, available tools, `tool_choice`, or other supported settings without starting a new Live session. Omitted settings retain their values. Setting `delegation` to `null` selects client mode and cannot reset a running Responses session; switching modes fails with `immutable_field_update`.
+Send `session.update` with changes in `session.delegation.responses` to update the backend model, instructions, tools, `tool_choice`, or other supported settings during the conversation. Omitted settings keep their current values.
+
+To switch between Responses and client delegation, create a new Live session. Updating `delegation` to `null` selects client mode, so sending it to a running Responses session fails with `immutable_field_update`.
 
 These settings use familiar Responses concepts, but Live supports a subset of the standalone Responses API. Live supplies conversation context and initiates delegated work. Configure the backend through the session; the Live `response.create` command uses that configuration and does not accept a standalone Responses request body.
 
@@ -29299,15 +29281,21 @@ For Responses-backed work, `session.delegation.created` has `target: "responses"
 }
 ```
 
-Dispatch on `envelope.event.type` and preserve the outer `delegation_id`. Do not handle every top-level `response.*` value as an unwrapped Responses event. Tolerate additional nested Responses lifecycle events.
+When the top-level event type is `response.event`, dispatch on `envelope.event.type`. Save the outer `delegation_id` to associate the backend event with its delegation. Your handler may also receive nested Responses lifecycle events beyond those shown here.
 
 Live speech and delegated work continue independently. A completed backend response does not itself mean the user heard the answer. Use the Live output transcript and audio for the spoken part of the interaction.
 
-### Complete a client-actionable function call
+
+
+
+
+### Run a custom function and return its result
 
 Read completed function calls from nested `response.output_item.done` events. The finished function item contains `call_id`, `name`, and `arguments`; an arguments-done event alone is not sufficient to identify the call.
 
-Track the response ID from nested `response.created` alongside the outer `delegation_id`, and collect that response's function calls from `response.output_item.done`. Forwarded lifecycle snapshots deliberately contain `response.output: []`, including at `response.completed`; their `tools` array is empty, `instructions` is `null`, and `input` is omitted. An empty terminal output list does **not** mean there are no pending function calls. Use the collected calls to determine which results must be submitted before continuing.
+Track the response ID from nested `response.created` alongside the outer `delegation_id`. Collect the response's function calls from `response.output_item.done`, and use that collection to determine which tool results to submit before continuing.
+
+The forwarded lifecycle events, including `response.completed`, contain `response.output: []` even when function calls need results. These events also have an empty `tools` array, `instructions: null`, and no `input` field. Read the individual output-item events for the function calls.
 
 After executing the authorized operation, append the result as a Responses item:
 
@@ -29371,9 +29359,9 @@ async def send_update(
 ```
 
 
-Submit every required result for the pending tool calls before continuing. Appending a function result does not automatically continue the response. `response.item.create` has no standalone success acknowledgment; keep processing errors and the subsequent nested response lifecycle.
+Send a `response.item.create` result for every pending function call, then send `response.create` to continue the backend response. `response.item.create` has no separate success acknowledgment; keep processing errors and nested Responses lifecycle events.
 
-`response.create` is a Live command for creating or continuing delegated Responses work, using the session's configured backend. Do not attach a Responses API creation body, backend model override, or `delegation_id` to this event. Both commands require Responses delegation.
+Both commands require Responses delegation. The Live `response.create` command uses the backend configuration stored in the session. Use the event payload shown above, and configure the backend model and other settings through the session.
 
   
 
@@ -29394,9 +29382,9 @@ session: SessionConfigParam = {"model": "gpt-live-1", "delegation": {"type": "cl
 ```
 
 
-This selects client delegation for the session. Configure the backend separately: your application chooses its model or service, instructions, tools, and how to route work. If you use the Responses API for that backend, set its model and tools in your own Responses requests. The Live session does not configure or run those backend tools.
+Your application configures and runs the backend: choose its model or service, instructions, tools, and routing. If the backend uses the Responses API, set its model and tools in your application's Responses requests.
 
-When GPT-Live requests help, your application builds the backend request from conversation and application context, runs the work, and decides which results to send back. Enforce permissions and required confirmations before executing your tools. Retain the full conversation history in your application so you can provide the relevant context for each backend request.
+When GPT-Live requests help, build the backend request from your saved conversation history and current task state. Check permissions and required confirmations, run the work, and choose which results to return.
 
 ## Keep the conversation context in your application
 
@@ -29425,7 +29413,7 @@ Keep long records and full tool output in the backend. If you create a replaceme
 }
 ```
 
-Read `event.delegation.id`. The delegation object contains metadata, not task text. Maintain the transcript and application context needed by your own delegated-work handler. Current IDs have an `item_` prefix, as illustrated here; treat the full ID as opaque and return it unchanged rather than constructing or parsing one.
+Save `event.delegation.id` and include it unchanged in updates about this task.
 
 Return a result using that ID:
 
@@ -29456,9 +29444,9 @@ async def send_update(
 ```
 
 
-Use `session.thinking.append` to add information to the model's internal reasoning without speaking it aloud when appended. Use `session.commentary.append` for a result the model should speak aloud; the model is trained to paraphrase the appended text. All appends contain a plain string and require `delegation_id`, including when its value is `null`. A non-null ID must name a known client delegation.
+Use `session.commentary.append` for results GPT-Live should say aloud; it is trained to paraphrase the text. Use `session.thinking.append` for facts or progress that it can use in later replies without saying them when they arrive. You can send multiple updates with the same client delegation ID.
 
-Repeated result appends can continue the same client delegation. An appended acknowledgment arrives after estimated context injection; it is not proof that the model has consumed or spoken the result, or that an external action succeeded.
+See [Send the right kind of update](#send-the-right-kind-of-update) for content limits, required fields, and acknowledgment timing.
 
   
 
@@ -29481,15 +29469,14 @@ unclear, ask for that detail instead of guessing.
 and confirmation requirements.]
 
 ## Return the result
-Return the relevant facts, whether the task is complete, and what comes next.
-Use confirmed values. Do not invent a successful action.
+Return the relevant facts, the task's current status, and the next step.
+Report an action as complete after the tool or service confirms success.
+If the outcome is unclear, state that and explain what needs to be checked.
 ```
 
 Keep large structured payloads, lengthy tool output, and Markdown intended for display in the backend. Give GPT-Live the relevant facts and let it choose how to say them. A concise tool result doesn't need an additional model call to rewrite it for speech.
 
 With client delegation, [return the result directly to GPT-Live](https://developers.openai.com/api/docs/guides/live-delegation?delegation-mode=client#receive-a-client-delegation). With Responses delegation, follow the [function-result flow](https://developers.openai.com/api/docs/guides/live-delegation?delegation-mode=responses#complete-a-client-actionable-function-call) to continue backend work.
-
-SDK event examples below use `connection`, a connected primary Live WebSocket or sideband from the [connection guides](https://developers.openai.com/api/docs/guides/voice-websockets?api=live). Call the helper after `session.started` on a primary connection; an attached sideband already belongs to a running session.
 
 ## Send the right kind of update
 
@@ -29602,7 +29589,7 @@ The instruction does not cancel backend work. [Block the affected action and han
 
 The corresponding acknowledgements are `session.thinking.appended`, `session.commentary.appended`, and `session.instructions.appended`. Match their `client_event_id` to your outgoing `event_id`. The acknowledgment waits for estimated context injection, not for speech or playback to finish. See [when context reaches the model](https://developers.openai.com/api/docs/guides/live-conversations#understand-when-context-reaches-the-model) for timing and error handling.
 
-Quiet context can still affect what the model says later. It is not a private place for secrets or hidden reasoning. Send useful facts and brief progress summaries.
+Send facts and brief progress summaries that GPT-Live can use in the conversation. Content sent with `session.thinking.append` can influence later spoken replies; keep secrets and private backend reasoning in your application.
 
 ## Keep updates accurate and useful
 
@@ -29619,7 +29606,7 @@ For spoken updates, send `session.commentary.append` with content that matches t
 | Failed                 | “That time is no longer available.”        |
 | Cancellation confirmed | “Your appointment has been canceled.”      |
 
-A spoken interruption does not automatically cancel backend work. If the user changes Friday to Thursday, update the active task and ignore late Friday results. Your application must decide whether to cancel work, change it, or let it finish. Check that cancellation succeeded before saying it did.
+When the user changes a request, update the active task in your application. For example, if they change Friday to Thursday, use Thursday for subsequent work and ignore results from the outdated Friday request. Manage any cancellation in the backend, and confirm it succeeded before telling the user that the work was canceled. Interrupting the spoken conversation leaves backend work running.
 
 Before retrying a failed tool call, check whether the original action already happened. For example, a lost response should not cause a second booking. If the outcome is unclear, say so and offer the next useful step.
 
@@ -29636,7 +29623,7 @@ In either delegation mode, use `session.thinking.append` with `delegation_id: nu
 
 ### Accept typed input
 
-If a caller types an exact value, such as an order number, pass it to the backend that handles the task. A voice-only application does not need this path. Keep the typed value as user data rather than a live-model instruction.
+Send typed values, such as order numbers, to the backend as user-provided data so it can use the exact text.
 
 
 
@@ -29735,7 +29722,7 @@ Reduce the time between a request for backend work and a useful result for the c
 
 ### Responses delegation
 
-Live manages persistent WebSocket connections to Responses, prepares the connection and known request configuration in advance, and reuses prior response state when available. You do not need to implement those steps for the hosted backend. Reuse depends on the active connection and compatible state; it does not guarantee a cache hit or a specific latency.
+Live manages persistent WebSocket connections to Responses and prepares known request configuration in advance. It can also reuse prior response state when the active connection and state support it. Measure response time and reported cache usage on your workload to see the effect.
 
 Tune the backend through `delegation.responses`:
 
@@ -29758,7 +29745,7 @@ Your application owns the path from delegation receipt to returning a result. Pr
 - **Prepare known configuration.** Initialize instructions, tools, and connections before the first request needs them. Responses WebSocket mode also supports warming up known request state before generation; follow its [setup guidance](https://developers.openai.com/api/docs/guides/websocket-mode#connect-and-create-responses).
 - **Stream useful results.** Return coherent, verified chunks with `session.commentary.append`. Use `session.thinking.append` for quiet progress. Preserve the client delegation ID and the 500-token limit per append. Keep private reasoning in the backend and confirm actions before announcing success.
 - **Keep reusable input stable.** Preserve instructions, tool definitions and ordering, and unchanged history prefixes. Append new information after reusable content when your backend supports caching and continuation.
-- **Avoid unnecessary buffering.** Forward a useful result as soon as it is ready. Buffer only enough to classify the output and form a coherent chunk. Prefer structured phase metadata; if you use text prefixes to distinguish progress from results, wait for the complete prefix before forwarding text.
+- **Forward complete, useful updates.** Send each result as soon as you have enough text to understand it on its own. Have your backend label updates as progress or results so your application can choose the appropriate append event. If it marks these categories with a text prefix, wait for the full prefix before forwarding the update.
 
 Measure the first useful spoken answer when comparing this path with Responses delegation.
 
@@ -29782,15 +29769,7 @@ For browser applications, use the WebRTC data channel for captions and local UI 
 
 Process accumulated text when meaningful new information arrives. A fragment may be incomplete, and later speech can change the request. Discard outdated results, coordinate with subsequent delegated work to avoid duplicate actions, and apply your usual permission and confirmation checks before consequential actions.
 
-To feed information back into the conversation:
-
-| Intent                                                        | Event                         |
-| ------------------------------------------------------------- | ----------------------------- |
-| Change the live model's behavior or redirect the conversation | `session.instructions.append` |
-| Provide quiet context for subsequent responses                | `session.thinking.append`     |
-| Provide information the model should say aloud                | `session.commentary.append`   |
-
-For updates outside a client delegation, use `delegation_id: null`. These appends steer the live model; your application controls UI changes, tool execution, and cancellation. See [Send the right kind of update](#send-the-right-kind-of-update) for append examples.
+Send findings or instructions back to GPT-Live using the [append event that matches the update](#send-the-right-kind-of-update). For work started outside a client delegation, use `delegation_id: null`. Your application applies UI changes and manages tool execution and cancellation.
 
 ### Shared optimizations
 
@@ -29805,7 +29784,9 @@ See [Latency optimization](https://developers.openai.com/api/docs/guides/latency
 
 ## Verify the complete interaction
 
-Test both the authoritative application state and the audio the client played. A backend response can finish while the spoken result is interrupted, and a context acknowledgment confirms acceptance rather than playback. Keep operation IDs and task revisions separate from delegation IDs so reconnects, retries, and late results do not repeat or reverse an action.
+Verify that the backend completed the intended action and that the client played the expected spoken result. For example, check both the booking record and the audio played after a successful reservation. The backend can finish while the spoken answer is interrupted, so test these outcomes separately.
+
+Track each application action with its own operation ID and each changed request with a task revision, alongside the GPT-Live delegation ID. Use those records to recognize completed work after reconnects or retries and to discard results for outdated requests.
 
 Use [Evaluating voice agents](https://developers.openai.com/cookbook/examples/audio/voice_agent_evaluation) for repeatable tests. For an existing Realtime tool loop or chained backend, follow [Migrate to GPT-Live](https://developers.openai.com/api/docs/guides/live-migration).
 
@@ -38648,16 +38629,16 @@ For more inspiration, visit the [OpenAI Cookbook](https://developers.openai.com/
 
 # Getting started with GPT-Live
 
-GPT-Live handles a spoken conversation while a backend agent looks up information, uses tools, and completes tasks. It can listen while speaking, a capability called **full duplex**. Sending work to the backend is called **delegation**: the conversation can continue while that work runs.
+GPT-Live handles a spoken conversation while a backend agent looks up information, uses tools, and completes tasks. It can listen while speaking (**full duplex**). Sending work to the backend is called **delegation**.
 
-For example, a user can ask about an order, add a detail while the backend checks its status, and hear the result when it is ready. You choose the backend model or agent independently of the voice model; Realtime uses one model for speech, reasoning, and tool selection.
+For example, a user can ask about an order and add a detail while the backend checks its status. GPT-Live can keep talking with the user and explain the result when it arrives. You choose the backend model or agent independently of the voice model.
 
 ## Understand the two parts
 
 - **GPT-Live handles conversation.** It listens, speaks, and decides when to ask the backend for help. Give it a short prompt for conversation style and when to delegate.
 - **The backend handles delegated tasks.** With Responses delegation, use a supported Responses model. With client delegation, connect any model, agent harness, or service your application runs. The backend reasons, uses tools, and returns results for GPT-Live to communicate. Keep detailed instructions, business rules, and tool workflows here.
 
-Your application owns permissions, confirmations, private function execution, and durable task state. Interrupting speech does not automatically cancel backend work. See [Voice agents](https://developers.openai.com/api/docs/guides/voice-agents) to compare GPT-Live with Realtime and chained voice applications.
+Your application checks permissions, obtains required confirmations, runs functions that access your systems, and saves task progress. Backend work can continue when the caller interrupts the assistant; your application decides whether to finish or cancel it. See [Voice agents](https://developers.openai.com/api/docs/guides/voice-agents) to compare GPT-Live with Realtime and chained voice applications.
 
 
 
@@ -38665,7 +38646,7 @@ Your application owns permissions, confirmations, private function execution, an
 
 ## Choose how to run the backend
 
-Start with **[Responses delegation](https://developers.openai.com/api/docs/guides/live-delegation?delegation-mode=responses#configure-responses-delegation)** when a managed backend fits: GPT-Live calls your configured Responses model, supplies conversation context, and returns results. Choose **[client delegation](https://developers.openai.com/api/docs/guides/live-delegation?delegation-mode=client#configure-client-delegation)** when your application needs to control backend execution, context, or which results reach GPT-Live.
+Start with **[Responses delegation](https://developers.openai.com/api/docs/guides/live-delegation?delegation-mode=responses#configure-responses-delegation)** to have OpenAI run the backend model and pass conversation context and results between it and GPT-Live. Your application still runs your own function tools. Choose **[client delegation](https://developers.openai.com/api/docs/guides/live-delegation?delegation-mode=client#configure-client-delegation)** to connect an existing agent or control the backend’s context, execution, and returned results yourself.
 
 See [Choose a delegation mode](https://developers.openai.com/api/docs/guides/live-delegation#choose-a-delegation-mode) for the comparison and configuration details. Choose the mode when you create the session; to change modes, start a new session.
 
@@ -38680,20 +38661,21 @@ You need a microphone, a browser page served over HTTPS or localhost, and a trus
 3. Wait for `session.started`, then speak and listen to a reply. Ask a question that needs current information to try the web search backend.
 4. End the conversation and [close the session](https://developers.openai.com/api/docs/guides/live-conversations#usage-and-graceful-close) to collect final usage and release the connection.
 
-Check both the spoken conversation and the backend result. A session-start event confirms startup; listening to a reply and checking the search result verify separate parts of the application.
+For your first test, listen to the assistant and check that its answer reflects the backend’s search result.
 
 GPT-Live voice sessions are billed by duration, per second. See the [model pricing](https://developers.openai.com/api/docs/models/gpt-live-1) for the current rate. Backend model and tool usage is billed separately. See [Cost optimization](https://developers.openai.com/api/docs/guides/voice-latency-cost?api=live) for usage accounting and ways to reduce costs.
 
 ## Choose a connection
 
-- **[WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc?api=live)** for browser voice applications. Media tracks carry audio; a data channel carries JSON events.
-- **[WebSockets](https://developers.openai.com/api/docs/guides/voice-websockets?api=live)** for server-side audio integrations. The primary socket carries audio and control events.
-- **[Server-side controls](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live)** for backend access to an existing session. A sideband connection carries events while audio stays on the primary connection.
-- **[Telephony and SIP](https://developers.openai.com/api/docs/guides/voice-sip?api=live)** for phone integration paths and provider guidance.
+- **[WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc?api=live)** for browser voice applications. It carries microphone and speaker audio on media tracks and JSON events on a data channel.
+- **[WebSockets](https://developers.openai.com/api/docs/guides/voice-websockets?api=live)** for server-side audio integrations. One connection carries audio and control events.
+- **[Telephony and SIP](https://developers.openai.com/api/docs/guides/voice-sip?api=live)** for connecting phone calls.
+
+To monitor or control an existing session from your backend, add a [server-side connection](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live). This additional WebSocket is called a **sideband**; audio continues through the session’s primary connection.
 
 ## Partner integrations
 
-For applications built with **LiveKit**, **Twilio**, **Telnyx**, or **Daily/Pipecat**, start with the [partner integration overview](https://developers.openai.com/api/docs/guides/live-partner-integrations) to choose a connection for your existing media path.
+If your application already uses **LiveKit**, **Twilio**, **Telnyx**, or **Daily/Pipecat**, follow the [partner integration overview](https://developers.openai.com/api/docs/guides/live-partner-integrations) to connect its existing calls or audio streams to GPT-Live.
 
 ## Continue building
 
@@ -38821,7 +38803,7 @@ Use the guide for your existing voice framework or telephony provider. Each part
 | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | [LiveKit](https://docs.livekit.io/agents/models/realtime/plugins/gpt-live)                    | Build GPT-Live voice agents with LiveKit’s OpenAI plugin.                        |
 | [Twilio](https://www.twilio.com/en-us/blog/developers/twilio-openai-gpt-live-1-api-resources) | Connect incoming and outgoing phone calls to GPT-Live with Twilio Agent Connect. |
-| [Telnyx](https://telnyx.com/resources/outbound-ai-calls-python-openai-live)                   | Build outbound calling experiences with GPT-Live and the Telnyx Voice API.       |
+| [Telnyx](https://developers.telnyx.com/docs/voice/sip-trunking/gpt-live-configuration-guide)  | Build outbound calling experiences with GPT-Live and the Telnyx Voice API.       |
 | [Daily/Pipecat](https://docs.pipecat.ai/api-reference/server/services/s2s/openai-live)        | Add GPT-Live to your application with Pipecat’s OpenAI Live service.             |
 
 ## Integration checklist
@@ -49112,355 +49094,6 @@ The model can choose to recover or try executing a different command. If you sen
 
 ---
 
-# Manage Codex workload identity with the Admin API
-
-Use the organization Admin API to manage Codex workload identity providers and
-federation rules from infrastructure tooling or CI. The API exposes the same
-provider and rule model as the OpenAI Admin Portal.
-
-The API calls federation rules `mappings` in paths and response objects. This
-page uses **federation rule** for the product concept and `mapping` only when it
-refers to an API field or path.
-
-These endpoints manage the Codex workload identity federation beta for managed
-  ChatGPT workspaces. To request access, contact your OpenAI representative or
-  [OpenAI
-  Support](https://help.openai.com/en/articles/6614161-how-can-i-contact-support).
-  These endpoints do not replace the existing OpenAI API workload identity
-  provider and service account mapping APIs.
-
-## Prerequisites
-
-You need:
-
-- Workload identity federation enabled for your organization and managed
-  ChatGPT workspace.
-- An [Admin API key](https://platform.openai.com/settings/organization/admin-keys)
-  whose owner is an active administrator allowed to manage workload identity.
-- The ID of the managed ChatGPT workspace.
-- The OpenAI user ID of an existing active human or service account in that
-  workspace.
-- The issuer, audience, and claims for the workload's OIDC token or SPIFFE
-  JWT-SVID.
-
-The WIF endpoints use resource IDs instead of names. They do not list or create
-ChatGPT workspaces or principals. Supply those IDs from your provisioning system.
-If you do not manage those resources programmatically, use the OpenAI Admin
-Portal to create or select the principal and connect that workload.
-
-Set the Admin API key in your environment:
-
-```bash
-export OPENAI_ADMIN_KEY="<admin-api-key>"
-```
-
-Admin API keys are long-lived credentials. Store the key in a secrets manager,
-do not commit it, and do not use it for Codex runtime authentication.
-
-## Endpoints
-
-All requests use `https://api.openai.com` and an Admin API key in the bearer
-authorization header.
-
-| Operation                    | Method and path                                                                           |
-| ---------------------------- | ----------------------------------------------------------------------------------------- |
-| List providers               | `GET /v1/organization/workload_identity/providers`                                        |
-| Create a provider            | `POST /v1/organization/workload_identity/providers`                                       |
-| Get a provider               | `GET /v1/organization/workload_identity/providers/{provider_id}`                          |
-| Update or disable a provider | `POST /v1/organization/workload_identity/providers/{provider_id}`                         |
-| Archive a provider           | `DELETE /v1/organization/workload_identity/providers/{provider_id}`                       |
-| List rules                   | `GET /v1/organization/workload_identity/providers/{provider_id}/mappings`                 |
-| Create a rule                | `POST /v1/organization/workload_identity/providers/{provider_id}/mappings`                |
-| Get a rule                   | `GET /v1/organization/workload_identity/providers/{provider_id}/mappings/{mapping_id}`    |
-| Update or disable a rule     | `POST /v1/organization/workload_identity/providers/{provider_id}/mappings/{mapping_id}`   |
-| Archive a rule               | `DELETE /v1/organization/workload_identity/providers/{provider_id}/mappings/{mapping_id}` |
-
-List responses use `{ "object": "list", "data": [...] }`. The endpoints do
-not use pagination.
-
-## Create an OIDC provider
-
-Create one provider for each issuer and trust boundary that you want to manage
-independently. Replace the example issuer and audience with exact values from a
-sample token. Inspect the token's `iat` and `exp` claims locally, then choose an
-accepted assertion lifetime that covers the issuer's expected `exp - iat`
-range. OpenAI checks that full duration, not the token's remaining validity.
-
-For Microsoft Entra, do not assume a one-hour assertion. [Access-token lifetimes
-vary](https://learn.microsoft.com/en-us/entra/identity-platform/access-tokens#token-lifetime),
-and Microsoft does not support [configuring managed-identity token
-lifetimes](https://learn.microsoft.com/en-us/entra/identity-platform/configurable-token-lifetimes).
-Replace `MAX_ASSERTION_LIFETIME_SECONDS` with an approved integer from 1 through
-176,400. This provider limit is separate from the lifetime of the OpenAI access
-token that a federation rule issues.
-
-```bash
-MAX_ASSERTION_LIFETIME_SECONDS="<accepted-issuer-lifetime-seconds>"
-
-jq -n \
-  --argjson max_assertion_lifetime_seconds "$MAX_ASSERTION_LIFETIME_SECONDS" \
-  '{
-    name: "entra-production",
-    type: "oidc",
-    issuer: "https://login.microsoftonline.com/00000000-0000-0000-0000-000000000000/v2.0",
-    audience: "api://openai-codex-production",
-    description: "Production Codex workloads in Microsoft Azure",
-    max_assertion_lifetime_seconds: $max_assertion_lifetime_seconds,
-    check_jti: true
-  }' > provider.json
-
-curl --fail-with-body --silent --show-error \
-  https://api.openai.com/v1/organization/workload_identity/providers \
-  -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-  -H "Content-Type: application/json" \
-  --data @provider.json \
-  --output provider-response.json
-
-PROVIDER_ID="$(jq -r .id provider-response.json)"
-printf 'Created provider %s\n' "$PROVIDER_ID"
-```
-
-Expected output begins with an identity-provider ID:
-
-```text
-Created provider idp_...
-```
-
-By default, an OIDC provider uses discovery at its issuer URL. Use `custom_url`
-when the public discovery document lives elsewhere, `jwks_uri` for an
-explicit public JWKS URL, or `jwks_local: true` with `jwks` to upload public
-keys. Do not include private key material.
-
-## Create a SPIFFE JWT-SVID provider
-
-Set `type` to `spiffe_jwt`, set `issuer` to the canonical trust domain, and
-provide either a public bundle URL or an uploaded SPIFFE bundle. A SPIFFE rule
-must also set `audiences`.
-
-```json
-{
-  "name": "spiffe-production",
-  "type": "spiffe_jwt",
-  "issuer": "spiffe://example.com",
-  "jwks_uri": "https://spiffe.example.com/bundle.json",
-  "max_assertion_lifetime_seconds": 3600,
-  "check_jti": true
-}
-```
-
-For an uploaded bundle, set `jwks_local` to `true`, replace `jwks_uri` with the
-`jwks` object, and include at least one public key whose `use` is `jwt-svid`.
-
-## Create a federation rule
-
-A rule targets one existing principal and can match one or many external
-workload identities. This example accepts one Azure managed identity subject:
-
-```bash
-export WORKSPACE_ID="<managed-chatgpt-workspace-id>"
-export PRINCIPAL_ID="<existing-openai-user-id>"
-
-jq -n \
-  --arg workspace_id "$WORKSPACE_ID" \
-  --arg principal_id "$PRINCIPAL_ID" \
-  '{
-    name: "entra-payments-production",
-    description: "Production payments workload",
-    workspace_id: $workspace_id,
-    principal_id: $principal_id,
-    external_subject: "11111111-2222-3333-4444-555555555555",
-    audiences: ["api://openai-codex-production"],
-    access_token_lifetime_seconds: 600,
-    enabled: true
-  }' > rule.json
-
-curl --fail-with-body --silent --show-error \
-  "https://api.openai.com/v1/organization/workload_identity/providers/$PROVIDER_ID/mappings" \
-  -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-  -H "Content-Type: application/json" \
-  --data @rule.json \
-  --output rule-response.json
-
-FEDERATION_RULE_ID="$(jq -r .id rule-response.json)"
-printf 'Created federation rule %s\n' "$FEDERATION_RULE_ID"
-```
-
-Expected output begins with a mapping ID. This is the value Codex uses as
-`OPENAI_FEDERATION_RULE_ID`:
-
-```text
-Created federation rule idpm_...
-```
-
-For a set of allowed subjects in one rule, omit `external_subject` and use a CEL
-condition:
-
-```json
-{
-  "condition": "assertion.sub in [\"workload-a\", \"workload-b\"]"
-}
-```
-
-Set at least one of `external_subject`, `claims`, or `condition`. All configured
-identity checks must pass. See the [federation rule
-reference](https://developers.openai.com/api/docs/guides/workload-identity-federation/federation-rules) for
-cardinality, CEL, audience, scope, and lifetime behavior.
-
-## List and reconcile resources
-
-List providers before creating one so your automation can compare the intended
-configuration with the current state:
-
-```bash
-curl --fail-with-body --silent --show-error \
-  https://api.openai.com/v1/organization/workload_identity/providers \
-  -H "Authorization: Bearer $OPENAI_ADMIN_KEY" | jq .
-```
-
-Then list rules under a provider:
-
-```bash
-curl --fail-with-body --silent --show-error \
-  "https://api.openai.com/v1/organization/workload_identity/providers/$PROVIDER_ID/mappings" \
-  -H "Authorization: Bearer $OPENAI_ADMIN_KEY" | jq .
-```
-
-The API does not define an idempotency-key contract. Store returned IDs in your
-approved configuration state, read the current resource before changing it,
-and update by ID. Do not create a replacement on every run.
-
-## Update or disable a resource
-
-Updates use `POST` with only the fields you want to change. This example changes
-the rule lifetime:
-
-```bash
-curl --fail-with-body --silent --show-error \
-  -X POST \
-  "https://api.openai.com/v1/organization/workload_identity/providers/$PROVIDER_ID/mappings/$FEDERATION_RULE_ID" \
-  -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"access_token_lifetime_seconds": 300}' | jq .
-```
-
-Disable a rule for an immediate stop:
-
-```bash
-curl --fail-with-body --silent --show-error \
-  -X POST \
-  "https://api.openai.com/v1/organization/workload_identity/providers/$PROVIDER_ID/mappings/$FEDERATION_RULE_ID" \
-  -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"enabled": false}' | jq .
-```
-
-Set `enabled` to `false` on the provider path to stop every rule under that
-provider. Disablement blocks new exchanges and revokes access tokens issued
-through the resource. You can turn it back on after its principal, workspace,
-binding, and provider are active.
-
-Ordinary rule edits affect only new exchanges. Tokens issued before the edit can
-remain valid until their TTL ends. Provider trust edits revoke issued tokens
-before the new trust takes effect.
-
-## Archive a resource
-
-`DELETE` archives a provider or rule instead of erasing it. Archival blocks new
-exchanges, revokes issued tokens, hides the resource from normal list results,
-and cannot be undone.
-
-Archive a rule:
-
-```bash
-curl --fail-with-body --silent --show-error \
-  -X DELETE \
-  "https://api.openai.com/v1/organization/workload_identity/providers/$PROVIDER_ID/mappings/$FEDERATION_RULE_ID" \
-  -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-Archive a provider:
-
-```bash
-curl --fail-with-body --silent --show-error \
-  -X DELETE \
-  "https://api.openai.com/v1/organization/workload_identity/providers/$PROVIDER_ID" \
-  -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-Archiving a provider revokes access for its Codex rules. You must remove any
-non-Codex product mapping before you can archive that provider. This protects
-existing OpenAI API workload identity configuration.
-
-## Provider fields
-
-Create requires `name` and `issuer`. Update accepts the mutable fields except
-`type`.
-
-| Field                            | Type and behavior                                                                                                |
-| -------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `name`                           | Non-empty display name.                                                                                          |
-| `type`                           | `oidc` by default, or `spiffe_jwt`. You cannot change it after creation.                                         |
-| `issuer`                         | Exact OIDC `iss` URL or canonical SPIFFE trust domain.                                                           |
-| `audience`                       | Optional provider-level audience. Set a rule audience when this is absent.                                       |
-| `description`                    | Optional administrator description.                                                                              |
-| `custom_url`                     | Optional public HTTPS OIDC discovery URL. OIDC only.                                                             |
-| `jwks_uri`                       | Optional public HTTPS JWKS or SPIFFE bundle URL.                                                                 |
-| `jwks_local`                     | Set to `true` when supplying `jwks`.                                                                             |
-| `jwks`                           | Uploaded public JWKS object, up to 100 keys and 1 MiB.                                                           |
-| `custom_ca_certificate`          | Optional PEM CA bundle for JWKS HTTPS, up to 256 KiB.                                                            |
-| `attribute_conditions`           | Optional bounded CEL condition applied before rule matching. Use `assertion` for the verified claims.            |
-| `max_assertion_lifetime_seconds` | Accepted upstream assertion lifetime, 1 through 176,400 seconds. OIDC uses the full `exp - iat`. Default: 3,600. |
-| `check_jti`                      | When `true`, reject a repeated non-empty JWT `jti`. Default: `false`.                                            |
-| `enabled`                        | Update-only switch that accepts or blocks exchanges.                                                             |
-
-Discovery and explicit or uploaded keys are alternative verification modes.
-Issuer, discovery, and JWKS URLs have validation requirements described in the
-[workload identity overview](https://developers.openai.com/api/docs/guides/workload-identity-federation#manage-jwks-and-key-rotation).
-
-## Federation rule fields
-
-Create requires `workspace_id` and `principal_id`, plus at least one identity
-check. You cannot change the workspace or principal after creation.
-
-| Field                           | Type and behavior                                                                                    |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `workspace_id`                  | Existing managed ChatGPT workspace ID. Create-only.                                                  |
-| `principal_id`                  | Existing active OpenAI user or service-account ID in the workspace. Create-only.                     |
-| `external_subject`              | Exact `sub` or one trailing-`*` prefix, up to 4,096 bytes.                                           |
-| `claims`                        | Up to 32 exact top-level scalar claims. Do not include `sub`.                                        |
-| `audiences`                     | One through 32 unique accepted audiences. Required for SPIFFE and when the provider has no audience. |
-| `condition`                     | Bounded CEL boolean condition over `assertion`, up to 16 KiB.                                        |
-| `scopes`                        | Optional subset of the four supported Codex scopes. Omit to use the default set.                     |
-| `access_token_lifetime_seconds` | 60 through 3,600 seconds. Default: 3,600.                                                            |
-| `name`                          | Optional display name.                                                                               |
-| `description`                   | Optional administrator description.                                                                  |
-| `enabled`                       | Whether the rule accepts exchanges. Default: `true`.                                                 |
-
-Provider responses use `workload_identity_provider`; rule responses use
-`workload_identity_mapping`. Both include `id`, `enabled`, `created_at`, and
-`updated_at`. Timestamps are Unix seconds.
-
-## Limits and errors
-
-An organization can have up to 50 non-archived providers. A provider can have up
-to 50 non-archived rules. The API returns:
-
-- `400` for request field errors, provider trust settings, rule conditions, scopes, or
-  inactive principal membership.
-- `403` when the Admin API key owner cannot manage workload identity.
-- `404` when the organization has no tenant association or the requested
-  resource is outside the organization and tenant boundary.
-- `409` for provider or rule limits, subject conflicts, inactive bindings, or
-  lifecycle conflicts.
-
-Treat `404` as non-disclosing: the service does not reveal a provider or rule
-owned by another organization or tenant. Retry transient `429` and `5xx`
-responses with bounded delays that increase after each attempt. Do not retry a
-validation or permission error without changing the request or administrator
-state.
-
----
-
 # Manage permissions in the OpenAI platform
 
 Role-based access control (RBAC) lets you decide who can do what across your organization and projects—both through the API and in the Dashboard. The same permissions govern both surfaces: if someone can call an endpoint (for example, `/v1/chat/completions`), they can use the equivalent Dashboard page, and missing permissions disable related UI (such as the **Upload** button in Playground). With RBAC you can:
@@ -50434,7 +50067,7 @@ To stop current work and keep the conversation, [cancel the active turn](https:/
 
 # Managing GPT-Live sessions
 
-After [connecting to GPT-Live](https://developers.openai.com/api/docs/guides/live), use session events to update context, display transcripts, and manage the connection's lifecycle. The model can listen and speak at the same time, so keep received events, audio playback, and backend task state separate in your application.
+After [connecting to GPT-Live](https://developers.openai.com/api/docs/guides/live), use session events to add context, display transcripts, and manage the connection. GPT-Live can listen and speak at the same time. Track transcript text, played audio, and backend task progress separately so your interface can show what the assistant is saying and what work is still running.
 
 This guide assumes your connection has emitted `session.started`. See [Connections](https://developers.openai.com/api/docs/guides/voice-webrtc?api=live) for connection setup and audio streaming, and [Delegation and tools](https://developers.openai.com/api/docs/guides/live-delegation) for backend work.
 
@@ -50452,7 +50085,7 @@ Choose the model, voice, and delegation mode when you create the session. Give t
 | ------------ | --------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
 | Model        | Set the required `model`.                                                                           | Start a new session to change it.                    |
 | Instructions | Set `instructions` for conversation behavior, up to 16,384 tokens.                                  | Add instructions with `session.instructions.append`. |
-| History      | Set `input` to relevant prior text messages. It defaults to `[]`.                                   | Append context; don't replace the startup history.   |
+| History      | Set `input` to relevant prior text messages. It defaults to `[]`.                                   | Add context with append events.                      |
 | Voice        | Set `audio.output.voice` to a supported voice or authorized custom voice. The default is `marin`.   | Start a new session to change it.                    |
 | Delegation   | Set `delegation.type` to `client` or `responses`. Omitted or `null` delegation selects client mode. | Update Responses settings within the existing mode.  |
 | Storage      | Set `store` to `true` to make the session available for forking. It defaults to `false`.            | Choose at startup.                                   |
@@ -50476,21 +50109,21 @@ Choose a voice when you create the session. Set `audio.output.voice` to the API 
 | Delta    | `delta`    | English    | Southern U.S.      | Feminine     | Generated |
 | Cinder   | `cinder`   | English    | Southern U.S.      | Masculine    | Generated |
 
-Regional influence describes a voice's speaking style, not a guarantee of accent fidelity. For an approved voice created from your own recording, see [Custom voices](https://developers.openai.com/api/docs/guides/custom-voices).
+Regional influence describes a voice’s speaking style. Test the voice with the languages and pronunciation your application needs. For an approved voice created from your own recording, see [Custom voices](https://developers.openai.com/api/docs/guides/custom-voices).
 
 
 
 
 
-For WebSocket, choose the shared `audio.format` at startup; it cannot change during the session. For WebRTC, omit this field because the connection negotiates its audio format. See [WebSocket audio formats](https://developers.openai.com/api/docs/guides/voice-websockets?api=live) for format and streaming details.
+For WebSocket, choose `audio.format` at startup. The same format applies to input and output audio for the session. To use another format, start a new session. WebRTC negotiates its audio format during connection setup, so leave `audio.format` out of WebRTC requests. See [WebSocket audio formats](https://developers.openai.com/api/docs/guides/voice-websockets?api=live) for supported formats and streaming details.
 
 ### Update a live session
 
 Use `session.update` for changes to `session.delegation.responses` in a session already using Responses delegation. Send only the settings you want to change; omitted settings retain their values. See [Configure Responses delegation](https://developers.openai.com/api/docs/guides/live-delegation#configure-responses-delegation) for the settings and update workflow.
 
-You cannot change the delegation mode after startup. In particular, setting `delegation` to `null` selects client mode; it does not reset a Responses session. The startup fields `model`, `instructions`, `input`, `audio`, and `store` are not accepted update fields. Unknown configuration fields are rejected.
+Choose the delegation mode and the fields `model`, `instructions`, `input`, `audio`, and `store` at startup. Use `session.update` only for the supported Responses settings described above; other configuration fields are rejected. To switch delegation modes, create a new session. At startup, `delegation: null` selects client delegation rather than restoring default Responses settings.
 
-A successful update emits `session.updated` with the full resolved session configuration. When you supply an `event_id`, the acknowledgment returns it as `client_event_id`. Check for [rejected commands](#handle-rejected-commands) as well as acknowledgments. Acceptance confirms the configuration update; it does not establish that a backend task ran or that the model spoke.
+A successful update emits `session.updated` with the resulting session configuration. Match it to your outgoing `event_id` through `client_event_id`. Handle [rejected commands](#handle-rejected-commands) in the same event loop. Track backend work and spoken output through their own events.
 
 ## Provide history and context
 
@@ -50526,17 +50159,19 @@ session: SessionConfigParam = {
 ```
 
 
-The list accepts up to 128 messages and 8,192 combined tokens. Supported roles are `developer`, `user`, and `assistant`, each with one text part. Developer and user messages use `input_text`; assistant messages use `text` or `output_text`. Put trusted application instructions in `instructions` or a developer message. The list does not accept the `system` role.
+The list accepts up to 128 messages and 8,192 combined tokens. Each message has one text part and one of these roles: `developer`, `user`, or `assistant`. Developer and user messages use `input_text`; assistant messages use `text` or `output_text`. Put trusted application instructions in `instructions` or a developer message.
 
-Select the history needed for the next interaction. `input` is a startup field, not a way to replace history during a running session. It also does not accept the full range of backend input items used in Responses delegation.
+Select the text history needed for the next interaction and supply it at startup. During the session, add updates with the context events below. Send backend-specific items, such as tool results, through the [delegation workflow](https://developers.openai.com/api/docs/guides/live-delegation).
 
 ### Understand when context reaches the model
 
-The full `input` supplied at session creation is available to the model when the session starts. Put context the model needs from the beginning in this field.
+Put any context the model needs from the start in `input`; the full field is available when the session starts.
 
-During a running session, the `session.instructions.append`, `session.thinking.append`, and `session.commentary.append` events feed content into the model over time. Their acknowledgments wait until frame progress reaches the estimated end of context injection. The returned `start_ms` and `end_ms` describe an estimated range on the session timeline, not speech or playback completion. They do not prove that the model consumed the entire update. Don't assume its next speech will reflect the whole update.
+During a running session, `session.instructions.append`, `session.thinking.append`, and `session.commentary.append` add context over time. The acknowledgment arrives when the session timeline reaches the estimated end of the added context. Its `start_ms` and `end_ms` estimate where that update falls on the session timeline.
 
-If frame progress stops, an acknowledgment can remain pending. Closing the session reports an error for pending appends. Match each acknowledgment to the outgoing `event_id` through `client_event_id`, and keep handling errors while you wait.
+These times describe context delivery, not speech or playback. The model may still respond before it has used the whole update. When an action depends on a new instruction or fact, verify the resulting behavior in your application.
+
+If the session timeline stops, the acknowledgment can remain pending. Match acknowledgments to the outgoing `event_id` through `client_event_id`, and keep handling errors while you wait. Closing the session returns errors for appends that are still pending.
 
 ### Add context during the conversation
 
@@ -50579,26 +50214,28 @@ async def send_update(
 ```
 
 
-Wait for `session.thinking.appended` with `client_event_id: "context_1"`, or handle an error. The acknowledgment confirms that context was accepted. It does not confirm speech, playback, or completion of an external action.
+Handle `session.thinking.appended` with `client_event_id: "context_1"`, or the corresponding error, to track this update. See [Understand when context reaches the model](#understand-when-context-reaches-the-model) for acknowledgment timing.
 
-Quiet context can influence later speech; it is not a privacy boundary. Keep credentials, secrets, and text the model must never reveal out of all three events. Use the instructions event for application-authored behavior, not untrusted tool output. Enforce permissions and required confirmations in your application.
+The assistant may repeat information supplied through any of these events. Send only information suitable for the conversation, and keep credentials and secrets in your backend. Use `session.instructions.append` for behavior defined by your application. Supply factual tool results as context, and enforce permissions and required confirmations in application code.
 
 For page navigation, selections, and other UI changes, see [Share UI context](https://developers.openai.com/api/docs/guides/live-delegation#share-ui-context) for concise updates that help GPT-Live understand what the user is referring to.
 
-For results tied to a backend task, use a known client delegation ID and follow [Send the right kind of update](https://developers.openai.com/api/docs/guides/live-delegation#send-the-right-kind-of-update). That ID is not a Responses response ID or tool call ID.
+For an update about a specific backend task, use the ID of the relevant client delegation. A delegation ID identifies the Live task; Responses response IDs and tool call IDs identify different objects. See [Send the right kind of update](https://developers.openai.com/api/docs/guides/live-delegation#send-the-right-kind-of-update) for the workflow.
 
-Use instructions to steer the conversation after an application check triggers. Your server can monitor events and send these corrections through a [sideband WebSocket](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#decide-whether-you-need-a-sideband) attached to the existing session, or through its primary WebSocket. See [Apply conversation guardrails](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#apply-conversation-guardrails) for concurrent checks, action blocking, and playback control.
-
-
+When your application detects a problem, send a short correction through the session’s primary WebSocket or a [sideband WebSocket](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#decide-whether-you-need-a-sideband). See [Apply conversation guardrails](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#apply-conversation-guardrails) for checks, action controls, and playback handling.
 
 
 
 
 
 
-## Build the conversation interface
 
-Display transcripts and microphone state independently of backend progress. Receiving assistant text does not tell you how much audio the user has heard.
+
+
+
+
+
+## Manage speech and transcripts
 
 ### Transcript deltas
 
@@ -50614,19 +50251,13 @@ Listen for `session.input_transcript.delta` for user speech and `session.output_
 }
 ```
 
-Append fragments in order for each speaker, retaining `start_ms` and `end_ms`. These are milliseconds on the session timeline, with intervals that include the start and exclude the end. They are not wall-clock timestamps, packet arrival times, or exact word alignments.
+Append each speaker’s `delta` fragments exactly as received, preserving spaces and repeated words. Retain their `start_ms` and `end_ms`. These values are milliseconds from the start of the session. The example above covers the interval from 1,000 ms up to, but excluding, 1,200 ms. They describe approximate fragment timing rather than exact word boundaries; use them instead of packet arrival times to organize the transcript.
 
-Only intervals containing transcript text produce events, and network delivery can be uneven. Do not infer silence from a missing event or treat a fragment as a complete user turn. Transcript deltas have no item ID or authoritative turn-completed event.
+Transcript events arrive for intervals that contain text, and delivery can be uneven. A fragment may contain only part of a sentence; a gap in delivery may be a network delay. Transcript deltas have no item ID or event that marks a completed conversational turn, so your application decides how to group them for display.
 
 Processing transcript fragments is optional. You can use them to update your UI, run checks, or start work early while the conversation continues. For lightweight checks, consider a small model such as `gpt-5.6-luna` with low reasoning effort. See [React to transcript fragments](https://developers.openai.com/api/docs/guides/live-delegation#react-to-transcript-fragments) for examples and connection guidance.
 
-For conversation guardrails, check accumulated user and assistant text as it arrives. Transcript delivery does not provide an advance buffer for approving speech before playback. See [Control playback when needed](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#control-playback-when-needed).
-
-
-
-
-
-If your interface groups text into turns, keep that grouping revisable. Preserve the original fragments, allow user and assistant intervals to overlap, and tune any gap timeout against recorded conversations. A brief acknowledgment from the other speaker may belong within an ongoing exchange. Grouping fragments must not trigger tool execution or cancel backend work by itself.
+Use [transcript guardrails](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#run-checks-alongside-the-conversation) to monitor the conversation and trigger interventions while speech continues. If your application needs to check assistant speech before playback, see [Check speech before playback](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#check-speech-before-playback) for buffering, approval, interruption, and recovery handling.
 
 
 
@@ -50634,18 +50265,17 @@ If your interface groups text into turns, keep that grouping revisable. Preserve
 
 Keep transcript timing separate from audio playback. WebSocket `session.output_audio.delta` events have no timing fields or output-audio-done event; WebRTC delivers audio through its media track. See [Connections](https://developers.openai.com/api/docs/guides/voice-websockets?api=live) for audio handling.
 
+
+
+
+
 ### Display captions
 
-Build caption rows that can grow while both speakers are talking:
+GPT-Live is full duplex: the caller and assistant can speak at the same time. Update their captions independently so both speakers’ text can keep growing during overlapping speech.
 
-1. **Preserve the text.** Store each speaker's original `delta`, `start_ms`, and `end_ms`. Concatenate text exactly as received, including spaces and repeated words. Don't trim fragments or insert spaces between them.
-2. **Update each speaker independently.** Allow user and assistant rows to grow during overlapping speech. Keep earlier assistant text visible after an interruption, and start a new row when the assistant resumes.
-3. **Keep rows stable.** Assign display IDs in your application and preserve row order as text grows. Don't derive row identity from changing text or end timestamps, or move a row to the bottom whenever it receives a fragment.
-4. **Revisit grouping for late fragments.** Use transcript timestamps to group nearby fragments from the same speaker. Allow late text to update earlier rows and revise fragment assignments while retaining the original fragments. These display groups are not complete semantic turns; any gap threshold is an application choice to test.
-5. **Let the reader control scrolling.** Follow new text while the reader is at the bottom. Pause automatic scrolling when they scroll up, and provide a way to return to the latest captions.
-6. **Show tool progress in a status area.** Use assistant transcript events for spoken captions. Display tool activity and backend results outside the captions; receiving a result does not mean the assistant has said it.
+If your app uses chat bubbles, the fragments “I’d like” and “ to change my booking” can appear in one caller bubble. If the assistant says “Sure” while the caller continues, show that acknowledgment separately while allowing the caller’s bubble to keep growing. Keep the original fragments and timestamps so text that arrives later can update the appropriate bubble.
 
-Test the display with overlapping speech, short acknowledgments, interruptions, long pauses, and translation where the two speakers' text arrives at different rates.
+Use `session.output_transcript.delta` for spoken captions and show backend updates separately. Keep decisions about running tools or canceling work in your application’s task logic, separate from how you group text for display.
 
 ### Control microphone input
 
@@ -50676,21 +50306,19 @@ async def send_update(
 
 Wait for `session.input_audio.muted` with `client_event_id: "mute_1"` before treating the command as accepted. To resume input, send `session.input_audio.unmute` and wait for `session.input_audio.unmuted`. Handle errors for either command.
 
-Muting input does not stop inference, delegated work, or generated speech. Control microphone capture and audio playback separately in your application when those controls are needed.
+Muting input leaves the session running: the model can keep generating speech, and delegated work can continue. Use your application’s microphone capture and audio player controls when you also need to stop local recording or playback.
 
 ### Greet before the caller speaks
 
-To request a greeting after `session.started`:
+To have GPT-Live open the conversation, send greeting instructions after `session.started`. Specify the language, what the assistant should say, and that it should begin immediately, then pause to listen. Use the application’s chosen greeting language until the caller speaks. For example:
 
-1. Send one fresh `session.instructions.append` with `delegation_id: null`. Include the greeting, its language, and an explicit instruction to greet immediately without waiting for the caller, then pause and listen. Keep the existing startup instructions.
-2. Wait for `session.instructions.appended`, matching its `client_event_id` to your command. Handle a rejected command before continuing.
-3. Keep input audio running, including silence before the caller speaks. On WebSocket, continue sending `session.input_audio.append`; on WebRTC, keep the negotiated input audio track active. Observe output transcript and audio for the greeting.
+> Greet the caller now in English. Introduce yourself as the support assistant and ask how you can help. Then pause and listen.
 
-Use the language specified by your application until the caller speaks; don't infer it from a name, phone number, or location. See [Prompting voice models](https://developers.openai.com/api/docs/guides/live-prompting) for prompt design.
+1. Keep input audio running throughout this sequence, including silence before the caller speaks. On WebSocket, continue sending `session.input_audio.append`; on WebRTC, keep the input audio track active.
+2. Send the instructions once with `session.instructions.append` and `delegation_id: null`.
+3. Match `session.instructions.appended` to your command using `client_event_id`, and handle any error. This acknowledgment confirms that the instructions were accepted.
 
-For a greeting that needs to follow application instructions, send those instructions with `session.instructions.append`, then use a short `session.commentary.append` to prompt the assistant to begin. For example: “Begin the conversation now, following the instructions provided.” Keep input audio running, including silence before the caller speaks.
-
-Instructions request a greeting; they do not guarantee exact wording or uninterrupted playback. The API does not emit an opening-completed event, and acknowledgment does not mean the greeting was heard. Use application-controlled playback if the audio must be verbatim. Test your greeting with the languages and interruptions your application supports.
+For exact wording and a known playback-completion point, play a verified recording or rendered clip through your application and [control GPT-Live playback while it plays](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#control-playback-when-needed). Test greetings in the languages you support, including when the caller starts speaking during the greeting. See [Prompting voice models](https://developers.openai.com/api/docs/guides/live-prompting) for prompt design.
 
 ### Deliver a disclosure
 
@@ -50728,9 +50356,9 @@ async def send_update(
 ```
 
 
-Keep input audio running as described in [Greet before the caller speaks](#greet-before-the-caller-speaks). Choose the delivery point deliberately: an instruction sent during the conversation can interrupt speech in progress.
+Keep input audio running, as in [Greet before the caller speaks](#greet-before-the-caller-speaks). An instruction sent during the conversation can interrupt speech in progress.
 
-This requests the wording; it does not guarantee exact delivery. Verify the complete spoken disclosure and actual playback before marking it delivered. `session.instructions.appended` confirms only that the instruction was accepted. If exact audio delivery is required, play a verified recording or rendered clip through your application and control GPT-Live output while it plays. See [Control playback when needed](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#control-playback-when-needed).
+Check the generated disclosure and its playback before marking it delivered. The instruction acknowledgment records acceptance; use the audio itself to check the wording. For exact wording and a known playback-completion point, play a verified recording or rendered clip through your application and control GPT-Live output while it plays. See [Control playback when needed](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#control-playback-when-needed).
 
 
 
@@ -50738,7 +50366,7 @@ This requests the wording; it does not guarantee exact delivery. Verify the comp
 
 ## Manage longer conversations
 
-GPT-Live automatically manages context during long conversations; no configuration parameter is needed. The instructions you provide at session start are preserved throughout compaction. You don’t need to resend them.
+GPT-Live manages long conversations automatically and preserves your original startup instructions.
 
 The default context window holds 128,000 tokens, including your instructions, conversation text, and audio tokens that don’t appear in the transcript.
 
@@ -50752,17 +50380,40 @@ Older conversation details may be summarized or omitted. Keep important facts, c
 
 ## Store and fork a session
 
-Set `store` to `true` in the session configuration at creation to save a recording for later download or forking. Storage defaults to `false` and must be enabled for your project. Downloads and forks require a completed stored recording and a data policy that permits persistence. Recordings expire after 30 days. With Zero Data Retention, `store` is treated as `false`, and recording downloads and forks are unavailable. See [GPT-Live data controls](https://developers.openai.com/api/docs/guides/your-data#v1livesessions).
+A fork starts a new session from a saved voice conversation. Use it to run several evaluation trials from the same reference conversation, or to let a user continue after an earlier session has ended. Each fork gets a new connection and session ID, with the source conversation and its saved configuration as its starting point.
 
-For example, add this field to the `session` object in your WebSocket `session.start` event or WebRTC creation request:
+### Run evaluations from a reference conversation
+
+Suppose you want to test how your agent handles a caller changing an order. Record the setup once, through the point where the caller has identified the order. End and finalize that session before the caller asks to change it. Each evaluation can then fork the same reference session and receive the same next caller audio: “Actually, can you send it to my office instead?”
+
+For each trial, restore the same test order and application state, supply the next caller input, and evaluate the new response and tool actions. You can repeat the scenario or compare supported Responses backend settings. Measure fork startup separately from response time. See the [GPT-Live evaluation guide](https://developers.openai.com/cookbook/examples/audio/voice_agent_evaluation) for choosing scenarios and measuring results.
+
+Forks inherit the GPT-Live model, voice, and original instructions. To compare a different voice model or startup prompt, create new sessions with that configuration. The fork API uses the completed source recording, so end the reference session where you want the evaluation to begin.
+
+### Continue after a session ends
+
+For example, a caller may hang up and call back later, or reconnect after a dropped call. If the earlier session has a completed stored recording, your application can fork it on a new connection and continue from the saved conversation.
+
+Save application task state alongside the source session ID. Before continuing, check the status of any outstanding backend work and give the new session its current results. For example, if an order update was already submitted, confirm its outcome before attempting another update. Use the new session ID for controls and sideband connections, and route subsequent backend results to the new session.
+
+### Prepare a session for forking
+
+1. **Enable storage when you create the source.** Set `store: true` in its session configuration. Storage defaults to `false`, must be enabled for your project, and requires a data policy that permits persistence.
+2. **Save the source session ID.** Read it from `session.started` or the WebRTC creation response, and associate it with your application’s conversation record.
+3. **Finish and close the source.** Complete required backend work, then follow [Usage and graceful close](https://developers.openai.com/api/docs/guides/live-conversations#usage-and-graceful-close). Keep the connection open until `session.closed` and handle any finalization error. Forking requires a completed stored recording; saving it can add time to finalization.
+4. **Start a fork on a new connection.** Use the source ID with the transport flow below, save the new session ID, and complete startup before continuing the conversation. Set the child’s `store` explicitly: `true` if you want to fork its continuation later, or `false` if you do not need to store that trial. Omitting it inherits the source setting.
+
+Stored recordings are available for 30 days. With Zero Data Retention (ZDR), `store` is treated as `false` and forking is unavailable. For fork-based evaluations, use a non-ZDR organization with storage enabled for the project.
+
+If you have no completed stored recording, [start a new session with relevant saved text history](https://developers.openai.com/api/docs/guides/live-conversations#seed-a-session-with-prior-conversation). See [GPT-Live data controls](https://developers.openai.com/api/docs/guides/your-data#v1livesessions) for storage requirements.
+
+For example, set this field in the source session’s WebSocket `session.start` configuration or WebRTC creation request:
 
 ```json
 {
   "store": true
 }
 ```
-
-Save the source session ID from `session.started` or the WebRTC creation response. A fork starts a **new session with a new ID** from the stored session state. It does not reopen the original connection or reuse the source session ID.
 
 Start the fork through the transport your application uses:
 
@@ -50771,11 +50422,14 @@ Start the fork through the transport your application uses:
 | WebSocket | Connect to `wss://api.openai.com/v1/live/sessions/{source_session_id}/fork`.                                                                     |
 | WebRTC    | Send a new SDP offer to `POST /v1/live/sessions/{source_session_id}/fork`. Apply the returned `transport.sdp` answer to the new peer connection. |
 
-A fork inherits the stored session configuration, subject to the transport rules below. For a WebSocket fork, send `session.start` with a required `session` object; `{}` supplies no overrides. Do not supply a new model or repeat the original instructions or input. You can override `store`, Responses delegation settings, and the new WebSocket audio format. WebRTC forks can override `store`, Responses delegation settings, and frontend client permissions. Omitting `store` on a fork inherits the source session's setting.
+A fork inherits the source session’s model, original instructions, and input. Send only the supported overrides at startup:
 
-A WebSocket fork does **not** inherit the source audio format: set `audio.format` explicitly or use the default PCM16 at 24 kHz. It also discards inherited frontend data-channel permissions. WebRTC forks negotiate their audio format and reject `audio.format`; they preserve frontend permission settings unless you override them.
+- **WebSocket:** `store`, Responses delegation settings, and the new connection’s `audio.format`. Send a `session.start` event with a `session` object; use `{}` to keep inherited settings where supported.
+- **WebRTC:** `store`, Responses delegation settings, and frontend client permissions.
 
-Wait for `session.started` before sending further WebSocket commands. WebRTC starts through the HTTP request and must not receive a second `session.start` on its data channel.
+For a WebSocket fork, set `audio.format` for the new connection or use the default PCM16 at 24 kHz. The source audio format and frontend data-channel permissions are not inherited. WebRTC negotiates audio format during connection setup; omit `audio.format`. WebRTC preserves frontend permission settings unless you override them.
+
+For WebSocket, wait for `session.started` before sending more commands. For WebRTC, the HTTP request starts the session; continue through the negotiated connection without sending another `session.start`.
 
 ### Start a WebSocket fork
 
@@ -50870,7 +50524,7 @@ def fork_session(source_session_id: str, offer_sdp: str) -> None:
 
 Return the response to your frontend, apply `transport.sdp` as the new peer connection's answer, and retain the new `session.id`. Keep the API key on your backend.
 
-Use the new session ID for later sideband connections and session controls. Keep application task state separately: restoring conversation state does not confirm that a pending backend action completed. Reconcile uncertain results before retrying an action. If you don't have a stored session to fork, [seed a new session with saved history](#seed-a-session-with-prior-conversation).
+Use the new session ID for sideband connections and session controls. Before retrying an unfinished action, check its outcome in your backend and restore the current application task state. If you have no completed stored recording, [seed a new session with saved history](#seed-a-session-with-prior-conversation).
 
 ### Download a recording
 
@@ -50902,6 +50556,17 @@ def download_recording(session_id: str) -> None:
 ```
 
 
+## Close idle sessions and resume
+
+For applications with long gaps between interactions, close the voice session during inactivity and start a new session when the user returns. Keep conversation context and application task state so the user can continue without repeating themselves. For example, an in-car assistant can resume when the driver activates voice again, while a coding assistant can keep its backend worker running between voice conversations.
+
+1. **Decide when to close.** Use an application-controlled inactivity timeout based on audio activity, assistant playback, and application interactions. Allow for expected pauses, such as reading or thinking. Close only when playback has finished and no pending work requires the current voice session. Gaps between transcript events alone do not establish silence.
+2. **Save state and close gracefully.** Save the source session ID, conversation context, and current task state. Finish any required Responses work, then follow [Usage and graceful close](#usage-and-graceful-close): install the `session.closed` listener, send `session.close`, and wait for `session.closed` before releasing the connection. With client delegation, application-managed backend work can continue independently while voice is closed.
+3. **Detect when to restart.** Offer a button labeled **Resume conversation**, a push-to-talk control, or an application-managed wake trigger. A closed Live session cannot listen for the user. If you use local speech detection to restart automatically, keep microphone capture active and buffer the opening speech through connection setup. Deliver that audio once the new session is ready, so the user’s first words are preserved.
+4. **Restore context in a new session.** If the source was created with `store: true`, storage is enabled and permitted, and its recording finalized successfully, [fork the stored session](#prepare-a-session-for-forking). Otherwise, [start a new session with saved text history](#seed-a-session-with-prior-conversation). Save the new session ID, check the status of outstanding backend operations, and route subsequent results to the new session. Keep operation status in your application so restarting does not repeat completed actions.
+
+Muting the microphone leaves the session active. Choose an idle timeout by comparing avoided voice duration with session-creation costs and the delay before voice becomes ready again. See [Voice session costs](https://developers.openai.com/api/docs/guides/voice-latency-cost?api=live#voice-session-costs) and [WebRTC initialization charges](https://developers.openai.com/api/docs/guides/voice-latency-cost?api=live#webrtc-initialization-charges).
+
 ## Handle errors and end the session
 
 Keep reading session events until the session finalizes. Distinguish a rejected command, a failed connection, and a completed session so your application can recover appropriately.
@@ -50924,7 +50589,7 @@ Read `error` events alongside acknowledgments. When present, `error.client_event
 }
 ```
 
-An error code can be `null`, and an error may lack a client event ID. Handle those cases without assuming a command succeeded. For an immutable-field error, keep the current configuration or create a new session with the intended settings.
+Provide a general error handler for errors whose code is `null` or whose client event ID is absent. For an immutable-field error, keep the current configuration or create a new session with the intended settings.
 
 ### Handle moderation
 
@@ -50933,7 +50598,7 @@ Moderation can affect the session in two ways:
 - Some moderation events end the session.
 - Others cut off assistant audio for the remainder of its current speech and emit an `error` event without ending the session.
 
-Read `error` events even while audio is playing. Don't assume every moderation error closes the session, or that an audio interruption means the connection failed. Keep application state aligned with the session lifecycle, and don't mark an interrupted spoken message as fully delivered. Application-level [conversation guardrails](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#apply-conversation-guardrails) remain separate from this built-in moderation behavior.
+Keep handling `error` events while audio is playing. Track audio interruption and session closure separately, and mark a spoken message as delivered only after checking its playback. Apply your own [conversation guardrails](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#apply-conversation-guardrails) alongside built-in moderation.
 
 ### Usage and graceful close
 
@@ -50948,7 +50613,7 @@ Read `error` events even while audio is playing. Don't assume every moderation e
 }
 ```
 
-These are snapshots, not increments to sum. Backend token usage is separate; preserve it from nested Responses completion events. See [Cost optimization](https://developers.openai.com/api/docs/guides/voice-latency-cost?api=live) for usage accounting.
+Use the latest `usage.seconds` as the running total for voice duration. For example, updates of 12 and then 15 seconds mean 15 seconds of use. Track backend token usage separately from nested Responses completion events. See [Cost optimization](https://developers.openai.com/api/docs/guides/voice-latency-cost?api=live) for usage accounting.
 
 To close gracefully:
 
@@ -50960,7 +50625,7 @@ To close gracefully:
 
 Sending `session.close` cancels queued Responses and rejects further commands. An active response can finish, but one waiting for a function result cannot continue after closing starts. Decide separately whether to finish or cancel work your application runs through client delegation.
 
-The `session.closed` event establishes finalization; the embedded session is a configuration snapshot. A socket close alone does not establish success, and a transport close code after a valid final event does not invalidate finalization. Closing WebRTC immediately after sending the command can prevent delivery of the final event.
+Use `session.closed` to confirm finalization and read the final configuration snapshot. Keep the transport open until this event arrives. If the socket closes first, record finalization as unconfirmed; if it closes after a valid `session.closed`, retain the confirmed result.
 
 The final event's `reason` explains why the session ended:
 
@@ -50978,7 +50643,7 @@ A `session.closed` event confirms finalization even when the reason is a connect
 
 An HTTP session-creation error means the session did not reach `session.started`. Handle startup errors separately from errors in a running session. If a running connection fails before `session.closed`, retain the latest observed usage and mark final usage as unconfirmed.
 
-If a stored session is available, [fork it](#store-and-fork-a-session) to start a new session from its saved state. Otherwise, create a replacement session with relevant saved history. Reconcile pending actions with your backend before retrying them, and suppress stale results from the previous session. Restore application state explicitly rather than assuming a new connection resumes the previous session or its pending work.
+If a completed stored recording is available, [fork it](#store-and-fork-a-session) to continue in a new session. Otherwise, create a replacement session with relevant saved history. Before continuing, check unfinished actions with your backend, restore current task state, and update result routing so late results from the previous session cannot overwrite newer work.
 
 ---
 
@@ -54116,7 +53781,7 @@ Don't scatter prompts inline across the codebase. Create a small `prompts/` modu
 
 # Migrate to GPT-Live
 
-GPT-Live handles the voice conversation while a backend handles task reasoning and tools. Keep your application logic, tool implementations, permissions, and durable state. The migration connects those responsibilities to the new voice interface.
+GPT-Live handles listening and speaking. A backend decides how to complete tasks and which tools to call. Keep your existing tool implementations, permission checks, and saved task records. During migration, connect that backend to GPT-Live and decide which instructions belong in each model.
 
 This guide uses an appointment assistant: check availability, ask the user to confirm a slot, then book it. Start with a connected session from [Getting started](https://developers.openai.com/api/docs/guides/live), and keep representative conversations from your existing application for comparison.
 
@@ -54136,16 +53801,16 @@ Use [Getting started](https://developers.openai.com/api/docs/guides/live) for se
 
 ## Choose your delegation mode
 
-Your existing architecture is a useful starting point:
+Choose who will run the backend:
 
-- **Responses delegation** fits a Realtime app where the model selects functions and your application executes them. A hosted Responses model takes over task reasoning and tool selection.
-- **Client delegation** fits an existing text agent or orchestrator. Your application supplies context, invokes that backend, and returns results to GPT-Live.
+- **Responses delegation:** Configure a hosted Responses model to reason about tasks and select tools. Your application executes custom functions and returns their results. This is a useful starting point when your Realtime model currently selects those functions.
+- **Client delegation:** Keep your existing agent or orchestrator. Your application supplies its conversation context, starts its work, and decides which results to send to GPT-Live.
 
-Either migration path can use either mode. For example, a Realtime app that already has a separate backend agent may keep it with client delegation. Also consider how much control you need over backend context, execution, and reviewing results before they reach GPT-Live. See [Choose a delegation mode](https://developers.openai.com/api/docs/guides/live-delegation#choose-a-delegation-mode) for the full comparison.
+Either mode can support either migration path. For example, a Realtime application with a separate backend agent can keep that agent through client delegation. See [Choose a delegation mode](https://developers.openai.com/api/docs/guides/live-delegation#choose-a-delegation-mode) for the full comparison.
 
 ## Choose your migration path
 
-Select the path that matches the application you have today.
+Start with [From Realtime API](https://developers.openai.com/api/docs/guides/live-migration?migration-path=realtime#from-realtime-api) if your current voice model selects tools. Start with [From a text agent or chained pipeline](https://developers.openai.com/api/docs/guides/live-migration?migration-path=text-agent#from-a-text-agent-or-chained-pipeline) if you are keeping an existing agent and adding GPT-Live as its voice interface.
 
 
 
@@ -54168,21 +53833,7 @@ For the appointment assistant:
 3. Your application runs the function, returns its result, and continues the backend response.
 4. GPT-Live uses the answer from the backend to discuss available slots with the user.
 
-GPT-Live can keep the conversation going while backend work runs. Finishing that work does not mean the assistant has finished speaking. See [Delegation and tools](https://developers.openai.com/api/docs/guides/live-delegation#configure-responses-delegation) for configuration and the full event flow.
-
-### Preserve decisions that depend on audio
-
-Check whether existing tool decisions depend on acoustic evidence, such as a voicemail beep or a recorded greeting's cadence. GPT-Live hears the incoming audio, but its voice frontend delegates work instead of issuing ordinary structured function calls. In client mode, `session.delegation.created` carries metadata and timing, without raw audio, task text, or parsed tool arguments. A delegated backend does not automatically receive the waveform.
-
-For answering-machine detection, explicitly route incoming audio to an audio-capable detector. One application-managed architecture to evaluate runs a separate Realtime session alongside GPT-Live for part of the call:
-
-1. Send a copy of the incoming call audio to both sessions.
-2. Have the detector report its classification through a structured function call. Check each result against your schema, reject stale results, and keep an unknown state when evidence is insufficient. Allow later evidence to revise the decision.
-3. Send relevant trusted context to GPT-Live, and apply your application's policy to outgoing audio playback.
-
-Keep human or machine classification separate from recording readiness. Recognizing voicemail does not establish that the greeting and beep have finished or that recording can begin. A classifier result or context acknowledgment also does not establish permission to play audio. Use [Adapt your guardrails](#adapt-your-guardrails) and the [playback controls](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#control-playback-when-needed) to enforce that decision in the audio path your application controls.
-
-Test a short “hello” that develops into a voicemail greeting, call-screening prompts, and a person picking up during voicemail. If you stop the detector before the call ends, test later human pickup after it stops. Choose when to stop the detector based on these tests and its added cost. The first human classification alone does not establish that further detection is unnecessary.
+GPT-Live can continue speaking while the backend works. Track the backend task and audio playback separately: use tool results to update task status and your player’s state to update the speaking indicator. See [Delegation and tools](https://developers.openai.com/api/docs/guides/live-delegation#configure-responses-delegation) for configuration and the full event flow.
 
 ### Adapt the connection and audio lifecycle
 
@@ -54199,11 +53850,11 @@ If your Realtime application uses a server connection to monitor the call or enf
 | Display user captions from input transcription events.                                                | Append `session.input_transcript.delta` text to the user's captions.                                            |
 | Display assistant captions from `response.output_audio_transcript.delta`.                             | Append `session.output_transcript.delta` text to the assistant's captions.                                      |
 
-**Generation and playback:** In Realtime, `response.output_audio.done` marks the end of audio generation, while `response.done` marks the end of the response stream. These events can also occur when a response is interrupted or unsuccessful; check `response.status` in `response.done`. Neither confirms that buffered audio has finished playing. For example, the server can finish generating while the client still has a second of audio to play. Drive a "speaking" indicator from playback state.
+**Generation and playback:** Drive the speaking indicator from your audio player. The server can finish generating while the player still has a second of audio queued. In Realtime, `response.output_audio.done` marks the end of generation and `response.done` ends the response stream; check `response.status` for interruption or failure. GPT-Live has no equivalent event for the end of each spoken response.
 
-**Captions:** Input transcription represents the user's speech; output transcription represents the assistant's generated speech. When input transcription is enabled, Realtime sends updates through `conversation.item.input_audio_transcription.delta` and a final transcript through `conversation.item.input_audio_transcription.completed`. A `delta` is a new text fragment. In GPT-Live, append each fragment to the corresponding speaker's captions independently because listening and speaking can overlap. A fragment is not a complete turn or confirmation of playback. See [Display captions](https://developers.openai.com/api/docs/guides/live-conversations#display-captions) for a display recipe.
+**Captions:** When input transcription is enabled, Realtime sends text fragments through `conversation.item.input_audio_transcription.delta` and a final transcript through `conversation.item.input_audio_transcription.completed`. In GPT-Live, append each fragment to the caller’s or assistant’s captions; both can change at once. Your application decides how to group text and tracks playback through the audio player. See [Display captions](https://developers.openai.com/api/docs/guides/live-conversations#display-captions).
 
-In GPT-Live, `response.create` starts or continues delegated Responses work. It does not grant permission for the voice model to speak. For startup, greetings, interruptions, and closing a session, follow [Managing sessions](https://developers.openai.com/api/docs/guides/live-conversations).
+Use `response.create` to start or continue delegated Responses work. GPT-Live manages when to speak as it listens to the conversation. For startup, greetings, interruptions, and closing a session, follow [Managing sessions](https://developers.openai.com/api/docs/guides/live-conversations).
 
 ### Split conversation and backend instructions
 
@@ -54248,7 +53899,7 @@ The function still returns a result for its original `call_id`. What changes is 
 | Return each function result.         | Send `conversation.item.create`.                                                 | Send `response.item.create`.                                                                                      |
 | Continue after all required results. | Send `response.create`.                                                          | Send `response.create` to continue backend work.                                                                  |
 
-For example, after `check_availability` returns one verified slot, your result changes as follows. These are messages on an already-connected session; `call_availability` stands for the actual call ID you received.
+For example, after `check_availability` returns a verified slot, send the following on your connected session. Replace `call_availability` with the call ID you received.
 
 **Before: Realtime result**
 
@@ -54325,17 +53976,35 @@ async def send_update(
 ```
 
 
-For the initial migration, setting `parallel_tool_calls` to `false` simplifies result handling. Collect calls from completed output-item events even if a terminal lifecycle snapshot has `output: []`. An arguments-done event alone does not supply the function name and `call_id`. Follow the complete [function-result procedure](https://developers.openai.com/api/docs/guides/live-delegation#complete-a-client-actionable-function-call) for collection, output submission, and errors.
+For the initial migration, set `parallel_tool_calls` to `false` to handle one tool call at a time. Collect each function call from the inner `response.output_item.done` event and keep its name, arguments, and `call_id`. Keep that record even if a later completion event contains `output: []`. Wait for the completed item before running the handler; the arguments-done event alone lacks the function name and `call_id`. Follow the complete [function-result procedure](https://developers.openai.com/api/docs/guides/live-delegation#complete-a-client-actionable-function-call) for collection, output submission, and errors.
 
 ### Preserve context and apply corrections
 
 Responses delegation supplies relevant voice conversation context to the backend. Keep the authoritative appointment state in your application: selected slot, confirmed slot, permissions, active operation, and outcome. Live conversation history can be compacted; it is not your booking record.
 
-If the user says “Actually, Friday instead” while a Thursday lookup is pending, update the task's revision and invalidate the earlier slot confirmation. Before executing a booking, check that its arguments still match the current task and confirmation. Return an accurate superseded or cancelled result for any pending function call your application declines, then complete the required output batch before continuing. If a booking already succeeded, reconcile that result and the requested change before taking another action.
+When the user says “Actually, Friday instead,” record Friday as the current request and clear any confirmation for Thursday. Give the task a new version number, such as revision 2, so your application can recognize results from the earlier request.
 
-Transcript fragments can arrive late or overlap with assistant speech. Append each `delta` exactly as received and use `start_ms` and `end_ms` to group the display. These timestamps are not definitive turn boundaries or word-level playback timestamps. Clarify important dates, names, and numbers when intent is uncertain. See [Managing sessions](https://developers.openai.com/api/docs/guides/live-conversations) for transcript and context handling.
+Before booking, check that the date, slot, and confirmation still match the current request. If you decline a pending function call because the user changed the request, return a result that explains it was skipped or cancelled, matching what actually happened. Submit a result for every required call before continuing the backend.
+
+If the Thursday booking already succeeded, check its current status and handle the requested change before attempting another booking.
+
+Keep each transcript fragment exactly as received, along with its speaker, `start_ms`, and `end_ms`. Use that information to update the appropriate caller or assistant caption or chat bubble, including when a fragment arrives late or both people speak at once. Choose message boundaries in your application and track audio playback in your player; the transcript timestamps do not identify exact word playback times. Clarify important dates, names, and numbers when intent is uncertain. See [Managing sessions](https://developers.openai.com/api/docs/guides/live-conversations) for transcript and context handling.
 
 **Images and screen context:** If your Realtime application accepts images, route them to a vision-capable backend and return relevant text to GPT-Live. Both client and Responses delegation support this pattern. See [Add images and visual context](https://developers.openai.com/api/docs/guides/live-delegation#add-images-and-visual-context).
+
+### Preserve decisions that depend on audio
+
+Some decisions require the sound itself, such as detecting a voicemail beep or recognizing a recorded greeting from its timing. GPT-Live hears the call, but delegation does not automatically send audio to your backend. In client mode, `session.delegation.created` contains an ID and timing information; your application supplies the request context and any audio the backend needs.
+
+For answering-machine detection, explicitly route incoming audio to an audio-capable detector. One application-managed architecture to evaluate runs a separate Realtime session alongside GPT-Live for part of the call:
+
+1. Send a copy of the incoming call audio to both sessions.
+2. Have the detector report its classification through a structured function call. Check each result against your schema, reject stale results, and keep an unknown state when evidence is insufficient. Allow later evidence to revise the decision.
+3. Send relevant trusted context to GPT-Live, and apply your application's policy to outgoing audio playback.
+
+Track two decisions: whether you are speaking to a person or a machine, and whether the destination is ready to record your message. A detector may recognize voicemail while the greeting is still playing. Wait for the evidence your application requires before allowing outgoing audio. A context acknowledgment records acceptance of the update; your application still makes the playback decision. Use [Adapt your guardrails](#adapt-your-guardrails) and the [playback controls](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#control-playback-when-needed) to enforce that decision in the audio path your application controls.
+
+Test a short “hello” that develops into a voicemail greeting, call-screening prompts, and a person picking up during voicemail. If you plan to stop the detector before the call ends, test what happens when a person picks up afterward. Use those results and the detector’s added cost to choose how long it should run. Include cases where an initial “human” classification changes as more audio arrives.
 
   
 
@@ -54365,9 +54034,27 @@ Configure `delegation` as `{"type":"client"}` during [session setup](https://dev
 }
 ```
 
-The notification contains metadata, not request text, tool arguments, or a complete transcript. Keep the actual `delegation.id` unchanged. Assemble the agent's input from recent role-labeled transcript fragments and verified application state, including the active task and latest correction. A delegation can arrive before a complete sentence appears in the transcript. If the available context does not establish the request, gather more context or ask for clarification before acting.
+Use this notification to start your application’s delegation handler. Preserve `delegation.id` so you can attach the result to the same request. Your handler prepares the agent’s input from caller and assistant transcripts plus the task records your application holds; the notification itself contains no request text or tool arguments.
 
-In a text application, you might pass the user's latest message directly to your agent. With GPT-Live, add an adapter that supplies that context and returns a concise, verified result:
+For example, the appointment agent might receive:
+
+> Caller: “Actually, Friday instead.”
+>
+> Current request: Find an appointment on Friday in the caller’s time zone.
+>
+> Previous result: Thursday at 2 PM was offered.
+>
+> Confirmation: No Friday slot has been confirmed.
+>
+> Task revision: 2.
+
+The notification may arrive before the full sentence is transcribed. Keep it until you have enough context, or ask the caller to clarify before taking action.
+
+In a text application, you might pass the user's latest message directly to your agent. With GPT-Live, add an adapter that supplies that context and returns a concise, verified result.
+
+Before calling the adapter, record the delegation ID so only one handler starts work for it. If the request is unclear, call the adapter again when the context is ready.
+
+Your backend remains responsible for authorization, confirmation, operation IDs, and retries. Check the task’s current revision before changing a booking. The adapter’s later revision check only prevents an outdated result from being announced; it cannot undo a booking already made.
 
 Connect a client delegation to your agent
 
@@ -54443,9 +54130,7 @@ async def handle_delegation(
 ```
 
 
-The adapter uses application callbacks to read context, run your agent, and check the current task revision; these aren't SDK methods. The context callback returns a ready snapshot containing recent conversation and the current task, or no snapshot when the request remains unclear. The agent callback invokes your existing agent and returns a verified summary of at most 500 tokens. In JavaScript, the application-provided `send` callback sends the JSON event on your Live connection. In Python, the adapter sends the update through the SDK `connection` directly.
-
-If context is not ready, retain the notification and invoke the adapter again after resolving the request. Before invoking this adapter, claim the delegation in your application so duplicate delivery cannot start the same operation twice. Keep authorization, confirmation, operation IDs, and retry decisions in your backend. The revision check prevents this adapter from announcing an outdated result; the backend must also check the current revision before a side effect such as booking.
+Implement the context and agent callbacks in your application. The context callback returns recent conversation and the current task, or no value while the request is still unclear. The agent callback runs your existing backend and returns a verified summary of at most 500 tokens. In JavaScript, the application-provided `send` callback sends the JSON event on your Live connection. In Python, the adapter sends the update through the SDK `connection` directly.
 
 For the appointment assistant, the context should establish the requested date and time zone, previously offered slots, any confirmed slot, and the latest correction. An availability result should say that a slot is available and that no booking has been made. Only return a booking confirmation after the booking succeeds. See [Client delegation](https://developers.openai.com/api/docs/guides/live-delegation#receive-a-client-delegation) for the full setup and result flow.
 
@@ -54457,19 +54142,23 @@ Keep structured tool output and workflow details in your backend. Return short f
 - Use `session.commentary.append` for a verified result the user should hear.
 - Use `session.instructions.append` for application-authored behavioral guidance.
 
-All three take plain-string `content` of at most 500 tokens and require `delegation_id`. Use the original client delegation ID for related work or `null` for general session context. Match append acknowledgments through `client_event_id`. Acceptance does not establish speech or playback. See [Send the right kind of update](https://developers.openai.com/api/docs/guides/live-delegation#send-the-right-kind-of-update).
+All three take plain-string `content` of at most 500 tokens and require `delegation_id`. Use the original client delegation ID for related work or `null` for general session context. Match each acknowledgment to the command you sent using `client_event_id`. This confirms that the update was accepted. Use assistant transcript events to observe generated speech and your player’s state to track playback. See [Send the right kind of update](https://developers.openai.com/api/docs/guides/live-delegation#send-the-right-kind-of-update).
 
-When the user says “Actually, Friday instead,” update the active task and its revision, invalidate any Thursday confirmation, and direct the existing agent to the corrected request. Decide whether to cancel, change, or let the pending lookup finish. Discard an outdated result before returning it to GPT-Live. An interruption in speech does not cancel a backend operation, and a cancellation request does not prove that an action was cancelled.
+When the user says “Actually, Friday instead,” save Friday as the current request, advance its version number, and clear any confirmation for Thursday. Send that correction to your existing agent. Decide whether to request cancellation of the Thursday lookup, change it, or let it finish and discard its result.
+
+Track the status of the lookup before reporting it as cancelled. Handle that backend decision even if the user’s interruption has already stopped the assistant’s speech.
 
 Backend work may outlive the voice session. Persist its status in your application. In a later voice interaction, start a new session with the relevant saved context; see [Managing sessions](https://developers.openai.com/api/docs/guides/live-conversations).
 
-### Adapt text and speech safeguards
-
-A text agent can finish and validate a reply before displaying it. A chained pipeline may validate the complete reply before sending it to text-to-speech. GPT-Live can speak while backend work is still running, so withholding a tool result or backend continuation does not hold all speech.
-
-Follow [Adapt your guardrails](#adapt-your-guardrails) to retain your checks and account for continuous speech.
+### Keep typed input connected to your agent
 
 Keep typed input connected to your existing backend. Treat a typed correction as an update to the same task, and send relevant verified context to the voice session. See [Accept typed input](https://developers.openai.com/api/docs/guides/live-delegation#accept-typed-input) and [Keep updates accurate and useful](https://developers.openai.com/api/docs/guides/live-delegation#keep-updates-accurate-and-useful).
+
+### Adapt text and speech safeguards
+
+A text agent or chained pipeline can validate a complete reply before displaying or speaking it. With GPT-Live, conversation and backend work run at the same time. If every spoken response must pass a check before the user hears it, put that check in the audio playback path your application controls. Holding a backend result alone will not pause all speech.
+
+Follow [Adapt your guardrails](#adapt-your-guardrails) to retain your checks and account for continuous speech.
 
 
 
@@ -54477,7 +54166,7 @@ Keep typed input connected to your existing backend. Treat a typed correction as
 
 Keep the input and output safeguards from your existing application when migrating from either architecture. GPT-Live can continue speaking while backend work and policy checks run, so apply checks to both the conversation and the actions your backend takes.
 
-Use a [sideband WebSocket](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#decide-whether-you-need-a-sideband) when your server needs independent access to a browser-owned session. Your server can receive transcripts and send corrective instructions while audio stays on WebRTC. If it already owns the primary WebSocket, use that event stream; Responses delegation does not require an additional sideband.
+If your server needs to monitor or control a browser’s WebRTC session, attach a [sideband WebSocket](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#decide-whether-you-need-a-sideband) to receive transcripts and send corrective instructions. Audio continues over WebRTC. If your server already streams audio through the primary WebSocket, use that connection’s event stream for these checks. Choosing Responses delegation does not by itself require a sideband.
 
 1. Monitor user and assistant transcript events and run your checks alongside the conversation.
 2. Block affected tools and external actions in application code. Cancel related application-owned work where supported, and prevent late results from continuing a blocked request.
@@ -54485,7 +54174,7 @@ Use a [sideband WebSocket](https://developers.openai.com/api/docs/guides/voice-s
 
 For example, if a caller asks the appointment assistant to change another person's booking without permission, block the booking operation before it runs. Then instruct the assistant to explain that it cannot make the change. Verify both the unchanged booking record and the spoken response; the refusal alone does not enforce authorization.
 
-A corrective instruction cannot retract audio already heard. If checks must finish before playback, add buffering and approval to the audio path your application controls and account for the added latency. Follow [Apply conversation guardrails](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#apply-conversation-guardrails) for the complete flow, a corrective instruction example, and playback controls. For required opening wording, see [Deliver a disclosure](https://developers.openai.com/api/docs/guides/live-conversations#deliver-a-disclosure).
+A corrective instruction cannot retract audio already heard. If your application needs to check assistant speech before playback, follow [Check speech before playback](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#check-speech-before-playback) for buffering, approval, interruption, and recovery handling. See [Apply conversation guardrails](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#apply-conversation-guardrails) for action controls and a corrective instruction example. For required opening wording, see [Deliver a disclosure](https://developers.openai.com/api/docs/guides/live-conversations#deliver-a-disclosure).
 
 ## Validate the migration
 
@@ -54494,9 +54183,9 @@ Compare the migrated assistant with representative conversations from your curre
 - **Actions and spoken confirmations:** Check availability, ask for confirmation, and book only the confirmed slot. Verify the backend outcome, spoken answer, and client playback separately.
 - **Corrections and duplicate prevention:** Change Thursday to Friday during a pending request. Discard outdated results and ensure retries cannot create a second booking.
 - **Permissions:** Try an unauthorized action and a booking without confirmation. Check that application policy blocks execution.
-- **Guardrail interventions:** Trigger a check during speech and during tool execution. Verify corrective speech, blocked actions, late-result handling, and playback recovery. Include slow checks and false positives.
+- **Guardrail interventions:** Trigger checks during speech and tool execution. Verify that the assistant receives the correction, affected actions stay blocked even if a tool result arrives late, and playback resumes as intended. Check whether a running operation actually stopped. Include slow checks and false positives.
 - **Interruptions:** Speak while the assistant is talking or working. Verify the conversation, audio playback, and backend task state independently.
-- **Failures and reconnects:** Exercise tool errors, lost results, and disconnects. Reconcile uncertain outcomes before retrying, and restore relevant saved context in a new session.
+- **Failures and reconnects:** Test tool errors, lost results, and disconnects. If a booking request loses its response, check whether the booking succeeded before retrying. Start the next voice session with the saved task context and verify that it continues from the established outcome.
 
 Use [Reduce backend latency](https://developers.openai.com/api/docs/guides/live-delegation#reduce-backend-latency) to tune the migrated backend. Compare useful spoken response time and task success with the [voice agent evaluation Cookbook](https://developers.openai.com/cookbook/examples/audio/voice_agent_evaluation), and use [Cost optimization](https://developers.openai.com/api/docs/guides/voice-latency-cost) to compare usage and cost.
 
@@ -69556,19 +69245,17 @@ When you feel confident in your prompts, you might want to check out the followi
 
 `gpt-live-1` is a voice model for natural, continuous conversation. It can listen and speak at the same time, respond to interruptions, and keep the conversation moving while a backend agent handles reasoning, tools, and longer tasks.
 
-Give GPT-Live a goal and room to conduct the conversation. The live prompt need not prescribe every question or acknowledgment. Define the assistant’s role, conversational style, and when to involve the backend. Give GPT-Live flexibility in its phrasing, acknowledgments, and pacing.
+Use `session.instructions` for the assistant’s role, speaking style, and when to ask the backend for help. Give the backend model or agent the procedures and tools for tasks such as looking up an order or changing a booking.
 
-When migrating from Realtime, start with a simpler prompt. Test which rules for exact wording, fixed response sequences, or turn-taking your product still needs. Revise existing instructions and remove conflicts as you iterate.
+Describe the conversational behavior you want, and let GPT-Live choose the wording for ordinary replies. When migrating from Realtime, keep the rules your product needs for wording, interruptions, and the order of actions. Test the simpler prompt on representative conversations as you revise it.
 
-Keep detailed procedures in the backend prompt and enforce permissions and tool execution checks in your application.
+Your application checks permissions and required confirmations before executing an action.
 
 ## Recommended prompt structure
 
-The live model has a small context window. Use the template below as your `session.instructions` value and add only the optional controls your application needs.
+Start with this template and add instructions as needed. See [session configuration](https://developers.openai.com/api/docs/guides/live-conversations#configuration-fields) for field limits.
 
-GPT-Live delegates reasoning and tool use to your backend while it handles the conversation. Configure backend prompts and tools in [Delegation and tools](https://developers.openai.com/api/docs/guides/live-delegation).
-
-Keep the policy labels. Customize the personality, backchannel behavior, backend capabilities, and delegation conditions for your product.
+Keep the template’s `Backchannel policy`, `Interruption policy`, and `Delegation policy` headings, and customize the text beneath them. Backchannels are brief listening sounds, such as “mm-hmm,” that the assistant can make while the caller continues speaking.
 
 ```text
 You are [name], a calm, friendly voice assistant for [service].
@@ -69595,17 +69282,15 @@ Delegate before giving an answer that depends on backend work.
 Do not guess the result while waiting.
 ```
 
-List only capabilities your backend actually has. These describe what it can help with; they are not instructions for the live model to call a tool.
+List the capabilities your backend supports. GPT-Live uses this list to decide which requests to hand off. Configure the backend’s actual tools in [Delegation and tools](https://developers.openai.com/api/docs/guides/live-delegation).
 
 ## Personality
 
-Give the assistant a clear role, tone, and pace. Also describe how it should respond when someone is frustrated or unsure. A few short sentences, like the opening of the starter prompt, are enough.
-
-The live prompt controls speaking behavior, including tone, pace, backchannels, and interruptions. Keep long business procedures in the backend prompt.
+Describe the assistant’s role, tone, and speaking pace in a few sentences. Include how it should respond when a caller is frustrated or unsure. For example: “Explain one step at a time. If the caller sounds confused, ask which part they want to go over.”
 
 ## Backchannels
 
-A backchannel is a short listening sound, such as “mm-hmm.” Start with moderate backchannels so the assistant shows it is listening without taking over the conversation.
+Start with the template’s backchannel policy, then listen for whether the assistant’s brief acknowledgments help the conversation or interrupt the caller. “Moderate” is a prompting instruction, not a numerical frequency setting.
 
 You can modify this line from the starter prompt:
 
@@ -69613,21 +69298,19 @@ You can modify this line from the starter prompt:
 Backchannel policy: Use moderate backchannels. Acknowledge naturally without competing with the main response.
 ```
 
-Do not add a blanket “never speak while the user is speaking” rule alongside it. That can also suppress helpful listening sounds. Change the policy only if your product needs different behavior, then listen to real conversations to check the result.
+If you want backchannels, allow brief listening sounds during interruptions. A rule that forbids all overlapping speech can suppress them.
 
 ## Interruptions
 
 When the user interrupts, the assistant should stop its answer and listen. A brief listening sound is different from taking over the user's turn.
 
-Stopping speech does not automatically stop backend work. “Stop talking” and “Cancel my booking” mean different things. If the user changes or cancels a request, the backend must handle that change and confirm what happened. See [task state and interruptions](https://developers.openai.com/api/docs/guides/live-delegation).
+Handle changes to a task separately from interruptions to speech. “Stop talking” asks the assistant to yield; “Cancel my booking” asks the backend to take an action. Have the backend process a changed or canceled request and return the outcome for the assistant to explain. See [task state and interruptions](https://developers.openai.com/api/docs/guides/live-delegation).
 
 ## Delegation
 
-Organize the `Delegation policy` section of your prompt under three labels: `Backend tools`, `Delegate to the backend when`, and `Do not delegate to the backend when`. Describe the backend's capabilities, then give concrete conditions, such as “the user asks to change a booking,” instead of “delegate when needed.”
+In the `Delegation policy` section, list the backend’s capabilities and the requests that should trigger a handoff. Use concrete conditions, such as “the user asks to change a booking.” Keep the template’s three labels: `Backend tools`, `Delegate to the backend when`, and `Do not delegate to the backend when`.
 
-Tell GPT-Live when to delegate and what the backend can help with. Put tool-call instructions and result-handling procedures in the backend prompt.
-
-For example, replace the starter prompt's delegation section with a policy like this; do not add a second policy:
+For a booking assistant, replace the starter template’s entire delegation section with:
 
 ```text
 Delegation policy:
@@ -69647,15 +69330,17 @@ Delegate before giving an answer that depends on backend work.
 Do not guess the result while waiting.
 ```
 
-List only capabilities your backend has. Check the policy against a few real user requests: which ones should trigger delegation, and which should not?
+Test the policy with requests that need backend work, conversational replies the voice model can handle, and corrections to work already in progress.
 
-Keep the full procedure and tool schemas in the backend prompt. The live model only needs the short handoff rules. It must not promise a booking, guess a price, or claim an action has finished before the backend confirms it.
+Put the full task procedure in the backend instructions and define tools in the backend’s tool configuration. Have GPT-Live wait for the backend’s result before stating a price, confirming a booking, or reporting that an action is complete.
+
+You can prompt GPT-Live to acknowledge a request while delegated work runs. As background work progresses, use [`session.commentary.append`](https://developers.openai.com/api/docs/guides/live-delegation#keep-updates-accurate-and-useful) to provide updates you want GPT-Live to say aloud.
 
 For backend prompts, conversation context, tool results, typed input, and API examples, read [Delegation and tools](https://developers.openai.com/api/docs/guides/live-delegation). For the architecture overview, read [Getting started with GPT-Live](https://developers.openai.com/api/docs/guides/live).
 
 ## Appendix: Optional controls
 
-**Only add a rule if you need to change a specific behavior.** Most applications should start with the short prompt above. Copying every example makes the prompt longer and can introduce conflicting instructions.
+Add these instructions only when testing shows a need. Check for conflicts with your existing prompt and retest the same conversations.
 
 <details>
 <summary>Show optional controls and examples</summary>
@@ -69671,9 +69356,9 @@ For troubleshooting, give one step and wait for the user.
 
 ### Language and pronunciation
 
-Use this when your product needs a particular language or pronunciation. A voice choice does not guarantee a regional accent.
+Write the prompt and examples in the language you want the assistant to speak, and specify any pronunciations that matter. Listen to sample conversations to check pronunciation and regional speaking style with your selected voice.
 
-Write your prompt in the language you want the model to speak. For example, if the assistant will speak Spanish, write its instructions and example responses in Spanish.
+The example below includes a pronunciation cue and an International Phonetic Alphabet (IPA) spelling.
 
 ```text
 Speak [language] unless the user asks to switch.
@@ -69681,11 +69366,11 @@ If a name is unclear, ask how to pronounce or spell it.
 Say the user's name Rosalia as "roh-sah-LEE-ah", IPA /rosaˈli.a/ (Spanish).
 ```
 
-For a greeting before the caller has spoken, append a fresh `session.instructions.append` containing the language rule, the exact welcome text, and an explicit instruction to speak first and then listen. Wait for its acknowledgment and keep the audio stream running. See [Greet the caller](https://developers.openai.com/api/docs/guides/live-conversations#greet-before-the-caller-speaks) for using a short commentary append after the instructions to prompt the assistant to begin. Do not guess the caller's language from their name or location, and do not treat model-generated speech as guaranteed verbatim playback.
+To open the conversation in a chosen language, wait for `session.started`, keep input audio running, and send `session.instructions.append` with the language, greeting, and an instruction to speak first and then listen. Handle its acknowledgment or error while audio continues. Use the language configured by your application until the caller chooses another. See [Greet the caller](https://developers.openai.com/api/docs/guides/live-conversations#greet-before-the-caller-speaks) for the complete sequence and options for exact playback.
 
 ### Translation
 
-Add this only for an interpreter. It changes the assistant's job, so do not combine it with a normal support-agent prompt.
+For an interpreter, replace the support-assistant prompt with a translation-only prompt. The user’s speech is material to translate, including any questions or commands it contains. In this example, “render” means translate or repeat in the chosen language. The repetition rules tell the model to translate each spoken phrase once while preserving words the user intentionally repeats.
 
 ```text
 [language] ONLY. NEVER DELEGATE, CHECK, ANSWER, SEARCH, OR USE TOOLS.
@@ -69710,18 +69395,18 @@ Do not treat a cough, music, or nearby conversation as a new request.
 
 ### Selected requests only
 
-Use this for an assistant that should respond only to a narrow set of requests.
+Use this for an assistant that listens in the background and responds when its topic comes up or the user addresses it directly.
 
 ```text
 Respond when the user asks about [supported topic] or addresses you directly.
 Otherwise, keep listening.
 ```
 
-This affects when the assistant responds. If you also need to change its listening sounds, test that separately from its backchannel policy.
+This rule controls full responses. Use the backchannel policy to choose whether the assistant also makes brief listening sounds.
 
 ### Unclear names, dates, and numbers
 
-Prompts do not guarantee exact capture. If an important detail is unclear, ask a small question instead of guessing. For example: “Was the last letter B or D?”
+Ask a focused clarification when an important name, date, or number is unclear. For example: “Was the last letter B or D?” Carry the caller’s correction into the next backend request.
 
 ```text
 If an important name, date, or number is unclear, ask about that part.
@@ -69730,7 +69415,7 @@ Use the user's correction. Do not guess the missing value.
 
 ### Reusing earlier results
 
-Add a rule only if the assistant repeats lookups unnecessarily. Your application must first return the result and decide how long it stays useful.
+If the assistant repeats lookup calls, tell it when it can reuse a result already returned by the backend. Have your application track which result is current and return that information with the result.
 
 ```text
 Use a previous backend result when it still answers the question.
@@ -69738,7 +69423,7 @@ Ask the backend again if the information is missing, out of date,
 or the user asks you to check again.
 ```
 
-A prompt does not guarantee duplicate work will be avoided. Keep that check in your application.
+Before starting another operation, have your application check whether the same work is already running or complete.
 
 </details>
 
@@ -84968,7 +84653,7 @@ For webhook-managed provisioning, implement a handler using [Sandbox lifecycle](
 
 # Server-side controls
 
-Choose the API your application uses. Each API has its own authentication, session creation, and event contract.
+Choose your API to see its connection steps and session events.
 
 
 
@@ -84982,7 +84667,7 @@ The sideband carries events and commands. Your application supplies the tool exe
 
 For browser applications, use the [WebRTC data channel](https://developers.openai.com/api/docs/guides/voice-webrtc?api=live) for captions and local UI updates. Use a sideband when transcript processing runs on your server, such as guardrail checks, sentiment analysis, or speculative tool calls. Your server can receive events and steer the same session directly while browser audio stays on WebRTC. See [React to transcript fragments](https://developers.openai.com/api/docs/guides/live-delegation#react-to-transcript-fragments) for examples.
 
-If your backend already owns the primary [WebSocket connection](https://developers.openai.com/api/docs/guides/voice-websockets?api=live), it already receives the session's events and can send commands.
+If your backend streams audio over the primary [WebSocket connection](https://developers.openai.com/api/docs/guides/voice-websockets?api=live), use that connection to receive events and send commands.
 
 [Responses delegation](https://developers.openai.com/api/docs/guides/live-delegation) also works without a sideband. The browser can forward function-call events from its data channel to an authenticated backend for execution. OpenAI-hosted tools run through the delegated backend without an application tool executor.
 
@@ -84997,7 +84682,7 @@ If your backend already owns the primary [WebSocket connection](https://develope
 
 3. Receive events and send commands on the attached socket. The session is already running; do not send `session.start` again.
 
-Treat the session ID as an opaque value. Preserve its prefix and use it only for the session to which your application has authorized access. Read the ID from the Live JSON response, rather than a Realtime `Location` header or `call_id` URL parameter.
+Use the session ID unchanged, including its prefix, and verify that your application has authorized access to that session.
 
 ### Observe events and send commands
 
@@ -85012,7 +84697,7 @@ Treat the session ID as an opaque value. Preserve its prefix and use it only for
 
 Commands follow the same validation and delegation rules as on the primary connection. For context appends, use `delegation_id: null` for general session context; a non-null ID must identify an existing client delegation. See [Delegation and tools](https://developers.openai.com/api/docs/guides/live-delegation) for configuration, function execution, and the context append examples.
 
-For browser sessions, keep microphone input and speaker output on the negotiated WebRTC media track. Use the sideband for conversation events and control. A transcript event or command acknowledgment does not prove that audio has played or that the user has heard it.
+For browser sessions, keep microphone input and speaker output on the negotiated WebRTC media track. Use the sideband for conversation events and control, and track playback in your audio player.
 
 ### Receive reflected audio
 
@@ -85025,15 +84710,15 @@ A sideband also receives copies of subsequent input and output audio while the p
 
 Both payloads are base64-encoded raw mono PCM16LE at 24 kHz, regardless of the primary transport's audio format. Neither event has an `event_id`. Reflected input contains received audio before input muting; it does not confirm that the model consumed those samples. Reflected output ranges can have gaps for dropped frames and do not indicate when the caller heard the audio.
 
-These are server events, not permission to send audio through the sideband. Send microphone audio through the primary transport; do not send `session.input_audio.append` on the attached socket.
+Send microphone audio only through the primary connection. Use the sideband to receive reflected audio.
 
 ### Assign one owner for each action
 
 Choose whether the browser or backend handles each action. If both connections receive a function-call event, execute the function once. Apply the same ownership rule to context updates and requests to continue backend work.
 
-Store transcripts and tool state in your application. Attach early if the backend needs to observe the conversation from the start, and retain any history collected before attachment. Do not rely on attachment to reconstruct earlier transcripts or tool results.
+Attach early if the backend needs to observe the conversation from the start. Store transcripts and tool state in your application, including any history collected before attachment.
 
-A sideband does not itself make session events private from the browser. Keep sensitive tool credentials and authorization decisions in your backend, and return only the context needed for the conversation.
+The browser can still receive session events when a sideband is attached. Keep sensitive tool credentials and authorization decisions in your backend, and return only the context needed for the conversation.
 
 
 
@@ -85041,17 +84726,17 @@ A sideband does not itself make session events private from the browser. Keep se
 
 ## Apply conversation guardrails
 
-Use your server's connection to monitor the conversation, check requests against your application's policies, and intervene when a check triggers. A sideband gives your server access to session events and commands; your application runs the checks and enforces their results. The same workflow applies when your server already owns the primary WebSocket connection.
+Use your server's primary WebSocket or sideband to monitor the conversation and check requests against your application's policies. Your application runs the checks, blocks affected actions, and sends corrective instructions when a check triggers.
 
 ### Run checks alongside the conversation
 
 Guardrails are one use of [processing transcript fragments as they arrive](https://developers.openai.com/api/docs/guides/live-delegation#react-to-transcript-fragments). The same stream can start a speculative lookup or update the UI alongside these checks.
 
 1. **Monitor transcripts.** Accumulate `session.input_transcript.delta` fragments to check user requests for jailbreak attempts, sensitive information, or policy violations. Use `session.output_transcript.delta` to check assistant speech for unsupported claims or responses outside your application's scope. Keep each check associated with the transcript and application request it evaluated.
-2. **Run checks concurrently.** A fast, lightweight model can evaluate requests while the conversation continues. Return a small structured result, such as `{"triggered": true}`, that your application can act on. Keep actions that require approval blocked until their checks pass; a timeout or failed check is not approval.
-3. **Block affected actions.** When a check triggers, mark the request as blocked in application state. Check that state before executing a tool or committing a change, including work already queued. A spoken refusal does not prevent a tool from running.
+2. **Run checks concurrently.** A fast, lightweight model can evaluate requests while the conversation continues. Return a small structured result, such as `{"triggered": true}`, that your application can act on. Run actions that require approval only after their checks pass. Keep them blocked if a check fails or times out.
+3. **Block affected actions.** When a check triggers, mark the request as blocked in application state. Check that state before executing a tool or committing a change, including work already queued.
 4. **Stop related work.** Cancel application-owned jobs where your backend supports cancellation, and discard late results from blocked or superseded requests. With Responses delegation, stop executing affected custom functions and do not send `response.create` to continue blocked work. This does not cancel an already-running hosted response or stop frontend speech.
-5. **Record and redirect.** Log the decision with the affected request and delegation IDs, then send a corrective instruction. An event name such as `guardrail.triggered` belongs to your application's telemetry; it is not a GPT-Live API event.
+5. **Record and redirect.** Log the decision with the affected request and delegation IDs, then send a corrective instruction.
 
 See [Transcript deltas](https://developers.openai.com/api/docs/guides/live-conversations#transcript-deltas) for collecting fragments and [Delegation and tools](https://developers.openai.com/api/docs/guides/live-delegation#keep-updates-accurate-and-useful) for keeping backend results aligned with the current task.
 
@@ -85092,17 +84777,29 @@ async def send_update(
 
 Keep the instruction application-authored. Do not copy untrusted user text into it as an instruction. Use `delegation_id: null` for this session-wide correction, and keep `content` within 500 tokens.
 
-Match `session.instructions.appended` to your command through `client_event_id`. The acknowledgment arrives after estimated context injection; it does not prove that the assistant stopped speaking or that queued audio stopped playing. Corrective instructions cannot retract audio the user has already heard.
+Match `session.instructions.appended` to your command through `client_event_id`. The acknowledgment arrives after estimated context injection. To stop audio reaching the caller, use the playback controls below.
 
 For disclosures that request specific spoken wording, also use instructions. See [Deliver a disclosure](https://developers.openai.com/api/docs/guides/live-conversations#deliver-a-disclosure) for an example and playback considerations.
 
 ### Control playback when needed
 
-Test corrective instructions and action blocking first. If your application also needs to block model audio, control output at the client or media relay: temporarily mute or drop the output, discard locally queued audio, send the corrective instruction, and resume playback according to your application's recovery policy. Clear stale audio before resuming. A sideband alone does not control the media path, and an instruction acknowledgment is not a signal to resume playback.
+If your application needs to block model audio, control playback at the client or media relay. Temporarily mute or drop the output, discard locally queued audio, and send the corrective instruction. Resume playback according to your application's recovery policy after clearing stale audio; an instruction acknowledgment is not a signal to resume. A sideband alone does not control playback, and corrective instructions cannot retract audio the caller has already heard.
 
 `session.input_audio.mute` controls the caller's microphone input. It does not mute model output or cancel delegated work.
 
-GPT-Live streams transcript fragments while speaking. If a check must finish before the user hears the audio, your application needs to buffer and approve audio before playback. This adds latency. Suppressed audio can also leave the model's conversation context ahead of what the user heard, so test how the conversation resumes.
+### Check speech before playback
+
+For most applications, [monitor user and assistant transcripts](#run-checks-alongside-the-conversation) while the conversation continues. When a guardrail triggers, your application can block affected actions or send corrective instructions.
+
+If your application needs to check assistant speech before playback, buffer the audio in your player or media bridge before sending it to the caller. Keep receiving audio and transcript events while the check runs, and read transcripts independently of playback.
+
+1. **Collect audio and its transcript.** Implement output voice activity detection (VAD) in your application, or use a noise gate provided by your media framework, to identify candidate speech segments. GPT-Live does not provide an output VAD or noise gate for this workflow. Wait for the transcript needed to check each segment.
+2. **Release approved audio.** When a segment passes the check, enqueue its original buffered audio for playback. If the check fails, the transcript is missing, or the check times out, discard the segment and use an application-defined safe fallback.
+3. **Handle interruptions.** Associate the audio, transcript, check result, and playback state with an application-generated ID. When an interruption cancels that speech, clear its buffered and queued audio and ignore any later approval for it.
+
+A pause can mark a candidate segment while the model is still composing an answer. If your policy requires checking a complete answer, define how your application establishes completion; voice activity detection alone cannot establish that the whole answer is finished.
+
+Buffering adds latency. Discarded speech remains in the model’s conversation context, so test how the conversation continues after withheld audio or a fallback.
 
 ### Test the intervention
 
@@ -85110,7 +84807,7 @@ Test allowed and blocked requests, false positives, slow or failed checks, a tri
 
 ## Finish cleanly
 
-Keep receiving events while the backend owns tool execution or final usage collection. Register the `session.closed` handler before sending `session.close`, and keep the WebRTC connection, data channel, and sideband open while pending work drains. Save the final session usage and any backend usage received in Responses events before cleanup. If the connection fails before the final event arrives, record finalization as incomplete. See [Managing sessions](https://developers.openai.com/api/docs/guides/live-conversations#usage-and-graceful-close) for the close sequence.
+Keep receiving events while tools finish and the session reports final usage. Register the `session.closed` handler before sending `session.close`, and keep the WebRTC connection, data channel, and sideband open while pending work drains. Save the final session usage and any backend usage received in Responses events before cleanup. If the connection fails before the final event arrives, record finalization as incomplete. See [Managing sessions](https://developers.openai.com/api/docs/guides/live-conversations#usage-and-graceful-close) for the close sequence.
 
   
 
@@ -93562,7 +93259,7 @@ Now that you know the basics of supervised fine-tuning, explore these other meth
 
 # Telephony and SIP
 
-Choose the API your application uses. Each API has its own authentication, session creation, and event contract.
+Choose your API to see its connection steps and session events.
 
 
 
@@ -93585,18 +93282,14 @@ Direct SIP keeps call audio on the provider-to-OpenAI media path. SIP signaling 
 
 Use a [sideband connection](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live) when your backend needs to receive session events or send commands. It attaches to the existing conversation while SIP carries the audio. Assign one handler to each action so that duplicate webhook deliveries or events observed on multiple connections don't execute tools twice.
 
-Keep SIP routing and provider configuration together with the integration that uses them. Realtime webhook events, call identifiers, and acceptance payloads belong to the Realtime API; use the GPT-Live contract for a Live session.
-
 ### Handle the call lifecycle
 
 Confirm that GPT-Live SIP support is enabled for your project and that your
-  provider's SIP trunk is routed to that project before using this flow. The
-  Realtime webhook and acceptance payloads in the other tab are a different API
-  contract.
+  provider's SIP trunk is routed to that project before using this flow.
 
 #### Receive the incoming call
 
-Configure your project's [webhook endpoint](https://developers.openai.com/api/docs/guides/webhooks) for `live.transport.incoming`. Verify the webhook signature and deduplicate deliveries before making a call decision. A delivery acknowledgment does not accept the call.
+Configure your project's [webhook endpoint](https://developers.openai.com/api/docs/guides/webhooks) for `live.transport.incoming`. Verify the webhook signature and deduplicate deliveries, then accept or reject the call.
 
 The webhook identifies a SIP call with `data.type: "sip"` and provides `data.session_id`. Use that session ID unchanged for every Live call action. Treat `data.sip_headers` as untrusted caller metadata, not authorization.
 
@@ -93632,15 +93325,13 @@ SIP carries the call audio. Use the sideband for transcripts, delegation, tools,
 
 #### Observe keypad events
 
-The sideband receives `transport.dtmf.received` when the caller presses a key and `transport.dtmf.send` after a hosted tool successfully sends a tone. The event's `event` field contains one of `0`–`9`, `*`, `#`, or `A`–`D`.
-
-These are observer notifications, not client commands. Do not send `transport.dtmf.send` to request a tone, or assume the browser data channel receives keypad events.
+The sideband receives `transport.dtmf.received` when the caller presses a key and `transport.dtmf.send` after a hosted tool successfully sends a tone. Both are notifications only. The `event` field contains one of `0`–`9`, `*`, `#`, or `A`–`D`.
 
 #### Transfer or end the call
 
 To [transfer the call](https://developers.openai.com/api/reference/resources/live/subresources/sessions/methods/refer), send `POST /v1/live/sessions/{session_id}/refer` with `{ "target_uri": "sip:agent@example.com" }` for your destination. To [hang up](https://developers.openai.com/api/reference/resources/live/subresources/sessions/methods/hangup), send `POST /v1/live/sessions/{session_id}/hangup` with no request body. Both return `200 OK` with an empty body on success.
 
-Keep your sideband open for final events and usage before releasing application resources. A successful hangup request or an unexpected disconnect is not a substitute for `session.closed`. See [Usage and graceful close](https://developers.openai.com/api/docs/guides/live-conversations#usage-and-graceful-close) for finalization and close reasons.
+Keep the sideband open until `session.closed` supplies final usage, then release application resources. If the connection drops first, record finalization as incomplete. See [Usage and graceful close](https://developers.openai.com/api/docs/guides/live-conversations#usage-and-graceful-close) for finalization and close reasons.
 
 This flow accepts inbound calls. Creating an outbound SIP call through `POST /v1/live/sessions` is not supported; use the relevant [partner integration](https://developers.openai.com/api/docs/guides/live-partner-integrations) for provider-owned outbound calling.
 
@@ -93648,9 +93339,9 @@ This flow accepts inbound calls. Creating an outbound SIP call through `POST /v1
 
 Use the [GPT-Live WebSocket connection](https://developers.openai.com/api/docs/guides/voice-websockets?api=live) when your application receives an audio stream from a phone provider or an agent framework. The application authenticates both connections, translates their event envelopes, and relays audio in both directions.
 
-GPT-Live supports raw G.711 μ-law and A-law audio at 8 kHz over WebSocket. When the provider stream uses the same codec, sample rate, and channel count, your application can forward the raw audio bytes without converting them to PCM. Preserve audio order and use the message format required by each connection. Matching audio formats don't make the two event protocols interchangeable.
+GPT-Live supports raw G.711 μ-law and A-law audio at 8 kHz over WebSocket. When the provider stream uses the same codec, sample rate, and channel count, your application can forward the raw audio bytes without converting them to PCM. Preserve audio order and wrap the audio bytes in the message format required by each connection.
 
-The bridge also owns any audio it queues for playback. Include provider buffering, interruptions, and ending the call in your application design. See [Managing sessions](https://developers.openai.com/api/docs/guides/live-conversations) for the Live session lifecycle and [Migrate to GPT-Live](https://developers.openai.com/api/docs/guides/live-migration) for changes to turn-taking and playback control.
+Have your bridge manage queued audio, interruptions, and call termination. Account for audio buffered by the provider when handling playback. See [Managing sessions](https://developers.openai.com/api/docs/guides/live-conversations) for the Live session lifecycle and [Migrate to GPT-Live](https://developers.openai.com/api/docs/guides/live-migration) for changes to turn-taking and playback control.
 
 Keep the provider's call or room identifier alongside the OpenAI session ID so you can trace a conversation across both systems.
 
@@ -108928,7 +108619,7 @@ Use this path when each stage needs to be visible or replaceable. For example, y
 
 ## Evaluate your voice agent
 
-Test conversation quality and task outcomes separately. A natural-sounding response does not prove that a tool ran or that application state changed.
+Test both the conversation and the completed task. For a booking assistant, listen to the confirmation and check that the correct appointment was saved.
 
 1. Choose representative scenarios with expected outcomes, tool calls, and permissions.
 2. Save the audio, events, tool results, and application state needed to verify each outcome. Distinguish a failed evaluation run from a valid run in which the agent fails the task.
@@ -108951,15 +108642,13 @@ Complement automated scores with human listening to assess pronunciation, natura
 
 For a GPT-Live evaluation harness, see the [voice agent evaluation Cookbook](https://developers.openai.com/cookbook/examples/audio/voice_agent_evaluation).
 
-For a Realtime evaluation harness and worked examples, use the [Realtime evaluation guide in the OpenAI Cookbook](https://developers.openai.com/cookbook/examples/realtime_eval_guide). The Cookbook owns the runnable evaluation recipes; this page provides the shared testing checklist.
+For a Realtime evaluation harness and worked examples, use the [Realtime evaluation guide in the OpenAI Cookbook](https://developers.openai.com/cookbook/examples/realtime_eval_guide).
 
 ### Measure latency
 
-Define an observed start and end event for every latency metric. Time to first
-audible response, time to delegation, interruption yield, backend completion,
-and verified task completion measure different boundaries. Use one monotonic
-timeline and report the eligible population, median, and tail latency. Do not
-substitute a backend-only timer for end-to-end response time.
+Measure how long callers wait for a useful spoken answer. Track backend time
+separately to find delays, and compare the median and 95th percentile across
+similar calls.
 
 Keep the caller, recording, backend model, prompt, transport, audio cadence, and
 grader fixed when comparing frontend models.
@@ -108970,15 +108659,13 @@ audio arrival, and client playback. Client delegation gives your application
 direct visibility into its backend requests; Responses delegation exposes nested
 response events and the custom tools your application runs.
 
-Use the intervals to locate delays in connection setup, model work, tools,
-application buffering, and playback. Measure the first useful spoken answer
-separately from an acknowledgment such as “I'm checking.” An earlier
-acknowledgment does not show that the requested result arrived sooner.
+Use these timings to find delays in connection setup, model work, tools,
+buffering, or playback. Measure acknowledgments such as “I'm checking” separately
+from the answer the caller needs.
 
-Change one factor at a time and repeat the same scenarios. Compare median and
-tail time to useful spoken responses alongside task success, tool correctness,
-and interruptions. See [Reduce backend latency](https://developers.openai.com/api/docs/guides/live-delegation#reduce-backend-latency)
-for implementation guidance.
+Change one factor at a time and repeat the same scenarios. Check whether faster
+responses also affect task success, tool correctness, or interruptions. See
+[Reduce backend latency](https://developers.openai.com/api/docs/guides/live-delegation#reduce-backend-latency).
 
 ## Voice agents still use the same core agent building blocks
 
@@ -110908,7 +110595,7 @@ If you misplace or accidentally expose your signing secret, you can generate a n
 
 # WebRTC
 
-Choose the API your application uses. Each API has its own authentication, session creation, and event contract.
+Choose your API to see its connection steps and session events.
 
 
 
@@ -112540,7 +112227,7 @@ When the server can associate an error with a named lane, the error event includ
 
 # WebSockets
 
-Choose the API your application uses. Each API has its own authentication, session creation, and event contract.
+Choose your API to see its connection steps and session events.
 
 
 
@@ -112548,7 +112235,7 @@ Choose the API your application uses. Each API has its own authentication, sessi
 
 Use a primary WebSocket when your server captures audio or relays an audio stream for a client. It carries audio and JSON events in both directions. Keep the project API key on that trusted server. For browser and mobile applications, start with [WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc?api=live).
 
-This guide covers the primary audio connection. A [sideband connection](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live) lets a server observe and control an existing Live session. A [Responses WebSocket](https://developers.openai.com/api/docs/guides/websocket-mode) connects your backend to the Responses API for reasoning and tools. Neither replaces the primary audio connection.
+This guide covers streaming audio to GPT-Live. To monitor or control an existing session, see [Server-side controls](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live). To connect a reasoning and tool backend to the Responses API, see [Responses WebSocket mode](https://developers.openai.com/api/docs/guides/websocket-mode).
 
 ### Authenticate and start the session
 
@@ -112801,9 +112488,9 @@ Send each event as a JSON text message. Audio travels as base64 inside those mes
 - **Receive backend events:** when using Responses delegation, process the nested `event` in each `response.event` envelope.
 - **Handle errors:** handle rejected commands and session errors from `error` events. Use `error.client_event_id`, when present, to identify the command.
 
-Output audio events have no timing fields, and GPT-Live does not emit an output-audio-done event. Track your playback queue to know which received audio has played. Transcript timestamps describe intervals on the session timeline; they do not mark audio playback completion. A backend response completing also does not mean the assistant has finished speaking.
+Track playback with your application’s audio queue. GPT-Live’s primary WebSocket sends output audio without timing fields or an output-audio-done event. Use transcript timestamps to organize captions and backend events to track delegated work.
 
-GPT-Live manages when to listen and speak as audio streams. It does not use Realtime's input-buffer commit and `response.create` voice-turn loop. In Live, `response.create` starts or continues delegated backend work. See [Delegation and tools](https://developers.openai.com/api/docs/guides/live-delegation) for that workflow.
+GPT-Live manages when to listen and speak as audio streams continuously. Use `response.create` to start or continue delegated backend work. See [Delegation and tools](https://developers.openai.com/api/docs/guides/live-delegation) for that workflow.
 
 ### Configure an ongoing session
 
@@ -113945,12 +113632,9 @@ guidance below, then follow the section for the product your workload uses.
 
 - **OpenAI API:** Continue to [Use workload identity with the OpenAI
   API](#use-workload-identity-with-the-openai-api).
-- **Codex:** Follow [Use workload identity with
-  Codex](https://developers.openai.com/codex/enterprise/workload-identity) for the complete Admin Portal and
-  runtime setup.
+- **Codex:** See [Use workload identity with Codex](#use-workload-identity-with-codex).
 
-Administrators can also [manage Codex providers and rules with the Admin
-API](https://developers.openai.com/api/docs/guides/workload-identity-federation/admin-api). See the [Codex
+See the [Codex
 federation rule
 reference](https://developers.openai.com/api/docs/guides/workload-identity-federation/federation-rules) for
 rule and lifecycle behavior.
@@ -114278,17 +113962,7 @@ Codex workload identity federation is in beta and must be enabled for your
   workspace. To request access, contact your OpenAI representative or [OpenAI
   Support](https://help.openai.com/en/articles/6614161-how-can-i-contact-support).
 
-Follow [Use workload identity with
-Codex](https://developers.openai.com/codex/enterprise/workload-identity) for the complete administrator and
-runtime procedure. It covers provider-specific token sources, federation rules,
-the required token-file configuration, credential precedence, supported Codex
-surfaces, rotation, and verification. For optional audit attribution, Codex
-accepts `OPENAI_WORKLOAD_IDENTITY_CONTEXT`; the Codex guide defines its schema,
-privacy limits, and audit behavior.
-
-Use the [Admin
-API](https://developers.openai.com/api/docs/guides/workload-identity-federation/admin-api) to manage Codex
-providers and rules programmatically. The [federation rule
+The [federation rule
 reference](https://developers.openai.com/api/docs/guides/workload-identity-federation/federation-rules)
 explains how one rule can accept more than one external subject while mapping to one
 ChatGPT principal.
@@ -114336,9 +114010,7 @@ then run `codex login status` again.
 
 ## Related docs
 
-- [Use workload identity with Codex](https://developers.openai.com/codex/enterprise/workload-identity)
 - [Codex federation rule reference](https://developers.openai.com/api/docs/guides/workload-identity-federation/federation-rules)
-- [Manage Codex workload identity with the Admin API](https://developers.openai.com/api/docs/guides/workload-identity-federation/admin-api)
 - [Workload identity token exchange reference](https://developers.openai.com/api/reference/workload-identity-federation)
 - [Codex authentication](https://developers.openai.com/codex/auth)
 - [Codex environment variables](https://developers.openai.com/codex/config-file/environment-variables)
@@ -114519,7 +114191,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.64.0</version>
+  <version>4.65.0</version>
 </dependency>
 ```
 
@@ -116721,7 +116393,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.64.0</version>
+  <version>4.65.0</version>
 </dependency>
 ```
 
