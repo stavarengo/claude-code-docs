@@ -7609,7 +7609,7 @@ Use these definitions in the request's `tools` array:
   {
     "type": "function",
     "name": "wait_for_tasks",
-    "description": "Wait for selected tasks whose results you need. Pass a nonempty list of distinct task_handles from your earlier lookup_price calls. Results arrive on their original calls; this tool returns status only. Do not wait again for results that have already arrived.",
+    "description": "Wait for selected tasks whose results you need. Pass a nonempty list of distinct task_handles from your earlier async tool calls. Results arrive on their original calls; this tool returns status only. Do not wait again for results that have already arrived.",
     "strict": true,
     "parameters": {
       "type": "object",
@@ -7691,6 +7691,67 @@ For example, send these output items in the next request's `input` array. The pr
 ```
 
 Set `previous_response_id` to the latest response ID, and include the tools and instructions in the continuation request. Your application can also deliver results as they become available, without a wait call. Only use the wait tool when the model's next step depends on results that haven't arrived.
+
+## Add a tool to ask the user for input
+
+An async tool can ask the user a question while the model continues independent work. For example, the model can ask who a report is for, gather facts while the user answers, and use the answer to tailor the report.
+
+Define a function with `async: true` to request missing information or a preference. Your application displays the question, collects the reply, and returns it as the tool result. Its schema and behavior belong to your application. `request_user_input_async` isn't a built-in Responses tool.
+
+Add this definition to the request's `tools` array alongside `wait_for_tasks`:
+
+```json
+{
+  "type": "function",
+  "name": "request_user_input_async",
+  "async": true,
+  "description": "Ask the user for missing information or a preference. Choose a fresh task_handle unique within this conversation, including completed tasks. Continue independent work while the answer is pending. Use wait_for_tasks when your next step depends on the answer.",
+  "strict": true,
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "question": { "type": "string" },
+      "task_handle": { "type": "string" }
+    },
+    "required": ["question", "task_handle"],
+    "additionalProperties": false
+  }
+}
+```
+
+### Display the question
+
+When the complete call item arrives, register the question's `task_handle` and original `call_id`, then display the question to the user. The following illustrative output item asks about the report's audience:
+
+```json
+{
+  "type": "function_call",
+  "name": "request_user_input_async",
+  "async": true,
+  "call_id": "call_audience",
+  "arguments": "{\"question\":\"Who is the report for: executives or engineers?\",\"task_handle\":\"report_audience_1\"}"
+}
+```
+
+Keep the question pending in the same registry used by the wait tool. While the user answers, continue consuming the model's response. Don't complete the tool call with an acknowledgment that you displayed the question; its result is the user's answer.
+
+### Return the user's answer
+
+When the user replies, send the answer on the question's original `call_id`. For example, include this output item in the next request's `input` array:
+
+```json
+[
+  {
+    "type": "function_call_output",
+    "call_id": "call_audience",
+    "output": "{\"task_handle\":\"report_audience_1\",\"answer\":\"Executives\"}"
+  }
+]
+```
+
+Set `previous_response_id` to the latest response ID, and include the tools and instructions in the continuation request. If the model called `wait_for_tasks` for `report_audience_1`, return the answer before the wait status, as in the [wait tool example](#deliver-results-before-wait-status).
+
+Async execution doesn't keep a response open until the user replies. Instruct the model to continue independent work and wait before taking a step that requires the answer. If your application supports dismissing or timing out a question, return an explicit no-answer result so the model can decide how to proceed.
 
 ## Compatibility
 
@@ -56429,10 +56490,10 @@ The webhook contains an alert ID, rather than the alert details:
 }
 ```
 
-After verifying and acknowledging the webhook, retrieve the alert in your background processing. Replace the illustrative `salert_123` value with `data.id` from the webhook. The event's `id` identifies the webhook event rather than the alert. Use an API key authorized for the same project with the `api.safety.alerts.read` permission:
+After verifying and acknowledging the webhook, retrieve the alert in your background processing. Replace the illustrative `alert_0123456789abcdef0123456789abcdef` value with `data.id` from the webhook. The event's `id` identifies the webhook event rather than the alert. Use an API key authorized for the same project with the `api.safety.alerts.read` permission:
 
 ```bash
-curl "https://api.openai.com/v1/safety/alerts/salert_123" \
+curl "https://api.openai.com/v1/safety/alerts/alert_0123456789abcdef0123456789abcdef" \
   -H "Authorization: Bearer ${OPENAI_API_KEY}"
 ```
 
@@ -56443,7 +56504,7 @@ Retrieve a project safety alert
 import OpenAI from "openai";
 
 const client = new OpenAI();
-const alertId = "salert_123";
+const alertId = "alert_0123456789abcdef0123456789abcdef";
 
 const alert = await client.safety.alerts.retrieve(alertId);
 console.log(alert.error_type, alert.reason, alert.response_id);
@@ -56455,7 +56516,7 @@ console.log(alert.error_type, alert.reason, alert.response_id);
 from openai import OpenAI
 
 client = OpenAI()
-alert = client.safety.alerts.retrieve("salert_123")
+alert = client.safety.alerts.retrieve("alert_0123456789abcdef0123456789abcdef")
 print(alert.error_type, alert.reason)
 ```
 
@@ -56472,7 +56533,7 @@ import (
 
 func main() {
 	client := openai.NewClient()
-	alert, err := client.Safety.Alerts.Get(context.Background(), "salert_123")
+	alert, err := client.Safety.Alerts.Get(context.Background(), "alert_0123456789abcdef0123456789abcdef")
 	if err != nil {
 		panic(err)
 	}
@@ -56486,7 +56547,7 @@ func main() {
 // Replace the illustrative IDs and URLs below with your own resource values.
 import com.openai.models.safety.alerts.SafetyAlert;
 
-SafetyAlert alert = client.safety().alerts().retrieve("salert_123");
+SafetyAlert alert = client.safety().alerts().retrieve("alert_0123456789abcdef0123456789abcdef");
 System.out.println(alert.errorType());
 alert.reason().ifPresent(System.out::println);
 System.out.println(alert.requestPaused());
@@ -56497,7 +56558,7 @@ System.out.println(alert.requestPaused());
 require "openai"
 
 client = OpenAI::Client.new
-alert = client.safety.alerts.retrieve("salert_123")
+alert = client.safety.alerts.retrieve("alert_0123456789abcdef0123456789abcdef")
 puts(alert.error_type)
 puts(alert.reason)
 puts(alert.request_paused)
@@ -64187,6 +64248,63 @@ On GPT-5.6 and later, two controls determine where cache breakpoints are placed:
 > Illustration: In explicit-only mode, tools and schemas precede a stable developer-message prefix and breakpoint 1. One branch adds a variable developer suffix and more conversation turns before breakpoint 2, then splits into new user inputs. Another branch has an unselected variable suffix. Content after each branch's last selected breakpoint is charged at the uncached input rate without a cache-write charge.
 
 
+
+
+
+
+
+
+
+<a id="prewarm-the-cache"></a>
+
+
+
+### Prewarm the cache
+
+
+
+For GPT-5.6 and later, prepare known context ahead of time to reduce time to first token on a subsequent request. For example, an interactive application can prewarm shared instructions, tool definitions, or reference material during startup, before the user asks their first question.
+
+Set [`prompt_cache_options.prewarm`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20prompt_cache_options%20%3E%20%28schema%29%20%3E%20%28property%29%20prewarm) to `true` in a Responses API request to prepare the prompt cache without generating output. Once it completes, send your actual request with the same prompt prefix and `prewarm` omitted or set to `false`.
+
+Prewarm the cache
+
+```json
+{
+  "model": "gpt-5.6",
+  "input": [
+    {
+      "role": "developer",
+      "content": "Your app's shared instructions and reference material..."
+    }
+  ],
+  "prompt_cache_options": {
+    "prewarm": true
+  }
+}
+```
+
+
+Send a follow-up request
+
+```json
+{
+  "model": "gpt-5.6",
+  "input": [
+    {
+      "role": "developer",
+      "content": "Your app's shared instructions and reference material..."
+    },
+    {
+      "role": "user",
+      "content": "The user's question..."
+    }
+  ]
+}
+```
+
+
+Note: Tokens written to the cache during a prewarm request are billed at the standard cache-write rate.
 
 
 
@@ -111064,7 +111182,7 @@ For more guidance on building user interfaces on top of WebRTC, [refer to the do
 
 ## Overview
 
-The Realtime API supports two mechanisms for connecting to the Realtime API from the browser, either using ephemeral API keys ([generated via the OpenAI REST API](https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets)), or via the new unified interface. Generally, using the unified interface is simpler, but puts your application server in the critical path for session initialization.
+The Realtime API supports two mechanisms for connecting from the browser: the unified interface and ephemeral API keys ([generated via the OpenAI REST API](https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets)). Use the unified interface for simpler setup and faster connections. This approach puts your application server in the critical path for session initialization.
 
 ### Connecting using the unified interface
 
@@ -111286,6 +111404,12 @@ await pc.setRemoteDescription(answer);
 ```
 
 
+## Reduce connection latency with WARP
+
+WebRTC Abridged Roundtrip Protocol (WARP) reduces the time it takes to start a Realtime API voice session. You can enable its optimizations individually or combine them for the full WARP handshake.
+
+See [WebRTC with WARP](https://developers.openai.com/api/docs/guides/realtime-webrtc-warp) for native client setup, browser support, origin-trial instructions, and the unified connection flow.
+
 ## Sending and receiving events
 
 Realtime API sessions are managed using a combination of [client-sent events](https://developers.openai.com/api/reference/resources/realtime/client-events#session.update) emitted by you as the developer, and [server-sent events](https://developers.openai.com/api/reference/resources/realtime/server-events#error) created by the Realtime API to indicate session lifecycle events.
@@ -111329,6 +111453,210 @@ To learn more about managing Realtime conversations, refer to the [Realtime conv
 
 
       Check out the WebRTC Realtime API in this light weight example app.](https://github.com/openai/openai-realtime-console/)
+
+---
+
+# WebRTC with WARP
+
+Use [WebRTC Abridged Roundtrip Protocol (WARP)](https://datatracker.ietf.org/doc/draft-uberti-tsvwg-warp/) to reduce the time it takes to start a Realtime API voice session. WARP combines [DTLS 1.3](https://datatracker.ietf.org/doc/html/rfc9147), [SPED](https://datatracker.ietf.org/doc/draft-hancke-webrtc-sped/), [SNAP](https://datatracker.ietf.org/doc/draft-hancke-tsvwg-snap/), and a pre-negotiated data channel to establish the connection with fewer network round trips.
+
+WARP, SPED, and SNAP are IETF Internet-Drafts, so their specifications and client support may change.
+
+You can also use these optimizations individually. Enable the features your client supports to reduce connection latency, even when full WARP isn't available. Using all the features together provides the full WARP handshake.
+
+## Enable WARP in a native client
+
+Current versions of [`libwebrtc`](https://webrtc.googlesource.com/src/) include the WARP optimizations. If your native client uses a compatible `libwebrtc` build, enable the following field trials:
+
+```text
+WebRTC-ForceDtls13/Enabled/
+WebRTC-Sctp-Snap/Enabled/
+WebRTC-IceHandshakeDtls/Enabled/
+```
+
+Some integrations require one combined field-trial string:
+
+```text
+WebRTC-ForceDtls13/Enabled/WebRTC-Sctp-Snap/Enabled/WebRTC-IceHandshakeDtls/Enabled/
+```
+
+Initialize the field trials before creating the peer connection factory. For example, a Rust integration can enable all three trials together:
+
+```rust
+const WARP_FIELD_TRIALS: &str = concat!(
+    "WebRTC-ForceDtls13/Enabled/",
+    "WebRTC-Sctp-Snap/Enabled/",
+    "WebRTC-IceHandshakeDtls/Enabled/",
+);
+
+webrtc_sys::peer_connection_factory::ffi::initialize_field_trials(
+    WARP_FIELD_TRIALS.to_string(),
+);
+```
+
+If you use an SDK that wraps `libwebrtc`, such as a native LiveKit SDK, pass the same field-trial string through its WebRTC configuration or initialization options. If the SDK doesn't expose field trials, initialize the underlying `libwebrtc` instance before the SDK creates its peer connection factory, or update to a wrapper that provides this configuration.
+
+After enabling the trials, create a negotiated data channel with any available ID. When you send the SDP offer to `/v1/realtime/calls`, include the same ID in the `dcid` query parameter.
+
+## Enable WARP in a browser
+
+Chrome, Edge, and other Chromium-based browsers bundle `libwebrtc`, but a web page can't configure its field trials. An [origin trial](https://developer.chrome.com/docs/web-platform/origin-trials/) enables an experimental browser feature for a registered website. Check the availability of each WARP feature:
+
+- **DTLS 1.3:** Chrome supports DTLS 1.3 without an origin trial.
+- **SNAP:** Chrome 151–156 supports SNAP through an origin trial. For Edge, check whether a SNAP origin trial is available for your version and register for an Edge-issued token.
+- **SPED:** No browser origin trial is available. Check back later for SPED support. To use full WARP, the browser must enable SPED by default, or you must control its startup flags and enable the necessary field trials yourself.
+
+Enabling the SNAP origin trial doesn't enable SPED or full WARP. If your browser doesn't expose SPED, you can still use DTLS 1.3 and the SNAP origin trial to gain the benefits of those individual optimizations.
+
+Check the origin trials for your browser:
+
+- [Google Chrome origin trials](https://developer.chrome.com/origintrials/#/trials/active)
+- [Microsoft Edge origin trials](https://developer.microsoft.com/en-us/microsoft-edge/origin-trials/trials)
+
+To enable the SNAP origin trial:
+
+1. Open your browser's origin trials page and find **WebRTC Data Channel: SCTP Negotiation Acceleration Protocol (SNAP)**.
+2. Select **Register** and enter your application's origin, such as `https://example.com`.
+3. Add the issued token to your page's `<head>` before the script that creates `RTCPeerConnection`:
+
+```html
+   <meta http-equiv="origin-trial" content="YOUR_ORIGIN_TRIAL_TOKEN" />
+```
+
+4. Reload the page. In Chrome, open DevTools, select **Application**, and confirm `WebRtcSctpSnap` appears under **Origin Trials**.
+
+You can also provide the token as an HTTP response header:
+
+```http
+Origin-Trial: YOUR_ORIGIN_TRIAL_TOKEN
+```
+
+An origin-trial token applies only to its named feature, issuing browser, and
+  registered origin. A SNAP token doesn't enable SPED, and a Chrome token
+  doesn't enable the trial in Edge. Firefox, Safari, browsers on iOS, and older
+  Chromium builds can support standard WebRTC without supporting full WARP.
+
+## Connect with the unified interface
+
+Use the [unified WebRTC connection flow](https://developers.openai.com/api/docs/guides/voice-webrtc?api=realtime#connecting-using-the-unified-interface) for faster Realtime API connections. The browser sends its SDP offer and negotiated data-channel ID to your application server. Your server forwards the same ID in the `dcid` query parameter when it calls `/v1/realtime/calls`.
+
+### Configure your application server
+
+This application server supports standard WebRTC and WARP. The comment marked `WARP only` identifies the `dcid` forwarding needed for WARP:
+
+```javascript
+import express from "express";
+
+const app = express();
+
+// Parse raw SDP payloads posted from the browser
+app.use(express.text({ type: ["application/sdp", "text/plain"] }));
+
+const sessionConfig = JSON.stringify({
+  type: "realtime",
+  model: "gpt-realtime-2.1",
+  audio: { output: { voice: "marin" } },
+});
+
+// An endpoint which creates a Realtime API session.
+app.post("/session", async (req, res) => {
+  const fd = new FormData();
+  fd.set("sdp", req.body);
+  fd.set("session", sessionConfig);
+
+  const endpoint = new URL("https://api.openai.com/v1/realtime/calls");
+
+  // WARP only: forward the negotiated data-channel ID to the Realtime API.
+  if (typeof req.query.dcid === "string") {
+    endpoint.searchParams.set("dcid", req.query.dcid);
+  }
+
+  try {
+    const r = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        "OpenAI-Safety-Identifier": "hashed-user-id",
+      },
+      body: fd,
+    });
+    // Send back the SDP we received from the OpenAI REST API
+    const sdp = await r.text();
+    res.send(sdp);
+  } catch (error) {
+    console.error("Token generation error:", error);
+    res.status(500).json({ error: "Failed to generate token" });
+  }
+});
+
+app.listen(3000);
+```
+
+
+### Connect from your browser
+
+After enabling the optimizations available in your browser, set `useWarp` to `true`. Choose any available data-channel ID and pass the same ID to the server. Comments marked `WARP only` identify the configuration and signaling that aren't needed for standard WebRTC:
+
+```javascript
+// WARP only: set to true after enabling the supported WARP optimizations.
+const useWarp = false;
+
+// WARP only: choose any available data-channel ID.
+const dataChannelId = 4;
+
+// Create a peer connection
+const pc = new RTCPeerConnection();
+
+// Set up to play remote audio from the model
+audioElement.current = document.createElement("audio");
+audioElement.current.autoplay = true;
+pc.ontrack = (e) => (audioElement.current.srcObject = e.streams[0]);
+
+// Add local audio track for microphone input in the browser
+const ms = await navigator.mediaDevices.getUserMedia({
+  audio: true,
+});
+pc.addTrack(ms.getTracks()[0]);
+
+// Set up the event channel using any channel label.
+// WARP only: pre-negotiate the channel using the selected data-channel ID.
+const dc = pc.createDataChannel(
+  "events",
+  useWarp ? { negotiated: true, id: dataChannelId } : undefined,
+);
+
+// Start the session using the Session Description Protocol (SDP)
+const offer = await pc.createOffer();
+await pc.setLocalDescription(offer);
+
+const endpoint = new URL("/session", window.location.origin);
+
+// WARP only: include the matching data-channel ID in the session request.
+if (useWarp) {
+  endpoint.searchParams.set("dcid", String(dataChannelId));
+}
+
+const sdpResponse = await fetch(endpoint, {
+  method: "POST",
+  body: offer.sdp,
+  headers: {
+    "Content-Type": "application/sdp",
+  },
+});
+
+const answer = {
+  type: "answer",
+  sdp: await sdpResponse.text(),
+};
+await pc.setRemoteDescription(answer);
+```
+
+
+## Use a client without WARP support
+
+If your WebRTC client doesn't use `libwebrtc`, add the WARP-compatible transport optimizations to your WebRTC stack or use another approach supported by that stack. The relevant specifications are [WARP](https://datatracker.ietf.org/doc/draft-uberti-tsvwg-warp/), [SPED](https://datatracker.ietf.org/doc/draft-hancke-webrtc-sped/), [SNAP](https://datatracker.ietf.org/doc/draft-hancke-tsvwg-snap/), [DTLS 1.3](https://datatracker.ietf.org/doc/html/rfc9147), and [data channel establishment](https://datatracker.ietf.org/doc/html/rfc8832).
+
+If those optimizations aren't available, use the [unified WebRTC interface](https://developers.openai.com/api/docs/guides/voice-webrtc?api=realtime#connecting-using-the-unified-interface).
 
 ---
 
@@ -114270,7 +114598,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.65.0</version>
+  <version>4.67.0</version>
 </dependency>
 ```
 
@@ -116480,7 +116808,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.65.0</version>
+  <version>4.67.0</version>
 </dependency>
 ```
 

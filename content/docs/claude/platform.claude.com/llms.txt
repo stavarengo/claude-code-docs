@@ -12,7 +12,7 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 629 pages - /docs - Content included below
+- English (en) - 634 pages - /docs - Content included below
 - German (Deutsch) (de) - 252 pages - /docs/de - Visit website for content
 - Spanish (Español) (es) - 252 pages - /docs/es - Visit website for content
 - French (Français) (fr) - 252 pages - /docs/fr - Visit website for content
@@ -58,7 +58,12 @@ The full documentation is available in the following languages on https://platfo
 - [Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai.md) - Claude on Google Cloud
 - [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws.md)
 - [Code execution tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool.md)
-- [Compaction](https://platform.claude.com/docs/en/build-with-claude/compaction.md)
+- [Keep thinking blocks valid](https://platform.claude.com/docs/en/build-with-claude/compaction-thinking-blocks.md) - Compaction and preserved thinking
+- [Threshold compaction](https://platform.claude.com/docs/en/build-with-claude/compaction-threshold.md) - Compaction at a token threshold
+- [Compact in the background](https://platform.claude.com/docs/en/build-with-claude/compaction-background.md) - Compaction in the background
+- [Compact on demand](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand.md) - Compaction on demand
+- [Compaction](https://platform.claude.com/docs/en/build-with-claude/compaction.md) - Compaction overview
+- [Keep recent turns](https://platform.claude.com/docs/en/build-with-claude/compaction-keep-recent-turns.md) - Compaction that keeps recent turns
 - [Computer use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool.md)
 - [Context editing](https://platform.claude.com/docs/en/build-with-claude/context-editing.md)
 - [Context windows](https://platform.claude.com/docs/en/build-with-claude/context-windows.md)
