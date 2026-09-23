@@ -4447,9 +4447,13 @@ Schema name: `ResponsesClientEventResponseCreate`
 
   - `string`
 
-  - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 83 more`
+  - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 85 more`
 
     - `"gpt-6-astra"`
+
+    - `"gpt-6-sol"`
+
+    - `"gpt-6-luna"`
 
     - `"gpt-5.6-sol"`
 
@@ -4621,7 +4625,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
     - `"gpt-3.5-turbo-16k-0613"`
 
-  - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 16 more`
+  - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 17 more`
 
     - `"o1-pro"`
 
@@ -4660,6 +4664,8 @@ Schema name: `ResponsesClientEventResponseCreate`
     - `"gpt-daybreak-red-latest"`
 
     - `"gpt-5.6-cyber"`
+
+    - `"gpt-rosalind-research"`
 
 - `moderation: optional object { model, policy }  or null`
 
@@ -11638,9 +11644,13 @@ Schema name: `ResponseCreatedEvent`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 83 more`
+    - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 85 more`
 
       - `"gpt-6-astra"`
+
+      - `"gpt-6-sol"`
+
+      - `"gpt-6-luna"`
 
       - `"gpt-5.6-sol"`
 
@@ -11812,7 +11822,7 @@ Schema name: `ResponseCreatedEvent`
 
       - `"gpt-3.5-turbo-16k-0613"`
 
-    - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 16 more`
+    - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 17 more`
 
       - `"o1-pro"`
 
@@ -11851,6 +11861,8 @@ Schema name: `ResponseCreatedEvent`
       - `"gpt-daybreak-red-latest"`
 
       - `"gpt-5.6-cyber"`
+
+      - `"gpt-rosalind-research"`
 
   - `object: "response"`
 
@@ -21336,9 +21348,13 @@ Schema name: `ResponseInProgressEvent`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 83 more`
+    - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 85 more`
 
       - `"gpt-6-astra"`
+
+      - `"gpt-6-sol"`
+
+      - `"gpt-6-luna"`
 
       - `"gpt-5.6-sol"`
 
@@ -21510,7 +21526,7 @@ Schema name: `ResponseInProgressEvent`
 
       - `"gpt-3.5-turbo-16k-0613"`
 
-    - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 16 more`
+    - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 17 more`
 
       - `"o1-pro"`
 
@@ -21549,6 +21565,8 @@ Schema name: `ResponseInProgressEvent`
       - `"gpt-daybreak-red-latest"`
 
       - `"gpt-5.6-cyber"`
+
+      - `"gpt-rosalind-research"`
 
   - `object: "response"`
 
@@ -31034,9 +31052,13 @@ Schema name: `ResponseCompletedEvent`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 83 more`
+    - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 85 more`
 
       - `"gpt-6-astra"`
+
+      - `"gpt-6-sol"`
+
+      - `"gpt-6-luna"`
 
       - `"gpt-5.6-sol"`
 
@@ -31208,7 +31230,7 @@ Schema name: `ResponseCompletedEvent`
 
       - `"gpt-3.5-turbo-16k-0613"`
 
-    - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 16 more`
+    - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 17 more`
 
       - `"o1-pro"`
 
@@ -31247,6 +31269,8 @@ Schema name: `ResponseCompletedEvent`
       - `"gpt-daybreak-red-latest"`
 
       - `"gpt-5.6-cyber"`
+
+      - `"gpt-rosalind-research"`
 
   - `object: "response"`
 
@@ -40749,9 +40773,13 @@ Schema name: `ResponseFailedEvent`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 83 more`
+    - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 85 more`
 
       - `"gpt-6-astra"`
+
+      - `"gpt-6-sol"`
+
+      - `"gpt-6-luna"`
 
       - `"gpt-5.6-sol"`
 
@@ -40923,7 +40951,7 @@ Schema name: `ResponseFailedEvent`
 
       - `"gpt-3.5-turbo-16k-0613"`
 
-    - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 16 more`
+    - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 17 more`
 
       - `"o1-pro"`
 
@@ -40962,6 +40990,8 @@ Schema name: `ResponseFailedEvent`
       - `"gpt-daybreak-red-latest"`
 
       - `"gpt-5.6-cyber"`
+
+      - `"gpt-rosalind-research"`
 
   - `object: "response"`
 
@@ -50449,9 +50479,13 @@ Schema name: `ResponseIncompleteEvent`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 83 more`
+    - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 85 more`
 
       - `"gpt-6-astra"`
+
+      - `"gpt-6-sol"`
+
+      - `"gpt-6-luna"`
 
       - `"gpt-5.6-sol"`
 
@@ -50623,7 +50657,7 @@ Schema name: `ResponseIncompleteEvent`
 
       - `"gpt-3.5-turbo-16k-0613"`
 
-    - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 16 more`
+    - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 17 more`
 
       - `"o1-pro"`
 
@@ -50662,6 +50696,8 @@ Schema name: `ResponseIncompleteEvent`
       - `"gpt-daybreak-red-latest"`
 
       - `"gpt-5.6-cyber"`
+
+      - `"gpt-rosalind-research"`
 
   - `object: "response"`
 
@@ -70875,9 +70911,13 @@ Schema name: `ResponseQueuedEvent`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 83 more`
+    - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 85 more`
 
       - `"gpt-6-astra"`
+
+      - `"gpt-6-sol"`
+
+      - `"gpt-6-luna"`
 
       - `"gpt-5.6-sol"`
 
@@ -71049,7 +71089,7 @@ Schema name: `ResponseQueuedEvent`
 
       - `"gpt-3.5-turbo-16k-0613"`
 
-    - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 16 more`
+    - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 17 more`
 
       - `"o1-pro"`
 
@@ -71088,6 +71128,8 @@ Schema name: `ResponseQueuedEvent`
       - `"gpt-daybreak-red-latest"`
 
       - `"gpt-5.6-cyber"`
+
+      - `"gpt-rosalind-research"`
 
   - `object: "response"`
 

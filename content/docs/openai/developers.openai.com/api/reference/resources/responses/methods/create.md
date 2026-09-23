@@ -4428,9 +4428,13 @@ as input for the model's response.
 
   - `string`
 
-  - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 83 more`
+  - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 85 more`
 
     - `"gpt-6-astra"`
+
+    - `"gpt-6-sol"`
+
+    - `"gpt-6-luna"`
 
     - `"gpt-5.6-sol"`
 
@@ -4602,7 +4606,7 @@ as input for the model's response.
 
     - `"gpt-3.5-turbo-16k-0613"`
 
-  - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 16 more`
+  - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 17 more`
 
     - `"o1-pro"`
 
@@ -4641,6 +4645,8 @@ as input for the model's response.
     - `"gpt-daybreak-red-latest"`
 
     - `"gpt-5.6-cyber"`
+
+    - `"gpt-rosalind-research"`
 
 - `moderation: optional object { model, policy }  or null`
 
@@ -10541,9 +10547,13 @@ as input for the model's response.
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-5.6-sol" or "gpt-5.6-terra" or 83 more`
+    - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 85 more`
 
       - `"gpt-6-astra"`
+
+      - `"gpt-6-sol"`
+
+      - `"gpt-6-luna"`
 
       - `"gpt-5.6-sol"`
 
@@ -10715,7 +10725,7 @@ as input for the model's response.
 
       - `"gpt-3.5-turbo-16k-0613"`
 
-    - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 16 more`
+    - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 17 more`
 
       - `"o1-pro"`
 
@@ -10754,6 +10764,8 @@ as input for the model's response.
       - `"gpt-daybreak-red-latest"`
 
       - `"gpt-5.6-cyber"`
+
+      - `"gpt-rosalind-research"`
 
   - `object: "response"`
 
