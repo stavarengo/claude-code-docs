@@ -238,7 +238,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [WebSockets](https://developers.openai.com/api/docs/guides/voice-websockets.md): Connect server-owned audio streams over WebSockets.
 - [Working with evals](https://developers.openai.com/api/docs/guides/evals.md): Learn how to test and improve AI model outputs through evaluations.
 - [Workload identity federation](https://developers.openai.com/api/docs/guides/workload-identity-federation.md): Authenticate trusted workloads to the OpenAI API and Codex with short-lived identity-provider tokens.
-- [ZDR with Private Safety Processing (PSP)](https://developers.openai.com/api/docs/guides/private-safety-processing.md): ZDR with Private Safety Processing (PSP)
+- [ZDR with Private Safety Processing](https://developers.openai.com/api/docs/guides/private-safety-processing.md): ZDR with Private Safety Processing
 
 ## Libraries
 - [SDKs and CLI](https://developers.openai.com/api/docs/libraries.md): Discover official OpenAI SDKs, the OpenAI CLI, and the Agents SDK.

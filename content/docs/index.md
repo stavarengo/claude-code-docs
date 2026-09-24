@@ -133,7 +133,7 @@ claude/platform.claude.com/docs/en/models/opus-4-5:{overview.md}
 claude/platform.claude.com/docs/en/models/opus-4-6:{overview.md}
 claude/platform.claude.com/docs/en/models/opus-4-7:{overview.md}
 claude/platform.claude.com/docs/en/models/opus-4-8:{overview.md}
-claude/platform.claude.com/docs/en/models/opus-5:{migration-guide.md,overview.md,whats-new-opus-5.md}
+claude/platform.claude.com/docs/en/models/opus-5:{overview.md}
 claude/platform.claude.com/docs/en/models/opus-5-5:{migration-guide.md,overview.md,whats-new-opus-5-5.md}
 claude/platform.claude.com/docs/en/models/sonnet-4-5:{overview.md}
 claude/platform.claude.com/docs/en/models/sonnet-4-6:{overview.md}
