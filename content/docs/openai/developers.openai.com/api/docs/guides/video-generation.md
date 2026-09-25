@@ -2,9 +2,15 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
+The Sora 2 models and Videos API were shut down on September 24, 2026 and are
+  no longer available. No one-to-one replacement API is available. This guide is
+  retained for historical reference. See the [deprecation
+  notice](https://developers.openai.com/api/docs/deprecations#2026-03-24-sora-2-video-generation-models-and-videos-api)
+  for the affected models and snapshots.
+
 ## Overview
 
-Sora is OpenAI’s newest frontier in generative media – a state-of-the-art video model capable of creating richly detailed, dynamic clips with audio from natural language or images. Built on years of research into multimodal diffusion and trained on diverse visual data, Sora brings a deep understanding of 3D space, motion, and scene continuity to text-to-video generation.
+Sora is OpenAI’s newest frontier in generative media—a state-of-the-art video model capable of creating richly detailed, dynamic clips with audio from natural language or images. Built on years of research into multimodal diffusion and trained on diverse visual data, Sora brings a deep understanding of 3D space, motion, and scene continuity to text-to-video generation.
 
 The [Videos API](https://developers.openai.com/api/reference/resources/videos) exposes these capabilities to developers for the first time, enabling programmatic creation, extension, editing, and management of videos.
 
@@ -26,7 +32,7 @@ The second generation Sora model comes in two variants, each tailored for differ
 
 `sora-2` is designed for **speed and flexibility**. It’s ideal for the exploration phase, when you’re experimenting with tone, structure, or visual style and need quick feedback rather than perfect fidelity.
 
-It generates good quality results quickly, making it well suited for rapid iteration, concepting, and rough cuts. `sora-2` is often more than sufficient for social media content, prototypes, and scenarios where turnaround time matters more than ultra-high fidelity.
+It generates good quality results quickly, making it well suited for rapid iteration, concept development, and rough cuts. `sora-2` is often more than sufficient for social media content, prototypes, and scenarios where turnaround time matters more than ultra-high fidelity.
 
 ### Sora 2 Pro
 
@@ -44,13 +50,13 @@ Generating a video is an **asynchronous** process:
 
 1. When you call the `POST /videos` endpoint, the API returns a job object with a job `id` and an initial `status`.
 
-2. You can either poll the `GET /videos/{video_id}` endpoint until the status transitions to completed, or – for a more efficient approach – use webhooks (see the webhooks section below) to be notified automatically when the job finishes.
+2. You can either poll the `GET /videos/{video_id}` endpoint until the status transitions to completed, or—for a more efficient approach—use webhooks (see the webhooks section below) to be notified automatically when the job finishes.
 
 3. Once the job has reached the `completed` state you can fetch the final MP4 file with `GET /videos/{video_id}/content`.
 
 ### Start a render job
 
-Start by calling `POST /videos` with a text prompt and the required parameters. The prompt defines the creative look and feel – subjects, camera, lighting, and motion – while parameters like `size` and `seconds` control the video's resolution and length.
+Start by calling `POST /videos` with a text prompt and the required parameters. The prompt defines the creative look and feel—subjects, camera, lighting, and motion—while parameters like `size` and `seconds` control the video's resolution and length.
 
 Create a video
 
@@ -575,7 +581,7 @@ You now have the final video file ready for playback, editing, or distribution. 
 
 #### Download supporting assets
 
-For each completed video, you can also download a **thumbnail** and a **spritesheet**. These are lightweight assets useful for previews, scrubbers, or catalog displays. Use the `variant` query parameter to specify what you want to download. The default is `variant=video` for the MP4.
+For each completed video, you can also download a **thumbnail** and a **sprite sheet**. These are lightweight assets useful for previews, scrubbers, or catalog displays. Use the `variant` query parameter to specify what you want to download. The default is `variant=video` for the MP4.
 
 ```bash
 # Download a thumbnail

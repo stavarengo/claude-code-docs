@@ -4522,24 +4522,29 @@ Use the [Agents overview](https://developers.openai.com/api/docs/guides/agents#c
 
 # API deployment checklist
 
-| Contents                                                                        | Expected impact                     |
-| ------------------------------------------------------------------------------- | ----------------------------------- |
-| [Use the Responses API](#use-the-responses-api)                                 | Quality, cost, latency, reliability |
-| [Choose a GPT-5.6 model](#choose-a-gpt-56-model)                                | Quality, cost, latency              |
-| [Set up `reasoning.effort`](#set-up-reasoningeffort)                            | Quality, cost, latency              |
-| [Set up `text.verbosity`](#set-up-textverbosity)                                | Quality, cost, latency              |
-| [Set up the assistant `phase` parameter](#set-up-the-assistant-phase-parameter) | Quality, cost                       |
-| [Use `tool_search`](#use-toolsearch)                                            | Cost, latency                       |
-| [Use Programmatic Tool Calling](#use-programmatic-tool-calling)                 | Quality, cost, latency              |
-| [Use Multi-agent for parallel work](#use-multi-agent-for-parallel-work)         | Quality, cost, latency              |
-| [Leverage built-in tools](#leverage-built-in-tools)                             | Quality                             |
-| [Leverage compaction](#leverage-compaction)                                     | Cost                                |
-| [Optimize prompt caching](#optimize-prompt-caching)                             | Latency, cost                       |
-| [Use `reasoning.encrypted_content`](#use-reasoningencryptedcontent)             | Quality, latency                    |
-| [Set image detail intentionally](#set-image-detail-intentionally)               | Quality, cost, latency              |
-| [Send a safety identifier](#send-a-safety-identifier)                           | Safety, reliability                 |
-| [Use `background=True`](#use-backgroundtrue)                                    | Resuming work                       |
-| [Use WebSocket mode](#use-websocket-mode)                                       | Latency                             |
+| Contents                                                                                                | Expected impact                     |
+| ------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| [Use the Responses API](#use-the-responses-api)                                                         | Quality, cost, latency, reliability |
+| [Choose a model for the workload](#choose-a-model-for-the-workload)                                     | Quality, cost, latency              |
+| [Set up `reasoning.effort`](#set-up-reasoningeffort)                                                    | Quality, cost, latency              |
+| [Change reasoning effort mid-conversation](#change-reasoning-effort-mid-conversation)                   | Quality, cost, latency              |
+| [Set up `text.verbosity`](#set-up-textverbosity)                                                        | Quality, cost, latency              |
+| [Set up the assistant `phase` parameter](#set-up-the-assistant-phase-parameter)                         | Quality, cost                       |
+| [Use `tool_search`](#use-toolsearch)                                                                    | Cost, latency                       |
+| [Use Programmatic Tool Calling](#use-programmatic-tool-calling)                                         | Quality, cost, latency              |
+| [Use Multi-agent for parallel work](#use-multi-agent-for-parallel-work)                                 | Quality, cost, latency              |
+| [Use async tool calling](#use-async-tool-calling)                                                       | Latency                             |
+| [Leverage built-in tools](#leverage-built-in-tools)                                                     | Quality                             |
+| [Leverage compaction](#leverage-compaction)                                                             | Cost                                |
+| [Optimize prompt caching](#optimize-prompt-caching)                                                     | Latency, cost                       |
+| [Use `reasoning.encrypted_content`](#use-reasoningencryptedcontent)                                     | Quality, latency                    |
+| [Set image detail intentionally](#set-image-detail-intentionally)                                       | Quality, cost, latency              |
+| [Send a safety identifier](#send-a-safety-identifier)                                                   | Safety, reliability                 |
+| [Handle misalignment monitoring](#handle-misalignment-monitoring)                                       | Safety, reliability                 |
+| [Handle rapid traffic increases and model overload](#handle-rapid-traffic-increases-and-model-overload) | Reliability                         |
+| [Use `background=True`](#use-backgroundtrue)                                                            | Task continuity                     |
+| [Use WebSocket mode](#use-websocket-mode)                                                               | Latency                             |
+| [Use mid-turn steering](#use-mid-turn-steering)                                                         | Quality                             |
 
 ## Use the Responses API
 
@@ -4548,36 +4553,45 @@ Use the [Agents overview](https://developers.openai.com/api/docs/guides/agents#c
 API and the best place to access the newest model behavior, built-in tools,
 stateful workflows, and agent features.
 
-## Choose a GPT-5.6 model
+## Choose a model for the workload
 
-Choose a [GPT-5.6 model](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.6) for the workload instead
-of routing every request to the most capable tier. Use `gpt-5.6` or
-`gpt-5.6-sol` for flagship capability, `gpt-5.6-terra` for strong performance
-at a lower price, and `gpt-5.6-luna` for efficient, high-volume workloads.
+Evaluate the [GPT-6 model family](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6-astra)
+for your workload. Use [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra) for the
+highest capability, [`gpt-6-sol`](https://developers.openai.com/api/docs/models/gpt-6-sol) for demanding
+reasoning and coding, and [`gpt-6-luna`](https://developers.openai.com/api/docs/models/gpt-6-luna) for
+efficient, repeatable work. Choose the model that performs well on representative
+tasks rather than routing every request to the most capable model.
 
-When migrating, preserve the current model's workload role and effective
-reasoning effort for the first comparison. Run representative evals before
-changing prompts or adding new capabilities. Compare task success, latency,
-input, output, reasoning, and cache-write tokens, and cost per successful task.
+When migrating to GPT-6, preserve your current model's workload role and
+effective reasoning effort where supported. Use the Responses API for reasoning
+with tools. GPT-6 Astra requires Responses for tool calling; GPT-6 Sol and Luna
+support function calling in Chat Completions only with `reasoning_effort: "none"`.
+When reasoning effort is not `none`, remove `temperature`, `top_p`, and
+`top_logprobs`; also remove `logprobs` from Chat Completions requests and
+`message.output_text.logprobs` from the Responses `include` array. With EU data
+residency, use Standard processing for all three models. See the
+[model migration guidance](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6-astra#migration-quickstart)
+for other compatibility checks. Run representative evals before changing prompts or adding new
+capabilities. Compare task success, latency, input, output, reasoning, and
+cache-write tokens, and cost per successful task.
 
 ## Set up `reasoning.effort`
 
 Use `reasoning.effort` to decide how much thinking the model should do before it
 answers.
 
-For GPT-5.6 models, the supported values are `none`, `low`, `medium`, `high`,
-`xhigh`, and `max`. The default is `medium`. Lower effort is faster and uses
-fewer reasoning tokens. Higher effort gives the model more time for planning,
+GPT-6 Astra, Sol, and Luna support `low`, `medium`, `high`, `xhigh`, and
+`max`. Sol and Luna also support `none`; Astra does not. Lower effort is faster and uses fewer
+reasoning tokens. Higher effort gives the model more time for planning,
 debugging, synthesis, and multi-step tradeoffs.
 
 Use `low` when the job is mostly extraction, routing, classification, or a
 routine rewrite. Use `medium` or `high` when the model needs to diagnose a
 problem, compare options, write a plan, or reason through code. Use `xhigh` or
 `max` only when representative evals show that the quality gain justifies the
-extra latency and cost. When migrating from GPT-5.5 or GPT-5.4, start with the
-current effort and compare the same setting with one level lower. GPT-5.6 can
-often maintain or improve quality with fewer reasoning tokens, so the lower
-setting may also reduce latency and cost.
+extra latency and cost. When migrating from `minimal`, or from `none` to GPT-6
+Astra, start with `low` and compare results. Otherwise, preserve your current effective
+effort and test changes against your quality, latency, and cost targets.
 
 For the hardest quality-first workloads, also compare
 [`reasoning.mode: "pro"`](https://developers.openai.com/api/docs/guides/reasoning#reasoning-mode) with
@@ -4723,6 +4737,18 @@ puts(response.output_text)
 ```
 
 
+## Change reasoning effort mid-conversation
+
+For GPT-6 models in standard, single-agent mode, add a
+[`configuration_update`](https://developers.openai.com/api/docs/guides/reasoning#change-reasoning-mid-conversation)
+input item before the next user message to change effort between responses.
+Leave the request-level `reasoning.effort` unchanged so the original prompt
+prefix remains eligible for caching. The update applies to the next response
+and continues until another update overrides it. Configuration updates cannot
+be combined with automatic compaction or truncation, and `/responses/compact`
+rejects histories containing them. To compact the history, include a
+`compaction_trigger` item and add a fresh update afterward.
+
 ## Set up `text.verbosity`
 
 `text.verbosity` is the main lever for balancing brevity against completeness.
@@ -4734,11 +4760,14 @@ generates less and returns output faster.
 For coding, `medium` and `high` tend to produce longer, more organized output
 with clearer structure. `low` keeps the answer tighter and more minimal.
 
-GPT-5.6 tends to be more concise by default than GPT-5.5. When migrating, check
-whether broad instructions like "Be concise" still help. In some cases, they may
-make responses too brief. Keep them only when they still help, and prefer using
-`text.verbosity` to control the default level of detail; then use the prompt to
-specify required content, structure, and a more specific length, if applicable.
+When migrating, check whether broad instructions like "Be concise" still help.
+Prefer `text.verbosity` to control the default level of detail, then use the
+prompt to specify required content, structure, and length.
+
+Prompts also affect quality, token usage, cost, and latency. Review the
+[latest-model prompting best practices](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices)
+alongside your verbosity setting, including its testing and verification
+guidance for coding agents.
 
 Set lower verbosity for compact output
 
@@ -4901,6 +4930,8 @@ back on follow-up requests for `gpt-5.3-codex` and later models,
 progress updates from the final result. This helps reduce early stopping, making
 the agent more likely to continue until it reaches the final answer.
 
+<a id="use-toolsearch" className="scroll-mt-[110px]"></a>
+
 ## Use `tool_search`
 
 Instead of loading the full tool catalog into every request, use
@@ -4923,7 +4954,7 @@ Tool search has two modes:
 **Start with hosted tool search** unless your app really needs to control
 discovery itself.
 
-Group your tools by user intent. Use namespaces or MCP servers when you can. It
+Group your tools by user intent. Use a namespace or an MCP server when you can. It
 is easier for the model to choose between a few clear groups than a long flat
 list of functions. We recommend keeping each namespace under about 10 functions
 for optimal token efficiency and model performance.
@@ -5242,8 +5273,8 @@ puts(response.output)
 ## Use Programmatic Tool Calling
 
 [Programmatic Tool Calling](https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling)
-lets GPT-5.6 write JavaScript that calls eligible tools and reduces their
-intermediate results inside a hosted runtime. Use it for bounded stages where
+lets supported models write JavaScript that calls eligible tools and reduces
+their intermediate results inside a hosted runtime. Use it for bounded stages where
 code can filter, join, rank, remove duplicates, combine, or check large tool
 results before returning a smaller structured result to the model.
 
@@ -5267,9 +5298,9 @@ using direct tool calls.
 
 ## Use Multi-agent for parallel work
 
-[Multi-agent](https://developers.openai.com/api/docs/guides/responses-multi-agent) is a GPT-5.6 feature that
-lets a root agent delegate independent workstreams to subagents and synthesize
-their results. Use it when you can split research, analysis, or implementation
+[Multi-agent](https://developers.openai.com/api/docs/guides/responses-multi-agent) lets supported models,
+including GPT-6 models, delegate independent workstreams to subagents and
+synthesize their results. Use it when you can split research, analysis, or implementation
 into concrete, bounded tasks that use separate context and run in parallel.
 
 Set `multi_agent.enabled` to `true` in the request. For HTTP, use the beta
@@ -5288,6 +5319,17 @@ Before enabling Multi-agent, account for its current limitations:
 `/responses/compact`, `reasoning.summary`, and `max_tool_calls` are not
 supported. The server automatically compacts the root context and every
 subagent context.
+
+## Use async tool calling
+
+On GPT-6 models, set `async: true` on a function or custom tool when the model
+can keep working while your application runs it. Start slow tool calls early and
+let the model handle independent work. Your application still executes and
+tracks the call, then returns the result in a later Responses request with the
+original `call_id`. Async execution does not apply to built-in tools or
+programmatic tool calls. In Multi-agent mode, do not combine async tools with
+parallel tool calls. See [async tool calling](https://developers.openai.com/api/docs/guides/async-tool-calling)
+for the full flow.
 
 ## Leverage built-in tools
 
@@ -5577,6 +5619,11 @@ after a stable prefix, add an explicit `prompt_cache_breakpoint` at the reusable
 the breakpoints you provide and no implicit breakpoint. Earlier models continue
 to use automatic prompt caching only.
 
+When migrating from GPT-5.5 or earlier, replace `prompt_cache_retention` with
+`prompt_cache_options.ttl: "30m"`. See the [prompt caching model
+differences](https://developers.openai.com/api/docs/guides/prompt-caching#summary-of-model-differences)
+before changing cache settings.
+
 On GPT-5.6 models and later model families, cache writes cost 1.25× the
 uncached input token rate. Log `cached_tokens` and `cache_write_tokens`, then
 compare write volume with later cache reads to measure net cost and tune
@@ -5736,9 +5783,11 @@ puts(response.output_text)
 ```
 
 
+<a id="use-reasoningencryptedcontent" className="scroll-mt-[110px]"></a>
+
 ## Use `reasoning.encrypted_content`
 
-GPT-5.6 can [preserve reasoning across
+Supported models, including GPT-6 models, can [preserve reasoning across
 calls](https://developers.openai.com/api/docs/guides/reasoning#preserve-reasoning-across-calls). Use
 `reasoning.context: "all_turns"` when the task's goals, assumptions, and
 priorities remain stable. Use `current_turn` when earlier reasoning is no longer
@@ -6000,20 +6049,17 @@ puts(second.output_text)
 
 ## Set image detail intentionally
 
-On GPT-5.6 models, omitted image `detail` and `detail: "auto"` use the same
-sizing behavior as `original`. The service preserves the input dimensions,
-except that images larger than 65,535 pixels on either side are scaled down to
-fit that limit. The API rejects images that still exceed the
-[30,000-patch limit](https://developers.openai.com/api/docs/guides/images-vision#image-input-requirements),
-rather than resizing them to fit it. Large images can use more input tokens and
-add latency as a result.
+Image `detail` defaults to `auto`, and its sizing behavior depends on the model.
+Large images can use more input tokens and add latency. Check the [sizing table
+for listed models](https://developers.openai.com/api/docs/guides/images-vision#model-sizing-behavior), and
+measure image token use and limits with your selected model before deployment.
 
 Choose [`detail`](https://developers.openai.com/api/docs/guides/images-vision#choose-an-image-detail-level)
 for the task. Resize the image, use `low` when fine visual detail is not
-important, or use `high` for standard high-fidelity image understanding. Keep
-`original` for large, dense, coordinate-sensitive, OCR, localization, or
-visual-inspection tasks where the extra detail improves quality. Measure
-worst-case image tokens and latency before deployment.
+important, or use `high` for standard high-fidelity image understanding. Use
+`original` where supported for large, dense, coordinate-sensitive, OCR,
+localization, or visual-inspection tasks where the extra detail improves quality.
+Measure worst-case image tokens and latency before deployment.
 
 ## Send a safety identifier
 
@@ -6026,6 +6072,29 @@ disrupts access for your broader organization.
 
 Hash the user's username or email address instead of sending identifying
 information. For logged-out experiences, use a stable session ID.
+
+## Handle misalignment monitoring
+
+For GPT-6 Astra agent workflows, plan for [misalignment
+monitoring](https://developers.openai.com/api/docs/guides/safety-checks/misalignment-monitoring). If a request
+returns `403` with `misalignment_policy_violation`, stop dispatching actions for
+that conversation and do not automatically retry the blocked workflow. Handle
+errors during streaming too, and review any actions that may already have run.
+Subscribe to `safety.alert.created` if your team needs project alerts; the
+webhook does not replace request error handling. Check the guide for which
+Responses requests can be stopped automatically.
+
+## Handle rapid traffic increases and model overload
+
+Check the HTTP status and `error.code` before choosing a recovery action. A
+`429` with `slow_down` means the request rate increased too quickly: follow
+`Retry-After` when present, reduce traffic, then ramp gradually. A `503` with
+`server_is_overloaded` means the requested model is temporarily overloaded:
+follow `Retry-After` when present, then retry. If the header is missing, increase
+retry delays exponentially with jitter and bound your retries. Billing, spend, and
+quota errors require action before retrying; do not treat every `429` as a
+temporary rate limit. See [rate limits](https://developers.openai.com/api/docs/guides/rate-limits#handle-rapid-traffic-increases-and-model-overload)
+and [error codes](https://developers.openai.com/api/docs/guides/error-codes).
 
 ## Use `background=True`
 
@@ -6217,8 +6286,8 @@ the status; the result will appear here when it's ready."
 [WebSocket mode](https://developers.openai.com/api/docs/guides/websocket-mode) is built for long-running,
 tool-call-heavy workflows where you keep a persistent connection open and
 continue by sending only new input items plus `previous_response_id`. For
-runs with 20 or more tool calls, this approach is roughly 40% faster
-end-to-end.
+workflows with 20 or more tool calls, we have seen up to roughly 40% faster
+end-to-end execution.
 
 **How this works**: The first message will look like a normal Responses request:
 model, instructions, tools, and user input. The server streams events back. If
@@ -6228,15 +6297,16 @@ the prior `previous_response_id` and the new item. That is where the latency win
 comes from. In plain HTTP, every follow-up is a fresh request. In WebSocket mode,
 the connection stays open and the most recent response state stays warm in
 memory on that connection. When the next turn continues from that response, the
-backend has to do less setup work.
+service has to do less setup work.
 
 If your workflow is one request, one answer, then **keep HTTP**. If your
 workflow behaves like a long-running agent, try WebSocket mode.
 
-A single WebSocket connection handles one in-flight response at a time, so
-parallel work needs multiple connections. Connections currently top out at 60
-minutes. Continuation uses the same `previous_response_id` semantics as HTTP
-mode, with a connection-local cache for the most recent response.
+Use different `stream_id` values for parallel conversations on one connection;
+route interleaved events by `stream_id`. A connection supports up to 16 active
+responses, while requests on the same stream run in order. Connections last up
+to 60 minutes. Continuation uses the same `previous_response_id` semantics as
+HTTP mode, with a connection-local cache for the latest response in each stream.
 
 Note: WebSocket mode works with ZDR because your data is not stored to disk,
 only stored in memory.
@@ -6386,6 +6456,16 @@ end
 ```
 
 
+## Use mid-turn steering
+
+If users may add requirements while a GPT-6 model is working, use a WebSocket
+connection to the Responses API. Send `response.steer` with the active response
+ID in `previous_response_id` and the new user input. Keep reading events for
+the continuation; `response.steer.accepted` means the update is queued.
+Steering does not change output already sent to your application or undo tools
+that have started. See [mid-turn steering](https://developers.openai.com/api/docs/guides/steering) for the
+event flow and tool-result handling.
+
 ## Final takeaway
 
 Responses API is the foundation for building smarter, more capable OpenAI
@@ -6393,6 +6473,54 @@ applications. The real advantage is that it lets developers move from one-off
 prompts to durable, tool-using, context-aware workflows that can adapt to the
 complexity of the task. Follow this guide to see higher performance in real
 deployments.
+
+---
+
+# API organization blocking
+
+API organization blocking lets you restrict which API organizations users can access from your network. Configure an allowlist of organization IDs through your proxy or Secure Access Service Edge (SASE) service.
+
+## How it works
+
+- **Custom allowlist header:** You configure which API organizations you want to allow by adding a custom HTTP header, `OpenAI-Allowed-Organization-Ids`, to your network configuration. You can specify one or more organization IDs (for example, `org-…`) in the header, separated by commas without spaces.
+- **API Platform enforces the allowlist:**
+  - When a user logs in to API Platform from your network, OpenAI reads the header and checks if the API organization that the user is trying to access matches one of the organization IDs listed in the `OpenAI-Allowed-Organization-Ids` header.
+  - If the user tries to access an organization not listed in the header, OpenAI automatically rejects this request with an error that has status code `403`, blocking access to that organization. Only the organizations listed in the header will be accessible.
+
+## Setup
+
+### Step 1: Find your organization IDs
+
+To allow access to specific organizations, copy the organization ID for each organization you want to allow. You can find this ID on the API Platform Organization settings page:
+
+- Log in to your API Platform account and switch to the desired organization.
+- Navigate to the Organization settings page and note the Organization ID (example value: `org-Tkxfm8owx4zIPaJGNDVrPs6m`).
+
+### Step 2: Configure the header
+
+Customers should configure their network, via a proxy or Secure Access Service Edge (SASE) service, to send the header.
+
+- **To allow multiple organizations**, enter the organization IDs separated by commas without spaces.
+- **Specify URL targeting:**
+  - Configure your proxy or SASE service to apply the header only to requests made to `https://api.openai.com/*`.
+
+### Step 3: Verify the configuration
+
+After configuring the header, test access from a device connected to the network where the rule applies.
+
+1. Sign in to API Platform with an account that has access to both:
+   - An organization included in the allowlist.
+   - An organization that is not included in the allowlist.
+2. Open the organization included in the allowlist. Confirm that you can access it.
+3. Try to open the organization that is not included in the allowlist. Confirm that access is blocked and the error has status code `403`.
+4. If you allow multiple organizations, confirm that you can access each one.
+
+If the results differ from what you expect, check that your proxy or SASE rule applies to the test device and that the header contains the correct organization IDs.
+
+### Troubleshoot access errors
+
+- **Status code 403:** If a user attempts to access an API organization that is not allowed, they will see an error. The error will have status code `403`, and a message will indicate they are not authorized to access that organization.
+- **Status code 400:** If the header value is malformed (for example, if the organization ID is invalid), all requests with that header will fail with an error that has status code `400`.
 
 ---
 
@@ -9019,7 +9147,6 @@ While some uses of the OpenAI Platform require you to send synchronous requests,
 1. Running evaluations
 2. Classifying large datasets
 3. Embedding content repositories
-4. Queuing large offline video-render jobs
 
 The Batch API offers a straightforward set of endpoints that allow you to collect a set of requests into a single file, kick off a batch processing job to execute these requests, query for the status of that batch while the underlying requests execute, and eventually retrieve the collected results when the batch is complete.
 
@@ -9042,18 +9169,8 @@ Batches start with a `.jsonl` file where each line contains the details of an in
 - `/v1/moderations` ([Moderation guide](https://developers.openai.com/api/docs/guides/moderation))
 - `/v1/images/generations` ([Images API](https://developers.openai.com/api/reference/resources/images))
 - `/v1/images/edits` ([Images API](https://developers.openai.com/api/reference/resources/images))
-- `/v1/videos` ([Video generation guide](https://developers.openai.com/api/docs/guides/video-generation))
 
 For a given input file, the parameters in each line's `body` field are the same as the parameters for the underlying endpoint. Each request must include a unique `custom_id` value, which you can use to reference results after completion. Here's an example of an input file with 2 requests. Note that each input file can only include requests to a single model.
-
-For video generation in Batch:
-
-- Batch currently supports `POST /v1/videos` only.
-- Batch requests for videos must use JSON, not multipart.
-- Upload assets ahead of time and pass supported asset references in the request body rather than using multipart uploads.
-- Use `input_reference` for image-guided generations in Batch. In JSON requests, pass `input_reference` as an object with either `file_id` or `image_url`.
-- Multipart `input_reference` uploads, including video reference inputs, aren't supported in Batch.
-- Batch-generated videos are available for download for up to `24` hours after the batch completes.
 
 When targeting `/v1/moderations`, include an `input` field in every request body. Batch accepts plain-text inputs and content arrays with text or image inputs using `omni-moderation-latest`. The Batch worker rejects requests that set `stream=true`, matching the synchronous moderation endpoint.
 
@@ -9514,8 +9631,6 @@ openai files content \
 
 
 The output `.jsonl` file will have one response line for every successful request line in the input file. Any failed requests in the batch will have their error information written to an error file that can be found via the batch's `error_file_id`.
-
-For `/v1/videos`, a completed batch result contains video objects that have already reached a terminal state such as `completed`, `failed`, or `expired`. You can use the returned video IDs to download final assets immediately after the batch finishes.
 
 Note that the output line order **may not match** the input line order.
   Instead of relying on order to process your results, use the custom_id field
@@ -27632,7 +27747,6 @@ The table below indicates when application state is stored for each endpoint. Ze
 | `/v1/completions`          |           No           |          30 days           |              None              |              Yes               |                            No                            |
 | `/v1/live/sessions`        |           No           |          30 days           |   None, or 30 days if stored   |  Yes, with limitations below   |                            No                            |
 | `/v1/realtime`             |           No           |          30 days           |              None              |              Yes               |                            No                            |
-| `/v1/videos`               |           No           |          30 days           |              None              |               No               |                            No                            |
 
 #### `/v1/chat/completions`
 
@@ -27668,9 +27782,9 @@ The table below indicates when application state is stored for each endpoint. Ze
 
 - Files can be manually deleted via the API or the dashboard, or can be automatically deleted by setting the `expires_after` parameter. See [here](https://developers.openai.com/api/reference/resources/files/methods/create#files_create-expires_after) for more information.
 
-#### `/v1/videos`
+#### Historical Videos API retention
 
-- The `v1/videos` API includes a workflow that saves data to disk while processing and retains it for 48 hours to allow the caller to download the produced video and then for 30 days for abuse monitoring. `v1/videos` is currently blocked for MAM or ZDR requests. If your organization has data retention controls enabled, configure a project with its retention setting set to **None** as described in [Configuring data retention controls](#configuring-data-retention-controls) to use `/v1/videos` with that project.
+Before the September 24, 2026 shutdown, the Videos API documentation specified 48 hours for downloading generated videos, followed by 30 days of retention for abuse monitoring. These periods describe the policy documented before shutdown; they do not promise download access after shutdown. See the [Videos API shutdown notice](https://developers.openai.com/api/docs/deprecations#2026-03-24-sora-2-video-generation-models-and-videos-api).
 
 #### Image and file inputs
 
@@ -29878,7 +29992,7 @@ DigitalOcean's Managed Agents Runtime Services (M.A.R.S.) starts a Firecracker m
 
 Choose **[webhook-managed](#webhook-managed)** provisioning to start or resume sandboxes from OpenAI events, or **[application-managed](#application-managed)** provisioning to control them from your application. For an interactive quickstart, use the optional [DigitalOcean CLI flow](#try-it-with-the-digitalocean-cli). See [Sandbox lifecycle](https://developers.openai.com/api/docs/guides/agents-api/environments/lifecycle) for connection and recovery behavior.
 
-M.A.R.S. is in invite-only private preview. Request access through [DigitalOcean's private-preview announcement](https://www.digitalocean.com/blog/managed-agents-runtime-services-private-preview).
+DigitalOcean Managed Agents is in public preview. See [DigitalOcean's documentation](https://docs.digitalocean.com/products/managed-agents/) for access and setup.
 
 ## Before you begin
 
@@ -29886,7 +30000,7 @@ You need a sandbox-enabled DigitalOcean account with access to `codex-agentapi` 
 
 Use `OPENAI_API_KEY` for your application or CLI. Set `OPENAI_EXECUTOR_API_KEY` to an [environment key](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#authentication). Pass only the environment key into the sandbox as `CODEX_API_KEY`.
 
-For webhook controllers or Python applications, set `DIGITALOCEAN_TOKEN` and install the [PyDo beta SDK](https://github.com/digitalocean/pydo/releases) with async support (`pydo[aio]`). Use the [OpenAI SDK](https://developers.openai.com/api/docs/libraries#install-an-official-sdk) for Agents API requests. CLI installation is needed only for the CLI flow.
+For webhook controllers or Python applications, set `DIGITALOCEAN_TOKEN` and install the [PyDo SDK](https://github.com/digitalocean/pydo/releases) version 0.41.0 or later with async support (`pydo[aio]`). Use the [OpenAI SDK](https://developers.openai.com/api/docs/libraries#install-an-official-sdk) for Agents API requests. CLI installation is needed only for the CLI flow.
 
 ## Webhook-managed
 
@@ -29901,13 +30015,13 @@ The image connects the executor to the session's environment. Your application s
 
 The CLI creates both resources and lets you interact with the agent from your terminal. It provisions the sandbox directly, without a webhook controller.
 
-Install the [`doctl` beta release](https://github.com/digitalocean/doctl/releases) that includes `harness-runtime`, then authenticate:
+Install [`doctl`](https://github.com/digitalocean/doctl/releases) version 1.170.0 or later, which includes `harness-runtime`, then authenticate:
 
 ```bash
 doctl auth init
 ```
 
-Save this manifest as `agents.yaml`:
+Save this manifest as `environment.yaml`:
 
 ```yaml
 name: openai-codex-session
@@ -29933,7 +30047,7 @@ The `config` block is the OpenAI create-session request. The CLI authenticates t
 Create the session and sandbox:
 
 ```bash
-doctl harness-runtime create --spec agents.yaml
+doctl harness-runtime create --spec environment.yaml
 ```
 
 The command waits up to 300 seconds for readiness by default. Save the OpenAI session ID and DigitalOcean session ID from the session details, then attach:
@@ -30090,9 +30204,9 @@ Remove the OpenAI webhook registration before deleting a webhook controller.
 
 ## References
 
-- Read [DigitalOcean sandbox setup](https://github.com/digitalocean/pydo/tree/v0.40.0-beta.8/examples/agents/doc_python_sdk)
+- Read [DigitalOcean sandbox setup](https://github.com/digitalocean/pydo/tree/main/examples/agents/doc_python_sdk)
 - Read [DigitalOcean Python SDK](https://github.com/digitalocean/pydo)
-- Read [DigitalOcean CLI beta release](https://github.com/digitalocean/doctl/releases)
+- Read [DigitalOcean CLI releases](https://github.com/digitalocean/doctl/releases)
 
 ---
 
@@ -31030,10 +31144,10 @@ Name your endpoint, provide an endpoint URL, and specify your API key. We requir
 
 Once you have configured an external model, you can use it for evals on the by selecting it from the model picker in your [dataset](https://platform.openai.com/evaluation) or your [evaluation](https://platform.openai.com/evaluation?tab=evals). Note that tool calls are currently not supported.
 
-| Model type  |           Datasets            |             Evals             |
-| ----------- | :---------------------------: | :---------------------------: |
+| Model type  |          Datasets           |            Evals            |
+| ----------- | :-------------------------: | :-------------------------: |
 | Third-party | | |
-| Custom      |                               | |
+| Custom      |                             | |
 
 ## Next steps
 
@@ -35700,7 +35814,7 @@ Below are a few ways to consider improving the quality of your training data set
 - Scrutinize existing examples for issues.
   - If your model has grammar, logic, or style issues, check if your data has any of the same issues. For instance, if the model now says "I will schedule this meeting for you" (when it shouldn't), see if existing examples teach the model to say it can do new things that it can't do
 - Consider the balance and diversity of data.
-  - If 60% of the assistant responses in the data says "I cannot answer this", but at inference time only 5% of responses should say that, you will likely get an overabundance of refusals.
+  - If 60% of the assistant responses in the data says "I cannot answer this," but at inference time only 5% of responses should say that, you will likely get an overabundance of refusals.
 - Make sure your training examples contain all of the information needed for the response.
   - If we want the model to compliment a user based on their personal traits and a training example includes assistant compliments for traits not found in the preceding conversation, the model may learn to hallucinate information.
 - Look at the agreement and consistency in the training examples.
@@ -35709,7 +35823,7 @@ Below are a few ways to consider improving the quality of your training data set
 
 ### Iterating on data quantity
 
-Once you're satisfied with the quality and distribution of the examples, you can consider scaling up the number of training examples. This tends to help the model learn the task better, especially around possible "edge cases". We expect a similar amount of improvement every time you double the number of training examples. You can loosely estimate the expected quality gain from increasing the training data size by:
+Once you're satisfied with the quality and distribution of the examples, you can consider scaling up the number of training examples. This tends to help the model learn the task better, especially around possible "edge cases." We expect a similar amount of improvement every time you double the number of training examples. You can loosely estimate the expected quality gain from increasing the training data size by:
 
 - Fine-tuning on your current dataset
 - Fine-tuning on half of your current dataset
@@ -38559,7 +38673,7 @@ We recommend using your dataset as a dynamic space, expanding your set of evalua
 
 ### Uploading a CSV
 
-We have a simple CSV containing company names and actual values for their revenue from past quarters.
+We have a CSV containing company names and actual values for their revenue from past quarters.
 
 <video
   src="https://openaiassets.blob.core.windows.net/$web/platform-docs/evals/csv-upload.mp4"
@@ -38614,7 +38728,7 @@ With your data and prompt set up, you’re ready to generate outputs. The model'
 
    You’ll see a new special **output** column in the dataset begin to populate with results. This column contains the results from running your prompt on each row in your dataset.
 
-1. Once your generated outputs are ready, annotate them. Open the annotation view by clicking the **output**, **rating**, or **output_feedback** column.
+1. Once your generated outputs are ready, annotate them. Open the annotation view by clicking the **output**, **rating**, or **`output_feedback`** column.
 
    Annotate as little or as much as you want. Datasets are designed to work with any degree and type of annotation, but the higher quality of information you can provide, the better your results will be.
 
@@ -38627,14 +38741,14 @@ Annotations are a key part of evaluating and improving model output. A good anno
 - Enables diagnosing prompt shortcomings, particularly in subtle or infrequent cases
 - Helps ensure that graders are aligned with your intent
 
-You can choose to annotate as little or as much as you want. Datasets are designed to work with any degree and type of annotation, but the higher quality of information you can provide, the better your results will be. Additionally, if you’re not an expert on the contents of your dataset, we recommend that a subject matter expert performs the annotation — this is the most valuable way for their expertise to be incorporated into your optimization process. Explore [our cookbook](https://developers.openai.com/cookbook/examples/evaluation/building_resilient_prompts_using_an_evaluation_flywheel) to learn more about what we have found to be most effective in using evals to improve our prompt resilience.
+You can choose to annotate as little or as much as you want. Datasets are designed to work with any degree and type of annotation, but the higher quality of information you can provide, the better your results will be. Additionally, if you’re not an expert on the contents of your dataset, we recommend that a subject matter expert performs the annotation—this is the most valuable way for their expertise to be incorporated into your optimization process. Explore [our cookbook](https://developers.openai.com/cookbook/examples/evaluation/building_resilient_prompts_using_an_evaluation_flywheel) to learn more about what we have found to be most effective in using evals to improve our prompt resilience.
 
 ### Annotation starting points
 
 Here are a few types of annotations you can use to get started:
 
 - A Good/Bad rating, indicating your judgment of the output
-- A text critique in the **output_feedback** section
+- A text critique in the **`output_feedback`** section
 - Custom annotation categories that you added in the **Columns** dropdown in the top right
 
 ### Incorporate expert annotations
@@ -49185,7 +49299,7 @@ Role-based access control (RBAC) lets you decide who can do what across your org
 - **Project**: A workspace for keys, files, and resources. Project roles grant access within only that project.
 - **Groups**: Collections of users you can assign roles to. Groups can be synced from your identity provider (via SCIM) to keep membership up to date automatically.
 - **Roles**: Bundles of permissions (like Models Request or Files Write). Roles can be created for the organization under **Organization settings**, or created for a specific project under that project's settings. Once created, organization or project roles can be assigned to users or groups. Users can have multiple roles, and their access is the union of those roles.
-- **Permissions**: The specific actions a role allows (e.g., make request to models, read files, write files, manage keys).
+- **Permissions**: The specific actions a role allows (for example, make requests to models, read files, write files, manage keys).
 
 ### Permissions
 
@@ -49222,7 +49336,6 @@ The table below shows the available permissions, which preset roles include them
 | Project Administration | Manage project users, service accounts, API keys, and rate limits via management API | `Read`, `Write`         |                        | `Read`, `Write`           |                            |                            |                      |
 | Batch                  | Create and manage batch jobs                                                         | `Read`, `Write`         | `Read`, `Write`        | `Read`, `Write`           | `Read`, `Write`            | `Read`                     |                      |
 | Service Accounts       | View and manage project service accounts                                             | `Read`, `Write`         |                        | `Read`, `Write`           |                            |                            |                      |
-| Videos                 | Create and retrieve videos                                                           | `Read`, `Write`         | `Read`, `Write`        | `Read`, `Write`           | `Read`, `Write`            |                            |                      |
 | Voices                 | Create and retrieve voices                                                           | `Read`, `Write`         | `Read`, `Write`        | `Read`, `Write`           | `Read`, `Write`            | `Read`                     |                      |
 | Agent Builder          | Create and manage agents and workflows in Agent Builder                              | `Read`, `Write`         | `Read`                 | `Read`, `Write`           | `Read`, `Write`            | `Read`                     | ✓                    |
 
@@ -49233,17 +49346,17 @@ The table below shows the available permissions, which preset roles include them
 
 Batch permissions include access required to prepare batch input files, execute requests, and retrieve results. This effective access is separate from the endpoints that can be submitted inside a batch, which are listed in the [Batch API guide](https://developers.openai.com/api/docs/guides/batch#1-prepare-your-batch-file).
 
-| Batch permission          | Additional access granted                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Read (`api.batch.read`)   | Files Read (`api.files.read`) for `/v1/files`                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| Write (`api.batch.write`) | Batch Read<br />List models (`api.model.read` and `model.read`) for `/v1/models`<br />Files Read and Write (`api.files.read` and `api.files.write`) for `/v1/files`<br />Model capabilities Request (`api.model.request` and `model.request`) for `/v1/audio`, `/v1/chat/completions`, `/v1/embeddings`, `/v1/images`, `/v1/moderations`, `/v1/realtime`, and `/v1/responses`<br />Videos Read and Write (`api.videos.read` and `api.videos.write`) for `/v1/videos` |
+| Batch permission          | Additional access granted                                                                                                                                                                                                                                                                                                                                                     |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Read (`api.batch.read`)   | Files Read (`api.files.read`) for `/v1/files`                                                                                                                                                                                                                                                                                                                                 |
+| Write (`api.batch.write`) | Batch Read<br />List models (`api.model.read` and `model.read`) for `/v1/models`<br />Files Read and Write (`api.files.read` and `api.files.write`) for `/v1/files`<br />Model capabilities Request (`api.model.request` and `model.request`) for `/v1/audio`, `/v1/chat/completions`, `/v1/embeddings`, `/v1/images`, `/v1/moderations`, `/v1/realtime`, and `/v1/responses` |
 
 ## Setting up RBAC
 
 Allow up to **30 minutes** for role changes and group sync to propagate.
 
 1. **Create groups**
-   Add groups for teams (e.g., “Data Science”, “Support”). If you use an IdP, enable SCIM sync so group membership stays current.
+   Add groups for teams (for example, **Data Science** and **Support**). If you use an IdP, enable SCIM sync so group membership stays current.
 
 2. **Create custom roles**
    Start from least privilege. For example:
@@ -49260,7 +49373,7 @@ Allow up to **30 minutes** for role changes and group sync to propagate.
    Use a non-owner account to confirm expected access (API and Dashboard). Adjust roles if users can see more than they need.
 
 Use the principle of least privilege. Start with the minimum permissions
-  required for a task, then add more only as needed.
+  required for a task, then add permissions only as needed.
 
 ## Access configuration examples
 
@@ -49271,7 +49384,7 @@ Use the principle of least privilege. Start with the minimum permissions
 
 ### Larger org
 
-- Sync groups from your IdP (e.g., “Research”, “Support”, “Finance”).
+- Sync groups from your IdP (for example, **Research**, **Support**, and **Finance**).
 - Create custom roles per function and assign at the org level; or only grant project-specific roles when a project needs tighter controls.
 
 ### Contractors & vendors
@@ -69292,7 +69405,7 @@ OpenAI is deprecating the dataset-backed prompt optimizer as part of the Evals
 The prompt optimizer can use the following from your dataset to improve your prompt:
 
 - Annotations (Good/Bad and additional custom annotation columns you add)
-- Text critiques written in **output_feedback**
+- Text critiques written in **`output_feedback`**
 - Results from graders
 
 For effective results, add annotations containing a Good/Bad rating _and_ detailed, specific critiques. Create [graders](https://developers.openai.com/api/docs/guides/evaluation-getting-started#add-graders) that precisely capture the properties that you desire from your prompt.
@@ -72850,6 +72963,7 @@ const event = {
       output: {
         format: {
           type: "audio/pcm",
+          rate: 24000,
         },
         voice: "marin",
       },
@@ -78472,8 +78586,8 @@ Fine-tuning jobs take some time to complete, and RFT jobs tend to take longer th
 
 For reinforcement fine-tuning jobs, the primary metrics are the per-step **reward** metrics. These metrics indicate how well your model is performing on the training data. They're calculated by the graders you defined in your job configuration. These are two separate top-level reward metrics:
 
-- `train_reward_mean`: The average reward across the samples taken from all datapoints in the current step. Because the specific datapoints in a batch change with each step, `train_reward_mean` values across different steps are not directly comparable and the specific values can fluctuate drastically from step to step.
-- `valid_reward_mean`: The average reward across the samples taken from all datapoints in the validation set, which is a more stable metric.
+- `train_reward_mean`: The average reward across the samples taken from all data points in the current step. Because the specific data points in a batch change with each step, `train_reward_mean` values across different steps are not directly comparable and the specific values can fluctuate drastically from step to step.
+- `valid_reward_mean`: The average reward across the samples taken from all data points in the validation set, which is a more stable metric.
 
 ![Reward Metric Graph](https://cdn.openai.com/API/images/guides/RFT_Reward_Chart.png)
 
@@ -78863,7 +78977,7 @@ As validation steps are performed, the input prompts, model samples, grader outp
 
 You can find the eval associated with your fine-tuning job by viewing your job on the fine-tuning dashboard, or by finding the `eval_id` field on the [fine-tuning job object](https://developers.openai.com/api/reference/resources/fine_tuning).
 
-The evals product is useful for inspecting the outputs of the model on specific datapoints, to get an understanding for how the model is behaving in different scenarios. It can help you figure out which slice of your dataset the model is performing poorly on which can help you identify areas for improvement in your training data.
+The evals product is useful for inspecting the outputs of the model on specific data points, to get an understanding for how the model is behaving in different scenarios. It can help you figure out which slice of your dataset the model is performing poorly on which can help you identify areas for improvement in your training data.
 
 The evals product can also help you find areas of improvement for your graders by finding areas where the grader is either overly lenient or overly harsh on the model outputs.
 
@@ -78877,7 +78991,7 @@ If you wish to continue the training process for a paused job, you can do so by 
 
 If you are training your model to [perform tool calls](https://developers.openai.com/api/docs/guides/function-calling), you will need to:
 
-1. Provide the set of tools available for your model to call on each datapoint in the RFT training dataset. More info here in the [dataset API reference](https://developers.openai.com/api/reference/resources/fine_tuning).
+1. Provide the set of tools available for your model to call on each data point in the RFT training dataset. More info here in the [dataset API reference](https://developers.openai.com/api/reference/resources/fine_tuning).
 2. Configure your grader to assign rewards based on the contents of the tool calls made by the model. Information on grading tools calls can be found [here in the grading docs](https://developers.openai.com/api/docs/guides/graders/#sample-namespace)
 
 ### Billing details
@@ -78888,7 +79002,7 @@ Details on exactly how we bill for reinforcement fine-tuning jobs can be found i
 
 ### Training errors
 
-Reinforcement fine-tuning is a complex process with many moving parts, and there are many places where things can go wrong. We publish various error metrics to help you understand what is going wrong in your job, and how to fix it. In general, we try to avoid failing a job entirely unless a very serious error occurs. When errors do occur, they often happen during the grading step. Errors during grading often happen either to the model outputting a sample that the grader doesn't know how to handle, the grader failing to execute properly due to some sort of system error, or due to a bug in the grading logic itself.
+Reinforcement fine-tuning is a complex process with many moving parts, and there are many places where things can go wrong. We publish various error metrics to help you understand what is going wrong in your job, and how to fix it. In general, we try to avoid failing a job entirely unless a particularly serious error occurs. When errors do occur, they often happen during the grading step. Errors during grading often happen either to the model outputting a sample that the grader doesn't know how to handle, the grader failing to execute properly due to some sort of system error, or due to a bug in the grading logic itself.
 
 The error metrics are available under the `event.data.errors` object, and are aggregated into counts and rates rolled up per-grader. We also display rates and counts of errors on the fine-tuning dashboard.
 
@@ -78903,7 +79017,7 @@ The error metrics are available under the `event.data.errors` object, and are ag
 The grader errors are broken down into the following categories, and they exist in both `train_` (for training data) and `valid_` (for validation data) versions:
 
 - `sample_parse_error_mean`: The average number of samples that failed to parse correctly. This often happens when the model fails to output valid JSON or adhere to a provided response format correctly. A small percentage of these errors, especially early in the training process, is normal. If you see a large number of these errors, it is likely that the response format of the model is not configured correctly or that your graders are misconfigured and looking for incorrect fields.
-- `invalid_variable_error_mean`: These errors occur when you attempt to reference a variable via a template that cannot be found either in the current datapoint or in the current model sample. This can happen if the model fails to provide output in the correct response format, or if your grader is misconfigured.
+- `invalid_variable_error_mean`: These errors occur when you attempt to reference a variable via a template that cannot be found either in the current data point or in the current model sample. This can happen if the model fails to provide output in the correct response format, or if your grader is misconfigured.
 - `other_error_mean`: This is a catch-all for any other errors that occur during grading. These errors are often caused by bugs in the grading logic itself, or by system errors that occur during grading.
 
 #### Python grading errors
@@ -93290,7 +93404,7 @@ curl https://api.openai.com/v1/responses \
 
 ### Use checkpoints if needed
 
-Checkpoints are models you can use. We create a full model checkpoint for you at the end of each training epoch. They're useful in cases where your fine-tuned model improves early on but then memorizes the dataset instead of learning generalizable knowledge—called \_overfitting. Checkpoints provide versions of your customized model from various moments in the process.
+Checkpoints are models you can use. We create a full model checkpoint for you at the end of each training epoch. They're useful in cases where your fine-tuned model improves early on but then memorizes the dataset instead of learning generalizable knowledge—called overfitting. Checkpoints provide versions of your customized model from various moments in the process.
 
 
 
@@ -107754,797 +107868,6 @@ Use the HTTP examples in [Run and continue sessions](https://developers.openai.c
 
 ---
 
-# Video generation with Sora
-
-## Overview
-
-Sora is OpenAI’s newest frontier in generative media – a state-of-the-art video model capable of creating richly detailed, dynamic clips with audio from natural language or images. Built on years of research into multimodal diffusion and trained on diverse visual data, Sora brings a deep understanding of 3D space, motion, and scene continuity to text-to-video generation.
-
-The [Videos API](https://developers.openai.com/api/reference/resources/videos) exposes these capabilities to developers for the first time, enabling programmatic creation, extension, editing, and management of videos.
-
-You can use it to:
-
-- Create new videos from prompts.
-- Guide a generation with an image reference.
-- Reuse character assets across multiple generations for stronger visual consistency.
-- Continue a completed clip with video extensions.
-- Edit an existing video with targeted changes.
-- Download finished videos and supporting assets.
-- Submit large offline render queues through the [Batch API](https://developers.openai.com/api/docs/guides/batch).
-
-## Models
-
-The second generation Sora model comes in two variants, each tailored for different use cases.
-
-### Sora 2
-
-`sora-2` is designed for **speed and flexibility**. It’s ideal for the exploration phase, when you’re experimenting with tone, structure, or visual style and need quick feedback rather than perfect fidelity.
-
-It generates good quality results quickly, making it well suited for rapid iteration, concepting, and rough cuts. `sora-2` is often more than sufficient for social media content, prototypes, and scenarios where turnaround time matters more than ultra-high fidelity.
-
-### Sora 2 Pro
-
-`sora-2-pro` produces higher quality results. It’s the better choice when you need **production-quality output**.
-
-`sora-2-pro` takes longer to render and is more expensive to run, but it produces more polished, stable results. It’s best for high-resolution cinematic footage, marketing assets, and any situation where visual precision is critical.
-
-Use `sora-2-pro` when you need 1080p exports in `1920x1080` or `1080x1920`.
-
-Both `sora-2` and `sora-2-pro` support `16`- and `20`-second generations.
-
-## Generate a video
-
-Generating a video is an **asynchronous** process:
-
-1. When you call the `POST /videos` endpoint, the API returns a job object with a job `id` and an initial `status`.
-
-2. You can either poll the `GET /videos/{video_id}` endpoint until the status transitions to completed, or – for a more efficient approach – use webhooks (see the webhooks section below) to be notified automatically when the job finishes.
-
-3. Once the job has reached the `completed` state you can fetch the final MP4 file with `GET /videos/{video_id}/content`.
-
-### Start a render job
-
-Start by calling `POST /videos` with a text prompt and the required parameters. The prompt defines the creative look and feel – subjects, camera, lighting, and motion – while parameters like `size` and `seconds` control the video's resolution and length.
-
-Create a video
-
-```javascript
-import OpenAI from "openai";
-
-const openai = new OpenAI();
-
-let video = await openai.videos.create({
-  model: "sora-2",
-  prompt: "A video of the words 'Thank you' in sparkling letters",
-});
-
-console.log("Video generation started: ", video);
-```
-
-```python
-from openai import OpenAI
-
-openai = OpenAI()
-
-video = openai.videos.create(
-    model="sora-2",
-    prompt="A video of a cool cat on a motorcycle in the night",
-)
-
-print("Video generation started:", video)
-```
-
-```go
-package main
-
-import (
-	"context"
-	"fmt"
-
-	"github.com/openai/openai-go/v3"
-)
-
-func main() {
-	client := openai.NewClient()
-	video, err := client.Videos.New(context.Background(), openai.VideoNewParams{
-		Model:  openai.VideoModelSora2,
-		Prompt: "A video of the words 'Thank you' in sparkling letters",
-	})
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("Video generation started:", video)
-}
-```
-
-```java
-import com.openai.client.OpenAIClient;
-import com.openai.client.okhttp.OpenAIOkHttpClient;
-import com.openai.models.videos.VideoCreateParams;
-
-var video =
-    client
-        .videos()
-        .create(
-            VideoCreateParams.builder()
-                .model("sora-2")
-                .prompt("A paper airplane flying over a forest")
-                .build());
-
-System.out.println(video.id());
-```
-
-```ruby
-require "openai"
-
-client = OpenAI::Client.new
-video = client.videos.create(model: "sora-2", prompt: "A paper airplane flying over a forest")
-puts(video.id)
-```
-
-```bash
-curl -X POST "https://api.openai.com/v1/videos" \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -H "Content-Type: multipart/form-data" \
-  -F prompt="Wide tracking shot of a teal coupe driving through a desert highway, heat ripples visible, hard sun overhead." \
-  -F model="sora-2-pro" \
-  -F size="1280x720" \
-  -F seconds="8" \
-```
-
-
-The response is a JSON object with a unique id and an initial status such as `queued` or `in_progress`. This means the render job has started.
-
-```shell
-{
-  "id": "video_68d7512d07848190b3e45da0ecbebcde004da08e1e0678d5",
-  "object": "video",
-  "created_at": 1758941485,
-  "status": "queued",
-  "model": "sora-2-pro",
-  "progress": 0,
-  "seconds": "8",
-  "size": "1280x720"
-}
-```
-
-### Choose size and duration
-
-Pick the smallest format that meets your production needs:
-
-- Use shorter clips when you are iterating on prompt, motion, or composition.
-- Generate videos up to `20` seconds when you need longer beats, fuller scenes, or fuller spots.
-- Use `sora-2-pro` for higher-resolution exports in `1920x1080` or `1080x1920`.
-
-Longer durations and 1080p jobs can take materially longer to complete than short 720p or 480p renders, so plan for higher latency in user-facing flows.
-
-### Guardrails and restrictions
-
-The API enforces several content restrictions:
-
-- Only content suitable for audiences under 18 (a setting to bypass this restriction will be available in the future).
-- Copyrighted characters and copyrighted music will be rejected.
-- Real people—including public figures—cannot be generated.
-- Character uploads that depict human likeness are blocked by default.
-- Input images with faces of humans are currently rejected.
-
-Make sure prompts, reference images, and transcripts respect these rules to avoid failed generations.
-
-### Effective prompting
-
-For best results, describe **shot type, subject, action, setting, and lighting**. For example:
-
-- _“Wide shot of a child flying a red kite in a grassy park, golden hour sunlight, camera slowly pans upward.”_
-- _“Close-up of a steaming coffee cup on a wooden table, morning light through blinds, soft depth of field.”_
-
-This level of specificity helps the model produce consistent results without inventing unwanted details. For more advanced prompting techniques, please refer to our dedicated Sora 2 [prompting guide](https://developers.openai.com/cookbook/examples/sora/sora2_prompting_guide).
-
-### Monitor progress
-
-Video generation takes time. Depending on model, API load and resolution, **a single render may take several minutes**.
-
-To manage this efficiently, you can poll the API to request status updates or you can get notified via a webhook.
-
-#### Poll the status endpoint
-
-Call `GET /videos/{video_id}` with the id returned from the create call. The response shows the job’s current status, progress percentage (if available), and any errors.
-
-Typical states are `queued`, `in_progress`, `completed`, and `failed`. Poll at a reasonable interval (for example, every 10–20 seconds), use exponential backoff if necessary, and provide feedback to users that the job is still in progress.
-
-Poll the status endpoint
-
-```javascript
-import OpenAI from "openai";
-import { setTimeout as sleep } from "node:timers/promises";
-
-const openai = new OpenAI();
-
-async function main() {
-  let video = await openai.videos.create({
-    model: "sora-2",
-    prompt: "A video of the words 'Thank you' in sparkling letters",
-  });
-
-  while (video.status === "queued" || video.status === "in_progress") {
-    await sleep(2000);
-    video = await openai.videos.retrieve(video.id);
-  }
-
-  if (video.status === "completed") {
-    console.log("Video successfully completed: ", video);
-  } else {
-    console.log("Video creation failed. Status: ", video.status);
-  }
-}
-
-main();
-```
-
-```python
-import asyncio
-
-from openai import AsyncOpenAI
-
-client = AsyncOpenAI()
-
-
-async def main() -> None:
-    video = await client.videos.create_and_poll(
-        model="sora-2",
-        prompt="A video of a cat on a motorcycle",
-    )
-
-    if video.status == "completed":
-        print("Video successfully completed: ", video)
-    else:
-        print("Video creation failed. Status: ", video.status)
-
-
-asyncio.run(main())
-```
-
-```go
-package main
-
-import (
-	"context"
-	"fmt"
-
-	"github.com/openai/openai-go/v3"
-)
-
-func main() {
-	client := openai.NewClient()
-	video, err := client.Videos.NewAndPoll(context.Background(), openai.VideoNewParams{
-		Model:  openai.VideoModelSora2,
-		Prompt: "A video of the words 'Thank you' in sparkling letters",
-	}, 2000)
-	if err != nil {
-		panic(err)
-	}
-	if video.Status == openai.VideoStatusCompleted {
-		fmt.Println("Video successfully completed:", video)
-		return
-	}
-	fmt.Println("Video creation failed. Status:", video.Status)
-}
-```
-
-```java
-import com.openai.client.OpenAIClient;
-import com.openai.client.okhttp.OpenAIOkHttpClient;
-import com.openai.models.videos.Video;
-import com.openai.models.videos.VideoCreateParams;
-
-var video =
-    client
-        .videos()
-        .create(
-            VideoCreateParams.builder()
-                .model("sora-2")
-                .prompt("A paper airplane flying over a forest")
-                .build());
-
-while (video.status().equals(Video.Status.QUEUED)
-    || video.status().equals(Video.Status.IN_PROGRESS)) {
-  Thread.sleep(1000);
-  video = client.videos().retrieve(video.id());
-}
-if (!video.status().equals(Video.Status.COMPLETED)) {
-  throw new IllegalStateException("Video generation failed: " + video.status());
-}
-System.out.println("Video completed: " + video.id());
-```
-
-```ruby
-require "openai"
-
-client = OpenAI::Client.new
-video = client.videos.create(model: "sora-2", prompt: "A paper airplane flying over a forest")
-
-while [:queued, :in_progress].include?(video.status)
-  sleep(2)
-  video = client.videos.retrieve(video.id)
-end
-
-unless video.status == OpenAI::Models::Video::Status::COMPLETED
-  raise "Video creation failed. Status: #{video.status}"
-end
-
-puts("Video successfully completed: #{video.id}")
-```
-
-
-Response example:
-
-```shell
-{
-  "id": "video_68d7512d07848190b3e45da0ecbebcde004da08e1e0678d5",
-  "object": "video",
-  "created_at": 1758941485,
-  "status": "in_progress",
-  "model": "sora-2-pro",
-  "progress": 33,
-  "seconds": "8",
-  "size": "1280x720"
-}
-```
-
-#### Use webhooks for notifications
-
-Instead of polling job status repeatedly with `GET`, register a [webhook](https://developers.openai.com/api/docs/guides/webhooks) to be notified automatically when a video generation completes or fails.
-
-Webhooks can be configured in your [webhook settings page](https://platform.openai.com/settings/project/webhooks). When a job finishes, the API emits one of two event types: `video.completed` and `video.failed`. Each event includes the ID of the job that triggered it.
-
-Example webhook payload:
-
-```
-{
-  "id": "evt_abc123",
-  "object": "event",
-  "created_at": 1758941485,
-  "type": "video.completed", // or "video.failed"
-  "data": {
-    "id": "video_abc123"
-  }
-}
-```
-
-### Retrieve results
-
-#### Download the MP4
-
-Once the job reaches status `completed`, fetch the MP4 with `GET /videos/{video_id}/content`. This endpoint streams the binary video data and returns standard content headers, so you can either save the file directly to disk or pipe it to cloud storage.
-
-Download the MP4
-
-```javascript
-import { writeFileSync } from "node:fs";
-
-import OpenAI from "openai";
-
-const openai = new OpenAI();
-
-let video = await openai.videos.create({
-  model: "sora-2",
-  prompt: "A video of the words 'Thank you' in sparkling letters",
-});
-
-console.log("Video generation started: ", video);
-let progress = video.progress ?? 0;
-
-while (video.status === "in_progress" || video.status === "queued") {
-  video = await openai.videos.retrieve(video.id);
-  progress = video.progress ?? 0;
-
-  // Display progress bar
-  const barLength = 30;
-  const filledLength = Math.floor((progress / 100) * barLength);
-  // Simple ASCII progress visualization for terminal output
-  const bar = "=".repeat(filledLength) + "-".repeat(barLength - filledLength);
-  const statusText = video.status === "queued" ? "Queued" : "Processing";
-
-  process.stdout.write(`${statusText}: [${bar}] ${progress.toFixed(1)}%`);
-
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-}
-
-// Clear the progress line and show completion
-process.stdout.write("\n");
-
-if (video.status === "failed") {
-  throw new Error("Video generation failed");
-}
-
-console.log("Video generation completed: ", video);
-
-console.log("Downloading video content...");
-
-const content = await openai.videos.downloadContent(video.id);
-
-const body = content.arrayBuffer();
-const buffer = Buffer.from(await body);
-
-writeFileSync("video.mp4", buffer);
-
-console.log("Wrote video.mp4");
-```
-
-```python
-from openai import OpenAI
-import sys
-import time
-
-
-openai = OpenAI()
-
-video = openai.videos.create(
-    model="sora-2",
-    prompt="A video of a cool cat on a motorcycle in the night",
-)
-
-print("Video generation started:", video)
-
-progress = getattr(video, "progress", 0)
-bar_length = 30
-
-while video.status in ("in_progress", "queued"):
-    # Refresh status
-    video = openai.videos.retrieve(video.id)
-    progress = getattr(video, "progress", 0)
-
-    filled_length = int((progress / 100) * bar_length)
-    bar = "=" * filled_length + "-" * (bar_length - filled_length)
-    status_text = "Queued" if video.status == "queued" else "Processing"
-
-    sys.stdout.write(f"\r{status_text}: [{bar}] {progress:.1f}%")
-    sys.stdout.flush()
-    time.sleep(2)
-
-# Move to next line after progress loop
-sys.stdout.write("\n")
-
-if video.status == "failed":
-    message = getattr(
-        getattr(video, "error", None), "message", "Video generation failed"
-    )
-    raise RuntimeError(message)
-
-print("Video generation completed:", video)
-print("Downloading video content...")
-
-content = openai.videos.download_content(video.id, variant="video")
-content.write_to_file("video.mp4")
-
-print("Wrote video.mp4")
-```
-
-```go
-package main
-
-import (
-	"context"
-	"fmt"
-	"io"
-	"os"
-
-	"github.com/openai/openai-go/v3"
-)
-
-func main() {
-	client := openai.NewClient()
-	video, err := client.Videos.NewAndPoll(context.Background(), openai.VideoNewParams{
-		Model:  openai.VideoModelSora2,
-		Prompt: "A video of the words 'Thank you' in sparkling letters",
-	}, 2000)
-	if err != nil {
-		panic(err)
-	}
-	if video.Status != openai.VideoStatusCompleted {
-		panic(fmt.Errorf("video generation failed with status %s", video.Status))
-	}
-
-	response, err := client.Videos.DownloadContent(context.Background(), video.ID, openai.VideoDownloadContentParams{})
-	if err != nil {
-		panic(err)
-	}
-	defer response.Body.Close()
-	file, err := os.Create("video.mp4")
-	if err != nil {
-		panic(err)
-	}
-	if _, err := io.Copy(file, response.Body); err != nil {
-		panic(err)
-	}
-	if err := file.Close(); err != nil {
-		panic(err)
-	}
-	fmt.Println("Wrote video.mp4")
-}
-```
-
-```java
-import com.openai.client.OpenAIClient;
-import com.openai.client.okhttp.OpenAIOkHttpClient;
-import com.openai.models.videos.Video;
-import com.openai.models.videos.VideoCreateParams;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-
-var video =
-    client
-        .videos()
-        .create(
-            VideoCreateParams.builder()
-                .model("sora-2")
-                .prompt("A video of the words 'Thank you' in sparkling letters")
-                .build());
-
-while (video.status().equals(Video.Status.QUEUED)
-    || video.status().equals(Video.Status.IN_PROGRESS)) {
-  Thread.sleep(1000);
-  video = client.videos().retrieve(video.id());
-}
-if (!video.status().equals(Video.Status.COMPLETED)) {
-  throw new IllegalStateException("Video generation failed: " + video.status());
-}
-try (var content = client.videos().downloadContent(video.id())) {
-  Files.copy(content.body(), Path.of("video.mp4"), StandardCopyOption.REPLACE_EXISTING);
-}
-System.out.println("Wrote video.mp4");
-```
-
-```ruby
-require "openai"
-
-client = OpenAI::Client.new
-video = client.videos.create(
-  model: "sora-2",
-  prompt: "A video of the words 'Thank you' in sparkling letters"
-)
-pending_statuses = [
-  OpenAI::Models::Video::Status::QUEUED,
-  OpenAI::Models::Video::Status::IN_PROGRESS
-]
-while pending_statuses.include?(video.status)
-  sleep(2)
-  video = client.videos.retrieve(video.id)
-end
-raise "Video generation failed" if video.status == OpenAI::Models::Video::Status::FAILED
-
-content = client.videos.download_content(video.id)
-File.binwrite("video.mp4", content.read)
-puts("Wrote video.mp4")
-```
-
-```bash
-curl -L "https://api.openai.com/v1/videos/video_abc123/content" \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  --output video.mp4
-```
-
-
-You now have the final video file ready for playback, editing, or distribution. Download URLs are valid for a maximum of 1 hour after generation. If you need long-term storage, copy the file to your own storage system promptly.
-
-#### Download supporting assets
-
-For each completed video, you can also download a **thumbnail** and a **spritesheet**. These are lightweight assets useful for previews, scrubbers, or catalog displays. Use the `variant` query parameter to specify what you want to download. The default is `variant=video` for the MP4.
-
-```bash
-# Download a thumbnail
-curl -L "https://api.openai.com/v1/videos/video_abc123/content?variant=thumbnail" \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  --output thumbnail.webp
-
-# Download a spritesheet
-curl -L "https://api.openai.com/v1/videos/video_abc123/content?variant=spritesheet" \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  --output spritesheet.jpg
-```
-
-
-## Use image references
-
-You can guide a generation with an input image, which acts as **the first frame of your video**. This is useful if you need the output video to preserve the look of a brand asset, a character, or a specific environment.
-
-Choose the `input_reference` format based on the request type:
-
-- Use `input_reference` with an uploaded image in `multipart/form-data` requests.
-- Use `input_reference` with a JSON object in `application/json` requests, including Batch. The JSON form accepts either `file_id` or `image_url`.
-
-The image must match the target video's resolution (`size`).
-
-Supported file formats are `image/jpeg`, `image/png`, and `image/webp`.
-
-```bash
-curl -X POST "https://api.openai.com/v1/videos" \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -H "Content-Type: multipart/form-data" \
-  -F prompt="She turns around and smiles, then slowly walks out of the frame." \
-  -F model="sora-2-pro" \
-  -F size="1280x720" \
-  -F seconds="8" \
-  -F input_reference="@sample_720p.jpeg;type=image/jpeg"
-```
-
-
-|                          Input image generated with [OpenAI GPT Image](https://developers.openai.com/api/docs/guides/image-generation)                           |                                 Generated video using Sora 2 (converted to GIF)                                  |
-| :---------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------: |
-| ![][sora_woman_skyline_original][Download this image](https://cdn.openai.com/API/docs/images/sora/woman_skyline_original_720p.jpeg) |    ![][sora_woman_skyline_video] Prompt: _“She turns around and smiles, then slowly walks out of the frame.”_    |
-|    ![][sora_monster_original_jpeg][Download this image](https://cdn.openai.com/API/docs/images/sora/monster_original_720p.jpeg)     | ![][sora_monster_original_gif] Prompt: _“The fridge door opens. A cute, chubby purple monster comes out of it.”_ |
-
-## Use characters for consistency
-
-Characters let you upload a reusable non-human subject and reference it across multiple generations. This is useful when you want an animal, mascot, or object to keep the same core appearance, styling, and screen presence across several shots.
-
-Character uploads currently work best with short `2`- to `4`-second clips in
-  `16:9` or `9:16`, at `720p` to `1080p`. Character source videos work best when
-  they match the aspect ratio of the requested output. If the aspect ratios
-  differ, the character can appear stretched or distorted. A single video can
-  include up to two characters.
-
-Characters are different from `input_reference`. An image reference conditions
-the opening frame of a single generation, while a character asset can be reused
-across future video requests.
-
-Create the character by uploading a short MP4 clip to `POST /v1/videos/characters`, then include the returned character ID in the `characters` array when you create a video.
-
-Character uploads that depict human likeness are blocked by default. Contact
-  your account manager or [reach out to our sales
-  team](https://openai.com/contact-sales/) to learn more about eligibility for
-  human-likeness access.
-
-```bash
-curl -X POST "https://api.openai.com/v1/videos/characters" \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -H "Content-Type: multipart/form-data" \
-  -F "video=@character.mp4;type=video/mp4" \
-  -F "name=Mossy"
-```
-
-
-Mention the character name verbatim in your prompt. Passing the character ID
-alone isn't enough to reliably preserve the character in the shot.
-
-Characters can be combined with `input_reference`. Extensions don't support
-characters.
-
-```bash
-curl -X POST "https://api.openai.com/v1/videos" \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "sora-2",
-    "prompt": "A cinematic tracking shot of Mossy, a moss-covered teapot mascot, weaving through a lantern-lit market at dusk.",
-    "size": "1280x720",
-    "seconds": "8",
-    "characters": [
-      { "id": "char_123" }
-    ]
-  }'
-```
-
-
-## Extend completed videos
-
-Video extensions let you continue an existing completed video and create a new stitched result. Provide the source video in the `video` field to `POST /v1/videos/extensions`, add a prompt describing how the scene should continue, and the API generates the next segment using the full source clip as context.
-
-Use extensions when you want to preserve motion, camera direction, and scene continuity. If you only need to control the opening frame of a new generation, use `input_reference` instead.
-
-Each extension can add up to `20` seconds. A single video can be extended up
-  to six times, for a maximum total length of `120` seconds. Extensions
-  currently accept only a source video and prompt. They don't support characters
-  or image references.
-
-```bash
-curl -X POST "https://api.openai.com/v1/videos/extensions" \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "video": {
-      "id": "video_abc123"
-    },
-    "prompt": "Continue the scene as the camera rises over the rooftops and reveals the sunrise.",
-    "seconds": "8"
-  }'
-```
-
-
-## Edit existing videos
-
-Editing lets you take an existing video and make targeted adjustments without regenerating everything from scratch. Send `POST /v1/videos/edits` with a prompt and a `video` reference, and the system reuses the original structure, continuity, and composition while applying the modification. This works best when you make a single, well-defined change because smaller, focused edits preserve more of the original fidelity and reduce the risk of introducing artifacts.
-
-Video generations could previously be edited using the remix endpoint, which
-  is being deprecated. Use the edits endpoint for new integrations.
-
-The `video` field accepts either a video ID or an uploaded video. If you pass a
-video ID, the API infers the model from the source video.
-
-Editing uploaded videos is only available to eligible customers. Contact your
-  account manager or [reach out to our sales
-  team](https://openai.com/contact-sales/) if you need this workflow.
-
-```bash
-curl -X POST "https://api.openai.com/v1/videos/edits" \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "video": {
-      "id": "video_abc123"
-    },
-    "prompt": "Shift the color palette to teal, sand, and rust, with a warm backlight."
-  }'
-```
-
-
-If you upload a new video instead of editing an existing generation, set
-`model` explicitly in the request.
-
-```bash
-curl -X POST "https://api.openai.com/v1/videos/edits" \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -H "Content-Type: multipart/form-data" \
-  -F "video=@source.mp4;type=video/mp4" \
-  -F "model=sora-2-pro" \
-  -F "prompt=Shift the color palette to teal, sand, and rust, with a warm backlight."
-```
-
-
-Editing is especially valuable for iteration because it lets you refine without discarding what already works. By constraining each edit to one clear adjustment, you keep the visual style, subject consistency, and camera framing stable, while still exploring variations in mood, palette, or staging. This makes it far easier to build polished sequences through small, reliable steps.
-
-|         Original video         |                             Edited generated video                              |
-| :----------------------------: | :-----------------------------------------------------------------------------: |
-| ![][sora_monster_original_gif] | ![][sora_monster_orange] Prompt: _“Change the color of the monster to orange.”_ |
-| ![][sora_monster_original_gif] | ![][sora_monster_2monsters] Prompt: _“A second monster comes out right after.”_ |
-
-## Run video jobs through the Batch API
-
-Use the [Batch API](https://developers.openai.com/api/docs/guides/batch) when you need to queue many video renders for offline processing, review pipelines, or studio workflows. Each line in the batch input file uses the same JSON request body you would send to `POST /v1/videos`, which makes it a good fit for shot lists and scheduled render queues.
-
-For video generation in Batch:
-
-- Batch currently supports `POST /v1/videos` only.
-- Batch requests must use JSON, not multipart.
-- Upload assets ahead of time and reference them from the JSON request body.
-- Use `input_reference` for image-guided generations in Batch. In JSON requests, pass `input_reference` as an object with either `file_id` or `image_url`.
-- Multipart `input_reference` uploads, including video reference inputs, aren't supported in Batch.
-- Batch-generated videos are available for download for up to `24` hours after the batch completes.
-
-```jsonl
-{"custom_id":"shot-001","method":"POST","url":"/v1/videos","body":{"model":"sora-2-pro","prompt":"Slow dolly shot through a miniature paper city at blue hour, soft fog, practical window lights flickering on.","size":"1920x1080","seconds":"20"}}
-{"custom_id":"shot-002","method":"POST","url":"/v1/videos","body":{"model":"sora-2-pro","prompt":"Portrait close-up of a red panda chef plating noodles in a stainless-steel kitchen, shallow depth of field.","size":"1080x1920","seconds":"16"}}
-```
-
-When a batch reaches `completed`, the video jobs in its output have already reached a terminal state such as `completed`, `failed`, or `expired`. Use stable `custom_id` values so you can map batch results back to your internal shot IDs, editorial queue, or asset pipeline, then download final assets with the returned video IDs.
-
-## Maintain your library
-
-Use `GET /videos` to enumerate your videos. The endpoint supports optional query parameters for pagination and sorting.
-
-```bash
-curl "https://api.openai.com/v1/videos?limit=20&after=video_123&order=asc" \
-  -H "Authorization: Bearer $OPENAI_API_KEY" | jq .
-```
-
-
-Use `DELETE /videos/{video_id}` to remove videos you no longer need from OpenAI’s storage.
-
-```bash
-curl -X DELETE "https://api.openai.com/v1/videos/REPLACE_WITH_YOUR_VIDEO_ID" \
-  -H "Authorization: Bearer $OPENAI_API_KEY" | jq .
-```
-
-
-[sora_woman_skyline_original]: https://cdn.openai.com/API/docs/images/sora/sora_woman_skyline_original_2.jpeg
-[sora_woman_skyline_video]: https://cdn.openai.com/API/docs/images/sora/sora_woman_skyline_video.gif
-[sora_monster_original_jpeg]: https://cdn.openai.com/API/docs/images/sora/sora_monster_original_2.jpeg
-[sora_monster_original_gif]: https://cdn.openai.com/API/docs/images/sora/sora_monster_original.gif
-[sora_monster_orange]: https://cdn.openai.com/API/docs/images/sora/sora_monster_orange.gif
-[sora_monster_2monsters]: https://cdn.openai.com/API/docs/images/sora/sora_monster_2monsters.gif
-
----
-
 # Vision fine-tuning
 
 Vision fine-tuning uses image inputs for [supervised fine-tuning](https://developers.openai.com/api/docs/guides/supervised-fine-tuning) to improve the model's understanding of image inputs. This guide will take you through this subset of SFT, and outline some of the important considerations for fine-tuning with image inputs.
@@ -113691,7 +113014,7 @@ Now that we have defined how we want our app to behave in an eval, let's constru
 
 ### Uploading test data
 
-There are several ways to provide test data for eval runs, but it may be convenient to upload a [JSONL](https://jsonlines.org/) file that contains data in the schema we specified when we created our eval. A sample JSONL file that conforms to the schema we set up is below:
+You can provide test data for eval runs in several ways, but it may be convenient to upload a [JSONL](https://jsonlines.org/) file that contains data in the schema we specified when we created our eval. A sample JSONL file that conforms to the schema we set up is below:
 
 ```json
 { "item": { "ticket_text": "My monitor won't turn on!", "correct_label": "Hardware" } }
@@ -114107,7 +113430,7 @@ You'll need the UUID of both your eval and eval run to fetch its status. When yo
 
 The API response contains granular information about test criteria results, API usage for generating model responses, and a `report_url` property that takes you to a page in the dashboard where you can explore the results visually.
 
-In our simple test, the model reliably generated the content we wanted for a small test case sample. In reality, you will often have to run your eval with more criteria, different prompts, and different data sets. But the process above gives you all the tools you need to build robust evals for your LLM apps!
+In our test, the model reliably generated the content we wanted for a small test case sample. In reality, you will often have to run your eval with more criteria, different prompts, and different data sets. But the process above gives you all the tools you need to build robust evals for your LLM apps!
 
 ## Next steps
 
@@ -114653,7 +113976,7 @@ We recommend enabling EKM for this additional control. See the [EKM technical FA
 
 
 
-Connect your own AWS S3 bucket or Azure Blob container to an OpenAI project. Follow the setup steps for your cloud, then register and validate the connection.
+Connect your own AWS S3 bucket, Azure Blob container, or Google Cloud Storage bucket to an OpenAI project. Follow the setup steps for your cloud, then register and validate the connection.
 
 ZDR with PSP is enabled per project. Once enabled, the PSP policy applies to all API traffic in that project, including requests to models that do not otherwise require PSP. To use ZDR without PSP for eligible models, send those requests through a separate project configured for ZDR without PSP.
 
@@ -114666,7 +113989,7 @@ ZDR with PSP is enabled per project. Once enabled, the PSP policy applies to all
 ### Open storage setup in the API console
 
 1. Open **Organization settings > Data controls > Data retention**, then select **Connect storage**.
-2. In **Connect external storage**, choose **AWS** or **Azure** and select your project. You can also open **Connect storage** from **Project Settings > Data retention**.
+2. In **Connect external storage**, choose **AWS**, **Azure**, or **GCP** and select your project. You can also open **Connect storage** from **Project Settings > Data retention**.
 3. Complete the cloud setup below. Then enter your storage details in the modal and select **Connect and validate**.
 
 ### Cloud-specific Setups
@@ -114681,7 +114004,7 @@ ZDR with PSP is enabled per project. Once enabled, the PSP policy applies to all
 
 
 
-Complete these steps if you're using AWS. For Azure, skip to **Azure Blob Storage**.
+Complete these steps if you're using AWS. For other clouds, skip to **Azure Blob Storage** or **Google Cloud Storage**.
 
 #### 1. Create the bucket
 
@@ -114844,6 +114167,108 @@ OpenAI manages the application credentials. Don't create or share a storage key,
 
 
 
+
+
+<a id="google-cloud-storage"></a>
+
+
+
+#### Google Cloud Storage
+
+
+
+#### 1. Create the bucket
+
+Create a bucket in **Cloud Storage > Buckets** in a location compatible with your OpenAI project's data residency, with:
+
+- **Public access prevention**: On.
+- **Access control**: Uniform.
+
+You can optionally disable the default **Soft delete policy (For data recovery)**; the next step configures lifecycle deletion.
+
+For Global projects, repeat this GCP setup for each region you intend to use.
+
+![Google Cloud bucket access settings showing Public access prevention On, Access control Uniform, and IP filtering Not configured.](https://developers.openai.com/images/platform/guides/private-safety-processing/setup-gcp-bucket-access-controls.webp)
+
+#### 2. Set the lifecycle rule
+
+In your bucket's **Lifecycle** tab, add a **Delete object** rule with these conditions:
+
+- **Object name matches prefix**: `openai/`.
+- **Age**: 30 days.
+
+![Google Cloud lifecycle rule showing Delete object, the openai/ object prefix, and Age 30.](https://developers.openai.com/images/platform/guides/private-safety-processing/setup-gcp-lifecycle-rule.webp)
+
+#### 3. Find your Google Cloud project number
+
+In **IAM & Admin > Settings**, copy the numeric **Project number** for the project containing your workload identity pool as `<CUSTOMER_GCP_PROJECT_NUMBER>`.
+
+#### 4. Create the workload identity pool and provider
+
+In **IAM & Admin > Workload Identity Federation**, create a workload identity pool and add an **OpenID Connect (OIDC)** provider with:
+
+- **Issuer (URL)**: `https://accounts.google.com`.
+- **Allowed audiences**: `<CUSTOMER_PROJECT_ID>` (your OpenAI project ID).
+
+![Google Cloud OIDC provider setup showing the Google issuer URL and an OpenAI project ID as the allowed audience.](https://developers.openai.com/images/platform/guides/private-safety-processing/setup-gcp-oidc-provider.webp)
+
+Configure these attribute mappings:
+
+| Google attribute           | OIDC value      |
+| -------------------------- | --------------- |
+| `google.subject`           | `assertion.sub` |
+| `attribute.openai_project` | `assertion.aud` |
+
+Set the attribute condition below. **Keep OpenAI's production identity subject `112981926705442324573` unchanged.**
+
+```text
+assertion.sub == '112981926705442324573' && assertion.aud == '<CUSTOMER_PROJECT_ID>'
+```
+
+![Google Cloud provider attributes mapping google.subject to assertion.sub and attribute.openai_project to assertion.aud, with the condition restricting the OpenAI production subject and project audience.](https://developers.openai.com/images/platform/guides/private-safety-processing/setup-gcp-provider-attributes.webp)
+
+Record the pool and provider IDs as `<CUSTOMER_GCP_POOL_ID>` and `<CUSTOMER_GCP_PROVIDER_ID>`.
+
+**Multiple OpenAI projects**
+
+For projects belonging to the same customer, you can reuse the pool and provider. Add each project ID to **Allowed audiences** and update the attribute condition:
+
+```text
+assertion.sub == '112981926705442324573' &&
+(assertion.aud == '<CUSTOMER_PROJECT_ID_1>' || assertion.aud == '<CUSTOMER_PROJECT_ID_2>')
+```
+
+Complete the bucket grant and storage registration for each project separately.
+
+#### 5. Create the custom storage role
+
+In **IAM & Admin > Roles**, create a custom role in the bucket's Google Cloud project with these permissions:
+
+```text
+storage.buckets.get
+storage.objects.create
+storage.objects.get
+storage.objects.delete
+```
+
+#### 6. Grant OpenAI access to the bucket
+
+In your bucket's **Permissions > Grant access**, add this principal:
+
+```text
+principalSet://iam.googleapis.com/projects/<CUSTOMER_GCP_PROJECT_NUMBER>/locations/global/workloadIdentityPools/<CUSTOMER_GCP_POOL_ID>/attribute.openai_project/<CUSTOMER_PROJECT_ID>
+```
+
+Select the custom role you created in step 5.
+
+![Google Cloud bucket access form with the OpenAI project principal set and the custom storage role selected.](https://developers.openai.com/images/platform/guides/private-safety-processing/setup-gcp-bucket-access.webp)
+
+Continue to **Register your storage**.
+
+
+
+
+
 ### Register your storage
 
 After completing the cloud setup above, use either the API console or the Management API to register and validate your storage. You only need to use one method.
@@ -114860,7 +114285,7 @@ Open **Organization settings > Data controls > Data retention** and select **Con
 
 ##### 2. Enter your storage details
 
-Choose **AWS** or **Azure**, then select the project. If you opened the modal from project settings, that project is already selected. If **Registered storage** appears, choose **Connect new storage** to add a destination.
+Choose **AWS**, **Azure**, or **GCP**, then select the project. If you opened the modal from project settings, that project is already selected. If **Registered storage** appears, choose **Connect new storage** to add a destination.
 
 For **AWS**, enter the **Bucket ARN** and **IAM role ARN** from your cloud setup.
 
@@ -114869,6 +114294,15 @@ For **AWS**, enter the **Bucket ARN** and **IAM role ARN** from your cloud setup
 For **Azure**, enter **Tenant ID**, **Subscription ID**, **Resource group**, **Storage account name**, and **Container name**. Scroll down in the modal to complete all fields.
 
 ![Connect external storage dialog for Azure showing the project and Azure storage configuration fields.](https://developers.openai.com/images/platform/guides/private-safety-processing/setup-08-platform-azure-connect.webp)
+
+For **GCP**, select the OpenAI project whose ID you used in the audience, attribute condition, and bucket grant. Enter these four fields:
+
+| Field                                | Value from your Google Cloud setup                                                           |
+| ------------------------------------ | -------------------------------------------------------------------------------------------- |
+| **Bucket name**                      | `<CUSTOMER_GCP_BUCKET_NAME>`                                                                 |
+| **Workload identity project number** | `<CUSTOMER_GCP_PROJECT_NUMBER>`: the numeric Google Cloud project number containing the pool |
+| **Workload identity pool ID**        | `<CUSTOMER_GCP_POOL_ID>`                                                                     |
+| **Workload identity provider ID**    | `<CUSTOMER_GCP_PROVIDER_ID>`                                                                 |
 
 ##### 3. Connect and validate
 
@@ -114935,6 +114369,25 @@ curl --fail-with-body -sS -X POST "$OPENAI_STORAGE_URL" \
       "resource_group": "CUSTOMER_RESOURCE_GROUP",
       "account_name": "CUSTOMER_STORAGE_ACCOUNT",
       "container": "CUSTOMER_CONTAINER_NAME"
+    }
+  }'
+```
+
+**Google Cloud Storage**
+
+```bash
+curl --fail-with-body -sS -X POST "$OPENAI_STORAGE_URL" \
+  -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
+  -H "OpenAI-Organization: $OPENAI_ORG_ID" \
+  -H 'Content-Type: application/json' \
+  --data-binary '{
+    "project_id": "<CUSTOMER_PROJECT_ID>",
+    "provider": {
+      "type": "gcp",
+      "bucket": "<CUSTOMER_GCP_BUCKET_NAME>",
+      "workload_identity_project_number": "<CUSTOMER_GCP_PROJECT_NUMBER>",
+      "workload_identity_pool_id": "<CUSTOMER_GCP_POOL_ID>",
+      "workload_identity_provider_id": "<CUSTOMER_GCP_PROVIDER_ID>"
     }
   }'
 ```
@@ -115241,7 +114694,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.69.0</version>
+  <version>4.69.2</version>
 </dependency>
 ```
 
@@ -116644,6 +116097,8 @@ As someone building an MCP server, don't put anything malicious in your tool def
 
 # Pricing
 
+FedRAMP endpoints are charged a 10% uplift over the corresponding standard model
+rates.
 <a id="astra"></a>
 <a id="latest-models"></a>
 
@@ -117021,57 +116476,6 @@ Batch
 | gpt-image-1 | Text | $2.50 | $0.63 | - |
 | chatgpt-image-latest | Image | $4.00 | $1.00 | $16.00 |
 | chatgpt-image-latest | Text | $2.50 | $0.63 | $5.00 |
-
-
-
-
-
-
-  
-
-    
-
-Video generation models
-
-
-    
-Prices per second.
-
-  
-
-
-  
-
-Standard
-
-
-      
-### Grouped Pricing Table data
-
-| Model | Size | Portrait | Landscape | Price per second |
-| --- | --- | --- | --- | --- |
-| sora-2 | 720p | 720x1280 | 1280x720 | $0.10 |
-| sora-2-pro | 720p | 720x1280 | 1280x720 | $0.30 |
-| sora-2-pro | 1024p | 1024x1792 | 1792x1024 | $0.50 |
-| sora-2-pro | 1080p | 1080x1920 | 1920x1080 | $0.70 |
-
-    
-
-    
-
-      
-Batch
-
-
-      
-### Grouped Pricing Table data
-
-| Model | Size | Portrait | Landscape | Price per second |
-| --- | --- | --- | --- | --- |
-| sora-2 | 720p | 720x1280 | 1280x720 | $0.05 |
-| sora-2-pro | 720p | 720x1280 | 1280x720 | $0.15 |
-| sora-2-pro | 1024p | 1024x1792 | 1792x1024 | $0.25 |
-| sora-2-pro | 1080p | 1080x1920 | 1920x1080 | $0.35 |
 
 
 
@@ -117459,7 +116863,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.69.0</version>
+  <version>4.69.2</version>
 </dependency>
 ```
 

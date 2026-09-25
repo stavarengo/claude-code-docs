@@ -21,14 +21,12 @@ When Claude Code can identify a gateway or proxy in the path, the notice names i
 Either way, nothing breaks: auto mode keeps working, and its classifier requests are billed as before. The notice
 appears only after the server's checks have stopped reaching the session for the rest of it, which can be as early as
 the session's first checked action. Once you press Enter, the notice doesn't appear again in that session. An individual
-action the server couldn't check doesn't trigger it: Claude Code handles that action on its own and asks the server
-again on the next request.
+action the server couldn't check doesn't trigger it.
 
 ## Who sees the notice
 
-Claude Code v2.1.278 or later asks for server-side checks by default on Enterprise plans and accounts that use the
-Claude API, and on [Claude Platform on AWS](/docs/en/claude-platform-on-aws), Amazon Bedrock, Google Cloud's Agent Platform,
-and Microsoft Foundry. Whether a platform or region performs them depends on that platform's rollout. Where it doesn't,
+[Server-side classifier review](/docs/en/permission-modes#server-side-classifier-review) lists which sessions ask the server
+for these checks. Whether a platform or region performs them depends on that platform's rollout. Where it doesn't,
 Claude Code uses its own classifier requests and shows this notice. On Amazon Bedrock, Google Cloud's Agent Platform,
 Microsoft Foundry, and signed-in Claude apps gateway sessions,
 [only Claude Sonnet 5, Opus 4.7 or later, and the Fable models](/docs/en/permission-modes#enable-auto-mode-on-bedrock-agent-platform-or-foundry)
@@ -45,10 +43,11 @@ unless a gateway acknowledgment on this machine in the last 24 hours has dismiss
 ## Why the server's checks aren't reaching the session
 
 The most common cause is an LLM gateway or proxy between Claude Code and the API: one that strips or rewrites request
-headers, drops request fields it doesn't recognize, or edits responses, for example by rewriting IDs or dropping keys
-from streaming events. The server then never receives the request for checks, or Claude Code never receives the results.
+headers, drops request fields it doesn't recognize, or edits responses. The server then never receives the request for checks, or Claude Code never receives the results.
 When your configuration or the responses identify a gateway, the notice names it. The notice can also appear when the
-platform, region, or credential the session uses doesn't have server-side checks yet.
+platform, region, or credential the session uses doesn't have server-side checks yet. When a gateway cuts responses
+short or rewrites the results into a form Claude Code can't read, you get denials with no verdict in place of this
+notice; see [Server-side classifier review](/docs/en/permission-modes#server-side-classifier-review).
 
 If you see the notice with no gateway or proxy in the path and it keeps appearing, the likely cause is that server-side
 checks haven't reached your platform, region, or credential yet. To confirm, contact support or your company's admin, or
@@ -83,8 +82,7 @@ setting `CLAUDE_CODE_AUTO_MODE_SERVER` to `0` before you start the session, in y
 export CLAUDE_CODE_AUTO_MODE_SERVER=0
 ```
 
-Classifier requests are then always Claude Code's own, billed the same way, and the notice doesn't appear. The variable
-isn't read on a direct connection to the Anthropic API. Setting
+Classifier requests are then always Claude Code's own, billed the same way, and the notice doesn't appear. On a direct connection to the Anthropic API, the variable requires Claude Code v2.1.281 or later. Setting
 [`CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS=1`](/docs/en/llm-gateway-protocol#disable-pre-release-capabilities) while
 `CLAUDE_CODE_AUTO_MODE_SERVER` is unset turns the server's checks off as well.
 

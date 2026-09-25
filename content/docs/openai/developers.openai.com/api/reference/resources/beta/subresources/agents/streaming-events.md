@@ -998,7 +998,7 @@ Schema name: `SessionEventAgentSessionTurnCreated`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 14 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 15 more`
 
       A stable, machine-readable failure category.
 
@@ -1029,6 +1029,10 @@ Schema name: `SessionEventAgentSessionTurnCreated`
       - `"cyber_policy"`
 
         The request was rejected by a safety policy.
+
+      - `"misalignment_policy_violation"`
+
+        The request was blocked by the safety systems.
 
       - `"connection_failed"`
 
@@ -1241,7 +1245,7 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 14 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 15 more`
 
       A stable, machine-readable failure category.
 
@@ -1272,6 +1276,10 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
       - `"cyber_policy"`
 
         The request was rejected by a safety policy.
+
+      - `"misalignment_policy_violation"`
+
+        The request was blocked by the safety systems.
 
       - `"connection_failed"`
 
@@ -1484,7 +1492,7 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 14 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 15 more`
 
       A stable, machine-readable failure category.
 
@@ -1515,6 +1523,10 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
       - `"cyber_policy"`
 
         The request was rejected by a safety policy.
+
+      - `"misalignment_policy_violation"`
+
+        The request was blocked by the safety systems.
 
       - `"connection_failed"`
 
@@ -1742,7 +1754,7 @@ Schema name: `SessionEventAgentSessionTurnFailed`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 14 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 15 more`
 
       A stable, machine-readable failure category.
 
@@ -1773,6 +1785,10 @@ Schema name: `SessionEventAgentSessionTurnFailed`
       - `"cyber_policy"`
 
         The request was rejected by a safety policy.
+
+      - `"misalignment_policy_violation"`
+
+        The request was blocked by the safety systems.
 
       - `"connection_failed"`
 
@@ -2000,7 +2016,7 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 14 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 15 more`
 
       A stable, machine-readable failure category.
 
@@ -2031,6 +2047,10 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
       - `"cyber_policy"`
 
         The request was rejected by a safety policy.
+
+      - `"misalignment_policy_violation"`
+
+        The request was blocked by the safety systems.
 
       - `"connection_failed"`
 

@@ -6,6 +6,9 @@
 
 Model ID: `sora-2-pro`
 
+The Sora 2 models and Videos API were shut down on September 24, 2026 and are no longer available. There is no one-to-one replacement API. See the [deprecation notice](/api/docs/deprecations#2026-03-24-sora-2-video-generation-models-and-videos-api).
+
+
 Sora 2 Pro is our state-of-the-art, most advanced media generation model, generating videos with synced audio.
 It can create richly detailed, dynamic clips from natural language or images.
 
