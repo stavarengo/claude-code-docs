@@ -204,12 +204,14 @@ If you run into problems installing on macOS or Linux, check these common issues
   source ~/.zshrc
   ```
 
-  For Bash, the Linux default shell:
+  For Bash on Linux:
 
   ```bash theme={null}
   echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
   source ~/.bashrc
   ```
+
+  For Bash on macOS, follow the macOS Bash step in [fix your PATH](/docs/en/troubleshoot-install#verify-your-path) instead.
 
   Then open a new terminal and try `claude` again. If it still isn't found, check that the file `~/.local/bin/claude` exists. If it doesn't, the install didn't finish. For more details, see [fix your PATH](/docs/en/troubleshoot-install#verify-your-path).
 </Accordion>

@@ -298,7 +298,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
           Automatically selects the most detailed summary supported by the model.
 
-    - `service_tier: "auto" or "default" or "flex" or 2 more`
+    - `service_tier: "auto" or "default" or "flex" or 3 more`
 
       The effective service-tier policy for model requests. Defaults to `auto`.
 
@@ -311,6 +311,8 @@ Schema name: `SessionEventAgentSessionCreated`
       - `"priority"`
 
       - `"fast"`
+
+      - `"ultrafast"`
 
     - `text: AgentText`
 
@@ -3090,7 +3092,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
           Automatically selects the most detailed summary supported by the model.
 
-    - `service_tier: "auto" or "default" or "flex" or 2 more`
+    - `service_tier: "auto" or "default" or "flex" or 3 more`
 
       The effective service-tier policy for model requests. Defaults to `auto`.
 
@@ -3103,6 +3105,8 @@ Schema name: `SessionEventAgentSessionIdle`
       - `"priority"`
 
       - `"fast"`
+
+      - `"ultrafast"`
 
     - `text: AgentText`
 
@@ -3840,7 +3844,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
           Automatically selects the most detailed summary supported by the model.
 
-    - `service_tier: "auto" or "default" or "flex" or 2 more`
+    - `service_tier: "auto" or "default" or "flex" or 3 more`
 
       The effective service-tier policy for model requests. Defaults to `auto`.
 
@@ -3853,6 +3857,8 @@ Schema name: `SessionEventAgentSessionInProgress`
       - `"priority"`
 
       - `"fast"`
+
+      - `"ultrafast"`
 
     - `text: AgentText`
 
@@ -4590,7 +4596,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
           Automatically selects the most detailed summary supported by the model.
 
-    - `service_tier: "auto" or "default" or "flex" or 2 more`
+    - `service_tier: "auto" or "default" or "flex" or 3 more`
 
       The effective service-tier policy for model requests. Defaults to `auto`.
 
@@ -4603,6 +4609,8 @@ Schema name: `SessionEventAgentSessionRequiresAction`
       - `"priority"`
 
       - `"fast"`
+
+      - `"ultrafast"`
 
     - `text: AgentText`
 
@@ -5340,7 +5348,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
           Automatically selects the most detailed summary supported by the model.
 
-    - `service_tier: "auto" or "default" or "flex" or 2 more`
+    - `service_tier: "auto" or "default" or "flex" or 3 more`
 
       The effective service-tier policy for model requests. Defaults to `auto`.
 
@@ -5353,6 +5361,8 @@ Schema name: `SessionEventAgentSessionFailed`
       - `"priority"`
 
       - `"fast"`
+
+      - `"ultrafast"`
 
     - `text: AgentText`
 

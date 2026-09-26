@@ -9828,7 +9828,7 @@ Expired requests will be written to your error file with the message as shown be
 
 # Blaxel
 
-See the [application-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/application_managed/blaxel) and [webhook-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/webhook_managed/blaxel) examples in the OpenAI Cookbook.
+See the [application-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/blaxel/application_managed) and [webhook-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/blaxel/webhook_managed) examples in the OpenAI Cookbook.
 
 See [Self-hosted sandboxes](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted) for executor setup and connection requirements.
 
@@ -11289,7 +11289,7 @@ The Court held that the District Court lacked personal jurisdiction over the pet
 
 This guide uses **webhook-managed provisioning** with Cloudflare's reference Worker.
 
-See the [application-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/application_managed/cloudflare) and [webhook-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/webhook_managed/cloudflare) examples in the OpenAI Cookbook.
+See the [application-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/cloudflare/application_managed) and [webhook-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/cloudflare/webhook_managed) examples in the OpenAI Cookbook.
 
 ## How it works
 
@@ -28001,7 +28001,7 @@ EKM does not support the following products. An attempt to use these endpoints i
 
 # Daytona
 
-See the [application-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/application_managed/daytona) and [webhook-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/webhook_managed/daytona) examples in the OpenAI Cookbook.
+See the [application-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/daytona/application_managed) and [webhook-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/daytona/webhook_managed) examples in the OpenAI Cookbook.
 
 See [Self-hosted sandboxes](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted) for executor setup and connection requirements.
 
@@ -29422,7 +29422,7 @@ session: SessionConfigParam = {
     "delegation": {
         "type": "responses",
         "responses": {
-            "model": "gpt-5.6-terra",
+            "model": "gpt-6-luna",
             "instructions": "[Your backend prompt]",
         },
     },
@@ -29430,7 +29430,7 @@ session: SessionConfigParam = {
 ```
 
 
-Start with [GPT-5.6 Terra](https://developers.openai.com/api/docs/models/gpt-5.6-terra), or try [GPT-5.6 Luna](https://developers.openai.com/api/docs/models/gpt-5.6-luna) for cost-sensitive workloads. Compare answer quality and latency on your tasks before choosing a backend model.
+Start with [`gpt-6-luna`](https://developers.openai.com/api/docs/models/gpt-6-luna), or try [`gpt-6-sol`](https://developers.openai.com/api/docs/models/gpt-6-sol) for more complex backend tasks. Compare answer quality and latency on your tasks before choosing a backend model.
 
 Register supported tools in `delegation.responses.tools`. Set `delegation.responses.tool_choice` to `"auto"` to let the backend choose a tool, `"required"` to require a tool call, or `"none"` to disable tool calls. You can also select a named function.
 
@@ -29984,7 +29984,7 @@ Use [Evaluating voice agents](https://developers.openai.com/cookbook/examples/au
 
 # DigitalOcean
 
-See the [application-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/application_managed/digitalocean) and [webhook-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/webhook_managed/digitalocean) examples in the OpenAI Cookbook.
+See the [application-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/digitalocean/application_managed) and [webhook-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/digitalocean/webhook_managed) examples in the OpenAI Cookbook.
 
 ## How it works
 
@@ -30499,7 +30499,7 @@ Now that you know the basics of DPO, explore these other methods as well.
 
 # E2B
 
-See the [application-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/application_managed/e2b) and [webhook-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/webhook_managed/e2b) examples in the OpenAI Cookbook.
+See the [application-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/e2b/application_managed) and [webhook-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/e2b/webhook_managed) examples in the OpenAI Cookbook.
 
 Choose a provisioning mode:
 
@@ -43202,6 +43202,12 @@ Responses API requests include the mainline model's token usage in addition to i
 Both GPT Image 2.5 models use the same token rates: $8 per million image input tokens, $2 per million cached image input tokens, $30 per million image output tokens, $5 per million text input tokens, and $1.25 per million cached text input tokens. See [pricing](https://developers.openai.com/api/docs/pricing#image-generation).
 
 Use the response's `usage` to measure token consumption for your prompts, sizes, and quality settings. Equal token rates don't mean equal cost per image: token consumption can differ by model and quality setting. For older-model pricing examples, see [Earlier GPT Image models](#earlier-gpt-image-models).
+
+### Cached input pricing
+
+For GPT Image 2 and GPT Image 2.5, cached input pricing applies only to the image generation tool in the Responses API. It doesn't apply to direct Images API requests, including `/v1/images/edits`.
+
+Cached image generation inputs are reflected in billing, but their cached token counts aren't included in the Responses API output. The response's `usage` can't verify these cache hits.
 
 
 
@@ -56703,7 +56709,7 @@ If retrieval returns `404` with code `safety_alert_not_found`, check the alert I
 
 # Modal
 
-See the [application-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/application_managed/modal) and [webhook-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/webhook_managed/modal) examples in the OpenAI Cookbook.
+See the [application-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/modal/application_managed) and [webhook-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/modal/webhook_managed) examples in the OpenAI Cookbook.
 
 See [Self-hosted sandboxes](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted) for executor setup and connection requirements.
 
@@ -61418,7 +61424,7 @@ Best of luck, and we’re excited to see what you build with this!
 
 This guide follows Oracle's beta Python example and uses **application-managed provisioning**: your application creates and deletes both the Agents API session and the OCI sandbox.
 
-See the [application-managed example](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/application_managed/oci) in the OpenAI Cookbook.
+See the [application-managed example](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/oci/application_managed) in the OpenAI Cookbook.
 
 See [Sandbox lifecycle](https://developers.openai.com/api/docs/guides/agents-api/environments/lifecycle) for the provisioning modes and connection behavior.
 
@@ -82697,7 +82703,7 @@ curl "https://api.openai.com/v1/agents/sessions/$session_id/events" \
 
 # Runloop
 
-See the [application-managed example](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/application_managed/runloop) in the OpenAI Cookbook.
+See the [application-managed example](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/runloop/application_managed) in the OpenAI Cookbook.
 
 This guide uses **application-managed** provisioning: your application starts the Devbox, connects its executor, and shuts it down when finished. See [Sandbox lifecycle](https://developers.openai.com/api/docs/guides/agents-api/environments/lifecycle) for the lifecycle behavior.
 
@@ -83518,8 +83524,7 @@ only receives prompt context. Large document sets, generated artifacts,
 commands, previews, and resumable work all need an environment the agent can
 inspect and change.
 
-Sandbox agents are available in the TypeScript and Python Agents SDKs. They
-  are in beta, so API details, defaults, and supported capabilities may change.
+Sandbox agents are available in the TypeScript and Python Agents SDKs.
 
 This guide covers sandboxes in the Agents SDK, where your application runs the harness. For an OpenAI-managed harness, use [Agents API: Connect a sandbox](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted).
 
@@ -84278,7 +84283,7 @@ An agent session can outlive its environment. Your application manages the compu
 
 Your application can start compute after creating a session. Use your [provider's SDK or API](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#sandbox-providers), then [connect the executor](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted) with the session's environment ID and an environment key.
 
-See the [application-managed sandbox examples](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/application_managed) in the OpenAI Cookbook.
+See the [application-managed sandbox examples](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes) in the OpenAI Cookbook.
 
 <picture>
   <source
@@ -84304,7 +84309,7 @@ Use one component to manage each session's environment. Store the mapping betwee
 
 You can also wait until input needs an environment connection. The API emits `agent.session.action_required` with `required_action.type: "environment_connection"` before waiting for the executor. Your webhook handler starts or reconnects the environment.
 
-See the [webhook-managed sandbox examples](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/webhook_managed) in the OpenAI Cookbook.
+See the [webhook-managed sandbox examples](https://github.com/openai/openai-cookbook/blob/main/examples/agents_api/sandboxes/webhook_managed.md) in the OpenAI Cookbook.
 
 <picture>
   <source
@@ -84947,7 +84952,7 @@ If your backend streams audio over the primary [WebSocket connection](https://de
 
 ### Attach to the existing session
 
-1. Save the ID of the session your backend will control. For WebRTC, use `session.id` from the JSON response to `POST /v1/live/sessions`. For SIP, [accept the incoming call](https://developers.openai.com/api/docs/guides/voice-sip?api=live#accept-or-reject-the-call) first, then use `data.session_id` from its webhook. Keep the ID alongside the application's user and conversation record.
+1. Save the ID of the session your backend will control. For WebRTC or an [outbound SIP call](https://developers.openai.com/api/docs/guides/voice-sip?api=live#place-an-outbound-call), use `session.id` from the JSON response to `POST /v1/live/sessions`. For inbound SIP, [accept the incoming call](https://developers.openai.com/api/docs/guides/voice-sip?api=live#accept-or-reject-the-call) first, then use `data.session_id` from its webhook. Keep the ID alongside the application's user and conversation record.
 2. Open a WebSocket from your server at the following URL, substituting the saved ID unchanged. Authenticate with `Authorization: Bearer $OPENAI_API_KEY` using the project authentication that created or accepted the session. Include the same connection headers required when creating the session.
 
 ```text
@@ -93556,7 +93561,7 @@ Direct SIP keeps call audio on the provider-to-OpenAI media path. SIP signaling 
 
 Use a [sideband connection](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live) when your backend needs to receive session events or send commands. It attaches to the existing conversation while SIP carries the audio. Assign one handler to each action so that duplicate webhook deliveries or events observed on multiple connections don't execute tools twice.
 
-### Handle the call lifecycle
+### Handle an inbound call
 
 Confirm that GPT-Live SIP support is enabled for your project and that your
   provider's SIP trunk is routed to that project before using this flow.
@@ -93607,7 +93612,100 @@ To [transfer the call](https://developers.openai.com/api/reference/resources/liv
 
 Keep the sideband open until `session.closed` supplies final usage, then release application resources. If the connection drops first, record finalization as incomplete. See [Usage and graceful close](https://developers.openai.com/api/docs/guides/live-conversations#usage-and-graceful-close) for finalization and close reasons.
 
-This flow accepts inbound calls. Creating an outbound SIP call through `POST /v1/live/sessions` is not supported; use the relevant [partner integration](https://developers.openai.com/api/docs/guides/live-partner-integrations) for provider-owned outbound calling.
+### Place an outbound call
+
+Call a phone number through your SIP provider with [Create session](https://developers.openai.com/api/reference/resources/live/methods/create). Your provider handles the phone network connection while GPT-Live carries the conversation.
+
+Outbound SIP calling must be enabled for your organization. It is available
+  through the Live API, not the Realtime API call-creation endpoint.
+
+#### Configure your trunk
+
+Use a trunk that supports TLS signaling, Opus audio, and SDES-SRTP media. Enable Opus and SRTP in your provider's settings before placing a call.
+
+Supply the trunk configuration with each request:
+
+| Field                           | Value                                                                                                              |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `transport.destination`         | The phone number to call, in E.164 format, such as `+14155550123`. SIP URI destinations aren't supported.          |
+| `transport.trunk.provider_url`  | A provider endpoint such as `sips:sip.example.com:5061`. The default port is `5061`; `;transport=tcp` is optional. |
+| `transport.trunk.auth.type`     | `digest` for SIP Digest authentication.                                                                            |
+| `transport.trunk.auth.username` | Your provider's SIP username.                                                                                      |
+| `transport.trunk.auth.password` | Your provider's SIP password.                                                                                      |
+| `transport.trunk.caller_number` | The caller phone number to send to your provider, in E.164 format.                                                 |
+
+The provider endpoint must use `sips:` for TLS signaling. Don't include credentials, paths, URI headers, or other URI parameters in the URL. Local hostnames and literal private or local IP addresses are rejected. Keep your OpenAI API key and SIP credentials on your server.
+
+#### Create the session
+
+Send `POST /v1/live/sessions` with your session configuration and `transport.type: "sip"`. Choose the voice and delegation mode when creating the session. Omit `audio.format` because SIP negotiates the audio format.
+
+This example uses `curl` and `jq`. Set `OPENAI_API_KEY`, `SIP_USERNAME`, and `SIP_PASSWORD` in your server environment, and replace the example provider endpoint and phone numbers with your own values. The example selects client delegation; your backend must handle [delegated work](https://developers.openai.com/api/docs/guides/live-delegation).
+
+```bash
+jq -n \
+  --arg username "$SIP_USERNAME" \
+  --arg password "$SIP_PASSWORD" \
+  '{
+    "session": {
+      "model": "gpt-live-1",
+      "instructions": "Help the user schedule an appointment.",
+      "audio": { "output": { "voice": "marin" } },
+      "delegation": { "type": "client" }
+    },
+    "transport": {
+      "type": "sip",
+      "destination": "+14155550123",
+      "trunk": {
+        "provider_url": "sips:sip.example.com:5061",
+        "auth": {
+          "type": "digest",
+          "username": $username,
+          "password": $password
+        },
+        "caller_number": "+14155550100"
+      }
+    }
+  }' | curl https://api.openai.com/v1/live/sessions \
+    -H "Authorization: Bearer $OPENAI_API_KEY" \
+    -H "Content-Type: application/json" \
+    --data-binary @-
+```
+
+The request returns `200 OK` after the session initializes:
+
+```json
+{
+  "session": { "id": "live_123" },
+  "transport": { "type": "sip" }
+}
+```
+
+This response doesn't mean the call has been answered. It contains no SDP or trunk credentials. Preserve `session.id` unchanged for the sideband connection and call controls. You don't need an incoming-call webhook or an accept request for an outbound call.
+
+#### Monitor and end the call
+
+Attach your backend to `wss://api.openai.com/v1/live/sessions/{session_id}/attach` using your OpenAI API key. Don't send `session.start` again. The [sideband connection](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live) carries conversation events, delegated work, and call progress while SIP carries the audio.
+
+| Event                | Meaning                                                                                   |
+| -------------------- | ----------------------------------------------------------------------------------------- |
+| `transport.ringing`  | The provider reports ringing or early media.                                              |
+| `transport.answered` | The call has been answered and media is established.                                      |
+| `transport.failed`   | Call setup failed after session initialization. Inspect `error.code` and `error.message`. |
+
+Each call-progress event includes `event_id` and `session_id`. Attach immediately after creation: the sideband only replays events from the preceding 3 seconds, so a later attachment can miss earlier call progress. Replayed events retain their original event IDs. Deduplicate events by `event_id`.
+
+Use the same [transfer](#transfer-or-end-the-call) and [hangup](https://developers.openai.com/api/reference/resources/live/subresources/sessions/methods/hangup) actions as for inbound calls. Keep the sideband open for `session.closed` and final usage as described in [Usage and graceful close](https://developers.openai.com/api/docs/guides/live-conversations#usage-and-graceful-close).
+
+#### Handle limits and errors
+
+Outbound SIP requests have a 1 MiB body limit. Ringing is limited to 3 minutes, and a connected call is limited to 2 hours. These limits aren't configurable in the creation request.
+
+A `403` response with `outbound_sip_not_enabled` means outbound calling isn't enabled for your organization. Invalid session configuration is returned on the creation request. Transport setup failures can return `502`, and initialization timeouts return `504`. After creation succeeds, monitor `transport.failed` for asynchronous setup failures.
+
+Each creation request places a new call. `X-Client-Request-Id` doesn't
+  deduplicate requests. Don't automatically retry after an ambiguous timeout or
+  connection failure: a retry can place another call.
 
 ### Server audio bridges
 
@@ -107830,7 +107928,7 @@ No, the `text-embedding-3-large` and `text-embedding-3-small` models lack knowle
 
 # Vercel
 
-See the [application-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/application_managed/vercel) and [webhook-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/webhook_managed/vercel) examples in the OpenAI Cookbook.
+See the [application-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/vercel/application_managed) and [webhook-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/vercel/webhook_managed) examples in the OpenAI Cookbook.
 
 See [Self-hosted sandboxes](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted) for executor setup and connection requirements.
 
@@ -114694,7 +114792,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.69.2</version>
+  <version>4.69.3</version>
 </dependency>
 ```
 
@@ -116425,6 +116523,13 @@ Prices per 1M tokens.
 
   
 
+  
+
+    Cached input rates for GPT Image 2 and GPT Image 2.5 only apply to images
+      generated with the Responses API - [learn
+      more](https://developers.openai.com/api/docs/guides/image-generation#cached-input-pricing).
+  
+
 
   
 
@@ -116863,7 +116968,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.69.2</version>
+  <version>4.69.3</version>
 </dependency>
 ```
 
