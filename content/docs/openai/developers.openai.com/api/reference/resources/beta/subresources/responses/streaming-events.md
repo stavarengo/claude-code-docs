@@ -415,7 +415,7 @@ Schema name: `BetaResponseCreatedEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -11904,7 +11904,7 @@ Schema name: `BetaResponseInProgressEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -23393,7 +23393,7 @@ Schema name: `BetaResponseCompletedEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -34899,7 +34899,7 @@ Schema name: `BetaResponseFailedEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -46390,7 +46390,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -57530,7 +57530,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
             - `index: number`
 
-              The index of the file in the list of files.
+              The index in the output text at which to insert the file citation.
 
             - `type: "file_citation"`
 
@@ -62417,7 +62417,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
             - `index: number`
 
-              The index of the file in the list of files.
+              The index in the output text at which to insert the file citation.
 
             - `type: "file_citation"`
 
@@ -67310,7 +67310,7 @@ Schema name: `BetaResponseContentPartAddedEvent`
 
         - `index: number`
 
-          The index of the file in the list of files.
+          The index in the output text at which to insert the file citation.
 
         - `type: "file_citation"`
 
@@ -67530,7 +67530,7 @@ Schema name: `BetaResponseContentPartDoneEvent`
 
         - `index: number`
 
-          The index of the file in the list of files.
+          The index in the output text at which to insert the file citation.
 
         - `type: "file_citation"`
 
@@ -69612,7 +69612,7 @@ Schema name: `BetaResponseOutputTextAnnotationAddedEvent`
 
     - `index: number`
 
-      The index of the file in the list of files.
+      The index in the output text at which to insert the file citation.
 
     - `type: "file_citation"`
 
@@ -70145,7 +70145,7 @@ Schema name: `BetaResponseQueuedEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 

@@ -407,7 +407,7 @@ Schema name: `ResponseCreatedEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -10128,7 +10128,7 @@ Schema name: `ResponseInProgressEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -19849,7 +19849,7 @@ Schema name: `ResponseCompletedEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -29587,7 +29587,7 @@ Schema name: `ResponseFailedEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -39310,7 +39310,7 @@ Schema name: `ResponseIncompleteEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -48690,7 +48690,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             - `index: number`
 
-              The index of the file in the list of files.
+              The index in the output text at which to insert the file citation.
 
             - `type: "file_citation"`
 
@@ -52846,7 +52846,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             - `index: number`
 
-              The index of the file in the list of files.
+              The index in the output text at which to insert the file citation.
 
             - `type: "file_citation"`
 
@@ -57008,7 +57008,7 @@ Schema name: `ResponseContentPartAddedEvent`
 
         - `index: number`
 
-          The index of the file in the list of files.
+          The index in the output text at which to insert the file citation.
 
         - `type: "file_citation"`
 
@@ -57220,7 +57220,7 @@ Schema name: `ResponseContentPartDoneEvent`
 
         - `index: number`
 
-          The index of the file in the list of files.
+          The index in the output text at which to insert the file citation.
 
         - `type: "file_citation"`
 
@@ -59014,7 +59014,7 @@ Schema name: `ResponseOutputTextAnnotationAddedEvent`
 
     - `index: number`
 
-      The index of the file in the list of files.
+      The index in the output text at which to insert the file citation.
 
     - `type: "file_citation"`
 
@@ -59531,7 +59531,7 @@ Schema name: `ResponseQueuedEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 

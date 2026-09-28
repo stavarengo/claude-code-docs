@@ -705,7 +705,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `index: number`
 
-              The index of the file in the list of files.
+              The index in the output text at which to insert the file citation.
 
             - `type: "file_citation"`
 
