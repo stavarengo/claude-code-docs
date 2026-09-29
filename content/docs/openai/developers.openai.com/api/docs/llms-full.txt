@@ -1590,11 +1590,11 @@ See [Migrate from Agent Builder](https://developers.openai.com/api/docs/guides/a
 
 On June 2, 2026, we notified developers using older GPT Image models of their deprecation and removal from the API on December 1, 2026.
 
-| Shutdown date | Model / system         | Recommended replacement |
-| ------------- | ---------------------- | ----------------------- |
-| Dec 1, 2026   | `gpt-image-1-mini`     | `gpt-image-2`           |
-| Dec 1, 2026   | `gpt-image-1.5`        | `gpt-image-2`           |
-| Dec 1, 2026   | `chatgpt-image-latest` | `gpt-image-2`           |
+| Shutdown date | Model / system         | Recommended replacement                           |
+| ------------- | ---------------------- | ------------------------------------------------- |
+| Dec 1, 2026   | `gpt-image-1-mini`     | `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` |
+| Dec 1, 2026   | `gpt-image-1.5`        | `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` |
+| Dec 1, 2026   | `chatgpt-image-latest` | `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` |
 
 ### Update to OpenAI’s self-serve fine-tuning
 
@@ -1612,20 +1612,20 @@ Inference on fine-tuned models will continue to be available until the base mode
 
 To improve reliability and make it easier for developers to choose the right models, we are deprecating a set of older OpenAI models. Access to these models will be shut down on the dates below.
 
-| Shutdown date    | Model snapshot                                                         | Substitute model                      |
-| ---------------- | ---------------------------------------------------------------------- | ------------------------------------- |
-| October 23, 2026 | `gpt-3.5-turbo-0125` \| `gpt-3.5-turbo`, `gpt-3.5-turbo-completions`   | `gpt-5.6-terra`                       |
-| October 23, 2026 | `gpt-4-0613` \| `gpt-4`, `gpt-4-0613-completions`, `gpt-4-completions` | `gpt-5.6-sol`                         |
-| October 23, 2026 | `gpt-4-1106-preview`                                                   | `gpt-5.6-sol`                         |
-| October 23, 2026 | `gpt-4-turbo` \| `gpt-4-turbo-2024-04-09`, `gpt-4-turbo-completions`   | `gpt-5.6-sol`                         |
-| October 23, 2026 | `gpt-4.1-nano` \| `gpt-4.1-nano-2025-04-14`                            | `gpt-5.6-luna`                        |
-| October 23, 2026 | `gpt-4o-2024-05-13`                                                    | `gpt-5.6-sol`                         |
-| October 23, 2026 | `gpt-image-1`                                                          | `gpt-image-2`                         |
-| October 23, 2026 | `o1-2024-12-17` \| `o1`                                                | `gpt-5.6-sol`                         |
-| October 23, 2026 | `o1-pro-2025-03-19` \| `o1-pro`                                        | `gpt-5.6-sol` (`reasoning.mode: pro`) |
-| October 23, 2026 | `o3-mini-2025-01-31` \| `o3-mini`                                      | `gpt-5.6-sol`                         |
-| October 23, 2026 | `ft-o4-mini-2025-04-16`                                                | `gpt-5.6-terra`                       |
-| October 23, 2026 | `o4-mini-2025-04-16` \| `o4-mini`                                      | `gpt-5.6-terra`                       |
+| Shutdown date    | Model snapshot                                                         | Substitute model                                  |
+| ---------------- | ---------------------------------------------------------------------- | ------------------------------------------------- |
+| October 23, 2026 | `gpt-3.5-turbo-0125` \| `gpt-3.5-turbo`, `gpt-3.5-turbo-completions`   | `gpt-5.6-terra`                                   |
+| October 23, 2026 | `gpt-4-0613` \| `gpt-4`, `gpt-4-0613-completions`, `gpt-4-completions` | `gpt-5.6-sol`                                     |
+| October 23, 2026 | `gpt-4-1106-preview`                                                   | `gpt-5.6-sol`                                     |
+| October 23, 2026 | `gpt-4-turbo` \| `gpt-4-turbo-2024-04-09`, `gpt-4-turbo-completions`   | `gpt-5.6-sol`                                     |
+| October 23, 2026 | `gpt-4.1-nano` \| `gpt-4.1-nano-2025-04-14`                            | `gpt-5.6-luna`                                    |
+| October 23, 2026 | `gpt-4o-2024-05-13`                                                    | `gpt-5.6-sol`                                     |
+| October 23, 2026 | `gpt-image-1`                                                          | `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` |
+| October 23, 2026 | `o1-2024-12-17` \| `o1`                                                | `gpt-5.6-sol`                                     |
+| October 23, 2026 | `o1-pro-2025-03-19` \| `o1-pro`                                        | `gpt-5.6-sol` (`reasoning.mode: pro`)             |
+| October 23, 2026 | `o3-mini-2025-01-31` \| `o3-mini`                                      | `gpt-5.6-sol`                                     |
+| October 23, 2026 | `ft-o4-mini-2025-04-16`                                                | `gpt-5.6-terra`                                   |
+| October 23, 2026 | `o4-mini-2025-04-16` \| `o4-mini`                                      | `gpt-5.6-terra`                                   |
 
 We are also removing fine-tuned versions as below:
 
@@ -17083,7 +17083,7 @@ Set `environment` alongside `agent` when creating a session. It determines where
 
 Choose `none`, `openai_hosted`, or `self_hosted`. [Architecture](https://developers.openai.com/api/docs/guides/agents-api/architecture) explains when to use each option and who manages the environment.
 
-For an OpenAI-hosted environment, configure the packages, initial files, and network access the task needs. You can reuse an environment template across sessions. For a self-hosted environment, prepare your compute and [connect an executor](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted).
+For an OpenAI-hosted environment, [choose a container size](https://developers.openai.com/api/docs/guides/agents-api/environments/openai-hosted#choose-a-container-size) and configure the packages, initial files, and network access the task needs. You can reuse an environment template across sessions. For a self-hosted environment, prepare your compute and [connect an executor](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted).
 
 See the [Create session reference](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/methods/create) for environment fields and [Plugins](https://developers.openai.com/api/docs/guides/agents-api/tools/plugins) for skills, plugins, and templates. See [Session artifacts](https://developers.openai.com/api/docs/guides/agents-api/environments/files) for files you want to keep after execution.
 
@@ -60827,6 +60827,32 @@ needs. The working directory is `/workspace`.
 Packages and input files are prepared before setup commands run. A nonzero setup
 exit status prevents the agent from starting. Use a setup command to check required
 dependencies or files. Templates save configuration, not a running workspace.
+
+### Choose a container size
+
+Set `environment.container_size` when creating a session to choose the CPU and
+memory available to your sandbox. Defaults to `medium`.
+
+| Size     | vCPU | Memory |
+| -------- | ---- | ------ |
+| `small`  | 1    | 1 GB   |
+| `medium` | 2    | 4 GB   |
+| `large`  | 4    | 16 GB  |
+
+For example, include this environment in your
+`POST /v1/agents/sessions` request to select `small`:
+
+```json
+{
+  "environment": {
+    "type": "openai_hosted",
+    "container_size": "small"
+  }
+}
+```
+
+The returned session reports the selected size in `environment.container_size`.
+This setting applies only to OpenAI-hosted sandboxes.
 
 ### Control network access
 
@@ -114792,7 +114818,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.69.3</version>
+  <version>4.70.0</version>
 </dependency>
 ```
 
@@ -116968,7 +116994,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.69.3</version>
+  <version>4.70.0</version>
 </dependency>
 ```
 
