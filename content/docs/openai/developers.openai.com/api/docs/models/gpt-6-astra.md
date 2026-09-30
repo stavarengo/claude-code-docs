@@ -2,11 +2,11 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-> Our most capable model, built for the hardest end-to-end work
+> Our most capable model for the most demanding work.
 
 Model ID: `gpt-6-astra`
 
-GPT-6 Astra is our most capable model, built for the hardest end-to-end work.
+GPT-6 Astra is our most capable model for the most demanding work.
 Use it for complex reasoning, coding, computer use, research, and document creation.
 `reasoning.effort` supports `low`, `medium`, `high`, `xhigh`, and `max`.
 

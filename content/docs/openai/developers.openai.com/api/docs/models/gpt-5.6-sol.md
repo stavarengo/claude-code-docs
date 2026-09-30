@@ -2,7 +2,7 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-> Flagship model for complex professional work
+> GPT-5.6 flagship model for complex professional work
 
 Model ID: `gpt-5.6-sol`
 
