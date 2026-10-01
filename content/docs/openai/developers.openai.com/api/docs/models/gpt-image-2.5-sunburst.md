@@ -33,7 +33,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 | Cached input | $2 | 1M tokens |
 | Output | $30 | 1M tokens |
 
-- Image output costs $30 per million tokens. Text output is not billed because this model outputs images, not text.
+- Image output costs $30 per million tokens with Standard processing or $15 with Batch processing. Text output is not billed because this model outputs images, not text.
 - Token rates match GPT Image 2. The GPT Image 2 calculator does not estimate GPT Image 2.5 token consumption.
 
 ## Endpoints
@@ -47,7 +47,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 | Realtime translation | `v1/realtime/translations` | Not supported |
 | Realtime transcription | `v1/realtime/transcription_sessions` | Not supported |
 | Assistants | `v1/assistants` | Not supported |
-| Batch | `v1/batch` | Not supported |
+| Batch | `v1/batch` | Supported |
 | Fine-tuning | `v1/fine-tuning` | Not supported |
 | Embeddings | `v1/embeddings` | Not supported |
 | Image generation | `v1/images/generations` | Supported |

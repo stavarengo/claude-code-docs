@@ -334,7 +334,7 @@ npm install @shadcn/react
 <ComponentSource
   name="message-scroller"
   title="components/ui/message-scroller.tsx"
-  styleName="base-nova"
+  styleName="base-rhea"
 />
 
 <Step>Update the import paths to match your project setup.</Step>
