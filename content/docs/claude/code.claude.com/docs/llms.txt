@@ -133,6 +133,24 @@
 - [Measure plugin cost and usage](https://code.claude.com/docs/en/plugins/measure.md): Measure a Claude Code plugin's token cost, find out whether people still use it, and pick the telemetry events for organization-wide plugin questions.
 - [Recommend your plugin from your CLI](https://code.claude.com/docs/en/plugins/cli-hints.md): Prompt Claude Code users to install your official-marketplace plugin by emitting a claude-code-hint tag from your CLI or SDK.
 
+### Mods
+
+- [Mods overview](https://code.claude.com/docs/en/plugins/mods/overview.md): Add panes, commands, and tool call rules to Claude Code with a mod. See what a mod can do, how to make or install one, and where mods run.
+- [Create a mod](https://code.claude.com/docs/en/plugins/mods/create.md): Have Claude write a Claude Code mod from a description, or write one yourself that counts tool calls and adds a command. Learn the reload and validate loop.
+- [Mods reference](https://code.claude.com/docs/en/plugins/mods/reference.md): Complete reference for Claude Code mods: hooks module layout, every event, every mods API method, render sites, elements by surface, limits, and settings.
+
+#### Build
+
+- [Draw in the interface with a mod](https://code.claude.com/docs/en/plugins/mods/interface.md): Draw panes, a band above the prompt, buttons, and text fields from a Claude Code mod, handle presses and input, and keep state between redraws and sessions.
+- [Interface gallery for mods](https://code.claude.com/docs/en/plugins/mods/gallery.md): See the interface elements a Claude Code mod can draw, such as text, buttons, fields, Markdown, code, and diffs, with sample code and terminal screenshots.
+- [React to events with a mod](https://code.claude.com/docs/en/plugins/mods/events.md): Handle Claude Code events from a mod: observe, rewrite, or answer tool calls, prompts, and turns, filter which events a hook handles, and plan for other mods.
+- [Use the mods API](https://code.claude.com/docs/en/plugins/mods/api.md): Call the mods API from a Claude Code mod to add commands and tools, call a model, run work on a timer, message other sessions, and reach files and the network.
+
+#### Test and troubleshoot
+
+- [Test a mod](https://code.claude.com/docs/en/plugins/mods/test.md): Write automated tests for a Claude Code mod that raise events, stub Claude Code's answers, and press buttons, with no session, sign-in, or network.
+- [Troubleshoot a mod](https://code.claude.com/docs/en/plugins/mods/troubleshoot.md): Find out why a Claude Code mod does nothing: match the symptom or message to its cause, look up refusal messages, and read the debug log.
+
 ### Run a marketplace
 
 - [Create a marketplace](https://code.claude.com/docs/en/plugins/create-marketplace.md): Build a plugin marketplace from a marketplace.json file and test it locally before you host it.
@@ -142,6 +160,7 @@
 ### Manage plugins for your organization
 
 - [Manage Claude Code plugins for your organization](https://code.claude.com/docs/en/plugins/org.md): Control which plugins Claude Code installs and allows across your organization through managed settings.
+- [Manage mods for your organization](https://code.claude.com/docs/en/plugins/mods/admin.md): Control Claude Code mods with managed settings: stop user-installed mods, allow only your own, review what a mod can do, and enforce policy with your own mod.
 
 ### Troubleshooting
 
@@ -227,7 +246,7 @@
 
 - [Configure permissions](https://code.claude.com/docs/en/permissions.md): Control what Claude Code can access and do with fine-grained permission rules, modes, and managed policies.
 - [Choose a permission mode](https://code.claude.com/docs/en/permission-modes.md): Control whether Claude asks before acting. Switch permission modes with Shift+Tab in the CLI, the mode indicator in VS Code, or the mode selector in Desktop.
-- [Configure the sandboxed Bash tool](https://code.claude.com/docs/en/sandboxing.md): Learn how Claude Code's sandboxed Bash tool provides filesystem and network isolation for safer, more autonomous agent execution.
+- [Configure the sandboxed Bash tool](https://code.claude.com/docs/en/sandboxing.md): Restrict the files and network hosts Claude Code's shell commands can reach with the built-in sandbox. Turn it on, set the boundary, and fix what it breaks.
 - [Choose a sandbox environment](https://code.claude.com/docs/en/sandbox-environments.md): Compare Claude Code sandbox options: the built-in sandboxed Bash tool, sandbox runtime, dev containers, Docker, and VMs. Choose the right isolation for your threat model.
 
 ### Environments
@@ -378,14 +397,14 @@
 
 ## Indexes
 
-- [French (209 pages)](https://code.claude.com/docs/_llms/fr.md): Documentation for French.
-- [German (210 pages)](https://code.claude.com/docs/_llms/de.md): Documentation for German.
-- [Italian (209 pages)](https://code.claude.com/docs/_llms/it.md): Documentation for Italian.
-- [Japanese (209 pages)](https://code.claude.com/docs/_llms/jp.md): Documentation for Japanese.
-- [Spanish (209 pages)](https://code.claude.com/docs/_llms/es.md): Documentation for Spanish.
-- [Korean (210 pages)](https://code.claude.com/docs/_llms/ko.md): Documentation for Korean.
-- [Simplified Chinese (210 pages)](https://code.claude.com/docs/_llms/zh-cn.md): Documentation for Simplified Chinese.
-- [Traditional Chinese (210 pages)](https://code.claude.com/docs/_llms/zh-tw.md): Documentation for Traditional Chinese.
-- [Russian (209 pages)](https://code.claude.com/docs/_llms/ru.md): Documentation for Russian.
-- [Indonesian (209 pages)](https://code.claude.com/docs/_llms/id.md): Documentation for Indonesian.
-- [Brazilian Portuguese (208 pages)](https://code.claude.com/docs/_llms/pt-br.md): Documentation for Brazilian Portuguese.
+- [French (219 pages)](https://code.claude.com/docs/_llms/fr.md): Documentation for French.
+- [German (219 pages)](https://code.claude.com/docs/_llms/de.md): Documentation for German.
+- [Italian (219 pages)](https://code.claude.com/docs/_llms/it.md): Documentation for Italian.
+- [Japanese (218 pages)](https://code.claude.com/docs/_llms/jp.md): Documentation for Japanese.
+- [Spanish (219 pages)](https://code.claude.com/docs/_llms/es.md): Documentation for Spanish.
+- [Korean (219 pages)](https://code.claude.com/docs/_llms/ko.md): Documentation for Korean.
+- [Simplified Chinese (219 pages)](https://code.claude.com/docs/_llms/zh-cn.md): Documentation for Simplified Chinese.
+- [Traditional Chinese (219 pages)](https://code.claude.com/docs/_llms/zh-tw.md): Documentation for Traditional Chinese.
+- [Russian (219 pages)](https://code.claude.com/docs/_llms/ru.md): Documentation for Russian.
+- [Indonesian (219 pages)](https://code.claude.com/docs/_llms/id.md): Documentation for Indonesian.
+- [Brazilian Portuguese (219 pages)](https://code.claude.com/docs/_llms/pt-br.md): Documentation for Brazilian Portuguese.

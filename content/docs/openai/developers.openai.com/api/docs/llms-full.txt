@@ -1500,6 +1500,27 @@ We use the term "legacy" to refer to models and endpoints that no longer receive
 
 Upcoming deprecations are listed below, with the most recent announcements at the top.
 
+### 2026-10-01: GPT-5.3-Codex, GPT-5.1, GPT-5.4-Nano
+
+The following models are deprecated and will be removed from the API on April 1, 2027, with six months' notice. Migrate to the recommended replacements before the shutdown date.
+
+| Shutdown date | Model / system  | Recommended replacement |
+| ------------- | --------------- | ----------------------- |
+| Apr 1, 2027   | `gpt-5.3-codex` | `gpt-6-sol`             |
+| Apr 1, 2027   | `gpt-5.4-nano`  | `gpt-6-luna`            |
+| Apr 1, 2027   | `gpt-5.1`       | `gpt-6-sol`             |
+
+### 2026-10-01: Text-to-speech models
+
+The following text-to-speech models are deprecated and will be removed from the API on January 6, 2027, with at least three months' notice. Migrate to `gpt-realtime-2.1-mini` before the shutdown date. See the [Realtime API guide](https://developers.openai.com/api/docs/guides/realtime) to plan your migration.
+
+| Shutdown date | Model / system               | Recommended replacement |
+| ------------- | ---------------------------- | ----------------------- |
+| Jan 6, 2027   | `tts-1`                      | `gpt-realtime-2.1-mini` |
+| Jan 6, 2027   | `tts-1-hd`                   | `gpt-realtime-2.1-mini` |
+| Jan 6, 2027   | `gpt-4o-mini-tts-2025-03-20` | `gpt-realtime-2.1-mini` |
+| Jan 6, 2027   | `gpt-4o-mini-tts-2025-12-15` | `gpt-realtime-2.1-mini` |
+
 ### 2026-09-11: GPT-5.4-Cyber
 
 The `gpt-5.4-cyber` model is deprecated and will be removed from the API on October 1, 2026. Migrate to the most capable cyber model available to you before the shutdown date.
@@ -86243,7 +86264,7 @@ Saved-agent updates apply only to new sessions. To change the model, reasoning e
 
 Use the conversation's session ID to send input. Subscribe to its [event stream](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/subresources/events/methods/stream) before sending the message so your application receives the turn's early events.
 
-Pass your API client, session ID, and message to a function in your application:
+Create one idempotency key for each logical message submission. Save it with the message before sending input. In the Python example, pass your API client, session ID, message, and key to a function in your application:
 
 Send a follow-up message
 
@@ -86272,10 +86293,16 @@ async function sendMessage(client, sessionId, text) {
 ```
 
 ```python
-# Pass your saved session ID and message to this helper.
-def send_message(client: OpenAI, session_id: str, text: str) -> None:
+from uuid import uuid4
+
+
+# Reuse the same submission key when retrying this message.
+def send_message(
+    client: OpenAI, session_id: str, text: str, submission_key: str
+) -> None:
     client.beta.agents.sessions.events.create(
         session_id,
+        idempotency_key=submission_key,
         events=[
             {
                 "type": "agent.session.input.message",
@@ -86293,6 +86320,10 @@ def send_message(client: OpenAI, session_id: str, text: str) -> None:
             }
         ],
     )
+
+
+submission_key = str(uuid4())
+# Save this key with the message before submitting it.
 ```
 
 ```go
@@ -86393,6 +86424,8 @@ curl \
   }'
 ```
 
+
+The Python SDK sends `idempotency_key` as the `Idempotency-Key` header and reuses it for automatic retries. If your application retries after a timeout or lost response, reuse the same key, session ID, and message. Generate a different key for each distinct submission, even when the message text is identical.
 
 For a combined send-and-stream example, see [Events and Items](https://developers.openai.com/api/docs/guides/agents-api/sessions/events#send-and-stream-a-task).
 
@@ -118927,7 +118960,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.73.0</version>
+  <version>4.75.1</version>
 </dependency>
 ```
 
@@ -121127,7 +121160,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.73.0</version>
+  <version>4.75.1</version>
 </dependency>
 ```
 

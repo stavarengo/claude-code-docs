@@ -12,18 +12,18 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 740 pages - /docs - Content included below
-- German (Deutsch) (de) - 264 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 264 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 264 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 264 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 264 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 264 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 264 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 264 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 264 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 264 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 264 pages - /docs/id - Visit website for content
+- English (en) - 748 pages - /docs - Content included below
+- German (Deutsch) (de) - 265 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 265 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 265 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 265 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 265 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 265 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 265 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 265 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 265 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 265 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 265 pages - /docs/id - Visit website for content
 
 ---
 
@@ -179,6 +179,7 @@ The full documentation is available in the following languages on https://platfo
 - [Overview](https://platform.claude.com/docs/en/manage-claude/inference-hooks.md) - Inference hooks
 - [Organizations, users, roles, groups, and settings](https://platform.claude.com/docs/en/manage-claude/compliance-org-data.md) - List organizations, users, roles, groups, and settings
 - [Manage WIF via API](https://platform.claude.com/docs/en/manage-claude/wif-admin-api.md) - Manage WIF with the Admin API
+- [Plugins API](https://platform.claude.com/docs/en/manage-claude/plugins-api.md)
 - [Activity Feed](https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed.md) - Query the Activity Feed
 - [Rate Limits API](https://platform.claude.com/docs/en/manage-claude/rate-limits-api.md)
 - [Chats, files, and projects](https://platform.claude.com/docs/en/manage-claude/compliance-content-data.md) - Retrieve and delete chats, files, and projects
@@ -327,7 +328,7 @@ The full documentation is available in the following languages on https://platfo
 - [Activities](https://platform.claude.com/docs/en/api/compliance/activities.md)
 - [Add Federation Rule Workspace](https://platform.claude.com/docs/en/api/organization/federation/rules/workspaces/add.md)
 - [Add Federation Rule Workspace (Beta)](https://platform.claude.com/docs/en/api/beta/organization/federation/rules/workspaces/add.md)
-- [Add RBAC Group Member (Beta)](https://platform.claude.com/docs/en/api/beta/organization/rbac_groups/members/create.md)
+- [Add RBAC Group Member (Beta)](https://platform.claude.com/docs/en/api/beta/organization/rbac_groups/members/add.md)
 - [Add Session Resource (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/resources/add.md)
 - [Add Workspace To Service Account](https://platform.claude.com/docs/en/api/organization/service_accounts/workspaces/add.md)
 - [Add Workspace To Service Account (Beta)](https://platform.claude.com/docs/en/api/beta/organization/service_accounts/workspaces/add.md)
@@ -337,6 +338,7 @@ The full documentation is available in the following languages on https://platfo
 - [API Keys (Beta)](https://platform.claude.com/docs/en/api/beta/organization/api_keys.md)
 - [Approve Spend Limit Increase Request (Beta)](https://platform.claude.com/docs/en/api/beta/organization/spend_limits/increase_requests/approve.md)
 - [Apps](https://platform.claude.com/docs/en/api/compliance/apps.md)
+- [Apps (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/apps.md)
 - [Archive a Dream (Beta)](https://platform.claude.com/docs/en/api/beta/dreams/archive.md)
 - [Archive a memory store (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/archive.md)
 - [Archive Agent (Beta)](https://platform.claude.com/docs/en/api/beta/agents/archive.md)
@@ -369,7 +371,7 @@ The full documentation is available in the following languages on https://platfo
 - [Cancel a Message Batch](https://platform.claude.com/docs/en/api/messages/batches/cancel.md)
 - [Cancel a Message Batch (Beta)](https://platform.claude.com/docs/en/api/beta/messages/batches/cancel.md)
 - [Certificates (Beta)](https://platform.claude.com/docs/en/api/beta/tunnels/certificates.md)
-- [Chat Projects (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/chat_projects.md)
+- [Chat (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/apps/chat.md)
 - [Chats](https://platform.claude.com/docs/en/api/compliance/apps/chats.md)
 - [Code](https://platform.claude.com/docs/en/api/compliance/code.md)
 - [Collaborators](https://platform.claude.com/docs/en/api/compliance/apps/projects/collaborators.md)
@@ -378,8 +380,8 @@ The full documentation is available in the following languages on https://platfo
 - [Compliance Settings](https://platform.claude.com/docs/en/api/organization/compliance_settings.md)
 - [Compliance Settings (Beta)](https://platform.claude.com/docs/en/api/beta/organization/compliance_settings.md)
 - [Connectors (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/connectors.md)
-- [Cost (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/cost.md)
 - [Cost Report (Beta)](https://platform.claude.com/docs/en/api/beta/organization/cost_report.md)
+- [Cost Report (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/cost_report.md)
 - [Count tokens in a Message](https://platform.claude.com/docs/en/api/messages/count_tokens.md)
 - [Count tokens in a Message (Beta)](https://platform.claude.com/docs/en/api/beta/messages/count_tokens.md)
 - [Create a Dream (Beta)](https://platform.claude.com/docs/en/api/beta/dreams/create.md)
@@ -469,6 +471,7 @@ The full documentation is available in the following languages on https://platfo
 - [Download Plugin Version Archive (Beta)](https://platform.claude.com/docs/en/api/beta/organization/plugins/versions/download.md)
 - [Download Skill Version Content (Beta)](https://platform.claude.com/docs/en/api/beta/skills/versions/download.md)
 - [Dreams (Beta)](https://platform.claude.com/docs/en/api/beta/dreams.md)
+- [Effective (Beta)](https://platform.claude.com/docs/en/api/beta/organization/spend_limits/effective.md)
 - [Environments (Beta)](https://platform.claude.com/docs/en/api/beta/environments.md)
 - [Events (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/events.md)
 - [Events (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/threads/events.md)
@@ -483,12 +486,12 @@ The full documentation is available in the following languages on https://platfo
 - [Get a Dream (Beta)](https://platform.claude.com/docs/en/api/beta/dreams/retrieve.md)
 - [Get a Model](https://platform.claude.com/docs/en/api/models/retrieve.md)
 - [Get a Model (Beta)](https://platform.claude.com/docs/en/api/beta/models/retrieve.md)
-- [Get Activity Summaries (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/retrieve_summaries.md)
+- [Get Activity Summaries (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/summaries/list.md)
 - [Get Agent (Beta)](https://platform.claude.com/docs/en/api/beta/agents/retrieve.md)
 - [Get Artifact Activity (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/artifacts/list.md)
 - [Get artifact metadata](https://platform.claude.com/docs/en/api/compliance/apps/artifacts/retrieve.md)
 - [Get chat messages](https://platform.claude.com/docs/en/api/compliance/apps/chats/messages/list.md)
-- [Get Chat Project Usage (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/chat_projects/list.md)
+- [Get Chat Project Usage (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/apps/chat/projects/list.md)
 - [Get Claude Code Usage Report (Beta)](https://platform.claude.com/docs/en/api/beta/organization/usage_report/retrieve_claude_code.md)
 - [Get Claude-generated file metadata](https://platform.claude.com/docs/en/api/compliance/apps/chats/generated_files/retrieve.md)
 - [Get Compliance Group](https://platform.claude.com/docs/en/api/compliance/groups/retrieve.md)
@@ -496,7 +499,7 @@ The full documentation is available in the following languages on https://platfo
 - [Get Compliance Settings](https://platform.claude.com/docs/en/api/organization/compliance_settings/retrieve.md)
 - [Get Compliance Settings (Beta)](https://platform.claude.com/docs/en/api/beta/organization/compliance_settings/retrieve.md)
 - [Get Connector Usage (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/connectors/list.md)
-- [Get Cost Over Time (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/cost/list.md)
+- [Get Cost Over Time (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/cost_report/list.md)
 - [Get Cost Report (Beta)](https://platform.claude.com/docs/en/api/beta/organization/cost_report/retrieve.md)
 - [Get Credential (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/credentials/retrieve.md)
 - [Get Current Organization](https://platform.claude.com/docs/en/api/organization/retrieve.md)
@@ -517,8 +520,8 @@ The full documentation is available in the following languages on https://platfo
 - [Get Invite](https://platform.claude.com/docs/en/api/organization/invites/retrieve.md)
 - [Get Invite (Beta)](https://platform.claude.com/docs/en/api/beta/organization/invites/retrieve.md)
 - [Get Messages Usage Report (Beta)](https://platform.claude.com/docs/en/api/beta/organization/usage_report/retrieve_messages.md)
-- [Get Per-User Cost (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/cost/list_by_user.md)
-- [Get Per-User Token Usage (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/usage/list_by_user.md)
+- [Get Per-User Cost (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/user_cost_report/list.md)
+- [Get Per-User Token Usage (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/user_usage_report/list.md)
 - [Get Plugin (Beta)](https://platform.claude.com/docs/en/api/beta/organization/plugins/retrieve.md)
 - [Get Plugin Marketplace (Beta)](https://platform.claude.com/docs/en/api/beta/organization/plugin_marketplaces/retrieve.md)
 - [Get Plugin Usage (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/plugins/list.md)
@@ -543,7 +546,7 @@ The full documentation is available in the following languages on https://platfo
 - [Get Skill Version (Beta)](https://platform.claude.com/docs/en/api/beta/skills/versions/retrieve.md)
 - [Get Spend Limit (Beta)](https://platform.claude.com/docs/en/api/beta/organization/spend_limits/retrieve.md)
 - [Get Spend Limit Increase Request (Beta)](https://platform.claude.com/docs/en/api/beta/organization/spend_limits/increase_requests/retrieve.md)
-- [Get Token Usage Over Time (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/usage/list.md)
+- [Get Token Usage Over Time (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/usage_report/list.md)
 - [Get Tunnel (Beta)](https://platform.claude.com/docs/en/api/beta/tunnels/retrieve.md)
 - [Get Tunnel (Beta)](https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/retrieve.md)
 - [Get Tunnel Certificate (Beta)](https://platform.claude.com/docs/en/api/beta/tunnels/certificates/retrieve.md)
@@ -578,7 +581,7 @@ The full documentation is available in the following languages on https://platfo
 - [List Deployment Runs (Beta)](https://platform.claude.com/docs/en/api/beta/deployment_runs/list.md)
 - [List Deployments (Beta)](https://platform.claude.com/docs/en/api/beta/deployments/list.md)
 - [List Dreams (Beta)](https://platform.claude.com/docs/en/api/beta/dreams/list.md)
-- [List Effective Spend Limits (Beta)](https://platform.claude.com/docs/en/api/beta/organization/spend_limits/list_effective.md)
+- [List Effective Spend Limits (Beta)](https://platform.claude.com/docs/en/api/beta/organization/spend_limits/effective/list.md)
 - [List Environments (Beta)](https://platform.claude.com/docs/en/api/beta/environments/list.md)
 - [List Events (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/events/list.md)
 - [List External Keys](https://platform.claude.com/docs/en/api/organization/external_keys/list.md)
@@ -631,6 +634,7 @@ The full documentation is available in the following languages on https://platfo
 - [List Skills](https://platform.claude.com/docs/en/api/skills/list.md)
 - [List Skills (Beta)](https://platform.claude.com/docs/en/api/beta/skills/list.md)
 - [List Spend Limit Increase Requests (Beta)](https://platform.claude.com/docs/en/api/beta/organization/spend_limits/increase_requests/list.md)
+- [List Spend Limits (Beta)](https://platform.claude.com/docs/en/api/beta/organization/spend_limits/list.md)
 - [List Tunnel Certificates (Beta)](https://platform.claude.com/docs/en/api/beta/tunnels/certificates/list.md)
 - [List Tunnel Certificates (Beta)](https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/tunnel_certificates/list.md)
 - [List Tunnels (Beta)](https://platform.claude.com/docs/en/api/beta/tunnels/list.md)
@@ -676,6 +680,7 @@ The full documentation is available in the following languages on https://platfo
 - [Plugins (Beta)](https://platform.claude.com/docs/en/api/beta/organization/plugins.md)
 - [Poll for Work (Beta)](https://platform.claude.com/docs/en/api/beta/environments/work/poll.md)
 - [Projects](https://platform.claude.com/docs/en/api/compliance/apps/projects.md)
+- [Projects (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/apps/chat/projects.md)
 - [Query compliance activities](https://platform.claude.com/docs/en/api/compliance/activities/list.md)
 - [Rate Limits](https://platform.claude.com/docs/en/api/organization/workspaces/rate_limits.md)
 - [Rate Limits](https://platform.claude.com/docs/en/api/organization/rate_limits.md)
@@ -689,7 +694,7 @@ The full documentation is available in the following languages on https://platfo
 - [Remove Federation Rule Workspace](https://platform.claude.com/docs/en/api/organization/federation/rules/workspaces/remove.md)
 - [Remove Federation Rule Workspace (Beta)](https://platform.claude.com/docs/en/api/beta/organization/federation/rules/workspaces/remove.md)
 - [Remove Plugin Installation Setting (Beta)](https://platform.claude.com/docs/en/api/beta/organization/plugins/installation_settings/remove.md)
-- [Remove RBAC Group Member (Beta)](https://platform.claude.com/docs/en/api/beta/organization/rbac_groups/members/delete.md)
+- [Remove RBAC Group Member (Beta)](https://platform.claude.com/docs/en/api/beta/organization/rbac_groups/members/remove.md)
 - [Remove User](https://platform.claude.com/docs/en/api/organization/users/remove.md)
 - [Remove User (Beta)](https://platform.claude.com/docs/en/api/beta/organization/users/remove.md)
 - [Remove Workspace From Service Account](https://platform.claude.com/docs/en/api/organization/service_accounts/workspaces/remove.md)
@@ -723,7 +728,7 @@ The full documentation is available in the following languages on https://platfo
 - [Sessions](https://platform.claude.com/docs/en/api/compliance/apps/sessions.md)
 - [Sessions (Beta)](https://platform.claude.com/docs/en/api/beta/sessions.md)
 - [Set Plugin Installation Setting (Beta)](https://platform.claude.com/docs/en/api/beta/organization/plugins/installation_settings/set.md)
-- [Set Spend Limit (Beta)](https://platform.claude.com/docs/en/api/beta/organization/spend_limits/create.md)
+- [Set Spend Limit (Beta)](https://platform.claude.com/docs/en/api/beta/organization/spend_limits/set.md)
 - [Settings](https://platform.claude.com/docs/en/api/compliance/organizations/settings.md)
 - [Shares (Beta)](https://platform.claude.com/docs/en/api/beta/organization/plugins/shares.md)
 - [Skills](https://platform.claude.com/docs/en/api/skills.md)
@@ -733,6 +738,7 @@ The full documentation is available in the following languages on https://platfo
 - [Stop Work (Beta)](https://platform.claude.com/docs/en/api/beta/environments/work/stop.md)
 - [Stream Events (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/events/stream.md)
 - [Stream Session Thread Events (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/threads/events/stream.md)
+- [Summaries (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/summaries.md)
 - [Threads (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/threads.md)
 - [Tunnel Certificates (Beta)](https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/tunnel_certificates.md)
 - [Tunnels (Beta)](https://platform.claude.com/docs/en/api/beta/tunnels.md)
@@ -773,9 +779,11 @@ The full documentation is available in the following languages on https://platfo
 - [Update Workspace Member (Beta)](https://platform.claude.com/docs/en/api/beta/organization/workspaces/members/update.md)
 - [Upload File](https://platform.claude.com/docs/en/api/files/upload.md)
 - [Upload File (Beta)](https://platform.claude.com/docs/en/api/beta/files/upload.md)
-- [Usage (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/usage.md)
 - [Usage Report (Beta)](https://platform.claude.com/docs/en/api/beta/organization/usage_report.md)
+- [Usage Report (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/usage_report.md)
+- [User Cost Report (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/user_cost_report.md)
 - [User Profiles (Beta)](https://platform.claude.com/docs/en/api/beta/user_profiles.md)
+- [User Usage Report (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/user_usage_report.md)
 - [Users](https://platform.claude.com/docs/en/api/organization/users.md)
 - [Users](https://platform.claude.com/docs/en/api/compliance/organizations/users.md)
 - [Users (Beta)](https://platform.claude.com/docs/en/api/beta/organization/users.md)
