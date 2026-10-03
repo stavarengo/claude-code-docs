@@ -306,6 +306,7 @@ The [`/code-review` command](/docs/en/commands) reviews a diff in your terminal 
     * `--fix`: applies the findings to your working tree after the review
     * `--comment`: posts the findings on a GitHub pull request as inline comments, or on a GitLab merge request as a single note
     * `--post`: on an `ultra` cloud review of a `github.com` pull request, preselects posting the finished findings to the PR in the launch dialog; see [Post findings to the pull request](/docs/en/ultrareview#post-findings-to-the-pull-request). Requires Claude Code v2.1.227 or later
+    * `--max-findings <n>`, `--max-findings all`, or `--max-findings default`: reports up to `n` findings, or every finding with `all`, in place of the review's usual limit. Later reviews reuse the value you typed until you pass `--max-findings default`. Requires Claude Code v2.1.288 or later
 
     When you pass `--comment` for a GitLab merge request, Claude Code posts the findings through GitLab's `glab` CLI. Requires Claude Code v2.1.257 or later. When `glab` isn't installed, Claude prints the findings in the terminal instead.
 
@@ -350,7 +351,7 @@ After the effort level and flags, Claude Code reads the rest of the line in one 
 The review runs in the background by default; before v2.1.218, it ran inside your conversation. It runs in the foreground instead in cases like these:
 
 * You run `/code-review` again while an earlier review is still in progress
-* You run it in non-interactive mode, with the `-p` flag or the Agent SDK; Claude Code waits for the review and includes the findings in the response, except for `ultra`, which [launches the cloud review without waiting](#escalate-to-ultrareview)
+* You run it in non-interactive mode, with the `-p` flag or the Agent SDK; Claude Code waits for the review and includes the findings in the response, except for `ultra`, which [doesn't wait for the cloud review](/docs/en/ultrareview#run-ultrareview-non-interactively)
 * You set [`CLAUDE_CODE_DISABLE_BACKGROUND_TASKS`](/docs/en/env-vars) to `1`, which also turns off every other background task feature
 
 ### Let Claude start the review

@@ -914,7 +914,98 @@ A thread was a collection of messages stored server-side. Threads could _only_ s
 
 #### Python
 
+
+
+#### Thread object
+
+```python
+thread = openai.beta.threads.create(
+    messages=[{"role": "user", "content": "what are the 5 Ds of dodgeball?"}],
+    metadata={"user_id": "peter_le_fleur"},
+)
+```
+
+#### Conversation object
+
+```python
+conversation = openai.conversations.create(
+    items=[{"role": "user", "content": "what are the 5 Ds of dodgeball?"}],
+    metadata={"user_id": "peter_le_fleur"},
+)
+```
+
+
+
 #### Go
+
+
+
+#### Thread object (Go)
+
+```go
+thread, err := client.Beta.Threads.New(context.Background(), openai.BetaThreadNewParams{
+	Messages: []openai.BetaThreadNewParamsMessage{{
+		Role: "user",
+		Content: openai.BetaThreadNewParamsMessageContentUnion{
+			OfString: openai.String("what are the 5 Ds of dodgeball?"),
+		},
+	}},
+	Metadata: shared.Metadata{"user_id": "peter_le_fleur"},
+})
+if err != nil {
+	panic(err)
+}
+```
+
+#### Conversation object (Go)
+
+```go
+conversation, err := client.Conversations.New(context.Background(), conversations.ConversationNewParams{
+	Items: []responses.ResponseInputItemUnionParam{
+		responses.ResponseInputItemParamOfMessage("what are the 5 Ds of dodgeball?", responses.EasyInputMessageRoleUser),
+	},
+	Metadata: shared.Metadata{"user_id": "peter_le_fleur"},
+})
+if err != nil {
+	panic(err)
+}
+```
+
+
+
+#### JavaScript
+
+
+
+#### Thread object (JavaScript)
+
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+const thread = await client.beta.threads.create({
+  messages: [{ role: "user", content: "what are the 5 Ds of dodgeball?" }],
+  metadata: { user_id: "peter_le_fleur" },
+});
+console.log(thread.id);
+```
+
+#### Conversation object (JavaScript)
+
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+
+const conversation = await client.conversations.create({
+  items: [{ role: "user", content: "What are the five Ds of dodgeball?" }],
+  metadata: { user_id: "peter_le_fleur" },
+});
+
+console.log(conversation.id);
+```
+
+
 
 ### Response example
 
@@ -961,7 +1052,133 @@ Responses are designed to be used alone, but you can also use them with prompt a
 
 #### Python
 
+
+
+#### Run object
+
+```python
+# Replace the illustrative IDs and URLs below with your own resource values.
+import time
+
+from openai import OpenAI
+
+openai = OpenAI()
+thread_id = "thread_123"
+assistant_id = "asst_123"
+
+run = openai.beta.threads.runs.create(
+    thread_id=thread_id,
+    assistant_id=assistant_id,
+)
+
+while run.status in ("queued", "in_progress"):
+    time.sleep(1)
+    run = openai.beta.threads.runs.retrieve(thread_id=thread_id, run_id=run.id)
+```
+
+#### Response object
+
+```python
+# Replace the illustrative IDs and URLs below with your own resource values.
+
+from openai import OpenAI
+
+openai = OpenAI()
+conversation_id = "conv_123"
+
+response = openai.responses.create(
+    model="gpt-6-astra",
+    input=[{"role": "user", "content": "What are the 5 Ds of dodgeball?"}],
+    conversation=conversation_id,
+)
+```
+
+
+
 #### Go
+
+
+
+#### Run object (Go)
+
+```go
+run, err := client.Beta.Threads.Runs.New(context.Background(), "thread_abc123", openai.BetaThreadRunNewParams{
+	AssistantID: "asst_abc123",
+})
+if err != nil {
+	panic(err)
+}
+for run.Status == openai.RunStatusQueued || run.Status == openai.RunStatusInProgress {
+	time.Sleep(time.Second)
+	run, err = client.Beta.Threads.Runs.Get(context.Background(), "thread_abc123", run.ID)
+	if err != nil {
+		panic(err)
+	}
+}
+```
+
+#### Response object (Go)
+
+```go
+_, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+	Model: "gpt-6-astra",
+	Input: responses.ResponseNewParamsInputUnion{OfInputItemList: responses.ResponseInputParam{
+		responses.ResponseInputItemParamOfMessage("What are the 5 Ds of dodgeball?", responses.EasyInputMessageRoleUser),
+	}},
+	Conversation: responses.ResponseNewParamsConversationUnion{OfString: openai.String("conv_abc123")},
+})
+if err != nil {
+	panic(err)
+}
+```
+
+
+
+#### JavaScript
+
+
+
+#### Run object (JavaScript)
+
+```javascript
+import { setTimeout } from "node:timers/promises";
+import OpenAI from "openai";
+
+const client = new OpenAI();
+// Replace these illustrative IDs with your own resources.
+const threadId = "thread_123";
+const assistantId = "asst_123";
+let run = await client.beta.threads.runs.create(threadId, {
+  assistant_id: assistantId,
+});
+while (run.status === "queued" || run.status === "in_progress") {
+  await setTimeout(1000);
+  run = await client.beta.threads.runs.retrieve(run.id, {
+    thread_id: threadId,
+  });
+}
+console.log(run.status);
+```
+
+#### Response object (JavaScript)
+
+```javascript
+// Replace the illustrative IDs and URLs below with your own resource values.
+import OpenAI from "openai";
+
+const client = new OpenAI();
+const conversationId = "conv_123";
+
+const response = await client.responses.create({
+  model: "gpt-6-astra",
+  input: [{ role: "user", content: "What are the five Ds of dodgeball?" }],
+  conversation: conversationId,
+});
+
+console.log(response.output_text);
+```
+
+
 
 ### Response example
 
@@ -4044,9 +4261,12 @@ with OpenAI() as client:
         environment={"type": "openai_hosted"},
         input="Create tree.py, a Python script that prints a readable tree of the files in the current directory. Run it and show me the output.",
         stream=True,
-    ) as events:
-        for event in events:
+    ).with_result_collection() as stream:
+        for event in stream:
             print(event.to_json(indent=None), flush=True)
+        result = stream.get_final_result()
+    print(result.output_text)
+    session_id = result.session_id
 ```
 
 
@@ -4089,10 +4309,14 @@ const events = await client.beta.agents.sessions.create({
     "Create tree.py, a Python script that prints a readable tree of the files in the current directory. Run it and show me the output.",
   stream: true,
 });
+events.withResultCollection();
 try {
   for await (const event of events) {
     console.log(JSON.stringify(event));
   }
+  const result = await events.finalResult();
+  console.log(result.output_text);
+  console.log("Session:", result.session_id);
 } finally {
   events.controller.abort();
 }
@@ -4146,6 +4370,7 @@ events := client.Beta.Agents.Sessions.NewStreaming(ctx, openai.BetaAgentSessionN
 	},
 })
 defer events.Close()
+openai.BetaAgentSessionWithResultCollection(events)
 if events.Err() != nil {
 	panic(events.Err())
 }
@@ -4153,9 +4378,13 @@ for events.Next() {
 	event := events.Current()
 	fmt.Println(event.RawJSON())
 }
-if err := events.Err(); err != nil {
+result, err := openai.BetaAgentSessionFinalResult(events)
+if err != nil {
 	panic(err)
 }
+fmt.Println(result.OutputText())
+sessionID := result.SessionID()
+fmt.Println("Session:", sessionID)
 ```
 
 
@@ -4197,6 +4426,7 @@ import com.openai.core.http.StreamResponse;
 import com.openai.models.beta.agents.AgentSessionEvent;
 import com.openai.models.beta.agents.EnvironmentParam;
 import com.openai.models.beta.agents.sessions.SessionCreateParams;
+import com.openai.services.beta.agents.AgentTurnResults;
 
 OpenAIClient client = OpenAIOkHttpClient.fromEnv();
 var json = new JsonMapper();
@@ -4217,11 +4447,16 @@ try (StreamResponse<AgentSessionEvent> events =
                     "Create tree.py, a Python script that prints a readable tree of the files"
                         + " in the current directory. Run it and show me the output.")
                 .build())) {
+  AgentTurnResults.withResultCollection(events);
   var iterator = events.stream().iterator();
   while (iterator.hasNext()) {
     var event = iterator.next();
     System.out.println(json.writeValueAsString(event));
   }
+  var result = AgentTurnResults.getFinalResult(events);
+  System.out.println(result.outputText());
+  String sessionId = result.sessionId();
+  System.out.println(sessionId);
 }
 ```
 
@@ -4265,9 +4500,14 @@ events = client.beta.agents.sessions.create_streaming(
   input: "Create tree.py, a Python script that prints a readable tree of the files in the current directory. Run it and show me the output."
 )
 begin
+  events.with_result_collection
   events.each do |event|
     puts JSON.generate(event.to_h)
   end
+  result = events.get_final_result
+  puts result.output_text
+  session_id = result.session_id
+  puts "Session: #{session_id}"
 ensure
   events.close
 end
@@ -13249,6 +13489,21 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.completions.CompletionCreateParams;
+
+var completion =
+    client
+        .completions()
+        .create(
+            CompletionCreateParams.builder()
+                .model("gpt-3.5-turbo-instruct")
+                .prompt("Write a tagline for an ice cream shop.")
+                .build());
+completion.choices().forEach(choice -> System.out.println(choice.text()));
+```
+
 ```ruby
 require "openai"
 
@@ -16776,7 +17031,7 @@ Use the app's README for installation, desktop permissions, and supported enviro
 
 ### Connect your own runtime
 
-The following example shows the API loop for a runtime you provide. Python and Ruby send Python code to a desktop runtime that uses PyAutoGUI; JavaScript uses Playwright to operate a browser. Each client exposes an ordinary function tool and returns text or images with the original `call_id`.
+The following example shows the API loop for a runtime you provide. Python, Ruby, and Go send Python code to a desktop runtime that uses PyAutoGUI; JavaScript uses Playwright to operate a browser. Each client exposes an ordinary function tool and returns text or images with the original `call_id`.
 
 The `execute_in_sandbox` or `executeInSandbox` helper sends code to your execution environment and returns its observations. It must preserve the browser or desktop session, enforce execution limits, and apply your permission rules. These are integration examples, separate from running the sample app.
 
@@ -17014,6 +17269,93 @@ def run_computer_use(endpoint, prompt)
     history[:id] = response.id
   end
 end
+```
+
+  
+
+  
+
+    
+Go
+
+    Run computer use with code execution
+
+```go
+func runComputerUse(ctx context.Context, client openai.Client, endpoint, prompt string, terminal *bufio.Scanner, output io.Writer) error {
+	session := make([]byte, 16)
+	if _, err := rand.Read(session); err != nil {
+		return err
+	}
+	sessionID := hex.EncodeToString(session)
+	tool := responses.ToolParamOfFunction("exec_py", map[string]any{
+		"type": "object", "properties": map[string]any{"code": map[string]any{"type": "string"}},
+		"required": []string{"code"}, "additionalProperties": false,
+	}, true)
+	tool.OfFunction.Description = openai.String("Run Python in a persistent desktop. Variables persist across calls. " +
+		"PyAutoGUI operations are synchronous. Available: pyautogui, time, " +
+		"log(value), and display(PIL_image). Inspect the screen with " +
+		"display(pyautogui.screenshot()) before acting. Use screenshot " +
+		"coordinates and check the screen after a short group of actions. " +
+		"Keep screenshots in memory and PyAutoGUI's fail-safe enabled.")
+	params := responses.ResponseNewParams{
+		Model: "gpt-6-astra", Tools: []responses.ToolUnionParam{tool},
+		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String(prompt)},
+	}
+	for turn := 0; turn < 20; turn++ {
+		response, err := client.Responses.New(ctx, params)
+		if err != nil {
+			return err
+		}
+		if response.Status != "completed" {
+			return fmt.Errorf("response stopped with status: %s", response.Status)
+		}
+		var calls []responses.ResponseFunctionToolCall
+		finalMessage := false
+		for _, item := range response.Output {
+			if item.Type == "function_call" {
+				calls = append(calls, item.AsFunctionCall())
+			}
+			if item.Type == "message" && item.AsMessage().Phase != "commentary" {
+				finalMessage = true
+			}
+		}
+		if len(calls) == 0 && finalMessage {
+			fmt.Fprintln(output, response.OutputText())
+			return nil
+		}
+		if turn == 19 {
+			return fmt.Errorf("task reached the 20-response limit; inspect the last result")
+		}
+		nextInput := responses.ResponseInputParam{}
+		for _, call := range calls {
+			if call.Name != "exec_py" {
+				return fmt.Errorf("unexpected tool: %s", call.Name)
+			}
+			var arguments struct {
+				Code *string `json:"code"`
+			}
+			if err := json.Unmarshal([]byte(call.Arguments), &arguments); err != nil {
+				return err
+			}
+			if arguments.Code == nil {
+				return fmt.Errorf("exec_py requires code")
+			}
+			observations, err := executeInSandbox(ctx, endpoint, sessionID, *arguments.Code, terminal, output)
+			if err != nil {
+				return err
+			}
+			nextInput = append(nextInput, responses.ResponseInputItemUnionParam{
+				OfFunctionCallOutput: &responses.ResponseInputItemFunctionCallOutputParam{
+					CallID: openai.String(call.CallID),
+					Output: responses.ResponseInputItemFunctionCallOutputOutputUnionParam{OfResponseFunctionCallOutputItemArray: observations},
+				},
+			})
+		}
+		params.Input = responses.ResponseNewParamsInputUnion{OfInputItemList: nextInput}
+		params.PreviousResponseID = openai.String(response.ID)
+	}
+	return nil
+}
 ```
 
 
@@ -28413,6 +28755,19 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.contentprovenancechecks.ContentProvenanceCheckCreateParams;
+import java.nio.file.Path;
+
+var result =
+    client
+        .contentProvenanceChecks()
+        .create(
+            ContentProvenanceCheckCreateParams.builder().file(Path.of("myimage.png")).build());
+System.out.println(result);
+```
+
 ```ruby
 require "openai"
 require "pathname"
@@ -38207,6 +38562,8 @@ transcript = client.audio.transcriptions.create(
   file: audio,
   model: "gpt-transcribe"
 )
+raise "Expected a JSON transcript response" if transcript.is_a?(StringIO)
+
 puts(transcript.text)
 ```
 
@@ -38359,6 +38716,8 @@ transcript = client.audio.transcriptions.create(
   model: "gpt-transcribe",
   keywords: ["OpenAI", "Responses API", "Codex"]
 )
+raise "Expected a JSON transcript response" if transcript.is_a?(StringIO)
+
 puts(transcript.text)
 ```
 
@@ -38712,6 +39071,8 @@ require "pathname"
 client = OpenAI::Client.new
 audio = Pathname("german.wav")
 translation = client.audio.translations.create(file: audio, model: "whisper-1")
+raise "Expected a JSON translation response" if translation.is_a?(StringIO)
+
 puts(translation.text)
 ```
 
@@ -38882,6 +39243,8 @@ transcript = client.audio.transcriptions.create(
   response_format: :verbose_json,
   timestamp_granularities: [:word]
 )
+raise "Expected a JSON transcript response" if transcript.is_a?(StringIO)
+
 pp(transcript[:words])
 ```
 
@@ -39020,6 +39383,39 @@ func main() {
 		panic(err)
 	}
 }
+```
+
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.audio.transcriptions.TranscriptionCreateParams;
+import java.nio.file.Path;
+
+var params =
+    TranscriptionCreateParams.builder()
+        .model("gpt-transcribe")
+        .file(Path.of("speech.wav"))
+        .build();
+try (var stream = client.audio().transcriptions().createStreaming(params)) {
+  stream.stream().forEach(event -> System.out.println(event));
+}
+```
+
+```csharp
+using OpenAI.Audio;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-transcribe";
+AudioClient client = new(model, key);
+
+await foreach (StreamingAudioTranscriptionUpdate update in client.TranscribeAudioStreamingAsync("speech.wav"))
+{
+    if (update is StreamingAudioTranscriptionTextDeltaUpdate delta)
+    {
+        Console.Write(delta.Delta);
+    }
+}
+Console.WriteLine();
 ```
 
 ```ruby
@@ -39212,6 +39608,8 @@ transcript = client.audio.transcriptions.create(
   model: "whisper-1",
   prompt: "The speaker says OpenAI and Responses API"
 )
+raise "Expected a JSON transcript response" if transcript.is_a?(StringIO)
+
 puts(transcript.text)
 ```
 
@@ -39444,6 +39842,8 @@ transcript = client.audio.transcriptions.create(
   file: audio,
   model: "gpt-4o-mini-transcribe"
 )
+
+raise "Expected a JSON transcript response" if transcript.is_a?(StringIO)
 
 response = client.responses.create(
   model: "gpt-4.1",
@@ -40835,6 +41235,65 @@ func callFunction(name string, arguments functionArguments) (string, error) {
 	default:
 		return "", fmt.Errorf("unknown function: %s", name)
 	}
+}
+```
+
+```java
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
+
+var argsJson = new ObjectMapper().readTree("{\"location\":\"Paris, France\"}");
+System.out.println(callFunction("get_weather", argsJson));
+
+// These local fixtures demonstrate dispatch; replace them with your application services.
+// The email fixture prints its inputs and does not send a message.
+static Map<String, Object> callFunction(String name, JsonNode arguments) {
+  return switch (name) {
+    case "get_weather" -> getWeather(arguments.get("location").asText());
+    case "send_email" -> sendEmail(arguments.get("to").asText(), arguments.get("body").asText());
+    default -> throw new IllegalArgumentException("Unknown function: " + name);
+  };
+}
+
+private static Map<String, Object> getWeather(String location) {
+  int temperature =
+      switch (location) {
+        case "Bogotá, Colombia" -> 18;
+        case "Paris, France" -> 15;
+        default -> 20;
+      };
+  return Map.of("location", location, "temperature_celsius", temperature);
+}
+
+private static Map<String, Object> sendEmail(String to, String body) {
+  System.out.println("Sending email to " + to + ": " + body);
+  return Map.of("status", "sent");
+}
+```
+
+```csharp
+using System.Text.Json;
+
+using JsonDocument arguments = JsonDocument.Parse("{\"location\":\"Paris, France\"}");
+Console.WriteLine(FunctionDispatcher.CallFunction("get_weather", arguments.RootElement));
+
+internal static class FunctionDispatcher
+{
+    // These local fixtures demonstrate dispatch; replace them with your application services.
+    // The email fixture prints its inputs and does not send a message.
+    internal static string CallFunction(string name, JsonElement arguments) => name switch
+    {
+        "get_weather" => GetWeather(arguments.GetProperty("location").GetString()!),
+        "send_email" => SendEmail(arguments.GetProperty("to").GetString()!, arguments.GetProperty("body").GetString()!),
+        _ => throw new ArgumentException($"Unknown function: {name}", nameof(name))
+    };
+    private static string GetWeather(string location) => JsonSerializer.Serialize(new { location, temperature_celsius = location switch { "Bogotá, Colombia" => 18, "Paris, France" => 15, _ => 20 } });
+    private static string SendEmail(string to, string body)
+    {
+        Console.WriteLine($"Sending email to {to}: {body}");
+        return "{\"status\":\"sent\"}";
+    }
 }
 ```
 
@@ -45261,6 +45720,34 @@ func saveImage(filename, encoded string) {
 }
 ```
 
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.images.ImageGenerateParams;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+
+var params =
+    ImageGenerateParams.builder()
+        .prompt(
+            "Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape")
+        .model("gpt-image-2.5-sunburst")
+        .partialImages(2)
+        .build();
+try (var stream = client.images().generateStreaming(params)) {
+  var events = stream.stream().iterator();
+  while (events.hasNext()) {
+    var event = events.next();
+    if (event.generationPartialImage().isPresent()) {
+      var partial = event.generationPartialImage().orElseThrow();
+      Files.write(
+          Path.of("river" + partial.partialImageIndex() + ".png"),
+          Base64.getDecoder().decode(partial.b64Json()));
+    }
+  }
+}
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -45480,6 +45967,26 @@ func main() {
 	}
 	fmt.Println(base64.StdEncoding.EncodeToString(image))
 }
+```
+
+```java
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+
+System.out.println(encodeImage(Path.of("example.png")));
+
+private static String encodeImage(Path path) throws java.io.IOException {
+  return Base64.getEncoder().encodeToString(Files.readAllBytes(path));
+}
+```
+
+```csharp
+using System;
+
+Console.WriteLine(EncodeImage("example.png"));
+
+static string EncodeImage(string filePath) => Convert.ToBase64String(File.ReadAllBytes(filePath));
 ```
 
 ```ruby
@@ -62048,8 +62555,14 @@ const events = await client.beta.agents.sessions.create({
     "Release A: Search now supports filtering by date. Existing queries continue to work. Release B: The export endpoint now returns a download URL instead of file bytes. Update clients to fetch that URL.",
   stream: true,
 });
-for await (const event of events) {
-  console.log(JSON.stringify(event));
+events.withResultCollection();
+try {
+  for await (const event of events) {
+    console.log(JSON.stringify(event));
+  }
+  console.log((await events.finalResult()).output_text);
+} finally {
+  events.controller.abort();
 }
 ```
 
@@ -62067,9 +62580,11 @@ with client.beta.agents.sessions.create(
     environment={"type": "none"},
     input="Release A: Search now supports filtering by date. Existing queries continue to work. Release B: The export endpoint now returns a download URL instead of file bytes. Update clients to fetch that URL.",
     stream=True,
-) as events:
-    for event in events:
+).with_result_collection() as stream:
+    for event in stream:
         print(event.model_dump_json())
+    result = stream.get_final_result()
+print(result.output_text)
 ```
 
 ```go
@@ -62088,12 +62603,15 @@ events := client.Beta.Agents.Sessions.NewStreaming(ctx, openai.BetaAgentSessionN
 	Environment: openai.EnvironmentParamUnion{OfParamNone: &openai.EnvironmentParamNone{}},
 	Input:       openai.BetaAgentSessionNewParamsInputUnion{OfString: openai.String("Release A: Search now supports filtering by date. Existing queries continue to work. Release B: The export endpoint now returns a download URL instead of file bytes. Update clients to fetch that URL.")}})
 defer events.Close()
+openai.BetaAgentSessionWithResultCollection(events)
 for events.Next() {
 	fmt.Println(events.Current().RawJSON())
 }
-if err := events.Err(); err != nil {
+result, err := openai.BetaAgentSessionFinalResult(events)
+if err != nil {
 	panic(err)
 }
+fmt.Println(result.OutputText())
 ```
 
 ```java
@@ -62101,6 +62619,7 @@ import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.beta.agents.MultiAgentConfigParam;
 import com.openai.models.beta.agents.sessions.SessionCreateParams;
+import com.openai.services.beta.agents.AgentTurnResults;
 
 OpenAIClient client = OpenAIOkHttpClient.fromEnv();
 try (var events =
@@ -62132,7 +62651,9 @@ try (var events =
                         + " download URL instead of file bytes. Update clients to fetch that"
                         + " URL.")
                 .build())) {
+  AgentTurnResults.withResultCollection(events);
   events.stream().forEach(System.out::println);
+  System.out.println(AgentTurnResults.getFinalResult(events).outputText());
 }
 ```
 
@@ -62155,7 +62676,10 @@ events = client.beta.agents.sessions.create_streaming(
   input: "Release A: Search now supports filtering by date. Existing queries continue to work. Release B: The export endpoint now returns a download URL instead of file bytes. Update clients to fetch that URL."
 )
 begin
+  events.with_result_collection
   events.each { |event| puts JSON.generate(event.to_h) }
+  result = events.get_final_result
+  puts result.output_text
 ensure
   events.close
 end
@@ -64740,6 +65264,7 @@ Create summary.json
 
 ```javascript
 import OpenAI from "openai";
+import { agentFileDestination } from "openai/helpers/beta/agents/filesystem";
 
 const client = new OpenAI();
 const stream = await client.beta.agents.sessions.create({
@@ -64760,8 +65285,18 @@ const stream = await client.beta.agents.sessions.create({
   stream: true,
 });
 
-for await (const event of stream) {
-  console.log(event);
+stream.withResultCollection();
+try {
+  for await (const event of stream) {
+    console.log(event);
+  }
+  const result = await stream.finalResult();
+  await client.beta.agents.sessions.artifacts.forResult(result).download({
+    path: "/workspace/outputs/summary.json",
+    to: agentFileDestination("summary.json"),
+  });
+} finally {
+  stream.controller.abort();
 }
 ```
 
@@ -64786,9 +65321,14 @@ stream = client.beta.agents.sessions.create(
     stream=True,
 )
 
-with stream:
+with stream.with_result_collection():
     for event in stream:
         print(event.model_dump_json())
+    result = stream.get_final_result()
+
+client.beta.agents.sessions.artifacts.for_result(result).download(
+    "/workspace/outputs/summary.json", to="summary.json"
+)
 ```
 
 ```go
@@ -64797,6 +65337,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/openai/openai-go/v3"
 )
@@ -64816,11 +65357,25 @@ func main() {
 		Input: openai.BetaAgentSessionNewParamsInputUnion{OfString: openai.String("Use Python to sum the amount column in /workspace/amounts.csv. Write a JSON object with the total to /workspace/outputs/summary.json, then read it back to verify it.")},
 	})
 	defer stream.Close()
-
+	openai.BetaAgentSessionWithResultCollection(stream)
 	for stream.Next() {
 		fmt.Println(stream.Current().RawJSON())
 	}
-	if err := stream.Err(); err != nil {
+
+	result, err := openai.BetaAgentSessionFinalResult(stream)
+	if err != nil {
+		panic(err)
+	}
+	destination, err := os.Create("summary.json")
+	if err != nil {
+		panic(err)
+	}
+	defer destination.Close()
+	_, err = client.Beta.Agents.Sessions.Artifacts.ForResult(result).Download(ctx, "/workspace/outputs/summary.json", destination)
+	if err != nil {
+		panic(err)
+	}
+	if err := destination.Close(); err != nil {
 		panic(err)
 	}
 }
@@ -64828,9 +65383,12 @@ func main() {
 
 ```java
 import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.helpers.beta.agents.AgentArtifactDownloads;
 import com.openai.models.beta.agents.EnvironmentParam;
 import com.openai.models.beta.agents.HostedEnvironmentFileParam;
 import com.openai.models.beta.agents.sessions.SessionCreateParams;
+import com.openai.services.beta.agents.AgentTurnResults;
+import java.nio.file.Path;
 
 public class HostedReport {
   public static void main(String[] args) throws Exception {
@@ -64857,7 +65415,11 @@ public class HostedReport {
             .build();
 
     try (var stream = client.beta().agents().sessions().createStreaming(params)) {
+      AgentTurnResults.withResultCollection(stream);
       stream.stream().forEach(System.out::println);
+      var result = AgentTurnResults.getFinalResult(stream);
+      AgentArtifactDownloads.forResult(client.beta().agents().sessions().artifacts(), result)
+          .download("/workspace/outputs/summary.json", Path.of("summary.json"));
     }
   }
 }
@@ -64866,6 +65428,7 @@ public class HostedReport {
 ```ruby
 require "openai"
 require "json"
+require "pathname"
 
 client = OpenAI::Client.new
 stream = client.beta.agents.sessions.create_streaming(
@@ -64885,7 +65448,14 @@ stream = client.beta.agents.sessions.create_streaming(
 )
 
 begin
+  stream.with_result_collection
   stream.each { |event| puts event.to_json }
+  result = stream.get_final_result
+  puts result.output_text
+  client.beta.agents.sessions.artifacts.for_result(result).download(
+    path: "/workspace/outputs/summary.json",
+    to: Pathname("summary.json")
+  )
 ensure
   stream.close
 end
@@ -67513,6 +68083,121 @@ func runTool(name, argumentsJSON string) (map[string]any, error) {
 }
 ```
 
+```java
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+var json = new ObjectMapper();
+var tools =
+    List.of(
+        Tool.ofFunction(function("get_inventory", "available_units")),
+        Tool.ofFunction(function("get_demand", "requested_units")),
+        Tool.ofProgrammaticToolCalling());
+var input = new ArrayList<ResponseInputItem>();
+input.add(
+    ResponseInputItem.ofEasyInputMessage(
+        EasyInputMessage.builder()
+            .role(EasyInputMessage.Role.USER)
+            .content("Compare inventory with demand for sku_123.")
+            .build()));
+
+while (true) {
+  var response =
+      client
+          .responses()
+          .create(
+              ResponseCreateParams.builder()
+                  .model("gpt-6-astra")
+                  .store(false)
+                  .inputOfResponse(input)
+                  .tools(tools)
+                  .build());
+  if (!response.status().orElseThrow().equals(ResponseStatus.COMPLETED)) {
+    throw new IllegalStateException("Response ended with status " + response.status());
+  }
+  // Preserve every replayable output item, including program and reasoning items.
+  response.output().stream()
+      .map(item -> JsonValue.from(item).convert(ResponseInputItem.class))
+      .forEach(input::add);
+  var calls = response.output().stream().flatMap(item -> item.functionCall().stream()).toList();
+  if (calls.isEmpty()) {
+    var messages = response.output().stream().flatMap(item -> item.message().stream()).toList();
+    if (!messages.isEmpty()) {
+      messages.forEach(
+          message ->
+              message
+                  .content()
+                  .forEach(
+                      content -> {
+                        content.outputText().ifPresent(text -> System.out.println(text.text()));
+                        content
+                            .refusal()
+                            .ifPresent(refusal -> System.out.println(refusal.refusal()));
+                      }));
+      break;
+    }
+    continue;
+  }
+  for (var call : calls) {
+    String sku = json.readTree(call.arguments()).get("sku").asText();
+    var result =
+        switch (call.name()) {
+          case "get_inventory" -> Map.of("sku", sku, "available_units", 42);
+          case "get_demand" -> Map.of("sku", sku, "requested_units", 31);
+          default -> throw new IllegalArgumentException("Unknown tool: " + call.name());
+        };
+    var output =
+        ResponseInputItem.FunctionCallOutput.builder()
+            .callId(call.callId())
+            .output(json.writeValueAsString(result));
+    // Preserve caller so the runtime can resume the correct program.
+    call.caller()
+        .ifPresent(
+            caller ->
+                output.caller(
+                    JsonValue.from(caller)
+                        .convert(ResponseInputItem.FunctionCallOutput.Caller.class)));
+    input.add(ResponseInputItem.ofFunctionCallOutput(output.build()));
+  }
+}
+
+private static FunctionTool function(String name, String outputField) {
+  var parameters =
+      Map.of(
+          "type",
+          "object",
+          "properties",
+          Map.of("sku", Map.of("type", "string")),
+          "required",
+          List.of("sku"),
+          "additionalProperties",
+          false);
+  var outputSchema =
+      Map.of(
+          "type",
+          "object",
+          "properties",
+          Map.of("sku", Map.of("type", "string"), outputField, Map.of("type", "number")),
+          "required",
+          List.of("sku", outputField),
+          "additionalProperties",
+          false);
+  return FunctionTool.builder()
+      .name(name)
+      .description("Return an object with sku (string) and " + outputField + " (number).")
+      .parameters(JsonValue.from(parameters).convert(FunctionTool.Parameters.class))
+      .outputSchema(JsonValue.from(outputSchema).convert(FunctionTool.OutputSchema.class))
+      .allowedCallers(List.of(FunctionTool.AllowedCaller.PROGRAMMATIC))
+      .strict(true)
+      .build();
+}
+```
+
 ```ruby
 require "json"
 require "openai"
@@ -70026,6 +70711,79 @@ def generate_prompt(task_or_prompt: str):
     return completion.choices[0].message.content
 ````
 
+````go
+import (
+	"context"
+	"fmt"
+	"log"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	client := openai.NewClient()
+	metaPrompt := "Given a task description or existing prompt, produce a detailed system prompt to guide a language model in completing the task effectively.\n" +
+		"\n" +
+		"# Guidelines\n" +
+		"\n" +
+		"- Understand the Task: Grasp the main objective, goals, requirements, constraints, and expected output.\n" +
+		"- Minimal Changes: If an existing prompt is provided, improve it only if it's simple. For complex prompts, enhance clarity and add missing elements without altering the original structure.\n" +
+		"- Reasoning Before Conclusions**: Encourage reasoning steps before any conclusions are reached. ATTENTION! If the user provides examples where the reasoning happens afterward, REVERSE the order! NEVER START EXAMPLES WITH CONCLUSIONS!\n" +
+		"    - Reasoning Order: Call out reasoning portions of the prompt and conclusion parts (specific fields by name). For each, determine the ORDER in which this is done, and whether it needs to be reversed.\n" +
+		"    - Conclusion, classifications, or results should ALWAYS appear last.\n" +
+		"- Examples: Include high-quality examples if helpful, using placeholders [in brackets] for complex elements.\n" +
+		"   - What kinds of examples may need to be included, how many, and whether they are complex enough to benefit from placeholders.\n" +
+		"- Clarity and Conciseness: Use clear, specific language. Avoid unnecessary instructions or bland statements.\n" +
+		"- Formatting: Use markdown features for readability. DO NOT USE ``` CODE BLOCKS UNLESS SPECIFICALLY REQUESTED.\n" +
+		"- Preserve User Content: If the input task or prompt includes extensive guidelines or examples, preserve them entirely, or as closely as possible. If they are vague, consider breaking down into sub-steps. Keep any details, guidelines, examples, variables, or placeholders provided by the user.\n" +
+		"- Constants: DO include constants in the prompt, as they are not susceptible to prompt injection. Such as guides, rubrics, and examples.\n" +
+		"- Output Format: Explicitly the most appropriate output format, in detail. This should include length and syntax (e.g. short sentence, paragraph, JSON, etc.)\n" +
+		"    - For tasks outputting well-defined or structured data (classification, JSON, etc.) bias toward outputting a JSON.\n" +
+		"    - JSON should never be wrapped in code blocks (```) unless explicitly requested.\n" +
+		"\n" +
+		"The final prompt you output should adhere to the following structure below. Do not include any additional commentary, only output the completed system prompt. SPECIFICALLY, do not include any additional messages at the start or end of the prompt. (e.g. no \"---\")\n" +
+		"\n" +
+		"[Concise instruction describing the task - this should be the first line in the prompt, no section header]\n" +
+		"\n" +
+		"[Additional details as needed.]\n" +
+		"\n" +
+		"[Optional sections with headings or bullet points for detailed steps.]\n" +
+		"\n" +
+		"# Steps [optional]\n" +
+		"\n" +
+		"[optional: a detailed breakdown of the steps necessary to accomplish the task]\n" +
+		"\n" +
+		"# Output Format\n" +
+		"\n" +
+		"[Specifically call out how the output should be formatted, be it response length, structure e.g. JSON, markdown, etc]\n" +
+		"\n" +
+		"# Examples [optional]\n" +
+		"\n" +
+		"[Optional: 1-3 well-defined examples with placeholders if necessary. Clearly mark where examples start and end, and what the input and output are. User placeholders as necessary.]\n" +
+		"[If the examples are shorter than what a realistic example is expected to be, make a reference with () explaining how real examples should be longer / shorter / different. AND USE PLACEHOLDERS! ]\n" +
+		"\n" +
+		"# Notes [optional]\n" +
+		"\n" +
+		"[optional: edge cases, details, and an area to call or repeat out specific important considerations]\n"
+	completion, err := client.Chat.Completions.New(context.Background(), openai.ChatCompletionNewParams{
+		Model: "gpt-6-astra",
+		Messages: []openai.ChatCompletionMessageParamUnion{
+			openai.SystemMessage(metaPrompt), openai.UserMessage("Task, Goal, or Current Prompt: Help a customer resolve a billing issue."),
+		}})
+	if err != nil {
+		return err
+	}
+	fmt.Println(completion.Choices[0].Message.Content)
+	return nil
+}
+````
+
 ````java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -70090,6 +70848,63 @@ ChatCompletionCreateParams params =
 client.chat().completions().create(params).choices().stream()
     .flatMap(choice -> choice.message().content().stream())
     .forEach(System.out::println);
+````
+
+````csharp
+using OpenAI.Chat;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-6-astra";
+ChatClient client = new(model, key);
+
+string metaPrompt = """"
+    Given a task description or existing prompt, produce a detailed system prompt to guide a language model in completing the task effectively.
+    
+    # Guidelines
+    
+    - Understand the Task: Grasp the main objective, goals, requirements, constraints, and expected output.
+    - Minimal Changes: If an existing prompt is provided, improve it only if it's simple. For complex prompts, enhance clarity and add missing elements without altering the original structure.
+    - Reasoning Before Conclusions**: Encourage reasoning steps before any conclusions are reached. ATTENTION! If the user provides examples where the reasoning happens afterward, REVERSE the order! NEVER START EXAMPLES WITH CONCLUSIONS!
+        - Reasoning Order: Call out reasoning portions of the prompt and conclusion parts (specific fields by name). For each, determine the ORDER in which this is done, and whether it needs to be reversed.
+        - Conclusion, classifications, or results should ALWAYS appear last.
+    - Examples: Include high-quality examples if helpful, using placeholders [in brackets] for complex elements.
+       - What kinds of examples may need to be included, how many, and whether they are complex enough to benefit from placeholders.
+    - Clarity and Conciseness: Use clear, specific language. Avoid unnecessary instructions or bland statements.
+    - Formatting: Use markdown features for readability. DO NOT USE ``` CODE BLOCKS UNLESS SPECIFICALLY REQUESTED.
+    - Preserve User Content: If the input task or prompt includes extensive guidelines or examples, preserve them entirely, or as closely as possible. If they are vague, consider breaking down into sub-steps. Keep any details, guidelines, examples, variables, or placeholders provided by the user.
+    - Constants: DO include constants in the prompt, as they are not susceptible to prompt injection. Such as guides, rubrics, and examples.
+    - Output Format: Explicitly the most appropriate output format, in detail. This should include length and syntax (e.g. short sentence, paragraph, JSON, etc.)
+        - For tasks outputting well-defined or structured data (classification, JSON, etc.) bias toward outputting a JSON.
+        - JSON should never be wrapped in code blocks (```) unless explicitly requested.
+    
+    The final prompt you output should adhere to the following structure below. Do not include any additional commentary, only output the completed system prompt. SPECIFICALLY, do not include any additional messages at the start or end of the prompt. (e.g. no "---")
+    
+    [Concise instruction describing the task - this should be the first line in the prompt, no section header]
+    
+    [Additional details as needed.]
+    
+    [Optional sections with headings or bullet points for detailed steps.]
+    
+    # Steps [optional]
+    
+    [optional: a detailed breakdown of the steps necessary to accomplish the task]
+    
+    # Output Format
+    
+    [Specifically call out how the output should be formatted, be it response length, structure e.g. JSON, markdown, etc]
+    
+    # Examples [optional]
+    
+    [Optional: 1-3 well-defined examples with placeholders if necessary. Clearly mark where examples start and end, and what the input and output are. User placeholders as necessary.]
+    [If the examples are shorter than what a realistic example is expected to be, make a reference with () explaining how real examples should be longer / shorter / different. AND USE PLACEHOLDERS! ]
+    
+    # Notes [optional]
+    
+    [optional: edge cases, details, and an area to call or repeat out specific important considerations]
+    """";
+ChatCompletionOptions options = new();
+ChatCompletion result = await client.CompleteChatAsync([new SystemChatMessage(metaPrompt), new UserChatMessage("Task, Goal, or Current Prompt: Help a customer resolve a billing issue.")], options);
+Console.WriteLine(result.Content[0].Text);
 ````
 
 ````ruby
@@ -70293,6 +71108,70 @@ def generate_prompt(task_or_prompt: str):
     return completion.choices[0].message.content
 ```
 
+```go
+import (
+	"context"
+	"fmt"
+	"log"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	client := openai.NewClient()
+	metaPrompt := "Given a task description or existing prompt, produce a detailed system prompt to guide a realtime audio output language model in completing the task effectively.\n" +
+		"\n" +
+		"# Guidelines\n" +
+		"\n" +
+		"- Understand the Task: Grasp the main objective, goals, requirements, constraints, and expected output.\n" +
+		"- Tone: Make sure to specifically call out the tone. By default it should be emotive and friendly, and speak quickly to avoid keeping the user just waiting.\n" +
+		"- Audio Output Constraints: Because the model is outputting audio, the responses should be short and conversational.\n" +
+		"- Minimal Changes: If an existing prompt is provided, improve it only if it's simple. For complex prompts, enhance clarity and add missing elements without altering the original structure.\n" +
+		"- Examples: Include high-quality examples if helpful, using placeholders [in brackets] for complex elements.\n" +
+		"   - What kinds of examples may need to be included, how many, and whether they are complex enough to benefit from placeholders.\n" +
+		"  - It is very important that any examples included reflect the short, conversational output responses of the model.\n" +
+		"Keep the sentences very short by default. Instead of 3 sentences in a row by the assistant, it should be split up with a back and forth with the user instead.\n" +
+		"  - By default each sentence should be a few words only (5-20ish words). However, if the user specifically asks for \"short\" responses, then the examples should truly have 1-10 word responses max.\n" +
+		"  - Make sure the examples are multi-turn (at least 4 back-forth-back-forth per example), not just one questions an response. They should reflect an organic conversation.\n" +
+		"- Clarity and Conciseness: Use clear, specific language. Avoid unnecessary instructions or bland statements.\n" +
+		"- Preserve User Content: If the input task or prompt includes extensive guidelines or examples, preserve them entirely, or as closely as possible. If they are vague, consider breaking down into sub-steps. Keep any details, guidelines, examples, variables, or placeholders provided by the user.\n" +
+		"- Constants: DO include constants in the prompt, as they are not susceptible to prompt injection. Such as guides, rubrics, and examples.\n" +
+		"\n" +
+		"The final prompt you output should adhere to the following structure below. Do not include any additional commentary, only output the completed system prompt. SPECIFICALLY, do not include any additional messages at the start or end of the prompt. (e.g. no \"---\")\n" +
+		"\n" +
+		"[Concise instruction describing the task - this should be the first line in the prompt, no section header]\n" +
+		"\n" +
+		"[Additional details as needed.]\n" +
+		"\n" +
+		"[Optional sections with headings or bullet points for detailed steps.]\n" +
+		"\n" +
+		"# Examples [optional]\n" +
+		"\n" +
+		"[Optional: 1-3 well-defined examples with placeholders if necessary. Clearly mark where examples start and end, and what the input and output are. User placeholders as necessary.]\n" +
+		"[If the examples are shorter than what a realistic example is expected to be, make a reference with () explaining how real examples should be longer / shorter / different. AND USE PLACEHOLDERS! ]\n" +
+		"\n" +
+		"# Notes [optional]\n" +
+		"\n" +
+		"[optional: edge cases, details, and an area to call or repeat out specific important considerations]\n"
+	completion, err := client.Chat.Completions.New(context.Background(), openai.ChatCompletionNewParams{
+		Model: "gpt-6-astra",
+		Messages: []openai.ChatCompletionMessageParamUnion{
+			openai.SystemMessage(metaPrompt), openai.UserMessage("Task, Goal, or Current Prompt: Help a customer resolve a billing issue."),
+		}})
+	if err != nil {
+		return err
+	}
+	fmt.Println(completion.Choices[0].Message.Content)
+	return nil
+}
+```
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -70349,6 +71228,54 @@ ChatCompletionCreateParams params =
 client.chat().completions().create(params).choices().stream()
     .flatMap(choice -> choice.message().content().stream())
     .forEach(System.out::println);
+```
+
+```csharp
+using OpenAI.Chat;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-6-astra";
+ChatClient client = new(model, key);
+
+string metaPrompt = """"
+    Given a task description or existing prompt, produce a detailed system prompt to guide a realtime audio output language model in completing the task effectively.
+    
+    # Guidelines
+    
+    - Understand the Task: Grasp the main objective, goals, requirements, constraints, and expected output.
+    - Tone: Make sure to specifically call out the tone. By default it should be emotive and friendly, and speak quickly to avoid keeping the user just waiting.
+    - Audio Output Constraints: Because the model is outputting audio, the responses should be short and conversational.
+    - Minimal Changes: If an existing prompt is provided, improve it only if it's simple. For complex prompts, enhance clarity and add missing elements without altering the original structure.
+    - Examples: Include high-quality examples if helpful, using placeholders [in brackets] for complex elements.
+       - What kinds of examples may need to be included, how many, and whether they are complex enough to benefit from placeholders.
+      - It is very important that any examples included reflect the short, conversational output responses of the model.
+    Keep the sentences very short by default. Instead of 3 sentences in a row by the assistant, it should be split up with a back and forth with the user instead.
+      - By default each sentence should be a few words only (5-20ish words). However, if the user specifically asks for "short" responses, then the examples should truly have 1-10 word responses max.
+      - Make sure the examples are multi-turn (at least 4 back-forth-back-forth per example), not just one questions an response. They should reflect an organic conversation.
+    - Clarity and Conciseness: Use clear, specific language. Avoid unnecessary instructions or bland statements.
+    - Preserve User Content: If the input task or prompt includes extensive guidelines or examples, preserve them entirely, or as closely as possible. If they are vague, consider breaking down into sub-steps. Keep any details, guidelines, examples, variables, or placeholders provided by the user.
+    - Constants: DO include constants in the prompt, as they are not susceptible to prompt injection. Such as guides, rubrics, and examples.
+    
+    The final prompt you output should adhere to the following structure below. Do not include any additional commentary, only output the completed system prompt. SPECIFICALLY, do not include any additional messages at the start or end of the prompt. (e.g. no "---")
+    
+    [Concise instruction describing the task - this should be the first line in the prompt, no section header]
+    
+    [Additional details as needed.]
+    
+    [Optional sections with headings or bullet points for detailed steps.]
+    
+    # Examples [optional]
+    
+    [Optional: 1-3 well-defined examples with placeholders if necessary. Clearly mark where examples start and end, and what the input and output are. User placeholders as necessary.]
+    [If the examples are shorter than what a realistic example is expected to be, make a reference with () explaining how real examples should be longer / shorter / different. AND USE PLACEHOLDERS! ]
+    
+    # Notes [optional]
+    
+    [optional: edge cases, details, and an area to call or repeat out specific important considerations]
+    """";
+ChatCompletionOptions options = new();
+ChatCompletion result = await client.CompleteChatAsync([new SystemChatMessage(metaPrompt), new UserChatMessage("Task, Goal, or Current Prompt: Help a customer resolve a billing issue.")], options);
+Console.WriteLine(result.Content[0].Text);
 ```
 
 ```ruby
@@ -70602,6 +71529,98 @@ def generate_prompt(task_or_prompt: str):
     return completion.choices[0].message.content
 ````
 
+````go
+import (
+	"context"
+	"fmt"
+	"log"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	client := openai.NewClient()
+	metaPrompt := "Given a current prompt and a change description, produce a detailed system prompt to guide a language model in completing the task effectively.\n" +
+		"\n" +
+		"Your final output will be the full corrected prompt verbatim. However, before that, at the very beginning of your response, use <reasoning> tags to analyze the prompt and determine the following, explicitly:\n" +
+		"<reasoning>\n" +
+		"- Simple Change: (yes/no) Is the change description explicit and simple? (If so, skip the rest of these questions.)\n" +
+		"- Reasoning: (yes/no) Does the current prompt use reasoning, analysis, or chain of thought?\n" +
+		"    - Identify: (max 10 words) if so, which section(s) utilize reasoning?\n" +
+		"    - Conclusion: (yes/no) is the chain of thought used to determine a conclusion?\n" +
+		"    - Ordering: (before/after) is the chain of though located before or after\n" +
+		"- Structure: (yes/no) does the input prompt have a well defined structure\n" +
+		"- Examples: (yes/no) does the input prompt have few-shot examples\n" +
+		"    - Representative: (1-5) if present, how representative are the examples?\n" +
+		"- Complexity: (1-5) how complex is the input prompt?\n" +
+		"    - Task: (1-5) how complex is the implied task?\n" +
+		"    - Necessity: ()\n" +
+		"- Specificity: (1-5) how detailed and specific is the prompt? (not to be confused with length)\n" +
+		"- Prioritization: (list) what 1-3 categories are the MOST important to address.\n" +
+		"- Conclusion: (max 30 words) given the previous assessment, give a very concise, imperative description of what should be changed and how. this does not have to adhere strictly to only the categories listed\n" +
+		"</reasoning>\n" +
+		"\n" +
+		"# Guidelines\n" +
+		"\n" +
+		"- Understand the Task: Grasp the main objective, goals, requirements, constraints, and expected output.\n" +
+		"- Minimal Changes: If an existing prompt is provided, improve it only if it's simple. For complex prompts, enhance clarity and add missing elements without altering the original structure.\n" +
+		"- Reasoning Before Conclusions**: Encourage reasoning steps before any conclusions are reached. ATTENTION! If the user provides examples where the reasoning happens afterward, REVERSE the order! NEVER START EXAMPLES WITH CONCLUSIONS!\n" +
+		"    - Reasoning Order: Call out reasoning portions of the prompt and conclusion parts (specific fields by name). For each, determine the ORDER in which this is done, and whether it needs to be reversed.\n" +
+		"    - Conclusion, classifications, or results should ALWAYS appear last.\n" +
+		"- Examples: Include high-quality examples if helpful, using placeholders [in brackets] for complex elements.\n" +
+		"   - What kinds of examples may need to be included, how many, and whether they are complex enough to benefit from placeholders.\n" +
+		"- Clarity and Conciseness: Use clear, specific language. Avoid unnecessary instructions or bland statements.\n" +
+		"- Formatting: Use markdown features for readability. DO NOT USE ``` CODE BLOCKS UNLESS SPECIFICALLY REQUESTED.\n" +
+		"- Preserve User Content: If the input task or prompt includes extensive guidelines or examples, preserve them entirely, or as closely as possible. If they are vague, consider breaking down into sub-steps. Keep any details, guidelines, examples, variables, or placeholders provided by the user.\n" +
+		"- Constants: DO include constants in the prompt, as they are not susceptible to prompt injection. Such as guides, rubrics, and examples.\n" +
+		"- Output Format: Explicitly the most appropriate output format, in detail. This should include length and syntax (e.g. short sentence, paragraph, JSON, etc.)\n" +
+		"    - For tasks outputting well-defined or structured data (classification, JSON, etc.) bias toward outputting a JSON.\n" +
+		"    - JSON should never be wrapped in code blocks (```) unless explicitly requested.\n" +
+		"\n" +
+		"The final prompt you output should adhere to the following structure below. Do not include any additional commentary, only output the completed system prompt. SPECIFICALLY, do not include any additional messages at the start or end of the prompt. (e.g. no \"---\")\n" +
+		"\n" +
+		"[Concise instruction describing the task - this should be the first line in the prompt, no section header]\n" +
+		"\n" +
+		"[Additional details as needed.]\n" +
+		"\n" +
+		"[Optional sections with headings or bullet points for detailed steps.]\n" +
+		"\n" +
+		"# Steps [optional]\n" +
+		"\n" +
+		"[optional: a detailed breakdown of the steps necessary to accomplish the task]\n" +
+		"\n" +
+		"# Output Format\n" +
+		"\n" +
+		"[Specifically call out how the output should be formatted, be it response length, structure e.g. JSON, markdown, etc]\n" +
+		"\n" +
+		"# Examples [optional]\n" +
+		"\n" +
+		"[Optional: 1-3 well-defined examples with placeholders if necessary. Clearly mark where examples start and end, and what the input and output are. User placeholders as necessary.]\n" +
+		"[If the examples are shorter than what a realistic example is expected to be, make a reference with () explaining how real examples should be longer / shorter / different. AND USE PLACEHOLDERS! ]\n" +
+		"\n" +
+		"# Notes [optional]\n" +
+		"\n" +
+		"[optional: edge cases, details, and an area to call or repeat out specific important considerations]\n" +
+		"[NOTE: you must start with a <reasoning> section. the immediate next token you produce should be <reasoning>]\n"
+	completion, err := client.Chat.Completions.New(context.Background(), openai.ChatCompletionNewParams{
+		Model: "gpt-6-astra",
+		Messages: []openai.ChatCompletionMessageParamUnion{
+			openai.SystemMessage(metaPrompt), openai.UserMessage("Task, Goal, or Current Prompt: Help a customer resolve a billing issue."),
+		}})
+	if err != nil {
+		return err
+	}
+	fmt.Println(completion.Choices[0].Message.Content)
+	return nil
+}
+````
+
 ````java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -70685,6 +71704,82 @@ ChatCompletionCreateParams params =
 client.chat().completions().create(params).choices().stream()
     .flatMap(choice -> choice.message().content().stream())
     .forEach(System.out::println);
+````
+
+````csharp
+using OpenAI.Chat;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-6-astra";
+ChatClient client = new(model, key);
+
+string metaPrompt = """"
+    Given a current prompt and a change description, produce a detailed system prompt to guide a language model in completing the task effectively.
+    
+    Your final output will be the full corrected prompt verbatim. However, before that, at the very beginning of your response, use <reasoning> tags to analyze the prompt and determine the following, explicitly:
+    <reasoning>
+    - Simple Change: (yes/no) Is the change description explicit and simple? (If so, skip the rest of these questions.)
+    - Reasoning: (yes/no) Does the current prompt use reasoning, analysis, or chain of thought?
+        - Identify: (max 10 words) if so, which section(s) utilize reasoning?
+        - Conclusion: (yes/no) is the chain of thought used to determine a conclusion?
+        - Ordering: (before/after) is the chain of though located before or after
+    - Structure: (yes/no) does the input prompt have a well defined structure
+    - Examples: (yes/no) does the input prompt have few-shot examples
+        - Representative: (1-5) if present, how representative are the examples?
+    - Complexity: (1-5) how complex is the input prompt?
+        - Task: (1-5) how complex is the implied task?
+        - Necessity: ()
+    - Specificity: (1-5) how detailed and specific is the prompt? (not to be confused with length)
+    - Prioritization: (list) what 1-3 categories are the MOST important to address.
+    - Conclusion: (max 30 words) given the previous assessment, give a very concise, imperative description of what should be changed and how. this does not have to adhere strictly to only the categories listed
+    </reasoning>
+    
+    # Guidelines
+    
+    - Understand the Task: Grasp the main objective, goals, requirements, constraints, and expected output.
+    - Minimal Changes: If an existing prompt is provided, improve it only if it's simple. For complex prompts, enhance clarity and add missing elements without altering the original structure.
+    - Reasoning Before Conclusions**: Encourage reasoning steps before any conclusions are reached. ATTENTION! If the user provides examples where the reasoning happens afterward, REVERSE the order! NEVER START EXAMPLES WITH CONCLUSIONS!
+        - Reasoning Order: Call out reasoning portions of the prompt and conclusion parts (specific fields by name). For each, determine the ORDER in which this is done, and whether it needs to be reversed.
+        - Conclusion, classifications, or results should ALWAYS appear last.
+    - Examples: Include high-quality examples if helpful, using placeholders [in brackets] for complex elements.
+       - What kinds of examples may need to be included, how many, and whether they are complex enough to benefit from placeholders.
+    - Clarity and Conciseness: Use clear, specific language. Avoid unnecessary instructions or bland statements.
+    - Formatting: Use markdown features for readability. DO NOT USE ``` CODE BLOCKS UNLESS SPECIFICALLY REQUESTED.
+    - Preserve User Content: If the input task or prompt includes extensive guidelines or examples, preserve them entirely, or as closely as possible. If they are vague, consider breaking down into sub-steps. Keep any details, guidelines, examples, variables, or placeholders provided by the user.
+    - Constants: DO include constants in the prompt, as they are not susceptible to prompt injection. Such as guides, rubrics, and examples.
+    - Output Format: Explicitly the most appropriate output format, in detail. This should include length and syntax (e.g. short sentence, paragraph, JSON, etc.)
+        - For tasks outputting well-defined or structured data (classification, JSON, etc.) bias toward outputting a JSON.
+        - JSON should never be wrapped in code blocks (```) unless explicitly requested.
+    
+    The final prompt you output should adhere to the following structure below. Do not include any additional commentary, only output the completed system prompt. SPECIFICALLY, do not include any additional messages at the start or end of the prompt. (e.g. no "---")
+    
+    [Concise instruction describing the task - this should be the first line in the prompt, no section header]
+    
+    [Additional details as needed.]
+    
+    [Optional sections with headings or bullet points for detailed steps.]
+    
+    # Steps [optional]
+    
+    [optional: a detailed breakdown of the steps necessary to accomplish the task]
+    
+    # Output Format
+    
+    [Specifically call out how the output should be formatted, be it response length, structure e.g. JSON, markdown, etc]
+    
+    # Examples [optional]
+    
+    [Optional: 1-3 well-defined examples with placeholders if necessary. Clearly mark where examples start and end, and what the input and output are. User placeholders as necessary.]
+    [If the examples are shorter than what a realistic example is expected to be, make a reference with () explaining how real examples should be longer / shorter / different. AND USE PLACEHOLDERS! ]
+    
+    # Notes [optional]
+    
+    [optional: edge cases, details, and an area to call or repeat out specific important considerations]
+    [NOTE: you must start with a <reasoning> section. the immediate next token you produce should be <reasoning>]
+    """";
+ChatCompletionOptions options = new();
+ChatCompletion result = await client.CompleteChatAsync([new SystemChatMessage(metaPrompt), new UserChatMessage("Task, Goal, or Current Prompt: Help a customer resolve a billing issue.")], options);
+Console.WriteLine(result.Content[0].Text);
 ````
 
 ````ruby
@@ -70947,6 +72042,89 @@ def generate_prompt(task_or_prompt: str):
     return completion.choices[0].message.content
 ```
 
+```go
+import (
+	"context"
+	"fmt"
+	"log"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	client := openai.NewClient()
+	metaPrompt := "Given a current prompt and a change description, produce a detailed system prompt to guide a realtime audio output language model in completing the task effectively.\n" +
+		"\n" +
+		"Your final output will be the full corrected prompt verbatim. However, before that, at the very beginning of your response, use <reasoning> tags to analyze the prompt and determine the following, explicitly:\n" +
+		"<reasoning>\n" +
+		"- Simple Change: (yes/no) Is the change description explicit and simple? (If so, skip the rest of these questions.)\n" +
+		"- Reasoning: (yes/no) Does the current prompt use reasoning, analysis, or chain of thought?\n" +
+		"    - Identify: (max 10 words) if so, which section(s) utilize reasoning?\n" +
+		"    - Conclusion: (yes/no) is the chain of thought used to determine a conclusion?\n" +
+		"    - Ordering: (before/after) is the chain of though located before or after\n" +
+		"- Structure: (yes/no) does the input prompt have a well defined structure\n" +
+		"- Examples: (yes/no) does the input prompt have few-shot examples\n" +
+		"    - Representative: (1-5) if present, how representative are the examples?\n" +
+		"- Complexity: (1-5) how complex is the input prompt?\n" +
+		"    - Task: (1-5) how complex is the implied task?\n" +
+		"    - Necessity: ()\n" +
+		"- Specificity: (1-5) how detailed and specific is the prompt? (not to be confused with length)\n" +
+		"- Prioritization: (list) what 1-3 categories are the MOST important to address.\n" +
+		"- Conclusion: (max 30 words) given the previous assessment, give a very concise, imperative description of what should be changed and how. this does not have to adhere strictly to only the categories listed\n" +
+		"</reasoning>\n" +
+		"\n" +
+		"# Guidelines\n" +
+		"\n" +
+		"- Understand the Task: Grasp the main objective, goals, requirements, constraints, and expected output.\n" +
+		"- Tone: Make sure to specifically call out the tone. By default it should be emotive and friendly, and speak quickly to avoid keeping the user just waiting.\n" +
+		"- Audio Output Constraints: Because the model is outputting audio, the responses should be short and conversational.\n" +
+		"- Minimal Changes: If an existing prompt is provided, improve it only if it's simple. For complex prompts, enhance clarity and add missing elements without altering the original structure.\n" +
+		"- Examples: Include high-quality examples if helpful, using placeholders [in brackets] for complex elements.\n" +
+		"   - What kinds of examples may need to be included, how many, and whether they are complex enough to benefit from placeholders.\n" +
+		"  - It is very important that any examples included reflect the short, conversational output responses of the model.\n" +
+		"Keep the sentences very short by default. Instead of 3 sentences in a row by the assistant, it should be split up with a back and forth with the user instead.\n" +
+		"  - By default each sentence should be a few words only (5-20ish words). However, if the user specifically asks for \"short\" responses, then the examples should truly have 1-10 word responses max.\n" +
+		"  - Make sure the examples are multi-turn (at least 4 back-forth-back-forth per example), not just one questions an response. They should reflect an organic conversation.\n" +
+		"- Clarity and Conciseness: Use clear, specific language. Avoid unnecessary instructions or bland statements.\n" +
+		"- Preserve User Content: If the input task or prompt includes extensive guidelines or examples, preserve them entirely, or as closely as possible. If they are vague, consider breaking down into sub-steps. Keep any details, guidelines, examples, variables, or placeholders provided by the user.\n" +
+		"- Constants: DO include constants in the prompt, as they are not susceptible to prompt injection. Such as guides, rubrics, and examples.\n" +
+		"\n" +
+		"The final prompt you output should adhere to the following structure below. Do not include any additional commentary, only output the completed system prompt. SPECIFICALLY, do not include any additional messages at the start or end of the prompt. (e.g. no \"---\")\n" +
+		"\n" +
+		"[Concise instruction describing the task - this should be the first line in the prompt, no section header]\n" +
+		"\n" +
+		"[Additional details as needed.]\n" +
+		"\n" +
+		"[Optional sections with headings or bullet points for detailed steps.]\n" +
+		"\n" +
+		"# Examples [optional]\n" +
+		"\n" +
+		"[Optional: 1-3 well-defined examples with placeholders if necessary. Clearly mark where examples start and end, and what the input and output are. User placeholders as necessary.]\n" +
+		"[If the examples are shorter than what a realistic example is expected to be, make a reference with () explaining how real examples should be longer / shorter / different. AND USE PLACEHOLDERS! ]\n" +
+		"\n" +
+		"# Notes [optional]\n" +
+		"\n" +
+		"[optional: edge cases, details, and an area to call or repeat out specific important considerations]\n" +
+		"[NOTE: you must start with a <reasoning> section. the immediate next token you produce should be <reasoning>]\n"
+	completion, err := client.Chat.Completions.New(context.Background(), openai.ChatCompletionNewParams{
+		Model: "gpt-6-astra",
+		Messages: []openai.ChatCompletionMessageParamUnion{
+			openai.SystemMessage(metaPrompt), openai.UserMessage("Task, Goal, or Current Prompt: Help a customer resolve a billing issue."),
+		}})
+	if err != nil {
+		return err
+	}
+	fmt.Println(completion.Choices[0].Message.Content)
+	return nil
+}
+```
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -71021,6 +72199,73 @@ ChatCompletionCreateParams params =
 client.chat().completions().create(params).choices().stream()
     .flatMap(choice -> choice.message().content().stream())
     .forEach(System.out::println);
+```
+
+```csharp
+using OpenAI.Chat;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-6-astra";
+ChatClient client = new(model, key);
+
+string metaPrompt = """"
+    Given a current prompt and a change description, produce a detailed system prompt to guide a realtime audio output language model in completing the task effectively.
+    
+    Your final output will be the full corrected prompt verbatim. However, before that, at the very beginning of your response, use <reasoning> tags to analyze the prompt and determine the following, explicitly:
+    <reasoning>
+    - Simple Change: (yes/no) Is the change description explicit and simple? (If so, skip the rest of these questions.)
+    - Reasoning: (yes/no) Does the current prompt use reasoning, analysis, or chain of thought?
+        - Identify: (max 10 words) if so, which section(s) utilize reasoning?
+        - Conclusion: (yes/no) is the chain of thought used to determine a conclusion?
+        - Ordering: (before/after) is the chain of though located before or after
+    - Structure: (yes/no) does the input prompt have a well defined structure
+    - Examples: (yes/no) does the input prompt have few-shot examples
+        - Representative: (1-5) if present, how representative are the examples?
+    - Complexity: (1-5) how complex is the input prompt?
+        - Task: (1-5) how complex is the implied task?
+        - Necessity: ()
+    - Specificity: (1-5) how detailed and specific is the prompt? (not to be confused with length)
+    - Prioritization: (list) what 1-3 categories are the MOST important to address.
+    - Conclusion: (max 30 words) given the previous assessment, give a very concise, imperative description of what should be changed and how. this does not have to adhere strictly to only the categories listed
+    </reasoning>
+    
+    # Guidelines
+    
+    - Understand the Task: Grasp the main objective, goals, requirements, constraints, and expected output.
+    - Tone: Make sure to specifically call out the tone. By default it should be emotive and friendly, and speak quickly to avoid keeping the user just waiting.
+    - Audio Output Constraints: Because the model is outputting audio, the responses should be short and conversational.
+    - Minimal Changes: If an existing prompt is provided, improve it only if it's simple. For complex prompts, enhance clarity and add missing elements without altering the original structure.
+    - Examples: Include high-quality examples if helpful, using placeholders [in brackets] for complex elements.
+       - What kinds of examples may need to be included, how many, and whether they are complex enough to benefit from placeholders.
+      - It is very important that any examples included reflect the short, conversational output responses of the model.
+    Keep the sentences very short by default. Instead of 3 sentences in a row by the assistant, it should be split up with a back and forth with the user instead.
+      - By default each sentence should be a few words only (5-20ish words). However, if the user specifically asks for "short" responses, then the examples should truly have 1-10 word responses max.
+      - Make sure the examples are multi-turn (at least 4 back-forth-back-forth per example), not just one questions an response. They should reflect an organic conversation.
+    - Clarity and Conciseness: Use clear, specific language. Avoid unnecessary instructions or bland statements.
+    - Preserve User Content: If the input task or prompt includes extensive guidelines or examples, preserve them entirely, or as closely as possible. If they are vague, consider breaking down into sub-steps. Keep any details, guidelines, examples, variables, or placeholders provided by the user.
+    - Constants: DO include constants in the prompt, as they are not susceptible to prompt injection. Such as guides, rubrics, and examples.
+    
+    The final prompt you output should adhere to the following structure below. Do not include any additional commentary, only output the completed system prompt. SPECIFICALLY, do not include any additional messages at the start or end of the prompt. (e.g. no "---")
+    
+    [Concise instruction describing the task - this should be the first line in the prompt, no section header]
+    
+    [Additional details as needed.]
+    
+    [Optional sections with headings or bullet points for detailed steps.]
+    
+    # Examples [optional]
+    
+    [Optional: 1-3 well-defined examples with placeholders if necessary. Clearly mark where examples start and end, and what the input and output are. User placeholders as necessary.]
+    [If the examples are shorter than what a realistic example is expected to be, make a reference with () explaining how real examples should be longer / shorter / different. AND USE PLACEHOLDERS! ]
+    
+    # Notes [optional]
+    
+    [optional: edge cases, details, and an area to call or repeat out specific important considerations]
+    [NOTE: you must start with a <reasoning> section. the immediate next token you produce should be <reasoning>]
+    """";
+ChatCompletionOptions options = new();
+ChatCompletion result = await client.CompleteChatAsync([new SystemChatMessage(metaPrompt), new UserChatMessage("Task, Goal, or Current Prompt: Help a customer resolve a billing issue.")], options);
+Console.WriteLine(result.Content[0].Text);
 ```
 
 ```ruby
@@ -71720,6 +72965,338 @@ def generate_schema(description: str):
     return json.loads(completion.choices[0].message.content)
 ```
 
+```go
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"log"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/shared"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	client := openai.NewClient()
+	metaPrompt := "# Instructions\n" +
+		"Return a valid schema for the described JSON.\n" +
+		"\n" +
+		"You must also make sure:\n" +
+		"- all fields in an object are set as required\n" +
+		"- I REPEAT, ALL FIELDS MUST BE MARKED AS REQUIRED\n" +
+		"- all objects must have additionalProperties set to false\n" +
+		"    - because of this, some cases like \"attributes\" or \"metadata\" properties that would normally allow additional properties should instead have a fixed set of properties\n" +
+		"- all objects must have properties defined\n" +
+		"- field order matters. any form of \"thinking\" or \"explanation\" should come before the conclusion\n" +
+		"- $defs must be defined under the schema param\n" +
+		"\n" +
+		"Notable keywords NOT supported include:\n" +
+		"- For objects: unevaluatedProperties, propertyNames, minProperties, maxProperties\n" +
+		"- For arrays: unevaluatedItems, contains, minContains, maxContains, uniqueItems\n" +
+		"\n" +
+		"Other notes:\n" +
+		"- definitions and recursion are supported\n" +
+		"- only if necessary to include references e.g. \"$defs\", it must be inside the \"schema\" object\n" +
+		"\n" +
+		"# Examples\n" +
+		"Input: Generate a math reasoning schema with steps and a final answer.\n" +
+		"Output: {\n" +
+		"    \"name\": \"math_reasoning\",\n" +
+		"    \"type\": \"object\",\n" +
+		"    \"properties\": {\n" +
+		"        \"steps\": {\n" +
+		"            \"type\": \"array\",\n" +
+		"            \"description\": \"A sequence of steps involved in solving the math problem.\",\n" +
+		"            \"items\": {\n" +
+		"                \"type\": \"object\",\n" +
+		"                \"properties\": {\n" +
+		"                    \"explanation\": {\n" +
+		"                        \"type\": \"string\",\n" +
+		"                        \"description\": \"Description of the reasoning or method used in this step.\"\n" +
+		"                    },\n" +
+		"                    \"output\": {\n" +
+		"                        \"type\": \"string\",\n" +
+		"                        \"description\": \"Result or outcome of this specific step.\"\n" +
+		"                    }\n" +
+		"                },\n" +
+		"                \"required\": [\n" +
+		"                    \"explanation\",\n" +
+		"                    \"output\"\n" +
+		"                ],\n" +
+		"                \"additionalProperties\": false\n" +
+		"            }\n" +
+		"        },\n" +
+		"        \"final_answer\": {\n" +
+		"            \"type\": \"string\",\n" +
+		"            \"description\": \"The final solution or answer to the math problem.\"\n" +
+		"        }\n" +
+		"    },\n" +
+		"    \"required\": [\n" +
+		"        \"steps\",\n" +
+		"        \"final_answer\"\n" +
+		"    ],\n" +
+		"    \"additionalProperties\": false\n" +
+		"}\n" +
+		"\n" +
+		"Input: Give me a linked list\n" +
+		"Output: {\n" +
+		"    \"name\": \"linked_list\",\n" +
+		"    \"type\": \"object\",\n" +
+		"    \"properties\": {\n" +
+		"        \"linked_list\": {\n" +
+		"            \"$ref\": \"#/$defs/linked_list_node\",\n" +
+		"            \"description\": \"The head node of the linked list.\"\n" +
+		"        }\n" +
+		"    },\n" +
+		"    \"$defs\": {\n" +
+		"        \"linked_list_node\": {\n" +
+		"            \"type\": \"object\",\n" +
+		"            \"description\": \"Defines a node in a singly linked list.\",\n" +
+		"            \"properties\": {\n" +
+		"                \"value\": {\n" +
+		"                    \"type\": \"number\",\n" +
+		"                    \"description\": \"The value stored in this node.\"\n" +
+		"                },\n" +
+		"                \"next\": {\n" +
+		"                    \"anyOf\": [\n" +
+		"                        {\n" +
+		"                            \"$ref\": \"#/$defs/linked_list_node\"\n" +
+		"                        },\n" +
+		"                        {\n" +
+		"                            \"type\": \"null\"\n" +
+		"                        }\n" +
+		"                    ],\n" +
+		"                    \"description\": \"Reference to the next node; null if it is the last node.\"\n" +
+		"                }\n" +
+		"            },\n" +
+		"            \"required\": [\n" +
+		"                \"value\",\n" +
+		"                \"next\"\n" +
+		"            ],\n" +
+		"            \"additionalProperties\": false\n" +
+		"        }\n" +
+		"    },\n" +
+		"    \"required\": [\n" +
+		"        \"linked_list\"\n" +
+		"    ],\n" +
+		"    \"additionalProperties\": false\n" +
+		"}\n" +
+		"\n" +
+		"Input: Dynamically generated UI\n" +
+		"Output: {\n" +
+		"    \"name\": \"ui\",\n" +
+		"    \"type\": \"object\",\n" +
+		"    \"properties\": {\n" +
+		"        \"type\": {\n" +
+		"            \"type\": \"string\",\n" +
+		"            \"description\": \"The type of the UI component\",\n" +
+		"            \"enum\": [\n" +
+		"                \"div\",\n" +
+		"                \"button\",\n" +
+		"                \"header\",\n" +
+		"                \"section\",\n" +
+		"                \"field\",\n" +
+		"                \"form\"\n" +
+		"            ]\n" +
+		"        },\n" +
+		"        \"label\": {\n" +
+		"            \"type\": \"string\",\n" +
+		"            \"description\": \"The label of the UI component, used for buttons or form fields\"\n" +
+		"        },\n" +
+		"        \"children\": {\n" +
+		"            \"type\": \"array\",\n" +
+		"            \"description\": \"Nested UI components\",\n" +
+		"            \"items\": {\n" +
+		"                \"$ref\": \"#\"\n" +
+		"            }\n" +
+		"        },\n" +
+		"        \"attributes\": {\n" +
+		"            \"type\": \"array\",\n" +
+		"            \"description\": \"Arbitrary attributes for the UI component, suitable for any element\",\n" +
+		"            \"items\": {\n" +
+		"                \"type\": \"object\",\n" +
+		"                \"properties\": {\n" +
+		"                    \"name\": {\n" +
+		"                        \"type\": \"string\",\n" +
+		"                        \"description\": \"The name of the attribute, for example onClick or className\"\n" +
+		"                    },\n" +
+		"                    \"value\": {\n" +
+		"                        \"type\": \"string\",\n" +
+		"                        \"description\": \"The value of the attribute\"\n" +
+		"                    }\n" +
+		"                },\n" +
+		"                \"required\": [\n" +
+		"                    \"name\",\n" +
+		"                    \"value\"\n" +
+		"                ],\n" +
+		"                \"additionalProperties\": false\n" +
+		"            }\n" +
+		"        }\n" +
+		"    },\n" +
+		"    \"required\": [\n" +
+		"        \"type\",\n" +
+		"        \"label\",\n" +
+		"        \"children\",\n" +
+		"        \"attributes\"\n" +
+		"    ],\n" +
+		"    \"additionalProperties\": false\n" +
+		"}\n"
+	var schema map[string]any
+	if err := json.Unmarshal([]byte(`{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The name of the schema"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "object",
+        "array",
+        "string",
+        "number",
+        "boolean",
+        "null"
+      ]
+    },
+    "properties": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/schema_definition"
+      }
+    },
+    "items": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/schema_definition"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/schema_definition"
+          }
+        }
+      ]
+    },
+    "required": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "additionalProperties": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "type"
+  ],
+  "additionalProperties": false,
+  "if": {
+    "properties": {
+      "type": {
+        "const": "object"
+      }
+    }
+  },
+  "then": {
+    "required": [
+      "properties"
+    ]
+  },
+  "$defs": {
+    "schema_definition": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "object",
+            "array",
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ]
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/schema_definition"
+          }
+        },
+        "items": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/schema_definition"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/schema_definition"
+              }
+            }
+          ]
+        },
+        "required": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "if": {
+        "properties": {
+          "type": {
+            "const": "object"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "properties"
+        ]
+      }
+    }
+  }
+}`), &schema); err != nil {
+		return err
+	}
+	completion, err := client.Chat.Completions.New(context.Background(), openai.ChatCompletionNewParams{
+		Model: "gpt-5.6-terra",
+		Messages: []openai.ChatCompletionMessageParamUnion{
+			openai.SystemMessage(metaPrompt), openai.UserMessage("Description: Schedule a meeting with a title and start time."),
+		}, ResponseFormat: openai.ChatCompletionNewParamsResponseFormatUnion{OfJSONSchema: &shared.ResponseFormatJSONSchemaParam{JSONSchema: shared.ResponseFormatJSONSchemaJSONSchemaParam{Name: "metaschema", Schema: schema}}}})
+	if err != nil {
+		return err
+	}
+	var result any
+	if err := json.Unmarshal([]byte(completion.Choices[0].Message.Content), &result); err != nil {
+		return err
+	}
+	encoded, err := json.MarshalIndent(result, "", "  ")
+	if err != nil {
+		return err
+	}
+	fmt.Println(string(encoded))
+	return nil
+}
+```
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -72051,6 +73628,313 @@ ChatCompletionCreateParams params =
 client.chat().completions().create(params).choices().stream()
     .flatMap(choice -> choice.message().content().stream())
     .forEach(System.out::println);
+```
+
+```csharp
+using System.Text.Json;
+using OpenAI.Chat;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-5.6-terra";
+ChatClient client = new(model, key);
+
+string metaPrompt = """"
+    # Instructions
+    Return a valid schema for the described JSON.
+    
+    You must also make sure:
+    - all fields in an object are set as required
+    - I REPEAT, ALL FIELDS MUST BE MARKED AS REQUIRED
+    - all objects must have additionalProperties set to false
+        - because of this, some cases like "attributes" or "metadata" properties that would normally allow additional properties should instead have a fixed set of properties
+    - all objects must have properties defined
+    - field order matters. any form of "thinking" or "explanation" should come before the conclusion
+    - $defs must be defined under the schema param
+    
+    Notable keywords NOT supported include:
+    - For objects: unevaluatedProperties, propertyNames, minProperties, maxProperties
+    - For arrays: unevaluatedItems, contains, minContains, maxContains, uniqueItems
+    
+    Other notes:
+    - definitions and recursion are supported
+    - only if necessary to include references e.g. "$defs", it must be inside the "schema" object
+    
+    # Examples
+    Input: Generate a math reasoning schema with steps and a final answer.
+    Output: {
+        "name": "math_reasoning",
+        "type": "object",
+        "properties": {
+            "steps": {
+                "type": "array",
+                "description": "A sequence of steps involved in solving the math problem.",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "explanation": {
+                            "type": "string",
+                            "description": "Description of the reasoning or method used in this step."
+                        },
+                        "output": {
+                            "type": "string",
+                            "description": "Result or outcome of this specific step."
+                        }
+                    },
+                    "required": [
+                        "explanation",
+                        "output"
+                    ],
+                    "additionalProperties": false
+                }
+            },
+            "final_answer": {
+                "type": "string",
+                "description": "The final solution or answer to the math problem."
+            }
+        },
+        "required": [
+            "steps",
+            "final_answer"
+        ],
+        "additionalProperties": false
+    }
+    
+    Input: Give me a linked list
+    Output: {
+        "name": "linked_list",
+        "type": "object",
+        "properties": {
+            "linked_list": {
+                "$ref": "#/$defs/linked_list_node",
+                "description": "The head node of the linked list."
+            }
+        },
+        "$defs": {
+            "linked_list_node": {
+                "type": "object",
+                "description": "Defines a node in a singly linked list.",
+                "properties": {
+                    "value": {
+                        "type": "number",
+                        "description": "The value stored in this node."
+                    },
+                    "next": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/$defs/linked_list_node"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "description": "Reference to the next node; null if it is the last node."
+                    }
+                },
+                "required": [
+                    "value",
+                    "next"
+                ],
+                "additionalProperties": false
+            }
+        },
+        "required": [
+            "linked_list"
+        ],
+        "additionalProperties": false
+    }
+    
+    Input: Dynamically generated UI
+    Output: {
+        "name": "ui",
+        "type": "object",
+        "properties": {
+            "type": {
+                "type": "string",
+                "description": "The type of the UI component",
+                "enum": [
+                    "div",
+                    "button",
+                    "header",
+                    "section",
+                    "field",
+                    "form"
+                ]
+            },
+            "label": {
+                "type": "string",
+                "description": "The label of the UI component, used for buttons or form fields"
+            },
+            "children": {
+                "type": "array",
+                "description": "Nested UI components",
+                "items": {
+                    "$ref": "#"
+                }
+            },
+            "attributes": {
+                "type": "array",
+                "description": "Arbitrary attributes for the UI component, suitable for any element",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "description": "The name of the attribute, for example onClick or className"
+                        },
+                        "value": {
+                            "type": "string",
+                            "description": "The value of the attribute"
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "value"
+                    ],
+                    "additionalProperties": false
+                }
+            }
+        },
+        "required": [
+            "type",
+            "label",
+            "children",
+            "attributes"
+        ],
+        "additionalProperties": false
+    }
+    """";
+ChatCompletionOptions options = new();
+options.ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat("metaschema", BinaryData.FromString("""
+    {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the schema"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "object",
+            "array",
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ]
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/schema_definition"
+          }
+        },
+        "items": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/schema_definition"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/schema_definition"
+              }
+            }
+          ]
+        },
+        "required": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "if": {
+        "properties": {
+          "type": {
+            "const": "object"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "properties"
+        ]
+      },
+      "$defs": {
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "object",
+                "array",
+                "string",
+                "number",
+                "boolean",
+                "null"
+              ]
+            },
+            "properties": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/schema_definition"
+              }
+            },
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/schema_definition"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/schema_definition"
+                  }
+                }
+              ]
+            },
+            "required": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false,
+          "if": {
+            "properties": {
+              "type": {
+                "const": "object"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "properties"
+            ]
+          }
+        }
+      }
+    }
+    """));
+ChatCompletion result = await client.CompleteChatAsync([new SystemChatMessage(metaPrompt), new UserChatMessage("Description: Schedule a meeting with a title and start time.")], options);
+using JsonDocument parsed = JsonDocument.Parse(result.Content[0].Text);
+Console.WriteLine(parsed.RootElement);
 ```
 
 ```ruby
@@ -72802,6 +74686,258 @@ def generate_function_schema(description: str):
     return json.loads(completion.choices[0].message.content)
 ```
 
+```go
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"log"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/shared"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	client := openai.NewClient()
+	metaPrompt := "# Instructions\n" +
+		"Return a valid schema for the described function.\n" +
+		"\n" +
+		"Pay special attention to making sure that \"required\" and \"type\" are always at the correct level of nesting. For example, \"required\" should be at the same level as \"properties\", not inside it.\n" +
+		"Make sure that every property, no matter how short, has a type and description correctly nested inside it.\n" +
+		"\n" +
+		"# Examples\n" +
+		"Input: Assign values to NN hyperparameters\n" +
+		"Output: {\n" +
+		"    \"name\": \"set_hyperparameters\",\n" +
+		"    \"description\": \"Assign values to NN hyperparameters\",\n" +
+		"    \"parameters\": {\n" +
+		"        \"type\": \"object\",\n" +
+		"        \"required\": [\n" +
+		"            \"learning_rate\",\n" +
+		"            \"epochs\"\n" +
+		"        ],\n" +
+		"        \"properties\": {\n" +
+		"            \"epochs\": {\n" +
+		"                \"type\": \"number\",\n" +
+		"                \"description\": \"Number of complete passes through dataset\"\n" +
+		"            },\n" +
+		"            \"learning_rate\": {\n" +
+		"                \"type\": \"number\",\n" +
+		"                \"description\": \"Speed of model learning\"\n" +
+		"            }\n" +
+		"        }\n" +
+		"    }\n" +
+		"}\n" +
+		"\n" +
+		"Input: Plans a motion path for the robot\n" +
+		"Output: {\n" +
+		"    \"name\": \"plan_motion\",\n" +
+		"    \"description\": \"Plans a motion path for the robot\",\n" +
+		"    \"parameters\": {\n" +
+		"        \"type\": \"object\",\n" +
+		"        \"required\": [\n" +
+		"            \"start_position\",\n" +
+		"            \"end_position\"\n" +
+		"        ],\n" +
+		"        \"properties\": {\n" +
+		"            \"end_position\": {\n" +
+		"                \"type\": \"object\",\n" +
+		"                \"properties\": {\n" +
+		"                    \"x\": {\n" +
+		"                        \"type\": \"number\",\n" +
+		"                        \"description\": \"End X coordinate\"\n" +
+		"                    },\n" +
+		"                    \"y\": {\n" +
+		"                        \"type\": \"number\",\n" +
+		"                        \"description\": \"End Y coordinate\"\n" +
+		"                    }\n" +
+		"                }\n" +
+		"            },\n" +
+		"            \"obstacles\": {\n" +
+		"                \"type\": \"array\",\n" +
+		"                \"description\": \"Array of obstacle coordinates\",\n" +
+		"                \"items\": {\n" +
+		"                    \"type\": \"object\",\n" +
+		"                    \"properties\": {\n" +
+		"                        \"x\": {\n" +
+		"                            \"type\": \"number\",\n" +
+		"                            \"description\": \"Obstacle X coordinate\"\n" +
+		"                        },\n" +
+		"                        \"y\": {\n" +
+		"                            \"type\": \"number\",\n" +
+		"                            \"description\": \"Obstacle Y coordinate\"\n" +
+		"                        }\n" +
+		"                    }\n" +
+		"                }\n" +
+		"            },\n" +
+		"            \"start_position\": {\n" +
+		"                \"type\": \"object\",\n" +
+		"                \"properties\": {\n" +
+		"                    \"x\": {\n" +
+		"                        \"type\": \"number\",\n" +
+		"                        \"description\": \"Start X coordinate\"\n" +
+		"                    },\n" +
+		"                    \"y\": {\n" +
+		"                        \"type\": \"number\",\n" +
+		"                        \"description\": \"Start Y coordinate\"\n" +
+		"                    }\n" +
+		"                }\n" +
+		"            }\n" +
+		"        }\n" +
+		"    }\n" +
+		"}\n" +
+		"\n" +
+		"Input: Calculates various technical indicators\n" +
+		"Output: {\n" +
+		"    \"name\": \"technical_indicator\",\n" +
+		"    \"description\": \"Calculates various technical indicators\",\n" +
+		"    \"parameters\": {\n" +
+		"        \"type\": \"object\",\n" +
+		"        \"required\": [\n" +
+		"            \"ticker\",\n" +
+		"            \"indicators\"\n" +
+		"        ],\n" +
+		"        \"properties\": {\n" +
+		"            \"indicators\": {\n" +
+		"                \"type\": \"array\",\n" +
+		"                \"description\": \"List of technical indicators to calculate\",\n" +
+		"                \"items\": {\n" +
+		"                    \"type\": \"string\",\n" +
+		"                    \"description\": \"Technical indicator\",\n" +
+		"                    \"enum\": [\n" +
+		"                        \"RSI\",\n" +
+		"                        \"MACD\",\n" +
+		"                        \"Bollinger_Bands\",\n" +
+		"                        \"Stochastic_Oscillator\"\n" +
+		"                    ]\n" +
+		"                }\n" +
+		"            },\n" +
+		"            \"period\": {\n" +
+		"                \"type\": \"number\",\n" +
+		"                \"description\": \"Time period for the analysis\"\n" +
+		"            },\n" +
+		"            \"ticker\": {\n" +
+		"                \"type\": \"string\",\n" +
+		"                \"description\": \"Stock ticker symbol\"\n" +
+		"            }\n" +
+		"        }\n" +
+		"    }\n" +
+		"}\n"
+	var schema map[string]any
+	if err := json.Unmarshal([]byte(`{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The name of the function"
+    },
+    "description": {
+      "type": "string",
+      "description": "A description of what the function does"
+    },
+    "parameters": {
+      "$ref": "#/$defs/schema_definition",
+      "description": "A JSON schema that defines the function's parameters"
+    }
+  },
+  "required": [
+    "name",
+    "description",
+    "parameters"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "schema_definition": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "object",
+            "array",
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ]
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/schema_definition"
+          }
+        },
+        "items": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/schema_definition"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/schema_definition"
+              }
+            }
+          ]
+        },
+        "required": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "if": {
+        "properties": {
+          "type": {
+            "const": "object"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "properties"
+        ]
+      }
+    }
+  }
+}`), &schema); err != nil {
+		return err
+	}
+	completion, err := client.Chat.Completions.New(context.Background(), openai.ChatCompletionNewParams{
+		Model: "gpt-5.6-terra",
+		Messages: []openai.ChatCompletionMessageParamUnion{
+			openai.SystemMessage(metaPrompt), openai.UserMessage("Description: Schedule a meeting with a title and start time."),
+		}, ResponseFormat: openai.ChatCompletionNewParamsResponseFormatUnion{OfJSONSchema: &shared.ResponseFormatJSONSchemaParam{JSONSchema: shared.ResponseFormatJSONSchemaJSONSchemaParam{Name: "function-metaschema", Schema: schema}}}})
+	if err != nil {
+		return err
+	}
+	var result any
+	if err := json.Unmarshal([]byte(completion.Choices[0].Message.Content), &result); err != nil {
+		return err
+	}
+	encoded, err := json.MarshalIndent(result, "", "  ")
+	if err != nil {
+		return err
+	}
+	fmt.Println(string(encoded))
+	return nil
+}
+```
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -73011,6 +75147,233 @@ ChatCompletionCreateParams params =
 client.chat().completions().create(params).choices().stream()
     .flatMap(choice -> choice.message().content().stream())
     .forEach(System.out::println);
+```
+
+```csharp
+using System.Text.Json;
+using OpenAI.Chat;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-5.6-terra";
+ChatClient client = new(model, key);
+
+string metaPrompt = """"
+    # Instructions
+    Return a valid schema for the described function.
+    
+    Pay special attention to making sure that "required" and "type" are always at the correct level of nesting. For example, "required" should be at the same level as "properties", not inside it.
+    Make sure that every property, no matter how short, has a type and description correctly nested inside it.
+    
+    # Examples
+    Input: Assign values to NN hyperparameters
+    Output: {
+        "name": "set_hyperparameters",
+        "description": "Assign values to NN hyperparameters",
+        "parameters": {
+            "type": "object",
+            "required": [
+                "learning_rate",
+                "epochs"
+            ],
+            "properties": {
+                "epochs": {
+                    "type": "number",
+                    "description": "Number of complete passes through dataset"
+                },
+                "learning_rate": {
+                    "type": "number",
+                    "description": "Speed of model learning"
+                }
+            }
+        }
+    }
+    
+    Input: Plans a motion path for the robot
+    Output: {
+        "name": "plan_motion",
+        "description": "Plans a motion path for the robot",
+        "parameters": {
+            "type": "object",
+            "required": [
+                "start_position",
+                "end_position"
+            ],
+            "properties": {
+                "end_position": {
+                    "type": "object",
+                    "properties": {
+                        "x": {
+                            "type": "number",
+                            "description": "End X coordinate"
+                        },
+                        "y": {
+                            "type": "number",
+                            "description": "End Y coordinate"
+                        }
+                    }
+                },
+                "obstacles": {
+                    "type": "array",
+                    "description": "Array of obstacle coordinates",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "x": {
+                                "type": "number",
+                                "description": "Obstacle X coordinate"
+                            },
+                            "y": {
+                                "type": "number",
+                                "description": "Obstacle Y coordinate"
+                            }
+                        }
+                    }
+                },
+                "start_position": {
+                    "type": "object",
+                    "properties": {
+                        "x": {
+                            "type": "number",
+                            "description": "Start X coordinate"
+                        },
+                        "y": {
+                            "type": "number",
+                            "description": "Start Y coordinate"
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    Input: Calculates various technical indicators
+    Output: {
+        "name": "technical_indicator",
+        "description": "Calculates various technical indicators",
+        "parameters": {
+            "type": "object",
+            "required": [
+                "ticker",
+                "indicators"
+            ],
+            "properties": {
+                "indicators": {
+                    "type": "array",
+                    "description": "List of technical indicators to calculate",
+                    "items": {
+                        "type": "string",
+                        "description": "Technical indicator",
+                        "enum": [
+                            "RSI",
+                            "MACD",
+                            "Bollinger_Bands",
+                            "Stochastic_Oscillator"
+                        ]
+                    }
+                },
+                "period": {
+                    "type": "number",
+                    "description": "Time period for the analysis"
+                },
+                "ticker": {
+                    "type": "string",
+                    "description": "Stock ticker symbol"
+                }
+            }
+        }
+    }
+    """";
+ChatCompletionOptions options = new();
+options.ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat("function-metaschema", BinaryData.FromString("""
+    {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the function"
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of what the function does"
+        },
+        "parameters": {
+          "$ref": "#/$defs/schema_definition",
+          "description": "A JSON schema that defines the function's parameters"
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "parameters"
+      ],
+      "additionalProperties": false,
+      "$defs": {
+        "schema_definition": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "object",
+                "array",
+                "string",
+                "number",
+                "boolean",
+                "null"
+              ]
+            },
+            "properties": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/schema_definition"
+              }
+            },
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/schema_definition"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/schema_definition"
+                  }
+                }
+              ]
+            },
+            "required": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false,
+          "if": {
+            "properties": {
+              "type": {
+                "const": "object"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "properties"
+            ]
+          }
+        }
+      }
+    }
+    """));
+ChatCompletion result = await client.CompleteChatAsync([new SystemChatMessage(metaPrompt), new UserChatMessage("Description: Schedule a meeting with a title and start time.")], options);
+using JsonDocument parsed = JsonDocument.Parse(result.Content[0].Text);
+Console.WriteLine(parsed.RootElement);
 ```
 
 ```ruby
@@ -86049,6 +88412,30 @@ func formatResults(results []openai.VectorStoreSearchResponse) string {
 }
 ```
 
+```java
+import com.openai.models.vectorstores.VectorStoreSearchResponse;
+import java.util.List;
+
+System.out.println(formatResults(results.data()));
+
+static String formatResults(List<VectorStoreSearchResponse> results) {
+  var formatted = new StringBuilder("<sources>");
+  for (var result : results) {
+    formatted
+        .append("<result file_id='")
+        .append(result.fileId())
+        .append("' file_name='")
+        .append(result.filename())
+        .append("'>");
+    for (var part : result.content()) {
+      formatted.append("<content>").append(part.text()).append("</content>");
+    }
+    formatted.append("</result>");
+  }
+  return formatted.append("</sources>").toString();
+}
+```
+
 ```ruby
 results = [
   {
@@ -86106,10 +88493,14 @@ const events = await client.beta.agents.sessions.create({
     "Create tree.py, a Python script that prints a readable tree of the files in the current directory. Run it and show me the output.",
   stream: true,
 });
+events.withResultCollection();
 try {
   for await (const event of events) {
     console.log(JSON.stringify(event));
   }
+  const result = await events.finalResult();
+  console.log(result.output_text);
+  console.log("Session:", result.session_id);
 } finally {
   events.controller.abort();
 }
@@ -86127,9 +88518,12 @@ with OpenAI() as client:
         environment={"type": "openai_hosted"},
         input="Create tree.py, a Python script that prints a readable tree of the files in the current directory. Run it and show me the output.",
         stream=True,
-    ) as events:
-        for event in events:
+    ).with_result_collection() as stream:
+        for event in stream:
             print(event.to_json(indent=None), flush=True)
+        result = stream.get_final_result()
+    print(result.output_text)
+    session_id = result.session_id
 ```
 
 ```go
@@ -86153,6 +88547,7 @@ events := client.Beta.Agents.Sessions.NewStreaming(ctx, openai.BetaAgentSessionN
 	},
 })
 defer events.Close()
+openai.BetaAgentSessionWithResultCollection(events)
 if events.Err() != nil {
 	panic(events.Err())
 }
@@ -86160,9 +88555,13 @@ for events.Next() {
 	event := events.Current()
 	fmt.Println(event.RawJSON())
 }
-if err := events.Err(); err != nil {
+result, err := openai.BetaAgentSessionFinalResult(events)
+if err != nil {
 	panic(err)
 }
+fmt.Println(result.OutputText())
+sessionID := result.SessionID()
+fmt.Println("Session:", sessionID)
 ```
 
 ```java
@@ -86173,6 +88572,7 @@ import com.openai.core.http.StreamResponse;
 import com.openai.models.beta.agents.AgentSessionEvent;
 import com.openai.models.beta.agents.EnvironmentParam;
 import com.openai.models.beta.agents.sessions.SessionCreateParams;
+import com.openai.services.beta.agents.AgentTurnResults;
 
 OpenAIClient client = OpenAIOkHttpClient.fromEnv();
 var json = new JsonMapper();
@@ -86193,11 +88593,16 @@ try (StreamResponse<AgentSessionEvent> events =
                     "Create tree.py, a Python script that prints a readable tree of the files"
                         + " in the current directory. Run it and show me the output.")
                 .build())) {
+  AgentTurnResults.withResultCollection(events);
   var iterator = events.stream().iterator();
   while (iterator.hasNext()) {
     var event = iterator.next();
     System.out.println(json.writeValueAsString(event));
   }
+  var result = AgentTurnResults.getFinalResult(events);
+  System.out.println(result.outputText());
+  String sessionId = result.sessionId();
+  System.out.println(sessionId);
 }
 ```
 
@@ -86215,9 +88620,14 @@ events = client.beta.agents.sessions.create_streaming(
   input: "Create tree.py, a Python script that prints a readable tree of the files in the current directory. Run it and show me the output."
 )
 begin
+  events.with_result_collection
   events.each do |event|
     puts JSON.generate(event.to_h)
   end
+  result = events.get_final_result
+  puts result.output_text
+  session_id = result.session_id
+  puts "Session: #{session_id}"
 ensure
   events.close
 end
@@ -87074,6 +89484,8 @@ If your org engages in suspicious activity that violates our safety policies, we
 
 ## Implementing safety identifiers for individual users
 
+To route warning and deactivation notices for a safety identifier to your investigation or support workflow, see [Safety enforcement notifications](https://developers.openai.com/api/docs/guides/safety-enforcement).
+
 The `safety_identifier` parameter is available in both the [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create) and older [Chat Completions API](https://developers.openai.com/api/reference/resources/chat). The Realtime API supports the same concept through the `OpenAI-Safety-Identifier` header. To use safety identifiers, provide a stable ID for your end user on each request. Hash user email or internal user IDs to avoid passing any personal information.
 
 Safety identifiers do not carry over between APIs or sessions. If your application already sends `safety_identifier` with Responses API requests, pass the same stable value separately when you create or connect each Realtime session.
@@ -87330,6 +89742,131 @@ The specific enforcement criteria may change based on evolving real-world usage 
 ## Other types of safety checks
 
 For safeguards specific to tools and model customization, see [computer use confirmation and consent](https://developers.openai.com/api/docs/guides/tools-computer-use#handle-user-confirmation-and-consent) and [fine-tuning safety](https://developers.openai.com/api/docs/guides/supervised-fine-tuning#safety-checks). OpenAI also publishes results in the [model evaluations hub](https://openai.com/safety/evaluations-hub).
+
+---
+
+# Safety enforcement notifications
+
+Use safety webhooks and the Safety Case Read API to connect OpenAI enforcement notices to your team's workflows. For example, when a warning arrives, your application can retrieve its case details, identify the affected user, and create an internal review ticket.
+
+## When to use this
+
+Use this integration to:
+
+- Route warning and deactivation notices to your trust and safety, security, or support team.
+- Add case details to an investigation or support ticket.
+- Associate a notice with a user through your application's safety-identifier mapping.
+
+The steps in this guide use a warning to illustrate the workflow. You can use the same integration for deactivation notices.
+
+## How it works
+
+Safety webhooks notify your application that a notice was issued. The Safety Case Read API provides the details for that notice.
+
+| Event                        | Notice                                                       |
+| ---------------------------- | ------------------------------------------------------------ |
+| `safety.warning_issued`      | A warning for a safety identifier in your organization.      |
+| `safety.deactivation_issued` | A deactivation for a safety identifier in your organization. |
+
+Each event contains a case ID. Use it with `GET /v1/safety/cases/{id}` to retrieve the safety identifier, notice type, case creation timestamp, and available policy reason.
+
+These organization-level notifications are separate from project-level [misalignment alerts](https://developers.openai.com/api/docs/guides/safety-checks/misalignment-monitoring#receive-project-safety-alerts). Retrieving a case does not change or reverse the enforcement. The API returns case metadata, not the underlying conversation or a full investigation report.
+
+## Integrate with your application
+
+Start by configuring an organization-level webhook and a key for case lookups. Then connect the notifications to your review workflow.
+
+### 1. Configure your webhook and API key
+
+Use a stable [safety identifier](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers) for each user, and keep your application's mapping from that identifier to the user. Avoid including personal information in the identifier.
+
+Open your [organization webhook settings](https://platform.openai.com/settings/organization/webhooks) and select **Create**. Enter your receiver's HTTPS URL and subscribe to `safety.warning_issued` and `safety.deactivation_issued`. Save the signing secret securely so your receiver can verify incoming events. These events use an organization endpoint, not a project endpoint.
+
+Your account needs `api.webhooks.read` and `organization.read` to view organization webhooks, plus `api.webhooks.write` and `organization.write` to create them. See [Permissions](https://developers.openai.com/api/docs/guides/rbac) for role configuration.
+
+For case lookups, configure an API key for the same organization with **Restricted** permissions and set **Safety** to **Read** (`api.safety.read`). The API key authenticates case lookups; it is separate from the webhook signing secret.
+
+### 2. Receive and verify the event
+
+A warning notification has this structure. The IDs are illustrative:
+
+```json
+{
+  "id": "evt_example",
+  "object": "event",
+  "created_at": 1787659200,
+  "type": "safety.warning_issued",
+  "data": {
+    "id": "C-example"
+  }
+}
+```
+
+Verify the signature before processing the event. Save the verified event for processing, return a successful `2xx` response promptly, and retrieve the case in a background worker. See the Webhooks guide for [signature verification](https://developers.openai.com/api/docs/guides/webhooks#verifying-webhook-signatures) and [acknowledgments, retries, and duplicate deliveries](https://developers.openai.com/api/docs/guides/webhooks#handling-webhook-requests-on-a-server).
+
+The event's `id` identifies the webhook event. Its `data.id` identifies the safety case to retrieve.
+
+### 3. Retrieve the case
+
+Set `OPENAI_API_KEY` to your API key. Replace `C-example` with `data.id` from the verified event:
+
+```bash
+curl "https://api.openai.com/v1/safety/cases/C-example" \
+  -H "Authorization: Bearer ${OPENAI_API_KEY}"
+```
+
+A successful lookup returns HTTP `200` and a case object. For example:
+
+```json
+{
+  "id": "C-example",
+  "object": "safety.case",
+  "created_at": 1787659100,
+  "entity_identifier": "safety-id-example",
+  "reason": "cyber_abuse",
+  "notice": {
+    "type": "warning"
+  }
+}
+```
+
+Use `entity_identifier` to find the affected user in your application. The `reason` can be `null`; continue processing the notice when no reason is available.
+
+The case creation timestamp is not necessarily the event timestamp or the time of an individual request. See the [Safety Case API reference](https://developers.openai.com/api/reference/resources/safety/subresources/cases/methods/retrieve) for field definitions.
+
+### 4. Create a review ticket
+
+Add the case ID, notice type, safety identifier, case creation timestamp, and available policy reason to your internal ticket. Link the matching user record so your team can investigate using its own application records. If you cannot find a matching user, preserve the case details and flag the missing mapping for review.
+
+Make ticket creation safe to retry. Follow the [webhook deduplication guidance](https://developers.openai.com/api/docs/guides/webhooks#handling-webhook-requests-on-a-server) so repeated deliveries do not create duplicate tickets. Retries of your own background processing should also reuse the existing ticket.
+
+If an agent helps with triage, limit its access to the records it needs and keep customer-facing actions subject to your existing approval controls.
+
+## Confirm it's working
+
+For a real event and an accessible case in your organization, check that:
+
+1. Your receiver verifies the signature and returns a successful acknowledgment.
+2. The lookup returns HTTP `200`, with a case `id` matching the event's `data.id`.
+3. Your application identifies the expected user or flags a missing mapping.
+4. One review ticket contains the available case details. Reprocessing the event does not create another ticket.
+
+Before receiving a real notice, test your processing logic with local example events and mocked case responses. Include both notice types, a `null` reason, a missing user mapping, and duplicate deliveries. Test signature verification separately, including rejection of invalid signatures; keep it enabled on your production receiver.
+
+The example IDs on this page are not retrievable cases. Mocked tests validate your processing logic, not live delivery or API permissions. Do not trigger an actual enforcement to test your integration. An absence of enforcement notifications alone does not indicate a broken integration.
+
+## Troubleshoot
+
+| Symptom                                   | What to check                                                                                            |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Signature verification fails              | Check the signing secret and preserve the raw request body as described in the Webhooks guide.           |
+| Lookup returns `401`                      | Check that the API key is present and valid.                                                             |
+| Lookup returns `403`                      | Check that the key has the `api.safety.read` permission.                                                 |
+| Lookup returns `404`                      | Use `data.id`, not the event ID. Check that the case belongs to the key's organization.                  |
+| Lookup returns `429` or a transient `5xx` | Retry with backoff and a bounded retry policy. Preserve the event for later processing or investigation. |
+| A ticket is created more than once        | Check that ticket creation remains safe across repeated deliveries and worker retries.                   |
+
+Do not silently discard a verified notification when its case lookup fails. Keep it available for retry or investigation.
 
 ---
 
@@ -110972,6 +113509,77 @@ df["ada_embedding"] = df.combined.apply(
 df.to_csv("output/embedded_1k_reviews.csv", index=False)
 ```
 
+```go
+import (
+	"context"
+	"encoding/csv"
+	"encoding/json"
+	"fmt"
+	"log"
+	"os"
+	"strings"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	client := openai.NewClient()
+	ctx := context.Background()
+	reviews := []string{"A rich cup of coffee.", "A bright herbal tea."}
+	if err := os.MkdirAll("output", 0755); err != nil {
+		return err
+	}
+	file, err := os.Create("output/embedded_1k_reviews.csv")
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	writer := csv.NewWriter(file)
+	if err := writer.Write([]string{"combined", "ada_embedding"}); err != nil {
+		return err
+	}
+	for _, review := range reviews {
+		vector, err := embedding(ctx, &client, strings.ReplaceAll(review, "\n", " "))
+		if err != nil {
+			return err
+		}
+		encoded, err := json.Marshal(vector)
+		if err != nil {
+			return err
+		}
+		if err := writer.Write([]string{review, string(encoded)}); err != nil {
+			return err
+		}
+	}
+	writer.Flush()
+	if err := writer.Error(); err != nil {
+		return err
+	}
+	if err := file.Close(); err != nil {
+		return err
+	}
+	fmt.Println("Saved output/embedded_1k_reviews.csv")
+	return nil
+}
+
+func embedding(ctx context.Context, client *openai.Client, text string) ([]float64, error) {
+	response, err := client.Embeddings.New(ctx, openai.EmbeddingNewParams{
+		Model: openai.EmbeddingModelTextEmbedding3Small,
+		Input: openai.EmbeddingNewParamsInputUnion{OfString: openai.String(text)},
+	})
+	if err != nil {
+		return nil, err
+	}
+	return response.Data[0].Embedding, nil
+}
+```
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -111006,6 +113614,35 @@ try (var writer = Files.newBufferedWriter(output)) {
   }
 }
 System.out.println(output);
+```
+
+```csharp
+using System.Text.Json;
+using OpenAI.Embeddings;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "text-embedding-3-small";
+EmbeddingClient client = new(model, key);
+
+string[] reviews = ["A rich cup of coffee.", "A bright herbal tea."];
+Directory.CreateDirectory("output");
+using StreamWriter writer = new("output/embedded_1k_reviews.csv");
+await writer.WriteLineAsync("combined,ada_embedding");
+foreach (string review in reviews)
+{
+    float[] vector = await EmbedAsync(client, review.Replace("\n", " ", StringComparison.Ordinal));
+    string encoded = JsonSerializer.Serialize(vector);
+    await writer.WriteLineAsync($"{CsvField(review)},{CsvField(encoded)}");
+}
+Console.WriteLine("Saved output/embedded_1k_reviews.csv");
+
+static async Task<float[]> EmbedAsync(EmbeddingClient client, string text)
+{
+    OpenAIEmbedding result = await client.GenerateEmbeddingAsync(text);
+    return result.ToFloats().ToArray();
+}
+
+static string CsvField(string value) => "\"" + value.Replace("\"", "\"\"", StringComparison.Ordinal) + "\"";
 ```
 
 ```ruby
@@ -111242,6 +113879,36 @@ response = client.chat.completions.create(
 print(response.choices[0].message.content)
 ```
 
+```go
+import (
+	"context"
+	"fmt"
+	"log"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	client := openai.NewClient()
+	completion, err := client.Chat.Completions.New(context.Background(), openai.ChatCompletionNewParams{
+		Model: "gpt-4.1-mini", Temperature: openai.Float(0), Messages: []openai.ChatCompletionMessageParamUnion{
+			openai.SystemMessage("You answer questions about the 2022 Winter Olympics."),
+			openai.UserMessage("Use the article to answer the question. If the answer cannot be found, write \"I don't know.\"\n\nArticle: At the 2022 Winter Olympics, Great Britain won women's curling and Sweden won men's curling.\n\nQuestion: Which athletes won the gold medal in curling at the 2022 Winter Olympics?")},
+	})
+	if err != nil {
+		return err
+	}
+	fmt.Println(completion.Choices[0].Message.Content)
+	return nil
+}
+```
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -111267,6 +113934,21 @@ ChatCompletionCreateParams params =
 client.chat().completions().create(params).choices().stream()
     .flatMap(choice -> choice.message().content().stream())
     .forEach(System.out::println);
+```
+
+```csharp
+using OpenAI.Chat;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-4.1-mini";
+ChatClient client = new(model, key);
+
+string article = "At the 2022 Winter Olympics, Great Britain won women's curling and Sweden won men's curling.";
+string query = $"Use the article to answer the question. If the answer cannot be found, write I don't know.\nArticle: {article}\nQuestion: Which athletes won the gold medal in curling at the 2022 Winter Olympics?";
+ChatCompletion result = await client.CompleteChatAsync(
+    [new SystemChatMessage("You answer questions about the 2022 Winter Olympics."), new UserChatMessage(query)],
+    new ChatCompletionOptions { Temperature = 0 });
+Console.WriteLine(result.Content[0].Text);
 ```
 
 ```ruby
@@ -111367,6 +114049,82 @@ def search_reviews(df, product_description, n=3, pprint=True):
 res = search_reviews(df, "delicious beans", n=3)
 ```
 
+```go
+import (
+	"context"
+	"fmt"
+	"log"
+	"math"
+	"sort"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	client := openai.NewClient()
+	ctx := context.Background()
+	texts := []string{"A rich cup of coffee.", "Crunchy crackers with sea salt.", "Dark chocolate with orange.", "A bright herbal tea.", "Smooth beans in tomato sauce.", "A mild cheese with herbs.", "Spicy roasted nuts.", "A crisp sparkling water."}
+	vectors := make([][]float64, len(texts))
+	for i, text := range texts {
+		vector, err := embedding(ctx, &client, text)
+		if err != nil {
+			return err
+		}
+		vectors[i] = vector
+	}
+	query, err := embedding(ctx, &client, "delicious beans")
+	if err != nil {
+		return err
+	}
+	matches := nearest(query, vectors)
+	for _, match := range matches[:min(3, len(matches))] {
+		fmt.Printf("%0.3f: %s\n", match.Similarity, texts[match.Index])
+	}
+	return nil
+}
+
+func embedding(ctx context.Context, client *openai.Client, text string) ([]float64, error) {
+	response, err := client.Embeddings.New(ctx, openai.EmbeddingNewParams{
+		Model: openai.EmbeddingModelTextEmbedding3Small,
+		Input: openai.EmbeddingNewParamsInputUnion{OfString: openai.String(text)},
+	})
+	if err != nil {
+		return nil, err
+	}
+	return response.Data[0].Embedding, nil
+}
+
+func cosineSimilarity(a, b []float64) float64 {
+	var dot, left, right float64
+	for i := range a {
+		dot += a[i] * b[i]
+		left += a[i] * a[i]
+		right += b[i] * b[i]
+	}
+	return dot / math.Sqrt(left*right)
+}
+
+type match struct {
+	Index      int
+	Similarity float64
+}
+
+func nearest(query []float64, vectors [][]float64) []match {
+	matches := make([]match, len(vectors))
+	for i, vector := range vectors {
+		matches[i] = match{Index: i, Similarity: cosineSimilarity(query, vector)}
+	}
+	sort.SliceStable(matches, func(i, j int) bool { return matches[i].Similarity > matches[j].Similarity })
+	return matches
+}
+```
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -111411,6 +114169,42 @@ IntStream.range(0, reviews.size())
     .limit(3)
     .map(reviews::get)
     .forEach(System.out::println);
+```
+
+```csharp
+using OpenAI.Embeddings;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "text-embedding-3-small";
+EmbeddingClient client = new(model, key);
+
+string[] texts = ["A rich cup of coffee.", "Crunchy crackers with sea salt.", "Dark chocolate with orange.", "A bright herbal tea.", "Smooth beans in tomato sauce.", "A mild cheese with herbs.", "Spicy roasted nuts.", "A crisp sparkling water."];
+OpenAIEmbeddingCollection batch = await client.GenerateEmbeddingsAsync(texts);
+float[][] vectors = batch.Select(item => item.ToFloats().ToArray()).ToArray();
+float[] query = await EmbedAsync(client, "delicious beans");
+var ranked = vectors.Select((vector, index) => new { Index = index, Similarity = CosineSimilarity(query, vector) }).OrderByDescending(match => match.Similarity);
+foreach (var match in ranked.Take(3))
+{
+    Console.WriteLine($"{match.Similarity:F3}: {texts[match.Index]}");
+}
+
+static async Task<float[]> EmbedAsync(EmbeddingClient client, string text)
+{
+    OpenAIEmbedding result = await client.GenerateEmbeddingAsync(text);
+    return result.ToFloats().ToArray();
+}
+
+static double CosineSimilarity(float[] left, float[] right)
+{
+    double dot = 0, leftNorm = 0, rightNorm = 0;
+    for (int i = 0; i < left.Length; i++)
+    {
+        dot += left[i] * right[i];
+        leftNorm += left[i] * left[i];
+        rightNorm += right[i] * right[i];
+    }
+    return dot / Math.Sqrt(leftNorm * rightNorm);
+}
 ```
 
 ```ruby
@@ -111518,6 +114312,82 @@ def search_functions(df, code_query, n=3, pprint=True, n_lines=7):
 res = search_functions(df, "Completions API tests", n=3)
 ```
 
+```go
+import (
+	"context"
+	"fmt"
+	"log"
+	"math"
+	"sort"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	client := openai.NewClient()
+	ctx := context.Background()
+	texts := []string{"def add(a, b): return a + b", "def complete(prompt): return prompt"}
+	vectors := make([][]float64, len(texts))
+	for i, text := range texts {
+		vector, err := embedding(ctx, &client, text)
+		if err != nil {
+			return err
+		}
+		vectors[i] = vector
+	}
+	query, err := embedding(ctx, &client, "Completions API tests")
+	if err != nil {
+		return err
+	}
+	matches := nearest(query, vectors)
+	for _, match := range matches[:min(3, len(matches))] {
+		fmt.Printf("%0.3f: %s\n", match.Similarity, texts[match.Index])
+	}
+	return nil
+}
+
+func embedding(ctx context.Context, client *openai.Client, text string) ([]float64, error) {
+	response, err := client.Embeddings.New(ctx, openai.EmbeddingNewParams{
+		Model: openai.EmbeddingModelTextEmbedding3Small,
+		Input: openai.EmbeddingNewParamsInputUnion{OfString: openai.String(text)},
+	})
+	if err != nil {
+		return nil, err
+	}
+	return response.Data[0].Embedding, nil
+}
+
+func cosineSimilarity(a, b []float64) float64 {
+	var dot, left, right float64
+	for i := range a {
+		dot += a[i] * b[i]
+		left += a[i] * a[i]
+		right += b[i] * b[i]
+	}
+	return dot / math.Sqrt(left*right)
+}
+
+type match struct {
+	Index      int
+	Similarity float64
+}
+
+func nearest(query []float64, vectors [][]float64) []match {
+	matches := make([]match, len(vectors))
+	for i, vector := range vectors {
+		matches[i] = match{Index: i, Similarity: cosineSimilarity(query, vector)}
+	}
+	sort.SliceStable(matches, func(i, j int) bool { return matches[i].Similarity > matches[j].Similarity })
+	return matches
+}
+```
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -111557,6 +114427,45 @@ IntStream.range(0, functions.size())
             .reversed())
     .map(functions::get)
     .forEach(System.out::println);
+```
+
+```csharp
+using OpenAI.Embeddings;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "text-embedding-3-small";
+EmbeddingClient client = new(model, key);
+
+string[] texts = ["def add(a, b): return a + b", "def complete(prompt): return prompt"];
+List<float[]> vectors = [];
+foreach (string text in texts)
+{
+    vectors.Add(await EmbedAsync(client, text));
+}
+float[] query = await EmbedAsync(client, "Completions API tests");
+var ranked = vectors.Select((vector, index) => new { Index = index, Similarity = CosineSimilarity(query, vector) }).OrderByDescending(match => match.Similarity);
+foreach (var match in ranked.Take(3))
+{
+    Console.WriteLine($"{match.Similarity:F3}: {texts[match.Index]}");
+}
+
+static async Task<float[]> EmbedAsync(EmbeddingClient client, string text)
+{
+    OpenAIEmbedding result = await client.GenerateEmbeddingAsync(text);
+    return result.ToFloats().ToArray();
+}
+
+static double CosineSimilarity(float[] left, float[] right)
+{
+    double dot = 0, leftNorm = 0, rightNorm = 0;
+    for (int i = 0; i < left.Length; i++)
+    {
+        dot += left[i] * right[i];
+        leftNorm += left[i] * left[i];
+        rightNorm += right[i] * right[i];
+    }
+    return dot / Math.Sqrt(leftNorm * rightNorm);
+}
 ```
 
 ```ruby
@@ -111668,6 +114577,79 @@ def recommendations_from_strings(
     return indices_of_nearest_neighbors
 ```
 
+```go
+import (
+	"context"
+	"fmt"
+	"log"
+	"math"
+	"sort"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	client := openai.NewClient()
+	ctx := context.Background()
+	texts := []string{"A cheetah is a fast land animal.", "A peregrine falcon is a fast bird.", "A tortoise moves slowly."}
+	vectors := make([][]float64, len(texts))
+	for i, text := range texts {
+		vector, err := embedding(ctx, &client, text)
+		if err != nil {
+			return err
+		}
+		vectors[i] = vector
+	}
+	query := vectors[0]
+	matches := nearest(query, vectors)
+	for _, match := range matches {
+		fmt.Println(match.Index)
+	}
+	return nil
+}
+
+func embedding(ctx context.Context, client *openai.Client, text string) ([]float64, error) {
+	response, err := client.Embeddings.New(ctx, openai.EmbeddingNewParams{
+		Model: openai.EmbeddingModelTextEmbedding3Small,
+		Input: openai.EmbeddingNewParamsInputUnion{OfString: openai.String(text)},
+	})
+	if err != nil {
+		return nil, err
+	}
+	return response.Data[0].Embedding, nil
+}
+
+func cosineSimilarity(a, b []float64) float64 {
+	var dot, left, right float64
+	for i := range a {
+		dot += a[i] * b[i]
+		left += a[i] * a[i]
+		right += b[i] * b[i]
+	}
+	return dot / math.Sqrt(left*right)
+}
+
+type match struct {
+	Index      int
+	Similarity float64
+}
+
+func nearest(query []float64, vectors [][]float64) []match {
+	matches := make([]match, len(vectors))
+	for i, vector := range vectors {
+		matches[i] = match{Index: i, Similarity: cosineSimilarity(query, vector)}
+	}
+	sort.SliceStable(matches, func(i, j int) bool { return matches[i].Similarity > matches[j].Similarity })
+	return matches
+}
+```
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -111713,6 +114695,45 @@ var nearestNeighbors =
         .toList();
 
 System.out.println(nearestNeighbors);
+```
+
+```csharp
+using OpenAI.Embeddings;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "text-embedding-3-small";
+EmbeddingClient client = new(model, key);
+
+string[] texts = ["A cheetah is a fast land animal.", "A peregrine falcon is a fast bird.", "A tortoise moves slowly."];
+List<float[]> vectors = [];
+foreach (string text in texts)
+{
+    vectors.Add(await EmbedAsync(client, text));
+}
+float[] query = vectors[0];
+var ranked = vectors.Select((vector, index) => new { Index = index, Similarity = CosineSimilarity(query, vector) }).OrderByDescending(match => match.Similarity);
+foreach (var match in ranked)
+{
+    Console.WriteLine(match.Index);
+}
+
+static async Task<float[]> EmbedAsync(EmbeddingClient client, string text)
+{
+    OpenAIEmbedding result = await client.GenerateEmbeddingAsync(text);
+    return result.ToFloats().ToArray();
+}
+
+static double CosineSimilarity(float[] left, float[] right)
+{
+    double dot = 0, leftNorm = 0, rightNorm = 0;
+    for (int i = 0; i < left.Length; i++)
+    {
+        dot += left[i] * right[i];
+        leftNorm += left[i] * left[i];
+        rightNorm += right[i] * right[i];
+    }
+    return dot / Math.Sqrt(leftNorm * rightNorm);
+}
 ```
 
 ```ruby
@@ -111940,6 +114961,68 @@ prediction = (
 )
 ```
 
+```go
+import (
+	"context"
+	"fmt"
+	"log"
+	"math"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	client := openai.NewClient()
+	ctx := context.Background()
+	negative, err := embedding(ctx, &client, "negative")
+	if err != nil {
+		return err
+	}
+	positive, err := embedding(ctx, &client, "positive")
+	if err != nil {
+		return err
+	}
+	review, err := embedding(ctx, &client, "Sample Review")
+	if err != nil {
+		return err
+	}
+	score := cosineSimilarity(review, positive) - cosineSimilarity(review, negative)
+	prediction := "negative"
+	if score > 0 {
+		prediction = "positive"
+	}
+	fmt.Println(prediction)
+	return nil
+}
+
+func embedding(ctx context.Context, client *openai.Client, text string) ([]float64, error) {
+	response, err := client.Embeddings.New(ctx, openai.EmbeddingNewParams{
+		Model: openai.EmbeddingModelTextEmbedding3Small,
+		Input: openai.EmbeddingNewParamsInputUnion{OfString: openai.String(text)},
+	})
+	if err != nil {
+		return nil, err
+	}
+	return response.Data[0].Embedding, nil
+}
+
+func cosineSimilarity(a, b []float64) float64 {
+	var dot, left, right float64
+	for i := range a {
+		dot += a[i] * b[i]
+		left += a[i] * a[i]
+		right += b[i] * b[i]
+	}
+	return dot / math.Sqrt(left*right)
+}
+```
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -111960,6 +115043,38 @@ List<Float> review = embeddings.get(2).embedding();
 double negative = cosineSimilarity(review, embeddings.get(0).embedding());
 double positive = cosineSimilarity(review, embeddings.get(1).embedding());
 System.out.println(positive > negative ? "positive" : "negative");
+```
+
+```csharp
+using OpenAI.Embeddings;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "text-embedding-3-small";
+EmbeddingClient client = new(model, key);
+
+float[] negative = await EmbedAsync(client, "negative");
+float[] positive = await EmbedAsync(client, "positive");
+float[] review = await EmbedAsync(client, "Sample Review");
+double score = CosineSimilarity(review, positive) - CosineSimilarity(review, negative);
+Console.WriteLine(score > 0 ? "positive" : "negative");
+
+static async Task<float[]> EmbedAsync(EmbeddingClient client, string text)
+{
+    OpenAIEmbedding result = await client.GenerateEmbeddingAsync(text);
+    return result.ToFloats().ToArray();
+}
+
+static double CosineSimilarity(float[] left, float[] right)
+{
+    double dot = 0, leftNorm = 0, rightNorm = 0;
+    for (int i = 0; i < left.Length; i++)
+    {
+        dot += left[i] * right[i];
+        leftNorm += left[i] * left[i];
+        rightNorm += right[i] * right[i];
+    }
+    return dot / Math.Sqrt(leftNorm * rightNorm);
+}
 ```
 
 ```ruby
@@ -114087,6 +117202,8 @@ OpenAI [webhooks](http://chatgpt.com/?q=eli5+what+is+a+webhook?) allow you to re
 
 To receive misalignment monitoring notifications for an API project, see [Receive project safety alerts](https://developers.openai.com/api/docs/guides/safety-checks/misalignment-monitoring#receive-project-safety-alerts).
 
+To receive organization-level warning and deactivation notices for safety identifiers, see [Safety enforcement notifications](https://developers.openai.com/api/docs/guides/safety-enforcement).
+
 For Agents API sessions, see [Session webhooks](https://developers.openai.com/api/docs/guides/agents-api/sessions/webhooks) for session events and recovery patterns. Use the endpoint setup, signature verification, and delivery guidance on this page for the webhook receiver.
 
 [API reference for webhook events
@@ -114354,7 +117471,7 @@ In this guide, you will learn how to create webhook endpoints in the dashboard, 
 
 ## Creating webhook endpoints
 
-To start receiving webhook requests on your server, log in to the dashboard and [open the webhook settings page](https://platform.openai.com/settings/project/webhooks). Webhooks are configured per-project.
+To start receiving project webhook requests on your server, log in to the dashboard and [open the webhook settings page](https://platform.openai.com/settings/project/webhooks). The setup in this section is for project endpoints. For organization-level safety events, see [Safety enforcement notifications](https://developers.openai.com/api/docs/guides/safety-enforcement).
 
 Click the "Create" button to create a new webhook endpoint. You will configure three things:
 

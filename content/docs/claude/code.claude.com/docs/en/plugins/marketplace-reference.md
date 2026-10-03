@@ -57,7 +57,7 @@ The table lists every key Claude Code reads from `marketplace.json`. `name`, `ow
 
 | Field | Type | Description |
 | :- | :- | :- |
-| `name` | string | Marketplace identifier: letters, digits, `.`, `_`, and `-`, starting with a letter or digit, and no `..`. It forms the half after `@` of every [plugin id](/docs/en/plugins/loading#find-where-a-plugin-came-from) installed from the marketplace, so `claude plugin validate` fails other names. See [Reserved names](#reserved-names) |
+| `name` | string | Marketplace identifier: letters, digits, `.`, `_`, and `-`, starting with a letter or digit, and no `..`. `claude plugin validate` fails any other name, because Claude Code can't install plugins from a marketplace that uses one. Users type the name after `@` in a [plugin id](/docs/en/plugins/loading#find-where-a-plugin-came-from) such as `my-plugin@my-marketplace` when they install a plugin. See [Reserved names](#reserved-names) |
 | `owner` | object | Maintainer information. `name` is required; `email` and `url` are optional |
 | `plugins` | array | [Plugin entries](#plugin-entries). Each entry is validated on its own, so one invalid entry doesn't fail the marketplace |
 | `$schema` | string | JSON Schema URL for editor autocomplete. Ignored at load time |
@@ -138,7 +138,7 @@ The table lists each plugin source type and its fields.
 | Relative path | the string itself | A directory inside the marketplace, resolved from the marketplace root. Must start with `./`, unless you write a [bare name under `metadata.pluginRoot`](#relative-path-plugin-source). `"."` on its own means the root itself |
 | `github` | `repo`, `ref`, `sha` | GitHub repository in `owner/repo` form |
 | `url` | `url`, `ref`, `sha` | Any git repository by URL |
-| `git-subdir` | `url`, `path`, `ref`, `sha` | One subdirectory of a git repository, fetched with a sparse partial clone |
+| `git-subdir` | `url`, `path`, `ref`, `sha` | One subdirectory of a git repository, fetched with a sparse checkout |
 | `npm` | `package`, `version`, `registry` | npm registry package or tarball link, fetched with your npm client and unpacked without running install scripts |
 | `archive` | `url`, `sha256` | Zip archive over HTTPS. Requires Claude Code v2.1.224 or later |
 | `command` | `command`, `timeout`, `mode` | Directory printed by a command Claude Code runs on the user's machine. Requires Claude Code v2.1.229 or later |
@@ -213,7 +213,7 @@ A bare name is a single directory name with no `/`, such as `"formatter"`. To wr
 
 ### git-subdir plugin source
 
-`url` accepts a full git URL or GitHub `owner/repo` shorthand. `path` is the subdirectory that holds the plugin, and Claude Code downloads only that subdirectory.
+`url` accepts a full git URL or GitHub `owner/repo` shorthand. `path` is the subdirectory that holds the plugin, and Claude Code checks out only that subdirectory. Over an `https` or SSH URL, Claude Code asks the server for a partial clone, so from a host that supports partial clones, a plugin in a large monorepo installs without downloading the rest of the repository.
 
 ```json theme={null}
 {

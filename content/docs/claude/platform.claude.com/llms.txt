@@ -12,7 +12,7 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 748 pages - /docs - Content included below
+- English (en) - 753 pages - /docs - Content included below
 - German (Deutsch) (de) - 265 pages - /docs/de - Visit website for content
 - Spanish (Español) (es) - 265 pages - /docs/es - Visit website for content
 - French (Français) (fr) - 265 pages - /docs/fr - Visit website for content
@@ -136,17 +136,22 @@ The full documentation is available in the following languages on https://platfo
 - [Build in Console](https://platform.claude.com/docs/en/managed-agents/onboarding.md)
 - [Cloud environment setup](https://platform.claude.com/docs/en/managed-agents/environments.md)
 - [Cloud sandbox reference](https://platform.claude.com/docs/en/managed-agents/cloud-sandboxes-reference.md)
+- [Custom tools and MCP servers](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-custom-tools.md) - Custom tools in self-hosted sandboxes
 - [Define outcomes](https://platform.claude.com/docs/en/managed-agents/define-outcomes.md)
 - [Agent setup](https://platform.claude.com/docs/en/managed-agents/agent-setup.md) - Define your agent
+- [Deploy workers](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-workers.md) - Deploy self-hosted workers
 - [Dreams](https://platform.claude.com/docs/en/managed-agents/dreams.md)
 - [MCP connector](https://platform.claude.com/docs/en/managed-agents/mcp-connector.md)
+- [Memory stores](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-memory.md) - Memory stores in self-hosted sandboxes
 - [Migration](https://platform.claude.com/docs/en/managed-agents/migration.md)
+- [Monitor and troubleshoot](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-operations.md) - Monitor and troubleshoot self-hosted workers
 - [Multiagent orchestration](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration.md)
 - [Permission policies](https://platform.claude.com/docs/en/managed-agents/permission-policies.md)
 - [Managed Agents reference](https://platform.claude.com/docs/en/managed-agents/reference.md) - Reference
 - [Scheduled deployments](https://platform.claude.com/docs/en/managed-agents/scheduled-deployments.md)
 - [Security model](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-security.md)
-- [Integration guide](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes.md) - Self-hosted sandboxes
+- [Overview and quickstart](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes.md) - Self-hosted sandboxes
+- [Worker reference](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-reference.md) - Self-hosted worker reference
 - [Session budgets](https://platform.claude.com/docs/en/managed-agents/budgets.md)
 - [Session event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming.md)
 - [Session operations](https://platform.claude.com/docs/en/managed-agents/session-operations.md)
