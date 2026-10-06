@@ -7133,7 +7133,7 @@ Schema name: `ResponseWsError`
 
     The response headers that were emitted with the error, if any.
 
-  - `misalignment: optional object { detailed_explanation, error_type, steer }`
+  - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
     - `detailed_explanation: optional string`
 
@@ -7156,6 +7156,10 @@ Schema name: `ResponseWsError`
         - `"potentially_unintended_destructive_activity"`
 
         - `"other"`
+
+    - `review_target: optional string or null`
+
+      An opaque target for explicitly continuing this review, or null when unavailable.
 
     - `steer: optional object { message }`
 
@@ -7297,7 +7301,7 @@ Schema name: `ResponseCreatedEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -7320,6 +7324,10 @@ Schema name: `ResponseCreatedEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -12308,7 +12316,7 @@ Schema name: `ResponseCreatedEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -17028,7 +17036,7 @@ Schema name: `ResponseInProgressEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -17051,6 +17059,10 @@ Schema name: `ResponseInProgressEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -22039,7 +22051,7 @@ Schema name: `ResponseInProgressEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -26759,7 +26771,7 @@ Schema name: `ResponseCompletedEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -26782,6 +26794,10 @@ Schema name: `ResponseCompletedEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -31770,7 +31786,7 @@ Schema name: `ResponseCompletedEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -36514,7 +36530,7 @@ Schema name: `ResponseFailedEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -36537,6 +36553,10 @@ Schema name: `ResponseFailedEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -41525,7 +41545,7 @@ Schema name: `ResponseFailedEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -46249,7 +46269,7 @@ Schema name: `ResponseIncompleteEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -46272,6 +46292,10 @@ Schema name: `ResponseIncompleteEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -51260,7 +51284,7 @@ Schema name: `ResponseIncompleteEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -56801,7 +56825,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
     - `id: string`
 
-      The unique ID of the computer call tool output.
+      The ID of the computer tool call output.
 
     - `call_id: string`
 
@@ -60965,7 +60989,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
     - `id: string`
 
-      The unique ID of the computer call tool output.
+      The ID of the computer tool call output.
 
     - `call_id: string`
 
@@ -66726,7 +66750,7 @@ Schema name: `ResponseQueuedEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -66749,6 +66773,10 @@ Schema name: `ResponseQueuedEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -71737,7 +71765,7 @@ Schema name: `ResponseQueuedEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 

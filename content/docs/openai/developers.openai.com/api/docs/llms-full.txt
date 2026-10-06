@@ -1589,6 +1589,111 @@ async def message(message: Message):
     return {"content": response.output_text}
 ```
 
+```go
+func main() {
+	client := openai.NewClient()
+	server := &http.Server{
+		Addr:              "127.0.0.1:8000",
+		Handler:           newChatHandler(client),
+		ReadHeaderTimeout: 5 * time.Second,
+	}
+	log.Fatal(server.ListenAndServe())
+}
+
+func newChatHandler(client openai.Client) http.Handler {
+	var mutex sync.Mutex
+	type sessionConversation struct {
+		ready        chan struct{}
+		id           string
+		err          error
+		responseSlot chan struct{}
+	}
+	conversationsBySession := map[string]*sessionConversation{}
+	mux := http.NewServeMux()
+	mux.HandleFunc("POST /messages", func(w http.ResponseWriter, r *http.Request) {
+		var message struct {
+			Content   string `json:"content"`
+			SessionID string `json:"session_id"`
+		}
+		if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1<<20)).Decode(&message); err != nil || strings.TrimSpace(message.Content) == "" || strings.TrimSpace(message.SessionID) == "" {
+			http.Error(w, "content and session_id must be non-empty strings", 400)
+			return
+		}
+		// A demo session map. Bind session IDs to authenticated users in your application.
+		mutex.Lock()
+		session, exists := conversationsBySession[message.SessionID]
+		if !exists {
+			session = &sessionConversation{ready: make(chan struct{}), responseSlot: make(chan struct{}, 1)}
+			conversationsBySession[message.SessionID] = session
+		}
+		mutex.Unlock()
+		if !exists {
+			go func() {
+				// Creation belongs to the shared session, not the first HTTP request.
+				ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+				defer cancel()
+				conversation, err := client.Conversations.New(ctx, conversations.ConversationNewParams{})
+				session.err = err
+				if err == nil {
+					session.id = conversation.ID
+				}
+				mutex.Lock()
+				if err != nil {
+					delete(conversationsBySession, message.SessionID)
+				}
+				close(session.ready)
+				mutex.Unlock()
+			}()
+		}
+		select {
+		case <-r.Context().Done():
+			http.Error(w, "Request cancelled", http.StatusRequestTimeout)
+			return
+		case <-session.ready:
+		}
+		if session.err != nil {
+			http.Error(w, "Could not create conversation", http.StatusInternalServerError)
+			return
+		}
+		// Serialize responses within this conversation; waiting requests can cancel.
+		select {
+		case session.responseSlot <- struct{}{}:
+			defer func() { <-session.responseSlot }()
+		case <-r.Context().Done():
+			http.Error(w, "Request cancelled", http.StatusRequestTimeout)
+			return
+		}
+		if r.Context().Err() != nil {
+			http.Error(w, "Request cancelled", http.StatusRequestTimeout)
+			return
+		}
+		// Replace this illustrative stored prompt ID with your prompt.
+		result, err := client.Responses.New(r.Context(), responses.ResponseNewParams{
+			Prompt: responses.ResponsePromptParam{
+				ID: "pmpt_123",
+			},
+			Input: responses.ResponseNewParamsInputUnion{
+				OfString: openai.String(message.Content),
+			},
+			Conversation: responses.ResponseNewParamsConversationUnion{
+				OfString: openai.String(session.id),
+			},
+		})
+		if err != nil || result.Status != responses.ResponseStatusCompleted {
+			http.Error(w, "Could not create response", 500)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(map[string]string{
+			"content": result.OutputText(),
+		}); err != nil {
+			log.Print(err)
+		}
+	})
+	return mux
+}
+```
+
 ```ruby
 # Replace the illustrative IDs and URLs below with your own resource values.
 require "openai"
@@ -2524,6 +2629,76 @@ Generally, we recommend using `auto`, which is the default. `auto` triggers load
 - `Button.onClickAction` → `self`
 - `Select.onChangeAction` → `none`
 - `Card.confirm.action` → `container`
+
+---
+
+# Add custom MCP server
+
+[<span
+      aria-hidden="true"
+      class="h-4 w-4 shrink-0 bg-current"
+      style="-webkit-mask: url('/images/codex/exclamation-shield.svg') no-repeat center / contain; mask: url('/images/codex/exclamation-shield.svg') no-repeat center / contain;"
+    >
+
+    Elevated risk](https://help.openai.com/en/articles/20001062)
+
+
+
+<a id="what-is-chatgpt-developer-mode"></a>
+
+## Connect a custom MCP server
+
+Connect your Model Context Protocol (MCP) server to ChatGPT as a plugin. ChatGPT supports both read and write tools from your server.
+
+Only connect to MCP servers you trust. An untrusted server may access or steal information shared through app use, or trick ChatGPT into using tools in unintended ways, including changing or deleting data. Review [prompt injections and other risks](https://developers.openai.com/api/docs/mcp) before connecting a server.
+
+## How to use
+
+- **Access:** Use ChatGPT on the web. Workspace permissions and security restrictions, including Lockdown, apply to adding and using custom MCP servers.
+- **Add an MCP server as a plugin:**
+  1. Go to [ChatGPT Plugins](https://chatgpt.com/plugins).
+  2. Select the plus button, then **Add custom MCP server**.
+  3. Enter a name and, optionally, a description. Under **Connection**, enter your **Server URL**, or select **Tunnel** for a [Secure MCP Tunnel](https://developers.openai.com/api/docs/guides/secure-mcp-tunnels).
+  4. Configure authentication for your server.
+  5. Review the risk warning and select **I understand and want to continue**.
+  6. Select **Create as a plugin**.
+  - Supported MCP protocols: SSE and streaming HTTP.
+  - Authentication options include **OAuth**, **No authentication**, and **OAuth or no authentication**.
+    - For OAuth, if static credentials are provided, then they will be used. Otherwise, ChatGPT can use Client ID Metadata Documents when the authorization server advertises support and the app creator chooses CIMD. CIMD supports public-client token exchange (`none`) and signed client assertion token exchange (`private_key_jwt`). ChatGPT can also use DCR when configured.
+    - Mixed authentication supports OAuth and no authentication. This means the initialize and list tools APIs use no auth, and tools use OAuth or no auth based on the security schemes set on their tool metadata.
+  - Find the resulting plugin in your personal plugins or the workspace where you created it. Install it before using it in a conversation.
+
+- **Manage tools:** In app settings there is a details page per app. Use that to toggle tools on or off and refresh apps to pull new tools, descriptions, and server instructions from the MCP server.
+- **Use apps in conversations:** In the prompt box, type `@` and select your installed plugin. Custom MCP plugins can be used alongside other apps, subject to workspace permissions and security restrictions. You may need to explore different prompting techniques to call the correct tools. For example:
+  - Be explicit: `Use the "Acme CRM" app's "update_record" tool to …`. When needed, include the server label and tool name.
+  - Disallow alternatives to avoid ambiguity: "Do not use built-in browsing or other tools; only use the Acme CRM app."
+  - Disambiguate similar tools: "Prefer `Calendar.create_event` for meetings; do not use `Reminders.create_task` for scheduling."
+  - Specify input shape and sequencing: "First call `Repo.read_file` with `{ path: "…" }`. Then call `Repo.write_file` with the modified content. Do not call other tools."
+  - If multiple apps overlap, state preferences up front (for example, "Use `CompanyDB` for authoritative data; use other sources only if `CompanyDB` returns no results").
+  - Custom MCP servers do not require `search`/`fetch` tools. Any tools your app exposes (including write actions) are available, subject to confirmation settings.
+  - See more guidance in [Using tools](https://developers.openai.com/api/docs/guides/tools) and [Prompting](https://developers.openai.com/api/docs/guides/prompting).
+  - Improve tool selection with better tool descriptions: In your MCP server, write action-oriented tool names and descriptions that include "Use this when…" guidance, note disallowed/edge cases, and add parameter descriptions (and enums) to help the model choose the right tool among similar ones and avoid built-in tools when inappropriate.
+  - Add server instructions for cross-tool guidance: Use the MCP [`instructions` field](https://modelcontextprotocol.io/specification/2025-06-18/basic/lifecycle#initialization) for server-wide guidance such as required tool sequences, shared rate limits, or relationships between tools. Keep the first 512 characters self-contained.
+
+  Examples:
+
+```
+  Schedule a 30‑minute meeting tomorrow at 3pm PT with
+  alice@example.com and bob@example.com using "Calendar.create_event".
+  Do not use any other scheduling tools.
+```
+
+```
+  Create a pull request using "GitHub.open_pull_request" from branch
+  "feat-retry" into "main" with title "Add retry logic" and body "…".
+  Do not push directly to main.
+```
+
+- **Reviewing and confirming tool calls:**
+  - Inspect JSON tool payloads to verify correctness and debug problems. For each tool call, expand the tool call details. Full JSON contents of the tool input and output are available.
+  - Write actions by default require confirmation. Carefully review the tool input which will be sent to a write action to ensure the behavior is as desired. Incorrect write actions can inadvertently destroy, alter, or share data!
+  - Read-only detection: We respect the `readOnlyHint` tool annotation (see [MCP tool annotations](https://modelcontextprotocol.io/legacy/concepts/tools#available-tool-annotations)). Tools without this hint are treated as write actions.
+  - You can choose to remember the approve or deny choice for a given tool for a conversation, which means it will apply that choice for the rest of that conversation. Because of this, you should only allow a tool to remember the approve choice if you know and trust the underlying application to make further write actions without your approval. New conversations will prompt for confirmation again. Refreshing the same conversation will also prompt for confirmation again on subsequent turns.
 
 ---
 
@@ -6586,6 +6761,10 @@ The Python sample uses `pip install "openai[realtime]>=3.8.0"`.
 The JavaScript sample uses `npm install openai@^7.10.0 ws`.
 The Ruby sample uses `gem install openai async-websocket`.
 
+For Go, run `go get github.com/openai/openai-go/v3@v3.70.0`.
+For Java, add the Maven dependency `com.openai:openai-java:4.75.1`.
+These Go and Java SDK versions provide native Responses WebSocket support.
+
 Start a Responses API WebSocket session
 
 ```javascript
@@ -6663,6 +6842,109 @@ with client.responses.connect() as connection:
     )
     first_event = connection.recv()
     print(first_event.type)
+```
+
+```go
+tools := []responses.ToolUnionParam{}
+for _, name := range []string{
+	"search_test_logs",
+	"search_code",
+} {
+	tools = append(tools, responses.ToolUnionParam{
+		OfFunction: &responses.FunctionToolParam{
+			Name:        name,
+			Description: openai.String("Search for a query."),
+			Parameters: map[string]any{
+				"type": "object",
+				"properties": map[string]any{
+					"query": map[string]any{
+						"type": "string",
+					},
+				},
+				"required": []string{
+					"query",
+				},
+				"additionalProperties": false,
+			},
+			Strict: openai.Bool(true),
+		},
+	})
+}
+ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+defer cancel()
+client := openai.NewClient()
+conn, err := client.Responses.Connect(ctx, responses.ResponseConnectionOptions{})
+if err != nil {
+	log.Fatal(err)
+}
+defer conn.Close()
+if err := conn.Create(ctx, responses.ResponsesClientEventResponseCreateParam{
+	Model: "gpt-6-astra",
+	Store: openai.Bool(false),
+	Input: responses.ResponsesClientEventResponseCreateInputUnionParam{
+		OfString: openai.String("Find the flaky test in this run, call the tools you need, and keep going until you can explain the root cause."),
+	},
+	Tools: tools,
+}); err != nil {
+	log.Fatal(err)
+}
+response, err := conn.FinalResponse(ctx)
+if err != nil {
+	log.Fatal(err)
+}
+if response.Status != responses.ResponseStatusCompleted {
+	log.Fatalf("Response ended with status %s", response.Status)
+}
+output := make([]json.RawMessage, 0, len(response.Output))
+for _, item := range response.Output {
+	output = append(output, json.RawMessage(item.RawJSON()))
+}
+if err := json.NewEncoder(os.Stdout).Encode(output); err != nil {
+	log.Fatal(err)
+}
+```
+
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.*;
+import java.util.*;
+
+var tools = new ArrayList<Tool>();
+for (var name : List.of("search_test_logs", "search_code"))
+  tools.add(
+      Tool.ofFunction(
+          FunctionTool.builder()
+              .name(name)
+              .description("Search for a query.")
+              .strict(true)
+              .parameters(
+                  FunctionTool.Parameters.builder()
+                      .putAdditionalProperty("type", JsonValue.from("object"))
+                      .putAdditionalProperty(
+                          "properties",
+                          JsonValue.from(Map.of("query", Map.of("type", "string"))))
+                      .putAdditionalProperty("required", JsonValue.from(List.of("query")))
+                      .putAdditionalProperty("additionalProperties", JsonValue.from(false))
+                      .build())
+              .build()));
+
+try (var conn = client.responses().connect()) {
+  conn.send(
+      ResponsesClientEvent.ofResponseCreate(
+          ResponsesClientEvent.ResponseCreate.builder()
+              .model("gpt-6-astra")
+              .store(false)
+              .input(
+                  "Find the flaky test in this run, call the tools you need, and keep going until you can explain the root cause.")
+              .tools(tools)
+              .build()));
+  var response = conn.finalResponse();
+  if (response.status().filter(ResponseStatus.COMPLETED::equals).isEmpty())
+    throw new IllegalStateException(
+        "Response ended with status " + response.status().orElse(null));
+  System.out.println(response.output());
+}
 ```
 
 ```ruby
@@ -10352,68 +10634,6 @@ Use [Blaxel Agent Drive](https://docs.blaxel.ai/Agent-drive/Overview) to preserv
 
 ---
 
-# ChatGPT Developer mode
-
-[<span
-      aria-hidden="true"
-      class="h-4 w-4 shrink-0 bg-current"
-      style="-webkit-mask: url('/images/codex/exclamation-shield.svg') no-repeat center / contain; mask: url('/images/codex/exclamation-shield.svg') no-repeat center / contain;"
-    >
-
-    Elevated risk](https://help.openai.com/en/articles/20001062)
-
-
-
-## What is ChatGPT developer mode
-
-ChatGPT developer mode provides full Model Context Protocol (MCP) client support for all tools, both read and write. It's powerful but dangerous, and is intended for developers who understand how to safely configure and test apps. When using developer mode, watch for [prompt injections and other risks](https://developers.openai.com/api/docs/mcp), model mistakes on write actions that could destroy data, and malicious MCPs that attempt to steal information.
-
-## How to use
-
-- **Eligibility:** Available to Pro, Plus, Business, Enterprise, and Education accounts on the web.
-- **Enable developer mode:** In [ChatGPT](https://chatgpt.com), open **Settings → Security and login** and turn on **Developer mode**.
-- **Create apps from MCP servers:**
-  - Go to [ChatGPT Plugins](https://chatgpt.com/plugins).
-  - Select the plus button and create a developer-mode app for your remote MCP server. It will appear in the composer's **Developer mode** tool later during conversations. The plus button will only create developer-mode apps after you turn on Developer mode.
-    - Supported MCP protocols: SSE and streaming HTTP.
-    - Authentication supported: OAuth, No Authentication, and Mixed Authentication
-      - For OAuth, if static credentials are provided, then they will be used. Otherwise, ChatGPT can use Client ID Metadata Documents when the authorization server advertises support and the app creator chooses CIMD. CIMD supports public-client token exchange (`none`) and signed client assertion token exchange (`private_key_jwt`). ChatGPT can also use DCR when configured.
-      - Mixed authentication supports OAuth and No Authentication. This means the initialize and list tools APIs use no auth, and tools use OAuth or no auth based on the security schemes set on their tool metadata.
-  - Created apps will show under "Drafts" in the app settings.
-- **Manage tools:** In app settings there is a details page per app. Use that to toggle tools on or off and refresh apps to pull new tools, descriptions, and server instructions from the MCP server.
-- **Use apps in conversations:** Choose **Developer mode** from the Plus menu and select the apps for the conversation. You may need to explore different prompting techniques to call the correct tools. For example:
-  - Be explicit: "Use the \"Acme CRM\" app's \"update_record\" tool to …". When needed, include the server label and tool name.
-  - Disallow alternatives to avoid ambiguity: "Do not use built-in browsing or other tools; only use the Acme CRM app."
-  - Disambiguate similar tools: "Prefer `Calendar.create_event` for meetings; do not use `Reminders.create_task` for scheduling."
-  - Specify input shape and sequencing: "First call `Repo.read_file` with `{ path: "…" }`. Then call `Repo.write_file` with the modified content. Do not call other tools."
-  - If multiple apps overlap, state preferences up front (e.g., "Use `CompanyDB` for authoritative data; use other sources only if `CompanyDB` returns no results").
-  - Developer mode does not require `search`/`fetch` tools. Any tools your app exposes (including write actions) are available, subject to confirmation settings.
-  - See more guidance in [Using tools](https://developers.openai.com/api/docs/guides/tools) and [Prompting](https://developers.openai.com/api/docs/guides/prompting).
-  - Improve tool selection with better tool descriptions: In your MCP server, write action-oriented tool names and descriptions that include "Use this when…" guidance, note disallowed/edge cases, and add parameter descriptions (and enums) to help the model choose the right tool among similar ones and avoid built-in tools when inappropriate.
-  - Add server instructions for cross-tool guidance: Use the MCP [`instructions` field](https://modelcontextprotocol.io/specification/2025-06-18/basic/lifecycle#initialization) for server-wide guidance such as required tool sequences, shared rate limits, or relationships between tools. Keep the first 512 characters self-contained.
-
-  Examples:
-
-```
-  Schedule a 30‑minute meeting tomorrow at 3pm PT with
-  alice@example.com and bob@example.com using "Calendar.create_event".
-  Do not use any other scheduling tools.
-```
-
-```
-  Create a pull request using "GitHub.open_pull_request" from branch
-  "feat-retry" into "main" with title "Add retry logic" and body "…".
-  Do not push directly to main.
-```
-
-- **Reviewing and confirming tool calls:**
-  - Inspect JSON tool payloads verify correctness and debug problems. For each tool call, you can use the carat to expand and collapse the tool call details. Full JSON contents of the tool input and output are available.
-  - Write actions by default require confirmation. Carefully review the tool input which will be sent to a write action to ensure the behavior is as desired. Incorrect write actions can inadvertently destroy, alter, or share data!
-  - Read-only detection: We respect the `readOnlyHint` tool annotation (see [MCP tool annotations](https://modelcontextprotocol.io/legacy/concepts/tools#available-tool-annotations)). Tools without this hint are treated as write actions.
-  - You can choose to remember the approve or deny choice for a given tool for a conversation, which means it will apply that choice for the rest of that conversation. Because of this, you should only allow a tool to remember the approve choice if you know and trust the underlying application to make further write actions without your approval. New conversations will prompt for confirmation again. Refreshing the same conversation will also prompt for confirmation again on subsequent turns.
-
----
-
 # ChatKit
 
 ChatKit is the best way to build agentic chat experiences. Whether you’re building an internal knowledge base assistant, HR onboarding helper, research companion, shopping or scheduling assistant, troubleshooting bot, financial planning advisor, or support agent, ChatKit provides a customizable chat embed to handle all user experience details.
@@ -10602,7 +10822,9 @@ server.start
 
    See the [chatkit-js repo](https://github.com/openai/chatkit-js) on GitHub.
 
-   chatkit.js
+   For Go, run `go get github.com/openai/openai-go/v3@v3.70.0`. For Java, add the Maven dependency `com.openai:openai-java:4.75.1`.
+
+   Create a ChatKit session token
 
 ```javascript
 export default async function getChatKitSessionToken(deviceId) {
@@ -10637,6 +10859,50 @@ export default async function getChatKitSessionToken(deviceId) {
   }
 
   return client_secret;
+}
+```
+
+```go
+// Call after authenticating the request. Pass the user's stable ID from your
+// server-side authentication context, never a client-supplied device ID.
+func getChatKitSessionToken(ctx context.Context, client openai.Client, authenticatedUserID string) (string, error) {
+	// Replace this illustrative workflow ID with your published workflow.
+	session, err := client.Beta.ChatKit.Sessions.New(ctx, openai.BetaChatKitSessionNewParams{
+		User: authenticatedUserID,
+		Workflow: openai.ChatSessionWorkflowParam{
+			ID: "wf_68df4b13b3588190a09d19288d4610ec0df388c3983f58d1",
+		},
+	})
+	if err != nil {
+		return "", err
+	}
+	return session.ClientSecret, nil
+}
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.beta.chatkit.sessions.*;
+import com.openai.models.beta.chatkit.threads.ChatSessionWorkflowParam;
+
+// Call after authenticating the request. Pass the user's stable ID from your
+// server-side authentication context, never a client-supplied device ID.
+static String getChatKitSessionToken(OpenAIClient client, String authenticatedUserId) {
+  // Replace this illustrative workflow ID with your published workflow.
+  return client
+      .beta()
+      .chatkit()
+      .sessions()
+      .create(
+          SessionCreateParams.builder()
+              .user(authenticatedUserId)
+              .workflow(
+                  ChatSessionWorkflowParam.builder()
+                      .id("wf_68df4b13b3588190a09d19288d4610ec0df388c3983f58d1")
+                      .build())
+              .build())
+      .clientSecret();
 }
 ```
 
@@ -11527,6 +11793,124 @@ def strip_citations(text: str, citations: Iterable[Citation]) -> str:
         clean_text = clean_text[: citation["start"]] + clean_text[citation["end"] :]
 
     return clean_text
+```
+
+```go
+// Start and End are UTF-8 byte offsets, suitable for Go string slicing.
+type Citation struct {
+	Raw, Family string
+	SourceIDs   []string
+	Locator     string
+	Start, End  int
+}
+
+var sourceID = regexp.MustCompile(`^[A-Za-z0-9_-]+$`)
+var lineLocator = regexp.MustCompile(`^L\d+(?:-L\d+)?$`)
+
+func extractCitations(text string, families []string) []Citation {
+	citations := []Citation{}
+	if len(families) == 0 {
+		return citations
+	}
+	escaped := make([]string, len(families))
+	for i, family := range families {
+		escaped[i] = regexp.QuoteMeta(family)
+	}
+	token := regexp.MustCompile("(?s)\uE200(" + strings.Join(escaped, "|") + ")\uE202(.*?)\uE201")
+	for _, match := range token.FindAllStringSubmatchIndex(text, -1) {
+		parts := []string{}
+		for _, part := range strings.Split(text[match[4]:match[5]], "\uE202") {
+			if part = strings.TrimSpace(part); part != "" {
+				parts = append(parts, part)
+			}
+		}
+		locator := ""
+		if len(parts) > 0 && lineLocator.MatchString(parts[len(parts)-1]) {
+			locator = parts[len(parts)-1]
+			parts = parts[:len(parts)-1]
+		}
+		valid := len(parts) > 0
+		for _, part := range parts {
+			if !sourceID.MatchString(part) {
+				valid = false
+				break
+			}
+		}
+		if valid {
+			citations = append(citations, Citation{
+				text[match[0]:match[1]],
+				text[match[2]:match[3]],
+				parts,
+				locator,
+				match[0],
+				match[1],
+			})
+		}
+	}
+	return citations
+}
+func stripCitations(text string, citations []Citation) string {
+	sorted := append([]Citation(nil), citations...)
+	sort.Slice(sorted, func(i, j int) bool {
+		return sorted[i].Start > sorted[j].Start
+	})
+	for _, citation := range sorted {
+		text = text[:citation.Start] + text[citation.End:]
+	}
+	return text
+}
+```
+
+```java
+import java.util.*;
+import java.util.regex.Pattern;
+
+// Java string offsets are UTF-16 code units, matching substring().
+record Citation(
+    String raw, String family, List<String> sourceIds, String locator, int start, int end) {}
+
+static final Pattern SOURCE_ID = Pattern.compile("^[A-Za-z0-9_-]+$");
+static final Pattern LINE_LOCATOR = Pattern.compile("^L\\d+(?:-L\\d+)?$");
+
+static List<Citation> extractCitations(String text, List<String> families) {
+  var citations = new ArrayList<Citation>();
+  if (families.isEmpty()) return citations;
+  var familyPattern =
+      families.stream().map(Pattern::quote).collect(java.util.stream.Collectors.joining("|"));
+  var matcher =
+      Pattern.compile("\uE200(" + familyPattern + ")\uE202(.*?)\uE201", Pattern.DOTALL)
+          .matcher(text);
+  while (matcher.find()) {
+    var parts =
+        new ArrayList<>(
+            Arrays.stream(matcher.group(2).split("\uE202"))
+                .map(String::strip)
+                .filter(s -> !s.isEmpty())
+                .toList());
+    String locator = null;
+    if (!parts.isEmpty() && LINE_LOCATOR.matcher(parts.get(parts.size() - 1)).matches())
+      locator = parts.remove(parts.size() - 1);
+    if (parts.isEmpty() || parts.stream().anyMatch(s -> !SOURCE_ID.matcher(s).matches()))
+      continue;
+    citations.add(
+        new Citation(
+            matcher.group(),
+            matcher.group(1),
+            List.copyOf(parts),
+            locator,
+            matcher.start(),
+            matcher.end()));
+  }
+  return citations;
+}
+
+static String stripCitations(String text, List<Citation> citations) {
+  var sorted = new ArrayList<>(citations);
+  sorted.sort(Comparator.comparingInt(Citation::start).reversed());
+  for (var citation : sorted)
+    text = text.substring(0, citation.start()) + text.substring(citation.end());
+  return text;
+}
 ```
 
 ```ruby
@@ -19623,6 +20007,32 @@ The `display` helper belongs to your runtime. Encode screenshots in memory and r
 
 Set `OPENAI_API_KEY` for the API client and `OPENAI_EXAMPLE_CODE_EXECUTION_URL` to your service endpoint. Set `OPENAI_EXAMPLE_CODE_EXECUTION_TOKEN` if your service requires a bearer token. These service settings are example configuration, not OpenAI API parameters.
 
+For Go, initialize a module if your project doesn't have one, then install the pinned SDK:
+
+```bash
+go mod init example.com/computer-use
+go get github.com/openai/openai-go/v3@v3.70.0
+```
+
+For Java 17 or later, add these dependencies to your Maven `pom.xml`:
+
+```xml
+<dependencies>
+  <dependency>
+    <groupId>com.openai</groupId>
+    <artifactId>openai-java</artifactId>
+    <version>4.75.1</version>
+  </dependency>
+  <dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.18.9</version>
+  </dependency>
+</dependencies>
+```
+
+The Java adapter is a standalone execution-service example with partial workflow coverage. The linked [computer use guide](https://developers.openai.com/api/docs/guides/tools-computer-use#connect-your-own-runtime) doesn't provide a complete Java API loop.
+
 Connect the API client to your execution service
 
 ```javascript
@@ -19742,6 +20152,149 @@ def execute_in_sandbox(
     return observations
 ```
 
+```go
+// This is an application adapter to your sandbox, not an SDK execution helper.
+func executeInSandbox(ctx context.Context, code, sessionID, endpoint string, input io.Reader) (responses.ResponseFunctionCallOutputItemListParam, error) {
+	fmt.Println(code)
+	fmt.Print("Run this code in the isolated runtime? Type yes: ")
+	scanner := bufio.NewScanner(input)
+	if !scanner.Scan() {
+		if err := scanner.Err(); err != nil {
+			return nil, err
+		}
+	}
+	if strings.TrimSpace(scanner.Text()) != "yes" {
+		return responses.ResponseFunctionCallOutputItemListParam{
+			{
+				OfInputText: &responses.ResponseInputTextContentParam{
+					Text: "The user declined this execution.",
+				},
+			},
+		}, nil
+	}
+	payload, err := json.Marshal(map[string]string{
+		"session_id": sessionID,
+		"language":   "python",
+		"code":       code,
+	})
+	if err != nil {
+		return nil, err
+	}
+	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+	defer cancel()
+	request, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, bytes.NewReader(payload))
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Set("Content-Type", "application/json")
+	if token := os.Getenv("OPENAI_EXAMPLE_CODE_EXECUTION_TOKEN"); token != "" {
+		request.Header.Set("Authorization", "Bearer "+token)
+	}
+	response, err := http.DefaultClient.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+	if response.StatusCode < 200 || response.StatusCode >= 300 {
+		return nil, fmt.Errorf("execution service returned HTTP %d", response.StatusCode)
+	}
+	var result struct {
+		Output []struct {
+			Type     string  `json:"type"`
+			Text     *string `json:"text"`
+			ImageURL *string `json:"image_url"`
+			Detail   string  `json:"detail"`
+		} `json:"output"`
+	}
+	if err := json.NewDecoder(response.Body).Decode(&result); err != nil {
+		return nil, err
+	}
+	if len(result.Output) == 0 {
+		return nil, fmt.Errorf("expected nonempty execution output")
+	}
+	output := make(responses.ResponseFunctionCallOutputItemListParam, 0, len(result.Output))
+	for _, item := range result.Output {
+		switch {
+		case item.Type == "input_text" && item.Text != nil:
+			output = append(output, responses.ResponseFunctionCallOutputItemUnionParam{
+				OfInputText: &responses.ResponseInputTextContentParam{
+					Text: *item.Text,
+				},
+			})
+		case item.Type == "input_image" && item.ImageURL != nil && item.Detail == "original":
+			output = append(output, responses.ResponseFunctionCallOutputItemUnionParam{
+				OfInputImage: &responses.ResponseInputImageContentParam{
+					ImageURL: openai.String(*item.ImageURL),
+					Detail:   "original",
+				},
+			})
+		default:
+			return nil, fmt.Errorf("expected input_text or input_image with original detail")
+		}
+	}
+	return output, nil
+}
+```
+
+```java
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.openai.models.responses.*;
+import java.net.http.*;
+import java.util.*;
+
+// Application-owned adapter: the sandbox must implement this HTTP contract.
+static List<ResponseFunctionCallOutputItem> executeInSandbox(
+    String code, String sessionId, java.net.URI endpoint, java.io.BufferedReader input)
+    throws Exception {
+  System.out.println(code);
+  System.out.print("Run this code in the isolated runtime? Type yes: ");
+  String approval = input.readLine();
+  if (approval == null || !approval.strip().equals("yes"))
+    return List.of(
+        ResponseFunctionCallOutputItem.ofInputText(
+            ResponseInputTextContent.builder()
+                .text("The user declined this execution.")
+                .build()));
+  var mapper = new ObjectMapper();
+  var request =
+      HttpRequest.newBuilder(endpoint)
+          .timeout(java.time.Duration.ofSeconds(30))
+          .header("Content-Type", "application/json")
+          .POST(
+              HttpRequest.BodyPublishers.ofString(
+                  mapper.writeValueAsString(
+                      Map.of("session_id", sessionId, "language", "python", "code", code))));
+  String token = System.getenv("OPENAI_EXAMPLE_CODE_EXECUTION_TOKEN");
+  if (token != null && !token.isBlank()) request.header("Authorization", "Bearer " + token);
+  var response =
+      HttpClient.newHttpClient().send(request.build(), HttpResponse.BodyHandlers.ofString());
+  if (response.statusCode() < 200 || response.statusCode() >= 300)
+    throw new IllegalStateException("Execution service returned HTTP " + response.statusCode());
+  var items = mapper.readTree(response.body()).path("output");
+  if (!items.isArray() || items.isEmpty())
+    throw new IllegalStateException("Expected nonempty execution output");
+  var output = new ArrayList<ResponseFunctionCallOutputItem>();
+  for (var item : items) {
+    if (item.path("type").asText().equals("input_text") && item.path("text").isTextual())
+      output.add(
+          ResponseFunctionCallOutputItem.ofInputText(
+              ResponseInputTextContent.builder().text(item.get("text").asText()).build()));
+    else if (item.path("type").asText().equals("input_image")
+        && item.path("image_url").isTextual()
+        && item.path("detail").asText().equals("original"))
+      output.add(
+          ResponseFunctionCallOutputItem.ofInputImage(
+              ResponseInputImageContent.builder()
+                  .imageUrl(item.get("image_url").asText())
+                  .detail(ResponseInputImageContent.Detail.ORIGINAL)
+                  .build()));
+    else
+      throw new IllegalStateException("Expected input_text or input_image with original detail");
+  }
+  return output;
+}
+```
+
 ```ruby
 require "net/http"
 
@@ -19793,7 +20346,7 @@ end
 ```
 
 
-Combine the adapter with the [API loop](https://developers.openai.com/api/docs/guides/tools-computer-use#connect-your-own-runtime), then call `run_computer_use` in Python or `runComputerUse` in JavaScript with your endpoint and task. The loop preserves the runtime session and uses `previous_response_id` to continue the model conversation. It stops after 20 responses if the task has not finished.
+Python, JavaScript, Ruby, and Go have complete [API loop examples](https://developers.openai.com/api/docs/guides/tools-computer-use#connect-your-own-runtime) for this execution-service contract. Use `run_computer_use` in Python or Ruby, or `runComputerUse` in JavaScript or Go, with your endpoint and task. The Go example also takes a context, SDK client, terminal scanner, and output writer; use its included adapter to preserve those inputs across calls. The loop preserves the runtime session and uses `previous_response_id` to continue the model conversation. It stops after 20 responses if the task has not finished.
 
 This adapter asks for approval before every generated script as a conservative demonstration. A production runtime must enforce the action-specific rules in [Handle user confirmation and consent](#handle-user-confirmation-and-consent). Removing the prompt does not supply those controls.
 
@@ -28659,6 +29212,11 @@ To check a file in your browser, use the web tool at
 For request parameters and response schemas, see the
 [Content provenance API reference](https://developers.openai.com/api/reference/resources/content_provenance_checks/methods/create).
 
+To check text, [apply for access](https://openai.com/form/content-provenance-api/).
+Text verification is currently available only to approved organizations including
+AI research and academic institutions. OpenAI reviews each application on a
+case-by-case basis.
+
 A `not_detected` result means the tool didn't find supported signals in the
   uploaded file. Content may still have been generated by OpenAI if its metadata
   was stripped or shows evidence of tampering, its watermark was degraded, it
@@ -28900,9 +29458,9 @@ doesn't rule out AI-generated or AI-modified content. `model` and
 `generated_at` provide the generating model and generation time when available;
 either field can be `null`.
 
-## Supported formats and availability
+## Supported uploads
 
-The API supports the following file formats:
+By default, the API supports the following file formats:
 
 - **Images:** PNG, JPEG, and WebP.
 - **Audio:** MP3, Opus, AAC, FLAC, WAV, and PCM.
@@ -28915,8 +29473,7 @@ image or `audio/ogg` for Opus audio. Don't add a separate `type` field or
 manually set the `multipart/form-data` request header. The `curl` `-F` option
 sets the request content type and multipart boundary. Send one file per request.
 
-Content provenance checks aren't eligible for
-[Zero Data Retention](https://developers.openai.com/api/docs/guides/your-data#zero-data-retention).
+## Rate limits
 
 Strict rate limits help protect the API against misuse. Organizations can
 [apply for higher limits](https://openai.com/form/content-provenance-api/), and
@@ -57517,6 +58074,138 @@ async def main():
 asyncio.run(main())
 ```
 
+```go
+ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+defer cancel()
+client := openai.NewClient()
+conn, err := client.Responses.Connect(ctx, responses.ResponseConnectionOptions{})
+if err != nil {
+	log.Fatal(err)
+}
+defer conn.Close()
+if err := conn.Create(ctx, responses.ResponsesClientEventResponseCreateParam{
+	Model: "gpt-6-astra",
+	Reasoning: shared.ReasoningParam{
+		Effort: shared.ReasoningEffortMedium,
+	},
+	Store: openai.Bool(false),
+	Input: responses.ResponsesClientEventResponseCreateInputUnionParam{
+		OfString: openai.String("Draft a project plan for building a task-tracking app."),
+	},
+}); err != nil {
+	log.Fatal(err)
+}
+initialID, successorID := "", ""
+for {
+	event, err := conn.Recv(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	switch event.Type {
+	case "response.created":
+		id := event.OfResponsesServerEventResponseWsCreated.Response.ID
+		if initialID == "" {
+			initialID = id
+			err := conn.Send(ctx, responses.ResponsesClientEventUnionParam{
+				OfResponseSteer: &responses.ResponseSteerEventParam{
+					PreviousResponseID: id,
+					Input: responses.ResponseSteerInputUnionParam{
+						OfString: openai.String("Keep the scope small enough for one developer to finish in two weeks."),
+					},
+				},
+			})
+			if err != nil {
+				log.Fatal(err)
+			}
+		} else {
+			successorID = id
+		}
+	case "response.steer.failed", "response.failed", "error":
+		log.Fatal(event.RawJSON())
+	case "response.incomplete":
+		r := event.OfResponsesServerEventResponseWsIncomplete.Response
+		if r.ID != initialID || r.IncompleteDetails.Reason != "steered" {
+			log.Fatal(event.RawJSON())
+		}
+	case "response.completed":
+		r := event.OfResponsesServerEventResponseWsCompleted.Response
+		if successorID != "" && r.ID == successorID {
+			fmt.Println(r.OutputText())
+			return
+		}
+	}
+	// Steering acceptance only queues input. Wait for the successor to complete.
+}
+```
+
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.*;
+import java.util.*;
+
+long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(120);
+try (var conn =
+    client.async().responses().connect().get(10, java.util.concurrent.TimeUnit.SECONDS)) {
+  conn.send(
+      ResponsesClientEvent.ofResponseCreate(
+          ResponsesClientEvent.ResponseCreate.builder()
+              .model("gpt-6-astra")
+              .reasoning(
+                  com.openai.models.Reasoning.builder()
+                      .effort(com.openai.models.ReasoningEffort.MEDIUM)
+                      .build())
+              .store(false)
+              .input("Draft a project plan for building a task-tracking app.")
+              .build()));
+  String initialId = null, successorId = null;
+  while (true) {
+    var event =
+        conn.receive()
+            .get(
+                Math.max(1, deadline - System.nanoTime()),
+                java.util.concurrent.TimeUnit.NANOSECONDS);
+    if (event.responseCreated().isPresent()) {
+      var id = event.responseCreated().orElseThrow().response().id();
+      if (initialId == null) {
+        initialId = id;
+        conn.send(
+            ResponsesClientEvent.ofResponseSteer(
+                ResponseSteerEvent.builder()
+                    .previousResponseId(id)
+                    .input(
+                        "Keep the scope small enough for one developer to finish in two weeks.")
+                    .build()));
+      } else {
+        successorId = id;
+      }
+    } else if (event.responseSteerFailed().isPresent()
+        || event.responseFailed().isPresent()
+        || event.error().isPresent()) {
+      throw new IllegalStateException(event.toString());
+    } else if (event.responseIncomplete().isPresent()) {
+      var response = event.responseIncomplete().orElseThrow().response();
+      if (!response.id().equals(initialId)
+          || !response
+              .incompleteDetails()
+              .flatMap(Response.IncompleteDetails::reason)
+              .map(r -> r.toString().equals("steered"))
+              .orElse(false)) throw new IllegalStateException(event.toString());
+    } else if (event.responseCompleted().isPresent()
+        && event.responseCompleted().orElseThrow().response().id().equals(successorId)) {
+      event.responseCompleted().orElseThrow().response().output().stream()
+          .flatMap(item -> item.message().stream())
+          .flatMap(message -> message.content().stream())
+          .flatMap(content -> content.outputText().stream())
+          .forEach(text -> System.out.println(text.text()));
+      break;
+    }
+    // Acceptance only queues input; follow the successor through completion.
+  }
+} finally {
+  client.close();
+}
+```
+
 ```ruby
 require "async"
 require "openai"
@@ -68511,7 +69200,7 @@ Some changes, such as switching models or compacting a conversation, are intenti
 | `service_tier_changed`     | The service tier used to process the request changed.                                                                                               | Keep the service tier consistent for requests expected to share a prefix. Check the returned `service_tier`, which can differ from the requested value. See [`service_tier`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20service_tier%20%3E%20%28schema%29) for supported values and behavior. |
 | `tools_changed`            | Tools were added, removed, or reordered, or their descriptions, schemas, or configuration changed.                                                  | Keep tool definitions and ordering stable. Use `tool_choice: "none"` to disable tools or `allowed_tools` to restrict which tools can run without changing the supplied tool list. See [Manage tools with append-only updates](https://developers.openai.com/api/docs/guides/prompt-caching#manage-tools-with-append-only-updates).                                                                                                                      |
 | `text_format_changed`      | The output format or its schema changed.                                                                                                            | Keep `text.format` and the schema consistent when the required output structure is unchanged. See [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs).                                                                                                                                                                                                                                                               |
-| `reasoning_effort_changed` | The reasoning effort changed.                                                                                                                       | Keep `reasoning.effort` consistent across requests intended to share a prefix. See [cache-affecting settings](https://developers.openai.com/api/docs/guides/prompt-caching#which-settings-affect-the-cached-prefix).                                                                                                                                                                                                                                    |
+| `reasoning_effort_changed` | The reasoning effort changed.                                                                                                                       | On supported GPT-6 and later models, append a `configuration_update` input item to [change reasoning effort during a conversation](https://developers.openai.com/api/docs/guides/reasoning?api-mode=responses#change-reasoning-mid-conversation) while preserving the earlier cached prefix.<br />On older models, keep `reasoning.effort` consistent across requests intended to share a prefix.                                                       |
 | `verbosity_changed`        | The response verbosity changed.                                                                                                                     | Keep `text.verbosity` consistent across requests intended to share a prefix. See [cache-affecting settings](https://developers.openai.com/api/docs/guides/prompt-caching#which-settings-affect-the-cached-prefix).                                                                                                                                                                                                                                      |
 | `context_compacted`        | Compaction replaced earlier conversation content.                                                                                                   | Preserve stable instructions and let later turns build on the compacted context. Compare total input cost: fewer input tokens can still save money despite lower cache reuse. See [Compaction](https://developers.openai.com/api/docs/guides/compaction).                                                                                                                                                                                               |
 | `input_changed`            | Earlier input changed, for example because instructions contain a timestamp or request ID, or previous messages were edited, reordered, or removed. | Move changing content after the reusable prefix and its cache breakpoint. Preserve earlier messages and tool results, and append new turns. See [Preserve conversation history](https://developers.openai.com/api/docs/guides/prompt-caching#preserve-conversation-history).                                                                                                                                                                            |
@@ -69152,6 +69841,31 @@ def calculate_input_cost(
     )
     input_cost = weighted_input_tokens * input_price_per_million / 1_000_000
     return input_cost
+```
+
+```go
+func calculateInputCost(usage responses.ResponseUsage, pricePerMillion, cacheInputMultiplier, cacheWriteMultiplier float64) float64 {
+	ordinary := usage.InputTokens - usage.InputTokensDetails.CachedTokens - usage.InputTokensDetails.CacheWriteTokens
+	weighted := float64(ordinary) + float64(usage.InputTokensDetails.CachedTokens)*cacheInputMultiplier + float64(usage.InputTokensDetails.CacheWriteTokens)*cacheWriteMultiplier
+	return weighted * pricePerMillion / 1_000_000
+}
+```
+
+```java
+import com.openai.models.responses.ResponseUsage;
+
+static double calculateInputCost(
+    ResponseUsage usage,
+    double pricePerMillion,
+    double cacheInputMultiplier,
+    double cacheWriteMultiplier) {
+  long cached = usage.inputTokensDetails().cachedTokens();
+  long written = usage.inputTokensDetails().cacheWriteTokens();
+  long ordinary = usage.inputTokens() - cached - written;
+  return (ordinary + cached * cacheInputMultiplier + written * cacheWriteMultiplier)
+      * pricePerMillion
+      / 1_000_000;
+}
 ```
 
 ```ruby
@@ -79255,6 +79969,56 @@ event = {
 ws.send(json.dumps(event))
 ```
 
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.core.JsonValue;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+
+// Replace pmpt_123 with your stored prompt ID.
+var pcm =
+    RealtimeAudioFormats.AudioPcm.builder()
+        .rate(RealtimeAudioFormats.AudioPcm.Rate._24000)
+        .build();
+connection.send(
+    RealtimeClientEvent.ofSessionUpdate(
+        SessionUpdateEvent.builder()
+            .session(
+                RealtimeSessionCreateRequest.builder()
+                    .model("gpt-realtime-2.1")
+                    .addOutputModality(RealtimeSessionCreateRequest.OutputModality.AUDIO)
+                    .audio(
+                        RealtimeAudioConfig.builder()
+                            .input(
+                                RealtimeAudioConfigInput.builder()
+                                    .format(pcm)
+                                    .turnDetection(
+                                        RealtimeAudioInputTurnDetection.SemanticVad.builder()
+                                            .build())
+                                    .build())
+                            .output(
+                                RealtimeAudioConfigOutput.builder()
+                                    .format(pcm)
+                                    .voice("marin")
+                                    .build())
+                            .build())
+                    .prompt(
+                        com.openai.models.responses.ResponsePrompt.builder()
+                            .id("pmpt_123")
+                            .version("89")
+                            .variables(
+                                com.openai.models.responses.ResponsePrompt.Variables.builder()
+                                    .putAdditionalProperty("city", JsonValue.from("Paris"))
+                                    .build())
+                            .build())
+                    .instructions(
+                        "Speak clearly and briefly. Confirm understanding before taking actions.")
+                    .build())
+            .build()));
+```
+
 ```ruby
 # Replace the illustrative IDs and URLs below with your own resource values.
 connection.session.update(
@@ -79351,6 +80115,37 @@ event = {
 ws.send(json.dumps(event))
 ```
 
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+
+connection.send(
+    RealtimeClientEvent.ofConversationItemCreate(
+        ConversationItemCreateEvent.builder()
+            .item(
+                RealtimeConversationItemUserMessage.builder()
+                    .addContent(
+                        RealtimeConversationItemUserMessage.Content.builder()
+                            .type(RealtimeConversationItemUserMessage.Content.Type.INPUT_TEXT)
+                            .text("What Prince album sold the most copies?")
+                            .build())
+                    .build())
+            .build()));
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+RealtimeMessageItem item = RealtimeItem.CreateUserMessageItem("What Prince album sold the most copies?");
+item.Id = Guid.NewGuid().ToString("N");
+await session.SendCommandAsync(new RealtimeClientCommandConversationItemCreate(item), timeout.Token);
+```
+
 ```ruby
 connection.conversation.items.create(
   type: :message,
@@ -79386,6 +80181,40 @@ event = {"type": "response.create", "response": {"output_modalities": ["text"]}}
 ws.send(json.dumps(event))
 ```
 
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+
+connection.send(
+    RealtimeClientEvent.ofResponseCreate(
+        ResponseCreateEvent.builder()
+            .response(
+                RealtimeResponseCreateParams.builder()
+                    .addOutputModality(RealtimeResponseCreateParams.OutputModality.TEXT)
+                    .build())
+            .build()));
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+await session.SendCommandAsync(new RealtimeClientCommandResponseCreate
+{
+    ResponseOptions = new()
+    {
+        OutputModalities =
+        {
+            RealtimeOutputModality.Text
+        }
+    }
+}, timeout.Token);
+```
+
 ```ruby
 connection.response.create(
   output_modalities: [:text],
@@ -79419,6 +80248,49 @@ def on_message(ws, message):
     server_event = json.loads(message)
     if server_event["type"] == "response.done":
         print(server_event["response"]["output"][0])
+```
+
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+
+static void handleEvent(RealtimeServerEvent event) {
+  event
+      .responseDone()
+      .ifPresent(
+          done -> {
+            if (!done.response()
+                .status()
+                .filter(RealtimeResponse.Status.COMPLETED::equals)
+                .isPresent())
+              throw new IllegalStateException(
+                  "Response ended with status "
+                      + done.response().status()
+                      + ": "
+                      + done.response().statusDetails());
+            System.out.println(done.response().output());
+          });
+}
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+internal static void HandleEvent(RealtimeServerUpdate update)
+{
+    if (update is RealtimeServerUpdateResponseDone completion && completion.Response.Status != RealtimeResponseStatus.Completed)
+        throw new InvalidOperationException($"Response ended with status {completion.Response.Status}: {System.ClientModel.Primitives.ModelReaderWriter.Write(completion.Response)}");
+    if (update is RealtimeServerUpdateResponseDone done)
+    {
+        foreach (RealtimeItem item in done.Response.OutputItems)
+            Console.WriteLine(System.ClientModel.Primitives.ModelReaderWriter.Write(item));
+    }
+}
 ```
 
 ```ruby
@@ -79751,6 +80623,51 @@ for filename in files:
     ws.send(json.dumps(event))
 ```
 
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+import java.util.Base64;
+
+// Call for each PCM16, 24 kHz, mono chunk supplied by your audio source.
+static void appendAudio(RealtimeConnection connection, byte[] pcmAudio) throws Exception {
+  String base64Audio = Base64.getEncoder().encodeToString(pcmAudio);
+  send(
+      connection,
+      RealtimeClientEvent.ofInputAudioBufferAppend(
+          InputAudioBufferAppendEvent.builder().audio(base64Audio).build()));
+}
+
+// Retry only explicit admission rejections; these guarantee nothing was sent.
+private static void send(RealtimeConnection connection, RealtimeClientEvent event)
+    throws Exception {
+  long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(5);
+  while (true) {
+    try {
+      connection.send(event);
+      return;
+    } catch (com.openai.core.http.WebSocketWriteNotAttempted.Busy busy) {
+      if (System.nanoTime() >= deadline) throw busy;
+      Thread.sleep(10);
+    }
+  }
+}
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+// Call for each PCM16, 24 kHz, mono chunk supplied by your audio source.
+internal static async Task AppendAudioAsync(RealtimeSessionClient session, BinaryData pcmAudio, CancellationToken cancellationToken)
+{
+    await session.SendCommandAsync(new RealtimeClientCommandInputAudioBufferAppend(pcmAudio), cancellationToken);
+}
+```
+
 ```ruby
 File.open("speech.pcm", "rb") do |audio|
   while (chunk = audio.read(9_600))
@@ -79807,6 +80724,48 @@ event = {
 ws.send(json.dumps(event))
 ```
 
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+import java.util.Base64;
+
+// Pass the complete PCM16, 24 kHz, mono recording from your application.
+static void sendAudioItem(RealtimeConnection connection, byte[] pcmAudio) throws Exception {
+  String fullAudio = Base64.getEncoder().encodeToString(pcmAudio);
+  connection.send(
+      RealtimeClientEvent.ofConversationItemCreate(
+          ConversationItemCreateEvent.builder()
+              .item(
+                  RealtimeConversationItemUserMessage.builder()
+                      .addContent(
+                          RealtimeConversationItemUserMessage.Content.builder()
+                              .type(RealtimeConversationItemUserMessage.Content.Type.INPUT_AUDIO)
+                              .audio(fullAudio)
+                              .build())
+                      .build())
+              .build()));
+}
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+// Pass the complete PCM16, 24 kHz, mono recording from your application.
+internal static async Task<string> SendAudioItemAsync(RealtimeSessionClient session, BinaryData pcmAudio, CancellationToken cancellationToken)
+{
+    RealtimeMessageItem item = RealtimeItem.CreateUserMessageItem([new RealtimeInputAudioMessageContentPart(pcmAudio)]);
+    string itemId = Guid.NewGuid().ToString("N");
+    item.Id = itemId;
+    await session.SendCommandAsync(new RealtimeClientCommandConversationItemCreate(item), cancellationToken);
+    return itemId;
+}
+```
+
 ```ruby
 audio = Base64.strict_encode64(File.binread("speech.pcm"))
 
@@ -79857,6 +80816,30 @@ def on_message(ws, message):
     if server_event["type"] == "response.output_audio.delta":
         # Access Base64-encoded audio chunks:
         print(server_event["delta"])
+```
+
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+
+static void handleEvent(RealtimeServerEvent event) {
+  event.responseOutputAudioDelta().ifPresent(delta -> System.out.println(delta.delta()));
+}
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+internal static void HandleEvent(RealtimeServerUpdate update)
+{
+    if (update is RealtimeServerUpdateResponseOutputAudioDelta delta)
+        Console.WriteLine(Convert.ToBase64String(delta.Delta.ToArray()));
+}
 ```
 
 ```ruby
@@ -80001,6 +80984,54 @@ event = {
 ws.send(json.dumps(event))
 ```
 
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.core.JsonValue;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+
+connection.send(
+    RealtimeClientEvent.ofResponseCreate(
+        ResponseCreateEvent.builder()
+            .response(
+                RealtimeResponseCreateParams.builder()
+                    .conversation("none")
+                    .metadata(
+                        RealtimeResponseCreateParams.Metadata.builder()
+                            .putAdditionalProperty("topic", JsonValue.from("classification"))
+                            .build())
+                    .addOutputModality(RealtimeResponseCreateParams.OutputModality.TEXT)
+                    .instructions(
+                        "Analyze the conversation so far. If it is related to support, output \"support\". If it is related to sales, output \"sales\".")
+                    .build())
+            .build()));
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+await session.SendCommandAsync(new RealtimeClientCommandResponseCreate
+{
+    ResponseOptions = new()
+    {
+        DefaultConversationConfiguration = RealtimeResponseDefaultConversationConfiguration.None,
+        Metadata = new Dictionary<string, BinaryData>
+        {
+            ["topic"] = BinaryData.FromObjectAsJson("classification")
+        },
+        OutputModalities =
+        {
+            RealtimeOutputModality.Text
+        },
+        Instructions = "Analyze the conversation so far. If it is related to support, output \"support\". If it is related to sales, output \"sales\"."
+    }
+}, timeout.Token);
+```
+
 ```ruby
 connection.response.create(
   conversation: :none,
@@ -80049,6 +81080,50 @@ def on_message(ws, message):
     if server_event["type"] == "response.done" and topic == "classification":
         # this server event pertained to our OOB model response
         print(server_event["response"]["output"][0])
+```
+
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.core.JsonValue;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+
+static boolean handleEvent(RealtimeServerEvent event) {
+  if (event.responseDone().isEmpty()) return false;
+  var response = event.responseDone().orElseThrow().response();
+  if (!response
+      .metadata()
+      .map(m -> m._additionalProperties().get("topic"))
+      .flatMap(JsonValue::asString)
+      .filter("classification"::equals)
+      .isPresent()) return false;
+  if (!response.status().filter(RealtimeResponse.Status.COMPLETED::equals).isPresent())
+    throw new IllegalStateException(
+        "Response ended with status " + response.status() + ": " + response.statusDetails());
+  System.out.println(response.output());
+  return true;
+}
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+internal static bool HandleEvent(RealtimeServerUpdate update)
+{
+    if (update is not RealtimeServerUpdateResponseDone done ||
+        !done.Response.Metadata.TryGetValue("topic", out BinaryData? topic) ||
+        topic.ToObjectFromJson<string>() != "classification")
+        return false;
+    if (done.Response.Status != RealtimeResponseStatus.Completed)
+        throw new InvalidOperationException($"Response ended with status {done.Response.Status}: {System.ClientModel.Primitives.ModelReaderWriter.Write(done.Response)}");
+    foreach (RealtimeItem item in done.Response.OutputItems)
+        Console.WriteLine(System.ClientModel.Primitives.ModelReaderWriter.Write(item));
+    return true;
+}
 ```
 
 ```ruby
@@ -80207,6 +81282,45 @@ event = {
 }
 
 ws.send(json.dumps(event))
+```
+
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+import java.util.List;
+
+connection.send(
+    RealtimeClientEvent.ofResponseCreate(
+        ResponseCreateEvent.builder()
+            .response(
+                RealtimeResponseCreateParams.builder()
+                    .input(List.of())
+                    .instructions(
+                        "Say exactly the following: I'm a little teapot, short and stout! This is my handle, this is my spout!")
+                    .build())
+            .build()));
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+RealtimeResponseOptions options = new()
+
+{
+    Instructions = "Say exactly the following: I'm a little teapot, short and stout! This is my handle, this is my spout!"
+
+};
+options.InputItems.Clear();
+// An explicitly empty list excludes conversation context.
+await session.SendCommandAsync(new RealtimeClientCommandResponseCreate
+{
+    ResponseOptions = options
+}, timeout.Token);
 ```
 
 ```ruby
@@ -80837,7 +81951,9 @@ await pc.setRemoteDescription({
 
 Connect to the dedicated translation endpoint and select the model in the URL:
 
-Before running this example, install `ws` for Node.js, `websocket-client` for Python, or `async-websocket` for Ruby (`gem install async-websocket`).
+Before running this example, install `ws` for Node.js, `websocket-client` for Python, or `async-websocket` for Ruby (`gem install async-websocket`). For Java, add the Maven dependency `com.openai:openai-java:4.75.1`.
+
+The Java examples cover connection setup, language configuration, and audio input separately. They don't show a complete translation workflow: the Java SDK supports receiving events and finishing a session, but this guide doesn't include Java examples for those steps. Use the Node.js or Python examples to follow the complete workflow below.
 
 Connect to a translation session
 
@@ -80869,6 +81985,41 @@ ws.connect(
 )
 ```
 
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.TranslationConnection;
+import com.openai.helpers.TranslationWebSocketOptions;
+import com.openai.models.realtime.*;
+
+var http = OkHttpClient.builder().build();
+var options =
+    ClientOptions.builder()
+        .fromEnv()
+        .httpClient(http)
+        .putHeader("OpenAI-Safety-Identifier", "hashed-user-id")
+        .build();
+try (http;
+    var connection =
+        TranslationConnection.connect(
+            options,
+            TranslationWebSocketOptions.builder()
+                .model("gpt-realtime-translate")
+                .sendTimeout(java.time.Duration.ofSeconds(30))
+                .build())) {
+  while (true) {
+    var event = connection.receive();
+    if (event.error().isPresent())
+      throw new IllegalStateException(event.error().orElseThrow().toString());
+    if (event.sessionCreated().isPresent()) {
+      System.out.println("Connected to translation session.");
+      System.out.println(event);
+      break;
+    }
+  }
+}
+```
+
 ```ruby
 require "async"
 require "async/http/endpoint"
@@ -80895,6 +82046,8 @@ end
 
 
 For Ruby, insert the following configuration and audio-append snippets inside the `Async::WebSocket::Client.connect` block, after the session-created check and before the block ends. Keep the connection open while sending audio and receiving translation events.
+
+The Java connection example closes the socket when its `try` block ends. The Java configuration and audio-input examples require an open `TranslationConnection`; keep it open while sending audio and receiving output. Before leaving the block, finish the session and drain its events through `session.closed` as described in [Close a WebSocket session](#close-a-websocket-session).
 
 Configure the target language after the socket opens:
 
@@ -80936,6 +82089,29 @@ ws.send(
 )
 ```
 
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.TranslationConnection;
+import com.openai.helpers.TranslationWebSocketOptions;
+import com.openai.models.realtime.*;
+
+connection.send(
+    RealtimeTranslationClientEvent.ofSessionUpdate(
+        RealtimeTranslationSessionUpdateEvent.builder()
+            .session(
+                RealtimeTranslationSessionUpdateRequest.builder()
+                    .audio(
+                        RealtimeTranslationSessionUpdateRequest.Audio.builder()
+                            .output(
+                                RealtimeTranslationSessionUpdateRequest.Audio.Output.builder()
+                                    .language("es")
+                                    .build())
+                            .build())
+                    .build())
+            .build()));
+```
+
 ```ruby
 connection.write(JSON.generate(type: "session.update", session: { audio: { output: { language: "es" } } }))
 connection.flush
@@ -80964,6 +82140,23 @@ ws.send(
         }
     )
 )
+```
+
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.TranslationConnection;
+import com.openai.helpers.TranslationWebSocketOptions;
+import com.openai.models.realtime.*;
+import java.util.Base64;
+
+// Call for each PCM16, 24 kHz, mono chunk supplied by your audio source.
+static void appendAudio(TranslationConnection connection, byte[] pcmAudio) {
+  String base64Pcm16 = Base64.getEncoder().encodeToString(pcmAudio);
+  connection.send(
+      RealtimeTranslationClientEvent.ofSessionInputAudioBufferAppend(
+          RealtimeTranslationInputAudioBufferAppendEvent.builder().audio(base64Pcm16).build()));
+}
 ```
 
 ```ruby
@@ -81277,6 +82470,68 @@ event = {
 ws.send(json.dumps(event))
 ```
 
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.core.JsonValue;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+import java.util.List;
+import java.util.Map;
+
+connection.send(
+    RealtimeClientEvent.ofSessionUpdate(
+        SessionUpdateEvent.builder()
+            .session(
+                RealtimeSessionCreateRequest.builder()
+                    .model("gpt-realtime-2.1")
+                    .addTool(
+                        RealtimeFunctionTool.builder()
+                            .type(RealtimeFunctionTool.Type.FUNCTION)
+                            .name("lookup_order")
+                            .description("Look up an order by its order number.")
+                            .parameters(
+                                JsonValue.from(
+                                    Map.of(
+                                        "type",
+                                        "object",
+                                        "properties",
+                                        Map.of(
+                                            "order_number",
+                                            Map.of(
+                                                "type",
+                                                "string",
+                                                "description",
+                                                "The customer-facing order number.")),
+                                        "required",
+                                        List.of("order_number"))))
+                            .build())
+                    .toolChoice(com.openai.models.responses.ToolChoiceOptions.AUTO)
+                    .build())
+            .build()));
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+await session.SendCommandAsync(new RealtimeClientCommandSessionUpdate(new RealtimeConversationSessionOptions
+{
+    Model = "gpt-realtime-2.1",
+    Tools =
+    {
+        new RealtimeFunctionTool("lookup_order")
+        {
+            FunctionDescription = "Look up an order by its order number.",
+            FunctionParameters = BinaryData.FromObjectAsJson(new { type = "object", properties = new { order_number = new { type = "string", description = "The customer-facing order number." } }, required = (string[])["order_number"] })
+        }
+    },
+    ToolChoice = RealtimeDefaultToolChoice.Auto
+}), timeout.Token);
+```
+
 ```ruby
 connection.session.update(
   type: :realtime,
@@ -81341,6 +82596,81 @@ event = {
 
 ws.send(json.dumps(event))
 ws.send(json.dumps({"type": "response.create"}))
+```
+
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.core.JsonValue;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+import com.openai.models.responses.ToolChoiceFunction;
+import com.openai.models.responses.ToolChoiceOptions;
+import java.util.Map;
+
+static void sendFunctionCallOutput(RealtimeConnection connection, String callId)
+    throws Exception {
+  send(
+      connection,
+      RealtimeClientEvent.ofConversationItemCreate(
+          ConversationItemCreateEvent.builder()
+              .item(
+                  RealtimeConversationItemFunctionCallOutput.builder()
+                      .callId(callId)
+                      .output("{\"status\":\"shipped\",\"delivery_date\":\"2026-05-09\"}")
+                      .build())
+              .build()));
+  send(
+      connection,
+      RealtimeClientEvent.ofResponseCreate(
+          ResponseCreateEvent.builder()
+              .response(
+                  RealtimeResponseCreateParams.builder()
+                      .metadata(
+                          RealtimeResponseCreateParams.Metadata.builder()
+                              .putAdditionalProperty(
+                                  "topic", JsonValue.from("lookup_order_followup"))
+                              .build())
+                      .toolChoice(ToolChoiceOptions.NONE)
+                      .build())
+              .build()));
+}
+
+// Retry only explicit admission rejections; these guarantee nothing was sent.
+private static void send(RealtimeConnection connection, RealtimeClientEvent event)
+    throws Exception {
+  long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(5);
+  while (true) {
+    try {
+      connection.send(event);
+      return;
+    } catch (com.openai.core.http.WebSocketWriteNotAttempted.Busy busy) {
+      if (System.nanoTime() >= deadline) throw busy;
+      Thread.sleep(10);
+    }
+  }
+}
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+internal static async Task SendFunctionCallOutputAsync(RealtimeSessionClient session, string callId, CancellationToken cancellationToken)
+{
+    string output = System.Text.Json.JsonSerializer.Serialize(new { status = "shipped", delivery_date = "2026-05-09" });
+    await session.SendCommandAsync(new RealtimeClientCommandConversationItemCreate(new RealtimeFunctionCallOutputItem(callId, output)), cancellationToken);
+    await session.SendCommandAsync(new RealtimeClientCommandResponseCreate
+    {
+        ResponseOptions = new()
+        {
+            Metadata = new Dictionary<string, BinaryData> { ["topic"] = BinaryData.FromObjectAsJson("lookup_order_followup") },
+            ToolChoice = RealtimeDefaultToolChoice.None
+        }
+    }, cancellationToken);
+}
 ```
 
 ```ruby
@@ -81415,6 +82745,65 @@ event = {
 }
 
 ws.send(json.dumps(event))
+```
+
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+import java.util.List;
+
+connection.send(
+    RealtimeClientEvent.ofSessionUpdate(
+        SessionUpdateEvent.builder()
+            .session(
+                RealtimeSessionCreateRequest.builder()
+                    .model("gpt-realtime-2.1")
+                    .addOutputModality(RealtimeSessionCreateRequest.OutputModality.TEXT)
+                    .addTool(
+                        RealtimeToolsConfigUnion.Mcp.builder()
+                            .serverLabel("openai_docs")
+                            .serverUrl("https://developers.openai.com/mcp")
+                            .allowedToolsOfMcp(
+                                List.of("search_openai_docs", "fetch_openai_doc"))
+                            .requireApproval(
+                                RealtimeToolsConfigUnion.Mcp.RequireApproval
+                                    .McpToolApprovalSetting.NEVER)
+                            .build())
+                    .build())
+            .build()));
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+await session.SendCommandAsync(new RealtimeClientCommandSessionUpdate(new RealtimeConversationSessionOptions
+{
+    Model = "gpt-realtime-2.1",
+    OutputModalities =
+    {
+        RealtimeOutputModality.Text
+    },
+    Tools =
+    {
+        new RealtimeMcpTool("openai_docs", new Uri("https://developers.openai.com/mcp"))
+        {
+            AllowedTools = new()
+            {
+                ToolNames =
+                {
+                    "search_openai_docs",
+                    "fetch_openai_doc"
+                }
+            },
+            ToolCallApprovalPolicy = RealtimeDefaultMcpToolCallApprovalPolicy.NeverRequireApproval
+        }
+    }
+}), timeout.Token);
 ```
 
 ```ruby
@@ -81501,6 +82890,68 @@ event = {
 }
 
 ws.send(json.dumps(event))
+```
+
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+import java.util.List;
+
+connection.send(
+    RealtimeClientEvent.ofSessionUpdate(
+        SessionUpdateEvent.builder()
+            .session(
+                RealtimeSessionCreateRequest.builder()
+                    .model("gpt-realtime-1.5")
+                    .addOutputModality(RealtimeSessionCreateRequest.OutputModality.TEXT)
+                    .addTool(
+                        RealtimeToolsConfigUnion.Mcp.builder()
+                            .serverLabel("google_calendar")
+                            .connectorId(
+                                RealtimeToolsConfigUnion.Mcp.ConnectorId
+                                    .CONNECTOR_GOOGLECALENDAR)
+                            .authorization(System.getenv("OPENAI_CONNECTOR_AUTHORIZATION"))
+                            .allowedToolsOfMcp(List.of("search_events", "read_event"))
+                            .requireApproval(
+                                RealtimeToolsConfigUnion.Mcp.RequireApproval
+                                    .McpToolApprovalSetting.NEVER)
+                            .build())
+                    .build())
+            .build()));
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+await session.SendCommandAsync(new RealtimeClientCommandSessionUpdate(new RealtimeConversationSessionOptions
+{
+    Model = "gpt-realtime-1.5",
+    OutputModalities =
+    {
+        RealtimeOutputModality.Text
+    },
+    Tools =
+    {
+        new RealtimeMcpTool("google_calendar", RealtimeMcpToolConnectorId.GoogleCalendar)
+        {
+            AuthorizationToken = Environment.GetEnvironmentVariable("OPENAI_CONNECTOR_AUTHORIZATION")!,
+            AllowedTools = new()
+            {
+                ToolNames =
+                {
+                    "search_events",
+                    "read_event"
+                }
+            },
+            ToolCallApprovalPolicy = RealtimeDefaultMcpToolCallApprovalPolicy.NeverRequireApproval
+        }
+    }
+}), timeout.Token);
 ```
 
 ```ruby
@@ -81811,6 +83262,62 @@ def approve_mcp_request(ws, approval_request_id):
     ws.send(json.dumps(event))
 ```
 
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+import com.openai.models.responses.ToolChoiceOptions;
+
+// Replace https://mcp.example.com/mcp with your company's MCP server URL.
+
+static void approveMcpRequest(RealtimeConnection connection, String approvalRequestId)
+    throws Exception {
+  send(
+      connection,
+      RealtimeClientEvent.ofConversationItemCreate(
+          ConversationItemCreateEvent.builder()
+              .item(
+                  RealtimeMcpApprovalResponse.builder()
+                      .id("mcp_approval_" + approvalRequestId)
+                      .approvalRequestId(approvalRequestId)
+                      .approve(true)
+                      .build())
+              .build()));
+}
+
+// Retry only explicit admission rejections; these guarantee nothing was sent.
+private static void send(RealtimeConnection connection, RealtimeClientEvent event)
+    throws Exception {
+  long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(5);
+  while (true) {
+    try {
+      connection.send(event);
+      return;
+    } catch (com.openai.core.http.WebSocketWriteNotAttempted.Busy busy) {
+      if (System.nanoTime() >= deadline) throw busy;
+      Thread.sleep(10);
+    }
+  }
+}
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+// Replace https://mcp.example.com/mcp with your company's MCP server URL.
+
+internal static async Task ApproveMcpRequestAsync(RealtimeSessionClient session, string approvalRequestId, CancellationToken cancellationToken)
+{
+    await session.SendCommandAsync(new RealtimeClientCommandConversationItemCreate(new RealtimeMcpToolCallApprovalResponseItem(approvalRequestId, true)
+    {
+        Id = $"mcp_approval_{approvalRequestId}"
+    }), cancellationToken);
+}
+```
+
 ```ruby
 # Use the ID from the received MCP approval-request item.
 approval_request_id = item.id
@@ -81894,6 +83401,87 @@ event = {
 }
 
 ws.send(json.dumps(event))
+```
+
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+import java.util.List;
+
+connection.send(
+    RealtimeClientEvent.ofResponseCreate(
+        ResponseCreateEvent.builder()
+            .response(
+                RealtimeResponseCreateParams.builder()
+                    .metadata(
+                        RealtimeResponseCreateParams.Metadata.builder()
+                            .putAdditionalProperty(
+                                "topic", com.openai.core.JsonValue.from("mcp_initial"))
+                            .build())
+                    .addOutputModality(RealtimeResponseCreateParams.OutputModality.TEXT)
+                    .addInput(
+                        RealtimeConversationItemUserMessage.builder()
+                            .addContent(
+                                RealtimeConversationItemUserMessage.Content.builder()
+                                    .type(
+                                        RealtimeConversationItemUserMessage.Content.Type
+                                            .INPUT_TEXT)
+                                    .text(
+                                        "Which transport should I use for browser clients in the Realtime API?")
+                                    .build())
+                            .build())
+                    .addTool(
+                        RealtimeResponseCreateMcpTool.builder()
+                            .serverLabel("openai_docs")
+                            .serverUrl("https://developers.openai.com/mcp")
+                            .allowedToolsOfMcp(
+                                List.of("search_openai_docs", "fetch_openai_doc"))
+                            .requireApproval(
+                                RealtimeResponseCreateMcpTool.RequireApproval
+                                    .McpToolApprovalSetting.NEVER)
+                            .build())
+                    .build())
+            .build()));
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+await session.SendCommandAsync(new RealtimeClientCommandResponseCreate
+{
+    ResponseOptions = new()
+    {
+        Metadata = new Dictionary<string, BinaryData> { ["topic"] = BinaryData.FromObjectAsJson("mcp_initial") },
+        OutputModalities =
+        {
+            RealtimeOutputModality.Text
+        },
+        InputItems =
+        {
+            RealtimeItem.CreateUserMessageItem("Which transport should I use for browser clients in the Realtime API?")
+        },
+        Tools =
+        {
+            new RealtimeMcpTool("openai_docs", new Uri("https://developers.openai.com/mcp"))
+            {
+                AllowedTools = new()
+                {
+                    ToolNames =
+                    {
+                        "search_openai_docs",
+                        "fetch_openai_doc"
+                    }
+                },
+                ToolCallApprovalPolicy = RealtimeDefaultMcpToolCallApprovalPolicy.NeverRequireApproval
+            }
+        }
+    }
+}, timeout.Token);
 ```
 
 ```ruby
@@ -81995,6 +83583,88 @@ event = {
 }
 
 ws.send(json.dumps(event))
+```
+
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+import java.util.List;
+
+send(
+    connection,
+    RealtimeClientEvent.ofResponseCreate(
+        ResponseCreateEvent.builder()
+            .response(
+                RealtimeResponseCreateParams.builder()
+                    .metadata(
+                        RealtimeResponseCreateParams.Metadata.builder()
+                            .putAdditionalProperty(
+                                "topic", com.openai.core.JsonValue.from("mcp_initial"))
+                            .build())
+                    .addOutputModality(RealtimeResponseCreateParams.OutputModality.TEXT)
+                    .addInput(
+                        RealtimeConversationItemUserMessage.builder()
+                            .addContent(
+                                RealtimeConversationItemUserMessage.Content.builder()
+                                    .type(
+                                        RealtimeConversationItemUserMessage.Content.Type
+                                            .INPUT_TEXT)
+                                    .text("Check my schedule for this afternoon.")
+                                    .build())
+                            .build())
+                    .addTool(
+                        RealtimeResponseCreateMcpTool.builder()
+                            .serverLabel("google_calendar")
+                            .build())
+                    .build())
+            .build()));
+
+// Retry only explicit admission rejections; these guarantee nothing was sent.
+private static void send(RealtimeConnection connection, RealtimeClientEvent event)
+    throws Exception {
+  long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(5);
+  while (true) {
+    try {
+      connection.send(event);
+      return;
+    } catch (com.openai.core.http.WebSocketWriteNotAttempted.Busy busy) {
+      if (System.nanoTime() >= deadline) throw busy;
+      Thread.sleep(10);
+    }
+  }
+}
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+await session.SendCommandAsync(new RealtimeClientCommandResponseCreate
+{
+    ResponseOptions = new()
+    {
+        Metadata = new Dictionary<string, BinaryData> { ["topic"] = BinaryData.FromObjectAsJson("mcp_initial") },
+        OutputModalities =
+        {
+            RealtimeOutputModality.Text
+        },
+        InputItems =
+        {
+            RealtimeItem.CreateUserMessageItem("Check my schedule for this afternoon.")
+        },
+        Tools =
+        {
+            new RealtimeMcpTool
+            {
+                ServerLabel = "google_calendar"
+            }
+        }
+    }
+}, timeout.Token);
 ```
 
 ```ruby
@@ -89753,15 +91423,15 @@ Use safety webhooks and the Safety Case Read API to connect OpenAI enforcement n
 
 Use this integration to:
 
-- Route warning and deactivation notices to your trust and safety, security, or support team.
-- Add case details to an investigation or support ticket.
+- Route warning and deactivation notices to your trust and safety or support team.
+- Add case info to an investigation or support ticket.
 - Associate a notice with a user through your application's safety-identifier mapping.
 
 The steps in this guide use a warning to illustrate the workflow. You can use the same integration for deactivation notices.
 
 ## How it works
 
-Safety webhooks notify your application that a notice was issued. The Safety Case Read API provides the details for that notice.
+[Safety webhooks](https://developers.openai.com/api/reference/resources/webhooks#safety.warning_issued) notify your application that a notice was issued.
 
 | Event                        | Notice                                                       |
 | ---------------------------- | ------------------------------------------------------------ |
@@ -89770,25 +91440,19 @@ Safety webhooks notify your application that a notice was issued. The Safety Cas
 
 Each event contains a case ID. Use it with `GET /v1/safety/cases/{id}` to retrieve the safety identifier, notice type, case creation timestamp, and available policy reason.
 
-These organization-level notifications are separate from project-level [misalignment alerts](https://developers.openai.com/api/docs/guides/safety-checks/misalignment-monitoring#receive-project-safety-alerts). Retrieving a case does not change or reverse the enforcement. The API returns case metadata, not the underlying conversation or a full investigation report.
+These organization-level notifications are separate from project-level [misalignment alerts](https://developers.openai.com/api/docs/guides/safety-checks/misalignment-monitoring#receive-project-safety-alerts). Retrieving a case does not change or reverse the enforcement.
 
 ## Integrate with your application
 
 Start by configuring an organization-level webhook and a key for case lookups. Then connect the notifications to your review workflow.
 
-### 1. Configure your webhook and API key
+### Configure your webhook and receive events
 
 Use a stable [safety identifier](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers) for each user, and keep your application's mapping from that identifier to the user. Avoid including personal information in the identifier.
 
-Open your [organization webhook settings](https://platform.openai.com/settings/organization/webhooks) and select **Create**. Enter your receiver's HTTPS URL and subscribe to `safety.warning_issued` and `safety.deactivation_issued`. Save the signing secret securely so your receiver can verify incoming events. These events use an organization endpoint, not a project endpoint.
+Create an organization-level webhook endpoint in your [organization webhook settings](https://platform.openai.com/settings/organization/webhooks) and subscribe to `safety.warning_issued` and `safety.deactivation_issued`.
 
-Your account needs `api.webhooks.read` and `organization.read` to view organization webhooks, plus `api.webhooks.write` and `organization.write` to create them. See [Permissions](https://developers.openai.com/api/docs/guides/rbac) for role configuration.
-
-For case lookups, configure an API key for the same organization with **Restricted** permissions and set **Safety** to **Read** (`api.safety.read`). The API key authenticates case lookups; it is separate from the webhook signing secret.
-
-### 2. Receive and verify the event
-
-A warning notification has this structure. The IDs are illustrative:
+A warning notification has the following structure:
 
 ```json
 {
@@ -89797,21 +91461,23 @@ A warning notification has this structure. The IDs are illustrative:
   "created_at": 1787659200,
   "type": "safety.warning_issued",
   "data": {
-    "id": "C-example"
+    "id": "C-abc123"
   }
 }
 ```
 
-Verify the signature before processing the event. Save the verified event for processing, return a successful `2xx` response promptly, and retrieve the case in a background worker. See the Webhooks guide for [signature verification](https://developers.openai.com/api/docs/guides/webhooks#verifying-webhook-signatures) and [acknowledgments, retries, and duplicate deliveries](https://developers.openai.com/api/docs/guides/webhooks#handling-webhook-requests-on-a-server).
+For general webhook best practices, see the [Webhooks guide](https://developers.openai.com/api/docs/guides/webhooks).
 
 The event's `id` identifies the webhook event. Its `data.id` identifies the safety case to retrieve.
 
-### 3. Retrieve the case
+### Retrieve the case
 
-Set `OPENAI_API_KEY` to your API key. Replace `C-example` with `data.id` from the verified event:
+For case lookups, configure an API key for the same organization with **Restricted** permissions and set **Safety** to **Read** (`api.safety.read`).
+
+Look up case metadata through the Safety Case Read API:
 
 ```bash
-curl "https://api.openai.com/v1/safety/cases/C-example" \
+curl "https://api.openai.com/v1/safety/cases/C-abc123" \
   -H "Authorization: Bearer ${OPENAI_API_KEY}"
 ```
 
@@ -89819,10 +91485,10 @@ A successful lookup returns HTTP `200` and a case object. For example:
 
 ```json
 {
-  "id": "C-example",
+  "id": "C-abc123",
   "object": "safety.case",
   "created_at": 1787659100,
-  "entity_identifier": "safety-id-example",
+  "entity_identifier": "entity_identifier",
   "reason": "cyber_abuse",
   "notice": {
     "type": "warning"
@@ -89830,30 +91496,11 @@ A successful lookup returns HTTP `200` and a case object. For example:
 }
 ```
 
-Use `entity_identifier` to find the affected user in your application. The `reason` can be `null`; continue processing the notice when no reason is available.
+The `entity_identifier` represents the affected safety identifier. The case creation timestamp can be used to help with investigation. See the [Safety Case API reference](https://developers.openai.com/api/reference/resources/safety/subresources/cases/methods/retrieve) for field definitions.
 
-The case creation timestamp is not necessarily the event timestamp or the time of an individual request. See the [Safety Case API reference](https://developers.openai.com/api/reference/resources/safety/subresources/cases/methods/retrieve) for field definitions.
+### Connect to your workflows
 
-### 4. Create a review ticket
-
-Add the case ID, notice type, safety identifier, case creation timestamp, and available policy reason to your internal ticket. Link the matching user record so your team can investigate using its own application records. If you cannot find a matching user, preserve the case details and flag the missing mapping for review.
-
-Make ticket creation safe to retry. Follow the [webhook deduplication guidance](https://developers.openai.com/api/docs/guides/webhooks#handling-webhook-requests-on-a-server) so repeated deliveries do not create duplicate tickets. Retries of your own background processing should also reuse the existing ticket.
-
-If an agent helps with triage, limit its access to the records it needs and keep customer-facing actions subject to your existing approval controls.
-
-## Confirm it's working
-
-For a real event and an accessible case in your organization, check that:
-
-1. Your receiver verifies the signature and returns a successful acknowledgment.
-2. The lookup returns HTTP `200`, with a case `id` matching the event's `data.id`.
-3. Your application identifies the expected user or flags a missing mapping.
-4. One review ticket contains the available case details. Reprocessing the event does not create another ticket.
-
-Before receiving a real notice, test your processing logic with local example events and mocked case responses. Include both notice types, a `null` reason, a missing user mapping, and duplicate deliveries. Test signature verification separately, including rejection of invalid signatures; keep it enabled on your production receiver.
-
-The example IDs on this page are not retrievable cases. Mocked tests validate your processing logic, not live delivery or API permissions. Do not trigger an actual enforcement to test your integration. An absence of enforcement notifications alone does not indicate a broken integration.
+Use webhooks to receive notifications, then use case metadata to programmatically route those notices into your existing investigation or support systems.
 
 ## Troubleshoot
 
@@ -89864,9 +91511,6 @@ The example IDs on this page are not retrievable cases. Mocked tests validate yo
 | Lookup returns `403`                      | Check that the key has the `api.safety.read` permission.                                                 |
 | Lookup returns `404`                      | Use `data.id`, not the event ID. Check that the case belongs to the key's organization.                  |
 | Lookup returns `429` or a transient `5xx` | Retry with backoff and a bounded retry policy. Preserve the event for later processing or investigation. |
-| A ticket is created more than once        | Check that ticket creation remains safe across repeated deliveries and worker retries.                   |
-
-Do not silently discard a verified notification when its case lookup fails. Keep it available for retry or investigation.
 
 ---
 
@@ -90867,12 +92511,12 @@ Store long-lived credentials in a secrets manager. Injecting a stored secret int
 
 Secure MCP Tunnel lets you connect private MCP servers to supported OpenAI products without opening inbound firewall ports or exposing those servers to the public internet. Run `tunnel-client` inside the network that can already reach your MCP server; it opens an outbound HTTPS path to OpenAI, pulls queued MCP work, forwards requests locally, and returns responses through the same tunnel.
 
-Secure MCP Tunnel supports private MCP connections, including developer-mode
-  testing. It does not support public plugin submission or distribution. Public
-  plugins require a stable, publicly reachable HTTPS MCP endpoint. If the MCP
-  server must stay private, expose a public HTTPS proxy that forwards requests
-  to it. See [public plugin submission](https://developers.openai.com/plugins/deploy/submission) for endpoint
-  and authentication requirements.
+Secure MCP Tunnel supports private MCP connections, including custom MCP
+  server testing. It does not support public plugin submission or distribution.
+  Public plugins require a stable, publicly reachable HTTPS MCP endpoint. If the
+  MCP server must stay private, expose a public HTTPS proxy that forwards
+  requests to it. See [public plugin submission](https://developers.openai.com/plugins/deploy/submission) for
+  endpoint and authentication requirements.
 
 ## What is an MCP tunnel?
 
@@ -90920,14 +92564,14 @@ You need:
 
 ## Permissions and access
 
-[Platform tunnel permissions](https://developers.openai.com/api/docs/guides/rbac) and ChatGPT developer-mode access are separate:
+[Platform tunnel permissions](https://developers.openai.com/api/docs/guides/rbac) and ChatGPT custom MCP server access are separate:
 
 - Creating or editing a tunnel requires Tunnels **Read** + **Manage**.
 - Running `tunnel-client` or selecting the tunnel while creating an app requires Tunnels **Read** + **Use**.
 - Tunnel permissions apply to a Platform organization. A Platform organization owner or RBAC administrator grants the tunnel role.
-- ChatGPT developer mode is a separate workspace permission. For Enterprise/Edu, a workspace admin grants developer-mode access; the user then enables it in **Settings → Security and login**. See the [developer-mode Help Center article](https://help.openai.com/en/articles/12584461-developer-mode-apps-and-full-mcp-connectors-in-chatgpt-beta) for plan-specific policy.
+- Adding and using custom MCP servers in ChatGPT remains subject to workspace permissions and security restrictions. See [Add custom MCP server](https://developers.openai.com/api/docs/guides/custom-mcp-server).
 
-Ask the target ChatGPT workspace admin for developer-mode access, and ask the target Platform organization owner/RBAC admin for tunnel permissions.
+Ask the target ChatGPT workspace admin for permission to add and use custom MCP servers, and ask the target Platform organization owner/RBAC admin for tunnel permissions.
 
 ## Associate tunnels with the right organizations and workspaces
 
@@ -90998,7 +92642,7 @@ Run `tunnel-client` in the same trust boundary that can already reach the privat
 
 ## Connect from ChatGPT
 
-Go to [ChatGPT Plugins](https://chatgpt.com/plugins), select the plus button to create a developer-mode app, and choose **Tunnel** under **Connection**. Select an available tunnel when ChatGPT lists it, or paste a valid `tunnel_id` if you already have one.
+Go to [ChatGPT Plugins](https://chatgpt.com/plugins), select the plus button, then **Add custom MCP server**, and choose **Tunnel** under **Connection**. Select an available tunnel when ChatGPT lists it, or paste a valid `tunnel_id` if you already have one. Configure authentication, review the risk warning, and select **I understand and want to continue**, then **Create as a plugin**.
 
 If the tunnel does not appear in ChatGPT, verify that the tunnel is associated with the target ChatGPT workspace, not only with a Platform organization, and that the app creator has Tunnels **Read** + **Use**.
 
@@ -91081,7 +92725,7 @@ Use this when you need to reach a small set of private REST endpoints without ex
 ## Where to configure it
 
 - Manage OpenAI-hosted MCP tunnel endpoints in [Platform tunnel settings](https://platform.openai.com/settings/organization/tunnels).
-- Use a tunnel when creating a developer-mode app at [ChatGPT Plugins](https://chatgpt.com/plugins).
+- Use a tunnel when [adding a custom MCP server](https://developers.openai.com/api/docs/guides/custom-mcp-server) at [ChatGPT Plugins](https://chatgpt.com/plugins).
 - For Codex or API flows, use the tunnel-backed MCP target exposed by the supported product surface.
 
 ## Next steps
@@ -91101,17 +92745,6 @@ Use this when you need to reach a small set of private REST endpoints without ex
     <figcaption class="mt-3 text-sm text-gray-600 dark:text-gray-400">
       Create and manage OpenAI-hosted MCP tunnel endpoints from Platform tunnel
       settings.
-    </figcaption>
-  </figure>
-  <figure>
-    [<img src="https://developers.openai.com/images/platform/guides/secure-mcp-tunnels/chatgpt-connectors-tunnel.png"
-        alt="Sanitized ChatGPT app creation screenshot with Tunnel selected."
-        loading="lazy"
-        class="w-full rounded-md border border-gray-200 dark:border-gray-800"
-      />](https://chatgpt.com/plugins)
-    <figcaption class="mt-3 text-sm text-gray-600 dark:text-gray-400">
-      Select Tunnel when connecting a ChatGPT developer-mode app to a private
-      MCP server.
     </figcaption>
   </figure>
 
@@ -92922,6 +94555,154 @@ response = client.responses.create(
 )
 
 print(response.output_text)
+```
+
+```go
+var bundle bytes.Buffer
+archive := zip.NewWriter(&bundle)
+file, err := archive.Create("csv-insights/SKILL.md")
+if err != nil {
+	log.Fatal(err)
+}
+if _, err := file.Write([]byte("---\nname: csv-insights\ndescription: Summarize CSV files.\n---\nRead the CSV and produce a Markdown report of totals.\n")); err != nil {
+	log.Fatal(err)
+}
+if err := archive.Close(); err != nil {
+	log.Fatal(err)
+}
+client := openai.NewClient()
+inlineZip := base64.StdEncoding.EncodeToString(bundle.Bytes())
+reportCSV := base64.StdEncoding.EncodeToString([]byte("product,revenue\nA,120\nB,80\n"))
+container, err := client.Containers.New(context.Background(), openai.ContainerNewParams{
+	Name: "inline-skill-container",
+	Skills: []openai.ContainerNewParamsSkillUnion{
+		{
+			OfInline: &responses.InlineSkillParam{
+				Name:        "csv-insights",
+				Description: "Summarize CSV files and produce a markdown report.",
+				Source: responses.InlineSkillSourceParam{
+					Data: inlineZip,
+				},
+			},
+		},
+	},
+})
+if err != nil {
+	log.Fatal(err)
+}
+response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+	Model: "gpt-6-astra",
+	Tools: []responses.ToolUnionParam{
+		{
+			OfShell: &responses.FunctionShellToolParam{
+				Environment: responses.FunctionShellToolEnvironmentUnionParam{
+					OfContainerReference: &responses.ContainerReferenceParam{
+						ContainerID: container.ID,
+					},
+				},
+			},
+		},
+	},
+	Input: responses.ResponseNewParamsInputUnion{
+		OfInputItemList: []responses.ResponseInputItemUnionParam{
+			{
+				OfMessage: &responses.EasyInputMessageParam{
+					Role: responses.EasyInputMessageRoleUser,
+					Content: responses.EasyInputMessageContentUnionParam{
+						OfInputItemContentList: []responses.ResponseInputContentUnionParam{
+							{
+								OfInputFile: &responses.ResponseInputFileParam{
+									Filename: openai.String("report.csv"),
+									FileData: openai.String("data:text/csv;base64," + reportCSV),
+								},
+							},
+							{
+								OfInputText: &responses.ResponseInputTextParam{
+									Text: "Use the csv-insights skill to summarize report.csv.",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	},
+})
+if err != nil {
+	log.Fatal(err)
+}
+if response.Status != responses.ResponseStatusCompleted {
+	log.Fatalf("Response ended with status %s", response.Status)
+}
+fmt.Println(response.OutputText())
+```
+
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.containers.ContainerCreateParams;
+import com.openai.models.responses.*;
+import java.util.*;
+
+var bundle = new java.io.ByteArrayOutputStream();
+try (var zip = new java.util.zip.ZipOutputStream(bundle)) {
+  zip.putNextEntry(new java.util.zip.ZipEntry("csv-insights/SKILL.md"));
+  zip.write(
+      "---\nname: csv-insights\ndescription: Summarize CSV files.\n---\nRead the CSV and produce a Markdown report of totals.\n"
+          .getBytes(java.nio.charset.StandardCharsets.UTF_8));
+  zip.closeEntry();
+}
+var client = OpenAIOkHttpClient.fromEnv();
+
+var inlineZip = Base64.getEncoder().encodeToString(bundle.toByteArray());
+var reportCsv =
+    Base64.getEncoder()
+        .encodeToString(
+            "product,revenue\nA,120\nB,80\n".getBytes(java.nio.charset.StandardCharsets.UTF_8));
+var container =
+    client
+        .containers()
+        .create(
+            ContainerCreateParams.builder()
+                .name("inline-skill-container")
+                .addSkill(
+                    InlineSkill.builder()
+                        .name("csv-insights")
+                        .description("Summarize CSV files and produce a markdown report.")
+                        .source(InlineSkillSource.builder().data(inlineZip).build())
+                        .build())
+                .build());
+var response =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder()
+                .model("gpt-6-astra")
+                .addTool(
+                    FunctionShellTool.builder()
+                        .containerReferenceEnvironment(container.id())
+                        .build())
+                .inputOfResponse(
+                    List.of(
+                        ResponseInputItem.ofMessage(
+                            ResponseInputItem.Message.builder()
+                                .role(ResponseInputItem.Message.Role.USER)
+                                .addContent(
+                                    ResponseInputFile.builder()
+                                        .filename("report.csv")
+                                        .fileData("data:text/csv;base64," + reportCsv)
+                                        .build())
+                                .addInputTextContent(
+                                    "Use the csv-insights skill to summarize report.csv.")
+                                .build())))
+                .build());
+if (response.status().filter(ResponseStatus.COMPLETED::equals).isEmpty())
+  throw new IllegalStateException(
+      "Response ended with status " + response.status().orElse(null));
+response.output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
 ```
 
 ```ruby
@@ -104607,6 +106388,40 @@ As mentioned already, developers can optionally prompt agents built with GPT-4.1
 
 Below, we share the agentic prompt that we used to achieve our highest score on SWE-bench Verified, which features detailed instructions about workflow and problem-solving strategy. This general pattern can be used for any agentic task.
 
+```javascript
+const response = await client.responses.create({
+  instructions:
+    "\nYou will be tasked to fix an issue from an open-source repository.\n\nYour thinking should be thorough and so it's fine if it's very long. You can think step by step before and after each action you decide to take.\n\nYou MUST iterate and keep going until the problem is solved.\n\nYou already have everything you need to solve this problem in the /testbed folder, even without internet connection. I want you to fully solve this autonomously before coming back to me.\n\nOnly terminate your turn when you are sure that the problem is solved. Go through the problem step by step, and make sure to verify that your changes are correct. NEVER end your turn without having solved the problem, and when you say you are going to make a tool call, make sure you ACTUALLY make the tool call, instead of ending your turn.\n\nTHE PROBLEM CAN DEFINITELY BE SOLVED WITHOUT THE INTERNET.\n\nTake your time and think through every step - remember to check your solution rigorously and watch out for boundary cases, especially with the changes you made. Your solution must be perfect. If not, continue working on it. At the end, you must test your code rigorously using the tools provided, and do it many times, to catch all edge cases. If it is not robust, iterate more and make it perfect. Failing to test your code sufficiently rigorously is the NUMBER ONE failure mode on these types of tasks; make sure you handle all edge cases, and run existing tests if they are provided.\n\nYou MUST plan extensively before each function call, and reflect extensively on the outcomes of the previous function calls. DO NOT do this entire process by making function calls only, as this can impair your ability to solve the problem and think insightfully.\n\n# Workflow\n\n## High-Level Problem Solving Strategy\n\n1. Understand the problem deeply. Carefully read the issue and think critically about what is required.\n2. Investigate the codebase. Explore relevant files, search for key functions, and gather context.\n3. Develop a clear, step-by-step plan. Break down the fix into manageable, incremental steps.\n4. Implement the fix incrementally. Make small, testable code changes.\n5. Debug as needed. Use debugging techniques to isolate and resolve issues.\n6. Test frequently. Run tests after each change to verify correctness.\n7. Iterate until the root cause is fixed and all tests pass.\n8. Reflect and validate comprehensively. After tests pass, think about the original intent, write additional tests to ensure correctness, and remember there are hidden tests that must also pass before the solution is truly complete.\n\nRefer to the detailed sections below for more information on each step.\n\n## 1. Deeply Understand the Problem\nCarefully read the issue and think hard about a plan to solve it before coding.\n\n## 2. Codebase Investigation\n- Explore relevant files and directories.\n- Search for key functions, classes, or variables related to the issue.\n- Read and understand relevant code snippets.\n- Identify the root cause of the problem.\n- Validate and update your understanding continuously as you gather more context.\n\n## 3. Develop a Detailed Plan\n- Outline a specific, simple, and verifiable sequence of steps to fix the problem.\n- Break down the fix into small, incremental changes.\n\n## 4. Making Code Changes\n- Before editing, always read the relevant file contents or section to ensure complete context.\n- If a patch is not applied correctly, attempt to reapply it.\n- Make small, testable, incremental changes that logically follow from your investigation and plan.\n\n## 5. Debugging\n- Make code changes only if you have high confidence they can solve the problem\n- When debugging, try to determine the root cause rather than addressing symptoms\n- Debug for as long as needed to identify the root cause and identify a fix\n- Use print statements, logs, or temporary code to inspect program state, including descriptive statements or error messages to understand what's happening\n- To test hypotheses, you can also add test statements or functions\n- Revisit your assumptions if unexpected behavior occurs.\n\n## 6. Testing\n- Run tests frequently using `!python3 run_tests.py` (or equivalent).\n- After each change, verify correctness by running relevant tests.\n- If tests fail, analyze failures and revise your patch.\n- Write additional tests if needed to capture important behaviors or edge cases.\n- Ensure all tests pass before finalizing.\n\n## 7. Final Verification\n- Confirm the root cause is fixed.\n- Review your solution for logic correctness and robustness.\n- Iterate until you are extremely confident the fix is complete and all tests pass.\n\n## 8. Final Reflection and Additional Testing\n- Reflect carefully on the original intent of the user and the problem statement.\n- Think about potential edge cases or scenarios that may not be covered by existing tests.\n- Write additional tests that would need to pass to fully validate the correctness of your solution.\n- Run these new tests and ensure they all pass.\n- Be aware that there are additional hidden tests that must also pass for the solution to be successful.\n- Do not assume the task is complete just because the visible tests pass; continue refining until you are confident the fix is robust and comprehensive.\n",
+  model: "gpt-4.1-2025-04-14",
+  tools: [
+    {
+      type: "function",
+      name: "python",
+      description:
+        'This function is used to execute Python code or terminal commands in a stateful Jupyter notebook environment. python will respond with the output of the execution or time out after 60.0 seconds. Internet access for this session is disabled. Do not make external web requests or API calls as they will fail. Just as in a Jupyter notebook, you may also execute terminal commands by calling this function with a terminal command, prefaced with an exclamation mark.\n\nIn addition, for the purposes of this task, you can call this function with an `apply_patch` command as input.  `apply_patch` effectively allows you to execute a diff/patch against a file, but the format of the diff specification is unique to this task, so pay careful attention to these instructions. To use the `apply_patch` command, you should pass a message of the following structure as "input":\n\n%%bash\napply_patch <<"EOF"\n*** Begin Patch\n[YOUR_PATCH]\n*** End Patch\nEOF\n\nWhere [YOUR_PATCH] is the actual content of your patch, specified in the following V4A diff format.\n\n*** [ACTION] File: [path/to/file] -> ACTION can be one of Add, Update, or Delete.\nFor each snippet of code that needs to be changed, repeat the following:\n[context_before] -> See below for further instructions on context.\n- [old_code] -> Precede the old code with a minus sign.\n+ [new_code] -> Precede the new, replacement code with a plus sign.\n[context_after] -> See below for further instructions on context.\n\nFor instructions on [context_before] and [context_after]:\n- By default, show 3 lines of code immediately above and 3 lines immediately below each change. If a change is within 3 lines of a previous change, do NOT duplicate the first change\'s [context_after] lines in the second change\'s [context_before] lines.\n- If 3 lines of context is insufficient to uniquely identify the snippet of code within the file, use the @@ operator to indicate the class or function to which the snippet belongs. For instance, we might have:\n@@ class BaseClass\n[3 lines of pre-context]\n- [old_code]\n+ [new_code]\n[3 lines of post-context]\n\n- If a code block is repeated so many times in a class or function such that even a single @@ statement and 3 lines of context cannot uniquely identify the snippet of code, you can use multiple `@@` statements to jump to the right context. For instance:\n\n@@ class BaseClass\n@@ \tdef method():\n[3 lines of pre-context]\n- [old_code]\n+ [new_code]\n[3 lines of post-context]\n\nNote, then, that we do not use line numbers in this diff format, as the context is enough to uniquely identify code. An example of a message that you might pass as "input" to this function, in order to apply a patch, is shown below.\n\n%%bash\napply_patch <<"EOF"\n*** Begin Patch\n*** Update File: pygorithm/searching/binary_search.py\n@@ class BaseClass\n@@     def search():\n-        pass\n+        raise NotImplementedError()\n\n@@ class Subclass\n@@     def search():\n-        pass\n+        raise NotImplementedError()\n\n*** End Patch\nEOF\n\nFile references can only be relative, NEVER ABSOLUTE. After the apply_patch command is run, Python will always say "Done!", regardless of whether the patch was successfully applied or not. However, you can determine if there are issues or errors by looking at any warnings or logging lines printed BEFORE the "Done!" is output.\n',
+      parameters: {
+        type: "object",
+        properties: {
+          input: {
+            type: "string",
+            description:
+              " The Python code, terminal command (prefaced by exclamation mark), or apply_patch command that you wish to execute.",
+          },
+        },
+        required: ["input"],
+        additionalProperties: false,
+      },
+      strict: true,
+    },
+  ],
+  input: "Please answer the following question:\nBug: Typerror...",
+});
+if (response.status !== "completed") {
+  throw new Error(`Response ended with status ${response.status}`);
+}
+console.log(JSON.stringify(response.output, null, 2));
+```
+
 ```python
 from openai import OpenAI
 
@@ -104782,6 +106597,51 @@ response = client.responses.create(
 )
 
 response.to_dict()["output"]
+```
+
+```go
+response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+	Model:        "gpt-4.1-2025-04-14",
+	Instructions: openai.String("\nYou will be tasked to fix an issue from an open-source repository.\n\nYour thinking should be thorough and so it's fine if it's very long. You can think step by step before and after each action you decide to take.\n\nYou MUST iterate and keep going until the problem is solved.\n\nYou already have everything you need to solve this problem in the /testbed folder, even without internet connection. I want you to fully solve this autonomously before coming back to me.\n\nOnly terminate your turn when you are sure that the problem is solved. Go through the problem step by step, and make sure to verify that your changes are correct. NEVER end your turn without having solved the problem, and when you say you are going to make a tool call, make sure you ACTUALLY make the tool call, instead of ending your turn.\n\nTHE PROBLEM CAN DEFINITELY BE SOLVED WITHOUT THE INTERNET.\n\nTake your time and think through every step - remember to check your solution rigorously and watch out for boundary cases, especially with the changes you made. Your solution must be perfect. If not, continue working on it. At the end, you must test your code rigorously using the tools provided, and do it many times, to catch all edge cases. If it is not robust, iterate more and make it perfect. Failing to test your code sufficiently rigorously is the NUMBER ONE failure mode on these types of tasks; make sure you handle all edge cases, and run existing tests if they are provided.\n\nYou MUST plan extensively before each function call, and reflect extensively on the outcomes of the previous function calls. DO NOT do this entire process by making function calls only, as this can impair your ability to solve the problem and think insightfully.\n\n# Workflow\n\n## High-Level Problem Solving Strategy\n\n1. Understand the problem deeply. Carefully read the issue and think critically about what is required.\n2. Investigate the codebase. Explore relevant files, search for key functions, and gather context.\n3. Develop a clear, step-by-step plan. Break down the fix into manageable, incremental steps.\n4. Implement the fix incrementally. Make small, testable code changes.\n5. Debug as needed. Use debugging techniques to isolate and resolve issues.\n6. Test frequently. Run tests after each change to verify correctness.\n7. Iterate until the root cause is fixed and all tests pass.\n8. Reflect and validate comprehensively. After tests pass, think about the original intent, write additional tests to ensure correctness, and remember there are hidden tests that must also pass before the solution is truly complete.\n\nRefer to the detailed sections below for more information on each step.\n\n## 1. Deeply Understand the Problem\nCarefully read the issue and think hard about a plan to solve it before coding.\n\n## 2. Codebase Investigation\n- Explore relevant files and directories.\n- Search for key functions, classes, or variables related to the issue.\n- Read and understand relevant code snippets.\n- Identify the root cause of the problem.\n- Validate and update your understanding continuously as you gather more context.\n\n## 3. Develop a Detailed Plan\n- Outline a specific, simple, and verifiable sequence of steps to fix the problem.\n- Break down the fix into small, incremental changes.\n\n## 4. Making Code Changes\n- Before editing, always read the relevant file contents or section to ensure complete context.\n- If a patch is not applied correctly, attempt to reapply it.\n- Make small, testable, incremental changes that logically follow from your investigation and plan.\n\n## 5. Debugging\n- Make code changes only if you have high confidence they can solve the problem\n- When debugging, try to determine the root cause rather than addressing symptoms\n- Debug for as long as needed to identify the root cause and identify a fix\n- Use print statements, logs, or temporary code to inspect program state, including descriptive statements or error messages to understand what's happening\n- To test hypotheses, you can also add test statements or functions\n- Revisit your assumptions if unexpected behavior occurs.\n\n## 6. Testing\n- Run tests frequently using `!python3 run_tests.py` (or equivalent).\n- After each change, verify correctness by running relevant tests.\n- If tests fail, analyze failures and revise your patch.\n- Write additional tests if needed to capture important behaviors or edge cases.\n- Ensure all tests pass before finalizing.\n\n## 7. Final Verification\n- Confirm the root cause is fixed.\n- Review your solution for logic correctness and robustness.\n- Iterate until you are extremely confident the fix is complete and all tests pass.\n\n## 8. Final Reflection and Additional Testing\n- Reflect carefully on the original intent of the user and the problem statement.\n- Think about potential edge cases or scenarios that may not be covered by existing tests.\n- Write additional tests that would need to pass to fully validate the correctness of your solution.\n- Run these new tests and ensure they all pass.\n- Be aware that there are additional hidden tests that must also pass for the solution to be successful.\n- Do not assume the task is complete just because the visible tests pass; continue refining until you are confident the fix is robust and comprehensive.\n"),
+	Input: responses.ResponseNewParamsInputUnion{
+		OfString: openai.String("Please answer the following question:\nBug: Typerror..."),
+	},
+	Tools: []responses.ToolUnionParam{
+		{
+			OfFunction: &responses.FunctionToolParam{
+				Name:        "python",
+				Description: openai.String("This function is used to execute Python code or terminal commands in a stateful Jupyter notebook environment. python will respond with the output of the execution or time out after 60.0 seconds. Internet access for this session is disabled. Do not make external web requests or API calls as they will fail. Just as in a Jupyter notebook, you may also execute terminal commands by calling this function with a terminal command, prefaced with an exclamation mark.\n\nIn addition, for the purposes of this task, you can call this function with an `apply_patch` command as input.  `apply_patch` effectively allows you to execute a diff/patch against a file, but the format of the diff specification is unique to this task, so pay careful attention to these instructions. To use the `apply_patch` command, you should pass a message of the following structure as \"input\":\n\n%%bash\napply_patch <<\"EOF\"\n*** Begin Patch\n[YOUR_PATCH]\n*** End Patch\nEOF\n\nWhere [YOUR_PATCH] is the actual content of your patch, specified in the following V4A diff format.\n\n*** [ACTION] File: [path/to/file] -> ACTION can be one of Add, Update, or Delete.\nFor each snippet of code that needs to be changed, repeat the following:\n[context_before] -> See below for further instructions on context.\n- [old_code] -> Precede the old code with a minus sign.\n+ [new_code] -> Precede the new, replacement code with a plus sign.\n[context_after] -> See below for further instructions on context.\n\nFor instructions on [context_before] and [context_after]:\n- By default, show 3 lines of code immediately above and 3 lines immediately below each change. If a change is within 3 lines of a previous change, do NOT duplicate the first change's [context_after] lines in the second change's [context_before] lines.\n- If 3 lines of context is insufficient to uniquely identify the snippet of code within the file, use the @@ operator to indicate the class or function to which the snippet belongs. For instance, we might have:\n@@ class BaseClass\n[3 lines of pre-context]\n- [old_code]\n+ [new_code]\n[3 lines of post-context]\n\n- If a code block is repeated so many times in a class or function such that even a single @@ statement and 3 lines of context cannot uniquely identify the snippet of code, you can use multiple `@@` statements to jump to the right context. For instance:\n\n@@ class BaseClass\n@@ \tdef method():\n[3 lines of pre-context]\n- [old_code]\n+ [new_code]\n[3 lines of post-context]\n\nNote, then, that we do not use line numbers in this diff format, as the context is enough to uniquely identify code. An example of a message that you might pass as \"input\" to this function, in order to apply a patch, is shown below.\n\n%%bash\napply_patch <<\"EOF\"\n*** Begin Patch\n*** Update File: pygorithm/searching/binary_search.py\n@@ class BaseClass\n@@     def search():\n-        pass\n+        raise NotImplementedError()\n\n@@ class Subclass\n@@     def search():\n-        pass\n+        raise NotImplementedError()\n\n*** End Patch\nEOF\n\nFile references can only be relative, NEVER ABSOLUTE. After the apply_patch command is run, Python will always say \"Done!\", regardless of whether the patch was successfully applied or not. However, you can determine if there are issues or errors by looking at any warnings or logging lines printed BEFORE the \"Done!\" is output.\n"),
+				Parameters: map[string]any{
+					"type": "object",
+					"properties": map[string]any{
+						"input": map[string]any{
+							"type":        "string",
+							"description": " The Python code, terminal command (prefaced by exclamation mark), or apply_patch command that you wish to execute.",
+						},
+					},
+					"required": []any{
+						"input",
+					},
+					"additionalProperties": false,
+				},
+				Strict: openai.Bool(true),
+			},
+		},
+	},
+})
+if err != nil {
+	log.Fatal(err)
+}
+if response.Status != responses.ResponseStatusCompleted {
+	log.Fatalf("Response ended with status %s", response.Status)
+}
+output := make([]json.RawMessage, 0, len(response.Output))
+for _, item := range response.Output {
+	output = append(output, json.RawMessage(item.RawJSON()))
+}
+if err := json.NewEncoder(os.Stdout).Encode(output); err != nil {
+	log.Fatal(err)
+}
 ```
 
 ```java
@@ -105085,6 +106945,58 @@ This demonstrates best practices for a fictional customer service agent. Observe
 
 Try running the following notebook cell - you should see both a user message and tool call, and the user message should start with a greeting, then echo back their answer, then mention they're about to call a tool. Try changing the instructions to shape the model behavior, or trying other user messages, to test instruction following performance.
 
+```javascript
+const response = await client.responses.create({
+  instructions:
+    'You are a helpful customer service agent working for NewTelco, helping a user efficiently fulfill their request while adhering closely to provided guidelines.\n\n# Instructions\n- Always greet the user with "Hi, you\'ve reached NewTelco, how can I help you?"\n- Always call a tool before answering factual questions about the company, its offerings or products, or a user\'s account. Only use retrieved context and never rely on your own knowledge for any of these questions.\n    - However, if you don\'t have enough information to properly call the tool, ask the user for the information you need.\n- Escalate to a human if the user requests.\n- Do not discuss prohibited topics (politics, religion, controversial current events, medical, legal, or financial advice, personal conversations, internal company operations, or criticism of any people or company).\n- Rely on sample phrases whenever appropriate, but never repeat a sample phrase in the same conversation. Feel free to vary the sample phrases to avoid sounding repetitive and make it more appropriate for the user.\n- Always follow the provided output format for new messages, including citations for any factual statements from retrieved policy documents.\n- If you\'re going to call a tool, always message the user with an appropriate message before and after calling the tool.\n- Maintain a professional and concise tone in all responses, and use emojis between sentences.\n- If you\'ve resolved the user\'s request, ask if there\'s anything else you can help with\n\n# Precise Response Steps (for each response)\n1. If necessary, call tools to fulfill the user\'s desired action. Always message the user before and after calling a tool to keep them in the loop.\n2. In your response to the user\n    a. Use active listening and echo back what you heard the user ask for.\n    b. Respond appropriately given the above guidelines.\n\n# Sample Phrases\n## Deflecting a Prohibited Topic\n- "I\'m sorry, but I\'m unable to discuss that topic. Is there something else I can help you with?"\n- "That\'s not something I\'m able to provide information on, but I\'m happy to help with any other questions you may have."\n\n## Before calling a tool\n- "To help you with that, I\'ll just need to verify your information."\n- "Let me check that for you—one moment, please."\n- "I\'ll retrieve the latest details for you now."\n\n## After calling a tool\n- "Okay, here\'s what I found: [response]"\n- "So here\'s what I found: [response]"\n\n# Output Format\n- Always include your final response to the user.\n- When providing factual information from retrieved context, always include citations immediately after the relevant statement(s). Use the following citation format:\n    - For a single source: [NAME](ID)\n    - For multiple sources: [NAME](ID), [NAME](ID)\n- Only provide information about this company, its policies, its products, or the customer\'s account, and only if it is based on information provided in context. Do not answer questions outside this scope.\n\n# Example\n## User\nCan you tell me about your family plan options?\n\n## Assistant Response 1\n### Message\n"Hi, you\'ve reached NewTelco, how can I help you? 😊🎉\n\nYou\'d like to know about our family plan options. 🤝 Let me check that for you—one moment, please. 🚀"\n\n### Tool Calls\nlookup_policy_document(topic="family plan options")\n\n// After tool call, the assistant would follow up with:\n\n## Assistant Response 2 (after tool call)\n### Message\n"Okay, here\'s what I found: 🎉 Our family plan allows up to 5 lines with shared data and a 10% discount for each additional line [Family Plan Policy](ID-010). 📱 Is there anything else I can help you with today? 😊"\n',
+  model: "gpt-4.1-2025-04-14",
+  tools: [
+    {
+      type: "function",
+      name: "lookup_policy_document",
+      description:
+        "Tool to look up internal documents and policies by topic or keyword.",
+      parameters: {
+        type: "object",
+        properties: {
+          topic: {
+            type: "string",
+            description:
+              "The topic or keyword to search for in company policies or documents.",
+          },
+        },
+        required: ["topic"],
+        additionalProperties: false,
+      },
+      strict: true,
+    },
+    {
+      type: "function",
+      name: "get_user_account_info",
+      description: "Tool to get user account information",
+      parameters: {
+        type: "object",
+        properties: {
+          phone_number: {
+            type: "string",
+            description: "Formatted as '(xxx) xxx-xxxx'",
+          },
+        },
+        required: ["phone_number"],
+        additionalProperties: false,
+      },
+      strict: true,
+    },
+  ],
+  input:
+    "How much will it cost for international service? I'm traveling to France.",
+});
+if (response.status !== "completed") {
+  throw new Error(`Response ended with status ${response.status}`);
+}
+console.log(JSON.stringify(response.output, null, 2));
+```
+
 ```python
 SYS_PROMPT_CUSTOMER_SERVICE = """You are a helpful customer service agent working for NewTelco, helping a user efficiently fulfill their request while adhering closely to provided guidelines.
 
@@ -105190,6 +107102,71 @@ response = client.responses.create(
 )
 
 response.to_dict()["output"]
+```
+
+```go
+response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+	Model:        "gpt-4.1-2025-04-14",
+	Instructions: openai.String("You are a helpful customer service agent working for NewTelco, helping a user efficiently fulfill their request while adhering closely to provided guidelines.\n\n# Instructions\n- Always greet the user with \"Hi, you've reached NewTelco, how can I help you?\"\n- Always call a tool before answering factual questions about the company, its offerings or products, or a user's account. Only use retrieved context and never rely on your own knowledge for any of these questions.\n    - However, if you don't have enough information to properly call the tool, ask the user for the information you need.\n- Escalate to a human if the user requests.\n- Do not discuss prohibited topics (politics, religion, controversial current events, medical, legal, or financial advice, personal conversations, internal company operations, or criticism of any people or company).\n- Rely on sample phrases whenever appropriate, but never repeat a sample phrase in the same conversation. Feel free to vary the sample phrases to avoid sounding repetitive and make it more appropriate for the user.\n- Always follow the provided output format for new messages, including citations for any factual statements from retrieved policy documents.\n- If you're going to call a tool, always message the user with an appropriate message before and after calling the tool.\n- Maintain a professional and concise tone in all responses, and use emojis between sentences.\n- If you've resolved the user's request, ask if there's anything else you can help with\n\n# Precise Response Steps (for each response)\n1. If necessary, call tools to fulfill the user's desired action. Always message the user before and after calling a tool to keep them in the loop.\n2. In your response to the user\n    a. Use active listening and echo back what you heard the user ask for.\n    b. Respond appropriately given the above guidelines.\n\n# Sample Phrases\n## Deflecting a Prohibited Topic\n- \"I'm sorry, but I'm unable to discuss that topic. Is there something else I can help you with?\"\n- \"That's not something I'm able to provide information on, but I'm happy to help with any other questions you may have.\"\n\n## Before calling a tool\n- \"To help you with that, I'll just need to verify your information.\"\n- \"Let me check that for you—one moment, please.\"\n- \"I'll retrieve the latest details for you now.\"\n\n## After calling a tool\n- \"Okay, here's what I found: [response]\"\n- \"So here's what I found: [response]\"\n\n# Output Format\n- Always include your final response to the user.\n- When providing factual information from retrieved context, always include citations immediately after the relevant statement(s). Use the following citation format:\n    - For a single source: [NAME](ID)\n    - For multiple sources: [NAME](ID), [NAME](ID)\n- Only provide information about this company, its policies, its products, or the customer's account, and only if it is based on information provided in context. Do not answer questions outside this scope.\n\n# Example\n## User\nCan you tell me about your family plan options?\n\n## Assistant Response 1\n### Message\n\"Hi, you've reached NewTelco, how can I help you? 😊🎉\n\nYou'd like to know about our family plan options. 🤝 Let me check that for you—one moment, please. 🚀\"\n\n### Tool Calls\nlookup_policy_document(topic=\"family plan options\")\n\n// After tool call, the assistant would follow up with:\n\n## Assistant Response 2 (after tool call)\n### Message\n\"Okay, here's what I found: 🎉 Our family plan allows up to 5 lines with shared data and a 10% discount for each additional line [Family Plan Policy](ID-010). 📱 Is there anything else I can help you with today? 😊\"\n"),
+	Input: responses.ResponseNewParamsInputUnion{
+		OfString: openai.String("How much will it cost for international service? I'm traveling to France."),
+	},
+	Tools: []responses.ToolUnionParam{
+		{
+			OfFunction: &responses.FunctionToolParam{
+				Name:        "lookup_policy_document",
+				Description: openai.String("Tool to look up internal documents and policies by topic or keyword."),
+				Parameters: map[string]any{
+					"type": "object",
+					"properties": map[string]any{
+						"topic": map[string]any{
+							"type":        "string",
+							"description": "The topic or keyword to search for in company policies or documents.",
+						},
+					},
+					"required": []any{
+						"topic",
+					},
+					"additionalProperties": false,
+				},
+				Strict: openai.Bool(true),
+			},
+		},
+		{
+			OfFunction: &responses.FunctionToolParam{
+				Name:        "get_user_account_info",
+				Description: openai.String("Tool to get user account information"),
+				Parameters: map[string]any{
+					"type": "object",
+					"properties": map[string]any{
+						"phone_number": map[string]any{
+							"type":        "string",
+							"description": "Formatted as '(xxx) xxx-xxxx'",
+						},
+					},
+					"required": []any{
+						"phone_number",
+					},
+					"additionalProperties": false,
+				},
+				Strict: openai.Bool(true),
+			},
+		},
+	},
+})
+if err != nil {
+	log.Fatal(err)
+}
+if response.Status != responses.ResponseStatusCompleted {
+	log.Fatalf("Response ended with status %s", response.Status)
+}
+output := make([]json.RawMessage, 0, len(response.Output))
+for _, item := range response.Output {
+	output = append(output, json.RawMessage(item.RawJSON()))
+}
+if err := json.NewEncoder(os.Stdout).Encode(output); err != nil {
+	log.Fatal(err)
+}
 ```
 
 ```java
@@ -107036,10 +109013,49 @@ The apply_patch tool lets GPT-5.1 create, update, and delete files in your codeb
 
 With GPT-5.1, you can use apply_patch as a new tool type without writing custom descriptions for the tool. The description and handling are managed via the Responses API. Under the hood, this implementation uses a freeform function call rather than a JSON format. In testing, the named function decreased apply_patch failure rates by 35%.
 
+```javascript
+const response = await client.responses.create({
+  model: "gpt-5.1",
+  input: "Update the README title and fix the failing test.",
+  tools: [{ type: "apply_patch" }],
+});
+if (response.status !== "completed") {
+  throw new Error(`Response ended with status ${response.status}`);
+}
+console.log(JSON.stringify(response.output, null, 2));
+```
+
 ```python
 response = client.responses.create(
     model="gpt-5.1", input=RESPONSE_INPUT, tools=[{"type": "apply_patch"}]
 )
+```
+
+```go
+response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+	Model: "gpt-5.1",
+	Input: responses.ResponseNewParamsInputUnion{
+		OfString: openai.String("Update the README title and fix the failing test."),
+	},
+	Tools: []responses.ToolUnionParam{
+		{
+			OfApplyPatch: &responses.ApplyPatchToolParam{},
+		},
+	},
+})
+if err != nil {
+	log.Fatal(err)
+}
+if response.Status != responses.ResponseStatusCompleted {
+	log.Fatalf("Response ended with status %s", response.Status)
+}
+output := make([]json.RawMessage, 0, len(response.Output))
+for _, item := range response.Output {
+	output = append(output, json.RawMessage(item.RawJSON()))
+}
+if err := json.NewEncoder(os.Stdout).Encode(output); err != nil {
+	log.Fatal(err)
+}
 ```
 
 ```java
@@ -107047,6 +109063,7 @@ import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.responses.ApplyPatchTool;
 import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseStatus;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
@@ -107055,11 +109072,11 @@ ResponseCreateParams params =
         .addTool(ApplyPatchTool.builder().build())
         .build();
 
-client.responses().create(params).output().stream()
-    .flatMap(item -> item.message().stream())
-    .flatMap(message -> message.content().stream())
-    .flatMap(content -> content.outputText().stream())
-    .forEach(text -> System.out.println(text.text()));
+var response = client.responses().create(params);
+if (response.status().filter(ResponseStatus.COMPLETED::equals).isEmpty())
+  throw new IllegalStateException(
+      "Response ended with status " + response.status().orElse(null));
+System.out.println(response.output());
 ```
 
 ```ruby
@@ -108079,6 +110096,21 @@ For guidance on when and how to compact in production, see the [Conversation Sta
 
 Here is an example:
 
+```javascript
+const input = [
+  { role: "user", content: "write a very long poem about a dog." },
+];
+const response = await client.responses.create({ model: "gpt-5.2", input });
+if (response.status !== "completed") {
+  throw new Error(`Response ended with status ${response.status}`);
+}
+const compacted = await client.responses.compact({
+  model: "gpt-5.2",
+  input: [...input, ...response.output],
+});
+console.log(JSON.stringify(compacted, null, 2));
+```
+
 ```python
 from openai import OpenAI
 import json
@@ -108115,41 +110147,6 @@ compacted_response = client.responses.compact(
 
 
 print(json.dumps(compacted_response.model_dump(), indent=2))
-```
-
-```java
-import com.openai.client.OpenAIClient;
-import com.openai.client.okhttp.OpenAIOkHttpClient;
-import com.openai.core.JsonValue;
-import com.openai.models.responses.EasyInputMessage;
-import com.openai.models.responses.ResponseCompactParams;
-import com.openai.models.responses.ResponseCreateParams;
-import com.openai.models.responses.ResponseInputItem;
-import java.util.ArrayList;
-
-var input = new ArrayList<ResponseInputItem>();
-input.add(
-    ResponseInputItem.ofEasyInputMessage(
-        EasyInputMessage.builder()
-            .role(EasyInputMessage.Role.USER)
-            .content("Write a very long poem about a dog.")
-            .build()));
-var response =
-    client
-        .responses()
-        .create(ResponseCreateParams.builder().model("gpt-5.2").inputOfResponse(input).build());
-response.output().stream()
-    .map(item -> JsonValue.from(item).convert(ResponseInputItem.class))
-    .forEach(input::add);
-var compacted =
-    client
-        .responses()
-        .compact(
-            ResponseCompactParams.builder()
-                .model("gpt-5.2")
-                .inputOfResponseInputItems(input)
-                .build());
-System.out.println(compacted.output());
 ```
 
 ```ruby
@@ -117565,6 +119562,39 @@ event = client.webhooks.unwrap(
 )
 ```
 
+```go
+// Verify the original bytes, before any JSON parsing.
+event, err := client.Webhooks.Unwrap(body, r.Header)
+if err != nil {
+	http.Error(w, "Invalid webhook", http.StatusBadRequest)
+	return
+}
+fmt.Println(event.Type)
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.core.http.Headers;
+import com.openai.models.webhooks.UnwrapWebhookEvent;
+import com.openai.models.webhooks.WebhookVerificationParams;
+
+// Your HTTP framework supplies the original request bytes and headers.
+// Load secret from OPENAI_WEBHOOK_SECRET in your application.
+// Reject InvalidWebhookSignatureException (invalid signature or timestamp)
+// and IllegalArgumentException (missing required headers).
+public static UnwrapWebhookEvent verifyWebhook(
+    OpenAIClient client, byte[] body, Headers headers, String secret) {
+  return client
+      .webhooks()
+      .unwrap(
+          WebhookVerificationParams.builder()
+              .payload(body)
+              .headers(headers)
+              .secret(secret)
+              .build());
+}
+```
+
 ```ruby
 require "openai"
 require "webrick"
@@ -118518,6 +120548,10 @@ Because the connection stays open and each turn sends only incremental input, We
 
 Install the WebSocket dependencies with `pip install "openai[realtime]>=3.8.0"` for Python, `npm install openai@^7.10.0 ws` for JavaScript, or `gem install openai async-websocket` for Ruby.
 
+For Go, run `go get github.com/openai/openai-go/v3@v3.70.0`.
+For Java, add the Maven dependency `com.openai:openai-java:4.75.1`.
+These Go and Java SDK versions provide native Responses WebSocket support.
+
 In WebSocket mode, start each turn by sending a `response.create` event from the client. The payload mirrors the normal [Responses create body](https://developers.openai.com/api/reference/resources/responses/methods/create), except that transport-specific fields like `stream` and `background` are not used.
 
 ```javascript
@@ -118591,6 +120625,63 @@ with client.responses.connect() as connection:
             break
         if event.type in {"response.failed", "response.incomplete", "error"}:
             raise RuntimeError(event.to_json())
+```
+
+```go
+ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+defer cancel()
+client := openai.NewClient()
+conn, err := client.Responses.Connect(ctx, responses.ResponseConnectionOptions{})
+if err != nil {
+	log.Fatal(err)
+}
+defer conn.Close()
+if err := conn.Create(ctx, responses.ResponsesClientEventResponseCreateParam{
+	Model: "gpt-6-astra",
+	Store: openai.Bool(false),
+	Input: responses.ResponsesClientEventResponseCreateInputUnionParam{
+		OfString: openai.String("Find fizz_buzz()"),
+	},
+	StreamID: openai.String("main"),
+	Tools:    []responses.ToolUnionParam{},
+}); err != nil {
+	log.Fatal(err)
+}
+response, err := conn.FinalResponse(ctx)
+if err != nil {
+	log.Fatal(err)
+}
+if response.Status != responses.ResponseStatusCompleted {
+	log.Fatalf("Response ended with status %s", response.Status)
+}
+fmt.Println(response.OutputText())
+```
+
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.*;
+import java.util.*;
+
+try (var conn = client.responses().connect()) {
+  conn.send(
+      ResponsesClientEvent.ofResponseCreate(
+          ResponsesClientEvent.ResponseCreate.builder()
+              .model("gpt-6-astra")
+              .store(false)
+              .input("Find fizz_buzz()")
+              .streamId("main")
+              .tools(List.of())
+              .build()));
+  var response = conn.finalResponse();
+  if (response.status().filter(ResponseStatus.COMPLETED::equals).isEmpty())
+    throw new IllegalStateException(
+        "Response ended with status " + response.status().orElse(null));
+  response.output().stream()
+      .flatMap(item -> item.message().stream())
+      .flatMap(message -> message.content().stream())
+      .flatMap(content -> content.outputText().stream())
+      .forEach(text -> System.out.println(text.text()));
+}
 ```
 
 ```ruby
@@ -118796,6 +120887,177 @@ with client.responses.connect() as connection:
         tool_choice="none",
     )
     print(wait_for_response(connection).output_text)
+```
+
+```go
+ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+defer cancel()
+client := openai.NewClient()
+tools := []responses.ToolUnionParam{
+	{
+		OfFunction: &responses.FunctionToolParam{
+			Name:        "get_test_results",
+			Description: openai.String("Return a local demo test result."),
+			Parameters: map[string]any{
+				"type":                 "object",
+				"properties":           map[string]any{},
+				"additionalProperties": false,
+			},
+			Strict: openai.Bool(true),
+		},
+	},
+}
+conn, err := client.Responses.Connect(ctx, responses.ResponseConnectionOptions{})
+if err != nil {
+	log.Fatal(err)
+}
+defer conn.Close()
+if err := conn.Create(ctx, responses.ResponsesClientEventResponseCreateParam{
+	Model: "gpt-6-astra",
+	Store: openai.Bool(false),
+	Input: responses.ResponsesClientEventResponseCreateInputUnionParam{
+		OfString: openai.String("Find the failing test and suggest a fix."),
+	},
+	StreamID:          openai.String("main"),
+	Tools:             tools,
+	ParallelToolCalls: openai.Bool(false),
+	ToolChoice: responses.ResponsesClientEventResponseCreateToolChoiceUnionParam{
+		OfFunctionTool: &responses.ToolChoiceFunctionParam{
+			Name: "get_test_results",
+		},
+	},
+}); err != nil {
+	log.Fatal(err)
+}
+first, err := conn.FinalResponse(ctx)
+if err != nil {
+	log.Fatal(err)
+}
+if first.Status != responses.ResponseStatusCompleted {
+	log.Fatalf("Response ended with status %s", first.Status)
+}
+var callID string
+for _, item := range first.Output {
+	if item.Type == "function_call" && item.Name == "get_test_results" {
+		callID = item.CallID
+		break
+	}
+}
+if callID == "" {
+	log.Fatal("Expected a get_test_results function call")
+}
+// The result is a local demo fixture; carry the real response and call IDs.
+result := `{"test":"test_fizz_buzz","failure":"Expected FizzBuzz for 15, got Fizz."}`
+if err := conn.Create(ctx, responses.ResponsesClientEventResponseCreateParam{
+	Model:              "gpt-6-astra",
+	StreamID:           openai.String("main"),
+	Store:              openai.Bool(false),
+	PreviousResponseID: openai.String(first.ID),
+	Tools:              tools,
+	ToolChoice: responses.ResponsesClientEventResponseCreateToolChoiceUnionParam{
+		OfToolChoiceMode: openai.Opt(responses.ToolChoiceOptionsNone),
+	},
+	Input: responses.ResponsesClientEventResponseCreateInputUnionParam{
+		OfResponse: &responses.ResponseInputParam{
+			{
+				OfFunctionCallOutput: &responses.ResponseInputItemFunctionCallOutputParam{
+					CallID: openai.String(callID),
+					Output: responses.ResponseInputItemFunctionCallOutputOutputUnionParam{
+						OfString: openai.String(result),
+					},
+				},
+			},
+			responses.ResponseInputItemParamOfMessage("Now optimize it.", responses.EasyInputMessageRoleUser),
+		},
+	},
+}); err != nil {
+	log.Fatal(err)
+}
+response, err := conn.FinalResponse(ctx)
+if err != nil {
+	log.Fatal(err)
+}
+if response.Status != responses.ResponseStatusCompleted {
+	log.Fatalf("Response ended with status %s", response.Status)
+}
+fmt.Println(response.OutputText())
+```
+
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.*;
+import java.util.*;
+
+var tool =
+    FunctionTool.builder()
+        .name("get_test_results")
+        .description("Return a local demo test result.")
+        .strict(true)
+        .parameters(
+            FunctionTool.Parameters.builder()
+                .putAdditionalProperty("type", JsonValue.from("object"))
+                .putAdditionalProperty("properties", JsonValue.from(Map.of()))
+                .putAdditionalProperty("additionalProperties", JsonValue.from(false))
+                .build())
+        .build();
+try (var conn = client.responses().connect()) {
+  conn.send(
+      ResponsesClientEvent.ofResponseCreate(
+          ResponsesClientEvent.ResponseCreate.builder()
+              .model("gpt-6-astra")
+              .store(false)
+              .input("Find the failing test and suggest a fix.")
+              .streamId("main")
+              .addTool(tool)
+              .parallelToolCalls(false)
+              .toolChoice(ToolChoiceFunction.builder().name("get_test_results").build())
+              .build()));
+  var first = conn.finalResponse();
+  if (first.status().filter(ResponseStatus.COMPLETED::equals).isEmpty())
+    throw new IllegalStateException(
+        "Response ended with status " + first.status().orElse(null));
+  var call =
+      first.output().stream()
+          .flatMap(item -> item.functionCall().stream())
+          .filter(item -> item.name().equals("get_test_results"))
+          .findFirst()
+          .orElseThrow(() -> new IllegalStateException("Expected get_test_results call"));
+  // Use the real response and call IDs with a local demo result.
+  var result =
+      "{\"test\":\"test_fizz_buzz\",\"failure\":\"Expected FizzBuzz for 15, got Fizz.\"}";
+  conn.send(
+      ResponsesClientEvent.ofResponseCreate(
+          ResponsesClientEvent.ResponseCreate.builder()
+              .model("gpt-6-astra")
+              .streamId("main")
+              .store(false)
+              .previousResponseId(first.id())
+              .addTool(tool)
+              .toolChoice(ToolChoiceOptions.NONE)
+              .inputOfResponse(
+                  List.of(
+                      ResponseInputItem.ofFunctionCallOutput(
+                          ResponseInputItem.FunctionCallOutput.builder()
+                              .callId(call.callId())
+                              .output(result)
+                              .build()),
+                      ResponseInputItem.ofEasyInputMessage(
+                          EasyInputMessage.builder()
+                              .role(EasyInputMessage.Role.USER)
+                              .content("Now optimize it.")
+                              .build())))
+              .build()));
+  var response = conn.finalResponse();
+  if (response.status().filter(ResponseStatus.COMPLETED::equals).isEmpty())
+    throw new IllegalStateException(
+        "Response ended with status " + response.status().orElse(null));
+  response.output().stream()
+      .flatMap(item -> item.message().stream())
+      .flatMap(message -> message.content().stream())
+      .flatMap(content -> content.outputText().stream())
+      .forEach(text -> System.out.println(text.text()));
+}
 ```
 
 ```ruby
@@ -119777,6 +122039,8 @@ It is possible to use WebSocket in browsers with an ephemeral API token as shown
     { value: "ws", label: "ws module (Node.js)" },
     { value: "python", label: "websocket-client (Python)" },
     { value: "ruby", label: "OpenAI SDK (Ruby)" },
+    { value: "java", label: "OpenAI SDK (Java)" },
+    { value: "csharp", label: "OpenAI SDK (.NET)" },
     { value: "websocket", label: "WebSocket (browsers)" },
   ]}
 >
@@ -119878,6 +122142,95 @@ client.realtime.connect(model: "gpt-realtime-2.1") do |connection|
   puts("Connected to the Realtime API: #{connection.url.host}")
   connection.each { |event| puts("Received event: #{event.type}") }
 end
+```
+
+  
+
+  
+
+    
+OpenAI SDK (Java)
+
+    
+
+      Use Java 17 or later with `com.openai:openai-java:4.75.1`.
+    
+
+    Connect with the OpenAI SDK (Java)
+
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+
+var http = OkHttpClient.builder().build();
+var options =
+    ClientOptions.builder()
+        .fromEnv()
+        .httpClient(http)
+        .putHeader("OpenAI-Safety-Identifier", "hashed-user-id")
+        .build();
+try (http;
+    var connection =
+        RealtimeConnection.connect(
+            options,
+            RealtimeWebSocketOptions.builder().model("gpt-realtime-2.1").build())) {
+  while (true) {
+    var event = connection.receive();
+    if (event.error().isPresent())
+      throw new IllegalStateException(event.error().orElseThrow().toString());
+    if (event.sessionCreated().isPresent()) {
+      System.out.println("Connected to server.");
+      System.out.println(event);
+      break;
+    }
+  }
+}
+```
+
+  
+
+  
+
+    
+OpenAI SDK (.NET)
+
+    
+
+      Install the SDK with 
+      `dotnet add package OpenAI --version 2.14.0`. The Realtime API
+      uses experimental SDK types; the example includes the required warning
+      directive.
+    
+
+    Connect with the OpenAI SDK (.NET)
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+RealtimeClient client = new(key);
+
+RealtimeSessionClientOptions options = new();
+options.Headers["OpenAI-Safety-Identifier"] = "hashed-user-id";
+using CancellationTokenSource timeout = new(TimeSpan.FromSeconds(30));
+using RealtimeSessionClient session = await client.StartConversationSessionAsync("gpt-realtime-2.1", options, cancellationToken: timeout.Token);
+await foreach (RealtimeServerUpdate update in session.ReceiveUpdatesAsync(timeout.Token))
+{
+    if (update is RealtimeServerUpdateError error)
+        throw new InvalidOperationException(error.Error.Message);
+    if (update is RealtimeServerUpdateSessionCreated)
+    {
+        Console.WriteLine("Connected to server.");
+        Console.WriteLine(System.ClientModel.Primitives.ModelReaderWriter.Write(update));
+        return;
+    }
+}
+throw new InvalidOperationException("Connection closed before session creation.");
 ```
 
   
@@ -120251,6 +122604,51 @@ eval_obj = client.evals.create(
 print(eval_obj)
 ```
 
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.evals.EvalCreateParams;
+import com.openai.models.graders.gradermodels.StringCheckGrader;
+import java.util.List;
+import java.util.Map;
+
+var eval =
+    client
+        .evals()
+        .create(
+            EvalCreateParams.builder()
+                .name("IT Ticket Categorization")
+                .dataSourceConfig(
+                    EvalCreateParams.DataSourceConfig.Custom.builder()
+                        .itemSchema(
+                            EvalCreateParams.DataSourceConfig.Custom.ItemSchema.builder()
+                                .additionalProperties(
+                                    Map.of(
+                                        "type", JsonValue.from("object"),
+                                        "properties",
+                                            JsonValue.from(
+                                                Map.of(
+                                                    "ticket_text",
+                                                    Map.of("type", "string"),
+                                                    "correct_label",
+                                                    Map.of("type", "string"))),
+                                        "required",
+                                            JsonValue.from(
+                                                List.of("ticket_text", "correct_label"))))
+                                .build())
+                        .includeSampleSchema(true)
+                        .build())
+                .addTestingCriterion(
+                    StringCheckGrader.builder()
+                        .name("Match output to human label")
+                        .input("{{ sample.output_text }}")
+                        .operation(StringCheckGrader.Operation.EQ)
+                        .reference("{{ item.correct_label }}")
+                        .build())
+                .build());
+System.out.println(eval);
+```
+
 ```ruby
 require "openai"
 
@@ -120586,6 +122984,54 @@ run = client.evals.runs.create(
 print(run)
 ```
 
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.evals.runs.*;
+
+// Replace these illustrative IDs with your eval and uploaded dataset file.
+var run =
+    client
+        .evals()
+        .runs()
+        .create(
+            RunCreateParams.builder()
+                .evalId("YOUR_EVAL_ID")
+                .name("Categorization text run")
+                .dataSource(
+                    RunCreateParams.DataSource.CreateEvalResponsesRunDataSource.builder()
+                        .type(
+                            RunCreateParams.DataSource.CreateEvalResponsesRunDataSource.Type
+                                .RESPONSES)
+                        .model("gpt-6-astra")
+                        .inputMessages(
+                            RunCreateParams.DataSource.CreateEvalResponsesRunDataSource
+                                .InputMessages.Template.builder()
+                                .addTemplate(
+                                    RunCreateParams.DataSource.CreateEvalResponsesRunDataSource
+                                        .InputMessages.Template.InnerTemplate.ChatMessage
+                                        .builder()
+                                        .role("developer")
+                                        .content(
+                                            "You are an expert in categorizing IT support tickets. Given the support ticket below, categorize the request into one of 'Hardware', 'Software', or 'Other'. Respond with only one of those words.")
+                                        .build())
+                                .addTemplate(
+                                    RunCreateParams.DataSource.CreateEvalResponsesRunDataSource
+                                        .InputMessages.Template.InnerTemplate.ChatMessage
+                                        .builder()
+                                        .role("user")
+                                        .content("{{ item.ticket_text }}")
+                                        .build())
+                                .build())
+                        .source(
+                            RunCreateParams.DataSource.CreateEvalResponsesRunDataSource.Source
+                                .FileId.builder()
+                                .id("YOUR_FILE_ID")
+                                .build())
+                        .build())
+                .build());
+System.out.println(run);
+```
+
 ```ruby
 require "openai"
 
@@ -120725,6 +123171,20 @@ client = OpenAI()
 
 run = client.evals.runs.retrieve("YOUR_RUN_ID", eval_id="YOUR_EVAL_ID")
 print(run)
+```
+
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.evals.runs.RunRetrieveParams;
+
+// Replace these illustrative IDs with your eval and run.
+var run =
+    client
+        .evals()
+        .runs()
+        .retrieve(
+            RunRetrieveParams.builder().evalId("YOUR_EVAL_ID").runId("YOUR_RUN_ID").build());
+System.out.println(run);
 ```
 
 ```ruby
@@ -121843,6 +124303,12 @@ Check these sources separately:
 - **Safety and compliance events:** Check available content-lifecycle events in the Compliance API, if separately enabled. These aren't storage-registration events or cloud access logs.
 
 Your sampling policy determines which requests create retained objects. A missing object or event alone doesn't mean storage has failed.
+
+#### Identify validation probes
+
+For AWS, Azure, and GCP, validation writes test objects to your configured storage destination. Their names include `csg_validation_` followed by a random hexadecimal suffix. Each object's body contains the text `customer-storage-gateway-validation:csg_validation_<suffix>`, using the same suffix as its name. They contain no customer prompts or responses. OpenAI reads each test object using the configured access, then attempts an unauthenticated `GET` of the same object to check for public access. Private storage is expected to reject the unauthenticated request. These requests may appear in your provider's access logs, depending on your logging configuration.
+
+For AWS, validation also checks the role's `sts:ExternalId` restriction. After successfully assuming your configured role with your project's external ID, OpenAI tests `AssumeRole` calls without an external ID and with the deliberately invalid test ID `proj_smoketest-verifier`. Both test calls are expected to return `AccessDenied`. They use the same OpenAI identity and configured role; the test ID doesn't identify another customer's project. AWS CloudTrail doesn't record these denied cross-account role-assumption attempts in your account. Keep your trust policy restricted to your real project ID; don't allow the test ID or remove the external-ID condition to make these probes succeed.
 
 ### Recover from a failure
 
@@ -123430,9 +125896,9 @@ If you connect your custom remote MCP server through a plugin, users in your wor
 
 ### Connect in ChatGPT
 
-1. In [ChatGPT](https://chatgpt.com), open **Settings → Security and login** and turn on **Developer mode**.
-1. Go to [ChatGPT Plugins](https://chatgpt.com/plugins), select the plus button, and connect your server URL in developer mode.
-1. Test your plugin by running prompts in chat and deep research.
+1. Go to [ChatGPT Plugins](https://chatgpt.com/plugins), select the plus button, then **Add custom MCP server**.
+1. Enter your server URL and authentication details. Review the risk warning and select **I understand and want to continue**, then **Create as a plugin**.
+1. Install your plugin and test it by running prompts in chat and deep research.
 
 For detailed setup steps, see [Connect and test your plugin](https://developers.openai.com/plugins/deploy/connect-chatgpt).
 

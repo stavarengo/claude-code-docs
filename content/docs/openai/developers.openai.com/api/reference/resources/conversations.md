@@ -10551,7 +10551,7 @@ Create items in a conversation with the given ID.
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -15038,7 +15038,7 @@ List all items for a conversation with the given ID.
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -19392,7 +19392,7 @@ Get a single item from a conversation with the given IDs.
 
     - `id: string`
 
-      The unique ID of the computer call tool output.
+      The ID of the computer tool call output.
 
     - `call_id: string`
 
@@ -23679,7 +23679,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `id: string`
 
-      The unique ID of the computer call tool output.
+      The ID of the computer tool call output.
 
     - `call_id: string`
 
@@ -27919,7 +27919,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
