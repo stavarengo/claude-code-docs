@@ -85,8 +85,6 @@ Rate limits ensure fair and reliable access to the API by placing specific caps 
 
 | Tier | RPM | TPM | Batch queue limit |
 | --- | ---: | ---: | ---: |
-| Tier 1 | 1,000 | 125,000 | 50,000 |
-| Tier 2 | 5,000 | 250,000 | 500,000 |
-| Tier 3 | 5,000 | 500,000 | 50,000,000 |
-| Tier 4 | 10,000 | 1,000,000 | 100,000,000 |
-| Tier 5 | 10,000 | 2,000,000 | 5,000,000,000 |
+| Build | 5,000 | 250,000 | 500,000 |
+| Launch | 10,000 | 1,000,000 | 100,000,000 |
+| Grow | 10,000 | 2,000,000 | 5,000,000,000 |

@@ -51,9 +51,7 @@ Rate limits ensure fair and reliable access to the API by placing specific caps 
 
 | Tier | RPM |
 | --- | ---: |
-| Tier free | 1 img/min |
-| Tier 1 | 500 img/min |
-| Tier 2 | 2500 img/min |
-| Tier 3 | 5000 img/min |
-| Tier 4 | 7500 img/min |
-| Tier 5 | 10000 img/min |
+| Free | 1 img/min |
+| Build | 2500 img/min |
+| Launch | 7500 img/min |
+| Grow | 10000 img/min |

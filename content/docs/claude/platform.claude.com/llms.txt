@@ -12,7 +12,7 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 753 pages - /docs - Content included below
+- English (en) - 754 pages - /docs - Content included below
 - German (Deutsch) (de) - 265 pages - /docs/de - Visit website for content
 - Spanish (Español) (es) - 265 pages - /docs/es - Visit website for content
 - French (Français) (fr) - 265 pages - /docs/fr - Visit website for content
@@ -148,6 +148,7 @@ The full documentation is available in the following languages on https://platfo
 - [Multiagent orchestration](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration.md)
 - [Permission policies](https://platform.claude.com/docs/en/managed-agents/permission-policies.md)
 - [Managed Agents reference](https://platform.claude.com/docs/en/managed-agents/reference.md) - Reference
+- [Web tool restrictions](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions.md) - Restrict web search and web fetch domains
 - [Scheduled deployments](https://platform.claude.com/docs/en/managed-agents/scheduled-deployments.md)
 - [Security model](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-security.md)
 - [Overview and quickstart](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes.md) - Self-hosted sandboxes

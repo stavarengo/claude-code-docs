@@ -57,9 +57,7 @@ Rate limits ensure fair and reliable access to the API by placing specific caps 
 
 | Tier | RPM | RPD | TPM |
 | --- | ---: | ---: | ---: |
-| free | 250 | 5,000 | 10,000 |
-| Tier 1 | 500 | 10,000 | 10,000 |
-| Tier 2 | 500 | - | 20,000 |
-| Tier 3 | 1,000 | - | 50,000 |
-| Tier 4 | 2,000 | - | 250,000 |
-| Tier 5 | 5,000 | - | 500,000 |
+| Free | 250 | 5,000 | 10,000 |
+| Build | 500 | - | 20,000 |
+| Launch | 2,000 | - | 250,000 |
+| Grow | 5,000 | - | 500,000 |

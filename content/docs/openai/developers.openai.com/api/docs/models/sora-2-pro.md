@@ -81,8 +81,6 @@ Rate limits ensure fair and reliable access to the API by placing specific caps 
 
 | Tier | RPM |
 | --- | ---: |
-| Tier 1 | 10 |
-| Tier 2 | 25 |
-| Tier 3 | 50 |
-| Tier 4 | 75 |
-| Tier 5 | 150 |
+| Build | 25 |
+| Launch | 75 |
+| Grow | 150 |

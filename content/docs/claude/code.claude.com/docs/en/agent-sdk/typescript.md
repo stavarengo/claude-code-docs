@@ -1209,7 +1209,7 @@ type CanUseTool = (
 | `mcpServer` | `{ name: string; source: string }` | For an `mcp__*` tool, the MCP server that serves it and where that server's definition came from, with the fields of [`McpServerProvenance`](#mcpserverprovenance). Absent for other tools. Requires Agent SDK v0.3.274 or later |
 | `decisionReason` | `string` | Explains why this permission request was triggered |
 | `defaultToNo` | `boolean` | When `true`, a single stray keystroke must not approve this request: open your prompt on its decline option, don't pre-select approve, and offer no one-key approve shortcut. Requires Agent SDK v0.3.268 or later |
-| `suppressAlwaysAllowRule` | `boolean` | When `true`, don't offer a persistent always-allow choice for this request, because the rule it would write grants more than the request's own action. Requires Agent SDK v0.3.268 or later |
+| `suppressAlwaysAllowRule` | `boolean` | When `true`, don't offer a persistent always-allow choice for this request. Requires Agent SDK v0.3.268 or later |
 | `toolUseID` | `string` | Unique identifier for this specific tool call within the assistant message |
 | `agentID` | `string` | If running within a sub-agent, the sub-agent's ID |
 | `requestId` | `string` | The `control_request` envelope's `request_id`. A `control_response` your application sends outside the SDK, such as a signed HTTP POST, must echo this value so the Claude Code process can match the reply to the request |

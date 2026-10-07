@@ -539,12 +539,14 @@ In the terminal, name the key in a bracketed button's label, or use `plain: true
 Many panes are a text field with a list under it. The example in this section is a notes pane: you type a note and press Enter to add it, and each note has an `x` button that deletes it. With two notes added, the terminal draws the pane this way:
 
 ```text theme={null}
-╭──────────────────────────────────────────────────────────╮
-│ Note: Type a note and press Enter ⏎ add                ✕ │
+╭────────────────────────────────────────────────────────✕─╮
+│ Note: Type a note and press Enter ⏎ add                  │
 │ x buy milk                                               │
 │ x call bob                                               │
 ╰──────────────────────────────────────────────────────────╯
 ```
+
+The `✕` on the top border is Claude Code's own mark for closing the pane.
 
 The example uses these techniques:
 

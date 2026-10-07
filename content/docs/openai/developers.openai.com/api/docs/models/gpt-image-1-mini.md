@@ -97,8 +97,6 @@ Rate limits ensure fair and reliable access to the API by placing specific caps 
 
 | Tier | IPM | TPM |
 | --- | ---: | ---: |
-| Tier 1 | 5 | 100,000 |
-| Tier 2 | 20 | 250,000 |
-| Tier 3 | 50 | 800,000 |
-| Tier 4 | 150 | 3,000,000 |
-| Tier 5 | 250 | 8,000,000 |
+| Build | 20 | 250,000 |
+| Launch | 150 | 3,000,000 |
+| Grow | 250 | 8,000,000 |

@@ -6,11 +6,7 @@
 
 Model ID: `gpt-daybreak-red-latest`
 
-An alias for our most advanced purpose-trained cybersecurity models, for
-approved defenders conducting advanced, authorized vulnerability research,
-exploit validation, and security testing.
-
-This model requires separate approval and provisioning, you can apply to join the Daybreak program [here](https://openai.com/daybreak/). More details on pricing [here](https://developers.openai.com/api/docs/pricing).
+This alias is deprecated, please use the latest cyber model available to you. You can apply to join the Daybreak program [here](https://openai.com/daybreak/).
 
 ## Model details
 
@@ -85,8 +81,6 @@ Rate limits ensure fair and reliable access to the API by placing specific caps 
 
 | Tier | RPM | TPM | Batch queue limit |
 | --- | ---: | ---: | ---: |
-| Tier 1 | 500 | 500,000 | 1,500,000 |
-| Tier 2 | 5,000 | 1,000,000 | 3,000,000 |
-| Tier 3 | 5,000 | 2,000,000 | 100,000,000 |
-| Tier 4 | 10,000 | 4,000,000 | 200,000,000 |
-| Tier 5 | 15,000 | 40,000,000 | 15,000,000,000 |
+| Build | 5,000 | 1,000,000 | 3,000,000 |
+| Launch | 10,000 | 4,000,000 | 200,000,000 |
+| Grow | 15,000 | 40,000,000 | 15,000,000,000 |

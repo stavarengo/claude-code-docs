@@ -81,8 +81,6 @@ Unsupported usage tiers: Free.
 
 | Tier | Concurrent sessions |
 | --- | ---: |
-| Tier 1 | 25 |
-| Tier 2 | 50 |
-| Tier 3 | 200 |
-| Tier 4 | 300 |
-| Tier 5 | 500 |
+| Build | 50 |
+| Launch | 300 |
+| Grow | 500 |

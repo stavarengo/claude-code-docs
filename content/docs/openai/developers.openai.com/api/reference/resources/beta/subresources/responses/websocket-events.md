@@ -2519,7 +2519,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
                 - `"grammar"`
 
-        - `Namespace object { description, name, tools, type }`
+        - `BetaToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
           Groups function/custom tools under a shared namespace.
 
@@ -2533,11 +2533,13 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
           - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-            The function/custom tools available inside this namespace.
+            The function/custom tools loaded inside this namespace.
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
+
+                The name of the loaded function tool.
 
               - `type: "function"`
 
@@ -5534,7 +5536,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 - `safety_identifier: optional string or null`
 
   A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-  The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+  The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
 - `service_tier: optional BetaServiceTier or null`
 
@@ -9650,7 +9652,7 @@ Schema name: `BetaResponseInjectEvent`
 
               - `"grammar"`
 
-      - `Namespace object { description, name, tools, type }`
+      - `BetaToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
         Groups function/custom tools under a shared namespace.
 
@@ -9664,11 +9666,13 @@ Schema name: `BetaResponseInjectEvent`
 
         - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-          The function/custom tools available inside this namespace.
+          The function/custom tools loaded inside this namespace.
 
           - `Function object { name, type, allowed_callers, 6 more }`
 
             - `name: string`
+
+              The name of the loaded function tool.
 
             - `type: "function"`
 
@@ -15413,7 +15417,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
               - `"grammar"`
 
-      - `Namespace object { description, name, tools, type }`
+      - `BetaToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
         Groups function/custom tools under a shared namespace.
 
@@ -15427,11 +15431,13 @@ Schema name: `BetaResponseInjectFailedEvent`
 
         - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-          The function/custom tools available inside this namespace.
+          The function/custom tools loaded inside this namespace.
 
           - `Function object { name, type, allowed_callers, 6 more }`
 
             - `name: string`
+
+              The name of the loaded function tool.
 
             - `type: "function"`
 
@@ -20536,7 +20542,7 @@ Schema name: `BetaResponseCreatedEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `BetaToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -20550,11 +20556,13 @@ Schema name: `BetaResponseCreatedEvent`
 
             - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -28881,7 +28889,7 @@ Schema name: `BetaResponseCreatedEvent`
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional BetaServiceTier or null`
 
@@ -31702,7 +31710,7 @@ Schema name: `BetaResponseInProgressEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `BetaToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -31716,11 +31724,13 @@ Schema name: `BetaResponseInProgressEvent`
 
             - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -40047,7 +40057,7 @@ Schema name: `BetaResponseInProgressEvent`
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional BetaServiceTier or null`
 
@@ -42868,7 +42878,7 @@ Schema name: `BetaResponseCompletedEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `BetaToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -42882,11 +42892,13 @@ Schema name: `BetaResponseCompletedEvent`
 
             - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -51213,7 +51225,7 @@ Schema name: `BetaResponseCompletedEvent`
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional BetaServiceTier or null`
 
@@ -54058,7 +54070,7 @@ Schema name: `BetaResponseFailedEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `BetaToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -54072,11 +54084,13 @@ Schema name: `BetaResponseFailedEvent`
 
             - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -62403,7 +62417,7 @@ Schema name: `BetaResponseFailedEvent`
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional BetaServiceTier or null`
 
@@ -65228,7 +65242,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `BetaToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -65242,11 +65256,13 @@ Schema name: `BetaResponseIncompleteEvent`
 
             - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -73573,7 +73589,7 @@ Schema name: `BetaResponseIncompleteEvent`
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional BetaServiceTier or null`
 
@@ -88634,7 +88650,7 @@ Schema name: `BetaResponseQueuedEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `BetaToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -88648,11 +88664,13 @@ Schema name: `BetaResponseQueuedEvent`
 
             - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -96979,7 +96997,7 @@ Schema name: `BetaResponseQueuedEvent`
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional BetaServiceTier or null`
 

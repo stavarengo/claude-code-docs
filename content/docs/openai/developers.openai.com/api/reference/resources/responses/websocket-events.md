@@ -2237,7 +2237,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
                 - `"grammar"`
 
-        - `Namespace object { description, name, tools, type }`
+        - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
           Groups function/custom tools under a shared namespace.
 
@@ -2251,11 +2251,13 @@ Schema name: `ResponsesClientEventResponseCreate`
 
           - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-            The function/custom tools available inside this namespace.
+            The function/custom tools loaded inside this namespace.
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
+
+                The name of the loaded function tool.
 
               - `type: "function"`
 
@@ -4893,7 +4895,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 - `safety_identifier: optional string or null`
 
   A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-  The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+  The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
 - `service_tier: optional ServiceTier or null`
 
@@ -9480,7 +9482,7 @@ Schema name: `ResponseCreatedEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -9494,11 +9496,13 @@ Schema name: `ResponseCreatedEvent`
 
             - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -16684,7 +16688,7 @@ Schema name: `ResponseCreatedEvent`
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional ServiceTier or null`
 
@@ -19215,7 +19219,7 @@ Schema name: `ResponseInProgressEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -19229,11 +19233,13 @@ Schema name: `ResponseInProgressEvent`
 
             - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -26419,7 +26425,7 @@ Schema name: `ResponseInProgressEvent`
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional ServiceTier or null`
 
@@ -28950,7 +28956,7 @@ Schema name: `ResponseCompletedEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -28964,11 +28970,13 @@ Schema name: `ResponseCompletedEvent`
 
             - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -36154,7 +36162,7 @@ Schema name: `ResponseCompletedEvent`
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional ServiceTier or null`
 
@@ -38709,7 +38717,7 @@ Schema name: `ResponseFailedEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -38723,11 +38731,13 @@ Schema name: `ResponseFailedEvent`
 
             - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -45913,7 +45923,7 @@ Schema name: `ResponseFailedEvent`
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional ServiceTier or null`
 
@@ -48448,7 +48458,7 @@ Schema name: `ResponseIncompleteEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -48462,11 +48472,13 @@ Schema name: `ResponseIncompleteEvent`
 
             - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -55652,7 +55664,7 @@ Schema name: `ResponseIncompleteEvent`
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional ServiceTier or null`
 
@@ -68929,7 +68941,7 @@ Schema name: `ResponseQueuedEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -68943,11 +68955,13 @@ Schema name: `ResponseQueuedEvent`
 
             - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -76133,7 +76147,7 @@ Schema name: `ResponseQueuedEvent`
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional ServiceTier or null`
 

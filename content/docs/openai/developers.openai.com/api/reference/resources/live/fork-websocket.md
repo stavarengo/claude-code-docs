@@ -3281,7 +3281,7 @@ Schema name: `LiveResponseItemCreateParam`
 
               - `"grammar"`
 
-      - `Namespace object { description, name, tools, type }`
+      - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
         Groups function/custom tools under a shared namespace.
 
@@ -3295,11 +3295,13 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-          The function/custom tools available inside this namespace.
+          The function/custom tools loaded inside this namespace.
 
           - `Function object { name, type, allowed_callers, 6 more }`
 
             - `name: string`
+
+              The name of the loaded function tool.
 
             - `type: "function"`
 
@@ -5838,9 +5840,9 @@ Schema name: `LiveSessionStarted`
 
           - `"sage"`
 
-          - `"shimmer"`
+          - `"shida"`
 
-          - `"shitan"`
+          - `"shimmer"`
 
           - `"sillage"`
 
@@ -6618,9 +6620,9 @@ Schema name: `LiveSessionUpdated`
 
           - `"sage"`
 
-          - `"shimmer"`
+          - `"shida"`
 
-          - `"shitan"`
+          - `"shimmer"`
 
           - `"sillage"`
 
@@ -7936,9 +7938,9 @@ Schema name: `LiveSessionClosed`
 
           - `"sage"`
 
-          - `"shimmer"`
+          - `"shida"`
 
-          - `"shitan"`
+          - `"shimmer"`
 
           - `"sillage"`
 

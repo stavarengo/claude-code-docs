@@ -70,8 +70,6 @@ Rate limits ensure fair and reliable access to the API by placing specific caps 
 
 | Tier | Minutes-of-audio per minute |
 | --- | ---: |
-| Tier 1 | 50 |
-| Tier 2 | 200 |
-| Tier 3 | 400 |
-| Tier 4 | 650 |
-| Tier 5 | 850 |
+| Build | 200 |
+| Launch | 650 |
+| Grow | 850 |
