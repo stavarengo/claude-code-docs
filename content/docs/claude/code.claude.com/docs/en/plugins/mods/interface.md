@@ -416,7 +416,7 @@ The [interface gallery](/docs/en/plugins/mods/gallery) has samples and screensho
 
 | Element | What it draws | Where |
 | :- | :- | :- |
-| `Box` | A flex container. Takes layout props such as `flexDirection`, `columnGap`, `padding`, `borderStyle`, and `width`. | Everywhere |
+| `Box` | A flex container. Takes layout props such as `flexDirection`, `columnGap`, `padding`, [`borderStyle`](/docs/en/plugins/mods/reference#box-border-styles), and `width`. | Everywhere |
 | `Text` | Styled text. Takes `color`, `bold`, `dimColor`, `italic`, and `wrap`. A `color` is a theme key or a color such as `'red'`. A `wrap` is `'wrap'`, `'truncate'`, `'truncate-start'`, `'truncate-middle'`, or `'truncate-end'`. | Everywhere |
 | `Button` | A control that calls `onPress` | Everywhere |
 | `Link`, `Code`, `Markdown` | A link with `href` and an optional `label`, a code block, and text formatted the way Claude's replies are. `Markdown` takes its content in a `text` prop, not in `children`, and needs a `key` when you pass `onLinkPress`. | Everywhere |
@@ -764,6 +764,7 @@ Because the `ui.render` hook read `count`, Claude Code runs the hook again each 
 These rules apply to the code:
 
 * **Write `plugin` and `key` as string literals**: `claude plugin validate` reads them from your source
+* **Hold the result of each `atom` call in a `const`**: if you declare `count` with `let`, validation fails with `takes a source the scan can read`
 * **Declare every value in the type declaration file**: otherwise validation fails with `hello-tabs.count is not declared`
 * **Write from a callback or another event's hook**: a `ui.render` hook can read state and can't write it, so write from `onPress`, `onSubmit`, or a hook for another event
 
