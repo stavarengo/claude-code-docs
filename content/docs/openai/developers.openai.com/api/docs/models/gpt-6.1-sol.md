@@ -16,8 +16,11 @@ assess the tradeoff between quality and cost.
 Use the Responses API for tool calling. Chat Completions is supported without
 tool calling.
 
-GPT-6.1 Sol supports US and EU data residency. Fast mode is unavailable with EU
-data residency. See [data residency eligibility](/api/docs/guides/your-data#which-models-and-features-are-eligible-for-data-residency).
+For the fastest response speeds, use [Ultrafast mode](/api/docs/guides/ultrafast-mode)
+with `model: "gpt-6.1-sol"` and `service_tier: "ultrafast"` in the Responses API.
+
+GPT-6.1 Sol supports US and EU data residency, including with Fast and Ultrafast
+modes. See [data residency eligibility](/api/docs/guides/your-data#which-models-and-features-are-eligible-for-data-residency).
 
 See [GPT-6.1 Sol in the GPT-6 guide](/api/docs/guides/latest-model?model=gpt-6-astra#gpt-61-sol) and
 [model-selection guidance](/api/docs/guides/model-selection#when-to-consider-gpt-61-sol).
@@ -51,6 +54,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 - Cache writes are billed at 1.25x the uncached input token rate.
 - Prompts with more than 272K input tokens are priced at 2x input and cache rates and 1.5x output for the full request.
 - Fast mode prices are 2x Standard. Batch and Flex prices are 50% lower than Standard.
+- Ultrafast mode prices are 6x Standard.
 - Regional processing adds a 10% premium where available.
 
 ## Endpoints
