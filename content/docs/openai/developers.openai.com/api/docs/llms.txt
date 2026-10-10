@@ -159,6 +159,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Oracle Cloud Infrastructure (OCI)](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/oci.md): Connect an OCI GenAI Sandbox to an Agents API session.
 - [Orchestration and handoffs](https://developers.openai.com/api/docs/guides/agents/orchestration.md): Learn how to orchestrate multiple agents with handoffs and agents-as-tools in the OpenAI Agents SDK.
 - [Plugins](https://developers.openai.com/api/docs/guides/agents-api/tools/plugins.md): Package skills and MCP configuration for use across sessions.
+- [Pre-warm sandboxes](https://developers.openai.com/api/docs/guides/agents-api/environments/prewarmed.md): Prepare a workspace before starting an agent session.
 - [Predicted Outputs](https://developers.openai.com/api/docs/guides/predicted-outputs.md): Understand how to reduce latency for model responses where much of the response is known ahead of time.
 - [Private Link](https://developers.openai.com/api/docs/guides/private-link.md): Configure Azure Private Link endpoints, DNS, health checks, and cross-region routing for the OpenAI API.
 - [Production best practices](https://developers.openai.com/api/docs/guides/production-best-practices.md): Explore best practices for transitioning your AI projects from prototype to production, including scaling, security, and cost management.
