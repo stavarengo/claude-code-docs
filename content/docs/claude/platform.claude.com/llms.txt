@@ -12,18 +12,18 @@ https://platform.claude.com
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 762 pages - /docs - Content included below
-- German (Deutsch) (de) - 280 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 280 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 280 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 280 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 280 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 280 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 280 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 280 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 280 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 280 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 280 pages - /docs/id - Visit website for content
+- English (en) - 760 pages - /docs - Content included below
+- German (Deutsch) (de) - 278 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 278 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 278 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 278 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 278 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 278 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 278 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 278 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 278 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 278 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 278 pages - /docs/id - Visit website for content
 
 ---
 
@@ -823,9 +823,7 @@ The full documentation is available in the following languages on https://platfo
 
 ### Other pages
 
-- [Introducing Claude Fable 5 and Claude Mythos 5](https://platform.claude.com/docs/en/models/fable-5/introducing-claude-fable-5-and-claude-mythos-5.md)
 - [API usage primer for Claude](https://platform.claude.com/docs/en/claude_api_primer.md)
-- [Claude Mythos 5 and Claude Fable 5 migration guide](https://platform.claude.com/docs/en/models/fable-5/migration-guide.md)
 
 ---
 

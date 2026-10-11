@@ -17,7 +17,7 @@ We recommend leveraging [GPT-6 Astra](/api/docs/models/gpt-6-astra) for producti
 - 400,000 context window
 - Maximum input tokens: 272,000
 - 128,000 max output tokens
-- Aug 31, 2025 knowledge cutoff
+- Apr 20, 2026 knowledge cutoff
 
 ## Pricing
 

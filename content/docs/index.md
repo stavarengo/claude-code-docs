@@ -154,7 +154,7 @@ claude/platform.claude.com/docs/en/manage-claude:{access-transparency-log.md,acc
 claude/platform.claude.com/docs/en/manage-claude/wif-providers:{aws.md,azure.md,gcp.md,github-actions.md,kubernetes.md,okta.md,spiffe.md}
 claude/platform.claude.com/docs/en/managed-agents:{agent-setup.md,budgets.md,cloud-sandboxes-reference.md,define-outcomes.md,dreams.md,environments.md,event-deltas.md,events-and-streaming.md,files.md,github.md,mcp-connector.md,memory.md,migration.md,multiagent-orchestration.md,onboarding.md,overview.md,permission-policies.md,quickstart.md,reference.md,scheduled-deployments.md,self-hosted-sandboxes-custom-tools.md,self-hosted-sandboxes-memory.md,self-hosted-sandboxes-operations.md,self-hosted-sandboxes-reference.md,self-hosted-sandboxes-security.md,self-hosted-sandboxes-workers.md,self-hosted-sandboxes.md,session-observability.md,session-operations.md,session-threads.md,sessions.md,skills.md,tools-web-restrictions.md,tools.md,vaults.md,webhooks.md,workflow-runs.md}
 claude/platform.claude.com/docs/en/models:{overview.md}
-claude/platform.claude.com/docs/en/models/fable-5:{introducing-claude-fable-5-and-claude-mythos-5.md,migration-guide.md,overview.md}
+claude/platform.claude.com/docs/en/models/fable-5:{overview.md}
 claude/platform.claude.com/docs/en/models/fable-5-1:{migration-guide.md,overview.md,whats-new-fable-5-1.md}
 claude/platform.claude.com/docs/en/models/haiku-4-5:{overview.md}
 claude/platform.claude.com/docs/en/models/haiku-5-5:{migration-guide.md,overview.md,whats-new-haiku-5-5.md}
