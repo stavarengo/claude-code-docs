@@ -7,7 +7,7 @@ description: Install and configure the Anthropic Go SDK with context-based cance
 The Anthropic Go library provides convenient access to the Claude API from applications written in Go.
 
 <Info>
-  For API feature documentation with code examples, see the [API reference](https://platform.claude.com/docs/en/api/overview). This page covers Go-specific SDK features and configuration.
+  For API feature documentation with code examples, see the [API reference](https://platform.claude.com/docs/en/api/overview?sdk_languages=cli). This page covers Go-specific SDK features and configuration.
 </Info>
 
 ## Installation
@@ -63,7 +63,7 @@ func main() {
 }
 ```
 
-For authentication options including Workload Identity Federation, see [Authentication](https://platform.claude.com/docs/en/manage-claude/authentication). If your API key is a [personal or service account key](https://platform.claude.com/docs/en/manage-claude/authentication#key-types) with access to multiple workspaces, set the workspace ID in the `anthropic-workspace-id` request header; [Select a workspace](https://platform.claude.com/docs/en/manage-claude/authentication#select-a-workspace) shows the per-request option for this SDK.
+For authentication options including Workload Identity Federation, see [Authentication](https://platform.claude.com/docs/en/manage-claude/authentication?sdk_languages=cli). If your API key is a [personal or service account key](https://platform.claude.com/docs/en/manage-claude/authentication?sdk_languages=cli#key-types) with access to multiple workspaces, set the workspace ID in the `anthropic-workspace-id` request header; [Select a workspace](https://platform.claude.com/docs/en/manage-claude/authentication?sdk_languages=cli#select-a-workspace) shows the per-request option for this SDK.
 
 <AccordionGroup>
   <Accordion title="Conversations">
@@ -517,7 +517,7 @@ client := anthropic.NewClient(
 
 Non-streaming Messages requests time out after 10 minutes by default; other requests have no default timeout. Use context to configure a timeout for a request lifecycle.
 
-Note that if a request is [retried](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/go#retries), the context timeout does not start over. To set a per-retry timeout, use `option.WithRequestTimeout()`.
+Note that if a request is [retried](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/go?sdk_languages=cli#retries), the context timeout does not start over. To set a per-retry timeout, use `option.WithRequestTimeout()`.
 
 ```go
 // This sets the timeout for the request, including all the retries.
@@ -549,9 +549,9 @@ defer cancel()
   Consider using the streaming Messages API for longer running requests.
 </Warning>
 
-Avoid setting a large `MaxTokens` value without using streaming as some networks may drop idle connections after a certain period of time, which can cause the request to fail or [time out](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/go#timeouts) without receiving a response from Anthropic.
+Avoid setting a large `MaxTokens` value without using streaming as some networks may drop idle connections after a certain period of time, which can cause the request to fail or [time out](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/go?sdk_languages=cli#timeouts) without receiving a response from Anthropic.
 
-This SDK will also return an error if a non-streaming request is expected to be above roughly 10 minutes long. Calling `.Messages.NewStreaming()` or [setting a custom timeout](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/go#timeouts) disables this error.
+This SDK will also return an error if a non-streaming request is expected to be above roughly 10 minutes long. Calling `.Messages.NewStreaming()` or [setting a custom timeout](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/go?sdk_languages=cli#timeouts) disables this error.
 
 ## File uploads
 
@@ -633,18 +633,18 @@ See the [full list of request options](https://pkg.go.dev/github.com/anthropics/
 
 ## HTTP client customization
 
-For request middleware (`option.WithMiddleware`) and replacing the default `http.Client` (`option.WithHTTPClient`), see [SDK middleware](https://platform.claude.com/docs/en/cli-sdks-libraries/middleware).
+For request middleware (`option.WithMiddleware`) and replacing the default `http.Client` (`option.WithHTTPClient`), see [SDK middleware](https://platform.claude.com/docs/en/cli-sdks-libraries/middleware?sdk_languages=cli).
 
 ## Platform integrations
 
 <Note>
   For detailed platform setup guides with code examples, see:
 
-  * [Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock)
-  * [Amazon Bedrock (Opus 4.6 and earlier)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy)
-  * [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws)
-  * [Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai)
-  * [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry)
+  * [Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock?sdk_languages=cli)
+  * [Amazon Bedrock (Opus 4.6 and earlier)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy?sdk_languages=cli)
+  * [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli)
+  * [Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai?sdk_languages=cli)
+  * [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli)
 </Note>
 
 The Go SDK supports the following platforms:
@@ -749,5 +749,5 @@ Your feedback is welcome; open an [issue](https://github.com/anthropics/anthropi
 
 * [GitHub repository](https://github.com/anthropics/anthropic-sdk-go)
 * [Go package documentation](https://pkg.go.dev/github.com/anthropics/anthropic-sdk-go)
-* [API reference](https://platform.claude.com/docs/en/api/overview)
-* [Streaming Messages](https://platform.claude.com/docs/en/build-with-claude/streaming)
+* [API reference](https://platform.claude.com/docs/en/api/overview?sdk_languages=cli)
+* [Streaming Messages](https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=cli)

@@ -8,7 +8,7 @@ description: Canonical names for the parts of an MCP tunnel deployment, the two 
   MCP tunnels are in research preview. [Request access](https://claude.com/form/mcp-tunnels) to try them.
 </Note>
 
-This page defines the terms used throughout the [MCP tunnels](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/overview) documentation. Several components appear under different names in configuration files, container images, and prose; the following tables give one canonical name for each and list the aliases you may encounter.
+This page defines the terms used throughout the [MCP tunnels](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/overview?sdk_languages=cli) documentation. Several components appear under different names in configuration files, container images, and prose; the following tables give one canonical name for each and list the aliases you may encounter.
 
 ## Components
 
@@ -26,10 +26,10 @@ This page defines the terms used throughout the [MCP tunnels](https://platform.c
 
 The tunnel stack needs two credentials at runtime: the **tunnel token**, which authenticates cloudflared's outbound connection, and a **server certificate** signed by a CA registered on the tunnel, which the proxy presents during the inner TLS handshake. There are two ways to supply them, presented throughout this guide as a pair of tabs.
 
-| Mode                    | How credentials reach the stack                                                                                                                                                                                                                                                                                                                                                           | Helm chart name                                   | Tab label                       |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------- |
-| **Programmatic access** | The setup component authenticates to the Tunnels API through [Workload Identity Federation](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation), fetches the tunnel token, generates a CA and server certificate locally, and registers the CA. No long-lived secret is copied by hand. Requires a federation rule with the `workspace:manage_tunnels` scope. | Managed mode (`setup.enabled: true`, the default) | **With programmatic access**    |
-| **Manual**              | You copy the tunnel token from the Claude Console, generate a CA and server certificate yourself (for example with `openssl`), register the CA in the Console, and supply the token and certificate to the stack as secrets. No setup component runs.                                                                                                                                     | External mode (`setup.enabled: false`)            | **Without programmatic access** |
+| Mode                    | How credentials reach the stack                                                                                                                                                                                                                                                                                                                                                                             | Helm chart name                                   | Tab label                       |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------- |
+| **Programmatic access** | The setup component authenticates to the Tunnels API through [Workload Identity Federation](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation?sdk_languages=cli), fetches the tunnel token, generates a CA and server certificate locally, and registers the CA. No long-lived secret is copied by hand. Requires a federation rule with the `workspace:manage_tunnels` scope. | Managed mode (`setup.enabled: true`, the default) | **With programmatic access**    |
+| **Manual**              | You copy the tunnel token from the Claude Console, generate a CA and server certificate yourself (for example with `openssl`), register the CA in the Console, and supply the token and certificate to the stack as secrets. No setup component runs.                                                                                                                                                       | External mode (`setup.enabled: false`)            | **Without programmatic access** |
 
 These modes are also referred to as **the programmatic flow** and **the manual flow** in the deploy guides.
 
@@ -70,5 +70,5 @@ sequenceDiagram
 
 ## See also
 
-* [MCP tunnels](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/overview) for the security model and shared-responsibility table.
-* [MCP tunnels reference](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/reference) for proxy configuration fields, certificate requirements, and the setup component.
+* [MCP tunnels](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/overview?sdk_languages=cli) for the security model and shared-responsibility table.
+* [MCP tunnels reference](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/reference?sdk_languages=cli) for proxy configuration fields, certificate requirements, and the setup component.

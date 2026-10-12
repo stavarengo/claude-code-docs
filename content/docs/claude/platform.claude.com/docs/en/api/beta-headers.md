@@ -7,7 +7,7 @@ description: Access experimental features before they become part of the standar
 Beta headers allow you to access experimental features and new model capabilities before they become part of the standard API.
 
 <Info>
-  The [client SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview) exposes a `client.beta` (python, typescript, ruby; csharp, go: `client.Beta`; java: `client.beta()`; php: `$client->beta`) namespace for calling the API with beta features enabled.
+  The [client SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) exposes a `client.beta` (python, typescript, ruby) namespace for calling the API with beta features enabled.
 </Info>
 
 ## How to use beta headers
@@ -22,132 +22,17 @@ anthropic-beta: BETA_FEATURE_NAME
 content-type: application/json
 ```
 
-Each feature's documentation states the exact beta name to send. The [API overview](https://platform.claude.com/docs/en/api/overview) lists the APIs currently in beta.
+Each feature's documentation states the exact beta name to send. The [API overview](https://platform.claude.com/docs/en/api/overview?sdk_languages=cli) lists the APIs currently in beta.
 
-The following examples show the same request with cURL, the `ant` CLI, and the SDK, using the [context editing](https://platform.claude.com/docs/en/build-with-claude/context-editing) beta as the example. The SDK takes beta names through `betas` (python, typescript, php, ruby; csharp, go: `Betas`; java: `.addBeta()`) and sends the `anthropic-beta` header for you:
+The following examples show the same request with cURL, the `ant` CLI, and the SDK, using the [context editing](https://platform.claude.com/docs/en/build-with-claude/context-editing?sdk_languages=cli) beta as the example. The SDK takes beta names through `betas` (python, typescript, php, ruby) and sends the `anthropic-beta` header for you:
 
 <CodeGroup>
-  ```bash cURL
-  curl https://api.anthropic.com/v1/messages \
-    -H "x-api-key: $ANTHROPIC_API_KEY" \
-    -H "anthropic-version: 2023-06-01" \
-    -H "anthropic-beta: context-management-2025-06-27" \
-    -H "content-type: application/json" \
-    -d '{
-      "model": "claude-opus-5-5",
-      "max_tokens": 1024,
-      "messages": [
-        {"role": "user", "content": "Hello, Claude"}
-      ]
-    }'
-  ```
-
   ```bash CLI
   ant beta:messages create \
     --beta context-management-2025-06-27 \
     --model claude-opus-5-5 \
     --max-tokens 1024 \
     --message '{role: user, content: "Hello, Claude"}'
-  ```
-
-  ```python Python
-  client = Anthropic()
-
-  response = client.beta.messages.create(
-      model="claude-opus-5-5",
-      max_tokens=1024,
-      messages=[{"role": "user", "content": "Hello, Claude"}],
-      betas=["context-management-2025-06-27"],
-  )
-
-  print(response.content)
-  ```
-
-  ```typescript TypeScript
-  const client = new Anthropic();
-
-  const msg = await client.beta.messages.create({
-    model: "claude-opus-5-5",
-    max_tokens: 1024,
-    messages: [{ role: "user", content: "Hello, Claude" }],
-    betas: ["context-management-2025-06-27"]
-  });
-
-  console.log(msg.content);
-  ```
-
-  ```csharp C#
-  var client = new AnthropicClient();
-
-  var message = await client.Beta.Messages.Create(
-      new MessageCreateParams
-      {
-          Model = "claude-opus-5-5",
-          MaxTokens = 1024,
-          Messages = [new() { Role = Role.User, Content = "Hello, Claude" }],
-          Betas = ["context-management-2025-06-27"],
-      }
-  );
-
-  Console.WriteLine(string.Join("\n", message.Content));
-  ```
-
-  ```go Go
-  client := anthropic.NewClient()
-
-  message, err := client.Beta.Messages.New(context.TODO(), anthropic.BetaMessageNewParams{
-  	Model:     anthropic.ModelClaudeOpus5_5,
-  	MaxTokens: 1024,
-  	Messages: []anthropic.BetaMessageParam{
-  		anthropic.NewBetaUserMessage(anthropic.NewBetaTextBlock("Hello, Claude")),
-  	},
-  	Betas: []anthropic.AnthropicBeta{anthropic.AnthropicBetaContextManagement2025_06_27},
-  })
-  if err != nil {
-  	panic(err)
-  }
-
-  fmt.Printf("%+v\n", message.Content)
-  ```
-
-  ```java Java
-  AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-  MessageCreateParams params = MessageCreateParams.builder()
-    .model(Model.CLAUDE_OPUS_5_5)
-    .maxTokens(1024)
-    .addUserMessage("Hello, Claude")
-    .addBeta(AnthropicBeta.CONTEXT_MANAGEMENT_2025_06_27)
-    .build();
-
-  BetaMessage message = client.beta().messages().create(params);
-  System.out.println(message.content());
-  ```
-
-  ```php PHP
-  $client = new Client();
-
-  $message = $client->beta->messages->create(
-      maxTokens: 1024,
-      messages: [['role' => 'user', 'content' => 'Hello, Claude']],
-      model: 'claude-opus-5-5',
-      betas: ['context-management-2025-06-27'],
-  );
-
-  echo $message;
-  ```
-
-  ```ruby Ruby
-  client = Anthropic::Client.new
-
-  message = client.beta.messages.create(
-    model: "claude-opus-5-5",
-    max_tokens: 1024,
-    messages: [{role: "user", content: "Hello, Claude"}],
-    betas: ["context-management-2025-06-27"]
-  )
-
-  puts(message.content)
   ```
 </CodeGroup>
 
@@ -176,16 +61,16 @@ anthropic-beta: feature2
 anthropic-beta: feature3
 ```
 
-With the SDK, list each feature (for example, `betas=["feature1", "feature2"]` (python; typescript, ruby: `betas: ["feature1", "feature2"]`; php: `betas: ['feature1', 'feature2']`; csharp: `Betas = ["feature1", "feature2"]`; go: `Betas: []anthropic.AnthropicBeta{"feature1", "feature2"}`; java: `.addBeta("feature1").addBeta("feature2")`)). With the CLI, pass a single `--beta` flag with the feature names separated by commas (for example, `--beta feature1,feature2`). You can also repeat the flag (for example, `--beta feature1 --beta feature2`).
+With the SDK, list each feature (for example, `betas=["feature1", "feature2"]` (python)). With the CLI, pass a single `--beta` flag with the feature names separated by commas (for example, `--beta feature1,feature2`). You can also repeat the flag (for example, `--beta feature1 --beta feature2`).
 
 ### Beta features on other platforms
 
-Beta names are the same on every platform that accepts them, but not every platform accepts every beta. [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws), [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry), and [Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai) take beta names in the `anthropic-beta` header, as the Claude API does. To send several betas, put their names in one header, separated by commas: Google Cloud reads only one `anthropic-beta` header and ignores the rest, so betas in the others don't take effect.
+Beta names are the same on every platform that accepts them, but not every platform accepts every beta. [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli), and [Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai?sdk_languages=cli) take beta names in the `anthropic-beta` header, as the Claude API does. To send several betas, put their names in one header, separated by commas: Google Cloud reads only one `anthropic-beta` header and ignores the rest, so betas in the others don't take effect.
 
 On Amazon Bedrock, where beta names go depends on the API you call:
 
-* [Claude in Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock) (`bedrock-mantle` endpoints) takes them in the `anthropic-beta` header.
-* The [InvokeModel API](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy) reads them from the request body, not from a header. List them in the body's `anthropic_beta` array, one name per element, for example `"anthropic_beta": ["feature1", "feature2"]`.
+* [Claude in Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock?sdk_languages=cli) (`bedrock-mantle` endpoints) takes them in the `anthropic-beta` header.
+* The [InvokeModel API](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy?sdk_languages=cli) reads them from the request body, not from a header. List them in the body's `anthropic_beta` array, one name per element, for example `"anthropic_beta": ["feature1", "feature2"]`.
 
 ### Endpoint-specific headers
 
@@ -197,7 +82,7 @@ Some beta APIs are scoped to specific endpoints and require a feature-specific b
 | `/v1/tunnels`                                    | `mcp-tunnels-2026-06-22`    |
 | `/v1/memory_stores` and sub-resources            | `agent-memory-2026-07-22`   |
 
-The SDK's `client.beta` (python, typescript, ruby; csharp, go: `client.Beta`; java: `client.beta()`; php: `$client->beta`) namespace adds these headers automatically. Add them yourself only when making raw HTTP requests. See the [Managed Agents overview](https://platform.claude.com/docs/en/managed-agents/overview), [Using agent memory](https://platform.claude.com/docs/en/managed-agents/memory), and the [MCP tunnels reference](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/reference#tunnels-api) for details.
+The SDK's `client.beta` (python, typescript, ruby) namespace adds these headers automatically. Add them yourself only when making raw HTTP requests. See the [Managed Agents overview](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli), [Using agent memory](https://platform.claude.com/docs/en/managed-agents/memory?sdk_languages=cli), and the [MCP tunnels reference](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/reference?sdk_languages=cli#tunnels-api) for details.
 
 Endpoint-specific headers that apply to the same endpoint aren't always combinable. On memory store endpoints, `agent-memory-2026-07-22` replaces `managed-agents-2026-04-01`: sending both on the same request returns a `400` error. The SDK sends the correct header for each endpoint automatically.
 
@@ -222,16 +107,16 @@ If you use an invalid beta name, or a beta your organization doesn't have access
 
 ## Getting help
 
-For updates to beta features, see the [release notes](https://platform.claude.com/docs/en/release-notes/overview). For help with production issues, contact [support](https://support.claude.com/).
+For updates to beta features, see the [release notes](https://platform.claude.com/docs/en/release-notes/overview?sdk_languages=cli). For help with production issues, contact [support](https://support.claude.com/).
 
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Errors" icon="info" href="https://platform.claude.com/docs/en/api/errors">
+  <Card title="Errors" icon="info" href="https://platform.claude.com/docs/en/api/errors?sdk_languages=cli">
     Understand the HTTP status codes, error response shape, and request IDs the Claude API returns, and handle errors with the SDK's typed exceptions.
   </Card>
 
-  <Card title="API overview" icon="compass" href="https://platform.claude.com/docs/en/api/overview">
+  <Card title="API overview" icon="compass" href="https://platform.claude.com/docs/en/api/overview?sdk_languages=cli">
     Explore the Claude API's features, including the APIs currently in beta.
   </Card>
 </CardGroup>

@@ -32,7 +32,7 @@ The following table shows zero-shot chain-of-thought evaluation scores for Claud
 | Swahili                           | 91.1%                           | 78.3%             |
 | Yoruba                            | 79.7%                           | 52.7%             |
 
-1 With [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking).
+1 With [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli).
 
 <Note>
   These metrics are based on [MMLU (Massive Multitask Language Understanding)](https://en.wikipedia.org/wiki/MMLU) English test sets that were translated into 14 additional languages by professional human translators, as documented in [OpenAI's simple-evals repository](https://github.com/openai/simple-evals/blob/main/multilingual_mmlu_benchmark_results.md). The use of human translators for this evaluation ensures high-quality translations, particularly important for languages with fewer digital resources.
@@ -45,134 +45,12 @@ The following table shows zero-shot chain-of-thought evaluation scores for Claud
 Claude infers the response language from the conversation, but for production applications you should state the target language explicitly. The most reliable place to do this is the system prompt, which keeps the instruction stable across every turn of a conversation.
 
 <CodeGroup>
-  ```bash cURL
-  curl https://api.anthropic.com/v1/messages \
-    -H "content-type: application/json" \
-    -H "x-api-key: $ANTHROPIC_API_KEY" \
-    -H "anthropic-version: 2023-06-01" \
-    -d '{
-      "model": "claude-opus-5-5",
-      "max_tokens": 1024,
-      "system": "Always respond in French, regardless of the language the user writes in.",
-      "messages": [
-        {"role": "user", "content": "How do I reset my password?"}
-      ]
-    }'
-  ```
-
   ```bash CLI
   ant messages create \
     --model claude-opus-5-5 \
     --max-tokens 1024 \
     --system "Always respond in French, regardless of the language the user writes in." \
     --message '{role: user, content: "How do I reset my password?"}'
-  ```
-
-  ```python Python
-  client = anthropic.Anthropic()
-
-  message = client.messages.create(
-      model="claude-opus-5-5",
-      max_tokens=1024,
-      system="Always respond in French, regardless of the language the user writes in.",
-      messages=[{"role": "user", "content": "How do I reset my password?"}],
-  )
-
-  print(message.content)
-  ```
-
-  ```typescript TypeScript
-  const client = new Anthropic();
-
-  const message = await client.messages.create({
-    model: "claude-opus-5-5",
-    max_tokens: 1024,
-    system: "Always respond in French, regardless of the language the user writes in.",
-    messages: [{ role: "user", content: "How do I reset my password?" }]
-  });
-
-  console.log(message.content);
-  ```
-
-  ```csharp C#
-  AnthropicClient client = new();
-
-  var parameters = new MessageCreateParams
-  {
-      Model = Model.ClaudeOpus5_5,
-      MaxTokens = 1024,
-      System = "Always respond in French, regardless of the language the user writes in.",
-      Messages =
-      [
-          new() { Role = Role.User, Content = "How do I reset my password?" }
-      ]
-  };
-
-  var message = await client.Messages.Create(parameters);
-  Console.WriteLine(message);
-  ```
-
-  ```go Go
-  client := anthropic.NewClient()
-
-  message, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
-  	Model:     anthropic.ModelClaudeOpus5_5,
-  	MaxTokens: 1024,
-  	System: []anthropic.TextBlockParam{
-  		{Text: "Always respond in French, regardless of the language the user writes in."},
-  	},
-  	Messages: []anthropic.MessageParam{
-  		anthropic.NewUserMessage(anthropic.NewTextBlock("How do I reset my password?")),
-  	},
-  })
-  if err != nil {
-  	log.Fatal(err)
-  }
-  fmt.Println(message.Content)
-  ```
-
-  ```java Java
-  AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-  MessageCreateParams params = MessageCreateParams.builder()
-      .model(Model.CLAUDE_OPUS_5_5)
-      .maxTokens(1024)
-      .system("Always respond in French, regardless of the language the user writes in.")
-      .addUserMessage("How do I reset my password?")
-      .build();
-
-  Message message = client.messages().create(params);
-  System.out.println(message.content());
-  ```
-
-  ```php PHP
-  $client = new Client();
-
-  $message = $client->messages->create(
-      maxTokens: 1024,
-      messages: [
-          ['role' => 'user', 'content' => 'How do I reset my password?']
-      ],
-      model: 'claude-opus-5-5',
-      system: 'Always respond in French, regardless of the language the user writes in.',
-  );
-
-  echo json_encode($message->content, JSON_PRETTY_PRINT), PHP_EOL;
-  ```
-
-  ```ruby Ruby
-  client = Anthropic::Client.new
-
-  message = client.messages.create(
-    model: "claude-opus-5-5",
-    max_tokens: 1024,
-    system: "Always respond in French, regardless of the language the user writes in.",
-    messages: [
-      { role: "user", content: "How do I reset my password?" }
-    ]
-  )
-
-  puts message.content
   ```
 </CodeGroup>
 
@@ -188,7 +66,7 @@ When working with multilingual content:
 2. **Use native scripts:** Submit text in its native script rather than transliteration for optimal results.
 3. **Consider cultural context:** Effective communication often requires cultural and regional awareness beyond pure translation.
 
-Also follow the general guidance in [Prompt engineering overview](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview) to further improve output quality.
+Also follow the general guidance in [Prompt engineering overview](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview?sdk_languages=cli) to further improve output quality.
 
 ***
 
@@ -201,19 +79,19 @@ Also follow the general guidance in [Prompt engineering overview](https://platfo
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Prompt engineering overview" icon="edit" href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview">
+  <Card title="Prompt engineering overview" icon="edit" href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview?sdk_languages=cli">
     Apply general prompting techniques to improve multilingual output quality.
   </Card>
 
-  <Card title="Customer support agent" icon="headset" href="https://platform.claude.com/docs/en/about-claude/use-case-guides/customer-support-chat">
+  <Card title="Customer support agent" icon="headset" href="https://platform.claude.com/docs/en/about-claude/use-case-guides/customer-support-chat?sdk_languages=cli">
     Build a localized support chatbot using a language-constrained system prompt.
   </Card>
 
-  <Card title="Models overview" icon="table" href="https://platform.claude.com/docs/en/models/overview">
+  <Card title="Models overview" icon="table" href="https://platform.claude.com/docs/en/models/overview?sdk_languages=cli">
     Compare model tiers to balance multilingual quality against cost and latency.
   </Card>
 
-  <Card title="Define success criteria and build evaluations" icon="scales" href="https://platform.claude.com/docs/en/test-and-evaluate/develop-tests">
+  <Card title="Define success criteria and build evaluations" icon="scales" href="https://platform.claude.com/docs/en/test-and-evaluate/develop-tests?sdk_languages=cli">
     Evaluate translation and localization quality before you ship.
   </Card>
 </CardGroup>

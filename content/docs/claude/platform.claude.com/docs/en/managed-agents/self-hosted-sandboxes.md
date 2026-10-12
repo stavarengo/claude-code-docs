@@ -5,12 +5,12 @@ description: Run Claude Managed Agents sessions in self-hosted sandboxes, keepin
 featureMetadata:
   topic:
     title: Managed Agents
-    url: https://platform.claude.com/docs/en/managed-agents/overview
+    url: https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli
   status: beta
   betaHeader: managed-agents-2026-04-01
 ---
 
-By default, Managed Agents executes tools and code inside [Anthropic-managed cloud sandboxes](https://platform.claude.com/docs/en/managed-agents/cloud-sandboxes-reference). Self-hosted sandboxes keep the orchestration on Anthropic's side but move tool execution into infrastructure you control. The agent's files, processes, and network traffic stay in your environment.
+By default, Managed Agents executes tools and code inside [Anthropic-managed cloud sandboxes](https://platform.claude.com/docs/en/managed-agents/cloud-sandboxes-reference?sdk_languages=cli). Self-hosted sandboxes keep the orchestration on Anthropic's side but move tool execution into infrastructure you control. The agent's files, processes, and network traffic stay in your environment.
 
 Self-hosting is a good fit when the agent needs to:
 
@@ -22,15 +22,15 @@ Self-hosting is a good fit when the agent needs to:
 
 A `self_hosted` environment acts as a work queue. You run an **environment worker**, a process on your own infrastructure that serves that queue:
 
-1. You create a [session](https://platform.claude.com/docs/en/managed-agents/sessions) that targets the environment. Anthropic enqueues the session as a work item.
-2. Your worker claims the work item and downloads the agent's [skills](https://platform.claude.com/docs/en/managed-agents/skills) and the session's [memory stores](https://platform.claude.com/docs/en/managed-agents/memory).
+1. You create a [session](https://platform.claude.com/docs/en/managed-agents/sessions?sdk_languages=cli) that targets the environment. Anthropic enqueues the session as a work item.
+2. Your worker claims the work item and downloads the agent's [skills](https://platform.claude.com/docs/en/managed-agents/skills?sdk_languages=cli) and the session's [memory stores](https://platform.claude.com/docs/en/managed-agents/memory?sdk_languages=cli).
 3. Claude runs on Anthropic's side and requests tool calls. Your worker runs each call locally and posts the result back.
 
-Tool inputs and outputs still flow to Anthropic's control plane, so the model can see results and determine what to do next. Anthropic stores skills and memory stores. Your sandbox holds a copy for the session. See [Security model](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-security) for the full data-flow boundary.
+Tool inputs and outputs still flow to Anthropic's control plane, so the model can see results and determine what to do next. Anthropic stores skills and memory stores. Your sandbox holds a copy for the session. See [Security model](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-security?sdk_languages=cli) for the full data-flow boundary.
 
 Self-hosted sandboxes support every Claude model available in Managed Agents. The model is configured on the agent, not the environment.
 
-The `ant` CLI and the Python, TypeScript, and Go SDKs ship pre-built workers. Sandbox providers such as Cloudflare, Daytona, and Modal also publish their own [platform guides](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes#platform-guides).
+The `ant` CLI and the Python, TypeScript, and Go SDKs ship pre-built workers. Sandbox providers such as Cloudflare, Daytona, and Modal also publish their own [platform guides](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes?sdk_languages=cli#platform-guides).
 
 ## Quickstart
 
@@ -38,13 +38,13 @@ This quickstart runs one always-on worker with the `ant` CLI, sends it a session
 
 ### Prerequisites
 
-* **An agent:** If you don't have one, complete [Get started with Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/quickstart) first and note the agent ID.
+* **An agent:** If you don't have one, complete [Get started with Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/quickstart?sdk_languages=cli) first and note the agent ID.
 * **A Linux host:** The host needs `/bin/bash` at that exact path. The worker needs only outbound HTTPS.
 * **A Claude API key:** You use it from your own machine to create sessions and read queue stats. Keep it off the worker host, where agent tool calls could read it.
-* **The `ant` CLI on your own machine:** The session and stats commands in this quickstart run there, not on the worker host. Install it the same way the [install step](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes#run-your-first-session) does for the worker.
+* **The `ant` CLI on your own machine:** The session and stats commands in this quickstart run there, not on the worker host. Install it the same way the [install step](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes?sdk_languages=cli#run-your-first-session) does for the worker.
 
 <Note>
-  On [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws), the worker authenticates with AWS IAM (SigV4) or an [API key generated in the AWS Console](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws#api-key-authentication), not an environment key. Attach the [`AnthropicSelfHostedEnvironmentAccess`](https://platform.claude.com/docs/en/api/claude-platform-on-aws-iam-actions#managed-policies) managed policy to the IAM principal your worker runs as. Environment keys generated in the Claude Console don't work with the Claude Platform on AWS endpoint.
+  On [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), the worker authenticates with AWS IAM (SigV4) or an [API key generated in the AWS Console](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli#api-key-authentication), not an environment key. Attach the [`AnthropicSelfHostedEnvironmentAccess`](https://platform.claude.com/docs/en/api/claude-platform-on-aws-iam-actions?sdk_languages=cli#managed-policies) managed policy to the IAM principal your worker runs as. Environment keys generated in the Claude Console don't work with the Claude Platform on AWS endpoint.
 </Note>
 
 ### Run your first session
@@ -56,18 +56,6 @@ This quickstart runs one always-on worker with the `ant` CLI, sends it a session
     Or through the API:
 
     <CodeGroup defaultLanguage="CLI">
-      ```bash cURL
-      curl -sS --fail-with-body https://api.anthropic.com/v1/environments \
-        -H "x-api-key: $ANTHROPIC_API_KEY" \
-        -H "anthropic-version: 2023-06-01" \
-        -H "anthropic-beta: managed-agents-2026-04-01" \
-        -H "content-type: application/json" \
-        -d '{
-          "name": "self-hosted",
-          "config": {"type": "self_hosted"}
-        }'
-      ```
-
       <CodeGroupItem>
         ```bash CLI
         ant apply environment.yaml
@@ -82,92 +70,6 @@ This quickstart runs one always-on worker with the `ant` CLI, sends it a session
           ```
         </File>
       </CodeGroupItem>
-
-      ```python Python
-      client = anthropic.Anthropic()
-
-      environment = client.beta.environments.create(
-          name="self-hosted", config={"type": "self_hosted"}
-      )
-      print(environment.id)
-      ```
-
-      ```typescript TypeScript
-      const client = new Anthropic();
-
-      const environment = await client.beta.environments.create({
-        name: "self-hosted",
-        config: { type: "self_hosted" }
-      });
-      console.log(environment.id);
-      ```
-
-      ```csharp C#
-      using Anthropic.Models.Beta.Environments;
-
-      var client = new AnthropicClient();
-
-      var environment = await client.Beta.Environments.Create(
-          new EnvironmentCreateParams
-          {
-              Name = "self-hosted",
-              Config = new BetaSelfHostedConfigParams(),
-          }
-      );
-      Console.WriteLine(environment.ID);
-      ```
-
-      ```go Go
-      client := anthropic.NewClient()
-
-      environment, err := client.Beta.Environments.New(context.Background(), anthropic.BetaEnvironmentNewParams{
-      	Name: "self-hosted",
-      	Config: anthropic.BetaEnvironmentNewParamsConfigUnion{
-      		OfSelfHosted: &anthropic.BetaSelfHostedConfigParams{},
-      	},
-      })
-      if err != nil {
-      	panic(err)
-      }
-      fmt.Println(environment.ID)
-      ```
-
-      ```java Java
-      import com.anthropic.models.beta.environments.BetaSelfHostedConfigParams;
-      import com.anthropic.models.beta.environments.EnvironmentCreateParams;
-
-      void main() {
-          var client = AnthropicOkHttpClient.fromEnv();
-
-          var environment = client.beta().environments().create(
-              EnvironmentCreateParams.builder()
-                  .name("self-hosted")
-                  .config(BetaSelfHostedConfigParams.builder().build())
-                  .build()
-          );
-          IO.println(environment.id());
-      }
-      ```
-
-      ```php PHP
-      $client = new Anthropic\Client();
-
-      $environment = $client->beta->environments->create(
-          name: 'self-hosted',
-          config: ['type' => 'self_hosted'],
-      );
-      echo $environment->id, PHP_EOL;
-      ```
-
-      ```ruby Ruby
-      client = Anthropic::Client.new
-
-      environment = client.beta.environments.create(
-        name: "self-hosted",
-        config: {type: :self_hosted}
-      )
-      puts environment.id
-      ```
     </CodeGroup>
   </Step>
 
@@ -229,7 +131,7 @@ This quickstart runs one always-on worker with the `ant` CLI, sends it a session
     ant beta:environments:work stats --environment-id "$ANTHROPIC_ENVIRONMENT_ID"
     ```
 
-    If `workers_polling` stays at 0, see [Troubleshooting](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-operations#troubleshooting).
+    If `workers_polling` stays at 0, see [Troubleshooting](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-operations?sdk_languages=cli#troubleshooting).
   </Step>
 
   <Step title="Start a session">
@@ -260,7 +162,7 @@ This quickstart runs one always-on worker with the `ant` CLI, sends it a session
     cat /workspace/hello.txt
     ```
 
-    The file describes your own host's kernel, so the agent's tool calls ran there. To follow the agent's work as it happens, see [Session event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming).
+    The file describes your own host's kernel, so the agent's tool calls ran there. To follow the agent's work as it happens, see [Session event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli).
   </Step>
 </Steps>
 
@@ -274,7 +176,7 @@ This quickstart runs one always-on worker with the `ant` CLI, sends it a session
 | Memory stores                 | Mounted by Anthropic at `/mnt/memory/` | Downloaded to `/mnt/memory/` and synced by the worker |
 | Lifecycle                     | Managed by Anthropic                   | Managed by you                                        |
 
-For Zero Data Retention and HIPAA BAA eligibility, see [API and data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention#feature-eligibility).
+For Zero Data Retention and HIPAA BAA eligibility, see [API and data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#feature-eligibility).
 
 ### Session resources
 
@@ -284,16 +186,16 @@ Self-hosted sandboxes support `memory_store` resources only. A session on a self
 Environment env_... is a self-hosted environment. `resources` are not supported with self-hosted environments.
 ```
 
-[Deployments](https://platform.claude.com/docs/en/managed-agents/scheduled-deployments) that target a self-hosted environment follow the same rule. To give a session its own input files, see [Stage files for a session](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-workers#stage-files-for-a-session).
+[Deployments](https://platform.claude.com/docs/en/managed-agents/scheduled-deployments?sdk_languages=cli) that target a self-hosted environment follow the same rule. To give a session its own input files, see [Stage files for a session](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-workers?sdk_languages=cli#stage-files-for-a-session).
 
 ## Self-hosted sandboxes and MCP tunnels
 
-Self-hosting controls *where the agent's code executes*. [MCP tunnels](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/overview) control *how Anthropic reaches MCP servers in your network*. The two are independent:
+Self-hosting controls *where the agent's code executes*. [MCP tunnels](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/overview?sdk_languages=cli) control *how Anthropic reaches MCP servers in your network*. The two are independent:
 
 * A session in Anthropic's cloud sandboxes can reach private MCP servers through a tunnel.
 * A self-hosted session can use either tunneled or public MCP servers.
 
-Use both when you want execution and tool access to stay inside your boundary. To skip the tunnel, [wrap the MCP server as custom tools](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-custom-tools#wrap-an-mcp-server-as-custom-tools) that your worker serves.
+Use both when you want execution and tool access to stay inside your boundary. To skip the tunnel, [wrap the MCP server as custom tools](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-custom-tools?sdk_languages=cli#wrap-an-mcp-server-as-custom-tools) that your worker serves.
 
 ## Platform guides
 
@@ -314,27 +216,27 @@ These pages describe how to build a worker on any sandboxing platform. Platform-
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Deploy workers" icon="play" href="https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-workers">
+  <Card title="Deploy workers" icon="play" href="https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-workers?sdk_languages=cli">
     Run the SDK worker, trigger workers from webhooks, or give each session its own sandbox.
   </Card>
 
-  <Card title="Memory stores" icon="brain" href="https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-memory">
+  <Card title="Memory stores" icon="brain" href="https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-memory?sdk_languages=cli">
     Prepare the host, configure sync, and handle read-only stores and conflicts.
   </Card>
 
-  <Card title="Custom tools and MCP servers" icon="tool" href="https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-custom-tools">
+  <Card title="Custom tools and MCP servers" icon="tool" href="https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-custom-tools?sdk_languages=cli">
     Serve your own tools from the worker, including tools from an MCP server inside your network.
   </Card>
 
-  <Card title="Monitor and troubleshoot" icon="lightning" href="https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-operations">
+  <Card title="Monitor and troubleshoot" icon="lightning" href="https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-operations?sdk_languages=cli">
     Read queue depth, stop sessions and workers cleanly, and fix common failures.
   </Card>
 
-  <Card title="Worker reference" icon="book" href="https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-reference">
+  <Card title="Worker reference" icon="book" href="https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-reference?sdk_languages=cli">
     CLI flags, environment variables, filesystem paths, and SDK helper options.
   </Card>
 
-  <Card title="Security model" icon="lock" href="https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-security">
+  <Card title="Security model" icon="lock" href="https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-security?sdk_languages=cli">
     Shared responsibility model for self-hosted sandbox environments.
   </Card>
 </CardGroup>

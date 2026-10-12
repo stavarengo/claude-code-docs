@@ -30,7 +30,7 @@ Each middleware can inspect or replace the request before calling `next()`, and 
 
 ## Registering middleware
 
-Each middleware is a function that receives the outgoing request and the next handler. Call `call_next(request)` (python; typescript: `next(request)`; csharp: `next(request, cancellationToken)`; go: `next(req)`; java: `nextClient.execute(request, requestOptions)`; php: `$next($request)`; ruby: `call_next.call(request)`) to forward the request to the rest of the chain (or directly to the SDK core if this is the last middleware), and return its response. Anything before that call runs on the way out; anything after runs on the way back.
+Each middleware is a function that receives the outgoing request and the next handler. Call `call_next(request)` (python) to forward the request to the rest of the chain (or directly to the SDK core if this is the last middleware), and return its response. Anything before that call runs on the way out; anything after runs on the way back.
 
 <CodeGroup exclude="shell">
   ```python Python
@@ -177,4 +177,4 @@ The SDK also accepts a custom HTTP client (for proxy configuration, custom TLS, 
 
 ## Built-in middleware
 
-The SDK ships a refusal-fallback middleware that automatically retries a request Claude declines (`stop_reason: "refusal"`) on a fallback model. [Refusals and fallback](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback) lists the models whose safety classifiers can decline requests, and [Detect and retry on a fallback model](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback#client-side-fallback) covers setup and per-language examples.
+The SDK ships a refusal-fallback middleware that automatically retries a request Claude declines (`stop_reason: "refusal"`) on a fallback model. [Refusals and fallback](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback?sdk_languages=cli) lists the models whose safety classifiers can decline requests, and [Detect and retry on a fallback model](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback?sdk_languages=cli#client-side-fallback) covers setup and per-language examples.

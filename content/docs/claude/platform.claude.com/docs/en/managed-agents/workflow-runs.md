@@ -5,14 +5,14 @@ description: "Follow an agent's workflow runs: their states and events, when the
 featureMetadata:
   topic:
     title: Managed Agents
-    url: https://platform.claude.com/docs/en/managed-agents/overview
+    url: https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli
   status: beta
   betaHeader: managed-agents-2026-04-01
 ---
 
-A **workflow** is a program that an agent writes to run many agents and combine what they return. A **workflow run** is the execution of one workflow. **[Dynamic workflows](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration#dynamic-workflows)** is the feature that lets an agent write workflows and start runs. You turn it on or off with the `workflows` setting in the agent's `multiagent` block.
+A **workflow** is a program that an agent writes to run many agents and combine what they return. A **workflow run** is the execution of one workflow. **[Dynamic workflows](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#dynamic-workflows)** is the feature that lets an agent write workflows and start runs. You turn it on or off with the `workflows` (java, php) setting in the agent's `multiagent` (java, php) block.
 
-The server runs a workflow in the background. Its agents work in [session threads](https://platform.claude.com/docs/en/managed-agents/session-threads) that the server creates as the workflow needs them. You follow runs on the session's [event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming). Only the agent starts a run. No event you send ends one; archiving the session can.
+The server runs a workflow in the background. Its agents work in [session threads](https://platform.claude.com/docs/en/managed-agents/session-threads?sdk_languages=cli) that the server creates as the workflow needs them. You follow runs on the session's [event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli). Only the agent starts a run. No event you send ends one; archiving the session can.
 
 ## How dynamic workflows work
 
@@ -26,7 +26,7 @@ The diagram shows one example. Each workflow that the agent writes has its own p
 
 * **Workflow run:** The server runs the workflow in the background, as one workflow run. A session can have several runs open at the same time.
 * **Phases:** A workflow can divide its work into phases. A phase is a named stage of the run, such as "Read the contracts". You follow a run's progress by its phase events.
-* **Agent threads:** In a phase, the program runs agents. Each agent works in its own [session thread](https://platform.claude.com/docs/en/managed-agents/session-threads), on a prompt that the program wrote. An agent in a run can be an inline agent, which the program defines itself, or a predefined agent, which you list in [`workflows.predefined_agents`](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration#predefined-and-inline-agents). For what each thread shows, see [A run's threads](https://platform.claude.com/docs/en/managed-agents/workflow-runs#a-runs-threads).
+* **Agent threads:** In a phase, the program runs agents. Each agent works in its own [session thread](https://platform.claude.com/docs/en/managed-agents/session-threads?sdk_languages=cli), on a prompt that the program wrote. An agent in a run can be an inline agent, which the program defines itself, or a predefined agent, which you list in the [`predefined_agents` list of `workflows` (java, php)](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#predefined-and-inline-agents). For what each thread shows, see [A run's threads](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli#a-runs-threads).
 
 The program can do the following:
 
@@ -36,9 +36,9 @@ The program can do the following:
 * **Repeat and choose:** Inside a phase, the program can repeat work and choose its next step from what an agent returned. For example, it can have a draft revised until a review passes or a set number of rounds is used up. In the diagram, the program can repeat a step inside the second phase.
 * **Handle a failed agent:** When one of its agents fails, the program can handle the failure or let it end the run.
 
-When the run ends, the agent that the session runs gets a turn to read what the run did. It can then answer you or start another run. [Run events](https://platform.claude.com/docs/en/managed-agents/workflow-runs#run-events) lists the cases where that turn comes later or doesn't come.
+When the run ends, the agent that the session runs gets a turn to read what the run did. It can then answer you or start another run. [Run events](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli#run-events) lists the cases where that turn comes later or doesn't come.
 
-You can guide how a run does the work, for example how it splits the work and what it does when an agent fails. See [Tell the agent when to use a run](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration#tell-the-agent-when-to-use-a-run).
+You can guide how a run does the work, for example how it splits the work and what it does when an agent fails. See [Tell the agent when to use a run](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#tell-the-agent-when-to-use-a-run).
 
 ## How a run moves through its states
 
@@ -52,31 +52,31 @@ A run is **open** from its `workflow_run.created` event until its `workflow_run.
 
 ## Run events
 
-Run events arrive on the session's event stream, which is the primary thread's stream, and listing the session's events returns them too. Run events don't trigger [webhooks](https://platform.claude.com/docs/en/managed-agents/webhooks). Status events from the run's threads arrive on the same stream. Each names its thread in `session_thread_id`, and a run's threads are the ones whose `session.thread_created` event had the run's `workflow_run_id`.
+Run events arrive on the session's event stream, which is the primary thread's stream, and listing the session's events returns them too. Run events don't trigger [webhooks](https://platform.claude.com/docs/en/managed-agents/webhooks?sdk_languages=cli). Status events from the run's threads arrive on the same stream. Each names its thread in `session_thread_id`, and a run's threads are the ones whose `session.thread_created` event had the run's `workflow_run_id`.
 
-| Event                                                    | When it arrives                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | What to do                                                                                                                                                                                                                                                                                                                                                                                              |
-| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `workflow_run.created`                                   | The agent started a run. Includes `workflow_run_id` (`wrun_…`), the run's `name` and `description`, and `phases`, the phases the workflow declares, each with an `id`, a `name`, and a `description`. A `description` is `null` when the workflow gives none. `phases` is always present and can be empty. The run's and phases' `name` and `description` are text the model wrote, so they can repeat words from your request. A run's `name` can also be one the server assigned. | Track the run as open. Show its `name`, and progress against `phases`.                                                                                                                                                                                                                                                                                                                                  |
-| `workflow_run.status_running`                            | When the run starts to execute, which can be a while after `created`, and each time it resumes after a pause at the budget. A resume after an interrupt might not send it. A run that starts idle might get `workflow_run.status_idle` first.                                                                                                                                                                                                                                       | Show the run as running.                                                                                                                                                                                                                                                                                                                                                                                |
-| `workflow_run.status_idle`                               | The run was paused, for example at the session's budget. The event doesn't say why. A pause after an interrupt might not send it.                                                                                                                                                                                                                                                                                                                                                   | To continue, see [Budgets and limits](https://platform.claude.com/docs/en/managed-agents/workflow-runs#budgets-and-limits) or [Interrupt a session with runs open](https://platform.claude.com/docs/en/managed-agents/workflow-runs#interrupt-a-session-with-runs-open).                                                                                                                                |
-| `workflow_run.phase_started`, `workflow_run.phase_ended` | The workflow entered or left a phase, or the run's end closed a phase that was still open. The end event doesn't say whether the phase's work finished. Both include `workflow_run_phase_id`. The end also has `phase_started_id`, the `id` of the start event it closes. Neither has the phase's name: look it up by `workflow_run_phase_id` in the `phases` of `workflow_run.created`.                                                                                            | Update progress. Phases run one at a time, in the order of `phases`, each at most once, but the API doesn't guarantee it. Match a phase's end to its start by `phase_started_id`. Handle more than one open phase, a phase that isn't in `phases`, and a listed phase that never starts, even in a run that completes. Every phase that starts also ends, before the run's `workflow_run.status_ended`. |
-| `workflow_run.status_ended`                              | The run ended. Always the last of the run's `workflow_run.*` events. Includes `result`.                                                                                                                                                                                                                                                                                                                                                                                             | Read `result` (next table). The agent then gets a turn to read how the run ended. At the budget, or while the primary thread waits on your client, that turn comes later. After an interrupt, that turn might not come: send a `user.message`, or read `result` yourself. After an archive or termination, it doesn't come.                                                                             |
-| `workflow_run.error`                                     | The server reports an error of a run, or a start that it refused. A run that ends in `error` gets this event, with the same error, before its `workflow_run.status_ended`. Includes `error`: a `type` and a `message` that is safe to log. `workflow_run_id` is `null` when no run was created.                                                                                                                                                                                     | Log it, and don't take it as the run's end. If `workflow_run_id` is `null`, no run started. Otherwise keep tracking the run until its `workflow_run.status_ended`.                                                                                                                                                                                                                                      |
+| Event                                                    | When it arrives                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | What to do                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `workflow_run.created`                                   | The agent started a run. Includes `workflow_run_id` (`wrun_…`), the run's `name` (java, php) and `description` (java, php), and `phases` (java, php), the phases the workflow declares, each with an `id` (java, php), a `name` (java, php), and a `description` (java, php). A `description` (java, php) is `null` when the workflow gives none. `phases` (java, php) is always present and can be empty. The run's and phases' `name` (java, php) and `description` (java, php) are text the model wrote, so they can repeat words from your request. A run's `name` (java, php) can also be one the server assigned. | Track the run as open. Show its `name` (java, php), and progress against `phases` (java, php).                                                                                                                                                                                                                                                                                                                                  |
+| `workflow_run.status_running`                            | When the run starts to execute, which can be a while after `created`, and each time it resumes after a pause at the budget. A resume after an interrupt might not send it. A run that starts idle might get `workflow_run.status_idle` first.                                                                                                                                                                                                                                                                                                                                                                           | Show the run as running.                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `workflow_run.status_idle`                               | The run was paused, for example at the session's budget. The event doesn't say why. A pause after an interrupt might not send it.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | To continue, see [Budgets and limits](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli#budgets-and-limits) or [Interrupt a session with runs open](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli#interrupt-a-session-with-runs-open).                                                                                                                    |
+| `workflow_run.phase_started`, `workflow_run.phase_ended` | The workflow entered or left a phase, or the run's end closed a phase that was still open. The end event doesn't say whether the phase's work finished. Both include `workflow_run_phase_id`. The end also has `phase_started_id`, the `id` (java, php) of the start event it closes. Neither has the phase's name: look it up by `workflow_run_phase_id` in the `phases` (java, php) of `workflow_run.created`.                                                                                                                                                                                                        | Update progress. Phases run one at a time, in the order of `phases` (java, php), each at most once, but the API doesn't guarantee it. Match a phase's end to its start by `phase_started_id`. Handle more than one open phase, a phase that isn't in `phases` (java, php), and a listed phase that never starts, even in a run that completes. Every phase that starts also ends, before the run's `workflow_run.status_ended`. |
+| `workflow_run.status_ended`                              | The run ended. Always the last of the run's `workflow_run.*` events. Includes `result` (java, php).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | Read `result` (java, php) (next table). The agent then gets a turn to read how the run ended. At the budget, or while the primary thread waits on your client, that turn comes later. After an interrupt, that turn might not come: send a `user.message`, or read `result` (java, php) yourself. After an archive or termination, it doesn't come.                                                                             |
+| `workflow_run.error`                                     | The server reports an error of a run, or a start that it refused. A run that ends in `error` gets this event, with the same error, before its `workflow_run.status_ended`. Includes `error` (java, php): a `type` (java, php) and a `message` (java, php) that is safe to log. `workflow_run_id` is `null` when no run was created.                                                                                                                                                                                                                                                                                     | Log it, and don't take it as the run's end. If `workflow_run_id` is `null`, no run started. Otherwise keep tracking the run until its `workflow_run.status_ended`.                                                                                                                                                                                                                                                              |
 
-| `result`                          | Meaning                                                                                                                                                                                                                                                                                                                                 |
-| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `{"type": "completed"}`           | The workflow finished running. The result doesn't say whether the work passed. A run can end `completed` even though work on its threads failed, or a thread couldn't be created. To find failed work, read the events of each of the [run's threads](https://platform.claude.com/docs/en/managed-agents/workflow-runs#a-runs-threads). |
-| `{"type": "stopped"}`             | The agent stopped the run, or the session was archived. The event doesn't say which, and later releases might add other causes.                                                                                                                                                                                                         |
-| `error` with `timeout_error`      | The run reached its lifetime: 24 hours by default, or the one the agent set.                                                                                                                                                                                                                                                            |
-| `error` with `program_error`      | The workflow failed. Its code failed, or it broke a rule for workflows, other than a limit. Or one of the run's threads failed, or couldn't be created, and the workflow let that end the run.                                                                                                                                          |
-| `error` with `thread_limit_error` | The run went over its [limit on the agents that a workflow starts](https://platform.claude.com/docs/en/managed-agents/workflow-runs#budgets-and-limits).                                                                                                                                                                                |
-| `error` with `unknown_error`      | The server couldn't continue the run, or the run went over one of the server's other limits on workflows.                                                                                                                                                                                                                               |
+| `result`                          | Meaning                                                                                                                                                                                                                                                                                                                                                   |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `{"type": "completed"}`           | The workflow finished running. The result doesn't say whether the work passed. A run can end `completed` even though work on its threads failed, or a thread couldn't be created. To find failed work, read the events of each of the [run's threads](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli#a-runs-threads). |
+| `{"type": "stopped"}`             | The agent stopped the run, or the session was archived. The event doesn't say which, and later releases might add other causes.                                                                                                                                                                                                                           |
+| `error` with `timeout_error`      | The run reached its lifetime: 24 hours by default, or the one the agent set.                                                                                                                                                                                                                                                                              |
+| `error` with `program_error`      | The workflow failed. Its code failed, or it broke a rule for workflows, other than a limit. Or one of the run's threads failed, or couldn't be created, and the workflow let that end the run.                                                                                                                                                            |
+| `error` with `thread_limit_error` | The run went over its [limit on the agents that a workflow starts](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli#budgets-and-limits).                                                                                                                                                                                |
+| `error` with `unknown_error`      | The server couldn't continue the run, or the run went over one of the server's other limits on workflows.                                                                                                                                                                                                                                                 |
 
 An error result looks like `{"type": "error", "error": {"type": "timeout_error", "message": "..."}}`, where `message` is safe to log. Treat an unrecognized `result.type` as a run that ended some other way, and an unrecognized `error.type` as an error. When something the session depends on fails, such as the model, an MCP server, credentials, or billing, the failing thread's stream gets a `session.error`. That doesn't end a run by itself. But if it makes one of the run's threads fail, and the workflow lets that end the run, the run ends with `program_error`.
 
-For example, you ask the [contract-review agent](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration#turn-on-dynamic-workflows) which of 300 contracts have a change-of-control clause, and the agent starts a run:
+For example, you ask the [contract-review agent](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#turn-on-dynamic-workflows) which of 300 contracts have a change-of-control clause, and the agent starts a run:
 
-1. `workflow_run.created` names the run "Find change-of-control clauses" and lists the phases "Read the contracts" and "Reconcile the findings" in `phases`. Then `workflow_run.status_running` follows.
+1. `workflow_run.created` names the run "Find change-of-control clauses" and lists the phases "Read the contracts" and "Reconcile the findings" in `phases` (java, php). Then `workflow_run.status_running` follows.
 2. Phase events mark each phase, and each thread the run creates sends `session.thread_created` with the run's `workflow_run_id`.
 3. `workflow_run.status_ended` arrives with `result: {"type": "completed"}`.
 4. The agent answers, "41 of the 300 contracts have one," and `session.status_idle` arrives with `end_turn`.
@@ -128,14 +128,14 @@ The run's last event reports how it ended:
 
 ## A run's threads
 
-Each agent in a run works in its own [session thread](https://platform.claude.com/docs/en/managed-agents/session-threads), which the server creates as the workflow needs it. You can list, read, and stream a run's threads like any child thread, and answer their tool calls from the primary stream. To stop them, ask the agent to stop the run (see [Interrupt a session with runs open](https://platform.claude.com/docs/en/managed-agents/workflow-runs#interrupt-a-session-with-runs-open)). You can't stop one by its ID, or archive one while its run is open.
+Each agent in a run works in its own [session thread](https://platform.claude.com/docs/en/managed-agents/session-threads?sdk_languages=cli), which the server creates as the workflow needs it. You can list, read, and stream a run's threads like any child thread, and answer their tool calls from the primary stream. To stop them, ask the agent to stop the run (see [Interrupt a session with runs open](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli#interrupt-a-session-with-runs-open)). You can't stop one by its ID, or archive one while its run is open.
 
 * **Grouping:** A run's thread carries the run's `workflow_run_id`, as does the `session.thread_created` event that announces it. Other threads, and the `session.thread_created` events that announce them, have `workflow_run_id` set to `null`.
-* **Agent:** `agent` shows the agent the thread runs. For an agent you listed in [`multiagent.workflows.predefined_agents`](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration#turn-on-dynamic-workflows), `agent` has that agent's `id` and `version`, as on the thread of a subagent you listed. For an agent the workflow defines (an inline agent), `agent` has `type` `inline` and no `id` or `version`. It has the system prompt the workflow wrote, not the session agent's. It also has the name and description the workflow gave it; the server assigns a name if the workflow gave none. It uses the model of the session agent, the agent the session runs. Its tools, MCP servers, and skills are a subset of the session agent's. It gets all of them, but the API doesn't guarantee that. Its tools keep their permission policies.
+* **Agent:** `agent` (java, php) shows the agent the thread runs. For an agent you listed in the [`predefined_agents` list of `workflows` (java, php)](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#turn-on-dynamic-workflows) in `multiagent` (java, php), `agent` (java, php) has that agent's `id` (java, php) and `version` (java, php), as on the thread of a subagent you listed. For an agent the workflow defines (an inline agent), `agent` (java, php) has `type` (java, php) `inline` and no `id` (java, php) or `version` (java, php). It has the system prompt the workflow wrote, not the session agent's. It also has the name and description the workflow gave it; the server assigns a name if the workflow gave none. It uses the model of the session agent, the agent the session runs. Its tools, MCP servers, and skills are a subset of the session agent's. It gets all of them, but the API doesn't guarantee that. Its tools keep their permission policies.
 * **What the threads share:** A run's threads work in the session's sandbox, so every thread works with the same files. That includes the files of a memory store the session mounts. An agent the workflow defines uses its MCP servers with the credentials the session resolves for them. Each thread has its own conversation history.
-* **Events:** A run thread's `session.thread_created`, `session.thread_status_running`, `session.thread_status_idle`, and `session.thread_status_terminated` events also arrive on the primary stream (see [Run events](https://platform.claude.com/docs/en/managed-agents/workflow-runs#run-events)). Its message events stay on its own stream. Its thread webhooks are sent as for any child thread. For what the thread's own stream records, see [Session thread events](https://platform.claude.com/docs/en/managed-agents/session-threads#session-thread-events).
+* **Events:** A run thread's `session.thread_created`, `session.thread_status_running`, `session.thread_status_idle`, and `session.thread_status_terminated` events also arrive on the primary stream (see [Run events](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli#run-events)). Its message events stay on its own stream. Its thread webhooks are sent as for any child thread. For what the thread's own stream records, see [Session thread events](https://platform.claude.com/docs/en/managed-agents/session-threads?sdk_languages=cli#session-thread-events).
 * **Phases:** No event or field says which phase a thread works in, and threads of one run can have the same `agent_name`. Follow a run's progress by its phase events, and tell its threads apart by `session_thread_id`.
-* **Thread limit:** A run's threads are exempt from the session's [child-thread limit](https://platform.claude.com/docs/en/managed-agents/session-threads#primary-thread-and-session-threads).
+* **Thread limit:** A run's threads are exempt from the session's [child-thread limit](https://platform.claude.com/docs/en/managed-agents/session-threads?sdk_languages=cli#primary-thread-and-session-threads).
 * **Starting runs:** Only the agent on the session's primary thread starts runs. An agent working in a run's thread can't start a run of its own, so runs don't nest.
 * **Archiving:** The server archives each thread no later than the end of its run. It can archive one sooner, once the thread returns its result or the run finishes with it. If the thread is still running or waiting on your client at that point, the server stops it first. An archived thread stays in the thread list, with status `terminated`. You don't need to archive a run's threads yourself. While the run is open, a request to archive one that the server hasn't archived yet returns 400 with `error.details.error_code: "workflow_run_open"`.
 * **Visibility:** You don't see the workflow's code, but you can ask the agent for the workflow, as the tip after this list describes. You also don't see the tool calls the agent makes to start and manage runs, or the result each thread returns to the workflow.
@@ -157,636 +157,52 @@ While a run is running, expect the session to stay `running`, even while none of
 
 * **Paused runs:** A paused run doesn't keep the session `running`, so the session can go idle while the run is still open. At the budget, for example, the session goes idle with `budget_reached`. The work isn't done until the run ends.
 * **Another run:** The agent can start a new run when it reads a result, so check again.
-* **Outcomes:** If you [defined an outcome](https://platform.claude.com/docs/en/managed-agents/define-outcomes), no evaluation starts while a run is open, whether it's running or idle. The turn in which the agent reads the run's result can start one.
-* **`retries_exhausted`:** The agent's turn failed on an error: retries ran out, or the error can't be retried, such as a billing failure. A run might still be running when this idle comes. If a run ended and the agent hasn't read its result yet, the server starts a new turn with no input from you. The session goes `running` again, so wait for the next idle. If the session stays idle, read the `session.error` that came before it and fix the cause. Then send a `user.message`, or read each run's `result` yourself.
+* **Outcomes:** If you [defined an outcome](https://platform.claude.com/docs/en/managed-agents/define-outcomes?sdk_languages=cli), no evaluation starts while a run is open, whether it's running or idle. The turn in which the agent reads the run's result can start one.
+* **`retries_exhausted`:** The agent's turn failed on an error: retries ran out, or the error can't be retried, such as a billing failure. A run might still be running when this idle comes. If a run ended and the agent hasn't read its result yet, the server starts a new turn with no input from you. The session goes `running` again, so wait for the next idle. If the session stays idle, read the `session.error` that came before it and fix the cause. Then send a `user.message`, or read each run's `result` (java, php) yourself.
 
 ## Follow a run
 
 This sample follows a session from your message to the agent's answer. It opens the stream and sends the message. Then it does the following:
 
 * **Tracks each run** from its `workflow_run.created` to its `workflow_run.status_ended`, and prints each phase as it starts.
-* **Answers custom tool calls** when each `agent.custom_tool_use` arrives, because a run's thread can wait on your client while the session stays `running`. If your agent's tools [ask for confirmation](https://platform.claude.com/docs/en/managed-agents/events-and-streaming#tool-confirmation), add a branch that answers each `agent.tool_use` or `agent.mcp_tool_use` whose `evaluated_permission` is `ask`. The sample has none, because a branch that allows every call would turn `always_ask` into always allow.
-* **Stops** when the [work is done](https://platform.claude.com/docs/en/managed-agents/workflow-runs#know-when-the-work-is-done): no run is open, and the session goes idle with `end_turn`. It also stops if the session terminates. On an idle with any other stop reason except `requires_action`, such as `budget_reached`, `retries_exhausted`, or `refusal`, it prints the reason and stops, so handle those in your own code. It stops on `retries_exhausted` even when the server is about to start a new turn by itself. It keeps waiting on `requires_action`, and on `end_turn` while a run is open.
+* **Answers custom tool calls** when each `agent.custom_tool_use` arrives, because a run's thread can wait on your client while the session stays `running`. If your agent's tools [ask for confirmation](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli#tool-confirmation), add a branch that answers each `agent.tool_use` or `agent.mcp_tool_use` whose `evaluated_permission` is `ask`. The sample has none, because a branch that allows every call would turn `always_ask` into always allow.
+* **Stops** when the [work is done](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli#know-when-the-work-is-done): no run is open, and the session goes idle with `end_turn`. It also stops if the session terminates. On an idle with any other stop reason except `requires_action`, such as `budget_reached`, `retries_exhausted`, or `refusal`, it prints the reason and stops, so handle those in your own code. It stops on `retries_exhausted` even when the server is about to start a new turn by itself. It keeps waiting on `requires_action`, and on `end_turn` while a run is open.
 
 <CodeGroup>
-  ```bash cURL
-  # This workflow does not translate well to a one-off shell command.
-  # Use one of the SDK examples in this code group instead.
-  ```
-
   ```bash CLI
   # This workflow does not translate well to a one-off shell command.
   # Use one of the SDK examples in this code group instead.
-  ```
-
-  ```python Python
-  open_runs: dict[str, str] = {}  # workflow_run_id -> run name
-  phase_names: dict[tuple[str, str], str] = {}  # (run ID, phase ID) -> phase name
-
-  # Open the stream first, then send the user message
-  with client.beta.sessions.events.stream(session_id) as stream:
-      client.beta.sessions.events.send(
-          session_id,
-          events=[
-              {
-                  "type": "user.message",
-                  "content": [
-                      {
-                          "type": "text",
-                          "text": "Which contracts in /contracts have a change-of-control clause?",
-                      },
-                  ],
-              },
-          ],
-      )
-
-      for event in stream:
-          match event.type:
-              case "workflow_run.created":
-                  open_runs[event.workflow_run_id] = event.name
-                  for phase in event.phases:
-                      phase_names[event.workflow_run_id, phase.id] = phase.name
-                  print(f"Run started: {event.name}")
-              case "workflow_run.phase_started":
-                  phase_id = event.workflow_run_phase_id
-                  key = (event.workflow_run_id, phase_id)
-                  print(f"  Phase: {phase_names.get(key, phase_id)}")
-              case "workflow_run.status_ended":
-                  name = open_runs.pop(event.workflow_run_id, event.workflow_run_id)
-                  print(f"Run ended: {name} ({event.result.type})")
-              case "agent.custom_tool_use":
-                  # Answer when the event arrives. A run's thread can wait on your
-                  # client while the session stays running.
-                  result = call_tool(event.name, event.input)
-                  try:
-                      client.beta.sessions.events.send(
-                          session_id,
-                          events=[
-                              {
-                                  "type": "user.custom_tool_result",
-                                  "custom_tool_use_id": event.id,
-                                  "content": [{"type": "text", "text": result}],
-                              },
-                          ],
-                      )
-                  except anthropic.BadRequestError as error:
-                      # The server refuses a result that comes too late, after it
-                      # archived the call's thread. Keep following the run.
-                      print(f"  Answer to {event.name} refused: {error.message}")
-              case "session.status_idle":
-                  # Done when every run has ended and the agent has finished its turn
-                  if not open_runs and event.stop_reason.type == "end_turn":
-                      break
-                  # An idle with requires_action waits on your client, so keep reading.
-                  # On any other stop reason, print it and stop.
-                  if event.stop_reason.type not in ("end_turn", "requires_action"):
-                      print(f"Session idle: {event.stop_reason.type}")
-                      break
-              case "session.status_terminated":
-                  break
-  ```
-
-  ```typescript TypeScript
-  const openRuns = new Map<string, string>(); // workflow_run_id -> run name
-  const phaseNames = new Map<string, string>(); // "run ID:phase ID" -> phase name
-
-  // Open the stream first, then send the user message
-  const stream = await client.beta.sessions.events.stream(sessionId);
-  await client.beta.sessions.events.send(sessionId, {
-    events: [
-      {
-        type: "user.message",
-        content: [{ type: "text", text: "Which contracts in /contracts have a change-of-control clause?" }],
-      },
-    ],
-  });
-
-  events: for await (const event of stream) {
-    switch (event.type) {
-      case "workflow_run.created":
-        openRuns.set(event.workflow_run_id, event.name);
-        for (const phase of event.phases) {
-          phaseNames.set(`${event.workflow_run_id}:${phase.id}`, phase.name);
-        }
-        console.log(`Run started: ${event.name}`);
-        break;
-      case "workflow_run.phase_started": {
-        const phaseId = event.workflow_run_phase_id;
-        const phaseName = phaseNames.get(`${event.workflow_run_id}:${phaseId}`);
-        console.log(`  Phase: ${phaseName ?? phaseId}`);
-        break;
-      }
-      case "workflow_run.status_ended": {
-        const name = openRuns.get(event.workflow_run_id) ?? event.workflow_run_id;
-        openRuns.delete(event.workflow_run_id);
-        console.log(`Run ended: ${name} (${event.result.type})`);
-        break;
-      }
-      case "agent.custom_tool_use": {
-        // Answer when the event arrives. A run's thread can wait on your
-        // client while the session stays running.
-        const result = await callTool(event.name, event.input);
-        try {
-          await client.beta.sessions.events.send(sessionId, {
-            events: [
-              {
-                type: "user.custom_tool_result",
-                custom_tool_use_id: event.id,
-                content: [{ type: "text", text: result }],
-              },
-            ],
-          });
-        } catch (error) {
-          // The server refuses a result that comes too late, after it
-          // archived the call's thread. Keep following the run.
-          if (!(error instanceof Anthropic.BadRequestError)) throw error;
-          console.log(`  Answer to ${event.name} refused: ${error.message}`);
-        }
-        break;
-      }
-      case "session.status_idle": {
-        // Done when every run has ended and the agent has finished its turn
-        const reason = event.stop_reason.type;
-        if (openRuns.size === 0 && reason === "end_turn") {
-          break events;
-        }
-        // An idle with requires_action waits on your client, so keep reading.
-        // On any other stop reason, print it and stop.
-        if (reason !== "end_turn" && reason !== "requires_action") {
-          console.log(`Session idle: ${reason}`);
-          break events;
-        }
-        break;
-      }
-      case "session.status_terminated":
-        break events;
-    }
-  }
-  ```
-
-  ```csharp C#
-  var openRuns = new Dictionary<string, string>(); // workflow_run_id -> run name
-  var phaseNames = new Dictionary<(string, string), string>(); // (run ID, phase ID) -> phase name
-
-  // Open the stream first, then send the user message. The raw-response call
-  // opens the stream now. The plain call would wait for the first read.
-  using var stream = await client.Beta.Sessions.Events.WithRawResponse.StreamStreaming(sessionId);
-  await client.Beta.Sessions.Events.Send(sessionId, new()
-  {
-      Events =
-      [
-          new BetaManagedAgentsUserMessageEventParams
-          {
-              Type = BetaManagedAgentsUserMessageEventParamsType.UserMessage,
-              Content =
-              [
-                  new BetaManagedAgentsTextBlock
-                  {
-                      Type = BetaManagedAgentsTextBlockType.Text,
-                      Text = "Which contracts in /contracts have a change-of-control clause?",
-                  },
-              ],
-          },
-      ],
-  });
-
-  await foreach (var streamEvent in stream.Enumerate())
-  {
-      if (streamEvent.Value is BetaManagedAgentsWorkflowRunCreatedEvent created)
-      {
-          openRuns[created.WorkflowRunID] = created.Name;
-          foreach (var listed in created.Phases)
-          {
-              phaseNames[(created.WorkflowRunID, listed.ID)] = listed.Name;
-          }
-          Console.WriteLine($"Run started: {created.Name}");
-      }
-      else if (streamEvent.Value is BetaManagedAgentsWorkflowRunPhaseStartedEvent phase)
-      {
-          var phaseId = phase.WorkflowRunPhaseID;
-          var key = (phase.WorkflowRunID, phaseId);
-          Console.WriteLine($"  Phase: {phaseNames.GetValueOrDefault(key, phaseId)}");
-      }
-      else if (streamEvent.Value is BetaManagedAgentsWorkflowRunStatusEndedEvent ended)
-      {
-          var name = openRuns.GetValueOrDefault(ended.WorkflowRunID, ended.WorkflowRunID);
-          openRuns.Remove(ended.WorkflowRunID);
-          var outcome = ended.Result.Value switch
-          {
-              BetaManagedAgentsWorkflowRunResultCompleted => "completed",
-              BetaManagedAgentsWorkflowRunResultStopped => "stopped",
-              BetaManagedAgentsWorkflowRunResultError => "error",
-              _ => "ended",
-          };
-          Console.WriteLine($"Run ended: {name} ({outcome})");
-      }
-      else if (streamEvent.Value is BetaManagedAgentsAgentCustomToolUseEvent toolUse)
-      {
-          // Answer when the event arrives. A run's thread can wait on your
-          // client while the session stays running.
-          var result = await CallTool(toolUse.Name, toolUse.Input);
-          try
-          {
-              await client.Beta.Sessions.Events.Send(sessionId, new()
-              {
-                  Events =
-                  [
-                      new BetaManagedAgentsUserCustomToolResultEventParams
-                      {
-                          Type = BetaManagedAgentsUserCustomToolResultEventParamsType.UserCustomToolResult,
-                          CustomToolUseID = toolUse.ID,
-                          Content =
-                          [
-                              new BetaManagedAgentsTextBlock
-                              {
-                                  Type = BetaManagedAgentsTextBlockType.Text,
-                                  Text = result,
-                              },
-                          ],
-                      },
-                  ],
-              });
-          }
-          catch (AnthropicBadRequestException error)
-          {
-              // The server refuses a result that comes too late, after it
-              // archived the call's thread. Keep following the run.
-              Console.WriteLine($"  Answer to {toolUse.Name} refused: {error.Message}");
-          }
-      }
-      else if (streamEvent.Value is BetaManagedAgentsSessionStatusIdleEvent idle)
-      {
-          // Done when every run has ended and the agent has finished its turn
-          var finished = idle.StopReason?.Value is BetaManagedAgentsSessionEndTurn;
-          if (openRuns.Count == 0 && finished)
-          {
-              break;
-          }
-          // An idle with requires_action waits on your client, so keep reading.
-          // On any other stop reason, print it and stop.
-          if (!finished && idle.StopReason?.Value is not BetaManagedAgentsSessionRequiresAction)
-          {
-              var reason = idle.StopReason?.Json.GetProperty("type").GetString();
-              Console.WriteLine($"Session idle: {reason}");
-              break;
-          }
-      }
-      else if (streamEvent.Value is BetaManagedAgentsSessionStatusTerminatedEvent)
-      {
-          break;
-      }
-  }
-  ```
-
-  ```go Go
-  	openRuns := map[string]string{}   // workflow_run_id -> run name
-  	phaseNames := map[[2]string]string{} // {run ID, phase ID} -> phase name
-
-  	// Open the stream first, then send the user message
-  	stream := client.Beta.Sessions.Events.StreamEvents(ctx, sessionID, anthropic.BetaSessionEventStreamParams{})
-  	defer stream.Close()
-
-  	if _, err := client.Beta.Sessions.Events.Send(ctx, sessionID, anthropic.BetaSessionEventSendParams{
-  		Events: []anthropic.BetaManagedAgentsEventParamsUnion{{
-  			OfUserMessage: &anthropic.BetaManagedAgentsUserMessageEventParams{
-  				Type: anthropic.BetaManagedAgentsUserMessageEventParamsTypeUserMessage,
-  				Content: []anthropic.BetaManagedAgentsUserMessageEventParamsContentUnion{{
-  					OfText: &anthropic.BetaManagedAgentsTextBlockParam{
-  						Type: anthropic.BetaManagedAgentsTextBlockTypeText,
-  						Text: "Which contracts in /contracts have a change-of-control clause?",
-  					},
-  				}},
-  			},
-  		}},
-  	}); err != nil {
-  		panic(err)
-  	}
-
-  events:
-  	for stream.Next() {
-  		switch event := stream.Current().AsAny().(type) {
-  		case anthropic.BetaManagedAgentsWorkflowRunCreatedEvent:
-  			openRuns[event.WorkflowRunID] = event.Name
-  			for _, phase := range event.Phases {
-  				phaseNames[[2]string{event.WorkflowRunID, phase.ID}] = phase.Name
-  			}
-  			fmt.Printf("Run started: %s\n", event.Name)
-  		case anthropic.BetaManagedAgentsWorkflowRunPhaseStartedEvent:
-  			phaseName, ok := phaseNames[[2]string{event.WorkflowRunID, event.WorkflowRunPhaseID}]
-  			if !ok {
-  				phaseName = event.WorkflowRunPhaseID
-  			}
-  			fmt.Printf("  Phase: %s\n", phaseName)
-  		case anthropic.BetaManagedAgentsWorkflowRunStatusEndedEvent:
-  			name, ok := openRuns[event.WorkflowRunID]
-  			if !ok {
-  				name = event.WorkflowRunID
-  			}
-  			delete(openRuns, event.WorkflowRunID)
-  			fmt.Printf("Run ended: %s (%s)\n", name, event.Result.Type)
-  		case anthropic.BetaManagedAgentsAgentCustomToolUseEvent:
-  			// Answer when the event arrives. A run's thread can wait on your
-  			// client while the session stays running.
-  			result := callTool(event.Name, event.Input)
-  			if _, err := client.Beta.Sessions.Events.Send(ctx, sessionID, anthropic.BetaSessionEventSendParams{
-  				Events: []anthropic.BetaManagedAgentsEventParamsUnion{{
-  					OfUserCustomToolResult: &anthropic.BetaManagedAgentsUserCustomToolResultEventParams{
-  						Type:            anthropic.BetaManagedAgentsUserCustomToolResultEventParamsTypeUserCustomToolResult,
-  						CustomToolUseID: event.ID,
-  						Content: []anthropic.BetaManagedAgentsUserCustomToolResultEventParamsContentUnion{{
-  							OfText: &anthropic.BetaManagedAgentsTextBlockParam{
-  								Type: anthropic.BetaManagedAgentsTextBlockTypeText,
-  								Text: result,
-  							},
-  						}},
-  					},
-  				}},
-  			}); err != nil {
-  				// The server refuses a result that comes too late, after it
-  				// archived the call's thread. Keep following the run.
-  				var apiErr *anthropic.Error
-  				if !errors.As(err, &apiErr) || apiErr.StatusCode != http.StatusBadRequest {
-  					panic(err)
-  				}
-  				fmt.Printf("  Answer to %s refused: %v\n", event.Name, err)
-  			}
-  		case anthropic.BetaManagedAgentsSessionStatusIdleEvent:
-  			// Done when every run has ended and the agent has finished its turn
-  			switch event.StopReason.AsAny().(type) {
-  			case anthropic.BetaManagedAgentsSessionEndTurn:
-  				if len(openRuns) == 0 {
-  					break events
-  				}
-  			// An idle with requires_action waits on your client, so keep reading.
-  			// On any other stop reason, print it and stop.
-  			case anthropic.BetaManagedAgentsSessionRequiresAction:
-  			default:
-  				fmt.Printf("Session idle: %s\n", event.StopReason.Type)
-  				break events
-  			}
-  		case anthropic.BetaManagedAgentsSessionStatusTerminatedEvent:
-  			break events
-  		}
-  	}
-  	if err := stream.Err(); err != nil {
-  		panic(err)
-  	}
-  ```
-
-  ```java Java
-  var openRuns = new HashMap<String, String>(); // workflow_run_id -> run name
-  var phaseNames = new HashMap<String, String>(); // "run ID:phase ID" -> phase name
-
-  // Open the stream first, then send the user message
-  try (var stream = client.beta().sessions().events().streamStreaming(sessionId)) {
-      client.beta().sessions().events().send(
-          sessionId,
-          EventSendParams.builder()
-              .addEvent(BetaManagedAgentsUserMessageEventParams.builder()
-                  .type(BetaManagedAgentsUserMessageEventParams.Type.USER_MESSAGE)
-                  .addTextContent("Which contracts in /contracts have a change-of-control clause?")
-                  .build())
-              .build()
-      );
-
-      Iterable<BetaManagedAgentsStreamSessionEvents> events = stream.stream()::iterator;
-      events:
-      for (var event : events) {
-          switch (event.type().value()) {
-              case WORKFLOW_RUN_CREATED -> {
-                  var created = event.asWorkflowRunCreated();
-                  openRuns.put(created.workflowRunId(), created.name());
-                  created.phases().forEach(phase ->
-                      phaseNames.put(created.workflowRunId() + ":" + phase.id(), phase.name()));
-                  IO.println("Run started: " + created.name());
-              }
-              case WORKFLOW_RUN_PHASE_STARTED -> {
-                  var started = event.asWorkflowRunPhaseStarted();
-                  var phaseId = started.workflowRunPhaseId();
-                  var key = started.workflowRunId() + ":" + phaseId;
-                  IO.println("  Phase: " + phaseNames.getOrDefault(key, phaseId));
-              }
-              case WORKFLOW_RUN_STATUS_ENDED -> {
-                  var ended = event.asWorkflowRunStatusEnded();
-                  var name = openRuns.getOrDefault(ended.workflowRunId(), ended.workflowRunId());
-                  openRuns.remove(ended.workflowRunId());
-                  var result = ended.result();
-                  var outcome = result.isCompleted() ? "completed"
-                      : result.isStopped() ? "stopped"
-                      : result.isError() ? "error"
-                      : "ended";
-                  IO.println("Run ended: " + name + " (" + outcome + ")");
-              }
-              case AGENT_CUSTOM_TOOL_USE -> {
-                  // Answer when the event arrives. A run's thread can wait on your
-                  // client while the session stays running.
-                  var toolUse = event.asAgentCustomToolUse();
-                  var result = callTool(toolUse.name(), toolUse.input());
-                  try {
-                      client.beta().sessions().events().send(
-                          sessionId,
-                          EventSendParams.builder()
-                              .addEvent(BetaManagedAgentsUserCustomToolResultEventParams.builder()
-                                  .type(BetaManagedAgentsUserCustomToolResultEventParams.Type.USER_CUSTOM_TOOL_RESULT)
-                                  .customToolUseId(toolUse.id())
-                                  .addTextContent(result)
-                                  .build())
-                              .build());
-                  } catch (BadRequestException e) {
-                      // The server refuses a result that comes too late, after it
-                      // archived the call's thread. Keep following the run.
-                      IO.println("  Answer to " + toolUse.name() + " refused: " + e.getMessage());
-                  }
-              }
-              case SESSION_STATUS_IDLE -> {
-                  // Done when every run has ended and the agent has finished its turn
-                  var stopReason = event.asSessionStatusIdle().stopReason();
-                  if (openRuns.isEmpty() && stopReason.isEndTurn()) {
-                      break events;
-                  }
-                  // An idle with requires_action waits on your client, so keep reading.
-                  // On any other stop reason, print it and stop.
-                  if (!stopReason.isEndTurn() && !stopReason.isRequiresAction()) {
-                      IO.println("Session idle: " + stopReason.type().asString());
-                      break events;
-                  }
-              }
-              case SESSION_STATUS_TERMINATED -> {
-                  break events;
-              }
-              default -> {}
-          }
-      }
-  }
-  ```
-
-  ```php PHP
-  $openRuns = []; // workflow_run_id => run name
-  $phaseNames = []; // run ID => [phase ID => phase name]
-
-  // Open the stream first, then send the user message
-  $stream = $client->beta->sessions->events->streamStream($sessionId);
-  $client->beta->sessions->events->send(
-      $sessionId,
-      events: [
-          [
-              'type' => 'user.message',
-              'content' => [
-                  ['type' => 'text', 'text' => 'Which contracts in /contracts have a change-of-control clause?'],
-              ],
-          ],
-      ],
-  );
-
-  foreach ($stream as $event) {
-      switch (true) {
-          case $event instanceof \Anthropic\Beta\Sessions\Events\ManagedAgentsWorkflowRunCreatedEvent:
-              $openRuns[$event->workflowRunID] = $event->name;
-              foreach ($event->phases as $phase) {
-                  $phaseNames[$event->workflowRunID][$phase->id] = $phase->name;
-              }
-              echo "Run started: {$event->name}", PHP_EOL;
-              break;
-          case $event instanceof \Anthropic\Beta\Sessions\Events\ManagedAgentsWorkflowRunPhaseStartedEvent:
-              $phaseId = $event->workflowRunPhaseID;
-              echo '  Phase: ', $phaseNames[$event->workflowRunID][$phaseId] ?? $phaseId, PHP_EOL;
-              break;
-          case $event instanceof \Anthropic\Beta\Sessions\Events\ManagedAgentsWorkflowRunStatusEndedEvent:
-              $name = $openRuns[$event->workflowRunID] ?? $event->workflowRunID;
-              unset($openRuns[$event->workflowRunID]);
-              echo "Run ended: {$name} ({$event->result->type})", PHP_EOL;
-              break;
-          case $event instanceof \Anthropic\Beta\Sessions\Events\ManagedAgentsAgentCustomToolUseEvent:
-              // Answer when the event arrives. A run's thread can wait on your
-              // client while the session stays running.
-              $result = callTool($event->name, $event->input);
-              try {
-                  $client->beta->sessions->events->send(
-                      $sessionId,
-                      events: [
-                          [
-                              'type' => 'user.custom_tool_result',
-                              'custom_tool_use_id' => $event->id,
-                              'content' => [['type' => 'text', 'text' => $result]],
-                          ],
-                      ],
-                  );
-              } catch (\Anthropic\Core\Exceptions\BadRequestException $error) {
-                  // The server refuses a result that comes too late, after it
-                  // archived the call's thread. Keep following the run.
-                  echo "  Answer to {$event->name} refused: {$error->getMessage()}", PHP_EOL;
-              }
-              break;
-          case $event instanceof \Anthropic\Beta\Sessions\Events\ManagedAgentsSessionStatusIdleEvent:
-              // Done when every run has ended and the agent has finished its turn
-              $finished = $event->stopReason->type === 'end_turn';
-              if (!$openRuns && $finished) {
-                  break 2;
-              }
-              // An idle with requires_action waits on your client, so keep reading.
-              // On any other stop reason, print it and stop.
-              if (!$finished && $event->stopReason->type !== 'requires_action') {
-                  echo "Session idle: {$event->stopReason->type}", PHP_EOL;
-                  break 2;
-              }
-              break;
-          case $event instanceof \Anthropic\Beta\Sessions\Events\ManagedAgentsSessionStatusTerminatedEvent:
-              break 2;
-      }
-  }
-  $stream->close();
-  ```
-
-  ```ruby Ruby
-  open_runs = {} # workflow_run_id => run name
-  phase_names = {} # [run ID, phase ID] => phase name
-
-  # Open the stream first, then send the user message
-  stream = client.beta.sessions.events.stream_events(session_id)
-
-  client.beta.sessions.events.send_(
-    session_id,
-    events: [{
-      type: "user.message",
-      content: [{type: "text", text: "Which contracts in /contracts have a change-of-control clause?"}]
-    }]
-  )
-
-  stream.each do |event|
-    case event
-    when Anthropic::Beta::Sessions::BetaManagedAgentsWorkflowRunCreatedEvent
-      open_runs[event.workflow_run_id] = event.name
-      event.phases.each { |phase| phase_names[[event.workflow_run_id, phase.id]] = phase.name }
-      puts "Run started: #{event.name}"
-    when Anthropic::Beta::Sessions::BetaManagedAgentsWorkflowRunPhaseStartedEvent
-      phase_id = event.workflow_run_phase_id
-      puts "  Phase: #{phase_names.fetch([event.workflow_run_id, phase_id], phase_id)}"
-    when Anthropic::Beta::Sessions::BetaManagedAgentsWorkflowRunStatusEndedEvent
-      name = open_runs.delete(event.workflow_run_id) || event.workflow_run_id
-      puts "Run ended: #{name} (#{event.result.type})"
-    when Anthropic::Beta::Sessions::BetaManagedAgentsAgentCustomToolUseEvent
-      # Answer when the event arrives. A run's thread can wait on your
-      # client while the session stays running.
-      result = call_tool.call(event.name, event.input)
-      begin
-        client.beta.sessions.events.send_(
-          session_id,
-          events: [{
-            type: "user.custom_tool_result",
-            custom_tool_use_id: event.id,
-            content: [{type: "text", text: result}]
-          }]
-        )
-      rescue Anthropic::Errors::BadRequestError => error
-        # The server refuses a result that comes too late, after it archived
-        # the call's thread. Keep following the run.
-        puts "  Answer to #{event.name} refused: #{error.message}"
-      end
-    when Anthropic::Beta::Sessions::BetaManagedAgentsSessionStatusIdleEvent
-      reason = event.stop_reason.type.to_sym
-      # Done when every run has ended and the agent has finished its turn
-      break if open_runs.empty? && reason == :end_turn
-      # An idle with requires_action waits on your client, so keep reading.
-      # On any other stop reason, print it and stop.
-      unless %i[end_turn requires_action].include?(reason)
-        puts "Session idle: #{reason}"
-        break
-      end
-    when Anthropic::Beta::Sessions::BetaManagedAgentsSessionStatusTerminatedEvent
-      break
-    end
-  end
   ```
 </CodeGroup>
 
 ## Interrupt a session with runs open
 
-Send [`user.interrupt`](https://platform.claude.com/docs/en/managed-agents/events-and-streaming#interrupt-the-agent) with no `session_thread_id`, or with the primary thread's ID. It stops the agent's turn. It ends no run. The session's runs might pause or keep running, and their events might not show which. A paused run's lifetime keeps passing, so the run can end with `timeout_error` while it's paused.
+Send [`user.interrupt`](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli#interrupt-the-agent) with no `session_thread_id`, or with the primary thread's ID. It stops the agent's turn. It ends no run. The session's runs might pause or keep running, and their events might not show which. A paused run's lifetime keeps passing, so the run can end with `timeout_error` while it's paused.
 
-* **Waiting tool calls:** After the interrupt, a run thread's tool call might still wait on your client. Answer each one. To cancel a call that asks for confirmation, deny it. To cancel a custom tool call, send a result with `is_error` set to `true` and a text in `content` that says why. While the session is `idle` with `requires_action`, a `user.message` returns 400, so answer the calls first.
+* **Waiting tool calls:** After the interrupt, a run thread's tool call might still wait on your client. Answer each one. To cancel a call that asks for confirmation, deny it. To cancel a custom tool call, send a result with `is_error` set to `true` and a text in `content` (java, php) that says why. While the session is `idle` with `requires_action`, a `user.message` returns 400, so answer the calls first.
 * **To stop the runs:** Send a `user.message` asking the agent to stop its runs. A stopped run ends with `result` `{"type": "stopped"}`. While the session is `idle` with `budget_reached`, a `user.message` returns 400 until you raise or remove the budget. Raising or removing it also resumes the runs that the budget paused, unless the interrupt also paused them.
 * **To continue:** Send a `user.message` asking the agent to continue its runs. After an interrupt, the runs might wait for this message. If the session is `idle` with `budget_reached`, raise or remove the budget first.
 * **Run results:** A run that ends after the interrupt still sends `workflow_run.status_ended`.
 
 ## While a run is open
 
-| Request                                                     | While a run is open                                                                                                                                                                                                                                                          | What to do                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Archive or delete the session                               | Might return 400 while a run is open, whatever the session's status. The error's `error.details.error_code` can be `"workflow_run_open"`. Might also succeed.                                                                                                                | Ask the agent to stop its runs, or wait until each run has ended. A paused run ends by itself only when its lifetime passes. Then send the request once the session is `idle`. An archive that succeeds ends each open run with `{"type": "stopped"}`. After an archive, a run's `workflow_run.status_ended`, and the `workflow_run.phase_ended` of a phase that was still open, don't arrive on the stream. List the session's events to read them. After a delete that succeeds, no `workflow_run` event reports the end of the session's runs.                                                                                                                                                          |
-| Archive one of a run's threads                              | Returns 400 with `error.details.error_code: "workflow_run_open"` while the run is open, running or idle, unless the server has already archived the thread.                                                                                                                  | Nothing. The server archives a run's threads.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| Update the session's `agent`                                | Returns 400 with `error.details.error_code: "workflow_run_open"` while any run is open, even a paused one. Updating the underlying agent is still accepted, and the session keeps its own copy. A request that also sends other fields, such as `budget`, is rejected whole. | Wait until every run has its `workflow_run.status_ended`, or ask the agent to stop its runs.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| Answer a tool call or tool confirmation from a run's thread | Allowed. It arrives on the primary stream, and its `session_thread_id` names the thread.                                                                                                                                                                                     | Answer as soon as the event arrives, passing the event's `id` as `tool_use_id` or `custom_tool_use_id`. Don't wait for `session.status_idle`: the session can stay `running` while the run's other threads work. Once the server has archived the thread, a tool result for one of its calls has no effect, and it can return 400. When a tool result returns 400, find the call's thread in the thread list. If its status is `terminated`, the result came too late, so drop it. Send each tool result in a request of its own, because the server refuses a whole request when it refuses one of its events. A tool confirmation that comes too late returns 200, which doesn't mean that the tool ran. |
+| Request                                                     | While a run is open                                                                                                                                                                                                                                                                      | What to do                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Archive or delete the session                               | Might return 400 while a run is open, whatever the session's status. The error's `error.details.error_code` can be `"workflow_run_open"`. Might also succeed.                                                                                                                            | Ask the agent to stop its runs, or wait until each run has ended. A paused run ends by itself only when its lifetime passes. Then send the request once the session is `idle`. An archive that succeeds ends each open run with `{"type": "stopped"}`. After an archive, a run's `workflow_run.status_ended`, and the `workflow_run.phase_ended` of a phase that was still open, don't arrive on the stream. List the session's events to read them. After a delete that succeeds, no `workflow_run` event reports the end of the session's runs.                                                                                                                                                                      |
+| Archive one of a run's threads                              | Returns 400 with `error.details.error_code: "workflow_run_open"` while the run is open, running or idle, unless the server has already archived the thread.                                                                                                                              | Nothing. The server archives a run's threads.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Update the session's `agent` (java, php)                    | Returns 400 with `error.details.error_code: "workflow_run_open"` while any run is open, even a paused one. Updating the underlying agent is still accepted, and the session keeps its own copy. A request that also sends other fields, such as `budget` (java, php), is rejected whole. | Wait until every run has its `workflow_run.status_ended`, or ask the agent to stop its runs.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Answer a tool call or tool confirmation from a run's thread | Allowed. It arrives on the primary stream, and its `session_thread_id` names the thread.                                                                                                                                                                                                 | Answer as soon as the event arrives, passing the event's `id` (java, php) as `tool_use_id` or `custom_tool_use_id`. Don't wait for `session.status_idle`: the session can stay `running` while the run's other threads work. Once the server has archived the thread, a tool result for one of its calls has no effect, and it can return 400. When a tool result returns 400, find the call's thread in the thread list. If its status is `terminated`, the result came too late, so drop it. Send each tool result in a request of its own, because the server refuses a whole request when it refuses one of its events. A tool confirmation that comes too late returns 200, which doesn't mean that the tool ran. |
 
 ### Rebuild run state after you reconnect
 
-Rebuild each run's state from the session's events. The stream doesn't replay what you missed: a new connection delivers only events emitted after it opened. So list the events with a `types` filter, one `types[]` entry for each event type, as in [List past events](https://platform.claude.com/docs/en/managed-agents/events-and-streaming#list-past-events). Pass each response's `next_page` as `page` until `next_page` is `null` or missing. `workflow_run.created`, `workflow_run.status_running`, `workflow_run.status_idle`, and `workflow_run.status_ended` give each run's state, except that a run paused after an interrupt might still show as running. `workflow_run.phase_started` and `workflow_run.phase_ended` rebuild progress. A run with no status event yet hasn't started to execute. No endpoint lists runs.
+Rebuild each run's state from the session's events. The stream doesn't replay what you missed: a new connection delivers only events emitted after it opened. So list the events with a `types` (java, php) filter, one entry for each event type, as in [List past events](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli#list-past-events). Pass each response's `next_page` as `page` (java, php) until `next_page` is `null` or missing. `workflow_run.created`, `workflow_run.status_running`, `workflow_run.status_idle`, and `workflow_run.status_ended` give each run's state, except that a run paused after an interrupt might still show as running. `workflow_run.phase_started` and `workflow_run.phase_ended` rebuild progress. A run with no status event yet hasn't started to execute. No endpoint lists runs.
 
 ## Budgets and limits
 
-A run's model requests count toward the [session's budget](https://platform.claude.com/docs/en/managed-agents/budgets). A run has no price of its own. The tokens its agents use are billed like the session's other tokens, at each model's rates. For all of a session's charges, see [Claude Managed Agents pricing](https://platform.claude.com/docs/en/about-claude/pricing#claude-managed-agents-pricing).
+A run's model requests count toward the [session's budget](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli). A run has no price of its own. The tokens its agents use are billed like the session's other tokens, at each model's rates. For all of a session's charges, see [Claude Managed Agents pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#claude-managed-agents-pricing).
 
-* **One run's usage:** List the session's threads and add up the token counts in `usage` of the threads with the run's `workflow_run_id`. The list includes archived threads, whose status is `terminated`, so a finished run's threads are counted. Pass each response's `next_page` as `page` until `next_page` is `null` or missing, and skip a thread whose `usage` is `null`. If you add up the threads' `list_cost` instead, the total leaves out session runtime, and each figure is rounded separately.
-* **At the budget:** Every open run pauses, and the session reports `idle` with `budget_reached`, or `requires_action` if a tool call is also waiting. Each thread finishes the model request it already started, so a run can pass the budget by one request for each working thread. Raising or removing the budget resumes the runs it paused, unless an interrupt also paused them. If the session's usage includes a model with no list price, only removing the budget does; see [Models without a list price](https://platform.claude.com/docs/en/managed-agents/budgets#models-without-a-list-price).
+* **One run's usage:** List the session's threads and add up the token counts in `usage` (java, php) of the threads with the run's `workflow_run_id`. The list includes archived threads, whose status is `terminated`, so a finished run's threads are counted. Pass each response's `next_page` as `page` (java, php) until `next_page` is `null` or missing, and skip a thread whose `usage` (java, php) is `null`. If you add up the threads' `list_cost` instead, the total leaves out session runtime, and each figure is rounded separately.
+* **At the budget:** Every open run pauses, and the session reports `idle` with `budget_reached`, or `requires_action` if a tool call is also waiting. Each thread finishes the model request it already started, so a run can pass the budget by one request for each working thread. Raising or removing the budget resumes the runs it paused, unless an interrupt also paused them. If the session's usage includes a model with no list price, only removing the budget does; see [Models without a list price](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli#models-without-a-list-price).
 
 | Limit                                              | Value                                               | At the limit                                                                                                                                                                                                               |
 | -------------------------------------------------- | --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -795,7 +211,7 @@ A run's model requests count toward the [session's budget](https://platform.clau
 | Run lifetime                                       | 24 hours by default, or the lifetime the agent sets | The run ends with `timeout_error`. No event says what lifetime the agent set.                                                                                                                                              |
 | Runs open at once in a session                     | 10 by default                                       | The server refuses to start another run. The agent's tool call gets an error, and you get a `workflow_run.error` whose `error.type` is `max_workflow_runs_error`. Idle runs count toward the limit.                        |
 
-The server shortens a run's or phase's `name` to 64 characters and its `description` to 256. The server has other limits on workflows, and rules for them, that aren't listed here. What you see depends on when the server finds the problem:
+The server shortens a run's or phase's `name` (java, php) to 64 characters and its `description` (java, php) to 256. The server has other limits on workflows, and rules for them, that aren't listed here. What you see depends on when the server finds the problem:
 
 | What happens                                                                                       | What you see                                                                   |
 | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
@@ -809,10 +225,10 @@ A session can start any number of runs over its life.
 
 A run's work counts toward rate limits that your organization already has.
 
-| What                                                                                  | Counts toward                                                                                                                                      | What to do                                                                                                                                      |
-| ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Your client's requests to retrieve or list the session, its threads, and their events | The read limit for [Managed Agents endpoints](https://platform.claude.com/docs/en/managed-agents/reference#rate-limits)                            | Follow a run on the session's event stream instead of polling.                                                                                  |
-| Model requests from a run's threads                                                   | Your [Messages API rate limits](https://platform.claude.com/docs/en/api/rate-limits) for the model each thread uses, along with your other traffic | Leave room for a run in those limits, or [request higher limits](https://platform.claude.com/docs/en/api/rate-limits#requesting-higher-limits). |
+| What                                                                                  | Counts toward                                                                                                                                                        | What to do                                                                                                                                                        |
+| ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Your client's requests to retrieve or list the session, its threads, and their events | The read limit for [Managed Agents endpoints](https://platform.claude.com/docs/en/managed-agents/reference?sdk_languages=cli#rate-limits)                            | Follow a run on the session's event stream instead of polling.                                                                                                    |
+| Model requests from a run's threads                                                   | Your [Messages API rate limits](https://platform.claude.com/docs/en/api/rate-limits?sdk_languages=cli) for the model each thread uses, along with your other traffic | Leave room for a run in those limits, or [request higher limits](https://platform.claude.com/docs/en/api/rate-limits?sdk_languages=cli#requesting-higher-limits). |
 
 When a model request from one of a run's threads is rate limited, or the model is overloaded, the thread's own stream can get a `session.error` of type `model_rate_limited_error` or `model_overloaded_error`:
 

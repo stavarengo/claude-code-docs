@@ -8,6 +8,10 @@ Claude Developer Platform Console (Requires login)
 
 https://platform.claude.com
 
+## MCP server
+
+Connect an MCP client to https://platform.claude.com/docs/mcp (Streamable HTTP transport) to search and read these docs. The server card is at https://platform.claude.com/docs/mcp/server-card.
+
 ## Available Languages on Website
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:

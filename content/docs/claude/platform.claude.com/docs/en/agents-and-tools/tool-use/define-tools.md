@@ -6,25 +6,25 @@ description: Specify tool schemas, write effective descriptions, and control whe
 
 ## Prerequisites
 
-* Familiarity with the [tool use overview](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview)
+* Familiarity with the [tool use overview](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=cli)
 * A Claude API key and a working SDK or cURL setup
 
 <Tip>
-  If using Claude with tool use and thinking, see [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking) for more information.
+  If using Claude with tool use and thinking, see [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli) for more information.
 </Tip>
 
 ## Specifying client tools
 
-Client tools are specified in the `tools` top-level parameter of the API request. Anthropic-schema client tools, such as the bash and text editor tools, are declared by a date-versioned `type`; see each tool's page, linked from the [Tool reference](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference), for the fields it accepts. The computer use and browser use tools are [client toolsets](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference#client-toolsets): a single entry with no `name` that declares a fixed set of member tools. A user-defined tool definition includes:
+Client tools are specified in the `tools` top-level parameter of the API request. Anthropic-schema client tools, such as the bash and text editor tools, are declared by a date-versioned `type`; see each tool's page, linked from the [Tool reference](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference?sdk_languages=cli), for the fields it accepts. The computer use and browser use tools are [client toolsets](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference?sdk_languages=cli#client-toolsets): a single entry with no `name` that declares a fixed set of member tools. A user-defined tool definition includes:
 
-| Parameter        | Description                                                                                                                                                                                                                            |
-| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`           | The name of the tool. Must match the regex `^[a-zA-Z0-9_-]{1,128}$`.                                                                                                                                                                   |
-| `description`    | A detailed plaintext description of what the tool does, when it should be used, and how it behaves.                                                                                                                                    |
-| `input_schema`   | A [JSON Schema](https://json-schema.org/) object defining the expected parameters for the tool.                                                                                                                                        |
-| `input_examples` | (Optional) An array of example input objects to help Claude understand how to use the tool. See [Providing tool use examples](https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools#providing-tool-use-examples). |
+| Parameter        | Description                                                                                                                                                                                                                                              |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`           | The name of the tool. Must match the regex `^[a-zA-Z0-9_-]{1,128}$`.                                                                                                                                                                                     |
+| `description`    | A detailed plaintext description of what the tool does, when it should be used, and how it behaves.                                                                                                                                                      |
+| `input_schema`   | A [JSON Schema](https://json-schema.org/) object defining the expected parameters for the tool.                                                                                                                                                          |
+| `input_examples` | (Optional) An array of example input objects to help Claude understand how to use the tool. See [Providing tool use examples](https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools?sdk_languages=cli#providing-tool-use-examples). |
 
-For the full set of optional properties available on any single tool definition, including `cache_control`, `strict`, `defer_loading`, and `allowed_callers`, see the [Tool reference](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference#tool-definition-properties). A client toolset entry accepts `cache_control` and `allowed_callers` on the entry and sets `defer_loading` per member; see [Client toolsets](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference#client-toolsets).
+For the full set of optional properties available on any single tool definition, including `cache_control`, `strict`, `defer_loading`, and `allowed_callers`, see the [Tool reference](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference?sdk_languages=cli#tool-definition-properties). A client toolset entry accepts `cache_control` and `allowed_callers` on the entry and sets `defer_loading` per member; see [Client toolsets](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference?sdk_languages=cli#client-toolsets).
 
 <Accordion title="Example simple tool definition">
   ```json JSON
@@ -77,15 +77,15 @@ To get the best performance out of Claude when using tools, follow these guideli
   * What each parameter means and how it affects the tool's behavior
   * Any important caveats or limitations, such as what information the tool does not return if the tool name is unclear. The more context you can give Claude about your tools, the better it will be at determining when and how to use them. Aim for at least 3–4 sentences for each tool description, more if the tool is complex.
 
-* **Prioritize descriptions, but consider using `input_examples` for complex tools.** Clear descriptions are most important, but for tools with complex inputs, nested objects, or format-sensitive parameters, you can use the `input_examples` field to provide schema-validated examples. See [Providing tool use examples](https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools#providing-tool-use-examples) for details.
+* **Prioritize descriptions, but consider using `input_examples` for complex tools.** Clear descriptions are most important, but for tools with complex inputs, nested objects, or format-sensitive parameters, you can use the `input_examples` field to provide schema-validated examples. See [Providing tool use examples](https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools?sdk_languages=cli#providing-tool-use-examples) for details.
 
 * **Consolidate related operations into fewer tools.** Rather than creating a separate tool for every action (`create_pr`, `review_pr`, `merge_pr`), group them into a single tool with an `action` parameter. Fewer, more capable tools reduce selection ambiguity and make your tool surface easier for Claude to navigate.
 
-* **Use meaningful namespacing in tool names.** When your tools span multiple services or resources, prefix names with the service (for example, `github_list_prs`, `slack_send_message`). This makes tool selection unambiguous as your library grows, and is especially important when using [tool search](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool).
+* **Use meaningful namespacing in tool names.** When your tools span multiple services or resources, prefix names with the service (for example, `github_list_prs`, `slack_send_message`). This makes tool selection unambiguous as your library grows, and is especially important when using [tool search](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool?sdk_languages=cli).
 
 * **Design tool responses to return only high-signal information.** Return semantic, stable identifiers (for example, slugs or UUIDs) rather than opaque internal references, and include only the fields Claude needs to reason about its next step. Bloated responses waste context and make it harder for Claude to extract what matters.
 
-* **Ask for an explanation, not reasoning.** If a parameter asks Claude why it is making the call, ask for a short explanation or the supporting evidence. A parameter that asks for the model's thinking or step-by-step reasoning may lead to a `reasoning_extraction` refusal. See [Keep reasoning in thinking blocks](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback#keep-reasoning-in-thinking-blocks).
+* **Ask for an explanation, not reasoning.** If a parameter asks Claude why it is making the call, ask for a short explanation or the supporting evidence. A parameter that asks for the model's thinking or step-by-step reasoning may lead to a `reasoning_extraction` refusal. See [Keep reasoning in thinking blocks](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback?sdk_languages=cli#keep-reasoning-in-thinking-blocks).
 
 <AccordionGroup>
   <Accordion title="Example of a good tool description">
@@ -141,48 +141,6 @@ You can provide concrete examples of valid tool inputs to help Claude understand
 Add an optional `input_examples` field to your tool definition with an array of example input objects. Each example must be valid according to the tool's `input_schema`:
 
 <CodeGroup>
-  ```bash cURL
-  curl -sS https://api.anthropic.com/v1/messages \
-    -H "content-type: application/json" \
-    -H "x-api-key: $ANTHROPIC_API_KEY" \
-    -H "anthropic-version: 2023-06-01" \
-    -d @- <<'EOF'
-  {
-    "model": "claude-opus-5-5",
-    "max_tokens": 1024,
-    "tools": [
-      {
-        "name": "get_weather",
-        "description": "Get the current weather in a given location",
-        "input_schema": {
-          "type": "object",
-          "properties": {
-            "location": {
-              "type": "string",
-              "description": "The city and state, e.g. San Francisco, CA"
-            },
-            "unit": {
-              "type": "string",
-              "enum": ["celsius", "fahrenheit"],
-              "description": "The unit of temperature"
-            }
-          },
-          "required": ["location"]
-        },
-        "input_examples": [
-          {"location": "San Francisco, CA", "unit": "fahrenheit"},
-          {"location": "Tokyo, Japan", "unit": "celsius"},
-          {"location": "New York, NY"}
-        ]
-      }
-    ],
-    "messages": [
-      {"role": "user", "content": "What's the weather like in San Francisco?"}
-    ]
-  }
-  EOF
-  ```
-
   ```bash CLI
   ant messages create <<'YAML'
   model: claude-opus-5-5
@@ -212,334 +170,6 @@ Add an optional `input_examples` field to your tool definition with an array of 
       content: What's the weather like in San Francisco?
   YAML
   ```
-
-  ```python Python
-  client = anthropic.Anthropic()
-
-  response = client.messages.create(
-      model="claude-opus-5-5",
-      max_tokens=1024,
-      tools=[
-          {
-              "name": "get_weather",
-              "description": "Get the current weather in a given location",
-              "input_schema": {
-                  "type": "object",
-                  "properties": {
-                      "location": {
-                          "type": "string",
-                          "description": "The city and state, e.g. San Francisco, CA",
-                      },
-                      "unit": {
-                          "type": "string",
-                          "enum": ["celsius", "fahrenheit"],
-                          "description": "The unit of temperature",
-                      },
-                  },
-                  "required": ["location"],
-              },
-              "input_examples": [
-                  {"location": "San Francisco, CA", "unit": "fahrenheit"},
-                  {"location": "Tokyo, Japan", "unit": "celsius"},
-                  {
-                      "location": "New York, NY"  # 'unit' is optional
-                  },
-              ],
-          }
-      ],
-      messages=[{"role": "user", "content": "What's the weather like in San Francisco?"}],
-  )
-
-  print(response)
-  ```
-
-  ```typescript TypeScript
-  const client = new Anthropic();
-
-  const response = await client.messages.create({
-    model: "claude-opus-5-5",
-    max_tokens: 1024,
-    tools: [
-      {
-        name: "get_weather",
-        description: "Get the current weather in a given location",
-        input_schema: {
-          type: "object",
-          properties: {
-            location: {
-              type: "string",
-              description: "The city and state, e.g. San Francisco, CA"
-            },
-            unit: {
-              type: "string",
-              enum: ["celsius", "fahrenheit"],
-              description: "The unit of temperature"
-            }
-          },
-          required: ["location"]
-        },
-        input_examples: [
-          {
-            location: "San Francisco, CA",
-            unit: "fahrenheit"
-          },
-          {
-            location: "Tokyo, Japan",
-            unit: "celsius"
-          },
-          {
-            location: "New York, NY"
-            // Demonstrates that 'unit' is optional
-          }
-        ]
-      }
-    ],
-    messages: [{ role: "user", content: "What's the weather like in San Francisco?" }]
-  });
-
-  console.log(response);
-  ```
-
-  ```csharp C#
-  AnthropicClient client = new();
-
-  var parameters = new MessageCreateParams
-  {
-      Model = Model.ClaudeOpus5_5,
-      MaxTokens = 1024,
-      Tools = [
-          new ToolUnion(new Tool()
-          {
-              Name = "get_weather",
-              Description = "Get the current weather in a given location",
-              InputSchema = new InputSchema()
-              {
-                  Properties = new Dictionary<string, JsonElement>
-                  {
-                      ["location"] = JsonSerializer.SerializeToElement(new { type = "string", description = "The city and state, e.g. San Francisco, CA" }),
-                      ["unit"] = JsonSerializer.SerializeToElement(new { type = "string", @enum = new[] { "celsius", "fahrenheit" }, description = "The unit of temperature" }),
-                  },
-                  Required = ["location"],
-              },
-              InputExamples =
-              [
-                  new Dictionary<string, JsonElement>()
-                  {
-                      { "location", JsonSerializer.SerializeToElement("San Francisco, CA") },
-                      { "unit", JsonSerializer.SerializeToElement("fahrenheit") },
-                  },
-                  new Dictionary<string, JsonElement>()
-                  {
-                      { "location", JsonSerializer.SerializeToElement("Tokyo, Japan") },
-                      { "unit", JsonSerializer.SerializeToElement("celsius") },
-                  },
-                  new Dictionary<string, JsonElement>()
-                  {
-                      { "location", JsonSerializer.SerializeToElement("New York, NY") },
-                  },
-              ],
-          }),
-      ],
-      Messages = [
-          new() { Role = Role.User, Content = "What's the weather like in San Francisco?" }
-      ]
-  };
-
-  var message = await client.Messages.Create(parameters);
-  Console.WriteLine(message);
-  ```
-
-  ```go Go
-  client := anthropic.NewClient()
-
-  response, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
-  	Model:     anthropic.ModelClaudeOpus5_5,
-  	MaxTokens: 1024,
-  	Tools: []anthropic.ToolUnionParam{
-  		{OfTool: &anthropic.ToolParam{
-  			Name:        "get_weather",
-  			Description: anthropic.String("Get the current weather in a given location"),
-  			InputSchema: anthropic.ToolInputSchemaParam{
-  				Properties: map[string]any{
-  					"location": map[string]any{
-  						"type":        "string",
-  						"description": "The city and state, e.g. San Francisco, CA",
-  					},
-  					"unit": map[string]any{
-  						"type":        "string",
-  						"enum":        []string{"celsius", "fahrenheit"},
-  						"description": "The unit of temperature",
-  					},
-  				},
-  				Required: []string{"location"},
-  			},
-  			InputExamples: []map[string]any{
-  				{
-  					"location": "San Francisco, CA",
-  					"unit":     "fahrenheit",
-  				},
-  				{
-  					"location": "Tokyo, Japan",
-  					"unit":     "celsius",
-  				},
-  				{
-  					"location": "New York, NY",
-  					// Demonstrates that 'unit' is optional
-  				},
-  			},
-  		}},
-  	},
-  	Messages: []anthropic.MessageParam{
-  		anthropic.NewUserMessage(anthropic.NewTextBlock("What's the weather like in San Francisco?")),
-  	},
-  })
-  if err != nil {
-  	log.Fatal(err)
-  }
-  fmt.Println(response.RawJSON())
-  ```
-
-  ```java Java
-  import com.anthropic.models.messages.Tool;
-  import com.anthropic.models.messages.Tool.InputSchema;
-  // ...
-  void main() {
-      AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-      MessageCreateParams params = MessageCreateParams.builder()
-          .model(Model.CLAUDE_OPUS_5_5)
-          .maxTokens(1024L)
-          .addTool(Tool.builder()
-              .name("get_weather")
-              .description("Get the current weather in a given location")
-              .inputSchema(InputSchema.builder()
-                  .properties(JsonValue.from(Map.of(
-                      "location", Map.of(
-                          "type", "string",
-                          "description", "The city and state, e.g. San Francisco, CA"
-                      ),
-                      "unit", Map.of(
-                          "type", "string",
-                          "enum", List.of("celsius", "fahrenheit"),
-                          "description", "The unit of temperature"
-                      )
-                  )))
-                  .required(List.of("location"))
-                  .build())
-              .putAdditionalProperty("input_examples", JsonValue.from(List.of(
-                  Map.of(
-                      "location", "San Francisco, CA",
-                      "unit", "fahrenheit"
-                  ),
-                  Map.of(
-                      "location", "Tokyo, Japan",
-                      "unit", "celsius"
-                  ),
-                  Map.of(
-                      "location", "New York, NY"
-                  )
-              )))
-              .build())
-          .addUserMessage("What's the weather like in San Francisco?")
-          .build();
-
-      Message response = client.messages().create(params);
-      IO.println(response);
-  }
-  ```
-
-  ```php PHP
-  $client = new Client();
-
-  $message = $client->messages->create(
-      maxTokens: 1024,
-      messages: [
-          ['role' => 'user', 'content' => "What's the weather like in San Francisco?"]
-      ],
-      model: 'claude-opus-5-5',
-      tools: [
-          [
-              'name' => 'get_weather',
-              'description' => 'Get the current weather in a given location',
-              'input_schema' => [
-                  'type' => 'object',
-                  'properties' => [
-                      'location' => [
-                          'type' => 'string',
-                          'description' => 'The city and state, e.g. San Francisco, CA'
-                      ],
-                      'unit' => [
-                          'type' => 'string',
-                          'enum' => ['celsius', 'fahrenheit'],
-                          'description' => 'The unit of temperature'
-                      ]
-                  ],
-                  'required' => ['location']
-              ],
-              'input_examples' => [
-                  [
-                      'location' => 'San Francisco, CA',
-                      'unit' => 'fahrenheit'
-                  ],
-                  [
-                      'location' => 'Tokyo, Japan',
-                      'unit' => 'celsius'
-                  ],
-                  [
-                      'location' => 'New York, NY'
-                  ]
-              ]
-          ]
-      ],
-  );
-  ```
-
-  ```ruby Ruby
-  client = Anthropic::Client.new
-
-  message = client.messages.create(
-    model: "claude-opus-5-5",
-    max_tokens: 1024,
-    tools: [
-      {
-        name: "get_weather",
-        description: "Get the current weather in a given location",
-        input_schema: {
-          type: "object",
-          properties: {
-            location: {
-              type: "string",
-              description: "The city and state, e.g. San Francisco, CA"
-            },
-            unit: {
-              type: "string",
-              enum: ["celsius", "fahrenheit"],
-              description: "The unit of temperature"
-            }
-          },
-          required: ["location"]
-        },
-        input_examples: [
-          {
-            location: "San Francisco, CA",
-            unit: "fahrenheit"
-          },
-          {
-            location: "Tokyo, Japan",
-            unit: "celsius"
-          },
-          {
-            location: "New York, NY"
-          }
-        ]
-      }
-    ],
-    messages: [
-      { role: "user", content: "What's the weather like in San Francisco?" }
-    ]
-  )
-  puts message
-  ```
 </CodeGroup>
 
 Examples are included in the prompt alongside your tool schema, showing Claude concrete patterns for well-formed tool calls. This helps Claude understand when to include optional parameters, what formats to use, and how to structure complex inputs.
@@ -547,7 +177,7 @@ Examples are included in the prompt alongside your tool schema, showing Claude c
 ### Requirements and limitations
 
 * **Schema validation** - Each example must be valid according to the tool's `input_schema`. Invalid examples return a 400 error
-* **Not supported for server-side tools or client toolsets** - Input examples work on user-defined and Anthropic-schema client tools other than the [computer use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool) and [browser use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool) toolsets, but not on server tools such as web search or code execution
+* **Not supported for server-side tools or client toolsets** - Input examples work on user-defined and Anthropic-schema client tools other than the [computer use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool?sdk_languages=cli) and [browser use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool?sdk_languages=cli) toolsets, but not on server tools such as web search or code execution
 * **Token cost** - Examples add to prompt tokens: \~20–50 tokens for simple examples, \~100–200 tokens for complex nested objects
 
 ## Controlling Claude's output
@@ -558,47 +188,14 @@ In some cases, you may want Claude to use a specific tool to answer the user's q
 
 Not every model and setting supports forced tool use. Where it isn't supported, `tool_choice: {"type": "any"}` and `tool_choice: {"type": "tool", "name": "..."}` fail, while `tool_choice: {"type": "auto"}` (the default) and `tool_choice: {"type": "none"}` still work:
 
-| Model or setting                                                                                                                              | Restriction                                                                                                         | What to use instead                                                                                                                                                                                                                                                                                                                                                                                                             |
-| --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Manual [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking) (`thinking: {type: "enabled"}`)           | `any` and `tool` are not supported and result in an error                                                           | `auto` or `none`. [Adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking) itself doesn't block forced tool use (models with thinking on by default, such as Claude Opus 5 and Claude Haiku 5.5, accept it, but a forced call skips thinking: the response starts with the tool call and has no `thinking` block); the models in the next row reject forced tool use regardless of thinking settings |
-| Claude Opus 5.5, Claude Sonnet 5.5, Claude Fable 5.1, and [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview) | `any` and `tool` return a [400 error](https://platform.claude.com/docs/en/api/errors#forced-tool-use-not-supported) | `auto` with [strict tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use) to guarantee schema-valid tool inputs, or [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs) when you need a response in a fixed JSON shape. Prompting still influences which tool `auto` picks. `none` is also supported                                              |
+| Model or setting                                                                                                                                                | Restriction                                                                                                                           | What to use instead                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Manual [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli) (`thinking: {type: "enabled"}`)           | `any` and `tool` are not supported and result in an error                                                                             | `auto` or `none`. [Adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli) itself doesn't block forced tool use (models with thinking on by default, such as Claude Opus 5 and Claude Haiku 5.5, accept it, but a forced call skips thinking: the response starts with the tool call and has no `thinking` block); the models in the next row reject forced tool use regardless of thinking settings |
+| Claude Opus 5.5, Claude Sonnet 5.5, Claude Fable 5.1, and [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=cli) | `any` and `tool` return a [400 error](https://platform.claude.com/docs/en/api/errors?sdk_languages=cli#forced-tool-use-not-supported) | `auto` with [strict tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use?sdk_languages=cli) to guarantee schema-valid tool inputs, or [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli) when you need a response in a fixed JSON shape. Prompting still influences which tool `auto` picks. `none` is also supported                            |
 
 On models that support it, the highlighted lines are the only difference from a standard tool use request:
 
 <CodeGroup>
-  ```bash cURL
-  curl -sS https://api.anthropic.com/v1/messages \
-    -H "content-type: application/json" \
-    -H "x-api-key: $ANTHROPIC_API_KEY" \
-    -H "anthropic-version: 2023-06-01" \
-    -d @- <<'EOF'
-  {
-    "model": "claude-opus-5",
-    "max_tokens": 1024,
-    "tools": [
-      {
-        "name": "get_weather",
-        "description": "Get the current weather in a given location",
-        "input_schema": {
-          "type": "object",
-          "properties": {
-            "location": {
-              "type": "string",
-              "description": "The city and state, e.g. San Francisco, CA"
-            }
-          },
-          "required": ["location"]
-        }
-      }
-    ],
-    "tool_choice": {"type": "tool", "name": "get_weather"},
-    "messages": [
-      {"role": "user", "content": "What's the weather like in San Francisco?"}
-    ]
-  }
-  EOF
-  ```
-
   ```bash CLI
   ant messages create <<'YAML'
   model: claude-opus-5
@@ -621,225 +218,6 @@ On models that support it, the highlighted lines are the only difference from a 
       content: What's the weather like in San Francisco?
   YAML
   ```
-
-  ```python Python
-  client = anthropic.Anthropic()
-
-  tools = [
-      {
-          "name": "get_weather",
-          "description": "Get the current weather in a given location",
-          "input_schema": {
-              "type": "object",
-              "properties": {
-                  "location": {
-                      "type": "string",
-                      "description": "The city and state, e.g. San Francisco, CA",
-                  }
-              },
-              "required": ["location"],
-          },
-      }
-  ]
-
-  response = client.messages.create(
-      model="claude-opus-5",
-      max_tokens=1024,
-      tools=tools,
-      tool_choice={"type": "tool", "name": "get_weather"},
-      messages=[{"role": "user", "content": "What's the weather like in San Francisco?"}],
-  )
-
-  print(response)
-  ```
-
-  ```typescript TypeScript
-  const client = new Anthropic();
-
-  const response = await client.messages.create({
-    model: "claude-opus-5",
-    max_tokens: 1024,
-    tools: [
-      {
-        name: "get_weather",
-        description: "Get the current weather in a given location",
-        input_schema: {
-          type: "object",
-          properties: {
-            location: {
-              type: "string",
-              description: "The city and state, e.g. San Francisco, CA"
-            }
-          },
-          required: ["location"]
-        }
-      }
-    ],
-    tool_choice: { type: "tool", name: "get_weather" },
-    messages: [{ role: "user", content: "What's the weather like in San Francisco?" }]
-  });
-
-  console.log(response);
-  ```
-
-  ```csharp C#
-  AnthropicClient client = new();
-
-  var parameters = new MessageCreateParams
-  {
-      Model = Model.ClaudeOpus5,
-      MaxTokens = 1024,
-      Tools = [
-          new ToolUnion(new Tool()
-          {
-              Name = "get_weather",
-              Description = "Get the current weather in a given location",
-              InputSchema = new InputSchema()
-              {
-                  Properties = new Dictionary<string, JsonElement>
-                  {
-                      ["location"] = JsonSerializer.SerializeToElement(new { type = "string", description = "The city and state, e.g. San Francisco, CA" }),
-                  },
-                  Required = ["location"],
-              },
-          }),
-      ],
-      ToolChoice = new ToolChoiceTool { Name = "get_weather" },
-      Messages = [
-          new() { Role = Role.User, Content = "What's the weather like in San Francisco?" }
-      ]
-  };
-
-  var message = await client.Messages.Create(parameters);
-  Console.WriteLine(message);
-  ```
-
-  ```go Go
-  client := anthropic.NewClient()
-
-  response, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
-  	Model:     anthropic.ModelClaudeOpus5,
-  	MaxTokens: 1024,
-  	Tools: []anthropic.ToolUnionParam{
-  		{OfTool: &anthropic.ToolParam{
-  			Name:        "get_weather",
-  			Description: anthropic.String("Get the current weather in a given location"),
-  			InputSchema: anthropic.ToolInputSchemaParam{
-  				Properties: map[string]any{
-  					"location": map[string]any{
-  						"type":        "string",
-  						"description": "The city and state, e.g. San Francisco, CA",
-  					},
-  				},
-  				Required: []string{"location"},
-  			},
-  		}},
-  	},
-  	ToolChoice: anthropic.ToolChoiceUnionParam{OfTool: &anthropic.ToolChoiceToolParam{Name: "get_weather"}},
-  	Messages: []anthropic.MessageParam{
-  		anthropic.NewUserMessage(anthropic.NewTextBlock("What's the weather like in San Francisco?")),
-  	},
-  })
-  if err != nil {
-  	log.Fatal(err)
-  }
-  fmt.Println(response.RawJSON())
-  ```
-
-  ```java Java
-  import com.anthropic.models.messages.Tool;
-  import com.anthropic.models.messages.Tool.InputSchema;
-  import com.anthropic.models.messages.ToolChoice;
-  import com.anthropic.models.messages.ToolChoiceTool;
-  // ...
-  void main() {
-      AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-      MessageCreateParams params = MessageCreateParams.builder()
-          .model(Model.CLAUDE_OPUS_5)
-          .maxTokens(1024L)
-          .addTool(Tool.builder()
-              .name("get_weather")
-              .description("Get the current weather in a given location")
-              .inputSchema(InputSchema.builder()
-                  .properties(JsonValue.from(Map.of(
-                      "location", Map.of(
-                          "type", "string",
-                          "description", "The city and state, e.g. San Francisco, CA"
-                      )
-                  )))
-                  .required(List.of("location"))
-                  .build())
-              .build())
-          .toolChoice(ToolChoice.ofTool(ToolChoiceTool.builder()
-              .name("get_weather")
-              .build()))
-          .addUserMessage("What's the weather like in San Francisco?")
-          .build();
-
-      Message response = client.messages().create(params);
-      IO.println(response);
-  }
-  ```
-
-  ```php PHP
-  $client = new Client();
-
-  $message = $client->messages->create(
-      maxTokens: 1024,
-      messages: [
-          ['role' => 'user', 'content' => "What's the weather like in San Francisco?"]
-      ],
-      model: 'claude-opus-5',
-      toolChoice: ['type' => 'tool', 'name' => 'get_weather'],
-      tools: [
-          [
-              'name' => 'get_weather',
-              'description' => 'Get the current weather in a given location',
-              'input_schema' => [
-                  'type' => 'object',
-                  'properties' => [
-                      'location' => [
-                          'type' => 'string',
-                          'description' => 'The city and state, e.g. San Francisco, CA'
-                      ]
-                  ],
-                  'required' => ['location']
-              ]
-          ]
-      ],
-  );
-  ```
-
-  ```ruby Ruby
-  client = Anthropic::Client.new
-
-  message = client.messages.create(
-    model: "claude-opus-5",
-    max_tokens: 1024,
-    tools: [
-      {
-        name: "get_weather",
-        description: "Get the current weather in a given location",
-        input_schema: {
-          type: "object",
-          properties: {
-            location: {
-              type: "string",
-              description: "The city and state, e.g. San Francisco, CA"
-            }
-          },
-          required: ["location"]
-        }
-      }
-    ],
-    tool_choice: { type: "tool", name: "get_weather" },
-    messages: [
-      { role: "user", content: "What's the weather like in San Francisco?" }
-    ]
-  )
-  puts message
-  ```
 </CodeGroup>
 
 When working with the `tool_choice` parameter, there are four possible options:
@@ -850,7 +228,7 @@ When working with the `tool_choice` parameter, there are four possible options:
 * `none` prevents Claude from using any tools. This is the default value when no `tools` are provided.
 
 <Note>
-  When using [prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#what-invalidates-the-cache), changes to the `tool_choice` parameter will invalidate cached message blocks. Tool definitions and system prompts remain cached, but message content must be reprocessed.
+  When using [prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli#what-invalidates-the-cache), changes to the `tool_choice` parameter will invalidate cached message blocks. Tool definitions and system prompts remain cached, but message content must be reprocessed.
 </Note>
 
 This diagram illustrates how each option works:
@@ -868,7 +246,7 @@ Forcing a tool also skips thinking on every model that accepts forced tool use: 
 <Tip>
   **Guaranteed tool calls with strict tools**
 
-  On models that support forced tool use, combine `tool_choice: {"type": "any"}` with [strict tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use) to guarantee both that one of your tools is called and that the tool inputs strictly follow your schema. Set `strict: true` on your tool definitions to enable schema validation.
+  On models that support forced tool use, combine `tool_choice: {"type": "any"}` with [strict tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use?sdk_languages=cli) to guarantee both that one of your tools is called and that the tool inputs strictly follow your schema. Set `strict: true` on your tool definitions to enable schema validation.
 </Tip>
 
 ### Model responses with tools
@@ -902,15 +280,15 @@ It's important to note that Claude may use various phrasings and approaches when
 ## Next steps
 
 <CardGroup>
-  <Card href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls" title="Handle tool calls">
+  <Card href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls?sdk_languages=cli" title="Handle tool calls">
     Parse tool\_use blocks and format tool\_result responses.
   </Card>
 
-  <Card href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-runner" title="Tool Runner (SDK)">
+  <Card href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-runner?sdk_languages=cli" title="Tool Runner (SDK)">
     Let the SDK handle the agentic loop automatically.
   </Card>
 
-  <Card href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference" title="Tool reference">
+  <Card href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference?sdk_languages=cli" title="Tool reference">
     Directory of Anthropic-provided tools and optional properties.
   </Card>
 </CardGroup>

@@ -5,26 +5,26 @@ description: Configure manual extended thinking with a fixed budget_tokens budge
 ---
 
 <Note>
-  To learn how zero data retention (ZDR) applies to this feature, see [API and data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention).
+  To learn how zero data retention (ZDR) applies to this feature, see [API and data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=curl).
 </Note>
 
 <Warning>
-  Extended thinking (`thinking.type: "enabled"` with `budget_tokens`) is deprecated on the Claude 4.6 models (requests using it still succeed). Claude 4.7 and later models do not support it and reject requests that use it, returning a 400 error. On Claude 4.5 and earlier models that support thinking, extended thinking is the only available thinking mode. Claude Mythos Preview supports both modes. Where both modes are available, use [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking) instead.
+  Extended thinking (`thinking.type: "enabled"` with `budget_tokens`) is deprecated on the Claude 4.6 models (requests using it still succeed). Claude 4.7 and later models do not support it and reject requests that use it, returning a 400 error. On Claude 4.5 and earlier models that support thinking, extended thinking is the only available thinking mode. Claude Mythos Preview supports both modes. Where both modes are available, use [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl) instead.
 
-  See [Migrating to adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking#migrating-to-adaptive-thinking) to move to adaptive thinking. If your model supports only extended thinking, this page describes the supported configuration; no change is needed until you move to a newer model.
+  See [Migrating to adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=curl#migrating-to-adaptive-thinking) to move to adaptive thinking. If your model supports only extended thinking, this page describes the supported configuration; no change is needed until you move to a newer model.
 </Warning>
 
 <Note>
-  If a request fails with a 400 error whose message starts with `"thinking.type.enabled" is not supported`, your model uses adaptive thinking instead. See [Troubleshooting thinking](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting#error-thinking-type-enabled), or jump to [Migrating to adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking#migrating-to-adaptive-thinking).
+  If a request fails with a 400 error whose message starts with `"thinking.type.enabled" is not supported`, your model uses adaptive thinking instead. See [Troubleshooting thinking](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting?sdk_languages=curl#error-thinking-type-enabled), or jump to [Migrating to adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=curl#migrating-to-adaptive-thinking).
 </Note>
 
 Extended thinking in manual mode gives you direct control over how much Claude thinks. You set a thinking token budget on each request with `thinking: {type: "enabled", budget_tokens: N}`, and Claude thinks against that budget before it starts its final answer. Manual mode remains useful when your workload requires predictable latency or precise control over thinking costs. This page covers how to set and tune the budget, how manual mode interacts with interleaved thinking and prompt caching, and how to migrate to adaptive thinking.
 
-To learn how thinking itself works, including thinking blocks and the response shape, the `display` parameter, streaming, thinking with tool use, and encryption, see the [thinking overview](https://platform.claude.com/docs/en/build-with-claude/thinking).
+To learn how thinking itself works, including thinking blocks and the response shape, the `display` parameter, streaming, thinking with tool use, and encryption, see the [thinking overview](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl).
 
 ## Supported models
 
-Extended thinking availability per model, including the models where extended thinking is the only mode, is listed in the [per-model configuration table](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting#supported-models).
+Extended thinking availability per model, including the models where extended thinking is the only mode, is listed in the [per-model configuration table](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting?sdk_languages=curl#supported-models).
 
 ## How to use extended thinking
 
@@ -51,216 +51,6 @@ Here is an example of using extended thinking in the Messages API:
       ]
     }'
   ```
-
-  ```bash CLI
-  ant messages create \
-    --format yaml <<'YAML'
-  model: claude-sonnet-4-6
-  max_tokens: 16000
-  thinking:
-    type: enabled
-    budget_tokens: 10000
-  messages:
-    - role: user
-      content: Are there an infinite number of prime numbers such that n mod 4 == 3?
-  YAML
-  ```
-
-  ```python Python
-  client = anthropic.Anthropic()
-
-  response = client.messages.create(
-      model="claude-sonnet-4-6",
-      max_tokens=16000,
-      thinking={"type": "enabled", "budget_tokens": 10000},
-      messages=[
-          {
-              "role": "user",
-              "content": "Are there an infinite number of prime numbers such that n mod 4 == 3?",
-          }
-      ],
-  )
-
-  # The response contains summarized thinking blocks and text blocks
-  for block in response.content:
-      match block.type:
-          case "thinking":
-              print(f"\nThinking summary: {block.thinking}")
-          case "text":
-              print(f"\nResponse: {block.text}")
-  ```
-
-  ```typescript TypeScript
-  const client = new Anthropic();
-
-  const response = await client.messages.create({
-    model: "claude-sonnet-4-6",
-    max_tokens: 16000,
-    thinking: {
-      type: "enabled",
-      budget_tokens: 10000,
-    },
-    messages: [
-      {
-        role: "user",
-        content: "Are there an infinite number of prime numbers such that n mod 4 == 3?",
-      },
-    ],
-  });
-
-  // The response contains summarized thinking blocks and text blocks
-  for (const block of response.content) {
-    switch (block.type) {
-      case "thinking":
-        console.log(`\nThinking summary: ${block.thinking}`);
-        break;
-      case "text":
-        console.log(`\nResponse: ${block.text}`);
-        break;
-    }
-  }
-  ```
-
-  ```csharp C#
-  AnthropicClient client = new();
-
-  var response = await client.Messages.Create(new()
-  {
-      Model = Model.ClaudeSonnet4_6,
-      MaxTokens = 16000,
-      Thinking = new ThinkingConfigEnabled(budgetTokens: 10000),
-      Messages =
-      [
-          new()
-          {
-              Role = Role.User,
-              Content = "Are there an infinite number of prime numbers such that n mod 4 == 3?",
-          },
-      ],
-  });
-
-  // The response contains summarized thinking blocks and text blocks
-  foreach (var block in response.Content)
-  {
-      if (block.TryPickThinking(out var thinking))
-      {
-          Console.WriteLine($"\nThinking summary: {thinking.Thinking}");
-      }
-      else if (block.TryPickText(out var text))
-      {
-          Console.WriteLine($"\nResponse: {text.Text}");
-      }
-  }
-  ```
-
-  ```go Go
-  client := anthropic.NewClient()
-
-  response, err := client.Messages.New(context.Background(), anthropic.MessageNewParams{
-  	Model:     anthropic.ModelClaudeSonnet4_6,
-  	MaxTokens: 16000,
-  	Thinking:  anthropic.ThinkingConfigParamOfEnabled(10000),
-  	Messages: []anthropic.MessageParam{
-  		anthropic.NewUserMessage(anthropic.NewTextBlock("Are there an infinite number of prime numbers such that n mod 4 == 3?")),
-  	},
-  })
-  if err != nil {
-  	log.Fatal(err)
-  }
-
-  // The response contains summarized thinking blocks and text blocks
-  for _, block := range response.Content {
-  	switch block := block.AsAny().(type) {
-  	case anthropic.ThinkingBlock:
-  		fmt.Printf("\nThinking summary: %s", block.Thinking)
-  	case anthropic.TextBlock:
-  		fmt.Printf("\nResponse: %s", block.Text)
-  	}
-  }
-  ```
-
-  ```java Java
-  import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-  import com.anthropic.models.messages.MessageCreateParams;
-  import com.anthropic.models.messages.Model;
-
-  void main() {
-      var client = AnthropicOkHttpClient.fromEnv();
-
-      var params = MessageCreateParams.builder()
-          .model(Model.CLAUDE_SONNET_4_6)
-          .maxTokens(16_000)
-          .enabledThinking(10_000)
-          .addUserMessage("Are there an infinite number of prime numbers such that n mod 4 == 3?")
-          .build();
-
-      var response = client.messages().create(params);
-
-      // The response contains summarized thinking blocks and text blocks
-      for (var block : response.content()) {
-          block.thinking().ifPresent(thinkingBlock ->
-              IO.println("\nThinking summary: " + thinkingBlock.thinking())
-          );
-          block.text().ifPresent(textBlock ->
-              IO.println("\nResponse: " + textBlock.text())
-          );
-      }
-  }
-  ```
-
-  ```php PHP
-  $client = new Client();
-
-  $response = $client->messages->create(
-      model: 'claude-sonnet-4-6',
-      maxTokens: 16000,
-      thinking: ['type' => 'enabled', 'budget_tokens' => 10000],
-      messages: [
-          [
-              'role' => 'user',
-              'content' => 'Are there an infinite number of prime numbers such that n mod 4 == 3?',
-          ],
-      ],
-  );
-
-  // The response contains summarized thinking blocks and text blocks
-  foreach ($response->content as $block) {
-      echo match (true) {
-          $block instanceof \Anthropic\Messages\ThinkingBlock => "\nThinking summary: {$block->thinking}",
-          $block instanceof \Anthropic\Messages\TextBlock => "\nResponse: {$block->text}",
-          default => '',
-      };
-  }
-  ```
-
-  ```ruby Ruby
-  client = Anthropic::Client.new
-
-  response = client.messages.create(
-    model: "claude-sonnet-4-6",
-    max_tokens: 16_000,
-    thinking: {
-      type: :enabled,
-      budget_tokens: 10_000
-    },
-    messages: [
-      {
-        role: :user,
-        content: "Are there an infinite number of prime numbers such that n mod 4 == 3?"
-      }
-    ]
-  )
-
-  # The response contains summarized thinking blocks and text blocks
-  response.content.each do |block|
-    case block
-    when Anthropic::Models::ThinkingBlock
-      puts "\nThinking summary: #{block.thinking}"
-    when Anthropic::Models::TextBlock
-      puts "\nResponse: #{block.text}"
-    end
-  end
-  ```
 </CodeGroup>
 
 To turn on manual extended thinking, add a `thinking` object with `type` set to `enabled` and a `budget_tokens` value.
@@ -272,53 +62,53 @@ The `budget_tokens` parameter sets a target for how many tokens Claude can use f
 `budget_tokens` must satisfy these constraints:
 
 * **Minimum of 1,024 tokens.** The API rejects smaller values.
-* **Less than `max_tokens`.** Thinking tokens count toward the `max_tokens` limit for the turn, so the budget must leave room for the final response. The one exception is [interleaved thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking#interleaved-thinking), where `budget_tokens` can exceed `max_tokens` because the budget spans all thinking blocks within one assistant turn.
-* **No cache pre-warming.** Because `budget_tokens` must be less than `max_tokens`, extended thinking cannot be combined with `max_tokens: 0` ([cache pre-warming](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#pre-warming-the-cache)).
+* **Less than `max_tokens`.** Thinking tokens count toward the `max_tokens` limit for the turn, so the budget must leave room for the final response. The one exception is [interleaved thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=curl#interleaved-thinking), where `budget_tokens` can exceed `max_tokens` because the budget spans all thinking blocks within one assistant turn.
+* **No cache pre-warming.** Because `budget_tokens` must be less than `max_tokens`, extended thinking cannot be combined with `max_tokens: 0` ([cache pre-warming](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#pre-warming-the-cache)).
 
 The budget is a target rather than a strict cap. Actual token usage varies with the task, and Claude may stop reasoning well before the budget is exhausted; `max_tokens` remains the hard ceiling on total output.
 
-On Claude Opus 4.5, the only extended-thinking-only model that supports [effort](https://platform.claude.com/docs/en/build-with-claude/effort), effort shapes the overall response while `budget_tokens` sets thinking depth; set both.
+On Claude Opus 4.5, the only extended-thinking-only model that supports [effort](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=curl), effort shapes the overall response while `budget_tokens` sets thinking depth; set both.
 
 To tune the budget:
 
 * Match the starting point to the task. For simple tasks, start near the 1,024-token minimum and increase incrementally to find the optimal range for your use case. For complex tasks, start with a larger budget of 16,000 tokens or more and adjust to your latency and quality needs. Higher budgets enable more comprehensive reasoning, with diminishing returns that depend on the task, and at the cost of increased latency. For critical tasks, test different settings to find the right balance.
-* For thinking budgets above 32k, use [batch processing](https://platform.claude.com/docs/en/build-with-claude/batch-processing) to avoid networking issues. Pushing the model to think beyond 32k tokens produces long-running requests that can hit system timeouts and open-connection limits.
+* For thinking budgets above 32k, use [batch processing](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=curl) to avoid networking issues. Pushing the model to think beyond 32k tokens produces long-running requests that can hit system timeouts and open-connection limits.
 
 To track what a budget actually costs you, monitor the `usage.output_tokens_details.thinking_tokens` field in the response, which reports how many of the billed output tokens were internal reasoning. When streaming, this breakdown appears only on the final `message_delta` event.
 
-When you are ready to move off manual budgets, see [Migrating to adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking#migrating-to-adaptive-thinking).
+When you are ready to move off manual budgets, see [Migrating to adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=curl#migrating-to-adaptive-thinking).
 
 ## Interleaved thinking in manual mode
 
-Interleaved thinking lets Claude think between tool calls within a single assistant turn, reasoning about each tool result before determining what to do next. For the concept, the turn structure, and how it behaves on adaptive-thinking models, see [interleaved thinking](https://platform.claude.com/docs/en/build-with-claude/thinking#interleaved-thinking) in the thinking overview. This section covers how to enable it when you use manual `type: "enabled"` thinking.
+Interleaved thinking lets Claude think between tool calls within a single assistant turn, reasoning about each tool result before determining what to do next. For the concept, the turn structure, and how it behaves on adaptive-thinking models, see [interleaved thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl#interleaved-thinking) in the thinking overview. This section covers how to enable it when you use manual `type: "enabled"` thinking.
 
-On Claude Opus 4.5, Claude Sonnet 4.5 (deprecated), and earlier Claude 4 models, add the `interleaved-thinking-2025-05-14` [beta header](https://platform.claude.com/docs/en/api/beta-headers) to your API request.
+On Claude Opus 4.5, Claude Sonnet 4.5 (deprecated), and earlier Claude 4 models, add the `interleaved-thinking-2025-05-14` [beta header](https://platform.claude.com/docs/en/api/beta-headers?sdk_languages=curl) to your API request.
 
 The 4.6 generation splits in manual mode:
 
-* **Claude Sonnet 4.6**: the beta header with manual `type: "enabled"` is still functional but deprecated. Prefer [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking), which interleaves automatically with no header.
+* **Claude Sonnet 4.6**: the beta header with manual `type: "enabled"` is still functional but deprecated. Prefer [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl), which interleaves automatically with no header.
 * **Claude Opus 4.6**: manual mode has no interleaved thinking at all. Only its adaptive mode interleaves, so switch to `thinking: {type: "adaptive"}` if you need reasoning between tool calls on this model.
 
 Claude Haiku 4.5 does not support interleaved thinking. On the Claude API, the beta header is accepted but ignored.
 
 Two more considerations for interleaved thinking in manual mode:
 
-* `budget_tokens` can exceed `max_tokens` here; the [budget rules](https://platform.claude.com/docs/en/build-with-claude/extended-thinking#budget-rules-and-tuning) explain this exception.
-* Interleaved thinking is only supported for [tools used through the Messages API](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview).
+* `budget_tokens` can exceed `max_tokens` here; the [budget rules](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=curl#budget-rules-and-tuning) explain this exception.
+* Interleaved thinking is only supported for [tools used through the Messages API](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=curl).
 
-How platforms treat the beta header differs. The Claude API and [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws) accept `interleaved-thinking-2025-05-14` on any model and ignore it where unsupported. Acceptance is not the same as effect: on models that reject `type: "enabled"` (4.7 and later) or lack manual-mode interleaving (Claude Opus 4.6), the header has no manual-mode effect; adaptive thinking interleaves automatically there.
+How platforms treat the beta header differs. The Claude API and [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=curl) accept `interleaved-thinking-2025-05-14` on any model and ignore it where unsupported. Acceptance is not the same as effect: on models that reject `type: "enabled"` (4.7 and later) or lack manual-mode interleaving (Claude Opus 4.6), the header has no manual-mode effect; adaptive thinking interleaves automatically there.
 
-Partner-operated platforms ([Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock) and [Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai)) likewise accept the header on any model without returning an error, and ignore it on models that don't support interleaved thinking.
+Partner-operated platforms ([Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock?sdk_languages=curl) and [Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai?sdk_languages=curl)) likewise accept the header on any model without returning an error, and ignore it on models that don't support interleaved thinking.
 
 ## Turn structure in manual mode
 
-The general turn-structure rules, including the single-turn tool-use loop, mid-turn conflict handling, and toggling thinking between turns, are on [Thinking with tool use](https://platform.claude.com/docs/en/build-with-claude/thinking#thinking-with-tool-use).
+The general turn-structure rules, including the single-turn tool-use loop, mid-turn conflict handling, and toggling thinking between turns, are on [Thinking with tool use](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl#thinking-with-tool-use).
 
-Manual mode adds one requirement: the final assistant turn of a thinking-enabled request must begin with a thinking block ([adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking) drops that requirement). Changing the thinking configuration between turns also invalidates prompt caching; see the following section.
+Manual mode adds one requirement: the final assistant turn of a thinking-enabled request must begin with a thinking block ([adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl) drops that requirement). Changing the thinking configuration between turns also invalidates prompt caching; see the following section.
 
 ## Prompt caching in manual mode
 
-Manual mode adds one rule on top of the mode-neutral caching behavior described in [thinking and prompt caching](https://platform.claude.com/docs/en/build-with-claude/thinking#thinking-and-prompt-caching): changing `budget_tokens` between requests invalidates cache breakpoints, just as switching thinking modes does, because the budget value is rendered into the prompt. Message-level breakpoints always miss after a budget change; whether tool and system-prompt breakpoints miss too depends on where the model renders the configuration.
+Manual mode adds one rule on top of the mode-neutral caching behavior described in [thinking and prompt caching](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl#thinking-and-prompt-caching): changing `budget_tokens` between requests invalidates cache breakpoints, just as switching thinking modes does, because the budget value is rendered into the prompt. Message-level breakpoints always miss after a budget change; whether tool and system-prompt breakpoints miss too depends on where the model renders the configuration.
 
 In practice, pick a budget and hold it stable for the life of a cached conversation. Running a multi-turn conversation with message-level caching on Claude Sonnet 4.6 and changing the budget on the third request from 4,000 to 8,000 tokens shows the invalidation directly:
 
@@ -333,23 +123,23 @@ Third request - different thinking budget (cache miss expected)
 Third response usage: { cache_creation_input_tokens: 1370, cache_read_input_tokens: 0, input_tokens: 747, output_tokens: 619 }
 ```
 
-The third request re-creates the cache (`cache_creation_input_tokens=1370`, `cache_read_input_tokens=0`) because the budget changed between requests. For a runnable version of the same experiment in adaptive mode, where the effort level plays the cache role that `budget_tokens` plays here, see [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost#prompt-caching) on the steering page.
+The third request re-creates the cache (`cache_creation_input_tokens=1370`, `cache_read_input_tokens=0`) because the budget changed between requests. For a runnable version of the same experiment in adaptive mode, where the effort level plays the cache role that `budget_tokens` plays here, see [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost?sdk_languages=curl#prompt-caching) on the steering page.
 
 ## Shared mechanics
 
-Most thinking behavior is mode neutral and documented once on the [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking) page. Everything there applies in manual mode too:
+Most thinking behavior is mode neutral and documented once on the [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl) page. Everything there applies in manual mode too:
 
-* [Controlling thinking display](https://platform.claude.com/docs/en/build-with-claude/thinking#controlling-thinking-display)
-* [Streaming thinking](https://platform.claude.com/docs/en/build-with-claude/thinking#streaming-thinking)
-* [Thinking with tool use](https://platform.claude.com/docs/en/build-with-claude/thinking#thinking-with-tool-use), including [preserving thinking blocks](https://platform.claude.com/docs/en/build-with-claude/thinking#preserving-thinking-blocks)
-* [Thinking and prompt caching](https://platform.claude.com/docs/en/build-with-claude/thinking#thinking-and-prompt-caching)
-* [Thinking and the context window](https://platform.claude.com/docs/en/build-with-claude/thinking#thinking-and-the-context-window)
-* [Thinking encryption](https://platform.claude.com/docs/en/build-with-claude/thinking#thinking-encryption)
-* [Pricing](https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost#pricing) (on the [Steering thinking](https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost) page)
+* [Controlling thinking display](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl#controlling-thinking-display)
+* [Streaming thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl#streaming-thinking)
+* [Thinking with tool use](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl#thinking-with-tool-use), including [preserving thinking blocks](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl#preserving-thinking-blocks)
+* [Thinking and prompt caching](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl#thinking-and-prompt-caching)
+* [Thinking and the context window](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl#thinking-and-the-context-window)
+* [Thinking encryption](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl#thinking-encryption)
+* [Pricing](https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost?sdk_languages=curl#pricing) (on the [Steering thinking](https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost?sdk_languages=curl) page)
 
 ## Migrating to adaptive thinking
 
-If your model supports only extended thinking (Claude Sonnet 4.5 (deprecated), Claude Opus 4.5, Claude Haiku 4.5, and earlier Claude 4 models), no action is needed now: adaptive thinking is not available there, and `type: "adaptive"` [returns a 400 error](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting#error-thinking-type-adaptive). Keep `budget_tokens` until you move to a model that supports adaptive thinking, then apply the mapping that follows.
+If your model supports only extended thinking (Claude Sonnet 4.5 (deprecated), Claude Opus 4.5, Claude Haiku 4.5, and earlier Claude 4 models), no action is needed now: adaptive thinking is not available there, and `type: "adaptive"` [returns a 400 error](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting?sdk_languages=curl#error-thinking-type-adaptive). Keep `budget_tokens` until you move to a model that supports adaptive thinking, then apply the mapping that follows.
 
 You need to migrate off `type: "enabled"` if:
 
@@ -384,26 +174,26 @@ becomes:
 }
 ```
 
-`effort: "high"` is the default on Claude Sonnet 4.6, so omitting it here produces identical behavior; it appears only to show where the depth control lives in adaptive mode. Claude Opus 5.5 and Claude Haiku 5.5 default to `"medium"`, and other models that support effort default to `"high"` (see [Effort levels](https://platform.claude.com/docs/en/build-with-claude/effort#effort-levels)).
+`effort: "high"` is the default on Claude Sonnet 4.6, so omitting it here produces identical behavior; it appears only to show where the depth control lives in adaptive mode. Claude Opus 5.5 and Claude Haiku 5.5 default to `"medium"`, and other models that support effort default to `"high"` (see [Effort levels](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=curl#effort-levels)).
 
-Expect a behavioral difference, not just a syntax change. With a fixed budget, Claude thinks on every request. With adaptive thinking, Claude determines whether and how much to think on each request, and at lower [effort](https://platform.claude.com/docs/en/build-with-claude/effort) settings it may skip thinking entirely on easy inputs. You can also remove the `interleaved-thinking-2025-05-14` beta header after migrating: adaptive thinking interleaves automatically, and the Claude API ignores the header on these models. Thinking block preservation changes too: Claude Opus 4.5 and models numbered 4.6 and higher keep prior turns' thinking blocks in context and bill them as input, where Claude Sonnet 4.5 (deprecated), Claude Haiku 4.5, and earlier models stripped them; see [thinking block preservation by model](https://platform.claude.com/docs/en/build-with-claude/thinking#thinking-block-preservation-by-model).
+Expect a behavioral difference, not just a syntax change. With a fixed budget, Claude thinks on every request. With adaptive thinking, Claude determines whether and how much to think on each request, and at lower [effort](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=curl) settings it may skip thinking entirely on easy inputs. You can also remove the `interleaved-thinking-2025-05-14` beta header after migrating: adaptive thinking interleaves automatically, and the Claude API ignores the header on these models. Thinking block preservation changes too: Claude Opus 4.5 and models numbered 4.6 and higher keep prior turns' thinking blocks in context and bill them as input, where Claude Sonnet 4.5 (deprecated), Claude Haiku 4.5, and earlier models stripped them; see [thinking block preservation by model](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl#thinking-block-preservation-by-model).
 
-Switching modes is a thinking-configuration change, so the first request after the switch invalidates cache breakpoints, as described in [Prompt caching in manual mode](https://platform.claude.com/docs/en/build-with-claude/extended-thinking#extended-thinking-with-prompt-caching).
+Switching modes is a thinking-configuration change, so the first request after the switch invalidates cache breakpoints, as described in [Prompt caching in manual mode](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=curl#extended-thinking-with-prompt-caching).
 
-For full guidance, see [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking), [effort](https://platform.claude.com/docs/en/build-with-claude/effort), and the [model migration guide](https://platform.claude.com/docs/en/about-claude/models/migration-guide).
+For full guidance, see [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl), [effort](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=curl), and the [model migration guide](https://platform.claude.com/docs/en/about-claude/models/migration-guide?sdk_languages=curl).
 
 ## Next steps
 
 <CardGroup cols={3}>
-  <Card title="Thinking" icon="brain" href="https://platform.claude.com/docs/en/build-with-claude/thinking">
+  <Card title="Thinking" icon="brain" href="https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl">
     Learn how thinking works: blocks, display, streaming, and tool use.
   </Card>
 
-  <Card title="Steering thinking" icon="compass" href="https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost">
+  <Card title="Steering thinking" icon="compass" href="https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost?sdk_languages=curl">
     Let Claude determine when and how much to think on each request.
   </Card>
 
-  <Card title="Thinking in tool and multi-turn workflows" icon="wrench" href="https://platform.claude.com/docs/en/build-with-claude/thinking-tool-workflows">
+  <Card title="Thinking in tool and multi-turn workflows" icon="wrench" href="https://platform.claude.com/docs/en/build-with-claude/thinking-tool-workflows?sdk_languages=curl">
     Preserve thinking blocks and manage thinking across tool calls and turns.
   </Card>
 </CardGroup>

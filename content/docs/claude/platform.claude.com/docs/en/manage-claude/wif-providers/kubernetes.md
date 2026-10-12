@@ -11,19 +11,19 @@ kubectl get --raw /.well-known/openid-configuration | jq -r .issuer
 ```
 
 <Note>
-  The mechanism on this page (projected service-account token, cluster API server as the OIDC issuer) is native to Kubernetes itself, so it underlies every Kubernetes distribution. If you run on a managed Kubernetes service, the cloud provider guides walk through where to find the provider-managed issuer URL: [AWS (EKS)](https://platform.claude.com/docs/en/manage-claude/wif-providers/aws#use-eks-projected-service-account-tokens), [Google Cloud (GKE)](https://platform.claude.com/docs/en/manage-claude/wif-providers/gcp), or [Azure (AKS)](https://platform.claude.com/docs/en/manage-claude/wif-providers/azure). If your cluster runs SPIRE, the SPIRE OIDC Discovery Provider is the issuer rather than the cluster API server; see [SPIFFE](https://platform.claude.com/docs/en/manage-claude/wif-providers/spiffe). For any other distribution or a managed provider not listed there, follow this guide and use the issuer URL your cluster reports.
+  The mechanism on this page (projected service-account token, cluster API server as the OIDC issuer) is native to Kubernetes itself, so it underlies every Kubernetes distribution. If you run on a managed Kubernetes service, the cloud provider guides walk through where to find the provider-managed issuer URL: [AWS (EKS)](https://platform.claude.com/docs/en/manage-claude/wif-providers/aws?sdk_languages=cli#use-eks-projected-service-account-tokens), [Google Cloud (GKE)](https://platform.claude.com/docs/en/manage-claude/wif-providers/gcp?sdk_languages=cli), or [Azure (AKS)](https://platform.claude.com/docs/en/manage-claude/wif-providers/azure?sdk_languages=cli). If your cluster runs SPIRE, the SPIRE OIDC Discovery Provider is the issuer rather than the cluster API server; see [SPIFFE](https://platform.claude.com/docs/en/manage-claude/wif-providers/spiffe?sdk_languages=cli). For any other distribution or a managed provider not listed there, follow this guide and use the issuer URL your cluster reports.
 </Note>
 
 ## Prerequisites
 
-* Familiarity with [WIF concepts](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation#concepts): service accounts, federation issuers, and federation rules.
+* Familiarity with [WIF concepts](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation?sdk_languages=cli#concepts): service accounts, federation issuers, and federation rules.
 
 * A Kubernetes cluster with the [`--service-account-issuer`](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/) flag configured on the API server. Most distributions set this by default; kubeadm clusters typically use `https://kubernetes.default.svc.cluster.local`. Your platform team can confirm the value if you don't have direct access to the API server configuration.
 
 * One of the following so Anthropic can validate token signatures:
 
   * The issuer's JWKS endpoint is reachable from the public internet over HTTPS on port 443, or
-  * You can fetch the JWKS from inside the cluster and register it in `inline` mode (covered in [Configure Anthropic](https://platform.claude.com/docs/en/manage-claude/wif-providers/kubernetes#configure-anthropic)).
+  * You can fetch the JWKS from inside the cluster and register it in `inline` mode (covered in [Configure Anthropic](https://platform.claude.com/docs/en/manage-claude/wif-providers/kubernetes?sdk_languages=cli#configure-anthropic)).
 
 * Permission to create service accounts, federation issuers, and federation rules in the Claude Console for your Anthropic organization.
 
@@ -73,7 +73,7 @@ The token issued for this pod carries `sub: "system:serviceaccount:inference:inf
 
 In the Claude Console, open **Settings → Workload identity**, click **Connect workload**, and select the **Kubernetes** tile. The wizard walks you through registering the issuer, creating a service account, and creating a federation rule.
 
-The wizard creates these resources for you. Use the following values whether you enter them in the wizard or send them to the [Admin API](https://platform.claude.com/docs/en/manage-claude/wif-admin-api):
+The wizard creates these resources for you. Use the following values whether you enter them in the wizard or send them to the [Admin API](https://platform.claude.com/docs/en/manage-claude/wif-admin-api?sdk_languages=cli):
 
 **Federation issuer:** Many self-managed clusters use an issuer URL such as `https://kubernetes.default.svc.cluster.local` that is not reachable from the public internet. If that applies to your cluster, choose the **inline** JWKS source and paste the cluster's keys. Fetch them from inside the cluster:
 
@@ -124,130 +124,9 @@ Be as specific as the workload allows. Loosen `subject_prefix` to `system:servic
 
 ## Acquire and use the token
 
-The pod spec in [Configure Kubernetes](https://platform.claude.com/docs/en/manage-claude/wif-providers/kubernetes#configure-kubernetes) sets `ANTHROPIC_IDENTITY_TOKEN_FILE` to the projected mount path, along with `ANTHROPIC_FEDERATION_RULE_ID`, `ANTHROPIC_ORGANIZATION_ID`, `ANTHROPIC_SERVICE_ACCOUNT_ID`, and `ANTHROPIC_WORKSPACE_ID`. With those in place, the SDK reads the token from disk on every exchange and refreshes the Anthropic access token automatically.
+The pod spec in [Configure Kubernetes](https://platform.claude.com/docs/en/manage-claude/wif-providers/kubernetes?sdk_languages=cli#configure-kubernetes) sets `ANTHROPIC_IDENTITY_TOKEN_FILE` to the projected mount path, along with `ANTHROPIC_FEDERATION_RULE_ID`, `ANTHROPIC_ORGANIZATION_ID`, `ANTHROPIC_SERVICE_ACCOUNT_ID`, and `ANTHROPIC_WORKSPACE_ID`. With those in place, the SDK reads the token from disk on every exchange and refreshes the Anthropic access token automatically.
 
 <CodeGroup>
-  ```bash cURL
-  JWT=$(cat "$ANTHROPIC_IDENTITY_TOKEN_FILE")
-
-  ACCESS_TOKEN=$(curl -sS https://api.anthropic.com/v1/oauth/token \
-    -H "content-type: application/json" \
-    --data @- <<JSON | jq -r .access_token
-  {
-    "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
-    "assertion": "$JWT",
-    "federation_rule_id": "$ANTHROPIC_FEDERATION_RULE_ID",
-    "organization_id": "$ANTHROPIC_ORGANIZATION_ID",
-    "service_account_id": "$ANTHROPIC_SERVICE_ACCOUNT_ID",
-    "workspace_id": "$ANTHROPIC_WORKSPACE_ID"
-  }
-  JSON
-  )
-
-  curl https://api.anthropic.com/v1/messages \
-    -H "authorization: Bearer $ACCESS_TOKEN" \
-    -H "anthropic-version: 2023-06-01" \
-    -H "content-type: application/json" \
-    -d '{
-      "model": "claude-opus-5-5",
-      "max_tokens": 1024,
-      "messages": [{"role": "user", "content": "Hello, Claude"}]
-    }' | jq -r '.content[] | select(.type == "text") | .text'
-  ```
-
-  ```python Python
-  import anthropic
-
-  # Reads ANTHROPIC_IDENTITY_TOKEN_FILE, ANTHROPIC_FEDERATION_RULE_ID,
-  # ANTHROPIC_ORGANIZATION_ID, ANTHROPIC_SERVICE_ACCOUNT_ID, and ANTHROPIC_WORKSPACE_ID
-  # from the pod's environment.
-  client = anthropic.Anthropic()
-
-  message = client.messages.create(
-      model="claude-opus-5-5",
-      max_tokens=1024,
-      messages=[{"role": "user", "content": "Hello, Claude"}],
-  )
-  print(next(block.text for block in message.content if block.type == "text"))
-  ```
-
-  ```typescript TypeScript
-  import Anthropic from "@anthropic-ai/sdk";
-
-  // Reads ANTHROPIC_IDENTITY_TOKEN_FILE, ANTHROPIC_FEDERATION_RULE_ID,
-  // ANTHROPIC_ORGANIZATION_ID, ANTHROPIC_SERVICE_ACCOUNT_ID, and ANTHROPIC_WORKSPACE_ID
-  // from the pod's environment.
-  const client = new Anthropic();
-
-  const message = await client.messages.create({
-    model: "claude-opus-5-5",
-    max_tokens: 1024,
-    messages: [{ role: "user", content: "Hello, Claude" }]
-  });
-  for (const block of message.content) {
-    if (block.type === "text") {
-      console.log(block.text);
-    }
-  }
-  ```
-
-  ```go Go
-  // Reads ANTHROPIC_IDENTITY_TOKEN_FILE, ANTHROPIC_FEDERATION_RULE_ID,
-  // ANTHROPIC_ORGANIZATION_ID, ANTHROPIC_SERVICE_ACCOUNT_ID, and ANTHROPIC_WORKSPACE_ID
-  // from the pod's environment.
-  client := anthropic.NewClient()
-
-  message, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
-  	Model:     anthropic.ModelClaudeOpus5_5,
-  	MaxTokens: 1024,
-  	Messages: []anthropic.MessageParam{
-  		anthropic.NewUserMessage(anthropic.NewTextBlock("Hello, Claude")),
-  	},
-  })
-  if err != nil {
-  	panic(err)
-  }
-  for _, block := range message.Content {
-  	if textBlock, ok := block.AsAny().(anthropic.TextBlock); ok {
-  		fmt.Println(textBlock.Text)
-  		break
-  	}
-  }
-  ```
-
-  ```java Java
-  AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-  var message = client.messages().create(MessageCreateParams.builder()
-          .model(Model.CLAUDE_OPUS_5_5)
-          .maxTokens(1024)
-          .addUserMessage("Hello, Claude")
-          .build());
-
-  IO.println(message.content());
-  ```
-
-  ```csharp C#
-  // Reads ANTHROPIC_IDENTITY_TOKEN_FILE, ANTHROPIC_FEDERATION_RULE_ID,
-  // ANTHROPIC_ORGANIZATION_ID, ANTHROPIC_SERVICE_ACCOUNT_ID, and ANTHROPIC_WORKSPACE_ID
-  // from the pod's environment.
-  using var client = new AnthropicClient();
-
-  var message = await client.Messages.Create(new()
-  {
-      Model = Model.ClaudeOpus5_5,
-      MaxTokens = 1024,
-      Messages = [new() { Role = Role.User, Content = "Hello, Claude" }],
-  });
-  foreach (var block in message.Content)
-  {
-      if (block.Value is TextBlock textBlock)
-      {
-          Console.WriteLine(textBlock.Text);
-      }
-  }
-  ```
-
   ```bash CLI
   # Reads ANTHROPIC_FEDERATION_RULE_ID, ANTHROPIC_ORGANIZATION_ID,
   # ANTHROPIC_SERVICE_ACCOUNT_ID, ANTHROPIC_WORKSPACE_ID, and ANTHROPIC_IDENTITY_TOKEN_FILE
@@ -256,42 +135,11 @@ The pod spec in [Configure Kubernetes](https://platform.claude.com/docs/en/manag
     --max-tokens 1024 \
     --message '{role: user, content: "Hello, Claude"}'
   ```
-
-  ```php PHP
-  use Anthropic\Client;
-
-  // Reads ANTHROPIC_FEDERATION_RULE_ID, ANTHROPIC_ORGANIZATION_ID,
-  // ANTHROPIC_SERVICE_ACCOUNT_ID, ANTHROPIC_WORKSPACE_ID, and ANTHROPIC_IDENTITY_TOKEN_FILE
-  $client = new Client();
-
-  $message = $client->messages->create(
-      model: 'claude-opus-5-5',
-      maxTokens: 1024,
-      messages: [['role' => 'user', 'content' => 'Hello, Claude']],
-  );
-  $textBlock = array_find($message->content, static fn ($block): bool => $block->type === 'text');
-  echo $textBlock->text, PHP_EOL;
-  ```
-
-  ```ruby Ruby
-  require "anthropic"
-
-  # Reads ANTHROPIC_FEDERATION_RULE_ID, ANTHROPIC_ORGANIZATION_ID,
-  # ANTHROPIC_SERVICE_ACCOUNT_ID, ANTHROPIC_WORKSPACE_ID, and ANTHROPIC_IDENTITY_TOKEN_FILE
-  client = Anthropic::Client.new
-
-  message = client.messages.create(
-    model: "claude-opus-5-5",
-    max_tokens: 1024,
-    messages: [{role: "user", content: "Hello, Claude"}]
-  )
-  puts message.content.find { it.type == :text }.text
-  ```
 </CodeGroup>
 
 ## Verify the setup
 
-A successful exchange returns an `access_token` beginning with `sk-ant-oat01-` and an `expires_in` value in seconds. If the exchange fails with the opaque `401` `authentication_error` response (message `Authentication failed`), check the [authentication history page](https://platform.claude.com/settings/workload-identity-federation?tab=history) for the deny reason and see [Troubleshoot a failed exchange](https://platform.claude.com/docs/en/manage-claude/wif-reference#troubleshoot-a-failed-exchange); the most common Kubernetes-side cause is a JWKS key mismatch (for `inline` mode, re-fetch with `kubectl get --raw /openid/v1/jwks` and update the issuer).
+A successful exchange returns an `access_token` beginning with `sk-ant-oat01-` and an `expires_in` value in seconds. If the exchange fails with the opaque `401` `authentication_error` response (message `Authentication failed`), check the [authentication history page](https://platform.claude.com/settings/workload-identity-federation?tab=history) for the deny reason and see [Troubleshoot a failed exchange](https://platform.claude.com/docs/en/manage-claude/wif-reference?sdk_languages=cli#troubleshoot-a-failed-exchange); the most common Kubernetes-side cause is a JWKS key mismatch (for `inline` mode, re-fetch with `kubectl get --raw /openid/v1/jwks` and update the issuer).
 
 ## Scope your rule
 
@@ -308,5 +156,5 @@ Lock the rule's `match` block to the narrowest scope that fits your use case:
 
 ## Next steps
 
-* [Workload Identity Federation](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation): concepts, the token-exchange flow, and SDK configuration options.
-* [WIF reference](https://platform.claude.com/docs/en/manage-claude/wif-reference): environment variables, JWKS source modes, and rule match modes.
+* [Workload Identity Federation](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation?sdk_languages=cli): concepts, the token-exchange flow, and SDK configuration options.
+* [WIF reference](https://platform.claude.com/docs/en/manage-claude/wif-reference?sdk_languages=cli): environment variables, JWKS source modes, and rule match modes.

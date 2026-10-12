@@ -1,0 +1,381 @@
+---
+title: Approve Spend Limit Increase Request
+url: https://platform.claude.com/docs/en/api/http/beta/organization/spend_limits/increase_requests/approve
+---
+
+# Approve Spend Limit Increase Request
+
+**POST** `/v1/organizations/spend_limit_increase_requests/{spend_limit_increase_request_id}/approve`
+
+Approve a pending spend limit increase request.
+
+Writes a per-user spend limit at `amount` for the requester and
+transitions the request to `approved`. `period` defaults to the period
+the member was blocked on. Anthropic emails the requester unless
+`suppress_notification` is set.
+
+## Path parameters
+
+- `spend_limit_increase_request_id: string`
+
+  ID of the spend limit increase request.
+
+## Headers
+
+- `"anthropic-version": optional string`
+
+  The version of the Claude API you want to use.
+
+  Read more about versioning and our version history [here](https://platform.claude.com/docs/en/api/versioning?sdk_languages=http).
+
+## Body parameters
+
+- `amount: string`
+
+  New per-user spend limit as a non-negative integer decimal string (minor units).
+
+- `period: optional BetaSpendLimitPeriod or null`
+
+  - `"daily"`
+
+  - `"monthly"`
+
+  - `"weekly"`
+
+- `suppress_notification: optional boolean`
+
+## Returns
+
+- `type: "spend_limit_increase_request"`
+
+  default: spend_limit_increase_request
+
+- `id: string`
+
+- `actor: BetaSpendLimitUserActor or BetaSpendLimitScopedAPIKeyActor`
+
+  - `BetaSpendLimitUserActor object`
+
+    A user within the organization. `name` and `email_address` are
+    null when the underlying account is unavailable or has been deleted;
+    `deleted` is true only for deleted accounts.
+
+    - `type: "user_actor"`
+
+      Actor type. Always `user_actor`.
+
+      default: user_actor
+
+    - `deleted: boolean`
+
+      True only when the underlying account has been deleted.
+
+      default: false
+
+    - `email_address: string or null`
+
+      The user's email address. Null when the account is unavailable or has been deleted.
+
+    - `name: string or null`
+
+      The user's current display name. Null when the account is unavailable, has been deleted, or has no name set.
+
+    - `user_id: string`
+
+      Tagged ID of the user.
+
+  - `BetaSpendLimitScopedAPIKeyActor object`
+
+    A scoped Admin API key acting on behalf of the organization.
+
+    - `type: "scoped_api_key_actor"`
+
+      default: scoped_api_key_actor
+
+    - `scoped_api_key_id: string`
+
+- `created_at: string`
+
+  format: date-time
+
+- `period: BetaSpendLimitPeriod`
+
+  - `"daily"`
+
+  - `"monthly"`
+
+  - `"weekly"`
+
+- `resolved_at: string or null`
+
+  format: date-time
+
+- `resolved_by: BetaSpendLimitUserActor or BetaSpendLimitScopedAPIKeyActor or null`
+
+  - `BetaSpendLimitUserActor object`
+
+    A user within the organization. `name` and `email_address` are
+    null when the underlying account is unavailable or has been deleted;
+    `deleted` is true only for deleted accounts.
+
+  - `BetaSpendLimitScopedAPIKeyActor object`
+
+    A scoped Admin API key acting on behalf of the organization.
+
+- `spend_limit: BetaSpendLimit`
+
+  A configured spend limit: a cap on metered spend for one scope and period.
+
+  - `type: "spend_limit"`
+
+    Object type. Always `spend_limit`.
+
+    default: spend_limit
+
+  - `id: string`
+
+    Unique tagged ID of the spend limit (`spl_...`).
+
+  - `amount: string or null`
+
+    Limit amount as a non-negative integer decimal string in the minor unit of `currency` (cents for USD): "50000" is $500.00. `null` means no numeric cap is configured at this scope — see the effective report for whether a limit applies.
+
+  - `created_at: string`
+
+    RFC 3339 datetime at which the spend limit was created.
+
+    format: date-time
+
+  - `currency: string`
+
+    ISO 4217 code of the organization's billing currency; the unit for `amount`.
+
+  - `is_enabled: boolean`
+
+    Read-only. `false` when extra usage is switched off for this organization (`organization` limit) or for this member (`user` limit); `amount` is kept and applies again when it's switched back on. Always `true` for other limits.
+
+  - `period: BetaSpendLimitPeriod`
+
+    Length of the window the limit resets over. `amount` caps spend within each period.
+
+  - `scope: BetaSpendLimitUserScope or BetaSpendLimitSeatTierScope or BetaSpendLimitRBACGroupScope or 3 more`
+
+    What the limit applies to. A tagged union on `type`; each variant carries the identifier for its scope.
+
+    - `BetaSpendLimitUserScope object`
+
+      Scope selecting a single member of the organization.
+
+      - `type: "user"`
+
+        Scope type. Always `user` for this scope.
+
+        default: user
+
+      - `user_id: string`
+
+        Tagged ID of the member the spend limit applies to.
+
+    - `BetaSpendLimitSeatTierScope object`
+
+      - `type: "seat_tier"`
+
+        default: seat_tier
+
+      - `seat_tier: string`
+
+    - `BetaSpendLimitRBACGroupScope object`
+
+      - `type: "rbac_group"`
+
+        default: rbac_group
+
+      - `rbac_group_id: string`
+
+    - `BetaSpendLimitOrganizationServiceScope object`
+
+      - `type: "organization_service"`
+
+        default: organization_service
+
+      - `service: string`
+
+    - `BetaSpendLimitOrganizationScope object`
+
+      - `type: "organization"`
+
+        default: organization
+
+    - `BetaSpendLimitWorkspaceScope object`
+
+      Scope selecting one workspace of a Claude Console organization.
+
+      - `type: "workspace"`
+
+        Scope type. Always `workspace` for this scope.
+
+        default: workspace
+
+      - `workspace_id: string`
+
+        Tagged ID of the workspace the spend limit applies to.
+
+  - `updated_at: string`
+
+    RFC 3339 datetime at which the spend limit was last modified.
+
+    format: date-time
+
+- `spend_summary: BetaSpendSummary or null`
+
+  Per-member effective-limit report row (`GET /spend_limits/effective`).
+
+  - `actor: BetaSpendLimitUserActor or BetaSpendLimitScopedAPIKeyActor`
+
+    - `BetaSpendLimitUserActor object`
+
+      A user within the organization. `name` and `email_address` are
+      null when the underlying account is unavailable or has been deleted;
+      `deleted` is true only for deleted accounts.
+
+    - `BetaSpendLimitScopedAPIKeyActor object`
+
+      A scoped Admin API key acting on behalf of the organization.
+
+  - `amount: string or null`
+
+    Effective limit amount as a non-negative integer decimal string in the minor unit of `currency` (cents for USD). `null` means no limit applies for this row's `period` — each period resolves independently, so another period may still cap this member.
+
+  - `currency: string`
+
+    ISO 4217 code of the organization's billing currency; the unit for `amount` and `period_to_date_spend`.
+
+  - `period: BetaSpendLimitPeriod`
+
+    Period this row's effective limit and spend are reported for.
+
+  - `period_to_date_spend: string`
+
+    The member's spend so far in the current period, as a non-negative decimal string in the minor unit of `currency` (cents for USD). May carry fractional minor units up to three decimal places (e.g. `"12050.5"`) — metered usage is not rounded to whole cents. Reads as `"0"` when the spend reading is temporarily unavailable.
+
+  - `scope: BetaSpendLimitUserScope or BetaSpendLimitSeatTierScope or BetaSpendLimitRBACGroupScope or 3 more`
+
+    - `BetaSpendLimitUserScope object`
+
+      Scope selecting a single member of the organization.
+
+    - `BetaSpendLimitSeatTierScope object`
+
+    - `BetaSpendLimitRBACGroupScope object`
+
+    - `BetaSpendLimitOrganizationServiceScope object`
+
+    - `BetaSpendLimitOrganizationScope object`
+
+    - `BetaSpendLimitWorkspaceScope object`
+
+      Scope selecting one workspace of a Claude Console organization.
+
+  - `source: BetaSpendLimitUserScope or BetaSpendLimitSeatTierScope or BetaSpendLimitRBACGroupScope or 3 more`
+
+    - `BetaSpendLimitUserScope object`
+
+      Scope selecting a single member of the organization.
+
+    - `BetaSpendLimitSeatTierScope object`
+
+    - `BetaSpendLimitRBACGroupScope object`
+
+    - `BetaSpendLimitOrganizationServiceScope object`
+
+    - `BetaSpendLimitOrganizationScope object`
+
+    - `BetaSpendLimitWorkspaceScope object`
+
+      Scope selecting one workspace of a Claude Console organization.
+
+  - `spend_limit_id: string`
+
+- `status: BetaSpendLimitIncreaseRequestStatus`
+
+  - `"approved"`
+
+  - `"denied"`
+
+  - `"pending"`
+
+## Example
+
+```bash
+curl https://api.anthropic.com/v1/organizations/spend_limit_increase_requests/$SPEND_LIMIT_INCREASE_REQUEST_ID/approve \
+    -H 'Content-Type: application/json' \
+    -H 'anthropic-version: 2023-06-01' \
+    -H "X-Api-Key: $ANTHROPIC_API_KEY" \
+    -d '{
+          "amount": "50000",
+          "period": "monthly"
+        }'
+```
+
+### Response (200)
+
+```json
+{
+  "id": "id",
+  "actor": {
+    "deleted": true,
+    "email_address": "email_address",
+    "name": "name",
+    "type": "user_actor",
+    "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+  },
+  "created_at": "2019-12-27T18:11:19.117Z",
+  "period": "daily",
+  "resolved_at": "2019-12-27T18:11:19.117Z",
+  "resolved_by": {
+    "deleted": true,
+    "email_address": "email_address",
+    "name": "name",
+    "type": "user_actor",
+    "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+  },
+  "spend_limit": {
+    "id": "id",
+    "amount": "50000",
+    "created_at": "2019-12-27T18:11:19.117Z",
+    "currency": "USD",
+    "is_enabled": true,
+    "period": "daily",
+    "scope": {
+      "type": "user",
+      "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+    },
+    "type": "spend_limit",
+    "updated_at": "2019-12-27T18:11:19.117Z"
+  },
+  "spend_summary": {
+    "actor": {
+      "deleted": true,
+      "email_address": "email_address",
+      "name": "name",
+      "type": "user_actor",
+      "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+    },
+    "amount": "50000",
+    "currency": "USD",
+    "period": "daily",
+    "period_to_date_spend": "12050.5",
+    "scope": {
+      "type": "user",
+      "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+    },
+    "source": {
+      "type": "user",
+      "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+    },
+    "spend_limit_id": "spend_limit_id"
+  },
+  "status": "approved",
+  "type": "spend_limit_increase_request"
+}
+```

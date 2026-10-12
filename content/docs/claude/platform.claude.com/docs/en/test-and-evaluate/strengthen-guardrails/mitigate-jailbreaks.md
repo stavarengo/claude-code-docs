@@ -15,7 +15,7 @@ These attacks fall into two categories with different threat models:
 
 In this threat model, a user is deliberately crafting inputs to manipulate your application into producing content or taking actions you don't want it to. These mitigations strengthen your application's guardrails:
 
-* **Harmlessness screens:** Use a lightweight model like Claude Haiku 5.5 to pre-screen user input before it reaches your main conversation. Use [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs) to constrain the response to a simple classification. Claude Haiku 5.5 runs [safety classifiers](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback) that can decline the screening request itself, so treat a response with `stop_reason: "refusal"` as a harmful verdict.
+* **Harmlessness screens:** Use a lightweight model like Claude Haiku 5.5 to pre-screen user input before it reaches your main conversation. Use [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli) to constrain the response to a simple classification. Claude Haiku 5.5 runs [safety classifiers](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback?sdk_languages=cli) that can decline the screening request itself, so treat a response with `stop_reason: "refusal"` as a harmful verdict.
 
   <Accordion title="Example: Harmlessness screen for content moderation">
     ```text User wrap
@@ -74,7 +74,7 @@ In this threat model, you're protecting your users from instructions embedded in
 
 Structure your application so that Claude can reliably distinguish untrusted content from your instructions:
 
-* **Put untrusted content only in tool results.** Deliver third-party content to Claude inside `tool_result` blocks, never in `system` prompts or plain user `text` blocks. Claude is trained to treat instructions that appear inside tool results with appropriate skepticism. See [Handle tool calls](https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls) for the `tool_result` format.
+* **Put untrusted content only in tool results.** Deliver third-party content to Claude inside `tool_result` blocks, never in `system` prompts or plain user `text` blocks. Claude is trained to treat instructions that appear inside tool results with appropriate skepticism. See [Handle tool calls](https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls?sdk_languages=cli) for the `tool_result` format.
 
 * **Tell Claude what the content is and where it came from.** In the tool's `description`, or in the structure of the result itself, make the nature and source of the content explicit: for example, that it is the body of an inbound email from an unknown sender, or OCR text extracted from a user-uploaded image. This context helps Claude calibrate how much to trust embedded directives.
 
@@ -111,11 +111,11 @@ Structure your application so that Claude can reliably distinguish untrusted con
     The email body is a JSON string inside a JSON object. Even though it contains text that looks like an instruction, the encoding makes it unambiguous that this is data, not a directive.
   </Accordion>
 
-* **Don't put your own instructions in tool results.** Because Claude treats tool-result content as untrusted data, instructions you place there may be ignored or flagged as a potential injection. Send your instructions in a `user` turn that follows the `tool_result` block. On supported models, you can also use a [mid-conversation system message](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages).
+* **Don't put your own instructions in tool results.** Because Claude treats tool-result content as untrusted data, instructions you place there may be ignored or flagged as a potential injection. Send your instructions in a `user` turn that follows the `tool_result` block. On supported models, you can also use a [mid-conversation system message](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages?sdk_languages=cli).
 
 * **Limit Claude's access to sensitive data and actions.** Apply the principle of least privilege so that a successful injection can do minimal damage: don't give Claude access to secrets it doesn't need, run tools in sandboxed environments, and scope permissions as narrowly as possible.
 
-* **Screen tool outputs before Claude acts on them.** Apply the same lightweight-model screening pattern you use for user input to the content your tools return. Run each tool, pass its raw output to a small classifier call with Claude Haiku 5.5, and only return the content as a `tool_result` block if the screen reports no injection attempt. Use [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs) so the classifier's verdict is a parseable value your application can branch on.
+* **Screen tool outputs before Claude acts on them.** Apply the same lightweight-model screening pattern you use for user input to the content your tools return. Run each tool, pass its raw output to a small classifier call with Claude Haiku 5.5, and only return the content as a `tool_result` block if the screen reports no injection attempt. Use [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli) so the classifier's verdict is a parseable value your application can branch on.
 
   <Accordion title="Example: Injection screen for tool output">
     ```text User wrap
@@ -157,11 +157,11 @@ Structure your application so that Claude can reliably distinguish untrusted con
 <Note>
   If you're using the 
 
-  [computer use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool)
+  [computer use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool?sdk_languages=cli)
 
    or the 
 
-  [browser use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool)
+  [browser use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool?sdk_languages=cli)
 
   , Anthropic runs additional classifiers that scan what the tools return, such as screenshots or page text, for potential prompt injections and steer Claude to check whether the instruction really came from you before acting. See those pages for details and opt-out information.
 </Note>
@@ -204,7 +204,7 @@ Combine strategies for robust protection. Here's an enterprise-grade example wit
   Evaluate if this query violates SEC rules, FINRA guidelines, or client privacy.
   ```
 
-  Use [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs) to constrain the response to a boolean classification.
+  Use [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli) to constrain the response to a boolean classification.
 </Accordion>
 
 By layering these strategies, you create a robust defense against jailbreaking and prompt injections, ensuring your Claude-powered applications maintain the highest standards of safety and compliance.

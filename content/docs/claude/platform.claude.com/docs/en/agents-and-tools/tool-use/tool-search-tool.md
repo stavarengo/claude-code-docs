@@ -11,20 +11,20 @@ Loading every tool definition up front causes two problems as a tool library gro
 * **Context bloat:** A typical multiserver setup (GitHub, Slack, Sentry, Grafana, and Splunk) can consume \~55k tokens in definitions before Claude does any work. Tool search typically reduces this by over 85 percent, loading only the 3–5 tools Claude needs for a given request.
 * **Tool selection accuracy:** Claude's ability to pick the right tool degrades once you exceed 30–50 available tools. Because tool search loads only a focused set of relevant tools on demand, selection accuracy stays high even across thousands of tools.
 
-For the models that support tool search, see [Model compatibility](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool#model-compatibility).
+For the models that support tool search, see [Model compatibility](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool?sdk_languages=cli#model-compatibility).
 
 <Tip>
   For background on the scaling challenges that tool search solves, see [Advanced tool use](https://www.anthropic.com/engineering/advanced-tool-use). Tool search's on-demand loading is also an instance of the broader just-in-time retrieval principle described in [Effective context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents).
 </Tip>
 
-Tool search runs as a server-side tool, but you can also implement your own client-side tool search. See [Custom tool search implementation](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool#custom-tool-search-implementation) for details.
+Tool search runs as a server-side tool, but you can also implement your own client-side tool search. See [Custom tool search implementation](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool?sdk_languages=cli#custom-tool-search-implementation) for details.
 
 <Note>
   Share feedback on this feature through the [feedback form](https://forms.gle/MhcGFFwLxuwnWTkYA).
 </Note>
 
 <Note>
-  To learn how zero data retention (ZDR) applies to this feature, see [API and data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention).
+  To learn how zero data retention (ZDR) applies to this feature, see [API and data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli).
 </Note>
 
 <Warning>
@@ -32,31 +32,31 @@ Tool search runs as a server-side tool, but you can also implement your own clie
 </Warning>
 
 <Note>
-  On [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws), server-side tool search works identically to the Claude API. Claude Platform on AWS uses the Anthropic Messages API directly, so there is no InvokeModel or Converse distinction.
+  On [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), server-side tool search works identically to the Claude API. Claude Platform on AWS uses the Anthropic Messages API directly, so there is no InvokeModel or Converse distinction.
 </Note>
 
 ## Model compatibility
 
 Both tool search variants are available on the following models:
 
-| Model                                                                                                                              | Tool versions                                                       |
-| ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| Claude Fable 5.1 (claude-fable-5-1)                                                                                                | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
-| Claude Mythos 5.1 (claude-mythos-5-1)                                                                                              | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
-| Claude Fable 5 (claude-fable-5)                                                                                                    | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
-| Claude Mythos 5 (claude-mythos-5)                                                                                                  | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
-| Claude Opus 5.5 (claude-opus-5-5)                                                                                                  | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
-| Claude Opus 5 (claude-opus-5)                                                                                                      | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
-| Claude Sonnet 5.5 (claude-sonnet-5-5)                                                                                              | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
-| Claude Sonnet 5 (claude-sonnet-5)                                                                                                  | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
-| Claude Haiku 5.5 (claude-haiku-5-5)                                                                                                | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
-| Claude Opus 4.8 (claude-opus-4-8)                                                                                                  | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
-| Claude Opus 4.7 (claude-opus-4-7)                                                                                                  | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
-| Claude Opus 4.6 (claude-opus-4-6)                                                                                                  | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
-| Claude Sonnet 4.6 (claude-sonnet-4-6)                                                                                              | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
-| Claude Opus 4.5 (claude-opus-4-5-20251101)                                                                                         | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
-| Claude Sonnet 4.5 (claude-sonnet-4-5-20250929) ([deprecated](https://platform.claude.com/docs/en/about-claude/model-deprecations)) | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
-| Claude Haiku 4.5 (claude-haiku-4-5-20251001)                                                                                       | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
+| Model                                                                                                                                                | Tool versions                                                       |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| Claude Fable 5.1 (claude-fable-5-1)                                                                                                                  | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
+| Claude Mythos 5.1 (claude-mythos-5-1)                                                                                                                | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
+| Claude Fable 5 (claude-fable-5)                                                                                                                      | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
+| Claude Mythos 5 (claude-mythos-5)                                                                                                                    | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
+| Claude Opus 5.5 (claude-opus-5-5)                                                                                                                    | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
+| Claude Opus 5 (claude-opus-5)                                                                                                                        | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
+| Claude Sonnet 5.5 (claude-sonnet-5-5)                                                                                                                | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
+| Claude Sonnet 5 (claude-sonnet-5)                                                                                                                    | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
+| Claude Haiku 5.5 (claude-haiku-5-5)                                                                                                                  | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
+| Claude Opus 4.8 (claude-opus-4-8)                                                                                                                    | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
+| Claude Opus 4.7 (claude-opus-4-7)                                                                                                                    | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
+| Claude Opus 4.6 (claude-opus-4-6)                                                                                                                    | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
+| Claude Sonnet 4.6 (claude-sonnet-4-6)                                                                                                                | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
+| Claude Opus 4.5 (claude-opus-4-5-20251101)                                                                                                           | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
+| Claude Sonnet 4.5 (claude-sonnet-4-5-20250929) ([deprecated](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli)) | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
+| Claude Haiku 4.5 (claude-haiku-4-5-20251001)                                                                                                         | `tool_search_tool_regex_20251119`, `tool_search_tool_bm25_20251119` |
 
 Claude Opus 4.1 and earlier models don't support the tool search tool.
 
@@ -82,61 +82,6 @@ When you enable the tool search tool:
 The following example includes the tool search tool and two deferred tools:
 
 <CodeGroup>
-  ```bash cURL
-  curl https://api.anthropic.com/v1/messages \
-      -H "x-api-key: $ANTHROPIC_API_KEY" \
-      -H "anthropic-version: 2023-06-01" \
-      -H "content-type: application/json" \
-      -d '{
-          "model": "claude-opus-5-5",
-          "max_tokens": 2048,
-          "messages": [
-              {
-                  "role": "user",
-                  "content": "What is the weather in San Francisco?"
-              }
-          ],
-          "tools": [
-              {
-                  "type": "tool_search_tool_regex_20251119",
-                  "name": "tool_search_tool_regex"
-              },
-              {
-                  "name": "get_weather",
-                  "description": "Get the weather at a specific location",
-                  "input_schema": {
-                      "type": "object",
-                      "properties": {
-                          "location": {"type": "string"},
-                          "unit": {
-                              "type": "string",
-                              "enum": ["celsius", "fahrenheit"]
-                          }
-                      },
-                      "required": ["location"]
-                  },
-                  "defer_loading": true
-              },
-              {
-                  "name": "search_files",
-                  "description": "Search through files in the workspace",
-                  "input_schema": {
-                      "type": "object",
-                      "properties": {
-                          "query": {"type": "string"},
-                          "file_types": {
-                              "type": "array",
-                              "items": {"type": "string"}
-                          }
-                      },
-                      "required": ["query"]
-                  },
-                  "defer_loading": true
-              }
-          ]
-      }'
-  ```
-
   ```bash CLI
   ant messages create <<'YAML'
   model: claude-opus-5-5
@@ -174,366 +119,9 @@ The following example includes the tool search tool and two deferred tools:
       defer_loading: true
   YAML
   ```
-
-  ```python Python
-  client = anthropic.Anthropic()
-
-  response = client.messages.create(
-      model="claude-opus-5-5",
-      max_tokens=2048,
-      messages=[{"role": "user", "content": "What is the weather in San Francisco?"}],
-      tools=[
-          {"type": "tool_search_tool_regex_20251119", "name": "tool_search_tool_regex"},
-          {
-              "name": "get_weather",
-              "description": "Get the weather at a specific location",
-              "input_schema": {
-                  "type": "object",
-                  "properties": {
-                      "location": {"type": "string"},
-                      "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]},
-                  },
-                  "required": ["location"],
-              },
-              "defer_loading": True,
-          },
-          {
-              "name": "search_files",
-              "description": "Search through files in the workspace",
-              "input_schema": {
-                  "type": "object",
-                  "properties": {
-                      "query": {"type": "string"},
-                      "file_types": {"type": "array", "items": {"type": "string"}},
-                  },
-                  "required": ["query"],
-              },
-              "defer_loading": True,
-          },
-      ],
-  )
-
-  print(response)
-  ```
-
-  ```typescript TypeScript
-  const client = new Anthropic();
-
-  const response = await client.messages.create({
-    model: "claude-opus-5-5",
-    max_tokens: 2048,
-    messages: [
-      {
-        role: "user",
-        content: "What is the weather in San Francisco?"
-      }
-    ],
-    tools: [
-      {
-        type: "tool_search_tool_regex_20251119",
-        name: "tool_search_tool_regex"
-      },
-      {
-        name: "get_weather",
-        description: "Get the weather at a specific location",
-        input_schema: {
-          type: "object" as const,
-          properties: {
-            location: { type: "string" },
-            unit: {
-              type: "string",
-              enum: ["celsius", "fahrenheit"]
-            }
-          },
-          required: ["location"]
-        },
-        defer_loading: true
-      },
-      {
-        name: "search_files",
-        description: "Search through files in the workspace",
-        input_schema: {
-          type: "object" as const,
-          properties: {
-            query: { type: "string" },
-            file_types: {
-              type: "array",
-              items: { type: "string" }
-            }
-          },
-          required: ["query"]
-        },
-        defer_loading: true
-      }
-    ]
-  });
-
-  console.log(response);
-  ```
-
-  ```csharp C#
-  AnthropicClient client = new();
-
-  var parameters = new MessageCreateParams
-  {
-      Model = Model.ClaudeOpus5_5,
-      MaxTokens = 2048,
-      Messages = [
-          new() {
-              Role = Role.User,
-              Content = "What is the weather in San Francisco?"
-          }
-      ],
-      Tools = [
-          new ToolUnion(new ToolSearchToolRegex20251119
-          {
-              Type = ToolSearchToolRegex20251119Type.ToolSearchToolRegex20251119
-          }),
-          new ToolUnion(new Tool()
-          {
-              Name = "get_weather",
-              Description = "Get the weather at a specific location",
-              InputSchema = new InputSchema()
-              {
-                  Properties = new Dictionary<string, JsonElement>
-                  {
-                      ["location"] = JsonSerializer.SerializeToElement(new { type = "string" }),
-                      ["unit"] = JsonSerializer.SerializeToElement(new { type = "string", @enum = new[] { "celsius", "fahrenheit" } }),
-                  },
-                  Required = ["location"],
-              },
-              DeferLoading = true,
-          }),
-          new ToolUnion(new Tool()
-          {
-              Name = "search_files",
-              Description = "Search through files in the workspace",
-              InputSchema = new InputSchema()
-              {
-                  Properties = new Dictionary<string, JsonElement>
-                  {
-                      ["query"] = JsonSerializer.SerializeToElement(new { type = "string" }),
-                      ["file_types"] = JsonSerializer.SerializeToElement(new { type = "array", items = new { type = "string" } }),
-                  },
-                  Required = ["query"],
-              },
-              DeferLoading = true,
-          }),
-      ]
-  };
-
-  var message = await client.Messages.Create(parameters);
-  Console.WriteLine(message);
-  ```
-
-  ```go Go
-  client := anthropic.NewClient()
-
-  response, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
-  	Model:     anthropic.ModelClaudeOpus5_5,
-  	MaxTokens: 2048,
-  	Messages: []anthropic.MessageParam{
-  		anthropic.NewUserMessage(anthropic.NewTextBlock("What is the weather in San Francisco?")),
-  	},
-  	Tools: []anthropic.ToolUnionParam{
-  		{OfToolSearchToolRegex20251119: &anthropic.ToolSearchToolRegex20251119Param{
-  			Type: anthropic.ToolSearchToolRegex20251119TypeToolSearchToolRegex20251119,
-  		}},
-  		{OfTool: &anthropic.ToolParam{
-  			Name:        "get_weather",
-  			Description: anthropic.String("Get the weather at a specific location"),
-  			InputSchema: anthropic.ToolInputSchemaParam{
-  				Properties: map[string]any{
-  					"location": map[string]any{"type": "string"},
-  					"unit": map[string]any{
-  						"type": "string",
-  						"enum": []string{"celsius", "fahrenheit"},
-  					},
-  				},
-  				Required: []string{"location"},
-  			},
-  			DeferLoading: anthropic.Bool(true),
-  		}},
-  		{OfTool: &anthropic.ToolParam{
-  			Name:        "search_files",
-  			Description: anthropic.String("Search through files in the workspace"),
-  			InputSchema: anthropic.ToolInputSchemaParam{
-  				Properties: map[string]any{
-  					"query":      map[string]any{"type": "string"},
-  					"file_types": map[string]any{"type": "array", "items": map[string]any{"type": "string"}},
-  				},
-  				Required: []string{"query"},
-  			},
-  			DeferLoading: anthropic.Bool(true),
-  		}},
-  	},
-  })
-  if err != nil {
-  	log.Fatal(err)
-  }
-  fmt.Println(response.RawJSON())
-  ```
-
-  ```java Java
-  import com.anthropic.models.messages.ToolSearchToolRegex20251119;
-
-  void main() {
-      AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-      InputSchema weatherSchema = InputSchema.builder()
-          .properties(JsonValue.from(Map.of(
-              "location", Map.of("type", "string"),
-              "unit", Map.of(
-                  "type", "string",
-                  "enum", List.of("celsius", "fahrenheit")
-              )
-          )))
-          .putAdditionalProperty("required", JsonValue.from(List.of("location")))
-          .build();
-
-      InputSchema searchSchema = InputSchema.builder()
-          .properties(JsonValue.from(Map.of(
-              "query", Map.of("type", "string"),
-              "file_types", Map.of(
-                  "type", "array",
-                  "items", Map.of("type", "string")
-              )
-          )))
-          .putAdditionalProperty("required", JsonValue.from(List.of("query")))
-          .build();
-
-      MessageCreateParams params = MessageCreateParams.builder()
-          .model(Model.CLAUDE_OPUS_5_5)
-          .maxTokens(2048L)
-          .addUserMessage("What is the weather in San Francisco?")
-          .addTool(ToolSearchToolRegex20251119.builder()
-              .type(ToolSearchToolRegex20251119.Type.TOOL_SEARCH_TOOL_REGEX_20251119)
-              .build())
-          .addTool(Tool.builder()
-              .name("get_weather")
-              .description("Get the weather at a specific location")
-              .inputSchema(weatherSchema)
-              .deferLoading(true)
-              .build())
-          .addTool(Tool.builder()
-              .name("search_files")
-              .description("Search through files in the workspace")
-              .inputSchema(searchSchema)
-              .deferLoading(true)
-              .build())
-          .build();
-
-      Message response = client.messages().create(params);
-      IO.println(response);
-  }
-  ```
-
-  ```php PHP
-  $client = new Client();
-
-  $message = $client->messages->create(
-      maxTokens: 2048,
-      messages: [
-          ['role' => 'user', 'content' => 'What is the weather in San Francisco?'],
-      ],
-      model: 'claude-opus-5-5',
-      tools: [
-          [
-              'type' => 'tool_search_tool_regex_20251119',
-              'name' => 'tool_search_tool_regex',
-          ],
-          [
-              'name' => 'get_weather',
-              'description' => 'Get the weather at a specific location',
-              'input_schema' => [
-                  'type' => 'object',
-                  'properties' => [
-                      'location' => ['type' => 'string'],
-                      'unit' => [
-                          'type' => 'string',
-                          'enum' => ['celsius', 'fahrenheit'],
-                      ],
-                  ],
-                  'required' => ['location'],
-              ],
-              'defer_loading' => true,
-          ],
-          [
-              'name' => 'search_files',
-              'description' => 'Search through files in the workspace',
-              'input_schema' => [
-                  'type' => 'object',
-                  'properties' => [
-                      'query' => ['type' => 'string'],
-                      'file_types' => [
-                          'type' => 'array',
-                          'items' => ['type' => 'string'],
-                      ],
-                  ],
-                  'required' => ['query'],
-              ],
-              'defer_loading' => true,
-          ],
-      ],
-  );
-
-  echo $message;
-  ```
-
-  ```ruby Ruby
-  client = Anthropic::Client.new
-
-  message = client.messages.create(
-    model: "claude-opus-5-5",
-    max_tokens: 2048,
-    messages: [
-      { role: "user", content: "What is the weather in San Francisco?" }
-    ],
-    tools: [
-      {
-        type: "tool_search_tool_regex_20251119",
-        name: "tool_search_tool_regex"
-      },
-      {
-        name: "get_weather",
-        description: "Get the weather at a specific location",
-        input_schema: {
-          type: "object",
-          properties: {
-            location: { type: "string" },
-            unit: {
-              type: "string",
-              enum: ["celsius", "fahrenheit"]
-            }
-          },
-          required: ["location"]
-        },
-        defer_loading: true
-      },
-      {
-        name: "search_files",
-        description: "Search through files in the workspace",
-        input_schema: {
-          type: "object",
-          properties: {
-            query: { type: "string" },
-            file_types: {
-              type: "array",
-              items: { type: "string" }
-            }
-          },
-          required: ["query"]
-        },
-        defer_loading: true
-      }
-    ]
-  )
-
-  puts message
-  ```
 </CodeGroup>
 
-Claude searches the catalog, discovers `get_weather`, and calls it. The response ends with `stop_reason: "tool_use"`. Execute the discovered tool and return a `tool_result` as in [Handle tool calls](https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls). [Response format](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool#response-format) shows the blocks you get back and what to send next.
+Claude searches the catalog, discovers `get_weather`, and calls it. The response ends with `stop_reason: "tool_use"`. Execute the discovered tool and return a `tool_result` as in [Handle tool calls](https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls?sdk_languages=cli). [Response format](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool?sdk_languages=cli#response-format) shows the blocks you get back and what to send next.
 
 ## Tool definition
 
@@ -599,11 +187,11 @@ Mark tools for on-demand loading by adding `defer_loading: true`:
 * Never set `defer_loading: true` on the tool search tool itself.
 * Keep your 3–5 most frequently used tools non-deferred so Claude can call them without searching first.
 
-The computer use and browser use toolsets (`computer_toolset_20260801` and `browser_toolset_20260801`) take `defer_loading` per member tool inside the entry's `configs` object, not on the entry itself; a request that sets it at the entry level is rejected. Because a toolset defers and expands as a unit, `defer_loading` must resolve to the same value on every enabled member, and when Claude discovers the toolset through search, every enabled member loads at once. See [Client toolsets](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference#client-toolsets) for the `configs` format.
+The computer use and browser use toolsets (`computer_toolset_20260801` and `browser_toolset_20260801`) take `defer_loading` per member tool inside the entry's `configs` object, not on the entry itself; a request that sets it at the entry level is rejected. Because a toolset defers and expands as a unit, `defer_loading` must resolve to the same value on every enabled member, and when Claude discovers the toolset through search, every enabled member loads at once. See [Client toolsets](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference?sdk_languages=cli#client-toolsets) for the `configs` format.
 
 Both tool search variants (`regex` and `bm25`) search tool names, descriptions, argument names, and argument descriptions.
 
-Internally, the API excludes deferred tools from the system-prompt prefix. When Claude discovers a deferred tool through tool search, the API appends a `tool_reference` block inline in the conversation, then expands it into the full tool definition before passing it to Claude. The prefix is untouched, so prompt caching is preserved. The grammar for [strict mode](https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use) (the rules that constrain tool-call output to match your schemas) builds from the full toolset, so `defer_loading` and strict mode compose without grammar recompilation.
+Internally, the API excludes deferred tools from the system-prompt prefix. When Claude discovers a deferred tool through tool search, the API appends a `tool_reference` block inline in the conversation, then expands it into the full tool definition before passing it to Claude. The prefix is untouched, so prompt caching is preserved. The grammar for [strict mode](https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use?sdk_languages=cli) (the rules that constrain tool-call output to match your schemas) builds from the full toolset, so `defer_loading` and strict mode compose without grammar recompilation.
 
 ## Response format
 
@@ -664,7 +252,7 @@ On the next request, pass the assistant's content back unchanged, including the 
 
 ## MCP integration
 
-If your tools come from MCP servers through the [MCP connector](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector), you don't set `defer_loading` on individual tool definitions. Instead, set it once on the `mcp_toolset` entry's `default_config` for the whole server, or per tool in its `configs`. See [MCP toolset configuration](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector#mcp-toolset-configuration).
+If your tools come from MCP servers through the [MCP connector](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector?sdk_languages=cli), you don't set `defer_loading` on individual tool definitions. Instead, set it once on the `mcp_toolset` entry's `default_config` for the whole server, or per tool in its `configs`. See [MCP toolset configuration](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector?sdk_languages=cli#mcp-toolset-configuration).
 
 ## Custom tool search implementation
 
@@ -681,7 +269,7 @@ You can implement your own tool search logic (for example, using embeddings or s
 Every tool referenced must have a corresponding tool definition in the top-level `tools` parameter, normally with `defer_loading: true`. This lets you use search methods the built-in variants don't provide, such as embedding-based retrieval, and the API expands the returned `tool_reference` blocks the same way.
 
 <Note>
-  The `tool_search_tool_result` format shown in the [Response format](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool#response-format) section is the server-side format used internally by Anthropic's built-in tool search. For custom client-side implementations, always use the standard `tool_result` format with `tool_reference` content blocks as shown in the preceding example.
+  The `tool_search_tool_result` format shown in the [Response format](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool?sdk_languages=cli#response-format) section is the server-side format used internally by Anthropic's built-in tool search. For custom client-side implementations, always use the standard `tool_result` format with `tool_reference` content blocks as shown in the preceding example.
 </Note>
 
 For a complete example using embeddings, see the [tool search with embeddings](https://platform.claude.com/cookbook/tool-use-tool-search-with-embeddings) recipe.
@@ -689,7 +277,7 @@ For a complete example using embeddings, see the [tool search with embeddings](h
 ## Error handling
 
 <Note>
-  [Tool use examples](https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools#providing-tool-use-examples) work with tool search: when Claude discovers a deferred tool, the API expands its `input_examples` along with its definition.
+  [Tool use examples](https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools?sdk_languages=cli#providing-tool-use-examples) work with tool search: when Claude discovers a deferred tool, the API expands its `input_examples` along with its definition.
 </Note>
 
 ### HTTP errors (400 status)
@@ -790,7 +378,7 @@ The `error_code` field has four possible values:
 
 ## Prompt caching
 
-To learn how `defer_loading` preserves prompt caching, see [Tool use with prompt caching](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-use-with-prompt-caching).
+To learn how `defer_loading` preserves prompt caching, see [Tool use with prompt caching](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-use-with-prompt-caching?sdk_languages=cli).
 
 A tool with `defer_loading: true` can't also carry `cache_control`: the API returns a 400. Put the cache breakpoint on a non-deferred tool.
 
@@ -817,7 +405,7 @@ data: {"type": "content_block_start", "index": 2, "content_block": {"type": "too
 
 ## Batch requests
 
-You can include the tool search tool in the [Messages Batches API](https://platform.claude.com/docs/en/build-with-claude/batch-processing).
+You can include the tool search tool in the [Messages Batches API](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=cli).
 
 ## Limits and best practices
 
@@ -826,7 +414,7 @@ You can include the tool search tool in the [Messages Batches API](https://platf
 * **Maximum deferred tools:** 10,000 tools with `defer_loading: true` per request
 * **Search results:** each search returns up to 5 matching tools by default; Claude can set `limit` in its search input to any integer from 1 to 10,000
 * **Pattern and query length:** maximum 200 characters for regex patterns and 500 characters for BM25 queries
-* **Model support:** see [Model compatibility](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool#model-compatibility)
+* **Model support:** see [Model compatibility](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool?sdk_languages=cli#model-compatibility)
 
 ### When to use tool search
 
@@ -856,23 +444,23 @@ Tool search isn't metered as a separate server tool. The response's `usage.serve
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Memory tool" icon="brain" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool">
+  <Card title="Memory tool" icon="brain" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool?sdk_languages=cli">
     Let Claude store and retrieve information across conversations by implementing the memory tool's file operations in your application.
   </Card>
 
-  <Card title="Tool reference" icon="book" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference">
+  <Card title="Tool reference" icon="book" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference?sdk_languages=cli">
     Directory of Anthropic-provided tools and reference for optional tool definition properties.
   </Card>
 
-  <Card title="MCP connector" icon="link" href="https://platform.claude.com/docs/en/agents-and-tools/mcp-connector">
+  <Card title="MCP connector" icon="link" href="https://platform.claude.com/docs/en/agents-and-tools/mcp-connector?sdk_languages=cli">
     Configure MCP toolsets with deferred loading.
   </Card>
 
-  <Card title="Tool use with prompt caching" icon="bolt" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-use-with-prompt-caching">
+  <Card title="Tool use with prompt caching" icon="bolt" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-use-with-prompt-caching?sdk_languages=cli">
     Cache tool definitions across turns and understand what invalidates your cache.
   </Card>
 
-  <Card title="Define tools" icon="hammer" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools">
+  <Card title="Define tools" icon="hammer" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools?sdk_languages=cli">
     Specify tool schemas, write effective descriptions, and control when Claude calls your tools.
   </Card>
 </CardGroup>

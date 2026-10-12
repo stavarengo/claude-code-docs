@@ -1,0 +1,339 @@
+---
+title: List Deployment Runs
+url: https://platform.claude.com/docs/en/api/cli/beta/deployment_runs/list
+---
+
+# List Deployment Runs
+
+`$ ant beta:deployment-runs list`
+
+**GET** `/v1/deployment_runs`
+
+List Deployment Runs
+
+## Parameters
+
+- `--created-at-gt: optional string` (query parameter)
+
+  Return runs created strictly after this time (exclusive).
+
+  format: date-time
+
+- `--created-at-gte: optional string` (query parameter)
+
+  Return runs created at or after this time (inclusive).
+
+  format: date-time
+
+- `--created-at-lt: optional string` (query parameter)
+
+  Return runs created strictly before this time (exclusive).
+
+  format: date-time
+
+- `--created-at-lte: optional string` (query parameter)
+
+  Return runs created at or before this time (inclusive).
+
+  format: date-time
+
+- `--deployment-id: optional string` (query parameter)
+
+  Filter to a specific deployment. Omit to list across all deployments in the workspace. Filtering by a non-existent `deployment_id` returns 200 with empty data.
+
+- `--has-error: optional boolean` (query parameter)
+
+  Filter: true for runs with non-null `error`, false for runs with non-null `session_id`. Omit for all.
+
+- `--limit: optional number` (query parameter)
+
+  Maximum results per page. Default 20, maximum 1000.
+
+  format: int32
+
+- `--page: optional string` (query parameter)
+
+  Opaque pagination cursor. Pass `next_page` from the previous response. Invalid or expired cursors return 400.
+
+- `--trigger-type: optional "schedule" or "manual"` (query parameter)
+
+  Filter runs by what triggered them. Omit to return all runs.
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  Optional header to specify the beta version(s) you want to use.
+
+- `--workspace-id: optional string` (header parameter)
+
+  Optional header to select the Workspace for this request. The value is a Workspace ID (for example, `wrkspc_011CZkZaBF1tNoB5wlCeusgy`).
+
+  Only needed for credentials that can act on more than one Workspace. A credential that belongs to a specific Workspace may omit it; if sent, it must match that Workspace.
+
+## Returns
+
+- `BetaManagedAgentsListDeploymentRunsData: object`
+
+  Paginated list of deployment runs. Sorted by `created_at` descending (most recent first).
+
+  - `data: array of BetaManagedAgentsDeploymentRun`
+
+    List of deployment runs.
+
+    - `type: "deployment_run"`
+
+    - `id: string`
+
+      Unique identifier for this run (`drun_...`).
+
+    - `agent: object`
+
+      Snapshot of the agent at fire time. Always fully resolved — deployments pin agent + version.
+
+      - `type: "agent"`
+
+      - `id: string`
+
+      - `version: number`
+
+        format: int32
+
+    - `created_at: string`
+
+      Time this run record was persisted.
+
+      format: date-time
+
+    - `deployment_id: string`
+
+      ID of the deployment that produced this run.
+
+    - `error: BetaManagedAgentsEnvironmentArchivedRunError or BetaManagedAgentsAgentArchivedRunError or BetaManagedAgentsEnvironmentNotFoundRunError or 13 more`
+
+      Populated on creation failure. Null on success. Exactly one of `session_id` or `error` is non-null.
+
+      - `beta_managed_agents_environment_archived_run_error: object`
+
+        The deployment's environment was archived.
+
+        - `type: "environment_archived_error"`
+
+        - `message: string`
+
+          Human-readable error description.
+
+      - `beta_managed_agents_agent_archived_run_error: object`
+
+        The deployment's agent was archived.
+
+        - `type: "agent_archived_error"`
+
+        - `message: string`
+
+          Human-readable error description.
+
+      - `beta_managed_agents_environment_not_found_run_error: object`
+
+        The deployment's environment no longer exists.
+
+        - `type: "environment_not_found_error"`
+
+        - `message: string`
+
+          Human-readable error description.
+
+      - `beta_managed_agents_vault_not_found_run_error: object`
+
+        A vault referenced by the deployment no longer exists.
+
+        - `type: "vault_not_found_error"`
+
+        - `message: string`
+
+          Human-readable error description.
+
+      - `beta_managed_agents_vault_archived_run_error: object`
+
+        A vault referenced by the deployment is archived.
+
+        - `type: "vault_archived_error"`
+
+        - `message: string`
+
+          Human-readable error description.
+
+      - `beta_managed_agents_file_not_found_run_error: object`
+
+        A file resource referenced by the deployment no longer exists.
+
+        - `type: "file_not_found_error"`
+
+        - `message: string`
+
+          Human-readable error description.
+
+      - `beta_managed_agents_memory_store_archived_run_error: object`
+
+        A memory store referenced by the deployment is archived.
+
+        - `type: "memory_store_archived_error"`
+
+        - `message: string`
+
+          Human-readable error description.
+
+      - `beta_managed_agents_skill_not_found_run_error: object`
+
+        A skill referenced by the deployment's agent no longer exists.
+
+        - `type: "skill_not_found_error"`
+
+        - `message: string`
+
+          Human-readable error description.
+
+      - `beta_managed_agents_session_resource_not_found_run_error: object`
+
+        A referenced resource no longer exists and its kind was not reported.
+
+        - `type: "session_resource_not_found_error"`
+
+        - `message: string`
+
+          Human-readable error description.
+
+      - `beta_managed_agents_workspace_archived_run_error: object`
+
+        The deployment's workspace was archived.
+
+        - `type: "workspace_archived_error"`
+
+        - `message: string`
+
+          Human-readable error description.
+
+      - `beta_managed_agents_organization_disabled_run_error: object`
+
+        The deployment's organization is disabled.
+
+        - `type: "organization_disabled_error"`
+
+        - `message: string`
+
+          Human-readable error description.
+
+      - `beta_managed_agents_session_rate_limited_run_error: object`
+
+        Session creation was rejected due to rate limiting. The schedule keeps firing; subsequent runs may succeed.
+
+        - `type: "session_rate_limited_error"`
+
+        - `message: string`
+
+          Human-readable error description.
+
+      - `beta_managed_agents_session_creation_rejected_run_error: object`
+
+        The session create request was rejected with a non-retryable validation error.
+
+        - `type: "session_creation_rejected_error"`
+
+        - `message: string`
+
+          Human-readable error description.
+
+      - `beta_managed_agents_unknown_run_error: object`
+
+        An unknown or unexpected error caused the run to fail. A fallback variant; clients that do not recognize a new error type can match on message alone.
+
+        - `type: "unknown_error"`
+
+        - `message: string`
+
+          Human-readable error description.
+
+      - `beta_managed_agents_self_hosted_resources_unsupported_run_error: object`
+
+        The deployment configures resources, but its environment is self-hosted and cannot mount them.
+
+        - `type: "self_hosted_resources_unsupported_error"`
+
+        - `message: string`
+
+          Human-readable error description.
+
+      - `beta_managed_agents_mcp_egress_blocked_run_error: object`
+
+        An MCP server host used by the deployment's agent is blocked by the environment's network policy.
+
+        - `type: "mcp_egress_blocked_error"`
+
+        - `message: string`
+
+          Human-readable error description.
+
+    - `session_id: string`
+
+      Populated on success. Null on creation failure. Exactly one of `session_id` or `error` is non-null.
+
+    - `trigger_context: BetaManagedAgentsScheduleTriggerContext or BetaManagedAgentsManualTriggerContext`
+
+      What triggered this run and trigger-specific metadata.
+
+      - `beta_managed_agents_schedule_trigger_context: object`
+
+        The run was fired by the deployment's cron schedule.
+
+        - `type: "schedule"`
+
+        - `scheduled_at: string`
+
+          The UTC instant at which the cron expression matched in the configured timezone, before jitter is applied. At most one run is recorded per (`deployment_id`, `scheduled_at`) pair.
+
+          format: date-time
+
+      - `beta_managed_agents_manual_trigger_context: object`
+
+        The run was started manually by creating a session directly against the deployment.
+
+        - `type: "manual"`
+
+  - `next_page: optional string`
+
+    Opaque cursor for the next page. Null when no more results.
+
+## Example
+
+```bash
+ant beta:deployment-runs list \
+  --api-key my-anthropic-api-key
+```
+
+### Response (200)
+
+```json
+{
+  "data": [
+    {
+      "id": "id",
+      "agent": {
+        "id": "agent_011CZkYqphY8vELVzwCUpqiQ",
+        "type": "agent",
+        "version": 1
+      },
+      "created_at": "2019-12-27T18:11:19.117Z",
+      "deployment_id": "deployment_id",
+      "error": {
+        "message": "message",
+        "type": "environment_archived_error"
+      },
+      "session_id": "session_id",
+      "trigger_context": {
+        "scheduled_at": "2019-12-27T18:11:19.117Z",
+        "type": "schedule"
+      },
+      "type": "deployment_run"
+    }
+  ],
+  "next_page": "next_page"
+}
+```

@@ -1,0 +1,34555 @@
+---
+title: Messages
+url: https://platform.claude.com/docs/en/api/cli/messages
+---
+
+# Messages
+
+## Create a Message
+
+`$ ant messages create`
+
+**POST** `/v1/messages`
+
+Send a structured list of input messages with text and/or image content, and the model will generate the next message in the conversation.
+
+The Messages API can be used for either single queries or stateless multi-turn conversations.
+
+Learn more about the Messages API in our [user guide](https://platform.claude.com/docs/en/get-started?sdk_languages=cli)
+
+### Parameters
+
+- `--max-tokens: number`
+
+  The maximum number of tokens to generate before stopping.
+
+  Note that our models may stop _before_ reaching this maximum. This parameter only specifies the absolute maximum number of tokens to generate.
+
+  Set to `0` to populate the [prompt cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli#pre-warming-the-cache) without generating a response.
+
+  Different models have different maximum values for this parameter.  See [models](https://platform.claude.com/docs/en/about-claude/models/overview?sdk_languages=cli) for details.
+
+  minimum: 0
+
+- `--message: array of MessageParam`
+
+  Input messages.
+
+  Our models are trained to operate on alternating `user` and `assistant` conversational turns. When creating a new `Message`, you specify the prior conversational turns with the `messages` parameter, and the model then generates the next `Message` in the conversation. Consecutive `user` or `assistant` turns in your request will be combined into a single turn.
+
+  Each input message must be an object with a `role` and `content`. You can specify a single `user`-role message, or you can include multiple `user` and `assistant` messages.
+
+  If the final message uses the `assistant` role, the response content will continue immediately from the content in that message. This can be used to constrain part of the model's response. This is called prefill. On models that don't support prefill, creating a message that ends with a partial `assistant` response returns a 400 error. See [Prefill not supported](https://platform.claude.com/docs/en/api/errors?sdk_languages=cli#prefill-not-supported).
+
+  Example with a single `user` message:
+
+  ```json
+  [{"role": "user", "content": "Hello, Claude"}]
+  ```
+
+  Example with multiple conversational turns:
+
+  ```json
+  [
+    {"role": "user", "content": "Hello there."},
+    {"role": "assistant", "content": "Hi, I'm Claude. How can I help you?"},
+    {"role": "user", "content": "Can you explain LLMs in plain English?"},
+  ]
+  ```
+
+  Example with a partially-filled response from Claude, for models that support prefill:
+
+  ```json
+  [
+    {"role": "user", "content": "What's the Greek name for Sun? (A) Sol (B) Helios (C) Sun"},
+    {"role": "assistant", "content": "The best answer is ("},
+  ]
+  ```
+
+  Each input message `content` may be either a single `string` or an array of content blocks, where each block has a specific `type`. Using a `string` for `content` is shorthand for an array of one content block of type `"text"`. The following input messages are equivalent:
+
+  ```json
+  {"role": "user", "content": "Hello, Claude"}
+  ```
+
+  ```json
+  {"role": "user", "content": [{"type": "text", "text": "Hello, Claude"}]}
+  ```
+
+  See [input examples](https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=cli).
+
+  Note that if you want to include a [system prompt](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices?sdk_languages=cli#give-claude-a-role), you can use the top-level `system` parameter — there is no `"system"` role for input messages in the Messages API.
+
+  There is a limit of 100,000 messages in a single request.
+
+- `--model: "claude-haiku-5-5" or "claude-sonnet-5-5" or "claude-fable-5-1" or 17 more or string`
+
+  The model that will complete your prompt.
+
+  See [models](https://docs.anthropic.com/en/docs/models-overview) for additional details and options.
+
+- `--cache-control: optional object`
+
+  Top-level cache control automatically applies a cache_control marker to the last cacheable block in the request.
+
+- `--container: optional ContainerParams or string`
+
+  Container identifier for reuse across requests.
+
+- `--diagnostics: optional object`
+
+  Request-level diagnostics. Supply `previous_message_id` to have the response include `diagnostics.cache_miss_reason` explaining any prompt-cache divergence from that prior request.
+
+- `--inference-geo: optional string`
+
+  Specifies the geographic region for inference processing. If not specified, the workspace's `default_inference_geo` is used.
+
+- `--metadata: optional object`
+
+  An object describing metadata about the request.
+
+- `--output-config: optional object`
+
+  Configuration options for the model's output, such as the output format.
+
+- `--service-tier: optional "auto" or "standard_only"`
+
+  Determines whether to use priority capacity (if available) or standard capacity for this request.
+
+  Anthropic offers different levels of service for your API requests. See [service-tiers](https://platform.claude.com/docs/en/api/service-tiers?sdk_languages=cli) for details.
+
+- `--stop-sequence: optional array of string`
+
+  Custom text sequences that will cause the model to stop generating.
+
+  Our models will normally stop when they have naturally completed their turn, which will result in a response `stop_reason` of `"end_turn"`.
+
+  If you want the model to stop generating when it encounters custom strings of text, you can use the `stop_sequences` parameter. If the model encounters one of the custom sequences, the response `stop_reason` value will be `"stop_sequence"` and the response `stop_sequence` value will contain the matched stop sequence.
+
+- `--system: optional string or array of TextBlockParam`
+
+  System prompt.
+
+  A system prompt is a way of providing context and instructions to Claude, such as specifying a particular goal or role. See our [guide to system prompts](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices?sdk_languages=cli#give-claude-a-role).
+
+- `--thinking: optional ThinkingConfigEnabled or ThinkingConfigDisabled or ThinkingConfigBetweenTools or ThinkingConfigAdaptive`
+
+  Configuration for Claude's thinking.
+
+  With `{"type": "adaptive"}`, Claude decides when and how much to think. With `{"type": "enabled"}` (manual extended thinking), you set a `budget_tokens` of at least 1,024. Thinking tokens count toward your `max_tokens` limit.
+
+  Which `type` values are accepted, and what happens when you omit `thinking`, depend on the model. See [thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli#configuring-thinking) for each model's behavior.
+
+- `--tool-choice: optional ToolChoiceAuto or ToolChoiceAny or ToolChoiceTool or ToolChoiceNone`
+
+  How the model should use the provided tools. The model can use a specific tool, any available tool, decide by itself, or not use tools at all.
+
+- `--tool: optional array of ToolUnion`
+
+  Definitions of tools that the model may use.
+
+  If you include `tools` in your API request, the model may return `tool_use` content blocks that represent the model's use of those tools. You can then run those tools using the tool input generated by the model and then optionally return results back to the model using `tool_result` content blocks.
+
+  There are two types of tools: **client tools** and **server tools**. The behavior described below applies to client tools. For [server tools](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=cli), see their individual documentation as each has its own behavior (e.g., the [web search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=cli)).
+
+  Each tool definition includes:
+
+  * `name`: Name of the tool.
+  * `description`: Optional, but strongly-recommended description of the tool.
+  * `input_schema`: [JSON schema](https://json-schema.org/draft/2020-12) for the tool `input` shape that the model will produce in `tool_use` output content blocks.
+
+  For example, if you defined `tools` as:
+
+  ```json
+  [
+    {
+      "name": "get_stock_price",
+      "description": "Get the current stock price for a given ticker symbol.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "ticker": {
+            "type": "string",
+            "description": "The stock ticker symbol, e.g. AAPL for Apple Inc."
+          }
+        },
+        "required": ["ticker"]
+      }
+    }
+  ]
+  ```
+
+  And then asked the model "What's the S&P 500 at today?", the model might produce `tool_use` content blocks in the response like this:
+
+  ```json
+  [
+    {
+      "type": "tool_use",
+      "id": "toolu_01D7FLrfh4GYq7yT1ULFeyMV",
+      "name": "get_stock_price",
+      "input": { "ticker": "^GSPC" }
+    }
+  ]
+  ```
+
+  You might then run your `get_stock_price` tool with `{"ticker": "^GSPC"}` as an input, and return the following back to the model in a subsequent `user` message:
+
+  ```json
+  [
+    {
+      "type": "tool_result",
+      "tool_use_id": "toolu_01D7FLrfh4GYq7yT1ULFeyMV",
+      "content": "259.75 USD"
+    }
+  ]
+  ```
+
+  Tools can be used for workflows that include running client-side tools and functions, or more generally whenever you want the model to produce a particular JSON structure of output.
+
+  See our [guide](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=cli) for more details.
+
+- `--user-profile-id: optional string` (header parameter)
+
+  The user profile ID to attribute this request to. Use when acting on behalf of a party other than your organization. Requires the `user-profiles` beta header.
+
+- `--workspace-id: optional string` (header parameter)
+
+  Optional header to select the Workspace for this request. The value is a Workspace ID (for example, `wrkspc_011CZkZaBF1tNoB5wlCeusgy`).
+
+  Only needed for credentials that can act on more than one Workspace. A credential that belongs to a specific Workspace may omit it; if sent, it must match that Workspace.
+
+- `--temperature: optional number`
+
+  **Deprecated**: Deprecated. Models released after Claude Opus 4.6 do not support setting temperature. A value of 1.0 will be accepted for backwards compatibility, all other values will be rejected with a 400 error.
+
+  Amount of randomness injected into the response.
+
+  Defaults to `1.0`. Ranges from `0.0` to `1.0`. Use `temperature` closer to `0.0` for analytical / multiple choice, and closer to `1.0` for creative and generative tasks.
+
+  Note that even with `temperature` of `0.0`, the results will not be fully deterministic.
+
+  minimum: 0, maximum: 1
+
+- `--top-k: optional number`
+
+  **Deprecated**: Deprecated. Models released after Claude Opus 4.6 do not accept top_k; any value will be rejected with a 400 error.
+
+  Only sample from the top K options for each subsequent token.
+
+  Used to remove "long tail" low probability responses. [Learn more technical details here](https://towardsdatascience.com/how-to-sample-from-language-models-682bceb97277).
+
+  Recommended for advanced use cases only.
+
+  minimum: 0
+
+- `--top-p: optional number`
+
+  **Deprecated**: Deprecated. Models released after Claude Opus 4.6 do not support setting top_p. A value >= 0.99 will be accepted for backwards compatibility, all other values will be rejected with a 400 error.
+
+  Use nucleus sampling.
+
+  In nucleus sampling, we compute the cumulative distribution over all the options for each subsequent token in decreasing probability order and cut it off once it reaches a particular probability specified by `top_p`.
+
+  Recommended for advanced use cases only.
+
+  minimum: 0, maximum: 1
+
+### Returns
+
+- `message: object`
+
+  - `type: "message"`
+
+    Object type.
+
+    For Messages, this is always `"message"`.
+
+  - `id: string`
+
+    Unique object identifier.
+
+    The format and length of IDs may change over time.
+
+  - `container: object`
+
+    Information about the container used in this request.
+
+    This will be non-null if a container tool (e.g. code execution) was used.
+
+    - `id: string`
+
+      Identifier for the container used in this request
+
+    - `expires_at: string`
+
+      The time at which the container will expire.
+
+      format: date-time
+
+    - `skills: array of ContainerSkill`
+
+      Skills loaded in the container
+
+      - `type: "anthropic" or "custom"`
+
+        Type of skill - either 'anthropic' (built-in) or 'custom' (user-defined)
+
+        - `"anthropic"`
+
+        - `"custom"`
+
+      - `skill_id: string`
+
+        Skill ID
+
+        minLength: 1, maxLength: 64
+
+      - `version: string`
+
+        The resolved version: a skill version ID for custom skills.
+
+        minLength: 1, maxLength: 64
+
+  - `content: array of ContentBlock`
+
+    Content generated by the model.
+
+    This is an array of content blocks, each of which has a `type` that determines its shape.
+
+    Example:
+
+    ```json
+    [{"type": "text", "text": "Hi, I'm Claude."}]
+    ```
+
+    If the request input `messages` ended with an `assistant` turn, then the response `content` will continue directly from that last turn. You can use this to constrain the model's output.
+
+    For example, if the input `messages` were:
+
+    ```json
+    [
+      {"role": "user", "content": "What's the Greek name for Sun? (A) Sol (B) Helios (C) Sun"},
+      {"role": "assistant", "content": "The best answer is ("}
+    ]
+    ```
+
+    Then the response `content` might be:
+
+    ```json
+    [{"type": "text", "text": "B)"}]
+    ```
+
+    - `text_block: object`
+
+      - `type: "text"`
+
+      - `citations: array of TextCitation`
+
+        Citations supporting the text block.
+
+        The type of citation returned will depend on the type of document being cited. Citing a PDF results in `page_location`, plain text results in `char_location`, and content document results in `content_block_location`.
+
+        - `citation_char_location: object`
+
+          - `type: "char_location"`
+
+          - `cited_text: string`
+
+          - `document_index: number`
+
+            minimum: 0
+
+          - `document_title: string`
+
+          - `end_char_index: number`
+
+          - `file_id: string`
+
+          - `start_char_index: number`
+
+            minimum: 0
+
+        - `citation_page_location: object`
+
+          - `type: "page_location"`
+
+          - `cited_text: string`
+
+          - `document_index: number`
+
+            minimum: 0
+
+          - `document_title: string`
+
+          - `end_page_number: number`
+
+          - `file_id: string`
+
+          - `start_page_number: number`
+
+            minimum: 1
+
+        - `citation_content_block_location: object`
+
+          - `type: "content_block_location"`
+
+          - `cited_text: string`
+
+            The full text of the cited block range, concatenated.
+
+            Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+          - `document_index: number`
+
+            minimum: 0
+
+          - `document_title: string`
+
+          - `end_block_index: number`
+
+            Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+            Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+          - `file_id: string`
+
+          - `start_block_index: number`
+
+            0-based index of the first cited block in the source's `content` array.
+
+            minimum: 0
+
+        - `citations_web_search_result_location: object`
+
+          - `type: "web_search_result_location"`
+
+          - `cited_text: string`
+
+          - `encrypted_index: string`
+
+          - `title: string`
+
+            maxLength: 512
+
+          - `url: string`
+
+        - `citations_search_result_location: object`
+
+          - `type: "search_result_location"`
+
+          - `cited_text: string`
+
+            The full text of the cited block range, concatenated.
+
+            Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+          - `end_block_index: number`
+
+            Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+            Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+          - `search_result_index: number`
+
+            0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+            Counted separately from `document_index`; server-side web search results are not included in this count.
+
+            minimum: 0
+
+          - `source: string`
+
+          - `start_block_index: number`
+
+            0-based index of the first cited block in the source's `content` array.
+
+            minimum: 0
+
+          - `title: string`
+
+      - `text: string`
+
+    - `thinking_block: object`
+
+      - `type: "thinking"`
+
+      - `signature: string`
+
+        A value used to verify that this thinking block was generated by Claude when it is passed back to the API.
+
+        This is an opaque field and should not be interpreted or parsed. When passing thinking blocks back to the API (required when using tools with extended thinking), pass them back exactly as received, with this field intact.
+
+        See [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli) for details.
+
+      - `thinking: string`
+
+        The text of Claude's thinking process for this block.
+
+    - `redacted_thinking_block: object`
+
+      - `type: "redacted_thinking"`
+
+      - `data: string`
+
+        The contents of this redacted thinking block, returned when portions of the model's thinking were safety-redacted. This field is opaque and encrypted, with no readable content.
+
+        Pass `redacted_thinking` blocks back to the API unchanged when continuing a multi-turn conversation.
+
+        See [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli#redacted-thinking-blocks) for details.
+
+    - `tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+          - `type: "direct"`
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+          - `type: "code_execution_20250825"`
+
+          - `tool_id: string`
+
+            pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+        - `server_tool_caller_20260120: object`
+
+          - `type: "code_execution_20260120"`
+
+          - `tool_id: string`
+
+            pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `input: map[unknown]`
+
+      - `name: string`
+
+        minLength: 1
+
+      - `toolset_name: optional string`
+
+        For a toolset member tool_use, the toolset family.
+
+        minLength: 1, maxLength: 64, pattern: ^[a-zA-Z0-9_-]+$
+
+    - `server_tool_use_block: object`
+
+      - `type: "server_tool_use"`
+
+      - `id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: map[unknown]`
+
+      - `name: "web_search" or "web_fetch" or "code_execution" or 4 more`
+
+        - `"web_search"`
+
+        - `"web_fetch"`
+
+        - `"code_execution"`
+
+        - `"bash_code_execution"`
+
+        - `"text_editor_code_execution"`
+
+        - `"tool_search_tool_regex"`
+
+        - `"tool_search_tool_bm25"`
+
+    - `web_search_tool_result_block: object`
+
+      - `type: "web_search_tool_result"`
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `content: WebSearchToolResultError or array of WebSearchResultBlock`
+
+        - `web_search_tool_result_error: object`
+
+          - `type: "web_search_tool_result_error"`
+
+          - `error_code: "invalid_tool_input" or "unavailable" or "max_uses_exceeded" or 3 more`
+
+            - `"invalid_tool_input"`
+
+            - `"unavailable"`
+
+            - `"max_uses_exceeded"`
+
+            - `"too_many_requests"`
+
+            - `"query_too_long"`
+
+            - `"request_too_large"`
+
+        - `union_member_1: array of WebSearchResultBlock`
+
+          - `type: "web_search_result"`
+
+          - `encrypted_content: string`
+
+          - `page_age: string`
+
+          - `title: string`
+
+          - `url: string`
+
+      - `tool_use_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `web_fetch_tool_result_block: object`
+
+      - `type: "web_fetch_tool_result"`
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `content: WebFetchToolResultErrorBlock or WebFetchBlock`
+
+        - `web_fetch_tool_result_error_block: object`
+
+          - `type: "web_fetch_tool_result_error"`
+
+          - `error_code: "invalid_tool_input" or "url_too_long" or "url_not_allowed" or 7 more`
+
+            - `"invalid_tool_input"`
+
+            - `"url_too_long"`
+
+            - `"url_not_allowed"`
+
+            - `"url_not_in_prior_context"`
+
+            - `"url_not_accessible"`
+
+            - `"unsupported_content_type"`
+
+            - `"too_many_requests"`
+
+            - `"max_uses_exceeded"`
+
+            - `"unavailable"`
+
+            - `"content_too_large"`
+
+        - `web_fetch_block: object`
+
+          - `type: "web_fetch_result"`
+
+          - `content: object`
+
+            - `type: "document"`
+
+            - `citations: object`
+
+              Citation configuration for the document
+
+              - `enabled: boolean`
+
+            - `source: Base64PDFSource or PlainTextSource`
+
+              - `base64_pdf_source: object`
+
+                - `type: "base64"`
+
+                - `data: string`
+
+                  format: byte
+
+                - `media_type: "application/pdf"`
+
+              - `plain_text_source: object`
+
+                - `type: "text"`
+
+                - `data: string`
+
+                - `media_type: "text/plain"`
+
+            - `title: string`
+
+              The title of the document
+
+          - `retrieved_at: string`
+
+            ISO 8601 timestamp when the content was retrieved
+
+          - `url: string`
+
+            Fetched content URL
+
+      - `tool_use_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `code_execution_tool_result_block: object`
+
+      - `type: "code_execution_tool_result"`
+
+      - `content: CodeExecutionToolResultError or CodeExecutionResultBlock or EncryptedCodeExecutionResultBlock`
+
+        - `code_execution_tool_result_error: object`
+
+          - `type: "code_execution_tool_result_error"`
+
+          - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+            - `"invalid_tool_input"`
+
+            - `"unavailable"`
+
+            - `"too_many_requests"`
+
+            - `"execution_time_exceeded"`
+
+        - `code_execution_result_block: object`
+
+          - `type: "code_execution_result"`
+
+          - `content: array of CodeExecutionOutputBlock`
+
+            - `type: "code_execution_output"`
+
+            - `file_id: string`
+
+          - `return_code: number`
+
+          - `stderr: string`
+
+          - `stdout: string`
+
+        - `encrypted_code_execution_result_block: object`
+
+          Code execution result with encrypted stdout for PFC + web_search results.
+
+          - `type: "encrypted_code_execution_result"`
+
+          - `content: array of CodeExecutionOutputBlock`
+
+            - `type: "code_execution_output"`
+
+            - `file_id: string`
+
+          - `encrypted_stdout: string`
+
+          - `return_code: number`
+
+          - `stderr: string`
+
+      - `tool_use_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `bash_code_execution_tool_result_block: object`
+
+      - `type: "bash_code_execution_tool_result"`
+
+      - `content: BashCodeExecutionToolResultError or BashCodeExecutionResultBlock`
+
+        - `bash_code_execution_tool_result_error: object`
+
+          - `type: "bash_code_execution_tool_result_error"`
+
+          - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+            - `"invalid_tool_input"`
+
+            - `"unavailable"`
+
+            - `"too_many_requests"`
+
+            - `"execution_time_exceeded"`
+
+            - `"output_file_too_large"`
+
+        - `bash_code_execution_result_block: object`
+
+          - `type: "bash_code_execution_result"`
+
+          - `content: array of BashCodeExecutionOutputBlock`
+
+            - `type: "bash_code_execution_output"`
+
+            - `file_id: string`
+
+          - `return_code: number`
+
+          - `stderr: string`
+
+          - `stdout: string`
+
+      - `tool_use_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `text_editor_code_execution_tool_result_block: object`
+
+      - `type: "text_editor_code_execution_tool_result"`
+
+      - `content: TextEditorCodeExecutionToolResultError or TextEditorCodeExecutionViewResultBlock or TextEditorCodeExecutionCreateResultBlock or TextEditorCodeExecutionStrReplaceResultBlock`
+
+        - `text_editor_code_execution_tool_result_error: object`
+
+          - `type: "text_editor_code_execution_tool_result_error"`
+
+          - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+            - `"invalid_tool_input"`
+
+            - `"unavailable"`
+
+            - `"too_many_requests"`
+
+            - `"execution_time_exceeded"`
+
+            - `"file_not_found"`
+
+          - `error_message: string`
+
+        - `text_editor_code_execution_view_result_block: object`
+
+          - `type: "text_editor_code_execution_view_result"`
+
+          - `content: string`
+
+          - `file_type: "text" or "image" or "pdf"`
+
+            - `"text"`
+
+            - `"image"`
+
+            - `"pdf"`
+
+          - `num_lines: number`
+
+          - `start_line: number`
+
+          - `total_lines: number`
+
+        - `text_editor_code_execution_create_result_block: object`
+
+          - `type: "text_editor_code_execution_create_result"`
+
+          - `is_file_update: boolean`
+
+        - `text_editor_code_execution_str_replace_result_block: object`
+
+          - `type: "text_editor_code_execution_str_replace_result"`
+
+          - `lines: array of string`
+
+          - `new_lines: number`
+
+          - `new_start: number`
+
+          - `old_lines: number`
+
+          - `old_start: number`
+
+      - `tool_use_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `tool_search_tool_result_block: object`
+
+      - `type: "tool_search_tool_result"`
+
+      - `content: ToolSearchToolResultError or ToolSearchToolSearchResultBlock`
+
+        - `tool_search_tool_result_error: object`
+
+          - `type: "tool_search_tool_result_error"`
+
+          - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+            - `"invalid_tool_input"`
+
+            - `"unavailable"`
+
+            - `"too_many_requests"`
+
+            - `"execution_time_exceeded"`
+
+          - `error_message: string`
+
+        - `tool_search_tool_search_result_block: object`
+
+          - `type: "tool_search_tool_search_result"`
+
+          - `tool_references: array of ToolReferenceBlock`
+
+            - `type: "tool_reference"`
+
+            - `tool_name: string`
+
+              minLength: 1, maxLength: 256, pattern: ^[a-zA-Z0-9_-]{1,256}$
+
+      - `tool_use_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `container_upload_block: object`
+
+      Response model for a file uploaded to the container.
+
+      - `type: "container_upload"`
+
+      - `file_id: string`
+
+  - `diagnostics: object`
+
+    Request-level diagnostics. `null` when the request did not supply `diagnostics`, or when it did and no prompt-cache divergence was detected.
+
+    - `cache_miss_reason: CacheMissModelChanged or CacheMissSystemChanged or CacheMissToolsChanged or 3 more`
+
+      Explains why the prompt cache could not fully reuse the prefix from the request identified by `diagnostics.previous_message_id`. `null` means diagnosis is still pending — the response was serialized before the background comparison completed.
+
+      - `cache_miss_model_changed: object`
+
+        - `type: "model_changed"`
+
+        - `cache_missed_input_tokens: number`
+
+          Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+      - `cache_miss_system_changed: object`
+
+        - `type: "system_changed"`
+
+        - `cache_missed_input_tokens: number`
+
+          Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+      - `cache_miss_tools_changed: object`
+
+        - `type: "tools_changed"`
+
+        - `cache_missed_input_tokens: number`
+
+          Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+      - `cache_miss_messages_changed: object`
+
+        - `type: "messages_changed"`
+
+        - `cache_missed_input_tokens: number`
+
+          Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+      - `cache_miss_previous_message_not_found: object`
+
+        - `type: "previous_message_not_found"`
+
+      - `cache_miss_unavailable: object`
+
+        - `type: "unavailable"`
+
+  - `model: "claude-haiku-5-5" or "claude-sonnet-5-5" or "claude-fable-5-1" or 17 more or string`
+
+    The model that will complete your prompt.
+
+    See [models](https://docs.anthropic.com/en/docs/models-overview) for additional details and options.
+
+    - `"claude-haiku-5-5"`
+
+      Fastest model for high-volume, real-time tasks
+
+    - `"claude-sonnet-5-5"`
+
+      Efficient model for coding and agents
+
+    - `"claude-fable-5-1"`
+
+      Frontier intelligence for ambitious tasks across coding, scientific discovery, and enterprise workflows
+
+    - `"claude-opus-5-5"`
+
+      Powerful intelligence for coding, knowledge work, and long-running agents
+
+    - `"claude-mythos-5-1"`
+
+      Our most capable model for cybersecurity and biology research, available through trusted access programs
+
+    - `"claude-sonnet-5"`
+
+      Efficient model for coding and agents
+
+    - `"claude-fable-5"`
+
+      Next generation of intelligence for the hardest knowledge work and coding problems
+
+    - `"claude-mythos-5"`
+
+      Most capable model for cybersecurity and biology research
+
+    - `"claude-opus-5"`
+
+      Powerful intelligence for long-running agents and coding
+
+    - `"claude-opus-4-8"`
+
+      Powerful intelligence for long-running agents and coding
+
+    - `"claude-opus-4-7"`
+
+      Powerful intelligence for long-running agents and coding
+
+    - `"claude-opus-4-6"`
+
+      Powerful intelligence for long-running agents and coding
+
+    - `"claude-sonnet-4-6"`
+
+      Best combination of speed and intelligence
+
+    - `"claude-haiku-4-5"`
+
+    - `"claude-haiku-4-5-20251001"`
+
+    - `"claude-opus-4-5"`
+
+      Powerful intelligence for long-running agents and coding
+
+    - `"claude-opus-4-5-20251101"`
+
+      Powerful intelligence for long-running agents and coding
+
+    - `"claude-mythos-preview"`
+
+      **Deprecated**: Will reach end-of-life on June 30, 2026. Please migrate to claude-mythos-5. Visit https://docs.anthropic.com/en/docs/resources/model-deprecations for more information.
+
+      New class of intelligence, strongest in coding and cybersecurity
+
+    - `"claude-sonnet-4-5"`
+
+      **Deprecated**: Will reach end-of-life on November 30, 2026. Please migrate to claude-sonnet-5-5. Visit https://docs.anthropic.com/en/docs/resources/model-deprecations for more information.
+
+      High-performance model for agents and coding
+
+    - `"claude-sonnet-4-5-20250929"`
+
+      **Deprecated**: Will reach end-of-life on November 30, 2026. Please migrate to claude-sonnet-5-5. Visit https://docs.anthropic.com/en/docs/resources/model-deprecations for more information.
+
+      High-performance model for agents and coding
+
+  - `role: "assistant"`
+
+    Conversational role of the generated message.
+
+    This will always be `"assistant"`.
+
+  - `stop_details: object`
+
+    Structured information about why model output stopped.
+
+    This is `null` when the `stop_reason` has no additional detail to report.
+
+    - `type: "refusal"`
+
+    - `category: "cyber" or "bio" or "frontier_llm" or 2 more`
+
+      The policy category that triggered the refusal.
+
+      `null` when the refusal doesn't map to a named category.
+
+      - `"cyber"`
+
+        The request could enable cyber harm, such as malware or exploit development. Benign cybersecurity work can also trigger this category.
+
+      - `"bio"`
+
+        The request could enable biological harm, such as dangerous lab methods. Beneficial life sciences work can also trigger this category.
+
+      - `"frontier_llm"`
+
+        The request could assist the development of competing AI models, which is restricted under [Anthropic's commercial terms](https://www.anthropic.com/legal/commercial-terms). Benign machine learning work can also trigger this category.
+
+      - `"reasoning_extraction"`
+
+        The request asks the model to reproduce its internal reasoning in the response text. To get reasoning in a structured form instead, use [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking?sdk_languages=cli).
+
+      - `"general_harms"`
+
+        The request could be related to an area that was determined as harmful. Benign work might sometimes trigger this category.
+
+    - `explanation: string`
+
+      Human-readable explanation of the refusal.
+
+      This text is not guaranteed to be stable. `null` when no explanation is available for the category.
+
+  - `stop_reason: "end_turn" or "max_tokens" or "stop_sequence" or 4 more`
+
+    The reason that we stopped.
+
+    This may be one the following values:
+
+    * `"end_turn"`: the model reached a natural stopping point
+    * `"max_tokens"`: we exceeded the requested `max_tokens` or the model's maximum
+    * `"stop_sequence"`: one of your provided custom `stop_sequences` was generated
+    * `"tool_use"`: the model invoked one or more tools
+    * `"pause_turn"`: we paused a long-running turn. You may provide the response back as-is in a subsequent request to let the model continue.
+    * `"refusal"`: when streaming classifiers intervene to handle potential policy violations
+    * `"model_context_window_exceeded"`: we exceeded the model's context window
+
+    In non-streaming mode this value is always non-null. In streaming mode, it is null in the `message_start` event and non-null otherwise.
+
+    - `"end_turn"`
+
+    - `"max_tokens"`
+
+    - `"stop_sequence"`
+
+    - `"tool_use"`
+
+    - `"pause_turn"`
+
+    - `"refusal"`
+
+    - `"model_context_window_exceeded"`
+
+  - `stop_sequence: string`
+
+    Which custom stop sequence was generated, if any.
+
+    This value will be a non-null string if one of your custom stop sequences was generated.
+
+  - `usage: object`
+
+    Billing and rate-limit usage.
+
+    Anthropic's API bills and rate-limits by token counts, as tokens represent the underlying cost to our systems.
+
+    Under the hood, the API transforms requests into a format suitable for the model. The model's output then goes through a parsing stage before becoming an API response. As a result, the token counts in `usage` will not match one-to-one with the exact visible content of an API request or response.
+
+    For example, `output_tokens` will be non-zero, even for an empty string response from Claude.
+
+    Total input tokens in a request is the summation of `input_tokens`, `cache_creation_input_tokens`, and `cache_read_input_tokens`.
+
+    - `cache_creation: object`
+
+      Breakdown of cached tokens by TTL
+
+      - `ephemeral_1h_input_tokens: number`
+
+        The number of input tokens used to create the 1 hour cache entry.
+
+        minimum: 0
+
+      - `ephemeral_5m_input_tokens: number`
+
+        The number of input tokens used to create the 5 minute cache entry.
+
+        minimum: 0
+
+    - `cache_creation_input_tokens: number`
+
+      The number of input tokens used to create the cache entry.
+
+      minimum: 0
+
+    - `cache_read_input_tokens: number`
+
+      The number of input tokens read from the cache.
+
+      minimum: 0
+
+    - `inference_geo: string`
+
+      The geographic region where inference was performed for this request.
+
+    - `input_tokens: number`
+
+      The number of input tokens which were used.
+
+      minimum: 0
+
+    - `output_tokens: number`
+
+      The number of output tokens which were used.
+
+      minimum: 0
+
+    - `output_tokens_details: object`
+
+      Breakdown of output tokens by category.
+
+      `output_tokens` remains the inclusive, authoritative total used for billing.
+      This object provides a read-only decomposition for observability — for example,
+      how many of the billed output tokens were spent on internal reasoning that may
+      have been summarized before being returned to you.
+
+      - `thinking_tokens: number`
+
+        Number of output tokens the model generated as internal reasoning, including
+        the thinking-block delimiter tokens.
+
+        Reflects the raw reasoning the model produced, not the (possibly shorter)
+        summarized thinking text returned in the response body. Computed by
+        re-tokenizing the raw reasoning text, so it may differ from the model's exact
+        generation count by a small number of tokens. Always ≤ `output_tokens`;
+        `output_tokens - thinking_tokens` approximates the non-reasoning output.
+
+        minimum: 0
+
+    - `server_tool_use: object`
+
+      The number of server tool requests.
+
+      - `web_fetch_requests: number`
+
+        The number of web fetch tool requests.
+
+        minimum: 0
+
+      - `web_search_requests: number`
+
+        The number of web search tool requests.
+
+        minimum: 0
+
+    - `service_tier: "standard" or "priority" or "batch"`
+
+      If the request used the priority, standard, or batch tier.
+
+      - `"standard"`
+
+      - `"priority"`
+
+      - `"batch"`
+
+- `raw_message_stream_event: RawMessageStartEvent or RawMessageDeltaEvent or RawMessageStopEvent or 3 more`
+
+  - `raw_message_start_event: object`
+
+    - `type: "message_start"`
+
+    - `message: object`
+
+      - `type: "message"`
+
+        Object type.
+
+        For Messages, this is always `"message"`.
+
+      - `id: string`
+
+        Unique object identifier.
+
+        The format and length of IDs may change over time.
+
+      - `container: object`
+
+        Information about the container used in this request.
+
+        This will be non-null if a container tool (e.g. code execution) was used.
+
+      - `content: array of ContentBlock`
+
+        Content generated by the model.
+
+        This is an array of content blocks, each of which has a `type` that determines its shape.
+
+        Example:
+
+        ```json
+        [{"type": "text", "text": "Hi, I'm Claude."}]
+        ```
+
+        If the request input `messages` ended with an `assistant` turn, then the response `content` will continue directly from that last turn. You can use this to constrain the model's output.
+
+        For example, if the input `messages` were:
+
+        ```json
+        [
+          {"role": "user", "content": "What's the Greek name for Sun? (A) Sol (B) Helios (C) Sun"},
+          {"role": "assistant", "content": "The best answer is ("}
+        ]
+        ```
+
+        Then the response `content` might be:
+
+        ```json
+        [{"type": "text", "text": "B)"}]
+        ```
+
+      - `diagnostics: object`
+
+        Request-level diagnostics. `null` when the request did not supply `diagnostics`, or when it did and no prompt-cache divergence was detected.
+
+      - `model: "claude-haiku-5-5" or "claude-sonnet-5-5" or "claude-fable-5-1" or 17 more or string`
+
+        The model that will complete your prompt.
+
+        See [models](https://docs.anthropic.com/en/docs/models-overview) for additional details and options.
+
+      - `role: "assistant"`
+
+        Conversational role of the generated message.
+
+        This will always be `"assistant"`.
+
+      - `stop_details: object`
+
+        Structured information about why model output stopped.
+
+        This is `null` when the `stop_reason` has no additional detail to report.
+
+      - `stop_reason: "end_turn" or "max_tokens" or "stop_sequence" or 4 more`
+
+        The reason that we stopped.
+
+        This may be one the following values:
+
+        * `"end_turn"`: the model reached a natural stopping point
+        * `"max_tokens"`: we exceeded the requested `max_tokens` or the model's maximum
+        * `"stop_sequence"`: one of your provided custom `stop_sequences` was generated
+        * `"tool_use"`: the model invoked one or more tools
+        * `"pause_turn"`: we paused a long-running turn. You may provide the response back as-is in a subsequent request to let the model continue.
+        * `"refusal"`: when streaming classifiers intervene to handle potential policy violations
+        * `"model_context_window_exceeded"`: we exceeded the model's context window
+
+        In non-streaming mode this value is always non-null. In streaming mode, it is null in the `message_start` event and non-null otherwise.
+
+      - `stop_sequence: string`
+
+        Which custom stop sequence was generated, if any.
+
+        This value will be a non-null string if one of your custom stop sequences was generated.
+
+      - `usage: object`
+
+        Billing and rate-limit usage.
+
+        Anthropic's API bills and rate-limits by token counts, as tokens represent the underlying cost to our systems.
+
+        Under the hood, the API transforms requests into a format suitable for the model. The model's output then goes through a parsing stage before becoming an API response. As a result, the token counts in `usage` will not match one-to-one with the exact visible content of an API request or response.
+
+        For example, `output_tokens` will be non-zero, even for an empty string response from Claude.
+
+        Total input tokens in a request is the summation of `input_tokens`, `cache_creation_input_tokens`, and `cache_read_input_tokens`.
+
+  - `raw_message_delta_event: object`
+
+    - `type: "message_delta"`
+
+    - `delta: object`
+
+      - `container: object`
+
+        Information about the container used in this request.
+
+        This will be non-null if a container tool (e.g. code execution) was used.
+
+        - `id: string`
+
+          Identifier for the container used in this request
+
+        - `expires_at: string`
+
+          The time at which the container will expire.
+
+          format: date-time
+
+        - `skills: array of ContainerSkill`
+
+          Skills loaded in the container
+
+      - `stop_details: object`
+
+        Structured information about why model output stopped.
+
+        This is `null` when the `stop_reason` has no additional detail to report.
+
+        - `type: "refusal"`
+
+        - `category: "cyber" or "bio" or "frontier_llm" or 2 more`
+
+          The policy category that triggered the refusal.
+
+          `null` when the refusal doesn't map to a named category.
+
+        - `explanation: string`
+
+          Human-readable explanation of the refusal.
+
+          This text is not guaranteed to be stable. `null` when no explanation is available for the category.
+
+      - `stop_reason: "end_turn" or "max_tokens" or "stop_sequence" or 4 more`
+
+        - `"end_turn"`
+
+        - `"max_tokens"`
+
+        - `"stop_sequence"`
+
+        - `"tool_use"`
+
+        - `"pause_turn"`
+
+        - `"refusal"`
+
+        - `"model_context_window_exceeded"`
+
+      - `stop_sequence: string`
+
+    - `usage: object`
+
+      Billing and rate-limit usage.
+
+      Anthropic's API bills and rate-limits by token counts, as tokens represent the underlying cost to our systems.
+
+      Under the hood, the API transforms requests into a format suitable for the model. The model's output then goes through a parsing stage before becoming an API response. As a result, the token counts in `usage` will not match one-to-one with the exact visible content of an API request or response.
+
+      For example, `output_tokens` will be non-zero, even for an empty string response from Claude.
+
+      Total input tokens in a request is the summation of `input_tokens`, `cache_creation_input_tokens`, and `cache_read_input_tokens`.
+
+      - `cache_creation_input_tokens: number`
+
+        The cumulative number of input tokens used to create the cache entry.
+
+        minimum: 0
+
+      - `cache_read_input_tokens: number`
+
+        The cumulative number of input tokens read from the cache.
+
+        minimum: 0
+
+      - `input_tokens: number`
+
+        The cumulative number of input tokens which were used.
+
+        minimum: 0
+
+      - `output_tokens: number`
+
+        The cumulative number of output tokens which were used.
+
+      - `output_tokens_details: object`
+
+        Breakdown of output tokens by category.
+
+        `output_tokens` remains the inclusive, authoritative total used for billing.
+        This object provides a read-only decomposition for observability — for example,
+        how many of the billed output tokens were spent on internal reasoning that may
+        have been summarized before being returned to you.
+
+        - `thinking_tokens: number`
+
+          Number of output tokens the model generated as internal reasoning, including
+          the thinking-block delimiter tokens.
+
+          Reflects the raw reasoning the model produced, not the (possibly shorter)
+          summarized thinking text returned in the response body. Computed by
+          re-tokenizing the raw reasoning text, so it may differ from the model's exact
+          generation count by a small number of tokens. Always ≤ `output_tokens`;
+          `output_tokens - thinking_tokens` approximates the non-reasoning output.
+
+          minimum: 0
+
+      - `server_tool_use: object`
+
+        The number of server tool requests.
+
+        - `web_fetch_requests: number`
+
+          The number of web fetch tool requests.
+
+          minimum: 0
+
+        - `web_search_requests: number`
+
+          The number of web search tool requests.
+
+          minimum: 0
+
+  - `raw_message_stop_event: object`
+
+    - `type: "message_stop"`
+
+  - `raw_content_block_start_event: object`
+
+    - `type: "content_block_start"`
+
+    - `content_block: TextBlock or ThinkingBlock or RedactedThinkingBlock or 9 more`
+
+      - `text_block: object`
+
+        - `type: "text"`
+
+        - `citations: array of TextCitation`
+
+          Citations supporting the text block.
+
+          The type of citation returned will depend on the type of document being cited. Citing a PDF results in `page_location`, plain text results in `char_location`, and content document results in `content_block_location`.
+
+        - `text: string`
+
+      - `thinking_block: object`
+
+        - `type: "thinking"`
+
+        - `signature: string`
+
+          A value used to verify that this thinking block was generated by Claude when it is passed back to the API.
+
+          This is an opaque field and should not be interpreted or parsed. When passing thinking blocks back to the API (required when using tools with extended thinking), pass them back exactly as received, with this field intact.
+
+          See [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli) for details.
+
+        - `thinking: string`
+
+          The text of Claude's thinking process for this block.
+
+      - `redacted_thinking_block: object`
+
+        - `type: "redacted_thinking"`
+
+        - `data: string`
+
+          The contents of this redacted thinking block, returned when portions of the model's thinking were safety-redacted. This field is opaque and encrypted, with no readable content.
+
+          Pass `redacted_thinking` blocks back to the API unchanged when continuing a multi-turn conversation.
+
+          See [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli#redacted-thinking-blocks) for details.
+
+      - `tool_use_block: object`
+
+        - `type: "tool_use"`
+
+        - `id: string`
+
+          pattern: ^[a-zA-Z0-9_-]+$
+
+        - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        - `input: map[unknown]`
+
+        - `name: string`
+
+          minLength: 1
+
+        - `toolset_name: optional string`
+
+          For a toolset member tool_use, the toolset family.
+
+          minLength: 1, maxLength: 64, pattern: ^[a-zA-Z0-9_-]+$
+
+      - `server_tool_use_block: object`
+
+        - `type: "server_tool_use"`
+
+        - `id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+        - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        - `input: map[unknown]`
+
+        - `name: "web_search" or "web_fetch" or "code_execution" or 4 more`
+
+      - `web_search_tool_result_block: object`
+
+        - `type: "web_search_tool_result"`
+
+        - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        - `content: WebSearchToolResultError or array of WebSearchResultBlock`
+
+        - `tool_use_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `web_fetch_tool_result_block: object`
+
+        - `type: "web_fetch_tool_result"`
+
+        - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        - `content: WebFetchToolResultErrorBlock or WebFetchBlock`
+
+        - `tool_use_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `code_execution_tool_result_block: object`
+
+        - `type: "code_execution_tool_result"`
+
+        - `content: CodeExecutionToolResultError or CodeExecutionResultBlock or EncryptedCodeExecutionResultBlock`
+
+        - `tool_use_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `bash_code_execution_tool_result_block: object`
+
+        - `type: "bash_code_execution_tool_result"`
+
+        - `content: BashCodeExecutionToolResultError or BashCodeExecutionResultBlock`
+
+        - `tool_use_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `text_editor_code_execution_tool_result_block: object`
+
+        - `type: "text_editor_code_execution_tool_result"`
+
+        - `content: TextEditorCodeExecutionToolResultError or TextEditorCodeExecutionViewResultBlock or TextEditorCodeExecutionCreateResultBlock or TextEditorCodeExecutionStrReplaceResultBlock`
+
+        - `tool_use_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `tool_search_tool_result_block: object`
+
+        - `type: "tool_search_tool_result"`
+
+        - `content: ToolSearchToolResultError or ToolSearchToolSearchResultBlock`
+
+        - `tool_use_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `container_upload_block: object`
+
+        Response model for a file uploaded to the container.
+
+        - `type: "container_upload"`
+
+        - `file_id: string`
+
+    - `index: number`
+
+  - `raw_content_block_delta_event: object`
+
+    - `type: "content_block_delta"`
+
+    - `delta: TextDelta or InputJSONDelta or CitationsDelta or 2 more`
+
+      - `text_delta: object`
+
+        - `type: "text_delta"`
+
+        - `text: string`
+
+      - `input_json_delta: object`
+
+        - `type: "input_json_delta"`
+
+        - `partial_json: string`
+
+      - `citations_delta: object`
+
+        - `type: "citations_delta"`
+
+        - `citation: CitationCharLocation or CitationPageLocation or CitationContentBlockLocation or 2 more`
+
+          - `citation_char_location: object`
+
+            - `type: "char_location"`
+
+            - `cited_text: string`
+
+            - `document_index: number`
+
+              minimum: 0
+
+            - `document_title: string`
+
+            - `end_char_index: number`
+
+            - `file_id: string`
+
+            - `start_char_index: number`
+
+              minimum: 0
+
+          - `citation_page_location: object`
+
+            - `type: "page_location"`
+
+            - `cited_text: string`
+
+            - `document_index: number`
+
+              minimum: 0
+
+            - `document_title: string`
+
+            - `end_page_number: number`
+
+            - `file_id: string`
+
+            - `start_page_number: number`
+
+              minimum: 1
+
+          - `citation_content_block_location: object`
+
+            - `type: "content_block_location"`
+
+            - `cited_text: string`
+
+              The full text of the cited block range, concatenated.
+
+              Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+            - `document_index: number`
+
+              minimum: 0
+
+            - `document_title: string`
+
+            - `end_block_index: number`
+
+              Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+              Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+            - `file_id: string`
+
+            - `start_block_index: number`
+
+              0-based index of the first cited block in the source's `content` array.
+
+              minimum: 0
+
+          - `citations_web_search_result_location: object`
+
+            - `type: "web_search_result_location"`
+
+            - `cited_text: string`
+
+            - `encrypted_index: string`
+
+            - `title: string`
+
+              maxLength: 512
+
+            - `url: string`
+
+          - `citations_search_result_location: object`
+
+            - `type: "search_result_location"`
+
+            - `cited_text: string`
+
+              The full text of the cited block range, concatenated.
+
+              Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+            - `end_block_index: number`
+
+              Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+              Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+            - `search_result_index: number`
+
+              0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+              Counted separately from `document_index`; server-side web search results are not included in this count.
+
+              minimum: 0
+
+            - `source: string`
+
+            - `start_block_index: number`
+
+              0-based index of the first cited block in the source's `content` array.
+
+              minimum: 0
+
+            - `title: string`
+
+      - `thinking_delta: object`
+
+        - `type: "thinking_delta"`
+
+        - `thinking: string`
+
+          The incremental `thinking` text for this content block. Concatenate the `thinking` values of successive `thinking_delta` events to assemble the block's full `thinking` value.
+
+      - `signature_delta: object`
+
+        - `type: "signature_delta"`
+
+        - `signature: string`
+
+          The `signature` for this thinking block: an opaque value used to verify that the block was generated by Claude when it is passed back to the API. Delivered in a `signature_delta` event just before the block's `content_block_stop` event.
+
+    - `index: number`
+
+  - `raw_content_block_stop_event: object`
+
+    - `type: "content_block_stop"`
+
+    - `index: number`
+
+### Example
+
+```bash
+ant messages create \
+  --api-key my-anthropic-api-key \
+  --max-tokens 1024 \
+  --message '{content: [{text: x, type: text}], role: user}' \
+  --model claude-opus-5
+```
+
+#### Response (200)
+
+```json
+{
+  "id": "msg_013Zva2CMHLNnXjNJJKqJ2EF",
+  "container": {
+    "id": "container_011CpZohnwH4vuy7gazohgSP",
+    "expires_at": "2019-12-27T18:11:19.117Z",
+    "skills": [
+      {
+        "skill_id": "pdf",
+        "type": "anthropic",
+        "version": "latest"
+      }
+    ]
+  },
+  "content": [
+    {
+      "citations": [
+        {
+          "cited_text": "The grass is green. The sky is blue.",
+          "document_index": 0,
+          "document_title": "My Document",
+          "end_char_index": 0,
+          "file_id": "file_011CNha8iCJcU1wXNR6q4V8w",
+          "start_char_index": 0,
+          "type": "char_location"
+        }
+      ],
+      "text": "Hi! My name is Claude.",
+      "type": "text"
+    }
+  ],
+  "diagnostics": {
+    "cache_miss_reason": {
+      "cache_missed_input_tokens": 0,
+      "type": "model_changed"
+    }
+  },
+  "model": "claude-opus-5",
+  "role": "assistant",
+  "stop_details": {
+    "category": "cyber",
+    "explanation": "This request was declined because it conflicts with Anthropic's Usage Policy.",
+    "type": "refusal"
+  },
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+    },
+    "cache_creation_input_tokens": 2051,
+    "cache_read_input_tokens": 2051,
+    "inference_geo": "global",
+    "input_tokens": 2095,
+    "output_tokens": 503,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_fetch_requests": 2,
+      "web_search_requests": 0
+    },
+    "service_tier": "standard"
+  }
+}
+```
+
+## Count tokens in a Message
+
+`$ ant messages count-tokens`
+
+**POST** `/v1/messages/count_tokens`
+
+Count the number of tokens in a Message.
+
+The Token Count API can be used to count the number of tokens in a Message, including tools, images, and documents, without creating it.
+
+Learn more about token counting in our [user guide](https://platform.claude.com/docs/en/build-with-claude/token-counting?sdk_languages=cli)
+
+### Parameters
+
+- `--message: array of MessageParam`
+
+  Input messages.
+
+  Our models are trained to operate on alternating `user` and `assistant` conversational turns. When creating a new `Message`, you specify the prior conversational turns with the `messages` parameter, and the model then generates the next `Message` in the conversation. Consecutive `user` or `assistant` turns in your request will be combined into a single turn.
+
+  Each input message must be an object with a `role` and `content`. You can specify a single `user`-role message, or you can include multiple `user` and `assistant` messages.
+
+  If the final message uses the `assistant` role, the response content will continue immediately from the content in that message. This can be used to constrain part of the model's response. This is called prefill. On models that don't support prefill, creating a message that ends with a partial `assistant` response returns a 400 error. See [Prefill not supported](https://platform.claude.com/docs/en/api/errors?sdk_languages=cli#prefill-not-supported).
+
+  Example with a single `user` message:
+
+  ```json
+  [{"role": "user", "content": "Hello, Claude"}]
+  ```
+
+  Example with multiple conversational turns:
+
+  ```json
+  [
+    {"role": "user", "content": "Hello there."},
+    {"role": "assistant", "content": "Hi, I'm Claude. How can I help you?"},
+    {"role": "user", "content": "Can you explain LLMs in plain English?"},
+  ]
+  ```
+
+  Example with a partially-filled response from Claude, for models that support prefill:
+
+  ```json
+  [
+    {"role": "user", "content": "What's the Greek name for Sun? (A) Sol (B) Helios (C) Sun"},
+    {"role": "assistant", "content": "The best answer is ("},
+  ]
+  ```
+
+  Each input message `content` may be either a single `string` or an array of content blocks, where each block has a specific `type`. Using a `string` for `content` is shorthand for an array of one content block of type `"text"`. The following input messages are equivalent:
+
+  ```json
+  {"role": "user", "content": "Hello, Claude"}
+  ```
+
+  ```json
+  {"role": "user", "content": [{"type": "text", "text": "Hello, Claude"}]}
+  ```
+
+  See [input examples](https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=cli).
+
+  Note that if you want to include a [system prompt](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices?sdk_languages=cli#give-claude-a-role), you can use the top-level `system` parameter — there is no `"system"` role for input messages in the Messages API.
+
+  There is a limit of 100,000 messages in a single request.
+
+- `--model: "claude-haiku-5-5" or "claude-sonnet-5-5" or "claude-fable-5-1" or 17 more or string`
+
+  The model that will complete your prompt.
+
+  See [models](https://docs.anthropic.com/en/docs/models-overview) for additional details and options.
+
+- `--cache-control: optional object`
+
+  Top-level cache control automatically applies a cache_control marker to the last cacheable block in the request.
+
+- `--output-config: optional object`
+
+  Configuration options for the model's output, such as the output format.
+
+- `--system: optional string or array of TextBlockParam`
+
+  System prompt.
+
+  A system prompt is a way of providing context and instructions to Claude, such as specifying a particular goal or role. See our [guide to system prompts](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices?sdk_languages=cli#give-claude-a-role).
+
+- `--thinking: optional ThinkingConfigEnabled or ThinkingConfigDisabled or ThinkingConfigBetweenTools or ThinkingConfigAdaptive`
+
+  Configuration for Claude's thinking.
+
+  With `{"type": "adaptive"}`, Claude decides when and how much to think. With `{"type": "enabled"}` (manual extended thinking), you set a `budget_tokens` of at least 1,024. Thinking tokens count toward your `max_tokens` limit.
+
+  Which `type` values are accepted, and what happens when you omit `thinking`, depend on the model. See [thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli#configuring-thinking) for each model's behavior.
+
+- `--tool-choice: optional ToolChoiceAuto or ToolChoiceAny or ToolChoiceTool or ToolChoiceNone`
+
+  How the model should use the provided tools. The model can use a specific tool, any available tool, decide by itself, or not use tools at all.
+
+- `--tool: optional array of MessageCountTokensTool`
+
+  Definitions of tools that the model may use.
+
+  If you include `tools` in your API request, the model may return `tool_use` content blocks that represent the model's use of those tools. You can then run those tools using the tool input generated by the model and then optionally return results back to the model using `tool_result` content blocks.
+
+  There are two types of tools: **client tools** and **server tools**. The behavior described below applies to client tools. For [server tools](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=cli), see their individual documentation as each has its own behavior (e.g., the [web search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=cli)).
+
+  Each tool definition includes:
+
+  * `name`: Name of the tool.
+  * `description`: Optional, but strongly-recommended description of the tool.
+  * `input_schema`: [JSON schema](https://json-schema.org/draft/2020-12) for the tool `input` shape that the model will produce in `tool_use` output content blocks.
+
+  For example, if you defined `tools` as:
+
+  ```json
+  [
+    {
+      "name": "get_stock_price",
+      "description": "Get the current stock price for a given ticker symbol.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "ticker": {
+            "type": "string",
+            "description": "The stock ticker symbol, e.g. AAPL for Apple Inc."
+          }
+        },
+        "required": ["ticker"]
+      }
+    }
+  ]
+  ```
+
+  And then asked the model "What's the S&P 500 at today?", the model might produce `tool_use` content blocks in the response like this:
+
+  ```json
+  [
+    {
+      "type": "tool_use",
+      "id": "toolu_01D7FLrfh4GYq7yT1ULFeyMV",
+      "name": "get_stock_price",
+      "input": { "ticker": "^GSPC" }
+    }
+  ]
+  ```
+
+  You might then run your `get_stock_price` tool with `{"ticker": "^GSPC"}` as an input, and return the following back to the model in a subsequent `user` message:
+
+  ```json
+  [
+    {
+      "type": "tool_result",
+      "tool_use_id": "toolu_01D7FLrfh4GYq7yT1ULFeyMV",
+      "content": "259.75 USD"
+    }
+  ]
+  ```
+
+  Tools can be used for workflows that include running client-side tools and functions, or more generally whenever you want the model to produce a particular JSON structure of output.
+
+  See our [guide](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=cli) for more details.
+
+- `--user-profile-id: optional string` (header parameter)
+
+  The user profile ID to attribute this request to. Use when acting on behalf of a party other than your organization. Requires the `user-profiles` beta header.
+
+- `--workspace-id: optional string` (header parameter)
+
+  Optional header to select the Workspace for this request. The value is a Workspace ID (for example, `wrkspc_011CZkZaBF1tNoB5wlCeusgy`).
+
+  Only needed for credentials that can act on more than one Workspace. A credential that belongs to a specific Workspace may omit it; if sent, it must match that Workspace.
+
+### Returns
+
+- `message_tokens_count: object`
+
+  - `input_tokens: number`
+
+    The total number of tokens across the provided list of messages, system prompt, and tools.
+
+### Example
+
+```bash
+ant messages count-tokens \
+  --api-key my-anthropic-api-key \
+  --message '{content: [{text: x, type: text}], role: user}' \
+  --model claude-opus-5
+```
+
+#### Response (200)
+
+```json
+{
+  "input_tokens": 2095
+}
+```
+
+## Domain types
+
+### Base64 Image Source
+
+- `base64_image_source: object`
+
+  - `type: "base64"`
+
+  - `data: string`
+
+    format: byte
+
+  - `media_type: "image/jpeg" or "image/png" or "image/gif" or "image/webp"`
+
+    - `"image/jpeg"`
+
+    - `"image/png"`
+
+    - `"image/gif"`
+
+    - `"image/webp"`
+
+### Base64 PDF Source
+
+- `base64_pdf_source: object`
+
+  - `type: "base64"`
+
+  - `data: string`
+
+    format: byte
+
+  - `media_type: "application/pdf"`
+
+### Bash Code Execution Output Block
+
+- `bash_code_execution_output_block: object`
+
+  - `type: "bash_code_execution_output"`
+
+  - `file_id: string`
+
+### Bash Code Execution Output Block Param
+
+- `bash_code_execution_output_block_param: object`
+
+  - `type: "bash_code_execution_output"`
+
+  - `file_id: string`
+
+### Bash Code Execution Result Block
+
+- `bash_code_execution_result_block: object`
+
+  - `type: "bash_code_execution_result"`
+
+  - `content: array of BashCodeExecutionOutputBlock`
+
+    - `type: "bash_code_execution_output"`
+
+    - `file_id: string`
+
+  - `return_code: number`
+
+  - `stderr: string`
+
+  - `stdout: string`
+
+### Bash Code Execution Result Block Param
+
+- `bash_code_execution_result_block_param: object`
+
+  - `type: "bash_code_execution_result"`
+
+  - `content: array of BashCodeExecutionOutputBlockParam`
+
+    - `type: "bash_code_execution_output"`
+
+    - `file_id: string`
+
+  - `return_code: number`
+
+  - `stderr: string`
+
+  - `stdout: string`
+
+### Bash Code Execution Tool Result Block
+
+- `bash_code_execution_tool_result_block: object`
+
+  - `type: "bash_code_execution_tool_result"`
+
+  - `content: BashCodeExecutionToolResultError or BashCodeExecutionResultBlock`
+
+    - `bash_code_execution_tool_result_error: object`
+
+      - `type: "bash_code_execution_tool_result_error"`
+
+      - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+        - `"invalid_tool_input"`
+
+        - `"unavailable"`
+
+        - `"too_many_requests"`
+
+        - `"execution_time_exceeded"`
+
+        - `"output_file_too_large"`
+
+    - `bash_code_execution_result_block: object`
+
+      - `type: "bash_code_execution_result"`
+
+      - `content: array of BashCodeExecutionOutputBlock`
+
+        - `type: "bash_code_execution_output"`
+
+        - `file_id: string`
+
+      - `return_code: number`
+
+      - `stderr: string`
+
+      - `stdout: string`
+
+  - `tool_use_id: string`
+
+    pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+### Bash Code Execution Tool Result Block Param
+
+- `bash_code_execution_tool_result_block_param: object`
+
+  - `type: "bash_code_execution_tool_result"`
+
+  - `content: BashCodeExecutionToolResultErrorParam or BashCodeExecutionResultBlockParam`
+
+    - `bash_code_execution_tool_result_error_param: object`
+
+      - `type: "bash_code_execution_tool_result_error"`
+
+      - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+        - `"invalid_tool_input"`
+
+        - `"unavailable"`
+
+        - `"too_many_requests"`
+
+        - `"execution_time_exceeded"`
+
+        - `"output_file_too_large"`
+
+    - `bash_code_execution_result_block_param: object`
+
+      - `type: "bash_code_execution_result"`
+
+      - `content: array of BashCodeExecutionOutputBlockParam`
+
+        - `type: "bash_code_execution_output"`
+
+        - `file_id: string`
+
+      - `return_code: number`
+
+      - `stderr: string`
+
+      - `stdout: string`
+
+  - `tool_use_id: string`
+
+    pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+### Bash Code Execution Tool Result Error
+
+- `bash_code_execution_tool_result_error: object`
+
+  - `type: "bash_code_execution_tool_result_error"`
+
+  - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+    - `"invalid_tool_input"`
+
+    - `"unavailable"`
+
+    - `"too_many_requests"`
+
+    - `"execution_time_exceeded"`
+
+    - `"output_file_too_large"`
+
+### Bash Code Execution Tool Result Error Code
+
+- `bash_code_execution_tool_result_error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+  - `"invalid_tool_input"`
+
+  - `"unavailable"`
+
+  - `"too_many_requests"`
+
+  - `"execution_time_exceeded"`
+
+  - `"output_file_too_large"`
+
+### Bash Code Execution Tool Result Error Param
+
+- `bash_code_execution_tool_result_error_param: object`
+
+  - `type: "bash_code_execution_tool_result_error"`
+
+  - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+    - `"invalid_tool_input"`
+
+    - `"unavailable"`
+
+    - `"too_many_requests"`
+
+    - `"execution_time_exceeded"`
+
+    - `"output_file_too_large"`
+
+### Browser Click Target
+
+- `browser_click_target: BrowserCoordinateTarget or BrowserRefTarget`
+
+  Where to act: either a viewport coordinate or an element reference.
+
+  - `browser_coordinate_target: object`
+
+    A point in the browser viewport, in viewport pixels (the same frame as a
+    full-viewport screenshot).
+
+    - `type: "coordinate"`
+
+    - `x: number`
+
+      Pixels from the left edge of the viewport.
+
+      minimum: 0
+
+    - `y: number`
+
+      Pixels from the top edge of the viewport.
+
+      minimum: 0
+
+  - `browser_ref_target: object`
+
+    An element on the page, identified by a reference from a prior `read_page` or
+    `find` result. References are scoped to the tab that produced them and become
+    stale after navigation or a major re-render.
+
+    - `type: "ref"`
+
+    - `ref: string`
+
+      An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+### Browser Close Tab Config
+
+- `browser_close_tab_config: object`
+
+  `close_tab`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Close Tab Input
+
+- `browser_close_tab_input: object`
+
+  Close the tab with the given tab_id.
+
+  - `tab_id: string`
+
+    The tab to close.
+
+### Browser Close Tab Tool Use Block
+
+- `browser_close_tab_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Close the tab with the given tab_id.
+
+    - `tab_id: string`
+
+      The tab to close.
+
+  - `name: "close_tab"`
+
+  - `toolset_name: "browser"`
+
+### Browser Coordinate Target
+
+- `browser_coordinate_target: object`
+
+  A point in the browser viewport, in viewport pixels (the same frame as a
+  full-viewport screenshot).
+
+  - `type: "coordinate"`
+
+  - `x: number`
+
+    Pixels from the left edge of the viewport.
+
+    minimum: 0
+
+  - `y: number`
+
+    Pixels from the top edge of the viewport.
+
+    minimum: 0
+
+### Browser Double Click Config
+
+- `browser_double_click_config: object`
+
+  `double_click`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Double Click Input
+
+- `browser_double_click_input: object`
+
+  Double left-click at a viewport coordinate or on an element by reference.
+
+  - `target: BrowserCoordinateTarget or BrowserRefTarget`
+
+    Where to act: either a viewport coordinate or an element reference.
+
+    - `browser_coordinate_target: object`
+
+      A point in the browser viewport, in viewport pixels (the same frame as a
+      full-viewport screenshot).
+
+      - `type: "coordinate"`
+
+      - `x: number`
+
+        Pixels from the left edge of the viewport.
+
+        minimum: 0
+
+      - `y: number`
+
+        Pixels from the top edge of the viewport.
+
+        minimum: 0
+
+    - `browser_ref_target: object`
+
+      An element on the page, identified by a reference from a prior `read_page` or
+      `find` result. References are scoped to the tab that produced them and become
+      stale after navigation or a major re-render.
+
+      - `type: "ref"`
+
+      - `ref: string`
+
+        An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+  - `modifiers: optional string`
+
+    Optional modifier key chord to hold for the duration of this action (e.g. "shift", "ctrl+shift", "cmd+alt").
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Double Click Tool Use Block
+
+- `browser_double_click_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Double left-click at a viewport coordinate or on an element by reference.
+
+    - `target: BrowserCoordinateTarget or BrowserRefTarget`
+
+      Where to act: either a viewport coordinate or an element reference.
+
+      - `browser_coordinate_target: object`
+
+        A point in the browser viewport, in viewport pixels (the same frame as a
+        full-viewport screenshot).
+
+        - `type: "coordinate"`
+
+        - `x: number`
+
+          Pixels from the left edge of the viewport.
+
+          minimum: 0
+
+        - `y: number`
+
+          Pixels from the top edge of the viewport.
+
+          minimum: 0
+
+      - `browser_ref_target: object`
+
+        An element on the page, identified by a reference from a prior `read_page` or
+        `find` result. References are scoped to the tab that produced them and become
+        stale after navigation or a major re-render.
+
+        - `type: "ref"`
+
+        - `ref: string`
+
+          An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+    - `modifiers: optional string`
+
+      Optional modifier key chord to hold for the duration of this action (e.g. "shift", "ctrl+shift", "cmd+alt").
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "double_click"`
+
+  - `toolset_name: "browser"`
+
+### Browser File Upload Config
+
+- `browser_file_upload_config: object`
+
+  `file_upload`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser File Upload Input
+
+- `browser_file_upload_input: object`
+
+  Set the value of a file-input element to one or more files. The target must be an
+  element reference; at least one of paths or document_ids is required.
+
+  - `target: object`
+
+    An element on the page, identified by a reference from a prior `read_page` or
+    `find` result. References are scoped to the tab that produced them and become
+    stale after navigation or a major re-render.
+
+    - `type: "ref"`
+
+    - `ref: string`
+
+      An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+  - `document_ids: optional array of string`
+
+    References to files the harness has staged, for deployments where the browser executor cannot read the caller's filesystem.
+
+    minItems: 1
+
+  - `paths: optional array of string`
+
+    File paths on the browser executor's filesystem.
+
+    minItems: 1
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser File Upload Tool Use Block
+
+- `browser_file_upload_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Set the value of a file-input element to one or more files. The target must be an
+    element reference; at least one of paths or document_ids is required.
+
+    - `target: object`
+
+      An element on the page, identified by a reference from a prior `read_page` or
+      `find` result. References are scoped to the tab that produced them and become
+      stale after navigation or a major re-render.
+
+      - `type: "ref"`
+
+      - `ref: string`
+
+        An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+    - `document_ids: optional array of string`
+
+      References to files the harness has staged, for deployments where the browser executor cannot read the caller's filesystem.
+
+      minItems: 1
+
+    - `paths: optional array of string`
+
+      File paths on the browser executor's filesystem.
+
+      minItems: 1
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "file_upload"`
+
+  - `toolset_name: "browser"`
+
+### Browser Find Config
+
+- `browser_find_config: object`
+
+  `find`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Find Input
+
+- `browser_find_input: object`
+
+  Find elements matching a natural-language description (e.g. "search bar", "add to
+  cart button") and return up to 20 matches with element references.
+
+  - `query: string`
+
+    Natural-language description of the element(s) to find.
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Find Tool Use Block
+
+- `browser_find_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Find elements matching a natural-language description (e.g. "search bar", "add to
+    cart button") and return up to 20 matches with element references.
+
+    - `query: string`
+
+      Natural-language description of the element(s) to find.
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "find"`
+
+  - `toolset_name: "browser"`
+
+### Browser Form Input Config
+
+- `browser_form_input_config: object`
+
+  `form_input`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Form Input Input
+
+- `browser_form_input_input: object`
+
+  Set the value of a form element (input, textarea, select, checkbox). Use a
+  boolean for checkboxes, an option value or text for selects.
+
+  - `target: object`
+
+    An element on the page, identified by a reference from a prior `read_page` or
+    `find` result. References are scoped to the tab that produced them and become
+    stale after navigation or a major re-render.
+
+    - `type: "ref"`
+
+    - `ref: string`
+
+      An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+  - `value: string or number or boolean`
+
+    The value to set.
+
+    - `union_member_0: string`
+
+    - `union_member_1: number`
+
+    - `union_member_2: boolean`
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Form Input Tool Use Block
+
+- `browser_form_input_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Set the value of a form element (input, textarea, select, checkbox). Use a
+    boolean for checkboxes, an option value or text for selects.
+
+    - `target: object`
+
+      An element on the page, identified by a reference from a prior `read_page` or
+      `find` result. References are scoped to the tab that produced them and become
+      stale after navigation or a major re-render.
+
+      - `type: "ref"`
+
+      - `ref: string`
+
+        An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+    - `value: string or number or boolean`
+
+      The value to set.
+
+      - `union_member_0: string`
+
+      - `union_member_1: number`
+
+      - `union_member_2: boolean`
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "form_input"`
+
+  - `toolset_name: "browser"`
+
+### Browser Form Input Value
+
+- `browser_form_input_value: string or number or boolean`
+
+  - `union_member_0: string`
+
+  - `union_member_1: number`
+
+  - `union_member_2: boolean`
+
+### Browser Get Page Text Config
+
+- `browser_get_page_text_config: object`
+
+  `get_page_text`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Get Page Text Input
+
+- `browser_get_page_text_input: object`
+
+  Return the page's visible text content as plain text, prioritizing article
+  content. Suited to articles, documentation, and other text-heavy pages.
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Get Page Text Tool Use Block
+
+- `browser_get_page_text_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Return the page's visible text content as plain text, prioritizing article
+    content. Suited to articles, documentation, and other text-heavy pages.
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "get_page_text"`
+
+  - `toolset_name: "browser"`
+
+### Browser Hold Key Config
+
+- `browser_hold_key_config: object`
+
+  `hold_key`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Hold Key Input
+
+- `browser_hold_key_input: object`
+
+  Hold a key or key chord down for a duration, then release it. Uses the same key
+  names and "+" chord syntax as the key action.
+
+  - `duration: number`
+
+    Seconds to hold the key down (maximum 30).
+
+    minimum: 0, maximum: 30
+
+  - `text: string`
+
+    The key or chord to hold.
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Hold Key Tool Use Block
+
+- `browser_hold_key_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Hold a key or key chord down for a duration, then release it. Uses the same key
+    names and "+" chord syntax as the key action.
+
+    - `duration: number`
+
+      Seconds to hold the key down (maximum 30).
+
+      minimum: 0, maximum: 30
+
+    - `text: string`
+
+      The key or chord to hold.
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "hold_key"`
+
+  - `toolset_name: "browser"`
+
+### Browser Hover Config
+
+- `browser_hover_config: object`
+
+  `hover`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Hover Input
+
+- `browser_hover_input: object`
+
+  Move the cursor to a coordinate or element without clicking.
+
+  - `target: BrowserCoordinateTarget or BrowserRefTarget`
+
+    Where to act: either a viewport coordinate or an element reference.
+
+    - `browser_coordinate_target: object`
+
+      A point in the browser viewport, in viewport pixels (the same frame as a
+      full-viewport screenshot).
+
+      - `type: "coordinate"`
+
+      - `x: number`
+
+        Pixels from the left edge of the viewport.
+
+        minimum: 0
+
+      - `y: number`
+
+        Pixels from the top edge of the viewport.
+
+        minimum: 0
+
+    - `browser_ref_target: object`
+
+      An element on the page, identified by a reference from a prior `read_page` or
+      `find` result. References are scoped to the tab that produced them and become
+      stale after navigation or a major re-render.
+
+      - `type: "ref"`
+
+      - `ref: string`
+
+        An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Hover Tool Use Block
+
+- `browser_hover_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Move the cursor to a coordinate or element without clicking.
+
+    - `target: BrowserCoordinateTarget or BrowserRefTarget`
+
+      Where to act: either a viewport coordinate or an element reference.
+
+      - `browser_coordinate_target: object`
+
+        A point in the browser viewport, in viewport pixels (the same frame as a
+        full-viewport screenshot).
+
+        - `type: "coordinate"`
+
+        - `x: number`
+
+          Pixels from the left edge of the viewport.
+
+          minimum: 0
+
+        - `y: number`
+
+          Pixels from the top edge of the viewport.
+
+          minimum: 0
+
+      - `browser_ref_target: object`
+
+        An element on the page, identified by a reference from a prior `read_page` or
+        `find` result. References are scoped to the tab that produced them and become
+        stale after navigation or a major re-render.
+
+        - `type: "ref"`
+
+        - `ref: string`
+
+          An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "hover"`
+
+  - `toolset_name: "browser"`
+
+### Browser Javascript Exec Config
+
+- `browser_javascript_exec_config: object`
+
+  `javascript_exec`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Javascript Exec Input
+
+- `browser_javascript_exec_input: object`
+
+  Execute JavaScript in the page context and return the value of the last
+  expression. The code runs with access to the DOM, `window`, and page variables.
+  Write the expression you want evaluated — do NOT use `return`.
+
+  - `text: string`
+
+    JavaScript to execute in the page context.
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Javascript Exec Tool Use Block
+
+- `browser_javascript_exec_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Execute JavaScript in the page context and return the value of the last
+    expression. The code runs with access to the DOM, `window`, and page variables.
+    Write the expression you want evaluated — do NOT use `return`.
+
+    - `text: string`
+
+      JavaScript to execute in the page context.
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "javascript_exec"`
+
+  - `toolset_name: "browser"`
+
+### Browser Key Config
+
+- `browser_key_config: object`
+
+  `key`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Key Input
+
+- `browser_key_input: object`
+
+  Press a key or key chord. Use "+" to combine modifiers with a key (e.g. "ctrl+a",
+  "cmd+shift+p") and space to sequence presses (e.g. "Backspace Backspace Delete").
+  Common names like "Return", "Tab", "Escape", "BackSpace" are supported.
+
+  - `text: string`
+
+    The key, chord, or space-separated sequence to press.
+
+  - `repeat: optional number`
+
+    Number of times to repeat. Default 1.
+
+    minimum: 1, maximum: 100
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Key Tool Use Block
+
+- `browser_key_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Press a key or key chord. Use "+" to combine modifiers with a key (e.g. "ctrl+a",
+    "cmd+shift+p") and space to sequence presses (e.g. "Backspace Backspace Delete").
+    Common names like "Return", "Tab", "Escape", "BackSpace" are supported.
+
+    - `text: string`
+
+      The key, chord, or space-separated sequence to press.
+
+    - `repeat: optional number`
+
+      Number of times to repeat. Default 1.
+
+      minimum: 1, maximum: 100
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "key"`
+
+  - `toolset_name: "browser"`
+
+### Browser Left Click Config
+
+- `browser_left_click_config: object`
+
+  `left_click`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Left Click Drag Config
+
+- `browser_left_click_drag_config: object`
+
+  `left_click_drag`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Left Click Drag Input
+
+- `browser_left_click_drag_input: object`
+
+  Press at `from`, drag to `target`, release. Both must be coordinate targets.
+
+  - `from: object`
+
+    A point in the browser viewport, in viewport pixels (the same frame as a
+    full-viewport screenshot).
+
+    - `type: "coordinate"`
+
+    - `x: number`
+
+      Pixels from the left edge of the viewport.
+
+      minimum: 0
+
+    - `y: number`
+
+      Pixels from the top edge of the viewport.
+
+      minimum: 0
+
+  - `target: object`
+
+    A point in the browser viewport, in viewport pixels (the same frame as a
+    full-viewport screenshot).
+
+    - `type: "coordinate"`
+
+    - `x: number`
+
+      Pixels from the left edge of the viewport.
+
+      minimum: 0
+
+    - `y: number`
+
+      Pixels from the top edge of the viewport.
+
+      minimum: 0
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Left Click Drag Tool Use Block
+
+- `browser_left_click_drag_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Press at `from`, drag to `target`, release. Both must be coordinate targets.
+
+    - `from: object`
+
+      A point in the browser viewport, in viewport pixels (the same frame as a
+      full-viewport screenshot).
+
+      - `type: "coordinate"`
+
+      - `x: number`
+
+        Pixels from the left edge of the viewport.
+
+        minimum: 0
+
+      - `y: number`
+
+        Pixels from the top edge of the viewport.
+
+        minimum: 0
+
+    - `target: object`
+
+      A point in the browser viewport, in viewport pixels (the same frame as a
+      full-viewport screenshot).
+
+      - `type: "coordinate"`
+
+      - `x: number`
+
+        Pixels from the left edge of the viewport.
+
+        minimum: 0
+
+      - `y: number`
+
+        Pixels from the top edge of the viewport.
+
+        minimum: 0
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "left_click_drag"`
+
+  - `toolset_name: "browser"`
+
+### Browser Left Click Input
+
+- `browser_left_click_input: object`
+
+  Left-click at a viewport coordinate or on an element by reference.
+
+  - `target: BrowserCoordinateTarget or BrowserRefTarget`
+
+    Where to act: either a viewport coordinate or an element reference.
+
+    - `browser_coordinate_target: object`
+
+      A point in the browser viewport, in viewport pixels (the same frame as a
+      full-viewport screenshot).
+
+      - `type: "coordinate"`
+
+      - `x: number`
+
+        Pixels from the left edge of the viewport.
+
+        minimum: 0
+
+      - `y: number`
+
+        Pixels from the top edge of the viewport.
+
+        minimum: 0
+
+    - `browser_ref_target: object`
+
+      An element on the page, identified by a reference from a prior `read_page` or
+      `find` result. References are scoped to the tab that produced them and become
+      stale after navigation or a major re-render.
+
+      - `type: "ref"`
+
+      - `ref: string`
+
+        An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+  - `modifiers: optional string`
+
+    Optional modifier key chord to hold for the duration of this action (e.g. "shift", "ctrl+shift", "cmd+alt").
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Left Click Tool Use Block
+
+- `browser_left_click_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Left-click at a viewport coordinate or on an element by reference.
+
+    - `target: BrowserCoordinateTarget or BrowserRefTarget`
+
+      Where to act: either a viewport coordinate or an element reference.
+
+      - `browser_coordinate_target: object`
+
+        A point in the browser viewport, in viewport pixels (the same frame as a
+        full-viewport screenshot).
+
+        - `type: "coordinate"`
+
+        - `x: number`
+
+          Pixels from the left edge of the viewport.
+
+          minimum: 0
+
+        - `y: number`
+
+          Pixels from the top edge of the viewport.
+
+          minimum: 0
+
+      - `browser_ref_target: object`
+
+        An element on the page, identified by a reference from a prior `read_page` or
+        `find` result. References are scoped to the tab that produced them and become
+        stale after navigation or a major re-render.
+
+        - `type: "ref"`
+
+        - `ref: string`
+
+          An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+    - `modifiers: optional string`
+
+      Optional modifier key chord to hold for the duration of this action (e.g. "shift", "ctrl+shift", "cmd+alt").
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "left_click"`
+
+  - `toolset_name: "browser"`
+
+### Browser Left Mouse Down Config
+
+- `browser_left_mouse_down_config: object`
+
+  `left_mouse_down`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Left Mouse Down Input
+
+- `browser_left_mouse_down_input: object`
+
+  Press and hold the left mouse button at a viewport coordinate. Pair with
+  left_mouse_up to perform a custom drag.
+
+  - `target: object`
+
+    A point in the browser viewport, in viewport pixels (the same frame as a
+    full-viewport screenshot).
+
+    - `type: "coordinate"`
+
+    - `x: number`
+
+      Pixels from the left edge of the viewport.
+
+      minimum: 0
+
+    - `y: number`
+
+      Pixels from the top edge of the viewport.
+
+      minimum: 0
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Left Mouse Down Tool Use Block
+
+- `browser_left_mouse_down_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Press and hold the left mouse button at a viewport coordinate. Pair with
+    left_mouse_up to perform a custom drag.
+
+    - `target: object`
+
+      A point in the browser viewport, in viewport pixels (the same frame as a
+      full-viewport screenshot).
+
+      - `type: "coordinate"`
+
+      - `x: number`
+
+        Pixels from the left edge of the viewport.
+
+        minimum: 0
+
+      - `y: number`
+
+        Pixels from the top edge of the viewport.
+
+        minimum: 0
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "left_mouse_down"`
+
+  - `toolset_name: "browser"`
+
+### Browser Left Mouse Up Config
+
+- `browser_left_mouse_up_config: object`
+
+  `left_mouse_up`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Left Mouse Up Input
+
+- `browser_left_mouse_up_input: object`
+
+  Release the left mouse button at a viewport coordinate.
+
+  - `target: object`
+
+    A point in the browser viewport, in viewport pixels (the same frame as a
+    full-viewport screenshot).
+
+    - `type: "coordinate"`
+
+    - `x: number`
+
+      Pixels from the left edge of the viewport.
+
+      minimum: 0
+
+    - `y: number`
+
+      Pixels from the top edge of the viewport.
+
+      minimum: 0
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Left Mouse Up Tool Use Block
+
+- `browser_left_mouse_up_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Release the left mouse button at a viewport coordinate.
+
+    - `target: object`
+
+      A point in the browser viewport, in viewport pixels (the same frame as a
+      full-viewport screenshot).
+
+      - `type: "coordinate"`
+
+      - `x: number`
+
+        Pixels from the left edge of the viewport.
+
+        minimum: 0
+
+      - `y: number`
+
+        Pixels from the top edge of the viewport.
+
+        minimum: 0
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "left_mouse_up"`
+
+  - `toolset_name: "browser"`
+
+### Browser List Tabs Config
+
+- `browser_list_tabs_config: object`
+
+  `list_tabs`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser List Tabs Input
+
+- `browser_list_tabs_input: object`
+
+  List all open tabs with each tab's tab_id, title, and URL.
+
+### Browser List Tabs Tool Use Block
+
+- `browser_list_tabs_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    List all open tabs with each tab's tab_id, title, and URL.
+
+  - `name: "list_tabs"`
+
+  - `toolset_name: "browser"`
+
+### Browser Middle Click Config
+
+- `browser_middle_click_config: object`
+
+  `middle_click`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Middle Click Input
+
+- `browser_middle_click_input: object`
+
+  Middle-click at a viewport coordinate or on an element by reference.
+
+  - `target: BrowserCoordinateTarget or BrowserRefTarget`
+
+    Where to act: either a viewport coordinate or an element reference.
+
+    - `browser_coordinate_target: object`
+
+      A point in the browser viewport, in viewport pixels (the same frame as a
+      full-viewport screenshot).
+
+      - `type: "coordinate"`
+
+      - `x: number`
+
+        Pixels from the left edge of the viewport.
+
+        minimum: 0
+
+      - `y: number`
+
+        Pixels from the top edge of the viewport.
+
+        minimum: 0
+
+    - `browser_ref_target: object`
+
+      An element on the page, identified by a reference from a prior `read_page` or
+      `find` result. References are scoped to the tab that produced them and become
+      stale after navigation or a major re-render.
+
+      - `type: "ref"`
+
+      - `ref: string`
+
+        An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+  - `modifiers: optional string`
+
+    Optional modifier key chord to hold for the duration of this action (e.g. "shift", "ctrl+shift", "cmd+alt").
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Middle Click Tool Use Block
+
+- `browser_middle_click_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Middle-click at a viewport coordinate or on an element by reference.
+
+    - `target: BrowserCoordinateTarget or BrowserRefTarget`
+
+      Where to act: either a viewport coordinate or an element reference.
+
+      - `browser_coordinate_target: object`
+
+        A point in the browser viewport, in viewport pixels (the same frame as a
+        full-viewport screenshot).
+
+        - `type: "coordinate"`
+
+        - `x: number`
+
+          Pixels from the left edge of the viewport.
+
+          minimum: 0
+
+        - `y: number`
+
+          Pixels from the top edge of the viewport.
+
+          minimum: 0
+
+      - `browser_ref_target: object`
+
+        An element on the page, identified by a reference from a prior `read_page` or
+        `find` result. References are scoped to the tab that produced them and become
+        stale after navigation or a major re-render.
+
+        - `type: "ref"`
+
+        - `ref: string`
+
+          An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+    - `modifiers: optional string`
+
+      Optional modifier key chord to hold for the duration of this action (e.g. "shift", "ctrl+shift", "cmd+alt").
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "middle_click"`
+
+  - `toolset_name: "browser"`
+
+### Browser Mouse Move Config
+
+- `browser_mouse_move_config: object`
+
+  `mouse_move`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Mouse Move Input
+
+- `browser_mouse_move_input: object`
+
+  Move the pointer to a viewport coordinate without clicking.
+
+  - `target: object`
+
+    A point in the browser viewport, in viewport pixels (the same frame as a
+    full-viewport screenshot).
+
+    - `type: "coordinate"`
+
+    - `x: number`
+
+      Pixels from the left edge of the viewport.
+
+      minimum: 0
+
+    - `y: number`
+
+      Pixels from the top edge of the viewport.
+
+      minimum: 0
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Mouse Move Tool Use Block
+
+- `browser_mouse_move_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Move the pointer to a viewport coordinate without clicking.
+
+    - `target: object`
+
+      A point in the browser viewport, in viewport pixels (the same frame as a
+      full-viewport screenshot).
+
+      - `type: "coordinate"`
+
+      - `x: number`
+
+        Pixels from the left edge of the viewport.
+
+        minimum: 0
+
+      - `y: number`
+
+        Pixels from the top edge of the viewport.
+
+        minimum: 0
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "mouse_move"`
+
+  - `toolset_name: "browser"`
+
+### Browser Navigate Config
+
+- `browser_navigate_config: object`
+
+  `navigate`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Navigate Input
+
+- `browser_navigate_input: object`
+
+  Navigate to a URL, or go back/forward/reload in history. The protocol may be
+  omitted (defaults to https://).
+
+  - `url: string`
+
+    The URL to navigate to, or "back" / "forward" / "reload" for history navigation.
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Navigate Tool Use Block
+
+- `browser_navigate_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Navigate to a URL, or go back/forward/reload in history. The protocol may be
+    omitted (defaults to https://).
+
+    - `url: string`
+
+      The URL to navigate to, or "back" / "forward" / "reload" for history navigation.
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "navigate"`
+
+  - `toolset_name: "browser"`
+
+### Browser New Tab Config
+
+- `browser_new_tab_config: object`
+
+  `new_tab`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser New Tab Input
+
+- `browser_new_tab_input: object`
+
+  Open a new empty tab and return its tab_id.
+
+### Browser New Tab Tool Use Block
+
+- `browser_new_tab_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Open a new empty tab and return its tab_id.
+
+  - `name: "new_tab"`
+
+  - `toolset_name: "browser"`
+
+### Browser Read Console Config
+
+- `browser_read_console_config: object`
+
+  `read_console`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Read Console Input
+
+- `browser_read_console_input: object`
+
+  Return console output (log entries, errors, warnings) accumulated since the
+  driver attached to the tab and since the last read, one line per entry. An empty
+  result does not mean no traffic for a tab that predates attach.
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Read Console Tool Use Block
+
+- `browser_read_console_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Return console output (log entries, errors, warnings) accumulated since the
+    driver attached to the tab and since the last read, one line per entry. An empty
+    result does not mean no traffic for a tab that predates attach.
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "read_console"`
+
+  - `toolset_name: "browser"`
+
+### Browser Read Network Config
+
+- `browser_read_network_config: object`
+
+  `read_network`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Read Network Input
+
+- `browser_read_network_input: object`
+
+  Return the network requests (method, URL, status, MIME type, timing) recorded
+  since the driver attached to the tab and since the last read, one line per entry.
+  An empty result does not mean no traffic for a tab that predates attach.
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Read Network Tool Use Block
+
+- `browser_read_network_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Return the network requests (method, URL, status, MIME type, timing) recorded
+    since the driver attached to the tab and since the last read, one line per entry.
+    An empty result does not mean no traffic for a tab that predates attach.
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "read_network"`
+
+  - `toolset_name: "browser"`
+
+### Browser Read Page Config
+
+- `browser_read_page_config: object`
+
+  `read_page`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Read Page Filter
+
+- `browser_read_page_filter: "all" or "interactive"`
+
+  - `"all"`
+
+  - `"interactive"`
+
+### Browser Read Page Input
+
+- `browser_read_page_input: object`
+
+  Return a structured accessibility tree of the page (or the subtree rooted at
+  `ref`), with element references like [ref_7] that can be used as targets on later
+  actions. Output is capped at 50,000 characters — narrow with `ref` or a smaller
+  `depth` when exceeded.
+
+  - `depth: optional number`
+
+    Maximum tree depth. Default 15.
+
+    minimum: 1
+
+  - `filter: optional "all" or "interactive"`
+
+    Which elements to include. Omitted: every visible element. "interactive": interactive elements only. "all": additionally includes off-viewport elements.
+
+    - `"all"`
+
+    - `"interactive"`
+
+  - `ref: optional string`
+
+    Element reference to read a subtree from. Omit to read from the page root.
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Read Page Tool Use Block
+
+- `browser_read_page_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Return a structured accessibility tree of the page (or the subtree rooted at
+    `ref`), with element references like [ref_7] that can be used as targets on later
+    actions. Output is capped at 50,000 characters — narrow with `ref` or a smaller
+    `depth` when exceeded.
+
+    - `depth: optional number`
+
+      Maximum tree depth. Default 15.
+
+      minimum: 1
+
+    - `filter: optional "all" or "interactive"`
+
+      Which elements to include. Omitted: every visible element. "interactive": interactive elements only. "all": additionally includes off-viewport elements.
+
+      - `"all"`
+
+      - `"interactive"`
+
+    - `ref: optional string`
+
+      Element reference to read a subtree from. Omit to read from the page root.
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "read_page"`
+
+  - `toolset_name: "browser"`
+
+### Browser Ref Target
+
+- `browser_ref_target: object`
+
+  An element on the page, identified by a reference from a prior `read_page` or
+  `find` result. References are scoped to the tab that produced them and become
+  stale after navigation or a major re-render.
+
+  - `type: "ref"`
+
+  - `ref: string`
+
+    An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+### Browser Right Click Config
+
+- `browser_right_click_config: object`
+
+  `right_click`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Right Click Input
+
+- `browser_right_click_input: object`
+
+  Right-click at a viewport coordinate or on an element by reference.
+
+  - `target: BrowserCoordinateTarget or BrowserRefTarget`
+
+    Where to act: either a viewport coordinate or an element reference.
+
+    - `browser_coordinate_target: object`
+
+      A point in the browser viewport, in viewport pixels (the same frame as a
+      full-viewport screenshot).
+
+      - `type: "coordinate"`
+
+      - `x: number`
+
+        Pixels from the left edge of the viewport.
+
+        minimum: 0
+
+      - `y: number`
+
+        Pixels from the top edge of the viewport.
+
+        minimum: 0
+
+    - `browser_ref_target: object`
+
+      An element on the page, identified by a reference from a prior `read_page` or
+      `find` result. References are scoped to the tab that produced them and become
+      stale after navigation or a major re-render.
+
+      - `type: "ref"`
+
+      - `ref: string`
+
+        An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+  - `modifiers: optional string`
+
+    Optional modifier key chord to hold for the duration of this action (e.g. "shift", "ctrl+shift", "cmd+alt").
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Right Click Tool Use Block
+
+- `browser_right_click_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Right-click at a viewport coordinate or on an element by reference.
+
+    - `target: BrowserCoordinateTarget or BrowserRefTarget`
+
+      Where to act: either a viewport coordinate or an element reference.
+
+      - `browser_coordinate_target: object`
+
+        A point in the browser viewport, in viewport pixels (the same frame as a
+        full-viewport screenshot).
+
+        - `type: "coordinate"`
+
+        - `x: number`
+
+          Pixels from the left edge of the viewport.
+
+          minimum: 0
+
+        - `y: number`
+
+          Pixels from the top edge of the viewport.
+
+          minimum: 0
+
+      - `browser_ref_target: object`
+
+        An element on the page, identified by a reference from a prior `read_page` or
+        `find` result. References are scoped to the tab that produced them and become
+        stale after navigation or a major re-render.
+
+        - `type: "ref"`
+
+        - `ref: string`
+
+          An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+    - `modifiers: optional string`
+
+      Optional modifier key chord to hold for the duration of this action (e.g. "shift", "ctrl+shift", "cmd+alt").
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "right_click"`
+
+  - `toolset_name: "browser"`
+
+### Browser Screenshot Config
+
+- `browser_screenshot_config: object`
+
+  `screenshot`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Screenshot Input
+
+- `browser_screenshot_input: object`
+
+  Capture the current browser viewport.
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Screenshot Tool Use Block
+
+- `browser_screenshot_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Capture the current browser viewport.
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "screenshot"`
+
+  - `toolset_name: "browser"`
+
+### Browser Scroll Config
+
+- `browser_scroll_config: object`
+
+  `scroll`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Scroll Direction
+
+- `browser_scroll_direction: "up" or "down" or "left" or "right"`
+
+  - `"up"`
+
+  - `"down"`
+
+  - `"left"`
+
+  - `"right"`
+
+### Browser Scroll Input
+
+- `browser_scroll_input: object`
+
+  Scroll at a viewport position. `target` must be a coordinate target.
+
+  - `scroll_direction: "up" or "down" or "left" or "right"`
+
+    - `"up"`
+
+    - `"down"`
+
+    - `"left"`
+
+    - `"right"`
+
+  - `target: object`
+
+    A point in the browser viewport, in viewport pixels (the same frame as a
+    full-viewport screenshot).
+
+    - `type: "coordinate"`
+
+    - `x: number`
+
+      Pixels from the left edge of the viewport.
+
+      minimum: 0
+
+    - `y: number`
+
+      Pixels from the top edge of the viewport.
+
+      minimum: 0
+
+  - `scroll_amount: optional number`
+
+    Scroll-wheel notches (1–10). Default 3.
+
+    minimum: 1, maximum: 10
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Scroll To Config
+
+- `browser_scroll_to_config: object`
+
+  `scroll_to`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Scroll To Input
+
+- `browser_scroll_to_input: object`
+
+  Scroll an element into view.
+
+  - `target: object`
+
+    An element on the page, identified by a reference from a prior `read_page` or
+    `find` result. References are scoped to the tab that produced them and become
+    stale after navigation or a major re-render.
+
+    - `type: "ref"`
+
+    - `ref: string`
+
+      An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Scroll To Tool Use Block
+
+- `browser_scroll_to_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Scroll an element into view.
+
+    - `target: object`
+
+      An element on the page, identified by a reference from a prior `read_page` or
+      `find` result. References are scoped to the tab that produced them and become
+      stale after navigation or a major re-render.
+
+      - `type: "ref"`
+
+      - `ref: string`
+
+        An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "scroll_to"`
+
+  - `toolset_name: "browser"`
+
+### Browser Scroll Tool Use Block
+
+- `browser_scroll_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Scroll at a viewport position. `target` must be a coordinate target.
+
+    - `scroll_direction: "up" or "down" or "left" or "right"`
+
+      - `"up"`
+
+      - `"down"`
+
+      - `"left"`
+
+      - `"right"`
+
+    - `target: object`
+
+      A point in the browser viewport, in viewport pixels (the same frame as a
+      full-viewport screenshot).
+
+      - `type: "coordinate"`
+
+      - `x: number`
+
+        Pixels from the left edge of the viewport.
+
+        minimum: 0
+
+      - `y: number`
+
+        Pixels from the top edge of the viewport.
+
+        minimum: 0
+
+    - `scroll_amount: optional number`
+
+      Scroll-wheel notches (1–10). Default 3.
+
+      minimum: 1, maximum: 10
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "scroll"`
+
+  - `toolset_name: "browser"`
+
+### Browser State Block Param
+
+- `browser_state_block_param: object`
+
+  The caller's browser state after a browser toolset member call —
+  the full inventory of open tabs, which tab is active, and any side
+  effects (tabs opened, download state changes) the call produced.
+
+  At most one per `tool_result`, only on a non-error result answering a
+  browser toolset member `tool_use`. The server renders the
+  model-visible text from it; the model never sees the raw fields.
+
+  - `type: "browser_state"`
+
+  - `tabs: array of BrowserStateTabEntry`
+
+    All tabs open in the browser after this call — the full inventory, not a delta. May be empty. Whenever non-empty, exactly one entry carries `active: true`.
+
+    maxItems: 100
+
+    - `tab_id: string`
+
+      The caller-assigned identifier for this tab, unique within the inventory.
+
+      minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+    - `title: string`
+
+      The title of the page the tab is showing. May be empty.
+
+      maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+    - `url: string`
+
+      The URL of the page the tab is showing. May be empty.
+
+      maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+    - `active: optional boolean`
+
+      Whether this tab is the active tab after this call. Whenever `tabs` is non-empty, exactly one entry is marked `active: true`.
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `state_changes: optional array of BrowserStateChange`
+
+    Tabs opened and download state changes during this call. "Nothing to report" is expressed by omitting the field, never by an empty list.
+
+    minItems: 1, maxItems: 200
+
+    - `browser_state_change_tab_opened: object`
+
+      A tab this call's execution opened that remains open at its end —
+      the creation delta of the `tabs` inventory, not an event log.
+
+      Carries only the `tab_id`; the tab's `title` and `url` live on its
+      `tabs` entry, which must include the same `tab_id`. A tab opened
+      during a failed call gets no deferred `tab_opened`; it simply appears
+      in the next result's `tabs` inventory.
+
+      - `type: "tab_opened"`
+
+      - `tab_id: string`
+
+        The `tab_id` of the opened tab, present in `tabs`.
+
+        minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+    - `browser_state_change_download_started: object`
+
+      A file download that started during this call.
+
+      - `type: "download_started"`
+
+      - `download_id: string`
+
+        The caller-assigned identifier for this download, stable across the state changes reporting it.
+
+        minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+      - `url: string`
+
+        The final post-redirect URL the download was served from.
+
+        maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+    - `browser_state_change_download_completed: object`
+
+      A file download that finished during this call, reported with the
+      same `download_id` as its `download_started` — or without a prior
+      `download_started`, when the download finished during the call that
+      started it (at most one state change per `download_id` per result).
+
+      - `type: "download_completed"`
+
+      - `download_id: string`
+
+        The caller-assigned identifier for this download, stable across the state changes reporting it.
+
+        minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+      - `url: string`
+
+        The final post-redirect URL the download was served from.
+
+        maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+      - `path: optional string`
+
+        Where the executor saved the file, on the executor's filesystem. Only included when another tool in the same environment can read the file at that path.
+
+        maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+      - `size_bytes: optional number`
+
+        The completed download's size.
+
+        minimum: 0
+
+    - `browser_state_change_download_failed: object`
+
+      A file download that failed — or was cancelled — during this call.
+
+      - `type: "download_failed"`
+
+      - `download_id: string`
+
+        The caller-assigned identifier for this download, stable across the state changes reporting it.
+
+        minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+      - `url: string`
+
+        The final post-redirect URL the download was served from.
+
+        maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+      - `error: optional string`
+
+        The failure or cancellation detail, when known.
+
+        maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+### Browser State Change
+
+- `browser_state_change: BrowserStateChangeTabOpened or BrowserStateChangeDownloadStarted or BrowserStateChangeDownloadCompleted or BrowserStateChangeDownloadFailed`
+
+  - `browser_state_change_tab_opened: object`
+
+    A tab this call's execution opened that remains open at its end —
+    the creation delta of the `tabs` inventory, not an event log.
+
+    Carries only the `tab_id`; the tab's `title` and `url` live on its
+    `tabs` entry, which must include the same `tab_id`. A tab opened
+    during a failed call gets no deferred `tab_opened`; it simply appears
+    in the next result's `tabs` inventory.
+
+    - `type: "tab_opened"`
+
+    - `tab_id: string`
+
+      The `tab_id` of the opened tab, present in `tabs`.
+
+      minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+  - `browser_state_change_download_started: object`
+
+    A file download that started during this call.
+
+    - `type: "download_started"`
+
+    - `download_id: string`
+
+      The caller-assigned identifier for this download, stable across the state changes reporting it.
+
+      minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+    - `url: string`
+
+      The final post-redirect URL the download was served from.
+
+      maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+  - `browser_state_change_download_completed: object`
+
+    A file download that finished during this call, reported with the
+    same `download_id` as its `download_started` — or without a prior
+    `download_started`, when the download finished during the call that
+    started it (at most one state change per `download_id` per result).
+
+    - `type: "download_completed"`
+
+    - `download_id: string`
+
+      The caller-assigned identifier for this download, stable across the state changes reporting it.
+
+      minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+    - `url: string`
+
+      The final post-redirect URL the download was served from.
+
+      maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+    - `path: optional string`
+
+      Where the executor saved the file, on the executor's filesystem. Only included when another tool in the same environment can read the file at that path.
+
+      maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+    - `size_bytes: optional number`
+
+      The completed download's size.
+
+      minimum: 0
+
+  - `browser_state_change_download_failed: object`
+
+    A file download that failed — or was cancelled — during this call.
+
+    - `type: "download_failed"`
+
+    - `download_id: string`
+
+      The caller-assigned identifier for this download, stable across the state changes reporting it.
+
+      minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+    - `url: string`
+
+      The final post-redirect URL the download was served from.
+
+      maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+    - `error: optional string`
+
+      The failure or cancellation detail, when known.
+
+      maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+### Browser State Change Download Completed
+
+- `browser_state_change_download_completed: object`
+
+  A file download that finished during this call, reported with the
+  same `download_id` as its `download_started` — or without a prior
+  `download_started`, when the download finished during the call that
+  started it (at most one state change per `download_id` per result).
+
+  - `type: "download_completed"`
+
+  - `download_id: string`
+
+    The caller-assigned identifier for this download, stable across the state changes reporting it.
+
+    minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+  - `url: string`
+
+    The final post-redirect URL the download was served from.
+
+    maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+  - `path: optional string`
+
+    Where the executor saved the file, on the executor's filesystem. Only included when another tool in the same environment can read the file at that path.
+
+    maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+  - `size_bytes: optional number`
+
+    The completed download's size.
+
+    minimum: 0
+
+### Browser State Change Download Failed
+
+- `browser_state_change_download_failed: object`
+
+  A file download that failed — or was cancelled — during this call.
+
+  - `type: "download_failed"`
+
+  - `download_id: string`
+
+    The caller-assigned identifier for this download, stable across the state changes reporting it.
+
+    minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+  - `url: string`
+
+    The final post-redirect URL the download was served from.
+
+    maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+  - `error: optional string`
+
+    The failure or cancellation detail, when known.
+
+    maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+### Browser State Change Download Started
+
+- `browser_state_change_download_started: object`
+
+  A file download that started during this call.
+
+  - `type: "download_started"`
+
+  - `download_id: string`
+
+    The caller-assigned identifier for this download, stable across the state changes reporting it.
+
+    minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+  - `url: string`
+
+    The final post-redirect URL the download was served from.
+
+    maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+### Browser State Change Tab Opened
+
+- `browser_state_change_tab_opened: object`
+
+  A tab this call's execution opened that remains open at its end —
+  the creation delta of the `tabs` inventory, not an event log.
+
+  Carries only the `tab_id`; the tab's `title` and `url` live on its
+  `tabs` entry, which must include the same `tab_id`. A tab opened
+  during a failed call gets no deferred `tab_opened`; it simply appears
+  in the next result's `tabs` inventory.
+
+  - `type: "tab_opened"`
+
+  - `tab_id: string`
+
+    The `tab_id` of the opened tab, present in `tabs`.
+
+    minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+### Browser State Tab Entry
+
+- `browser_state_tab_entry: object`
+
+  One open browser tab reported in a `browser_state` block's `tabs`
+  inventory.
+
+  `tab_id` is the caller-assigned identifier for the tab; `title` and
+  `url` describe the page the tab is currently showing and may be empty
+  strings (a blank tab legitimately has both empty). `active` marks the
+  tab that is active after this call; whenever `tabs` is non-empty,
+  exactly one entry is marked.
+
+  - `tab_id: string`
+
+    The caller-assigned identifier for this tab, unique within the inventory.
+
+    minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+  - `title: string`
+
+    The title of the page the tab is showing. May be empty.
+
+    maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+  - `url: string`
+
+    The URL of the page the tab is showing. May be empty.
+
+    maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+  - `active: optional boolean`
+
+    Whether this tab is the active tab after this call. Whenever `tabs` is non-empty, exactly one entry is marked `active: true`.
+
+### Browser Switch Tab Config
+
+- `browser_switch_tab_config: object`
+
+  `switch_tab`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Switch Tab Input
+
+- `browser_switch_tab_input: object`
+
+  Make the tab with the given tab_id the active tab — the tab that actions without
+  a tab_id apply to.
+
+  - `tab_id: string`
+
+    The tab to switch to.
+
+### Browser Switch Tab Tool Use Block
+
+- `browser_switch_tab_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Make the tab with the given tab_id the active tab — the tab that actions without
+    a tab_id apply to.
+
+    - `tab_id: string`
+
+      The tab to switch to.
+
+  - `name: "switch_tab"`
+
+  - `toolset_name: "browser"`
+
+### Browser Tool Use Block
+
+- `browser_tool_use_block: BrowserNavigateToolUseBlock or BrowserListTabsToolUseBlock or BrowserNewTabToolUseBlock or 28 more`
+
+  - `browser_navigate_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+        - `type: "direct"`
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+        - `type: "code_execution_20250825"`
+
+        - `tool_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `server_tool_caller_20260120: object`
+
+        - `type: "code_execution_20260120"`
+
+        - `tool_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `input: object`
+
+      Navigate to a URL, or go back/forward/reload in history. The protocol may be
+      omitted (defaults to https://).
+
+      - `url: string`
+
+        The URL to navigate to, or "back" / "forward" / "reload" for history navigation.
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "navigate"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_list_tabs_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      List all open tabs with each tab's tab_id, title, and URL.
+
+    - `name: "list_tabs"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_new_tab_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Open a new empty tab and return its tab_id.
+
+    - `name: "new_tab"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_switch_tab_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Make the tab with the given tab_id the active tab — the tab that actions without
+      a tab_id apply to.
+
+      - `tab_id: string`
+
+        The tab to switch to.
+
+    - `name: "switch_tab"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_close_tab_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Close the tab with the given tab_id.
+
+      - `tab_id: string`
+
+        The tab to close.
+
+    - `name: "close_tab"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_read_page_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Return a structured accessibility tree of the page (or the subtree rooted at
+      `ref`), with element references like [ref_7] that can be used as targets on later
+      actions. Output is capped at 50,000 characters — narrow with `ref` or a smaller
+      `depth` when exceeded.
+
+      - `depth: optional number`
+
+        Maximum tree depth. Default 15.
+
+        minimum: 1
+
+      - `filter: optional "all" or "interactive"`
+
+        Which elements to include. Omitted: every visible element. "interactive": interactive elements only. "all": additionally includes off-viewport elements.
+
+        - `"all"`
+
+        - `"interactive"`
+
+      - `ref: optional string`
+
+        Element reference to read a subtree from. Omit to read from the page root.
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "read_page"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_get_page_text_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Return the page's visible text content as plain text, prioritizing article
+      content. Suited to articles, documentation, and other text-heavy pages.
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "get_page_text"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_read_console_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Return console output (log entries, errors, warnings) accumulated since the
+      driver attached to the tab and since the last read, one line per entry. An empty
+      result does not mean no traffic for a tab that predates attach.
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "read_console"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_read_network_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Return the network requests (method, URL, status, MIME type, timing) recorded
+      since the driver attached to the tab and since the last read, one line per entry.
+      An empty result does not mean no traffic for a tab that predates attach.
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "read_network"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_find_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Find elements matching a natural-language description (e.g. "search bar", "add to
+      cart button") and return up to 20 matches with element references.
+
+      - `query: string`
+
+        Natural-language description of the element(s) to find.
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "find"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_form_input_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Set the value of a form element (input, textarea, select, checkbox). Use a
+      boolean for checkboxes, an option value or text for selects.
+
+      - `target: object`
+
+        An element on the page, identified by a reference from a prior `read_page` or
+        `find` result. References are scoped to the tab that produced them and become
+        stale after navigation or a major re-render.
+
+        - `type: "ref"`
+
+        - `ref: string`
+
+          An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+      - `value: string or number or boolean`
+
+        The value to set.
+
+        - `union_member_0: string`
+
+        - `union_member_1: number`
+
+        - `union_member_2: boolean`
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "form_input"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_file_upload_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Set the value of a file-input element to one or more files. The target must be an
+      element reference; at least one of paths or document_ids is required.
+
+      - `target: object`
+
+        An element on the page, identified by a reference from a prior `read_page` or
+        `find` result. References are scoped to the tab that produced them and become
+        stale after navigation or a major re-render.
+
+        - `type: "ref"`
+
+        - `ref: string`
+
+          An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+      - `document_ids: optional array of string`
+
+        References to files the harness has staged, for deployments where the browser executor cannot read the caller's filesystem.
+
+        minItems: 1
+
+      - `paths: optional array of string`
+
+        File paths on the browser executor's filesystem.
+
+        minItems: 1
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "file_upload"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_scroll_to_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Scroll an element into view.
+
+      - `target: object`
+
+        An element on the page, identified by a reference from a prior `read_page` or
+        `find` result. References are scoped to the tab that produced them and become
+        stale after navigation or a major re-render.
+
+        - `type: "ref"`
+
+        - `ref: string`
+
+          An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "scroll_to"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_screenshot_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Capture the current browser viewport.
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "screenshot"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_zoom_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Return a cropped screenshot of the given viewport region, scaled up for closer
+      inspection — useful for small icons, buttons, or text. Coordinates are in the
+      same viewport-pixel space as a full screenshot.
+
+      - `region: array of number`
+
+        [x0, y0, x1, y1] in viewport pixels.
+
+        minItems: 4, maxItems: 4
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "zoom"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_left_click_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Left-click at a viewport coordinate or on an element by reference.
+
+      - `target: BrowserCoordinateTarget or BrowserRefTarget`
+
+        Where to act: either a viewport coordinate or an element reference.
+
+        - `browser_coordinate_target: object`
+
+          A point in the browser viewport, in viewport pixels (the same frame as a
+          full-viewport screenshot).
+
+          - `type: "coordinate"`
+
+          - `x: number`
+
+            Pixels from the left edge of the viewport.
+
+            minimum: 0
+
+          - `y: number`
+
+            Pixels from the top edge of the viewport.
+
+            minimum: 0
+
+        - `browser_ref_target: object`
+
+          An element on the page, identified by a reference from a prior `read_page` or
+          `find` result. References are scoped to the tab that produced them and become
+          stale after navigation or a major re-render.
+
+          - `type: "ref"`
+
+          - `ref: string`
+
+            An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+      - `modifiers: optional string`
+
+        Optional modifier key chord to hold for the duration of this action (e.g. "shift", "ctrl+shift", "cmd+alt").
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "left_click"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_right_click_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Right-click at a viewport coordinate or on an element by reference.
+
+      - `target: BrowserCoordinateTarget or BrowserRefTarget`
+
+        Where to act: either a viewport coordinate or an element reference.
+
+        - `browser_coordinate_target: object`
+
+          A point in the browser viewport, in viewport pixels (the same frame as a
+          full-viewport screenshot).
+
+        - `browser_ref_target: object`
+
+          An element on the page, identified by a reference from a prior `read_page` or
+          `find` result. References are scoped to the tab that produced them and become
+          stale after navigation or a major re-render.
+
+      - `modifiers: optional string`
+
+        Optional modifier key chord to hold for the duration of this action (e.g. "shift", "ctrl+shift", "cmd+alt").
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "right_click"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_middle_click_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Middle-click at a viewport coordinate or on an element by reference.
+
+      - `target: BrowserCoordinateTarget or BrowserRefTarget`
+
+        Where to act: either a viewport coordinate or an element reference.
+
+        - `browser_coordinate_target: object`
+
+          A point in the browser viewport, in viewport pixels (the same frame as a
+          full-viewport screenshot).
+
+        - `browser_ref_target: object`
+
+          An element on the page, identified by a reference from a prior `read_page` or
+          `find` result. References are scoped to the tab that produced them and become
+          stale after navigation or a major re-render.
+
+      - `modifiers: optional string`
+
+        Optional modifier key chord to hold for the duration of this action (e.g. "shift", "ctrl+shift", "cmd+alt").
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "middle_click"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_double_click_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Double left-click at a viewport coordinate or on an element by reference.
+
+      - `target: BrowserCoordinateTarget or BrowserRefTarget`
+
+        Where to act: either a viewport coordinate or an element reference.
+
+        - `browser_coordinate_target: object`
+
+          A point in the browser viewport, in viewport pixels (the same frame as a
+          full-viewport screenshot).
+
+        - `browser_ref_target: object`
+
+          An element on the page, identified by a reference from a prior `read_page` or
+          `find` result. References are scoped to the tab that produced them and become
+          stale after navigation or a major re-render.
+
+      - `modifiers: optional string`
+
+        Optional modifier key chord to hold for the duration of this action (e.g. "shift", "ctrl+shift", "cmd+alt").
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "double_click"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_triple_click_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Triple left-click at a viewport coordinate or on an element by reference
+      (typically selects a line or paragraph).
+
+      - `target: BrowserCoordinateTarget or BrowserRefTarget`
+
+        Where to act: either a viewport coordinate or an element reference.
+
+        - `browser_coordinate_target: object`
+
+          A point in the browser viewport, in viewport pixels (the same frame as a
+          full-viewport screenshot).
+
+        - `browser_ref_target: object`
+
+          An element on the page, identified by a reference from a prior `read_page` or
+          `find` result. References are scoped to the tab that produced them and become
+          stale after navigation or a major re-render.
+
+      - `modifiers: optional string`
+
+        Optional modifier key chord to hold for the duration of this action (e.g. "shift", "ctrl+shift", "cmd+alt").
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "triple_click"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_hover_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Move the cursor to a coordinate or element without clicking.
+
+      - `target: BrowserCoordinateTarget or BrowserRefTarget`
+
+        Where to act: either a viewport coordinate or an element reference.
+
+        - `browser_coordinate_target: object`
+
+          A point in the browser viewport, in viewport pixels (the same frame as a
+          full-viewport screenshot).
+
+        - `browser_ref_target: object`
+
+          An element on the page, identified by a reference from a prior `read_page` or
+          `find` result. References are scoped to the tab that produced them and become
+          stale after navigation or a major re-render.
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "hover"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_left_click_drag_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Press at `from`, drag to `target`, release. Both must be coordinate targets.
+
+      - `from: object`
+
+        A point in the browser viewport, in viewport pixels (the same frame as a
+        full-viewport screenshot).
+
+        - `type: "coordinate"`
+
+        - `x: number`
+
+          Pixels from the left edge of the viewport.
+
+          minimum: 0
+
+        - `y: number`
+
+          Pixels from the top edge of the viewport.
+
+          minimum: 0
+
+      - `target: object`
+
+        A point in the browser viewport, in viewport pixels (the same frame as a
+        full-viewport screenshot).
+
+        - `type: "coordinate"`
+
+        - `x: number`
+
+          Pixels from the left edge of the viewport.
+
+          minimum: 0
+
+        - `y: number`
+
+          Pixels from the top edge of the viewport.
+
+          minimum: 0
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "left_click_drag"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_left_mouse_down_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Press and hold the left mouse button at a viewport coordinate. Pair with
+      left_mouse_up to perform a custom drag.
+
+      - `target: object`
+
+        A point in the browser viewport, in viewport pixels (the same frame as a
+        full-viewport screenshot).
+
+        - `type: "coordinate"`
+
+        - `x: number`
+
+          Pixels from the left edge of the viewport.
+
+          minimum: 0
+
+        - `y: number`
+
+          Pixels from the top edge of the viewport.
+
+          minimum: 0
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "left_mouse_down"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_left_mouse_up_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Release the left mouse button at a viewport coordinate.
+
+      - `target: object`
+
+        A point in the browser viewport, in viewport pixels (the same frame as a
+        full-viewport screenshot).
+
+        - `type: "coordinate"`
+
+        - `x: number`
+
+          Pixels from the left edge of the viewport.
+
+          minimum: 0
+
+        - `y: number`
+
+          Pixels from the top edge of the viewport.
+
+          minimum: 0
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "left_mouse_up"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_mouse_move_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Move the pointer to a viewport coordinate without clicking.
+
+      - `target: object`
+
+        A point in the browser viewport, in viewport pixels (the same frame as a
+        full-viewport screenshot).
+
+        - `type: "coordinate"`
+
+        - `x: number`
+
+          Pixels from the left edge of the viewport.
+
+          minimum: 0
+
+        - `y: number`
+
+          Pixels from the top edge of the viewport.
+
+          minimum: 0
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "mouse_move"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_scroll_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Scroll at a viewport position. `target` must be a coordinate target.
+
+      - `scroll_direction: "up" or "down" or "left" or "right"`
+
+        - `"up"`
+
+        - `"down"`
+
+        - `"left"`
+
+        - `"right"`
+
+      - `target: object`
+
+        A point in the browser viewport, in viewport pixels (the same frame as a
+        full-viewport screenshot).
+
+        - `type: "coordinate"`
+
+        - `x: number`
+
+          Pixels from the left edge of the viewport.
+
+          minimum: 0
+
+        - `y: number`
+
+          Pixels from the top edge of the viewport.
+
+          minimum: 0
+
+      - `scroll_amount: optional number`
+
+        Scroll-wheel notches (1–10). Default 3.
+
+        minimum: 1, maximum: 10
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "scroll"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_type_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Type a literal string at the current focus.
+
+      - `text: string`
+
+        The text to type.
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "type"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_key_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Press a key or key chord. Use "+" to combine modifiers with a key (e.g. "ctrl+a",
+      "cmd+shift+p") and space to sequence presses (e.g. "Backspace Backspace Delete").
+      Common names like "Return", "Tab", "Escape", "BackSpace" are supported.
+
+      - `text: string`
+
+        The key, chord, or space-separated sequence to press.
+
+      - `repeat: optional number`
+
+        Number of times to repeat. Default 1.
+
+        minimum: 1, maximum: 100
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "key"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_hold_key_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Hold a key or key chord down for a duration, then release it. Uses the same key
+      names and "+" chord syntax as the key action.
+
+      - `duration: number`
+
+        Seconds to hold the key down (maximum 30).
+
+        minimum: 0, maximum: 30
+
+      - `text: string`
+
+        The key or chord to hold.
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "hold_key"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_wait_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Pause for the given duration.
+
+      - `duration: number`
+
+        Seconds to wait (maximum 30).
+
+        minimum: 0, maximum: 30
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "wait"`
+
+    - `toolset_name: "browser"`
+
+  - `browser_javascript_exec_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Execute JavaScript in the page context and return the value of the last
+      expression. The code runs with access to the DOM, `window`, and page variables.
+      Write the expression you want evaluated — do NOT use `return`.
+
+      - `text: string`
+
+        JavaScript to execute in the page context.
+
+      - `tab_id: optional string`
+
+        Tab to act on. Defaults to the active tab when omitted.
+
+    - `name: "javascript_exec"`
+
+    - `toolset_name: "browser"`
+
+### Browser Toolset 20260801
+
+- `browser_toolset_20260801: object`
+
+  The browser toolset: a single `tools[]` entry (carrying no
+  `name`) that declares the browser tool family. The model is served
+  the family's tool with any members disabled via `configs` removed
+  from its schema.
+
+  - `type: "browser_toolset_20260801"`
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `configs: optional object`
+
+    Sparse per-member overrides, keyed by member name. Absent, null, and {} are equivalent; a member's defaults apply wherever its key is absent.
+
+    - `type: optional object`
+
+      `type`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `close_tab: optional object`
+
+      `close_tab`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `double_click: optional object`
+
+      `double_click`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `file_upload: optional object`
+
+      `file_upload`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `find: optional object`
+
+      `find`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `form_input: optional object`
+
+      `form_input`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `get_page_text: optional object`
+
+      `get_page_text`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `hold_key: optional object`
+
+      `hold_key`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `hover: optional object`
+
+      `hover`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `javascript_exec: optional object`
+
+      `javascript_exec`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `key: optional object`
+
+      `key`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `left_click: optional object`
+
+      `left_click`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `left_click_drag: optional object`
+
+      `left_click_drag`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `left_mouse_down: optional object`
+
+      `left_mouse_down`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `left_mouse_up: optional object`
+
+      `left_mouse_up`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `list_tabs: optional object`
+
+      `list_tabs`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `middle_click: optional object`
+
+      `middle_click`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `mouse_move: optional object`
+
+      `mouse_move`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `navigate: optional object`
+
+      `navigate`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `new_tab: optional object`
+
+      `new_tab`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `read_console: optional object`
+
+      `read_console`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `read_network: optional object`
+
+      `read_network`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `read_page: optional object`
+
+      `read_page`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `right_click: optional object`
+
+      `right_click`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `screenshot: optional object`
+
+      `screenshot`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `scroll: optional object`
+
+      `scroll`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `scroll_to: optional object`
+
+      `scroll_to`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `switch_tab: optional object`
+
+      `switch_tab`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `triple_click: optional object`
+
+      `triple_click`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `wait: optional object`
+
+      `wait`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `zoom: optional object`
+
+      `zoom`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Toolset Configs
+
+- `browser_toolset_configs: object`
+
+  Per-member configuration for `browser_toolset_20260801`: one
+  optional field per member tool, keyed by the member name — the same
+  name the member's `tool_use` blocks carry. Every member is an
+  accepted key, and a member's defaults apply wherever its key is
+  absent. Unknown keys are rejected: the field set is this toolset
+  version's complete member set.
+
+  - `type: optional object`
+
+    `type`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `close_tab: optional object`
+
+    `close_tab`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `double_click: optional object`
+
+    `double_click`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `file_upload: optional object`
+
+    `file_upload`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `find: optional object`
+
+    `find`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `form_input: optional object`
+
+    `form_input`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `get_page_text: optional object`
+
+    `get_page_text`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `hold_key: optional object`
+
+    `hold_key`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `hover: optional object`
+
+    `hover`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `javascript_exec: optional object`
+
+    `javascript_exec`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `key: optional object`
+
+    `key`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `left_click: optional object`
+
+    `left_click`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `left_click_drag: optional object`
+
+    `left_click_drag`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `left_mouse_down: optional object`
+
+    `left_mouse_down`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `left_mouse_up: optional object`
+
+    `left_mouse_up`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `list_tabs: optional object`
+
+    `list_tabs`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `middle_click: optional object`
+
+    `middle_click`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `mouse_move: optional object`
+
+    `mouse_move`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `navigate: optional object`
+
+    `navigate`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `new_tab: optional object`
+
+    `new_tab`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `read_console: optional object`
+
+    `read_console`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `read_network: optional object`
+
+    `read_network`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `read_page: optional object`
+
+    `read_page`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `right_click: optional object`
+
+    `right_click`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `screenshot: optional object`
+
+    `screenshot`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `scroll: optional object`
+
+    `scroll`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `scroll_to: optional object`
+
+    `scroll_to`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `switch_tab: optional object`
+
+    `switch_tab`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `triple_click: optional object`
+
+    `triple_click`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `wait: optional object`
+
+    `wait`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `zoom: optional object`
+
+    `zoom`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Triple Click Config
+
+- `browser_triple_click_config: object`
+
+  `triple_click`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Triple Click Input
+
+- `browser_triple_click_input: object`
+
+  Triple left-click at a viewport coordinate or on an element by reference
+  (typically selects a line or paragraph).
+
+  - `target: BrowserCoordinateTarget or BrowserRefTarget`
+
+    Where to act: either a viewport coordinate or an element reference.
+
+    - `browser_coordinate_target: object`
+
+      A point in the browser viewport, in viewport pixels (the same frame as a
+      full-viewport screenshot).
+
+      - `type: "coordinate"`
+
+      - `x: number`
+
+        Pixels from the left edge of the viewport.
+
+        minimum: 0
+
+      - `y: number`
+
+        Pixels from the top edge of the viewport.
+
+        minimum: 0
+
+    - `browser_ref_target: object`
+
+      An element on the page, identified by a reference from a prior `read_page` or
+      `find` result. References are scoped to the tab that produced them and become
+      stale after navigation or a major re-render.
+
+      - `type: "ref"`
+
+      - `ref: string`
+
+        An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+  - `modifiers: optional string`
+
+    Optional modifier key chord to hold for the duration of this action (e.g. "shift", "ctrl+shift", "cmd+alt").
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Triple Click Tool Use Block
+
+- `browser_triple_click_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Triple left-click at a viewport coordinate or on an element by reference
+    (typically selects a line or paragraph).
+
+    - `target: BrowserCoordinateTarget or BrowserRefTarget`
+
+      Where to act: either a viewport coordinate or an element reference.
+
+      - `browser_coordinate_target: object`
+
+        A point in the browser viewport, in viewport pixels (the same frame as a
+        full-viewport screenshot).
+
+        - `type: "coordinate"`
+
+        - `x: number`
+
+          Pixels from the left edge of the viewport.
+
+          minimum: 0
+
+        - `y: number`
+
+          Pixels from the top edge of the viewport.
+
+          minimum: 0
+
+      - `browser_ref_target: object`
+
+        An element on the page, identified by a reference from a prior `read_page` or
+        `find` result. References are scoped to the tab that produced them and become
+        stale after navigation or a major re-render.
+
+        - `type: "ref"`
+
+        - `ref: string`
+
+          An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+    - `modifiers: optional string`
+
+      Optional modifier key chord to hold for the duration of this action (e.g. "shift", "ctrl+shift", "cmd+alt").
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "triple_click"`
+
+  - `toolset_name: "browser"`
+
+### Browser Type Config
+
+- `browser_type_config: object`
+
+  `type`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Type Input
+
+- `browser_type_input: object`
+
+  Type a literal string at the current focus.
+
+  - `text: string`
+
+    The text to type.
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Type Tool Use Block
+
+- `browser_type_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Type a literal string at the current focus.
+
+    - `text: string`
+
+      The text to type.
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "type"`
+
+  - `toolset_name: "browser"`
+
+### Browser Wait Config
+
+- `browser_wait_config: object`
+
+  `wait`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Wait Input
+
+- `browser_wait_input: object`
+
+  Pause for the given duration.
+
+  - `duration: number`
+
+    Seconds to wait (maximum 30).
+
+    minimum: 0, maximum: 30
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Wait Tool Use Block
+
+- `browser_wait_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Pause for the given duration.
+
+    - `duration: number`
+
+      Seconds to wait (maximum 30).
+
+      minimum: 0, maximum: 30
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "wait"`
+
+  - `toolset_name: "browser"`
+
+### Browser Zoom Config
+
+- `browser_zoom_config: object`
+
+  `zoom`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Browser Zoom Input
+
+- `browser_zoom_input: object`
+
+  Return a cropped screenshot of the given viewport region, scaled up for closer
+  inspection — useful for small icons, buttons, or text. Coordinates are in the
+  same viewport-pixel space as a full screenshot.
+
+  - `region: array of number`
+
+    [x0, y0, x1, y1] in viewport pixels.
+
+    minItems: 4, maxItems: 4
+
+  - `tab_id: optional string`
+
+    Tab to act on. Defaults to the active tab when omitted.
+
+### Browser Zoom Tool Use Block
+
+- `browser_zoom_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Return a cropped screenshot of the given viewport region, scaled up for closer
+    inspection — useful for small icons, buttons, or text. Coordinates are in the
+    same viewport-pixel space as a full screenshot.
+
+    - `region: array of number`
+
+      [x0, y0, x1, y1] in viewport pixels.
+
+      minItems: 4, maxItems: 4
+
+    - `tab_id: optional string`
+
+      Tab to act on. Defaults to the active tab when omitted.
+
+  - `name: "zoom"`
+
+  - `toolset_name: "browser"`
+
+### Cache Control Ephemeral
+
+- `cache_control_ephemeral: object`
+
+  - `type: "ephemeral"`
+
+  - `ttl: optional "5m" or "1h"`
+
+    The time-to-live for the cache control breakpoint.
+
+    This may be one the following values:
+
+    - `5m`: 5 minutes
+    - `1h`: 1 hour
+
+    Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `"5m"`
+
+    - `"1h"`
+
+### Cache Creation
+
+- `cache_creation: object`
+
+  - `ephemeral_1h_input_tokens: number`
+
+    The number of input tokens used to create the 1 hour cache entry.
+
+    minimum: 0
+
+  - `ephemeral_5m_input_tokens: number`
+
+    The number of input tokens used to create the 5 minute cache entry.
+
+    minimum: 0
+
+### Cache Miss Messages Changed
+
+- `cache_miss_messages_changed: object`
+
+  - `type: "messages_changed"`
+
+  - `cache_missed_input_tokens: number`
+
+    Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+### Cache Miss Model Changed
+
+- `cache_miss_model_changed: object`
+
+  - `type: "model_changed"`
+
+  - `cache_missed_input_tokens: number`
+
+    Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+### Cache Miss Previous Message Not Found
+
+- `cache_miss_previous_message_not_found: object`
+
+  - `type: "previous_message_not_found"`
+
+### Cache Miss Reason
+
+- `cache_miss_reason: CacheMissModelChanged or CacheMissSystemChanged or CacheMissToolsChanged or 3 more`
+
+  - `cache_miss_model_changed: object`
+
+    - `type: "model_changed"`
+
+    - `cache_missed_input_tokens: number`
+
+      Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+  - `cache_miss_system_changed: object`
+
+    - `type: "system_changed"`
+
+    - `cache_missed_input_tokens: number`
+
+      Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+  - `cache_miss_tools_changed: object`
+
+    - `type: "tools_changed"`
+
+    - `cache_missed_input_tokens: number`
+
+      Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+  - `cache_miss_messages_changed: object`
+
+    - `type: "messages_changed"`
+
+    - `cache_missed_input_tokens: number`
+
+      Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+  - `cache_miss_previous_message_not_found: object`
+
+    - `type: "previous_message_not_found"`
+
+  - `cache_miss_unavailable: object`
+
+    - `type: "unavailable"`
+
+### Cache Miss System Changed
+
+- `cache_miss_system_changed: object`
+
+  - `type: "system_changed"`
+
+  - `cache_missed_input_tokens: number`
+
+    Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+### Cache Miss Tools Changed
+
+- `cache_miss_tools_changed: object`
+
+  - `type: "tools_changed"`
+
+  - `cache_missed_input_tokens: number`
+
+    Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+### Cache Miss Unavailable
+
+- `cache_miss_unavailable: object`
+
+  - `type: "unavailable"`
+
+### Citation Char Location
+
+- `citation_char_location: object`
+
+  - `type: "char_location"`
+
+  - `cited_text: string`
+
+  - `document_index: number`
+
+    minimum: 0
+
+  - `document_title: string`
+
+  - `end_char_index: number`
+
+  - `file_id: string`
+
+  - `start_char_index: number`
+
+    minimum: 0
+
+### Citation Char Location Param
+
+- `citation_char_location_param: object`
+
+  - `type: "char_location"`
+
+  - `cited_text: string`
+
+  - `document_index: number`
+
+    minimum: 0
+
+  - `document_title: string`
+
+    minLength: 1, maxLength: 500
+
+  - `end_char_index: number`
+
+  - `start_char_index: number`
+
+    minimum: 0
+
+### Citation Content Block Location
+
+- `citation_content_block_location: object`
+
+  - `type: "content_block_location"`
+
+  - `cited_text: string`
+
+    The full text of the cited block range, concatenated.
+
+    Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+  - `document_index: number`
+
+    minimum: 0
+
+  - `document_title: string`
+
+  - `end_block_index: number`
+
+    Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+    Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+  - `file_id: string`
+
+  - `start_block_index: number`
+
+    0-based index of the first cited block in the source's `content` array.
+
+    minimum: 0
+
+### Citation Content Block Location Param
+
+- `citation_content_block_location_param: object`
+
+  - `type: "content_block_location"`
+
+  - `cited_text: string`
+
+    The full text of the cited block range, concatenated.
+
+    Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+  - `document_index: number`
+
+    minimum: 0
+
+  - `document_title: string`
+
+    minLength: 1, maxLength: 500
+
+  - `end_block_index: number`
+
+    Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+    Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+  - `start_block_index: number`
+
+    0-based index of the first cited block in the source's `content` array.
+
+    minimum: 0
+
+### Citation Page Location
+
+- `citation_page_location: object`
+
+  - `type: "page_location"`
+
+  - `cited_text: string`
+
+  - `document_index: number`
+
+    minimum: 0
+
+  - `document_title: string`
+
+  - `end_page_number: number`
+
+  - `file_id: string`
+
+  - `start_page_number: number`
+
+    minimum: 1
+
+### Citation Page Location Param
+
+- `citation_page_location_param: object`
+
+  - `type: "page_location"`
+
+  - `cited_text: string`
+
+  - `document_index: number`
+
+    minimum: 0
+
+  - `document_title: string`
+
+    minLength: 1, maxLength: 500
+
+  - `end_page_number: number`
+
+  - `start_page_number: number`
+
+    minimum: 1
+
+### Citation Search Result Location Param
+
+- `citation_search_result_location_param: object`
+
+  - `type: "search_result_location"`
+
+  - `cited_text: string`
+
+    The full text of the cited block range, concatenated.
+
+    Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+  - `end_block_index: number`
+
+    Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+    Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+  - `search_result_index: number`
+
+    0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+    Counted separately from `document_index`; server-side web search results are not included in this count.
+
+    minimum: 0
+
+  - `source: string`
+
+  - `start_block_index: number`
+
+    0-based index of the first cited block in the source's `content` array.
+
+    minimum: 0
+
+  - `title: string`
+
+### Citation Web Search Result Location Param
+
+- `citation_web_search_result_location_param: object`
+
+  - `type: "web_search_result_location"`
+
+  - `cited_text: string`
+
+  - `encrypted_index: string`
+
+  - `title: string`
+
+    minLength: 1, maxLength: 512
+
+  - `url: string`
+
+    minLength: 1
+
+### Citations Config
+
+- `citations_config: object`
+
+  - `enabled: boolean`
+
+### Citations Config Param
+
+- `citations_config_param: object`
+
+  - `enabled: optional boolean`
+
+### Citations Delta
+
+- `citations_delta: object`
+
+  - `type: "citations_delta"`
+
+  - `citation: CitationCharLocation or CitationPageLocation or CitationContentBlockLocation or 2 more`
+
+    - `citation_char_location: object`
+
+      - `type: "char_location"`
+
+      - `cited_text: string`
+
+      - `document_index: number`
+
+        minimum: 0
+
+      - `document_title: string`
+
+      - `end_char_index: number`
+
+      - `file_id: string`
+
+      - `start_char_index: number`
+
+        minimum: 0
+
+    - `citation_page_location: object`
+
+      - `type: "page_location"`
+
+      - `cited_text: string`
+
+      - `document_index: number`
+
+        minimum: 0
+
+      - `document_title: string`
+
+      - `end_page_number: number`
+
+      - `file_id: string`
+
+      - `start_page_number: number`
+
+        minimum: 1
+
+    - `citation_content_block_location: object`
+
+      - `type: "content_block_location"`
+
+      - `cited_text: string`
+
+        The full text of the cited block range, concatenated.
+
+        Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+      - `document_index: number`
+
+        minimum: 0
+
+      - `document_title: string`
+
+      - `end_block_index: number`
+
+        Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+        Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+      - `file_id: string`
+
+      - `start_block_index: number`
+
+        0-based index of the first cited block in the source's `content` array.
+
+        minimum: 0
+
+    - `citations_web_search_result_location: object`
+
+      - `type: "web_search_result_location"`
+
+      - `cited_text: string`
+
+      - `encrypted_index: string`
+
+      - `title: string`
+
+        maxLength: 512
+
+      - `url: string`
+
+    - `citations_search_result_location: object`
+
+      - `type: "search_result_location"`
+
+      - `cited_text: string`
+
+        The full text of the cited block range, concatenated.
+
+        Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+      - `end_block_index: number`
+
+        Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+        Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+      - `search_result_index: number`
+
+        0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+        Counted separately from `document_index`; server-side web search results are not included in this count.
+
+        minimum: 0
+
+      - `source: string`
+
+      - `start_block_index: number`
+
+        0-based index of the first cited block in the source's `content` array.
+
+        minimum: 0
+
+      - `title: string`
+
+### Citations Search Result Location
+
+- `citations_search_result_location: object`
+
+  - `type: "search_result_location"`
+
+  - `cited_text: string`
+
+    The full text of the cited block range, concatenated.
+
+    Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+  - `end_block_index: number`
+
+    Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+    Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+  - `search_result_index: number`
+
+    0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+    Counted separately from `document_index`; server-side web search results are not included in this count.
+
+    minimum: 0
+
+  - `source: string`
+
+  - `start_block_index: number`
+
+    0-based index of the first cited block in the source's `content` array.
+
+    minimum: 0
+
+  - `title: string`
+
+### Citations Web Search Result Location
+
+- `citations_web_search_result_location: object`
+
+  - `type: "web_search_result_location"`
+
+  - `cited_text: string`
+
+  - `encrypted_index: string`
+
+  - `title: string`
+
+    maxLength: 512
+
+  - `url: string`
+
+### Code Execution Output Block
+
+- `code_execution_output_block: object`
+
+  - `type: "code_execution_output"`
+
+  - `file_id: string`
+
+### Code Execution Output Block Param
+
+- `code_execution_output_block_param: object`
+
+  - `type: "code_execution_output"`
+
+  - `file_id: string`
+
+### Code Execution Result Block
+
+- `code_execution_result_block: object`
+
+  - `type: "code_execution_result"`
+
+  - `content: array of CodeExecutionOutputBlock`
+
+    - `type: "code_execution_output"`
+
+    - `file_id: string`
+
+  - `return_code: number`
+
+  - `stderr: string`
+
+  - `stdout: string`
+
+### Code Execution Result Block Param
+
+- `code_execution_result_block_param: object`
+
+  - `type: "code_execution_result"`
+
+  - `content: array of CodeExecutionOutputBlockParam`
+
+    - `type: "code_execution_output"`
+
+    - `file_id: string`
+
+  - `return_code: number`
+
+  - `stderr: string`
+
+  - `stdout: string`
+
+### Code Execution Tool 20250522
+
+- `code_execution_tool_20250522: object`
+
+  - `type: "code_execution_20250522"`
+
+  - `name: "code_execution"`
+
+    Name of the tool.
+
+    This is how the tool will be called by the model and in `tool_use` blocks.
+
+  - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+    - `"direct"`
+
+    - `"code_execution_20250825"`
+
+    - `"code_execution_20260120"`
+
+    - `"code_execution_20260521"`
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `defer_loading: optional boolean`
+
+    If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+  - `strict: optional boolean`
+
+    When true, guarantees schema validation on tool names and inputs
+
+### Code Execution Tool 20250825
+
+- `code_execution_tool_20250825: object`
+
+  - `type: "code_execution_20250825"`
+
+  - `name: "code_execution"`
+
+    Name of the tool.
+
+    This is how the tool will be called by the model and in `tool_use` blocks.
+
+  - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+    - `"direct"`
+
+    - `"code_execution_20250825"`
+
+    - `"code_execution_20260120"`
+
+    - `"code_execution_20260521"`
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `defer_loading: optional boolean`
+
+    If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+  - `strict: optional boolean`
+
+    When true, guarantees schema validation on tool names and inputs
+
+### Code Execution Tool 20260120
+
+- `code_execution_tool_20260120: object`
+
+  Code execution tool with REPL state persistence (daemon mode + gVisor checkpoint).
+
+  - `type: "code_execution_20260120"`
+
+  - `name: "code_execution"`
+
+    Name of the tool.
+
+    This is how the tool will be called by the model and in `tool_use` blocks.
+
+  - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+    - `"direct"`
+
+    - `"code_execution_20250825"`
+
+    - `"code_execution_20260120"`
+
+    - `"code_execution_20260521"`
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `defer_loading: optional boolean`
+
+    If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+  - `strict: optional boolean`
+
+    When true, guarantees schema validation on tool names and inputs
+
+### Code Execution Tool 20260521
+
+- `code_execution_tool_20260521: object`
+
+  Code execution tool with REPL state persistence.
+
+  - `type: "code_execution_20260521"`
+
+  - `name: "code_execution"`
+
+    Name of the tool.
+
+    This is how the tool will be called by the model and in `tool_use` blocks.
+
+  - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+    - `"direct"`
+
+    - `"code_execution_20250825"`
+
+    - `"code_execution_20260120"`
+
+    - `"code_execution_20260521"`
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `defer_loading: optional boolean`
+
+    If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+  - `strict: optional boolean`
+
+    When true, guarantees schema validation on tool names and inputs
+
+### Code Execution Tool Result Block
+
+- `code_execution_tool_result_block: object`
+
+  - `type: "code_execution_tool_result"`
+
+  - `content: CodeExecutionToolResultError or CodeExecutionResultBlock or EncryptedCodeExecutionResultBlock`
+
+    - `code_execution_tool_result_error: object`
+
+      - `type: "code_execution_tool_result_error"`
+
+      - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+        - `"invalid_tool_input"`
+
+        - `"unavailable"`
+
+        - `"too_many_requests"`
+
+        - `"execution_time_exceeded"`
+
+    - `code_execution_result_block: object`
+
+      - `type: "code_execution_result"`
+
+      - `content: array of CodeExecutionOutputBlock`
+
+        - `type: "code_execution_output"`
+
+        - `file_id: string`
+
+      - `return_code: number`
+
+      - `stderr: string`
+
+      - `stdout: string`
+
+    - `encrypted_code_execution_result_block: object`
+
+      Code execution result with encrypted stdout for PFC + web_search results.
+
+      - `type: "encrypted_code_execution_result"`
+
+      - `content: array of CodeExecutionOutputBlock`
+
+        - `type: "code_execution_output"`
+
+        - `file_id: string`
+
+      - `encrypted_stdout: string`
+
+      - `return_code: number`
+
+      - `stderr: string`
+
+  - `tool_use_id: string`
+
+    pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+### Code Execution Tool Result Block Content
+
+- `code_execution_tool_result_block_content: CodeExecutionToolResultError or CodeExecutionResultBlock or EncryptedCodeExecutionResultBlock`
+
+  - `code_execution_tool_result_error: object`
+
+    - `type: "code_execution_tool_result_error"`
+
+    - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+      - `"invalid_tool_input"`
+
+      - `"unavailable"`
+
+      - `"too_many_requests"`
+
+      - `"execution_time_exceeded"`
+
+  - `code_execution_result_block: object`
+
+    - `type: "code_execution_result"`
+
+    - `content: array of CodeExecutionOutputBlock`
+
+      - `type: "code_execution_output"`
+
+      - `file_id: string`
+
+    - `return_code: number`
+
+    - `stderr: string`
+
+    - `stdout: string`
+
+  - `encrypted_code_execution_result_block: object`
+
+    Code execution result with encrypted stdout for PFC + web_search results.
+
+    - `type: "encrypted_code_execution_result"`
+
+    - `content: array of CodeExecutionOutputBlock`
+
+      - `type: "code_execution_output"`
+
+      - `file_id: string`
+
+    - `encrypted_stdout: string`
+
+    - `return_code: number`
+
+    - `stderr: string`
+
+### Code Execution Tool Result Block Param
+
+- `code_execution_tool_result_block_param: object`
+
+  - `type: "code_execution_tool_result"`
+
+  - `content: CodeExecutionToolResultErrorParam or CodeExecutionResultBlockParam or EncryptedCodeExecutionResultBlockParam`
+
+    - `code_execution_tool_result_error_param: object`
+
+      - `type: "code_execution_tool_result_error"`
+
+      - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+        - `"invalid_tool_input"`
+
+        - `"unavailable"`
+
+        - `"too_many_requests"`
+
+        - `"execution_time_exceeded"`
+
+    - `code_execution_result_block_param: object`
+
+      - `type: "code_execution_result"`
+
+      - `content: array of CodeExecutionOutputBlockParam`
+
+        - `type: "code_execution_output"`
+
+        - `file_id: string`
+
+      - `return_code: number`
+
+      - `stderr: string`
+
+      - `stdout: string`
+
+    - `encrypted_code_execution_result_block_param: object`
+
+      Code execution result with encrypted stdout for PFC + web_search results.
+
+      - `type: "encrypted_code_execution_result"`
+
+      - `content: array of CodeExecutionOutputBlockParam`
+
+        - `type: "code_execution_output"`
+
+        - `file_id: string`
+
+      - `encrypted_stdout: string`
+
+      - `return_code: number`
+
+      - `stderr: string`
+
+  - `tool_use_id: string`
+
+    pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+### Code Execution Tool Result Block Param Content
+
+- `code_execution_tool_result_block_param_content: CodeExecutionToolResultErrorParam or CodeExecutionResultBlockParam or EncryptedCodeExecutionResultBlockParam`
+
+  - `code_execution_tool_result_error_param: object`
+
+    - `type: "code_execution_tool_result_error"`
+
+    - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+      - `"invalid_tool_input"`
+
+      - `"unavailable"`
+
+      - `"too_many_requests"`
+
+      - `"execution_time_exceeded"`
+
+  - `code_execution_result_block_param: object`
+
+    - `type: "code_execution_result"`
+
+    - `content: array of CodeExecutionOutputBlockParam`
+
+      - `type: "code_execution_output"`
+
+      - `file_id: string`
+
+    - `return_code: number`
+
+    - `stderr: string`
+
+    - `stdout: string`
+
+  - `encrypted_code_execution_result_block_param: object`
+
+    Code execution result with encrypted stdout for PFC + web_search results.
+
+    - `type: "encrypted_code_execution_result"`
+
+    - `content: array of CodeExecutionOutputBlockParam`
+
+      - `type: "code_execution_output"`
+
+      - `file_id: string`
+
+    - `encrypted_stdout: string`
+
+    - `return_code: number`
+
+    - `stderr: string`
+
+### Code Execution Tool Result Error
+
+- `code_execution_tool_result_error: object`
+
+  - `type: "code_execution_tool_result_error"`
+
+  - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+    - `"invalid_tool_input"`
+
+    - `"unavailable"`
+
+    - `"too_many_requests"`
+
+    - `"execution_time_exceeded"`
+
+### Code Execution Tool Result Error Code
+
+- `code_execution_tool_result_error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+  - `"invalid_tool_input"`
+
+  - `"unavailable"`
+
+  - `"too_many_requests"`
+
+  - `"execution_time_exceeded"`
+
+### Code Execution Tool Result Error Param
+
+- `code_execution_tool_result_error_param: object`
+
+  - `type: "code_execution_tool_result_error"`
+
+  - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+    - `"invalid_tool_input"`
+
+    - `"unavailable"`
+
+    - `"too_many_requests"`
+
+    - `"execution_time_exceeded"`
+
+### Computer Cursor Position Config
+
+- `computer_cursor_position_config: object`
+
+  `cursor_position`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Computer Cursor Position Input
+
+- `computer_cursor_position_input: object`
+
+  Get the current (x, y) pixel coordinate of the cursor.
+
+### Computer Cursor Position Tool Use Block
+
+- `computer_cursor_position_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Get the current (x, y) pixel coordinate of the cursor.
+
+  - `name: "cursor_position"`
+
+  - `toolset_name: "computer"`
+
+### Computer Double Click Config
+
+- `computer_double_click_config: object`
+
+  `double_click`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Computer Double Click Input
+
+- `computer_double_click_input: object`
+
+  Double-click the left mouse button at the specified (x, y) pixel coordinate, or
+  the current cursor position if `coordinate` is omitted.
+
+  - `coordinate: optional array of number`
+
+    (x, y): x pixels from the left edge, y pixels from the top edge.
+
+    minItems: 2, maxItems: 2
+
+  - `text: optional string`
+
+    Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+### Computer Double Click Tool Use Block
+
+- `computer_double_click_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Double-click the left mouse button at the specified (x, y) pixel coordinate, or
+    the current cursor position if `coordinate` is omitted.
+
+    - `coordinate: optional array of number`
+
+      (x, y): x pixels from the left edge, y pixels from the top edge.
+
+      minItems: 2, maxItems: 2
+
+    - `text: optional string`
+
+      Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+  - `name: "double_click"`
+
+  - `toolset_name: "computer"`
+
+### Computer Hold Key Config
+
+- `computer_hold_key_config: object`
+
+  `hold_key`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Computer Hold Key Input
+
+- `computer_hold_key_input: object`
+
+  Hold down a key or key-combination for a specified duration. Uses the same key
+  syntax as `key`.
+
+  - `duration: number`
+
+    Duration to hold the key, in seconds.
+
+    maximum: 300
+
+  - `text: string`
+
+    The key or key-combination to hold.
+
+### Computer Hold Key Tool Use Block
+
+- `computer_hold_key_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Hold down a key or key-combination for a specified duration. Uses the same key
+    syntax as `key`.
+
+    - `duration: number`
+
+      Duration to hold the key, in seconds.
+
+      maximum: 300
+
+    - `text: string`
+
+      The key or key-combination to hold.
+
+  - `name: "hold_key"`
+
+  - `toolset_name: "computer"`
+
+### Computer Key Config
+
+- `computer_key_config: object`
+
+  `key`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Computer Key Input
+
+- `computer_key_input: object`
+
+  Press a key or key-combination on the keyboard. Use "+" to combine modifiers with
+  a key (e.g. "ctrl+s", "alt+Tab", "ctrl+shift+Escape"). Key names are
+  case-insensitive; common names like "Return", "Tab", "Escape", "Up", "Down",
+  "Left", "Right", "Home", "End", "Page_Up", "Page_Down", "Delete", "BackSpace" are
+  supported.
+
+  - `text: string`
+
+    The key or key-combination to press.
+
+  - `repeat: optional number`
+
+    Number of times to repeat the key press. Default is 1.
+
+    minimum: 1, maximum: 100
+
+### Computer Key Tool Use Block
+
+- `computer_key_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Press a key or key-combination on the keyboard. Use "+" to combine modifiers with
+    a key (e.g. "ctrl+s", "alt+Tab", "ctrl+shift+Escape"). Key names are
+    case-insensitive; common names like "Return", "Tab", "Escape", "Up", "Down",
+    "Left", "Right", "Home", "End", "Page_Up", "Page_Down", "Delete", "BackSpace" are
+    supported.
+
+    - `text: string`
+
+      The key or key-combination to press.
+
+    - `repeat: optional number`
+
+      Number of times to repeat the key press. Default is 1.
+
+      minimum: 1, maximum: 100
+
+  - `name: "key"`
+
+  - `toolset_name: "computer"`
+
+### Computer Left Click Config
+
+- `computer_left_click_config: object`
+
+  `left_click`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Computer Left Click Drag Config
+
+- `computer_left_click_drag_config: object`
+
+  `left_click_drag`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Computer Left Click Drag Input
+
+- `computer_left_click_drag_input: object`
+
+  Click and drag the cursor from `start_coordinate` to `coordinate`.
+
+  - `coordinate: array of number`
+
+    (x, y): x pixels from the left edge, y pixels from the top edge.
+
+    minItems: 2, maxItems: 2
+
+  - `start_coordinate: array of number`
+
+    (x, y): x pixels from the left edge, y pixels from the top edge.
+
+    minItems: 2, maxItems: 2
+
+  - `text: optional string`
+
+    Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+### Computer Left Click Drag Tool Use Block
+
+- `computer_left_click_drag_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Click and drag the cursor from `start_coordinate` to `coordinate`.
+
+    - `coordinate: array of number`
+
+      (x, y): x pixels from the left edge, y pixels from the top edge.
+
+      minItems: 2, maxItems: 2
+
+    - `start_coordinate: array of number`
+
+      (x, y): x pixels from the left edge, y pixels from the top edge.
+
+      minItems: 2, maxItems: 2
+
+    - `text: optional string`
+
+      Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+  - `name: "left_click_drag"`
+
+  - `toolset_name: "computer"`
+
+### Computer Left Click Input
+
+- `computer_left_click_input: object`
+
+  Click the left mouse button at the specified (x, y) pixel coordinate, or the
+  current cursor position if `coordinate` is omitted.
+
+  - `coordinate: optional array of number`
+
+    (x, y): x pixels from the left edge, y pixels from the top edge.
+
+    minItems: 2, maxItems: 2
+
+  - `text: optional string`
+
+    Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+### Computer Left Click Tool Use Block
+
+- `computer_left_click_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Click the left mouse button at the specified (x, y) pixel coordinate, or the
+    current cursor position if `coordinate` is omitted.
+
+    - `coordinate: optional array of number`
+
+      (x, y): x pixels from the left edge, y pixels from the top edge.
+
+      minItems: 2, maxItems: 2
+
+    - `text: optional string`
+
+      Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+  - `name: "left_click"`
+
+  - `toolset_name: "computer"`
+
+### Computer Left Mouse Down Config
+
+- `computer_left_mouse_down_config: object`
+
+  `left_mouse_down`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Computer Left Mouse Down Input
+
+- `computer_left_mouse_down_input: object`
+
+  Press and hold the left mouse button at the current cursor position.
+
+### Computer Left Mouse Down Tool Use Block
+
+- `computer_left_mouse_down_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Press and hold the left mouse button at the current cursor position.
+
+  - `name: "left_mouse_down"`
+
+  - `toolset_name: "computer"`
+
+### Computer Left Mouse Up Config
+
+- `computer_left_mouse_up_config: object`
+
+  `left_mouse_up`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Computer Left Mouse Up Input
+
+- `computer_left_mouse_up_input: object`
+
+  Release the left mouse button.
+
+### Computer Left Mouse Up Tool Use Block
+
+- `computer_left_mouse_up_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Release the left mouse button.
+
+  - `name: "left_mouse_up"`
+
+  - `toolset_name: "computer"`
+
+### Computer Middle Click Config
+
+- `computer_middle_click_config: object`
+
+  `middle_click`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Computer Middle Click Input
+
+- `computer_middle_click_input: object`
+
+  Click the middle mouse button at the specified (x, y) pixel coordinate, or the
+  current cursor position if `coordinate` is omitted.
+
+  - `coordinate: optional array of number`
+
+    (x, y): x pixels from the left edge, y pixels from the top edge.
+
+    minItems: 2, maxItems: 2
+
+  - `text: optional string`
+
+    Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+### Computer Middle Click Tool Use Block
+
+- `computer_middle_click_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Click the middle mouse button at the specified (x, y) pixel coordinate, or the
+    current cursor position if `coordinate` is omitted.
+
+    - `coordinate: optional array of number`
+
+      (x, y): x pixels from the left edge, y pixels from the top edge.
+
+      minItems: 2, maxItems: 2
+
+    - `text: optional string`
+
+      Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+  - `name: "middle_click"`
+
+  - `toolset_name: "computer"`
+
+### Computer Mouse Move Config
+
+- `computer_mouse_move_config: object`
+
+  `mouse_move`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Computer Mouse Move Input
+
+- `computer_mouse_move_input: object`
+
+  Move the cursor to a specified (x, y) pixel coordinate. Use this ONLY to hover
+  without clicking; otherwise use a click action directly.
+
+  - `coordinate: array of number`
+
+    (x, y): x pixels from the left edge, y pixels from the top edge.
+
+    minItems: 2, maxItems: 2
+
+### Computer Mouse Move Tool Use Block
+
+- `computer_mouse_move_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Move the cursor to a specified (x, y) pixel coordinate. Use this ONLY to hover
+    without clicking; otherwise use a click action directly.
+
+    - `coordinate: array of number`
+
+      (x, y): x pixels from the left edge, y pixels from the top edge.
+
+      minItems: 2, maxItems: 2
+
+  - `name: "mouse_move"`
+
+  - `toolset_name: "computer"`
+
+### Computer Right Click Config
+
+- `computer_right_click_config: object`
+
+  `right_click`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Computer Right Click Input
+
+- `computer_right_click_input: object`
+
+  Click the right mouse button at the specified (x, y) pixel coordinate, or the
+  current cursor position if `coordinate` is omitted.
+
+  - `coordinate: optional array of number`
+
+    (x, y): x pixels from the left edge, y pixels from the top edge.
+
+    minItems: 2, maxItems: 2
+
+  - `text: optional string`
+
+    Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+### Computer Right Click Tool Use Block
+
+- `computer_right_click_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Click the right mouse button at the specified (x, y) pixel coordinate, or the
+    current cursor position if `coordinate` is omitted.
+
+    - `coordinate: optional array of number`
+
+      (x, y): x pixels from the left edge, y pixels from the top edge.
+
+      minItems: 2, maxItems: 2
+
+    - `text: optional string`
+
+      Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+  - `name: "right_click"`
+
+  - `toolset_name: "computer"`
+
+### Computer Screenshot Config
+
+- `computer_screenshot_config: object`
+
+  `screenshot`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Computer Screenshot Input
+
+- `computer_screenshot_input: object`
+
+  Take a screenshot of the screen.
+
+### Computer Screenshot Tool Use Block
+
+- `computer_screenshot_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Take a screenshot of the screen.
+
+  - `name: "screenshot"`
+
+  - `toolset_name: "computer"`
+
+### Computer Scroll Config
+
+- `computer_scroll_config: object`
+
+  `scroll`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Computer Scroll Direction
+
+- `computer_scroll_direction: "up" or "down" or "left" or "right"`
+
+  - `"up"`
+
+  - `"down"`
+
+  - `"left"`
+
+  - `"right"`
+
+### Computer Scroll Input
+
+- `computer_scroll_input: object`
+
+  Scroll the screen at the specified (x, y) pixel coordinate, or the current cursor
+  position if `coordinate` is omitted. Do NOT use PageUp/PageDown to scroll.
+
+  - `scroll_amount: number`
+
+    Number of 'clicks' of the scroll wheel.
+
+  - `scroll_direction: "up" or "down" or "left" or "right"`
+
+    - `"up"`
+
+    - `"down"`
+
+    - `"left"`
+
+    - `"right"`
+
+  - `coordinate: optional array of number`
+
+    (x, y): x pixels from the left edge, y pixels from the top edge.
+
+    minItems: 2, maxItems: 2
+
+  - `text: optional string`
+
+    Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+### Computer Scroll Tool Use Block
+
+- `computer_scroll_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Scroll the screen at the specified (x, y) pixel coordinate, or the current cursor
+    position if `coordinate` is omitted. Do NOT use PageUp/PageDown to scroll.
+
+    - `scroll_amount: number`
+
+      Number of 'clicks' of the scroll wheel.
+
+    - `scroll_direction: "up" or "down" or "left" or "right"`
+
+      - `"up"`
+
+      - `"down"`
+
+      - `"left"`
+
+      - `"right"`
+
+    - `coordinate: optional array of number`
+
+      (x, y): x pixels from the left edge, y pixels from the top edge.
+
+      minItems: 2, maxItems: 2
+
+    - `text: optional string`
+
+      Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+  - `name: "scroll"`
+
+  - `toolset_name: "computer"`
+
+### Computer Tool Use Block
+
+- `computer_tool_use_block: ComputerKeyToolUseBlock or ComputerHoldKeyToolUseBlock or ComputerTypeToolUseBlock or 14 more`
+
+  - `computer_key_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+        - `type: "direct"`
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+        - `type: "code_execution_20250825"`
+
+        - `tool_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `server_tool_caller_20260120: object`
+
+        - `type: "code_execution_20260120"`
+
+        - `tool_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `input: object`
+
+      Press a key or key-combination on the keyboard. Use "+" to combine modifiers with
+      a key (e.g. "ctrl+s", "alt+Tab", "ctrl+shift+Escape"). Key names are
+      case-insensitive; common names like "Return", "Tab", "Escape", "Up", "Down",
+      "Left", "Right", "Home", "End", "Page_Up", "Page_Down", "Delete", "BackSpace" are
+      supported.
+
+      - `text: string`
+
+        The key or key-combination to press.
+
+      - `repeat: optional number`
+
+        Number of times to repeat the key press. Default is 1.
+
+        minimum: 1, maximum: 100
+
+    - `name: "key"`
+
+    - `toolset_name: "computer"`
+
+  - `computer_hold_key_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Hold down a key or key-combination for a specified duration. Uses the same key
+      syntax as `key`.
+
+      - `duration: number`
+
+        Duration to hold the key, in seconds.
+
+        maximum: 300
+
+      - `text: string`
+
+        The key or key-combination to hold.
+
+    - `name: "hold_key"`
+
+    - `toolset_name: "computer"`
+
+  - `computer_type_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Type a string of text on the keyboard.
+
+      - `text: string`
+
+        The text to type.
+
+    - `name: "type"`
+
+    - `toolset_name: "computer"`
+
+  - `computer_cursor_position_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Get the current (x, y) pixel coordinate of the cursor.
+
+    - `name: "cursor_position"`
+
+    - `toolset_name: "computer"`
+
+  - `computer_mouse_move_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Move the cursor to a specified (x, y) pixel coordinate. Use this ONLY to hover
+      without clicking; otherwise use a click action directly.
+
+      - `coordinate: array of number`
+
+        (x, y): x pixels from the left edge, y pixels from the top edge.
+
+        minItems: 2, maxItems: 2
+
+    - `name: "mouse_move"`
+
+    - `toolset_name: "computer"`
+
+  - `computer_left_mouse_down_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Press and hold the left mouse button at the current cursor position.
+
+    - `name: "left_mouse_down"`
+
+    - `toolset_name: "computer"`
+
+  - `computer_left_mouse_up_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Release the left mouse button.
+
+    - `name: "left_mouse_up"`
+
+    - `toolset_name: "computer"`
+
+  - `computer_left_click_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Click the left mouse button at the specified (x, y) pixel coordinate, or the
+      current cursor position if `coordinate` is omitted.
+
+      - `coordinate: optional array of number`
+
+        (x, y): x pixels from the left edge, y pixels from the top edge.
+
+        minItems: 2, maxItems: 2
+
+      - `text: optional string`
+
+        Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+    - `name: "left_click"`
+
+    - `toolset_name: "computer"`
+
+  - `computer_left_click_drag_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Click and drag the cursor from `start_coordinate` to `coordinate`.
+
+      - `coordinate: array of number`
+
+        (x, y): x pixels from the left edge, y pixels from the top edge.
+
+        minItems: 2, maxItems: 2
+
+      - `start_coordinate: array of number`
+
+        (x, y): x pixels from the left edge, y pixels from the top edge.
+
+        minItems: 2, maxItems: 2
+
+      - `text: optional string`
+
+        Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+    - `name: "left_click_drag"`
+
+    - `toolset_name: "computer"`
+
+  - `computer_right_click_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Click the right mouse button at the specified (x, y) pixel coordinate, or the
+      current cursor position if `coordinate` is omitted.
+
+      - `coordinate: optional array of number`
+
+        (x, y): x pixels from the left edge, y pixels from the top edge.
+
+        minItems: 2, maxItems: 2
+
+      - `text: optional string`
+
+        Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+    - `name: "right_click"`
+
+    - `toolset_name: "computer"`
+
+  - `computer_middle_click_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Click the middle mouse button at the specified (x, y) pixel coordinate, or the
+      current cursor position if `coordinate` is omitted.
+
+      - `coordinate: optional array of number`
+
+        (x, y): x pixels from the left edge, y pixels from the top edge.
+
+        minItems: 2, maxItems: 2
+
+      - `text: optional string`
+
+        Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+    - `name: "middle_click"`
+
+    - `toolset_name: "computer"`
+
+  - `computer_double_click_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Double-click the left mouse button at the specified (x, y) pixel coordinate, or
+      the current cursor position if `coordinate` is omitted.
+
+      - `coordinate: optional array of number`
+
+        (x, y): x pixels from the left edge, y pixels from the top edge.
+
+        minItems: 2, maxItems: 2
+
+      - `text: optional string`
+
+        Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+    - `name: "double_click"`
+
+    - `toolset_name: "computer"`
+
+  - `computer_triple_click_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Triple-click the left mouse button at the specified (x, y) pixel coordinate, or
+      the current cursor position if `coordinate` is omitted.
+
+      - `coordinate: optional array of number`
+
+        (x, y): x pixels from the left edge, y pixels from the top edge.
+
+        minItems: 2, maxItems: 2
+
+      - `text: optional string`
+
+        Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+    - `name: "triple_click"`
+
+    - `toolset_name: "computer"`
+
+  - `computer_scroll_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Scroll the screen at the specified (x, y) pixel coordinate, or the current cursor
+      position if `coordinate` is omitted. Do NOT use PageUp/PageDown to scroll.
+
+      - `scroll_amount: number`
+
+        Number of 'clicks' of the scroll wheel.
+
+      - `scroll_direction: "up" or "down" or "left" or "right"`
+
+        - `"up"`
+
+        - `"down"`
+
+        - `"left"`
+
+        - `"right"`
+
+      - `coordinate: optional array of number`
+
+        (x, y): x pixels from the left edge, y pixels from the top edge.
+
+        minItems: 2, maxItems: 2
+
+      - `text: optional string`
+
+        Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+    - `name: "scroll"`
+
+    - `toolset_name: "computer"`
+
+  - `computer_wait_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Wait for a specified duration.
+
+      - `duration: number`
+
+        Duration to wait, in seconds.
+
+        maximum: 300
+
+    - `name: "wait"`
+
+    - `toolset_name: "computer"`
+
+  - `computer_screenshot_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Take a screenshot of the screen.
+
+    - `name: "screenshot"`
+
+    - `toolset_name: "computer"`
+
+  - `computer_zoom_tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: object`
+
+      Take a screenshot of a rectangular region. Region coordinates are in the
+      full-screenshot space (not physical display pixels). The crop is scaled up to
+      fill the image budget so fine details become legible.
+
+      - `region: array of number`
+
+        (x0, y0, x1, y1): The region to capture.
+
+        minItems: 4, maxItems: 4
+
+    - `name: "zoom"`
+
+    - `toolset_name: "computer"`
+
+### Computer Toolset 20260801
+
+- `computer_toolset_20260801: object`
+
+  The computer toolset: a single `tools[]` entry (carrying no
+  `name`) that declares the computer tool family. The model is
+  served the family's tool with any members disabled via `configs`
+  removed from its schema. Every member is enabled by default, zoom
+  included. The single-tool options `display_number` and
+  `enable_zoom` are not fields of a toolset entry — it carries only
+  `type`, `configs`, and `cache_control`; zoom is controlled
+  via `configs.zoom.enabled`.
+
+  - `type: "computer_toolset_20260801"`
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `configs: optional object`
+
+    Sparse per-member overrides, keyed by member name. Absent, null, and {} are equivalent; a member's defaults apply wherever its key is absent.
+
+    - `type: optional object`
+
+      `type`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `cursor_position: optional object`
+
+      `cursor_position`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `double_click: optional object`
+
+      `double_click`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `hold_key: optional object`
+
+      `hold_key`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `key: optional object`
+
+      `key`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `left_click: optional object`
+
+      `left_click`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `left_click_drag: optional object`
+
+      `left_click_drag`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `left_mouse_down: optional object`
+
+      `left_mouse_down`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `left_mouse_up: optional object`
+
+      `left_mouse_up`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `middle_click: optional object`
+
+      `middle_click`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `mouse_move: optional object`
+
+      `mouse_move`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `right_click: optional object`
+
+      `right_click`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `screenshot: optional object`
+
+      `screenshot`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `scroll: optional object`
+
+      `scroll`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `triple_click: optional object`
+
+      `triple_click`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `wait: optional object`
+
+      `wait`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+    - `zoom: optional object`
+
+      `zoom`'s config overrides.
+
+      - `defer_loading: optional boolean`
+
+        Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+      - `enabled: optional boolean`
+
+        Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Computer Toolset Configs
+
+- `computer_toolset_configs: object`
+
+  Per-member configuration for `computer_toolset_20260801`: one
+  optional field per member tool, keyed by the member name — the same
+  name the member's `tool_use` blocks carry. Every member is an
+  accepted key, and a member's defaults apply wherever its key is
+  absent. Unknown keys are rejected: the field set is this toolset
+  version's complete member set.
+
+  - `type: optional object`
+
+    `type`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `cursor_position: optional object`
+
+    `cursor_position`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `double_click: optional object`
+
+    `double_click`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `hold_key: optional object`
+
+    `hold_key`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `key: optional object`
+
+    `key`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `left_click: optional object`
+
+    `left_click`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `left_click_drag: optional object`
+
+    `left_click_drag`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `left_mouse_down: optional object`
+
+    `left_mouse_down`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `left_mouse_up: optional object`
+
+    `left_mouse_up`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `middle_click: optional object`
+
+    `middle_click`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `mouse_move: optional object`
+
+    `mouse_move`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `right_click: optional object`
+
+    `right_click`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `screenshot: optional object`
+
+    `screenshot`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `scroll: optional object`
+
+    `scroll`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `triple_click: optional object`
+
+    `triple_click`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `wait: optional object`
+
+    `wait`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `zoom: optional object`
+
+    `zoom`'s config overrides.
+
+    - `defer_loading: optional boolean`
+
+      Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+    - `enabled: optional boolean`
+
+      Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Computer Triple Click Config
+
+- `computer_triple_click_config: object`
+
+  `triple_click`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Computer Triple Click Input
+
+- `computer_triple_click_input: object`
+
+  Triple-click the left mouse button at the specified (x, y) pixel coordinate, or
+  the current cursor position if `coordinate` is omitted.
+
+  - `coordinate: optional array of number`
+
+    (x, y): x pixels from the left edge, y pixels from the top edge.
+
+    minItems: 2, maxItems: 2
+
+  - `text: optional string`
+
+    Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+### Computer Triple Click Tool Use Block
+
+- `computer_triple_click_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Triple-click the left mouse button at the specified (x, y) pixel coordinate, or
+    the current cursor position if `coordinate` is omitted.
+
+    - `coordinate: optional array of number`
+
+      (x, y): x pixels from the left edge, y pixels from the top edge.
+
+      minItems: 2, maxItems: 2
+
+    - `text: optional string`
+
+      Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+  - `name: "triple_click"`
+
+  - `toolset_name: "computer"`
+
+### Computer Type Config
+
+- `computer_type_config: object`
+
+  `type`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Computer Type Input
+
+- `computer_type_input: object`
+
+  Type a string of text on the keyboard.
+
+  - `text: string`
+
+    The text to type.
+
+### Computer Type Tool Use Block
+
+- `computer_type_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Type a string of text on the keyboard.
+
+    - `text: string`
+
+      The text to type.
+
+  - `name: "type"`
+
+  - `toolset_name: "computer"`
+
+### Computer Wait Config
+
+- `computer_wait_config: object`
+
+  `wait`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Computer Wait Input
+
+- `computer_wait_input: object`
+
+  Wait for a specified duration.
+
+  - `duration: number`
+
+    Duration to wait, in seconds.
+
+    maximum: 300
+
+### Computer Wait Tool Use Block
+
+- `computer_wait_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Wait for a specified duration.
+
+    - `duration: number`
+
+      Duration to wait, in seconds.
+
+      maximum: 300
+
+  - `name: "wait"`
+
+  - `toolset_name: "computer"`
+
+### Computer Zoom Config
+
+- `computer_zoom_config: object`
+
+  `zoom`'s config overrides.
+
+  - `defer_loading: optional boolean`
+
+    Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+  - `enabled: optional boolean`
+
+    Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+### Computer Zoom Input
+
+- `computer_zoom_input: object`
+
+  Take a screenshot of a rectangular region. Region coordinates are in the
+  full-screenshot space (not physical display pixels). The crop is scaled up to
+  fill the image budget so fine details become legible.
+
+  - `region: array of number`
+
+    (x0, y0, x1, y1): The region to capture.
+
+    minItems: 4, maxItems: 4
+
+### Computer Zoom Tool Use Block
+
+- `computer_zoom_tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: object`
+
+    Take a screenshot of a rectangular region. Region coordinates are in the
+    full-screenshot space (not physical display pixels). The crop is scaled up to
+    fill the image budget so fine details become legible.
+
+    - `region: array of number`
+
+      (x0, y0, x1, y1): The region to capture.
+
+      minItems: 4, maxItems: 4
+
+  - `name: "zoom"`
+
+  - `toolset_name: "computer"`
+
+### Container
+
+- `container: object`
+
+  Information about the container used in the request (for the code execution tool)
+
+  - `id: string`
+
+    Identifier for the container used in this request
+
+  - `expires_at: string`
+
+    The time at which the container will expire.
+
+    format: date-time
+
+  - `skills: array of ContainerSkill`
+
+    Skills loaded in the container
+
+    - `type: "anthropic" or "custom"`
+
+      Type of skill - either 'anthropic' (built-in) or 'custom' (user-defined)
+
+      - `"anthropic"`
+
+      - `"custom"`
+
+    - `skill_id: string`
+
+      Skill ID
+
+      minLength: 1, maxLength: 64
+
+    - `version: string`
+
+      The resolved version: a skill version ID for custom skills.
+
+      minLength: 1, maxLength: 64
+
+### Container Params
+
+- `container_params: object`
+
+  Container parameters with skills to be loaded.
+
+  - `id: optional string`
+
+    Container id
+
+  - `skills: optional array of SkillParams`
+
+    List of skills to load in the container
+
+    maxItems: 20
+
+    - `type: "anthropic" or "custom"`
+
+      Type of skill - either 'anthropic' (built-in) or 'custom' (user-defined)
+
+      - `"anthropic"`
+
+      - `"custom"`
+
+    - `skill_id: string`
+
+      Skill ID
+
+      minLength: 1, maxLength: 64
+
+    - `version: optional string`
+
+      Skill version or 'latest' for most recent version
+
+      minLength: 1, maxLength: 64
+
+### Container Skill
+
+- `container_skill: object`
+
+  A skill that was loaded in a container (response model).
+
+  - `type: "anthropic" or "custom"`
+
+    Type of skill - either 'anthropic' (built-in) or 'custom' (user-defined)
+
+    - `"anthropic"`
+
+    - `"custom"`
+
+  - `skill_id: string`
+
+    Skill ID
+
+    minLength: 1, maxLength: 64
+
+  - `version: string`
+
+    The resolved version: a skill version ID for custom skills.
+
+    minLength: 1, maxLength: 64
+
+### Container Upload Block
+
+- `container_upload_block: object`
+
+  Response model for a file uploaded to the container.
+
+  - `type: "container_upload"`
+
+  - `file_id: string`
+
+### Container Upload Block Param
+
+- `container_upload_block_param: object`
+
+  A content block that represents a file to be uploaded to the container
+  Files uploaded via this block will be available in the container's input directory.
+
+  - `type: "container_upload"`
+
+  - `file_id: string`
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+### Content Block
+
+- `content_block: TextBlock or ThinkingBlock or RedactedThinkingBlock or 9 more`
+
+  - `text_block: object`
+
+    - `type: "text"`
+
+    - `citations: array of TextCitation`
+
+      Citations supporting the text block.
+
+      The type of citation returned will depend on the type of document being cited. Citing a PDF results in `page_location`, plain text results in `char_location`, and content document results in `content_block_location`.
+
+      - `citation_char_location: object`
+
+        - `type: "char_location"`
+
+        - `cited_text: string`
+
+        - `document_index: number`
+
+          minimum: 0
+
+        - `document_title: string`
+
+        - `end_char_index: number`
+
+        - `file_id: string`
+
+        - `start_char_index: number`
+
+          minimum: 0
+
+      - `citation_page_location: object`
+
+        - `type: "page_location"`
+
+        - `cited_text: string`
+
+        - `document_index: number`
+
+          minimum: 0
+
+        - `document_title: string`
+
+        - `end_page_number: number`
+
+        - `file_id: string`
+
+        - `start_page_number: number`
+
+          minimum: 1
+
+      - `citation_content_block_location: object`
+
+        - `type: "content_block_location"`
+
+        - `cited_text: string`
+
+          The full text of the cited block range, concatenated.
+
+          Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+        - `document_index: number`
+
+          minimum: 0
+
+        - `document_title: string`
+
+        - `end_block_index: number`
+
+          Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+          Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+        - `file_id: string`
+
+        - `start_block_index: number`
+
+          0-based index of the first cited block in the source's `content` array.
+
+          minimum: 0
+
+      - `citations_web_search_result_location: object`
+
+        - `type: "web_search_result_location"`
+
+        - `cited_text: string`
+
+        - `encrypted_index: string`
+
+        - `title: string`
+
+          maxLength: 512
+
+        - `url: string`
+
+      - `citations_search_result_location: object`
+
+        - `type: "search_result_location"`
+
+        - `cited_text: string`
+
+          The full text of the cited block range, concatenated.
+
+          Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+        - `end_block_index: number`
+
+          Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+          Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+        - `search_result_index: number`
+
+          0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+          Counted separately from `document_index`; server-side web search results are not included in this count.
+
+          minimum: 0
+
+        - `source: string`
+
+        - `start_block_index: number`
+
+          0-based index of the first cited block in the source's `content` array.
+
+          minimum: 0
+
+        - `title: string`
+
+    - `text: string`
+
+  - `thinking_block: object`
+
+    - `type: "thinking"`
+
+    - `signature: string`
+
+      A value used to verify that this thinking block was generated by Claude when it is passed back to the API.
+
+      This is an opaque field and should not be interpreted or parsed. When passing thinking blocks back to the API (required when using tools with extended thinking), pass them back exactly as received, with this field intact.
+
+      See [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli) for details.
+
+    - `thinking: string`
+
+      The text of Claude's thinking process for this block.
+
+  - `redacted_thinking_block: object`
+
+    - `type: "redacted_thinking"`
+
+    - `data: string`
+
+      The contents of this redacted thinking block, returned when portions of the model's thinking were safety-redacted. This field is opaque and encrypted, with no readable content.
+
+      Pass `redacted_thinking` blocks back to the API unchanged when continuing a multi-turn conversation.
+
+      See [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli#redacted-thinking-blocks) for details.
+
+  - `tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+        - `type: "direct"`
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+        - `type: "code_execution_20250825"`
+
+        - `tool_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `server_tool_caller_20260120: object`
+
+        - `type: "code_execution_20260120"`
+
+        - `tool_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `input: map[unknown]`
+
+    - `name: string`
+
+      minLength: 1
+
+    - `toolset_name: optional string`
+
+      For a toolset member tool_use, the toolset family.
+
+      minLength: 1, maxLength: 64, pattern: ^[a-zA-Z0-9_-]+$
+
+  - `server_tool_use_block: object`
+
+    - `type: "server_tool_use"`
+
+    - `id: string`
+
+      pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `input: map[unknown]`
+
+    - `name: "web_search" or "web_fetch" or "code_execution" or 4 more`
+
+      - `"web_search"`
+
+      - `"web_fetch"`
+
+      - `"code_execution"`
+
+      - `"bash_code_execution"`
+
+      - `"text_editor_code_execution"`
+
+      - `"tool_search_tool_regex"`
+
+      - `"tool_search_tool_bm25"`
+
+  - `web_search_tool_result_block: object`
+
+    - `type: "web_search_tool_result"`
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `content: WebSearchToolResultError or array of WebSearchResultBlock`
+
+      - `web_search_tool_result_error: object`
+
+        - `type: "web_search_tool_result_error"`
+
+        - `error_code: "invalid_tool_input" or "unavailable" or "max_uses_exceeded" or 3 more`
+
+          - `"invalid_tool_input"`
+
+          - `"unavailable"`
+
+          - `"max_uses_exceeded"`
+
+          - `"too_many_requests"`
+
+          - `"query_too_long"`
+
+          - `"request_too_large"`
+
+      - `union_member_1: array of WebSearchResultBlock`
+
+        - `type: "web_search_result"`
+
+        - `encrypted_content: string`
+
+        - `page_age: string`
+
+        - `title: string`
+
+        - `url: string`
+
+    - `tool_use_id: string`
+
+      pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `web_fetch_tool_result_block: object`
+
+    - `type: "web_fetch_tool_result"`
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+    - `content: WebFetchToolResultErrorBlock or WebFetchBlock`
+
+      - `web_fetch_tool_result_error_block: object`
+
+        - `type: "web_fetch_tool_result_error"`
+
+        - `error_code: "invalid_tool_input" or "url_too_long" or "url_not_allowed" or 7 more`
+
+          - `"invalid_tool_input"`
+
+          - `"url_too_long"`
+
+          - `"url_not_allowed"`
+
+          - `"url_not_in_prior_context"`
+
+          - `"url_not_accessible"`
+
+          - `"unsupported_content_type"`
+
+          - `"too_many_requests"`
+
+          - `"max_uses_exceeded"`
+
+          - `"unavailable"`
+
+          - `"content_too_large"`
+
+      - `web_fetch_block: object`
+
+        - `type: "web_fetch_result"`
+
+        - `content: object`
+
+          - `type: "document"`
+
+          - `citations: object`
+
+            Citation configuration for the document
+
+            - `enabled: boolean`
+
+          - `source: Base64PDFSource or PlainTextSource`
+
+            - `base64_pdf_source: object`
+
+              - `type: "base64"`
+
+              - `data: string`
+
+                format: byte
+
+              - `media_type: "application/pdf"`
+
+            - `plain_text_source: object`
+
+              - `type: "text"`
+
+              - `data: string`
+
+              - `media_type: "text/plain"`
+
+          - `title: string`
+
+            The title of the document
+
+        - `retrieved_at: string`
+
+          ISO 8601 timestamp when the content was retrieved
+
+        - `url: string`
+
+          Fetched content URL
+
+    - `tool_use_id: string`
+
+      pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `code_execution_tool_result_block: object`
+
+    - `type: "code_execution_tool_result"`
+
+    - `content: CodeExecutionToolResultError or CodeExecutionResultBlock or EncryptedCodeExecutionResultBlock`
+
+      - `code_execution_tool_result_error: object`
+
+        - `type: "code_execution_tool_result_error"`
+
+        - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+          - `"invalid_tool_input"`
+
+          - `"unavailable"`
+
+          - `"too_many_requests"`
+
+          - `"execution_time_exceeded"`
+
+      - `code_execution_result_block: object`
+
+        - `type: "code_execution_result"`
+
+        - `content: array of CodeExecutionOutputBlock`
+
+          - `type: "code_execution_output"`
+
+          - `file_id: string`
+
+        - `return_code: number`
+
+        - `stderr: string`
+
+        - `stdout: string`
+
+      - `encrypted_code_execution_result_block: object`
+
+        Code execution result with encrypted stdout for PFC + web_search results.
+
+        - `type: "encrypted_code_execution_result"`
+
+        - `content: array of CodeExecutionOutputBlock`
+
+          - `type: "code_execution_output"`
+
+          - `file_id: string`
+
+        - `encrypted_stdout: string`
+
+        - `return_code: number`
+
+        - `stderr: string`
+
+    - `tool_use_id: string`
+
+      pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `bash_code_execution_tool_result_block: object`
+
+    - `type: "bash_code_execution_tool_result"`
+
+    - `content: BashCodeExecutionToolResultError or BashCodeExecutionResultBlock`
+
+      - `bash_code_execution_tool_result_error: object`
+
+        - `type: "bash_code_execution_tool_result_error"`
+
+        - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+          - `"invalid_tool_input"`
+
+          - `"unavailable"`
+
+          - `"too_many_requests"`
+
+          - `"execution_time_exceeded"`
+
+          - `"output_file_too_large"`
+
+      - `bash_code_execution_result_block: object`
+
+        - `type: "bash_code_execution_result"`
+
+        - `content: array of BashCodeExecutionOutputBlock`
+
+          - `type: "bash_code_execution_output"`
+
+          - `file_id: string`
+
+        - `return_code: number`
+
+        - `stderr: string`
+
+        - `stdout: string`
+
+    - `tool_use_id: string`
+
+      pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `text_editor_code_execution_tool_result_block: object`
+
+    - `type: "text_editor_code_execution_tool_result"`
+
+    - `content: TextEditorCodeExecutionToolResultError or TextEditorCodeExecutionViewResultBlock or TextEditorCodeExecutionCreateResultBlock or TextEditorCodeExecutionStrReplaceResultBlock`
+
+      - `text_editor_code_execution_tool_result_error: object`
+
+        - `type: "text_editor_code_execution_tool_result_error"`
+
+        - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+          - `"invalid_tool_input"`
+
+          - `"unavailable"`
+
+          - `"too_many_requests"`
+
+          - `"execution_time_exceeded"`
+
+          - `"file_not_found"`
+
+        - `error_message: string`
+
+      - `text_editor_code_execution_view_result_block: object`
+
+        - `type: "text_editor_code_execution_view_result"`
+
+        - `content: string`
+
+        - `file_type: "text" or "image" or "pdf"`
+
+          - `"text"`
+
+          - `"image"`
+
+          - `"pdf"`
+
+        - `num_lines: number`
+
+        - `start_line: number`
+
+        - `total_lines: number`
+
+      - `text_editor_code_execution_create_result_block: object`
+
+        - `type: "text_editor_code_execution_create_result"`
+
+        - `is_file_update: boolean`
+
+      - `text_editor_code_execution_str_replace_result_block: object`
+
+        - `type: "text_editor_code_execution_str_replace_result"`
+
+        - `lines: array of string`
+
+        - `new_lines: number`
+
+        - `new_start: number`
+
+        - `old_lines: number`
+
+        - `old_start: number`
+
+    - `tool_use_id: string`
+
+      pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `tool_search_tool_result_block: object`
+
+    - `type: "tool_search_tool_result"`
+
+    - `content: ToolSearchToolResultError or ToolSearchToolSearchResultBlock`
+
+      - `tool_search_tool_result_error: object`
+
+        - `type: "tool_search_tool_result_error"`
+
+        - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+          - `"invalid_tool_input"`
+
+          - `"unavailable"`
+
+          - `"too_many_requests"`
+
+          - `"execution_time_exceeded"`
+
+        - `error_message: string`
+
+      - `tool_search_tool_search_result_block: object`
+
+        - `type: "tool_search_tool_search_result"`
+
+        - `tool_references: array of ToolReferenceBlock`
+
+          - `type: "tool_reference"`
+
+          - `tool_name: string`
+
+            minLength: 1, maxLength: 256, pattern: ^[a-zA-Z0-9_-]{1,256}$
+
+    - `tool_use_id: string`
+
+      pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `container_upload_block: object`
+
+    Response model for a file uploaded to the container.
+
+    - `type: "container_upload"`
+
+    - `file_id: string`
+
+### Content Block Param
+
+- `content_block_param: TextBlockParam or ImageBlockParam or DocumentBlockParam or 13 more`
+
+  - `text_block_param: object`
+
+    - `type: "text"`
+
+    - `text: string`
+
+      minLength: 1
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+        - `"5m"`
+
+        - `"1h"`
+
+    - `citations: optional array of TextCitationParam`
+
+      - `citation_char_location_param: object`
+
+        - `type: "char_location"`
+
+        - `cited_text: string`
+
+        - `document_index: number`
+
+          minimum: 0
+
+        - `document_title: string`
+
+          minLength: 1, maxLength: 500
+
+        - `end_char_index: number`
+
+        - `start_char_index: number`
+
+          minimum: 0
+
+      - `citation_page_location_param: object`
+
+        - `type: "page_location"`
+
+        - `cited_text: string`
+
+        - `document_index: number`
+
+          minimum: 0
+
+        - `document_title: string`
+
+          minLength: 1, maxLength: 500
+
+        - `end_page_number: number`
+
+        - `start_page_number: number`
+
+          minimum: 1
+
+      - `citation_content_block_location_param: object`
+
+        - `type: "content_block_location"`
+
+        - `cited_text: string`
+
+          The full text of the cited block range, concatenated.
+
+          Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+        - `document_index: number`
+
+          minimum: 0
+
+        - `document_title: string`
+
+          minLength: 1, maxLength: 500
+
+        - `end_block_index: number`
+
+          Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+          Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+        - `start_block_index: number`
+
+          0-based index of the first cited block in the source's `content` array.
+
+          minimum: 0
+
+      - `citation_web_search_result_location_param: object`
+
+        - `type: "web_search_result_location"`
+
+        - `cited_text: string`
+
+        - `encrypted_index: string`
+
+        - `title: string`
+
+          minLength: 1, maxLength: 512
+
+        - `url: string`
+
+          minLength: 1
+
+      - `citation_search_result_location_param: object`
+
+        - `type: "search_result_location"`
+
+        - `cited_text: string`
+
+          The full text of the cited block range, concatenated.
+
+          Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+        - `end_block_index: number`
+
+          Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+          Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+        - `search_result_index: number`
+
+          0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+          Counted separately from `document_index`; server-side web search results are not included in this count.
+
+          minimum: 0
+
+        - `source: string`
+
+        - `start_block_index: number`
+
+          0-based index of the first cited block in the source's `content` array.
+
+          minimum: 0
+
+        - `title: string`
+
+  - `image_block_param: object`
+
+    - `type: "image"`
+
+    - `source: Base64ImageSource or URLImageSource or FileImageSource`
+
+      - `base64_image_source: object`
+
+        - `type: "base64"`
+
+        - `data: string`
+
+          format: byte
+
+        - `media_type: "image/jpeg" or "image/png" or "image/gif" or "image/webp"`
+
+          - `"image/jpeg"`
+
+          - `"image/png"`
+
+          - `"image/gif"`
+
+          - `"image/webp"`
+
+      - `url_image_source: object`
+
+        - `type: "url"`
+
+        - `url: string`
+
+      - `file_image_source: object`
+
+        - `type: "file"`
+
+        - `file_id: string`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `transformations: optional object`
+
+      Configures the transformations the server applies to this image before the model observes it. Each key names a condition the server transforms images for; its value selects the transformation applied. Omitted keys keep their default behavior, and an empty object is equivalent to omitting the field.
+
+      - `oversized_image: optional "downsize" or "error"`
+
+        What the server does when this image exceeds the model's maximum image size. `"downsize"` (the default) scales the image down to fit, which changes the dimensions the model observes without telling you. `"error"` instead rejects the request with a 400 error naming the image's dimensions and the largest dimensions that fit, so you can scale the image deliberately — your image is never silently scaled down.
+
+        - `"downsize"`
+
+        - `"error"`
+
+  - `document_block_param: object`
+
+    - `type: "document"`
+
+    - `source: Base64PDFSource or PlainTextSource or ContentBlockSource or 2 more`
+
+      - `base64_pdf_source: object`
+
+        - `type: "base64"`
+
+        - `data: string`
+
+          format: byte
+
+        - `media_type: "application/pdf"`
+
+      - `plain_text_source: object`
+
+        - `type: "text"`
+
+        - `data: string`
+
+        - `media_type: "text/plain"`
+
+      - `content_block_source: object`
+
+        - `type: "content"`
+
+        - `content: string or array of ContentBlockSourceContent`
+
+          - `union_member_0: string`
+
+          - `content_block_source_content: array of ContentBlockSourceContent`
+
+            - `text_block_param: object`
+
+              - `type: "text"`
+
+              - `text: string`
+
+                minLength: 1
+
+              - `cache_control: optional object`
+
+                Create a cache control breakpoint at this content block.
+
+              - `citations: optional array of TextCitationParam`
+
+            - `image_block_param: object`
+
+              - `type: "image"`
+
+              - `source: Base64ImageSource or URLImageSource or FileImageSource`
+
+              - `cache_control: optional object`
+
+                Create a cache control breakpoint at this content block.
+
+              - `transformations: optional object`
+
+                Configures the transformations the server applies to this image before the model observes it. Each key names a condition the server transforms images for; its value selects the transformation applied. Omitted keys keep their default behavior, and an empty object is equivalent to omitting the field.
+
+      - `url_pdf_source: object`
+
+        - `type: "url"`
+
+        - `url: string`
+
+      - `file_document_source: object`
+
+        - `type: "file"`
+
+        - `file_id: string`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `citations: optional object`
+
+      - `enabled: optional boolean`
+
+    - `context: optional string`
+
+      minLength: 1
+
+    - `title: optional string`
+
+      minLength: 1, maxLength: 500
+
+  - `search_result_block_param: object`
+
+    - `type: "search_result"`
+
+    - `content: array of TextBlockParam`
+
+      - `type: "text"`
+
+      - `text: string`
+
+        minLength: 1
+
+      - `cache_control: optional object`
+
+        Create a cache control breakpoint at this content block.
+
+      - `citations: optional array of TextCitationParam`
+
+    - `source: string`
+
+    - `title: string`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `citations: optional object`
+
+      - `enabled: optional boolean`
+
+  - `thinking_block_param: object`
+
+    - `type: "thinking"`
+
+    - `signature: string`
+
+      The `signature` value of this thinking block, exactly as returned by the API in a previous response. Used to verify that the block was generated by Claude.
+
+      Thinking blocks must be passed back unmodified and in their original order; a modified block results in a 400 `invalid_request_error`.
+
+    - `thinking: string`
+
+      The `thinking` text of this block as returned by the API.
+
+  - `redacted_thinking_block_param: object`
+
+    - `type: "redacted_thinking"`
+
+    - `data: string`
+
+      The `data` value of this redacted thinking block, exactly as returned by the API in a previous response. Opaque and encrypted; pass it back unchanged.
+
+  - `tool_use_block_param: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `input: map[unknown]`
+
+    - `name: string`
+
+      minLength: 1, maxLength: 200
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `caller: optional DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+        - `type: "direct"`
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+        - `type: "code_execution_20250825"`
+
+        - `tool_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `server_tool_caller_20260120: object`
+
+        - `type: "code_execution_20260120"`
+
+        - `tool_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `toolset_name: optional string`
+
+      For a toolset member tool_use, the toolset family this member belongs to.
+
+      minLength: 1, maxLength: 64, pattern: ^[a-zA-Z0-9_-]+$
+
+  - `tool_result_block_param: object`
+
+    - `type: "tool_result"`
+
+    - `tool_use_id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `content: optional array of TextBlockParam or ImageBlockParam or SearchResultBlockParam or 3 more`
+
+      - `text_block_param: object`
+
+        - `type: "text"`
+
+        - `text: string`
+
+          minLength: 1
+
+        - `cache_control: optional object`
+
+          Create a cache control breakpoint at this content block.
+
+        - `citations: optional array of TextCitationParam`
+
+      - `image_block_param: object`
+
+        - `type: "image"`
+
+        - `source: Base64ImageSource or URLImageSource or FileImageSource`
+
+        - `cache_control: optional object`
+
+          Create a cache control breakpoint at this content block.
+
+        - `transformations: optional object`
+
+          Configures the transformations the server applies to this image before the model observes it. Each key names a condition the server transforms images for; its value selects the transformation applied. Omitted keys keep their default behavior, and an empty object is equivalent to omitting the field.
+
+      - `search_result_block_param: object`
+
+        - `type: "search_result"`
+
+        - `content: array of TextBlockParam`
+
+        - `source: string`
+
+        - `title: string`
+
+        - `cache_control: optional object`
+
+          Create a cache control breakpoint at this content block.
+
+        - `citations: optional object`
+
+      - `document_block_param: object`
+
+        - `type: "document"`
+
+        - `source: Base64PDFSource or PlainTextSource or ContentBlockSource or 2 more`
+
+        - `cache_control: optional object`
+
+          Create a cache control breakpoint at this content block.
+
+        - `citations: optional object`
+
+        - `context: optional string`
+
+          minLength: 1
+
+        - `title: optional string`
+
+          minLength: 1, maxLength: 500
+
+      - `tool_reference_block_param: object`
+
+        Tool reference block that can be included in tool_result content.
+
+        - `type: "tool_reference"`
+
+        - `tool_name: string`
+
+          minLength: 1, maxLength: 256, pattern: ^[a-zA-Z0-9_-]{1,256}$
+
+        - `cache_control: optional object`
+
+          Create a cache control breakpoint at this content block.
+
+          - `type: "ephemeral"`
+
+          - `ttl: optional "5m" or "1h"`
+
+            The time-to-live for the cache control breakpoint.
+
+            This may be one the following values:
+
+            - `5m`: 5 minutes
+            - `1h`: 1 hour
+
+            Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `browser_state_block_param: object`
+
+        The caller's browser state after a browser toolset member call —
+        the full inventory of open tabs, which tab is active, and any side
+        effects (tabs opened, download state changes) the call produced.
+
+        At most one per `tool_result`, only on a non-error result answering a
+        browser toolset member `tool_use`. The server renders the
+        model-visible text from it; the model never sees the raw fields.
+
+        - `type: "browser_state"`
+
+        - `tabs: array of BrowserStateTabEntry`
+
+          All tabs open in the browser after this call — the full inventory, not a delta. May be empty. Whenever non-empty, exactly one entry carries `active: true`.
+
+          maxItems: 100
+
+          - `tab_id: string`
+
+            The caller-assigned identifier for this tab, unique within the inventory.
+
+            minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+          - `title: string`
+
+            The title of the page the tab is showing. May be empty.
+
+            maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+          - `url: string`
+
+            The URL of the page the tab is showing. May be empty.
+
+            maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+          - `active: optional boolean`
+
+            Whether this tab is the active tab after this call. Whenever `tabs` is non-empty, exactly one entry is marked `active: true`.
+
+        - `cache_control: optional object`
+
+          Create a cache control breakpoint at this content block.
+
+          - `type: "ephemeral"`
+
+          - `ttl: optional "5m" or "1h"`
+
+            The time-to-live for the cache control breakpoint.
+
+            This may be one the following values:
+
+            - `5m`: 5 minutes
+            - `1h`: 1 hour
+
+            Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+        - `state_changes: optional array of BrowserStateChange`
+
+          Tabs opened and download state changes during this call. "Nothing to report" is expressed by omitting the field, never by an empty list.
+
+          minItems: 1, maxItems: 200
+
+          - `browser_state_change_tab_opened: object`
+
+            A tab this call's execution opened that remains open at its end —
+            the creation delta of the `tabs` inventory, not an event log.
+
+            Carries only the `tab_id`; the tab's `title` and `url` live on its
+            `tabs` entry, which must include the same `tab_id`. A tab opened
+            during a failed call gets no deferred `tab_opened`; it simply appears
+            in the next result's `tabs` inventory.
+
+            - `type: "tab_opened"`
+
+            - `tab_id: string`
+
+              The `tab_id` of the opened tab, present in `tabs`.
+
+              minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+          - `browser_state_change_download_started: object`
+
+            A file download that started during this call.
+
+            - `type: "download_started"`
+
+            - `download_id: string`
+
+              The caller-assigned identifier for this download, stable across the state changes reporting it.
+
+              minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+            - `url: string`
+
+              The final post-redirect URL the download was served from.
+
+              maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+          - `browser_state_change_download_completed: object`
+
+            A file download that finished during this call, reported with the
+            same `download_id` as its `download_started` — or without a prior
+            `download_started`, when the download finished during the call that
+            started it (at most one state change per `download_id` per result).
+
+            - `type: "download_completed"`
+
+            - `download_id: string`
+
+              The caller-assigned identifier for this download, stable across the state changes reporting it.
+
+              minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+            - `url: string`
+
+              The final post-redirect URL the download was served from.
+
+              maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+            - `path: optional string`
+
+              Where the executor saved the file, on the executor's filesystem. Only included when another tool in the same environment can read the file at that path.
+
+              maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+            - `size_bytes: optional number`
+
+              The completed download's size.
+
+              minimum: 0
+
+          - `browser_state_change_download_failed: object`
+
+            A file download that failed — or was cancelled — during this call.
+
+            - `type: "download_failed"`
+
+            - `download_id: string`
+
+              The caller-assigned identifier for this download, stable across the state changes reporting it.
+
+              minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+            - `url: string`
+
+              The final post-redirect URL the download was served from.
+
+              maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+            - `error: optional string`
+
+              The failure or cancellation detail, when known.
+
+              maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+    - `is_error: optional boolean`
+
+    - `toolset_name: optional string`
+
+      For a toolset member tool_result, the toolset family of the paired tool_use.
+
+      minLength: 1, maxLength: 64, pattern: ^[a-zA-Z0-9_-]+$
+
+  - `server_tool_use_block_param: object`
+
+    - `type: "server_tool_use"`
+
+    - `id: string`
+
+      pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `input: map[unknown]`
+
+    - `name: "web_search" or "web_fetch" or "code_execution" or 4 more`
+
+      - `"web_search"`
+
+      - `"web_fetch"`
+
+      - `"code_execution"`
+
+      - `"bash_code_execution"`
+
+      - `"text_editor_code_execution"`
+
+      - `"tool_search_tool_regex"`
+
+      - `"tool_search_tool_bm25"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `caller: optional DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+  - `web_search_tool_result_block_param: object`
+
+    - `type: "web_search_tool_result"`
+
+    - `content: array of WebSearchResultBlockParam or WebSearchToolRequestError`
+
+      - `web_search_tool_result_block_item: array of WebSearchResultBlockParam`
+
+        - `type: "web_search_result"`
+
+        - `encrypted_content: string`
+
+        - `title: string`
+
+        - `url: string`
+
+        - `page_age: optional string`
+
+      - `web_search_tool_request_error: object`
+
+        - `type: "web_search_tool_result_error"`
+
+        - `error_code: "invalid_tool_input" or "unavailable" or "max_uses_exceeded" or 3 more`
+
+          - `"invalid_tool_input"`
+
+          - `"unavailable"`
+
+          - `"max_uses_exceeded"`
+
+          - `"too_many_requests"`
+
+          - `"query_too_long"`
+
+          - `"request_too_large"`
+
+    - `tool_use_id: string`
+
+      pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `caller: optional DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+  - `web_fetch_tool_result_block_param: object`
+
+    - `type: "web_fetch_tool_result"`
+
+    - `content: WebFetchToolResultErrorBlockParam or WebFetchBlockParam`
+
+      - `web_fetch_tool_result_error_block_param: object`
+
+        - `type: "web_fetch_tool_result_error"`
+
+        - `error_code: "invalid_tool_input" or "url_too_long" or "url_not_allowed" or 7 more`
+
+          - `"invalid_tool_input"`
+
+          - `"url_too_long"`
+
+          - `"url_not_allowed"`
+
+          - `"url_not_in_prior_context"`
+
+          - `"url_not_accessible"`
+
+          - `"unsupported_content_type"`
+
+          - `"too_many_requests"`
+
+          - `"max_uses_exceeded"`
+
+          - `"unavailable"`
+
+          - `"content_too_large"`
+
+      - `web_fetch_block_param: object`
+
+        - `type: "web_fetch_result"`
+
+        - `content: object`
+
+          - `type: "document"`
+
+          - `source: Base64PDFSource or PlainTextSource or ContentBlockSource or 2 more`
+
+          - `cache_control: optional object`
+
+            Create a cache control breakpoint at this content block.
+
+          - `citations: optional object`
+
+          - `context: optional string`
+
+            minLength: 1
+
+          - `title: optional string`
+
+            minLength: 1, maxLength: 500
+
+        - `url: string`
+
+          Fetched content URL
+
+        - `retrieved_at: optional string`
+
+          ISO 8601 timestamp when the content was retrieved
+
+    - `tool_use_id: string`
+
+      pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `caller: optional DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+      - `server_tool_caller_20260120: object`
+
+  - `code_execution_tool_result_block_param: object`
+
+    - `type: "code_execution_tool_result"`
+
+    - `content: CodeExecutionToolResultErrorParam or CodeExecutionResultBlockParam or EncryptedCodeExecutionResultBlockParam`
+
+      - `code_execution_tool_result_error_param: object`
+
+        - `type: "code_execution_tool_result_error"`
+
+        - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+          - `"invalid_tool_input"`
+
+          - `"unavailable"`
+
+          - `"too_many_requests"`
+
+          - `"execution_time_exceeded"`
+
+      - `code_execution_result_block_param: object`
+
+        - `type: "code_execution_result"`
+
+        - `content: array of CodeExecutionOutputBlockParam`
+
+          - `type: "code_execution_output"`
+
+          - `file_id: string`
+
+        - `return_code: number`
+
+        - `stderr: string`
+
+        - `stdout: string`
+
+      - `encrypted_code_execution_result_block_param: object`
+
+        Code execution result with encrypted stdout for PFC + web_search results.
+
+        - `type: "encrypted_code_execution_result"`
+
+        - `content: array of CodeExecutionOutputBlockParam`
+
+          - `type: "code_execution_output"`
+
+          - `file_id: string`
+
+        - `encrypted_stdout: string`
+
+        - `return_code: number`
+
+        - `stderr: string`
+
+    - `tool_use_id: string`
+
+      pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+  - `bash_code_execution_tool_result_block_param: object`
+
+    - `type: "bash_code_execution_tool_result"`
+
+    - `content: BashCodeExecutionToolResultErrorParam or BashCodeExecutionResultBlockParam`
+
+      - `bash_code_execution_tool_result_error_param: object`
+
+        - `type: "bash_code_execution_tool_result_error"`
+
+        - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+          - `"invalid_tool_input"`
+
+          - `"unavailable"`
+
+          - `"too_many_requests"`
+
+          - `"execution_time_exceeded"`
+
+          - `"output_file_too_large"`
+
+      - `bash_code_execution_result_block_param: object`
+
+        - `type: "bash_code_execution_result"`
+
+        - `content: array of BashCodeExecutionOutputBlockParam`
+
+          - `type: "bash_code_execution_output"`
+
+          - `file_id: string`
+
+        - `return_code: number`
+
+        - `stderr: string`
+
+        - `stdout: string`
+
+    - `tool_use_id: string`
+
+      pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+  - `text_editor_code_execution_tool_result_block_param: object`
+
+    - `type: "text_editor_code_execution_tool_result"`
+
+    - `content: TextEditorCodeExecutionToolResultErrorParam or TextEditorCodeExecutionViewResultBlockParam or TextEditorCodeExecutionCreateResultBlockParam or TextEditorCodeExecutionStrReplaceResultBlockParam`
+
+      - `text_editor_code_execution_tool_result_error_param: object`
+
+        - `type: "text_editor_code_execution_tool_result_error"`
+
+        - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+          - `"invalid_tool_input"`
+
+          - `"unavailable"`
+
+          - `"too_many_requests"`
+
+          - `"execution_time_exceeded"`
+
+          - `"file_not_found"`
+
+        - `error_message: optional string`
+
+      - `text_editor_code_execution_view_result_block_param: object`
+
+        - `type: "text_editor_code_execution_view_result"`
+
+        - `content: string`
+
+        - `file_type: "text" or "image" or "pdf"`
+
+          - `"text"`
+
+          - `"image"`
+
+          - `"pdf"`
+
+        - `num_lines: optional number`
+
+        - `start_line: optional number`
+
+        - `total_lines: optional number`
+
+      - `text_editor_code_execution_create_result_block_param: object`
+
+        - `type: "text_editor_code_execution_create_result"`
+
+        - `is_file_update: boolean`
+
+      - `text_editor_code_execution_str_replace_result_block_param: object`
+
+        - `type: "text_editor_code_execution_str_replace_result"`
+
+        - `lines: optional array of string`
+
+        - `new_lines: optional number`
+
+        - `new_start: optional number`
+
+        - `old_lines: optional number`
+
+        - `old_start: optional number`
+
+    - `tool_use_id: string`
+
+      pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+  - `tool_search_tool_result_block_param: object`
+
+    - `type: "tool_search_tool_result"`
+
+    - `content: ToolSearchToolResultErrorParam or ToolSearchToolSearchResultBlockParam`
+
+      - `tool_search_tool_result_error_param: object`
+
+        - `type: "tool_search_tool_result_error"`
+
+        - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+          - `"invalid_tool_input"`
+
+          - `"unavailable"`
+
+          - `"too_many_requests"`
+
+          - `"execution_time_exceeded"`
+
+        - `error_message: optional string`
+
+      - `tool_search_tool_search_result_block_param: object`
+
+        - `type: "tool_search_tool_search_result"`
+
+        - `tool_references: array of ToolReferenceBlockParam`
+
+          - `type: "tool_reference"`
+
+          - `tool_name: string`
+
+            minLength: 1, maxLength: 256, pattern: ^[a-zA-Z0-9_-]{1,256}$
+
+          - `cache_control: optional object`
+
+            Create a cache control breakpoint at this content block.
+
+    - `tool_use_id: string`
+
+      pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+  - `container_upload_block_param: object`
+
+    A content block that represents a file to be uploaded to the container
+    Files uploaded via this block will be available in the container's input directory.
+
+    - `type: "container_upload"`
+
+    - `file_id: string`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+### Content Block Source
+
+- `content_block_source: object`
+
+  - `type: "content"`
+
+  - `content: string or array of ContentBlockSourceContent`
+
+    - `union_member_0: string`
+
+    - `content_block_source_content: array of ContentBlockSourceContent`
+
+      - `text_block_param: object`
+
+        - `type: "text"`
+
+        - `text: string`
+
+          minLength: 1
+
+        - `cache_control: optional object`
+
+          Create a cache control breakpoint at this content block.
+
+          - `type: "ephemeral"`
+
+          - `ttl: optional "5m" or "1h"`
+
+            The time-to-live for the cache control breakpoint.
+
+            This may be one the following values:
+
+            - `5m`: 5 minutes
+            - `1h`: 1 hour
+
+            Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+            - `"5m"`
+
+            - `"1h"`
+
+        - `citations: optional array of TextCitationParam`
+
+          - `citation_char_location_param: object`
+
+            - `type: "char_location"`
+
+            - `cited_text: string`
+
+            - `document_index: number`
+
+              minimum: 0
+
+            - `document_title: string`
+
+              minLength: 1, maxLength: 500
+
+            - `end_char_index: number`
+
+            - `start_char_index: number`
+
+              minimum: 0
+
+          - `citation_page_location_param: object`
+
+            - `type: "page_location"`
+
+            - `cited_text: string`
+
+            - `document_index: number`
+
+              minimum: 0
+
+            - `document_title: string`
+
+              minLength: 1, maxLength: 500
+
+            - `end_page_number: number`
+
+            - `start_page_number: number`
+
+              minimum: 1
+
+          - `citation_content_block_location_param: object`
+
+            - `type: "content_block_location"`
+
+            - `cited_text: string`
+
+              The full text of the cited block range, concatenated.
+
+              Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+            - `document_index: number`
+
+              minimum: 0
+
+            - `document_title: string`
+
+              minLength: 1, maxLength: 500
+
+            - `end_block_index: number`
+
+              Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+              Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+            - `start_block_index: number`
+
+              0-based index of the first cited block in the source's `content` array.
+
+              minimum: 0
+
+          - `citation_web_search_result_location_param: object`
+
+            - `type: "web_search_result_location"`
+
+            - `cited_text: string`
+
+            - `encrypted_index: string`
+
+            - `title: string`
+
+              minLength: 1, maxLength: 512
+
+            - `url: string`
+
+              minLength: 1
+
+          - `citation_search_result_location_param: object`
+
+            - `type: "search_result_location"`
+
+            - `cited_text: string`
+
+              The full text of the cited block range, concatenated.
+
+              Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+            - `end_block_index: number`
+
+              Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+              Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+            - `search_result_index: number`
+
+              0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+              Counted separately from `document_index`; server-side web search results are not included in this count.
+
+              minimum: 0
+
+            - `source: string`
+
+            - `start_block_index: number`
+
+              0-based index of the first cited block in the source's `content` array.
+
+              minimum: 0
+
+            - `title: string`
+
+      - `image_block_param: object`
+
+        - `type: "image"`
+
+        - `source: Base64ImageSource or URLImageSource or FileImageSource`
+
+          - `base64_image_source: object`
+
+            - `type: "base64"`
+
+            - `data: string`
+
+              format: byte
+
+            - `media_type: "image/jpeg" or "image/png" or "image/gif" or "image/webp"`
+
+              - `"image/jpeg"`
+
+              - `"image/png"`
+
+              - `"image/gif"`
+
+              - `"image/webp"`
+
+          - `url_image_source: object`
+
+            - `type: "url"`
+
+            - `url: string`
+
+          - `file_image_source: object`
+
+            - `type: "file"`
+
+            - `file_id: string`
+
+        - `cache_control: optional object`
+
+          Create a cache control breakpoint at this content block.
+
+          - `type: "ephemeral"`
+
+          - `ttl: optional "5m" or "1h"`
+
+            The time-to-live for the cache control breakpoint.
+
+            This may be one the following values:
+
+            - `5m`: 5 minutes
+            - `1h`: 1 hour
+
+            Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+        - `transformations: optional object`
+
+          Configures the transformations the server applies to this image before the model observes it. Each key names a condition the server transforms images for; its value selects the transformation applied. Omitted keys keep their default behavior, and an empty object is equivalent to omitting the field.
+
+          - `oversized_image: optional "downsize" or "error"`
+
+            What the server does when this image exceeds the model's maximum image size. `"downsize"` (the default) scales the image down to fit, which changes the dimensions the model observes without telling you. `"error"` instead rejects the request with a 400 error naming the image's dimensions and the largest dimensions that fit, so you can scale the image deliberately — your image is never silently scaled down.
+
+            - `"downsize"`
+
+            - `"error"`
+
+### Content Block Source Content
+
+- `content_block_source_content: TextBlockParam or ImageBlockParam`
+
+  - `text_block_param: object`
+
+    - `type: "text"`
+
+    - `text: string`
+
+      minLength: 1
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+        - `"5m"`
+
+        - `"1h"`
+
+    - `citations: optional array of TextCitationParam`
+
+      - `citation_char_location_param: object`
+
+        - `type: "char_location"`
+
+        - `cited_text: string`
+
+        - `document_index: number`
+
+          minimum: 0
+
+        - `document_title: string`
+
+          minLength: 1, maxLength: 500
+
+        - `end_char_index: number`
+
+        - `start_char_index: number`
+
+          minimum: 0
+
+      - `citation_page_location_param: object`
+
+        - `type: "page_location"`
+
+        - `cited_text: string`
+
+        - `document_index: number`
+
+          minimum: 0
+
+        - `document_title: string`
+
+          minLength: 1, maxLength: 500
+
+        - `end_page_number: number`
+
+        - `start_page_number: number`
+
+          minimum: 1
+
+      - `citation_content_block_location_param: object`
+
+        - `type: "content_block_location"`
+
+        - `cited_text: string`
+
+          The full text of the cited block range, concatenated.
+
+          Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+        - `document_index: number`
+
+          minimum: 0
+
+        - `document_title: string`
+
+          minLength: 1, maxLength: 500
+
+        - `end_block_index: number`
+
+          Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+          Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+        - `start_block_index: number`
+
+          0-based index of the first cited block in the source's `content` array.
+
+          minimum: 0
+
+      - `citation_web_search_result_location_param: object`
+
+        - `type: "web_search_result_location"`
+
+        - `cited_text: string`
+
+        - `encrypted_index: string`
+
+        - `title: string`
+
+          minLength: 1, maxLength: 512
+
+        - `url: string`
+
+          minLength: 1
+
+      - `citation_search_result_location_param: object`
+
+        - `type: "search_result_location"`
+
+        - `cited_text: string`
+
+          The full text of the cited block range, concatenated.
+
+          Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+        - `end_block_index: number`
+
+          Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+          Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+        - `search_result_index: number`
+
+          0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+          Counted separately from `document_index`; server-side web search results are not included in this count.
+
+          minimum: 0
+
+        - `source: string`
+
+        - `start_block_index: number`
+
+          0-based index of the first cited block in the source's `content` array.
+
+          minimum: 0
+
+        - `title: string`
+
+  - `image_block_param: object`
+
+    - `type: "image"`
+
+    - `source: Base64ImageSource or URLImageSource or FileImageSource`
+
+      - `base64_image_source: object`
+
+        - `type: "base64"`
+
+        - `data: string`
+
+          format: byte
+
+        - `media_type: "image/jpeg" or "image/png" or "image/gif" or "image/webp"`
+
+          - `"image/jpeg"`
+
+          - `"image/png"`
+
+          - `"image/gif"`
+
+          - `"image/webp"`
+
+      - `url_image_source: object`
+
+        - `type: "url"`
+
+        - `url: string`
+
+      - `file_image_source: object`
+
+        - `type: "file"`
+
+        - `file_id: string`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `transformations: optional object`
+
+      Configures the transformations the server applies to this image before the model observes it. Each key names a condition the server transforms images for; its value selects the transformation applied. Omitted keys keep their default behavior, and an empty object is equivalent to omitting the field.
+
+      - `oversized_image: optional "downsize" or "error"`
+
+        What the server does when this image exceeds the model's maximum image size. `"downsize"` (the default) scales the image down to fit, which changes the dimensions the model observes without telling you. `"error"` instead rejects the request with a 400 error naming the image's dimensions and the largest dimensions that fit, so you can scale the image deliberately — your image is never silently scaled down.
+
+        - `"downsize"`
+
+        - `"error"`
+
+### Diagnostics
+
+- `diagnostics: object`
+
+  Request-level diagnostics: why the prompt cache could not fully reuse
+  the prefix of the request named by `diagnostics.previous_message_id`.
+
+  - `cache_miss_reason: CacheMissModelChanged or CacheMissSystemChanged or CacheMissToolsChanged or 3 more`
+
+    Explains why the prompt cache could not fully reuse the prefix from the request identified by `diagnostics.previous_message_id`. `null` means diagnosis is still pending — the response was serialized before the background comparison completed.
+
+    - `cache_miss_model_changed: object`
+
+      - `type: "model_changed"`
+
+      - `cache_missed_input_tokens: number`
+
+        Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+    - `cache_miss_system_changed: object`
+
+      - `type: "system_changed"`
+
+      - `cache_missed_input_tokens: number`
+
+        Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+    - `cache_miss_tools_changed: object`
+
+      - `type: "tools_changed"`
+
+      - `cache_missed_input_tokens: number`
+
+        Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+    - `cache_miss_messages_changed: object`
+
+      - `type: "messages_changed"`
+
+      - `cache_missed_input_tokens: number`
+
+        Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+    - `cache_miss_previous_message_not_found: object`
+
+      - `type: "previous_message_not_found"`
+
+    - `cache_miss_unavailable: object`
+
+      - `type: "unavailable"`
+
+### Diagnostics Param
+
+- `diagnostics_param: object`
+
+  Request-level diagnostics. Currently carries the previous response
+  id for prompt-cache divergence reporting.
+
+  - `previous_message_id: optional string`
+
+    The `id` (`msg_...`) from this client's previous /v1/messages response. The server compares that request's prompt fingerprint against this one and returns `diagnostics.cache_miss_reason` when the prompt-cache prefix could not be reused. Pass `null` on the first turn to opt in without a prior message to compare.
+
+    maxLength: 256
+
+### Direct Caller
+
+- `direct_caller: object`
+
+  Tool invocation directly from the model.
+
+  - `type: "direct"`
+
+### Document Block
+
+- `document_block: object`
+
+  - `type: "document"`
+
+  - `citations: object`
+
+    Citation configuration for the document
+
+    - `enabled: boolean`
+
+  - `source: Base64PDFSource or PlainTextSource`
+
+    - `base64_pdf_source: object`
+
+      - `type: "base64"`
+
+      - `data: string`
+
+        format: byte
+
+      - `media_type: "application/pdf"`
+
+    - `plain_text_source: object`
+
+      - `type: "text"`
+
+      - `data: string`
+
+      - `media_type: "text/plain"`
+
+  - `title: string`
+
+    The title of the document
+
+### Document Block Param
+
+- `document_block_param: object`
+
+  - `type: "document"`
+
+  - `source: Base64PDFSource or PlainTextSource or ContentBlockSource or 2 more`
+
+    - `base64_pdf_source: object`
+
+      - `type: "base64"`
+
+      - `data: string`
+
+        format: byte
+
+      - `media_type: "application/pdf"`
+
+    - `plain_text_source: object`
+
+      - `type: "text"`
+
+      - `data: string`
+
+      - `media_type: "text/plain"`
+
+    - `content_block_source: object`
+
+      - `type: "content"`
+
+      - `content: string or array of ContentBlockSourceContent`
+
+        - `union_member_0: string`
+
+        - `content_block_source_content: array of ContentBlockSourceContent`
+
+          - `text_block_param: object`
+
+            - `type: "text"`
+
+            - `text: string`
+
+              minLength: 1
+
+            - `cache_control: optional object`
+
+              Create a cache control breakpoint at this content block.
+
+              - `type: "ephemeral"`
+
+              - `ttl: optional "5m" or "1h"`
+
+                The time-to-live for the cache control breakpoint.
+
+                This may be one the following values:
+
+                - `5m`: 5 minutes
+                - `1h`: 1 hour
+
+                Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+                - `"5m"`
+
+                - `"1h"`
+
+            - `citations: optional array of TextCitationParam`
+
+              - `citation_char_location_param: object`
+
+                - `type: "char_location"`
+
+                - `cited_text: string`
+
+                - `document_index: number`
+
+                  minimum: 0
+
+                - `document_title: string`
+
+                  minLength: 1, maxLength: 500
+
+                - `end_char_index: number`
+
+                - `start_char_index: number`
+
+                  minimum: 0
+
+              - `citation_page_location_param: object`
+
+                - `type: "page_location"`
+
+                - `cited_text: string`
+
+                - `document_index: number`
+
+                  minimum: 0
+
+                - `document_title: string`
+
+                  minLength: 1, maxLength: 500
+
+                - `end_page_number: number`
+
+                - `start_page_number: number`
+
+                  minimum: 1
+
+              - `citation_content_block_location_param: object`
+
+                - `type: "content_block_location"`
+
+                - `cited_text: string`
+
+                  The full text of the cited block range, concatenated.
+
+                  Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+                - `document_index: number`
+
+                  minimum: 0
+
+                - `document_title: string`
+
+                  minLength: 1, maxLength: 500
+
+                - `end_block_index: number`
+
+                  Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+                  Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+                - `start_block_index: number`
+
+                  0-based index of the first cited block in the source's `content` array.
+
+                  minimum: 0
+
+              - `citation_web_search_result_location_param: object`
+
+                - `type: "web_search_result_location"`
+
+                - `cited_text: string`
+
+                - `encrypted_index: string`
+
+                - `title: string`
+
+                  minLength: 1, maxLength: 512
+
+                - `url: string`
+
+                  minLength: 1
+
+              - `citation_search_result_location_param: object`
+
+                - `type: "search_result_location"`
+
+                - `cited_text: string`
+
+                  The full text of the cited block range, concatenated.
+
+                  Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+                - `end_block_index: number`
+
+                  Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+                  Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+                - `search_result_index: number`
+
+                  0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+                  Counted separately from `document_index`; server-side web search results are not included in this count.
+
+                  minimum: 0
+
+                - `source: string`
+
+                - `start_block_index: number`
+
+                  0-based index of the first cited block in the source's `content` array.
+
+                  minimum: 0
+
+                - `title: string`
+
+          - `image_block_param: object`
+
+            - `type: "image"`
+
+            - `source: Base64ImageSource or URLImageSource or FileImageSource`
+
+              - `base64_image_source: object`
+
+                - `type: "base64"`
+
+                - `data: string`
+
+                  format: byte
+
+                - `media_type: "image/jpeg" or "image/png" or "image/gif" or "image/webp"`
+
+                  - `"image/jpeg"`
+
+                  - `"image/png"`
+
+                  - `"image/gif"`
+
+                  - `"image/webp"`
+
+              - `url_image_source: object`
+
+                - `type: "url"`
+
+                - `url: string`
+
+              - `file_image_source: object`
+
+                - `type: "file"`
+
+                - `file_id: string`
+
+            - `cache_control: optional object`
+
+              Create a cache control breakpoint at this content block.
+
+              - `type: "ephemeral"`
+
+              - `ttl: optional "5m" or "1h"`
+
+                The time-to-live for the cache control breakpoint.
+
+                This may be one the following values:
+
+                - `5m`: 5 minutes
+                - `1h`: 1 hour
+
+                Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+            - `transformations: optional object`
+
+              Configures the transformations the server applies to this image before the model observes it. Each key names a condition the server transforms images for; its value selects the transformation applied. Omitted keys keep their default behavior, and an empty object is equivalent to omitting the field.
+
+              - `oversized_image: optional "downsize" or "error"`
+
+                What the server does when this image exceeds the model's maximum image size. `"downsize"` (the default) scales the image down to fit, which changes the dimensions the model observes without telling you. `"error"` instead rejects the request with a 400 error naming the image's dimensions and the largest dimensions that fit, so you can scale the image deliberately — your image is never silently scaled down.
+
+                - `"downsize"`
+
+                - `"error"`
+
+    - `url_pdf_source: object`
+
+      - `type: "url"`
+
+      - `url: string`
+
+    - `file_document_source: object`
+
+      - `type: "file"`
+
+      - `file_id: string`
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+  - `citations: optional object`
+
+    - `enabled: optional boolean`
+
+  - `context: optional string`
+
+    minLength: 1
+
+  - `title: optional string`
+
+    minLength: 1, maxLength: 500
+
+### Encrypted Code Execution Result Block
+
+- `encrypted_code_execution_result_block: object`
+
+  Code execution result with encrypted stdout for PFC + web_search results.
+
+  - `type: "encrypted_code_execution_result"`
+
+  - `content: array of CodeExecutionOutputBlock`
+
+    - `type: "code_execution_output"`
+
+    - `file_id: string`
+
+  - `encrypted_stdout: string`
+
+  - `return_code: number`
+
+  - `stderr: string`
+
+### Encrypted Code Execution Result Block Param
+
+- `encrypted_code_execution_result_block_param: object`
+
+  Code execution result with encrypted stdout for PFC + web_search results.
+
+  - `type: "encrypted_code_execution_result"`
+
+  - `content: array of CodeExecutionOutputBlockParam`
+
+    - `type: "code_execution_output"`
+
+    - `file_id: string`
+
+  - `encrypted_stdout: string`
+
+  - `return_code: number`
+
+  - `stderr: string`
+
+### File Document Source
+
+- `file_document_source: object`
+
+  - `type: "file"`
+
+  - `file_id: string`
+
+### File Image Source
+
+- `file_image_source: object`
+
+  - `type: "file"`
+
+  - `file_id: string`
+
+### Image Block Param
+
+- `image_block_param: object`
+
+  - `type: "image"`
+
+  - `source: Base64ImageSource or URLImageSource or FileImageSource`
+
+    - `base64_image_source: object`
+
+      - `type: "base64"`
+
+      - `data: string`
+
+        format: byte
+
+      - `media_type: "image/jpeg" or "image/png" or "image/gif" or "image/webp"`
+
+        - `"image/jpeg"`
+
+        - `"image/png"`
+
+        - `"image/gif"`
+
+        - `"image/webp"`
+
+    - `url_image_source: object`
+
+      - `type: "url"`
+
+      - `url: string`
+
+    - `file_image_source: object`
+
+      - `type: "file"`
+
+      - `file_id: string`
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `transformations: optional object`
+
+    Configures the transformations the server applies to this image before the model observes it. Each key names a condition the server transforms images for; its value selects the transformation applied. Omitted keys keep their default behavior, and an empty object is equivalent to omitting the field.
+
+    - `oversized_image: optional "downsize" or "error"`
+
+      What the server does when this image exceeds the model's maximum image size. `"downsize"` (the default) scales the image down to fit, which changes the dimensions the model observes without telling you. `"error"` instead rejects the request with a 400 error naming the image's dimensions and the largest dimensions that fit, so you can scale the image deliberately — your image is never silently scaled down.
+
+      - `"downsize"`
+
+      - `"error"`
+
+### Image Transformations Param
+
+- `image_transformations_param: object`
+
+  Configures the transformations the server applies to this image before the model observes it. Each key names a condition the server transforms images for; its value selects the transformation applied. Omitted keys keep their default behavior, and an empty object is equivalent to omitting the field.
+
+  - `oversized_image: optional "downsize" or "error"`
+
+    What the server does when this image exceeds the model's maximum image size. `"downsize"` (the default) scales the image down to fit, which changes the dimensions the model observes without telling you. `"error"` instead rejects the request with a 400 error naming the image's dimensions and the largest dimensions that fit, so you can scale the image deliberately — your image is never silently scaled down.
+
+    - `"downsize"`
+
+    - `"error"`
+
+### Input JSON Delta
+
+- `input_json_delta: object`
+
+  - `type: "input_json_delta"`
+
+  - `partial_json: string`
+
+### JSON Output Format
+
+- `json_output_format: object`
+
+  - `type: "json_schema"`
+
+  - `schema: map[unknown]`
+
+    The JSON schema of the format
+
+### Memory Tool 20250818
+
+- `memory_tool_20250818: object`
+
+  - `type: "memory_20250818"`
+
+  - `name: "memory"`
+
+    Name of the tool.
+
+    This is how the tool will be called by the model and in `tool_use` blocks.
+
+  - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+    - `"direct"`
+
+    - `"code_execution_20250825"`
+
+    - `"code_execution_20260120"`
+
+    - `"code_execution_20260521"`
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `defer_loading: optional boolean`
+
+    If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+  - `input_examples: optional array of map[unknown]`
+
+  - `strict: optional boolean`
+
+    When true, guarantees schema validation on tool names and inputs
+
+### Message
+
+- `message: object`
+
+  - `type: "message"`
+
+    Object type.
+
+    For Messages, this is always `"message"`.
+
+  - `id: string`
+
+    Unique object identifier.
+
+    The format and length of IDs may change over time.
+
+  - `container: object`
+
+    Information about the container used in this request.
+
+    This will be non-null if a container tool (e.g. code execution) was used.
+
+    - `id: string`
+
+      Identifier for the container used in this request
+
+    - `expires_at: string`
+
+      The time at which the container will expire.
+
+      format: date-time
+
+    - `skills: array of ContainerSkill`
+
+      Skills loaded in the container
+
+      - `type: "anthropic" or "custom"`
+
+        Type of skill - either 'anthropic' (built-in) or 'custom' (user-defined)
+
+        - `"anthropic"`
+
+        - `"custom"`
+
+      - `skill_id: string`
+
+        Skill ID
+
+        minLength: 1, maxLength: 64
+
+      - `version: string`
+
+        The resolved version: a skill version ID for custom skills.
+
+        minLength: 1, maxLength: 64
+
+  - `content: array of ContentBlock`
+
+    Content generated by the model.
+
+    This is an array of content blocks, each of which has a `type` that determines its shape.
+
+    Example:
+
+    ```json
+    [{"type": "text", "text": "Hi, I'm Claude."}]
+    ```
+
+    If the request input `messages` ended with an `assistant` turn, then the response `content` will continue directly from that last turn. You can use this to constrain the model's output.
+
+    For example, if the input `messages` were:
+
+    ```json
+    [
+      {"role": "user", "content": "What's the Greek name for Sun? (A) Sol (B) Helios (C) Sun"},
+      {"role": "assistant", "content": "The best answer is ("}
+    ]
+    ```
+
+    Then the response `content` might be:
+
+    ```json
+    [{"type": "text", "text": "B)"}]
+    ```
+
+    - `text_block: object`
+
+      - `type: "text"`
+
+      - `citations: array of TextCitation`
+
+        Citations supporting the text block.
+
+        The type of citation returned will depend on the type of document being cited. Citing a PDF results in `page_location`, plain text results in `char_location`, and content document results in `content_block_location`.
+
+        - `citation_char_location: object`
+
+          - `type: "char_location"`
+
+          - `cited_text: string`
+
+          - `document_index: number`
+
+            minimum: 0
+
+          - `document_title: string`
+
+          - `end_char_index: number`
+
+          - `file_id: string`
+
+          - `start_char_index: number`
+
+            minimum: 0
+
+        - `citation_page_location: object`
+
+          - `type: "page_location"`
+
+          - `cited_text: string`
+
+          - `document_index: number`
+
+            minimum: 0
+
+          - `document_title: string`
+
+          - `end_page_number: number`
+
+          - `file_id: string`
+
+          - `start_page_number: number`
+
+            minimum: 1
+
+        - `citation_content_block_location: object`
+
+          - `type: "content_block_location"`
+
+          - `cited_text: string`
+
+            The full text of the cited block range, concatenated.
+
+            Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+          - `document_index: number`
+
+            minimum: 0
+
+          - `document_title: string`
+
+          - `end_block_index: number`
+
+            Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+            Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+          - `file_id: string`
+
+          - `start_block_index: number`
+
+            0-based index of the first cited block in the source's `content` array.
+
+            minimum: 0
+
+        - `citations_web_search_result_location: object`
+
+          - `type: "web_search_result_location"`
+
+          - `cited_text: string`
+
+          - `encrypted_index: string`
+
+          - `title: string`
+
+            maxLength: 512
+
+          - `url: string`
+
+        - `citations_search_result_location: object`
+
+          - `type: "search_result_location"`
+
+          - `cited_text: string`
+
+            The full text of the cited block range, concatenated.
+
+            Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+          - `end_block_index: number`
+
+            Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+            Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+          - `search_result_index: number`
+
+            0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+            Counted separately from `document_index`; server-side web search results are not included in this count.
+
+            minimum: 0
+
+          - `source: string`
+
+          - `start_block_index: number`
+
+            0-based index of the first cited block in the source's `content` array.
+
+            minimum: 0
+
+          - `title: string`
+
+      - `text: string`
+
+    - `thinking_block: object`
+
+      - `type: "thinking"`
+
+      - `signature: string`
+
+        A value used to verify that this thinking block was generated by Claude when it is passed back to the API.
+
+        This is an opaque field and should not be interpreted or parsed. When passing thinking blocks back to the API (required when using tools with extended thinking), pass them back exactly as received, with this field intact.
+
+        See [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli) for details.
+
+      - `thinking: string`
+
+        The text of Claude's thinking process for this block.
+
+    - `redacted_thinking_block: object`
+
+      - `type: "redacted_thinking"`
+
+      - `data: string`
+
+        The contents of this redacted thinking block, returned when portions of the model's thinking were safety-redacted. This field is opaque and encrypted, with no readable content.
+
+        Pass `redacted_thinking` blocks back to the API unchanged when continuing a multi-turn conversation.
+
+        See [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli#redacted-thinking-blocks) for details.
+
+    - `tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+          - `type: "direct"`
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+          - `type: "code_execution_20250825"`
+
+          - `tool_id: string`
+
+            pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+        - `server_tool_caller_20260120: object`
+
+          - `type: "code_execution_20260120"`
+
+          - `tool_id: string`
+
+            pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `input: map[unknown]`
+
+      - `name: string`
+
+        minLength: 1
+
+      - `toolset_name: optional string`
+
+        For a toolset member tool_use, the toolset family.
+
+        minLength: 1, maxLength: 64, pattern: ^[a-zA-Z0-9_-]+$
+
+    - `server_tool_use_block: object`
+
+      - `type: "server_tool_use"`
+
+      - `id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: map[unknown]`
+
+      - `name: "web_search" or "web_fetch" or "code_execution" or 4 more`
+
+        - `"web_search"`
+
+        - `"web_fetch"`
+
+        - `"code_execution"`
+
+        - `"bash_code_execution"`
+
+        - `"text_editor_code_execution"`
+
+        - `"tool_search_tool_regex"`
+
+        - `"tool_search_tool_bm25"`
+
+    - `web_search_tool_result_block: object`
+
+      - `type: "web_search_tool_result"`
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `content: WebSearchToolResultError or array of WebSearchResultBlock`
+
+        - `web_search_tool_result_error: object`
+
+          - `type: "web_search_tool_result_error"`
+
+          - `error_code: "invalid_tool_input" or "unavailable" or "max_uses_exceeded" or 3 more`
+
+            - `"invalid_tool_input"`
+
+            - `"unavailable"`
+
+            - `"max_uses_exceeded"`
+
+            - `"too_many_requests"`
+
+            - `"query_too_long"`
+
+            - `"request_too_large"`
+
+        - `union_member_1: array of WebSearchResultBlock`
+
+          - `type: "web_search_result"`
+
+          - `encrypted_content: string`
+
+          - `page_age: string`
+
+          - `title: string`
+
+          - `url: string`
+
+      - `tool_use_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `web_fetch_tool_result_block: object`
+
+      - `type: "web_fetch_tool_result"`
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `content: WebFetchToolResultErrorBlock or WebFetchBlock`
+
+        - `web_fetch_tool_result_error_block: object`
+
+          - `type: "web_fetch_tool_result_error"`
+
+          - `error_code: "invalid_tool_input" or "url_too_long" or "url_not_allowed" or 7 more`
+
+            - `"invalid_tool_input"`
+
+            - `"url_too_long"`
+
+            - `"url_not_allowed"`
+
+            - `"url_not_in_prior_context"`
+
+            - `"url_not_accessible"`
+
+            - `"unsupported_content_type"`
+
+            - `"too_many_requests"`
+
+            - `"max_uses_exceeded"`
+
+            - `"unavailable"`
+
+            - `"content_too_large"`
+
+        - `web_fetch_block: object`
+
+          - `type: "web_fetch_result"`
+
+          - `content: object`
+
+            - `type: "document"`
+
+            - `citations: object`
+
+              Citation configuration for the document
+
+              - `enabled: boolean`
+
+            - `source: Base64PDFSource or PlainTextSource`
+
+              - `base64_pdf_source: object`
+
+                - `type: "base64"`
+
+                - `data: string`
+
+                  format: byte
+
+                - `media_type: "application/pdf"`
+
+              - `plain_text_source: object`
+
+                - `type: "text"`
+
+                - `data: string`
+
+                - `media_type: "text/plain"`
+
+            - `title: string`
+
+              The title of the document
+
+          - `retrieved_at: string`
+
+            ISO 8601 timestamp when the content was retrieved
+
+          - `url: string`
+
+            Fetched content URL
+
+      - `tool_use_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `code_execution_tool_result_block: object`
+
+      - `type: "code_execution_tool_result"`
+
+      - `content: CodeExecutionToolResultError or CodeExecutionResultBlock or EncryptedCodeExecutionResultBlock`
+
+        - `code_execution_tool_result_error: object`
+
+          - `type: "code_execution_tool_result_error"`
+
+          - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+            - `"invalid_tool_input"`
+
+            - `"unavailable"`
+
+            - `"too_many_requests"`
+
+            - `"execution_time_exceeded"`
+
+        - `code_execution_result_block: object`
+
+          - `type: "code_execution_result"`
+
+          - `content: array of CodeExecutionOutputBlock`
+
+            - `type: "code_execution_output"`
+
+            - `file_id: string`
+
+          - `return_code: number`
+
+          - `stderr: string`
+
+          - `stdout: string`
+
+        - `encrypted_code_execution_result_block: object`
+
+          Code execution result with encrypted stdout for PFC + web_search results.
+
+          - `type: "encrypted_code_execution_result"`
+
+          - `content: array of CodeExecutionOutputBlock`
+
+            - `type: "code_execution_output"`
+
+            - `file_id: string`
+
+          - `encrypted_stdout: string`
+
+          - `return_code: number`
+
+          - `stderr: string`
+
+      - `tool_use_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `bash_code_execution_tool_result_block: object`
+
+      - `type: "bash_code_execution_tool_result"`
+
+      - `content: BashCodeExecutionToolResultError or BashCodeExecutionResultBlock`
+
+        - `bash_code_execution_tool_result_error: object`
+
+          - `type: "bash_code_execution_tool_result_error"`
+
+          - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+            - `"invalid_tool_input"`
+
+            - `"unavailable"`
+
+            - `"too_many_requests"`
+
+            - `"execution_time_exceeded"`
+
+            - `"output_file_too_large"`
+
+        - `bash_code_execution_result_block: object`
+
+          - `type: "bash_code_execution_result"`
+
+          - `content: array of BashCodeExecutionOutputBlock`
+
+            - `type: "bash_code_execution_output"`
+
+            - `file_id: string`
+
+          - `return_code: number`
+
+          - `stderr: string`
+
+          - `stdout: string`
+
+      - `tool_use_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `text_editor_code_execution_tool_result_block: object`
+
+      - `type: "text_editor_code_execution_tool_result"`
+
+      - `content: TextEditorCodeExecutionToolResultError or TextEditorCodeExecutionViewResultBlock or TextEditorCodeExecutionCreateResultBlock or TextEditorCodeExecutionStrReplaceResultBlock`
+
+        - `text_editor_code_execution_tool_result_error: object`
+
+          - `type: "text_editor_code_execution_tool_result_error"`
+
+          - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+            - `"invalid_tool_input"`
+
+            - `"unavailable"`
+
+            - `"too_many_requests"`
+
+            - `"execution_time_exceeded"`
+
+            - `"file_not_found"`
+
+          - `error_message: string`
+
+        - `text_editor_code_execution_view_result_block: object`
+
+          - `type: "text_editor_code_execution_view_result"`
+
+          - `content: string`
+
+          - `file_type: "text" or "image" or "pdf"`
+
+            - `"text"`
+
+            - `"image"`
+
+            - `"pdf"`
+
+          - `num_lines: number`
+
+          - `start_line: number`
+
+          - `total_lines: number`
+
+        - `text_editor_code_execution_create_result_block: object`
+
+          - `type: "text_editor_code_execution_create_result"`
+
+          - `is_file_update: boolean`
+
+        - `text_editor_code_execution_str_replace_result_block: object`
+
+          - `type: "text_editor_code_execution_str_replace_result"`
+
+          - `lines: array of string`
+
+          - `new_lines: number`
+
+          - `new_start: number`
+
+          - `old_lines: number`
+
+          - `old_start: number`
+
+      - `tool_use_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `tool_search_tool_result_block: object`
+
+      - `type: "tool_search_tool_result"`
+
+      - `content: ToolSearchToolResultError or ToolSearchToolSearchResultBlock`
+
+        - `tool_search_tool_result_error: object`
+
+          - `type: "tool_search_tool_result_error"`
+
+          - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+            - `"invalid_tool_input"`
+
+            - `"unavailable"`
+
+            - `"too_many_requests"`
+
+            - `"execution_time_exceeded"`
+
+          - `error_message: string`
+
+        - `tool_search_tool_search_result_block: object`
+
+          - `type: "tool_search_tool_search_result"`
+
+          - `tool_references: array of ToolReferenceBlock`
+
+            - `type: "tool_reference"`
+
+            - `tool_name: string`
+
+              minLength: 1, maxLength: 256, pattern: ^[a-zA-Z0-9_-]{1,256}$
+
+      - `tool_use_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `container_upload_block: object`
+
+      Response model for a file uploaded to the container.
+
+      - `type: "container_upload"`
+
+      - `file_id: string`
+
+  - `diagnostics: object`
+
+    Request-level diagnostics. `null` when the request did not supply `diagnostics`, or when it did and no prompt-cache divergence was detected.
+
+    - `cache_miss_reason: CacheMissModelChanged or CacheMissSystemChanged or CacheMissToolsChanged or 3 more`
+
+      Explains why the prompt cache could not fully reuse the prefix from the request identified by `diagnostics.previous_message_id`. `null` means diagnosis is still pending — the response was serialized before the background comparison completed.
+
+      - `cache_miss_model_changed: object`
+
+        - `type: "model_changed"`
+
+        - `cache_missed_input_tokens: number`
+
+          Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+      - `cache_miss_system_changed: object`
+
+        - `type: "system_changed"`
+
+        - `cache_missed_input_tokens: number`
+
+          Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+      - `cache_miss_tools_changed: object`
+
+        - `type: "tools_changed"`
+
+        - `cache_missed_input_tokens: number`
+
+          Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+      - `cache_miss_messages_changed: object`
+
+        - `type: "messages_changed"`
+
+        - `cache_missed_input_tokens: number`
+
+          Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+      - `cache_miss_previous_message_not_found: object`
+
+        - `type: "previous_message_not_found"`
+
+      - `cache_miss_unavailable: object`
+
+        - `type: "unavailable"`
+
+  - `model: "claude-haiku-5-5" or "claude-sonnet-5-5" or "claude-fable-5-1" or 17 more or string`
+
+    The model that will complete your prompt.
+
+    See [models](https://docs.anthropic.com/en/docs/models-overview) for additional details and options.
+
+    - `"claude-haiku-5-5"`
+
+      Fastest model for high-volume, real-time tasks
+
+    - `"claude-sonnet-5-5"`
+
+      Efficient model for coding and agents
+
+    - `"claude-fable-5-1"`
+
+      Frontier intelligence for ambitious tasks across coding, scientific discovery, and enterprise workflows
+
+    - `"claude-opus-5-5"`
+
+      Powerful intelligence for coding, knowledge work, and long-running agents
+
+    - `"claude-mythos-5-1"`
+
+      Our most capable model for cybersecurity and biology research, available through trusted access programs
+
+    - `"claude-sonnet-5"`
+
+      Efficient model for coding and agents
+
+    - `"claude-fable-5"`
+
+      Next generation of intelligence for the hardest knowledge work and coding problems
+
+    - `"claude-mythos-5"`
+
+      Most capable model for cybersecurity and biology research
+
+    - `"claude-opus-5"`
+
+      Powerful intelligence for long-running agents and coding
+
+    - `"claude-opus-4-8"`
+
+      Powerful intelligence for long-running agents and coding
+
+    - `"claude-opus-4-7"`
+
+      Powerful intelligence for long-running agents and coding
+
+    - `"claude-opus-4-6"`
+
+      Powerful intelligence for long-running agents and coding
+
+    - `"claude-sonnet-4-6"`
+
+      Best combination of speed and intelligence
+
+    - `"claude-haiku-4-5"`
+
+    - `"claude-haiku-4-5-20251001"`
+
+    - `"claude-opus-4-5"`
+
+      Powerful intelligence for long-running agents and coding
+
+    - `"claude-opus-4-5-20251101"`
+
+      Powerful intelligence for long-running agents and coding
+
+    - `"claude-mythos-preview"`
+
+      **Deprecated**: Will reach end-of-life on June 30, 2026. Please migrate to claude-mythos-5. Visit https://docs.anthropic.com/en/docs/resources/model-deprecations for more information.
+
+      New class of intelligence, strongest in coding and cybersecurity
+
+    - `"claude-sonnet-4-5"`
+
+      **Deprecated**: Will reach end-of-life on November 30, 2026. Please migrate to claude-sonnet-5-5. Visit https://docs.anthropic.com/en/docs/resources/model-deprecations for more information.
+
+      High-performance model for agents and coding
+
+    - `"claude-sonnet-4-5-20250929"`
+
+      **Deprecated**: Will reach end-of-life on November 30, 2026. Please migrate to claude-sonnet-5-5. Visit https://docs.anthropic.com/en/docs/resources/model-deprecations for more information.
+
+      High-performance model for agents and coding
+
+  - `role: "assistant"`
+
+    Conversational role of the generated message.
+
+    This will always be `"assistant"`.
+
+  - `stop_details: object`
+
+    Structured information about why model output stopped.
+
+    This is `null` when the `stop_reason` has no additional detail to report.
+
+    - `type: "refusal"`
+
+    - `category: "cyber" or "bio" or "frontier_llm" or 2 more`
+
+      The policy category that triggered the refusal.
+
+      `null` when the refusal doesn't map to a named category.
+
+      - `"cyber"`
+
+        The request could enable cyber harm, such as malware or exploit development. Benign cybersecurity work can also trigger this category.
+
+      - `"bio"`
+
+        The request could enable biological harm, such as dangerous lab methods. Beneficial life sciences work can also trigger this category.
+
+      - `"frontier_llm"`
+
+        The request could assist the development of competing AI models, which is restricted under [Anthropic's commercial terms](https://www.anthropic.com/legal/commercial-terms). Benign machine learning work can also trigger this category.
+
+      - `"reasoning_extraction"`
+
+        The request asks the model to reproduce its internal reasoning in the response text. To get reasoning in a structured form instead, use [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking?sdk_languages=cli).
+
+      - `"general_harms"`
+
+        The request could be related to an area that was determined as harmful. Benign work might sometimes trigger this category.
+
+    - `explanation: string`
+
+      Human-readable explanation of the refusal.
+
+      This text is not guaranteed to be stable. `null` when no explanation is available for the category.
+
+  - `stop_reason: "end_turn" or "max_tokens" or "stop_sequence" or 4 more`
+
+    The reason that we stopped.
+
+    This may be one the following values:
+
+    * `"end_turn"`: the model reached a natural stopping point
+    * `"max_tokens"`: we exceeded the requested `max_tokens` or the model's maximum
+    * `"stop_sequence"`: one of your provided custom `stop_sequences` was generated
+    * `"tool_use"`: the model invoked one or more tools
+    * `"pause_turn"`: we paused a long-running turn. You may provide the response back as-is in a subsequent request to let the model continue.
+    * `"refusal"`: when streaming classifiers intervene to handle potential policy violations
+    * `"model_context_window_exceeded"`: we exceeded the model's context window
+
+    In non-streaming mode this value is always non-null. In streaming mode, it is null in the `message_start` event and non-null otherwise.
+
+    - `"end_turn"`
+
+    - `"max_tokens"`
+
+    - `"stop_sequence"`
+
+    - `"tool_use"`
+
+    - `"pause_turn"`
+
+    - `"refusal"`
+
+    - `"model_context_window_exceeded"`
+
+  - `stop_sequence: string`
+
+    Which custom stop sequence was generated, if any.
+
+    This value will be a non-null string if one of your custom stop sequences was generated.
+
+  - `usage: object`
+
+    Billing and rate-limit usage.
+
+    Anthropic's API bills and rate-limits by token counts, as tokens represent the underlying cost to our systems.
+
+    Under the hood, the API transforms requests into a format suitable for the model. The model's output then goes through a parsing stage before becoming an API response. As a result, the token counts in `usage` will not match one-to-one with the exact visible content of an API request or response.
+
+    For example, `output_tokens` will be non-zero, even for an empty string response from Claude.
+
+    Total input tokens in a request is the summation of `input_tokens`, `cache_creation_input_tokens`, and `cache_read_input_tokens`.
+
+    - `cache_creation: object`
+
+      Breakdown of cached tokens by TTL
+
+      - `ephemeral_1h_input_tokens: number`
+
+        The number of input tokens used to create the 1 hour cache entry.
+
+        minimum: 0
+
+      - `ephemeral_5m_input_tokens: number`
+
+        The number of input tokens used to create the 5 minute cache entry.
+
+        minimum: 0
+
+    - `cache_creation_input_tokens: number`
+
+      The number of input tokens used to create the cache entry.
+
+      minimum: 0
+
+    - `cache_read_input_tokens: number`
+
+      The number of input tokens read from the cache.
+
+      minimum: 0
+
+    - `inference_geo: string`
+
+      The geographic region where inference was performed for this request.
+
+    - `input_tokens: number`
+
+      The number of input tokens which were used.
+
+      minimum: 0
+
+    - `output_tokens: number`
+
+      The number of output tokens which were used.
+
+      minimum: 0
+
+    - `output_tokens_details: object`
+
+      Breakdown of output tokens by category.
+
+      `output_tokens` remains the inclusive, authoritative total used for billing.
+      This object provides a read-only decomposition for observability — for example,
+      how many of the billed output tokens were spent on internal reasoning that may
+      have been summarized before being returned to you.
+
+      - `thinking_tokens: number`
+
+        Number of output tokens the model generated as internal reasoning, including
+        the thinking-block delimiter tokens.
+
+        Reflects the raw reasoning the model produced, not the (possibly shorter)
+        summarized thinking text returned in the response body. Computed by
+        re-tokenizing the raw reasoning text, so it may differ from the model's exact
+        generation count by a small number of tokens. Always ≤ `output_tokens`;
+        `output_tokens - thinking_tokens` approximates the non-reasoning output.
+
+        minimum: 0
+
+    - `server_tool_use: object`
+
+      The number of server tool requests.
+
+      - `web_fetch_requests: number`
+
+        The number of web fetch tool requests.
+
+        minimum: 0
+
+      - `web_search_requests: number`
+
+        The number of web search tool requests.
+
+        minimum: 0
+
+    - `service_tier: "standard" or "priority" or "batch"`
+
+      If the request used the priority, standard, or batch tier.
+
+      - `"standard"`
+
+      - `"priority"`
+
+      - `"batch"`
+
+### Message Count Tokens Tool
+
+- `message_count_tokens_tool: Tool or ToolBash20250124 or CodeExecutionTool20250522 or 18 more`
+
+  - `tool: object`
+
+    - `type: optional "custom"`
+
+    - `input_schema: object`
+
+      [JSON schema](https://json-schema.org/draft/2020-12) for this tool's input.
+
+      This defines the shape of the `input` that your tool accepts and that the model will produce.
+
+      - `type: "object"`
+
+      - `properties: optional map[unknown]`
+
+      - `required: optional array of string`
+
+    - `name: string`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+      minLength: 1, maxLength: 128, pattern: ^[a-zA-Z0-9_-]{1,128}$
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+        - `"5m"`
+
+        - `"1h"`
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `description: optional string`
+
+      Description of what this tool does.
+
+      Tool descriptions should be as detailed as possible. The more information that the model has about what the tool is and how to use it, the better it will perform. You can use natural language descriptions to reinforce important aspects of the tool input JSON schema.
+
+    - `eager_input_streaming: optional boolean`
+
+      Enable eager input streaming for this tool. When true, tool input parameters will be streamed incrementally as they are generated, and types will be inferred on-the-fly rather than buffering the full JSON output. When false, streaming is disabled for this tool even if the fine-grained-tool-streaming beta is active. When null (default), uses the default behavior based on beta headers.
+
+    - `input_examples: optional array of map[unknown]`
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+  - `tool_bash_20250124: object`
+
+    - `type: "bash_20250124"`
+
+    - `name: "bash"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `input_examples: optional array of map[unknown]`
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+  - `code_execution_tool_20250522: object`
+
+    - `type: "code_execution_20250522"`
+
+    - `name: "code_execution"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+  - `code_execution_tool_20250825: object`
+
+    - `type: "code_execution_20250825"`
+
+    - `name: "code_execution"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+  - `code_execution_tool_20260120: object`
+
+    Code execution tool with REPL state persistence (daemon mode + gVisor checkpoint).
+
+    - `type: "code_execution_20260120"`
+
+    - `name: "code_execution"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+  - `code_execution_tool_20260521: object`
+
+    Code execution tool with REPL state persistence.
+
+    - `type: "code_execution_20260521"`
+
+    - `name: "code_execution"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+  - `browser_toolset_20260801: object`
+
+    The browser toolset: a single `tools[]` entry (carrying no
+    `name`) that declares the browser tool family. The model is served
+    the family's tool with any members disabled via `configs` removed
+    from its schema.
+
+    - `type: "browser_toolset_20260801"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `configs: optional object`
+
+      Sparse per-member overrides, keyed by member name. Absent, null, and {} are equivalent; a member's defaults apply wherever its key is absent.
+
+      - `type: optional object`
+
+        `type`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `close_tab: optional object`
+
+        `close_tab`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `double_click: optional object`
+
+        `double_click`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `file_upload: optional object`
+
+        `file_upload`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `find: optional object`
+
+        `find`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `form_input: optional object`
+
+        `form_input`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `get_page_text: optional object`
+
+        `get_page_text`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `hold_key: optional object`
+
+        `hold_key`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `hover: optional object`
+
+        `hover`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `javascript_exec: optional object`
+
+        `javascript_exec`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `key: optional object`
+
+        `key`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `left_click: optional object`
+
+        `left_click`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `left_click_drag: optional object`
+
+        `left_click_drag`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `left_mouse_down: optional object`
+
+        `left_mouse_down`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `left_mouse_up: optional object`
+
+        `left_mouse_up`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `list_tabs: optional object`
+
+        `list_tabs`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `middle_click: optional object`
+
+        `middle_click`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `mouse_move: optional object`
+
+        `mouse_move`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `navigate: optional object`
+
+        `navigate`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `new_tab: optional object`
+
+        `new_tab`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `read_console: optional object`
+
+        `read_console`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `read_network: optional object`
+
+        `read_network`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `read_page: optional object`
+
+        `read_page`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `right_click: optional object`
+
+        `right_click`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `screenshot: optional object`
+
+        `screenshot`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `scroll: optional object`
+
+        `scroll`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `scroll_to: optional object`
+
+        `scroll_to`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `switch_tab: optional object`
+
+        `switch_tab`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `triple_click: optional object`
+
+        `triple_click`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `wait: optional object`
+
+        `wait`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `zoom: optional object`
+
+        `zoom`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `memory_tool_20250818: object`
+
+    - `type: "memory_20250818"`
+
+    - `name: "memory"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `input_examples: optional array of map[unknown]`
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+  - `computer_toolset_20260801: object`
+
+    The computer toolset: a single `tools[]` entry (carrying no
+    `name`) that declares the computer tool family. The model is
+    served the family's tool with any members disabled via `configs`
+    removed from its schema. Every member is enabled by default, zoom
+    included. The single-tool options `display_number` and
+    `enable_zoom` are not fields of a toolset entry — it carries only
+    `type`, `configs`, and `cache_control`; zoom is controlled
+    via `configs.zoom.enabled`.
+
+    - `type: "computer_toolset_20260801"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `configs: optional object`
+
+      Sparse per-member overrides, keyed by member name. Absent, null, and {} are equivalent; a member's defaults apply wherever its key is absent.
+
+      - `type: optional object`
+
+        `type`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `cursor_position: optional object`
+
+        `cursor_position`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `double_click: optional object`
+
+        `double_click`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `hold_key: optional object`
+
+        `hold_key`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `key: optional object`
+
+        `key`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `left_click: optional object`
+
+        `left_click`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `left_click_drag: optional object`
+
+        `left_click_drag`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `left_mouse_down: optional object`
+
+        `left_mouse_down`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `left_mouse_up: optional object`
+
+        `left_mouse_up`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `middle_click: optional object`
+
+        `middle_click`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `mouse_move: optional object`
+
+        `mouse_move`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `right_click: optional object`
+
+        `right_click`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `screenshot: optional object`
+
+        `screenshot`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `scroll: optional object`
+
+        `scroll`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `triple_click: optional object`
+
+        `triple_click`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `wait: optional object`
+
+        `wait`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `zoom: optional object`
+
+        `zoom`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `tool_text_editor_20250124: object`
+
+    - `type: "text_editor_20250124"`
+
+    - `name: "str_replace_editor"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `input_examples: optional array of map[unknown]`
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+  - `tool_text_editor_20250429: object`
+
+    - `type: "text_editor_20250429"`
+
+    - `name: "str_replace_based_edit_tool"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `input_examples: optional array of map[unknown]`
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+  - `tool_text_editor_20250728: object`
+
+    - `type: "text_editor_20250728"`
+
+    - `name: "str_replace_based_edit_tool"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `input_examples: optional array of map[unknown]`
+
+    - `max_characters: optional number`
+
+      Maximum number of characters to display when viewing a file. If not specified, defaults to displaying the full file.
+
+      minimum: 1
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+  - `web_search_tool_20250305: object`
+
+    - `type: "web_search_20250305"`
+
+    - `name: "web_search"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `allowed_domains: optional array of string`
+
+      If provided, only these domains will be included in results. Cannot be used alongside `blocked_domains`.
+
+    - `blocked_domains: optional array of string`
+
+      If provided, these domains will never appear in results. Cannot be used alongside `allowed_domains`.
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `max_uses: optional number`
+
+      Maximum number of times the tool can be used in the API request.
+
+      minimum: 1
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+    - `user_location: optional object`
+
+      Parameters for the user's location. Used to provide more relevant search results.
+
+      - `type: "approximate"`
+
+      - `city: optional string`
+
+        The city of the user.
+
+        minLength: 1, maxLength: 255
+
+      - `country: optional string`
+
+        The two letter [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) of the user.
+
+        minLength: 2, maxLength: 2
+
+      - `region: optional string`
+
+        The region of the user.
+
+        minLength: 1, maxLength: 255
+
+      - `timezone: optional string`
+
+        The [IANA timezone](https://nodatime.org/TimeZones) of the user.
+
+        minLength: 1, maxLength: 255
+
+  - `web_fetch_tool_20250910: object`
+
+    - `type: "web_fetch_20250910"`
+
+    - `name: "web_fetch"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `allowed_domains: optional array of string`
+
+      List of domains to allow fetching from
+
+    - `blocked_domains: optional array of string`
+
+      List of domains to block fetching from
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `citations: optional object`
+
+      Citations configuration for fetched documents. Citations are disabled by default.
+
+      - `enabled: optional boolean`
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `max_content_tokens: optional number`
+
+      Maximum number of tokens used by including web page text content in the context. The limit is approximate and does not apply to binary content such as PDFs.
+
+      minimum: 1
+
+    - `max_uses: optional number`
+
+      Maximum number of times the tool can be used in the API request.
+
+      minimum: 1
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+    - `url_sources: optional object`
+
+      Which sources contribute to the set of URLs the tool may fetch. Omitted means every source.
+
+      - `client_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+        Which client tools' results contribute fetchable URLs: "all", "none", or an only or except list of client tool names from tools[].
+
+        - `web_fetch_url_source_all: object`
+
+          The `url_sources` variant under which a source contributes in
+          full: every result of the tool filter's source, or all user input.
+
+          - `type: "all"`
+
+        - `web_fetch_url_source_none: object`
+
+          The `url_sources` variant under which a source contributes nothing:
+          no result of the tool filter's source, or no user input.
+
+          - `type: "none"`
+
+        - `web_fetch_url_source_only: object`
+
+          The tool filter variant under which only the named tools' results
+          contribute.
+
+          - `type: "only"`
+
+          - `tools: array of WebFetchURLSourceToolReference`
+
+            - `type: "tool_reference"`
+
+            - `name: string`
+
+        - `web_fetch_url_source_except: object`
+
+          The tool filter variant under which every result but the named
+          tools' contributes.
+
+          - `type: "except"`
+
+          - `tools: array of WebFetchURLSourceToolReference`
+
+            - `type: "tool_reference"`
+
+            - `name: string`
+
+      - `server_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+        Which server tools' results contribute fetchable URLs: "all", "none", or an only or except list of server tool names from tools[]; only web_search and web_fetch results ever contribute.
+
+        - `web_fetch_url_source_all: object`
+
+          The `url_sources` variant under which a source contributes in
+          full: every result of the tool filter's source, or all user input.
+
+        - `web_fetch_url_source_none: object`
+
+          The `url_sources` variant under which a source contributes nothing:
+          no result of the tool filter's source, or no user input.
+
+        - `web_fetch_url_source_only: object`
+
+          The tool filter variant under which only the named tools' results
+          contribute.
+
+        - `web_fetch_url_source_except: object`
+
+          The tool filter variant under which every result but the named
+          tools' contributes.
+
+      - `user_input: optional WebFetchURLSourceAll or WebFetchURLSourceNone`
+
+        Whether URLs in user messages are fetchable: "all" or "none".
+
+        - `web_fetch_url_source_all: object`
+
+          The `url_sources` variant under which a source contributes in
+          full: every result of the tool filter's source, or all user input.
+
+        - `web_fetch_url_source_none: object`
+
+          The `url_sources` variant under which a source contributes nothing:
+          no result of the tool filter's source, or no user input.
+
+  - `web_search_tool_20260209: object`
+
+    - `type: "web_search_20260209"`
+
+    - `name: "web_search"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `allowed_domains: optional array of string`
+
+      If provided, only these domains will be included in results. Cannot be used alongside `blocked_domains`.
+
+    - `blocked_domains: optional array of string`
+
+      If provided, these domains will never appear in results. Cannot be used alongside `allowed_domains`.
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `max_uses: optional number`
+
+      Maximum number of times the tool can be used in the API request.
+
+      minimum: 1
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+    - `user_location: optional object`
+
+      Parameters for the user's location. Used to provide more relevant search results.
+
+      - `type: "approximate"`
+
+      - `city: optional string`
+
+        The city of the user.
+
+        minLength: 1, maxLength: 255
+
+      - `country: optional string`
+
+        The two letter [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) of the user.
+
+        minLength: 2, maxLength: 2
+
+      - `region: optional string`
+
+        The region of the user.
+
+        minLength: 1, maxLength: 255
+
+      - `timezone: optional string`
+
+        The [IANA timezone](https://nodatime.org/TimeZones) of the user.
+
+        minLength: 1, maxLength: 255
+
+  - `web_fetch_tool_20260209: object`
+
+    - `type: "web_fetch_20260209"`
+
+    - `name: "web_fetch"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `allowed_domains: optional array of string`
+
+      List of domains to allow fetching from
+
+    - `blocked_domains: optional array of string`
+
+      List of domains to block fetching from
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `citations: optional object`
+
+      Citations configuration for fetched documents. Citations are disabled by default.
+
+      - `enabled: optional boolean`
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `max_content_tokens: optional number`
+
+      Maximum number of tokens used by including web page text content in the context. The limit is approximate and does not apply to binary content such as PDFs.
+
+      minimum: 1
+
+    - `max_uses: optional number`
+
+      Maximum number of times the tool can be used in the API request.
+
+      minimum: 1
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+    - `url_sources: optional object`
+
+      Which sources contribute to the set of URLs the tool may fetch. Omitted means every source.
+
+      - `client_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+        Which client tools' results contribute fetchable URLs: "all", "none", or an only or except list of client tool names from tools[].
+
+      - `server_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+        Which server tools' results contribute fetchable URLs: "all", "none", or an only or except list of server tool names from tools[]; only web_search and web_fetch results ever contribute.
+
+      - `user_input: optional WebFetchURLSourceAll or WebFetchURLSourceNone`
+
+        Whether URLs in user messages are fetchable: "all" or "none".
+
+  - `web_fetch_tool_20260309: object`
+
+    Web fetch tool with use_cache parameter for bypassing cached content.
+
+    - `type: "web_fetch_20260309"`
+
+    - `name: "web_fetch"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `allowed_domains: optional array of string`
+
+      List of domains to allow fetching from
+
+    - `blocked_domains: optional array of string`
+
+      List of domains to block fetching from
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `citations: optional object`
+
+      Citations configuration for fetched documents. Citations are disabled by default.
+
+      - `enabled: optional boolean`
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `max_content_tokens: optional number`
+
+      Maximum number of tokens used by including web page text content in the context. The limit is approximate and does not apply to binary content such as PDFs.
+
+      minimum: 1
+
+    - `max_uses: optional number`
+
+      Maximum number of times the tool can be used in the API request.
+
+      minimum: 1
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+    - `url_sources: optional object`
+
+      Which sources contribute to the set of URLs the tool may fetch. Omitted means every source.
+
+      - `client_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+        Which client tools' results contribute fetchable URLs: "all", "none", or an only or except list of client tool names from tools[].
+
+      - `server_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+        Which server tools' results contribute fetchable URLs: "all", "none", or an only or except list of server tool names from tools[]; only web_search and web_fetch results ever contribute.
+
+      - `user_input: optional WebFetchURLSourceAll or WebFetchURLSourceNone`
+
+        Whether URLs in user messages are fetchable: "all" or "none".
+
+    - `use_cache: optional boolean`
+
+      Whether to use cached content. Set to false to bypass the cache and fetch fresh content. Only set to false when the user explicitly requests fresh content or when fetching rapidly-changing sources.
+
+  - `web_search_tool_20260318: object`
+
+    - `type: "web_search_20260318"`
+
+    - `name: "web_search"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `allowed_domains: optional array of string`
+
+      If provided, only these domains will be included in results. Cannot be used alongside `blocked_domains`.
+
+    - `blocked_domains: optional array of string`
+
+      If provided, these domains will never appear in results. Cannot be used alongside `allowed_domains`.
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `max_uses: optional number`
+
+      Maximum number of times the tool can be used in the API request.
+
+      minimum: 1
+
+    - `response_inclusion: optional "full" or "excluded"`
+
+      How this tool's result blocks appear in the API response when the result was consumed by a completed code_execution call in the same turn. 'full' returns the complete content (default). 'excluded' drops the nested server_tool_use and result block pair entirely. Results from direct calls, or from code_execution calls that paused before completing, are always returned in full so they can be sent back on the next turn.
+
+      - `"full"`
+
+      - `"excluded"`
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+    - `user_location: optional object`
+
+      Parameters for the user's location. Used to provide more relevant search results.
+
+      - `type: "approximate"`
+
+      - `city: optional string`
+
+        The city of the user.
+
+        minLength: 1, maxLength: 255
+
+      - `country: optional string`
+
+        The two letter [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) of the user.
+
+        minLength: 2, maxLength: 2
+
+      - `region: optional string`
+
+        The region of the user.
+
+        minLength: 1, maxLength: 255
+
+      - `timezone: optional string`
+
+        The [IANA timezone](https://nodatime.org/TimeZones) of the user.
+
+        minLength: 1, maxLength: 255
+
+  - `web_fetch_tool_20260318: object`
+
+    - `type: "web_fetch_20260318"`
+
+    - `name: "web_fetch"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `allowed_domains: optional array of string`
+
+      List of domains to allow fetching from
+
+    - `blocked_domains: optional array of string`
+
+      List of domains to block fetching from
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `citations: optional object`
+
+      Citations configuration for fetched documents. Citations are disabled by default.
+
+      - `enabled: optional boolean`
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `max_content_tokens: optional number`
+
+      Maximum number of tokens used by including web page text content in the context. The limit is approximate and does not apply to binary content such as PDFs.
+
+      minimum: 1
+
+    - `max_uses: optional number`
+
+      Maximum number of times the tool can be used in the API request.
+
+      minimum: 1
+
+    - `response_inclusion: optional "full" or "excluded"`
+
+      How this tool's result blocks appear in the API response when the result was consumed by a completed code_execution call in the same turn. 'full' returns the complete content (default). 'excluded' drops the nested server_tool_use and result block pair entirely. Results from direct calls, or from code_execution calls that paused before completing, are always returned in full so they can be sent back on the next turn.
+
+      - `"full"`
+
+      - `"excluded"`
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+    - `url_sources: optional object`
+
+      Which sources contribute to the set of URLs the tool may fetch. Omitted means every source.
+
+      - `client_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+        Which client tools' results contribute fetchable URLs: "all", "none", or an only or except list of client tool names from tools[].
+
+      - `server_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+        Which server tools' results contribute fetchable URLs: "all", "none", or an only or except list of server tool names from tools[]; only web_search and web_fetch results ever contribute.
+
+      - `user_input: optional WebFetchURLSourceAll or WebFetchURLSourceNone`
+
+        Whether URLs in user messages are fetchable: "all" or "none".
+
+    - `use_cache: optional boolean`
+
+      Whether to use cached content. Set to false to bypass the cache and fetch fresh content. Only set to false when the user explicitly requests fresh content or when fetching rapidly-changing sources.
+
+  - `tool_search_tool_bm25_20251119: object`
+
+    - `type: "tool_search_tool_bm25_20251119" or "tool_search_tool_bm25"`
+
+      - `"tool_search_tool_bm25_20251119"`
+
+      - `"tool_search_tool_bm25"`
+
+    - `name: "tool_search_tool_bm25"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+  - `tool_search_tool_regex_20251119: object`
+
+    - `type: "tool_search_tool_regex_20251119" or "tool_search_tool_regex"`
+
+      - `"tool_search_tool_regex_20251119"`
+
+      - `"tool_search_tool_regex"`
+
+    - `name: "tool_search_tool_regex"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+### Message Create Params Container
+
+- `message_create_params_container: ContainerParams or string`
+
+  Container identifier for reuse across requests.
+
+  - `container_params: object`
+
+    Container parameters with skills to be loaded.
+
+    - `id: optional string`
+
+      Container id
+
+    - `skills: optional array of SkillParams`
+
+      List of skills to load in the container
+
+      maxItems: 20
+
+      - `type: "anthropic" or "custom"`
+
+        Type of skill - either 'anthropic' (built-in) or 'custom' (user-defined)
+
+        - `"anthropic"`
+
+        - `"custom"`
+
+      - `skill_id: string`
+
+        Skill ID
+
+        minLength: 1, maxLength: 64
+
+      - `version: optional string`
+
+        Skill version or 'latest' for most recent version
+
+        minLength: 1, maxLength: 64
+
+  - `union_member_1: string`
+
+### Message Delta Usage
+
+- `message_delta_usage: object`
+
+  - `cache_creation_input_tokens: number`
+
+    The cumulative number of input tokens used to create the cache entry.
+
+    minimum: 0
+
+  - `cache_read_input_tokens: number`
+
+    The cumulative number of input tokens read from the cache.
+
+    minimum: 0
+
+  - `input_tokens: number`
+
+    The cumulative number of input tokens which were used.
+
+    minimum: 0
+
+  - `output_tokens: number`
+
+    The cumulative number of output tokens which were used.
+
+  - `output_tokens_details: object`
+
+    Breakdown of output tokens by category.
+
+    `output_tokens` remains the inclusive, authoritative total used for billing.
+    This object provides a read-only decomposition for observability — for example,
+    how many of the billed output tokens were spent on internal reasoning that may
+    have been summarized before being returned to you.
+
+    - `thinking_tokens: number`
+
+      Number of output tokens the model generated as internal reasoning, including
+      the thinking-block delimiter tokens.
+
+      Reflects the raw reasoning the model produced, not the (possibly shorter)
+      summarized thinking text returned in the response body. Computed by
+      re-tokenizing the raw reasoning text, so it may differ from the model's exact
+      generation count by a small number of tokens. Always ≤ `output_tokens`;
+      `output_tokens - thinking_tokens` approximates the non-reasoning output.
+
+      minimum: 0
+
+  - `server_tool_use: object`
+
+    The number of server tool requests.
+
+    - `web_fetch_requests: number`
+
+      The number of web fetch tool requests.
+
+      minimum: 0
+
+    - `web_search_requests: number`
+
+      The number of web search tool requests.
+
+      minimum: 0
+
+### Message Param
+
+- `message_param: object`
+
+  - `content: array of ContentBlockParam`
+
+    - `text_block_param: object`
+
+      - `type: "text"`
+
+      - `text: string`
+
+        minLength: 1
+
+      - `cache_control: optional object`
+
+        Create a cache control breakpoint at this content block.
+
+        - `type: "ephemeral"`
+
+        - `ttl: optional "5m" or "1h"`
+
+          The time-to-live for the cache control breakpoint.
+
+          This may be one the following values:
+
+          - `5m`: 5 minutes
+          - `1h`: 1 hour
+
+          Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+          - `"5m"`
+
+          - `"1h"`
+
+      - `citations: optional array of TextCitationParam`
+
+        - `citation_char_location_param: object`
+
+          - `type: "char_location"`
+
+          - `cited_text: string`
+
+          - `document_index: number`
+
+            minimum: 0
+
+          - `document_title: string`
+
+            minLength: 1, maxLength: 500
+
+          - `end_char_index: number`
+
+          - `start_char_index: number`
+
+            minimum: 0
+
+        - `citation_page_location_param: object`
+
+          - `type: "page_location"`
+
+          - `cited_text: string`
+
+          - `document_index: number`
+
+            minimum: 0
+
+          - `document_title: string`
+
+            minLength: 1, maxLength: 500
+
+          - `end_page_number: number`
+
+          - `start_page_number: number`
+
+            minimum: 1
+
+        - `citation_content_block_location_param: object`
+
+          - `type: "content_block_location"`
+
+          - `cited_text: string`
+
+            The full text of the cited block range, concatenated.
+
+            Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+          - `document_index: number`
+
+            minimum: 0
+
+          - `document_title: string`
+
+            minLength: 1, maxLength: 500
+
+          - `end_block_index: number`
+
+            Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+            Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+          - `start_block_index: number`
+
+            0-based index of the first cited block in the source's `content` array.
+
+            minimum: 0
+
+        - `citation_web_search_result_location_param: object`
+
+          - `type: "web_search_result_location"`
+
+          - `cited_text: string`
+
+          - `encrypted_index: string`
+
+          - `title: string`
+
+            minLength: 1, maxLength: 512
+
+          - `url: string`
+
+            minLength: 1
+
+        - `citation_search_result_location_param: object`
+
+          - `type: "search_result_location"`
+
+          - `cited_text: string`
+
+            The full text of the cited block range, concatenated.
+
+            Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+          - `end_block_index: number`
+
+            Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+            Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+          - `search_result_index: number`
+
+            0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+            Counted separately from `document_index`; server-side web search results are not included in this count.
+
+            minimum: 0
+
+          - `source: string`
+
+          - `start_block_index: number`
+
+            0-based index of the first cited block in the source's `content` array.
+
+            minimum: 0
+
+          - `title: string`
+
+    - `image_block_param: object`
+
+      - `type: "image"`
+
+      - `source: Base64ImageSource or URLImageSource or FileImageSource`
+
+        - `base64_image_source: object`
+
+          - `type: "base64"`
+
+          - `data: string`
+
+            format: byte
+
+          - `media_type: "image/jpeg" or "image/png" or "image/gif" or "image/webp"`
+
+            - `"image/jpeg"`
+
+            - `"image/png"`
+
+            - `"image/gif"`
+
+            - `"image/webp"`
+
+        - `url_image_source: object`
+
+          - `type: "url"`
+
+          - `url: string`
+
+        - `file_image_source: object`
+
+          - `type: "file"`
+
+          - `file_id: string`
+
+      - `cache_control: optional object`
+
+        Create a cache control breakpoint at this content block.
+
+        - `type: "ephemeral"`
+
+        - `ttl: optional "5m" or "1h"`
+
+          The time-to-live for the cache control breakpoint.
+
+          This may be one the following values:
+
+          - `5m`: 5 minutes
+          - `1h`: 1 hour
+
+          Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `transformations: optional object`
+
+        Configures the transformations the server applies to this image before the model observes it. Each key names a condition the server transforms images for; its value selects the transformation applied. Omitted keys keep their default behavior, and an empty object is equivalent to omitting the field.
+
+        - `oversized_image: optional "downsize" or "error"`
+
+          What the server does when this image exceeds the model's maximum image size. `"downsize"` (the default) scales the image down to fit, which changes the dimensions the model observes without telling you. `"error"` instead rejects the request with a 400 error naming the image's dimensions and the largest dimensions that fit, so you can scale the image deliberately — your image is never silently scaled down.
+
+          - `"downsize"`
+
+          - `"error"`
+
+    - `document_block_param: object`
+
+      - `type: "document"`
+
+      - `source: Base64PDFSource or PlainTextSource or ContentBlockSource or 2 more`
+
+        - `base64_pdf_source: object`
+
+          - `type: "base64"`
+
+          - `data: string`
+
+            format: byte
+
+          - `media_type: "application/pdf"`
+
+        - `plain_text_source: object`
+
+          - `type: "text"`
+
+          - `data: string`
+
+          - `media_type: "text/plain"`
+
+        - `content_block_source: object`
+
+          - `type: "content"`
+
+          - `content: string or array of ContentBlockSourceContent`
+
+            - `union_member_0: string`
+
+            - `content_block_source_content: array of ContentBlockSourceContent`
+
+              - `text_block_param: object`
+
+                - `type: "text"`
+
+                - `text: string`
+
+                  minLength: 1
+
+                - `cache_control: optional object`
+
+                  Create a cache control breakpoint at this content block.
+
+                - `citations: optional array of TextCitationParam`
+
+              - `image_block_param: object`
+
+                - `type: "image"`
+
+                - `source: Base64ImageSource or URLImageSource or FileImageSource`
+
+                - `cache_control: optional object`
+
+                  Create a cache control breakpoint at this content block.
+
+                - `transformations: optional object`
+
+                  Configures the transformations the server applies to this image before the model observes it. Each key names a condition the server transforms images for; its value selects the transformation applied. Omitted keys keep their default behavior, and an empty object is equivalent to omitting the field.
+
+        - `url_pdf_source: object`
+
+          - `type: "url"`
+
+          - `url: string`
+
+        - `file_document_source: object`
+
+          - `type: "file"`
+
+          - `file_id: string`
+
+      - `cache_control: optional object`
+
+        Create a cache control breakpoint at this content block.
+
+        - `type: "ephemeral"`
+
+        - `ttl: optional "5m" or "1h"`
+
+          The time-to-live for the cache control breakpoint.
+
+          This may be one the following values:
+
+          - `5m`: 5 minutes
+          - `1h`: 1 hour
+
+          Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `citations: optional object`
+
+        - `enabled: optional boolean`
+
+      - `context: optional string`
+
+        minLength: 1
+
+      - `title: optional string`
+
+        minLength: 1, maxLength: 500
+
+    - `search_result_block_param: object`
+
+      - `type: "search_result"`
+
+      - `content: array of TextBlockParam`
+
+        - `type: "text"`
+
+        - `text: string`
+
+          minLength: 1
+
+        - `cache_control: optional object`
+
+          Create a cache control breakpoint at this content block.
+
+        - `citations: optional array of TextCitationParam`
+
+      - `source: string`
+
+      - `title: string`
+
+      - `cache_control: optional object`
+
+        Create a cache control breakpoint at this content block.
+
+        - `type: "ephemeral"`
+
+        - `ttl: optional "5m" or "1h"`
+
+          The time-to-live for the cache control breakpoint.
+
+          This may be one the following values:
+
+          - `5m`: 5 minutes
+          - `1h`: 1 hour
+
+          Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `citations: optional object`
+
+        - `enabled: optional boolean`
+
+    - `thinking_block_param: object`
+
+      - `type: "thinking"`
+
+      - `signature: string`
+
+        The `signature` value of this thinking block, exactly as returned by the API in a previous response. Used to verify that the block was generated by Claude.
+
+        Thinking blocks must be passed back unmodified and in their original order; a modified block results in a 400 `invalid_request_error`.
+
+      - `thinking: string`
+
+        The `thinking` text of this block as returned by the API.
+
+    - `redacted_thinking_block_param: object`
+
+      - `type: "redacted_thinking"`
+
+      - `data: string`
+
+        The `data` value of this redacted thinking block, exactly as returned by the API in a previous response. Opaque and encrypted; pass it back unchanged.
+
+    - `tool_use_block_param: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `input: map[unknown]`
+
+      - `name: string`
+
+        minLength: 1, maxLength: 200
+
+      - `cache_control: optional object`
+
+        Create a cache control breakpoint at this content block.
+
+        - `type: "ephemeral"`
+
+        - `ttl: optional "5m" or "1h"`
+
+          The time-to-live for the cache control breakpoint.
+
+          This may be one the following values:
+
+          - `5m`: 5 minutes
+          - `1h`: 1 hour
+
+          Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `caller: optional DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+          - `type: "direct"`
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+          - `type: "code_execution_20250825"`
+
+          - `tool_id: string`
+
+            pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+        - `server_tool_caller_20260120: object`
+
+          - `type: "code_execution_20260120"`
+
+          - `tool_id: string`
+
+            pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `toolset_name: optional string`
+
+        For a toolset member tool_use, the toolset family this member belongs to.
+
+        minLength: 1, maxLength: 64, pattern: ^[a-zA-Z0-9_-]+$
+
+    - `tool_result_block_param: object`
+
+      - `type: "tool_result"`
+
+      - `tool_use_id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `cache_control: optional object`
+
+        Create a cache control breakpoint at this content block.
+
+        - `type: "ephemeral"`
+
+        - `ttl: optional "5m" or "1h"`
+
+          The time-to-live for the cache control breakpoint.
+
+          This may be one the following values:
+
+          - `5m`: 5 minutes
+          - `1h`: 1 hour
+
+          Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `content: optional array of TextBlockParam or ImageBlockParam or SearchResultBlockParam or 3 more`
+
+        - `text_block_param: object`
+
+          - `type: "text"`
+
+          - `text: string`
+
+            minLength: 1
+
+          - `cache_control: optional object`
+
+            Create a cache control breakpoint at this content block.
+
+          - `citations: optional array of TextCitationParam`
+
+        - `image_block_param: object`
+
+          - `type: "image"`
+
+          - `source: Base64ImageSource or URLImageSource or FileImageSource`
+
+          - `cache_control: optional object`
+
+            Create a cache control breakpoint at this content block.
+
+          - `transformations: optional object`
+
+            Configures the transformations the server applies to this image before the model observes it. Each key names a condition the server transforms images for; its value selects the transformation applied. Omitted keys keep their default behavior, and an empty object is equivalent to omitting the field.
+
+        - `search_result_block_param: object`
+
+          - `type: "search_result"`
+
+          - `content: array of TextBlockParam`
+
+          - `source: string`
+
+          - `title: string`
+
+          - `cache_control: optional object`
+
+            Create a cache control breakpoint at this content block.
+
+          - `citations: optional object`
+
+        - `document_block_param: object`
+
+          - `type: "document"`
+
+          - `source: Base64PDFSource or PlainTextSource or ContentBlockSource or 2 more`
+
+          - `cache_control: optional object`
+
+            Create a cache control breakpoint at this content block.
+
+          - `citations: optional object`
+
+          - `context: optional string`
+
+            minLength: 1
+
+          - `title: optional string`
+
+            minLength: 1, maxLength: 500
+
+        - `tool_reference_block_param: object`
+
+          Tool reference block that can be included in tool_result content.
+
+          - `type: "tool_reference"`
+
+          - `tool_name: string`
+
+            minLength: 1, maxLength: 256, pattern: ^[a-zA-Z0-9_-]{1,256}$
+
+          - `cache_control: optional object`
+
+            Create a cache control breakpoint at this content block.
+
+            - `type: "ephemeral"`
+
+            - `ttl: optional "5m" or "1h"`
+
+              The time-to-live for the cache control breakpoint.
+
+              This may be one the following values:
+
+              - `5m`: 5 minutes
+              - `1h`: 1 hour
+
+              Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+        - `browser_state_block_param: object`
+
+          The caller's browser state after a browser toolset member call —
+          the full inventory of open tabs, which tab is active, and any side
+          effects (tabs opened, download state changes) the call produced.
+
+          At most one per `tool_result`, only on a non-error result answering a
+          browser toolset member `tool_use`. The server renders the
+          model-visible text from it; the model never sees the raw fields.
+
+          - `type: "browser_state"`
+
+          - `tabs: array of BrowserStateTabEntry`
+
+            All tabs open in the browser after this call — the full inventory, not a delta. May be empty. Whenever non-empty, exactly one entry carries `active: true`.
+
+            maxItems: 100
+
+            - `tab_id: string`
+
+              The caller-assigned identifier for this tab, unique within the inventory.
+
+              minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+            - `title: string`
+
+              The title of the page the tab is showing. May be empty.
+
+              maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+            - `url: string`
+
+              The URL of the page the tab is showing. May be empty.
+
+              maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+            - `active: optional boolean`
+
+              Whether this tab is the active tab after this call. Whenever `tabs` is non-empty, exactly one entry is marked `active: true`.
+
+          - `cache_control: optional object`
+
+            Create a cache control breakpoint at this content block.
+
+            - `type: "ephemeral"`
+
+            - `ttl: optional "5m" or "1h"`
+
+              The time-to-live for the cache control breakpoint.
+
+              This may be one the following values:
+
+              - `5m`: 5 minutes
+              - `1h`: 1 hour
+
+              Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+          - `state_changes: optional array of BrowserStateChange`
+
+            Tabs opened and download state changes during this call. "Nothing to report" is expressed by omitting the field, never by an empty list.
+
+            minItems: 1, maxItems: 200
+
+            - `browser_state_change_tab_opened: object`
+
+              A tab this call's execution opened that remains open at its end —
+              the creation delta of the `tabs` inventory, not an event log.
+
+              Carries only the `tab_id`; the tab's `title` and `url` live on its
+              `tabs` entry, which must include the same `tab_id`. A tab opened
+              during a failed call gets no deferred `tab_opened`; it simply appears
+              in the next result's `tabs` inventory.
+
+              - `type: "tab_opened"`
+
+              - `tab_id: string`
+
+                The `tab_id` of the opened tab, present in `tabs`.
+
+                minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+            - `browser_state_change_download_started: object`
+
+              A file download that started during this call.
+
+              - `type: "download_started"`
+
+              - `download_id: string`
+
+                The caller-assigned identifier for this download, stable across the state changes reporting it.
+
+                minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+              - `url: string`
+
+                The final post-redirect URL the download was served from.
+
+                maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+            - `browser_state_change_download_completed: object`
+
+              A file download that finished during this call, reported with the
+              same `download_id` as its `download_started` — or without a prior
+              `download_started`, when the download finished during the call that
+              started it (at most one state change per `download_id` per result).
+
+              - `type: "download_completed"`
+
+              - `download_id: string`
+
+                The caller-assigned identifier for this download, stable across the state changes reporting it.
+
+                minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+              - `url: string`
+
+                The final post-redirect URL the download was served from.
+
+                maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+              - `path: optional string`
+
+                Where the executor saved the file, on the executor's filesystem. Only included when another tool in the same environment can read the file at that path.
+
+                maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+              - `size_bytes: optional number`
+
+                The completed download's size.
+
+                minimum: 0
+
+            - `browser_state_change_download_failed: object`
+
+              A file download that failed — or was cancelled — during this call.
+
+              - `type: "download_failed"`
+
+              - `download_id: string`
+
+                The caller-assigned identifier for this download, stable across the state changes reporting it.
+
+                minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+              - `url: string`
+
+                The final post-redirect URL the download was served from.
+
+                maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+              - `error: optional string`
+
+                The failure or cancellation detail, when known.
+
+                maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+      - `is_error: optional boolean`
+
+      - `toolset_name: optional string`
+
+        For a toolset member tool_result, the toolset family of the paired tool_use.
+
+        minLength: 1, maxLength: 64, pattern: ^[a-zA-Z0-9_-]+$
+
+    - `server_tool_use_block_param: object`
+
+      - `type: "server_tool_use"`
+
+      - `id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `input: map[unknown]`
+
+      - `name: "web_search" or "web_fetch" or "code_execution" or 4 more`
+
+        - `"web_search"`
+
+        - `"web_fetch"`
+
+        - `"code_execution"`
+
+        - `"bash_code_execution"`
+
+        - `"text_editor_code_execution"`
+
+        - `"tool_search_tool_regex"`
+
+        - `"tool_search_tool_bm25"`
+
+      - `cache_control: optional object`
+
+        Create a cache control breakpoint at this content block.
+
+        - `type: "ephemeral"`
+
+        - `ttl: optional "5m" or "1h"`
+
+          The time-to-live for the cache control breakpoint.
+
+          This may be one the following values:
+
+          - `5m`: 5 minutes
+          - `1h`: 1 hour
+
+          Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `caller: optional DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+    - `web_search_tool_result_block_param: object`
+
+      - `type: "web_search_tool_result"`
+
+      - `content: array of WebSearchResultBlockParam or WebSearchToolRequestError`
+
+        - `web_search_tool_result_block_item: array of WebSearchResultBlockParam`
+
+          - `type: "web_search_result"`
+
+          - `encrypted_content: string`
+
+          - `title: string`
+
+          - `url: string`
+
+          - `page_age: optional string`
+
+        - `web_search_tool_request_error: object`
+
+          - `type: "web_search_tool_result_error"`
+
+          - `error_code: "invalid_tool_input" or "unavailable" or "max_uses_exceeded" or 3 more`
+
+            - `"invalid_tool_input"`
+
+            - `"unavailable"`
+
+            - `"max_uses_exceeded"`
+
+            - `"too_many_requests"`
+
+            - `"query_too_long"`
+
+            - `"request_too_large"`
+
+      - `tool_use_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `cache_control: optional object`
+
+        Create a cache control breakpoint at this content block.
+
+        - `type: "ephemeral"`
+
+        - `ttl: optional "5m" or "1h"`
+
+          The time-to-live for the cache control breakpoint.
+
+          This may be one the following values:
+
+          - `5m`: 5 minutes
+          - `1h`: 1 hour
+
+          Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `caller: optional DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+    - `web_fetch_tool_result_block_param: object`
+
+      - `type: "web_fetch_tool_result"`
+
+      - `content: WebFetchToolResultErrorBlockParam or WebFetchBlockParam`
+
+        - `web_fetch_tool_result_error_block_param: object`
+
+          - `type: "web_fetch_tool_result_error"`
+
+          - `error_code: "invalid_tool_input" or "url_too_long" or "url_not_allowed" or 7 more`
+
+            - `"invalid_tool_input"`
+
+            - `"url_too_long"`
+
+            - `"url_not_allowed"`
+
+            - `"url_not_in_prior_context"`
+
+            - `"url_not_accessible"`
+
+            - `"unsupported_content_type"`
+
+            - `"too_many_requests"`
+
+            - `"max_uses_exceeded"`
+
+            - `"unavailable"`
+
+            - `"content_too_large"`
+
+        - `web_fetch_block_param: object`
+
+          - `type: "web_fetch_result"`
+
+          - `content: object`
+
+            - `type: "document"`
+
+            - `source: Base64PDFSource or PlainTextSource or ContentBlockSource or 2 more`
+
+            - `cache_control: optional object`
+
+              Create a cache control breakpoint at this content block.
+
+            - `citations: optional object`
+
+            - `context: optional string`
+
+              minLength: 1
+
+            - `title: optional string`
+
+              minLength: 1, maxLength: 500
+
+          - `url: string`
+
+            Fetched content URL
+
+          - `retrieved_at: optional string`
+
+            ISO 8601 timestamp when the content was retrieved
+
+      - `tool_use_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `cache_control: optional object`
+
+        Create a cache control breakpoint at this content block.
+
+        - `type: "ephemeral"`
+
+        - `ttl: optional "5m" or "1h"`
+
+          The time-to-live for the cache control breakpoint.
+
+          This may be one the following values:
+
+          - `5m`: 5 minutes
+          - `1h`: 1 hour
+
+          Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `caller: optional DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+    - `code_execution_tool_result_block_param: object`
+
+      - `type: "code_execution_tool_result"`
+
+      - `content: CodeExecutionToolResultErrorParam or CodeExecutionResultBlockParam or EncryptedCodeExecutionResultBlockParam`
+
+        - `code_execution_tool_result_error_param: object`
+
+          - `type: "code_execution_tool_result_error"`
+
+          - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+            - `"invalid_tool_input"`
+
+            - `"unavailable"`
+
+            - `"too_many_requests"`
+
+            - `"execution_time_exceeded"`
+
+        - `code_execution_result_block_param: object`
+
+          - `type: "code_execution_result"`
+
+          - `content: array of CodeExecutionOutputBlockParam`
+
+            - `type: "code_execution_output"`
+
+            - `file_id: string`
+
+          - `return_code: number`
+
+          - `stderr: string`
+
+          - `stdout: string`
+
+        - `encrypted_code_execution_result_block_param: object`
+
+          Code execution result with encrypted stdout for PFC + web_search results.
+
+          - `type: "encrypted_code_execution_result"`
+
+          - `content: array of CodeExecutionOutputBlockParam`
+
+            - `type: "code_execution_output"`
+
+            - `file_id: string`
+
+          - `encrypted_stdout: string`
+
+          - `return_code: number`
+
+          - `stderr: string`
+
+      - `tool_use_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `cache_control: optional object`
+
+        Create a cache control breakpoint at this content block.
+
+        - `type: "ephemeral"`
+
+        - `ttl: optional "5m" or "1h"`
+
+          The time-to-live for the cache control breakpoint.
+
+          This may be one the following values:
+
+          - `5m`: 5 minutes
+          - `1h`: 1 hour
+
+          Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `bash_code_execution_tool_result_block_param: object`
+
+      - `type: "bash_code_execution_tool_result"`
+
+      - `content: BashCodeExecutionToolResultErrorParam or BashCodeExecutionResultBlockParam`
+
+        - `bash_code_execution_tool_result_error_param: object`
+
+          - `type: "bash_code_execution_tool_result_error"`
+
+          - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+            - `"invalid_tool_input"`
+
+            - `"unavailable"`
+
+            - `"too_many_requests"`
+
+            - `"execution_time_exceeded"`
+
+            - `"output_file_too_large"`
+
+        - `bash_code_execution_result_block_param: object`
+
+          - `type: "bash_code_execution_result"`
+
+          - `content: array of BashCodeExecutionOutputBlockParam`
+
+            - `type: "bash_code_execution_output"`
+
+            - `file_id: string`
+
+          - `return_code: number`
+
+          - `stderr: string`
+
+          - `stdout: string`
+
+      - `tool_use_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `cache_control: optional object`
+
+        Create a cache control breakpoint at this content block.
+
+        - `type: "ephemeral"`
+
+        - `ttl: optional "5m" or "1h"`
+
+          The time-to-live for the cache control breakpoint.
+
+          This may be one the following values:
+
+          - `5m`: 5 minutes
+          - `1h`: 1 hour
+
+          Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `text_editor_code_execution_tool_result_block_param: object`
+
+      - `type: "text_editor_code_execution_tool_result"`
+
+      - `content: TextEditorCodeExecutionToolResultErrorParam or TextEditorCodeExecutionViewResultBlockParam or TextEditorCodeExecutionCreateResultBlockParam or TextEditorCodeExecutionStrReplaceResultBlockParam`
+
+        - `text_editor_code_execution_tool_result_error_param: object`
+
+          - `type: "text_editor_code_execution_tool_result_error"`
+
+          - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+            - `"invalid_tool_input"`
+
+            - `"unavailable"`
+
+            - `"too_many_requests"`
+
+            - `"execution_time_exceeded"`
+
+            - `"file_not_found"`
+
+          - `error_message: optional string`
+
+        - `text_editor_code_execution_view_result_block_param: object`
+
+          - `type: "text_editor_code_execution_view_result"`
+
+          - `content: string`
+
+          - `file_type: "text" or "image" or "pdf"`
+
+            - `"text"`
+
+            - `"image"`
+
+            - `"pdf"`
+
+          - `num_lines: optional number`
+
+          - `start_line: optional number`
+
+          - `total_lines: optional number`
+
+        - `text_editor_code_execution_create_result_block_param: object`
+
+          - `type: "text_editor_code_execution_create_result"`
+
+          - `is_file_update: boolean`
+
+        - `text_editor_code_execution_str_replace_result_block_param: object`
+
+          - `type: "text_editor_code_execution_str_replace_result"`
+
+          - `lines: optional array of string`
+
+          - `new_lines: optional number`
+
+          - `new_start: optional number`
+
+          - `old_lines: optional number`
+
+          - `old_start: optional number`
+
+      - `tool_use_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `cache_control: optional object`
+
+        Create a cache control breakpoint at this content block.
+
+        - `type: "ephemeral"`
+
+        - `ttl: optional "5m" or "1h"`
+
+          The time-to-live for the cache control breakpoint.
+
+          This may be one the following values:
+
+          - `5m`: 5 minutes
+          - `1h`: 1 hour
+
+          Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `tool_search_tool_result_block_param: object`
+
+      - `type: "tool_search_tool_result"`
+
+      - `content: ToolSearchToolResultErrorParam or ToolSearchToolSearchResultBlockParam`
+
+        - `tool_search_tool_result_error_param: object`
+
+          - `type: "tool_search_tool_result_error"`
+
+          - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+            - `"invalid_tool_input"`
+
+            - `"unavailable"`
+
+            - `"too_many_requests"`
+
+            - `"execution_time_exceeded"`
+
+          - `error_message: optional string`
+
+        - `tool_search_tool_search_result_block_param: object`
+
+          - `type: "tool_search_tool_search_result"`
+
+          - `tool_references: array of ToolReferenceBlockParam`
+
+            - `type: "tool_reference"`
+
+            - `tool_name: string`
+
+              minLength: 1, maxLength: 256, pattern: ^[a-zA-Z0-9_-]{1,256}$
+
+            - `cache_control: optional object`
+
+              Create a cache control breakpoint at this content block.
+
+      - `tool_use_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `cache_control: optional object`
+
+        Create a cache control breakpoint at this content block.
+
+        - `type: "ephemeral"`
+
+        - `ttl: optional "5m" or "1h"`
+
+          The time-to-live for the cache control breakpoint.
+
+          This may be one the following values:
+
+          - `5m`: 5 minutes
+          - `1h`: 1 hour
+
+          Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `container_upload_block_param: object`
+
+      A content block that represents a file to be uploaded to the container
+      Files uploaded via this block will be available in the container's input directory.
+
+      - `type: "container_upload"`
+
+      - `file_id: string`
+
+      - `cache_control: optional object`
+
+        Create a cache control breakpoint at this content block.
+
+        - `type: "ephemeral"`
+
+        - `ttl: optional "5m" or "1h"`
+
+          The time-to-live for the cache control breakpoint.
+
+          This may be one the following values:
+
+          - `5m`: 5 minutes
+          - `1h`: 1 hour
+
+          Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+  - `role: "user" or "assistant" or "system"`
+
+    - `"user"`
+
+    - `"assistant"`
+
+    - `"system"`
+
+### Message Tokens Count
+
+- `message_tokens_count: object`
+
+  - `input_tokens: number`
+
+    The total number of tokens across the provided list of messages, system prompt, and tools.
+
+### Metadata
+
+- `metadata: object`
+
+  - `user_id: optional string`
+
+    An external identifier for the user who is associated with the request.
+
+    This should be a uuid, hash value, or other opaque identifier. Anthropic may use this id to help detect abuse. Do not include any identifying information such as name, email address, or phone number.
+
+    maxLength: 512
+
+### Output Config
+
+- `output_config: object`
+
+  - `effort: optional "low" or "medium" or "high" or 2 more`
+
+    How much effort the model should put into its response. Higher effort levels may result in more thorough analysis but take longer.
+
+    Valid values are `low`, `medium`, `high`, `xhigh`, or `max`.
+
+    - `"low"`
+
+    - `"medium"`
+
+    - `"high"`
+
+    - `"xhigh"`
+
+    - `"max"`
+
+  - `format: optional object`
+
+    A schema to specify Claude's output format in responses. See [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli)
+
+    - `type: "json_schema"`
+
+    - `schema: map[unknown]`
+
+      The JSON schema of the format
+
+### Output Tokens Details
+
+- `output_tokens_details: object`
+
+  - `thinking_tokens: number`
+
+    Number of output tokens the model generated as internal reasoning, including
+    the thinking-block delimiter tokens.
+
+    Reflects the raw reasoning the model produced, not the (possibly shorter)
+    summarized thinking text returned in the response body. Computed by
+    re-tokenizing the raw reasoning text, so it may differ from the model's exact
+    generation count by a small number of tokens. Always ≤ `output_tokens`;
+    `output_tokens - thinking_tokens` approximates the non-reasoning output.
+
+    minimum: 0
+
+### Plain Text Source
+
+- `plain_text_source: object`
+
+  - `type: "text"`
+
+  - `data: string`
+
+  - `media_type: "text/plain"`
+
+### Raw Content Block Delta
+
+- `raw_content_block_delta: TextDelta or InputJSONDelta or CitationsDelta or 2 more`
+
+  - `text_delta: object`
+
+    - `type: "text_delta"`
+
+    - `text: string`
+
+  - `input_json_delta: object`
+
+    - `type: "input_json_delta"`
+
+    - `partial_json: string`
+
+  - `citations_delta: object`
+
+    - `type: "citations_delta"`
+
+    - `citation: CitationCharLocation or CitationPageLocation or CitationContentBlockLocation or 2 more`
+
+      - `citation_char_location: object`
+
+        - `type: "char_location"`
+
+        - `cited_text: string`
+
+        - `document_index: number`
+
+          minimum: 0
+
+        - `document_title: string`
+
+        - `end_char_index: number`
+
+        - `file_id: string`
+
+        - `start_char_index: number`
+
+          minimum: 0
+
+      - `citation_page_location: object`
+
+        - `type: "page_location"`
+
+        - `cited_text: string`
+
+        - `document_index: number`
+
+          minimum: 0
+
+        - `document_title: string`
+
+        - `end_page_number: number`
+
+        - `file_id: string`
+
+        - `start_page_number: number`
+
+          minimum: 1
+
+      - `citation_content_block_location: object`
+
+        - `type: "content_block_location"`
+
+        - `cited_text: string`
+
+          The full text of the cited block range, concatenated.
+
+          Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+        - `document_index: number`
+
+          minimum: 0
+
+        - `document_title: string`
+
+        - `end_block_index: number`
+
+          Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+          Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+        - `file_id: string`
+
+        - `start_block_index: number`
+
+          0-based index of the first cited block in the source's `content` array.
+
+          minimum: 0
+
+      - `citations_web_search_result_location: object`
+
+        - `type: "web_search_result_location"`
+
+        - `cited_text: string`
+
+        - `encrypted_index: string`
+
+        - `title: string`
+
+          maxLength: 512
+
+        - `url: string`
+
+      - `citations_search_result_location: object`
+
+        - `type: "search_result_location"`
+
+        - `cited_text: string`
+
+          The full text of the cited block range, concatenated.
+
+          Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+        - `end_block_index: number`
+
+          Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+          Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+        - `search_result_index: number`
+
+          0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+          Counted separately from `document_index`; server-side web search results are not included in this count.
+
+          minimum: 0
+
+        - `source: string`
+
+        - `start_block_index: number`
+
+          0-based index of the first cited block in the source's `content` array.
+
+          minimum: 0
+
+        - `title: string`
+
+  - `thinking_delta: object`
+
+    - `type: "thinking_delta"`
+
+    - `thinking: string`
+
+      The incremental `thinking` text for this content block. Concatenate the `thinking` values of successive `thinking_delta` events to assemble the block's full `thinking` value.
+
+  - `signature_delta: object`
+
+    - `type: "signature_delta"`
+
+    - `signature: string`
+
+      The `signature` for this thinking block: an opaque value used to verify that the block was generated by Claude when it is passed back to the API. Delivered in a `signature_delta` event just before the block's `content_block_stop` event.
+
+### Raw Content Block Delta Event
+
+- `raw_content_block_delta_event: object`
+
+  - `type: "content_block_delta"`
+
+  - `delta: TextDelta or InputJSONDelta or CitationsDelta or 2 more`
+
+    - `text_delta: object`
+
+      - `type: "text_delta"`
+
+      - `text: string`
+
+    - `input_json_delta: object`
+
+      - `type: "input_json_delta"`
+
+      - `partial_json: string`
+
+    - `citations_delta: object`
+
+      - `type: "citations_delta"`
+
+      - `citation: CitationCharLocation or CitationPageLocation or CitationContentBlockLocation or 2 more`
+
+        - `citation_char_location: object`
+
+          - `type: "char_location"`
+
+          - `cited_text: string`
+
+          - `document_index: number`
+
+            minimum: 0
+
+          - `document_title: string`
+
+          - `end_char_index: number`
+
+          - `file_id: string`
+
+          - `start_char_index: number`
+
+            minimum: 0
+
+        - `citation_page_location: object`
+
+          - `type: "page_location"`
+
+          - `cited_text: string`
+
+          - `document_index: number`
+
+            minimum: 0
+
+          - `document_title: string`
+
+          - `end_page_number: number`
+
+          - `file_id: string`
+
+          - `start_page_number: number`
+
+            minimum: 1
+
+        - `citation_content_block_location: object`
+
+          - `type: "content_block_location"`
+
+          - `cited_text: string`
+
+            The full text of the cited block range, concatenated.
+
+            Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+          - `document_index: number`
+
+            minimum: 0
+
+          - `document_title: string`
+
+          - `end_block_index: number`
+
+            Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+            Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+          - `file_id: string`
+
+          - `start_block_index: number`
+
+            0-based index of the first cited block in the source's `content` array.
+
+            minimum: 0
+
+        - `citations_web_search_result_location: object`
+
+          - `type: "web_search_result_location"`
+
+          - `cited_text: string`
+
+          - `encrypted_index: string`
+
+          - `title: string`
+
+            maxLength: 512
+
+          - `url: string`
+
+        - `citations_search_result_location: object`
+
+          - `type: "search_result_location"`
+
+          - `cited_text: string`
+
+            The full text of the cited block range, concatenated.
+
+            Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+          - `end_block_index: number`
+
+            Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+            Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+          - `search_result_index: number`
+
+            0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+            Counted separately from `document_index`; server-side web search results are not included in this count.
+
+            minimum: 0
+
+          - `source: string`
+
+          - `start_block_index: number`
+
+            0-based index of the first cited block in the source's `content` array.
+
+            minimum: 0
+
+          - `title: string`
+
+    - `thinking_delta: object`
+
+      - `type: "thinking_delta"`
+
+      - `thinking: string`
+
+        The incremental `thinking` text for this content block. Concatenate the `thinking` values of successive `thinking_delta` events to assemble the block's full `thinking` value.
+
+    - `signature_delta: object`
+
+      - `type: "signature_delta"`
+
+      - `signature: string`
+
+        The `signature` for this thinking block: an opaque value used to verify that the block was generated by Claude when it is passed back to the API. Delivered in a `signature_delta` event just before the block's `content_block_stop` event.
+
+  - `index: number`
+
+### Raw Content Block Start Event
+
+- `raw_content_block_start_event: object`
+
+  - `type: "content_block_start"`
+
+  - `content_block: TextBlock or ThinkingBlock or RedactedThinkingBlock or 9 more`
+
+    - `text_block: object`
+
+      - `type: "text"`
+
+      - `citations: array of TextCitation`
+
+        Citations supporting the text block.
+
+        The type of citation returned will depend on the type of document being cited. Citing a PDF results in `page_location`, plain text results in `char_location`, and content document results in `content_block_location`.
+
+        - `citation_char_location: object`
+
+          - `type: "char_location"`
+
+          - `cited_text: string`
+
+          - `document_index: number`
+
+            minimum: 0
+
+          - `document_title: string`
+
+          - `end_char_index: number`
+
+          - `file_id: string`
+
+          - `start_char_index: number`
+
+            minimum: 0
+
+        - `citation_page_location: object`
+
+          - `type: "page_location"`
+
+          - `cited_text: string`
+
+          - `document_index: number`
+
+            minimum: 0
+
+          - `document_title: string`
+
+          - `end_page_number: number`
+
+          - `file_id: string`
+
+          - `start_page_number: number`
+
+            minimum: 1
+
+        - `citation_content_block_location: object`
+
+          - `type: "content_block_location"`
+
+          - `cited_text: string`
+
+            The full text of the cited block range, concatenated.
+
+            Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+          - `document_index: number`
+
+            minimum: 0
+
+          - `document_title: string`
+
+          - `end_block_index: number`
+
+            Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+            Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+          - `file_id: string`
+
+          - `start_block_index: number`
+
+            0-based index of the first cited block in the source's `content` array.
+
+            minimum: 0
+
+        - `citations_web_search_result_location: object`
+
+          - `type: "web_search_result_location"`
+
+          - `cited_text: string`
+
+          - `encrypted_index: string`
+
+          - `title: string`
+
+            maxLength: 512
+
+          - `url: string`
+
+        - `citations_search_result_location: object`
+
+          - `type: "search_result_location"`
+
+          - `cited_text: string`
+
+            The full text of the cited block range, concatenated.
+
+            Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+          - `end_block_index: number`
+
+            Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+            Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+          - `search_result_index: number`
+
+            0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+            Counted separately from `document_index`; server-side web search results are not included in this count.
+
+            minimum: 0
+
+          - `source: string`
+
+          - `start_block_index: number`
+
+            0-based index of the first cited block in the source's `content` array.
+
+            minimum: 0
+
+          - `title: string`
+
+      - `text: string`
+
+    - `thinking_block: object`
+
+      - `type: "thinking"`
+
+      - `signature: string`
+
+        A value used to verify that this thinking block was generated by Claude when it is passed back to the API.
+
+        This is an opaque field and should not be interpreted or parsed. When passing thinking blocks back to the API (required when using tools with extended thinking), pass them back exactly as received, with this field intact.
+
+        See [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli) for details.
+
+      - `thinking: string`
+
+        The text of Claude's thinking process for this block.
+
+    - `redacted_thinking_block: object`
+
+      - `type: "redacted_thinking"`
+
+      - `data: string`
+
+        The contents of this redacted thinking block, returned when portions of the model's thinking were safety-redacted. This field is opaque and encrypted, with no readable content.
+
+        Pass `redacted_thinking` blocks back to the API unchanged when continuing a multi-turn conversation.
+
+        See [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli#redacted-thinking-blocks) for details.
+
+    - `tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+          - `type: "direct"`
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+          - `type: "code_execution_20250825"`
+
+          - `tool_id: string`
+
+            pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+        - `server_tool_caller_20260120: object`
+
+          - `type: "code_execution_20260120"`
+
+          - `tool_id: string`
+
+            pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `input: map[unknown]`
+
+      - `name: string`
+
+        minLength: 1
+
+      - `toolset_name: optional string`
+
+        For a toolset member tool_use, the toolset family.
+
+        minLength: 1, maxLength: 64, pattern: ^[a-zA-Z0-9_-]+$
+
+    - `server_tool_use_block: object`
+
+      - `type: "server_tool_use"`
+
+      - `id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: map[unknown]`
+
+      - `name: "web_search" or "web_fetch" or "code_execution" or 4 more`
+
+        - `"web_search"`
+
+        - `"web_fetch"`
+
+        - `"code_execution"`
+
+        - `"bash_code_execution"`
+
+        - `"text_editor_code_execution"`
+
+        - `"tool_search_tool_regex"`
+
+        - `"tool_search_tool_bm25"`
+
+    - `web_search_tool_result_block: object`
+
+      - `type: "web_search_tool_result"`
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `content: WebSearchToolResultError or array of WebSearchResultBlock`
+
+        - `web_search_tool_result_error: object`
+
+          - `type: "web_search_tool_result_error"`
+
+          - `error_code: "invalid_tool_input" or "unavailable" or "max_uses_exceeded" or 3 more`
+
+            - `"invalid_tool_input"`
+
+            - `"unavailable"`
+
+            - `"max_uses_exceeded"`
+
+            - `"too_many_requests"`
+
+            - `"query_too_long"`
+
+            - `"request_too_large"`
+
+        - `union_member_1: array of WebSearchResultBlock`
+
+          - `type: "web_search_result"`
+
+          - `encrypted_content: string`
+
+          - `page_age: string`
+
+          - `title: string`
+
+          - `url: string`
+
+      - `tool_use_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `web_fetch_tool_result_block: object`
+
+      - `type: "web_fetch_tool_result"`
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `content: WebFetchToolResultErrorBlock or WebFetchBlock`
+
+        - `web_fetch_tool_result_error_block: object`
+
+          - `type: "web_fetch_tool_result_error"`
+
+          - `error_code: "invalid_tool_input" or "url_too_long" or "url_not_allowed" or 7 more`
+
+            - `"invalid_tool_input"`
+
+            - `"url_too_long"`
+
+            - `"url_not_allowed"`
+
+            - `"url_not_in_prior_context"`
+
+            - `"url_not_accessible"`
+
+            - `"unsupported_content_type"`
+
+            - `"too_many_requests"`
+
+            - `"max_uses_exceeded"`
+
+            - `"unavailable"`
+
+            - `"content_too_large"`
+
+        - `web_fetch_block: object`
+
+          - `type: "web_fetch_result"`
+
+          - `content: object`
+
+            - `type: "document"`
+
+            - `citations: object`
+
+              Citation configuration for the document
+
+              - `enabled: boolean`
+
+            - `source: Base64PDFSource or PlainTextSource`
+
+              - `base64_pdf_source: object`
+
+                - `type: "base64"`
+
+                - `data: string`
+
+                  format: byte
+
+                - `media_type: "application/pdf"`
+
+              - `plain_text_source: object`
+
+                - `type: "text"`
+
+                - `data: string`
+
+                - `media_type: "text/plain"`
+
+            - `title: string`
+
+              The title of the document
+
+          - `retrieved_at: string`
+
+            ISO 8601 timestamp when the content was retrieved
+
+          - `url: string`
+
+            Fetched content URL
+
+      - `tool_use_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `code_execution_tool_result_block: object`
+
+      - `type: "code_execution_tool_result"`
+
+      - `content: CodeExecutionToolResultError or CodeExecutionResultBlock or EncryptedCodeExecutionResultBlock`
+
+        - `code_execution_tool_result_error: object`
+
+          - `type: "code_execution_tool_result_error"`
+
+          - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+            - `"invalid_tool_input"`
+
+            - `"unavailable"`
+
+            - `"too_many_requests"`
+
+            - `"execution_time_exceeded"`
+
+        - `code_execution_result_block: object`
+
+          - `type: "code_execution_result"`
+
+          - `content: array of CodeExecutionOutputBlock`
+
+            - `type: "code_execution_output"`
+
+            - `file_id: string`
+
+          - `return_code: number`
+
+          - `stderr: string`
+
+          - `stdout: string`
+
+        - `encrypted_code_execution_result_block: object`
+
+          Code execution result with encrypted stdout for PFC + web_search results.
+
+          - `type: "encrypted_code_execution_result"`
+
+          - `content: array of CodeExecutionOutputBlock`
+
+            - `type: "code_execution_output"`
+
+            - `file_id: string`
+
+          - `encrypted_stdout: string`
+
+          - `return_code: number`
+
+          - `stderr: string`
+
+      - `tool_use_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `bash_code_execution_tool_result_block: object`
+
+      - `type: "bash_code_execution_tool_result"`
+
+      - `content: BashCodeExecutionToolResultError or BashCodeExecutionResultBlock`
+
+        - `bash_code_execution_tool_result_error: object`
+
+          - `type: "bash_code_execution_tool_result_error"`
+
+          - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+            - `"invalid_tool_input"`
+
+            - `"unavailable"`
+
+            - `"too_many_requests"`
+
+            - `"execution_time_exceeded"`
+
+            - `"output_file_too_large"`
+
+        - `bash_code_execution_result_block: object`
+
+          - `type: "bash_code_execution_result"`
+
+          - `content: array of BashCodeExecutionOutputBlock`
+
+            - `type: "bash_code_execution_output"`
+
+            - `file_id: string`
+
+          - `return_code: number`
+
+          - `stderr: string`
+
+          - `stdout: string`
+
+      - `tool_use_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `text_editor_code_execution_tool_result_block: object`
+
+      - `type: "text_editor_code_execution_tool_result"`
+
+      - `content: TextEditorCodeExecutionToolResultError or TextEditorCodeExecutionViewResultBlock or TextEditorCodeExecutionCreateResultBlock or TextEditorCodeExecutionStrReplaceResultBlock`
+
+        - `text_editor_code_execution_tool_result_error: object`
+
+          - `type: "text_editor_code_execution_tool_result_error"`
+
+          - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+            - `"invalid_tool_input"`
+
+            - `"unavailable"`
+
+            - `"too_many_requests"`
+
+            - `"execution_time_exceeded"`
+
+            - `"file_not_found"`
+
+          - `error_message: string`
+
+        - `text_editor_code_execution_view_result_block: object`
+
+          - `type: "text_editor_code_execution_view_result"`
+
+          - `content: string`
+
+          - `file_type: "text" or "image" or "pdf"`
+
+            - `"text"`
+
+            - `"image"`
+
+            - `"pdf"`
+
+          - `num_lines: number`
+
+          - `start_line: number`
+
+          - `total_lines: number`
+
+        - `text_editor_code_execution_create_result_block: object`
+
+          - `type: "text_editor_code_execution_create_result"`
+
+          - `is_file_update: boolean`
+
+        - `text_editor_code_execution_str_replace_result_block: object`
+
+          - `type: "text_editor_code_execution_str_replace_result"`
+
+          - `lines: array of string`
+
+          - `new_lines: number`
+
+          - `new_start: number`
+
+          - `old_lines: number`
+
+          - `old_start: number`
+
+      - `tool_use_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `tool_search_tool_result_block: object`
+
+      - `type: "tool_search_tool_result"`
+
+      - `content: ToolSearchToolResultError or ToolSearchToolSearchResultBlock`
+
+        - `tool_search_tool_result_error: object`
+
+          - `type: "tool_search_tool_result_error"`
+
+          - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+            - `"invalid_tool_input"`
+
+            - `"unavailable"`
+
+            - `"too_many_requests"`
+
+            - `"execution_time_exceeded"`
+
+          - `error_message: string`
+
+        - `tool_search_tool_search_result_block: object`
+
+          - `type: "tool_search_tool_search_result"`
+
+          - `tool_references: array of ToolReferenceBlock`
+
+            - `type: "tool_reference"`
+
+            - `tool_name: string`
+
+              minLength: 1, maxLength: 256, pattern: ^[a-zA-Z0-9_-]{1,256}$
+
+      - `tool_use_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `container_upload_block: object`
+
+      Response model for a file uploaded to the container.
+
+      - `type: "container_upload"`
+
+      - `file_id: string`
+
+  - `index: number`
+
+### Raw Content Block Stop Event
+
+- `raw_content_block_stop_event: object`
+
+  - `type: "content_block_stop"`
+
+  - `index: number`
+
+### Raw Message Delta Event
+
+- `raw_message_delta_event: object`
+
+  - `type: "message_delta"`
+
+  - `delta: object`
+
+    - `container: object`
+
+      Information about the container used in this request.
+
+      This will be non-null if a container tool (e.g. code execution) was used.
+
+      - `id: string`
+
+        Identifier for the container used in this request
+
+      - `expires_at: string`
+
+        The time at which the container will expire.
+
+        format: date-time
+
+      - `skills: array of ContainerSkill`
+
+        Skills loaded in the container
+
+        - `type: "anthropic" or "custom"`
+
+          Type of skill - either 'anthropic' (built-in) or 'custom' (user-defined)
+
+          - `"anthropic"`
+
+          - `"custom"`
+
+        - `skill_id: string`
+
+          Skill ID
+
+          minLength: 1, maxLength: 64
+
+        - `version: string`
+
+          The resolved version: a skill version ID for custom skills.
+
+          minLength: 1, maxLength: 64
+
+    - `stop_details: object`
+
+      Structured information about why model output stopped.
+
+      This is `null` when the `stop_reason` has no additional detail to report.
+
+      - `type: "refusal"`
+
+      - `category: "cyber" or "bio" or "frontier_llm" or 2 more`
+
+        The policy category that triggered the refusal.
+
+        `null` when the refusal doesn't map to a named category.
+
+        - `"cyber"`
+
+          The request could enable cyber harm, such as malware or exploit development. Benign cybersecurity work can also trigger this category.
+
+        - `"bio"`
+
+          The request could enable biological harm, such as dangerous lab methods. Beneficial life sciences work can also trigger this category.
+
+        - `"frontier_llm"`
+
+          The request could assist the development of competing AI models, which is restricted under [Anthropic's commercial terms](https://www.anthropic.com/legal/commercial-terms). Benign machine learning work can also trigger this category.
+
+        - `"reasoning_extraction"`
+
+          The request asks the model to reproduce its internal reasoning in the response text. To get reasoning in a structured form instead, use [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking?sdk_languages=cli).
+
+        - `"general_harms"`
+
+          The request could be related to an area that was determined as harmful. Benign work might sometimes trigger this category.
+
+      - `explanation: string`
+
+        Human-readable explanation of the refusal.
+
+        This text is not guaranteed to be stable. `null` when no explanation is available for the category.
+
+    - `stop_reason: "end_turn" or "max_tokens" or "stop_sequence" or 4 more`
+
+      - `"end_turn"`
+
+      - `"max_tokens"`
+
+      - `"stop_sequence"`
+
+      - `"tool_use"`
+
+      - `"pause_turn"`
+
+      - `"refusal"`
+
+      - `"model_context_window_exceeded"`
+
+    - `stop_sequence: string`
+
+  - `usage: object`
+
+    Billing and rate-limit usage.
+
+    Anthropic's API bills and rate-limits by token counts, as tokens represent the underlying cost to our systems.
+
+    Under the hood, the API transforms requests into a format suitable for the model. The model's output then goes through a parsing stage before becoming an API response. As a result, the token counts in `usage` will not match one-to-one with the exact visible content of an API request or response.
+
+    For example, `output_tokens` will be non-zero, even for an empty string response from Claude.
+
+    Total input tokens in a request is the summation of `input_tokens`, `cache_creation_input_tokens`, and `cache_read_input_tokens`.
+
+    - `cache_creation_input_tokens: number`
+
+      The cumulative number of input tokens used to create the cache entry.
+
+      minimum: 0
+
+    - `cache_read_input_tokens: number`
+
+      The cumulative number of input tokens read from the cache.
+
+      minimum: 0
+
+    - `input_tokens: number`
+
+      The cumulative number of input tokens which were used.
+
+      minimum: 0
+
+    - `output_tokens: number`
+
+      The cumulative number of output tokens which were used.
+
+    - `output_tokens_details: object`
+
+      Breakdown of output tokens by category.
+
+      `output_tokens` remains the inclusive, authoritative total used for billing.
+      This object provides a read-only decomposition for observability — for example,
+      how many of the billed output tokens were spent on internal reasoning that may
+      have been summarized before being returned to you.
+
+      - `thinking_tokens: number`
+
+        Number of output tokens the model generated as internal reasoning, including
+        the thinking-block delimiter tokens.
+
+        Reflects the raw reasoning the model produced, not the (possibly shorter)
+        summarized thinking text returned in the response body. Computed by
+        re-tokenizing the raw reasoning text, so it may differ from the model's exact
+        generation count by a small number of tokens. Always ≤ `output_tokens`;
+        `output_tokens - thinking_tokens` approximates the non-reasoning output.
+
+        minimum: 0
+
+    - `server_tool_use: object`
+
+      The number of server tool requests.
+
+      - `web_fetch_requests: number`
+
+        The number of web fetch tool requests.
+
+        minimum: 0
+
+      - `web_search_requests: number`
+
+        The number of web search tool requests.
+
+        minimum: 0
+
+### Raw Message Start Event
+
+- `raw_message_start_event: object`
+
+  - `type: "message_start"`
+
+  - `message: object`
+
+    - `type: "message"`
+
+      Object type.
+
+      For Messages, this is always `"message"`.
+
+    - `id: string`
+
+      Unique object identifier.
+
+      The format and length of IDs may change over time.
+
+    - `container: object`
+
+      Information about the container used in this request.
+
+      This will be non-null if a container tool (e.g. code execution) was used.
+
+      - `id: string`
+
+        Identifier for the container used in this request
+
+      - `expires_at: string`
+
+        The time at which the container will expire.
+
+        format: date-time
+
+      - `skills: array of ContainerSkill`
+
+        Skills loaded in the container
+
+        - `type: "anthropic" or "custom"`
+
+          Type of skill - either 'anthropic' (built-in) or 'custom' (user-defined)
+
+          - `"anthropic"`
+
+          - `"custom"`
+
+        - `skill_id: string`
+
+          Skill ID
+
+          minLength: 1, maxLength: 64
+
+        - `version: string`
+
+          The resolved version: a skill version ID for custom skills.
+
+          minLength: 1, maxLength: 64
+
+    - `content: array of ContentBlock`
+
+      Content generated by the model.
+
+      This is an array of content blocks, each of which has a `type` that determines its shape.
+
+      Example:
+
+      ```json
+      [{"type": "text", "text": "Hi, I'm Claude."}]
+      ```
+
+      If the request input `messages` ended with an `assistant` turn, then the response `content` will continue directly from that last turn. You can use this to constrain the model's output.
+
+      For example, if the input `messages` were:
+
+      ```json
+      [
+        {"role": "user", "content": "What's the Greek name for Sun? (A) Sol (B) Helios (C) Sun"},
+        {"role": "assistant", "content": "The best answer is ("}
+      ]
+      ```
+
+      Then the response `content` might be:
+
+      ```json
+      [{"type": "text", "text": "B)"}]
+      ```
+
+      - `text_block: object`
+
+        - `type: "text"`
+
+        - `citations: array of TextCitation`
+
+          Citations supporting the text block.
+
+          The type of citation returned will depend on the type of document being cited. Citing a PDF results in `page_location`, plain text results in `char_location`, and content document results in `content_block_location`.
+
+          - `citation_char_location: object`
+
+            - `type: "char_location"`
+
+            - `cited_text: string`
+
+            - `document_index: number`
+
+              minimum: 0
+
+            - `document_title: string`
+
+            - `end_char_index: number`
+
+            - `file_id: string`
+
+            - `start_char_index: number`
+
+              minimum: 0
+
+          - `citation_page_location: object`
+
+            - `type: "page_location"`
+
+            - `cited_text: string`
+
+            - `document_index: number`
+
+              minimum: 0
+
+            - `document_title: string`
+
+            - `end_page_number: number`
+
+            - `file_id: string`
+
+            - `start_page_number: number`
+
+              minimum: 1
+
+          - `citation_content_block_location: object`
+
+            - `type: "content_block_location"`
+
+            - `cited_text: string`
+
+              The full text of the cited block range, concatenated.
+
+              Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+            - `document_index: number`
+
+              minimum: 0
+
+            - `document_title: string`
+
+            - `end_block_index: number`
+
+              Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+              Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+            - `file_id: string`
+
+            - `start_block_index: number`
+
+              0-based index of the first cited block in the source's `content` array.
+
+              minimum: 0
+
+          - `citations_web_search_result_location: object`
+
+            - `type: "web_search_result_location"`
+
+            - `cited_text: string`
+
+            - `encrypted_index: string`
+
+            - `title: string`
+
+              maxLength: 512
+
+            - `url: string`
+
+          - `citations_search_result_location: object`
+
+            - `type: "search_result_location"`
+
+            - `cited_text: string`
+
+              The full text of the cited block range, concatenated.
+
+              Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+            - `end_block_index: number`
+
+              Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+              Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+            - `search_result_index: number`
+
+              0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+              Counted separately from `document_index`; server-side web search results are not included in this count.
+
+              minimum: 0
+
+            - `source: string`
+
+            - `start_block_index: number`
+
+              0-based index of the first cited block in the source's `content` array.
+
+              minimum: 0
+
+            - `title: string`
+
+        - `text: string`
+
+      - `thinking_block: object`
+
+        - `type: "thinking"`
+
+        - `signature: string`
+
+          A value used to verify that this thinking block was generated by Claude when it is passed back to the API.
+
+          This is an opaque field and should not be interpreted or parsed. When passing thinking blocks back to the API (required when using tools with extended thinking), pass them back exactly as received, with this field intact.
+
+          See [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli) for details.
+
+        - `thinking: string`
+
+          The text of Claude's thinking process for this block.
+
+      - `redacted_thinking_block: object`
+
+        - `type: "redacted_thinking"`
+
+        - `data: string`
+
+          The contents of this redacted thinking block, returned when portions of the model's thinking were safety-redacted. This field is opaque and encrypted, with no readable content.
+
+          Pass `redacted_thinking` blocks back to the API unchanged when continuing a multi-turn conversation.
+
+          See [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli#redacted-thinking-blocks) for details.
+
+      - `tool_use_block: object`
+
+        - `type: "tool_use"`
+
+        - `id: string`
+
+          pattern: ^[a-zA-Z0-9_-]+$
+
+        - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+          - `direct_caller: object`
+
+            Tool invocation directly from the model.
+
+            - `type: "direct"`
+
+          - `server_tool_caller: object`
+
+            Tool invocation generated by a server-side tool.
+
+            - `type: "code_execution_20250825"`
+
+            - `tool_id: string`
+
+              pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+          - `server_tool_caller_20260120: object`
+
+            - `type: "code_execution_20260120"`
+
+            - `tool_id: string`
+
+              pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+        - `input: map[unknown]`
+
+        - `name: string`
+
+          minLength: 1
+
+        - `toolset_name: optional string`
+
+          For a toolset member tool_use, the toolset family.
+
+          minLength: 1, maxLength: 64, pattern: ^[a-zA-Z0-9_-]+$
+
+      - `server_tool_use_block: object`
+
+        - `type: "server_tool_use"`
+
+        - `id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+        - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+          - `direct_caller: object`
+
+            Tool invocation directly from the model.
+
+          - `server_tool_caller: object`
+
+            Tool invocation generated by a server-side tool.
+
+          - `server_tool_caller_20260120: object`
+
+        - `input: map[unknown]`
+
+        - `name: "web_search" or "web_fetch" or "code_execution" or 4 more`
+
+          - `"web_search"`
+
+          - `"web_fetch"`
+
+          - `"code_execution"`
+
+          - `"bash_code_execution"`
+
+          - `"text_editor_code_execution"`
+
+          - `"tool_search_tool_regex"`
+
+          - `"tool_search_tool_bm25"`
+
+      - `web_search_tool_result_block: object`
+
+        - `type: "web_search_tool_result"`
+
+        - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+          - `direct_caller: object`
+
+            Tool invocation directly from the model.
+
+          - `server_tool_caller: object`
+
+            Tool invocation generated by a server-side tool.
+
+          - `server_tool_caller_20260120: object`
+
+        - `content: WebSearchToolResultError or array of WebSearchResultBlock`
+
+          - `web_search_tool_result_error: object`
+
+            - `type: "web_search_tool_result_error"`
+
+            - `error_code: "invalid_tool_input" or "unavailable" or "max_uses_exceeded" or 3 more`
+
+              - `"invalid_tool_input"`
+
+              - `"unavailable"`
+
+              - `"max_uses_exceeded"`
+
+              - `"too_many_requests"`
+
+              - `"query_too_long"`
+
+              - `"request_too_large"`
+
+          - `union_member_1: array of WebSearchResultBlock`
+
+            - `type: "web_search_result"`
+
+            - `encrypted_content: string`
+
+            - `page_age: string`
+
+            - `title: string`
+
+            - `url: string`
+
+        - `tool_use_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `web_fetch_tool_result_block: object`
+
+        - `type: "web_fetch_tool_result"`
+
+        - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+          - `direct_caller: object`
+
+            Tool invocation directly from the model.
+
+          - `server_tool_caller: object`
+
+            Tool invocation generated by a server-side tool.
+
+          - `server_tool_caller_20260120: object`
+
+        - `content: WebFetchToolResultErrorBlock or WebFetchBlock`
+
+          - `web_fetch_tool_result_error_block: object`
+
+            - `type: "web_fetch_tool_result_error"`
+
+            - `error_code: "invalid_tool_input" or "url_too_long" or "url_not_allowed" or 7 more`
+
+              - `"invalid_tool_input"`
+
+              - `"url_too_long"`
+
+              - `"url_not_allowed"`
+
+              - `"url_not_in_prior_context"`
+
+              - `"url_not_accessible"`
+
+              - `"unsupported_content_type"`
+
+              - `"too_many_requests"`
+
+              - `"max_uses_exceeded"`
+
+              - `"unavailable"`
+
+              - `"content_too_large"`
+
+          - `web_fetch_block: object`
+
+            - `type: "web_fetch_result"`
+
+            - `content: object`
+
+              - `type: "document"`
+
+              - `citations: object`
+
+                Citation configuration for the document
+
+                - `enabled: boolean`
+
+              - `source: Base64PDFSource or PlainTextSource`
+
+                - `base64_pdf_source: object`
+
+                  - `type: "base64"`
+
+                  - `data: string`
+
+                    format: byte
+
+                  - `media_type: "application/pdf"`
+
+                - `plain_text_source: object`
+
+                  - `type: "text"`
+
+                  - `data: string`
+
+                  - `media_type: "text/plain"`
+
+              - `title: string`
+
+                The title of the document
+
+            - `retrieved_at: string`
+
+              ISO 8601 timestamp when the content was retrieved
+
+            - `url: string`
+
+              Fetched content URL
+
+        - `tool_use_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `code_execution_tool_result_block: object`
+
+        - `type: "code_execution_tool_result"`
+
+        - `content: CodeExecutionToolResultError or CodeExecutionResultBlock or EncryptedCodeExecutionResultBlock`
+
+          - `code_execution_tool_result_error: object`
+
+            - `type: "code_execution_tool_result_error"`
+
+            - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+              - `"invalid_tool_input"`
+
+              - `"unavailable"`
+
+              - `"too_many_requests"`
+
+              - `"execution_time_exceeded"`
+
+          - `code_execution_result_block: object`
+
+            - `type: "code_execution_result"`
+
+            - `content: array of CodeExecutionOutputBlock`
+
+              - `type: "code_execution_output"`
+
+              - `file_id: string`
+
+            - `return_code: number`
+
+            - `stderr: string`
+
+            - `stdout: string`
+
+          - `encrypted_code_execution_result_block: object`
+
+            Code execution result with encrypted stdout for PFC + web_search results.
+
+            - `type: "encrypted_code_execution_result"`
+
+            - `content: array of CodeExecutionOutputBlock`
+
+              - `type: "code_execution_output"`
+
+              - `file_id: string`
+
+            - `encrypted_stdout: string`
+
+            - `return_code: number`
+
+            - `stderr: string`
+
+        - `tool_use_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `bash_code_execution_tool_result_block: object`
+
+        - `type: "bash_code_execution_tool_result"`
+
+        - `content: BashCodeExecutionToolResultError or BashCodeExecutionResultBlock`
+
+          - `bash_code_execution_tool_result_error: object`
+
+            - `type: "bash_code_execution_tool_result_error"`
+
+            - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+              - `"invalid_tool_input"`
+
+              - `"unavailable"`
+
+              - `"too_many_requests"`
+
+              - `"execution_time_exceeded"`
+
+              - `"output_file_too_large"`
+
+          - `bash_code_execution_result_block: object`
+
+            - `type: "bash_code_execution_result"`
+
+            - `content: array of BashCodeExecutionOutputBlock`
+
+              - `type: "bash_code_execution_output"`
+
+              - `file_id: string`
+
+            - `return_code: number`
+
+            - `stderr: string`
+
+            - `stdout: string`
+
+        - `tool_use_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `text_editor_code_execution_tool_result_block: object`
+
+        - `type: "text_editor_code_execution_tool_result"`
+
+        - `content: TextEditorCodeExecutionToolResultError or TextEditorCodeExecutionViewResultBlock or TextEditorCodeExecutionCreateResultBlock or TextEditorCodeExecutionStrReplaceResultBlock`
+
+          - `text_editor_code_execution_tool_result_error: object`
+
+            - `type: "text_editor_code_execution_tool_result_error"`
+
+            - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+              - `"invalid_tool_input"`
+
+              - `"unavailable"`
+
+              - `"too_many_requests"`
+
+              - `"execution_time_exceeded"`
+
+              - `"file_not_found"`
+
+            - `error_message: string`
+
+          - `text_editor_code_execution_view_result_block: object`
+
+            - `type: "text_editor_code_execution_view_result"`
+
+            - `content: string`
+
+            - `file_type: "text" or "image" or "pdf"`
+
+              - `"text"`
+
+              - `"image"`
+
+              - `"pdf"`
+
+            - `num_lines: number`
+
+            - `start_line: number`
+
+            - `total_lines: number`
+
+          - `text_editor_code_execution_create_result_block: object`
+
+            - `type: "text_editor_code_execution_create_result"`
+
+            - `is_file_update: boolean`
+
+          - `text_editor_code_execution_str_replace_result_block: object`
+
+            - `type: "text_editor_code_execution_str_replace_result"`
+
+            - `lines: array of string`
+
+            - `new_lines: number`
+
+            - `new_start: number`
+
+            - `old_lines: number`
+
+            - `old_start: number`
+
+        - `tool_use_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `tool_search_tool_result_block: object`
+
+        - `type: "tool_search_tool_result"`
+
+        - `content: ToolSearchToolResultError or ToolSearchToolSearchResultBlock`
+
+          - `tool_search_tool_result_error: object`
+
+            - `type: "tool_search_tool_result_error"`
+
+            - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+              - `"invalid_tool_input"`
+
+              - `"unavailable"`
+
+              - `"too_many_requests"`
+
+              - `"execution_time_exceeded"`
+
+            - `error_message: string`
+
+          - `tool_search_tool_search_result_block: object`
+
+            - `type: "tool_search_tool_search_result"`
+
+            - `tool_references: array of ToolReferenceBlock`
+
+              - `type: "tool_reference"`
+
+              - `tool_name: string`
+
+                minLength: 1, maxLength: 256, pattern: ^[a-zA-Z0-9_-]{1,256}$
+
+        - `tool_use_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `container_upload_block: object`
+
+        Response model for a file uploaded to the container.
+
+        - `type: "container_upload"`
+
+        - `file_id: string`
+
+    - `diagnostics: object`
+
+      Request-level diagnostics. `null` when the request did not supply `diagnostics`, or when it did and no prompt-cache divergence was detected.
+
+      - `cache_miss_reason: CacheMissModelChanged or CacheMissSystemChanged or CacheMissToolsChanged or 3 more`
+
+        Explains why the prompt cache could not fully reuse the prefix from the request identified by `diagnostics.previous_message_id`. `null` means diagnosis is still pending — the response was serialized before the background comparison completed.
+
+        - `cache_miss_model_changed: object`
+
+          - `type: "model_changed"`
+
+          - `cache_missed_input_tokens: number`
+
+            Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+        - `cache_miss_system_changed: object`
+
+          - `type: "system_changed"`
+
+          - `cache_missed_input_tokens: number`
+
+            Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+        - `cache_miss_tools_changed: object`
+
+          - `type: "tools_changed"`
+
+          - `cache_missed_input_tokens: number`
+
+            Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+        - `cache_miss_messages_changed: object`
+
+          - `type: "messages_changed"`
+
+          - `cache_missed_input_tokens: number`
+
+            Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+        - `cache_miss_previous_message_not_found: object`
+
+          - `type: "previous_message_not_found"`
+
+        - `cache_miss_unavailable: object`
+
+          - `type: "unavailable"`
+
+    - `model: "claude-haiku-5-5" or "claude-sonnet-5-5" or "claude-fable-5-1" or 17 more or string`
+
+      The model that will complete your prompt.
+
+      See [models](https://docs.anthropic.com/en/docs/models-overview) for additional details and options.
+
+      - `"claude-haiku-5-5"`
+
+        Fastest model for high-volume, real-time tasks
+
+      - `"claude-sonnet-5-5"`
+
+        Efficient model for coding and agents
+
+      - `"claude-fable-5-1"`
+
+        Frontier intelligence for ambitious tasks across coding, scientific discovery, and enterprise workflows
+
+      - `"claude-opus-5-5"`
+
+        Powerful intelligence for coding, knowledge work, and long-running agents
+
+      - `"claude-mythos-5-1"`
+
+        Our most capable model for cybersecurity and biology research, available through trusted access programs
+
+      - `"claude-sonnet-5"`
+
+        Efficient model for coding and agents
+
+      - `"claude-fable-5"`
+
+        Next generation of intelligence for the hardest knowledge work and coding problems
+
+      - `"claude-mythos-5"`
+
+        Most capable model for cybersecurity and biology research
+
+      - `"claude-opus-5"`
+
+        Powerful intelligence for long-running agents and coding
+
+      - `"claude-opus-4-8"`
+
+        Powerful intelligence for long-running agents and coding
+
+      - `"claude-opus-4-7"`
+
+        Powerful intelligence for long-running agents and coding
+
+      - `"claude-opus-4-6"`
+
+        Powerful intelligence for long-running agents and coding
+
+      - `"claude-sonnet-4-6"`
+
+        Best combination of speed and intelligence
+
+      - `"claude-haiku-4-5"`
+
+      - `"claude-haiku-4-5-20251001"`
+
+      - `"claude-opus-4-5"`
+
+        Powerful intelligence for long-running agents and coding
+
+      - `"claude-opus-4-5-20251101"`
+
+        Powerful intelligence for long-running agents and coding
+
+      - `"claude-mythos-preview"`
+
+        **Deprecated**: Will reach end-of-life on June 30, 2026. Please migrate to claude-mythos-5. Visit https://docs.anthropic.com/en/docs/resources/model-deprecations for more information.
+
+        New class of intelligence, strongest in coding and cybersecurity
+
+      - `"claude-sonnet-4-5"`
+
+        **Deprecated**: Will reach end-of-life on November 30, 2026. Please migrate to claude-sonnet-5-5. Visit https://docs.anthropic.com/en/docs/resources/model-deprecations for more information.
+
+        High-performance model for agents and coding
+
+      - `"claude-sonnet-4-5-20250929"`
+
+        **Deprecated**: Will reach end-of-life on November 30, 2026. Please migrate to claude-sonnet-5-5. Visit https://docs.anthropic.com/en/docs/resources/model-deprecations for more information.
+
+        High-performance model for agents and coding
+
+    - `role: "assistant"`
+
+      Conversational role of the generated message.
+
+      This will always be `"assistant"`.
+
+    - `stop_details: object`
+
+      Structured information about why model output stopped.
+
+      This is `null` when the `stop_reason` has no additional detail to report.
+
+      - `type: "refusal"`
+
+      - `category: "cyber" or "bio" or "frontier_llm" or 2 more`
+
+        The policy category that triggered the refusal.
+
+        `null` when the refusal doesn't map to a named category.
+
+        - `"cyber"`
+
+          The request could enable cyber harm, such as malware or exploit development. Benign cybersecurity work can also trigger this category.
+
+        - `"bio"`
+
+          The request could enable biological harm, such as dangerous lab methods. Beneficial life sciences work can also trigger this category.
+
+        - `"frontier_llm"`
+
+          The request could assist the development of competing AI models, which is restricted under [Anthropic's commercial terms](https://www.anthropic.com/legal/commercial-terms). Benign machine learning work can also trigger this category.
+
+        - `"reasoning_extraction"`
+
+          The request asks the model to reproduce its internal reasoning in the response text. To get reasoning in a structured form instead, use [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking?sdk_languages=cli).
+
+        - `"general_harms"`
+
+          The request could be related to an area that was determined as harmful. Benign work might sometimes trigger this category.
+
+      - `explanation: string`
+
+        Human-readable explanation of the refusal.
+
+        This text is not guaranteed to be stable. `null` when no explanation is available for the category.
+
+    - `stop_reason: "end_turn" or "max_tokens" or "stop_sequence" or 4 more`
+
+      The reason that we stopped.
+
+      This may be one the following values:
+
+      * `"end_turn"`: the model reached a natural stopping point
+      * `"max_tokens"`: we exceeded the requested `max_tokens` or the model's maximum
+      * `"stop_sequence"`: one of your provided custom `stop_sequences` was generated
+      * `"tool_use"`: the model invoked one or more tools
+      * `"pause_turn"`: we paused a long-running turn. You may provide the response back as-is in a subsequent request to let the model continue.
+      * `"refusal"`: when streaming classifiers intervene to handle potential policy violations
+      * `"model_context_window_exceeded"`: we exceeded the model's context window
+
+      In non-streaming mode this value is always non-null. In streaming mode, it is null in the `message_start` event and non-null otherwise.
+
+      - `"end_turn"`
+
+      - `"max_tokens"`
+
+      - `"stop_sequence"`
+
+      - `"tool_use"`
+
+      - `"pause_turn"`
+
+      - `"refusal"`
+
+      - `"model_context_window_exceeded"`
+
+    - `stop_sequence: string`
+
+      Which custom stop sequence was generated, if any.
+
+      This value will be a non-null string if one of your custom stop sequences was generated.
+
+    - `usage: object`
+
+      Billing and rate-limit usage.
+
+      Anthropic's API bills and rate-limits by token counts, as tokens represent the underlying cost to our systems.
+
+      Under the hood, the API transforms requests into a format suitable for the model. The model's output then goes through a parsing stage before becoming an API response. As a result, the token counts in `usage` will not match one-to-one with the exact visible content of an API request or response.
+
+      For example, `output_tokens` will be non-zero, even for an empty string response from Claude.
+
+      Total input tokens in a request is the summation of `input_tokens`, `cache_creation_input_tokens`, and `cache_read_input_tokens`.
+
+      - `cache_creation: object`
+
+        Breakdown of cached tokens by TTL
+
+        - `ephemeral_1h_input_tokens: number`
+
+          The number of input tokens used to create the 1 hour cache entry.
+
+          minimum: 0
+
+        - `ephemeral_5m_input_tokens: number`
+
+          The number of input tokens used to create the 5 minute cache entry.
+
+          minimum: 0
+
+      - `cache_creation_input_tokens: number`
+
+        The number of input tokens used to create the cache entry.
+
+        minimum: 0
+
+      - `cache_read_input_tokens: number`
+
+        The number of input tokens read from the cache.
+
+        minimum: 0
+
+      - `inference_geo: string`
+
+        The geographic region where inference was performed for this request.
+
+      - `input_tokens: number`
+
+        The number of input tokens which were used.
+
+        minimum: 0
+
+      - `output_tokens: number`
+
+        The number of output tokens which were used.
+
+        minimum: 0
+
+      - `output_tokens_details: object`
+
+        Breakdown of output tokens by category.
+
+        `output_tokens` remains the inclusive, authoritative total used for billing.
+        This object provides a read-only decomposition for observability — for example,
+        how many of the billed output tokens were spent on internal reasoning that may
+        have been summarized before being returned to you.
+
+        - `thinking_tokens: number`
+
+          Number of output tokens the model generated as internal reasoning, including
+          the thinking-block delimiter tokens.
+
+          Reflects the raw reasoning the model produced, not the (possibly shorter)
+          summarized thinking text returned in the response body. Computed by
+          re-tokenizing the raw reasoning text, so it may differ from the model's exact
+          generation count by a small number of tokens. Always ≤ `output_tokens`;
+          `output_tokens - thinking_tokens` approximates the non-reasoning output.
+
+          minimum: 0
+
+      - `server_tool_use: object`
+
+        The number of server tool requests.
+
+        - `web_fetch_requests: number`
+
+          The number of web fetch tool requests.
+
+          minimum: 0
+
+        - `web_search_requests: number`
+
+          The number of web search tool requests.
+
+          minimum: 0
+
+      - `service_tier: "standard" or "priority" or "batch"`
+
+        If the request used the priority, standard, or batch tier.
+
+        - `"standard"`
+
+        - `"priority"`
+
+        - `"batch"`
+
+### Raw Message Stop Event
+
+- `raw_message_stop_event: object`
+
+  - `type: "message_stop"`
+
+### Raw Message Stream Event
+
+- `raw_message_stream_event: RawMessageStartEvent or RawMessageDeltaEvent or RawMessageStopEvent or 3 more`
+
+  - `raw_message_start_event: object`
+
+    - `type: "message_start"`
+
+    - `message: object`
+
+      - `type: "message"`
+
+        Object type.
+
+        For Messages, this is always `"message"`.
+
+      - `id: string`
+
+        Unique object identifier.
+
+        The format and length of IDs may change over time.
+
+      - `container: object`
+
+        Information about the container used in this request.
+
+        This will be non-null if a container tool (e.g. code execution) was used.
+
+        - `id: string`
+
+          Identifier for the container used in this request
+
+        - `expires_at: string`
+
+          The time at which the container will expire.
+
+          format: date-time
+
+        - `skills: array of ContainerSkill`
+
+          Skills loaded in the container
+
+          - `type: "anthropic" or "custom"`
+
+            Type of skill - either 'anthropic' (built-in) or 'custom' (user-defined)
+
+            - `"anthropic"`
+
+            - `"custom"`
+
+          - `skill_id: string`
+
+            Skill ID
+
+            minLength: 1, maxLength: 64
+
+          - `version: string`
+
+            The resolved version: a skill version ID for custom skills.
+
+            minLength: 1, maxLength: 64
+
+      - `content: array of ContentBlock`
+
+        Content generated by the model.
+
+        This is an array of content blocks, each of which has a `type` that determines its shape.
+
+        Example:
+
+        ```json
+        [{"type": "text", "text": "Hi, I'm Claude."}]
+        ```
+
+        If the request input `messages` ended with an `assistant` turn, then the response `content` will continue directly from that last turn. You can use this to constrain the model's output.
+
+        For example, if the input `messages` were:
+
+        ```json
+        [
+          {"role": "user", "content": "What's the Greek name for Sun? (A) Sol (B) Helios (C) Sun"},
+          {"role": "assistant", "content": "The best answer is ("}
+        ]
+        ```
+
+        Then the response `content` might be:
+
+        ```json
+        [{"type": "text", "text": "B)"}]
+        ```
+
+        - `text_block: object`
+
+          - `type: "text"`
+
+          - `citations: array of TextCitation`
+
+            Citations supporting the text block.
+
+            The type of citation returned will depend on the type of document being cited. Citing a PDF results in `page_location`, plain text results in `char_location`, and content document results in `content_block_location`.
+
+            - `citation_char_location: object`
+
+              - `type: "char_location"`
+
+              - `cited_text: string`
+
+              - `document_index: number`
+
+                minimum: 0
+
+              - `document_title: string`
+
+              - `end_char_index: number`
+
+              - `file_id: string`
+
+              - `start_char_index: number`
+
+                minimum: 0
+
+            - `citation_page_location: object`
+
+              - `type: "page_location"`
+
+              - `cited_text: string`
+
+              - `document_index: number`
+
+                minimum: 0
+
+              - `document_title: string`
+
+              - `end_page_number: number`
+
+              - `file_id: string`
+
+              - `start_page_number: number`
+
+                minimum: 1
+
+            - `citation_content_block_location: object`
+
+              - `type: "content_block_location"`
+
+              - `cited_text: string`
+
+                The full text of the cited block range, concatenated.
+
+                Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+              - `document_index: number`
+
+                minimum: 0
+
+              - `document_title: string`
+
+              - `end_block_index: number`
+
+                Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+                Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+              - `file_id: string`
+
+              - `start_block_index: number`
+
+                0-based index of the first cited block in the source's `content` array.
+
+                minimum: 0
+
+            - `citations_web_search_result_location: object`
+
+              - `type: "web_search_result_location"`
+
+              - `cited_text: string`
+
+              - `encrypted_index: string`
+
+              - `title: string`
+
+                maxLength: 512
+
+              - `url: string`
+
+            - `citations_search_result_location: object`
+
+              - `type: "search_result_location"`
+
+              - `cited_text: string`
+
+                The full text of the cited block range, concatenated.
+
+                Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+              - `end_block_index: number`
+
+                Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+                Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+              - `search_result_index: number`
+
+                0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+                Counted separately from `document_index`; server-side web search results are not included in this count.
+
+                minimum: 0
+
+              - `source: string`
+
+              - `start_block_index: number`
+
+                0-based index of the first cited block in the source's `content` array.
+
+                minimum: 0
+
+              - `title: string`
+
+          - `text: string`
+
+        - `thinking_block: object`
+
+          - `type: "thinking"`
+
+          - `signature: string`
+
+            A value used to verify that this thinking block was generated by Claude when it is passed back to the API.
+
+            This is an opaque field and should not be interpreted or parsed. When passing thinking blocks back to the API (required when using tools with extended thinking), pass them back exactly as received, with this field intact.
+
+            See [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli) for details.
+
+          - `thinking: string`
+
+            The text of Claude's thinking process for this block.
+
+        - `redacted_thinking_block: object`
+
+          - `type: "redacted_thinking"`
+
+          - `data: string`
+
+            The contents of this redacted thinking block, returned when portions of the model's thinking were safety-redacted. This field is opaque and encrypted, with no readable content.
+
+            Pass `redacted_thinking` blocks back to the API unchanged when continuing a multi-turn conversation.
+
+            See [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli#redacted-thinking-blocks) for details.
+
+        - `tool_use_block: object`
+
+          - `type: "tool_use"`
+
+          - `id: string`
+
+            pattern: ^[a-zA-Z0-9_-]+$
+
+          - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+            - `direct_caller: object`
+
+              Tool invocation directly from the model.
+
+              - `type: "direct"`
+
+            - `server_tool_caller: object`
+
+              Tool invocation generated by a server-side tool.
+
+              - `type: "code_execution_20250825"`
+
+              - `tool_id: string`
+
+                pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+            - `server_tool_caller_20260120: object`
+
+              - `type: "code_execution_20260120"`
+
+              - `tool_id: string`
+
+                pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+          - `input: map[unknown]`
+
+          - `name: string`
+
+            minLength: 1
+
+          - `toolset_name: optional string`
+
+            For a toolset member tool_use, the toolset family.
+
+            minLength: 1, maxLength: 64, pattern: ^[a-zA-Z0-9_-]+$
+
+        - `server_tool_use_block: object`
+
+          - `type: "server_tool_use"`
+
+          - `id: string`
+
+            pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+          - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+            - `direct_caller: object`
+
+              Tool invocation directly from the model.
+
+            - `server_tool_caller: object`
+
+              Tool invocation generated by a server-side tool.
+
+            - `server_tool_caller_20260120: object`
+
+          - `input: map[unknown]`
+
+          - `name: "web_search" or "web_fetch" or "code_execution" or 4 more`
+
+            - `"web_search"`
+
+            - `"web_fetch"`
+
+            - `"code_execution"`
+
+            - `"bash_code_execution"`
+
+            - `"text_editor_code_execution"`
+
+            - `"tool_search_tool_regex"`
+
+            - `"tool_search_tool_bm25"`
+
+        - `web_search_tool_result_block: object`
+
+          - `type: "web_search_tool_result"`
+
+          - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+            - `direct_caller: object`
+
+              Tool invocation directly from the model.
+
+            - `server_tool_caller: object`
+
+              Tool invocation generated by a server-side tool.
+
+            - `server_tool_caller_20260120: object`
+
+          - `content: WebSearchToolResultError or array of WebSearchResultBlock`
+
+            - `web_search_tool_result_error: object`
+
+              - `type: "web_search_tool_result_error"`
+
+              - `error_code: "invalid_tool_input" or "unavailable" or "max_uses_exceeded" or 3 more`
+
+                - `"invalid_tool_input"`
+
+                - `"unavailable"`
+
+                - `"max_uses_exceeded"`
+
+                - `"too_many_requests"`
+
+                - `"query_too_long"`
+
+                - `"request_too_large"`
+
+            - `union_member_1: array of WebSearchResultBlock`
+
+              - `type: "web_search_result"`
+
+              - `encrypted_content: string`
+
+              - `page_age: string`
+
+              - `title: string`
+
+              - `url: string`
+
+          - `tool_use_id: string`
+
+            pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+        - `web_fetch_tool_result_block: object`
+
+          - `type: "web_fetch_tool_result"`
+
+          - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+            - `direct_caller: object`
+
+              Tool invocation directly from the model.
+
+            - `server_tool_caller: object`
+
+              Tool invocation generated by a server-side tool.
+
+            - `server_tool_caller_20260120: object`
+
+          - `content: WebFetchToolResultErrorBlock or WebFetchBlock`
+
+            - `web_fetch_tool_result_error_block: object`
+
+              - `type: "web_fetch_tool_result_error"`
+
+              - `error_code: "invalid_tool_input" or "url_too_long" or "url_not_allowed" or 7 more`
+
+                - `"invalid_tool_input"`
+
+                - `"url_too_long"`
+
+                - `"url_not_allowed"`
+
+                - `"url_not_in_prior_context"`
+
+                - `"url_not_accessible"`
+
+                - `"unsupported_content_type"`
+
+                - `"too_many_requests"`
+
+                - `"max_uses_exceeded"`
+
+                - `"unavailable"`
+
+                - `"content_too_large"`
+
+            - `web_fetch_block: object`
+
+              - `type: "web_fetch_result"`
+
+              - `content: object`
+
+                - `type: "document"`
+
+                - `citations: object`
+
+                  Citation configuration for the document
+
+                  - `enabled: boolean`
+
+                - `source: Base64PDFSource or PlainTextSource`
+
+                  - `base64_pdf_source: object`
+
+                    - `type: "base64"`
+
+                    - `data: string`
+
+                      format: byte
+
+                    - `media_type: "application/pdf"`
+
+                  - `plain_text_source: object`
+
+                    - `type: "text"`
+
+                    - `data: string`
+
+                    - `media_type: "text/plain"`
+
+                - `title: string`
+
+                  The title of the document
+
+              - `retrieved_at: string`
+
+                ISO 8601 timestamp when the content was retrieved
+
+              - `url: string`
+
+                Fetched content URL
+
+          - `tool_use_id: string`
+
+            pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+        - `code_execution_tool_result_block: object`
+
+          - `type: "code_execution_tool_result"`
+
+          - `content: CodeExecutionToolResultError or CodeExecutionResultBlock or EncryptedCodeExecutionResultBlock`
+
+            - `code_execution_tool_result_error: object`
+
+              - `type: "code_execution_tool_result_error"`
+
+              - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+                - `"invalid_tool_input"`
+
+                - `"unavailable"`
+
+                - `"too_many_requests"`
+
+                - `"execution_time_exceeded"`
+
+            - `code_execution_result_block: object`
+
+              - `type: "code_execution_result"`
+
+              - `content: array of CodeExecutionOutputBlock`
+
+                - `type: "code_execution_output"`
+
+                - `file_id: string`
+
+              - `return_code: number`
+
+              - `stderr: string`
+
+              - `stdout: string`
+
+            - `encrypted_code_execution_result_block: object`
+
+              Code execution result with encrypted stdout for PFC + web_search results.
+
+              - `type: "encrypted_code_execution_result"`
+
+              - `content: array of CodeExecutionOutputBlock`
+
+                - `type: "code_execution_output"`
+
+                - `file_id: string`
+
+              - `encrypted_stdout: string`
+
+              - `return_code: number`
+
+              - `stderr: string`
+
+          - `tool_use_id: string`
+
+            pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+        - `bash_code_execution_tool_result_block: object`
+
+          - `type: "bash_code_execution_tool_result"`
+
+          - `content: BashCodeExecutionToolResultError or BashCodeExecutionResultBlock`
+
+            - `bash_code_execution_tool_result_error: object`
+
+              - `type: "bash_code_execution_tool_result_error"`
+
+              - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+                - `"invalid_tool_input"`
+
+                - `"unavailable"`
+
+                - `"too_many_requests"`
+
+                - `"execution_time_exceeded"`
+
+                - `"output_file_too_large"`
+
+            - `bash_code_execution_result_block: object`
+
+              - `type: "bash_code_execution_result"`
+
+              - `content: array of BashCodeExecutionOutputBlock`
+
+                - `type: "bash_code_execution_output"`
+
+                - `file_id: string`
+
+              - `return_code: number`
+
+              - `stderr: string`
+
+              - `stdout: string`
+
+          - `tool_use_id: string`
+
+            pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+        - `text_editor_code_execution_tool_result_block: object`
+
+          - `type: "text_editor_code_execution_tool_result"`
+
+          - `content: TextEditorCodeExecutionToolResultError or TextEditorCodeExecutionViewResultBlock or TextEditorCodeExecutionCreateResultBlock or TextEditorCodeExecutionStrReplaceResultBlock`
+
+            - `text_editor_code_execution_tool_result_error: object`
+
+              - `type: "text_editor_code_execution_tool_result_error"`
+
+              - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+                - `"invalid_tool_input"`
+
+                - `"unavailable"`
+
+                - `"too_many_requests"`
+
+                - `"execution_time_exceeded"`
+
+                - `"file_not_found"`
+
+              - `error_message: string`
+
+            - `text_editor_code_execution_view_result_block: object`
+
+              - `type: "text_editor_code_execution_view_result"`
+
+              - `content: string`
+
+              - `file_type: "text" or "image" or "pdf"`
+
+                - `"text"`
+
+                - `"image"`
+
+                - `"pdf"`
+
+              - `num_lines: number`
+
+              - `start_line: number`
+
+              - `total_lines: number`
+
+            - `text_editor_code_execution_create_result_block: object`
+
+              - `type: "text_editor_code_execution_create_result"`
+
+              - `is_file_update: boolean`
+
+            - `text_editor_code_execution_str_replace_result_block: object`
+
+              - `type: "text_editor_code_execution_str_replace_result"`
+
+              - `lines: array of string`
+
+              - `new_lines: number`
+
+              - `new_start: number`
+
+              - `old_lines: number`
+
+              - `old_start: number`
+
+          - `tool_use_id: string`
+
+            pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+        - `tool_search_tool_result_block: object`
+
+          - `type: "tool_search_tool_result"`
+
+          - `content: ToolSearchToolResultError or ToolSearchToolSearchResultBlock`
+
+            - `tool_search_tool_result_error: object`
+
+              - `type: "tool_search_tool_result_error"`
+
+              - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+                - `"invalid_tool_input"`
+
+                - `"unavailable"`
+
+                - `"too_many_requests"`
+
+                - `"execution_time_exceeded"`
+
+              - `error_message: string`
+
+            - `tool_search_tool_search_result_block: object`
+
+              - `type: "tool_search_tool_search_result"`
+
+              - `tool_references: array of ToolReferenceBlock`
+
+                - `type: "tool_reference"`
+
+                - `tool_name: string`
+
+                  minLength: 1, maxLength: 256, pattern: ^[a-zA-Z0-9_-]{1,256}$
+
+          - `tool_use_id: string`
+
+            pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+        - `container_upload_block: object`
+
+          Response model for a file uploaded to the container.
+
+          - `type: "container_upload"`
+
+          - `file_id: string`
+
+      - `diagnostics: object`
+
+        Request-level diagnostics. `null` when the request did not supply `diagnostics`, or when it did and no prompt-cache divergence was detected.
+
+        - `cache_miss_reason: CacheMissModelChanged or CacheMissSystemChanged or CacheMissToolsChanged or 3 more`
+
+          Explains why the prompt cache could not fully reuse the prefix from the request identified by `diagnostics.previous_message_id`. `null` means diagnosis is still pending — the response was serialized before the background comparison completed.
+
+          - `cache_miss_model_changed: object`
+
+            - `type: "model_changed"`
+
+            - `cache_missed_input_tokens: number`
+
+              Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+          - `cache_miss_system_changed: object`
+
+            - `type: "system_changed"`
+
+            - `cache_missed_input_tokens: number`
+
+              Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+          - `cache_miss_tools_changed: object`
+
+            - `type: "tools_changed"`
+
+            - `cache_missed_input_tokens: number`
+
+              Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+          - `cache_miss_messages_changed: object`
+
+            - `type: "messages_changed"`
+
+            - `cache_missed_input_tokens: number`
+
+              Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+          - `cache_miss_previous_message_not_found: object`
+
+            - `type: "previous_message_not_found"`
+
+          - `cache_miss_unavailable: object`
+
+            - `type: "unavailable"`
+
+      - `model: "claude-haiku-5-5" or "claude-sonnet-5-5" or "claude-fable-5-1" or 17 more or string`
+
+        The model that will complete your prompt.
+
+        See [models](https://docs.anthropic.com/en/docs/models-overview) for additional details and options.
+
+        - `"claude-haiku-5-5"`
+
+          Fastest model for high-volume, real-time tasks
+
+        - `"claude-sonnet-5-5"`
+
+          Efficient model for coding and agents
+
+        - `"claude-fable-5-1"`
+
+          Frontier intelligence for ambitious tasks across coding, scientific discovery, and enterprise workflows
+
+        - `"claude-opus-5-5"`
+
+          Powerful intelligence for coding, knowledge work, and long-running agents
+
+        - `"claude-mythos-5-1"`
+
+          Our most capable model for cybersecurity and biology research, available through trusted access programs
+
+        - `"claude-sonnet-5"`
+
+          Efficient model for coding and agents
+
+        - `"claude-fable-5"`
+
+          Next generation of intelligence for the hardest knowledge work and coding problems
+
+        - `"claude-mythos-5"`
+
+          Most capable model for cybersecurity and biology research
+
+        - `"claude-opus-5"`
+
+          Powerful intelligence for long-running agents and coding
+
+        - `"claude-opus-4-8"`
+
+          Powerful intelligence for long-running agents and coding
+
+        - `"claude-opus-4-7"`
+
+          Powerful intelligence for long-running agents and coding
+
+        - `"claude-opus-4-6"`
+
+          Powerful intelligence for long-running agents and coding
+
+        - `"claude-sonnet-4-6"`
+
+          Best combination of speed and intelligence
+
+        - `"claude-haiku-4-5"`
+
+        - `"claude-haiku-4-5-20251001"`
+
+        - `"claude-opus-4-5"`
+
+          Powerful intelligence for long-running agents and coding
+
+        - `"claude-opus-4-5-20251101"`
+
+          Powerful intelligence for long-running agents and coding
+
+        - `"claude-mythos-preview"`
+
+          **Deprecated**: Will reach end-of-life on June 30, 2026. Please migrate to claude-mythos-5. Visit https://docs.anthropic.com/en/docs/resources/model-deprecations for more information.
+
+          New class of intelligence, strongest in coding and cybersecurity
+
+        - `"claude-sonnet-4-5"`
+
+          **Deprecated**: Will reach end-of-life on November 30, 2026. Please migrate to claude-sonnet-5-5. Visit https://docs.anthropic.com/en/docs/resources/model-deprecations for more information.
+
+          High-performance model for agents and coding
+
+        - `"claude-sonnet-4-5-20250929"`
+
+          **Deprecated**: Will reach end-of-life on November 30, 2026. Please migrate to claude-sonnet-5-5. Visit https://docs.anthropic.com/en/docs/resources/model-deprecations for more information.
+
+          High-performance model for agents and coding
+
+      - `role: "assistant"`
+
+        Conversational role of the generated message.
+
+        This will always be `"assistant"`.
+
+      - `stop_details: object`
+
+        Structured information about why model output stopped.
+
+        This is `null` when the `stop_reason` has no additional detail to report.
+
+        - `type: "refusal"`
+
+        - `category: "cyber" or "bio" or "frontier_llm" or 2 more`
+
+          The policy category that triggered the refusal.
+
+          `null` when the refusal doesn't map to a named category.
+
+          - `"cyber"`
+
+            The request could enable cyber harm, such as malware or exploit development. Benign cybersecurity work can also trigger this category.
+
+          - `"bio"`
+
+            The request could enable biological harm, such as dangerous lab methods. Beneficial life sciences work can also trigger this category.
+
+          - `"frontier_llm"`
+
+            The request could assist the development of competing AI models, which is restricted under [Anthropic's commercial terms](https://www.anthropic.com/legal/commercial-terms). Benign machine learning work can also trigger this category.
+
+          - `"reasoning_extraction"`
+
+            The request asks the model to reproduce its internal reasoning in the response text. To get reasoning in a structured form instead, use [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking?sdk_languages=cli).
+
+          - `"general_harms"`
+
+            The request could be related to an area that was determined as harmful. Benign work might sometimes trigger this category.
+
+        - `explanation: string`
+
+          Human-readable explanation of the refusal.
+
+          This text is not guaranteed to be stable. `null` when no explanation is available for the category.
+
+      - `stop_reason: "end_turn" or "max_tokens" or "stop_sequence" or 4 more`
+
+        The reason that we stopped.
+
+        This may be one the following values:
+
+        * `"end_turn"`: the model reached a natural stopping point
+        * `"max_tokens"`: we exceeded the requested `max_tokens` or the model's maximum
+        * `"stop_sequence"`: one of your provided custom `stop_sequences` was generated
+        * `"tool_use"`: the model invoked one or more tools
+        * `"pause_turn"`: we paused a long-running turn. You may provide the response back as-is in a subsequent request to let the model continue.
+        * `"refusal"`: when streaming classifiers intervene to handle potential policy violations
+        * `"model_context_window_exceeded"`: we exceeded the model's context window
+
+        In non-streaming mode this value is always non-null. In streaming mode, it is null in the `message_start` event and non-null otherwise.
+
+        - `"end_turn"`
+
+        - `"max_tokens"`
+
+        - `"stop_sequence"`
+
+        - `"tool_use"`
+
+        - `"pause_turn"`
+
+        - `"refusal"`
+
+        - `"model_context_window_exceeded"`
+
+      - `stop_sequence: string`
+
+        Which custom stop sequence was generated, if any.
+
+        This value will be a non-null string if one of your custom stop sequences was generated.
+
+      - `usage: object`
+
+        Billing and rate-limit usage.
+
+        Anthropic's API bills and rate-limits by token counts, as tokens represent the underlying cost to our systems.
+
+        Under the hood, the API transforms requests into a format suitable for the model. The model's output then goes through a parsing stage before becoming an API response. As a result, the token counts in `usage` will not match one-to-one with the exact visible content of an API request or response.
+
+        For example, `output_tokens` will be non-zero, even for an empty string response from Claude.
+
+        Total input tokens in a request is the summation of `input_tokens`, `cache_creation_input_tokens`, and `cache_read_input_tokens`.
+
+        - `cache_creation: object`
+
+          Breakdown of cached tokens by TTL
+
+          - `ephemeral_1h_input_tokens: number`
+
+            The number of input tokens used to create the 1 hour cache entry.
+
+            minimum: 0
+
+          - `ephemeral_5m_input_tokens: number`
+
+            The number of input tokens used to create the 5 minute cache entry.
+
+            minimum: 0
+
+        - `cache_creation_input_tokens: number`
+
+          The number of input tokens used to create the cache entry.
+
+          minimum: 0
+
+        - `cache_read_input_tokens: number`
+
+          The number of input tokens read from the cache.
+
+          minimum: 0
+
+        - `inference_geo: string`
+
+          The geographic region where inference was performed for this request.
+
+        - `input_tokens: number`
+
+          The number of input tokens which were used.
+
+          minimum: 0
+
+        - `output_tokens: number`
+
+          The number of output tokens which were used.
+
+          minimum: 0
+
+        - `output_tokens_details: object`
+
+          Breakdown of output tokens by category.
+
+          `output_tokens` remains the inclusive, authoritative total used for billing.
+          This object provides a read-only decomposition for observability — for example,
+          how many of the billed output tokens were spent on internal reasoning that may
+          have been summarized before being returned to you.
+
+          - `thinking_tokens: number`
+
+            Number of output tokens the model generated as internal reasoning, including
+            the thinking-block delimiter tokens.
+
+            Reflects the raw reasoning the model produced, not the (possibly shorter)
+            summarized thinking text returned in the response body. Computed by
+            re-tokenizing the raw reasoning text, so it may differ from the model's exact
+            generation count by a small number of tokens. Always ≤ `output_tokens`;
+            `output_tokens - thinking_tokens` approximates the non-reasoning output.
+
+            minimum: 0
+
+        - `server_tool_use: object`
+
+          The number of server tool requests.
+
+          - `web_fetch_requests: number`
+
+            The number of web fetch tool requests.
+
+            minimum: 0
+
+          - `web_search_requests: number`
+
+            The number of web search tool requests.
+
+            minimum: 0
+
+        - `service_tier: "standard" or "priority" or "batch"`
+
+          If the request used the priority, standard, or batch tier.
+
+          - `"standard"`
+
+          - `"priority"`
+
+          - `"batch"`
+
+  - `raw_message_delta_event: object`
+
+    - `type: "message_delta"`
+
+    - `delta: object`
+
+      - `container: object`
+
+        Information about the container used in this request.
+
+        This will be non-null if a container tool (e.g. code execution) was used.
+
+        - `id: string`
+
+          Identifier for the container used in this request
+
+        - `expires_at: string`
+
+          The time at which the container will expire.
+
+          format: date-time
+
+        - `skills: array of ContainerSkill`
+
+          Skills loaded in the container
+
+      - `stop_details: object`
+
+        Structured information about why model output stopped.
+
+        This is `null` when the `stop_reason` has no additional detail to report.
+
+        - `type: "refusal"`
+
+        - `category: "cyber" or "bio" or "frontier_llm" or 2 more`
+
+          The policy category that triggered the refusal.
+
+          `null` when the refusal doesn't map to a named category.
+
+        - `explanation: string`
+
+          Human-readable explanation of the refusal.
+
+          This text is not guaranteed to be stable. `null` when no explanation is available for the category.
+
+      - `stop_reason: "end_turn" or "max_tokens" or "stop_sequence" or 4 more`
+
+        - `"end_turn"`
+
+        - `"max_tokens"`
+
+        - `"stop_sequence"`
+
+        - `"tool_use"`
+
+        - `"pause_turn"`
+
+        - `"refusal"`
+
+        - `"model_context_window_exceeded"`
+
+      - `stop_sequence: string`
+
+    - `usage: object`
+
+      Billing and rate-limit usage.
+
+      Anthropic's API bills and rate-limits by token counts, as tokens represent the underlying cost to our systems.
+
+      Under the hood, the API transforms requests into a format suitable for the model. The model's output then goes through a parsing stage before becoming an API response. As a result, the token counts in `usage` will not match one-to-one with the exact visible content of an API request or response.
+
+      For example, `output_tokens` will be non-zero, even for an empty string response from Claude.
+
+      Total input tokens in a request is the summation of `input_tokens`, `cache_creation_input_tokens`, and `cache_read_input_tokens`.
+
+      - `cache_creation_input_tokens: number`
+
+        The cumulative number of input tokens used to create the cache entry.
+
+        minimum: 0
+
+      - `cache_read_input_tokens: number`
+
+        The cumulative number of input tokens read from the cache.
+
+        minimum: 0
+
+      - `input_tokens: number`
+
+        The cumulative number of input tokens which were used.
+
+        minimum: 0
+
+      - `output_tokens: number`
+
+        The cumulative number of output tokens which were used.
+
+      - `output_tokens_details: object`
+
+        Breakdown of output tokens by category.
+
+        `output_tokens` remains the inclusive, authoritative total used for billing.
+        This object provides a read-only decomposition for observability — for example,
+        how many of the billed output tokens were spent on internal reasoning that may
+        have been summarized before being returned to you.
+
+        - `thinking_tokens: number`
+
+          Number of output tokens the model generated as internal reasoning, including
+          the thinking-block delimiter tokens.
+
+          Reflects the raw reasoning the model produced, not the (possibly shorter)
+          summarized thinking text returned in the response body. Computed by
+          re-tokenizing the raw reasoning text, so it may differ from the model's exact
+          generation count by a small number of tokens. Always ≤ `output_tokens`;
+          `output_tokens - thinking_tokens` approximates the non-reasoning output.
+
+          minimum: 0
+
+      - `server_tool_use: object`
+
+        The number of server tool requests.
+
+        - `web_fetch_requests: number`
+
+          The number of web fetch tool requests.
+
+          minimum: 0
+
+        - `web_search_requests: number`
+
+          The number of web search tool requests.
+
+          minimum: 0
+
+  - `raw_message_stop_event: object`
+
+    - `type: "message_stop"`
+
+  - `raw_content_block_start_event: object`
+
+    - `type: "content_block_start"`
+
+    - `content_block: TextBlock or ThinkingBlock or RedactedThinkingBlock or 9 more`
+
+      - `text_block: object`
+
+        - `type: "text"`
+
+        - `citations: array of TextCitation`
+
+          Citations supporting the text block.
+
+          The type of citation returned will depend on the type of document being cited. Citing a PDF results in `page_location`, plain text results in `char_location`, and content document results in `content_block_location`.
+
+        - `text: string`
+
+      - `thinking_block: object`
+
+        - `type: "thinking"`
+
+        - `signature: string`
+
+          A value used to verify that this thinking block was generated by Claude when it is passed back to the API.
+
+          This is an opaque field and should not be interpreted or parsed. When passing thinking blocks back to the API (required when using tools with extended thinking), pass them back exactly as received, with this field intact.
+
+          See [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli) for details.
+
+        - `thinking: string`
+
+          The text of Claude's thinking process for this block.
+
+      - `redacted_thinking_block: object`
+
+        - `type: "redacted_thinking"`
+
+        - `data: string`
+
+          The contents of this redacted thinking block, returned when portions of the model's thinking were safety-redacted. This field is opaque and encrypted, with no readable content.
+
+          Pass `redacted_thinking` blocks back to the API unchanged when continuing a multi-turn conversation.
+
+          See [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli#redacted-thinking-blocks) for details.
+
+      - `tool_use_block: object`
+
+        - `type: "tool_use"`
+
+        - `id: string`
+
+          pattern: ^[a-zA-Z0-9_-]+$
+
+        - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        - `input: map[unknown]`
+
+        - `name: string`
+
+          minLength: 1
+
+        - `toolset_name: optional string`
+
+          For a toolset member tool_use, the toolset family.
+
+          minLength: 1, maxLength: 64, pattern: ^[a-zA-Z0-9_-]+$
+
+      - `server_tool_use_block: object`
+
+        - `type: "server_tool_use"`
+
+        - `id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+        - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        - `input: map[unknown]`
+
+        - `name: "web_search" or "web_fetch" or "code_execution" or 4 more`
+
+      - `web_search_tool_result_block: object`
+
+        - `type: "web_search_tool_result"`
+
+        - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        - `content: WebSearchToolResultError or array of WebSearchResultBlock`
+
+        - `tool_use_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `web_fetch_tool_result_block: object`
+
+        - `type: "web_fetch_tool_result"`
+
+        - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        - `content: WebFetchToolResultErrorBlock or WebFetchBlock`
+
+        - `tool_use_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `code_execution_tool_result_block: object`
+
+        - `type: "code_execution_tool_result"`
+
+        - `content: CodeExecutionToolResultError or CodeExecutionResultBlock or EncryptedCodeExecutionResultBlock`
+
+        - `tool_use_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `bash_code_execution_tool_result_block: object`
+
+        - `type: "bash_code_execution_tool_result"`
+
+        - `content: BashCodeExecutionToolResultError or BashCodeExecutionResultBlock`
+
+        - `tool_use_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `text_editor_code_execution_tool_result_block: object`
+
+        - `type: "text_editor_code_execution_tool_result"`
+
+        - `content: TextEditorCodeExecutionToolResultError or TextEditorCodeExecutionViewResultBlock or TextEditorCodeExecutionCreateResultBlock or TextEditorCodeExecutionStrReplaceResultBlock`
+
+        - `tool_use_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `tool_search_tool_result_block: object`
+
+        - `type: "tool_search_tool_result"`
+
+        - `content: ToolSearchToolResultError or ToolSearchToolSearchResultBlock`
+
+        - `tool_use_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `container_upload_block: object`
+
+        Response model for a file uploaded to the container.
+
+        - `type: "container_upload"`
+
+        - `file_id: string`
+
+    - `index: number`
+
+  - `raw_content_block_delta_event: object`
+
+    - `type: "content_block_delta"`
+
+    - `delta: TextDelta or InputJSONDelta or CitationsDelta or 2 more`
+
+      - `text_delta: object`
+
+        - `type: "text_delta"`
+
+        - `text: string`
+
+      - `input_json_delta: object`
+
+        - `type: "input_json_delta"`
+
+        - `partial_json: string`
+
+      - `citations_delta: object`
+
+        - `type: "citations_delta"`
+
+        - `citation: CitationCharLocation or CitationPageLocation or CitationContentBlockLocation or 2 more`
+
+          - `citation_char_location: object`
+
+            - `type: "char_location"`
+
+            - `cited_text: string`
+
+            - `document_index: number`
+
+              minimum: 0
+
+            - `document_title: string`
+
+            - `end_char_index: number`
+
+            - `file_id: string`
+
+            - `start_char_index: number`
+
+              minimum: 0
+
+          - `citation_page_location: object`
+
+            - `type: "page_location"`
+
+            - `cited_text: string`
+
+            - `document_index: number`
+
+              minimum: 0
+
+            - `document_title: string`
+
+            - `end_page_number: number`
+
+            - `file_id: string`
+
+            - `start_page_number: number`
+
+              minimum: 1
+
+          - `citation_content_block_location: object`
+
+            - `type: "content_block_location"`
+
+            - `cited_text: string`
+
+              The full text of the cited block range, concatenated.
+
+              Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+            - `document_index: number`
+
+              minimum: 0
+
+            - `document_title: string`
+
+            - `end_block_index: number`
+
+              Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+              Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+            - `file_id: string`
+
+            - `start_block_index: number`
+
+              0-based index of the first cited block in the source's `content` array.
+
+              minimum: 0
+
+          - `citations_web_search_result_location: object`
+
+            - `type: "web_search_result_location"`
+
+            - `cited_text: string`
+
+            - `encrypted_index: string`
+
+            - `title: string`
+
+              maxLength: 512
+
+            - `url: string`
+
+          - `citations_search_result_location: object`
+
+            - `type: "search_result_location"`
+
+            - `cited_text: string`
+
+              The full text of the cited block range, concatenated.
+
+              Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+            - `end_block_index: number`
+
+              Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+              Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+            - `search_result_index: number`
+
+              0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+              Counted separately from `document_index`; server-side web search results are not included in this count.
+
+              minimum: 0
+
+            - `source: string`
+
+            - `start_block_index: number`
+
+              0-based index of the first cited block in the source's `content` array.
+
+              minimum: 0
+
+            - `title: string`
+
+      - `thinking_delta: object`
+
+        - `type: "thinking_delta"`
+
+        - `thinking: string`
+
+          The incremental `thinking` text for this content block. Concatenate the `thinking` values of successive `thinking_delta` events to assemble the block's full `thinking` value.
+
+      - `signature_delta: object`
+
+        - `type: "signature_delta"`
+
+        - `signature: string`
+
+          The `signature` for this thinking block: an opaque value used to verify that the block was generated by Claude when it is passed back to the API. Delivered in a `signature_delta` event just before the block's `content_block_stop` event.
+
+    - `index: number`
+
+  - `raw_content_block_stop_event: object`
+
+    - `type: "content_block_stop"`
+
+    - `index: number`
+
+### Redacted Thinking Block
+
+- `redacted_thinking_block: object`
+
+  - `type: "redacted_thinking"`
+
+  - `data: string`
+
+    The contents of this redacted thinking block, returned when portions of the model's thinking were safety-redacted. This field is opaque and encrypted, with no readable content.
+
+    Pass `redacted_thinking` blocks back to the API unchanged when continuing a multi-turn conversation.
+
+    See [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli#redacted-thinking-blocks) for details.
+
+### Redacted Thinking Block Param
+
+- `redacted_thinking_block_param: object`
+
+  - `type: "redacted_thinking"`
+
+  - `data: string`
+
+    The `data` value of this redacted thinking block, exactly as returned by the API in a previous response. Opaque and encrypted; pass it back unchanged.
+
+### Refusal Stop Details
+
+- `refusal_stop_details: object`
+
+  Structured information about a refusal.
+
+  - `type: "refusal"`
+
+  - `category: "cyber" or "bio" or "frontier_llm" or 2 more`
+
+    The policy category that triggered the refusal.
+
+    `null` when the refusal doesn't map to a named category.
+
+    - `"cyber"`
+
+      The request could enable cyber harm, such as malware or exploit development. Benign cybersecurity work can also trigger this category.
+
+    - `"bio"`
+
+      The request could enable biological harm, such as dangerous lab methods. Beneficial life sciences work can also trigger this category.
+
+    - `"frontier_llm"`
+
+      The request could assist the development of competing AI models, which is restricted under [Anthropic's commercial terms](https://www.anthropic.com/legal/commercial-terms). Benign machine learning work can also trigger this category.
+
+    - `"reasoning_extraction"`
+
+      The request asks the model to reproduce its internal reasoning in the response text. To get reasoning in a structured form instead, use [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking?sdk_languages=cli).
+
+    - `"general_harms"`
+
+      The request could be related to an area that was determined as harmful. Benign work might sometimes trigger this category.
+
+  - `explanation: string`
+
+    Human-readable explanation of the refusal.
+
+    This text is not guaranteed to be stable. `null` when no explanation is available for the category.
+
+### Search Result Block Param
+
+- `search_result_block_param: object`
+
+  - `type: "search_result"`
+
+  - `content: array of TextBlockParam`
+
+    - `type: "text"`
+
+    - `text: string`
+
+      minLength: 1
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+        - `"5m"`
+
+        - `"1h"`
+
+    - `citations: optional array of TextCitationParam`
+
+      - `citation_char_location_param: object`
+
+        - `type: "char_location"`
+
+        - `cited_text: string`
+
+        - `document_index: number`
+
+          minimum: 0
+
+        - `document_title: string`
+
+          minLength: 1, maxLength: 500
+
+        - `end_char_index: number`
+
+        - `start_char_index: number`
+
+          minimum: 0
+
+      - `citation_page_location_param: object`
+
+        - `type: "page_location"`
+
+        - `cited_text: string`
+
+        - `document_index: number`
+
+          minimum: 0
+
+        - `document_title: string`
+
+          minLength: 1, maxLength: 500
+
+        - `end_page_number: number`
+
+        - `start_page_number: number`
+
+          minimum: 1
+
+      - `citation_content_block_location_param: object`
+
+        - `type: "content_block_location"`
+
+        - `cited_text: string`
+
+          The full text of the cited block range, concatenated.
+
+          Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+        - `document_index: number`
+
+          minimum: 0
+
+        - `document_title: string`
+
+          minLength: 1, maxLength: 500
+
+        - `end_block_index: number`
+
+          Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+          Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+        - `start_block_index: number`
+
+          0-based index of the first cited block in the source's `content` array.
+
+          minimum: 0
+
+      - `citation_web_search_result_location_param: object`
+
+        - `type: "web_search_result_location"`
+
+        - `cited_text: string`
+
+        - `encrypted_index: string`
+
+        - `title: string`
+
+          minLength: 1, maxLength: 512
+
+        - `url: string`
+
+          minLength: 1
+
+      - `citation_search_result_location_param: object`
+
+        - `type: "search_result_location"`
+
+        - `cited_text: string`
+
+          The full text of the cited block range, concatenated.
+
+          Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+        - `end_block_index: number`
+
+          Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+          Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+        - `search_result_index: number`
+
+          0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+          Counted separately from `document_index`; server-side web search results are not included in this count.
+
+          minimum: 0
+
+        - `source: string`
+
+        - `start_block_index: number`
+
+          0-based index of the first cited block in the source's `content` array.
+
+          minimum: 0
+
+        - `title: string`
+
+  - `source: string`
+
+  - `title: string`
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+  - `citations: optional object`
+
+    - `enabled: optional boolean`
+
+### Server Tool Caller
+
+- `server_tool_caller: object`
+
+  Tool invocation generated by a server-side tool.
+
+  - `type: "code_execution_20250825"`
+
+  - `tool_id: string`
+
+    pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+### Server Tool Caller 20260120
+
+- `server_tool_caller_20260120: object`
+
+  - `type: "code_execution_20260120"`
+
+  - `tool_id: string`
+
+    pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+### Server Tool Usage
+
+- `server_tool_usage: object`
+
+  - `web_fetch_requests: number`
+
+    The number of web fetch tool requests.
+
+    minimum: 0
+
+  - `web_search_requests: number`
+
+    The number of web search tool requests.
+
+    minimum: 0
+
+### Server Tool Use Block
+
+- `server_tool_use_block: object`
+
+  - `type: "server_tool_use"`
+
+  - `id: string`
+
+    pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: map[unknown]`
+
+  - `name: "web_search" or "web_fetch" or "code_execution" or 4 more`
+
+    - `"web_search"`
+
+    - `"web_fetch"`
+
+    - `"code_execution"`
+
+    - `"bash_code_execution"`
+
+    - `"text_editor_code_execution"`
+
+    - `"tool_search_tool_regex"`
+
+    - `"tool_search_tool_bm25"`
+
+### Server Tool Use Block Param
+
+- `server_tool_use_block_param: object`
+
+  - `type: "server_tool_use"`
+
+  - `id: string`
+
+    pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: map[unknown]`
+
+  - `name: "web_search" or "web_fetch" or "code_execution" or 4 more`
+
+    - `"web_search"`
+
+    - `"web_fetch"`
+
+    - `"code_execution"`
+
+    - `"bash_code_execution"`
+
+    - `"text_editor_code_execution"`
+
+    - `"tool_search_tool_regex"`
+
+    - `"tool_search_tool_bm25"`
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `caller: optional DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+### Signature Delta
+
+- `signature_delta: object`
+
+  - `type: "signature_delta"`
+
+  - `signature: string`
+
+    The `signature` for this thinking block: an opaque value used to verify that the block was generated by Claude when it is passed back to the API. Delivered in a `signature_delta` event just before the block's `content_block_stop` event.
+
+### Skill Params
+
+- `skill_params: object`
+
+  Specification for a skill to be loaded in a container (request model).
+
+  - `type: "anthropic" or "custom"`
+
+    Type of skill - either 'anthropic' (built-in) or 'custom' (user-defined)
+
+    - `"anthropic"`
+
+    - `"custom"`
+
+  - `skill_id: string`
+
+    Skill ID
+
+    minLength: 1, maxLength: 64
+
+  - `version: optional string`
+
+    Skill version or 'latest' for most recent version
+
+    minLength: 1, maxLength: 64
+
+### Stop Reason
+
+- `stop_reason: "end_turn" or "max_tokens" or "stop_sequence" or 4 more`
+
+  - `"end_turn"`
+
+  - `"max_tokens"`
+
+  - `"stop_sequence"`
+
+  - `"tool_use"`
+
+  - `"pause_turn"`
+
+  - `"refusal"`
+
+  - `"model_context_window_exceeded"`
+
+### Text Block
+
+- `text_block: object`
+
+  - `type: "text"`
+
+  - `citations: array of TextCitation`
+
+    Citations supporting the text block.
+
+    The type of citation returned will depend on the type of document being cited. Citing a PDF results in `page_location`, plain text results in `char_location`, and content document results in `content_block_location`.
+
+    - `citation_char_location: object`
+
+      - `type: "char_location"`
+
+      - `cited_text: string`
+
+      - `document_index: number`
+
+        minimum: 0
+
+      - `document_title: string`
+
+      - `end_char_index: number`
+
+      - `file_id: string`
+
+      - `start_char_index: number`
+
+        minimum: 0
+
+    - `citation_page_location: object`
+
+      - `type: "page_location"`
+
+      - `cited_text: string`
+
+      - `document_index: number`
+
+        minimum: 0
+
+      - `document_title: string`
+
+      - `end_page_number: number`
+
+      - `file_id: string`
+
+      - `start_page_number: number`
+
+        minimum: 1
+
+    - `citation_content_block_location: object`
+
+      - `type: "content_block_location"`
+
+      - `cited_text: string`
+
+        The full text of the cited block range, concatenated.
+
+        Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+      - `document_index: number`
+
+        minimum: 0
+
+      - `document_title: string`
+
+      - `end_block_index: number`
+
+        Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+        Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+      - `file_id: string`
+
+      - `start_block_index: number`
+
+        0-based index of the first cited block in the source's `content` array.
+
+        minimum: 0
+
+    - `citations_web_search_result_location: object`
+
+      - `type: "web_search_result_location"`
+
+      - `cited_text: string`
+
+      - `encrypted_index: string`
+
+      - `title: string`
+
+        maxLength: 512
+
+      - `url: string`
+
+    - `citations_search_result_location: object`
+
+      - `type: "search_result_location"`
+
+      - `cited_text: string`
+
+        The full text of the cited block range, concatenated.
+
+        Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+      - `end_block_index: number`
+
+        Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+        Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+      - `search_result_index: number`
+
+        0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+        Counted separately from `document_index`; server-side web search results are not included in this count.
+
+        minimum: 0
+
+      - `source: string`
+
+      - `start_block_index: number`
+
+        0-based index of the first cited block in the source's `content` array.
+
+        minimum: 0
+
+      - `title: string`
+
+  - `text: string`
+
+### Text Block Param
+
+- `text_block_param: object`
+
+  - `type: "text"`
+
+  - `text: string`
+
+    minLength: 1
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `citations: optional array of TextCitationParam`
+
+    - `citation_char_location_param: object`
+
+      - `type: "char_location"`
+
+      - `cited_text: string`
+
+      - `document_index: number`
+
+        minimum: 0
+
+      - `document_title: string`
+
+        minLength: 1, maxLength: 500
+
+      - `end_char_index: number`
+
+      - `start_char_index: number`
+
+        minimum: 0
+
+    - `citation_page_location_param: object`
+
+      - `type: "page_location"`
+
+      - `cited_text: string`
+
+      - `document_index: number`
+
+        minimum: 0
+
+      - `document_title: string`
+
+        minLength: 1, maxLength: 500
+
+      - `end_page_number: number`
+
+      - `start_page_number: number`
+
+        minimum: 1
+
+    - `citation_content_block_location_param: object`
+
+      - `type: "content_block_location"`
+
+      - `cited_text: string`
+
+        The full text of the cited block range, concatenated.
+
+        Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+      - `document_index: number`
+
+        minimum: 0
+
+      - `document_title: string`
+
+        minLength: 1, maxLength: 500
+
+      - `end_block_index: number`
+
+        Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+        Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+      - `start_block_index: number`
+
+        0-based index of the first cited block in the source's `content` array.
+
+        minimum: 0
+
+    - `citation_web_search_result_location_param: object`
+
+      - `type: "web_search_result_location"`
+
+      - `cited_text: string`
+
+      - `encrypted_index: string`
+
+      - `title: string`
+
+        minLength: 1, maxLength: 512
+
+      - `url: string`
+
+        minLength: 1
+
+    - `citation_search_result_location_param: object`
+
+      - `type: "search_result_location"`
+
+      - `cited_text: string`
+
+        The full text of the cited block range, concatenated.
+
+        Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+      - `end_block_index: number`
+
+        Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+        Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+      - `search_result_index: number`
+
+        0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+        Counted separately from `document_index`; server-side web search results are not included in this count.
+
+        minimum: 0
+
+      - `source: string`
+
+      - `start_block_index: number`
+
+        0-based index of the first cited block in the source's `content` array.
+
+        minimum: 0
+
+      - `title: string`
+
+### Text Citation
+
+- `text_citation: CitationCharLocation or CitationPageLocation or CitationContentBlockLocation or 2 more`
+
+  - `citation_char_location: object`
+
+    - `type: "char_location"`
+
+    - `cited_text: string`
+
+    - `document_index: number`
+
+      minimum: 0
+
+    - `document_title: string`
+
+    - `end_char_index: number`
+
+    - `file_id: string`
+
+    - `start_char_index: number`
+
+      minimum: 0
+
+  - `citation_page_location: object`
+
+    - `type: "page_location"`
+
+    - `cited_text: string`
+
+    - `document_index: number`
+
+      minimum: 0
+
+    - `document_title: string`
+
+    - `end_page_number: number`
+
+    - `file_id: string`
+
+    - `start_page_number: number`
+
+      minimum: 1
+
+  - `citation_content_block_location: object`
+
+    - `type: "content_block_location"`
+
+    - `cited_text: string`
+
+      The full text of the cited block range, concatenated.
+
+      Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+    - `document_index: number`
+
+      minimum: 0
+
+    - `document_title: string`
+
+    - `end_block_index: number`
+
+      Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+      Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+    - `file_id: string`
+
+    - `start_block_index: number`
+
+      0-based index of the first cited block in the source's `content` array.
+
+      minimum: 0
+
+  - `citations_web_search_result_location: object`
+
+    - `type: "web_search_result_location"`
+
+    - `cited_text: string`
+
+    - `encrypted_index: string`
+
+    - `title: string`
+
+      maxLength: 512
+
+    - `url: string`
+
+  - `citations_search_result_location: object`
+
+    - `type: "search_result_location"`
+
+    - `cited_text: string`
+
+      The full text of the cited block range, concatenated.
+
+      Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+    - `end_block_index: number`
+
+      Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+      Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+    - `search_result_index: number`
+
+      0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+      Counted separately from `document_index`; server-side web search results are not included in this count.
+
+      minimum: 0
+
+    - `source: string`
+
+    - `start_block_index: number`
+
+      0-based index of the first cited block in the source's `content` array.
+
+      minimum: 0
+
+    - `title: string`
+
+### Text Citation Param
+
+- `text_citation_param: CitationCharLocationParam or CitationPageLocationParam or CitationContentBlockLocationParam or 2 more`
+
+  - `citation_char_location_param: object`
+
+    - `type: "char_location"`
+
+    - `cited_text: string`
+
+    - `document_index: number`
+
+      minimum: 0
+
+    - `document_title: string`
+
+      minLength: 1, maxLength: 500
+
+    - `end_char_index: number`
+
+    - `start_char_index: number`
+
+      minimum: 0
+
+  - `citation_page_location_param: object`
+
+    - `type: "page_location"`
+
+    - `cited_text: string`
+
+    - `document_index: number`
+
+      minimum: 0
+
+    - `document_title: string`
+
+      minLength: 1, maxLength: 500
+
+    - `end_page_number: number`
+
+    - `start_page_number: number`
+
+      minimum: 1
+
+  - `citation_content_block_location_param: object`
+
+    - `type: "content_block_location"`
+
+    - `cited_text: string`
+
+      The full text of the cited block range, concatenated.
+
+      Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+    - `document_index: number`
+
+      minimum: 0
+
+    - `document_title: string`
+
+      minLength: 1, maxLength: 500
+
+    - `end_block_index: number`
+
+      Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+      Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+    - `start_block_index: number`
+
+      0-based index of the first cited block in the source's `content` array.
+
+      minimum: 0
+
+  - `citation_web_search_result_location_param: object`
+
+    - `type: "web_search_result_location"`
+
+    - `cited_text: string`
+
+    - `encrypted_index: string`
+
+    - `title: string`
+
+      minLength: 1, maxLength: 512
+
+    - `url: string`
+
+      minLength: 1
+
+  - `citation_search_result_location_param: object`
+
+    - `type: "search_result_location"`
+
+    - `cited_text: string`
+
+      The full text of the cited block range, concatenated.
+
+      Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+    - `end_block_index: number`
+
+      Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+      Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+    - `search_result_index: number`
+
+      0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+      Counted separately from `document_index`; server-side web search results are not included in this count.
+
+      minimum: 0
+
+    - `source: string`
+
+    - `start_block_index: number`
+
+      0-based index of the first cited block in the source's `content` array.
+
+      minimum: 0
+
+    - `title: string`
+
+### Text Delta
+
+- `text_delta: object`
+
+  - `type: "text_delta"`
+
+  - `text: string`
+
+### Text Editor Code Execution Create Result Block
+
+- `text_editor_code_execution_create_result_block: object`
+
+  - `type: "text_editor_code_execution_create_result"`
+
+  - `is_file_update: boolean`
+
+### Text Editor Code Execution Create Result Block Param
+
+- `text_editor_code_execution_create_result_block_param: object`
+
+  - `type: "text_editor_code_execution_create_result"`
+
+  - `is_file_update: boolean`
+
+### Text Editor Code Execution Str Replace Result Block
+
+- `text_editor_code_execution_str_replace_result_block: object`
+
+  - `type: "text_editor_code_execution_str_replace_result"`
+
+  - `lines: array of string`
+
+  - `new_lines: number`
+
+  - `new_start: number`
+
+  - `old_lines: number`
+
+  - `old_start: number`
+
+### Text Editor Code Execution Str Replace Result Block Param
+
+- `text_editor_code_execution_str_replace_result_block_param: object`
+
+  - `type: "text_editor_code_execution_str_replace_result"`
+
+  - `lines: optional array of string`
+
+  - `new_lines: optional number`
+
+  - `new_start: optional number`
+
+  - `old_lines: optional number`
+
+  - `old_start: optional number`
+
+### Text Editor Code Execution Tool Result Block
+
+- `text_editor_code_execution_tool_result_block: object`
+
+  - `type: "text_editor_code_execution_tool_result"`
+
+  - `content: TextEditorCodeExecutionToolResultError or TextEditorCodeExecutionViewResultBlock or TextEditorCodeExecutionCreateResultBlock or TextEditorCodeExecutionStrReplaceResultBlock`
+
+    - `text_editor_code_execution_tool_result_error: object`
+
+      - `type: "text_editor_code_execution_tool_result_error"`
+
+      - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+        - `"invalid_tool_input"`
+
+        - `"unavailable"`
+
+        - `"too_many_requests"`
+
+        - `"execution_time_exceeded"`
+
+        - `"file_not_found"`
+
+      - `error_message: string`
+
+    - `text_editor_code_execution_view_result_block: object`
+
+      - `type: "text_editor_code_execution_view_result"`
+
+      - `content: string`
+
+      - `file_type: "text" or "image" or "pdf"`
+
+        - `"text"`
+
+        - `"image"`
+
+        - `"pdf"`
+
+      - `num_lines: number`
+
+      - `start_line: number`
+
+      - `total_lines: number`
+
+    - `text_editor_code_execution_create_result_block: object`
+
+      - `type: "text_editor_code_execution_create_result"`
+
+      - `is_file_update: boolean`
+
+    - `text_editor_code_execution_str_replace_result_block: object`
+
+      - `type: "text_editor_code_execution_str_replace_result"`
+
+      - `lines: array of string`
+
+      - `new_lines: number`
+
+      - `new_start: number`
+
+      - `old_lines: number`
+
+      - `old_start: number`
+
+  - `tool_use_id: string`
+
+    pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+### Text Editor Code Execution Tool Result Block Param
+
+- `text_editor_code_execution_tool_result_block_param: object`
+
+  - `type: "text_editor_code_execution_tool_result"`
+
+  - `content: TextEditorCodeExecutionToolResultErrorParam or TextEditorCodeExecutionViewResultBlockParam or TextEditorCodeExecutionCreateResultBlockParam or TextEditorCodeExecutionStrReplaceResultBlockParam`
+
+    - `text_editor_code_execution_tool_result_error_param: object`
+
+      - `type: "text_editor_code_execution_tool_result_error"`
+
+      - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+        - `"invalid_tool_input"`
+
+        - `"unavailable"`
+
+        - `"too_many_requests"`
+
+        - `"execution_time_exceeded"`
+
+        - `"file_not_found"`
+
+      - `error_message: optional string`
+
+    - `text_editor_code_execution_view_result_block_param: object`
+
+      - `type: "text_editor_code_execution_view_result"`
+
+      - `content: string`
+
+      - `file_type: "text" or "image" or "pdf"`
+
+        - `"text"`
+
+        - `"image"`
+
+        - `"pdf"`
+
+      - `num_lines: optional number`
+
+      - `start_line: optional number`
+
+      - `total_lines: optional number`
+
+    - `text_editor_code_execution_create_result_block_param: object`
+
+      - `type: "text_editor_code_execution_create_result"`
+
+      - `is_file_update: boolean`
+
+    - `text_editor_code_execution_str_replace_result_block_param: object`
+
+      - `type: "text_editor_code_execution_str_replace_result"`
+
+      - `lines: optional array of string`
+
+      - `new_lines: optional number`
+
+      - `new_start: optional number`
+
+      - `old_lines: optional number`
+
+      - `old_start: optional number`
+
+  - `tool_use_id: string`
+
+    pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+### Text Editor Code Execution Tool Result Error
+
+- `text_editor_code_execution_tool_result_error: object`
+
+  - `type: "text_editor_code_execution_tool_result_error"`
+
+  - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+    - `"invalid_tool_input"`
+
+    - `"unavailable"`
+
+    - `"too_many_requests"`
+
+    - `"execution_time_exceeded"`
+
+    - `"file_not_found"`
+
+  - `error_message: string`
+
+### Text Editor Code Execution Tool Result Error Code
+
+- `text_editor_code_execution_tool_result_error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+  - `"invalid_tool_input"`
+
+  - `"unavailable"`
+
+  - `"too_many_requests"`
+
+  - `"execution_time_exceeded"`
+
+  - `"file_not_found"`
+
+### Text Editor Code Execution Tool Result Error Param
+
+- `text_editor_code_execution_tool_result_error_param: object`
+
+  - `type: "text_editor_code_execution_tool_result_error"`
+
+  - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+    - `"invalid_tool_input"`
+
+    - `"unavailable"`
+
+    - `"too_many_requests"`
+
+    - `"execution_time_exceeded"`
+
+    - `"file_not_found"`
+
+  - `error_message: optional string`
+
+### Text Editor Code Execution View Result Block
+
+- `text_editor_code_execution_view_result_block: object`
+
+  - `type: "text_editor_code_execution_view_result"`
+
+  - `content: string`
+
+  - `file_type: "text" or "image" or "pdf"`
+
+    - `"text"`
+
+    - `"image"`
+
+    - `"pdf"`
+
+  - `num_lines: number`
+
+  - `start_line: number`
+
+  - `total_lines: number`
+
+### Text Editor Code Execution View Result Block Param
+
+- `text_editor_code_execution_view_result_block_param: object`
+
+  - `type: "text_editor_code_execution_view_result"`
+
+  - `content: string`
+
+  - `file_type: "text" or "image" or "pdf"`
+
+    - `"text"`
+
+    - `"image"`
+
+    - `"pdf"`
+
+  - `num_lines: optional number`
+
+  - `start_line: optional number`
+
+  - `total_lines: optional number`
+
+### Thinking Block
+
+- `thinking_block: object`
+
+  - `type: "thinking"`
+
+  - `signature: string`
+
+    A value used to verify that this thinking block was generated by Claude when it is passed back to the API.
+
+    This is an opaque field and should not be interpreted or parsed. When passing thinking blocks back to the API (required when using tools with extended thinking), pass them back exactly as received, with this field intact.
+
+    See [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli) for details.
+
+  - `thinking: string`
+
+    The text of Claude's thinking process for this block.
+
+### Thinking Block Param
+
+- `thinking_block_param: object`
+
+  - `type: "thinking"`
+
+  - `signature: string`
+
+    The `signature` value of this thinking block, exactly as returned by the API in a previous response. Used to verify that the block was generated by Claude.
+
+    Thinking blocks must be passed back unmodified and in their original order; a modified block results in a 400 `invalid_request_error`.
+
+  - `thinking: string`
+
+    The `thinking` text of this block as returned by the API.
+
+### Thinking Config Adaptive
+
+- `thinking_config_adaptive: object`
+
+  - `type: "adaptive"`
+
+  - `display: optional "summarized" or "omitted"`
+
+    Controls how thinking content appears in the response. When set to `summarized`, thinking is returned normally. When set to `omitted`, thinking content is redacted but a signature is returned for multi-turn continuity. The default depends on the model; see [Controlling thinking display](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli#controlling-thinking-display).
+
+    - `"summarized"`
+
+    - `"omitted"`
+
+### Thinking Config Between Tools
+
+- `thinking_config_between_tools: object`
+
+  - `type: "between_tools"`
+
+### Thinking Config Disabled
+
+- `thinking_config_disabled: object`
+
+  - `type: "disabled"`
+
+### Thinking Config Enabled
+
+- `thinking_config_enabled: object`
+
+  - `type: "enabled"`
+
+  - `budget_tokens: number`
+
+    Determines how many tokens Claude can use for its internal reasoning process. Larger budgets can enable more thorough analysis for complex problems, improving response quality.
+
+    Must be ≥1024 and less than `max_tokens`.
+
+    See [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli) for details.
+
+    minimum: 1024
+
+  - `display: optional "summarized" or "omitted"`
+
+    Controls how thinking content appears in the response. When set to `summarized`, thinking is returned normally. When set to `omitted`, thinking content is redacted but a signature is returned for multi-turn continuity. The default depends on the model; see [Controlling thinking display](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli#controlling-thinking-display).
+
+    - `"summarized"`
+
+    - `"omitted"`
+
+### Thinking Config Param
+
+- `thinking_config_param: ThinkingConfigEnabled or ThinkingConfigDisabled or ThinkingConfigBetweenTools or ThinkingConfigAdaptive`
+
+  Configuration for Claude's thinking.
+
+  With `{"type": "adaptive"}`, Claude decides when and how much to think. With `{"type": "enabled"}` (manual extended thinking), you set a `budget_tokens` of at least 1,024. Thinking tokens count toward your `max_tokens` limit.
+
+  Which `type` values are accepted, and what happens when you omit `thinking`, depend on the model. See [thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli#configuring-thinking) for each model's behavior.
+
+  - `thinking_config_enabled: object`
+
+    - `type: "enabled"`
+
+    - `budget_tokens: number`
+
+      Determines how many tokens Claude can use for its internal reasoning process. Larger budgets can enable more thorough analysis for complex problems, improving response quality.
+
+      Must be ≥1024 and less than `max_tokens`.
+
+      See [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli) for details.
+
+      minimum: 1024
+
+    - `display: optional "summarized" or "omitted"`
+
+      Controls how thinking content appears in the response. When set to `summarized`, thinking is returned normally. When set to `omitted`, thinking content is redacted but a signature is returned for multi-turn continuity. The default depends on the model; see [Controlling thinking display](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli#controlling-thinking-display).
+
+      - `"summarized"`
+
+      - `"omitted"`
+
+  - `thinking_config_disabled: object`
+
+    - `type: "disabled"`
+
+  - `thinking_config_between_tools: object`
+
+    - `type: "between_tools"`
+
+  - `thinking_config_adaptive: object`
+
+    - `type: "adaptive"`
+
+    - `display: optional "summarized" or "omitted"`
+
+      Controls how thinking content appears in the response. When set to `summarized`, thinking is returned normally. When set to `omitted`, thinking content is redacted but a signature is returned for multi-turn continuity. The default depends on the model; see [Controlling thinking display](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli#controlling-thinking-display).
+
+      - `"summarized"`
+
+      - `"omitted"`
+
+### Thinking Delta
+
+- `thinking_delta: object`
+
+  - `type: "thinking_delta"`
+
+  - `thinking: string`
+
+    The incremental `thinking` text for this content block. Concatenate the `thinking` values of successive `thinking_delta` events to assemble the block's full `thinking` value.
+
+### Tool
+
+- `tool: object`
+
+  - `type: optional "custom"`
+
+  - `input_schema: object`
+
+    [JSON schema](https://json-schema.org/draft/2020-12) for this tool's input.
+
+    This defines the shape of the `input` that your tool accepts and that the model will produce.
+
+    - `type: "object"`
+
+    - `properties: optional map[unknown]`
+
+    - `required: optional array of string`
+
+  - `name: string`
+
+    Name of the tool.
+
+    This is how the tool will be called by the model and in `tool_use` blocks.
+
+    minLength: 1, maxLength: 128, pattern: ^[a-zA-Z0-9_-]{1,128}$
+
+  - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+    - `"direct"`
+
+    - `"code_execution_20250825"`
+
+    - `"code_execution_20260120"`
+
+    - `"code_execution_20260521"`
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `defer_loading: optional boolean`
+
+    If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+  - `description: optional string`
+
+    Description of what this tool does.
+
+    Tool descriptions should be as detailed as possible. The more information that the model has about what the tool is and how to use it, the better it will perform. You can use natural language descriptions to reinforce important aspects of the tool input JSON schema.
+
+  - `eager_input_streaming: optional boolean`
+
+    Enable eager input streaming for this tool. When true, tool input parameters will be streamed incrementally as they are generated, and types will be inferred on-the-fly rather than buffering the full JSON output. When false, streaming is disabled for this tool even if the fine-grained-tool-streaming beta is active. When null (default), uses the default behavior based on beta headers.
+
+  - `input_examples: optional array of map[unknown]`
+
+  - `strict: optional boolean`
+
+    When true, guarantees schema validation on tool names and inputs
+
+### Tool Bash 20250124
+
+- `tool_bash_20250124: object`
+
+  - `type: "bash_20250124"`
+
+  - `name: "bash"`
+
+    Name of the tool.
+
+    This is how the tool will be called by the model and in `tool_use` blocks.
+
+  - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+    - `"direct"`
+
+    - `"code_execution_20250825"`
+
+    - `"code_execution_20260120"`
+
+    - `"code_execution_20260521"`
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `defer_loading: optional boolean`
+
+    If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+  - `input_examples: optional array of map[unknown]`
+
+  - `strict: optional boolean`
+
+    When true, guarantees schema validation on tool names and inputs
+
+### Tool Choice
+
+- `tool_choice: ToolChoiceAuto or ToolChoiceAny or ToolChoiceTool or ToolChoiceNone`
+
+  How the model should use the provided tools. The model can use a specific tool, any available tool, decide by itself, or not use tools at all.
+
+  - `tool_choice_auto: object`
+
+    The model will automatically decide whether to use tools.
+
+    - `type: "auto"`
+
+    - `disable_parallel_tool_use: optional boolean`
+
+      Whether to disable parallel tool use.
+
+      Defaults to `false`. If set to `true`, the model will output at most one tool use.
+
+  - `tool_choice_any: object`
+
+    The model will use any available tools.
+
+    - `type: "any"`
+
+    - `disable_parallel_tool_use: optional boolean`
+
+      Whether to disable parallel tool use.
+
+      Defaults to `false`. If set to `true`, the model will output exactly one tool use.
+
+  - `tool_choice_tool: object`
+
+    The model will use the specified tool with `tool_choice.name`.
+
+    - `type: "tool"`
+
+    - `name: string`
+
+      The name of the tool to use.
+
+    - `disable_parallel_tool_use: optional boolean`
+
+      Whether to disable parallel tool use.
+
+      Defaults to `false`. If set to `true`, the model will output exactly one tool use.
+
+  - `tool_choice_none: object`
+
+    The model will not be allowed to use tools.
+
+    - `type: "none"`
+
+### Tool Choice Any
+
+- `tool_choice_any: object`
+
+  The model will use any available tools.
+
+  - `type: "any"`
+
+  - `disable_parallel_tool_use: optional boolean`
+
+    Whether to disable parallel tool use.
+
+    Defaults to `false`. If set to `true`, the model will output exactly one tool use.
+
+### Tool Choice Auto
+
+- `tool_choice_auto: object`
+
+  The model will automatically decide whether to use tools.
+
+  - `type: "auto"`
+
+  - `disable_parallel_tool_use: optional boolean`
+
+    Whether to disable parallel tool use.
+
+    Defaults to `false`. If set to `true`, the model will output at most one tool use.
+
+### Tool Choice None
+
+- `tool_choice_none: object`
+
+  The model will not be allowed to use tools.
+
+  - `type: "none"`
+
+### Tool Choice Tool
+
+- `tool_choice_tool: object`
+
+  The model will use the specified tool with `tool_choice.name`.
+
+  - `type: "tool"`
+
+  - `name: string`
+
+    The name of the tool to use.
+
+  - `disable_parallel_tool_use: optional boolean`
+
+    Whether to disable parallel tool use.
+
+    Defaults to `false`. If set to `true`, the model will output exactly one tool use.
+
+### Tool Reference Block
+
+- `tool_reference_block: object`
+
+  - `type: "tool_reference"`
+
+  - `tool_name: string`
+
+    minLength: 1, maxLength: 256, pattern: ^[a-zA-Z0-9_-]{1,256}$
+
+### Tool Reference Block Param
+
+- `tool_reference_block_param: object`
+
+  Tool reference block that can be included in tool_result content.
+
+  - `type: "tool_reference"`
+
+  - `tool_name: string`
+
+    minLength: 1, maxLength: 256, pattern: ^[a-zA-Z0-9_-]{1,256}$
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+### Tool Result Block Param
+
+- `tool_result_block_param: object`
+
+  - `type: "tool_result"`
+
+  - `tool_use_id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `content: optional array of TextBlockParam or ImageBlockParam or SearchResultBlockParam or 3 more`
+
+    - `text_block_param: object`
+
+      - `type: "text"`
+
+      - `text: string`
+
+        minLength: 1
+
+      - `cache_control: optional object`
+
+        Create a cache control breakpoint at this content block.
+
+        - `type: "ephemeral"`
+
+        - `ttl: optional "5m" or "1h"`
+
+          The time-to-live for the cache control breakpoint.
+
+          This may be one the following values:
+
+          - `5m`: 5 minutes
+          - `1h`: 1 hour
+
+          Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `citations: optional array of TextCitationParam`
+
+        - `citation_char_location_param: object`
+
+          - `type: "char_location"`
+
+          - `cited_text: string`
+
+          - `document_index: number`
+
+            minimum: 0
+
+          - `document_title: string`
+
+            minLength: 1, maxLength: 500
+
+          - `end_char_index: number`
+
+          - `start_char_index: number`
+
+            minimum: 0
+
+        - `citation_page_location_param: object`
+
+          - `type: "page_location"`
+
+          - `cited_text: string`
+
+          - `document_index: number`
+
+            minimum: 0
+
+          - `document_title: string`
+
+            minLength: 1, maxLength: 500
+
+          - `end_page_number: number`
+
+          - `start_page_number: number`
+
+            minimum: 1
+
+        - `citation_content_block_location_param: object`
+
+          - `type: "content_block_location"`
+
+          - `cited_text: string`
+
+            The full text of the cited block range, concatenated.
+
+            Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+          - `document_index: number`
+
+            minimum: 0
+
+          - `document_title: string`
+
+            minLength: 1, maxLength: 500
+
+          - `end_block_index: number`
+
+            Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+            Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+          - `start_block_index: number`
+
+            0-based index of the first cited block in the source's `content` array.
+
+            minimum: 0
+
+        - `citation_web_search_result_location_param: object`
+
+          - `type: "web_search_result_location"`
+
+          - `cited_text: string`
+
+          - `encrypted_index: string`
+
+          - `title: string`
+
+            minLength: 1, maxLength: 512
+
+          - `url: string`
+
+            minLength: 1
+
+        - `citation_search_result_location_param: object`
+
+          - `type: "search_result_location"`
+
+          - `cited_text: string`
+
+            The full text of the cited block range, concatenated.
+
+            Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+          - `end_block_index: number`
+
+            Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+            Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+          - `search_result_index: number`
+
+            0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+            Counted separately from `document_index`; server-side web search results are not included in this count.
+
+            minimum: 0
+
+          - `source: string`
+
+          - `start_block_index: number`
+
+            0-based index of the first cited block in the source's `content` array.
+
+            minimum: 0
+
+          - `title: string`
+
+    - `image_block_param: object`
+
+      - `type: "image"`
+
+      - `source: Base64ImageSource or URLImageSource or FileImageSource`
+
+        - `base64_image_source: object`
+
+          - `type: "base64"`
+
+          - `data: string`
+
+            format: byte
+
+          - `media_type: "image/jpeg" or "image/png" or "image/gif" or "image/webp"`
+
+            - `"image/jpeg"`
+
+            - `"image/png"`
+
+            - `"image/gif"`
+
+            - `"image/webp"`
+
+        - `url_image_source: object`
+
+          - `type: "url"`
+
+          - `url: string`
+
+        - `file_image_source: object`
+
+          - `type: "file"`
+
+          - `file_id: string`
+
+      - `cache_control: optional object`
+
+        Create a cache control breakpoint at this content block.
+
+        - `type: "ephemeral"`
+
+        - `ttl: optional "5m" or "1h"`
+
+          The time-to-live for the cache control breakpoint.
+
+          This may be one the following values:
+
+          - `5m`: 5 minutes
+          - `1h`: 1 hour
+
+          Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `transformations: optional object`
+
+        Configures the transformations the server applies to this image before the model observes it. Each key names a condition the server transforms images for; its value selects the transformation applied. Omitted keys keep their default behavior, and an empty object is equivalent to omitting the field.
+
+        - `oversized_image: optional "downsize" or "error"`
+
+          What the server does when this image exceeds the model's maximum image size. `"downsize"` (the default) scales the image down to fit, which changes the dimensions the model observes without telling you. `"error"` instead rejects the request with a 400 error naming the image's dimensions and the largest dimensions that fit, so you can scale the image deliberately — your image is never silently scaled down.
+
+          - `"downsize"`
+
+          - `"error"`
+
+    - `search_result_block_param: object`
+
+      - `type: "search_result"`
+
+      - `content: array of TextBlockParam`
+
+        - `type: "text"`
+
+        - `text: string`
+
+          minLength: 1
+
+        - `cache_control: optional object`
+
+          Create a cache control breakpoint at this content block.
+
+        - `citations: optional array of TextCitationParam`
+
+      - `source: string`
+
+      - `title: string`
+
+      - `cache_control: optional object`
+
+        Create a cache control breakpoint at this content block.
+
+        - `type: "ephemeral"`
+
+        - `ttl: optional "5m" or "1h"`
+
+          The time-to-live for the cache control breakpoint.
+
+          This may be one the following values:
+
+          - `5m`: 5 minutes
+          - `1h`: 1 hour
+
+          Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `citations: optional object`
+
+        - `enabled: optional boolean`
+
+    - `document_block_param: object`
+
+      - `type: "document"`
+
+      - `source: Base64PDFSource or PlainTextSource or ContentBlockSource or 2 more`
+
+        - `base64_pdf_source: object`
+
+          - `type: "base64"`
+
+          - `data: string`
+
+            format: byte
+
+          - `media_type: "application/pdf"`
+
+        - `plain_text_source: object`
+
+          - `type: "text"`
+
+          - `data: string`
+
+          - `media_type: "text/plain"`
+
+        - `content_block_source: object`
+
+          - `type: "content"`
+
+          - `content: string or array of ContentBlockSourceContent`
+
+            - `union_member_0: string`
+
+            - `content_block_source_content: array of ContentBlockSourceContent`
+
+              - `text_block_param: object`
+
+                - `type: "text"`
+
+                - `text: string`
+
+                  minLength: 1
+
+                - `cache_control: optional object`
+
+                  Create a cache control breakpoint at this content block.
+
+                - `citations: optional array of TextCitationParam`
+
+              - `image_block_param: object`
+
+                - `type: "image"`
+
+                - `source: Base64ImageSource or URLImageSource or FileImageSource`
+
+                - `cache_control: optional object`
+
+                  Create a cache control breakpoint at this content block.
+
+                - `transformations: optional object`
+
+                  Configures the transformations the server applies to this image before the model observes it. Each key names a condition the server transforms images for; its value selects the transformation applied. Omitted keys keep their default behavior, and an empty object is equivalent to omitting the field.
+
+        - `url_pdf_source: object`
+
+          - `type: "url"`
+
+          - `url: string`
+
+        - `file_document_source: object`
+
+          - `type: "file"`
+
+          - `file_id: string`
+
+      - `cache_control: optional object`
+
+        Create a cache control breakpoint at this content block.
+
+        - `type: "ephemeral"`
+
+        - `ttl: optional "5m" or "1h"`
+
+          The time-to-live for the cache control breakpoint.
+
+          This may be one the following values:
+
+          - `5m`: 5 minutes
+          - `1h`: 1 hour
+
+          Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `citations: optional object`
+
+        - `enabled: optional boolean`
+
+      - `context: optional string`
+
+        minLength: 1
+
+      - `title: optional string`
+
+        minLength: 1, maxLength: 500
+
+    - `tool_reference_block_param: object`
+
+      Tool reference block that can be included in tool_result content.
+
+      - `type: "tool_reference"`
+
+      - `tool_name: string`
+
+        minLength: 1, maxLength: 256, pattern: ^[a-zA-Z0-9_-]{1,256}$
+
+      - `cache_control: optional object`
+
+        Create a cache control breakpoint at this content block.
+
+        - `type: "ephemeral"`
+
+        - `ttl: optional "5m" or "1h"`
+
+          The time-to-live for the cache control breakpoint.
+
+          This may be one the following values:
+
+          - `5m`: 5 minutes
+          - `1h`: 1 hour
+
+          Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `browser_state_block_param: object`
+
+      The caller's browser state after a browser toolset member call —
+      the full inventory of open tabs, which tab is active, and any side
+      effects (tabs opened, download state changes) the call produced.
+
+      At most one per `tool_result`, only on a non-error result answering a
+      browser toolset member `tool_use`. The server renders the
+      model-visible text from it; the model never sees the raw fields.
+
+      - `type: "browser_state"`
+
+      - `tabs: array of BrowserStateTabEntry`
+
+        All tabs open in the browser after this call — the full inventory, not a delta. May be empty. Whenever non-empty, exactly one entry carries `active: true`.
+
+        maxItems: 100
+
+        - `tab_id: string`
+
+          The caller-assigned identifier for this tab, unique within the inventory.
+
+          minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+        - `title: string`
+
+          The title of the page the tab is showing. May be empty.
+
+          maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+        - `url: string`
+
+          The URL of the page the tab is showing. May be empty.
+
+          maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+        - `active: optional boolean`
+
+          Whether this tab is the active tab after this call. Whenever `tabs` is non-empty, exactly one entry is marked `active: true`.
+
+      - `cache_control: optional object`
+
+        Create a cache control breakpoint at this content block.
+
+        - `type: "ephemeral"`
+
+        - `ttl: optional "5m" or "1h"`
+
+          The time-to-live for the cache control breakpoint.
+
+          This may be one the following values:
+
+          - `5m`: 5 minutes
+          - `1h`: 1 hour
+
+          Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `state_changes: optional array of BrowserStateChange`
+
+        Tabs opened and download state changes during this call. "Nothing to report" is expressed by omitting the field, never by an empty list.
+
+        minItems: 1, maxItems: 200
+
+        - `browser_state_change_tab_opened: object`
+
+          A tab this call's execution opened that remains open at its end —
+          the creation delta of the `tabs` inventory, not an event log.
+
+          Carries only the `tab_id`; the tab's `title` and `url` live on its
+          `tabs` entry, which must include the same `tab_id`. A tab opened
+          during a failed call gets no deferred `tab_opened`; it simply appears
+          in the next result's `tabs` inventory.
+
+          - `type: "tab_opened"`
+
+          - `tab_id: string`
+
+            The `tab_id` of the opened tab, present in `tabs`.
+
+            minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+        - `browser_state_change_download_started: object`
+
+          A file download that started during this call.
+
+          - `type: "download_started"`
+
+          - `download_id: string`
+
+            The caller-assigned identifier for this download, stable across the state changes reporting it.
+
+            minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+          - `url: string`
+
+            The final post-redirect URL the download was served from.
+
+            maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+        - `browser_state_change_download_completed: object`
+
+          A file download that finished during this call, reported with the
+          same `download_id` as its `download_started` — or without a prior
+          `download_started`, when the download finished during the call that
+          started it (at most one state change per `download_id` per result).
+
+          - `type: "download_completed"`
+
+          - `download_id: string`
+
+            The caller-assigned identifier for this download, stable across the state changes reporting it.
+
+            minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+          - `url: string`
+
+            The final post-redirect URL the download was served from.
+
+            maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+          - `path: optional string`
+
+            Where the executor saved the file, on the executor's filesystem. Only included when another tool in the same environment can read the file at that path.
+
+            maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+          - `size_bytes: optional number`
+
+            The completed download's size.
+
+            minimum: 0
+
+        - `browser_state_change_download_failed: object`
+
+          A file download that failed — or was cancelled — during this call.
+
+          - `type: "download_failed"`
+
+          - `download_id: string`
+
+            The caller-assigned identifier for this download, stable across the state changes reporting it.
+
+            minLength: 1, maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+          - `url: string`
+
+            The final post-redirect URL the download was served from.
+
+            maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+          - `error: optional string`
+
+            The failure or cancellation detail, when known.
+
+            maxLength: 4096, pattern: ^[^\x00-\x1f\x7f-\x9f\u2028\u2029]*$
+
+  - `is_error: optional boolean`
+
+  - `toolset_name: optional string`
+
+    For a toolset member tool_result, the toolset family of the paired tool_use.
+
+    minLength: 1, maxLength: 64, pattern: ^[a-zA-Z0-9_-]+$
+
+### Tool Search Tool Bm25 20251119
+
+- `tool_search_tool_bm25_20251119: object`
+
+  - `type: "tool_search_tool_bm25_20251119" or "tool_search_tool_bm25"`
+
+    - `"tool_search_tool_bm25_20251119"`
+
+    - `"tool_search_tool_bm25"`
+
+  - `name: "tool_search_tool_bm25"`
+
+    Name of the tool.
+
+    This is how the tool will be called by the model and in `tool_use` blocks.
+
+  - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+    - `"direct"`
+
+    - `"code_execution_20250825"`
+
+    - `"code_execution_20260120"`
+
+    - `"code_execution_20260521"`
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `defer_loading: optional boolean`
+
+    If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+  - `strict: optional boolean`
+
+    When true, guarantees schema validation on tool names and inputs
+
+### Tool Search Tool Regex 20251119
+
+- `tool_search_tool_regex_20251119: object`
+
+  - `type: "tool_search_tool_regex_20251119" or "tool_search_tool_regex"`
+
+    - `"tool_search_tool_regex_20251119"`
+
+    - `"tool_search_tool_regex"`
+
+  - `name: "tool_search_tool_regex"`
+
+    Name of the tool.
+
+    This is how the tool will be called by the model and in `tool_use` blocks.
+
+  - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+    - `"direct"`
+
+    - `"code_execution_20250825"`
+
+    - `"code_execution_20260120"`
+
+    - `"code_execution_20260521"`
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `defer_loading: optional boolean`
+
+    If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+  - `strict: optional boolean`
+
+    When true, guarantees schema validation on tool names and inputs
+
+### Tool Search Tool Result Block
+
+- `tool_search_tool_result_block: object`
+
+  - `type: "tool_search_tool_result"`
+
+  - `content: ToolSearchToolResultError or ToolSearchToolSearchResultBlock`
+
+    - `tool_search_tool_result_error: object`
+
+      - `type: "tool_search_tool_result_error"`
+
+      - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+        - `"invalid_tool_input"`
+
+        - `"unavailable"`
+
+        - `"too_many_requests"`
+
+        - `"execution_time_exceeded"`
+
+      - `error_message: string`
+
+    - `tool_search_tool_search_result_block: object`
+
+      - `type: "tool_search_tool_search_result"`
+
+      - `tool_references: array of ToolReferenceBlock`
+
+        - `type: "tool_reference"`
+
+        - `tool_name: string`
+
+          minLength: 1, maxLength: 256, pattern: ^[a-zA-Z0-9_-]{1,256}$
+
+  - `tool_use_id: string`
+
+    pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+### Tool Search Tool Result Block Param
+
+- `tool_search_tool_result_block_param: object`
+
+  - `type: "tool_search_tool_result"`
+
+  - `content: ToolSearchToolResultErrorParam or ToolSearchToolSearchResultBlockParam`
+
+    - `tool_search_tool_result_error_param: object`
+
+      - `type: "tool_search_tool_result_error"`
+
+      - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+        - `"invalid_tool_input"`
+
+        - `"unavailable"`
+
+        - `"too_many_requests"`
+
+        - `"execution_time_exceeded"`
+
+      - `error_message: optional string`
+
+    - `tool_search_tool_search_result_block_param: object`
+
+      - `type: "tool_search_tool_search_result"`
+
+      - `tool_references: array of ToolReferenceBlockParam`
+
+        - `type: "tool_reference"`
+
+        - `tool_name: string`
+
+          minLength: 1, maxLength: 256, pattern: ^[a-zA-Z0-9_-]{1,256}$
+
+        - `cache_control: optional object`
+
+          Create a cache control breakpoint at this content block.
+
+          - `type: "ephemeral"`
+
+          - `ttl: optional "5m" or "1h"`
+
+            The time-to-live for the cache control breakpoint.
+
+            This may be one the following values:
+
+            - `5m`: 5 minutes
+            - `1h`: 1 hour
+
+            Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+            - `"5m"`
+
+            - `"1h"`
+
+  - `tool_use_id: string`
+
+    pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+### Tool Search Tool Result Error
+
+- `tool_search_tool_result_error: object`
+
+  - `type: "tool_search_tool_result_error"`
+
+  - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+    - `"invalid_tool_input"`
+
+    - `"unavailable"`
+
+    - `"too_many_requests"`
+
+    - `"execution_time_exceeded"`
+
+  - `error_message: string`
+
+### Tool Search Tool Result Error Code
+
+- `tool_search_tool_result_error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+  - `"invalid_tool_input"`
+
+  - `"unavailable"`
+
+  - `"too_many_requests"`
+
+  - `"execution_time_exceeded"`
+
+### Tool Search Tool Result Error Param
+
+- `tool_search_tool_result_error_param: object`
+
+  - `type: "tool_search_tool_result_error"`
+
+  - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+    - `"invalid_tool_input"`
+
+    - `"unavailable"`
+
+    - `"too_many_requests"`
+
+    - `"execution_time_exceeded"`
+
+  - `error_message: optional string`
+
+### Tool Search Tool Search Result Block
+
+- `tool_search_tool_search_result_block: object`
+
+  - `type: "tool_search_tool_search_result"`
+
+  - `tool_references: array of ToolReferenceBlock`
+
+    - `type: "tool_reference"`
+
+    - `tool_name: string`
+
+      minLength: 1, maxLength: 256, pattern: ^[a-zA-Z0-9_-]{1,256}$
+
+### Tool Search Tool Search Result Block Param
+
+- `tool_search_tool_search_result_block_param: object`
+
+  - `type: "tool_search_tool_search_result"`
+
+  - `tool_references: array of ToolReferenceBlockParam`
+
+    - `type: "tool_reference"`
+
+    - `tool_name: string`
+
+      minLength: 1, maxLength: 256, pattern: ^[a-zA-Z0-9_-]{1,256}$
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+        - `"5m"`
+
+        - `"1h"`
+
+### Tool Text Editor 20250124
+
+- `tool_text_editor_20250124: object`
+
+  - `type: "text_editor_20250124"`
+
+  - `name: "str_replace_editor"`
+
+    Name of the tool.
+
+    This is how the tool will be called by the model and in `tool_use` blocks.
+
+  - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+    - `"direct"`
+
+    - `"code_execution_20250825"`
+
+    - `"code_execution_20260120"`
+
+    - `"code_execution_20260521"`
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `defer_loading: optional boolean`
+
+    If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+  - `input_examples: optional array of map[unknown]`
+
+  - `strict: optional boolean`
+
+    When true, guarantees schema validation on tool names and inputs
+
+### Tool Text Editor 20250429
+
+- `tool_text_editor_20250429: object`
+
+  - `type: "text_editor_20250429"`
+
+  - `name: "str_replace_based_edit_tool"`
+
+    Name of the tool.
+
+    This is how the tool will be called by the model and in `tool_use` blocks.
+
+  - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+    - `"direct"`
+
+    - `"code_execution_20250825"`
+
+    - `"code_execution_20260120"`
+
+    - `"code_execution_20260521"`
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `defer_loading: optional boolean`
+
+    If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+  - `input_examples: optional array of map[unknown]`
+
+  - `strict: optional boolean`
+
+    When true, guarantees schema validation on tool names and inputs
+
+### Tool Text Editor 20250728
+
+- `tool_text_editor_20250728: object`
+
+  - `type: "text_editor_20250728"`
+
+  - `name: "str_replace_based_edit_tool"`
+
+    Name of the tool.
+
+    This is how the tool will be called by the model and in `tool_use` blocks.
+
+  - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+    - `"direct"`
+
+    - `"code_execution_20250825"`
+
+    - `"code_execution_20260120"`
+
+    - `"code_execution_20260521"`
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `defer_loading: optional boolean`
+
+    If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+  - `input_examples: optional array of map[unknown]`
+
+  - `max_characters: optional number`
+
+    Maximum number of characters to display when viewing a file. If not specified, defaults to displaying the full file.
+
+    minimum: 1
+
+  - `strict: optional boolean`
+
+    When true, guarantees schema validation on tool names and inputs
+
+### Tool Union
+
+- `tool_union: Tool or ToolBash20250124 or CodeExecutionTool20250522 or 18 more`
+
+  - `tool: object`
+
+    - `type: optional "custom"`
+
+    - `input_schema: object`
+
+      [JSON schema](https://json-schema.org/draft/2020-12) for this tool's input.
+
+      This defines the shape of the `input` that your tool accepts and that the model will produce.
+
+      - `type: "object"`
+
+      - `properties: optional map[unknown]`
+
+      - `required: optional array of string`
+
+    - `name: string`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+      minLength: 1, maxLength: 128, pattern: ^[a-zA-Z0-9_-]{1,128}$
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+        - `"5m"`
+
+        - `"1h"`
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `description: optional string`
+
+      Description of what this tool does.
+
+      Tool descriptions should be as detailed as possible. The more information that the model has about what the tool is and how to use it, the better it will perform. You can use natural language descriptions to reinforce important aspects of the tool input JSON schema.
+
+    - `eager_input_streaming: optional boolean`
+
+      Enable eager input streaming for this tool. When true, tool input parameters will be streamed incrementally as they are generated, and types will be inferred on-the-fly rather than buffering the full JSON output. When false, streaming is disabled for this tool even if the fine-grained-tool-streaming beta is active. When null (default), uses the default behavior based on beta headers.
+
+    - `input_examples: optional array of map[unknown]`
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+  - `tool_bash_20250124: object`
+
+    - `type: "bash_20250124"`
+
+    - `name: "bash"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `input_examples: optional array of map[unknown]`
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+  - `code_execution_tool_20250522: object`
+
+    - `type: "code_execution_20250522"`
+
+    - `name: "code_execution"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+  - `code_execution_tool_20250825: object`
+
+    - `type: "code_execution_20250825"`
+
+    - `name: "code_execution"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+  - `code_execution_tool_20260120: object`
+
+    Code execution tool with REPL state persistence (daemon mode + gVisor checkpoint).
+
+    - `type: "code_execution_20260120"`
+
+    - `name: "code_execution"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+  - `code_execution_tool_20260521: object`
+
+    Code execution tool with REPL state persistence.
+
+    - `type: "code_execution_20260521"`
+
+    - `name: "code_execution"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+  - `browser_toolset_20260801: object`
+
+    The browser toolset: a single `tools[]` entry (carrying no
+    `name`) that declares the browser tool family. The model is served
+    the family's tool with any members disabled via `configs` removed
+    from its schema.
+
+    - `type: "browser_toolset_20260801"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `configs: optional object`
+
+      Sparse per-member overrides, keyed by member name. Absent, null, and {} are equivalent; a member's defaults apply wherever its key is absent.
+
+      - `type: optional object`
+
+        `type`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `close_tab: optional object`
+
+        `close_tab`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `double_click: optional object`
+
+        `double_click`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `file_upload: optional object`
+
+        `file_upload`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `find: optional object`
+
+        `find`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `form_input: optional object`
+
+        `form_input`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `get_page_text: optional object`
+
+        `get_page_text`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `hold_key: optional object`
+
+        `hold_key`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `hover: optional object`
+
+        `hover`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `javascript_exec: optional object`
+
+        `javascript_exec`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `key: optional object`
+
+        `key`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `left_click: optional object`
+
+        `left_click`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `left_click_drag: optional object`
+
+        `left_click_drag`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `left_mouse_down: optional object`
+
+        `left_mouse_down`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `left_mouse_up: optional object`
+
+        `left_mouse_up`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `list_tabs: optional object`
+
+        `list_tabs`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `middle_click: optional object`
+
+        `middle_click`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `mouse_move: optional object`
+
+        `mouse_move`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `navigate: optional object`
+
+        `navigate`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `new_tab: optional object`
+
+        `new_tab`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `read_console: optional object`
+
+        `read_console`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `read_network: optional object`
+
+        `read_network`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `read_page: optional object`
+
+        `read_page`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `right_click: optional object`
+
+        `right_click`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `screenshot: optional object`
+
+        `screenshot`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `scroll: optional object`
+
+        `scroll`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `scroll_to: optional object`
+
+        `scroll_to`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `switch_tab: optional object`
+
+        `switch_tab`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `triple_click: optional object`
+
+        `triple_click`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `wait: optional object`
+
+        `wait`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `zoom: optional object`
+
+        `zoom`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `memory_tool_20250818: object`
+
+    - `type: "memory_20250818"`
+
+    - `name: "memory"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `input_examples: optional array of map[unknown]`
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+  - `computer_toolset_20260801: object`
+
+    The computer toolset: a single `tools[]` entry (carrying no
+    `name`) that declares the computer tool family. The model is
+    served the family's tool with any members disabled via `configs`
+    removed from its schema. Every member is enabled by default, zoom
+    included. The single-tool options `display_number` and
+    `enable_zoom` are not fields of a toolset entry — it carries only
+    `type`, `configs`, and `cache_control`; zoom is controlled
+    via `configs.zoom.enabled`.
+
+    - `type: "computer_toolset_20260801"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `configs: optional object`
+
+      Sparse per-member overrides, keyed by member name. Absent, null, and {} are equivalent; a member's defaults apply wherever its key is absent.
+
+      - `type: optional object`
+
+        `type`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `cursor_position: optional object`
+
+        `cursor_position`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `double_click: optional object`
+
+        `double_click`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `hold_key: optional object`
+
+        `hold_key`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `key: optional object`
+
+        `key`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `left_click: optional object`
+
+        `left_click`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `left_click_drag: optional object`
+
+        `left_click_drag`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `left_mouse_down: optional object`
+
+        `left_mouse_down`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `left_mouse_up: optional object`
+
+        `left_mouse_up`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `middle_click: optional object`
+
+        `middle_click`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `mouse_move: optional object`
+
+        `mouse_move`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `right_click: optional object`
+
+        `right_click`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `screenshot: optional object`
+
+        `screenshot`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `scroll: optional object`
+
+        `scroll`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `triple_click: optional object`
+
+        `triple_click`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `wait: optional object`
+
+        `wait`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+      - `zoom: optional object`
+
+        `zoom`'s config overrides.
+
+        - `defer_loading: optional boolean`
+
+          Defer loading for this member. Must resolve to the same value on every enabled member of the toolset.
+
+        - `enabled: optional boolean`
+
+          Whether this member is offered to the model. Default is per member, per the toolset's documentation. A member whose enabled resolves false is withheld from the served schema.
+
+  - `tool_text_editor_20250124: object`
+
+    - `type: "text_editor_20250124"`
+
+    - `name: "str_replace_editor"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `input_examples: optional array of map[unknown]`
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+  - `tool_text_editor_20250429: object`
+
+    - `type: "text_editor_20250429"`
+
+    - `name: "str_replace_based_edit_tool"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `input_examples: optional array of map[unknown]`
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+  - `tool_text_editor_20250728: object`
+
+    - `type: "text_editor_20250728"`
+
+    - `name: "str_replace_based_edit_tool"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `input_examples: optional array of map[unknown]`
+
+    - `max_characters: optional number`
+
+      Maximum number of characters to display when viewing a file. If not specified, defaults to displaying the full file.
+
+      minimum: 1
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+  - `web_search_tool_20250305: object`
+
+    - `type: "web_search_20250305"`
+
+    - `name: "web_search"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `allowed_domains: optional array of string`
+
+      If provided, only these domains will be included in results. Cannot be used alongside `blocked_domains`.
+
+    - `blocked_domains: optional array of string`
+
+      If provided, these domains will never appear in results. Cannot be used alongside `allowed_domains`.
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `max_uses: optional number`
+
+      Maximum number of times the tool can be used in the API request.
+
+      minimum: 1
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+    - `user_location: optional object`
+
+      Parameters for the user's location. Used to provide more relevant search results.
+
+      - `type: "approximate"`
+
+      - `city: optional string`
+
+        The city of the user.
+
+        minLength: 1, maxLength: 255
+
+      - `country: optional string`
+
+        The two letter [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) of the user.
+
+        minLength: 2, maxLength: 2
+
+      - `region: optional string`
+
+        The region of the user.
+
+        minLength: 1, maxLength: 255
+
+      - `timezone: optional string`
+
+        The [IANA timezone](https://nodatime.org/TimeZones) of the user.
+
+        minLength: 1, maxLength: 255
+
+  - `web_fetch_tool_20250910: object`
+
+    - `type: "web_fetch_20250910"`
+
+    - `name: "web_fetch"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `allowed_domains: optional array of string`
+
+      List of domains to allow fetching from
+
+    - `blocked_domains: optional array of string`
+
+      List of domains to block fetching from
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `citations: optional object`
+
+      Citations configuration for fetched documents. Citations are disabled by default.
+
+      - `enabled: optional boolean`
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `max_content_tokens: optional number`
+
+      Maximum number of tokens used by including web page text content in the context. The limit is approximate and does not apply to binary content such as PDFs.
+
+      minimum: 1
+
+    - `max_uses: optional number`
+
+      Maximum number of times the tool can be used in the API request.
+
+      minimum: 1
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+    - `url_sources: optional object`
+
+      Which sources contribute to the set of URLs the tool may fetch. Omitted means every source.
+
+      - `client_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+        Which client tools' results contribute fetchable URLs: "all", "none", or an only or except list of client tool names from tools[].
+
+        - `web_fetch_url_source_all: object`
+
+          The `url_sources` variant under which a source contributes in
+          full: every result of the tool filter's source, or all user input.
+
+          - `type: "all"`
+
+        - `web_fetch_url_source_none: object`
+
+          The `url_sources` variant under which a source contributes nothing:
+          no result of the tool filter's source, or no user input.
+
+          - `type: "none"`
+
+        - `web_fetch_url_source_only: object`
+
+          The tool filter variant under which only the named tools' results
+          contribute.
+
+          - `type: "only"`
+
+          - `tools: array of WebFetchURLSourceToolReference`
+
+            - `type: "tool_reference"`
+
+            - `name: string`
+
+        - `web_fetch_url_source_except: object`
+
+          The tool filter variant under which every result but the named
+          tools' contributes.
+
+          - `type: "except"`
+
+          - `tools: array of WebFetchURLSourceToolReference`
+
+            - `type: "tool_reference"`
+
+            - `name: string`
+
+      - `server_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+        Which server tools' results contribute fetchable URLs: "all", "none", or an only or except list of server tool names from tools[]; only web_search and web_fetch results ever contribute.
+
+        - `web_fetch_url_source_all: object`
+
+          The `url_sources` variant under which a source contributes in
+          full: every result of the tool filter's source, or all user input.
+
+        - `web_fetch_url_source_none: object`
+
+          The `url_sources` variant under which a source contributes nothing:
+          no result of the tool filter's source, or no user input.
+
+        - `web_fetch_url_source_only: object`
+
+          The tool filter variant under which only the named tools' results
+          contribute.
+
+        - `web_fetch_url_source_except: object`
+
+          The tool filter variant under which every result but the named
+          tools' contributes.
+
+      - `user_input: optional WebFetchURLSourceAll or WebFetchURLSourceNone`
+
+        Whether URLs in user messages are fetchable: "all" or "none".
+
+        - `web_fetch_url_source_all: object`
+
+          The `url_sources` variant under which a source contributes in
+          full: every result of the tool filter's source, or all user input.
+
+        - `web_fetch_url_source_none: object`
+
+          The `url_sources` variant under which a source contributes nothing:
+          no result of the tool filter's source, or no user input.
+
+  - `web_search_tool_20260209: object`
+
+    - `type: "web_search_20260209"`
+
+    - `name: "web_search"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `allowed_domains: optional array of string`
+
+      If provided, only these domains will be included in results. Cannot be used alongside `blocked_domains`.
+
+    - `blocked_domains: optional array of string`
+
+      If provided, these domains will never appear in results. Cannot be used alongside `allowed_domains`.
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `max_uses: optional number`
+
+      Maximum number of times the tool can be used in the API request.
+
+      minimum: 1
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+    - `user_location: optional object`
+
+      Parameters for the user's location. Used to provide more relevant search results.
+
+      - `type: "approximate"`
+
+      - `city: optional string`
+
+        The city of the user.
+
+        minLength: 1, maxLength: 255
+
+      - `country: optional string`
+
+        The two letter [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) of the user.
+
+        minLength: 2, maxLength: 2
+
+      - `region: optional string`
+
+        The region of the user.
+
+        minLength: 1, maxLength: 255
+
+      - `timezone: optional string`
+
+        The [IANA timezone](https://nodatime.org/TimeZones) of the user.
+
+        minLength: 1, maxLength: 255
+
+  - `web_fetch_tool_20260209: object`
+
+    - `type: "web_fetch_20260209"`
+
+    - `name: "web_fetch"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `allowed_domains: optional array of string`
+
+      List of domains to allow fetching from
+
+    - `blocked_domains: optional array of string`
+
+      List of domains to block fetching from
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `citations: optional object`
+
+      Citations configuration for fetched documents. Citations are disabled by default.
+
+      - `enabled: optional boolean`
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `max_content_tokens: optional number`
+
+      Maximum number of tokens used by including web page text content in the context. The limit is approximate and does not apply to binary content such as PDFs.
+
+      minimum: 1
+
+    - `max_uses: optional number`
+
+      Maximum number of times the tool can be used in the API request.
+
+      minimum: 1
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+    - `url_sources: optional object`
+
+      Which sources contribute to the set of URLs the tool may fetch. Omitted means every source.
+
+      - `client_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+        Which client tools' results contribute fetchable URLs: "all", "none", or an only or except list of client tool names from tools[].
+
+      - `server_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+        Which server tools' results contribute fetchable URLs: "all", "none", or an only or except list of server tool names from tools[]; only web_search and web_fetch results ever contribute.
+
+      - `user_input: optional WebFetchURLSourceAll or WebFetchURLSourceNone`
+
+        Whether URLs in user messages are fetchable: "all" or "none".
+
+  - `web_fetch_tool_20260309: object`
+
+    Web fetch tool with use_cache parameter for bypassing cached content.
+
+    - `type: "web_fetch_20260309"`
+
+    - `name: "web_fetch"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `allowed_domains: optional array of string`
+
+      List of domains to allow fetching from
+
+    - `blocked_domains: optional array of string`
+
+      List of domains to block fetching from
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `citations: optional object`
+
+      Citations configuration for fetched documents. Citations are disabled by default.
+
+      - `enabled: optional boolean`
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `max_content_tokens: optional number`
+
+      Maximum number of tokens used by including web page text content in the context. The limit is approximate and does not apply to binary content such as PDFs.
+
+      minimum: 1
+
+    - `max_uses: optional number`
+
+      Maximum number of times the tool can be used in the API request.
+
+      minimum: 1
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+    - `url_sources: optional object`
+
+      Which sources contribute to the set of URLs the tool may fetch. Omitted means every source.
+
+      - `client_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+        Which client tools' results contribute fetchable URLs: "all", "none", or an only or except list of client tool names from tools[].
+
+      - `server_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+        Which server tools' results contribute fetchable URLs: "all", "none", or an only or except list of server tool names from tools[]; only web_search and web_fetch results ever contribute.
+
+      - `user_input: optional WebFetchURLSourceAll or WebFetchURLSourceNone`
+
+        Whether URLs in user messages are fetchable: "all" or "none".
+
+    - `use_cache: optional boolean`
+
+      Whether to use cached content. Set to false to bypass the cache and fetch fresh content. Only set to false when the user explicitly requests fresh content or when fetching rapidly-changing sources.
+
+  - `web_search_tool_20260318: object`
+
+    - `type: "web_search_20260318"`
+
+    - `name: "web_search"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `allowed_domains: optional array of string`
+
+      If provided, only these domains will be included in results. Cannot be used alongside `blocked_domains`.
+
+    - `blocked_domains: optional array of string`
+
+      If provided, these domains will never appear in results. Cannot be used alongside `allowed_domains`.
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `max_uses: optional number`
+
+      Maximum number of times the tool can be used in the API request.
+
+      minimum: 1
+
+    - `response_inclusion: optional "full" or "excluded"`
+
+      How this tool's result blocks appear in the API response when the result was consumed by a completed code_execution call in the same turn. 'full' returns the complete content (default). 'excluded' drops the nested server_tool_use and result block pair entirely. Results from direct calls, or from code_execution calls that paused before completing, are always returned in full so they can be sent back on the next turn.
+
+      - `"full"`
+
+      - `"excluded"`
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+    - `user_location: optional object`
+
+      Parameters for the user's location. Used to provide more relevant search results.
+
+      - `type: "approximate"`
+
+      - `city: optional string`
+
+        The city of the user.
+
+        minLength: 1, maxLength: 255
+
+      - `country: optional string`
+
+        The two letter [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) of the user.
+
+        minLength: 2, maxLength: 2
+
+      - `region: optional string`
+
+        The region of the user.
+
+        minLength: 1, maxLength: 255
+
+      - `timezone: optional string`
+
+        The [IANA timezone](https://nodatime.org/TimeZones) of the user.
+
+        minLength: 1, maxLength: 255
+
+  - `web_fetch_tool_20260318: object`
+
+    - `type: "web_fetch_20260318"`
+
+    - `name: "web_fetch"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `allowed_domains: optional array of string`
+
+      List of domains to allow fetching from
+
+    - `blocked_domains: optional array of string`
+
+      List of domains to block fetching from
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `citations: optional object`
+
+      Citations configuration for fetched documents. Citations are disabled by default.
+
+      - `enabled: optional boolean`
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `max_content_tokens: optional number`
+
+      Maximum number of tokens used by including web page text content in the context. The limit is approximate and does not apply to binary content such as PDFs.
+
+      minimum: 1
+
+    - `max_uses: optional number`
+
+      Maximum number of times the tool can be used in the API request.
+
+      minimum: 1
+
+    - `response_inclusion: optional "full" or "excluded"`
+
+      How this tool's result blocks appear in the API response when the result was consumed by a completed code_execution call in the same turn. 'full' returns the complete content (default). 'excluded' drops the nested server_tool_use and result block pair entirely. Results from direct calls, or from code_execution calls that paused before completing, are always returned in full so they can be sent back on the next turn.
+
+      - `"full"`
+
+      - `"excluded"`
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+    - `url_sources: optional object`
+
+      Which sources contribute to the set of URLs the tool may fetch. Omitted means every source.
+
+      - `client_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+        Which client tools' results contribute fetchable URLs: "all", "none", or an only or except list of client tool names from tools[].
+
+      - `server_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+        Which server tools' results contribute fetchable URLs: "all", "none", or an only or except list of server tool names from tools[]; only web_search and web_fetch results ever contribute.
+
+      - `user_input: optional WebFetchURLSourceAll or WebFetchURLSourceNone`
+
+        Whether URLs in user messages are fetchable: "all" or "none".
+
+    - `use_cache: optional boolean`
+
+      Whether to use cached content. Set to false to bypass the cache and fetch fresh content. Only set to false when the user explicitly requests fresh content or when fetching rapidly-changing sources.
+
+  - `tool_search_tool_bm25_20251119: object`
+
+    - `type: "tool_search_tool_bm25_20251119" or "tool_search_tool_bm25"`
+
+      - `"tool_search_tool_bm25_20251119"`
+
+      - `"tool_search_tool_bm25"`
+
+    - `name: "tool_search_tool_bm25"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+  - `tool_search_tool_regex_20251119: object`
+
+    - `type: "tool_search_tool_regex_20251119" or "tool_search_tool_regex"`
+
+      - `"tool_search_tool_regex_20251119"`
+
+      - `"tool_search_tool_regex"`
+
+    - `name: "tool_search_tool_regex"`
+
+      Name of the tool.
+
+      This is how the tool will be called by the model and in `tool_use` blocks.
+
+    - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+      - `"direct"`
+
+      - `"code_execution_20250825"`
+
+      - `"code_execution_20260120"`
+
+      - `"code_execution_20260521"`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `defer_loading: optional boolean`
+
+      If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+    - `strict: optional boolean`
+
+      When true, guarantees schema validation on tool names and inputs
+
+### Tool Use Block
+
+- `tool_use_block: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `input: map[unknown]`
+
+  - `name: string`
+
+    minLength: 1
+
+  - `toolset_name: optional string`
+
+    For a toolset member tool_use, the toolset family.
+
+    minLength: 1, maxLength: 64, pattern: ^[a-zA-Z0-9_-]+$
+
+### Tool Use Block Param
+
+- `tool_use_block_param: object`
+
+  - `type: "tool_use"`
+
+  - `id: string`
+
+    pattern: ^[a-zA-Z0-9_-]+$
+
+  - `input: map[unknown]`
+
+  - `name: string`
+
+    minLength: 1, maxLength: 200
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `caller: optional DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `toolset_name: optional string`
+
+    For a toolset member tool_use, the toolset family this member belongs to.
+
+    minLength: 1, maxLength: 64, pattern: ^[a-zA-Z0-9_-]+$
+
+### Tool Use Caller
+
+- `tool_use_caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+  Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+  - `direct_caller: object`
+
+    Tool invocation directly from the model.
+
+    - `type: "direct"`
+
+  - `server_tool_caller: object`
+
+    Tool invocation generated by a server-side tool.
+
+    - `type: "code_execution_20250825"`
+
+    - `tool_id: string`
+
+      pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `server_tool_caller_20260120: object`
+
+    - `type: "code_execution_20260120"`
+
+    - `tool_id: string`
+
+      pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+### Toolset Tool Use Block
+
+- `toolset_tool_use_block: BrowserToolUseBlock or ComputerToolUseBlock or ToolUseBlock`
+
+  - `browser_tool_use_block: BrowserNavigateToolUseBlock or BrowserListTabsToolUseBlock or BrowserNewTabToolUseBlock or 28 more`
+
+    - `browser_navigate_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+          - `type: "direct"`
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+          - `type: "code_execution_20250825"`
+
+          - `tool_id: string`
+
+            pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+        - `server_tool_caller_20260120: object`
+
+          - `type: "code_execution_20260120"`
+
+          - `tool_id: string`
+
+            pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `input: object`
+
+        Navigate to a URL, or go back/forward/reload in history. The protocol may be
+        omitted (defaults to https://).
+
+        - `url: string`
+
+          The URL to navigate to, or "back" / "forward" / "reload" for history navigation.
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "navigate"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_list_tabs_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        List all open tabs with each tab's tab_id, title, and URL.
+
+      - `name: "list_tabs"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_new_tab_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Open a new empty tab and return its tab_id.
+
+      - `name: "new_tab"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_switch_tab_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Make the tab with the given tab_id the active tab — the tab that actions without
+        a tab_id apply to.
+
+        - `tab_id: string`
+
+          The tab to switch to.
+
+      - `name: "switch_tab"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_close_tab_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Close the tab with the given tab_id.
+
+        - `tab_id: string`
+
+          The tab to close.
+
+      - `name: "close_tab"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_read_page_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Return a structured accessibility tree of the page (or the subtree rooted at
+        `ref`), with element references like [ref_7] that can be used as targets on later
+        actions. Output is capped at 50,000 characters — narrow with `ref` or a smaller
+        `depth` when exceeded.
+
+        - `depth: optional number`
+
+          Maximum tree depth. Default 15.
+
+          minimum: 1
+
+        - `filter: optional "all" or "interactive"`
+
+          Which elements to include. Omitted: every visible element. "interactive": interactive elements only. "all": additionally includes off-viewport elements.
+
+          - `"all"`
+
+          - `"interactive"`
+
+        - `ref: optional string`
+
+          Element reference to read a subtree from. Omit to read from the page root.
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "read_page"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_get_page_text_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Return the page's visible text content as plain text, prioritizing article
+        content. Suited to articles, documentation, and other text-heavy pages.
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "get_page_text"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_read_console_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Return console output (log entries, errors, warnings) accumulated since the
+        driver attached to the tab and since the last read, one line per entry. An empty
+        result does not mean no traffic for a tab that predates attach.
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "read_console"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_read_network_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Return the network requests (method, URL, status, MIME type, timing) recorded
+        since the driver attached to the tab and since the last read, one line per entry.
+        An empty result does not mean no traffic for a tab that predates attach.
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "read_network"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_find_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Find elements matching a natural-language description (e.g. "search bar", "add to
+        cart button") and return up to 20 matches with element references.
+
+        - `query: string`
+
+          Natural-language description of the element(s) to find.
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "find"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_form_input_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Set the value of a form element (input, textarea, select, checkbox). Use a
+        boolean for checkboxes, an option value or text for selects.
+
+        - `target: object`
+
+          An element on the page, identified by a reference from a prior `read_page` or
+          `find` result. References are scoped to the tab that produced them and become
+          stale after navigation or a major re-render.
+
+          - `type: "ref"`
+
+          - `ref: string`
+
+            An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+        - `value: string or number or boolean`
+
+          The value to set.
+
+          - `union_member_0: string`
+
+          - `union_member_1: number`
+
+          - `union_member_2: boolean`
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "form_input"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_file_upload_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Set the value of a file-input element to one or more files. The target must be an
+        element reference; at least one of paths or document_ids is required.
+
+        - `target: object`
+
+          An element on the page, identified by a reference from a prior `read_page` or
+          `find` result. References are scoped to the tab that produced them and become
+          stale after navigation or a major re-render.
+
+          - `type: "ref"`
+
+          - `ref: string`
+
+            An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+        - `document_ids: optional array of string`
+
+          References to files the harness has staged, for deployments where the browser executor cannot read the caller's filesystem.
+
+          minItems: 1
+
+        - `paths: optional array of string`
+
+          File paths on the browser executor's filesystem.
+
+          minItems: 1
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "file_upload"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_scroll_to_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Scroll an element into view.
+
+        - `target: object`
+
+          An element on the page, identified by a reference from a prior `read_page` or
+          `find` result. References are scoped to the tab that produced them and become
+          stale after navigation or a major re-render.
+
+          - `type: "ref"`
+
+          - `ref: string`
+
+            An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "scroll_to"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_screenshot_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Capture the current browser viewport.
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "screenshot"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_zoom_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Return a cropped screenshot of the given viewport region, scaled up for closer
+        inspection — useful for small icons, buttons, or text. Coordinates are in the
+        same viewport-pixel space as a full screenshot.
+
+        - `region: array of number`
+
+          [x0, y0, x1, y1] in viewport pixels.
+
+          minItems: 4, maxItems: 4
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "zoom"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_left_click_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Left-click at a viewport coordinate or on an element by reference.
+
+        - `target: BrowserCoordinateTarget or BrowserRefTarget`
+
+          Where to act: either a viewport coordinate or an element reference.
+
+          - `browser_coordinate_target: object`
+
+            A point in the browser viewport, in viewport pixels (the same frame as a
+            full-viewport screenshot).
+
+            - `type: "coordinate"`
+
+            - `x: number`
+
+              Pixels from the left edge of the viewport.
+
+              minimum: 0
+
+            - `y: number`
+
+              Pixels from the top edge of the viewport.
+
+              minimum: 0
+
+          - `browser_ref_target: object`
+
+            An element on the page, identified by a reference from a prior `read_page` or
+            `find` result. References are scoped to the tab that produced them and become
+            stale after navigation or a major re-render.
+
+            - `type: "ref"`
+
+            - `ref: string`
+
+              An element reference (e.g. "ref_7") returned by a prior `read_page` or `find` result.
+
+        - `modifiers: optional string`
+
+          Optional modifier key chord to hold for the duration of this action (e.g. "shift", "ctrl+shift", "cmd+alt").
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "left_click"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_right_click_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Right-click at a viewport coordinate or on an element by reference.
+
+        - `target: BrowserCoordinateTarget or BrowserRefTarget`
+
+          Where to act: either a viewport coordinate or an element reference.
+
+          - `browser_coordinate_target: object`
+
+            A point in the browser viewport, in viewport pixels (the same frame as a
+            full-viewport screenshot).
+
+          - `browser_ref_target: object`
+
+            An element on the page, identified by a reference from a prior `read_page` or
+            `find` result. References are scoped to the tab that produced them and become
+            stale after navigation or a major re-render.
+
+        - `modifiers: optional string`
+
+          Optional modifier key chord to hold for the duration of this action (e.g. "shift", "ctrl+shift", "cmd+alt").
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "right_click"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_middle_click_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Middle-click at a viewport coordinate or on an element by reference.
+
+        - `target: BrowserCoordinateTarget or BrowserRefTarget`
+
+          Where to act: either a viewport coordinate or an element reference.
+
+          - `browser_coordinate_target: object`
+
+            A point in the browser viewport, in viewport pixels (the same frame as a
+            full-viewport screenshot).
+
+          - `browser_ref_target: object`
+
+            An element on the page, identified by a reference from a prior `read_page` or
+            `find` result. References are scoped to the tab that produced them and become
+            stale after navigation or a major re-render.
+
+        - `modifiers: optional string`
+
+          Optional modifier key chord to hold for the duration of this action (e.g. "shift", "ctrl+shift", "cmd+alt").
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "middle_click"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_double_click_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Double left-click at a viewport coordinate or on an element by reference.
+
+        - `target: BrowserCoordinateTarget or BrowserRefTarget`
+
+          Where to act: either a viewport coordinate or an element reference.
+
+          - `browser_coordinate_target: object`
+
+            A point in the browser viewport, in viewport pixels (the same frame as a
+            full-viewport screenshot).
+
+          - `browser_ref_target: object`
+
+            An element on the page, identified by a reference from a prior `read_page` or
+            `find` result. References are scoped to the tab that produced them and become
+            stale after navigation or a major re-render.
+
+        - `modifiers: optional string`
+
+          Optional modifier key chord to hold for the duration of this action (e.g. "shift", "ctrl+shift", "cmd+alt").
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "double_click"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_triple_click_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Triple left-click at a viewport coordinate or on an element by reference
+        (typically selects a line or paragraph).
+
+        - `target: BrowserCoordinateTarget or BrowserRefTarget`
+
+          Where to act: either a viewport coordinate or an element reference.
+
+          - `browser_coordinate_target: object`
+
+            A point in the browser viewport, in viewport pixels (the same frame as a
+            full-viewport screenshot).
+
+          - `browser_ref_target: object`
+
+            An element on the page, identified by a reference from a prior `read_page` or
+            `find` result. References are scoped to the tab that produced them and become
+            stale after navigation or a major re-render.
+
+        - `modifiers: optional string`
+
+          Optional modifier key chord to hold for the duration of this action (e.g. "shift", "ctrl+shift", "cmd+alt").
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "triple_click"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_hover_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Move the cursor to a coordinate or element without clicking.
+
+        - `target: BrowserCoordinateTarget or BrowserRefTarget`
+
+          Where to act: either a viewport coordinate or an element reference.
+
+          - `browser_coordinate_target: object`
+
+            A point in the browser viewport, in viewport pixels (the same frame as a
+            full-viewport screenshot).
+
+          - `browser_ref_target: object`
+
+            An element on the page, identified by a reference from a prior `read_page` or
+            `find` result. References are scoped to the tab that produced them and become
+            stale after navigation or a major re-render.
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "hover"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_left_click_drag_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Press at `from`, drag to `target`, release. Both must be coordinate targets.
+
+        - `from: object`
+
+          A point in the browser viewport, in viewport pixels (the same frame as a
+          full-viewport screenshot).
+
+          - `type: "coordinate"`
+
+          - `x: number`
+
+            Pixels from the left edge of the viewport.
+
+            minimum: 0
+
+          - `y: number`
+
+            Pixels from the top edge of the viewport.
+
+            minimum: 0
+
+        - `target: object`
+
+          A point in the browser viewport, in viewport pixels (the same frame as a
+          full-viewport screenshot).
+
+          - `type: "coordinate"`
+
+          - `x: number`
+
+            Pixels from the left edge of the viewport.
+
+            minimum: 0
+
+          - `y: number`
+
+            Pixels from the top edge of the viewport.
+
+            minimum: 0
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "left_click_drag"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_left_mouse_down_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Press and hold the left mouse button at a viewport coordinate. Pair with
+        left_mouse_up to perform a custom drag.
+
+        - `target: object`
+
+          A point in the browser viewport, in viewport pixels (the same frame as a
+          full-viewport screenshot).
+
+          - `type: "coordinate"`
+
+          - `x: number`
+
+            Pixels from the left edge of the viewport.
+
+            minimum: 0
+
+          - `y: number`
+
+            Pixels from the top edge of the viewport.
+
+            minimum: 0
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "left_mouse_down"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_left_mouse_up_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Release the left mouse button at a viewport coordinate.
+
+        - `target: object`
+
+          A point in the browser viewport, in viewport pixels (the same frame as a
+          full-viewport screenshot).
+
+          - `type: "coordinate"`
+
+          - `x: number`
+
+            Pixels from the left edge of the viewport.
+
+            minimum: 0
+
+          - `y: number`
+
+            Pixels from the top edge of the viewport.
+
+            minimum: 0
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "left_mouse_up"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_mouse_move_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Move the pointer to a viewport coordinate without clicking.
+
+        - `target: object`
+
+          A point in the browser viewport, in viewport pixels (the same frame as a
+          full-viewport screenshot).
+
+          - `type: "coordinate"`
+
+          - `x: number`
+
+            Pixels from the left edge of the viewport.
+
+            minimum: 0
+
+          - `y: number`
+
+            Pixels from the top edge of the viewport.
+
+            minimum: 0
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "mouse_move"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_scroll_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Scroll at a viewport position. `target` must be a coordinate target.
+
+        - `scroll_direction: "up" or "down" or "left" or "right"`
+
+          - `"up"`
+
+          - `"down"`
+
+          - `"left"`
+
+          - `"right"`
+
+        - `target: object`
+
+          A point in the browser viewport, in viewport pixels (the same frame as a
+          full-viewport screenshot).
+
+          - `type: "coordinate"`
+
+          - `x: number`
+
+            Pixels from the left edge of the viewport.
+
+            minimum: 0
+
+          - `y: number`
+
+            Pixels from the top edge of the viewport.
+
+            minimum: 0
+
+        - `scroll_amount: optional number`
+
+          Scroll-wheel notches (1–10). Default 3.
+
+          minimum: 1, maximum: 10
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "scroll"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_type_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Type a literal string at the current focus.
+
+        - `text: string`
+
+          The text to type.
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "type"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_key_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Press a key or key chord. Use "+" to combine modifiers with a key (e.g. "ctrl+a",
+        "cmd+shift+p") and space to sequence presses (e.g. "Backspace Backspace Delete").
+        Common names like "Return", "Tab", "Escape", "BackSpace" are supported.
+
+        - `text: string`
+
+          The key, chord, or space-separated sequence to press.
+
+        - `repeat: optional number`
+
+          Number of times to repeat. Default 1.
+
+          minimum: 1, maximum: 100
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "key"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_hold_key_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Hold a key or key chord down for a duration, then release it. Uses the same key
+        names and "+" chord syntax as the key action.
+
+        - `duration: number`
+
+          Seconds to hold the key down (maximum 30).
+
+          minimum: 0, maximum: 30
+
+        - `text: string`
+
+          The key or chord to hold.
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "hold_key"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_wait_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Pause for the given duration.
+
+        - `duration: number`
+
+          Seconds to wait (maximum 30).
+
+          minimum: 0, maximum: 30
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "wait"`
+
+      - `toolset_name: "browser"`
+
+    - `browser_javascript_exec_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Execute JavaScript in the page context and return the value of the last
+        expression. The code runs with access to the DOM, `window`, and page variables.
+        Write the expression you want evaluated — do NOT use `return`.
+
+        - `text: string`
+
+          JavaScript to execute in the page context.
+
+        - `tab_id: optional string`
+
+          Tab to act on. Defaults to the active tab when omitted.
+
+      - `name: "javascript_exec"`
+
+      - `toolset_name: "browser"`
+
+  - `computer_tool_use_block: ComputerKeyToolUseBlock or ComputerHoldKeyToolUseBlock or ComputerTypeToolUseBlock or 14 more`
+
+    - `computer_key_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Press a key or key-combination on the keyboard. Use "+" to combine modifiers with
+        a key (e.g. "ctrl+s", "alt+Tab", "ctrl+shift+Escape"). Key names are
+        case-insensitive; common names like "Return", "Tab", "Escape", "Up", "Down",
+        "Left", "Right", "Home", "End", "Page_Up", "Page_Down", "Delete", "BackSpace" are
+        supported.
+
+        - `text: string`
+
+          The key or key-combination to press.
+
+        - `repeat: optional number`
+
+          Number of times to repeat the key press. Default is 1.
+
+          minimum: 1, maximum: 100
+
+      - `name: "key"`
+
+      - `toolset_name: "computer"`
+
+    - `computer_hold_key_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Hold down a key or key-combination for a specified duration. Uses the same key
+        syntax as `key`.
+
+        - `duration: number`
+
+          Duration to hold the key, in seconds.
+
+          maximum: 300
+
+        - `text: string`
+
+          The key or key-combination to hold.
+
+      - `name: "hold_key"`
+
+      - `toolset_name: "computer"`
+
+    - `computer_type_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Type a string of text on the keyboard.
+
+        - `text: string`
+
+          The text to type.
+
+      - `name: "type"`
+
+      - `toolset_name: "computer"`
+
+    - `computer_cursor_position_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Get the current (x, y) pixel coordinate of the cursor.
+
+      - `name: "cursor_position"`
+
+      - `toolset_name: "computer"`
+
+    - `computer_mouse_move_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Move the cursor to a specified (x, y) pixel coordinate. Use this ONLY to hover
+        without clicking; otherwise use a click action directly.
+
+        - `coordinate: array of number`
+
+          (x, y): x pixels from the left edge, y pixels from the top edge.
+
+          minItems: 2, maxItems: 2
+
+      - `name: "mouse_move"`
+
+      - `toolset_name: "computer"`
+
+    - `computer_left_mouse_down_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Press and hold the left mouse button at the current cursor position.
+
+      - `name: "left_mouse_down"`
+
+      - `toolset_name: "computer"`
+
+    - `computer_left_mouse_up_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Release the left mouse button.
+
+      - `name: "left_mouse_up"`
+
+      - `toolset_name: "computer"`
+
+    - `computer_left_click_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Click the left mouse button at the specified (x, y) pixel coordinate, or the
+        current cursor position if `coordinate` is omitted.
+
+        - `coordinate: optional array of number`
+
+          (x, y): x pixels from the left edge, y pixels from the top edge.
+
+          minItems: 2, maxItems: 2
+
+        - `text: optional string`
+
+          Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+      - `name: "left_click"`
+
+      - `toolset_name: "computer"`
+
+    - `computer_left_click_drag_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Click and drag the cursor from `start_coordinate` to `coordinate`.
+
+        - `coordinate: array of number`
+
+          (x, y): x pixels from the left edge, y pixels from the top edge.
+
+          minItems: 2, maxItems: 2
+
+        - `start_coordinate: array of number`
+
+          (x, y): x pixels from the left edge, y pixels from the top edge.
+
+          minItems: 2, maxItems: 2
+
+        - `text: optional string`
+
+          Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+      - `name: "left_click_drag"`
+
+      - `toolset_name: "computer"`
+
+    - `computer_right_click_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Click the right mouse button at the specified (x, y) pixel coordinate, or the
+        current cursor position if `coordinate` is omitted.
+
+        - `coordinate: optional array of number`
+
+          (x, y): x pixels from the left edge, y pixels from the top edge.
+
+          minItems: 2, maxItems: 2
+
+        - `text: optional string`
+
+          Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+      - `name: "right_click"`
+
+      - `toolset_name: "computer"`
+
+    - `computer_middle_click_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Click the middle mouse button at the specified (x, y) pixel coordinate, or the
+        current cursor position if `coordinate` is omitted.
+
+        - `coordinate: optional array of number`
+
+          (x, y): x pixels from the left edge, y pixels from the top edge.
+
+          minItems: 2, maxItems: 2
+
+        - `text: optional string`
+
+          Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+      - `name: "middle_click"`
+
+      - `toolset_name: "computer"`
+
+    - `computer_double_click_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Double-click the left mouse button at the specified (x, y) pixel coordinate, or
+        the current cursor position if `coordinate` is omitted.
+
+        - `coordinate: optional array of number`
+
+          (x, y): x pixels from the left edge, y pixels from the top edge.
+
+          minItems: 2, maxItems: 2
+
+        - `text: optional string`
+
+          Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+      - `name: "double_click"`
+
+      - `toolset_name: "computer"`
+
+    - `computer_triple_click_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Triple-click the left mouse button at the specified (x, y) pixel coordinate, or
+        the current cursor position if `coordinate` is omitted.
+
+        - `coordinate: optional array of number`
+
+          (x, y): x pixels from the left edge, y pixels from the top edge.
+
+          minItems: 2, maxItems: 2
+
+        - `text: optional string`
+
+          Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+      - `name: "triple_click"`
+
+      - `toolset_name: "computer"`
+
+    - `computer_scroll_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Scroll the screen at the specified (x, y) pixel coordinate, or the current cursor
+        position if `coordinate` is omitted. Do NOT use PageUp/PageDown to scroll.
+
+        - `scroll_amount: number`
+
+          Number of 'clicks' of the scroll wheel.
+
+        - `scroll_direction: "up" or "down" or "left" or "right"`
+
+          - `"up"`
+
+          - `"down"`
+
+          - `"left"`
+
+          - `"right"`
+
+        - `coordinate: optional array of number`
+
+          (x, y): x pixels from the left edge, y pixels from the top edge.
+
+          minItems: 2, maxItems: 2
+
+        - `text: optional string`
+
+          Optional key combination to hold down during this action (e.g. "ctrl", "shift", "ctrl+shift").
+
+      - `name: "scroll"`
+
+      - `toolset_name: "computer"`
+
+    - `computer_wait_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Wait for a specified duration.
+
+        - `duration: number`
+
+          Duration to wait, in seconds.
+
+          maximum: 300
+
+      - `name: "wait"`
+
+      - `toolset_name: "computer"`
+
+    - `computer_screenshot_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Take a screenshot of the screen.
+
+      - `name: "screenshot"`
+
+      - `toolset_name: "computer"`
+
+    - `computer_zoom_tool_use_block: object`
+
+      - `type: "tool_use"`
+
+      - `id: string`
+
+        pattern: ^[a-zA-Z0-9_-]+$
+
+      - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+        Which party invoked the tool call: the model directly, or a server tool on its behalf.
+
+        - `direct_caller: object`
+
+          Tool invocation directly from the model.
+
+        - `server_tool_caller: object`
+
+          Tool invocation generated by a server-side tool.
+
+        - `server_tool_caller_20260120: object`
+
+      - `input: object`
+
+        Take a screenshot of a rectangular region. Region coordinates are in the
+        full-screenshot space (not physical display pixels). The crop is scaled up to
+        fill the image budget so fine details become legible.
+
+        - `region: array of number`
+
+          (x0, y0, x1, y1): The region to capture.
+
+          minItems: 4, maxItems: 4
+
+      - `name: "zoom"`
+
+      - `toolset_name: "computer"`
+
+  - `tool_use_block: object`
+
+    - `type: "tool_use"`
+
+    - `id: string`
+
+      pattern: ^[a-zA-Z0-9_-]+$
+
+    - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+      - `direct_caller: object`
+
+        Tool invocation directly from the model.
+
+        - `type: "direct"`
+
+      - `server_tool_caller: object`
+
+        Tool invocation generated by a server-side tool.
+
+        - `type: "code_execution_20250825"`
+
+        - `tool_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+      - `server_tool_caller_20260120: object`
+
+        - `type: "code_execution_20260120"`
+
+        - `tool_id: string`
+
+          pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `input: map[unknown]`
+
+    - `name: string`
+
+      minLength: 1
+
+    - `toolset_name: optional string`
+
+      For a toolset member tool_use, the toolset family.
+
+      minLength: 1, maxLength: 64, pattern: ^[a-zA-Z0-9_-]+$
+
+### URL Image Source
+
+- `url_image_source: object`
+
+  - `type: "url"`
+
+  - `url: string`
+
+### URL PDF Source
+
+- `url_pdf_source: object`
+
+  - `type: "url"`
+
+  - `url: string`
+
+### Usage
+
+- `usage: object`
+
+  - `cache_creation: object`
+
+    Breakdown of cached tokens by TTL
+
+    - `ephemeral_1h_input_tokens: number`
+
+      The number of input tokens used to create the 1 hour cache entry.
+
+      minimum: 0
+
+    - `ephemeral_5m_input_tokens: number`
+
+      The number of input tokens used to create the 5 minute cache entry.
+
+      minimum: 0
+
+  - `cache_creation_input_tokens: number`
+
+    The number of input tokens used to create the cache entry.
+
+    minimum: 0
+
+  - `cache_read_input_tokens: number`
+
+    The number of input tokens read from the cache.
+
+    minimum: 0
+
+  - `inference_geo: string`
+
+    The geographic region where inference was performed for this request.
+
+  - `input_tokens: number`
+
+    The number of input tokens which were used.
+
+    minimum: 0
+
+  - `output_tokens: number`
+
+    The number of output tokens which were used.
+
+    minimum: 0
+
+  - `output_tokens_details: object`
+
+    Breakdown of output tokens by category.
+
+    `output_tokens` remains the inclusive, authoritative total used for billing.
+    This object provides a read-only decomposition for observability — for example,
+    how many of the billed output tokens were spent on internal reasoning that may
+    have been summarized before being returned to you.
+
+    - `thinking_tokens: number`
+
+      Number of output tokens the model generated as internal reasoning, including
+      the thinking-block delimiter tokens.
+
+      Reflects the raw reasoning the model produced, not the (possibly shorter)
+      summarized thinking text returned in the response body. Computed by
+      re-tokenizing the raw reasoning text, so it may differ from the model's exact
+      generation count by a small number of tokens. Always ≤ `output_tokens`;
+      `output_tokens - thinking_tokens` approximates the non-reasoning output.
+
+      minimum: 0
+
+  - `server_tool_use: object`
+
+    The number of server tool requests.
+
+    - `web_fetch_requests: number`
+
+      The number of web fetch tool requests.
+
+      minimum: 0
+
+    - `web_search_requests: number`
+
+      The number of web search tool requests.
+
+      minimum: 0
+
+  - `service_tier: "standard" or "priority" or "batch"`
+
+    If the request used the priority, standard, or batch tier.
+
+    - `"standard"`
+
+    - `"priority"`
+
+    - `"batch"`
+
+### User Location
+
+- `user_location: object`
+
+  - `type: "approximate"`
+
+  - `city: optional string`
+
+    The city of the user.
+
+    minLength: 1, maxLength: 255
+
+  - `country: optional string`
+
+    The two letter [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) of the user.
+
+    minLength: 2, maxLength: 2
+
+  - `region: optional string`
+
+    The region of the user.
+
+    minLength: 1, maxLength: 255
+
+  - `timezone: optional string`
+
+    The [IANA timezone](https://nodatime.org/TimeZones) of the user.
+
+    minLength: 1, maxLength: 255
+
+### Web Fetch Block
+
+- `web_fetch_block: object`
+
+  - `type: "web_fetch_result"`
+
+  - `content: object`
+
+    - `type: "document"`
+
+    - `citations: object`
+
+      Citation configuration for the document
+
+      - `enabled: boolean`
+
+    - `source: Base64PDFSource or PlainTextSource`
+
+      - `base64_pdf_source: object`
+
+        - `type: "base64"`
+
+        - `data: string`
+
+          format: byte
+
+        - `media_type: "application/pdf"`
+
+      - `plain_text_source: object`
+
+        - `type: "text"`
+
+        - `data: string`
+
+        - `media_type: "text/plain"`
+
+    - `title: string`
+
+      The title of the document
+
+  - `retrieved_at: string`
+
+    ISO 8601 timestamp when the content was retrieved
+
+  - `url: string`
+
+    Fetched content URL
+
+### Web Fetch Block Param
+
+- `web_fetch_block_param: object`
+
+  - `type: "web_fetch_result"`
+
+  - `content: object`
+
+    - `type: "document"`
+
+    - `source: Base64PDFSource or PlainTextSource or ContentBlockSource or 2 more`
+
+      - `base64_pdf_source: object`
+
+        - `type: "base64"`
+
+        - `data: string`
+
+          format: byte
+
+        - `media_type: "application/pdf"`
+
+      - `plain_text_source: object`
+
+        - `type: "text"`
+
+        - `data: string`
+
+        - `media_type: "text/plain"`
+
+      - `content_block_source: object`
+
+        - `type: "content"`
+
+        - `content: string or array of ContentBlockSourceContent`
+
+          - `union_member_0: string`
+
+          - `content_block_source_content: array of ContentBlockSourceContent`
+
+            - `text_block_param: object`
+
+              - `type: "text"`
+
+              - `text: string`
+
+                minLength: 1
+
+              - `cache_control: optional object`
+
+                Create a cache control breakpoint at this content block.
+
+                - `type: "ephemeral"`
+
+                - `ttl: optional "5m" or "1h"`
+
+                  The time-to-live for the cache control breakpoint.
+
+                  This may be one the following values:
+
+                  - `5m`: 5 minutes
+                  - `1h`: 1 hour
+
+                  Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+                  - `"5m"`
+
+                  - `"1h"`
+
+              - `citations: optional array of TextCitationParam`
+
+                - `citation_char_location_param: object`
+
+                  - `type: "char_location"`
+
+                  - `cited_text: string`
+
+                  - `document_index: number`
+
+                    minimum: 0
+
+                  - `document_title: string`
+
+                    minLength: 1, maxLength: 500
+
+                  - `end_char_index: number`
+
+                  - `start_char_index: number`
+
+                    minimum: 0
+
+                - `citation_page_location_param: object`
+
+                  - `type: "page_location"`
+
+                  - `cited_text: string`
+
+                  - `document_index: number`
+
+                    minimum: 0
+
+                  - `document_title: string`
+
+                    minLength: 1, maxLength: 500
+
+                  - `end_page_number: number`
+
+                  - `start_page_number: number`
+
+                    minimum: 1
+
+                - `citation_content_block_location_param: object`
+
+                  - `type: "content_block_location"`
+
+                  - `cited_text: string`
+
+                    The full text of the cited block range, concatenated.
+
+                    Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+                  - `document_index: number`
+
+                    minimum: 0
+
+                  - `document_title: string`
+
+                    minLength: 1, maxLength: 500
+
+                  - `end_block_index: number`
+
+                    Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+                    Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+                  - `start_block_index: number`
+
+                    0-based index of the first cited block in the source's `content` array.
+
+                    minimum: 0
+
+                - `citation_web_search_result_location_param: object`
+
+                  - `type: "web_search_result_location"`
+
+                  - `cited_text: string`
+
+                  - `encrypted_index: string`
+
+                  - `title: string`
+
+                    minLength: 1, maxLength: 512
+
+                  - `url: string`
+
+                    minLength: 1
+
+                - `citation_search_result_location_param: object`
+
+                  - `type: "search_result_location"`
+
+                  - `cited_text: string`
+
+                    The full text of the cited block range, concatenated.
+
+                    Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+                  - `end_block_index: number`
+
+                    Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+                    Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+                  - `search_result_index: number`
+
+                    0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+                    Counted separately from `document_index`; server-side web search results are not included in this count.
+
+                    minimum: 0
+
+                  - `source: string`
+
+                  - `start_block_index: number`
+
+                    0-based index of the first cited block in the source's `content` array.
+
+                    minimum: 0
+
+                  - `title: string`
+
+            - `image_block_param: object`
+
+              - `type: "image"`
+
+              - `source: Base64ImageSource or URLImageSource or FileImageSource`
+
+                - `base64_image_source: object`
+
+                  - `type: "base64"`
+
+                  - `data: string`
+
+                    format: byte
+
+                  - `media_type: "image/jpeg" or "image/png" or "image/gif" or "image/webp"`
+
+                    - `"image/jpeg"`
+
+                    - `"image/png"`
+
+                    - `"image/gif"`
+
+                    - `"image/webp"`
+
+                - `url_image_source: object`
+
+                  - `type: "url"`
+
+                  - `url: string`
+
+                - `file_image_source: object`
+
+                  - `type: "file"`
+
+                  - `file_id: string`
+
+              - `cache_control: optional object`
+
+                Create a cache control breakpoint at this content block.
+
+                - `type: "ephemeral"`
+
+                - `ttl: optional "5m" or "1h"`
+
+                  The time-to-live for the cache control breakpoint.
+
+                  This may be one the following values:
+
+                  - `5m`: 5 minutes
+                  - `1h`: 1 hour
+
+                  Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+              - `transformations: optional object`
+
+                Configures the transformations the server applies to this image before the model observes it. Each key names a condition the server transforms images for; its value selects the transformation applied. Omitted keys keep their default behavior, and an empty object is equivalent to omitting the field.
+
+                - `oversized_image: optional "downsize" or "error"`
+
+                  What the server does when this image exceeds the model's maximum image size. `"downsize"` (the default) scales the image down to fit, which changes the dimensions the model observes without telling you. `"error"` instead rejects the request with a 400 error naming the image's dimensions and the largest dimensions that fit, so you can scale the image deliberately — your image is never silently scaled down.
+
+                  - `"downsize"`
+
+                  - `"error"`
+
+      - `url_pdf_source: object`
+
+        - `type: "url"`
+
+        - `url: string`
+
+      - `file_document_source: object`
+
+        - `type: "file"`
+
+        - `file_id: string`
+
+    - `cache_control: optional object`
+
+      Create a cache control breakpoint at this content block.
+
+      - `type: "ephemeral"`
+
+      - `ttl: optional "5m" or "1h"`
+
+        The time-to-live for the cache control breakpoint.
+
+        This may be one the following values:
+
+        - `5m`: 5 minutes
+        - `1h`: 1 hour
+
+        Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+    - `citations: optional object`
+
+      - `enabled: optional boolean`
+
+    - `context: optional string`
+
+      minLength: 1
+
+    - `title: optional string`
+
+      minLength: 1, maxLength: 500
+
+  - `url: string`
+
+    Fetched content URL
+
+  - `retrieved_at: optional string`
+
+    ISO 8601 timestamp when the content was retrieved
+
+### Web Fetch Tool 20250910
+
+- `web_fetch_tool_20250910: object`
+
+  - `type: "web_fetch_20250910"`
+
+  - `name: "web_fetch"`
+
+    Name of the tool.
+
+    This is how the tool will be called by the model and in `tool_use` blocks.
+
+  - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+    - `"direct"`
+
+    - `"code_execution_20250825"`
+
+    - `"code_execution_20260120"`
+
+    - `"code_execution_20260521"`
+
+  - `allowed_domains: optional array of string`
+
+    List of domains to allow fetching from
+
+  - `blocked_domains: optional array of string`
+
+    List of domains to block fetching from
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `citations: optional object`
+
+    Citations configuration for fetched documents. Citations are disabled by default.
+
+    - `enabled: optional boolean`
+
+  - `defer_loading: optional boolean`
+
+    If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+  - `max_content_tokens: optional number`
+
+    Maximum number of tokens used by including web page text content in the context. The limit is approximate and does not apply to binary content such as PDFs.
+
+    minimum: 1
+
+  - `max_uses: optional number`
+
+    Maximum number of times the tool can be used in the API request.
+
+    minimum: 1
+
+  - `strict: optional boolean`
+
+    When true, guarantees schema validation on tool names and inputs
+
+  - `url_sources: optional object`
+
+    Which sources contribute to the set of URLs the tool may fetch. Omitted means every source.
+
+    - `client_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+      Which client tools' results contribute fetchable URLs: "all", "none", or an only or except list of client tool names from tools[].
+
+      - `web_fetch_url_source_all: object`
+
+        The `url_sources` variant under which a source contributes in
+        full: every result of the tool filter's source, or all user input.
+
+        - `type: "all"`
+
+      - `web_fetch_url_source_none: object`
+
+        The `url_sources` variant under which a source contributes nothing:
+        no result of the tool filter's source, or no user input.
+
+        - `type: "none"`
+
+      - `web_fetch_url_source_only: object`
+
+        The tool filter variant under which only the named tools' results
+        contribute.
+
+        - `type: "only"`
+
+        - `tools: array of WebFetchURLSourceToolReference`
+
+          - `type: "tool_reference"`
+
+          - `name: string`
+
+      - `web_fetch_url_source_except: object`
+
+        The tool filter variant under which every result but the named
+        tools' contributes.
+
+        - `type: "except"`
+
+        - `tools: array of WebFetchURLSourceToolReference`
+
+          - `type: "tool_reference"`
+
+          - `name: string`
+
+    - `server_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+      Which server tools' results contribute fetchable URLs: "all", "none", or an only or except list of server tool names from tools[]; only web_search and web_fetch results ever contribute.
+
+      - `web_fetch_url_source_all: object`
+
+        The `url_sources` variant under which a source contributes in
+        full: every result of the tool filter's source, or all user input.
+
+      - `web_fetch_url_source_none: object`
+
+        The `url_sources` variant under which a source contributes nothing:
+        no result of the tool filter's source, or no user input.
+
+      - `web_fetch_url_source_only: object`
+
+        The tool filter variant under which only the named tools' results
+        contribute.
+
+      - `web_fetch_url_source_except: object`
+
+        The tool filter variant under which every result but the named
+        tools' contributes.
+
+    - `user_input: optional WebFetchURLSourceAll or WebFetchURLSourceNone`
+
+      Whether URLs in user messages are fetchable: "all" or "none".
+
+      - `web_fetch_url_source_all: object`
+
+        The `url_sources` variant under which a source contributes in
+        full: every result of the tool filter's source, or all user input.
+
+      - `web_fetch_url_source_none: object`
+
+        The `url_sources` variant under which a source contributes nothing:
+        no result of the tool filter's source, or no user input.
+
+### Web Fetch Tool 20260209
+
+- `web_fetch_tool_20260209: object`
+
+  - `type: "web_fetch_20260209"`
+
+  - `name: "web_fetch"`
+
+    Name of the tool.
+
+    This is how the tool will be called by the model and in `tool_use` blocks.
+
+  - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+    - `"direct"`
+
+    - `"code_execution_20250825"`
+
+    - `"code_execution_20260120"`
+
+    - `"code_execution_20260521"`
+
+  - `allowed_domains: optional array of string`
+
+    List of domains to allow fetching from
+
+  - `blocked_domains: optional array of string`
+
+    List of domains to block fetching from
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `citations: optional object`
+
+    Citations configuration for fetched documents. Citations are disabled by default.
+
+    - `enabled: optional boolean`
+
+  - `defer_loading: optional boolean`
+
+    If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+  - `max_content_tokens: optional number`
+
+    Maximum number of tokens used by including web page text content in the context. The limit is approximate and does not apply to binary content such as PDFs.
+
+    minimum: 1
+
+  - `max_uses: optional number`
+
+    Maximum number of times the tool can be used in the API request.
+
+    minimum: 1
+
+  - `strict: optional boolean`
+
+    When true, guarantees schema validation on tool names and inputs
+
+  - `url_sources: optional object`
+
+    Which sources contribute to the set of URLs the tool may fetch. Omitted means every source.
+
+    - `client_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+      Which client tools' results contribute fetchable URLs: "all", "none", or an only or except list of client tool names from tools[].
+
+      - `web_fetch_url_source_all: object`
+
+        The `url_sources` variant under which a source contributes in
+        full: every result of the tool filter's source, or all user input.
+
+        - `type: "all"`
+
+      - `web_fetch_url_source_none: object`
+
+        The `url_sources` variant under which a source contributes nothing:
+        no result of the tool filter's source, or no user input.
+
+        - `type: "none"`
+
+      - `web_fetch_url_source_only: object`
+
+        The tool filter variant under which only the named tools' results
+        contribute.
+
+        - `type: "only"`
+
+        - `tools: array of WebFetchURLSourceToolReference`
+
+          - `type: "tool_reference"`
+
+          - `name: string`
+
+      - `web_fetch_url_source_except: object`
+
+        The tool filter variant under which every result but the named
+        tools' contributes.
+
+        - `type: "except"`
+
+        - `tools: array of WebFetchURLSourceToolReference`
+
+          - `type: "tool_reference"`
+
+          - `name: string`
+
+    - `server_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+      Which server tools' results contribute fetchable URLs: "all", "none", or an only or except list of server tool names from tools[]; only web_search and web_fetch results ever contribute.
+
+      - `web_fetch_url_source_all: object`
+
+        The `url_sources` variant under which a source contributes in
+        full: every result of the tool filter's source, or all user input.
+
+      - `web_fetch_url_source_none: object`
+
+        The `url_sources` variant under which a source contributes nothing:
+        no result of the tool filter's source, or no user input.
+
+      - `web_fetch_url_source_only: object`
+
+        The tool filter variant under which only the named tools' results
+        contribute.
+
+      - `web_fetch_url_source_except: object`
+
+        The tool filter variant under which every result but the named
+        tools' contributes.
+
+    - `user_input: optional WebFetchURLSourceAll or WebFetchURLSourceNone`
+
+      Whether URLs in user messages are fetchable: "all" or "none".
+
+      - `web_fetch_url_source_all: object`
+
+        The `url_sources` variant under which a source contributes in
+        full: every result of the tool filter's source, or all user input.
+
+      - `web_fetch_url_source_none: object`
+
+        The `url_sources` variant under which a source contributes nothing:
+        no result of the tool filter's source, or no user input.
+
+### Web Fetch Tool 20260309
+
+- `web_fetch_tool_20260309: object`
+
+  Web fetch tool with use_cache parameter for bypassing cached content.
+
+  - `type: "web_fetch_20260309"`
+
+  - `name: "web_fetch"`
+
+    Name of the tool.
+
+    This is how the tool will be called by the model and in `tool_use` blocks.
+
+  - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+    - `"direct"`
+
+    - `"code_execution_20250825"`
+
+    - `"code_execution_20260120"`
+
+    - `"code_execution_20260521"`
+
+  - `allowed_domains: optional array of string`
+
+    List of domains to allow fetching from
+
+  - `blocked_domains: optional array of string`
+
+    List of domains to block fetching from
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `citations: optional object`
+
+    Citations configuration for fetched documents. Citations are disabled by default.
+
+    - `enabled: optional boolean`
+
+  - `defer_loading: optional boolean`
+
+    If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+  - `max_content_tokens: optional number`
+
+    Maximum number of tokens used by including web page text content in the context. The limit is approximate and does not apply to binary content such as PDFs.
+
+    minimum: 1
+
+  - `max_uses: optional number`
+
+    Maximum number of times the tool can be used in the API request.
+
+    minimum: 1
+
+  - `strict: optional boolean`
+
+    When true, guarantees schema validation on tool names and inputs
+
+  - `url_sources: optional object`
+
+    Which sources contribute to the set of URLs the tool may fetch. Omitted means every source.
+
+    - `client_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+      Which client tools' results contribute fetchable URLs: "all", "none", or an only or except list of client tool names from tools[].
+
+      - `web_fetch_url_source_all: object`
+
+        The `url_sources` variant under which a source contributes in
+        full: every result of the tool filter's source, or all user input.
+
+        - `type: "all"`
+
+      - `web_fetch_url_source_none: object`
+
+        The `url_sources` variant under which a source contributes nothing:
+        no result of the tool filter's source, or no user input.
+
+        - `type: "none"`
+
+      - `web_fetch_url_source_only: object`
+
+        The tool filter variant under which only the named tools' results
+        contribute.
+
+        - `type: "only"`
+
+        - `tools: array of WebFetchURLSourceToolReference`
+
+          - `type: "tool_reference"`
+
+          - `name: string`
+
+      - `web_fetch_url_source_except: object`
+
+        The tool filter variant under which every result but the named
+        tools' contributes.
+
+        - `type: "except"`
+
+        - `tools: array of WebFetchURLSourceToolReference`
+
+          - `type: "tool_reference"`
+
+          - `name: string`
+
+    - `server_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+      Which server tools' results contribute fetchable URLs: "all", "none", or an only or except list of server tool names from tools[]; only web_search and web_fetch results ever contribute.
+
+      - `web_fetch_url_source_all: object`
+
+        The `url_sources` variant under which a source contributes in
+        full: every result of the tool filter's source, or all user input.
+
+      - `web_fetch_url_source_none: object`
+
+        The `url_sources` variant under which a source contributes nothing:
+        no result of the tool filter's source, or no user input.
+
+      - `web_fetch_url_source_only: object`
+
+        The tool filter variant under which only the named tools' results
+        contribute.
+
+      - `web_fetch_url_source_except: object`
+
+        The tool filter variant under which every result but the named
+        tools' contributes.
+
+    - `user_input: optional WebFetchURLSourceAll or WebFetchURLSourceNone`
+
+      Whether URLs in user messages are fetchable: "all" or "none".
+
+      - `web_fetch_url_source_all: object`
+
+        The `url_sources` variant under which a source contributes in
+        full: every result of the tool filter's source, or all user input.
+
+      - `web_fetch_url_source_none: object`
+
+        The `url_sources` variant under which a source contributes nothing:
+        no result of the tool filter's source, or no user input.
+
+  - `use_cache: optional boolean`
+
+    Whether to use cached content. Set to false to bypass the cache and fetch fresh content. Only set to false when the user explicitly requests fresh content or when fetching rapidly-changing sources.
+
+### Web Fetch Tool 20260318
+
+- `web_fetch_tool_20260318: object`
+
+  - `type: "web_fetch_20260318"`
+
+  - `name: "web_fetch"`
+
+    Name of the tool.
+
+    This is how the tool will be called by the model and in `tool_use` blocks.
+
+  - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+    - `"direct"`
+
+    - `"code_execution_20250825"`
+
+    - `"code_execution_20260120"`
+
+    - `"code_execution_20260521"`
+
+  - `allowed_domains: optional array of string`
+
+    List of domains to allow fetching from
+
+  - `blocked_domains: optional array of string`
+
+    List of domains to block fetching from
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `citations: optional object`
+
+    Citations configuration for fetched documents. Citations are disabled by default.
+
+    - `enabled: optional boolean`
+
+  - `defer_loading: optional boolean`
+
+    If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+  - `max_content_tokens: optional number`
+
+    Maximum number of tokens used by including web page text content in the context. The limit is approximate and does not apply to binary content such as PDFs.
+
+    minimum: 1
+
+  - `max_uses: optional number`
+
+    Maximum number of times the tool can be used in the API request.
+
+    minimum: 1
+
+  - `response_inclusion: optional "full" or "excluded"`
+
+    How this tool's result blocks appear in the API response when the result was consumed by a completed code_execution call in the same turn. 'full' returns the complete content (default). 'excluded' drops the nested server_tool_use and result block pair entirely. Results from direct calls, or from code_execution calls that paused before completing, are always returned in full so they can be sent back on the next turn.
+
+    - `"full"`
+
+    - `"excluded"`
+
+  - `strict: optional boolean`
+
+    When true, guarantees schema validation on tool names and inputs
+
+  - `url_sources: optional object`
+
+    Which sources contribute to the set of URLs the tool may fetch. Omitted means every source.
+
+    - `client_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+      Which client tools' results contribute fetchable URLs: "all", "none", or an only or except list of client tool names from tools[].
+
+      - `web_fetch_url_source_all: object`
+
+        The `url_sources` variant under which a source contributes in
+        full: every result of the tool filter's source, or all user input.
+
+        - `type: "all"`
+
+      - `web_fetch_url_source_none: object`
+
+        The `url_sources` variant under which a source contributes nothing:
+        no result of the tool filter's source, or no user input.
+
+        - `type: "none"`
+
+      - `web_fetch_url_source_only: object`
+
+        The tool filter variant under which only the named tools' results
+        contribute.
+
+        - `type: "only"`
+
+        - `tools: array of WebFetchURLSourceToolReference`
+
+          - `type: "tool_reference"`
+
+          - `name: string`
+
+      - `web_fetch_url_source_except: object`
+
+        The tool filter variant under which every result but the named
+        tools' contributes.
+
+        - `type: "except"`
+
+        - `tools: array of WebFetchURLSourceToolReference`
+
+          - `type: "tool_reference"`
+
+          - `name: string`
+
+    - `server_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+      Which server tools' results contribute fetchable URLs: "all", "none", or an only or except list of server tool names from tools[]; only web_search and web_fetch results ever contribute.
+
+      - `web_fetch_url_source_all: object`
+
+        The `url_sources` variant under which a source contributes in
+        full: every result of the tool filter's source, or all user input.
+
+      - `web_fetch_url_source_none: object`
+
+        The `url_sources` variant under which a source contributes nothing:
+        no result of the tool filter's source, or no user input.
+
+      - `web_fetch_url_source_only: object`
+
+        The tool filter variant under which only the named tools' results
+        contribute.
+
+      - `web_fetch_url_source_except: object`
+
+        The tool filter variant under which every result but the named
+        tools' contributes.
+
+    - `user_input: optional WebFetchURLSourceAll or WebFetchURLSourceNone`
+
+      Whether URLs in user messages are fetchable: "all" or "none".
+
+      - `web_fetch_url_source_all: object`
+
+        The `url_sources` variant under which a source contributes in
+        full: every result of the tool filter's source, or all user input.
+
+      - `web_fetch_url_source_none: object`
+
+        The `url_sources` variant under which a source contributes nothing:
+        no result of the tool filter's source, or no user input.
+
+  - `use_cache: optional boolean`
+
+    Whether to use cached content. Set to false to bypass the cache and fetch fresh content. Only set to false when the user explicitly requests fresh content or when fetching rapidly-changing sources.
+
+### Web Fetch Tool Result Block
+
+- `web_fetch_tool_result_block: object`
+
+  - `type: "web_fetch_tool_result"`
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `content: WebFetchToolResultErrorBlock or WebFetchBlock`
+
+    - `web_fetch_tool_result_error_block: object`
+
+      - `type: "web_fetch_tool_result_error"`
+
+      - `error_code: "invalid_tool_input" or "url_too_long" or "url_not_allowed" or 7 more`
+
+        - `"invalid_tool_input"`
+
+        - `"url_too_long"`
+
+        - `"url_not_allowed"`
+
+        - `"url_not_in_prior_context"`
+
+        - `"url_not_accessible"`
+
+        - `"unsupported_content_type"`
+
+        - `"too_many_requests"`
+
+        - `"max_uses_exceeded"`
+
+        - `"unavailable"`
+
+        - `"content_too_large"`
+
+    - `web_fetch_block: object`
+
+      - `type: "web_fetch_result"`
+
+      - `content: object`
+
+        - `type: "document"`
+
+        - `citations: object`
+
+          Citation configuration for the document
+
+          - `enabled: boolean`
+
+        - `source: Base64PDFSource or PlainTextSource`
+
+          - `base64_pdf_source: object`
+
+            - `type: "base64"`
+
+            - `data: string`
+
+              format: byte
+
+            - `media_type: "application/pdf"`
+
+          - `plain_text_source: object`
+
+            - `type: "text"`
+
+            - `data: string`
+
+            - `media_type: "text/plain"`
+
+        - `title: string`
+
+          The title of the document
+
+      - `retrieved_at: string`
+
+        ISO 8601 timestamp when the content was retrieved
+
+      - `url: string`
+
+        Fetched content URL
+
+  - `tool_use_id: string`
+
+    pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+### Web Fetch Tool Result Block Param
+
+- `web_fetch_tool_result_block_param: object`
+
+  - `type: "web_fetch_tool_result"`
+
+  - `content: WebFetchToolResultErrorBlockParam or WebFetchBlockParam`
+
+    - `web_fetch_tool_result_error_block_param: object`
+
+      - `type: "web_fetch_tool_result_error"`
+
+      - `error_code: "invalid_tool_input" or "url_too_long" or "url_not_allowed" or 7 more`
+
+        - `"invalid_tool_input"`
+
+        - `"url_too_long"`
+
+        - `"url_not_allowed"`
+
+        - `"url_not_in_prior_context"`
+
+        - `"url_not_accessible"`
+
+        - `"unsupported_content_type"`
+
+        - `"too_many_requests"`
+
+        - `"max_uses_exceeded"`
+
+        - `"unavailable"`
+
+        - `"content_too_large"`
+
+    - `web_fetch_block_param: object`
+
+      - `type: "web_fetch_result"`
+
+      - `content: object`
+
+        - `type: "document"`
+
+        - `source: Base64PDFSource or PlainTextSource or ContentBlockSource or 2 more`
+
+          - `base64_pdf_source: object`
+
+            - `type: "base64"`
+
+            - `data: string`
+
+              format: byte
+
+            - `media_type: "application/pdf"`
+
+          - `plain_text_source: object`
+
+            - `type: "text"`
+
+            - `data: string`
+
+            - `media_type: "text/plain"`
+
+          - `content_block_source: object`
+
+            - `type: "content"`
+
+            - `content: string or array of ContentBlockSourceContent`
+
+              - `union_member_0: string`
+
+              - `content_block_source_content: array of ContentBlockSourceContent`
+
+                - `text_block_param: object`
+
+                  - `type: "text"`
+
+                  - `text: string`
+
+                    minLength: 1
+
+                  - `cache_control: optional object`
+
+                    Create a cache control breakpoint at this content block.
+
+                    - `type: "ephemeral"`
+
+                    - `ttl: optional "5m" or "1h"`
+
+                      The time-to-live for the cache control breakpoint.
+
+                      This may be one the following values:
+
+                      - `5m`: 5 minutes
+                      - `1h`: 1 hour
+
+                      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+                      - `"5m"`
+
+                      - `"1h"`
+
+                  - `citations: optional array of TextCitationParam`
+
+                    - `citation_char_location_param: object`
+
+                      - `type: "char_location"`
+
+                      - `cited_text: string`
+
+                      - `document_index: number`
+
+                        minimum: 0
+
+                      - `document_title: string`
+
+                        minLength: 1, maxLength: 500
+
+                      - `end_char_index: number`
+
+                      - `start_char_index: number`
+
+                        minimum: 0
+
+                    - `citation_page_location_param: object`
+
+                      - `type: "page_location"`
+
+                      - `cited_text: string`
+
+                      - `document_index: number`
+
+                        minimum: 0
+
+                      - `document_title: string`
+
+                        minLength: 1, maxLength: 500
+
+                      - `end_page_number: number`
+
+                      - `start_page_number: number`
+
+                        minimum: 1
+
+                    - `citation_content_block_location_param: object`
+
+                      - `type: "content_block_location"`
+
+                      - `cited_text: string`
+
+                        The full text of the cited block range, concatenated.
+
+                        Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+                      - `document_index: number`
+
+                        minimum: 0
+
+                      - `document_title: string`
+
+                        minLength: 1, maxLength: 500
+
+                      - `end_block_index: number`
+
+                        Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+                        Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+                      - `start_block_index: number`
+
+                        0-based index of the first cited block in the source's `content` array.
+
+                        minimum: 0
+
+                    - `citation_web_search_result_location_param: object`
+
+                      - `type: "web_search_result_location"`
+
+                      - `cited_text: string`
+
+                      - `encrypted_index: string`
+
+                      - `title: string`
+
+                        minLength: 1, maxLength: 512
+
+                      - `url: string`
+
+                        minLength: 1
+
+                    - `citation_search_result_location_param: object`
+
+                      - `type: "search_result_location"`
+
+                      - `cited_text: string`
+
+                        The full text of the cited block range, concatenated.
+
+                        Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+                      - `end_block_index: number`
+
+                        Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+                        Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+                      - `search_result_index: number`
+
+                        0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+                        Counted separately from `document_index`; server-side web search results are not included in this count.
+
+                        minimum: 0
+
+                      - `source: string`
+
+                      - `start_block_index: number`
+
+                        0-based index of the first cited block in the source's `content` array.
+
+                        minimum: 0
+
+                      - `title: string`
+
+                - `image_block_param: object`
+
+                  - `type: "image"`
+
+                  - `source: Base64ImageSource or URLImageSource or FileImageSource`
+
+                    - `base64_image_source: object`
+
+                      - `type: "base64"`
+
+                      - `data: string`
+
+                        format: byte
+
+                      - `media_type: "image/jpeg" or "image/png" or "image/gif" or "image/webp"`
+
+                        - `"image/jpeg"`
+
+                        - `"image/png"`
+
+                        - `"image/gif"`
+
+                        - `"image/webp"`
+
+                    - `url_image_source: object`
+
+                      - `type: "url"`
+
+                      - `url: string`
+
+                    - `file_image_source: object`
+
+                      - `type: "file"`
+
+                      - `file_id: string`
+
+                  - `cache_control: optional object`
+
+                    Create a cache control breakpoint at this content block.
+
+                    - `type: "ephemeral"`
+
+                    - `ttl: optional "5m" or "1h"`
+
+                      The time-to-live for the cache control breakpoint.
+
+                      This may be one the following values:
+
+                      - `5m`: 5 minutes
+                      - `1h`: 1 hour
+
+                      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+                  - `transformations: optional object`
+
+                    Configures the transformations the server applies to this image before the model observes it. Each key names a condition the server transforms images for; its value selects the transformation applied. Omitted keys keep their default behavior, and an empty object is equivalent to omitting the field.
+
+                    - `oversized_image: optional "downsize" or "error"`
+
+                      What the server does when this image exceeds the model's maximum image size. `"downsize"` (the default) scales the image down to fit, which changes the dimensions the model observes without telling you. `"error"` instead rejects the request with a 400 error naming the image's dimensions and the largest dimensions that fit, so you can scale the image deliberately — your image is never silently scaled down.
+
+                      - `"downsize"`
+
+                      - `"error"`
+
+          - `url_pdf_source: object`
+
+            - `type: "url"`
+
+            - `url: string`
+
+          - `file_document_source: object`
+
+            - `type: "file"`
+
+            - `file_id: string`
+
+        - `cache_control: optional object`
+
+          Create a cache control breakpoint at this content block.
+
+          - `type: "ephemeral"`
+
+          - `ttl: optional "5m" or "1h"`
+
+            The time-to-live for the cache control breakpoint.
+
+            This may be one the following values:
+
+            - `5m`: 5 minutes
+            - `1h`: 1 hour
+
+            Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+        - `citations: optional object`
+
+          - `enabled: optional boolean`
+
+        - `context: optional string`
+
+          minLength: 1
+
+        - `title: optional string`
+
+          minLength: 1, maxLength: 500
+
+      - `url: string`
+
+        Fetched content URL
+
+      - `retrieved_at: optional string`
+
+        ISO 8601 timestamp when the content was retrieved
+
+  - `tool_use_id: string`
+
+    pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+  - `caller: optional DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+### Web Fetch Tool Result Error Block
+
+- `web_fetch_tool_result_error_block: object`
+
+  - `type: "web_fetch_tool_result_error"`
+
+  - `error_code: "invalid_tool_input" or "url_too_long" or "url_not_allowed" or 7 more`
+
+    - `"invalid_tool_input"`
+
+    - `"url_too_long"`
+
+    - `"url_not_allowed"`
+
+    - `"url_not_in_prior_context"`
+
+    - `"url_not_accessible"`
+
+    - `"unsupported_content_type"`
+
+    - `"too_many_requests"`
+
+    - `"max_uses_exceeded"`
+
+    - `"unavailable"`
+
+    - `"content_too_large"`
+
+### Web Fetch Tool Result Error Block Param
+
+- `web_fetch_tool_result_error_block_param: object`
+
+  - `type: "web_fetch_tool_result_error"`
+
+  - `error_code: "invalid_tool_input" or "url_too_long" or "url_not_allowed" or 7 more`
+
+    - `"invalid_tool_input"`
+
+    - `"url_too_long"`
+
+    - `"url_not_allowed"`
+
+    - `"url_not_in_prior_context"`
+
+    - `"url_not_accessible"`
+
+    - `"unsupported_content_type"`
+
+    - `"too_many_requests"`
+
+    - `"max_uses_exceeded"`
+
+    - `"unavailable"`
+
+    - `"content_too_large"`
+
+### Web Fetch Tool Result Error Code
+
+- `web_fetch_tool_result_error_code: "invalid_tool_input" or "url_too_long" or "url_not_allowed" or 7 more`
+
+  - `"invalid_tool_input"`
+
+  - `"url_too_long"`
+
+  - `"url_not_allowed"`
+
+  - `"url_not_in_prior_context"`
+
+  - `"url_not_accessible"`
+
+  - `"unsupported_content_type"`
+
+  - `"too_many_requests"`
+
+  - `"max_uses_exceeded"`
+
+  - `"unavailable"`
+
+  - `"content_too_large"`
+
+### Web Fetch URL Source All
+
+- `web_fetch_url_source_all: object`
+
+  The `url_sources` variant under which a source contributes in
+  full: every result of the tool filter's source, or all user input.
+
+  - `type: "all"`
+
+### Web Fetch URL Source Except
+
+- `web_fetch_url_source_except: object`
+
+  The tool filter variant under which every result but the named
+  tools' contributes.
+
+  - `type: "except"`
+
+  - `tools: array of WebFetchURLSourceToolReference`
+
+    - `type: "tool_reference"`
+
+    - `name: string`
+
+### Web Fetch URL Source None
+
+- `web_fetch_url_source_none: object`
+
+  The `url_sources` variant under which a source contributes nothing:
+  no result of the tool filter's source, or no user input.
+
+  - `type: "none"`
+
+### Web Fetch URL Source Only
+
+- `web_fetch_url_source_only: object`
+
+  The tool filter variant under which only the named tools' results
+  contribute.
+
+  - `type: "only"`
+
+  - `tools: array of WebFetchURLSourceToolReference`
+
+    - `type: "tool_reference"`
+
+    - `name: string`
+
+### Web Fetch URL Source Tool Reference
+
+- `web_fetch_url_source_tool_reference: object`
+
+  One entry of a tool filter's `tools`: it must name a tool declared
+  in this request's `tools[]`.
+
+  - `type: "tool_reference"`
+
+  - `name: string`
+
+### Web Fetch URL Sources
+
+- `web_fetch_url_sources: object`
+
+  Which sources contribute to the set of URLs web fetch may fetch.
+
+  Each key is a tagged variant: `user_input` is `all` or `none`; the
+  two tool filters are `all`, `none`, `only` (only the named tools'
+  results) or `except` (every result but the named tools'). A named tool
+  must be declared in this request's `tools[]`.
+
+  - `client_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+    Which client tools' results contribute fetchable URLs: "all", "none", or an only or except list of client tool names from tools[].
+
+    - `web_fetch_url_source_all: object`
+
+      The `url_sources` variant under which a source contributes in
+      full: every result of the tool filter's source, or all user input.
+
+      - `type: "all"`
+
+    - `web_fetch_url_source_none: object`
+
+      The `url_sources` variant under which a source contributes nothing:
+      no result of the tool filter's source, or no user input.
+
+      - `type: "none"`
+
+    - `web_fetch_url_source_only: object`
+
+      The tool filter variant under which only the named tools' results
+      contribute.
+
+      - `type: "only"`
+
+      - `tools: array of WebFetchURLSourceToolReference`
+
+        - `type: "tool_reference"`
+
+        - `name: string`
+
+    - `web_fetch_url_source_except: object`
+
+      The tool filter variant under which every result but the named
+      tools' contributes.
+
+      - `type: "except"`
+
+      - `tools: array of WebFetchURLSourceToolReference`
+
+        - `type: "tool_reference"`
+
+        - `name: string`
+
+  - `server_tool_results: optional WebFetchURLSourceAll or WebFetchURLSourceNone or WebFetchURLSourceOnly or WebFetchURLSourceExcept`
+
+    Which server tools' results contribute fetchable URLs: "all", "none", or an only or except list of server tool names from tools[]; only web_search and web_fetch results ever contribute.
+
+    - `web_fetch_url_source_all: object`
+
+      The `url_sources` variant under which a source contributes in
+      full: every result of the tool filter's source, or all user input.
+
+    - `web_fetch_url_source_none: object`
+
+      The `url_sources` variant under which a source contributes nothing:
+      no result of the tool filter's source, or no user input.
+
+    - `web_fetch_url_source_only: object`
+
+      The tool filter variant under which only the named tools' results
+      contribute.
+
+    - `web_fetch_url_source_except: object`
+
+      The tool filter variant under which every result but the named
+      tools' contributes.
+
+  - `user_input: optional WebFetchURLSourceAll or WebFetchURLSourceNone`
+
+    Whether URLs in user messages are fetchable: "all" or "none".
+
+    - `web_fetch_url_source_all: object`
+
+      The `url_sources` variant under which a source contributes in
+      full: every result of the tool filter's source, or all user input.
+
+    - `web_fetch_url_source_none: object`
+
+      The `url_sources` variant under which a source contributes nothing:
+      no result of the tool filter's source, or no user input.
+
+### Web Search Result Block
+
+- `web_search_result_block: object`
+
+  - `type: "web_search_result"`
+
+  - `encrypted_content: string`
+
+  - `page_age: string`
+
+  - `title: string`
+
+  - `url: string`
+
+### Web Search Result Block Param
+
+- `web_search_result_block_param: object`
+
+  - `type: "web_search_result"`
+
+  - `encrypted_content: string`
+
+  - `title: string`
+
+  - `url: string`
+
+  - `page_age: optional string`
+
+### Web Search Tool 20250305
+
+- `web_search_tool_20250305: object`
+
+  - `type: "web_search_20250305"`
+
+  - `name: "web_search"`
+
+    Name of the tool.
+
+    This is how the tool will be called by the model and in `tool_use` blocks.
+
+  - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+    - `"direct"`
+
+    - `"code_execution_20250825"`
+
+    - `"code_execution_20260120"`
+
+    - `"code_execution_20260521"`
+
+  - `allowed_domains: optional array of string`
+
+    If provided, only these domains will be included in results. Cannot be used alongside `blocked_domains`.
+
+  - `blocked_domains: optional array of string`
+
+    If provided, these domains will never appear in results. Cannot be used alongside `allowed_domains`.
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `defer_loading: optional boolean`
+
+    If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+  - `max_uses: optional number`
+
+    Maximum number of times the tool can be used in the API request.
+
+    minimum: 1
+
+  - `strict: optional boolean`
+
+    When true, guarantees schema validation on tool names and inputs
+
+  - `user_location: optional object`
+
+    Parameters for the user's location. Used to provide more relevant search results.
+
+    - `type: "approximate"`
+
+    - `city: optional string`
+
+      The city of the user.
+
+      minLength: 1, maxLength: 255
+
+    - `country: optional string`
+
+      The two letter [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) of the user.
+
+      minLength: 2, maxLength: 2
+
+    - `region: optional string`
+
+      The region of the user.
+
+      minLength: 1, maxLength: 255
+
+    - `timezone: optional string`
+
+      The [IANA timezone](https://nodatime.org/TimeZones) of the user.
+
+      minLength: 1, maxLength: 255
+
+### Web Search Tool 20260209
+
+- `web_search_tool_20260209: object`
+
+  - `type: "web_search_20260209"`
+
+  - `name: "web_search"`
+
+    Name of the tool.
+
+    This is how the tool will be called by the model and in `tool_use` blocks.
+
+  - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+    - `"direct"`
+
+    - `"code_execution_20250825"`
+
+    - `"code_execution_20260120"`
+
+    - `"code_execution_20260521"`
+
+  - `allowed_domains: optional array of string`
+
+    If provided, only these domains will be included in results. Cannot be used alongside `blocked_domains`.
+
+  - `blocked_domains: optional array of string`
+
+    If provided, these domains will never appear in results. Cannot be used alongside `allowed_domains`.
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `defer_loading: optional boolean`
+
+    If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+  - `max_uses: optional number`
+
+    Maximum number of times the tool can be used in the API request.
+
+    minimum: 1
+
+  - `strict: optional boolean`
+
+    When true, guarantees schema validation on tool names and inputs
+
+  - `user_location: optional object`
+
+    Parameters for the user's location. Used to provide more relevant search results.
+
+    - `type: "approximate"`
+
+    - `city: optional string`
+
+      The city of the user.
+
+      minLength: 1, maxLength: 255
+
+    - `country: optional string`
+
+      The two letter [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) of the user.
+
+      minLength: 2, maxLength: 2
+
+    - `region: optional string`
+
+      The region of the user.
+
+      minLength: 1, maxLength: 255
+
+    - `timezone: optional string`
+
+      The [IANA timezone](https://nodatime.org/TimeZones) of the user.
+
+      minLength: 1, maxLength: 255
+
+### Web Search Tool 20260318
+
+- `web_search_tool_20260318: object`
+
+  - `type: "web_search_20260318"`
+
+  - `name: "web_search"`
+
+    Name of the tool.
+
+    This is how the tool will be called by the model and in `tool_use` blocks.
+
+  - `allowed_callers: optional array of "direct" or "code_execution_20250825" or "code_execution_20260120" or "code_execution_20260521"`
+
+    - `"direct"`
+
+    - `"code_execution_20250825"`
+
+    - `"code_execution_20260120"`
+
+    - `"code_execution_20260521"`
+
+  - `allowed_domains: optional array of string`
+
+    If provided, only these domains will be included in results. Cannot be used alongside `blocked_domains`.
+
+  - `blocked_domains: optional array of string`
+
+    If provided, these domains will never appear in results. Cannot be used alongside `allowed_domains`.
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `defer_loading: optional boolean`
+
+    If true, tool will not be included in initial system prompt. Only loaded when returned via tool_reference from tool search.
+
+  - `max_uses: optional number`
+
+    Maximum number of times the tool can be used in the API request.
+
+    minimum: 1
+
+  - `response_inclusion: optional "full" or "excluded"`
+
+    How this tool's result blocks appear in the API response when the result was consumed by a completed code_execution call in the same turn. 'full' returns the complete content (default). 'excluded' drops the nested server_tool_use and result block pair entirely. Results from direct calls, or from code_execution calls that paused before completing, are always returned in full so they can be sent back on the next turn.
+
+    - `"full"`
+
+    - `"excluded"`
+
+  - `strict: optional boolean`
+
+    When true, guarantees schema validation on tool names and inputs
+
+  - `user_location: optional object`
+
+    Parameters for the user's location. Used to provide more relevant search results.
+
+    - `type: "approximate"`
+
+    - `city: optional string`
+
+      The city of the user.
+
+      minLength: 1, maxLength: 255
+
+    - `country: optional string`
+
+      The two letter [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) of the user.
+
+      minLength: 2, maxLength: 2
+
+    - `region: optional string`
+
+      The region of the user.
+
+      minLength: 1, maxLength: 255
+
+    - `timezone: optional string`
+
+      The [IANA timezone](https://nodatime.org/TimeZones) of the user.
+
+      minLength: 1, maxLength: 255
+
+### Web Search Tool Request Error
+
+- `web_search_tool_request_error: object`
+
+  - `type: "web_search_tool_result_error"`
+
+  - `error_code: "invalid_tool_input" or "unavailable" or "max_uses_exceeded" or 3 more`
+
+    - `"invalid_tool_input"`
+
+    - `"unavailable"`
+
+    - `"max_uses_exceeded"`
+
+    - `"too_many_requests"`
+
+    - `"query_too_long"`
+
+    - `"request_too_large"`
+
+### Web Search Tool Result Block
+
+- `web_search_tool_result_block: object`
+
+  - `type: "web_search_tool_result"`
+
+  - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `content: WebSearchToolResultError or array of WebSearchResultBlock`
+
+    - `web_search_tool_result_error: object`
+
+      - `type: "web_search_tool_result_error"`
+
+      - `error_code: "invalid_tool_input" or "unavailable" or "max_uses_exceeded" or 3 more`
+
+        - `"invalid_tool_input"`
+
+        - `"unavailable"`
+
+        - `"max_uses_exceeded"`
+
+        - `"too_many_requests"`
+
+        - `"query_too_long"`
+
+        - `"request_too_large"`
+
+    - `union_member_1: array of WebSearchResultBlock`
+
+      - `type: "web_search_result"`
+
+      - `encrypted_content: string`
+
+      - `page_age: string`
+
+      - `title: string`
+
+      - `url: string`
+
+  - `tool_use_id: string`
+
+    pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+### Web Search Tool Result Block Content
+
+- `web_search_tool_result_block_content: WebSearchToolResultError or array of WebSearchResultBlock`
+
+  - `web_search_tool_result_error: object`
+
+    - `type: "web_search_tool_result_error"`
+
+    - `error_code: "invalid_tool_input" or "unavailable" or "max_uses_exceeded" or 3 more`
+
+      - `"invalid_tool_input"`
+
+      - `"unavailable"`
+
+      - `"max_uses_exceeded"`
+
+      - `"too_many_requests"`
+
+      - `"query_too_long"`
+
+      - `"request_too_large"`
+
+  - `union_member_1: array of WebSearchResultBlock`
+
+    - `type: "web_search_result"`
+
+    - `encrypted_content: string`
+
+    - `page_age: string`
+
+    - `title: string`
+
+    - `url: string`
+
+### Web Search Tool Result Block Param
+
+- `web_search_tool_result_block_param: object`
+
+  - `type: "web_search_tool_result"`
+
+  - `content: array of WebSearchResultBlockParam or WebSearchToolRequestError`
+
+    - `web_search_tool_result_block_item: array of WebSearchResultBlockParam`
+
+      - `type: "web_search_result"`
+
+      - `encrypted_content: string`
+
+      - `title: string`
+
+      - `url: string`
+
+      - `page_age: optional string`
+
+    - `web_search_tool_request_error: object`
+
+      - `type: "web_search_tool_result_error"`
+
+      - `error_code: "invalid_tool_input" or "unavailable" or "max_uses_exceeded" or 3 more`
+
+        - `"invalid_tool_input"`
+
+        - `"unavailable"`
+
+        - `"max_uses_exceeded"`
+
+        - `"too_many_requests"`
+
+        - `"query_too_long"`
+
+        - `"request_too_large"`
+
+  - `tool_use_id: string`
+
+    pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+  - `cache_control: optional object`
+
+    Create a cache control breakpoint at this content block.
+
+    - `type: "ephemeral"`
+
+    - `ttl: optional "5m" or "1h"`
+
+      The time-to-live for the cache control breakpoint.
+
+      This may be one the following values:
+
+      - `5m`: 5 minutes
+      - `1h`: 1 hour
+
+      Defaults to `5m`. See [prompt caching pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for details.
+
+      - `"5m"`
+
+      - `"1h"`
+
+  - `caller: optional DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+    - `direct_caller: object`
+
+      Tool invocation directly from the model.
+
+      - `type: "direct"`
+
+    - `server_tool_caller: object`
+
+      Tool invocation generated by a server-side tool.
+
+      - `type: "code_execution_20250825"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+    - `server_tool_caller_20260120: object`
+
+      - `type: "code_execution_20260120"`
+
+      - `tool_id: string`
+
+        pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+### Web Search Tool Result Block Param Content
+
+- `web_search_tool_result_block_param_content: array of WebSearchResultBlockParam or WebSearchToolRequestError`
+
+  - `web_search_tool_result_block_item: array of WebSearchResultBlockParam`
+
+    - `type: "web_search_result"`
+
+    - `encrypted_content: string`
+
+    - `title: string`
+
+    - `url: string`
+
+    - `page_age: optional string`
+
+  - `web_search_tool_request_error: object`
+
+    - `type: "web_search_tool_result_error"`
+
+    - `error_code: "invalid_tool_input" or "unavailable" or "max_uses_exceeded" or 3 more`
+
+      - `"invalid_tool_input"`
+
+      - `"unavailable"`
+
+      - `"max_uses_exceeded"`
+
+      - `"too_many_requests"`
+
+      - `"query_too_long"`
+
+      - `"request_too_large"`
+
+### Web Search Tool Result Error
+
+- `web_search_tool_result_error: object`
+
+  - `type: "web_search_tool_result_error"`
+
+  - `error_code: "invalid_tool_input" or "unavailable" or "max_uses_exceeded" or 3 more`
+
+    - `"invalid_tool_input"`
+
+    - `"unavailable"`
+
+    - `"max_uses_exceeded"`
+
+    - `"too_many_requests"`
+
+    - `"query_too_long"`
+
+    - `"request_too_large"`
+
+### Web Search Tool Result Error Code
+
+- `web_search_tool_result_error_code: "invalid_tool_input" or "unavailable" or "max_uses_exceeded" or 3 more`
+
+  - `"invalid_tool_input"`
+
+  - `"unavailable"`
+
+  - `"max_uses_exceeded"`
+
+  - `"too_many_requests"`
+
+  - `"query_too_long"`
+
+  - `"request_too_large"`
+
+## Messages › Batches
+
+### Create a Message Batch
+
+`$ ant messages:batches create`
+
+**POST** `/v1/messages/batches`
+
+Send a batch of Message creation requests.
+
+The Message Batches API can be used to process multiple Messages API requests at once. Once a Message Batch is created, it begins processing immediately. Batches can take up to 24 hours to complete.
+
+Learn more about the Message Batches API in our [user guide](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=cli)
+
+#### Parameters
+
+- `--request: array of object`
+
+  List of requests for prompt completion. Each is an individual request to create a Message.
+
+  minItems: 1, maxItems: 100000
+
+- `--user-profile-id: optional string` (header parameter)
+
+  The user profile ID to attribute the requests in this batch to. Use when acting on behalf of a party other than your organization. Requires the `user-profiles` beta header. Applies to every request in the batch; an individual request whose `user_profile_id` body field conflicts with this header is errored.
+
+- `--workspace-id: optional string` (header parameter)
+
+  Optional header to select the Workspace for this request. The value is a Workspace ID (for example, `wrkspc_011CZkZaBF1tNoB5wlCeusgy`).
+
+  Only needed for credentials that can act on more than one Workspace. A credential that belongs to a specific Workspace may omit it; if sent, it must match that Workspace.
+
+#### Returns
+
+- `message_batch: object`
+
+  - `type: "message_batch"`
+
+    Object type.
+
+    For Message Batches, this is always `"message_batch"`.
+
+  - `id: string`
+
+    Unique object identifier.
+
+    The format and length of IDs may change over time.
+
+  - `archived_at: string`
+
+    RFC 3339 datetime string representing the time at which the Message Batch was archived and its results became unavailable.
+
+    format: date-time
+
+  - `cancel_initiated_at: string`
+
+    RFC 3339 datetime string representing the time at which cancellation was initiated for the Message Batch. Specified only if cancellation was initiated.
+
+    format: date-time
+
+  - `created_at: string`
+
+    RFC 3339 datetime string representing the time at which the Message Batch was created.
+
+    format: date-time
+
+  - `ended_at: string`
+
+    RFC 3339 datetime string representing the time at which processing for the Message Batch ended. Specified only once processing ends.
+
+    Processing ends when every request in a Message Batch has either succeeded, errored, canceled, or expired.
+
+    format: date-time
+
+  - `expires_at: string`
+
+    RFC 3339 datetime string representing the time at which the Message Batch will expire and end processing, which is 24 hours after creation.
+
+    format: date-time
+
+  - `processing_status: "in_progress" or "canceling" or "ended"`
+
+    Processing status of the Message Batch.
+
+    - `"in_progress"`
+
+    - `"canceling"`
+
+    - `"ended"`
+
+  - `request_counts: object`
+
+    Tallies requests within the Message Batch, categorized by their status.
+
+    Requests start as `processing` and move to one of the other statuses only once processing of the entire batch ends. The sum of all values always matches the total number of requests in the batch.
+
+    - `canceled: number`
+
+      Number of requests in the Message Batch that have been canceled.
+
+      This is zero until processing of the entire Message Batch has ended.
+
+    - `errored: number`
+
+      Number of requests in the Message Batch that encountered an error.
+
+      This is zero until processing of the entire Message Batch has ended.
+
+    - `expired: number`
+
+      Number of requests in the Message Batch that have expired.
+
+      This is zero until processing of the entire Message Batch has ended.
+
+    - `processing: number`
+
+      Number of requests in the Message Batch that are processing.
+
+    - `succeeded: number`
+
+      Number of requests in the Message Batch that have completed successfully.
+
+      This is zero until processing of the entire Message Batch has ended.
+
+  - `results_url: string`
+
+    URL to a `.jsonl` file containing the results of the Message Batch requests. Specified only once processing ends.
+
+    Results in the file are not guaranteed to be in the same order as requests. Use the `custom_id` field to match results to requests.
+
+#### Example
+
+```bash
+ant messages:batches create \
+  --api-key my-anthropic-api-key \
+  --request '{custom_id: my-custom-id-1, params: {max_tokens: 1024, messages: [{content: [{text: x, type: text}], role: user}], model: claude-opus-5}}'
+```
+
+##### Response (200)
+
+```json
+{
+  "id": "msgbatch_013Zva2CMHLNnXjNJJKqJ2EF",
+  "archived_at": "2024-08-20T18:37:24.100435Z",
+  "cancel_initiated_at": "2024-08-20T18:37:24.100435Z",
+  "created_at": "2024-08-20T18:37:24.100435Z",
+  "ended_at": "2024-08-20T18:37:24.100435Z",
+  "expires_at": "2024-08-20T18:37:24.100435Z",
+  "processing_status": "in_progress",
+  "request_counts": {
+    "canceled": 10,
+    "errored": 30,
+    "expired": 10,
+    "processing": 100,
+    "succeeded": 50
+  },
+  "results_url": "https://api.anthropic.com/v1/messages/batches/msgbatch_013Zva2CMHLNnXjNJJKqJ2EF/results",
+  "type": "message_batch"
+}
+```
+
+### Retrieve a Message Batch
+
+`$ ant messages:batches retrieve`
+
+**GET** `/v1/messages/batches/{message_batch_id}`
+
+This endpoint is idempotent and can be used to poll for Message Batch completion. To access the results of a Message Batch, make a request to the `results_url` field in the response.
+
+Learn more about the Message Batches API in our [user guide](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=cli)
+
+#### Parameters
+
+- `--message-batch-id: string` (path parameter)
+
+  ID of the Message Batch.
+
+- `--workspace-id: optional string` (header parameter)
+
+  Optional header to select the Workspace for this request. The value is a Workspace ID (for example, `wrkspc_011CZkZaBF1tNoB5wlCeusgy`).
+
+  Only needed for credentials that can act on more than one Workspace. A credential that belongs to a specific Workspace may omit it; if sent, it must match that Workspace.
+
+#### Returns
+
+- `message_batch: object`
+
+  - `type: "message_batch"`
+
+    Object type.
+
+    For Message Batches, this is always `"message_batch"`.
+
+  - `id: string`
+
+    Unique object identifier.
+
+    The format and length of IDs may change over time.
+
+  - `archived_at: string`
+
+    RFC 3339 datetime string representing the time at which the Message Batch was archived and its results became unavailable.
+
+    format: date-time
+
+  - `cancel_initiated_at: string`
+
+    RFC 3339 datetime string representing the time at which cancellation was initiated for the Message Batch. Specified only if cancellation was initiated.
+
+    format: date-time
+
+  - `created_at: string`
+
+    RFC 3339 datetime string representing the time at which the Message Batch was created.
+
+    format: date-time
+
+  - `ended_at: string`
+
+    RFC 3339 datetime string representing the time at which processing for the Message Batch ended. Specified only once processing ends.
+
+    Processing ends when every request in a Message Batch has either succeeded, errored, canceled, or expired.
+
+    format: date-time
+
+  - `expires_at: string`
+
+    RFC 3339 datetime string representing the time at which the Message Batch will expire and end processing, which is 24 hours after creation.
+
+    format: date-time
+
+  - `processing_status: "in_progress" or "canceling" or "ended"`
+
+    Processing status of the Message Batch.
+
+    - `"in_progress"`
+
+    - `"canceling"`
+
+    - `"ended"`
+
+  - `request_counts: object`
+
+    Tallies requests within the Message Batch, categorized by their status.
+
+    Requests start as `processing` and move to one of the other statuses only once processing of the entire batch ends. The sum of all values always matches the total number of requests in the batch.
+
+    - `canceled: number`
+
+      Number of requests in the Message Batch that have been canceled.
+
+      This is zero until processing of the entire Message Batch has ended.
+
+    - `errored: number`
+
+      Number of requests in the Message Batch that encountered an error.
+
+      This is zero until processing of the entire Message Batch has ended.
+
+    - `expired: number`
+
+      Number of requests in the Message Batch that have expired.
+
+      This is zero until processing of the entire Message Batch has ended.
+
+    - `processing: number`
+
+      Number of requests in the Message Batch that are processing.
+
+    - `succeeded: number`
+
+      Number of requests in the Message Batch that have completed successfully.
+
+      This is zero until processing of the entire Message Batch has ended.
+
+  - `results_url: string`
+
+    URL to a `.jsonl` file containing the results of the Message Batch requests. Specified only once processing ends.
+
+    Results in the file are not guaranteed to be in the same order as requests. Use the `custom_id` field to match results to requests.
+
+#### Example
+
+```bash
+ant messages:batches retrieve \
+  --api-key my-anthropic-api-key \
+  --message-batch-id message_batch_id
+```
+
+##### Response (200)
+
+```json
+{
+  "id": "msgbatch_013Zva2CMHLNnXjNJJKqJ2EF",
+  "archived_at": "2024-08-20T18:37:24.100435Z",
+  "cancel_initiated_at": "2024-08-20T18:37:24.100435Z",
+  "created_at": "2024-08-20T18:37:24.100435Z",
+  "ended_at": "2024-08-20T18:37:24.100435Z",
+  "expires_at": "2024-08-20T18:37:24.100435Z",
+  "processing_status": "in_progress",
+  "request_counts": {
+    "canceled": 10,
+    "errored": 30,
+    "expired": 10,
+    "processing": 100,
+    "succeeded": 50
+  },
+  "results_url": "https://api.anthropic.com/v1/messages/batches/msgbatch_013Zva2CMHLNnXjNJJKqJ2EF/results",
+  "type": "message_batch"
+}
+```
+
+### List Message Batches
+
+`$ ant messages:batches list`
+
+**GET** `/v1/messages/batches`
+
+List all Message Batches within a Workspace. Most recently created batches are returned first.
+
+Learn more about the Message Batches API in our [user guide](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=cli)
+
+#### Parameters
+
+- `--after-id: optional string` (query parameter)
+
+  ID of the object to use as a cursor for pagination. When provided, returns the page of results immediately after this object.
+
+- `--before-id: optional string` (query parameter)
+
+  ID of the object to use as a cursor for pagination. When provided, returns the page of results immediately before this object.
+
+- `--limit: optional number` (query parameter)
+
+  Number of items to return per page.
+
+  Defaults to `20`. Ranges from `1` to `1000`.
+
+  minimum: 1, maximum: 1000
+
+- `--workspace-id: optional string` (header parameter)
+
+  Optional header to select the Workspace for this request. The value is a Workspace ID (for example, `wrkspc_011CZkZaBF1tNoB5wlCeusgy`).
+
+  Only needed for credentials that can act on more than one Workspace. A credential that belongs to a specific Workspace may omit it; if sent, it must match that Workspace.
+
+#### Returns
+
+- `ListResponse_MessageBatch_: object`
+
+  - `data: array of MessageBatch`
+
+    - `type: "message_batch"`
+
+      Object type.
+
+      For Message Batches, this is always `"message_batch"`.
+
+    - `id: string`
+
+      Unique object identifier.
+
+      The format and length of IDs may change over time.
+
+    - `archived_at: string`
+
+      RFC 3339 datetime string representing the time at which the Message Batch was archived and its results became unavailable.
+
+      format: date-time
+
+    - `cancel_initiated_at: string`
+
+      RFC 3339 datetime string representing the time at which cancellation was initiated for the Message Batch. Specified only if cancellation was initiated.
+
+      format: date-time
+
+    - `created_at: string`
+
+      RFC 3339 datetime string representing the time at which the Message Batch was created.
+
+      format: date-time
+
+    - `ended_at: string`
+
+      RFC 3339 datetime string representing the time at which processing for the Message Batch ended. Specified only once processing ends.
+
+      Processing ends when every request in a Message Batch has either succeeded, errored, canceled, or expired.
+
+      format: date-time
+
+    - `expires_at: string`
+
+      RFC 3339 datetime string representing the time at which the Message Batch will expire and end processing, which is 24 hours after creation.
+
+      format: date-time
+
+    - `processing_status: "in_progress" or "canceling" or "ended"`
+
+      Processing status of the Message Batch.
+
+      - `"in_progress"`
+
+      - `"canceling"`
+
+      - `"ended"`
+
+    - `request_counts: object`
+
+      Tallies requests within the Message Batch, categorized by their status.
+
+      Requests start as `processing` and move to one of the other statuses only once processing of the entire batch ends. The sum of all values always matches the total number of requests in the batch.
+
+      - `canceled: number`
+
+        Number of requests in the Message Batch that have been canceled.
+
+        This is zero until processing of the entire Message Batch has ended.
+
+      - `errored: number`
+
+        Number of requests in the Message Batch that encountered an error.
+
+        This is zero until processing of the entire Message Batch has ended.
+
+      - `expired: number`
+
+        Number of requests in the Message Batch that have expired.
+
+        This is zero until processing of the entire Message Batch has ended.
+
+      - `processing: number`
+
+        Number of requests in the Message Batch that are processing.
+
+      - `succeeded: number`
+
+        Number of requests in the Message Batch that have completed successfully.
+
+        This is zero until processing of the entire Message Batch has ended.
+
+    - `results_url: string`
+
+      URL to a `.jsonl` file containing the results of the Message Batch requests. Specified only once processing ends.
+
+      Results in the file are not guaranteed to be in the same order as requests. Use the `custom_id` field to match results to requests.
+
+  - `first_id: string`
+
+    First ID in the `data` list. Can be used as the `before_id` for the previous page.
+
+  - `has_more: boolean`
+
+    Indicates if there are more results in the requested page direction.
+
+  - `last_id: string`
+
+    Last ID in the `data` list. Can be used as the `after_id` for the next page.
+
+#### Example
+
+```bash
+ant messages:batches list \
+  --api-key my-anthropic-api-key
+```
+
+##### Response (200)
+
+```json
+{
+  "data": [
+    {
+      "id": "msgbatch_013Zva2CMHLNnXjNJJKqJ2EF",
+      "archived_at": "2024-08-20T18:37:24.100435Z",
+      "cancel_initiated_at": "2024-08-20T18:37:24.100435Z",
+      "created_at": "2024-08-20T18:37:24.100435Z",
+      "ended_at": "2024-08-20T18:37:24.100435Z",
+      "expires_at": "2024-08-20T18:37:24.100435Z",
+      "processing_status": "in_progress",
+      "request_counts": {
+        "canceled": 10,
+        "errored": 30,
+        "expired": 10,
+        "processing": 100,
+        "succeeded": 50
+      },
+      "results_url": "https://api.anthropic.com/v1/messages/batches/msgbatch_013Zva2CMHLNnXjNJJKqJ2EF/results",
+      "type": "message_batch"
+    }
+  ],
+  "first_id": "first_id",
+  "has_more": true,
+  "last_id": "last_id"
+}
+```
+
+### Cancel a Message Batch
+
+`$ ant messages:batches cancel`
+
+**POST** `/v1/messages/batches/{message_batch_id}/cancel`
+
+Batches may be canceled any time before processing ends. Once cancellation is initiated, the batch enters a `canceling` state, at which time the system may complete any in-progress, non-interruptible requests before finalizing cancellation.
+
+The number of canceled requests is specified in `request_counts`. To determine which requests were canceled, check the individual results within the batch. Note that cancellation may not result in any canceled requests if they were non-interruptible.
+
+Learn more about the Message Batches API in our [user guide](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=cli)
+
+#### Parameters
+
+- `--message-batch-id: string` (path parameter)
+
+  ID of the Message Batch.
+
+- `--workspace-id: optional string` (header parameter)
+
+  Optional header to select the Workspace for this request. The value is a Workspace ID (for example, `wrkspc_011CZkZaBF1tNoB5wlCeusgy`).
+
+  Only needed for credentials that can act on more than one Workspace. A credential that belongs to a specific Workspace may omit it; if sent, it must match that Workspace.
+
+#### Returns
+
+- `message_batch: object`
+
+  - `type: "message_batch"`
+
+    Object type.
+
+    For Message Batches, this is always `"message_batch"`.
+
+  - `id: string`
+
+    Unique object identifier.
+
+    The format and length of IDs may change over time.
+
+  - `archived_at: string`
+
+    RFC 3339 datetime string representing the time at which the Message Batch was archived and its results became unavailable.
+
+    format: date-time
+
+  - `cancel_initiated_at: string`
+
+    RFC 3339 datetime string representing the time at which cancellation was initiated for the Message Batch. Specified only if cancellation was initiated.
+
+    format: date-time
+
+  - `created_at: string`
+
+    RFC 3339 datetime string representing the time at which the Message Batch was created.
+
+    format: date-time
+
+  - `ended_at: string`
+
+    RFC 3339 datetime string representing the time at which processing for the Message Batch ended. Specified only once processing ends.
+
+    Processing ends when every request in a Message Batch has either succeeded, errored, canceled, or expired.
+
+    format: date-time
+
+  - `expires_at: string`
+
+    RFC 3339 datetime string representing the time at which the Message Batch will expire and end processing, which is 24 hours after creation.
+
+    format: date-time
+
+  - `processing_status: "in_progress" or "canceling" or "ended"`
+
+    Processing status of the Message Batch.
+
+    - `"in_progress"`
+
+    - `"canceling"`
+
+    - `"ended"`
+
+  - `request_counts: object`
+
+    Tallies requests within the Message Batch, categorized by their status.
+
+    Requests start as `processing` and move to one of the other statuses only once processing of the entire batch ends. The sum of all values always matches the total number of requests in the batch.
+
+    - `canceled: number`
+
+      Number of requests in the Message Batch that have been canceled.
+
+      This is zero until processing of the entire Message Batch has ended.
+
+    - `errored: number`
+
+      Number of requests in the Message Batch that encountered an error.
+
+      This is zero until processing of the entire Message Batch has ended.
+
+    - `expired: number`
+
+      Number of requests in the Message Batch that have expired.
+
+      This is zero until processing of the entire Message Batch has ended.
+
+    - `processing: number`
+
+      Number of requests in the Message Batch that are processing.
+
+    - `succeeded: number`
+
+      Number of requests in the Message Batch that have completed successfully.
+
+      This is zero until processing of the entire Message Batch has ended.
+
+  - `results_url: string`
+
+    URL to a `.jsonl` file containing the results of the Message Batch requests. Specified only once processing ends.
+
+    Results in the file are not guaranteed to be in the same order as requests. Use the `custom_id` field to match results to requests.
+
+#### Example
+
+```bash
+ant messages:batches cancel \
+  --api-key my-anthropic-api-key \
+  --message-batch-id message_batch_id
+```
+
+##### Response (200)
+
+```json
+{
+  "id": "msgbatch_013Zva2CMHLNnXjNJJKqJ2EF",
+  "archived_at": "2024-08-20T18:37:24.100435Z",
+  "cancel_initiated_at": "2024-08-20T18:37:24.100435Z",
+  "created_at": "2024-08-20T18:37:24.100435Z",
+  "ended_at": "2024-08-20T18:37:24.100435Z",
+  "expires_at": "2024-08-20T18:37:24.100435Z",
+  "processing_status": "in_progress",
+  "request_counts": {
+    "canceled": 10,
+    "errored": 30,
+    "expired": 10,
+    "processing": 100,
+    "succeeded": 50
+  },
+  "results_url": "https://api.anthropic.com/v1/messages/batches/msgbatch_013Zva2CMHLNnXjNJJKqJ2EF/results",
+  "type": "message_batch"
+}
+```
+
+### Delete a Message Batch
+
+`$ ant messages:batches delete`
+
+**DELETE** `/v1/messages/batches/{message_batch_id}`
+
+Delete a Message Batch.
+
+Message Batches can only be deleted once they've finished processing. If you'd like to delete an in-progress batch, you must first cancel it.
+
+Learn more about the Message Batches API in our [user guide](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=cli)
+
+#### Parameters
+
+- `--message-batch-id: string` (path parameter)
+
+  ID of the Message Batch.
+
+- `--workspace-id: optional string` (header parameter)
+
+  Optional header to select the Workspace for this request. The value is a Workspace ID (for example, `wrkspc_011CZkZaBF1tNoB5wlCeusgy`).
+
+  Only needed for credentials that can act on more than one Workspace. A credential that belongs to a specific Workspace may omit it; if sent, it must match that Workspace.
+
+#### Returns
+
+- `deleted_message_batch: object`
+
+  - `type: "message_batch_deleted"`
+
+    Deleted object type.
+
+    For Message Batches, this is always `"message_batch_deleted"`.
+
+  - `id: string`
+
+    ID of the Message Batch.
+
+#### Example
+
+```bash
+ant messages:batches delete \
+  --api-key my-anthropic-api-key \
+  --message-batch-id message_batch_id
+```
+
+##### Response (200)
+
+```json
+{
+  "id": "msgbatch_013Zva2CMHLNnXjNJJKqJ2EF",
+  "type": "message_batch_deleted"
+}
+```
+
+### Retrieve Message Batch results
+
+`$ ant messages:batches results`
+
+**GET** `/v1/messages/batches/{message_batch_id}/results`
+
+Streams the results of a Message Batch as a `.jsonl` file.
+
+Each line in the file is a JSON object containing the result of a single request in the Message Batch. Results are not guaranteed to be in the same order as requests. Use the `custom_id` field to match results to requests.
+
+Learn more about the Message Batches API in our [user guide](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=cli)
+
+#### Parameters
+
+- `--message-batch-id: string` (path parameter)
+
+  ID of the Message Batch.
+
+- `--workspace-id: optional string` (header parameter)
+
+  Optional header to select the Workspace for this request. The value is a Workspace ID (for example, `wrkspc_011CZkZaBF1tNoB5wlCeusgy`).
+
+  Only needed for credentials that can act on more than one Workspace. A credential that belongs to a specific Workspace may omit it; if sent, it must match that Workspace.
+
+#### Returns
+
+- `message_batch_individual_response: object`
+
+  This is a single line in the response `.jsonl` file and does not represent the response as a whole.
+
+  - `custom_id: string`
+
+    Developer-provided ID created for each request in a Message Batch. Useful for matching results to requests, as results may be given out of request order.
+
+    Must be unique for each request within the Message Batch.
+
+  - `result: MessageBatchSucceededResult or MessageBatchErroredResult or MessageBatchCanceledResult or MessageBatchExpiredResult`
+
+    Processing result for this request.
+
+    Contains a Message output if processing was successful, an error response if processing failed, or the reason why processing was not attempted, such as cancellation or expiration.
+
+    - `message_batch_succeeded_result: object`
+
+      - `type: "succeeded"`
+
+      - `message: object`
+
+        - `type: "message"`
+
+          Object type.
+
+          For Messages, this is always `"message"`.
+
+        - `id: string`
+
+          Unique object identifier.
+
+          The format and length of IDs may change over time.
+
+        - `container: object`
+
+          Information about the container used in this request.
+
+          This will be non-null if a container tool (e.g. code execution) was used.
+
+          - `id: string`
+
+            Identifier for the container used in this request
+
+          - `expires_at: string`
+
+            The time at which the container will expire.
+
+            format: date-time
+
+          - `skills: array of ContainerSkill`
+
+            Skills loaded in the container
+
+            - `type: "anthropic" or "custom"`
+
+              Type of skill - either 'anthropic' (built-in) or 'custom' (user-defined)
+
+              - `"anthropic"`
+
+              - `"custom"`
+
+            - `skill_id: string`
+
+              Skill ID
+
+              minLength: 1, maxLength: 64
+
+            - `version: string`
+
+              The resolved version: a skill version ID for custom skills.
+
+              minLength: 1, maxLength: 64
+
+        - `content: array of ContentBlock`
+
+          Content generated by the model.
+
+          This is an array of content blocks, each of which has a `type` that determines its shape.
+
+          Example:
+
+          ```json
+          [{"type": "text", "text": "Hi, I'm Claude."}]
+          ```
+
+          If the request input `messages` ended with an `assistant` turn, then the response `content` will continue directly from that last turn. You can use this to constrain the model's output.
+
+          For example, if the input `messages` were:
+
+          ```json
+          [
+            {"role": "user", "content": "What's the Greek name for Sun? (A) Sol (B) Helios (C) Sun"},
+            {"role": "assistant", "content": "The best answer is ("}
+          ]
+          ```
+
+          Then the response `content` might be:
+
+          ```json
+          [{"type": "text", "text": "B)"}]
+          ```
+
+          - `text_block: object`
+
+            - `type: "text"`
+
+            - `citations: array of TextCitation`
+
+              Citations supporting the text block.
+
+              The type of citation returned will depend on the type of document being cited. Citing a PDF results in `page_location`, plain text results in `char_location`, and content document results in `content_block_location`.
+
+              - `citation_char_location: object`
+
+                - `type: "char_location"`
+
+                - `cited_text: string`
+
+                - `document_index: number`
+
+                  minimum: 0
+
+                - `document_title: string`
+
+                - `end_char_index: number`
+
+                - `file_id: string`
+
+                - `start_char_index: number`
+
+                  minimum: 0
+
+              - `citation_page_location: object`
+
+                - `type: "page_location"`
+
+                - `cited_text: string`
+
+                - `document_index: number`
+
+                  minimum: 0
+
+                - `document_title: string`
+
+                - `end_page_number: number`
+
+                - `file_id: string`
+
+                - `start_page_number: number`
+
+                  minimum: 1
+
+              - `citation_content_block_location: object`
+
+                - `type: "content_block_location"`
+
+                - `cited_text: string`
+
+                  The full text of the cited block range, concatenated.
+
+                  Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+                - `document_index: number`
+
+                  minimum: 0
+
+                - `document_title: string`
+
+                - `end_block_index: number`
+
+                  Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+                  Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+                - `file_id: string`
+
+                - `start_block_index: number`
+
+                  0-based index of the first cited block in the source's `content` array.
+
+                  minimum: 0
+
+              - `citations_web_search_result_location: object`
+
+                - `type: "web_search_result_location"`
+
+                - `cited_text: string`
+
+                - `encrypted_index: string`
+
+                - `title: string`
+
+                  maxLength: 512
+
+                - `url: string`
+
+              - `citations_search_result_location: object`
+
+                - `type: "search_result_location"`
+
+                - `cited_text: string`
+
+                  The full text of the cited block range, concatenated.
+
+                  Always equals the contents of `content[start_block_index:end_block_index]` joined together. The text block is the minimal citable unit; this field is never a substring of a single block. Not counted toward output tokens, and not counted toward input tokens when sent back in subsequent turns.
+
+                - `end_block_index: number`
+
+                  Exclusive 0-based end index of the cited block range in the source's `content` array.
+
+                  Always greater than `start_block_index`; a single-block citation has `end_block_index = start_block_index + 1`.
+
+                - `search_result_index: number`
+
+                  0-based index of the cited search result among all `search_result` content blocks in the request, in the order they appear across messages and tool results.
+
+                  Counted separately from `document_index`; server-side web search results are not included in this count.
+
+                  minimum: 0
+
+                - `source: string`
+
+                - `start_block_index: number`
+
+                  0-based index of the first cited block in the source's `content` array.
+
+                  minimum: 0
+
+                - `title: string`
+
+            - `text: string`
+
+          - `thinking_block: object`
+
+            - `type: "thinking"`
+
+            - `signature: string`
+
+              A value used to verify that this thinking block was generated by Claude when it is passed back to the API.
+
+              This is an opaque field and should not be interpreted or parsed. When passing thinking blocks back to the API (required when using tools with extended thinking), pass them back exactly as received, with this field intact.
+
+              See [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli) for details.
+
+            - `thinking: string`
+
+              The text of Claude's thinking process for this block.
+
+          - `redacted_thinking_block: object`
+
+            - `type: "redacted_thinking"`
+
+            - `data: string`
+
+              The contents of this redacted thinking block, returned when portions of the model's thinking were safety-redacted. This field is opaque and encrypted, with no readable content.
+
+              Pass `redacted_thinking` blocks back to the API unchanged when continuing a multi-turn conversation.
+
+              See [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli#redacted-thinking-blocks) for details.
+
+          - `tool_use_block: object`
+
+            - `type: "tool_use"`
+
+            - `id: string`
+
+              pattern: ^[a-zA-Z0-9_-]+$
+
+            - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+              - `direct_caller: object`
+
+                Tool invocation directly from the model.
+
+                - `type: "direct"`
+
+              - `server_tool_caller: object`
+
+                Tool invocation generated by a server-side tool.
+
+                - `type: "code_execution_20250825"`
+
+                - `tool_id: string`
+
+                  pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+              - `server_tool_caller_20260120: object`
+
+                - `type: "code_execution_20260120"`
+
+                - `tool_id: string`
+
+                  pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+            - `input: map[unknown]`
+
+            - `name: string`
+
+              minLength: 1
+
+            - `toolset_name: optional string`
+
+              For a toolset member tool_use, the toolset family.
+
+              minLength: 1, maxLength: 64, pattern: ^[a-zA-Z0-9_-]+$
+
+          - `server_tool_use_block: object`
+
+            - `type: "server_tool_use"`
+
+            - `id: string`
+
+              pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+            - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+              - `direct_caller: object`
+
+                Tool invocation directly from the model.
+
+              - `server_tool_caller: object`
+
+                Tool invocation generated by a server-side tool.
+
+              - `server_tool_caller_20260120: object`
+
+            - `input: map[unknown]`
+
+            - `name: "web_search" or "web_fetch" or "code_execution" or 4 more`
+
+              - `"web_search"`
+
+              - `"web_fetch"`
+
+              - `"code_execution"`
+
+              - `"bash_code_execution"`
+
+              - `"text_editor_code_execution"`
+
+              - `"tool_search_tool_regex"`
+
+              - `"tool_search_tool_bm25"`
+
+          - `web_search_tool_result_block: object`
+
+            - `type: "web_search_tool_result"`
+
+            - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+              - `direct_caller: object`
+
+                Tool invocation directly from the model.
+
+              - `server_tool_caller: object`
+
+                Tool invocation generated by a server-side tool.
+
+              - `server_tool_caller_20260120: object`
+
+            - `content: WebSearchToolResultError or array of WebSearchResultBlock`
+
+              - `web_search_tool_result_error: object`
+
+                - `type: "web_search_tool_result_error"`
+
+                - `error_code: "invalid_tool_input" or "unavailable" or "max_uses_exceeded" or 3 more`
+
+                  - `"invalid_tool_input"`
+
+                  - `"unavailable"`
+
+                  - `"max_uses_exceeded"`
+
+                  - `"too_many_requests"`
+
+                  - `"query_too_long"`
+
+                  - `"request_too_large"`
+
+              - `union_member_1: array of WebSearchResultBlock`
+
+                - `type: "web_search_result"`
+
+                - `encrypted_content: string`
+
+                - `page_age: string`
+
+                - `title: string`
+
+                - `url: string`
+
+            - `tool_use_id: string`
+
+              pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+          - `web_fetch_tool_result_block: object`
+
+            - `type: "web_fetch_tool_result"`
+
+            - `caller: DirectCaller or ServerToolCaller or ServerToolCaller20260120`
+
+              - `direct_caller: object`
+
+                Tool invocation directly from the model.
+
+              - `server_tool_caller: object`
+
+                Tool invocation generated by a server-side tool.
+
+              - `server_tool_caller_20260120: object`
+
+            - `content: WebFetchToolResultErrorBlock or WebFetchBlock`
+
+              - `web_fetch_tool_result_error_block: object`
+
+                - `type: "web_fetch_tool_result_error"`
+
+                - `error_code: "invalid_tool_input" or "url_too_long" or "url_not_allowed" or 7 more`
+
+                  - `"invalid_tool_input"`
+
+                  - `"url_too_long"`
+
+                  - `"url_not_allowed"`
+
+                  - `"url_not_in_prior_context"`
+
+                  - `"url_not_accessible"`
+
+                  - `"unsupported_content_type"`
+
+                  - `"too_many_requests"`
+
+                  - `"max_uses_exceeded"`
+
+                  - `"unavailable"`
+
+                  - `"content_too_large"`
+
+              - `web_fetch_block: object`
+
+                - `type: "web_fetch_result"`
+
+                - `content: object`
+
+                  - `type: "document"`
+
+                  - `citations: object`
+
+                    Citation configuration for the document
+
+                    - `enabled: boolean`
+
+                  - `source: Base64PDFSource or PlainTextSource`
+
+                    - `base64_pdf_source: object`
+
+                      - `type: "base64"`
+
+                      - `data: string`
+
+                        format: byte
+
+                      - `media_type: "application/pdf"`
+
+                    - `plain_text_source: object`
+
+                      - `type: "text"`
+
+                      - `data: string`
+
+                      - `media_type: "text/plain"`
+
+                  - `title: string`
+
+                    The title of the document
+
+                - `retrieved_at: string`
+
+                  ISO 8601 timestamp when the content was retrieved
+
+                - `url: string`
+
+                  Fetched content URL
+
+            - `tool_use_id: string`
+
+              pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+          - `code_execution_tool_result_block: object`
+
+            - `type: "code_execution_tool_result"`
+
+            - `content: CodeExecutionToolResultError or CodeExecutionResultBlock or EncryptedCodeExecutionResultBlock`
+
+              - `code_execution_tool_result_error: object`
+
+                - `type: "code_execution_tool_result_error"`
+
+                - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+                  - `"invalid_tool_input"`
+
+                  - `"unavailable"`
+
+                  - `"too_many_requests"`
+
+                  - `"execution_time_exceeded"`
+
+              - `code_execution_result_block: object`
+
+                - `type: "code_execution_result"`
+
+                - `content: array of CodeExecutionOutputBlock`
+
+                  - `type: "code_execution_output"`
+
+                  - `file_id: string`
+
+                - `return_code: number`
+
+                - `stderr: string`
+
+                - `stdout: string`
+
+              - `encrypted_code_execution_result_block: object`
+
+                Code execution result with encrypted stdout for PFC + web_search results.
+
+                - `type: "encrypted_code_execution_result"`
+
+                - `content: array of CodeExecutionOutputBlock`
+
+                  - `type: "code_execution_output"`
+
+                  - `file_id: string`
+
+                - `encrypted_stdout: string`
+
+                - `return_code: number`
+
+                - `stderr: string`
+
+            - `tool_use_id: string`
+
+              pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+          - `bash_code_execution_tool_result_block: object`
+
+            - `type: "bash_code_execution_tool_result"`
+
+            - `content: BashCodeExecutionToolResultError or BashCodeExecutionResultBlock`
+
+              - `bash_code_execution_tool_result_error: object`
+
+                - `type: "bash_code_execution_tool_result_error"`
+
+                - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+                  - `"invalid_tool_input"`
+
+                  - `"unavailable"`
+
+                  - `"too_many_requests"`
+
+                  - `"execution_time_exceeded"`
+
+                  - `"output_file_too_large"`
+
+              - `bash_code_execution_result_block: object`
+
+                - `type: "bash_code_execution_result"`
+
+                - `content: array of BashCodeExecutionOutputBlock`
+
+                  - `type: "bash_code_execution_output"`
+
+                  - `file_id: string`
+
+                - `return_code: number`
+
+                - `stderr: string`
+
+                - `stdout: string`
+
+            - `tool_use_id: string`
+
+              pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+          - `text_editor_code_execution_tool_result_block: object`
+
+            - `type: "text_editor_code_execution_tool_result"`
+
+            - `content: TextEditorCodeExecutionToolResultError or TextEditorCodeExecutionViewResultBlock or TextEditorCodeExecutionCreateResultBlock or TextEditorCodeExecutionStrReplaceResultBlock`
+
+              - `text_editor_code_execution_tool_result_error: object`
+
+                - `type: "text_editor_code_execution_tool_result_error"`
+
+                - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or 2 more`
+
+                  - `"invalid_tool_input"`
+
+                  - `"unavailable"`
+
+                  - `"too_many_requests"`
+
+                  - `"execution_time_exceeded"`
+
+                  - `"file_not_found"`
+
+                - `error_message: string`
+
+              - `text_editor_code_execution_view_result_block: object`
+
+                - `type: "text_editor_code_execution_view_result"`
+
+                - `content: string`
+
+                - `file_type: "text" or "image" or "pdf"`
+
+                  - `"text"`
+
+                  - `"image"`
+
+                  - `"pdf"`
+
+                - `num_lines: number`
+
+                - `start_line: number`
+
+                - `total_lines: number`
+
+              - `text_editor_code_execution_create_result_block: object`
+
+                - `type: "text_editor_code_execution_create_result"`
+
+                - `is_file_update: boolean`
+
+              - `text_editor_code_execution_str_replace_result_block: object`
+
+                - `type: "text_editor_code_execution_str_replace_result"`
+
+                - `lines: array of string`
+
+                - `new_lines: number`
+
+                - `new_start: number`
+
+                - `old_lines: number`
+
+                - `old_start: number`
+
+            - `tool_use_id: string`
+
+              pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+          - `tool_search_tool_result_block: object`
+
+            - `type: "tool_search_tool_result"`
+
+            - `content: ToolSearchToolResultError or ToolSearchToolSearchResultBlock`
+
+              - `tool_search_tool_result_error: object`
+
+                - `type: "tool_search_tool_result_error"`
+
+                - `error_code: "invalid_tool_input" or "unavailable" or "too_many_requests" or "execution_time_exceeded"`
+
+                  - `"invalid_tool_input"`
+
+                  - `"unavailable"`
+
+                  - `"too_many_requests"`
+
+                  - `"execution_time_exceeded"`
+
+                - `error_message: string`
+
+              - `tool_search_tool_search_result_block: object`
+
+                - `type: "tool_search_tool_search_result"`
+
+                - `tool_references: array of ToolReferenceBlock`
+
+                  - `type: "tool_reference"`
+
+                  - `tool_name: string`
+
+                    minLength: 1, maxLength: 256, pattern: ^[a-zA-Z0-9_-]{1,256}$
+
+            - `tool_use_id: string`
+
+              pattern: ^srvtoolu_[a-zA-Z0-9_]+$
+
+          - `container_upload_block: object`
+
+            Response model for a file uploaded to the container.
+
+            - `type: "container_upload"`
+
+            - `file_id: string`
+
+        - `diagnostics: object`
+
+          Request-level diagnostics. `null` when the request did not supply `diagnostics`, or when it did and no prompt-cache divergence was detected.
+
+          - `cache_miss_reason: CacheMissModelChanged or CacheMissSystemChanged or CacheMissToolsChanged or 3 more`
+
+            Explains why the prompt cache could not fully reuse the prefix from the request identified by `diagnostics.previous_message_id`. `null` means diagnosis is still pending — the response was serialized before the background comparison completed.
+
+            - `cache_miss_model_changed: object`
+
+              - `type: "model_changed"`
+
+              - `cache_missed_input_tokens: number`
+
+                Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+            - `cache_miss_system_changed: object`
+
+              - `type: "system_changed"`
+
+              - `cache_missed_input_tokens: number`
+
+                Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+            - `cache_miss_tools_changed: object`
+
+              - `type: "tools_changed"`
+
+              - `cache_missed_input_tokens: number`
+
+                Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+            - `cache_miss_messages_changed: object`
+
+              - `type: "messages_changed"`
+
+              - `cache_missed_input_tokens: number`
+
+                Approximate number of input tokens that would have been read from cache had the prefix matched the previous request.
+
+            - `cache_miss_previous_message_not_found: object`
+
+              - `type: "previous_message_not_found"`
+
+            - `cache_miss_unavailable: object`
+
+              - `type: "unavailable"`
+
+        - `model: "claude-haiku-5-5" or "claude-sonnet-5-5" or "claude-fable-5-1" or 17 more or string`
+
+          The model that will complete your prompt.
+
+          See [models](https://docs.anthropic.com/en/docs/models-overview) for additional details and options.
+
+          - `"claude-haiku-5-5"`
+
+            Fastest model for high-volume, real-time tasks
+
+          - `"claude-sonnet-5-5"`
+
+            Efficient model for coding and agents
+
+          - `"claude-fable-5-1"`
+
+            Frontier intelligence for ambitious tasks across coding, scientific discovery, and enterprise workflows
+
+          - `"claude-opus-5-5"`
+
+            Powerful intelligence for coding, knowledge work, and long-running agents
+
+          - `"claude-mythos-5-1"`
+
+            Our most capable model for cybersecurity and biology research, available through trusted access programs
+
+          - `"claude-sonnet-5"`
+
+            Efficient model for coding and agents
+
+          - `"claude-fable-5"`
+
+            Next generation of intelligence for the hardest knowledge work and coding problems
+
+          - `"claude-mythos-5"`
+
+            Most capable model for cybersecurity and biology research
+
+          - `"claude-opus-5"`
+
+            Powerful intelligence for long-running agents and coding
+
+          - `"claude-opus-4-8"`
+
+            Powerful intelligence for long-running agents and coding
+
+          - `"claude-opus-4-7"`
+
+            Powerful intelligence for long-running agents and coding
+
+          - `"claude-opus-4-6"`
+
+            Powerful intelligence for long-running agents and coding
+
+          - `"claude-sonnet-4-6"`
+
+            Best combination of speed and intelligence
+
+          - `"claude-haiku-4-5"`
+
+          - `"claude-haiku-4-5-20251001"`
+
+          - `"claude-opus-4-5"`
+
+            Powerful intelligence for long-running agents and coding
+
+          - `"claude-opus-4-5-20251101"`
+
+            Powerful intelligence for long-running agents and coding
+
+          - `"claude-mythos-preview"`
+
+            **Deprecated**: Will reach end-of-life on June 30, 2026. Please migrate to claude-mythos-5. Visit https://docs.anthropic.com/en/docs/resources/model-deprecations for more information.
+
+            New class of intelligence, strongest in coding and cybersecurity
+
+          - `"claude-sonnet-4-5"`
+
+            **Deprecated**: Will reach end-of-life on November 30, 2026. Please migrate to claude-sonnet-5-5. Visit https://docs.anthropic.com/en/docs/resources/model-deprecations for more information.
+
+            High-performance model for agents and coding
+
+          - `"claude-sonnet-4-5-20250929"`
+
+            **Deprecated**: Will reach end-of-life on November 30, 2026. Please migrate to claude-sonnet-5-5. Visit https://docs.anthropic.com/en/docs/resources/model-deprecations for more information.
+
+            High-performance model for agents and coding
+
+        - `role: "assistant"`
+
+          Conversational role of the generated message.
+
+          This will always be `"assistant"`.
+
+        - `stop_details: object`
+
+          Structured information about why model output stopped.
+
+          This is `null` when the `stop_reason` has no additional detail to report.
+
+          - `type: "refusal"`
+
+          - `category: "cyber" or "bio" or "frontier_llm" or 2 more`
+
+            The policy category that triggered the refusal.
+
+            `null` when the refusal doesn't map to a named category.
+
+            - `"cyber"`
+
+              The request could enable cyber harm, such as malware or exploit development. Benign cybersecurity work can also trigger this category.
+
+            - `"bio"`
+
+              The request could enable biological harm, such as dangerous lab methods. Beneficial life sciences work can also trigger this category.
+
+            - `"frontier_llm"`
+
+              The request could assist the development of competing AI models, which is restricted under [Anthropic's commercial terms](https://www.anthropic.com/legal/commercial-terms). Benign machine learning work can also trigger this category.
+
+            - `"reasoning_extraction"`
+
+              The request asks the model to reproduce its internal reasoning in the response text. To get reasoning in a structured form instead, use [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking?sdk_languages=cli).
+
+            - `"general_harms"`
+
+              The request could be related to an area that was determined as harmful. Benign work might sometimes trigger this category.
+
+          - `explanation: string`
+
+            Human-readable explanation of the refusal.
+
+            This text is not guaranteed to be stable. `null` when no explanation is available for the category.
+
+        - `stop_reason: "end_turn" or "max_tokens" or "stop_sequence" or 4 more`
+
+          The reason that we stopped.
+
+          This may be one the following values:
+
+          * `"end_turn"`: the model reached a natural stopping point
+          * `"max_tokens"`: we exceeded the requested `max_tokens` or the model's maximum
+          * `"stop_sequence"`: one of your provided custom `stop_sequences` was generated
+          * `"tool_use"`: the model invoked one or more tools
+          * `"pause_turn"`: we paused a long-running turn. You may provide the response back as-is in a subsequent request to let the model continue.
+          * `"refusal"`: when streaming classifiers intervene to handle potential policy violations
+          * `"model_context_window_exceeded"`: we exceeded the model's context window
+
+          In non-streaming mode this value is always non-null. In streaming mode, it is null in the `message_start` event and non-null otherwise.
+
+          - `"end_turn"`
+
+          - `"max_tokens"`
+
+          - `"stop_sequence"`
+
+          - `"tool_use"`
+
+          - `"pause_turn"`
+
+          - `"refusal"`
+
+          - `"model_context_window_exceeded"`
+
+        - `stop_sequence: string`
+
+          Which custom stop sequence was generated, if any.
+
+          This value will be a non-null string if one of your custom stop sequences was generated.
+
+        - `usage: object`
+
+          Billing and rate-limit usage.
+
+          Anthropic's API bills and rate-limits by token counts, as tokens represent the underlying cost to our systems.
+
+          Under the hood, the API transforms requests into a format suitable for the model. The model's output then goes through a parsing stage before becoming an API response. As a result, the token counts in `usage` will not match one-to-one with the exact visible content of an API request or response.
+
+          For example, `output_tokens` will be non-zero, even for an empty string response from Claude.
+
+          Total input tokens in a request is the summation of `input_tokens`, `cache_creation_input_tokens`, and `cache_read_input_tokens`.
+
+          - `cache_creation: object`
+
+            Breakdown of cached tokens by TTL
+
+            - `ephemeral_1h_input_tokens: number`
+
+              The number of input tokens used to create the 1 hour cache entry.
+
+              minimum: 0
+
+            - `ephemeral_5m_input_tokens: number`
+
+              The number of input tokens used to create the 5 minute cache entry.
+
+              minimum: 0
+
+          - `cache_creation_input_tokens: number`
+
+            The number of input tokens used to create the cache entry.
+
+            minimum: 0
+
+          - `cache_read_input_tokens: number`
+
+            The number of input tokens read from the cache.
+
+            minimum: 0
+
+          - `inference_geo: string`
+
+            The geographic region where inference was performed for this request.
+
+          - `input_tokens: number`
+
+            The number of input tokens which were used.
+
+            minimum: 0
+
+          - `output_tokens: number`
+
+            The number of output tokens which were used.
+
+            minimum: 0
+
+          - `output_tokens_details: object`
+
+            Breakdown of output tokens by category.
+
+            `output_tokens` remains the inclusive, authoritative total used for billing.
+            This object provides a read-only decomposition for observability — for example,
+            how many of the billed output tokens were spent on internal reasoning that may
+            have been summarized before being returned to you.
+
+            - `thinking_tokens: number`
+
+              Number of output tokens the model generated as internal reasoning, including
+              the thinking-block delimiter tokens.
+
+              Reflects the raw reasoning the model produced, not the (possibly shorter)
+              summarized thinking text returned in the response body. Computed by
+              re-tokenizing the raw reasoning text, so it may differ from the model's exact
+              generation count by a small number of tokens. Always ≤ `output_tokens`;
+              `output_tokens - thinking_tokens` approximates the non-reasoning output.
+
+              minimum: 0
+
+          - `server_tool_use: object`
+
+            The number of server tool requests.
+
+            - `web_fetch_requests: number`
+
+              The number of web fetch tool requests.
+
+              minimum: 0
+
+            - `web_search_requests: number`
+
+              The number of web search tool requests.
+
+              minimum: 0
+
+          - `service_tier: "standard" or "priority" or "batch"`
+
+            If the request used the priority, standard, or batch tier.
+
+            - `"standard"`
+
+            - `"priority"`
+
+            - `"batch"`
+
+    - `message_batch_errored_result: object`
+
+      - `type: "errored"`
+
+      - `error: object`
+
+        - `type: "error"`
+
+        - `error: InvalidRequestError or AuthenticationError or BillingError or 6 more`
+
+          - `invalid_request_error: object`
+
+            - `type: "invalid_request_error"`
+
+            - `message: string`
+
+          - `authentication_error: object`
+
+            - `type: "authentication_error"`
+
+            - `message: string`
+
+          - `billing_error: object`
+
+            - `type: "billing_error"`
+
+            - `message: string`
+
+          - `permission_error: object`
+
+            - `type: "permission_error"`
+
+            - `message: string`
+
+          - `not_found_error: object`
+
+            - `type: "not_found_error"`
+
+            - `message: string`
+
+          - `rate_limit_error: object`
+
+            - `type: "rate_limit_error"`
+
+            - `message: string`
+
+          - `gateway_timeout_error: object`
+
+            - `type: "timeout_error"`
+
+            - `message: string`
+
+          - `api_error_object: object`
+
+            - `type: "api_error"`
+
+            - `message: string`
+
+          - `overloaded_error: object`
+
+            - `type: "overloaded_error"`
+
+            - `message: string`
+
+        - `request_id: string`
+
+    - `message_batch_canceled_result: object`
+
+      - `type: "canceled"`
+
+    - `message_batch_expired_result: object`
+
+      - `type: "expired"`
+
+#### Example
+
+```bash
+ant messages:batches results \
+  --api-key my-anthropic-api-key \
+  --message-batch-id message_batch_id
+```

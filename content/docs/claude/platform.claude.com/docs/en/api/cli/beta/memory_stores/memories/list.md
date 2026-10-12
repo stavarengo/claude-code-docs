@@ -1,0 +1,154 @@
+---
+title: List memories
+url: https://platform.claude.com/docs/en/api/cli/beta/memory_stores/memories/list
+---
+
+# List memories
+
+`$ ant beta:memory-stores:memories list`
+
+**GET** `/v1/memory_stores/{memory_store_id}/memories`
+
+List memories
+
+## Parameters
+
+- `--memory-store-id: string` (path parameter)
+
+  The ID of the memory store to list memories from (`memstore_...`).
+
+- `--depth: optional number` (query parameter)
+
+  `0` (or omitted) returns all descendants below `path_prefix` (recursive). `1` returns immediate children only; deeper entries roll up as `memory_prefix` items. `depth=1` behaves like `ls`; omitting `depth` behaves like `find`.
+
+  format: int32
+
+- `--limit: optional number` (query parameter)
+
+  Maximum number of items to return per page. Must be between 1 and 100. Defaults to 20 when omitted. Capped at 20 when `view=full`. Both `memory` and `memory_prefix` items count toward the limit.
+
+  format: int32
+
+- `--page: optional string` (query parameter)
+
+  Opaque pagination cursor (a `page_...` value). Pass the `next_page` value from a previous response to fetch the next page; omit for the first page.
+
+- `--path-prefix: optional string` (query parameter)
+
+  Optional path prefix filter. Must end with `/` (segment-aligned), e.g., `/notes/`. This value appears in request URLs. Do not include secrets or personally identifiable information.
+
+- `--view: optional "basic" or "full"` (query parameter)
+
+  Which projection of each `memory` to return. Defaults to `basic` (content omitted). `full` populates `content` on each item and caps `limit` at 20; use this as the bulk-read path for export and sync.
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  Optional header to specify the beta version(s) you want to use.
+
+- `--workspace-id: optional string` (header parameter)
+
+  Optional header to select the Workspace for this request. The value is a Workspace ID (for example, `wrkspc_011CZkZaBF1tNoB5wlCeusgy`).
+
+  Only needed for credentials that can act on more than one Workspace. A credential that belongs to a specific Workspace may omit it; if sent, it must match that Workspace.
+
+## Returns
+
+- `BetaManagedAgentsListMemoriesResult: object`
+
+  Response payload for [List memories](https://platform.claude.com/docs/en/api/beta/memory_stores/memories/list?sdk_languages=cli).
+
+  - `data: optional array of BetaManagedAgentsMemoryListItem`
+
+    One page of results. Each item is either a `memory` object or, when `depth` was set, a `memory_prefix` rollup marker. Items are returned in a stable, server-defined order.
+
+    - `beta_managed_agents_memory: object`
+
+      A `memory` object: a single text document at a hierarchical path inside a memory store. The `content` field is populated when `view=full` and `null` when `view=basic`; the `content_size_bytes` and `content_sha256` fields are always populated so sync clients can diff without fetching content. Memories are addressed by their `mem_...` ID; the path is the create key and can be changed via update.
+
+      - `type: "memory"`
+
+      - `id: string`
+
+        Unique identifier for this memory (a `mem_...` value). Stable across renames; use this ID, not the path, to read, update, or delete the memory.
+
+      - `content_sha256: string`
+
+        Lowercase hex SHA-256 digest of the UTF-8 `content` bytes (64 characters). The server applies no normalization, so clients can compute the same hash locally for staleness checks and as the value for a `content_sha256` precondition on update. Always populated, regardless of `view`.
+
+      - `content_size_bytes: number`
+
+        Size of `content` in bytes (the UTF-8 plaintext length). Always populated, regardless of `view`.
+
+        format: int32
+
+      - `created_at: string`
+
+        When this memory was created, in RFC 3339 format.
+
+        format: date-time
+
+      - `memory_store_id: string`
+
+        ID of the memory store this memory belongs to (a `memstore_...` value).
+
+      - `memory_version_id: string`
+
+        ID of the `memory_version` representing this memory's current content (a `memver_...` value). This is the authoritative head pointer; `memory_version` objects do not carry an `is_latest` flag, so compare against this field instead. Enumerate the history via [List memory versions](https://platform.claude.com/docs/en/api/beta/memory_stores/memory_versions/list?sdk_languages=cli).
+
+      - `path: string`
+
+        Hierarchical path of the memory within the store, e.g. `/projects/foo/notes.md`. Always starts with `/`. Paths are case-sensitive and unique within a store. Maximum 1,024 bytes.
+
+      - `updated_at: string`
+
+        When this memory was last modified, in RFC 3339 format. Use this as a cheap freshness signal; for who made the change, look up the head version's `created_by` via [List memory versions](https://platform.claude.com/docs/en/api/beta/memory_stores/memory_versions/list?sdk_languages=cli).
+
+        format: date-time
+
+      - `content: optional string`
+
+        The memory's UTF-8 text content. Populated when `view=full`; `null` when `view=basic`. Maximum 100 kB (102,400 bytes).
+
+    - `beta_managed_agents_memory_prefix: object`
+
+      A rolled-up directory marker returned by [List memories](https://platform.claude.com/docs/en/api/beta/memory_stores/memories/list?sdk_languages=cli) when `depth` is set. Indicates that one or more memories exist deeper than the requested depth under this prefix. This is a list-time rollup, not a stored resource; it has no ID and no lifecycle. Each prefix counts toward the page `limit` and interleaves with `memory` items in path order.
+
+      - `type: "memory_prefix"`
+
+      - `path: string`
+
+        The rolled-up path prefix, including a trailing `/` (e.g. `/projects/foo/`). Pass this value as `path_prefix` on a subsequent list call to drill into the directory.
+
+  - `next_page: optional string`
+
+    Opaque cursor for the next page (a `page_...` value), or `null` if there are no more results. Pass as `page` on the next request.
+
+## Example
+
+```bash
+ant beta:memory-stores:memories list \
+  --api-key my-anthropic-api-key \
+  --memory-store-id memory_store_id
+```
+
+### Response (200)
+
+```json
+{
+  "data": [
+    {
+      "id": "mem_011CZkZ9X2dpNyB6YbtxvB6e",
+      "content_sha256": "ba7936d94c84d948a2232088f78228f175df6a8353b2d5bc9228eee5794a0024",
+      "content_size_bytes": 28,
+      "created_at": "2026-03-15T10:00:00Z",
+      "memory_store_id": "memstore_01Wf3kQ8tZxB2mVr7HcJ4aNd",
+      "memory_version_id": "memver_011CZkZBJq5dWxk9fVLNcPht",
+      "path": "/preferences/formatting.md",
+      "type": "memory",
+      "updated_at": "2026-03-15T10:00:00Z",
+      "content": null
+    }
+  ],
+  "next_page": "page_MjAyNS0wNS0xNFQwMDowMDowMFo="
+}
+```

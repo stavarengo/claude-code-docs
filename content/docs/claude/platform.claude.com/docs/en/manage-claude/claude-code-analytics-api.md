@@ -19,7 +19,7 @@ This API enables you to better monitor, analyze, and optimize your Claude Code a
 * **Usage justification:** Provide metrics to justify and expand Claude Code adoption internally
 
 <Check>
-  **Admin API credentials required.** These endpoints are part of the Admin API. You can access them using an [Admin API key](https://platform.claude.com/docs/en/manage-claude/admin-api-keys), an OAuth token with the `org:admin` scope, or a personal or service account key that isn't scoped to a workspace; workspace API keys don't work. See [Authentication](https://platform.claude.com/docs/en/manage-claude/admin-api#authentication) for details.
+  **Admin API credentials required.** These endpoints are part of the Admin API. You can access them using an [Admin API key](https://platform.claude.com/docs/en/manage-claude/admin-api-keys?sdk_languages=cli), an OAuth token with the `org:admin` scope, or a personal or service account key that isn't scoped to a workspace; workspace API keys don't work. See [Authentication](https://platform.claude.com/docs/en/manage-claude/admin-api?sdk_languages=cli#authentication) for details.
 </Check>
 
 <Note>
@@ -27,7 +27,7 @@ This API enables you to better monitor, analyze, and optimize your Claude Code a
 </Note>
 
 <Note>
-  **Claude Enterprise organizations:** Claude Code activity for claude.ai users is reported by the Claude Enterprise Analytics API, which uses an Analytics API key instead of an Admin API key. See [Analytics APIs](https://platform.claude.com/docs/en/manage-claude/analytics-api) to find which API and key type your organization needs.
+  **Claude Enterprise organizations:** Claude Code activity for claude.ai users is reported by the Claude Enterprise Analytics API, which uses an Analytics API key instead of an Admin API key. See [Analytics APIs](https://platform.claude.com/docs/en/manage-claude/analytics-api?sdk_languages=cli) to find which API and key type your organization needs.
 </Note>
 
 ## Quick start
@@ -65,7 +65,7 @@ Track Claude Code usage, productivity metrics, and developer activity across you
 * **Cursor-based pagination:** Handle large datasets with stable pagination using opaque cursors
 * **Data freshness:** Metrics are available with up to 1-hour delay for consistency
 
-For complete parameter details and response schemas, see the [Claude Code Analytics API reference](https://platform.claude.com/docs/en/api/beta/organization/usage_report/retrieve_claude_code).
+For complete parameter details and response schemas, see the [Claude Code Analytics API reference](https://platform.claude.com/docs/en/api/beta/organization/usage_report/retrieve_claude_code?sdk_languages=cli).
 
 ### Basic examples
 
@@ -252,7 +252,7 @@ Historical Claude Code analytics data is retained and accessible through the API
 
 ### Which Claude Code deployments are supported?
 
-This API only tracks Claude Code usage on the Claude API. Usage through [Claude in Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock), [Claude in Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry), [Claude on Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai), or [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws) is not included.
+This API only tracks Claude Code usage on the Claude API. Usage through [Claude in Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock?sdk_languages=cli), [Claude in Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli), [Claude on Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai?sdk_languages=cli), or [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli) is not included.
 
 ### What does it cost to use this API?
 
@@ -270,10 +270,10 @@ All dates are in UTC. The `starting_at` parameter should be in YYYY-MM-DD format
 
 The Claude Code Analytics API helps you understand and optimize your team's development workflow. Learn more about related features:
 
-* [Admin API](https://platform.claude.com/docs/en/manage-claude/admin-api)
-* [Admin API reference](https://platform.claude.com/docs/en/api/beta/organization)
+* [Admin API](https://platform.claude.com/docs/en/manage-claude/admin-api?sdk_languages=cli)
+* [Admin API reference](https://platform.claude.com/docs/en/api/beta/organization?sdk_languages=cli)
 * [Claude Code Analytics dashboard](https://platform.claude.com/claude-code)
-* [Usage and Cost API](https://platform.claude.com/docs/en/manage-claude/usage-cost-api) - Track API usage across all Anthropic services
-* [Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api) - Retrieve audit and activity data
+* [Usage and Cost API](https://platform.claude.com/docs/en/manage-claude/usage-cost-api?sdk_languages=cli) - Track API usage across all Anthropic services
+* [Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api?sdk_languages=cli) - Retrieve audit and activity data
 * [Identity and access management](https://code.claude.com/docs/en/iam)
 * [Monitoring usage with OpenTelemetry](https://code.claude.com/docs/en/monitoring-usage) for custom metrics and alerting

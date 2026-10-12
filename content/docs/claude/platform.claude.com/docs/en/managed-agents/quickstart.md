@@ -5,7 +5,7 @@ description: Create your first autonomous agent.
 featureMetadata:
   topic:
     title: Managed Agents
-    url: https://platform.claude.com/docs/en/managed-agents/overview
+    url: https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli
   status: beta
   betaHeader: managed-agents-2026-04-01
 ---
@@ -137,37 +137,6 @@ export ANTHROPIC_API_KEY="your-api-key-here"
 
     <CodeGroup defaultLanguage="CLI">
       <CodeGroupItem>
-        ```bash cURL
-        set -euo pipefail
-
-        agent=$(
-          curl -sS --fail-with-body https://api.anthropic.com/v1/agents \
-            -H "x-api-key: $ANTHROPIC_API_KEY" \
-            -H "anthropic-version: 2023-06-01" \
-            -H "anthropic-beta: managed-agents-2026-04-01" \
-            -H "content-type: application/json" \
-            -d @- <<'EOF'
-        {
-          "name": "Coding Assistant",
-          "model": "claude-opus-5-5",
-          "system": "You are a helpful coding assistant. Write clean, well-documented code.",
-          "tools": [
-            {"type": "agent_toolset_20260401"}
-          ]
-        }
-        EOF
-        )
-
-        AGENT_ID=$(jq -er '.id' <<<"$agent")
-        AGENT_VERSION=$(jq -er '.version' <<<"$agent")
-
-        echo "Agent ID: $AGENT_ID, version: $AGENT_VERSION"
-        ```
-
-        Save the returned `agent.id`. You'll reference it in every session you create.
-      </CodeGroupItem>
-
-      <CodeGroupItem>
         ```bash CLI
         ant apply coding-assistant.md
         ```
@@ -185,225 +154,17 @@ export ANTHROPIC_API_KEY="your-api-key-here"
           ```
         </File>
 
-        [`ant apply`](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/apply) prints the agent's ID and records it in `claude-lock.json`. You'll reference it in every session you create.
-      </CodeGroupItem>
-
-      <CodeGroupItem>
-        ```python Python
-        from anthropic import Anthropic
-
-        client = Anthropic()
-
-        agent = client.beta.agents.create(
-            name="Coding Assistant",
-            model="claude-opus-5-5",
-            system="You are a helpful coding assistant. Write clean, well-documented code.",
-            tools=[
-                {"type": "agent_toolset_20260401"},
-            ],
-        )
-
-        print(f"Agent ID: {agent.id}, version: {agent.version}")
-        ```
-
-        Save the returned `agent.id`. You'll reference it in every session you create.
-      </CodeGroupItem>
-
-      <CodeGroupItem>
-        ```typescript TypeScript
-        import Anthropic from "@anthropic-ai/sdk";
-
-        const client = new Anthropic();
-
-        const agent = await client.beta.agents.create({
-          name: "Coding Assistant",
-          model: "claude-opus-5-5",
-          system: "You are a helpful coding assistant. Write clean, well-documented code.",
-          tools: [
-            { type: "agent_toolset_20260401" },
-          ],
-        });
-
-        console.log(`Agent ID: ${agent.id}, version: ${agent.version}`);
-        ```
-
-        Save the returned `agent.id`. You'll reference it in every session you create.
-      </CodeGroupItem>
-
-      <CodeGroupItem>
-        ```csharp C#
-        using Anthropic;
-        using Anthropic.Models.Beta.Agents;
-        using Anthropic.Models.Beta.Environments;
-        using Anthropic.Models.Beta.Sessions;
-        using Anthropic.Models.Beta.Sessions.Events;
-
-        var client = new AnthropicClient();
-
-        var agent = await client.Beta.Agents.Create(new()
-        {
-            Name = "Coding Assistant",
-            Model = BetaManagedAgentsModel.ClaudeOpus5_5,
-            System = "You are a helpful coding assistant. Write clean, well-documented code.",
-            Tools =
-            [
-                new BetaManagedAgentsAgentToolset20260401Params
-                {
-                    Type = "agent_toolset_20260401",
-                },
-            ],
-        });
-
-        Console.WriteLine($"Agent ID: {agent.ID}, version: {agent.Version}");
-        ```
-
-        Save the returned `agent.id`. You'll reference it in every session you create.
-      </CodeGroupItem>
-
-      <CodeGroupItem>
-        ```go Go
-        package main
-
-        import (
-        	"context"
-        	"fmt"
-
-        	"github.com/anthropics/anthropic-sdk-go"
-        )
-
-        func main() {
-        	client := anthropic.NewClient()
-        	ctx := context.Background()
-
-        	agent, err := client.Beta.Agents.New(ctx, anthropic.BetaAgentNewParams{
-        		Name: "Coding Assistant",
-        		Model: anthropic.BetaManagedAgentsModelConfigParams{
-        			ID: anthropic.BetaManagedAgentsModelClaudeOpus5_5,
-        		},
-        		System: anthropic.String("You are a helpful coding assistant. Write clean, well-documented code."),
-        		Tools: []anthropic.BetaAgentNewParamsToolUnion{{
-        			OfAgentToolset20260401: &anthropic.BetaManagedAgentsAgentToolset20260401Params{
-        				Type: anthropic.BetaManagedAgentsAgentToolset20260401ParamsTypeAgentToolset20260401,
-        			},
-        		}},
-        	})
-        	if err != nil {
-        		panic(err)
-        	}
-
-        	fmt.Printf("Agent ID: %s, version: %d\n", agent.ID, agent.Version)
-        ```
-
-        Save the returned `agent.id`. You'll reference it in every session you create.
-      </CodeGroupItem>
-
-      <CodeGroupItem>
-        ```java Java
-        import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-        import com.anthropic.models.beta.agents.AgentCreateParams;
-        import com.anthropic.models.beta.agents.BetaManagedAgentsAgentToolset20260401Params;
-        import com.anthropic.models.beta.agents.BetaManagedAgentsModel;
-        import com.anthropic.models.beta.environments.BetaCloudConfigParams;
-        import com.anthropic.models.beta.environments.BetaLimitedNetworkParams;
-        import com.anthropic.models.beta.environments.EnvironmentCreateParams;
-        import com.anthropic.models.beta.sessions.SessionCreateParams;
-        import com.anthropic.models.beta.sessions.events.BetaManagedAgentsStreamSessionEvents;
-        import com.anthropic.models.beta.sessions.events.BetaManagedAgentsUserMessageEventParams;
-        import com.anthropic.models.beta.sessions.events.EventSendParams;
-
-        void main() {
-            var client = AnthropicOkHttpClient.fromEnv();
-
-            var agent = client.beta().agents().create(AgentCreateParams.builder()
-                .name("Coding Assistant")
-                .model(BetaManagedAgentsModel.CLAUDE_OPUS_5_5)
-                .system("You are a helpful coding assistant. Write clean, well-documented code.")
-                .addTool(BetaManagedAgentsAgentToolset20260401Params.builder()
-                    .type(BetaManagedAgentsAgentToolset20260401Params.Type.AGENT_TOOLSET_20260401)
-                    .build())
-                .build());
-
-            IO.println("Agent ID: " + agent.id() + ", version: " + agent.version());
-        ```
-
-        Save the returned `agent.id`. You'll reference it in every session you create.
-      </CodeGroupItem>
-
-      <CodeGroupItem>
-        ```php PHP
-        use Anthropic\Client;
-
-        $client = new Client();
-
-        $agent = $client->beta->agents->create(
-            name: 'Coding Assistant',
-            model: 'claude-opus-5-5',
-            system: 'You are a helpful coding assistant. Write clean, well-documented code.',
-            tools: [
-                ['type' => 'agent_toolset_20260401'],
-            ],
-        );
-
-        echo "Agent ID: {$agent->id}, version: {$agent->version}\n";
-        ```
-
-        Save the returned `agent.id`. You'll reference it in every session you create.
-      </CodeGroupItem>
-
-      <CodeGroupItem>
-        ```ruby Ruby
-        require "anthropic"
-
-        client = Anthropic::Client.new
-
-        agent = client.beta.agents.create(
-          name: "Coding Assistant",
-          model: "claude-opus-5-5",
-          system_: "You are a helpful coding assistant. Write clean, well-documented code.",
-          tools: [{type: "agent_toolset_20260401"}]
-        )
-
-        puts "Agent ID: #{agent.id}, version: #{agent.version}"
-        ```
-
-        Save the returned `agent.id`. You'll reference it in every session you create.
+        [`ant apply`](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/apply?sdk_languages=cli) prints the agent's ID and records it in `claude-lock.json`. You'll reference it in every session you create.
       </CodeGroupItem>
     </CodeGroup>
 
-    The `agent_toolset_20260401` tool type enables the full set of pre-built agent tools (bash, file operations, web search, and more). See [Tools](https://platform.claude.com/docs/en/managed-agents/tools) for the complete list and per-tool configuration options.
+    The `agent_toolset_20260401` tool type enables the full set of pre-built agent tools (bash, file operations, web search, and more). See [Tools](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli) for the complete list and per-tool configuration options.
   </Step>
 
   <Step title="Create an environment">
-    An environment defines the sandbox where your agent runs. This one uses `limited` [networking](https://platform.claude.com/docs/en/managed-agents/environments#networking) with package managers allowed, so code running in the sandbox can reach public [package registries and code hosts](https://platform.claude.com/docs/en/managed-agents/environments#package-manager-hosts). Web search and web fetch run outside the sandbox, and this quickstart does not need them. With `limited` networking, the [`allowed_hosts` list](https://platform.claude.com/docs/en/managed-agents/environments#networking) applies to them too. They return no pages or search results in this environment, because it lists no hosts. For your own agent, list the hosts it needs in `allowed_hosts`.
+    An environment defines the sandbox where your agent runs. This one uses `limited` [networking](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli#networking) with package managers allowed, so code running in the sandbox can reach public [package registries and code hosts](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli#package-manager-hosts). Web search and web fetch run outside the sandbox, and this quickstart does not need them. With `limited` networking, the [`allowed_hosts` list](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli#networking) applies to them too. They return no pages or search results in this environment, because it lists no hosts. For your own agent, list the hosts it needs in `allowed_hosts`.
 
     <CodeGroup defaultLanguage="CLI">
-      <CodeGroupItem>
-        ```bash cURL
-        environment=$(
-          curl -sS --fail-with-body https://api.anthropic.com/v1/environments \
-            -H "x-api-key: $ANTHROPIC_API_KEY" \
-            -H "anthropic-version: 2023-06-01" \
-            -H "anthropic-beta: managed-agents-2026-04-01" \
-            -H "content-type: application/json" \
-            -d @- <<'EOF'
-        {
-          "name": "quickstart-env",
-          "config": {
-            "type": "cloud",
-            "networking": {"type": "limited", "allow_package_managers": true}
-          }
-        }
-        EOF
-        )
-
-        ENVIRONMENT_ID=$(jq -er '.id' <<<"$environment")
-
-        echo "Environment ID: $ENVIRONMENT_ID"
-        ```
-
-        Save the returned `environment.id` too.
-      </CodeGroupItem>
-
       <CodeGroupItem>
         ```bash CLI
         ant apply environment.yaml
@@ -421,133 +182,14 @@ export ANTHROPIC_API_KEY="your-api-key-here"
           ```
         </File>
 
-        [`ant apply`](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/apply) records the environment's ID in `claude-lock.json` too. To create the agent and the environment with one command, pass both files: `ant apply coding-assistant.md environment.yaml`.
-      </CodeGroupItem>
-
-      <CodeGroupItem>
-        ```python Python
-        environment = client.beta.environments.create(
-            name="quickstart-env",
-            config={
-                "type": "cloud",
-                "networking": {"type": "limited", "allow_package_managers": True},
-            },
-        )
-
-        print(f"Environment ID: {environment.id}")
-        ```
-
-        Save the returned `environment.id` too.
-      </CodeGroupItem>
-
-      <CodeGroupItem>
-        ```typescript TypeScript
-        const environment = await client.beta.environments.create({
-          name: "quickstart-env",
-          config: {
-            type: "cloud",
-            networking: { type: "limited", allow_package_managers: true },
-          },
-        });
-
-        console.log(`Environment ID: ${environment.id}`);
-        ```
-
-        Save the returned `environment.id` too.
-      </CodeGroupItem>
-
-      <CodeGroupItem>
-        ```csharp C#
-        var environment = await client.Beta.Environments.Create(new()
-        {
-            Name = "quickstart-env",
-            Config = new BetaCloudConfigParams
-            {
-                Networking = new BetaLimitedNetworkParams { AllowPackageManagers = true },
-            },
-        });
-
-        Console.WriteLine($"Environment ID: {environment.ID}");
-        ```
-
-        Save the returned `environment.id` too.
-      </CodeGroupItem>
-
-      <CodeGroupItem>
-        ```go Go
-        environment, err := client.Beta.Environments.New(ctx, anthropic.BetaEnvironmentNewParams{
-        	Name: "quickstart-env",
-        	Config: anthropic.BetaEnvironmentNewParamsConfigUnion{
-        		OfCloud: &anthropic.BetaCloudConfigParams{
-        			Networking: anthropic.BetaCloudConfigParamsNetworkingUnion{
-        				OfLimited: &anthropic.BetaLimitedNetworkParams{
-        					AllowPackageManagers: anthropic.Bool(true),
-        				},
-        			},
-        		},
-        	},
-        })
-        if err != nil {
-        	panic(err)
-        }
-
-        fmt.Printf("Environment ID: %s\n", environment.ID)
-        ```
-
-        Save the returned `environment.id` too.
-      </CodeGroupItem>
-
-      <CodeGroupItem>
-        ```java Java
-        var environment = client.beta().environments().create(EnvironmentCreateParams.builder()
-            .name("quickstart-env")
-            .config(BetaCloudConfigParams.builder()
-                .networking(BetaLimitedNetworkParams.builder()
-                    .allowPackageManagers(true)
-                    .build())
-                .build())
-            .build());
-
-        IO.println("Environment ID: " + environment.id());
-        ```
-
-        Save the returned `environment.id` too.
-      </CodeGroupItem>
-
-      <CodeGroupItem>
-        ```php PHP
-        $environment = $client->beta->environments->create(
-            name: 'quickstart-env',
-            config: [
-                'type' => 'cloud',
-                'networking' => ['type' => 'limited', 'allow_package_managers' => true],
-            ],
-        );
-
-        echo "Environment ID: {$environment->id}\n";
-        ```
-
-        Save the returned `environment.id` too.
-      </CodeGroupItem>
-
-      <CodeGroupItem>
-        ```ruby Ruby
-        environment = client.beta.environments.create(
-          name: "quickstart-env",
-          config: {type: "cloud", networking: {type: "limited", allow_package_managers: true}}
-        )
-
-        puts "Environment ID: #{environment.id}"
-        ```
-
-        Save the returned `environment.id` too.
+        [`ant apply`](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/apply?sdk_languages=cli) records the environment's ID in `claude-lock.json` too. To create the agent and the environment with one command, pass both files: `ant apply coding-assistant.md environment.yaml`.
       </CodeGroupItem>
     </CodeGroup>
 
     <Tip>
       To run the sandbox on your own infrastructure instead of a cloud sandbox, see 
 
-      [Self-hosted sandboxes](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes)
+      [Self-hosted sandboxes](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes?sdk_languages=cli)
 
       .
     </Tip>
@@ -557,27 +199,6 @@ export ANTHROPIC_API_KEY="your-api-key-here"
     Create a session that references your agent and environment.
 
     <CodeGroup>
-      ```bash cURL
-      session=$(
-        curl -sS --fail-with-body https://api.anthropic.com/v1/sessions \
-          -H "x-api-key: $ANTHROPIC_API_KEY" \
-          -H "anthropic-version: 2023-06-01" \
-          -H "anthropic-beta: managed-agents-2026-04-01" \
-          -H "content-type: application/json" \
-          -d @- <<EOF
-      {
-        "agent": "$AGENT_ID",
-        "environment_id": "$ENVIRONMENT_ID",
-        "title": "Quickstart session"
-      }
-      EOF
-      )
-
-      SESSION_ID=$(jq -er '.id' <<<"$session")
-
-      echo "Session ID: $SESSION_ID"
-      ```
-
       ```bash CLI
       SESSION_ID=$(ant beta:sessions create \
         --agent "$AGENT_ID" \
@@ -587,80 +208,6 @@ export ANTHROPIC_API_KEY="your-api-key-here"
 
       echo "Session ID: $SESSION_ID"
       ```
-
-      ```python Python
-      session = client.beta.sessions.create(
-          agent=agent.id,
-          environment_id=environment.id,
-          title="Quickstart session",
-      )
-
-      print(f"Session ID: {session.id}")
-      ```
-
-      ```typescript TypeScript
-      const session = await client.beta.sessions.create({
-        agent: agent.id,
-        environment_id: environment.id,
-        title: "Quickstart session",
-      });
-
-      console.log(`Session ID: ${session.id}`);
-      ```
-
-      ```csharp C#
-      var session = await client.Beta.Sessions.Create(new()
-      {
-          Agent = agent.ID,
-          EnvironmentID = environment.ID,
-          Title = "Quickstart session",
-      });
-
-      Console.WriteLine($"Session ID: {session.ID}");
-      ```
-
-      ```go Go
-      session, err := client.Beta.Sessions.New(ctx, anthropic.BetaSessionNewParams{
-      	Agent:         anthropic.BetaSessionNewParamsAgentUnion{OfString: anthropic.String(agent.ID)},
-      	EnvironmentID: environment.ID,
-      	Title:         anthropic.String("Quickstart session"),
-      })
-      if err != nil {
-      	panic(err)
-      }
-
-      fmt.Printf("Session ID: %s\n", session.ID)
-      ```
-
-      ```java Java
-      var session = client.beta().sessions().create(SessionCreateParams.builder()
-          .agent(agent.id())
-          .environmentId(environment.id())
-          .title("Quickstart session")
-          .build());
-
-      IO.println("Session ID: " + session.id());
-      ```
-
-      ```php PHP
-      $session = $client->beta->sessions->create(
-          agent: $agent->id,
-          environmentID: $environment->id,
-          title: 'Quickstart session',
-      );
-
-      echo "Session ID: {$session->id}\n";
-      ```
-
-      ```ruby Ruby
-      session = client.beta.sessions.create(
-        agent: agent.id,
-        environment_id: environment.id,
-        title: "Quickstart session"
-      )
-
-      puts "Session ID: #{session.id}"
-      ```
     </CodeGroup>
   </Step>
 
@@ -668,262 +215,9 @@ export ANTHROPIC_API_KEY="your-api-key-here"
     Open a stream, send a user event, then process events as they arrive:
 
     <CodeGroup>
-      ```bash cURL
-      # This workflow does not translate well to a one-off shell command.
-      # Use one of the SDK examples in this code group instead.
-      ```
-
       ```bash CLI
       # This workflow does not translate well to a one-off shell command.
       # Use one of the SDK examples in this code group instead.
-      ```
-
-      ```python Python
-      with client.beta.sessions.events.stream(session.id) as stream:
-          # Send the user message after the stream opens
-          client.beta.sessions.events.send(
-              session.id,
-              events=[
-                  {
-                      "type": "user.message",
-                      "content": [
-                          {
-                              "type": "text",
-                              "text": "Create a Python script that generates the first 20 Fibonacci numbers and saves them to fibonacci.txt",
-                          },
-                      ],
-                  },
-              ],
-          )
-
-          # Process streaming events
-          for event in stream:
-              match event.type:
-                  case "agent.message":
-                      for block in event.content:
-                          if block.type == "text":
-                              print(block.text, end="")
-                  case "agent.tool_use":
-                      print(f"\n[Using tool: {event.name}]")
-                  case "session.status_idle":
-                      print("\n\nAgent finished.")
-                      break
-      ```
-
-      ```typescript TypeScript
-      const stream = await client.beta.sessions.events.stream(session.id);
-
-      // Send the user message after the stream opens
-      await client.beta.sessions.events.send(session.id, {
-        events: [
-          {
-            type: "user.message",
-            content: [
-              {
-                type: "text",
-                text: "Create a Python script that generates the first 20 Fibonacci numbers and saves them to fibonacci.txt",
-              },
-            ],
-          },
-        ],
-      });
-
-      // Process streaming events
-      loop: for await (const event of stream) {
-        switch (event.type) {
-          case "agent.message":
-            for (const block of event.content) {
-              if (block.type === "text") {
-                process.stdout.write(block.text);
-              }
-            }
-            break;
-          case "agent.tool_use":
-            console.log(`\n[Using tool: ${event.name}]`);
-            break;
-          case "session.status_idle":
-            console.log("\n\nAgent finished.");
-            break loop;
-        }
-      }
-      ```
-
-      ```csharp C#
-      var stream = client.Beta.Sessions.Events.StreamStreaming(session.ID);
-
-      // Send the user message after the stream opens
-      await client.Beta.Sessions.Events.Send(session.ID, new()
-      {
-          Events =
-          [
-              new BetaManagedAgentsUserMessageEventParams
-              {
-                  Type = "user.message",
-                  Content =
-                  [
-                      new BetaManagedAgentsTextBlock
-                      {
-                          Type = "text",
-                          Text = "Create a Python script that generates the first 20 Fibonacci numbers and saves them to fibonacci.txt",
-                      },
-                  ],
-              },
-          ],
-      });
-
-      // Process streaming events
-      await foreach (var ev in stream)
-      {
-          if (ev.Value is BetaManagedAgentsAgentMessageEvent message)
-          {
-              foreach (var block in message.Content)
-              {
-                  if (block.Value is BetaManagedAgentsTextBlock textBlock)
-                  {
-                      Console.Write(textBlock.Text);
-                  }
-              }
-          }
-          else if (ev.Value is BetaManagedAgentsAgentToolUseEvent toolUse)
-          {
-              Console.WriteLine($"\n[Using tool: {toolUse.Name}]");
-          }
-          else if (ev.Value is BetaManagedAgentsSessionStatusIdleEvent)
-          {
-              Console.WriteLine("\n\nAgent finished.");
-              break;
-          }
-      }
-      ```
-
-      ```go Go
-      	stream := client.Beta.Sessions.Events.StreamEvents(ctx, session.ID, anthropic.BetaSessionEventStreamParams{})
-      	defer stream.Close()
-
-      	// Send the user message after the stream opens
-      	_, err = client.Beta.Sessions.Events.Send(ctx, session.ID, anthropic.BetaSessionEventSendParams{
-      		Events: []anthropic.BetaManagedAgentsEventParamsUnion{{
-      			OfUserMessage: &anthropic.BetaManagedAgentsUserMessageEventParams{
-      				Type: anthropic.BetaManagedAgentsUserMessageEventParamsTypeUserMessage,
-      				Content: []anthropic.BetaManagedAgentsUserMessageEventParamsContentUnion{{
-      					OfText: &anthropic.BetaManagedAgentsTextBlockParam{
-      						Type: anthropic.BetaManagedAgentsTextBlockTypeText,
-      						Text: "Create a Python script that generates the first 20 Fibonacci numbers and saves them to fibonacci.txt",
-      					},
-      				}},
-      			},
-      		}},
-      	})
-      	if err != nil {
-      		panic(err)
-      	}
-
-      	// Process streaming events
-      loop:
-      	for stream.Next() {
-      		switch event := stream.Current().AsAny().(type) {
-      		case anthropic.BetaManagedAgentsAgentMessageEvent:
-      			for _, block := range event.Content {
-      				if block.Type == "text" {
-      					fmt.Print(block.Text)
-      				}
-      			}
-      		case anthropic.BetaManagedAgentsAgentToolUseEvent:
-      			fmt.Printf("\n[Using tool: %s]\n", event.Name)
-      		case anthropic.BetaManagedAgentsSessionStatusIdleEvent:
-      			fmt.Print("\n\nAgent finished.\n")
-      			break loop
-      		}
-      	}
-      	if err := stream.Err(); err != nil {
-      		panic(err)
-      	}
-      ```
-
-      ```java Java
-      try (var stream = client.beta().sessions().events().streamStreaming(session.id())) {
-          // Send the user message after the stream opens
-          client.beta().sessions().events().send(session.id(), EventSendParams.builder()
-              .addEvent(BetaManagedAgentsUserMessageEventParams.builder()
-                  .type(BetaManagedAgentsUserMessageEventParams.Type.USER_MESSAGE)
-                  .addTextContent("Create a Python script that generates the first 20 Fibonacci numbers and saves them to fibonacci.txt")
-                  .build())
-              .build());
-
-          // Process streaming events
-          loop:
-          for (var event : (Iterable<BetaManagedAgentsStreamSessionEvents>) stream.stream()::iterator) {
-              switch (event.type().value()) {
-                  case AGENT_MESSAGE -> event.asAgentMessage().content().forEach(block -> block.text().ifPresent(textBlock -> IO.print(textBlock.text())));
-                  case AGENT_TOOL_USE -> IO.println("\n[Using tool: " + event.asAgentToolUse().name() + "]");
-                  case SESSION_STATUS_IDLE -> {
-                      IO.println("\n\nAgent finished.");
-                      break loop;
-                  }
-              }
-          }
-      }
-      ```
-
-      ```php PHP
-      $stream = $client->beta->sessions->events->streamStream($session->id);
-
-      // Send the user message after the stream opens
-      $client->beta->sessions->events->send(
-          $session->id,
-          events: [
-              [
-                  'type' => 'user.message',
-                  'content' => [
-                      ['type' => 'text', 'text' => 'Create a Python script that generates the first 20 Fibonacci numbers and saves them to fibonacci.txt'],
-                  ],
-              ],
-          ],
-      );
-
-      // Process streaming events
-      foreach ($stream as $event) {
-          match (true) {
-              $event instanceof \Anthropic\Beta\Sessions\Events\ManagedAgentsAgentMessageEvent => array_walk(
-                  $event->content,
-                  static fn ($block) => $block instanceof \Anthropic\Beta\Sessions\Events\ManagedAgentsTextBlock ? print($block->text) : null,
-              ),
-              $event instanceof \Anthropic\Beta\Sessions\Events\ManagedAgentsAgentToolUseEvent => print("\n[Using tool: {$event->name}]\n"),
-              $event instanceof \Anthropic\Beta\Sessions\Events\ManagedAgentsSessionStatusIdleEvent => print("\n\nAgent finished.\n"),
-              default => null,
-          };
-          if ($event->type === 'session.status_idle') {
-              break;
-          }
-      }
-      ```
-
-      ```ruby Ruby
-      stream = client.beta.sessions.events.stream_events(session.id)
-
-      # Send the user message after the stream opens
-      client.beta.sessions.events.send_(
-        session.id,
-        events: [{
-          type: "user.message",
-          content: [{type: "text", text: "Create a Python script that generates the first 20 Fibonacci numbers and saves them to fibonacci.txt"}]
-        }]
-      )
-
-      # Process streaming events
-      stream.each do |event|
-        case event
-        when Anthropic::Beta::Sessions::BetaManagedAgentsAgentMessageEvent
-          event.content.each { print it.text if it.is_a?(Anthropic::Beta::Sessions::BetaManagedAgentsTextBlock) }
-        when Anthropic::Beta::Sessions::BetaManagedAgentsAgentToolUseEvent
-          puts "\n[Using tool: #{event.name}]"
-        when Anthropic::Beta::Sessions::BetaManagedAgentsSessionStatusIdleEvent
-          puts "\n\nAgent finished."
-          break
-        else
-          # ignore other event types
-        end
-      end
       ```
     </CodeGroup>
 
@@ -973,23 +267,23 @@ Each of these quickstarts pairs Claude Managed Agents with a popular chat framew
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Define your agent" icon="brain" href="https://platform.claude.com/docs/en/managed-agents/agent-setup">
+  <Card title="Define your agent" icon="brain" href="https://platform.claude.com/docs/en/managed-agents/agent-setup?sdk_languages=cli">
     Create reusable, versioned agent configurations
   </Card>
 
-  <Card title="Configure environments" icon="settings" href="https://platform.claude.com/docs/en/managed-agents/environments">
+  <Card title="Configure environments" icon="settings" href="https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli">
     Customize networking and sandbox settings
   </Card>
 
-  <Card title="Agent tools" icon="tool" href="https://platform.claude.com/docs/en/managed-agents/tools">
+  <Card title="Agent tools" icon="tool" href="https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli">
     Enable specific tools for your agent
   </Card>
 
-  <Card title="Session event stream" icon="lightning" href="https://platform.claude.com/docs/en/managed-agents/events-and-streaming">
+  <Card title="Session event stream" icon="lightning" href="https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli">
     Handle events and steer the agent mid-execution
   </Card>
 
-  <Card title="Scheduled deployments" icon="arrows-clockwise" href="https://platform.claude.com/docs/en/managed-agents/scheduled-deployments">
+  <Card title="Scheduled deployments" icon="arrows-clockwise" href="https://platform.claude.com/docs/en/managed-agents/scheduled-deployments?sdk_languages=cli">
     Run your agent on a recurring cron schedule
   </Card>
 

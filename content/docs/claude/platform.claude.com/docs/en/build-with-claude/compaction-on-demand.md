@@ -41,30 +41,11 @@ From then on the block takes the place of the messages it summarizes. It goes fi
 
 ## Request a summary
 
-Send the `compact-2026-09-04` beta header on the request that asks for the summary and on every later request that carries the signed block. To check whether a model supports on-demand compaction, call the [Models API](https://platform.claude.com/docs/en/api/beta/models/list) with the beta header and read each model's `capabilities.compaction`. You can't combine `compaction` with `context_management` on one request.
+Send the `compact-2026-09-04` beta header on the request that asks for the summary and on every later request that carries the signed block. To check whether a model supports on-demand compaction, call the [Models API](https://platform.claude.com/docs/en/api/beta/models/list?sdk_languages=cli) with the beta header and read each model's `capabilities.compaction`. You can't combine `compaction` with `context_management` on one request.
 
-Send the conversation as it stands with `"compaction": {"type": "summarize"}`. The API summarizes every message in the request once, generates no reply after it, and returns the block alone with `stop_reason` `"compaction"`. Send the same `system` prompt and `tools` that you use for the rest of the conversation. The summarizer reads them, and if you keep turns after the block on a model with [preserved thinking](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking), the thinking in those turns stays valid only if `system` and `tools` match. The conversation in this example has no `system` prompt or tools, so the request sends neither:
+Send the conversation as it stands with `"compaction": {"type": "summarize"}`. The API summarizes every message in the request once, generates no reply after it, and returns the block alone with `stop_reason` `"compaction"`. Send the same `system` prompt and `tools` that you use for the rest of the conversation. The summarizer reads them, and if you keep turns after the block on a model with [preserved thinking](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking?sdk_languages=cli), the thinking in those turns stays valid only if `system` and `tools` match. The conversation in this example has no `system` prompt or tools, so the request sends neither:
 
 <CodeGroup>
-  ```bash cURL
-  # max_tokens caps the whole call, including any thinking, so allow several thousand tokens.
-  curl https://api.anthropic.com/v1/messages \
-    -H "x-api-key: $ANTHROPIC_API_KEY" \
-    -H "anthropic-version: 2023-06-01" \
-    -H "anthropic-beta: compact-2026-09-04" \
-    -H "content-type: application/json" \
-    -d '{
-      "model": "claude-opus-5-5",
-      "max_tokens": 4096,
-      "messages": [
-        {"role": "user", "content": "I am building a recipe app. Help me name the main entities in the data model."},
-        {"role": "assistant", "content": "Start with Recipe, Ingredient, and Step. Add a RecipeIngredient entry that holds the quantity and unit for each ingredient in a recipe."},
-        {"role": "user", "content": "Good. Now suggest field names for Recipe."}
-      ],
-      "compaction": {"type": "summarize"}
-    }'
-  ```
-
   ```bash CLI
   ant beta:messages create --beta compact-2026-09-04 <<'YAML'
   model: claude-opus-5-5
@@ -80,206 +61,6 @@ Send the conversation as it stands with `"compaction": {"type": "summarize"}`. T
   compaction:
     type: summarize
   YAML
-  ```
-
-  ```python Python
-  from anthropic.types.beta import BetaMessageParam
-
-  client = anthropic.Anthropic()
-
-  history: list[BetaMessageParam] = [
-      {
-          "role": "user",
-          "content": "I am building a recipe app. Help me name the main entities in the data model.",
-      },
-      {
-          "role": "assistant",
-          "content": "Start with Recipe, Ingredient, and Step. Add a RecipeIngredient entry that holds the quantity and unit for each ingredient in a recipe.",
-      },
-      {"role": "user", "content": "Good. Now suggest field names for Recipe."},
-  ]
-
-  response = client.beta.messages.create(
-      model="claude-opus-5-5",
-      # max_tokens caps the whole call, including any thinking, so allow several thousand tokens.
-      max_tokens=4096,
-      betas=["compact-2026-09-04"],
-      messages=history,
-      compaction={"type": "summarize"},
-  )
-  print(f"Stop reason: {response.stop_reason}")
-  ```
-
-  ```typescript TypeScript
-  const client = new Anthropic();
-
-  const history: Anthropic.Beta.Messages.BetaMessageParam[] = [
-    {
-      role: "user",
-      content: "I am building a recipe app. Help me name the main entities in the data model."
-    },
-    {
-      role: "assistant",
-      content:
-        "Start with Recipe, Ingredient, and Step. Add a RecipeIngredient entry that holds the quantity and unit for each ingredient in a recipe."
-    },
-    { role: "user", content: "Good. Now suggest field names for Recipe." }
-  ];
-
-  const response = await client.beta.messages.create({
-    model: "claude-opus-5-5",
-    // max_tokens caps the whole call, including any thinking, so allow several thousand tokens.
-    max_tokens: 4096,
-    betas: ["compact-2026-09-04"],
-    messages: history,
-    compaction: { type: "summarize" }
-  });
-  console.log(`Stop reason: ${response.stop_reason}`);
-  ```
-
-  ```csharp C#
-  using Anthropic.Models.Beta;
-  using Anthropic.Models.Beta.Messages;
-  using Model = Anthropic.Models.Messages.Model;
-
-  AnthropicClient client = new();
-
-  List<BetaMessageParam> history =
-  [
-      new()
-      {
-          Role = Role.User,
-          Content = "I am building a recipe app. Help me name the main entities in the data model.",
-      },
-      new()
-      {
-          Role = Role.Assistant,
-          Content = "Start with Recipe, Ingredient, and Step. Add a RecipeIngredient entry that holds the quantity and unit for each ingredient in a recipe.",
-      },
-      new() { Role = Role.User, Content = "Good. Now suggest field names for Recipe." },
-  ];
-
-  var response = await client.Beta.Messages.Create(new MessageCreateParams
-  {
-      Model = Model.ClaudeOpus5_5,
-      // max_tokens caps the whole call, including any thinking, so allow several thousand tokens.
-      MaxTokens = 4096,
-      Betas = [AnthropicBeta.Compact2026_09_04],
-      Messages = history,
-      Compaction = new BetaCompactionConfig(), // type defaults to "summarize"
-  });
-
-  Console.WriteLine($"Stop reason: {response.StopReason?.Raw()}");
-  ```
-
-  ```go Go
-  client := anthropic.NewClient()
-
-  history := []anthropic.BetaMessageParam{
-  	anthropic.NewBetaUserMessage(anthropic.NewBetaTextBlock("I am building a recipe app. Help me name the main entities in the data model.")),
-  	{
-  		Role:    anthropic.BetaMessageParamRoleAssistant,
-  		Content: []anthropic.BetaContentBlockParamUnion{anthropic.NewBetaTextBlock("Start with Recipe, Ingredient, and Step. Add a RecipeIngredient entry that holds the quantity and unit for each ingredient in a recipe.")},
-  	},
-  	anthropic.NewBetaUserMessage(anthropic.NewBetaTextBlock("Good. Now suggest field names for Recipe.")),
-  }
-
-  response, err := client.Beta.Messages.New(context.TODO(), anthropic.BetaMessageNewParams{
-  	Model: anthropic.ModelClaudeOpus5_5,
-  	// max_tokens caps the whole call, including any thinking, so allow several thousand tokens.
-  	MaxTokens: 4096,
-  	Betas:     []anthropic.AnthropicBeta{anthropic.AnthropicBetaCompact2026_09_04},
-  	Messages:  history,
-  	Compaction: anthropic.BetaCompactionConfigUnionParam{
-  		OfSummarize: &anthropic.BetaSummarizeCompactionParam{},
-  	},
-  })
-  if err != nil {
-  	log.Fatal(err)
-  }
-  fmt.Println("Stop reason:", response.StopReason)
-  ```
-
-  ```java Java
-  import com.anthropic.models.beta.AnthropicBeta;
-  import com.anthropic.models.beta.messages.BetaCompactionConfig;
-  import com.anthropic.models.beta.messages.MessageCreateParams;
-
-  void main() {
-      var client = AnthropicOkHttpClient.fromEnv();
-
-      var params = MessageCreateParams.builder()
-          .model(Model.CLAUDE_OPUS_5_5)
-          // max_tokens caps the whole call, including any thinking, so allow several thousand tokens.
-          .maxTokens(4096)
-          .addBeta(AnthropicBeta.COMPACT_2026_09_04)
-          .addUserMessage("I am building a recipe app. Help me name the main entities in the data model.")
-          .addAssistantMessage("Start with Recipe, Ingredient, and Step. Add a RecipeIngredient entry that holds the quantity and unit for each ingredient in a recipe.")
-          .addUserMessage("Good. Now suggest field names for Recipe.")
-          .compaction(BetaCompactionConfig.builder().build()) // type defaults to "summarize"
-          .build();
-
-      var response = client.beta().messages().create(params);
-      response.stopReason().ifPresent(reason -> IO.println("Stop reason: " + reason));
-  }
-  ```
-
-  ```php PHP
-  use Anthropic\Beta\AnthropicBeta;
-  use Anthropic\Beta\Messages\BetaCompactionConfig;
-  use Anthropic\Beta\Messages\BetaMessageParam;
-  use Anthropic\Beta\Messages\BetaMessageParam\Role;
-
-  $client = new Client();
-
-  $history = [
-      BetaMessageParam::with(
-          role: Role::USER,
-          content: 'I am building a recipe app. Help me name the main entities in the data model.',
-      ),
-      BetaMessageParam::with(
-          role: Role::ASSISTANT,
-          content: 'Start with Recipe, Ingredient, and Step. Add a RecipeIngredient entry that holds the quantity and unit for each ingredient in a recipe.',
-      ),
-      BetaMessageParam::with(role: Role::USER, content: 'Good. Now suggest field names for Recipe.'),
-  ];
-
-  $response = $client->beta->messages->create(
-      model: Model::CLAUDE_OPUS_5_5,
-      // max_tokens caps the whole call, including any thinking, so allow several thousand tokens.
-      maxTokens: 4096,
-      betas: [AnthropicBeta::COMPACT_2026_09_04],
-      messages: $history,
-      compaction: BetaCompactionConfig::with(), // type defaults to 'summarize'
-  );
-
-  echo "Stop reason: {$response->stopReason}", PHP_EOL;
-  ```
-
-  ```ruby Ruby
-  client = Anthropic::Client.new
-
-  history = [
-    {
-      role: "user",
-      content: "I am building a recipe app. Help me name the main entities in the data model."
-    },
-    {
-      role: "assistant",
-      content: "Start with Recipe, Ingredient, and Step. Add a RecipeIngredient entry that holds the quantity and unit for each ingredient in a recipe."
-    },
-    { role: "user", content: "Good. Now suggest field names for Recipe." }
-  ]
-
-  response = client.beta.messages.create(
-    model: Anthropic::Model::CLAUDE_OPUS_5_5,
-    # max_tokens caps the whole call, including any thinking, so allow several thousand tokens.
-    max_tokens: 4096,
-    betas: [Anthropic::AnthropicBeta::COMPACT_2026_09_04],
-    messages: history,
-    compaction: { type: "summarize" }
-  )
-  puts "Stop reason: #{response.stop_reason}"
   ```
 </CodeGroup>
 
@@ -305,7 +86,7 @@ Send the conversation as it stands with `"compaction": {"type": "summarize"}`. T
 }
 ```
 
-The summarization call uses the request's model, `system`, `tools`, thinking settings, and `max_tokens`. The summarizer reads the tool definitions but never runs a tool, and the response carries no thinking. `max_tokens` caps the whole call, including any thinking the model does before it writes the summary, so allow several thousand tokens. [Count compaction usage](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand#understanding-usage) shows how the call is billed.
+The summarization call uses the request's model, `system`, `tools`, thinking settings, and `max_tokens`. The summarizer reads the tool definitions but never runs a tool, and the response carries no thinking. `max_tokens` caps the whole call, including any thinking the model does before it writes the summary, so allow several thousand tokens. [Count compaction usage](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand?sdk_languages=cli#understanding-usage) shows how the call is billed.
 
 If the last `assistant` turn ends in a tool call with no result yet, the API rejects the request. Send that turn's tool results first. Also leave out `stop_sequences`, structured-output `output_config.format`, and a `tool_choice` of type `any` or `tool`. They would do nothing on a summarization call, and the API rejects them. The conversation must still fit the model's context window, so compact before you outgrow it, not after.
 
@@ -313,7 +94,7 @@ When you stream the response, the block arrives whole. You get one `content_bloc
 
 ## Continue from the summary
 
-In your history, replace the messages you sent with the returned assistant message. Keep the `compaction` block exactly as the API returned it, including its `signature`. Any turns taken after you sent the compaction request follow the block unchanged, which is what [Compaction in the background](https://platform.claude.com/docs/en/build-with-claude/compaction-background) builds on. Send the block first on every later request, with the beta header:
+In your history, replace the messages you sent with the returned assistant message. Keep the `compaction` block exactly as the API returned it, including its `signature`. Any turns taken after you sent the compaction request follow the block unchanged, which is what [Compaction in the background](https://platform.claude.com/docs/en/build-with-claude/compaction-background?sdk_languages=cli) builds on. Send the block first on every later request, with the beta header:
 
 ```json
 {
@@ -351,11 +132,11 @@ The API puts the summary where the block stands and passes every later message t
   Two mistakes in the swap raise no error. If summarized messages remain after the block, the API sends them to Claude again. If a later request leaves the block out, Claude gets no summary.
 </Warning>
 
-Threshold compaction works the other way around: its block follows the messages it summarizes, and the API drops them for you. See [Passing compaction blocks back](https://platform.claude.com/docs/en/build-with-claude/compaction-threshold#passing-compaction-blocks-back).
+Threshold compaction works the other way around: its block follows the messages it summarizes, and the API drops them for you. See [Passing compaction blocks back](https://platform.claude.com/docs/en/build-with-claude/compaction-threshold?sdk_languages=cli#passing-compaction-blocks-back).
 
 In Python, use `client.beta.messages`, as the samples on this page do. If you call `client.messages` and serialize blocks yourself, use `to_dict()` or `model_dump(exclude_none=True)`: a plain `model_dump()` adds `citations: null` and `text: null` to the block, and the API rejects it.
 
-If you keep turns after the block and send their thinking blocks back, the conditions that keep that thinking valid are on [Compaction and preserved thinking](https://platform.claude.com/docs/en/build-with-claude/compaction-thinking-blocks).
+If you keep turns after the block and send their thinking blocks back, the conditions that keep that thinking valid are on [Compaction and preserved thinking](https://platform.claude.com/docs/en/build-with-claude/compaction-thinking-blocks?sdk_languages=cli).
 
 ### Compact again
 
@@ -763,19 +544,19 @@ After each turn, the loop adds the last response's input and output tokens, beca
   ```
 </CodeGroup>
 
-The check on `stop_reason` comes before the code looks for the block; [Handle a missing summary or an error](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand#when-no-summary-comes-back) says why. The history is replaced, not appended to: the returned message replaces every message the request carried, under the rules in [Continue from the summary](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand#continue-from-the-summary). When no summary comes back, the loop keeps its history and asks again after the next turn.
+The check on `stop_reason` comes before the code looks for the block; [Handle a missing summary or an error](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand?sdk_languages=cli#when-no-summary-comes-back) says why. The history is replaced, not appended to: the returned message replaces every message the request carried, under the rules in [Continue from the summary](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand?sdk_languages=cli#continue-from-the-summary). When no summary comes back, the loop keeps its history and asks again after the next turn.
 
-The SDK [tool runner](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-runner) in Python, TypeScript, C#, Go, Java, PHP, and Ruby can send the compaction request for you. When you decide to compact, call `compact_before_next_turn()` (typescript, java, php: `compactBeforeNextTurn()`; csharp, go: `CompactBeforeNextTurn()`) on the runner. Once the current turn and its tool calls finish, the runner sends the compaction request and replaces its history with the returned message. Create the runner with the `compact-2026-09-04` beta, because the runner doesn't add it.
+The SDK [tool runner](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-runner?sdk_languages=cli) in Python, TypeScript, C#, Go, Java, PHP, and Ruby can send the compaction request for you. When you decide to compact, call `compact_before_next_turn()` on the runner. Once the current turn and its tool calls finish, the runner sends the compaction request and replaces its history with the returned message. Create the runner with the `compact-2026-09-04` beta, because the runner doesn't add it.
 
-The runner builds the compaction request from its own parameters and leaves `context_management` out. It also leaves out `stop_sequences`, a `tool_choice` of type `any` or `tool`, and a structured-output `output_config.format`, which the API rejects on a compaction request. [Request a summary](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand#request-a-summary) explains why. The runner sends them again on its later requests. SDK versions before Python 1.8.0, TypeScript 0.128.0, C# 12.50.0, Go 1.75.0, and Java 2.65.0 send them on the compaction request too. On those versions, a runner that sets any of these parameters gets a 400 error. The runner sends a [task budget](https://platform.claude.com/docs/en/build-with-claude/task-budgets) unchanged. If `output_config.task_budget` sets `remaining`, the compaction request returns a 400 error, so leave `remaining` unset, as [Limits and interactions with other features](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand#how-it-fits-with-the-rest-of-the-api) says. The runner refuses to compact while its `context_management` has a compaction edit, so use one kind of compaction on a runner.
+The runner builds the compaction request from its own parameters and leaves `context_management` out. It also leaves out `stop_sequences`, a `tool_choice` of type `any` or `tool`, and a structured-output `output_config.format`, which the API rejects on a compaction request. [Request a summary](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand?sdk_languages=cli#request-a-summary) explains why. The runner sends them again on its later requests. SDK versions before Python 1.8.0, TypeScript 0.128.0, C# 12.50.0, Go 1.75.0, and Java 2.65.0 send them on the compaction request too. On those versions, a runner that sets any of these parameters gets a 400 error. The runner sends a [task budget](https://platform.claude.com/docs/en/build-with-claude/task-budgets?sdk_languages=cli) unchanged. If `output_config.task_budget` sets `remaining`, the compaction request returns a 400 error, so leave `remaining` unset, as [Limits and interactions with other features](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand?sdk_languages=cli#how-it-fits-with-the-rest-of-the-api) says. The runner refuses to compact while its `context_management` has a compaction edit, so use one kind of compaction on a runner.
 
 ### When to compact
 
 You can send a compaction request after any completed turn, so your code decides when.
 
-To estimate how large the next request will be, add `input_tokens` and `output_tokens` from the last response's `usage`, as the loop does. With [prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#tracking-cache-performance), `input_tokens` counts only the tokens after the last cache breakpoint, so add `cache_read_input_tokens` and `cache_creation_input_tokens` as well. You can also send the same messages to the [token counting](https://platform.claude.com/docs/en/build-with-claude/token-counting) endpoint.
+To estimate how large the next request will be, add `input_tokens` and `output_tokens` from the last response's `usage`, as the loop does. With [prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli#tracking-cache-performance), `input_tokens` counts only the tokens after the last cache breakpoint, so add `cache_read_input_tokens` and `cache_creation_input_tokens` as well. You can also send the same messages to the [token counting](https://platform.claude.com/docs/en/build-with-claude/token-counting?sdk_languages=cli) endpoint.
 
-Compare that number with a limit you choose, below the model's [context window](https://platform.claude.com/docs/en/build-with-claude/context-windows).
+Compare that number with a limit you choose, below the model's [context window](https://platform.claude.com/docs/en/build-with-claude/context-windows?sdk_languages=cli).
 
 ## Write your own summarization prompt
 
@@ -804,35 +585,35 @@ A summary is produced only when the summarization call ends normally with text a
 | `"refusal"`                       | The request was declined.                               | Continue without a summary.                                       |
 | `"end_turn"`                      | The call returned no text.                              | Continue without a summary.                                       |
 
-The summarization call is subject to the same safeguards as your other requests. After a `"refusal"`, [`stop_details`](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons#refusal) identifies the policy category behind it.
+The summarization call is subject to the same safeguards as your other requests. After a `"refusal"`, [`stop_details`](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons?sdk_languages=cli#refusal) identifies the policy category behind it.
 
 ### Errors
 
 A compaction request, or a request that carries a block, can also fail outright. Most 400 errors have a message that says what to remove or resend. Some also carry an `error.details.error_code` that starts with `compaction_`. Parameter errors, such as a field that can't be combined with `compaction`, carry the message only.
 
-| Error                                                                                                                                                                           | Cause                                                                                   | What to do                                                                                                                                                                          |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 529 `overloaded_error`, `error.details.error_code` `compaction_unavailable`                                                                                                     | A transient server problem while producing a block, or while reading one you sent back. | Retry the request.                                                                                                                                                                  |
-| 400 `compaction_block_misplaced`                                                                                                                                                | Summarized messages remain in front of the block.                                       | Remove them, so the block comes first in `messages`.                                                                                                                                |
-| 400 `compaction_signature_invalid` or `compaction_content_mismatch`                                                                                                             | The block's `signature` or `content` was changed after the API returned it.             | Send the block exactly as returned, including its `signature`.                                                                                                                      |
-| 400                                                                                                                                                                             | The request carries more than one `compaction` block.                                   | Send exactly one, the newest.                                                                                                                                                       |
-| 400                                                                                                                                                                             | The last `assistant` turn ends in a tool call with no result yet.                       | Send that turn's tool results, then compact.                                                                                                                                        |
-| 400 `compaction_nothing_to_summarize`                                                                                                                                           | `messages` has no `user` or `assistant` content, for example an empty list.             | Send at least one `user` or `assistant` message.                                                                                                                                    |
-| 400 on the compaction request, with a message that says the `compaction` parameter `requires anthropic-beta: compact-2026-09-04`                                                | The compaction request left out the beta header.                                        | Add the beta header; see [Request a summary](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand#request-a-summary).                                         |
-| 400 on a later request that carries the block: a validation error that says `compaction` is not one of the expected content block types. The message doesn't mention the header | That request left out the beta header.                                                  | Add the beta header to every request that carries the block; see [Request a summary](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand#request-a-summary). |
-| 400 validation error, such as `messages.0.content.0.compaction.citations: Extra inputs are not permitted`                                                                       | A block was sent back with fields the API didn't return, such as `citations: null`.     | Send the block exactly as returned; see [Continue from the summary](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand#continue-from-the-summary).          |
+| Error                                                                                                                                                                           | Cause                                                                                   | What to do                                                                                                                                                                                            |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 529 `overloaded_error`, `error.details.error_code` `compaction_unavailable`                                                                                                     | A transient server problem while producing a block, or while reading one you sent back. | Retry the request.                                                                                                                                                                                    |
+| 400 `compaction_block_misplaced`                                                                                                                                                | Summarized messages remain in front of the block.                                       | Remove them, so the block comes first in `messages`.                                                                                                                                                  |
+| 400 `compaction_signature_invalid` or `compaction_content_mismatch`                                                                                                             | The block's `signature` or `content` was changed after the API returned it.             | Send the block exactly as returned, including its `signature`.                                                                                                                                        |
+| 400                                                                                                                                                                             | The request carries more than one `compaction` block.                                   | Send exactly one, the newest.                                                                                                                                                                         |
+| 400                                                                                                                                                                             | The last `assistant` turn ends in a tool call with no result yet.                       | Send that turn's tool results, then compact.                                                                                                                                                          |
+| 400 `compaction_nothing_to_summarize`                                                                                                                                           | `messages` has no `user` or `assistant` content, for example an empty list.             | Send at least one `user` or `assistant` message.                                                                                                                                                      |
+| 400 on the compaction request, with a message that says the `compaction` parameter `requires anthropic-beta: compact-2026-09-04`                                                | The compaction request left out the beta header.                                        | Add the beta header; see [Request a summary](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand?sdk_languages=cli#request-a-summary).                                         |
+| 400 on a later request that carries the block: a validation error that says `compaction` is not one of the expected content block types. The message doesn't mention the header | That request left out the beta header.                                                  | Add the beta header to every request that carries the block; see [Request a summary](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand?sdk_languages=cli#request-a-summary). |
+| 400 validation error, such as `messages.0.content.0.compaction.citations: Extra inputs are not permitted`                                                                       | A block was sent back with fields the API didn't return, such as `citations: null`.     | Send the block exactly as returned; see [Continue from the summary](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand?sdk_languages=cli#continue-from-the-summary).          |
 
 ## Count compaction usage
 
 The summarization call is billed and rate-limited like any other request, and `usage.iterations` reports it as the `compaction` entry. The top-level `input_tokens` and `output_tokens` are zero because no reply was generated. To count what a conversation consumed, sum across `usage.iterations`, not the top-level fields. Sending a block back on later requests adds no compaction cost.
 
-You have a working loop that compacts a conversation and handles a missing summary. Two pages change how it runs, and you can combine them: [Compaction that keeps recent turns](https://platform.claude.com/docs/en/build-with-claude/compaction-keep-recent-turns) keeps the last turns word for word, and [Compaction in the background](https://platform.claude.com/docs/en/build-with-claude/compaction-background) lets the conversation continue while the summary is written. [Compaction and preserved thinking](https://platform.claude.com/docs/en/build-with-claude/compaction-thinking-blocks) applies if you send thinking blocks back and do either.
+You have a working loop that compacts a conversation and handles a missing summary. Two pages change how it runs, and you can combine them: [Compaction that keeps recent turns](https://platform.claude.com/docs/en/build-with-claude/compaction-keep-recent-turns?sdk_languages=cli) keeps the last turns word for word, and [Compaction in the background](https://platform.claude.com/docs/en/build-with-claude/compaction-background?sdk_languages=cli) lets the conversation continue while the summary is written. [Compaction and preserved thinking](https://platform.claude.com/docs/en/build-with-claude/compaction-thinking-blocks?sdk_languages=cli) applies if you send thinking blocks back and do either.
 
 ## Limits and interactions with other features
 
 * **Threshold compaction and context editing.** You can't send `compaction` and `context_management` on the same request. Threshold compaction (`compact_20260112`) can't run on a request that carries a signed block.
 * **Prompt caching.** `cache_control` on the block places a breakpoint after the summary.
-* **Mid-conversation system messages and tool changes.** `role: "system"` messages inside the summarized range are summarized too, so their text instructions stop applying once the block replaces them. A [per-message effort](https://platform.claude.com/docs/en/build-with-claude/effort#change-effort-mid-conversation-beta) level they set isn't carried over either: until a later message sets a level, turns run at the request's top-level `output_config.effort`, or the model's default if you don't set one. If an instruction or effort level still matters, state it again in a `role: "system"` message. Send that message right after your next new `user` turn, and leave it in your history from then on. For [tool changes](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages#mid-conversation-tool-changes), and for where that message goes when you keep turns after the block, see [Change the system prompt or tools](https://platform.claude.com/docs/en/build-with-claude/compaction-thinking-blocks#change-the-system-prompt-or-tools).
-* **Task budgets.** Don't send the `remaining` value of a [task budget](https://platform.claude.com/docs/en/build-with-claude/task-budgets) (`output_config.task_budget.remaining`) with `compaction` or on requests that carry the block. Doing so returns a 400 error.
-* **Token counting.** The [token counting](https://platform.claude.com/docs/en/build-with-claude/token-counting) endpoint ignores the `compaction` parameter.
+* **Mid-conversation system messages and tool changes.** `role: "system"` messages inside the summarized range are summarized too, so their text instructions stop applying once the block replaces them. A [per-message effort](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=cli#change-effort-mid-conversation-beta) level they set isn't carried over either: until a later message sets a level, turns run at the request's top-level `output_config.effort`, or the model's default if you don't set one. If an instruction or effort level still matters, state it again in a `role: "system"` message. Send that message right after your next new `user` turn, and leave it in your history from then on. For [tool changes](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages?sdk_languages=cli#mid-conversation-tool-changes), and for where that message goes when you keep turns after the block, see [Change the system prompt or tools](https://platform.claude.com/docs/en/build-with-claude/compaction-thinking-blocks?sdk_languages=cli#change-the-system-prompt-or-tools).
+* **Task budgets.** Don't send the `remaining` value of a [task budget](https://platform.claude.com/docs/en/build-with-claude/task-budgets?sdk_languages=cli) (`output_config.task_budget.remaining`) with `compaction` or on requests that carry the block. Doing so returns a 400 error.
+* **Token counting.** The [token counting](https://platform.claude.com/docs/en/build-with-claude/token-counting?sdk_languages=cli) endpoint ignores the `compaction` parameter.
 * **Content the summary can't carry.** Images, documents, `container_upload` blocks, and fetched URLs inside the summarized messages are gone once the block replaces them. Restate or re-upload anything a later turn still needs.

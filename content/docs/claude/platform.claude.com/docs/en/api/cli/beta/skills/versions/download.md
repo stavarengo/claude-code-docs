@@ -1,0 +1,49 @@
+---
+title: Download Skill Version Content
+url: https://platform.claude.com/docs/en/api/cli/beta/skills/versions/download
+---
+
+# Download Skill Version Content
+
+`$ ant beta:skills:versions download`
+
+**GET** `/v1/skills/{skill_id}/versions/{version}/content`
+
+Download a skill version's content as a zip archive.
+
+## Parameters
+
+- `--skill-id: string` (path parameter)
+
+  Unique identifier for the skill.
+
+  The format and length of IDs may change over time.
+
+- `--version: string` (path parameter)
+
+  Identifies the skill version by its version ID.
+
+  Requests carrying the `skills-2025-10-02` beta header address versions by their Unix epoch timestamp instead (e.g., "1759178010641129").
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  Optional header to specify the beta version(s) you want to use.
+
+- `--workspace-id: optional string` (header parameter)
+
+  Optional header to select the Workspace for this request. The value is a Workspace ID (for example, `wrkspc_011CZkZaBF1tNoB5wlCeusgy`).
+
+  Only needed for credentials that can act on more than one Workspace. A credential that belongs to a specific Workspace may omit it; if sent, it must match that Workspace.
+
+## Returns
+
+- `unnamed_schema_2: file path`
+
+## Example
+
+```bash
+ant beta:skills:versions download \
+  --api-key my-anthropic-api-key \
+  --skill-id skill_id \
+  --version version
+```

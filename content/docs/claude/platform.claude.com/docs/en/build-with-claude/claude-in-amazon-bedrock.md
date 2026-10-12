@@ -7,12 +7,12 @@ description: Access Claude models through Amazon Bedrock with AWS-native authent
 This guide walks you through setting up and making API calls to Claude in Amazon Bedrock. Claude in Amazon Bedrock runs on AWS-managed infrastructure with zero operator access (Anthropic personnel have no access to the inference infrastructure), letting you build sensitive applications entirely inside the AWS security boundary while using the same Messages API shape you use with Anthropic's first-party API.
 
 <Note>
-  This page covers Claude in Amazon Bedrock, which serves Claude through the Messages API at `/anthropic/v1/messages` on AWS-managed infrastructure. The previous Amazon Bedrock integration (the `InvokeModel` and `Converse` APIs with ARN-versioned model identifiers) remains available and is documented at [Claude on Amazon Bedrock (Opus 4.6 and earlier)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy). For an Anthropic-operated alternative on AWS with AWS Marketplace billing and typically same-day feature access, see [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws).
+  This page covers Claude in Amazon Bedrock, which serves Claude through the Messages API at `/anthropic/v1/messages` on AWS-managed infrastructure. The previous Amazon Bedrock integration (the `InvokeModel` and `Converse` APIs with ARN-versioned model identifiers) remains available and is documented at [Claude on Amazon Bedrock (Opus 4.6 and earlier)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy?sdk_languages=cli). For an Anthropic-operated alternative on AWS with AWS Marketplace billing and typically same-day feature access, see [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli).
 </Note>
 
 ## Access
 
-Amazon Bedrock sets access criteria for each Claude model individually. Claude Fable 5.1, Claude Fable 5, Claude Opus 4.8, Claude Sonnet 5, Claude Opus 4.7, and Claude Haiku 4.5 are open to all Amazon Bedrock customers. For any other model's current criteria, check [Amazon Bedrock model access](https://console.aws.amazon.com/bedrock/home#/modelaccess) in the AWS console. Claude Mythos Preview requires an invitation through [Project Glasswing](https://anthropic.com/glasswing). For region availability, see [Regions](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock#regions).
+Amazon Bedrock sets access criteria for each Claude model individually. Claude Fable 5.1, Claude Fable 5, Claude Opus 4.8, Claude Sonnet 5, Claude Opus 4.7, and Claude Haiku 4.5 are open to all Amazon Bedrock customers. For any other model's current criteria, check [Amazon Bedrock model access](https://console.aws.amazon.com/bedrock/home#/modelaccess) in the AWS console. Claude Mythos Preview requires an invitation through [Project Glasswing](https://anthropic.com/glasswing). For region availability, see [Regions](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock?sdk_languages=cli#regions).
 
 ## Prerequisites
 
@@ -71,7 +71,7 @@ For short-term access without IAM roles (12-hour maximum, least preferred):
 
 ## Install an SDK
 
-Anthropic's [client SDKs](https://platform.claude.com/docs/en/cli-sdks-libraries/overview) support Claude in Amazon Bedrock through a Bedrock-specific package or module.
+Anthropic's [client SDKs](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) support Claude in Amazon Bedrock through a Bedrock-specific package or module.
 
 <Tabs>
   <Tab title="Python">
@@ -146,236 +146,63 @@ The endpoint follows the pattern `https://bedrock-mantle.{region}.api.aws/anthro
 The SDK resolves credentials and region using the standard AWS precedence: constructor arguments, then environment variables (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`, `AWS_REGION`), then the AWS config file and credential chain (SSO, assumed roles, ECS task role, IMDS).
 
 <Tabs>
-  <Tab title="cURL">
-    ```bash
-    curl https://bedrock-mantle.us-east-1.api.aws/anthropic/v1/messages \
-      --aws-sigv4 "aws:amz:us-east-1:bedrock-mantle" \
-      --user "$AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY" \
-      -H "x-amz-security-token: $AWS_SESSION_TOKEN" \
-      -H "content-type: application/json" \
-      -H "anthropic-version: 2023-06-01" \
-      -d '{
-        "model": "anthropic.claude-opus-5-5",
-        "max_tokens": 1024,
-        "messages": [
-          {"role": "user", "content": "Hello, Claude"}
-        ]
-      }'
-    ```
-  </Tab>
-
   <Tab title="CLI">
     The `ant` CLI does not support Amazon Bedrock. Use either cURL or an SDK.
-  </Tab>
-
-  <Tab title="Python">
-    ```python
-    from anthropic import AnthropicBedrockMantle
-
-    client = AnthropicBedrockMantle(aws_region="us-east-1")
-
-    message = client.messages.create(
-        model="anthropic.claude-opus-5-5",
-        max_tokens=1024,
-        messages=[{"role": "user", "content": "Hello, Claude"}],
-    )
-
-    print(next(block.text for block in message.content if block.type == "text"))
-    ```
-  </Tab>
-
-  <Tab title="TypeScript">
-    ```typescript
-    import { AnthropicBedrockMantle } from "@anthropic-ai/bedrock-sdk";
-
-    const client = new AnthropicBedrockMantle({
-      awsRegion: "us-east-1"
-    });
-
-    const message = await client.messages.create({
-      model: "anthropic.claude-opus-5-5",
-      max_tokens: 1024,
-      messages: [{ role: "user", content: "Hello, Claude" }]
-    });
-
-    const textBlock = message.content.find((block) => block.type === "text");
-    if (textBlock) {
-      console.log(textBlock.text);
-    }
-    ```
-  </Tab>
-
-  <Tab title="C#">
-    ```csharp
-    using Anthropic.Bedrock;
-    using Anthropic.Models.Messages;
-
-    var client = new AnthropicBedrockMantleClient(new() { AwsRegion = "us-east-1" });
-
-    var message = await client.Messages.Create(new()
-    {
-        Model = "anthropic.claude-opus-5-5",
-        MaxTokens = 1024,
-        Messages = [new() { Role = Role.User, Content = "Hello, Claude" }],
-    });
-
-    foreach (var item in message.Content)
-    {
-        if (item.Value is TextBlock block)
-        {
-            Console.WriteLine(block.Text);
-            break;
-        }
-    }
-    ```
-  </Tab>
-
-  <Tab title="Go">
-    ```go
-    client, err := bedrock.NewMantleClient(context.Background(), bedrock.MantleClientConfig{
-    	AWSRegion: "us-east-1",
-    })
-    if err != nil {
-    	panic(err)
-    }
-
-    message, err := client.Messages.New(context.Background(), anthropic.MessageNewParams{
-    	Model:     "anthropic.claude-opus-5-5",
-    	MaxTokens: 1024,
-    	Messages: []anthropic.MessageParam{
-    		anthropic.NewUserMessage(anthropic.NewTextBlock("Hello, Claude")),
-    	},
-    })
-    if err != nil {
-    	panic(err)
-    }
-
-    for _, block := range message.Content {
-    	if textBlock, ok := block.AsAny().(anthropic.TextBlock); ok {
-    		fmt.Println(textBlock.Text)
-    		break
-    	}
-    }
-    ```
-  </Tab>
-
-  <Tab title="Java">
-    ```java
-    import com.anthropic.bedrock.backends.BedrockMantleBackend;
-    import com.anthropic.client.AnthropicClient;
-    import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-    import com.anthropic.models.messages.ContentBlock;
-    import com.anthropic.models.messages.Message;
-    import com.anthropic.models.messages.MessageCreateParams;
-
-    void main() {
-        AnthropicClient client = AnthropicOkHttpClient.builder()
-            .backend(BedrockMantleBackend.fromEnv())
-            .build();
-
-        Message message = client.messages().create(
-            MessageCreateParams.builder()
-                .model("anthropic.claude-opus-5-5")
-                .maxTokens(1024)
-                .addUserMessage("Hello, Claude")
-                .build()
-        );
-
-        message.content().stream()
-                .filter(ContentBlock::isText)
-                .findFirst()
-                .ifPresent(block -> IO.println(block.asText().text()));
-    }
-    ```
-  </Tab>
-
-  <Tab title="PHP">
-    ```php
-    use Anthropic\Bedrock\MantleClient;
-
-    $client = new MantleClient(awsRegion: 'us-east-1');
-
-    $message = $client->messages->create(
-        model: 'anthropic.claude-opus-5-5',
-        maxTokens: 1024,
-        messages: [
-            ['role' => 'user', 'content' => 'Hello, Claude'],
-        ],
-    );
-
-    echo array_find($message->content, fn ($block) => $block->type === 'text')->text;
-    ```
-  </Tab>
-
-  <Tab title="Ruby">
-    ```ruby
-    require "anthropic"
-
-    client = Anthropic::BedrockMantleClient.new(aws_region: "us-east-1")
-
-    message = client.messages.create(
-      model: "anthropic.claude-opus-5-5",
-      max_tokens: 1024,
-      messages: [{role: "user", content: "Hello, Claude"}]
-    )
-
-    puts message.content.find { it.type == :text }.text
-    ```
   </Tab>
 </Tabs>
 
 <Tip>
-  You can also create the standard client with `Anthropic` (python, typescript; go: `anthropic.NewClient()`; java: `AnthropicOkHttpClient.builder()`; csharp: `AnthropicClient`; php: `Anthropic\Client`; ruby: `Anthropic::Client`): set `base_url` (python, ruby; typescript: `baseURL`; go: `option.WithBaseURL()`; java: `.baseUrl()`; csharp: `BaseUrl`; php: `baseUrl`) to `https://bedrock-mantle.{region}.api.aws/anthropic` and pass your bearer token as `api_key` (python, ruby; typescript, php: `apiKey`; go: `option.WithAPIKey()`; java: `.apiKey()`; csharp: `ApiKey`). This path supports bearer-token authentication only. SigV4 signing requires `AnthropicBedrockMantle` (csharp: `AnthropicBedrockMantleClient`; go: `bedrock.NewMantleClient`; java: `BedrockMantleBackend`; php: `MantleClient`; ruby: `Anthropic::BedrockMantleClient`).
+  You can also create the standard client with `Anthropic` (python, typescript): set `base_url` (python, ruby) to `https://bedrock-mantle.{region}.api.aws/anthropic` and pass your bearer token as `api_key` (python, ruby). This path supports bearer-token authentication only. SigV4 signing requires `AnthropicBedrockMantle`.
 </Tip>
 
 ## Supported models
 
-Model IDs in Claude in Amazon Bedrock carry an `anthropic.` provider prefix. Model capabilities and behaviors are documented on the [Models overview](https://platform.claude.com/docs/en/models/overview) page.
+Model IDs in Claude in Amazon Bedrock carry an `anthropic.` provider prefix. Model capabilities and behaviors are documented on the [Models overview](https://platform.claude.com/docs/en/models/overview?sdk_languages=cli) page.
 
-| Model                                                                                       | Model ID                          | Access                                                                                              |
-| :------------------------------------------------------------------------------------------ | :-------------------------------- | :-------------------------------------------------------------------------------------------------- |
-| Claude Fable 5.1                                                                            | `anthropic.claude-fable-5-1`      | Open                                                                                                |
-| Claude Mythos 5.1 ([limited availability](https://support.claude.com/en/articles/14604842)) | `anthropic.claude-mythos-5-1`     | Active (verification required)                                                                      |
-| Claude Fable 5                                                                              | `anthropic.claude-fable-5`        | Open                                                                                                |
-| Claude Mythos 5 ([limited availability](https://support.claude.com/en/articles/14604842))   | `anthropic.claude-mythos-5`       | Active (verification required)                                                                      |
-| Claude Mythos Preview ([limited availability](https://anthropic.com/glasswing))             | `anthropic.claude-mythos-preview` | Invitation only                                                                                     |
-| Claude Opus 5.5                                                                             | `anthropic.claude-opus-5-5`       | [See Access](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock#access) |
-| Claude Opus 5                                                                               | `anthropic.claude-opus-5`         | [See Access](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock#access) |
-| Claude Opus 4.8                                                                             | `anthropic.claude-opus-4-8`       | Open                                                                                                |
-| Claude Opus 4.7                                                                             | `anthropic.claude-opus-4-7`       | Open                                                                                                |
-| Claude Sonnet 5.5                                                                           | `anthropic.claude-sonnet-5-5`     | [See Access](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock#access) |
-| Claude Sonnet 5                                                                             | `anthropic.claude-sonnet-5`       | Open                                                                                                |
-| Claude Haiku 5.5                                                                            | `anthropic.claude-haiku-5-5`      | [See Access](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock#access) |
-| Claude Haiku 4.5                                                                            | `anthropic.claude-haiku-4-5`      | Open                                                                                                |
+| Model                                                                                       | Model ID                          | Access                                                                                                                |
+| :------------------------------------------------------------------------------------------ | :-------------------------------- | :-------------------------------------------------------------------------------------------------------------------- |
+| Claude Fable 5.1                                                                            | `anthropic.claude-fable-5-1`      | Open                                                                                                                  |
+| Claude Mythos 5.1 ([limited availability](https://support.claude.com/en/articles/14604842)) | `anthropic.claude-mythos-5-1`     | Active (verification required)                                                                                        |
+| Claude Fable 5                                                                              | `anthropic.claude-fable-5`        | Open                                                                                                                  |
+| Claude Mythos 5 ([limited availability](https://support.claude.com/en/articles/14604842))   | `anthropic.claude-mythos-5`       | Active (verification required)                                                                                        |
+| Claude Mythos Preview ([limited availability](https://anthropic.com/glasswing))             | `anthropic.claude-mythos-preview` | Invitation only                                                                                                       |
+| Claude Opus 5.5                                                                             | `anthropic.claude-opus-5-5`       | [See Access](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock?sdk_languages=cli#access) |
+| Claude Opus 5                                                                               | `anthropic.claude-opus-5`         | [See Access](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock?sdk_languages=cli#access) |
+| Claude Opus 4.8                                                                             | `anthropic.claude-opus-4-8`       | Open                                                                                                                  |
+| Claude Opus 4.7                                                                             | `anthropic.claude-opus-4-7`       | Open                                                                                                                  |
+| Claude Sonnet 5.5                                                                           | `anthropic.claude-sonnet-5-5`     | [See Access](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock?sdk_languages=cli#access) |
+| Claude Sonnet 5                                                                             | `anthropic.claude-sonnet-5`       | Open                                                                                                                  |
+| Claude Haiku 5.5                                                                            | `anthropic.claude-haiku-5-5`      | [See Access](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock?sdk_languages=cli#access) |
+| Claude Haiku 4.5                                                                            | `anthropic.claude-haiku-4-5`      | Open                                                                                                                  |
 
 Use the latest version of Claude Code with Claude in Amazon Bedrock; run `claude update` to upgrade.
 
 <Tip>
-  Upgrading to a newer Claude model? In Claude Code, run `/claude-api migrate` to apply model ID swaps and breaking parameter changes across your codebase. The skill detects which cloud platform your code targets and adjusts model ID formats and feature changes for that platform. See [Migrating to a newer Claude model](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/claude-api-skill#migrating-to-a-newer-claude-model).
+  Upgrading to a newer Claude model? In Claude Code, run `/claude-api migrate` to apply model ID swaps and breaking parameter changes across your codebase. The skill detects which cloud platform your code targets and adjusts model ID formats and feature changes for that platform. See [Migrating to a newer Claude model](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/claude-api-skill?sdk_languages=cli#migrating-to-a-newer-claude-model).
 </Tip>
 
 ## Feature support
 
-For the full feature list with Amazon Bedrock availability, see [Features overview](https://platform.claude.com/docs/en/build-with-claude/overview).
+For the full feature list with Amazon Bedrock availability, see [Features overview](https://platform.claude.com/docs/en/build-with-claude/overview?sdk_languages=cli).
 
 ### Supported feature highlights
 
-* [Messages API](https://platform.claude.com/docs/en/api/messages/create) (`/anthropic/v1/messages`)
-* [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)
-* [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking)
-* [Tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview), including the [Bash tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/bash-tool), [Computer use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool), [Memory tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool), and [Text editor tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/text-editor-tool)
-* [Citations](https://platform.claude.com/docs/en/build-with-claude/citations)
+* [Messages API](https://platform.claude.com/docs/en/api/messages/create?sdk_languages=cli) (`/anthropic/v1/messages`)
+* [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli)
+* [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli)
+* [Tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=cli), including the [Bash tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/bash-tool?sdk_languages=cli), [Computer use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool?sdk_languages=cli), [Memory tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool?sdk_languages=cli), and [Text editor tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/text-editor-tool?sdk_languages=cli)
+* [Citations](https://platform.claude.com/docs/en/build-with-claude/citations?sdk_languages=cli)
 
 ### Features not supported
 
-* [Structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs)
+* [Structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli)
 * Input sources (URL sources for images and documents, Files API)
 * Server-side tools (code execution, web search, web fetch, advisor)
 * Agent infrastructure (Agent Skills, MCP connector, programmatic tool calling)
 * API endpoints (Message Batches, Models, Admin, Compliance, Usage and Cost)
 * Claude Managed Agents
-* Server-side fallback (the [`fallbacks` parameter](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback#server-side-fallback); use the [client-side fallback pattern](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback#client-side-fallback) instead)
-* [Computer use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool) and [browser use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool) toolsets (`computer_toolset_20260801` and `browser_toolset_20260801` are not currently available on Amazon Bedrock; the beta computer use tool versions remain available)
+* Server-side fallback (the [`fallbacks` parameter](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback?sdk_languages=cli#server-side-fallback); use the [client-side fallback pattern](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback?sdk_languages=cli#client-side-fallback) instead)
+* [Computer use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool?sdk_languages=cli) and [browser use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool?sdk_languages=cli) toolsets (`computer_toolset_20260801` and `browser_toolset_20260801` are not currently available on Amazon Bedrock; the beta computer use tool versions remain available)
 
 ## Regions
 

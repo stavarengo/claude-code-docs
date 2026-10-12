@@ -5,7 +5,7 @@ description: Pre-installed packages, databases, and utilities available in cloud
 featureMetadata:
   topic:
     title: Managed Agents
-    url: https://platform.claude.com/docs/en/managed-agents/overview
+    url: https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli
   status: beta
   betaHeader: managed-agents-2026-04-01
 ---
@@ -78,10 +78,10 @@ The sandbox sets `PLAYWRIGHT_BROWSERS_PATH` to `/opt/pw-browsers`, so the pre-in
 
 ## Sandbox specifications
 
-| Property         | Value                                                                                                                                                                                                         |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Operating system | Ubuntu 24.04 LTS                                                                                                                                                                                              |
-| Architecture     | x86\_64 (amd64)                                                                                                                                                                                               |
-| Memory           | Up to 8 GB                                                                                                                                                                                                    |
-| Disk space       | Up to 10 GB                                                                                                                                                                                                   |
-| Network          | API-created environments default to [`unrestricted` networking](https://platform.claude.com/docs/en/managed-agents/environments#networking); sandboxes provisioned through Claude Studio default to `limited` |
+| Property         | Value                                                                                                                                                                                                                           |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Operating system | Ubuntu 24.04 LTS                                                                                                                                                                                                                |
+| Architecture     | x86\_64 (amd64)                                                                                                                                                                                                                 |
+| Memory           | Up to 8 GB                                                                                                                                                                                                                      |
+| Disk space       | Up to 10 GB                                                                                                                                                                                                                     |
+| Network          | API-created environments default to [`unrestricted` networking](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli#networking); sandboxes provisioned through Claude Studio default to `limited` |

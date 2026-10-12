@@ -1,0 +1,127 @@
+---
+title: Get project details
+url: https://platform.claude.com/docs/en/api/http/compliance/apps/projects/retrieve
+---
+
+# Get project details
+
+**GET** `/v1/compliance/apps/projects/{project_id}`
+
+Get detailed information for a specific project.
+
+## Path parameters
+
+- `project_id: string`
+
+  The project ID (tagged ID, e.g., claude_proj_abc123)
+
+## Headers
+
+- `"anthropic-version": optional string`
+
+  The version of the Claude API you want to use.
+
+  Read more about versioning and our version history [here](https://platform.claude.com/docs/en/api/versioning?sdk_languages=http).
+
+- `"x-api-key": optional string`
+
+## Returns
+
+- `id: string`
+
+  Project identifier (tagged ID)
+
+- `attachments_count: number`
+
+  Number of attachments contained within this project
+
+- `chats_count: number`
+
+  Number of chats contained within this project
+
+- `created_at: string`
+
+  Project creation timestamp
+
+  format: date-time
+
+- `deleted_at: string or null`
+
+  Timestamp when the project was deleted by an end user, or null otherwise
+
+  format: date-time
+
+- `description: string`
+
+  Project description
+
+- `instructions: string`
+
+  Project's custom instructions / prompt
+
+- `is_private: boolean`
+
+  If false, the project is visible to all organization members; if true the project is accessible only to the creator and specified collaborators
+
+- `name: string`
+
+  Project name
+
+- `organization_uuid: string`
+
+  Organization UUID this project belongs to
+
+- `updated_at: string`
+
+  Project last update timestamp
+
+  format: date-time
+
+- `user: object or null`
+
+  Project creator information, or null if the creator's account has been deleted or the creator is no longer a member of an organization the key may read
+
+  - `id: string`
+
+    User identifier (tagged ID)
+
+  - `email_address: string`
+
+    User's email address
+
+- `organization_id: string`
+
+  **Deprecated**
+
+  Organization identifier (tagged ID)
+
+## Example
+
+```bash
+curl https://api.anthropic.com/v1/compliance/apps/projects/$PROJECT_ID \
+    -H 'anthropic-version: 2023-06-01' \
+    -H "Authorization: Bearer $ANTHROPIC_COMPLIANCE_API_KEY"
+```
+
+### Response (200)
+
+```json
+{
+  "id": "claude_proj_01Nm7PqRsTuVwXyZaBcDeFgH",
+  "attachments_count": 3,
+  "chats_count": 14,
+  "created_at": "2025-03-12T18:22:41.123456Z",
+  "deleted_at": "2019-12-27T18:11:19.117Z",
+  "description": "Planning and research for the Q3 launch",
+  "instructions": "Focus on concise, actionable answers.",
+  "is_private": true,
+  "name": "Q3 Product Launch",
+  "organization_id": "org_015eofRkKpogX7uDKUyvBTph",
+  "organization_uuid": "a1b2c3d4-e5f6-4789-a012-3456789abcde",
+  "updated_at": "2025-03-14T09:05:17.456789Z",
+  "user": {
+    "id": "user_01WCz1FkmYMm4gnmykNKUu3Q",
+    "email_address": "jane.doe@example.com"
+  }
+}
+```

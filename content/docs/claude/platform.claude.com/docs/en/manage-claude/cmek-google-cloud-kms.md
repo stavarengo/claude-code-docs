@@ -8,10 +8,10 @@ description: Use Google Cloud KMS to provide an encryption key for your organiza
 claude "/claude-api help me configure a customer-managed encryption key with Google Cloud KMS"
 ```
 
-This guide walks through configuring a Google Cloud KMS key as a [customer-managed encryption key (CMEK)](https://platform.claude.com/docs/en/manage-claude/cmek) for your Anthropic organization.
+This guide walks through configuring a Google Cloud KMS key as a [customer-managed encryption key (CMEK)](https://platform.claude.com/docs/en/manage-claude/cmek?sdk_languages=cli) for your Anthropic organization.
 
 <Warning>
-  Enabling CMEK is permanent. If your KMS key is deleted or disabled, Anthropic cannot recover the data encrypted under it. Review the [warnings and limitations](https://platform.claude.com/docs/en/manage-claude/cmek) before you begin.
+  Enabling CMEK is permanent. If your KMS key is deleted or disabled, Anthropic cannot recover the data encrypted under it. Review the [warnings and limitations](https://platform.claude.com/docs/en/manage-claude/cmek?sdk_languages=cli) before you begin.
 </Warning>
 
 ## Prerequisites
@@ -58,7 +58,7 @@ anthropic-cmek-client-us@gcp-anthropic-cmek-clients.iam.gserviceaccount.com
     The `--labels` option adds the organization label, `anthropic-org-<ORGANIZATION_UUID>` with the value `true`, where `<ORGANIZATION_UUID>` is your Anthropic organization ID in lowercase. The label is required for Anthropic to validate the key.
 
     <Note>
-      **Finding your organization ID:** Copy the **Organization ID** field under **Settings > Organization** in the Claude Console, or under **Organization settings > Organization** in claude.ai, or read the `id` field from the [Organization Info](https://platform.claude.com/docs/en/api/organization/retrieve) endpoint. Use the bare UUID, not the `org_`-prefixed ID.
+      **Finding your organization ID:** Copy the **Organization ID** field under **Settings > Organization** in the Claude Console, or under **Organization settings > Organization** in claude.ai, or read the `id` field from the [Organization Info](https://platform.claude.com/docs/en/api/organization/retrieve?sdk_languages=cli) endpoint. Use the bare UUID, not the `org_`-prefixed ID.
     </Note>
 
     ```bash
@@ -157,7 +157,7 @@ How you register the key depends on which product you use.
           <Step title="Register the key with Anthropic">
             In the Claude Console, open **Settings > Encryption keys** and click **Add key**. Enter a display name, choose **Google Cloud KMS**, and click **Continue**. Paste the full key resource name into **Key resource name**, and click **Add**.
 
-            The key details step shows the organization label. Add it to the key, as [the create step](https://platform.claude.com/docs/en/manage-claude/cmek-google-cloud-kms#organization-label) describes, before you click **Add**.
+            The key details step shows the organization label. Add it to the key, as [the create step](https://platform.claude.com/docs/en/manage-claude/cmek-google-cloud-kms?sdk_languages=cli#organization-label) describes, before you click **Add**.
           </Step>
 
           <Step title="Validate the key">
@@ -165,7 +165,7 @@ How you register the key depends on which product you use.
           </Step>
 
           <Step title="Attach the key to a workspace">
-            In the Claude Console, go to [Manage > Security](https://platform.claude.com/settings/workspaces/default/security-compliance) and select the workspace in the workspace picker at the top of the sidebar. Under **Encryption key**, select the key, click **Save**, and confirm. Attaching a key can't be undone. For a workspace that already receives requests, the key can take [up to a day to take effect](https://platform.claude.com/docs/en/manage-claude/cmek#how-it-works).
+            In the Claude Console, go to [Manage > Security](https://platform.claude.com/settings/workspaces/default/security-compliance) and select the workspace in the workspace picker at the top of the sidebar. Under **Encryption key**, select the key, click **Save**, and confirm. Attaching a key can't be undone. For a workspace that already receives requests, the key can take [up to a day to take effect](https://platform.claude.com/docs/en/manage-claude/cmek?sdk_languages=cli#how-it-works).
           </Step>
         </Steps>
       </Tab>
@@ -176,21 +176,6 @@ How you register the key depends on which product you use.
             Create an external key configuration through the Admin API, using the resource name from the Note the full key resource name step under Encryption key setup.
 
             <CodeGroup>
-              ```bash cURL
-              curl -sS "https://api.anthropic.com/v1/organizations/external_keys" \
-                -H "x-api-key: $ANTHROPIC_API_KEY" \
-                -H "anthropic-version: 2023-06-01" \
-                -H "content-type: application/json" \
-                -d '{
-                  "display_name": "<friendly-name>",
-                  "geo": "us",
-                  "provider_config": {
-                    "type": "gcp",
-                    "key_name": "projects/<your-project-id>/locations/<region>/keyRings/<your-keyring-name>/cryptoKeys/<your-key-name>"
-                  }
-                }'
-              ```
-
               ```bash CLI
               ant organization:external-keys create <<'YAML'
               display_name: "<friendly-name>"
@@ -199,131 +184,6 @@ How you register the key depends on which product you use.
                 type: gcp
                 key_name: "projects/<your-project-id>/locations/<region>/keyRings/<your-keyring-name>/cryptoKeys/<your-key-name>"
               YAML
-              ```
-
-              ```python Python
-              client = anthropic.Anthropic()
-
-              external_key = client.organization.external_keys.create(
-                  display_name="<friendly-name>",
-                  geo="us",
-                  provider_config={
-                      "type": "gcp",
-                      "key_name": "projects/<your-project-id>/locations/<region>/keyRings/<your-keyring-name>/cryptoKeys/<your-key-name>",
-                  },
-              )
-
-              print(f"id: {external_key.id}")
-              print(f"display_name: {external_key.display_name}")
-              ```
-
-              ```typescript TypeScript
-              const client = new Anthropic();
-
-              const externalKey = await client.organization.externalKeys.create({
-                display_name: "<friendly-name>",
-                geo: "us",
-                provider_config: {
-                  type: "gcp",
-                  key_name:
-                    "projects/<your-project-id>/locations/<region>/keyRings/<your-keyring-name>/cryptoKeys/<your-key-name>"
-                }
-              });
-
-              console.log(`id: ${externalKey.id}`);
-              console.log(`display_name: ${externalKey.display_name}`);
-              ```
-
-              ```csharp C#
-              using Anthropic.Models.Organization.ExternalKeys;
-
-              AnthropicClient client = new();
-
-              var externalKey = await client.Organization.ExternalKeys.Create(new()
-              {
-                  DisplayName = "<friendly-name>",
-                  Geo = Geo.Us,
-                  ProviderConfig = new GcpExternalKeyConfig
-                  {
-                      KeyName = "projects/<your-project-id>/locations/<region>/keyRings/<your-keyring-name>/cryptoKeys/<your-key-name>"
-                  }
-              });
-
-              Console.WriteLine($"id: {externalKey.ID}");
-              Console.WriteLine($"display_name: {externalKey.DisplayName}");
-              ```
-
-              ```go Go
-              client := anthropic.NewClient()
-
-              externalKey, err := client.Organization.ExternalKeys.New(context.Background(), anthropic.OrganizationExternalKeyNewParams{
-              	DisplayName: anthropic.String("<friendly-name>"),
-              	Geo:         anthropic.OrganizationExternalKeyNewParamsGeoUs,
-              	ProviderConfig: anthropic.OrganizationExternalKeyNewParamsProviderConfigUnion{
-              		OfGCP: &anthropic.GCPExternalKeyConfigParam{
-              			KeyName: "projects/<your-project-id>/locations/<region>/keyRings/<your-keyring-name>/cryptoKeys/<your-key-name>",
-              		},
-              	},
-              })
-              if err != nil {
-              	log.Fatal(err)
-              }
-
-              fmt.Printf("id: %s\n", externalKey.ID)
-              fmt.Printf("display_name: %s\n", externalKey.DisplayName)
-              ```
-
-              ```java Java
-              import com.anthropic.models.organization.externalkeys.ExternalKeyCreateParams;
-
-              void main() {
-                  AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-                  var params = ExternalKeyCreateParams.builder()
-                      .displayName("<friendly-name>")
-                      .geo(ExternalKeyCreateParams.Geo.US)
-                      .gcpProviderConfig("projects/<your-project-id>/locations/<region>/keyRings/<your-keyring-name>/cryptoKeys/<your-key-name>")
-                      .build();
-                  var externalKey = client.organization().externalKeys().create(params);
-
-                  IO.println("id: " + externalKey.id());
-                  IO.println("display_name: " + externalKey.displayName().orElseThrow());
-              }
-              ```
-
-              ```php PHP
-              use Anthropic\Organization\ExternalKeys\ExternalKeyCreateParams\Geo;
-              // ...
-
-              $client = new Client();
-
-              $externalKey = $client->organization->externalKeys->create(
-                  displayName: '<friendly-name>',
-                  geo: Geo::US,
-                  providerConfig: [
-                      'type' => 'gcp',
-                      'keyName' => 'projects/<your-project-id>/locations/<region>/keyRings/<your-keyring-name>/cryptoKeys/<your-key-name>',
-                  ],
-              );
-
-              echo "id: {$externalKey->id}\n";
-              echo "display_name: {$externalKey->displayName}\n";
-              ```
-
-              ```ruby Ruby
-              client = Anthropic::Client.new
-
-              external_key = client.organization.external_keys.create(
-                display_name: "<friendly-name>",
-                geo: :us,
-                provider_config: {
-                  type: :gcp,
-                  key_name: "projects/<your-project-id>/locations/<region>/keyRings/<your-keyring-name>/cryptoKeys/<your-key-name>"
-                }
-              )
-
-              puts "id: #{external_key.id}"
-              puts "display_name: #{external_key.display_name}"
               ```
             </CodeGroup>
 
@@ -342,83 +202,8 @@ How you register the key depends on which product you use.
             Trigger an encrypt and decrypt round-trip against your key.
 
             <CodeGroup>
-              ```bash cURL
-              curl -sS -X POST "https://api.anthropic.com/v1/organizations/external_keys/ekey_<id>/validate" \
-                -H "x-api-key: $ANTHROPIC_API_KEY" \
-                -H "anthropic-version: 2023-06-01"
-              ```
-
               ```bash CLI
               ant organization:external-keys validate --external-key-id "ekey_<id>"
-              ```
-
-              ```python Python
-              client = anthropic.Anthropic()
-
-              validation = client.organization.external_keys.validate("ekey_<id>")
-
-              print(f"status: {validation.status}")
-              print(f"error: {validation.error}")
-              ```
-
-              ```typescript TypeScript
-              const client = new Anthropic();
-
-              const validation = await client.organization.externalKeys.validate("ekey_<id>");
-
-              console.log(`status: ${validation.status}`);
-              console.log(`error: ${validation.error}`);
-              ```
-
-              ```csharp C#
-              AnthropicClient client = new();
-
-              var validation = await client.Organization.ExternalKeys.Validate("ekey_<id>");
-
-              Console.WriteLine($"status: {validation.Status.Raw()}");
-              Console.WriteLine($"error: {validation.Error}");
-              ```
-
-              ```go Go
-              client := anthropic.NewClient()
-
-              validation, err := client.Organization.ExternalKeys.Validate(context.Background(), "ekey_<id>")
-              if err != nil {
-              	log.Fatal(err)
-              }
-
-              fmt.Printf("status: %s\n", validation.Status)
-              fmt.Printf("error: %s\n", validation.Error)
-              ```
-
-              ```java Java
-              AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-              var validation = client.organization().externalKeys().validate("ekey_<id>");
-
-              IO.println("status: " + validation.status().asString());
-              IO.println("error: " + validation.error().orElse(""));
-              ```
-
-              ```php PHP
-              $client = new Client();
-
-              $validation = $client->organization->externalKeys->validate(
-                  externalKeyID: 'ekey_<id>',
-              );
-
-              echo "status: {$validation->status}\n";
-              echo "error: {$validation->error}\n";
-              ```
-
-              ```ruby Ruby
-              client = Anthropic::Client.new
-
-              external_key_id = "ekey_<id>"
-              validation = client.organization.external_keys.validate(external_key_id)
-
-              puts "status: #{validation.status}"
-              puts "error: #{validation.error}"
               ```
             </CodeGroup>
 
@@ -436,116 +221,13 @@ How you register the key depends on which product you use.
           </Step>
 
           <Step title="Attach the key to a workspace">
-            Once the key is validated, attach it to a new workspace before you send any requests to that workspace. For a workspace that already receives requests, the key can take [up to a day to take effect](https://platform.claude.com/docs/en/manage-claude/cmek#how-it-works).
+            Once the key is validated, attach it to a new workspace before you send any requests to that workspace. For a workspace that already receives requests, the key can take [up to a day to take effect](https://platform.claude.com/docs/en/manage-claude/cmek?sdk_languages=cli#how-it-works).
 
             <CodeGroup>
-              ```bash cURL
-              curl -sS -X POST "https://api.anthropic.com/v1/organizations/workspaces/<workspace-id>" \
-                -H "x-api-key: $ANTHROPIC_API_KEY" \
-                -H "anthropic-version: 2023-06-01" \
-                -H "content-type: application/json" \
-                -d '{
-                  "external_key_id": "ekey_<id>"
-                }'
-              ```
-
               ```bash CLI
               ant organization:workspaces update \
                 --workspace-id "<workspace-id>" \
                 --external-key-id "ekey_<id>"
-              ```
-
-              ```python Python
-              client = anthropic.Anthropic()
-
-              workspace = client.organization.workspaces.update(
-                  "<workspace-id>", external_key_id="ekey_<id>"
-              )
-
-              print(f"id: {workspace.id}")
-              print(f"external_key_id: {workspace.external_key_id}")
-              ```
-
-              ```typescript TypeScript
-              const client = new Anthropic();
-
-              const workspace = await client.organization.workspaces.update("<workspace-id>", {
-                external_key_id: "ekey_<id>"
-              });
-
-              console.log(`id: ${workspace.id}`);
-              console.log(`external_key_id: ${workspace.external_key_id}`);
-              ```
-
-              ```csharp C#
-              AnthropicClient client = new();
-
-              var workspace = await client.Organization.Workspaces.Update("<workspace-id>", new()
-              {
-                  ExternalKeyID = "ekey_<id>"
-              });
-
-              Console.WriteLine($"id: {workspace.ID}");
-              Console.WriteLine($"external_key_id: {workspace.ExternalKeyID}");
-              ```
-
-              ```go Go
-              client := anthropic.NewClient()
-
-              workspace, err := client.Organization.Workspaces.Update(
-              	context.Background(),
-              	"<workspace-id>",
-              	anthropic.OrganizationWorkspaceUpdateParams{
-              		ExternalKeyID: anthropic.String("ekey_<id>"),
-              	},
-              )
-              if err != nil {
-              	log.Fatal(err)
-              }
-
-              fmt.Printf("id: %s\n", workspace.ID)
-              fmt.Printf("external_key_id: %s\n", workspace.ExternalKeyID)
-              ```
-
-              ```java Java
-              import com.anthropic.models.organization.workspaces.WorkspaceUpdateParams;
-
-              void main() {
-                  AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-                  var params = WorkspaceUpdateParams.builder()
-                      .externalKeyId("ekey_<id>")
-                      .build();
-                  var workspace = client.organization().workspaces().update("<workspace-id>", params);
-
-                  IO.println("id: " + workspace.id());
-                  IO.println("external_key_id: " + workspace.externalKeyId().orElseThrow());
-              }
-              ```
-
-              ```php PHP
-              $client = new Client();
-
-              $workspace = $client->organization->workspaces->update(
-                  workspaceID: '<workspace-id>',
-                  externalKeyID: 'ekey_<id>',
-              );
-
-              echo "id: {$workspace->id}\n";
-              echo "external_key_id: {$workspace->externalKeyID}\n";
-              ```
-
-              ```ruby Ruby
-              client = Anthropic::Client.new
-
-              workspace_id = "<workspace-id>"
-              workspace = client.organization.workspaces.update(
-                workspace_id,
-                external_key_id: "ekey_<id>"
-              )
-
-              puts "id: #{workspace.id}"
-              puts "external_key_id: #{workspace.external_key_id}"
               ```
             </CodeGroup>
           </Step>

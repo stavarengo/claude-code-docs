@@ -6,7 +6,7 @@ description: "Claude Haiku 4.5 reference: lifecycle status, model IDs on every p
 
 **Legacy.** Released October 15, 2025.
 
-Although Claude Haiku 4.5 is still available, you should consider migrating to Claude Haiku 5.5. [See Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/overview) · [Migrate to Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/migration-guide)
+Although Claude Haiku 4.5 is still available, you should consider migrating to Claude Haiku 5.5. [See Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/overview?sdk_languages=cli) · [Migrate to Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/migration-guide?sdk_languages=cli)
 
 Model ID: `claude-haiku-4-5-20251001`
 
@@ -16,13 +16,13 @@ Context window: 200K tokens · Max output: 64K tokens · Input pricing: $1 / MTo
 
 ## How it compares to the current lineup
 
-| Model                                                                               | Context | Max output | Price / MTok       | Thinking             | Default effort | Knowledge cutoff |
-| :---------------------------------------------------------------------------------- | :------ | :--------- | :----------------- | :------------------- | :------------- | :--------------- |
-| [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview)   | 1M      | 128K       | $10 / $50          | Adaptive (always on) | `high`         | Jun 2026         |
-| [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview)     | 1M      | 128K       | $4 / $20           | Adaptive (always on) | `medium`       | Jun 2026         |
-| [Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/overview) | 1M      | 128K       | $2 / $10           | Adaptive             | `high`         | Jun 2026         |
-| [Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/overview)   | 1M      | 128K       | From $0.10 / $0.50 | Adaptive             | `medium`       | Jun 2026         |
-| **Claude Haiku 4.5** (this model)                                                   | 200K    | 64K        | $1 / $5            | Extended             | —              | Feb 2025         |
+| Model                                                                                                 | Context | Max output | Price / MTok       | Thinking             | Default effort | Knowledge cutoff |
+| :---------------------------------------------------------------------------------------------------- | :------ | :--------- | :----------------- | :------------------- | :------------- | :--------------- |
+| [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview?sdk_languages=cli)   | 1M      | 128K       | $10 / $50          | Adaptive (always on) | `high`         | Jun 2026         |
+| [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=cli)     | 1M      | 128K       | $4 / $20           | Adaptive (always on) | `medium`       | Jun 2026         |
+| [Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/overview?sdk_languages=cli) | 1M      | 128K       | $2 / $10           | Adaptive             | `high`         | Jun 2026         |
+| [Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/overview?sdk_languages=cli)   | 1M      | 128K       | From $0.10 / $0.50 | Adaptive             | `medium`       | Jun 2026         |
+| **Claude Haiku 4.5** (this model)                                                                     | 200K    | 64K        | $1 / $5            | Extended             | —              | Feb 2025         |
 
 * **Context:** 1M tokens is roughly 555k words or 2.5M Unicode characters on the current tokenizer (introduced with Claude Opus 4.7); models before it fit about 750k words in 1M tokens. 200k tokens is roughly 150k words.
 * **Max output:** Synchronous Messages API limit. On the Message Batches API, Claude Opus 5.5, Claude Opus 5, Claude Sonnet 5.5, Claude Sonnet 5, Claude Haiku 5.5, Claude Opus 4.8, Claude Opus 4.7, Claude Opus 4.6, and Claude Sonnet 4.6 support up to 300k output tokens with the output-300k-2026-03-24 beta header.
@@ -35,68 +35,68 @@ Context window: 200K tokens · Max output: 64K tokens · Input pricing: $1 / MTo
 
 ### Model IDs
 
-| Platform                                                                                                              | Model ID                                   |
-| :-------------------------------------------------------------------------------------------------------------------- | :----------------------------------------- |
-| Claude API                                                                                                            | `claude-haiku-4-5-20251001`                |
-| Claude API alias                                                                                                      | `claude-haiku-4-5`                         |
-| [Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock)                      | `anthropic.claude-haiku-4-5`               |
-| [Amazon Bedrock (InvokeModel)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy) | `anthropic.claude-haiku-4-5-20251001-v1:0` |
-| [Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai)                             | `claude-haiku-4-5@20251001`                |
-| [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry)                | `claude-haiku-4-5`                         |
-| [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws)                | `claude-haiku-4-5`                         |
+| Platform                                                                                                                                | Model ID                                   |
+| :-------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------- |
+| Claude API                                                                                                                              | `claude-haiku-4-5-20251001`                |
+| Claude API alias                                                                                                                        | `claude-haiku-4-5`                         |
+| [Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock?sdk_languages=cli)                      | `anthropic.claude-haiku-4-5`               |
+| [Amazon Bedrock (InvokeModel)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy?sdk_languages=cli) | `anthropic.claude-haiku-4-5-20251001-v1:0` |
+| [Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai?sdk_languages=cli)                             | `claude-haiku-4-5@20251001`                |
+| [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli)                | `claude-haiku-4-5`                         |
+| [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli)                | `claude-haiku-4-5`                         |
 
 ### Pricing
 
-| Feature                                                                                | Value                            |
-| :------------------------------------------------------------------------------------- | :------------------------------- |
-| Input                                                                                  | $1 / MTok                        |
-| Output                                                                                 | $5 / MTok                        |
-| [5m cache write](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) | $1.25 / MTok                     |
-| [1h cache write](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) | $2 / MTok                        |
-| [Cache read](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)     | $0.10 / MTok                     |
-| [Batch API](https://platform.claude.com/docs/en/build-with-claude/batch-processing)    | 50% discount on input and output |
+| Feature                                                                                                  | Value                            |
+| :------------------------------------------------------------------------------------------------------- | :------------------------------- |
+| Input                                                                                                    | $1 / MTok                        |
+| Output                                                                                                   | $5 / MTok                        |
+| [5m cache write](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) | $1.25 / MTok                     |
+| [1h cache write](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) | $2 / MTok                        |
+| [Cache read](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli)     | $0.10 / MTok                     |
+| [Batch API](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=cli)    | 50% discount on input and output |
 
-[Full price list](https://platform.claude.com/docs/en/about-claude/pricing)
+[Full price list](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli)
 
 ### Capabilities
 
-| Feature                                                                                 | Value                  |
-| :-------------------------------------------------------------------------------------- | :--------------------- |
-| [Context window](https://platform.claude.com/docs/en/build-with-claude/context-windows) | 200K tokens            |
-| Max output                                                                              | 64K tokens             |
-| [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking)              | Extended               |
-| [Default effort](https://platform.claude.com/docs/en/build-with-claude/effort)          | Not supported          |
-| Input → output                                                                          | Text and images → text |
-| Reliable knowledge cutoff                                                               | Feb 2025               |
-| Training data cutoff                                                                    | Jul 2025               |
+| Feature                                                                                                   | Value                  |
+| :-------------------------------------------------------------------------------------------------------- | :--------------------- |
+| [Context window](https://platform.claude.com/docs/en/build-with-claude/context-windows?sdk_languages=cli) | 200K tokens            |
+| Max output                                                                                                | 64K tokens             |
+| [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli)              | Extended               |
+| [Default effort](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=cli)          | Not supported          |
+| Input → output                                                                                            | Text and images → text |
+| Reliable knowledge cutoff                                                                                 | Feb 2025               |
+| Training data cutoff                                                                                      | Jul 2025               |
 
 ### Availability
 
-| Feature                                                                       | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| :---------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Status](https://platform.claude.com/docs/en/about-claude/model-deprecations) | Active (legacy)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| Released                                                                      | October 15, 2025                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| Retirement                                                                    | Not sooner than October 15, 2026                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| Platforms                                                                     | Claude API, [Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock), [Amazon Bedrock (InvokeModel)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy), [Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai), [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry), [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws) |
+| Feature                                                                                         | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| :---------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Status](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli) | Active (legacy)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Released                                                                                        | October 15, 2025                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Retirement                                                                                      | Not sooner than October 15, 2026                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Platforms                                                                                       | Claude API, [Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock?sdk_languages=cli), [Amazon Bedrock (InvokeModel)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy?sdk_languages=cli), [Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai?sdk_languages=cli), [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli), [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli) |
 
 ## Good to know
 
-* `claude-haiku-4-5` is a convenience alias that resolves to the pinned snapshot `claude-haiku-4-5-20251001`. See [Model IDs and versioning](https://platform.claude.com/docs/en/about-claude/models/model-ids-and-versions).
+* `claude-haiku-4-5` is a convenience alias that resolves to the pinned snapshot `claude-haiku-4-5-20251001`. See [Model IDs and versioning](https://platform.claude.com/docs/en/about-claude/models/model-ids-and-versions?sdk_languages=cli).
 * Claude Haiku 4.5 uses manual extended thinking (`thinking.type: "enabled"`), not adaptive thinking.
-* Query limits and capabilities programmatically with the [Models API](https://platform.claude.com/docs/en/api/models/list).
+* Query limits and capabilities programmatically with the [Models API](https://platform.claude.com/docs/en/api/models/list?sdk_languages=cli).
 
 ## Resources
 
 <CardGroup cols={3}>
-  <Card title="Migrate to Claude Haiku 5.5" icon="arrows-left-right" href="https://platform.claude.com/docs/en/models/haiku-5-5/migration-guide">
+  <Card title="Migrate to Claude Haiku 5.5" icon="arrows-left-right" href="https://platform.claude.com/docs/en/models/haiku-5-5/migration-guide?sdk_languages=cli">
     What changes when moving from Claude Haiku 4.5 to Claude Haiku 5.5.
   </Card>
 
-  <Card title="Claude Haiku 5.5" icon="arrow-right" href="https://platform.claude.com/docs/en/models/haiku-5-5/overview">
+  <Card title="Claude Haiku 5.5" icon="arrow-right" href="https://platform.claude.com/docs/en/models/haiku-5-5/overview?sdk_languages=cli">
     The current Haiku model: overview, specs, and resources.
   </Card>
 
-  <Card title="Extended thinking" icon="brain" href="https://platform.claude.com/docs/en/build-with-claude/extended-thinking">
+  <Card title="Extended thinking" icon="brain" href="https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli">
     Claude Haiku 4.5 supports manual extended thinking with `budget_tokens`.
   </Card>
 </CardGroup>
@@ -104,7 +104,7 @@ Context window: 200K tokens · Max output: 64K tokens · Input pricing: $1 / MTo
 ## Reference
 
 <CardGroup cols={3}>
-  <Card title="System prompt" icon="text" href="https://platform.claude.com/docs/en/release-notes/system-prompts/overview#claude-haiku-4-5">
+  <Card title="System prompt" icon="text" href="https://platform.claude.com/docs/en/release-notes/system-prompts/overview?sdk_languages=cli#claude-haiku-4-5">
     The system prompt Claude Haiku 4.5 uses on claude.ai and the Claude apps.
   </Card>
 
@@ -112,19 +112,19 @@ Context window: 200K tokens · Max output: 64K tokens · Input pricing: $1 / MTo
     Safety evaluations and deployment decisions for Claude Haiku 4.5.
   </Card>
 
-  <Card title="Pricing" icon="coins" href="https://platform.claude.com/docs/en/about-claude/pricing">
+  <Card title="Pricing" icon="coins" href="https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli">
     Full price list, including batch discounts and prompt caching rates.
   </Card>
 
-  <Card title="Model IDs and versioning" icon="fingerprint" href="https://platform.claude.com/docs/en/about-claude/models/model-ids-and-versions">
+  <Card title="Model IDs and versioning" icon="fingerprint" href="https://platform.claude.com/docs/en/about-claude/models/model-ids-and-versions?sdk_languages=cli">
     How model IDs, aliases, and pinned snapshots work.
   </Card>
 
-  <Card title="Model deprecations" icon="clock" href="https://platform.claude.com/docs/en/about-claude/model-deprecations">
+  <Card title="Model deprecations" icon="clock" href="https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli">
     Lifecycle status and retirement commitments for every Claude model.
   </Card>
 
-  <Card title="Amazon Bedrock (Opus 4.6 and earlier)" icon="cloud" href="https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy">
+  <Card title="Amazon Bedrock (Opus 4.6 and earlier)" icon="cloud" href="https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy?sdk_languages=cli">
     Claude Haiku 4.5 is also available through the InvokeModel Bedrock integration and Bedrock-style model IDs.
   </Card>
 </CardGroup>

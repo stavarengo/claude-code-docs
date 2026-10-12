@@ -12,29 +12,29 @@ For the most current pricing information, visit [claude.com/pricing](https://cla
 
 The following table shows pricing for all Claude models:
 
-| Model                                                                                                                                | Base input tokens     | 5m cache writes | 1h cache writes | Cache hits and refreshes | Output tokens          |
-| :----------------------------------------------------------------------------------------------------------------------------------- | :-------------------- | :-------------- | :-------------- | :----------------------- | :--------------------- |
-| Claude Fable 5.1                                                                                                                     | $10 / MTok            | $12.50 / MTok   | $20 / MTok      | $0.25 / MTok<sup>1</sup> | $50 / MTok             |
-| Claude Mythos 5.1 ([limited availability](https://support.claude.com/en/articles/14604842))                                          | $10 / MTok            | $12.50 / MTok   | $20 / MTok      | $0.25 / MTok<sup>1</sup> | $50 / MTok             |
-| Claude Fable 5                                                                                                                       | $10 / MTok            | $12.50 / MTok   | $20 / MTok      | $1 / MTok                | $50 / MTok             |
-| Claude Mythos 5 ([limited availability](https://support.claude.com/en/articles/14604842))                                            | $10 / MTok            | $12.50 / MTok   | $20 / MTok      | $1 / MTok                | $50 / MTok             |
-| Claude Opus 5.5                                                                                                                      | $4 / MTok             | $5 / MTok       | $8 / MTok       | $0.20 / MTok<sup>2</sup> | $20 / MTok             |
-| Claude Opus 5                                                                                                                        | $5 / MTok             | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok             | $25 / MTok             |
-| Claude Opus 4.8                                                                                                                      | $5 / MTok             | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok             | $25 / MTok             |
-| Claude Opus 4.7                                                                                                                      | $5 / MTok             | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok             | $25 / MTok             |
-| Claude Opus 4.6                                                                                                                      | $5 / MTok             | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok             | $25 / MTok             |
-| Claude Opus 4.5                                                                                                                      | $5 / MTok             | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok             | $25 / MTok             |
-| Claude Opus 4.1 ([retired, except on Bedrock and Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations)) | $15 / MTok            | $18.75 / MTok   | $30 / MTok      | $1.50 / MTok             | $75 / MTok             |
-| Claude Opus 4 ([retired, except on Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations))               | $15 / MTok            | $18.75 / MTok   | $30 / MTok      | $1.50 / MTok             | $75 / MTok             |
-| Claude Sonnet 5.5                                                                                                                    | $2 / MTok             | $2.50 / MTok    | $4 / MTok       | $0.10 / MTok<sup>2</sup> | $10 / MTok             |
-| Claude Sonnet 5                                                                                                                      | $2 / MTok<sup>3</sup> | $2.50 / MTok    | $4 / MTok       | $0.20 / MTok             | $10 / MTok<sup>3</sup> |
-| Claude Sonnet 4.6                                                                                                                    | $3 / MTok             | $3.75 / MTok    | $6 / MTok       | $0.30 / MTok             | $15 / MTok             |
-| Claude Sonnet 4.5                                                                                                                    | $3 / MTok             | $3.75 / MTok    | $6 / MTok       | $0.30 / MTok             | $15 / MTok             |
-| Claude Sonnet 4 ([retired, except on Bedrock and Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations)) | $3 / MTok             | $3.75 / MTok    | $6 / MTok       | $0.30 / MTok             | $15 / MTok             |
-| Claude Haiku 5.5 (for prompts up to 100,000 tokens)                                                                                  | $0.10 / MTok          | $0.125 / MTok   | $0.20 / MTok    | $0.01 / MTok             | $0.50 / MTok           |
-| Claude Haiku 5.5 (for prompts over 100,000 tokens)                                                                                   | $0.50 / MTok          | $0.625 / MTok   | $1 / MTok       | $0.05 / MTok             | $2.50 / MTok           |
-| Claude Haiku 4.5                                                                                                                     | $1 / MTok             | $1.25 / MTok    | $2 / MTok       | $0.10 / MTok             | $5 / MTok              |
-| Claude Haiku 3.5 ([retired, except on Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations))            | $0.80 / MTok          | $1 / MTok       | $1.60 / MTok    | $0.08 / MTok             | $4 / MTok              |
+| Model                                                                                                                                                  | Base input tokens     | 5m cache writes | 1h cache writes | Cache hits and refreshes | Output tokens          |
+| :----------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------- | :-------------- | :-------------- | :----------------------- | :--------------------- |
+| Claude Fable 5.1                                                                                                                                       | $10 / MTok            | $12.50 / MTok   | $20 / MTok      | $0.25 / MTok<sup>1</sup> | $50 / MTok             |
+| Claude Mythos 5.1 ([limited availability](https://support.claude.com/en/articles/14604842))                                                            | $10 / MTok            | $12.50 / MTok   | $20 / MTok      | $0.25 / MTok<sup>1</sup> | $50 / MTok             |
+| Claude Fable 5                                                                                                                                         | $10 / MTok            | $12.50 / MTok   | $20 / MTok      | $1 / MTok                | $50 / MTok             |
+| Claude Mythos 5 ([limited availability](https://support.claude.com/en/articles/14604842))                                                              | $10 / MTok            | $12.50 / MTok   | $20 / MTok      | $1 / MTok                | $50 / MTok             |
+| Claude Opus 5.5                                                                                                                                        | $4 / MTok             | $5 / MTok       | $8 / MTok       | $0.20 / MTok<sup>2</sup> | $20 / MTok             |
+| Claude Opus 5                                                                                                                                          | $5 / MTok             | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok             | $25 / MTok             |
+| Claude Opus 4.8                                                                                                                                        | $5 / MTok             | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok             | $25 / MTok             |
+| Claude Opus 4.7                                                                                                                                        | $5 / MTok             | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok             | $25 / MTok             |
+| Claude Opus 4.6                                                                                                                                        | $5 / MTok             | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok             | $25 / MTok             |
+| Claude Opus 4.5                                                                                                                                        | $5 / MTok             | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok             | $25 / MTok             |
+| Claude Opus 4.1 ([retired, except on Bedrock and Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli)) | $15 / MTok            | $18.75 / MTok   | $30 / MTok      | $1.50 / MTok             | $75 / MTok             |
+| Claude Opus 4 ([retired, except on Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli))               | $15 / MTok            | $18.75 / MTok   | $30 / MTok      | $1.50 / MTok             | $75 / MTok             |
+| Claude Sonnet 5.5                                                                                                                                      | $2 / MTok             | $2.50 / MTok    | $4 / MTok       | $0.10 / MTok<sup>2</sup> | $10 / MTok             |
+| Claude Sonnet 5                                                                                                                                        | $2 / MTok<sup>3</sup> | $2.50 / MTok    | $4 / MTok       | $0.20 / MTok             | $10 / MTok<sup>3</sup> |
+| Claude Sonnet 4.6                                                                                                                                      | $3 / MTok             | $3.75 / MTok    | $6 / MTok       | $0.30 / MTok             | $15 / MTok             |
+| Claude Sonnet 4.5                                                                                                                                      | $3 / MTok             | $3.75 / MTok    | $6 / MTok       | $0.30 / MTok             | $15 / MTok             |
+| Claude Sonnet 4 ([retired, except on Bedrock and Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli)) | $3 / MTok             | $3.75 / MTok    | $6 / MTok       | $0.30 / MTok             | $15 / MTok             |
+| Claude Haiku 5.5 (for prompts up to 100,000 tokens)                                                                                                    | $0.10 / MTok          | $0.125 / MTok   | $0.20 / MTok    | $0.01 / MTok             | $0.50 / MTok           |
+| Claude Haiku 5.5 (for prompts over 100,000 tokens)                                                                                                     | $0.50 / MTok          | $0.625 / MTok   | $1 / MTok       | $0.05 / MTok             | $2.50 / MTok           |
+| Claude Haiku 4.5                                                                                                                                       | $1 / MTok             | $1.25 / MTok    | $2 / MTok       | $0.10 / MTok             | $5 / MTok              |
+| Claude Haiku 3.5 ([retired, except on Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli))            | $0.80 / MTok          | $1 / MTok       | $1.60 / MTok    | $0.08 / MTok             | $4 / MTok              |
 
 *<sup>1 Cache hits and refreshes on Claude Fable 5.1 and Claude Mythos 5.1 are priced at 0.025x the base input price.</sup>*
 
@@ -49,15 +49,15 @@ The following table shows pricing for all Claude models:
 * **1h cache writes:** Writing a prompt prefix to the 1-hour prompt cache.
 * **Cache hits and refreshes:** Reading a prompt prefix from the prompt cache, which also refreshes it.
 * **Limited access:** Available only to organizations verified through Anthropic’s verification programs, such as the [Cyber Verification Program](https://support.claude.com/en/articles/14604842). To request access, apply to the program that covers your use case.
-* **Retired:** May still be available on other cloud platforms. See [Model deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations) for more.
+* **Retired:** May still be available on other cloud platforms. See [Model deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli) for more.
 
 Claude 4.7 and later models and Claude Mythos Preview use a newer tokenizer that contributes to their improved performance on a wide range of tasks. This tokenizer produces approximately 30% more tokens for the same text. The exact increase depends on the content and workload shape. Claude Sonnet 4.6 and earlier models use the previous tokenizer.
 
 ## Cloud platform pricing
 
-This section covers partner-operated cloud platforms, where the cloud provider invoices you. For Anthropic-operated cloud platforms billed through a marketplace, see [Claude Platform on AWS pricing](https://platform.claude.com/docs/en/about-claude/pricing#claude-platform-on-aws-pricing) and [Claude in Microsoft Foundry pricing](https://platform.claude.com/docs/en/about-claude/pricing#claude-in-microsoft-foundry-pricing).
+This section covers partner-operated cloud platforms, where the cloud provider invoices you. For Anthropic-operated cloud platforms billed through a marketplace, see [Claude Platform on AWS pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#claude-platform-on-aws-pricing) and [Claude in Microsoft Foundry pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#claude-in-microsoft-foundry-pricing).
 
-Claude models are available on [Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock) and [Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai). For official pricing, visit:
+Claude models are available on [Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock?sdk_languages=cli) and [Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai?sdk_languages=cli). For official pricing, visit:
 
 * [Amazon Bedrock pricing](https://aws.amazon.com/bedrock/pricing/)
 * [Google Cloud pricing](https://cloud.google.com/vertex-ai/generative-ai/pricing#claude-models)
@@ -70,36 +70,36 @@ Claude models are available on [Amazon Bedrock](https://platform.claude.com/docs
   * **Bedrock** offers two endpoint types: global endpoints (dynamic routing for maximum availability) and regional endpoints (guaranteed data routing through specific geographic regions).
   * **Google Cloud** offers global endpoints and multi-region endpoints (dynamic routing within a geographic area) for these models, and regional endpoints for Claude Sonnet 4.6 and earlier models.
 
-  Regional and multi-region endpoints include a 10% premium over global endpoints. The Claude API (first-party) is global by default; for first-party data residency options and pricing, see [Data residency pricing](https://platform.claude.com/docs/en/about-claude/pricing#data-residency-pricing).
+  Regional and multi-region endpoints include a 10% premium over global endpoints. The Claude API (first-party) is global by default; for first-party data residency options and pricing, see [Data residency pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#data-residency-pricing).
 
   **Scope:** This pricing structure applies to Claude Sonnet 4.5 (deprecated), Haiku 4.5, Opus 4.5, and all future models. Earlier models (Claude Opus 4.1 and prior releases) retain their existing pricing.
 
   For implementation details and code examples:
 
-  * [Amazon Bedrock global vs regional endpoints](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock#regions) for Opus 4.7, Haiku 4.5, and later models, or [the legacy integration](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy#global-vs-regional-endpoints) for all other models on Bedrock
-  * [Google Cloud global, multi-region, and regional endpoints](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai#global-multi-region-and-regional-endpoints)
+  * [Amazon Bedrock global vs regional endpoints](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock?sdk_languages=cli#regions) for Opus 4.7, Haiku 4.5, and later models, or [the legacy integration](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy?sdk_languages=cli#global-vs-regional-endpoints) for all other models on Bedrock
+  * [Google Cloud global, multi-region, and regional endpoints](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai?sdk_languages=cli#global-multi-region-and-regional-endpoints)
 </Note>
 
 ## Claude Platform on AWS pricing
 
-[Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws) bills through AWS Marketplace using Claude Consumption Units (CCUs). Anthropic rates your token usage in USD at standard per-model, per-feature rates, applies any negotiated discount, converts the result to CCUs at $0.01 per CCU, and reports the CCU quantity to AWS Marketplace hourly. Your AWS bill shows a single CCU line item.
+[Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli) bills through AWS Marketplace using Claude Consumption Units (CCUs). Anthropic rates your token usage in USD at standard per-model, per-feature rates, applies any negotiated discount, converts the result to CCUs at $0.01 per CCU, and reports the CCU quantity to AWS Marketplace hourly. Your AWS bill shows a single CCU line item.
 
-| Concept             | Details                                                                                                                                                                                                           |
-| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Billing unit**    | Claude Consumption Unit (CCU)                                                                                                                                                                                     |
-| **CCU price**       | $0.01 per CCU (fixed; discounts apply at token-to-CCU conversion, not to the CCU price)                                                                                                                           |
-| **Conversion**      | Token usage rated in USD at standard per-model, per-feature rates (same as [Claude API pricing](https://platform.claude.com/docs/en/about-claude/pricing#model-pricing)), then converted to CCUs at $0.01 per CCU |
-| **Billing cadence** | Hourly metering to AWS Marketplace; monthly invoices                                                                                                                                                              |
-| **Payment model**   | Arrears only (postpaid); no prepaid credits                                                                                                                                                                       |
-| **Discounts**       | Applied as fewer CCUs metered                                                                                                                                                                                     |
-| **Tax**             | Pre-tax metering; AWS Marketplace handles tax                                                                                                                                                                     |
-| **Cost visibility** | Real-time breakdown in the Claude Console (access through the AWS Console); AWS Cost Explorer shows aggregated CCU                                                                                                |
+| Concept             | Details                                                                                                                                                                                                                             |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Billing unit**    | Claude Consumption Unit (CCU)                                                                                                                                                                                                       |
+| **CCU price**       | $0.01 per CCU (fixed; discounts apply at token-to-CCU conversion, not to the CCU price)                                                                                                                                             |
+| **Conversion**      | Token usage rated in USD at standard per-model, per-feature rates (same as [Claude API pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#model-pricing)), then converted to CCUs at $0.01 per CCU |
+| **Billing cadence** | Hourly metering to AWS Marketplace; monthly invoices                                                                                                                                                                                |
+| **Payment model**   | Arrears only (postpaid); no prepaid credits                                                                                                                                                                                         |
+| **Discounts**       | Applied as fewer CCUs metered                                                                                                                                                                                                       |
+| **Tax**             | Pre-tax metering; AWS Marketplace handles tax                                                                                                                                                                                       |
+| **Cost visibility** | Real-time breakdown in the Claude Console (access through the AWS Console); AWS Cost Explorer shows aggregated CCU                                                                                                                  |
 
 **CCU:** Claude Consumption Unit. A CCU is a unit of measure used solely for Marketplace Platform invoicing. If Customer accesses the Services through certain Marketplace Platforms (e.g., Claude Platform on AWS), usage will be invoiced in Claude Consumption Units ("CCU") rather than per MTok. One hundred (100) CCU represents $1.00 USD of fees owed for the Services, calculated at the applicable prices on [claude.com/pricing#api](https://claude.com/pricing#api), after application of any discounts.
 
 ### Inference geography
 
-For Claude 4.6 and later models, using `inference_geo: "us"` applies a 1.1x pricing multiplier. `inference_geo: "global"` (default) uses standard pricing. See [Data residency](https://platform.claude.com/docs/en/manage-claude/data-residency) for details.
+For Claude 4.6 and later models, using `inference_geo: "us"` applies a 1.1x pricing multiplier. `inference_geo: "global"` (default) uses standard pricing. See [Data residency](https://platform.claude.com/docs/en/manage-claude/data-residency?sdk_languages=cli) for details.
 
 ### Private offers
 
@@ -111,24 +111,24 @@ When you sign up on the AWS Console **Claude Platform on AWS** service page, the
 
 ## Claude in Microsoft Foundry pricing
 
-[Claude in Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry) bills through the Azure Marketplace using Claude Consumption Units (CCUs). Anthropic rates your token usage in USD at standard per-model, per-feature rates, applies any negotiated discount, converts the result to CCUs at $0.01 per CCU, and reports the CCU quantity to the Azure Marketplace hourly. Your Azure bill shows a single CCU line item.
+[Claude in Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli) bills through the Azure Marketplace using Claude Consumption Units (CCUs). Anthropic rates your token usage in USD at standard per-model, per-feature rates, applies any negotiated discount, converts the result to CCUs at $0.01 per CCU, and reports the CCU quantity to the Azure Marketplace hourly. Your Azure bill shows a single CCU line item.
 
-| Concept             | Details                                                                                                                                                                                                           |
-| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Billing unit**    | Claude Consumption Unit (CCU)                                                                                                                                                                                     |
-| **CCU price**       | $0.01 per CCU (fixed; discounts apply at token-to-CCU conversion, not to the CCU price)                                                                                                                           |
-| **Conversion**      | Token usage rated in USD at standard per-model, per-feature rates (same as [Claude API pricing](https://platform.claude.com/docs/en/about-claude/pricing#model-pricing)), then converted to CCUs at $0.01 per CCU |
-| **Billing cadence** | Hourly metering to the Azure Marketplace; monthly invoices                                                                                                                                                        |
-| **Payment model**   | Arrears only (postpaid); no prepaid credits                                                                                                                                                                       |
-| **Discounts**       | Applied as fewer CCUs metered                                                                                                                                                                                     |
-| **Tax**             | Pre-tax metering; Azure Marketplace handles tax                                                                                                                                                                   |
-| **Cost visibility** | Azure Cost Management shows aggregated CCU                                                                                                                                                                        |
+| Concept             | Details                                                                                                                                                                                                                             |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Billing unit**    | Claude Consumption Unit (CCU)                                                                                                                                                                                                       |
+| **CCU price**       | $0.01 per CCU (fixed; discounts apply at token-to-CCU conversion, not to the CCU price)                                                                                                                                             |
+| **Conversion**      | Token usage rated in USD at standard per-model, per-feature rates (same as [Claude API pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#model-pricing)), then converted to CCUs at $0.01 per CCU |
+| **Billing cadence** | Hourly metering to the Azure Marketplace; monthly invoices                                                                                                                                                                          |
+| **Payment model**   | Arrears only (postpaid); no prepaid credits                                                                                                                                                                                         |
+| **Discounts**       | Applied as fewer CCUs metered                                                                                                                                                                                                       |
+| **Tax**             | Pre-tax metering; Azure Marketplace handles tax                                                                                                                                                                                     |
+| **Cost visibility** | Azure Cost Management shows aggregated CCU                                                                                                                                                                                          |
 
 **CCU:** Claude Consumption Unit. A CCU is a unit of measure used solely for Marketplace Platform invoicing. If Customer accesses the Services through certain Marketplace Platforms (e.g., Claude Platform on AWS, Claude in Microsoft Foundry), usage will be invoiced in Claude Consumption Units ("CCU") rather than per MTok. One hundred (100) CCU represents $1.00 USD of fees owed for the Services, calculated at the applicable prices on [claude.com/pricing#api](https://claude.com/pricing#api), after application of any discounts.
 
 ### Inference geography
 
-Deployments hosted on Azure can use the US Data Zone Standard deployment type, which keeps inference within the United States. This is equivalent to `inference_geo: "us"` on the Claude API and applies the same 1.1x pricing multiplier. See [Data residency](https://platform.claude.com/docs/en/manage-claude/data-residency) for details.
+Deployments hosted on Azure can use the US Data Zone Standard deployment type, which keeps inference within the United States. This is equivalent to `inference_geo: "us"` on the Claude API and applies the same 1.1x pricing multiplier. See [Data residency](https://platform.claude.com/docs/en/manage-claude/data-residency?sdk_languages=cli) for details.
 
 ## Feature-specific pricing
 
@@ -153,75 +153,75 @@ Cache write tokens are charged when content is first stored. Cache read tokens a
 
 These multipliers stack with other pricing modifiers, including the Batch API discount and data residency.
 
-For implementation details, supported models, and code examples, see [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching).
+For implementation details, supported models, and code examples, see [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli).
 
 ### Data residency pricing
 
-For Claude 4.6 and later models, specifying US-only inference through the `inference_geo` parameter incurs a 1.1x multiplier on all token pricing categories, including input tokens, output tokens, cache writes, and cache reads. On Claude Haiku 5.5, the multiplier also applies to the higher prices for prompts over 100,000 tokens (see [Long context pricing](https://platform.claude.com/docs/en/about-claude/pricing#long-context-pricing)). Global routing (the default) uses standard pricing.
+For Claude 4.6 and later models, specifying US-only inference through the `inference_geo` parameter incurs a 1.1x multiplier on all token pricing categories, including input tokens, output tokens, cache writes, and cache reads. On Claude Haiku 5.5, the multiplier also applies to the higher prices for prompts over 100,000 tokens (see [Long context pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#long-context-pricing)). Global routing (the default) uses standard pricing.
 
-This applies to the Claude API (first-party) and Claude Platform on AWS. On Claude in Microsoft Foundry, the same 1.1x multiplier applies to deployments that use the US Data Zone Standard deployment type (see [Inference geography](https://platform.claude.com/docs/en/about-claude/pricing#foundry-inference-geography)). Partner-operated platforms (Bedrock and Google Cloud) have independent regional pricing. See [Bedrock](https://aws.amazon.com/bedrock/pricing/) and [Google Cloud](https://cloud.google.com/vertex-ai/generative-ai/pricing#claude-models) for details. Earlier models do not support the `inference_geo` parameter and always use standard pricing; requests that include the parameter on these models return a 400 error.
+This applies to the Claude API (first-party) and Claude Platform on AWS. On Claude in Microsoft Foundry, the same 1.1x multiplier applies to deployments that use the US Data Zone Standard deployment type (see [Inference geography](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#foundry-inference-geography)). Partner-operated platforms (Bedrock and Google Cloud) have independent regional pricing. See [Bedrock](https://aws.amazon.com/bedrock/pricing/) and [Google Cloud](https://cloud.google.com/vertex-ai/generative-ai/pricing#claude-models) for details. Earlier models do not support the `inference_geo` parameter and always use standard pricing; requests that include the parameter on these models return a 400 error.
 
-For more information, see [Data residency](https://platform.claude.com/docs/en/manage-claude/data-residency).
+For more information, see [Data residency](https://platform.claude.com/docs/en/manage-claude/data-residency?sdk_languages=cli).
 
 ### Fast mode pricing
 
-[Fast mode](https://platform.claude.com/docs/en/build-with-claude/fast-mode), in research preview, provides significantly faster output for Claude Opus 5.5, Claude Opus 5, and Claude Opus 4.8 at premium pricing. Fast mode pricing applies across the full context window, including requests over 200k input tokens. Fast mode is available on the Claude API (first-party) only; it is not available on Claude Platform on AWS or partner-operated cloud platforms.
+[Fast mode](https://platform.claude.com/docs/en/build-with-claude/fast-mode?sdk_languages=cli), in research preview, provides significantly faster output for Claude Opus 5.5, Claude Opus 5, and Claude Opus 4.8 at premium pricing. Fast mode pricing applies across the full context window, including requests over 200k input tokens. Fast mode is available on the Claude API (first-party) only; it is not available on Claude Platform on AWS or partner-operated cloud platforms.
 
 | Model                           | Input      | Output     |
 | ------------------------------- | ---------- | ---------- |
 | Claude Opus 5.5                 | $8 / MTok  | $40 / MTok |
 | Claude Opus 5 / Claude Opus 4.8 | $10 / MTok | $50 / MTok |
 
-Fast mode is not available on Claude Opus 4.7 (requests with `speed: "fast"` return an error) or Claude Opus 4.6 (requests run at standard speed and are billed at standard rates). See [Fast mode](https://platform.claude.com/docs/en/build-with-claude/fast-mode#supported-models).
+Fast mode is not available on Claude Opus 4.7 (requests with `speed: "fast"` return an error) or Claude Opus 4.6 (requests run at standard speed and are billed at standard rates). See [Fast mode](https://platform.claude.com/docs/en/build-with-claude/fast-mode?sdk_languages=cli#supported-models).
 
 Fast mode pricing stacks with other pricing modifiers:
 
-* [Prompt caching multipliers](https://platform.claude.com/docs/en/about-claude/pricing#prompt-caching) apply on top of fast mode pricing
-* [Data residency](https://platform.claude.com/docs/en/manage-claude/data-residency) multipliers apply on top of fast mode pricing
+* [Prompt caching multipliers](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#prompt-caching) apply on top of fast mode pricing
+* [Data residency](https://platform.claude.com/docs/en/manage-claude/data-residency?sdk_languages=cli) multipliers apply on top of fast mode pricing
 
-Fast mode is not available with the [Batch API](https://platform.claude.com/docs/en/about-claude/pricing#batch-processing).
+Fast mode is not available with the [Batch API](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#batch-processing).
 
-For more information, see [Fast mode](https://platform.claude.com/docs/en/build-with-claude/fast-mode).
+For more information, see [Fast mode](https://platform.claude.com/docs/en/build-with-claude/fast-mode?sdk_languages=cli).
 
 ### Batch processing
 
 The Batch API allows asynchronous processing of large volumes of requests with a 50% discount on both input and output tokens.
 
-| Model                                                                                                                                | Batch input  | Batch output  |
-| :----------------------------------------------------------------------------------------------------------------------------------- | :----------- | :------------ |
-| Claude Fable 5.1                                                                                                                     | $5 / MTok    | $25 / MTok    |
-| Claude Mythos 5.1 ([limited availability](https://support.claude.com/en/articles/14604842))                                          | $5 / MTok    | $25 / MTok    |
-| Claude Fable 5                                                                                                                       | $5 / MTok    | $25 / MTok    |
-| Claude Mythos 5 ([limited availability](https://support.claude.com/en/articles/14604842))                                            | $5 / MTok    | $25 / MTok    |
-| Claude Opus 5.5                                                                                                                      | $2 / MTok    | $10 / MTok    |
-| Claude Opus 5                                                                                                                        | $2.50 / MTok | $12.50 / MTok |
-| Claude Opus 4.8                                                                                                                      | $2.50 / MTok | $12.50 / MTok |
-| Claude Opus 4.7                                                                                                                      | $2.50 / MTok | $12.50 / MTok |
-| Claude Opus 4.6                                                                                                                      | $2.50 / MTok | $12.50 / MTok |
-| Claude Opus 4.5                                                                                                                      | $2.50 / MTok | $12.50 / MTok |
-| Claude Opus 4.1 ([retired, except on Bedrock and Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations)) | $7.50 / MTok | $37.50 / MTok |
-| Claude Opus 4 ([retired, except on Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations))               | $7.50 / MTok | $37.50 / MTok |
-| Claude Sonnet 5.5                                                                                                                    | $1 / MTok    | $5 / MTok     |
-| Claude Sonnet 5                                                                                                                      | $1 / MTok    | $5 / MTok     |
-| Claude Sonnet 4.6                                                                                                                    | $1.50 / MTok | $7.50 / MTok  |
-| Claude Sonnet 4.5                                                                                                                    | $1.50 / MTok | $7.50 / MTok  |
-| Claude Sonnet 4 ([retired, except on Bedrock and Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations)) | $1.50 / MTok | $7.50 / MTok  |
-| Claude Haiku 5.5 (for prompts up to 100,000 tokens)                                                                                  | $0.05 / MTok | $0.25 / MTok  |
-| Claude Haiku 5.5 (for prompts over 100,000 tokens)                                                                                   | $0.25 / MTok | $1.25 / MTok  |
-| Claude Haiku 4.5                                                                                                                     | $0.50 / MTok | $2.50 / MTok  |
-| Claude Haiku 3.5 ([retired, except on Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations))            | $0.40 / MTok | $2 / MTok     |
+| Model                                                                                                                                                  | Batch input  | Batch output  |
+| :----------------------------------------------------------------------------------------------------------------------------------------------------- | :----------- | :------------ |
+| Claude Fable 5.1                                                                                                                                       | $5 / MTok    | $25 / MTok    |
+| Claude Mythos 5.1 ([limited availability](https://support.claude.com/en/articles/14604842))                                                            | $5 / MTok    | $25 / MTok    |
+| Claude Fable 5                                                                                                                                         | $5 / MTok    | $25 / MTok    |
+| Claude Mythos 5 ([limited availability](https://support.claude.com/en/articles/14604842))                                                              | $5 / MTok    | $25 / MTok    |
+| Claude Opus 5.5                                                                                                                                        | $2 / MTok    | $10 / MTok    |
+| Claude Opus 5                                                                                                                                          | $2.50 / MTok | $12.50 / MTok |
+| Claude Opus 4.8                                                                                                                                        | $2.50 / MTok | $12.50 / MTok |
+| Claude Opus 4.7                                                                                                                                        | $2.50 / MTok | $12.50 / MTok |
+| Claude Opus 4.6                                                                                                                                        | $2.50 / MTok | $12.50 / MTok |
+| Claude Opus 4.5                                                                                                                                        | $2.50 / MTok | $12.50 / MTok |
+| Claude Opus 4.1 ([retired, except on Bedrock and Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli)) | $7.50 / MTok | $37.50 / MTok |
+| Claude Opus 4 ([retired, except on Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli))               | $7.50 / MTok | $37.50 / MTok |
+| Claude Sonnet 5.5                                                                                                                                      | $1 / MTok    | $5 / MTok     |
+| Claude Sonnet 5                                                                                                                                        | $1 / MTok    | $5 / MTok     |
+| Claude Sonnet 4.6                                                                                                                                      | $1.50 / MTok | $7.50 / MTok  |
+| Claude Sonnet 4.5                                                                                                                                      | $1.50 / MTok | $7.50 / MTok  |
+| Claude Sonnet 4 ([retired, except on Bedrock and Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli)) | $1.50 / MTok | $7.50 / MTok  |
+| Claude Haiku 5.5 (for prompts up to 100,000 tokens)                                                                                                    | $0.05 / MTok | $0.25 / MTok  |
+| Claude Haiku 5.5 (for prompts over 100,000 tokens)                                                                                                     | $0.25 / MTok | $1.25 / MTok  |
+| Claude Haiku 4.5                                                                                                                                       | $0.50 / MTok | $2.50 / MTok  |
+| Claude Haiku 3.5 ([retired, except on Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli))            | $0.40 / MTok | $2 / MTok     |
 
 * **MTok:** Million tokens. $5 / MTok is $5 for every million tokens.
 * **Limited access:** Available only to organizations verified through Anthropic’s verification programs, such as the [Cyber Verification Program](https://support.claude.com/en/articles/14604842). To request access, apply to the program that covers your use case.
-* **Retired:** May still be available on other cloud platforms. See [Model deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations) for more.
+* **Retired:** May still be available on other cloud platforms. See [Model deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli) for more.
 
-For more information about batch processing, see [Batch processing](https://platform.claude.com/docs/en/build-with-claude/batch-processing).
+For more information about batch processing, see [Batch processing](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=cli).
 
 ### Long context pricing
 
-Claude 4.6 and later models (except Claude Haiku 5.5) and [Claude Mythos Preview](https://anthropic.com/glasswing) include the full [1M token context window](https://platform.claude.com/docs/en/build-with-claude/context-windows) at standard pricing. (A 900k-token request is billed at the same per-token rate as a 9k-token request.) Prompt caching and batch processing discounts apply at standard rates across the full context window.
+Claude 4.6 and later models (except Claude Haiku 5.5) and [Claude Mythos Preview](https://anthropic.com/glasswing) include the full [1M token context window](https://platform.claude.com/docs/en/build-with-claude/context-windows?sdk_languages=cli) at standard pricing. (A 900k-token request is billed at the same per-token rate as a 9k-token request.) Prompt caching and batch processing discounts apply at standard rates across the full context window.
 
-Claude Haiku 5.5 is priced by prompt length: a request whose prompt is over 100,000 tokens pays higher prices. A request's prompt length counts all of its input tokens, including cache reads and cache writes. Each request is priced on its own: a request over the threshold pays the higher prices even when part of its prompt is a cache hit, and earlier requests keep the prices they were billed at. [Model pricing](https://platform.claude.com/docs/en/about-claude/pricing#model-pricing) and [Batch processing](https://platform.claude.com/docs/en/about-claude/pricing#batch-processing) list both sets of prices.
+Claude Haiku 5.5 is priced by prompt length: a request whose prompt is over 100,000 tokens pays higher prices. A request's prompt length counts all of its input tokens, including cache reads and cache writes. Each request is priced on its own: a request over the threshold pays the higher prices even when part of its prompt is a cache hit, and earlier requests keep the prices they were billed at. [Model pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#model-pricing) and [Batch processing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#batch-processing) list both sets of prices.
 
 ### Tool use pricing
 
@@ -241,40 +241,40 @@ The additional tokens from tool use come from:
 
 When you use `tools`, the API also automatically includes a special system prompt for the model that enables tool use. The number of tool use tokens required for each model is listed in the following table (excluding the additional tokens listed earlier). Note that the table assumes at least 1 tool is provided. If no `tools` are provided, then a tool choice of `none` uses 0 additional system prompt tokens.
 
-| Model                                                                                                                                | Tool use system prompt tokens: auto, none | Tool use system prompt tokens: any, tool |
-| :----------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------- | :--------------------------------------- |
-| Claude Opus 5.5                                                                                                                      | 286 tokens                                |                                          |
-| Claude Opus 5                                                                                                                        | 286 tokens                                | 406 tokens                               |
-| Claude Opus 4.8                                                                                                                      | 290 tokens                                | 410 tokens                               |
-| Claude Opus 4.7                                                                                                                      | 675 tokens                                | 804 tokens                               |
-| Claude Opus 4.6                                                                                                                      | 497 tokens                                | 589 tokens                               |
-| Claude Opus 4.5                                                                                                                      | 496 tokens                                | 588 tokens                               |
-| Claude Opus 4.1 ([retired, except on Bedrock and Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations)) | 313 tokens                                | 315 tokens                               |
-| Claude Opus 4 ([retired, except on Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations))               | 313 tokens                                | 315 tokens                               |
-| Claude Sonnet 5.5                                                                                                                    | 286 tokens                                |                                          |
-| Claude Sonnet 5                                                                                                                      | 354 tokens                                | 474 tokens                               |
-| Claude Sonnet 4.6                                                                                                                    | 497 tokens                                | 589 tokens                               |
-| Claude Sonnet 4.5                                                                                                                    | 496 tokens                                | 588 tokens                               |
-| Claude Sonnet 4 ([retired, except on Bedrock and Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations)) | 313 tokens                                | 315 tokens                               |
-| Claude Haiku 5.5                                                                                                                     | 286 tokens                                | 406 tokens                               |
-| Claude Haiku 4.5                                                                                                                     | 496 tokens                                | 588 tokens                               |
-| Claude Haiku 3.5 ([retired, except on Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations))            | 264 tokens                                | 355 tokens                               |
+| Model                                                                                                                                                  | Tool use system prompt tokens: auto, none | Tool use system prompt tokens: any, tool |
+| :----------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------- | :--------------------------------------- |
+| Claude Opus 5.5                                                                                                                                        | 286 tokens                                |                                          |
+| Claude Opus 5                                                                                                                                          | 286 tokens                                | 406 tokens                               |
+| Claude Opus 4.8                                                                                                                                        | 290 tokens                                | 410 tokens                               |
+| Claude Opus 4.7                                                                                                                                        | 675 tokens                                | 804 tokens                               |
+| Claude Opus 4.6                                                                                                                                        | 497 tokens                                | 589 tokens                               |
+| Claude Opus 4.5                                                                                                                                        | 496 tokens                                | 588 tokens                               |
+| Claude Opus 4.1 ([retired, except on Bedrock and Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli)) | 313 tokens                                | 315 tokens                               |
+| Claude Opus 4 ([retired, except on Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli))               | 313 tokens                                | 315 tokens                               |
+| Claude Sonnet 5.5                                                                                                                                      | 286 tokens                                |                                          |
+| Claude Sonnet 5                                                                                                                                        | 354 tokens                                | 474 tokens                               |
+| Claude Sonnet 4.6                                                                                                                                      | 497 tokens                                | 589 tokens                               |
+| Claude Sonnet 4.5                                                                                                                                      | 496 tokens                                | 588 tokens                               |
+| Claude Sonnet 4 ([retired, except on Bedrock and Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli)) | 313 tokens                                | 315 tokens                               |
+| Claude Haiku 5.5                                                                                                                                       | 286 tokens                                | 406 tokens                               |
+| Claude Haiku 4.5                                                                                                                                       | 496 tokens                                | 588 tokens                               |
+| Claude Haiku 3.5 ([retired, except on Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli))            | 264 tokens                                | 355 tokens                               |
 
 * **auto, none:** The count when tool\_choice is auto or none.
 * **any, tool:** The count when tool\_choice is any or tool.
-* **Retired:** May still be available on other cloud platforms. See [Model deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations) for more.
+* **Retired:** May still be available on other cloud platforms. See [Model deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli) for more.
 
 These token counts are added to your normal input and output tokens to calculate the total cost of a request.
 
-For current per-model prices, refer to the [model pricing](https://platform.claude.com/docs/en/about-claude/pricing#model-pricing) section.
+For current per-model prices, refer to the [model pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#model-pricing) section.
 
-For more information about tool use implementation and best practices, see [Tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview).
+For more information about tool use implementation and best practices, see [Tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=cli).
 
 ### Specific tool pricing
 
 #### Bash tool
 
-The bash tool definition adds the following input tokens to your request. This is in addition to the per-model [tool use system prompt](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview#pricing) that applies whenever any tool is present.
+The bash tool definition adds the following input tokens to your request. This is in addition to the per-model [tool use system prompt](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=cli#pricing) that applies whenever any tool is present.
 
 | Model                                                 | Additional input tokens |
 | ----------------------------------------------------- | ----------------------- |
@@ -287,7 +287,7 @@ Additional tokens are consumed by:
 * Error messages
 * Large file contents
 
-See [tool use pricing](https://platform.claude.com/docs/en/about-claude/pricing#tool-use-pricing) for complete pricing details.
+See [tool use pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#tool-use-pricing) for complete pricing details.
 
 #### Code execution tool
 
@@ -325,7 +325,7 @@ In addition to the base tokens, the following additional input tokens are needed
 | `text_editor_20250728` (Claude 4.7 and later models and Claude Mythos Preview) | 974 tokens              |
 | `text_editor_20250728` (Claude 4.6 and earlier models)                         | 745 tokens              |
 
-See [tool use pricing](https://platform.claude.com/docs/en/about-claude/pricing#tool-use-pricing) for complete pricing details.
+See [tool use pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#tool-use-pricing) for complete pricing details.
 
 #### Web search tool
 
@@ -379,9 +379,9 @@ Example token usage for typical content:
 
 #### Computer use tool
 
-Computer use follows the standard [tool use pricing](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview#pricing). When using the computer use tool:
+Computer use follows the standard [tool use pricing](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=cli#pricing). When using the computer use tool:
 
-**Toolset definition overhead:** Declaring `computer_toolset_20260801` with its default members adds about 4,500 input tokens to a request (about 4,590 on Claude Sonnet 5 and about 4,520 on the other supported models), which covers the member tool definitions and the tool use system prompt. Disabling `zoom` with `configs` removes about 410 of those tokens. The exact count for a request is reported in the response `usage`, and you can estimate it in advance with the [token counting endpoint](https://platform.claude.com/docs/en/build-with-claude/token-counting).
+**Toolset definition overhead:** Declaring `computer_toolset_20260801` with its default members adds about 4,500 input tokens to a request (about 4,590 on Claude Sonnet 5 and about 4,520 on the other supported models), which covers the member tool definitions and the tool use system prompt. Disabling `zoom` with `configs` removes about 410 of those tokens. The exact count for a request is reported in the response `usage`, and you can estimate it in advance with the [token counting endpoint](https://platform.claude.com/docs/en/build-with-claude/token-counting?sdk_languages=cli).
 
 **Earlier tool versions:** The following figures apply to the `computer_20251124` and `computer_20250124` tool versions, not to `computer_toolset_20260801`:
 
@@ -390,7 +390,7 @@ Computer use follows the standard [tool use pricing](https://platform.claude.com
 
 **Additional token consumption:**
 
-* Screenshot and zoom images returned in tool results, billed as image input (see [Vision pricing](https://platform.claude.com/docs/en/build-with-claude/vision#evaluate-image-size))
+* Screenshot and zoom images returned in tool results, billed as image input (see [Vision pricing](https://platform.claude.com/docs/en/build-with-claude/vision?sdk_languages=cli#evaluate-image-size))
 * Tool execution results returned to Claude
 
 <Note>
@@ -399,13 +399,13 @@ Computer use follows the standard [tool use pricing](https://platform.claude.com
 
 #### Browser use tool
 
-Browser use follows the standard [tool use pricing](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview#pricing). When using the browser use tool:
+Browser use follows the standard [tool use pricing](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=cli#pricing). When using the browser use tool:
 
-**Toolset definition overhead:** Declaring `browser_toolset_20260801` with its default members adds about 6,600 input tokens to a request (about 6,670 on Claude Sonnet 5 and about 6,610 on the other supported models), which covers the member tool definitions and the tool use system prompt. Enabling all four optional members adds about 880 tokens, and disabling members with `configs` reduces the count. The exact count for a request is reported in the response `usage`, and you can estimate it in advance with the [token counting endpoint](https://platform.claude.com/docs/en/build-with-claude/token-counting).
+**Toolset definition overhead:** Declaring `browser_toolset_20260801` with its default members adds about 6,600 input tokens to a request (about 6,670 on Claude Sonnet 5 and about 6,610 on the other supported models), which covers the member tool definitions and the tool use system prompt. Enabling all four optional members adds about 880 tokens, and disabling members with `configs` reduces the count. The exact count for a request is reported in the response `usage`, and you can estimate it in advance with the [token counting endpoint](https://platform.claude.com/docs/en/build-with-claude/token-counting?sdk_languages=cli).
 
 **Additional token consumption:**
 
-* Screenshot and zoom images returned in tool results, billed as image input (see [Vision pricing](https://platform.claude.com/docs/en/build-with-claude/vision#evaluate-image-size))
+* Screenshot and zoom images returned in tool results, billed as image input (see [Vision pricing](https://platform.claude.com/docs/en/build-with-claude/vision?sdk_languages=cli#evaluate-image-size))
 * Text tool results returned to Claude, such as accessibility trees, page text, and console or network entries
 
 <Note>
@@ -414,20 +414,20 @@ Browser use follows the standard [tool use pricing](https://platform.claude.com/
 
 ## Claude Managed Agents pricing
 
-[Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview) is billed on two dimensions: tokens and session runtime.
+[Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli) is billed on two dimensions: tokens and session runtime.
 
 ### Tokens
 
-All tokens consumed by a Claude Managed Agents session are billed at the rates shown in [Model pricing](https://platform.claude.com/docs/en/about-claude/pricing#model-pricing). [Prompt caching](https://platform.claude.com/docs/en/about-claude/pricing#prompt-caching) multipliers apply identically. Web search triggered inside a session incurs the standard $10 per 1,000 searches. On [Claude Platform on AWS](https://platform.claude.com/docs/en/about-claude/pricing#claude-platform-on-aws-pricing), session token and runtime charges convert to Claude Consumption Units at the standard rate. [Fast mode](https://platform.claude.com/docs/en/about-claude/pricing#fast-mode-pricing) premium pricing applies when an agent's `model.speed` is set to `"fast"`.
+All tokens consumed by a Claude Managed Agents session are billed at the rates shown in [Model pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#model-pricing). [Prompt caching](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#prompt-caching) multipliers apply identically. Web search triggered inside a session incurs the standard $10 per 1,000 searches. On [Claude Platform on AWS](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#claude-platform-on-aws-pricing), session token and runtime charges convert to Claude Consumption Units at the standard rate. [Fast mode](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#fast-mode-pricing) premium pricing applies when an agent's `model.speed` is set to `"fast"`.
 
-The [data residency multiplier](https://platform.claude.com/docs/en/about-claude/pricing#data-residency-pricing) also applies: when an agent's `model.inference_geo` is pinned to `"us"`, tokens consumed by sessions running that agent are billed at 1.1x the standard rates, the same multiplier that applies to US-only inference on the Messages API.
+The [data residency multiplier](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#data-residency-pricing) also applies: when an agent's `model.inference_geo` is pinned to `"us"`, tokens consumed by sessions running that agent are billed at 1.1x the standard rates, the same multiplier that applies to US-only inference on the Messages API.
 
 The following Messages API modifiers do **not** apply to Claude Managed Agents sessions:
 
-| Modifier                                                                                                  | Why it doesn't apply                                           |
-| --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| [Batch API discount](https://platform.claude.com/docs/en/about-claude/pricing#batch-processing)           | Sessions are stateful and interactive. There is no batch mode. |
-| [Cloud platform pricing](https://platform.claude.com/docs/en/about-claude/pricing#cloud-platform-pricing) | Not available on partner-operated cloud platforms.             |
+| Modifier                                                                                                                    | Why it doesn't apply                                           |
+| --------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| [Batch API discount](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#batch-processing)           | Sessions are stateful and interactive. There is no batch mode. |
+| [Cloud platform pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#cloud-platform-pricing) | Not available on partner-operated cloud platforms.             |
 
 ### Session runtime
 
@@ -438,7 +438,7 @@ The following Messages API modifiers do **not** apply to Claude Managed Agents s
 Runtime is measured to the millisecond and accrues only while the session's status is `running`. Time spent `idle` (waiting for your next message or a tool confirmation), `rescheduling`, or `terminated` does not count toward runtime.
 
 <Note>
-  Session runtime replaces the [code execution](https://platform.claude.com/docs/en/about-claude/pricing#code-execution-tool) container-hour billing model when using Claude Managed Agents. You are not separately billed for container hours on top of session runtime.
+  Session runtime replaces the [code execution](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#code-execution-tool) container-hour billing model when using Claude Managed Agents. You are not separately billed for container hours on top of session runtime.
 </Note>
 
 ### Worked example
@@ -485,7 +485,7 @@ Rate limits vary by usage tier and affect how many requests you can make:
 * **Build tier:** Increased limits for growing applications
 * **Scale tier:** Highest standard limits for production workloads
 
-For detailed rate limit information, see [Rate limits](https://platform.claude.com/docs/en/api/rate-limits).
+For detailed rate limit information, see [Rate limits](https://platform.claude.com/docs/en/api/rate-limits?sdk_languages=cli).
 
 For limits beyond the Scale tier or custom pricing arrangements, [contact the sales team](https://claude.com/contact-sales).
 
@@ -493,7 +493,7 @@ For limits beyond the Scale tier or custom pricing arrangements, [contact the sa
 
 Volume discounts may be available for high-volume users. These are negotiated on a case-by-case basis.
 
-* Standard usage tiers use the pricing shown in [Model pricing](https://platform.claude.com/docs/en/about-claude/pricing#model-pricing)
+* Standard usage tiers use the pricing shown in [Model pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#model-pricing)
 * Enterprise customers can [contact sales](mailto:sales@anthropic.com) for custom pricing
 * Academic and research discounts may be available
 
@@ -519,7 +519,7 @@ Contact the sales team at [sales@anthropic.com](mailto:sales@anthropic.com) or t
 
 ### How is token usage calculated?
 
-Tokens are pieces of text that models process. How many tokens the same text produces depends on the model's tokenizer, the language, and the type of content. Claude 4.7 and later models and Claude Mythos Preview use a newer tokenizer that produces approximately 30 percent more tokens for the same text than earlier models. To see how many tokens a request uses on a specific model, count it with [token counting](https://platform.claude.com/docs/en/build-with-claude/token-counting) and that model's ID.
+Tokens are pieces of text that models process. How many tokens the same text produces depends on the model's tokenizer, the language, and the type of content. Claude 4.7 and later models and Claude Mythos Preview use a newer tokenizer that produces approximately 30 percent more tokens for the same text than earlier models. To see how many tokens a request uses on a specific model, count it with [token counting](https://platform.claude.com/docs/en/build-with-claude/token-counting?sdk_languages=cli) and that model's ID.
 
 ### Are there free tiers or trials?
 
@@ -527,7 +527,7 @@ New users receive a small amount of free credits to test the API. [Contact sales
 
 ### How do discounts stack?
 
-Batch API and prompt caching discounts can be combined. For example, using both features together provides significant cost savings compared to standard API calls. See [prompt caching pricing](https://platform.claude.com/docs/en/about-claude/pricing#prompt-caching) for how the multipliers interact.
+Batch API and prompt caching discounts can be combined. For example, using both features together provides significant cost savings compared to standard API calls. See [prompt caching pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#prompt-caching) for how the multipliers interact.
 
 ### What payment methods are accepted?
 

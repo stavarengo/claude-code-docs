@@ -66,7 +66,7 @@ If you don't have a Console organization, create one at [platform.claude.com](ht
   </Step>
 
   <Step title="Start building">
-    Your credits appear in the Console, in the **Promotional credits** section under [**Settings > Billing**](https://platform.claude.com/settings/billing). Create an API key and make your first request. See [Get started](https://platform.claude.com/docs/en/get-started).
+    Your credits appear in the Console, in the **Promotional credits** section under [**Settings > Billing**](https://platform.claude.com/settings/billing). Create an API key and make your first request. See [Get started](https://platform.claude.com/docs/en/get-started?sdk_languages=cli).
   </Step>
 </Steps>
 
@@ -80,32 +80,32 @@ Subscribers who aren't eligible don't see API credits in their settings page. If
 
 These API credits can only be used on the Claude Platform. The following table shows which products are covered:
 
-| Product                                                                              | Covered |
-| ------------------------------------------------------------------------------------ | ------- |
-| [Claude API](https://platform.claude.com/docs/en/api/overview)                       | Yes     |
-| [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview) | Yes     |
-| [Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk/overview)               | Yes     |
-| [Playground](https://platform.claude.com/playground)                                 | Yes     |
-| Claude Code                                                                          | No      |
-| Extra usage in the Claude apps                                                       | No      |
-| Claude Platform on AWS, Bedrock, Google Cloud, Microsoft Foundry                     | No      |
+| Product                                                                                                | Covered |
+| ------------------------------------------------------------------------------------------------------ | ------- |
+| [Claude API](https://platform.claude.com/docs/en/api/overview?sdk_languages=cli)                       | Yes     |
+| [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli) | Yes     |
+| [Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk/overview)                                 | Yes     |
+| [Playground](https://platform.claude.com/playground)                                                   | Yes     |
+| Claude Code                                                                                            | No      |
+| Extra usage in the Claude apps                                                                         | No      |
+| Claude Platform on AWS, Bedrock, Google Cloud, Microsoft Foundry                                       | No      |
 
 ## How credits are applied
 
 * **Timing.** Credits arrive each billing cycle, shortly after your plan payment is processed. On annual plans, credits arrive monthly.
 * **Order.** Included credits are spent first, then any credits you've purchased. Auto-reload is based only on your purchased balance. It reloads when that balance reaches your threshold, even if included credits remain.
 * **Expiry.** Unused credits expire at the end of each billing cycle (or monthly for annual plans) and don't roll over.
-* **Sharing.** Every API key and workspace in the linked organization draws from the same balance. To cap spending on a project, give it its own workspace and set that workspace's [spend limit](https://platform.claude.com/docs/en/manage-claude/workspaces#setting-workspace-limits).
+* **Sharing.** Every API key and workspace in the linked organization draws from the same balance. To cap spending on a project, give it its own workspace and set that workspace's [spend limit](https://platform.claude.com/docs/en/manage-claude/workspaces?sdk_languages=cli#setting-workspace-limits).
 * **Visibility.** Your credits appear in the Console under [**Settings > Billing**](https://platform.claude.com/settings/billing), in the **Promotional credits** section, with the amount and expiry date.
 * **Your Claude plan.** Credits don't change your usage limits in Claude or Claude Code.
 
 ## Spend limits and rate limits
 
-Credits don't change how [rate limits and spend limits](https://platform.claude.com/docs/en/api/rate-limits) work:
+Credits don't change how [rate limits and spend limits](https://platform.claude.com/docs/en/api/rate-limits?sdk_languages=cli) work:
 
-* Usage paid with credits counts toward your organization's [monthly spend cap](https://platform.claude.com/docs/en/api/rate-limits#spend-limits). Spend caps reset on the first of each calendar month, while credits refresh on your billing cycle (or monthly for annual plans).
+* Usage paid with credits counts toward your organization's [monthly spend cap](https://platform.claude.com/docs/en/api/rate-limits?sdk_languages=cli#spend-limits). Spend caps reset on the first of each calendar month, while credits refresh on your billing cycle (or monthly for annual plans).
 * Organizations linked to an eligible plan move up to at least the Start tier. If their monthly credits are over $200 USD, they move up to at least the Build tier.
-* Claiming credits doesn't otherwise change your [usage tier](https://platform.claude.com/docs/en/api/rate-limits#about-rate-limits), and these credits don't count toward moving to a higher tier.
+* Claiming credits doesn't otherwise change your [usage tier](https://platform.claude.com/docs/en/api/rate-limits?sdk_languages=cli#about-rate-limits), and these credits don't count toward moving to a higher tier.
 
 ### When credits run out
 
@@ -138,14 +138,14 @@ Credit balance too low · Add funds: https://platform.claude.com/settings/billin
 
 Your monthly cost depends mainly on the model you choose and how often your application runs. To stretch your credits:
 
-* Choose a model that fits each task. To learn how, see [Choosing the right model](https://platform.claude.com/docs/en/about-claude/models/choosing-a-model).
-* Use [prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) for repeated context.
-* Use the [Message Batches API](https://platform.claude.com/docs/en/build-with-claude/batch-processing) for work that doesn't need an immediate response. It costs 50 percent less.
-* Check [pricing](https://platform.claude.com/docs/en/about-claude/pricing) and track spend on the [Cost](https://platform.claude.com/cost) page.
+* Choose a model that fits each task. To learn how, see [Choosing the right model](https://platform.claude.com/docs/en/about-claude/models/choosing-a-model?sdk_languages=cli).
+* Use [prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for repeated context.
+* Use the [Message Batches API](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=cli) for work that doesn't need an immediate response. It costs 50 percent less.
+* Check [pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli) and track spend on the [Cost](https://platform.claude.com/cost) page.
 
 ## Related
 
-* [Rate limits and spend limits](https://platform.claude.com/docs/en/api/rate-limits)
-* [Workspaces](https://platform.claude.com/docs/en/manage-claude/workspaces)
-* [Pricing](https://platform.claude.com/docs/en/about-claude/pricing)
+* [Rate limits and spend limits](https://platform.claude.com/docs/en/api/rate-limits?sdk_languages=cli)
+* [Workspaces](https://platform.claude.com/docs/en/manage-claude/workspaces?sdk_languages=cli)
+* [Pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli)
 * [Help Center: API credits for Max and Team plans](https://support.claude.com/en/articles/17154008)

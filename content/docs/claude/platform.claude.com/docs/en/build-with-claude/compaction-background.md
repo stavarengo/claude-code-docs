@@ -27,13 +27,13 @@ featureMetadata:
     Microsoft Foundry: beta
 ---
 
-Background compaction, often called async compaction, changes two things in the [compaction loop](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand#compact-in-a-loop): the compaction request runs while the conversation continues on its full history, and the swap waits until the block arrives. [Continue from the summary](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand#continue-from-the-summary) and [Handle a missing summary or an error](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand#when-no-summary-comes-back) apply unchanged.
+Background compaction, often called async compaction, changes two things in the [compaction loop](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand?sdk_languages=cli#compact-in-a-loop): the compaction request runs while the conversation continues on its full history, and the swap waits until the block arrives. [Continue from the summary](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand?sdk_languages=cli#continue-from-the-summary) and [Handle a missing summary or an error](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand?sdk_languages=cli#when-no-summary-comes-back) apply unchanged.
 
 ## How the swap works while work continues
 
 The compaction request and the block it returns are the same as in the loop. Your history grows between sending the request and using its result, and the swap must leave that growth in place.
 
-1. Send the [compaction request](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand#request-a-summary) with your history as it stands, and record how many messages it held.
+1. Send the [compaction request](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand?sdk_languages=cli#request-a-summary) with your history as it stands, and record how many messages it held.
 2. While that request runs, keep the conversation going on the full history. Append each new turn, don't edit anything already in the history, and don't start another compaction request until this one is swapped in or has failed.
 3. When the response arrives with `stop_reason` `"compaction"`, drop exactly the messages you sent from the front of your history and put the returned message in their place. Every turn appended since step 1 stays after it.
 4. Send the swapped history on the first request after the block arrives, so that thinking produced while the summary was being written stays valid.
@@ -44,13 +44,13 @@ For example, if the compaction request held messages 1 to 5 and the conversation
   ![Background compaction timeline: the compaction request is sent with messages 1 to 5 while the conversation continues on its full history and gains messages 6 to 8; when the block arrives, it replaces messages 1 to 5 at the front of the history, and the history becomes the block followed by messages 6 to 8](https://platform.claude.com/docs/images/compaction-background-timeline.svg)
 </Frame>
 
-If the response has any other `stop_reason`, no summary was produced, which counts as a failure in step 2. Keep the full history; [Handle a missing summary or an error](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand#when-no-summary-comes-back) lists the causes and what to do for each.
+If the response has any other `stop_reason`, no summary was produced, which counts as a failure in step 2. Keep the full history; [Handle a missing summary or an error](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand?sdk_languages=cli#when-no-summary-comes-back) lists the causes and what to do for each.
 
 ## Request the summary in the background
 
 The compaction request counts against your rate limits like any other request, and while it runs your application has two requests open at once. The conversation keeps growing on its full history until the swap, so start the compaction request while the context window still has room for the turns that arrive meanwhile.
 
-The following program is the loop from [Compact in a loop](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand#compact-in-a-loop) with the compaction request taken off the conversation's path. The highlighted lines show where it differs from the loop, and the following list takes them in the order the program runs them.
+The following program is the loop from [Compact in a loop](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand?sdk_languages=cli#compact-in-a-loop) with the compaction request taken off the conversation's path. The highlighted lines show where it differs from the loop, and the following list takes them in the order the program runs them.
 
 <CodeGroup exclude="shell, php">
   ```python Python
@@ -551,4 +551,4 @@ The `stop_reason` check is unchanged from the loop: a response without a block l
 
 ## Keep thinking valid while the summary is built
 
-Turns that arrive while the summary is being written are kept turns. If you send thinking blocks back on a model with [preserved thinking](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking), the thinking in those turns stays valid only while the [conditions for kept thinking](https://platform.claude.com/docs/en/build-with-claude/compaction-thinking-blocks#conditions-for-kept-thinking-to-stay-valid) hold.
+Turns that arrive while the summary is being written are kept turns. If you send thinking blocks back on a model with [preserved thinking](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking?sdk_languages=cli), the thinking in those turns stays valid only while the [conditions for kept thinking](https://platform.claude.com/docs/en/build-with-claude/compaction-thinking-blocks?sdk_languages=cli#conditions-for-kept-thinking-to-stay-valid) hold.

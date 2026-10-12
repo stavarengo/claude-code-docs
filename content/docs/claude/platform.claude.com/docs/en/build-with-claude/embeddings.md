@@ -223,7 +223,7 @@ retrieved_id = np.argmax(similarities)
 print(documents[retrieved_id])
 ```
 
-Note that `input_type="document"` and `input_type="query"` are used for embedding the document and query, respectively. For more about `input_type`, see [When and how should I use the input\_type parameter?](https://platform.claude.com/docs/en/build-with-claude/embeddings#faq) in the FAQ.
+Note that `input_type="document"` and `input_type="query"` are used for embedding the document and query, respectively. For more about `input_type`, see [When and how should I use the input\_type parameter?](https://platform.claude.com/docs/en/build-with-claude/embeddings?sdk_languages=cli#faq) in the FAQ.
 
 The output is the fifth document, which is indeed the most relevant to the query:
 

@@ -5,12 +5,12 @@ description: Inspect a session in the Claude Console, read its token usage and l
 featureMetadata:
   topic:
     title: Managed Agents
-    url: https://platform.claude.com/docs/en/managed-agents/overview
+    url: https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli
   status: beta
   betaHeader: managed-agents-2026-04-01
 ---
 
-Use the session viewer in the Claude Console to inspect what an agent did in a session, without writing any code. Use the session's `usage` totals to see what that work consumed.
+Use the session viewer in the Claude Console to inspect what an agent did in a session, without writing any code. Use the session's `usage` (java, php) totals to see what that work consumed.
 
 ## Inspect a session in the Console
 
@@ -18,21 +18,21 @@ The session viewer is only accessible to Developers and Admins. To open it, go t
 
 The session viewer shows:
 
-* **Timeline minimap:** A zoomable overview of the session's activity over time, with one lane per thread in [multiagent](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration) sessions. Select a lane to view that thread, or select a mark to jump to its event.
+* **Timeline minimap:** A zoomable overview of the session's activity over time, with one lane per thread in [multiagent](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli) sessions. Select a lane to view that thread, or select a mark to jump to its event.
 * **Transcript:** The conversation grouped by model request, including thinking, tool calls with their inputs and results, and message text as it streams. You can filter the events and copy or download them as JSON.
 * **Inspector:** A resizable side panel with details about the session, in five tabs.
 
-| Inspector tab | What it shows                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Session**   | The session's details and metadata, its cumulative cost over time, and spend against the session's [budget](https://platform.claude.com/docs/en/managed-agents/budgets) when one is set.                                                                                                                                                                                                                                                                                                                                |
-| **Events**    | Every raw event on the current thread, in the order the server sent it. Select an event to see its JSON. A message that streamed while the page was open also has a **Deltas** view of its [event deltas](https://platform.claude.com/docs/en/managed-agents/event-deltas).                                                                                                                                                                                                                                             |
-| **Tools**     | The tools the session's agents are configured with, along with call counts, failures, and median duration. Select a tool to see its calls and jump to one in the transcript.                                                                                                                                                                                                                                                                                                                                            |
-| **Resources** | Mounted [files](https://platform.claude.com/docs/en/managed-agents/files), [repositories](https://platform.claude.com/docs/en/managed-agents/github), and [memory stores](https://platform.claude.com/docs/en/managed-agents/memory) at their container paths, including the memories in each store and the changes this session made to them. Also lists files the agent wrote to `/mnt/session/outputs` and the [skills](https://platform.claude.com/docs/en/managed-agents/skills) attached to the session's agents. |
-| **Threads**   | Every thread with its status, context size, and cost. Select a thread to view its details, such as the agent, model, context usage, and cost.                                                                                                                                                                                                                                                                                                                                                                           |
+| Inspector tab | What it shows                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Session**   | The session's details and metadata, its cumulative cost over time, and spend against the session's [budget](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli) when one is set.                                                                                                                                                                                                                                                                                                                                                                                      |
+| **Events**    | Every raw event on the current thread, in the order the server sent it. Select an event to see its JSON. A message that streamed while the page was open also has a **Deltas** view of its [event deltas](https://platform.claude.com/docs/en/managed-agents/event-deltas?sdk_languages=cli).                                                                                                                                                                                                                                                                                                   |
+| **Tools**     | The tools the session's agents are configured with, along with call counts, failures, and median duration. Select a tool to see its calls and jump to one in the transcript.                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| **Resources** | Mounted [files](https://platform.claude.com/docs/en/managed-agents/files?sdk_languages=cli), [repositories](https://platform.claude.com/docs/en/managed-agents/github?sdk_languages=cli), and [memory stores](https://platform.claude.com/docs/en/managed-agents/memory?sdk_languages=cli) at their container paths, including the memories in each store and the changes this session made to them. Also lists files the agent wrote to `/mnt/session/outputs` and the [skills](https://platform.claude.com/docs/en/managed-agents/skills?sdk_languages=cli) attached to the session's agents. |
+| **Threads**   | Every thread with its status, context size, and cost. Select a thread to view its details, such as the agent, model, context usage, and cost.                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 
 Append `?event={event_id}` to a session URL to open the session at a specific event.
 
-With `ant beta:sessions connect`, you can open the same viewer from the `ant` CLI or follow the session in your terminal. See [Connect to a Managed Agents session from your terminal](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/sessions-connect).
+With `ant beta:sessions connect`, you can open the same viewer from the `ant` CLI or follow the session in your terminal. See [Connect to a Managed Agents session from your terminal](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/sessions-connect?sdk_languages=cli).
 
 ## Track usage
 
@@ -79,36 +79,36 @@ The session's `stats` object has its own `active_seconds`, which sums each threa
 
 ### Per-thread usage
 
-Each [session thread](https://platform.claude.com/docs/en/managed-agents/session-threads)'s own `usage` carries `list_cost` and `active_seconds` too. Per-thread figures are rounded independently and exclude the session's running-time cost, so they don't sum exactly to the session's `list_cost`. The session figure is the authoritative one.
+Each [session thread](https://platform.claude.com/docs/en/managed-agents/session-threads?sdk_languages=cli)'s own `usage` carries `list_cost` and `active_seconds` too. Per-thread figures are rounded independently and exclude the session's running-time cost, so they don't sum exactly to the session's `list_cost`. The session figure is the authoritative one.
 
 ### Read usage from the stream
 
-You don't have to poll the session to observe these totals. The `session.usage` event carries the same cumulative snapshot on the session stream and in the event history. The snapshot holds the `usage` object plus the session's `budget`, which is `null` when the session has none.
+You don't have to poll the session to observe these totals. The `session.usage` event carries the same cumulative snapshot on the session stream and in the event history. The snapshot holds the `usage` (java, php) object plus the session's `budget` (java, php), which is `null` when the session has none.
 
 The event is emitted on idle transitions rather than on a timer:
 
 * The session emits one immediately before it goes idle, whatever the stop reason.
-* The session emits one when a thread pauses at a [session budget](https://platform.claude.com/docs/en/managed-agents/budgets).
+* The session emits one when a thread pauses at a [session budget](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli).
 
 ### Enforce a spend limit
 
-To enforce a spend limit, set a session budget rather than polling usage and stopping the session yourself. The platform prices the session's consumption continuously, and pauses each thread before its next model request once the list cost reaches the cap. See [When a session reaches its budget](https://platform.claude.com/docs/en/managed-agents/budgets#when-a-session-reaches-its-budget) for what that looks like on the stream.
+To enforce a spend limit, set a session budget rather than polling usage and stopping the session yourself. The platform prices the session's consumption continuously, and pauses each thread before its next model request once the list cost reaches the cap. See [When a session reaches its budget](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli#when-a-session-reaches-its-budget) for what that looks like on the stream.
 
 ## Debugging tips
 
-* **Check session events:** The session reports errors through [`session.error`](https://platform.claude.com/docs/en/managed-agents/reference#event-types) events.
+* **Check session events:** The session reports errors through [`session.error`](https://platform.claude.com/docs/en/managed-agents/reference?sdk_languages=cli#event-types) events.
 * **Review tool results:** Tool execution failures often explain unexpected agent behavior. The Inspector's **Tools** tab shows each tool's failures.
 * **Use system prompts:** Add logging instructions to the system prompt so the agent summarizes what it did and what it found.
-* **Troubleshoot previews:** If a stream that opts in to event deltas doesn't behave as you expect, see [Troubleshoot previews](https://platform.claude.com/docs/en/managed-agents/event-deltas#troubleshoot-previews).
+* **Troubleshoot previews:** If a stream that opts in to event deltas doesn't behave as you expect, see [Troubleshoot previews](https://platform.claude.com/docs/en/managed-agents/event-deltas?sdk_languages=cli#troubleshoot-previews).
 
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Session event stream" icon="lightning" href="https://platform.claude.com/docs/en/managed-agents/events-and-streaming">
+  <Card title="Session event stream" icon="lightning" href="https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli">
     Send events, stream responses, and interrupt or redirect your session mid-execution.
   </Card>
 
-  <Card title="Session budgets" icon="coins" href="https://platform.claude.com/docs/en/managed-agents/budgets">
+  <Card title="Session budgets" icon="coins" href="https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli">
     Cap a session's spend with a hard dollar budget enforced at public list rates.
   </Card>
 </CardGroup>

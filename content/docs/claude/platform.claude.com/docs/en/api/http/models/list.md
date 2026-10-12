@@ -1,0 +1,477 @@
+---
+title: List Models
+url: https://platform.claude.com/docs/en/api/http/models/list
+---
+
+# List Models
+
+**GET** `/v1/models`
+
+List available models.
+
+The Models API response can be used to determine which models are available for use in the API. More recently released models are listed first.
+
+## Query parameters
+
+- `after_id: optional string`
+
+  ID of the object to use as a cursor for pagination. When provided, returns the page of results immediately after this object.
+
+- `before_id: optional string`
+
+  ID of the object to use as a cursor for pagination. When provided, returns the page of results immediately before this object.
+
+- `lifecycle: optional array of "active" or "deprecated" or "retired"`
+
+  Filter the list to models in any of the given lifecycle stages (`active`, `deprecated`, or `retired`). Up to 3 values. When omitted, the list contains the `active` and `deprecated` models; `retired` models appear only when `retired` is requested explicitly.
+
+  maxItems: 3
+
+  - `"active"`
+
+  - `"deprecated"`
+
+  - `"retired"`
+
+- `limit: optional number`
+
+  Number of items to return per page.
+
+  Defaults to `20`. Ranges from `1` to `1000`.
+
+  default: 20, minimum: 1, maximum: 1000
+
+## Headers
+
+- `"anthropic-version": optional string`
+
+  The version of the Claude API you want to use.
+
+  Read more about versioning and our version history [here](https://platform.claude.com/docs/en/api/versioning?sdk_languages=http).
+
+- `"anthropic-workspace-id": optional string`
+
+  Optional header to select the Workspace for this request. The value is a Workspace ID (for example, `wrkspc_011CZkZaBF1tNoB5wlCeusgy`).
+
+  Only needed for credentials that can act on more than one Workspace. A credential that belongs to a specific Workspace may omit it; if sent, it must match that Workspace.
+
+- `"anthropic-beta": optional array of AnthropicBeta`
+
+  **Deprecated**: Deprecated. This parameter will be removed from this method in a future release. To use beta features, call the beta models methods (`client.beta.models`) instead.
+
+  Optional header to specify the beta version(s) you want to use.
+
+  - `string`
+
+  - `"message-batches-2024-09-24"`
+
+  - `"prompt-caching-2024-07-31"`
+
+  - `"computer-use-2024-10-22"`
+
+  - `"computer-use-2025-01-24"`
+
+  - `"pdfs-2024-09-25"`
+
+  - `"token-counting-2024-11-01"`
+
+  - `"token-efficient-tools-2025-02-19"`
+
+  - `"output-128k-2025-02-19"`
+
+  - `"files-api-2025-04-14"`
+
+  - `"mcp-client-2025-04-04"`
+
+  - `"mcp-client-2025-11-20"`
+
+  - `"dev-full-thinking-2025-05-14"`
+
+  - `"interleaved-thinking-2025-05-14"`
+
+  - `"code-execution-2025-05-22"`
+
+  - `"extended-cache-ttl-2025-04-11"`
+
+  - `"context-1m-2025-08-07"`
+
+  - `"context-management-2025-06-27"`
+
+  - `"model-context-window-exceeded-2025-08-26"`
+
+  - `"skills-2025-10-02"`
+
+  - `"fast-mode-2026-02-01"`
+
+  - `"output-300k-2026-03-24"`
+
+  - `"user-profiles-2026-03-24"`
+
+  - `"user-profiles-2026-08-18"`
+
+  - `"user-profiles-2026-09-04"`
+
+  - `"advisor-tool-2026-03-01"`
+
+  - `"managed-agents-2026-04-01"`
+
+  - `"cache-diagnosis-2026-04-07"`
+
+  - `"dreaming-2026-04-21"`
+
+  - `"thinking-token-count-2026-05-13"`
+
+  - `"server-side-fallback-2026-06-01"`
+
+  - `"server-side-fallback-2026-07-01"`
+
+  - `"fallback-credit-2026-06-01"`
+
+  - `"fallback-credit-2026-07-01"`
+
+  - `"agent-memory-2026-07-22"`
+
+  - `"mid-conversation-tool-changes-2026-07-01"`
+
+  - `"compact-2026-01-12"`
+
+  - `"computer-use-2025-11-24"`
+
+  - `"mcp-tunnels-2026-06-22"`
+
+  - `"structured-outputs-2025-11-13"`
+
+  - `"task-budgets-2026-03-13"`
+
+  - `"thinking-display-updates-2026-08-18"`
+
+  - `"ce-user-management-2026-07-13"`
+
+  - `"mid-conversation-output-config-2026-07-01"`
+
+  - `"thinking-binding-controls-2026-08-01"`
+
+  - `"mid-conversation-system-clear-at-2026-08-21"`
+
+  - `"compact-2026-09-04"`
+
+  - `"inline-tools-2026-09-15"`
+
+  - `"mcp-client-2026-09-15"`
+
+  - `"ce-plugins-2026-09-01"`
+
+  - `"spend-limit-reads-2026-09-26"`
+
+## Returns
+
+- `data: array of ModelInfo`
+
+  - `type: "model"`
+
+    Object type.
+
+    For Models, this is always `"model"`.
+
+    default: model
+
+  - `id: string`
+
+    Unique model identifier.
+
+  - `capabilities: ModelCapabilities or null`
+
+    Object mapping capability names to their support details. Keys are always present for all known capabilities.
+
+    - `batch: CapabilitySupport`
+
+      Whether the model supports the Batch API.
+
+      - `supported: boolean`
+
+        Whether this capability is supported by the model.
+
+    - `citations: CapabilitySupport`
+
+      Whether the model supports citation generation.
+
+    - `code_execution: CapabilitySupport`
+
+      Whether code that the model runs in the code execution tool can call the request's other tools, as in programmatic tool calling and dynamic filtering for web search and web fetch. Support for the code execution tool itself is in `server_tools.code_execution`.
+
+    - `context_management: ContextManagementCapability`
+
+      Context management support and available strategies.
+
+      - `clear_thinking_20251015: CapabilitySupport or null`
+
+        Whether the clear_thinking_20251015 strategy is supported.
+
+      - `clear_tool_uses_20250919: CapabilitySupport or null`
+
+        Whether the clear_tool_uses_20250919 strategy is supported.
+
+      - `compact_20260112: CapabilitySupport or null`
+
+        Whether the compact_20260112 strategy is supported.
+
+      - `supported: boolean`
+
+        Whether this capability is supported by the model.
+
+    - `effort: EffortCapability`
+
+      Effort (reasoning_effort) support and available levels.
+
+      - `high: CapabilitySupport`
+
+        Whether the model supports high effort level.
+
+      - `low: CapabilitySupport`
+
+        Whether the model supports low effort level.
+
+      - `max: CapabilitySupport`
+
+        Whether the model supports max effort level.
+
+      - `medium: CapabilitySupport`
+
+        Whether the model supports medium effort level.
+
+      - `supported: boolean`
+
+        Whether this capability is supported by the model.
+
+      - `xhigh: CapabilitySupport or null`
+
+        Whether the model supports xhigh effort level.
+
+    - `image_input: CapabilitySupport`
+
+      Whether the model accepts image content blocks.
+
+    - `pdf_input: CapabilitySupport`
+
+      Whether the model accepts PDF content blocks.
+
+    - `server_tools: ServerToolsCapability`
+
+      Whether this model supports the web search and code execution server tools. `supported` is true when the model supports at least one of the tools. A supported tool can still be rejected for your organization, for example when an admin has turned web search off.
+
+      - `code_execution: CapabilitySupport`
+
+        Whether the model supports the code execution tool: true when the model supports at least one version of the tool, not necessarily every version.
+
+      - `supported: boolean`
+
+        Whether this capability is supported by the model.
+
+      - `web_search: CapabilitySupport`
+
+        Whether the model supports the web search tool: true when the model supports at least one version of the tool, not necessarily every version.
+
+    - `structured_outputs: CapabilitySupport`
+
+      Whether the model supports structured output / JSON mode / strict tool schemas.
+
+    - `thinking: ThinkingCapability`
+
+      Thinking capability and supported type configurations.
+
+      - `supported: boolean`
+
+        Whether this capability is supported by the model.
+
+      - `types: ThinkingTypes`
+
+        Supported thinking type configurations.
+
+        - `adaptive: CapabilitySupport`
+
+          Whether the model accepts thinking with type 'adaptive' (the model decides whether and how much to think).
+
+        - `disabled: CapabilitySupport`
+
+          Whether the model accepts thinking with type 'disabled' (thinking turned off). False exactly when a request that sends it gets a 400 from this model. True on a model that does not support thinking.
+
+        - `enabled: CapabilitySupport`
+
+          Whether the model accepts thinking with type 'enabled' (extended thinking with a caller-set `budget_tokens`).
+
+  - `created_at: string`
+
+    RFC 3339 datetime string representing the time at which the model was released. May be set to an epoch value if the release date is unknown.
+
+    format: date-time
+
+  - `deprecated_at: string or null`
+
+    RFC 3339 datetime string representing the time of the model's most recent deprecation. Populated for `deprecated` and `retired` models; `null` while the model is `active`.
+
+    format: date-time
+
+  - `display_name: string`
+
+    A human-readable name for the model.
+
+  - `lifecycle: "active" or "deprecated" or "retired"`
+
+    The model's current lifecycle stage.
+
+    - `active`: The model is available for use, open to new adopters, and not scheduled for retirement.
+    - `deprecated`: The model remains callable for organizations with existing access, but is headed for retirement and closed to new adopters.
+    - `retired`: The model is no longer available for use; inference requests naming it fail. It remains in the catalogue as the historical record of its retirement.
+
+    default: active
+
+    - `"active"`
+
+    - `"deprecated"`
+
+    - `"retired"`
+
+  - `line: ModelLine or null`
+
+    The model line this model belongs to, such as `opus` for both Claude Opus 4.5 and Claude Opus 4.6. More lines may be added. `null` when the model belongs to no line; do not infer a line from the `id`.
+
+    - `"haiku"`
+
+    - `"sonnet"`
+
+    - `"opus"`
+
+    - `"fable"`
+
+    - `"mythos"`
+
+  - `max_input_tokens: number or null`
+
+    Maximum input context window size in tokens for this model.
+
+  - `max_tokens: number or null`
+
+    Maximum value for the `max_tokens` parameter when using this model.
+
+  - `retires_at: string or null`
+
+    RFC 3339 datetime string representing the model's currently scheduled retirement date. The schedule can be revised until retirement occurs; `null` while the model is `active` or while no retirement is scheduled. A past date on a `deprecated` model means retirement is overdue, not that it has occurred: `lifecycle` is the retirement signal.
+
+    format: date-time
+
+- `first_id: string or null`
+
+  First ID in the `data` list. Can be used as the `before_id` for the previous page.
+
+- `has_more: boolean`
+
+  Indicates if there are more results in the requested page direction.
+
+- `last_id: string or null`
+
+  Last ID in the `data` list. Can be used as the `after_id` for the next page.
+
+## Example
+
+```bash
+curl https://api.anthropic.com/v1/models \
+    -H 'anthropic-version: 2023-06-01' \
+    -H "X-Api-Key: $ANTHROPIC_API_KEY"
+```
+
+### Response (200)
+
+```json
+{
+  "data": [
+    {
+      "id": "claude-opus-5",
+      "capabilities": {
+        "batch": {
+          "supported": true
+        },
+        "citations": {
+          "supported": true
+        },
+        "code_execution": {
+          "supported": true
+        },
+        "context_management": {
+          "clear_thinking_20251015": {
+            "supported": true
+          },
+          "clear_tool_uses_20250919": {
+            "supported": true
+          },
+          "compact_20260112": {
+            "supported": true
+          },
+          "supported": true
+        },
+        "effort": {
+          "high": {
+            "supported": true
+          },
+          "low": {
+            "supported": true
+          },
+          "max": {
+            "supported": true
+          },
+          "medium": {
+            "supported": true
+          },
+          "supported": true,
+          "xhigh": {
+            "supported": true
+          }
+        },
+        "image_input": {
+          "supported": true
+        },
+        "pdf_input": {
+          "supported": true
+        },
+        "server_tools": {
+          "code_execution": {
+            "supported": true
+          },
+          "supported": true,
+          "web_search": {
+            "supported": true
+          }
+        },
+        "structured_outputs": {
+          "supported": true
+        },
+        "thinking": {
+          "supported": true,
+          "types": {
+            "adaptive": {
+              "supported": true
+            },
+            "disabled": {
+              "supported": true
+            },
+            "enabled": {
+              "supported": true
+            }
+          }
+        }
+      },
+      "created_at": "2026-07-24T00:00:00Z",
+      "deprecated_at": "2019-12-27T18:11:19.117Z",
+      "display_name": "Claude Opus 5",
+      "lifecycle": "active",
+      "line": "haiku",
+      "max_input_tokens": 0,
+      "max_tokens": 0,
+      "retires_at": "2019-12-27T18:11:19.117Z",
+      "type": "model"
+    }
+  ],
+  "first_id": "first_id",
+  "has_more": true,
+  "last_id": "last_id"
+}
+```

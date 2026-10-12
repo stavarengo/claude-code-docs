@@ -9,9 +9,9 @@ description: Choosing a Claude model means balancing capabilities, speed, and co
 When choosing a Claude model, consider first evaluating these factors:
 
 * **Capabilities:** What specific features or capabilities will you need the model to have to meet your needs?
-* **Speed:** How quickly does the model need to respond in your application? Claude Opus 5.5, Claude Opus 5, and Claude Opus 4.8 support [fast mode](https://platform.claude.com/docs/en/build-with-claude/fast-mode) (research preview), which delivers up to 2.5x higher output speed at premium pricing.
+* **Speed:** How quickly does the model need to respond in your application? Claude Opus 5.5, Claude Opus 5, and Claude Opus 4.8 support [fast mode](https://platform.claude.com/docs/en/build-with-claude/fast-mode?sdk_languages=cli) (research preview), which delivers up to 2.5x higher output speed at premium pricing.
 * **Cost:** What's your budget for both development and production usage?
-* **Effort:** Several Claude models support an [effort parameter](https://platform.claude.com/docs/en/build-with-claude/effort) that trades intelligence for latency and cost within a single model. Tuning effort is often a better lever than switching models. On Claude Fable 5.1, Claude Opus 5, and Claude Sonnet 5.5, start with the default (`high`) and adjust up or down based on your evals. On Claude Opus 5.5 and Claude Haiku 5.5 the default is `medium`; start there and adjust the same way. On Claude Opus 4.8 and Claude Opus 4.7, the `xhigh` effort level, between `high` and `max`, is the best setting for most coding and agentic use cases.
+* **Effort:** Several Claude models support an [effort parameter](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=cli) that trades intelligence for latency and cost within a single model. Tuning effort is often a better lever than switching models. On Claude Fable 5.1, Claude Opus 5, and Claude Sonnet 5.5, start with the default (`high`) and adjust up or down based on your evals. On Claude Opus 5.5 and Claude Haiku 5.5 the default is `medium`; start there and adjust the same way. On Claude Opus 4.8 and Claude Opus 4.7, the `xhigh` effort level, between `high` and `max`, is the best setting for most coding and agentic use cases.
 
 ***
 
@@ -40,10 +40,10 @@ This approach allows for quick iteration, lower development costs, and is often 
 For complex tasks where intelligence and advanced capabilities are paramount, you may want to start capability-first: implement with the strongest starting point for your task, then optimize to more efficient models down the line:
 
 1. Implement with Claude Opus 5.5.
-2. [Optimize your prompts](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5) for this model.
+2. [Optimize your prompts](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5?sdk_languages=cli) for this model.
 3. Evaluate if performance meets your requirements.
-4. Consider increasing efficiency by lowering [effort](https://platform.claude.com/docs/en/build-with-claude/effort) or downgrading models over time with greater workflow optimization.
-5. If your evals at `xhigh` or `max` effort still fall short on demanding reasoning or long-horizon agentic work, move to [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/whats-new-fable-5-1).
+4. Consider increasing efficiency by lowering [effort](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=cli) or downgrading models over time with greater workflow optimization.
+5. If your evals at `xhigh` or `max` effort still fall short on demanding reasoning or long-horizon agentic work, move to [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/whats-new-fable-5-1?sdk_languages=cli).
 
 This approach is best for:
 
@@ -53,11 +53,11 @@ This approach is best for:
 * Applications where accuracy outweighs cost considerations
 * Advanced coding and high-autonomy agentic work
 
-**Claude Opus 5.5** (`claude-opus-5-5`) is built for long-running agentic coding and knowledge work, with [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking) always on. If your integration forces tool use (`tool_choice` of type `any` or `tool`), turns thinking off, or uses the `computer_20251124` computer use tool, see [Breaking changes](https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5#breaking-changes) before switching.
+**Claude Opus 5.5** (`claude-opus-5-5`) is built for long-running agentic coding and knowledge work, with [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli) always on. If your integration forces tool use (`tool_choice` of type `any` or `tool`), turns thinking off, or uses the `computer_20251124` computer use tool, see [Breaking changes](https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5?sdk_languages=cli#breaking-changes) before switching.
 
-**Claude Fable 5.1** (`claude-fable-5-1`) is Anthropic's most capable model open to all customers. It extends Claude Fable 5 with stronger long-running agentic coding, knowledge work, and research at the same input and output prices, with cache reads at a quarter of the cost. **Claude Mythos 5.1** (`claude-mythos-5-1`) offers the same capabilities only to organizations verified through Anthropic's verification programs, such as the [Cyber Verification Program](https://support.claude.com/en/articles/14604842). Both models use always-on [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking). See [What's new in Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/whats-new-fable-5-1) for details.
+**Claude Fable 5.1** (`claude-fable-5-1`) is Anthropic's most capable model open to all customers. It extends Claude Fable 5 with stronger long-running agentic coding, knowledge work, and research at the same input and output prices, with cache reads at a quarter of the cost. **Claude Mythos 5.1** (`claude-mythos-5-1`) offers the same capabilities only to organizations verified through Anthropic's verification programs, such as the [Cyber Verification Program](https://support.claude.com/en/articles/14604842). Both models use always-on [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli). See [What's new in Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/whats-new-fable-5-1?sdk_languages=cli) for details.
 
-For context windows, output limits, and prices, see the [model comparison table](https://platform.claude.com/docs/en/models/overview#latest-models-comparison).
+For context windows, output limits, and prices, see the [model comparison table](https://platform.claude.com/docs/en/models/overview?sdk_languages=cli#latest-models-comparison).
 
 ## Model selection matrix
 
@@ -76,7 +76,7 @@ Most workloads start with Claude Opus 5.5.
 
 To determine if you need to upgrade or change models, you should:
 
-1. [Create benchmark tests](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests) specific to your use case - having a good evaluation set is the most important step in the process.
+1. [Create benchmark tests](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests?sdk_languages=cli) specific to your use case - having a good evaluation set is the most important step in the process.
 
 2. Test with your actual prompts and data.
 
@@ -90,32 +90,32 @@ To determine if you need to upgrade or change models, you should:
 
 ## Combine models
 
-Multi-model strategies pair a lower-cost model with a frontier model so that most tokens are billed at the lower rate. The two common patterns are an executor that escalates hard decisions to an advisor, and an orchestrator that delegates bulk work to lower-cost workers. See [Optimizing for cost and intelligence](https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence) for both strategies, measured examples, and implementation options.
+Multi-model strategies pair a lower-cost model with a frontier model so that most tokens are billed at the lower rate. The two common patterns are an executor that escalates hard decisions to an advisor, and an orchestrator that delegates bulk work to lower-cost workers. See [Optimizing for cost and intelligence](https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence?sdk_languages=cli) for both strategies, measured examples, and implementation options.
 
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Model comparison chart" icon="settings" href="https://platform.claude.com/docs/en/models/overview">
+  <Card title="Model comparison chart" icon="settings" href="https://platform.claude.com/docs/en/models/overview?sdk_languages=cli">
     See detailed specifications and pricing for the latest Claude models
   </Card>
 
-  <Card title="What's new in Claude Fable 5.1" icon="sparkle" href="https://platform.claude.com/docs/en/models/fable-5-1/whats-new-fable-5-1">
+  <Card title="What's new in Claude Fable 5.1" icon="sparkle" href="https://platform.claude.com/docs/en/models/fable-5-1/whats-new-fable-5-1?sdk_languages=cli">
     Built for demanding reasoning and long-horizon agentic work
   </Card>
 
-  <Card title="What's new in Claude Opus 5.5" icon="sparkle" href="https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5">
+  <Card title="What's new in Claude Opus 5.5" icon="sparkle" href="https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5?sdk_languages=cli">
     The latest Opus model: breaking changes, new features, and behavior differences
   </Card>
 
-  <Card title="What's new in Claude Sonnet 5.5" icon="sparkle" href="https://platform.claude.com/docs/en/models/sonnet-5-5/whats-new-sonnet-5-5">
+  <Card title="What's new in Claude Sonnet 5.5" icon="sparkle" href="https://platform.claude.com/docs/en/models/sonnet-5-5/whats-new-sonnet-5-5?sdk_languages=cli">
     The latest Sonnet model: breaking changes, new features, and behavior differences
   </Card>
 
-  <Card title="What's new in Claude Haiku 5.5" icon="sparkle" href="https://platform.claude.com/docs/en/models/haiku-5-5/whats-new-haiku-5-5">
+  <Card title="What's new in Claude Haiku 5.5" icon="sparkle" href="https://platform.claude.com/docs/en/models/haiku-5-5/whats-new-haiku-5-5?sdk_languages=cli">
     The latest Haiku model: breaking changes, new features, and behavior differences
   </Card>
 
-  <Card title="Start building" icon="code" href="https://platform.claude.com/docs/en/get-started">
+  <Card title="Start building" icon="code" href="https://platform.claude.com/docs/en/get-started?sdk_languages=cli">
     Get started with your first API call
   </Card>
 </CardGroup>

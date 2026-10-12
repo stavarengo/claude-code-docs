@@ -5,7 +5,7 @@ description: Send each governed prompt to your organization's AI security server
 ---
 
 <Note>
-  Inference hooks are in beta and available to Claude Enterprise organizations. Configuring them requires the `organization:manage` permission in claude.ai, which only the Owner and Primary owner roles hold; see [Configure Inference hooks](https://platform.claude.com/docs/en/manage-claude/inference-hooks-configuration).
+  Inference hooks are in beta and available to Claude Enterprise organizations. Configuring them requires the `organization:manage` permission in claude.ai, which only the Owner and Primary owner roles hold; see [Configure Inference hooks](https://platform.claude.com/docs/en/manage-claude/inference-hooks-configuration?sdk_languages=cli).
 </Note>
 
 Inference hooks let a Claude Enterprise organization route every governed prompt through an AI security server, an HTTPS service that the organization or its security vendor operates, before inference runs. When a user submits a prompt, Anthropic sends the conversation transcript to your AI security server and waits for an allow or deny verdict; a denied request never reaches the model. Security and compliance teams use Inference hooks to enforce data policies inline, and developers build the AI security server that evaluates each request.
@@ -21,7 +21,7 @@ There are two hook events. `prompt` fires once per governed inference request, b
 1. A user submits a prompt on a governed surface.
 2. Anthropic sends an HTTPS `POST` to your organization's configured AI security server endpoint. The request body carries the conversation transcript, and each request is signed according to the [Standard Webhooks](https://www.standardwebhooks.com/) specification once your organization generates its signing secret, so your server can verify it came from Anthropic.
 3. Your AI security server evaluates the content and responds with a verdict within the verdict timeout your organization configures (5 seconds by default).
-4. On `allow`, inference proceeds normally. On `deny`, the request is rejected and the user sees a blocked-by-policy message assembled from two parts: the per-request reason your AI security server supplied in the verdict's `deny_reason` field, followed by a standing message your administrators configure (for example, who to contact or where to request an exception). If your administrators haven't configured one, a built-in default directs the user to contact them. Each denial is also recorded in your organization's [Activity Feed](https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed).
+4. On `allow`, inference proceeds normally. On `deny`, the request is rejected and the user sees a blocked-by-policy message assembled from two parts: the per-request reason your AI security server supplied in the verdict's `deny_reason` field, followed by a standing message your administrators configure (for example, who to contact or where to request an exception). If your administrators haven't configured one, a built-in default directs the user to contact them. Each denial is also recorded in your organization's [Activity Feed](https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed?sdk_languages=cli).
 
 The following diagram traces one example (a Cowork request where Claude also calls an O365 tool) to illustrate which parts of the flow are hooked. The hooked points are the diagram's steps 1, 2, and 3, where the prompt arrives, Claude calls the tool, and the tool result returns. At each one, your AI security server returns a verdict before the flow continues. Step 2 is hooked only with **Validate tool calls** on, and its one verdict covers all the tool calls in a response.
 
@@ -29,17 +29,17 @@ The following diagram traces one example (a Cowork request where Claude also cal
   ![Flow diagram: the prompt, the tool call, and the tool result are each checked by the AI security server; the response is not](https://platform.claude.com/docs/images/inference-hooks-flow-2.svg)
 </Frame>
 
-A verdict is a small JSON object: `{"action": "allow"}` lets the request proceed, and a deny carries the user-facing reason. For the full verdict schema, see [Return a verdict](https://platform.claude.com/docs/en/manage-claude/inference-hooks-endpoint#return-a-verdict).
+A verdict is a small JSON object: `{"action": "allow"}` lets the request proceed, and a deny carries the user-facing reason. For the full verdict schema, see [Return a verdict](https://platform.claude.com/docs/en/manage-claude/inference-hooks-endpoint?sdk_languages=cli#return-a-verdict).
 
 Your AI security server sees what the user sees: transcript text, tool calls and their results, and text extracted from attachments. It never receives raw file or image bytes, system prompts, or Anthropic-internal context.
 
 The Inference hooks system doesn't keep its own copy of prompt or response content. It stores only your hook configuration and metadata about hook activity, such as verdicts, timestamps, and request identifiers. The Claude product you use stores prompts and responses under its own data retention rules, whether or not hooks are on. For example, a message that a hook blocks on claude.ai stays in the conversation.
 
-If your AI security server is unreachable, returns an error, or doesn't respond within the timeout, your organization's failure handling setting decides the outcome: block the request, or allow it to proceed without inspection. Sustained failures attributable to your server trip a circuit breaker: Anthropic stops contacting it and applies your failure handling setting to every request, then resets the breaker automatically once it detects that your server is returning verdicts again; see [Circuit breaker](https://platform.claude.com/docs/en/manage-claude/inference-hooks-configuration#circuit-breaker).
+If your AI security server is unreachable, returns an error, or doesn't respond within the timeout, your organization's failure handling setting decides the outcome: block the request, or allow it to proceed without inspection. Sustained failures attributable to your server trip a circuit breaker: Anthropic stops contacting it and applies your failure handling setting to every request, then resets the breaker automatically once it detects that your server is returning verdicts again; see [Circuit breaker](https://platform.claude.com/docs/en/manage-claude/inference-hooks-configuration?sdk_languages=cli#circuit-breaker).
 
-Enforcement can roll out at your pace, so nobody has to be blocked on day one: shadow mode observes verdicts on live traffic without blocking anything, a rollout percentage inspects a chosen fraction of requests, and exclusions exempt members of chosen roles entirely. See [Configure Inference hooks](https://platform.claude.com/docs/en/manage-claude/inference-hooks-configuration).
+Enforcement can roll out at your pace, so nobody has to be blocked on day one: shadow mode observes verdicts on live traffic without blocking anything, a rollout percentage inspects a chosen fraction of requests, and exclusions exempt members of chosen roles entirely. See [Configure Inference hooks](https://platform.claude.com/docs/en/manage-claude/inference-hooks-configuration?sdk_languages=cli).
 
-For the full request and response schemas, signature verification, and operational details, see [Develop an integration](https://platform.claude.com/docs/en/manage-claude/inference-hooks-endpoint).
+For the full request and response schemas, signature verification, and operational details, see [Develop an integration](https://platform.claude.com/docs/en/manage-claude/inference-hooks-endpoint?sdk_languages=cli).
 
 ***
 
@@ -59,7 +59,7 @@ The steps depend on the app:
 ## Use cases
 
 * **Data loss prevention (DLP).** Forward the transcript to your DLP scanner and deny prompts that carry regulated or classified material. This is the most common deployment.
-* **Real-time transcript archival.** Archive each transcript as it arrives and always return `allow`, as a push-based alternative to polling the [Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api).
+* **Real-time transcript archival.** Archive each transcript as it arrives and always return `allow`, as a push-based alternative to polling the [Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api?sdk_languages=cli).
 * **Prompt telemetry.** Measure how your organization uses Claude, at the moment of use.
 * **Policy engines.** Enforce your own rules before inference: model allowlists, project-scoped restrictions, or working-hours controls.
 
@@ -101,18 +101,18 @@ Both features serve security, legal, and compliance teams at Claude Enterprise o
 | What it does | Allows or denies each governed request in real time | Retrieves activity, chats, files, projects, session transcripts, and users for audit and export |
 | Direction    | Anthropic calls your AI security server             | You call Anthropic's API                                                                        |
 
-Use Inference hooks to stop a request before it reaches the model, and the [Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api) to audit what happened afterward.
+Use Inference hooks to stop a request before it reaches the model, and the [Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api?sdk_languages=cli) to audit what happened afterward.
 
 ***
 
 ## In this section
 
 <CardGroup>
-  <Card href="https://platform.claude.com/docs/en/manage-claude/inference-hooks-configuration" title="Configure Inference hooks">
+  <Card href="https://platform.claude.com/docs/en/manage-claude/inference-hooks-configuration?sdk_languages=cli" title="Configure Inference hooks">
     Allow Inference hooks for your organization, set up and test your AI security server, choose failure handling, and enforce verdicts.
   </Card>
 
-  <Card href="https://platform.claude.com/docs/en/manage-claude/inference-hooks-endpoint" title="Develop an Inference hooks integration">
+  <Card href="https://platform.claude.com/docs/en/manage-claude/inference-hooks-endpoint?sdk_languages=cli" title="Develop an Inference hooks integration">
     The request and verdict schemas, signature verification, operational semantics, and integration patterns for building the AI security server.
   </Card>
 </CardGroup>

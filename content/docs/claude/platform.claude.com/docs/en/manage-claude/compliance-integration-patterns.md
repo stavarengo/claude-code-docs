@@ -5,7 +5,7 @@ description: Choose between polling and cursor-driven Activity Feed consumption,
 ---
 
 <Note>
-  To enable the Compliance API, see [Set up the Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api-access).
+  To enable the Compliance API, see [Set up the Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api-access?sdk_languages=cli).
 </Note>
 
 <Check>
@@ -16,9 +16,9 @@ A production Compliance API integration makes three design choices: how it consu
 
 This page assumes you have read the following pages:
 
-* [Query the Activity Feed](https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed), which defines the parameters and pagination contract referenced throughout.
-* [Retrieve and delete chats, files, and projects](https://platform.claude.com/docs/en/manage-claude/compliance-content-data), which defines the chat, file, and project endpoints and the `deleted_at` semantics referenced in [Plan content retention](https://platform.claude.com/docs/en/manage-claude/compliance-integration-patterns#plan-content-retention).
-* [Retrieve session transcripts](https://platform.claude.com/docs/en/manage-claude/compliance-sessions), which defines the local and remote session endpoints.
+* [Query the Activity Feed](https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed?sdk_languages=cli), which defines the parameters and pagination contract referenced throughout.
+* [Retrieve and delete chats, files, and projects](https://platform.claude.com/docs/en/manage-claude/compliance-content-data?sdk_languages=cli), which defines the chat, file, and project endpoints and the `deleted_at` semantics referenced in [Plan content retention](https://platform.claude.com/docs/en/manage-claude/compliance-integration-patterns?sdk_languages=cli#plan-content-retention).
+* [Retrieve session transcripts](https://platform.claude.com/docs/en/manage-claude/compliance-sessions?sdk_languages=cli), which defines the local and remote session endpoints.
 
 ## Choose a feed-consumption pattern
 
@@ -29,7 +29,7 @@ Both patterns share these constraints:
 * Activities are queryable within 1 minute of occurring and retained for 6 years. Recording is not retroactive: it begins when the Compliance API is first enabled for your organization, and activity from before enablement is not backfilled.
 * The maximum `limit` for each page is 5,000.
 * Cursor values are opaque strings that you must not parse.
-* Requests are limited to 600 per minute per [parent organization](https://platform.claude.com/docs/en/manage-claude/compliance-api#how-the-compliance-api-works), shared across every key, every linked organization, and every `/v1/compliance/*` endpoint; unlike the local session endpoints, the remote session endpoints carry a second request budget on top. See [429 Too Many Requests](https://platform.claude.com/docs/en/manage-claude/compliance-errors#429-too-many-requests) for the response headers and retry contract.
+* Requests are limited to 600 per minute per [parent organization](https://platform.claude.com/docs/en/manage-claude/compliance-api?sdk_languages=cli#how-the-compliance-api-works), shared across every key, every linked organization, and every `/v1/compliance/*` endpoint; unlike the local session endpoints, the remote session endpoints carry a second request budget on top. See [429 Too Many Requests](https://platform.claude.com/docs/en/manage-claude/compliance-errors?sdk_languages=cli#429-too-many-requests) for the response headers and retry contract.
 
 | Pattern                         | Choose when                                                                                                                                                                                                     |
 | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -50,7 +50,7 @@ curl --fail-with-body -sS -G \
   --data-urlencode "limit=5000"
 ```
 
-When the response has `has_more: true`, the window contains more than one page of activities. Either page within the window by passing the response's `last_id` as `after_id` on the next request (stopping when `has_more` is `false`), or choose a smaller time window. See [Paginate results](https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed#paginate-results) for the full contract.
+When the response has `has_more: true`, the window contains more than one page of activities. Either page within the window by passing the response's `last_id` as `after_id` on the next request (stopping when `has_more` is `false`), or choose a smaller time window. See [Paginate results](https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed?sdk_languages=cli#paginate-results) for the full contract.
 
 Even with clean tiling, an activity that indexes after its window has closed never appears in a later window. Deduplicate on the activity `id` and either widen each new window so it overlaps the previous one by a few minutes or run a periodic reconciliation pass that re-queries an older window.
 
@@ -71,7 +71,7 @@ curl --fail-with-body -sS -G \
   --data-urlencode "before_id=$first_id"
 ```
 
-Page through until `has_more` is `false`, then persist `first_id` from the final response and pass it unchanged as `before_id` on the next run to retrieve activities newer than the saved cursor. To walk in the opposite direction for a backfill, persist `last_id` and pass it as `after_id` instead. For the full cursor-vs-page-token reference and retry semantics, see [Paginate results](https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed#paginate-results).
+Page through until `has_more` is `false`, then persist `first_id` from the final response and pass it unchanged as `before_id` on the next run to retrieve activities newer than the saved cursor. To walk in the opposite direction for a backfill, persist `last_id` and pass it as `after_id` instead. For the full cursor-vs-page-token reference and retry semantics, see [Paginate results](https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed?sdk_languages=cli#paginate-results).
 
 A production **catch-up** loop fetches activities recorded since your last poll by driving iteration off `has_more` and `first_id`:
 
@@ -86,7 +86,7 @@ loop:
 persist(cursor)
 ```
 
-Cursors survive key rotation; see [Manage and rotate keys](https://platform.claude.com/docs/en/manage-claude/compliance-api-access#manage-and-rotate-keys).
+Cursors survive key rotation; see [Manage and rotate keys](https://platform.claude.com/docs/en/manage-claude/compliance-api-access?sdk_languages=cli#manage-and-rotate-keys).
 
 <Warning>
   Each page is adjacent to the cursor you pass: the loop walks forward toward the present, one page at a time. Do not treat a single response as caught up while `has_more` is `true`. Persist the cursor only after `has_more` is `false`; the unfetched pages are the newer ones between this response's `first_id` and the present, and they stay unread until you finish the loop or run again.
@@ -120,7 +120,7 @@ Five retention horizons govern what you can retrieve later:
 | Remote session transcripts (sessions in the cloud)      | 6 years, unless a user deletes the session sooner                                                                                                               | Anthropic                                                            |
 | Content hard-deleted through the Compliance API         | Not retained; deletion is immediate and permanent                                                                                                               | The caller of the `DELETE` endpoint                                  |
 
-To learn how the rest of the Claude Platform handles retention, see [API and data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention).
+To learn how the rest of the Claude Platform handles retention, see [API and data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli).
 
 Decide between export-and-archive and on-demand API retrieval as follows:
 
@@ -141,40 +141,40 @@ The list endpoints do not return a `total_count` field or a checksum. To attest 
 * The number of records exported.
 * The run timestamp and the `request-id` of the final page.
 
-Activity volume is not a completeness check. The `claude_*_viewed` activity types, such as `claude_chat_viewed`, follow each app's loading pattern (see [Understand the Activity object](https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed#understand-the-activity-object)). A period with chat messages but no `claude_chat_viewed` activities does not on its own indicate missing data. Rely on the traversal and the overlap or reconciliation pass described in [Window polling](https://platform.claude.com/docs/en/manage-claude/compliance-integration-patterns#window-polling) instead.
+Activity volume is not a completeness check. The `claude_*_viewed` activity types, such as `claude_chat_viewed`, follow each app's loading pattern (see [Understand the Activity object](https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed?sdk_languages=cli#understand-the-activity-object)). A period with chat messages but no `claude_chat_viewed` activities does not on its own indicate missing data. Rely on the traversal and the overlap or reconciliation pass described in [Window polling](https://platform.claude.com/docs/en/manage-claude/compliance-integration-patterns?sdk_languages=cli#window-polling) instead.
 
 The content endpoints (chats, files, projects, project attachments, and local and remote session transcripts) serve Claude Enterprise data only. The Activity Feed surfaces administrative and resource events organization-wide. The Compliance API does not include:
 
 * Prompt text or model responses from Claude Console, or from Claude API workloads authenticated with an API key.
 * On-device activity in local sessions that is never sent to Anthropic, such as local files that Claude did not read.
 * Claude Code usage authenticated with a Claude Console API key, run through a third-party cloud platform (Amazon Bedrock, Google Cloud, or Microsoft Foundry), or run in a [Claude Code cloud session](https://code.claude.com/docs/en/claude-code-on-the-web), which runs on cloud infrastructure instead of the user's machine.
-* Local sessions from products other than Cowork and Claude Code in organizations with [HIPAA readiness](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention#hipaa-readiness) enabled, and local sessions for which [zero data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention#zero-data-retention-zdr-scope) is in effect.
+* Local sessions from products other than Cowork and Claude Code in organizations with [HIPAA readiness](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#hipaa-readiness) enabled, and local sessions for which [zero data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#zero-data-retention-zdr-scope) is in effect.
 * Thinking blocks, and images or other binary content, inside session transcripts (transcripts carry user prompts, assistant responses, and tool activity only; local session transcripts show a placeholder `text` block where binary content was omitted).
-* The original file for a chat attachment that claude.ai stored as extracted text, such as some Word, PowerPoint, and PDF uploads (the file content endpoint returns the extracted text; see [Retrieve files and artifacts](https://platform.claude.com/docs/en/manage-claude/compliance-content-data#retrieve-files-and-artifacts)).
+* The original file for a chat attachment that claude.ai stored as extracted text, such as some Word, PowerPoint, and PDF uploads (the file content endpoint returns the extracted text; see [Retrieve files and artifacts](https://platform.claude.com/docs/en/manage-claude/compliance-content-data?sdk_languages=cli#retrieve-files-and-artifacts)).
 * The system prompt of local sessions (a marker message stands in for it).
 * Tool definitions and MCP server configuration in session transcripts (local or remote), and citation metadata on `text` blocks in local session transcripts.
-* Local session transcript content in an organization whose [customer-managed encryption key](https://platform.claude.com/docs/en/manage-claude/cmek) cannot currently be used. Those requests return [503 Service Unavailable](https://platform.claude.com/docs/en/manage-claude/compliance-errors#local-sessions-temporarily-unavailable), and session metadata is still listed.
+* Local session transcript content in an organization whose [customer-managed encryption key](https://platform.claude.com/docs/en/manage-claude/cmek?sdk_languages=cli) cannot currently be used. Those requests return [503 Service Unavailable](https://platform.claude.com/docs/en/manage-claude/compliance-errors?sdk_languages=cli#local-sessions-temporarily-unavailable), and session metadata is still listed.
 * Content removed by your organization's retention policy.
 * Content of chats that users delete in claude.ai (the chats are still listed, with `deleted_at` populated).
 * Remote sessions that users delete (deleted sessions are no longer listed, and the messages endpoint returns 404 for them).
 * Content hard-deleted through the Compliance API.
 
-See the [Compliance API FAQ](https://platform.claude.com/docs/en/manage-claude/compliance-faq#data-coverage-and-retention) for more on what the Compliance API does and does not capture.
+See the [Compliance API FAQ](https://platform.claude.com/docs/en/manage-claude/compliance-faq?sdk_languages=cli#data-coverage-and-retention) for more on what the Compliance API does and does not capture.
 
 For chain of custody, store the exported records with provenance metadata: source endpoint, query parameters, run timestamp, and a content hash of each record.
 
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Query the Activity Feed" href="https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed">
+  <Card title="Query the Activity Feed" href="https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed?sdk_languages=cli">
     Filter parameters, pagination, and the `Activity` object schema.
   </Card>
 
-  <Card title="Retrieve and delete chats, files, and projects" href="https://platform.claude.com/docs/en/manage-claude/compliance-content-data">
+  <Card title="Retrieve and delete chats, files, and projects" href="https://platform.claude.com/docs/en/manage-claude/compliance-content-data?sdk_languages=cli">
     The chat, file, and project endpoints, including hard delete.
   </Card>
 
-  <Card title="Retrieve session transcripts" href="https://platform.claude.com/docs/en/manage-claude/compliance-sessions">
+  <Card title="Retrieve session transcripts" href="https://platform.claude.com/docs/en/manage-claude/compliance-sessions?sdk_languages=cli">
     List the sessions your users run in Claude apps and agents, such as Cowork and Claude Code, and retrieve their transcripts.
   </Card>
 </CardGroup>

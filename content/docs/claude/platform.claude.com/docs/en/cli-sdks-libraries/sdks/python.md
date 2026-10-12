@@ -7,7 +7,7 @@ description: Install and configure the Anthropic Python SDK with sync and async 
 The Anthropic Python SDK provides convenient access to the Claude API from Python applications. It supports both synchronous and asynchronous operations, streaming, and integrations with Amazon Bedrock, Claude Platform on AWS, Google Cloud, and Microsoft Foundry.
 
 <Info>
-  For API feature documentation with code examples, see the [API reference](https://platform.claude.com/docs/en/api/overview). This page covers Python-specific SDK features and configuration.
+  For API feature documentation with code examples, see the [API reference](https://platform.claude.com/docs/en/api/overview?sdk_languages=cli). This page covers Python-specific SDK features and configuration.
 </Info>
 
 ## Installation
@@ -69,7 +69,7 @@ for block in message.content:
   Consider using [python-dotenv](https://pypi.org/project/python-dotenv/) to add `ANTHROPIC_API_KEY="my-anthropic-api-key"` to your `.env` file so that your API key isn't stored in source control.
 </Tip>
 
-For authentication options including Workload Identity Federation, see [Authentication](https://platform.claude.com/docs/en/manage-claude/authentication). If your API key is a [personal or service account key](https://platform.claude.com/docs/en/manage-claude/authentication#key-types) with access to multiple workspaces, set the workspace ID in the `anthropic-workspace-id` request header; [Select a workspace](https://platform.claude.com/docs/en/manage-claude/authentication#select-a-workspace) shows the per-request option for this SDK.
+For authentication options including Workload Identity Federation, see [Authentication](https://platform.claude.com/docs/en/manage-claude/authentication?sdk_languages=cli). If your API key is a [personal or service account key](https://platform.claude.com/docs/en/manage-claude/authentication?sdk_languages=cli#key-types) with access to multiple workspaces, set the workspace ID in the `anthropic-workspace-id` request header; [Select a workspace](https://platform.claude.com/docs/en/manage-claude/authentication?sdk_languages=cli#select-a-workspace) shows the per-request option for this SDK.
 
 ## Async usage
 
@@ -226,7 +226,7 @@ print(count.input_tokens)  # 10
 
 ## Tool use
 
-This SDK provides support for tool use, also known as function calling. For more details, see [Tool use with Claude](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview).
+This SDK provides support for tool use, also known as function calling. For more details, see [Tool use with Claude](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=cli).
 
 ### Tool helpers
 
@@ -272,11 +272,11 @@ for message in runner:
 
 On every iteration, an API request is made. If the response includes a call to one of the given tools, the tool is automatically called, and the result is returned directly to the model in the next iteration.
 
-To run the browser use tool or the computer use tool with this SDK, see [Browser and computer use with the SDK toolsets](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-sdk).
+To run the browser use tool or the computer use tool with this SDK, see [Browser and computer use with the SDK toolsets](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-sdk?sdk_languages=cli).
 
 ## Message batches
 
-This SDK provides support for [Batch processing](https://platform.claude.com/docs/en/build-with-claude/batch-processing) under `client.messages.batches`.
+This SDK provides support for [Batch processing](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=cli) under `client.messages.batches`.
 
 ### Creating a batch
 
@@ -390,7 +390,7 @@ Error codes are as follows:
 
 ## Request IDs
 
-> For more information on debugging requests, see [Request ID](https://platform.claude.com/docs/en/api/errors#request-id).
+> For more information on debugging requests, see [Request ID](https://platform.claude.com/docs/en/api/errors?sdk_languages=cli#request-id).
 
 All object responses in the SDK provide a `_request_id` property which is added from the `request-id` response header so that you can quickly log failing requests and report them back to Anthropic.
 
@@ -455,19 +455,19 @@ client.with_options(timeout=5.0).messages.create(
 
 On timeout, the SDK throws an `APITimeoutError`.
 
-Note that requests that time out are [retried twice by default](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/python#retries).
+Note that requests that time out are [retried twice by default](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/python?sdk_languages=cli#retries).
 
 ## Long requests
 
 <Warning>
-  Consider using the streaming [Messages API](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/python#streaming-responses) for longer running requests.
+  Consider using the streaming [Messages API](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/python?sdk_languages=cli#streaming-responses) for longer running requests.
 </Warning>
 
-Avoid setting a large `max_tokens` value without using streaming. Some networks may drop idle connections after a certain period of time, which can cause the request to fail or [time out](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/python#timeouts) without receiving a response from Anthropic.
+Avoid setting a large `max_tokens` value without using streaming. Some networks may drop idle connections after a certain period of time, which can cause the request to fail or [time out](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/python?sdk_languages=cli#timeouts) without receiving a response from Anthropic.
 
 The SDK will throw a `ValueError` if a non-streaming request is expected to take longer than approximately 10 minutes. Passing `stream=True` or overriding the `timeout` option at the client or request level disables this error.
 
-An expected request latency longer than the [timeout](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/python#timeouts) for a non-streaming request will result in the client terminating the connection and retrying without receiving a response.
+An expected request latency longer than the [timeout](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/python?sdk_languages=cli#timeouts) for a non-streaming request will result in the client terminating the connection and retrying without receiving a response.
 
 The SDK sets a [TCP socket keep-alive](https://tldp.org/HOWTO/TCP-Keepalive-HOWTO/overview.html) option to reduce the impact of idle connection timeouts on some networks. This can be overridden by passing a custom `http_client` option to the client.
 
@@ -714,11 +714,11 @@ with Anthropic() as client:
 
 ## Beta features
 
-Beta features are available before general release to get early feedback and test new functionality. You can check the availability of all of Claude's capabilities and tools in the [Features overview](https://platform.claude.com/docs/en/build-with-claude/overview).
+Beta features are available before general release to get early feedback and test new functionality. You can check the availability of all of Claude's capabilities and tools in the [Features overview](https://platform.claude.com/docs/en/build-with-claude/overview?sdk_languages=cli).
 
-You can access most beta API features through the `beta` property of the client. To enable a particular beta feature, you need to add the appropriate [beta header](https://platform.claude.com/docs/en/api/beta-headers) to the `betas` field when creating a message.
+You can access most beta API features through the `beta` property of the client. To enable a particular beta feature, you need to add the appropriate [beta header](https://platform.claude.com/docs/en/api/beta-headers?sdk_languages=cli) to the `betas` field when creating a message.
 
-For example, to enable [context editing](https://platform.claude.com/docs/en/build-with-claude/context-editing):
+For example, to enable [context editing](https://platform.claude.com/docs/en/build-with-claude/context-editing?sdk_languages=cli):
 
 ```python
 client = Anthropic()
@@ -736,11 +736,11 @@ response = client.beta.messages.create(
 <Note>
   For detailed platform setup guides with code examples, see:
 
-  * [Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock)
-  * [Amazon Bedrock (Opus 4.6 and earlier)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy)
-  * [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws)
-  * [Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai)
-  * [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry)
+  * [Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock?sdk_languages=cli)
+  * [Amazon Bedrock (Opus 4.6 and earlier)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy?sdk_languages=cli)
+  * [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli)
+  * [Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai?sdk_languages=cli)
+  * [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli)
 </Note>
 
 All five client classes are included in the base `anthropic` package:
@@ -776,6 +776,6 @@ print(anthropic.__version__)
 ## Additional resources
 
 * [GitHub repository](https://github.com/anthropics/anthropic-sdk-python)
-* [API reference](https://platform.claude.com/docs/en/api/overview)
-* [Streaming Messages](https://platform.claude.com/docs/en/build-with-claude/streaming)
-* [Tool use with Claude](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview)
+* [API reference](https://platform.claude.com/docs/en/api/overview?sdk_languages=cli)
+* [Streaming Messages](https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=cli)
+* [Tool use with Claude](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=cli)

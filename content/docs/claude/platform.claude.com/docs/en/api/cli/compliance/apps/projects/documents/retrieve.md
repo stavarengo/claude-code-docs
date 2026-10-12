@@ -1,0 +1,81 @@
+---
+title: Get project document content
+url: https://platform.claude.com/docs/en/api/cli/compliance/apps/projects/documents/retrieve
+---
+
+# Get project document content
+
+**GET** `/v1/compliance/apps/projects/documents/{document_id}`
+
+Get detailed information for a specific project document.
+
+## Path parameters
+
+- `document_id: string`
+
+  The document ID (tagged ID, e.g., claude_proj_doc_abc123)
+
+## Headers
+
+- `"anthropic-version": optional string`
+
+  The version of the Claude API you want to use.
+
+  Read more about versioning and our version history [here](https://platform.claude.com/docs/en/api/versioning?sdk_languages=http).
+
+- `"x-api-key": optional string`
+
+## Returns
+
+- `id: string`
+
+  Project document identifier (tagged ID)
+
+- `content: string`
+
+  Document text content
+
+- `created_at: string`
+
+  Document creation timestamp
+
+  format: date-time
+
+- `filename: string`
+
+  Document filename
+
+- `user: object or null`
+
+  Document creator information, or null if the creator's account has been deleted or the creator is no longer a member of an organization the key may read
+
+  - `id: string`
+
+    User identifier (tagged ID)
+
+  - `email_address: string`
+
+    User's email address
+
+## Example
+
+```bash
+curl https://api.anthropic.com/v1/compliance/apps/projects/documents/$DOCUMENT_ID \
+    -H 'anthropic-version: 2023-06-01' \
+    -H "Authorization: Bearer $ANTHROPIC_COMPLIANCE_API_KEY"
+```
+
+### Response (200)
+
+```json
+{
+  "id": "claude_proj_doc_01Qr8StUvWxYzAbCdEfGhJjK",
+  "content": "# Design notes\n\n- Item one\n- Item two\n",
+  "created_at": "2025-03-12T18:22:41.123456Z",
+  "filename": "design-notes.txt",
+  "user": {
+    "id": "user_01WCz1FkmYMm4gnmykNKUu3Q",
+    "email_address": "jane.doe@example.com"
+  }
+}
+```

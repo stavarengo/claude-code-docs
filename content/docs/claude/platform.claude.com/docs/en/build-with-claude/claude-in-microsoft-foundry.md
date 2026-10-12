@@ -4,20 +4,20 @@ url: https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-f
 description: Access Claude models through Microsoft Foundry with Azure-native endpoints and authentication.
 ---
 
-This guide shows you how to set up and make API calls to Claude in Microsoft Foundry using one of Anthropic's client SDKs or direct HTTP requests. When you access Claude in Microsoft Foundry, you are billed for Claude usage in the Azure Marketplace. You can use Claude models including Claude Fable 5.1, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Sonnet 5.5, Claude Sonnet 5, and Claude Haiku 5.5, and features such as the [1M-token context window](https://platform.claude.com/docs/en/build-with-claude/context-windows), while managing costs through your Azure subscription.
+This guide shows you how to set up and make API calls to Claude in Microsoft Foundry using one of Anthropic's client SDKs or direct HTTP requests. When you access Claude in Microsoft Foundry, you are billed for Claude usage in the Azure Marketplace. You can use Claude models including Claude Fable 5.1, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Sonnet 5.5, Claude Sonnet 5, and Claude Haiku 5.5, and features such as the [1M-token context window](https://platform.claude.com/docs/en/build-with-claude/context-windows?sdk_languages=cli), while managing costs through your Azure subscription.
 
-Claude is available in Global Standard and US Data Zone Standard deployment types in Foundry resources, billed in Claude Consumption Units through the Azure Marketplace. Visit [Claude in Microsoft Foundry pricing](https://platform.claude.com/docs/en/about-claude/pricing#claude-in-microsoft-foundry-pricing) for details.
+Claude is available in Global Standard and US Data Zone Standard deployment types in Foundry resources, billed in Claude Consumption Units through the Azure Marketplace. Visit [Claude in Microsoft Foundry pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#claude-in-microsoft-foundry-pricing) for details.
 
 ## Hosting options
 
 Claude models in Microsoft Foundry are available in two hosting options. You choose the hosting option when you configure the deployment.
 
-|                      | Hosted on Azure                                            | Hosted on Anthropic                                                                                                                                                                              |
-| -------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Where inference runs | Anthropic-operated service running on Azure infrastructure | Anthropic-operated service running on Anthropic infrastructure                                                                                                                                   |
-| Model availability   | The latest models in the Opus, Sonnet, and Haiku families  | All Claude models available on Microsoft Foundry                                                                                                                                                 |
-| Deployment types     | Global Standard, US Data Zone Standard                     | Global Standard                                                                                                                                                                                  |
-| Recommended for      | Most workloads                                             | [Access to features or models not yet hosted on Azure](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry#additional-features-not-supported-when-hosted-on-azure) |
+|                      | Hosted on Azure                                            | Hosted on Anthropic                                                                                                                                                                                                |
+| -------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Where inference runs | Anthropic-operated service running on Azure infrastructure | Anthropic-operated service running on Anthropic infrastructure                                                                                                                                                     |
+| Model availability   | The latest models in the Opus, Sonnet, and Haiku families  | All Claude models available on Microsoft Foundry                                                                                                                                                                   |
+| Deployment types     | Global Standard, US Data Zone Standard                     | Global Standard                                                                                                                                                                                                    |
+| Recommended for      | Most workloads                                             | [Access to features or models not yet hosted on Azure](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli#additional-features-not-supported-when-hosted-on-azure) |
 
 Claude Sonnet 5.5 supports only Global Standard deployments.
 
@@ -36,7 +36,7 @@ Before you begin, ensure you have:
 
 ## Install an SDK
 
-Anthropic's [client SDKs](https://platform.claude.com/docs/en/cli-sdks-libraries/overview) support Foundry through a platform-specific package or client class. The examples on this page also show requests with cURL and the ant CLI. To set up the CLI, see [CLI quickstart](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/quickstart).
+Anthropic's [client SDKs](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) support Foundry through a platform-specific package or client class. The examples on this page also show requests with cURL and the ant CLI. To set up the CLI, see [CLI quickstart](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/quickstart?sdk_languages=cli).
 
 <Note>
   Foundry is supported by the C#, Go, Java, PHP, Python, and TypeScript SDKs. Foundry is not currently available in the Ruby SDK.
@@ -158,8 +158,8 @@ After creating your resource, deploy a Claude model to make it available for API
 5. Configure the deployment:
 
    * **Deployment name:** Defaults to the model ID, but you can customize it (for example, `my-claude-deployment`). The deployment name cannot be changed after creation.
-   * **Region scope:** Select Global, or for models hosted on Azure, Data Zone. Selecting Data Zone creates a US Data Zone Standard deployment, which keeps inference within the United States and is equivalent to setting [`inference_geo: "us"`](https://platform.claude.com/docs/en/manage-claude/data-residency#inference-geo) on the Claude API. For Claude Sonnet 5.5, select Global.
-   * **Model version:** Expand **Model version settings** and select a version from the **Model version** dropdown menu. Each [hosting option](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry#hosting-options) is listed as a separate model version, labeled with its hosting option (for example, version 1 for Hosted on Anthropic, version 2 for Hosted on Azure).
+   * **Region scope:** Select Global, or for models hosted on Azure, Data Zone. Selecting Data Zone creates a US Data Zone Standard deployment, which keeps inference within the United States and is equivalent to setting [`inference_geo: "us"`](https://platform.claude.com/docs/en/manage-claude/data-residency?sdk_languages=cli#inference-geo) on the Claude API. For Claude Sonnet 5.5, select Global.
+   * **Model version:** Expand **Model version settings** and select a version from the **Model version** dropdown menu. Each [hosting option](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli#hosting-options) is listed as a separate model version, labeled with its hosting option (for example, version 1 for Hosted on Anthropic, version 2 for Hosted on Azure).
 
 6. Select **Deploy** and wait for provisioning to complete.
 
@@ -197,20 +197,6 @@ The SDK's Foundry client requires an API key and either a resource name or base 
 **Example using API key:**
 
 <CodeGroup>
-  ```bash cURL
-  curl https://{resource}.services.ai.azure.com/anthropic/v1/messages \
-    -H "content-type: application/json" \
-    -H "api-key: YOUR_AZURE_API_KEY" \
-    -H "anthropic-version: 2023-06-01" \
-    -d '{
-      "model": "claude-opus-5-5",
-      "max_tokens": 1024,
-      "messages": [
-        {"role": "user", "content": "Hello!"}
-      ]
-    }'
-  ```
-
   ```bash CLI
   # ant reads ANTHROPIC_API_KEY and sends it as x-api-key, which Foundry accepts
   export ANTHROPIC_API_KEY="YOUR_AZURE_API_KEY"
@@ -221,167 +207,6 @@ The SDK's Foundry client requires an API key and either a resource name or base 
     --max-tokens 1024 \
     --message '{role: user, content: "Hello!"}' \
     --transform content
-  ```
-
-  ```python Python
-  import os
-  from anthropic import AnthropicFoundry
-
-  client = AnthropicFoundry(
-      api_key=os.environ.get("ANTHROPIC_FOUNDRY_API_KEY"),
-      resource="example-resource",  # your resource name
-  )
-
-  message = client.messages.create(
-      model="claude-opus-5-5",
-      max_tokens=1024,
-      messages=[{"role": "user", "content": "Hello!"}],
-  )
-  print(message.content)
-  ```
-
-  ```typescript TypeScript
-  import AnthropicFoundry from "@anthropic-ai/foundry-sdk";
-
-  const client = new AnthropicFoundry({
-    apiKey: process.env.ANTHROPIC_FOUNDRY_API_KEY,
-    resource: "example-resource" // your resource name
-  });
-
-  const message = await client.messages.create({
-    model: "claude-opus-5-5",
-    max_tokens: 1024,
-    messages: [{ role: "user", content: "Hello!" }]
-  });
-  console.log(message.content);
-  ```
-
-  ```csharp C#
-  using Anthropic.Foundry;
-  using Anthropic.Models.Messages;
-
-  // The C# client always builds the base URL from the resource name.
-  // It does not read ANTHROPIC_FOUNDRY_BASE_URL.
-  var client = new AnthropicFoundryClient(
-      new AnthropicFoundryApiKeyCredentials(
-          Environment.GetEnvironmentVariable("ANTHROPIC_FOUNDRY_API_KEY")!,
-          "example-resource"
-      )
-  );
-
-  var response = await client.Messages.Create(new MessageCreateParams
-  {
-      Model = "claude-opus-5-5",
-      MaxTokens = 1024,
-      Messages = [new() { Role = Role.User, Content = "Hello!" }],
-  });
-
-  Console.WriteLine(
-      string.Join("", response.Content
-          .Select(block => block.Value)
-          .OfType<TextBlock>()
-          .Select(textBlock => textBlock.Text)));
-  ```
-
-  ```go Go
-  package main
-
-  import (
-  	"context"
-  	"fmt"
-  	"os"
-
-  	"github.com/anthropics/anthropic-sdk-go"
-  	"github.com/anthropics/anthropic-sdk-go/foundry"
-  )
-
-  func main() {
-  	client, err := foundry.NewClient(foundry.ClientConfig{
-  		APIKey:   os.Getenv("ANTHROPIC_FOUNDRY_API_KEY"),
-  		Resource: "example-resource", // your resource name
-  	})
-  	if err != nil {
-  		panic(err)
-  	}
-
-  	message, err := client.Messages.New(context.Background(), anthropic.MessageNewParams{
-  		Model:     "claude-opus-5-5",
-  		MaxTokens: 1024,
-  		Messages: []anthropic.MessageParam{
-  			anthropic.NewUserMessage(anthropic.NewTextBlock("Hello!")),
-  		},
-  	})
-  	if err != nil {
-  		panic(err)
-  	}
-  	fmt.Println(message.Content)
-  }
-  ```
-
-  ```java Java
-  import com.anthropic.client.AnthropicClient;
-  import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-  import com.anthropic.foundry.backends.FoundryBackend;
-  import com.anthropic.models.messages.MessageCreateParams;
-
-  void main() {
-      // Requires env vars: ANTHROPIC_FOUNDRY_API_KEY, ANTHROPIC_FOUNDRY_RESOURCE
-      AnthropicClient client = AnthropicOkHttpClient.builder()
-          .backend(FoundryBackend.fromEnv())
-          .build();
-
-      MessageCreateParams params = MessageCreateParams.builder()
-          .model("claude-opus-5-5")
-          .maxTokens(1024)
-          .addUserMessage("Hello!")
-          .build();
-
-      client.messages().create(params).content().stream()
-          .flatMap(block -> block.text().stream())
-          .forEach(textBlock -> IO.println(textBlock.text()));
-  }
-  ```
-
-  ```php PHP
-  use Anthropic\Foundry;
-
-  $client = Foundry\Client::withCredentials(
-      apiKey: getenv('ANTHROPIC_FOUNDRY_API_KEY'),
-      baseUrl: 'https://example-resource.services.ai.azure.com/anthropic',
-  );
-
-  $message = $client->messages->create(
-      maxTokens: 1024,
-      messages: [
-          ['role' => 'user', 'content' => 'Hello!']
-      ],
-      model: 'claude-opus-5-5',
-  );
-  echo array_find($message->content, fn ($block) => $block->type === 'text')->text;
-  ```
-
-  ```ruby Ruby
-  # The Ruby SDK does not yet support Foundry natively. This example uses the
-  # standard Ruby SDK as a workaround. Pass credentials explicitly: without
-  # them, the client falls back to the ANTHROPIC_API_KEY or
-  # ANTHROPIC_AUTH_TOKEN environment variables and could send a Claude API
-  # credential to your Foundry endpoint. Features that Foundry
-  # does not support fail server-side rather than client-side. For full
-  # Foundry support, use the C#, Go, Java, PHP, Python, or TypeScript SDKs.
-  require "anthropic"
-
-  client = Anthropic::Client.new(
-    base_url: "https://example-resource.services.ai.azure.com/anthropic",
-    api_key: ENV.fetch("ANTHROPIC_FOUNDRY_API_KEY")
-  )
-
-  message = client.messages.create(
-    model: "claude-opus-5-5",
-    max_tokens: 1024,
-    messages: [{role: "user", content: "Hello!"}]
-  )
-
-  puts message.content.find { it.type == :text }.text
   ```
 </CodeGroup>
 
@@ -400,235 +225,12 @@ Entra ID authentication lets you manage access with Azure RBAC, integrate with y
 **Example using Entra ID:**
 
 <CodeGroup>
-  ```bash cURL
-  # Get Microsoft Entra ID token
-  ACCESS_TOKEN=$(az account get-access-token --resource https://ai.azure.com --query accessToken -o tsv)
-
-  # Make request with token. Replace {resource} with your resource name
-  curl https://{resource}.services.ai.azure.com/anthropic/v1/messages \
-    -H "content-type: application/json" \
-    -H "Authorization: Bearer $ACCESS_TOKEN" \
-    -H "anthropic-version: 2023-06-01" \
-    -d '{
-      "model": "claude-opus-5-5",
-      "max_tokens": 1024,
-      "messages": [
-        {"role": "user", "content": "Hello!"}
-      ]
-    }'
-  ```
-
   ```bash CLI
   # The ant CLI can send a bearer token with --auth-token, but a set
   # ANTHROPIC_API_KEY environment variable takes precedence over it (the CLI
   # prints only a console notice), so your request could authenticate with
   # the wrong credential. For the Entra ID flow, use the cURL example or one
   # of the SDK examples instead.
-  ```
-
-  ```python Python
-  from anthropic import AnthropicFoundry
-  from azure.identity import DefaultAzureCredential, get_bearer_token_provider
-
-  # Get Microsoft Entra ID token using token provider pattern
-  token_provider = get_bearer_token_provider(
-      DefaultAzureCredential(), "https://ai.azure.com/.default"
-  )
-
-  # Create client with Entra ID authentication
-  client = AnthropicFoundry(
-      resource="example-resource",  # your resource name
-      azure_ad_token_provider=token_provider,  # Use token provider for Entra ID auth
-  )
-
-  # Make request
-  message = client.messages.create(
-      model="claude-opus-5-5",
-      max_tokens=1024,
-      messages=[{"role": "user", "content": "Hello!"}],
-  )
-  print(message.content)
-  ```
-
-  ```typescript TypeScript
-  import AnthropicFoundry from "@anthropic-ai/foundry-sdk";
-  import { DefaultAzureCredential, getBearerTokenProvider } from "@azure/identity";
-
-  // Get Entra ID token using token provider pattern
-  const credential = new DefaultAzureCredential();
-  const tokenProvider = getBearerTokenProvider(credential, "https://ai.azure.com/.default");
-
-  // Create client with Entra ID authentication
-  const client = new AnthropicFoundry({
-    resource: "example-resource", // your resource name
-    azureADTokenProvider: tokenProvider // Use token provider for Entra ID auth
-  });
-
-  // Make request
-  const message = await client.messages.create({
-    model: "claude-opus-5-5",
-    max_tokens: 1024,
-    messages: [{ role: "user", content: "Hello!" }]
-  });
-  console.log(message.content);
-  ```
-
-  ```csharp C#
-  using Anthropic.Foundry;
-  using Anthropic.Models.Messages;
-  using Azure.Identity;
-
-  var client = new AnthropicFoundryClient(
-      new AnthropicFoundryIdentityTokenCredentials(
-          new DefaultAzureCredential(),
-          "example-resource"
-      )
-  );
-
-  var response = await client.Messages.Create(new MessageCreateParams
-  {
-      Model = "claude-opus-5-5",
-      MaxTokens = 1024,
-      Messages = [new() { Role = Role.User, Content = "Hello!" }],
-  });
-
-  Console.WriteLine(
-      string.Join("", response.Content
-          .Select(block => block.Value)
-          .OfType<TextBlock>()
-          .Select(textBlock => textBlock.Text)));
-  ```
-
-  ```go Go
-  package main
-
-  import (
-  	"context"
-  	"fmt"
-
-  	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
-  	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
-  	"github.com/anthropics/anthropic-sdk-go"
-  	"github.com/anthropics/anthropic-sdk-go/foundry"
-  )
-
-  func main() {
-  	credential, err := azidentity.NewDefaultAzureCredential(nil)
-  	if err != nil {
-  		panic(err)
-  	}
-
-  	tokenProvider := func(ctx context.Context) (string, error) {
-  		token, err := credential.GetToken(ctx, policy.TokenRequestOptions{
-  			Scopes: []string{foundry.EntraIDScope},
-  		})
-  		return token.Token, err
-  	}
-
-  	client, err := foundry.NewClient(foundry.ClientConfig{
-  		Resource:             "example-resource", // your resource name
-  		AzureADTokenProvider: tokenProvider,
-  	})
-  	if err != nil {
-  		panic(err)
-  	}
-
-  	message, err := client.Messages.New(context.Background(), anthropic.MessageNewParams{
-  		Model:     "claude-opus-5-5",
-  		MaxTokens: 1024,
-  		Messages: []anthropic.MessageParam{
-  			anthropic.NewUserMessage(anthropic.NewTextBlock("Hello!")),
-  		},
-  	})
-  	if err != nil {
-  		panic(err)
-  	}
-  	fmt.Println(message.Content)
-  }
-  ```
-
-  ```java Java
-  import com.anthropic.client.AnthropicClient;
-  import com.anthropic.client.okhttp.AnthropicOkHttpClient;
-  import com.anthropic.foundry.backends.FoundryBackend;
-  import com.anthropic.models.messages.MessageCreateParams;
-  import com.azure.identity.AuthenticationUtil;
-  import com.azure.identity.DefaultAzureCredentialBuilder;
-  import java.util.function.Supplier;
-
-  void main() {
-      Supplier<String> bearerTokenSupplier = AuthenticationUtil.getBearerTokenSupplier(
-          new DefaultAzureCredentialBuilder().build(),
-          "https://ai.azure.com/.default"
-      );
-
-      AnthropicClient client = AnthropicOkHttpClient.builder()
-          .backend(FoundryBackend.builder()
-              .bearerTokenSupplier(bearerTokenSupplier)
-              .resource("example-resource")
-              .build())
-          .build();
-
-      MessageCreateParams params = MessageCreateParams.builder()
-          .model("claude-opus-5-5")
-          .maxTokens(1024)
-          .addUserMessage("Hello!")
-          .build();
-
-      client.messages().create(params).content().stream()
-          .flatMap(block -> block.text().stream())
-          .forEach(textBlock -> IO.println(textBlock.text()));
-  }
-  ```
-
-  ```php PHP
-  use Anthropic\Foundry;
-
-  // Obtain an Entra ID access token, for example using the Azure CLI:
-  //   az account get-access-token --resource https://ai.azure.com \
-  //     --query accessToken -o tsv
-  $token = getenv('AZURE_ACCESS_TOKEN');
-
-  $client = Foundry\Client::withCredentials(
-      authToken: $token,
-      baseUrl: 'https://example-resource.services.ai.azure.com/anthropic',
-  );
-
-  $message = $client->messages->create(
-      maxTokens: 1024,
-      messages: [
-          ['role' => 'user', 'content' => 'Hello!']
-      ],
-      model: 'claude-opus-5-5',
-  );
-  echo array_find($message->content, fn ($block) => $block->type === 'text')->text;
-  ```
-
-  ```ruby Ruby
-  # The Ruby SDK does not yet support Foundry natively. This example uses the
-  # standard Ruby SDK as a workaround, with a static Entra ID token: automatic
-  # token refresh is not built in, so your application must refresh tokens
-  # itself (they typically expire after 1 hour). Pass credentials explicitly:
-  # without them, the client falls back to the ANTHROPIC_API_KEY or
-  # ANTHROPIC_AUTH_TOKEN environment variables. For full Foundry support, use
-  # the C#, Go, Java, PHP, Python, or TypeScript SDKs.
-  require "anthropic"
-
-  # Obtain an Entra ID access token, for example using the Azure CLI:
-  #   az account get-access-token --resource https://ai.azure.com \
-  #     --query accessToken -o tsv
-  client = Anthropic::Client.new(
-    base_url: "https://example-resource.services.ai.azure.com/anthropic",
-    auth_token: ENV.fetch("AZURE_ACCESS_TOKEN")
-  )
-
-  message = client.messages.create(
-    model: "claude-opus-5-5",
-    max_tokens: 1024,
-    messages: [{role: "user", content: "Hello!"}]
-  )
-
-  puts message.content.find { it.type == :text }.text
   ```
 </CodeGroup>
 
@@ -638,11 +240,11 @@ Foundry includes request identifiers in HTTP response headers for debugging and 
 
 ## Feature support
 
-Claude in Microsoft Foundry supports most Claude features. You can find all the features currently supported in [Features overview](https://platform.claude.com/docs/en/build-with-claude/overview).
+Claude in Microsoft Foundry supports most Claude features. You can find all the features currently supported in [Features overview](https://platform.claude.com/docs/en/build-with-claude/overview?sdk_languages=cli).
 
 ### Context window
 
-Claude Fable 5.1, Claude Fable 5, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Opus 4.7, Claude Opus 4.6, Claude Sonnet 5.5, Claude Sonnet 5, Claude Sonnet 4.6, and Claude Haiku 5.5 have a [1M-token context window](https://platform.claude.com/docs/en/build-with-claude/context-windows) on Microsoft Foundry. Other Claude models, including Claude Sonnet 4.5 (deprecated), have a 200k-token context window.
+Claude Fable 5.1, Claude Fable 5, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Opus 4.7, Claude Opus 4.6, Claude Sonnet 5.5, Claude Sonnet 5, Claude Sonnet 4.6, and Claude Haiku 5.5 have a [1M-token context window](https://platform.claude.com/docs/en/build-with-claude/context-windows?sdk_languages=cli) on Microsoft Foundry. Other Claude models, including Claude Sonnet 4.5 (deprecated), have a 200k-token context window.
 
 ### Claude features not supported for Claude in Microsoft Foundry
 
@@ -652,51 +254,51 @@ Claude Fable 5.1, Claude Fable 5, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.
 * Compliance API
 * Models API
 * Message Batches API
-* Server-side fallback (the [`fallbacks` parameter](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback#server-side-fallback); use the [client-side fallback pattern](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback#client-side-fallback) instead)
-* [Computer use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool) and [browser use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool) toolsets (`computer_toolset_20260801` and `browser_toolset_20260801` are not currently available on Microsoft Foundry; the beta computer use tool versions remain available for the models listed under [Earlier tool versions](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool#earlier-tool-versions))
+* Server-side fallback (the [`fallbacks` parameter](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback?sdk_languages=cli#server-side-fallback); use the [client-side fallback pattern](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback?sdk_languages=cli#client-side-fallback) instead)
+* [Computer use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool?sdk_languages=cli) and [browser use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool?sdk_languages=cli) toolsets (`computer_toolset_20260801` and `browser_toolset_20260801` are not currently available on Microsoft Foundry; the beta computer use tool versions remain available for the models listed under [Earlier tool versions](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool?sdk_languages=cli#earlier-tool-versions))
 
 ### Additional features not supported when hosted on Azure
 
 The following features are available for deployments hosted on Anthropic but are not supported for deployments hosted on Azure:
 
-* [Code execution](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool)
-* [Web search](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool) and [web fetch](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-fetch-tool) tool versions later than `web_search_20250305` and `web_fetch_20250910`. Deployments hosted on Azure support only these basic versions, so dynamic filtering, response inclusion, and cache bypass are not available.
-* [Agent Skills](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview)
-* [Programmatic tool calling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling)
-* [Files API](https://platform.claude.com/docs/en/build-with-claude/files)
+* [Code execution](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=cli)
+* [Web search](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=cli) and [web fetch](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-fetch-tool?sdk_languages=cli) tool versions later than `web_search_20250305` and `web_fetch_20250910`. Deployments hosted on Azure support only these basic versions, so dynamic filtering, response inclusion, and cache bypass are not available.
+* [Agent Skills](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview?sdk_languages=cli)
+* [Programmatic tool calling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=cli)
+* [Files API](https://platform.claude.com/docs/en/build-with-claude/files?sdk_languages=cli)
 
 Requests that use these features against a deployment hosted on Azure return a `400 Bad Request` error by design. Claude Code detects deployments hosted on Azure and automatically adapts its feature set.
 
 ## API responses
 
-API responses from Claude in Microsoft Foundry follow the standard [Claude API response format](https://platform.claude.com/docs/en/api/messages/create). This includes the `usage` object in response bodies, which provides detailed token consumption information for your requests. The `usage` object is consistent across all platforms (Claude API, Amazon Bedrock, Claude Platform on AWS, Foundry, and Google Cloud).
+API responses from Claude in Microsoft Foundry follow the standard [Claude API response format](https://platform.claude.com/docs/en/api/messages/create?sdk_languages=cli). This includes the `usage` object in response bodies, which provides detailed token consumption information for your requests. The `usage` object is consistent across all platforms (Claude API, Amazon Bedrock, Claude Platform on AWS, Foundry, and Google Cloud).
 
-For details on response headers specific to Foundry, see [Correlation request IDs](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry#correlation-request-ids).
+For details on response headers specific to Foundry, see [Correlation request IDs](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli#correlation-request-ids).
 
 ## API model IDs and deployments
 
-Lifecycle terms (Deprecated, Retired) are defined in [Model deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations). Microsoft Foundry follows the Claude API lifecycle schedule.
+Lifecycle terms (Deprecated, Retired) are defined in [Model deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli). Microsoft Foundry follows the Claude API lifecycle schedule.
 
 The following Claude models are available through Foundry:
 
-| Model                                                                                                 | Default deployment name | Hosted on Azure | Hosted on Anthropic |
-| :---------------------------------------------------------------------------------------------------- | :---------------------- | :-------------: | :-----------------: |
-| Claude Fable 5.1                                                                                      | `claude-fable-5-1`      |                 |          ✓          |
-| Claude Mythos 5.1 ([limited availability](https://support.claude.com/en/articles/14604842))           | `claude-mythos-5-1`     |                 |          ✓          |
-| Claude Fable 5                                                                                        | `claude-fable-5`        |                 |          ✓          |
-| Claude Mythos 5 ([limited availability](https://support.claude.com/en/articles/14604842))             | `claude-mythos-5`       |                 |          ✓          |
-| Claude Opus 5.5                                                                                       | `claude-opus-5-5`       |        ✓        |          ✓          |
-| Claude Opus 5                                                                                         | `claude-opus-5`         |        ✓        |          ✓          |
-| Claude Opus 4.8                                                                                       | `claude-opus-4-8`       |        ✓        |          ✓          |
-| Claude Opus 4.7                                                                                       | `claude-opus-4-7`       |                 |          ✓          |
-| Claude Opus 4.6                                                                                       | `claude-opus-4-6`       |                 |          ✓          |
-| Claude Opus 4.5                                                                                       | `claude-opus-4-5`       |                 |          ✓          |
-| Claude Sonnet 5.5                                                                                     | `claude-sonnet-5-5`     |        ✓        |          ✓          |
-| Claude Sonnet 5                                                                                       | `claude-sonnet-5`       |        ✓        |          ✓          |
-| Claude Sonnet 4.6                                                                                     | `claude-sonnet-4-6`     |                 |          ✓          |
-| Claude Sonnet 4.5 ([deprecated](https://platform.claude.com/docs/en/about-claude/model-deprecations)) | `claude-sonnet-4-5`     |                 |          ✓          |
-| Claude Haiku 5.5                                                                                      | `claude-haiku-5-5`      |        ✓        |          ✓          |
-| Claude Haiku 4.5                                                                                      | `claude-haiku-4-5`      |        ✓        |          ✓          |
+| Model                                                                                                                   | Default deployment name | Hosted on Azure | Hosted on Anthropic |
+| :---------------------------------------------------------------------------------------------------------------------- | :---------------------- | :-------------: | :-----------------: |
+| Claude Fable 5.1                                                                                                        | `claude-fable-5-1`      |                 |          ✓          |
+| Claude Mythos 5.1 ([limited availability](https://support.claude.com/en/articles/14604842))                             | `claude-mythos-5-1`     |                 |          ✓          |
+| Claude Fable 5                                                                                                          | `claude-fable-5`        |                 |          ✓          |
+| Claude Mythos 5 ([limited availability](https://support.claude.com/en/articles/14604842))                               | `claude-mythos-5`       |                 |          ✓          |
+| Claude Opus 5.5                                                                                                         | `claude-opus-5-5`       |        ✓        |          ✓          |
+| Claude Opus 5                                                                                                           | `claude-opus-5`         |        ✓        |          ✓          |
+| Claude Opus 4.8                                                                                                         | `claude-opus-4-8`       |        ✓        |          ✓          |
+| Claude Opus 4.7                                                                                                         | `claude-opus-4-7`       |                 |          ✓          |
+| Claude Opus 4.6                                                                                                         | `claude-opus-4-6`       |                 |          ✓          |
+| Claude Opus 4.5                                                                                                         | `claude-opus-4-5`       |                 |          ✓          |
+| Claude Sonnet 5.5                                                                                                       | `claude-sonnet-5-5`     |        ✓        |          ✓          |
+| Claude Sonnet 5                                                                                                         | `claude-sonnet-5`       |        ✓        |          ✓          |
+| Claude Sonnet 4.6                                                                                                       | `claude-sonnet-4-6`     |                 |          ✓          |
+| Claude Sonnet 4.5 ([deprecated](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli)) | `claude-sonnet-4-5`     |                 |          ✓          |
+| Claude Haiku 5.5                                                                                                        | `claude-haiku-5-5`      |        ✓        |          ✓          |
+| Claude Haiku 4.5                                                                                                        | `claude-haiku-4-5`      |        ✓        |          ✓          |
 
 By default, deployment names match the model IDs shown in the preceding table. However, you can create custom deployments with different names in the Foundry portal to manage different configurations, versions, or rate limits. Use the deployment name (not necessarily the model ID) in your API requests.
 
@@ -705,14 +307,14 @@ By default, deployment names match the model IDs shown in the preceding table. H
 </Info>
 
 <Tip>
-  Upgrading to a newer Claude model? In Claude Code, run `/claude-api migrate` to apply model ID swaps and breaking parameter changes across your codebase. The skill detects which cloud platform your code targets and adjusts model ID formats and feature changes for that platform. See [Migrating to a newer Claude model](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/claude-api-skill#migrating-to-a-newer-claude-model).
+  Upgrading to a newer Claude model? In Claude Code, run `/claude-api migrate` to apply model ID swaps and breaking parameter changes across your codebase. The skill detects which cloud platform your code targets and adjusts model ID formats and feature changes for that platform. See [Migrating to a newer Claude model](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/claude-api-skill?sdk_languages=cli#migrating-to-a-newer-claude-model).
 </Tip>
 
 ## Billing
 
 Claude in Microsoft Foundry bills through the [Azure Marketplace](https://azuremarketplace.microsoft.com/). Usage is denominated in Claude Consumption Units (CCUs), metered hourly, and invoiced monthly in arrears on your Azure bill. CCUs are not prepaid credits. There is no CCU balance or commitment.
 
-For the CCU price, conversion mechanics, and per-model token rates, see [Claude in Microsoft Foundry pricing](https://platform.claude.com/docs/en/about-claude/pricing#claude-in-microsoft-foundry-pricing).
+For the CCU price, conversion mechanics, and per-model token rates, see [Claude in Microsoft Foundry pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#claude-in-microsoft-foundry-pricing).
 
 ## Migrating between hosting options
 
@@ -776,15 +378,15 @@ Foundry does not include Anthropic's standard rate limit headers (`anthropic-rat
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Features overview" icon="stack" href="https://platform.claude.com/docs/en/build-with-claude/overview">
+  <Card title="Features overview" icon="stack" href="https://platform.claude.com/docs/en/build-with-claude/overview?sdk_languages=cli">
     Explore Claude's advanced features and capabilities.
   </Card>
 
-  <Card title="Pricing" icon="chart" href="https://platform.claude.com/docs/en/about-claude/pricing#claude-in-microsoft-foundry-pricing">
+  <Card title="Pricing" icon="chart" href="https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#claude-in-microsoft-foundry-pricing">
     Learn about Anthropic's pricing structure for models and features.
   </Card>
 
-  <Card title="Model deprecations" icon="arrow-clockwise" href="https://platform.claude.com/docs/en/about-claude/model-deprecations">
+  <Card title="Model deprecations" icon="arrow-clockwise" href="https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli">
     As safer and more capable models launch, Anthropic regularly retires older ones. See all API deprecations, along with recommended replacements.
   </Card>
 </CardGroup>
@@ -800,7 +402,7 @@ Foundry does not include Anthropic's standard rate limit headers (`anthropic-rat
     View Microsoft's pricing details for Azure AI Foundry.
   </Card>
 
-  <Card title="Model pricing" icon="table" href="https://platform.claude.com/docs/en/about-claude/pricing#model-pricing">
+  <Card title="Model pricing" icon="table" href="https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#model-pricing">
     View Anthropic's per-model pricing details.
   </Card>
 

@@ -26,13 +26,13 @@ featureMetadata:
     Claude Platform on AWS: ga
     Microsoft Foundry:
       availability: ga
-      note: On [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry), programmatic tool calling requires a [Hosted on Anthropic deployment](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry#additional-features-not-supported-when-hosted-on-azure).
+      note: On [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli), programmatic tool calling requires a [Hosted on Anthropic deployment](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli#additional-features-not-supported-when-hosted-on-azure).
   details:
-    - Programmatic tool calling requires the code execution tool with the `code_execution_20260120` or later [tool version](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool#tool-versions).
+    - Programmatic tool calling requires the code execution tool with the `code_execution_20260120` or later [tool version](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=cli#tool-versions).
     - Claude Haiku 4.5 accepts the `code_execution_20260120` and later tool versions but doesn't support programmatic tool calling.
 ---
 
-Programmatic tool calling allows Claude to write code that calls your tools programmatically within a [code execution](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool) container, rather than requiring round trips through the model for each tool invocation. This reduces latency for multi-tool workflows and decreases token consumption by allowing Claude to filter or process data before it reaches the model's context window. On agentic search benchmarks like [BrowseComp](https://arxiv.org/abs/2504.12516) and [DeepSearchQA](https://github.com/google-deepmind/deepsearchqa), which test multistep web research and complex information retrieval, adding programmatic tool calling on top of basic search tools improved performance by an average of 11% while using 24% fewer input tokens (see [Improved web search with dynamic filtering](https://claude.com/blog/improved-web-search-with-dynamic-filtering)).
+Programmatic tool calling allows Claude to write code that calls your tools programmatically within a [code execution](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=cli) container, rather than requiring round trips through the model for each tool invocation. This reduces latency for multi-tool workflows and decreases token consumption by allowing Claude to filter or process data before it reaches the model's context window. On agentic search benchmarks like [BrowseComp](https://arxiv.org/abs/2504.12516) and [DeepSearchQA](https://github.com/google-deepmind/deepsearchqa), which test multistep web research and complex information retrieval, adding programmatic tool calling on top of basic search tools improved performance by an average of 11% while using 24% fewer input tokens (see [Improved web search with dynamic filtering](https://claude.com/blog/improved-web-search-with-dynamic-filtering)).
 
 Consider checking budget compliance across 20 employees: the traditional approach requires 20 separate model round-trips, pulling thousands of expense line items into the context along the way. With programmatic tool calling, a single script runs all 20 lookups, filters the results, and returns only the employees who exceeded their limits, shrinking what Claude needs to reason over from hundreds of kilobytes down to a handful of lines.
 
@@ -40,51 +40,13 @@ Consider checking budget compliance across 20 employees: the traditional approac
   For a deeper look at the inference and context costs that programmatic tool calling addresses, see [Advanced tool use](https://www.anthropic.com/engineering/advanced-tool-use).
 </Tip>
 
-Programmatic tool calling requires the [code execution tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool) with tool version `code_execution_20260120` or later. To check whether a model supports programmatic tool calling before you send a request, read its `capabilities.code_execution.supported` value from the Models API. [Using the Models API](https://platform.claude.com/docs/en/models/overview#using-the-models-api) describes the field.
+Programmatic tool calling requires the [code execution tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=cli) with tool version `code_execution_20260120` or later. To check whether a model supports programmatic tool calling before you send a request, read its `capabilities.code_execution.supported` value from the Models API. [Using the Models API](https://platform.claude.com/docs/en/models/overview?sdk_languages=cli#using-the-models-api) describes the field.
 
 ## Quick start
 
-Here's an example where Claude programmatically queries a database multiple times and aggregates results. Adding `allowed_callers: ["code_execution_20260120"]` to a tool definition is what makes that tool callable from within code execution (see [The `allowed_callers` field](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling#the-allowed-callers-field)):
+Here's an example where Claude programmatically queries a database multiple times and aggregates results. Adding `allowed_callers: ["code_execution_20260120"]` to a tool definition is what makes that tool callable from within code execution (see [The `allowed_callers` field](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=cli#the-allowed-callers-field)):
 
 <CodeGroup>
-  ```bash cURL
-  curl https://api.anthropic.com/v1/messages \
-      --header "x-api-key: $ANTHROPIC_API_KEY" \
-      --header "anthropic-version: 2023-06-01" \
-      --header "content-type: application/json" \
-      --data '{
-          "model": "claude-opus-5-5",
-          "max_tokens": 4096,
-          "messages": [
-              {
-                  "role": "user",
-                  "content": "Query sales data for the West, East, and Central regions, then tell me which region had the highest revenue"
-              }
-          ],
-          "tools": [
-              {
-                  "type": "code_execution_20260120",
-                  "name": "code_execution"
-              },
-              {
-                  "name": "query_database",
-                  "description": "Execute a SQL query against the sales database. Returns a list of rows as JSON objects.",
-                  "input_schema": {
-                      "type": "object",
-                      "properties": {
-                          "sql": {
-                              "type": "string",
-                              "description": "SQL query to execute"
-                          }
-                      },
-                      "required": ["sql"]
-                  },
-                  "allowed_callers": ["code_execution_20260120"]
-              }
-          ]
-      }'
-  ```
-
   ```bash CLI
   ant messages create <<'YAML'
   model: claude-opus-5-5
@@ -113,256 +75,9 @@ Here's an example where Claude programmatically queries a database multiple time
         - code_execution_20260120
   YAML
   ```
-
-  ```python Python
-  client = anthropic.Anthropic()
-
-  response = client.messages.create(
-      model="claude-opus-5-5",
-      max_tokens=4096,
-      messages=[
-          {
-              "role": "user",
-              "content": "Query sales data for the West, East, and Central regions, then tell me which region had the highest revenue",
-          }
-      ],
-      tools=[
-          {"type": "code_execution_20260120", "name": "code_execution"},
-          {
-              "name": "query_database",
-              "description": "Execute a SQL query against the sales database. Returns a list of rows as JSON objects.",
-              "input_schema": {
-                  "type": "object",
-                  "properties": {
-                      "sql": {"type": "string", "description": "SQL query to execute"}
-                  },
-                  "required": ["sql"],
-              },
-              "allowed_callers": ["code_execution_20260120"],
-          },
-      ],
-  )
-
-  print(response)
-  ```
-
-  ```typescript TypeScript
-  const client = new Anthropic();
-
-  const response = await client.messages.create({
-    model: "claude-opus-5-5",
-    max_tokens: 4096,
-    messages: [
-      {
-        role: "user",
-        content:
-          "Query sales data for the West, East, and Central regions, then tell me which region had the highest revenue"
-      }
-    ],
-    tools: [
-      {
-        type: "code_execution_20260120",
-        name: "code_execution"
-      },
-      {
-        name: "query_database",
-        description:
-          "Execute a SQL query against the sales database. Returns a list of rows as JSON objects.",
-        input_schema: {
-          type: "object" as const,
-          properties: {
-            sql: {
-              type: "string",
-              description: "SQL query to execute"
-            }
-          },
-          required: ["sql"]
-        },
-        allowed_callers: ["code_execution_20260120"]
-      }
-    ]
-  });
-
-  console.log(response);
-  ```
-
-  ```csharp C#
-  AnthropicClient client = new();
-
-  var parameters = new MessageCreateParams
-  {
-      Model = Model.ClaudeOpus5_5,
-      MaxTokens = 4096,
-      Messages = [
-          new() {
-              Role = Role.User,
-              Content = "Query sales data for the West, East, and Central regions, then tell me which region had the highest revenue"
-          }
-      ],
-      Tools = [
-          new CodeExecutionTool20260120(),
-          new ToolUnion(new Tool()
-          {
-              Name = "query_database",
-              Description = "Execute a SQL query against the sales database. Returns a list of rows as JSON objects.",
-              InputSchema = new InputSchema()
-              {
-                  Properties = new Dictionary<string, JsonElement>
-                  {
-                      ["sql"] = JsonSerializer.SerializeToElement(new { type = "string", description = "SQL query to execute" }),
-                  },
-                  Required = ["sql"],
-              },
-              AllowedCallers = ["code_execution_20260120"]
-          }),
-      ]
-  };
-
-  var message = await client.Messages.Create(parameters);
-  Console.WriteLine(message);
-  ```
-
-  ```go Go
-  client := anthropic.NewClient()
-
-  response, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
-  	Model:     anthropic.ModelClaudeOpus5_5,
-  	MaxTokens: 4096,
-  	Messages: []anthropic.MessageParam{
-  		anthropic.NewUserMessage(anthropic.NewTextBlock("Query sales data for the West, East, and Central regions, then tell me which region had the highest revenue")),
-  	},
-  	Tools: []anthropic.ToolUnionParam{
-  		{OfCodeExecutionTool20260120: &anthropic.CodeExecutionTool20260120Param{}},
-  		{OfTool: &anthropic.ToolParam{
-  			Name:        "query_database",
-  			Description: anthropic.String("Execute a SQL query against the sales database. Returns a list of rows as JSON objects."),
-  			InputSchema: anthropic.ToolInputSchemaParam{
-  				Properties: map[string]any{
-  					"sql": map[string]any{
-  						"type":        "string",
-  						"description": "SQL query to execute",
-  					},
-  				},
-  				Required: []string{"sql"},
-  			},
-  			AllowedCallers: []string{"code_execution_20260120"},
-  		}},
-  	},
-  })
-  if err != nil {
-  	log.Fatal(err)
-  }
-  fmt.Println(response.RawJSON())
-  ```
-
-  ```java Java
-  import com.anthropic.models.messages.CodeExecutionTool20260120;
-  // ...
-
-  void main() {
-      AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-      MessageCreateParams params = MessageCreateParams.builder()
-          .model(Model.CLAUDE_OPUS_5_5)
-          .maxTokens(4096L)
-          .addUserMessage("Query sales data for the West, East, and Central regions, then tell me which region had the highest revenue")
-          .addTool(CodeExecutionTool20260120.builder().build())
-          .addTool(Tool.builder()
-              .name("query_database")
-              .description("Execute a SQL query against the sales database. Returns a list of rows as JSON objects.")
-              .inputSchema(InputSchema.builder()
-                  .properties(JsonValue.from(Map.of(
-                      "sql", Map.of(
-                          "type", "string",
-                          "description", "SQL query to execute"
-                      )
-                  )))
-                  .putAdditionalProperty("required", JsonValue.from(List.of("sql")))
-                  .build())
-              .allowedCallers(List.of(Tool.AllowedCaller.of("code_execution_20260120")))
-              .build())
-          .build();
-
-      Message response = client.messages().create(params);
-      IO.println(response);
-  }
-  ```
-
-  ```php PHP
-  $client = new Client();
-
-  $message = $client->messages->create(
-      maxTokens: 4096,
-      messages: [
-          ['role' => 'user', 'content' => 'Query sales data for the West, East, and Central regions, then tell me which region had the highest revenue'],
-      ],
-      model: 'claude-opus-5-5',
-      tools: [
-          [
-              'type' => 'code_execution_20260120',
-              'name' => 'code_execution',
-          ],
-          [
-              'name' => 'query_database',
-              'description' => 'Execute a SQL query against the sales database. Returns a list of rows as JSON objects.',
-              'input_schema' => [
-                  'type' => 'object',
-                  'properties' => [
-                      'sql' => [
-                          'type' => 'string',
-                          'description' => 'SQL query to execute',
-                      ],
-                  ],
-                  'required' => ['sql'],
-              ],
-              'allowed_callers' => ['code_execution_20260120'],
-          ],
-      ],
-  );
-
-  echo $message;
-  ```
-
-  ```ruby Ruby
-  client = Anthropic::Client.new
-
-  message = client.messages.create(
-    model: "claude-opus-5-5",
-    max_tokens: 4096,
-    messages: [
-      {
-        role: "user",
-        content: "Query sales data for the West, East, and Central regions, then tell me which region had the highest revenue"
-      }
-    ],
-    tools: [
-      {
-        type: "code_execution_20260120",
-        name: "code_execution"
-      },
-      {
-        name: "query_database",
-        description: "Execute a SQL query against the sales database. Returns a list of rows as JSON objects.",
-        input_schema: {
-          type: "object",
-          properties: {
-            sql: {
-              type: "string",
-              description: "SQL query to execute"
-            }
-          },
-          required: ["sql"]
-        },
-        allowed_callers: ["code_execution_20260120"]
-      }
-    ]
-  )
-
-  puts message
-  ```
 </CodeGroup>
 
-The response stops with `stop_reason: "tool_use"`, a `container` ID, and a `tool_use` block for `query_database` whose `caller` field identifies the code execution run that called it. Return the result as shown in [Step 3 of the example workflow](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling#step-3-provide-tool-result) so the code can finish.
+The response stops with `stop_reason: "tool_use"`, a `container` ID, and a `tool_use` block for `query_database` whose `caller` field identifies the code execution run that called it. Return the result as shown in [Step 3 of the example workflow](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=cli#step-3-provide-tool-result) so the code can finish.
 
 ## How programmatic tool calling works
 
@@ -460,7 +175,7 @@ Programmatic tool calling uses the same containers as code execution:
 * **Expiration:** `expires_at` tells you how long the container has left. Idle containers are currently reclaimed after about 5 minutes, and no container can be reused more than 30 days after it was created.
 
 <Warning>
-  While Claude's code is waiting for a programmatic tool result, the pending call times out after about 4 minutes and raises a `TimeoutError` inside the code. Return each tool result well before the `expires_at` timestamp on the paused response. See [Container expiration during tool call](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling#container-expiration-during-tool-call).
+  While Claude's code is waiting for a programmatic tool result, the pending call times out after about 4 minutes and raises a `TimeoutError` inside the code. Return each tool result well before the `expires_at` timestamp on the paused response. See [Container expiration during tool call](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=cli#container-expiration-during-tool-call).
 </Warning>
 
 ## Example workflow
@@ -475,7 +190,7 @@ Send a request with code execution and a tool that allows programmatic calling. 
   Provide detailed descriptions of your tool's output format in the tool description. If you specify that the tool returns JSON, Claude attempts to deserialize and process the result in code. The more detail you provide about the output schema, the better Claude can handle the response programmatically.
 </Note>
 
-The request shape is identical to the [Quick start](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling#quick-start) example: include `code_execution` in your tools list, add `allowed_callers: ["code_execution_20260120"]` to any tool you want Claude to invoke from code, and send your user message. The remaining steps in this workflow use the user message `"Query customer purchase history from the last quarter and identify our top 5 customers by revenue"`.
+The request shape is identical to the [Quick start](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=cli#quick-start) example: include `code_execution` in your tools list, add `allowed_callers: ["code_execution_20260120"]` to any tool you want Claude to invoke from code, and send your user message. The remaining steps in this workflow use the user message `"Query customer purchase history from the last quarter and identify our top 5 customers by revenue"`.
 
 ### Step 2: API response with tool call
 
@@ -520,85 +235,11 @@ Claude writes code that calls your tool. The API pauses and returns:
 
 Send the full conversation history plus your tool result. Three details matter on this request:
 
-* The user message that carries your result can contain only `tool_result` blocks. See [Message formatting restrictions](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling#message-formatting-restrictions).
+* The user message that carries your result can contain only `tool_result` blocks. See [Message formatting restrictions](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=cli#message-formatting-restrictions).
 * Pass the `container` ID from the paused response. The API rejects a continuation that has pending programmatic tool calls but no container ID.
 * Send the same `tools` array as the original request. The code execution tool must still be present for the paused code to resume, and the tools you send on this request are the definitions Claude and the running code can use for the rest of the turn.
 
 <CodeGroup>
-  ```bash cURL
-  curl https://api.anthropic.com/v1/messages \
-      --header "x-api-key: $ANTHROPIC_API_KEY" \
-      --header "anthropic-version: 2023-06-01" \
-      --header "content-type: application/json" \
-      --data '{
-          "model": "claude-opus-5-5",
-          "max_tokens": 4096,
-          "container": "container_xyz789",
-          "messages": [
-              {
-                  "role": "user",
-                  "content": "Query customer purchase history from the last quarter and identify our top 5 customers by revenue"
-              },
-              {
-                  "role": "assistant",
-                  "content": [
-                      {
-                          "type": "text",
-                          "text": "I'\''ll query the purchase history and analyze the results."
-                      },
-                      {
-                          "type": "server_tool_use",
-                          "id": "srvtoolu_abc123",
-                          "name": "code_execution",
-                          "input": {"code": "..."}
-                      },
-                      {
-                          "type": "tool_use",
-                          "id": "toolu_def456",
-                          "name": "query_database",
-                          "input": {"sql": "<sql>"},
-                          "caller": {
-                              "type": "code_execution_20260120",
-                              "tool_id": "srvtoolu_abc123"
-                          }
-                      }
-                  ]
-              },
-              {
-                  "role": "user",
-                  "content": [
-                      {
-                          "type": "tool_result",
-                          "tool_use_id": "toolu_def456",
-                          "content": "[{\"customer_id\": \"C1\", \"revenue\": 45000}, {\"customer_id\": \"C2\", \"revenue\": 38000}]"
-                      }
-                  ]
-              }
-          ],
-          "tools": [
-              {
-                  "type": "code_execution_20260120",
-                  "name": "code_execution"
-              },
-              {
-                  "name": "query_database",
-                  "description": "Execute a SQL query against the sales database. Returns a list of rows as JSON objects.",
-                  "input_schema": {
-                      "type": "object",
-                      "properties": {
-                          "sql": {
-                              "type": "string",
-                              "description": "SQL query to execute"
-                          }
-                      },
-                      "required": ["sql"]
-                  },
-                  "allowed_callers": ["code_execution_20260120"]
-              }
-          ]
-      }'
-  ```
-
   ```bash CLI
   ant messages create <<'YAML'
   model: claude-opus-5-5
@@ -652,507 +293,6 @@ Send the full conversation history plus your tool result. Three details matter o
       allowed_callers:
         - code_execution_20260120
   YAML
-  ```
-
-  ```python Python
-  response = client.messages.create(
-      model="claude-opus-5-5",
-      max_tokens=4096,
-      container="container_xyz789",  # Reuse the container
-      messages=[
-          {
-              "role": "user",
-              "content": "Query customer purchase history from the last quarter and identify our top 5 customers by revenue",
-          },
-          {
-              "role": "assistant",
-              "content": [
-                  {
-                      "type": "text",
-                      "text": "I'll query the purchase history and analyze the results.",
-                  },
-                  {
-                      "type": "server_tool_use",
-                      "id": "srvtoolu_abc123",
-                      "name": "code_execution",
-                      "input": {"code": "..."},
-                  },
-                  {
-                      "type": "tool_use",
-                      "id": "toolu_def456",
-                      "name": "query_database",
-                      "input": {"sql": "<sql>"},
-                      "caller": {
-                          "type": "code_execution_20260120",
-                          "tool_id": "srvtoolu_abc123",
-                      },
-                  },
-              ],
-          },
-          {
-              "role": "user",
-              "content": [
-                  {
-                      "type": "tool_result",
-                      "tool_use_id": "toolu_def456",
-                      "content": '[{"customer_id": "C1", "revenue": 45000}, {"customer_id": "C2", "revenue": 38000}, ...]',
-                  }
-              ],
-          },
-      ],
-      # Same tools array as the original request
-      tools=[
-          {"type": "code_execution_20260120", "name": "code_execution"},
-          {
-              "name": "query_database",
-              "description": "Execute a SQL query against the sales database. Returns a list of rows as JSON objects.",
-              "input_schema": {
-                  "type": "object",
-                  "properties": {
-                      "sql": {"type": "string", "description": "SQL query to execute"}
-                  },
-                  "required": ["sql"],
-              },
-              "allowed_callers": ["code_execution_20260120"],
-          },
-      ],
-  )
-
-  print(response)
-  ```
-
-  ```typescript TypeScript
-  const response = await client.messages.create({
-    model: "claude-opus-5-5",
-    max_tokens: 4096,
-    container: "container_xyz789", // Reuse the container
-    messages: [
-      {
-        role: "user",
-        content:
-          "Query customer purchase history from the last quarter and identify our top 5 customers by revenue"
-      },
-      {
-        role: "assistant",
-        content: [
-          { type: "text", text: "I'll query the purchase history and analyze the results." },
-          {
-            type: "server_tool_use",
-            id: "srvtoolu_abc123",
-            name: "code_execution",
-            input: { code: "..." }
-          },
-          {
-            type: "tool_use",
-            id: "toolu_def456",
-            name: "query_database",
-            input: { sql: "<sql>" },
-            caller: {
-              type: "code_execution_20260120",
-              tool_id: "srvtoolu_abc123"
-            }
-          }
-        ]
-      },
-      {
-        role: "user",
-        content: [
-          {
-            type: "tool_result",
-            tool_use_id: "toolu_def456",
-            content:
-              '[{"customer_id": "C1", "revenue": 45000}, {"customer_id": "C2", "revenue": 38000}, ...]'
-          }
-        ]
-      }
-    ],
-    // Same tools array as the original request
-    tools: [
-      {
-        type: "code_execution_20260120",
-        name: "code_execution"
-      },
-      {
-        name: "query_database",
-        description:
-          "Execute a SQL query against the sales database. Returns a list of rows as JSON objects.",
-        input_schema: {
-          type: "object" as const,
-          properties: {
-            sql: {
-              type: "string",
-              description: "SQL query to execute"
-            }
-          },
-          required: ["sql"]
-        },
-        allowed_callers: ["code_execution_20260120"]
-      }
-    ]
-  });
-
-  console.log(response);
-  ```
-
-  ```csharp C#
-  AnthropicClient client = new();
-
-  var parameters = new MessageCreateParams
-  {
-      Model = Model.ClaudeOpus5_5,
-      MaxTokens = 4096,
-      Container = "container_xyz789",
-      Messages =
-      [
-          new()
-          {
-              Role = Role.User,
-              Content = "Query customer purchase history from the last quarter and identify our top 5 customers by revenue"
-          },
-          new()
-          {
-              Role = Role.Assistant,
-              Content = new ContentBlock[]
-              {
-                  new TextBlock { Text = "I'll query the purchase history and analyze the results." },
-                  new ServerToolUseBlock
-                  {
-                      Id = "srvtoolu_abc123",
-                      Name = "code_execution",
-                      Input = new { code = "..." }
-                  },
-                  new ToolUseBlock
-                  {
-                      Id = "toolu_def456",
-                      Name = "query_database",
-                      Input = new { sql = "<sql>" },
-                      Caller = new ToolCaller
-                      {
-                          Type = "code_execution_20260120",
-                          ToolId = "srvtoolu_abc123"
-                      }
-                  }
-              }
-          },
-          new()
-          {
-              Role = Role.User,
-              Content = new ContentBlockParam[]
-              {
-                  new ToolResultBlockParam
-                  {
-                      ToolUseID = "toolu_def456",
-                      Content = "[{\"customer_id\": \"C1\", \"revenue\": 45000}, {\"customer_id\": \"C2\", \"revenue\": 38000}, ...]"
-                  }
-              }
-          }
-      ],
-      // Same tools array as the original request
-      Tools = [
-          new CodeExecutionTool20260120(),
-          new ToolUnion(new Tool()
-          {
-              Name = "query_database",
-              Description = "Execute a SQL query against the sales database. Returns a list of rows as JSON objects.",
-              InputSchema = new InputSchema()
-              {
-                  Properties = new Dictionary<string, JsonElement>
-                  {
-                      ["sql"] = JsonSerializer.SerializeToElement(new { type = "string", description = "SQL query to execute" }),
-                  },
-                  Required = ["sql"],
-              },
-              AllowedCallers = ["code_execution_20260120"]
-          }),
-      ]
-  };
-
-  var message = await client.Messages.Create(parameters);
-  Console.WriteLine(message);
-  ```
-
-  ```go Go
-  client := anthropic.NewClient()
-
-  response, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
-  	Model:     anthropic.ModelClaudeOpus5_5,
-  	MaxTokens: 4096,
-  	Container: anthropic.MessageCreateParamsContainerUnion{
-  		OfString: anthropic.String("container_xyz789"),
-  	},
-  	Messages: []anthropic.MessageParam{
-  		anthropic.NewUserMessage(anthropic.NewTextBlock("Query customer purchase history from the last quarter and identify our top 5 customers by revenue")),
-  		{
-  			Role: anthropic.MessageParamRoleAssistant,
-  			Content: []anthropic.ContentBlockParamUnion{
-  				anthropic.NewTextBlock("I'll query the purchase history and analyze the results."),
-  				{OfServerToolUse: &anthropic.ServerToolUseBlockParam{
-  					ID:    "srvtoolu_abc123",
-  					Name:  anthropic.ServerToolUseBlockParamNameCodeExecution,
-  					Input: map[string]any{"code": "..."},
-  				}},
-  				{OfToolUse: &anthropic.ToolUseBlockParam{
-  					ID:    "toolu_def456",
-  					Name:  "query_database",
-  					Input: map[string]any{"sql": "<sql>"},
-  					Caller: anthropic.ServerToolUseBlockParamCallerUnion{
-  						OfCodeExecution20260120: &anthropic.ServerToolCaller20260120Param{
-  							ToolID: "srvtoolu_abc123",
-  						},
-  					},
-  				}},
-  			},
-  		},
-  		{
-  			Role: anthropic.MessageParamRoleUser,
-  			Content: []anthropic.ContentBlockParamUnion{
-  				{OfToolResult: &anthropic.ToolResultBlockParam{
-  					ToolUseID: "toolu_def456",
-  					Content: []anthropic.ToolResultBlockParamContentUnion{
-  						{OfText: &anthropic.TextBlockParam{
-  							Text: `[{"customer_id": "C1", "revenue": 45000}, {"customer_id": "C2", "revenue": 38000}, ...]`,
-  						}},
-  					},
-  				}},
-  			},
-  		},
-  	},
-  	// Same tools array as the original request
-  	Tools: []anthropic.ToolUnionParam{
-  		{OfCodeExecutionTool20260120: &anthropic.CodeExecutionTool20260120Param{}},
-  		{OfTool: &anthropic.ToolParam{
-  			Name:        "query_database",
-  			Description: anthropic.String("Execute a SQL query against the sales database. Returns a list of rows as JSON objects."),
-  			InputSchema: anthropic.ToolInputSchemaParam{
-  				Properties: map[string]any{
-  					"sql": map[string]any{
-  						"type":        "string",
-  						"description": "SQL query to execute",
-  					},
-  				},
-  				Required: []string{"sql"},
-  			},
-  			AllowedCallers: []string{"code_execution_20260120"},
-  		}},
-  	},
-  })
-  if err != nil {
-  	log.Fatal(err)
-  }
-  fmt.Println(response.RawJSON())
-  ```
-
-  ```java Java
-  import com.anthropic.models.messages.CodeExecutionTool20260120;
-  // ...
-
-  void main() {
-      AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-      MessageCreateParams params = MessageCreateParams.builder()
-          .model(Model.CLAUDE_OPUS_5_5)
-          .maxTokens(4096L)
-          .container("container_xyz789")
-          .addUserMessage("Query customer purchase history from the last quarter and identify our top 5 customers by revenue")
-          .addAssistantMessageOfBlockParams(List.of(
-              ContentBlockParam.ofText(
-                  TextBlockParam.builder()
-                      .text("I'll query the purchase history and analyze the results.")
-                      .build()),
-              ContentBlockParam.ofServerToolUse(
-                  ServerToolUseBlockParam.builder()
-                      .id("srvtoolu_abc123")
-                      .name("code_execution")
-                      .input(JsonValue.from(Map.of("code", "...")))
-                      .build()),
-              ContentBlockParam.ofToolUse(
-                  ToolUseBlockParam.builder()
-                      .id("toolu_def456")
-                      .name("query_database")
-                      .input(JsonValue.from(Map.of("sql", "<sql>")))
-                      .codeExecution20260120Caller("srvtoolu_abc123")
-                      .build())
-          ))
-          .addUserMessageOfBlockParams(List.of(
-              ContentBlockParam.ofToolResult(
-                  ToolResultBlockParam.builder()
-                      .toolUseId("toolu_def456")
-                      .content("[{\"customer_id\": \"C1\", \"revenue\": 45000}, {\"customer_id\": \"C2\", \"revenue\": 38000}, ...]")
-                      .build())
-          ))
-          // Same tools array as the original request
-          .addTool(CodeExecutionTool20260120.builder().build())
-          .addTool(Tool.builder()
-              .name("query_database")
-              .description("Execute a SQL query against the sales database. Returns a list of rows as JSON objects.")
-              .inputSchema(InputSchema.builder()
-                  .properties(JsonValue.from(Map.of(
-                      "sql", Map.of(
-                          "type", "string",
-                          "description", "SQL query to execute"
-                      )
-                  )))
-                  .putAdditionalProperty("required", JsonValue.from(List.of("sql")))
-                  .build())
-              .allowedCallers(List.of(Tool.AllowedCaller.of("code_execution_20260120")))
-              .build())
-          .build();
-
-      Message response = client.messages().create(params);
-      IO.println(response);
-  }
-  ```
-
-  ```php PHP
-  $client = new Client();
-
-  $message = $client->messages->create(
-      maxTokens: 4096,
-      messages: [
-          [
-              'role' => 'user',
-              'content' => 'Query customer purchase history from the last quarter and identify our top 5 customers by revenue',
-          ],
-          [
-              'role' => 'assistant',
-              'content' => [
-                  [
-                      'type' => 'text',
-                      'text' => "I'll query the purchase history and analyze the results.",
-                  ],
-                  [
-                      'type' => 'server_tool_use',
-                      'id' => 'srvtoolu_abc123',
-                      'name' => 'code_execution',
-                      'input' => ['code' => '...'],
-                  ],
-                  [
-                      'type' => 'tool_use',
-                      'id' => 'toolu_def456',
-                      'name' => 'query_database',
-                      'input' => ['sql' => '<sql>'],
-                      'caller' => [
-                          'type' => 'code_execution_20260120',
-                          'tool_id' => 'srvtoolu_abc123',
-                      ],
-                  ],
-              ],
-          ],
-          [
-              'role' => 'user',
-              'content' => [
-                  [
-                      'type' => 'tool_result',
-                      'tool_use_id' => 'toolu_def456',
-                      'content' => '[{"customer_id": "C1", "revenue": 45000}, {"customer_id": "C2", "revenue": 38000}, ...]',
-                  ],
-              ],
-          ],
-      ],
-      model: 'claude-opus-5-5',
-      container: 'container_xyz789',
-      // Same tools array as the original request
-      tools: [
-          [
-              'type' => 'code_execution_20260120',
-              'name' => 'code_execution',
-          ],
-          [
-              'name' => 'query_database',
-              'description' => 'Execute a SQL query against the sales database. Returns a list of rows as JSON objects.',
-              'input_schema' => [
-                  'type' => 'object',
-                  'properties' => [
-                      'sql' => [
-                          'type' => 'string',
-                          'description' => 'SQL query to execute',
-                      ],
-                  ],
-                  'required' => ['sql'],
-              ],
-              'allowed_callers' => ['code_execution_20260120'],
-          ],
-      ],
-  );
-
-  echo $message;
-  ```
-
-  ```ruby Ruby
-  require "anthropic"
-
-  client = Anthropic::Client.new
-
-  message = client.messages.create(
-    model: "claude-opus-5-5",
-    max_tokens: 4096,
-    container: "container_xyz789",
-    messages: [
-      {
-        role: "user",
-        content: "Query customer purchase history from the last quarter and identify our top 5 customers by revenue"
-      },
-      {
-        role: "assistant",
-        content: [
-          {
-            type: "text",
-            text: "I'll query the purchase history and analyze the results."
-          },
-          {
-            type: "server_tool_use",
-            id: "srvtoolu_abc123",
-            name: "code_execution",
-            input: { code: "..." }
-          },
-          {
-            type: "tool_use",
-            id: "toolu_def456",
-            name: "query_database",
-            input: { sql: "<sql>" },
-            caller: {
-              type: "code_execution_20260120",
-              tool_id: "srvtoolu_abc123"
-            }
-          }
-        ]
-      },
-      {
-        role: "user",
-        content: [
-          {
-            type: "tool_result",
-            tool_use_id: "toolu_def456",
-            content: '[{"customer_id": "C1", "revenue": 45000}, {"customer_id": "C2", "revenue": 38000}, ...]'
-          }
-        ]
-      }
-    ],
-    # Same tools array as the original request
-    tools: [
-      {
-        type: "code_execution_20260120",
-        name: "code_execution"
-      },
-      {
-        name: "query_database",
-        description: "Execute a SQL query against the sales database. Returns a list of rows as JSON objects.",
-        input_schema: {
-          type: "object",
-          properties: {
-            sql: {
-              type: "string",
-              description: "SQL query to execute"
-            }
-          },
-          required: ["sql"]
-        },
-        allowed_callers: ["code_execution_20260120"]
-      }
-    ]
-  )
-
-  puts message
   ```
 </CodeGroup>
 
@@ -1305,10 +445,10 @@ When all tool calls are satisfied and code completes:
 
 ### Common errors
 
-| Error                                      | Where it appears                                                             | Description                                                                    | Solution                                                                                                                         |
-| ------------------------------------------ | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
-| `invalid_tool_input`                       | `error_code` on the `code_execution_tool_result` error block in the response | Invalid parameters were passed to the code execution tool                      | See the [code execution tool errors](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool#errors)   |
-| `invalid_request_error` (on `tool_choice`) | HTTP 400 error response                                                      | `tool_choice` names a tool whose `allowed_callers` does not include `"direct"` | Either add `"direct"` to that tool's `allowed_callers`, or remove the tool from `tool_choice` and let Claude invoke it from code |
+| Error                                      | Where it appears                                                             | Description                                                                    | Solution                                                                                                                                         |
+| ------------------------------------------ | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `invalid_tool_input`                       | `error_code` on the `code_execution_tool_result` error block in the response | Invalid parameters were passed to the code execution tool                      | See the [code execution tool errors](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=cli#errors) |
+| `invalid_request_error` (on `tool_choice`) | HTTP 400 error response                                                      | `tool_choice` names a tool whose `allowed_callers` does not include `"direct"` | Either add `"direct"` to that tool's `allowed_callers`, or remove the tool from `tool_choice` and let Claude invoke it from code                 |
 
 ### Container expiration during tool call
 
@@ -1369,8 +509,8 @@ To work around this, do one of the following:
 
 The following tools cannot be called programmatically:
 
-* Tools provided by an [MCP connector](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector)
-* The [computer use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool) and [browser use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool) toolsets (`computer_toolset_20260801` and `browser_toolset_20260801`), whose `allowed_callers` field accepts only `"direct"`
+* Tools provided by an [MCP connector](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector?sdk_languages=cli)
+* The [computer use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool?sdk_languages=cli) and [browser use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool?sdk_languages=cli) toolsets (`computer_toolset_20260801` and `browser_toolset_20260801`), whose `allowed_callers` field accepts only `"direct"`
 
 ### Message formatting restrictions
 
@@ -1440,11 +580,11 @@ In Anthropic's internal evaluations on a production Claude model:
 * On [τ²-bench](https://arxiv.org/abs/2506.07982) (airline, retail, and telecom domains), where each turn makes one or two sequential tool calls, programmatic tool calling left scores unchanged and cost roughly 8% more. Sequential single-call workflows do not benefit.
 * Across production API traffic, requests whose `tools` array contains 10 to 49 tool definitions see typical token savings of 20% to 40% with programmatic tool calling enabled.
 
-Actual savings vary with workload shape. See [When to use programmatic calling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling#when-to-use-programmatic-calling).
+Actual savings vary with workload shape. See [When to use programmatic calling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=cli#when-to-use-programmatic-calling).
 
 ## Usage and pricing
 
-Programmatic tool calling uses the same pricing as code execution. See the [code execution pricing](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool#usage-and-pricing) for details.
+Programmatic tool calling uses the same pricing as code execution. See the [code execution pricing](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=cli#usage-and-pricing) for details.
 
 <Note>
   Token counting for programmatic tool calls: Tool results from programmatic invocations do not count toward your input/output token usage. Only the final code execution result and Claude's response count.
@@ -1560,30 +700,30 @@ Anthropic's programmatic tool calling is a managed version of sandboxed executio
 * Enabled with a tool definition, with no infrastructure to run
 * Environment and instructions optimized for Claude
 
-Consider using Anthropic's managed solution if you're using the Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws), or [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry). On Microsoft Foundry, programmatic tool calling requires a [Hosted on Anthropic deployment](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry#additional-features-not-supported-when-hosted-on-azure).
+Consider using Anthropic's managed solution if you're using the Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), or [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli). On Microsoft Foundry, programmatic tool calling requires a [Hosted on Anthropic deployment](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli#additional-features-not-supported-when-hosted-on-azure).
 
 ## Data retention
 
 Programmatic tool calling is built on the code execution infrastructure and uses the same sandbox containers. Container data, including execution artifacts and outputs, is retained for up to 30 days.
 
-For ZDR eligibility across all features, see [API and data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention).
+For ZDR eligibility across all features, see [API and data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli).
 
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Fine-grained tool streaming" icon="bolt" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/fine-grained-tool-streaming">
+  <Card title="Fine-grained tool streaming" icon="bolt" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/fine-grained-tool-streaming?sdk_languages=cli">
     Stream tool inputs without server-side JSON buffering for latency-sensitive applications.
   </Card>
 
-  <Card title="Code execution tool" icon="code" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool">
+  <Card title="Code execution tool" icon="code" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=cli">
     Run Python and bash code in a sandboxed container to analyze data, generate files, and iterate on solutions.
   </Card>
 
-  <Card title="Tool use with Claude" icon="wrench" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview">
+  <Card title="Tool use with Claude" icon="wrench" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=cli">
     Connect Claude to external tools and APIs. See where tools execute, when Claude calls them, and which tool fits your task.
   </Card>
 
-  <Card title="Define tools" icon="hammer" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools">
+  <Card title="Define tools" icon="hammer" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools?sdk_languages=cli">
     Specify tool schemas, write effective descriptions, and control when Claude calls your tools.
   </Card>
 </CardGroup>

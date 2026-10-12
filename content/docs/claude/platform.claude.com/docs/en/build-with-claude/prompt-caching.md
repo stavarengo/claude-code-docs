@@ -7,13 +7,13 @@ description: Cache prompt prefixes with `cache_control` to cut costs and latency
 Prompt caching optimizes your API usage by allowing resuming from specific prefixes in your prompts. This significantly reduces processing time and costs for repetitive tasks or prompts with consistent elements.
 
 <Note>
-  To learn how zero data retention (ZDR) applies to this feature, see [API and data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention).
+  To learn how zero data retention (ZDR) applies to this feature, see [API and data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=curl).
 </Note>
 
 There are two ways to enable prompt caching:
 
-* **[Automatic caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#automatic-caching)**: Add a single `cache_control` field at the top level of your request. The system automatically applies the cache breakpoint to the last cacheable block and moves it forward as conversations grow. Best for multi-turn conversations where the growing message history should be cached automatically.
-* **[Explicit cache breakpoints](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#explicit-cache-breakpoints)**: Place `cache_control` directly on individual content blocks for fine-grained control over exactly what gets cached.
+* **[Automatic caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#automatic-caching)**: Add a single `cache_control` field at the top level of your request. The system automatically applies the cache breakpoint to the last cacheable block and moves it forward as conversations grow. Best for multi-turn conversations where the growing message history should be cached automatically.
+* **[Explicit cache breakpoints](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#explicit-cache-breakpoints)**: Place `cache_control` directly on individual content blocks for fine-grained control over exactly what gets cached.
 
 The simplest way to start is with automatic caching:
 
@@ -35,158 +35,6 @@ The simplest way to start is with automatic caching:
         }
       ]
     }'
-  ```
-
-  ```bash CLI
-  ant messages create --transform usage <<'YAML'
-  model: claude-opus-5-5
-  max_tokens: 1024
-  cache_control:
-    type: ephemeral
-  system: >-
-    You are an AI assistant tasked with analyzing literary works. Your goal is
-    to provide insightful commentary on themes, characters, and writing style.
-  messages:
-    - role: user
-      content: Analyze the major themes in Pride and Prejudice.
-  YAML
-  ```
-
-  ```python Python
-  client = anthropic.Anthropic()
-
-  response = client.messages.create(
-      model="claude-opus-5-5",
-      max_tokens=1024,
-      cache_control={"type": "ephemeral"},
-      system="You are an AI assistant tasked with analyzing literary works. Your goal is to provide insightful commentary on themes, characters, and writing style.",
-      messages=[
-          {
-              "role": "user",
-              "content": "Analyze the major themes in 'Pride and Prejudice'.",
-          }
-      ],
-  )
-  print(response.usage.model_dump_json())
-  ```
-
-  ```typescript TypeScript
-  const client = new Anthropic();
-
-  const response = await client.messages.create({
-    model: "claude-opus-5-5",
-    max_tokens: 1024,
-    cache_control: { type: "ephemeral" },
-    system:
-      "You are an AI assistant tasked with analyzing literary works. Your goal is to provide insightful commentary on themes, characters, and writing style.",
-    messages: [
-      {
-        role: "user",
-        content: "Analyze the major themes in 'Pride and Prejudice'."
-      }
-    ]
-  });
-  console.log(response.usage);
-  ```
-
-  ```csharp C#
-  AnthropicClient client = new();
-
-  var parameters = new MessageCreateParams
-  {
-      Model = Model.ClaudeOpus5_5,
-      MaxTokens = 1024,
-      CacheControl = new CacheControlEphemeral(),
-      System = "You are an AI assistant tasked with analyzing literary works. Your goal is to provide insightful commentary on themes, characters, and writing style.",
-      Messages =
-      [
-          new()
-          {
-              Role = Role.User,
-              Content = "Analyze the major themes in 'Pride and Prejudice'."
-          }
-      ]
-  };
-
-  var message = await client.Messages.Create(parameters);
-  Console.WriteLine(message.Usage);
-  ```
-
-  ```go Go
-  client := anthropic.NewClient()
-
-  response, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
-  	Model:        anthropic.ModelClaudeOpus5_5,
-  	MaxTokens:    1024,
-  	CacheControl: anthropic.NewCacheControlEphemeralParam(),
-  	System: []anthropic.TextBlockParam{
-  		{Text: "You are an AI assistant tasked with analyzing literary works. Your goal is to provide insightful commentary on themes, characters, and writing style."},
-  	},
-  	Messages: []anthropic.MessageParam{
-  		anthropic.NewUserMessage(anthropic.NewTextBlock("Analyze the major themes in 'Pride and Prejudice'.")),
-  	},
-  })
-  if err != nil {
-  	log.Fatal(err)
-  }
-  fmt.Println(response.Usage.RawJSON())
-  ```
-
-  ```java Java
-  import com.anthropic.models.messages.CacheControlEphemeral;
-  // ...
-  public class PromptCachingExample {
-
-    public static void main(String[] args) {
-      AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-      MessageCreateParams params = MessageCreateParams.builder()
-          .model(Model.CLAUDE_OPUS_5_5)
-          .maxTokens(1024)
-          .cacheControl(CacheControlEphemeral.builder().build())
-          .system("You are an AI assistant tasked with analyzing literary works. Your goal is to provide insightful commentary on themes, characters, and writing style.")
-          .addUserMessage("Analyze the major themes in 'Pride and Prejudice'.")
-          .build();
-
-      Message message = client.messages().create(params);
-      System.out.println(message.usage());
-    }
-  }
-  ```
-
-  ```php PHP
-  use Anthropic\Messages\CacheControlEphemeral;
-  // ...
-  $client = new Client();
-
-  $response = $client->messages->create(
-      maxTokens: 1024,
-      messages: [
-          ['role' => 'user', 'content' => "Analyze the major themes in 'Pride and Prejudice'."]
-      ],
-      model: 'claude-opus-5-5',
-      cacheControl: CacheControlEphemeral::with(),
-      system: "You are an AI assistant tasked with analyzing literary works. Your goal is to provide insightful commentary on themes, characters, and writing style.",
-  );
-  echo json_encode($response->usage);
-  ```
-
-  ```ruby Ruby
-  client = Anthropic::Client.new
-
-  response = client.messages.create(
-    model: "claude-opus-5-5",
-    max_tokens: 1024,
-    cache_control: {type: "ephemeral"},
-    system: "You are an AI assistant tasked with analyzing literary works. Your goal is to provide insightful commentary on themes, characters, and writing style.",
-    messages: [
-      {
-        role: "user",
-        content: "Analyze the major themes in 'Pride and Prejudice'."
-      }
-    ]
-  )
-  puts response.usage
   ```
 </CodeGroup>
 
@@ -214,9 +62,9 @@ By default, the cache has a 5-minute lifetime. The cache is refreshed for no add
 The lifetime is measured from the start of the request that writes or reads the cache entry, not from the end of its response. Time spent generating a response counts against the lifetime: if a response takes 4 minutes to stream, a follow-up request that reuses the same cached prefix must start within about 1 minute of that response completing.
 
 <Note>
-  If you find that 5 minutes is too short, Anthropic also offers a 1-hour cache duration [at additional cost](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#pricing).
+  If you find that 5 minutes is too short, Anthropic also offers a 1-hour cache duration [at additional cost](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#pricing).
 
-  For more information, see [1-hour cache duration](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#1-hour-cache-duration).
+  For more information, see [1-hour cache duration](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#1-hour-cache-duration).
 </Note>
 
 <Tip>
@@ -231,29 +79,29 @@ The lifetime is measured from the start of the request that writes or reads the 
 
 Prompt caching introduces a new pricing structure. The following table shows the price per million tokens for each supported model:
 
-| Model                                                                                                                                | Base input tokens | 5m cache writes | 1h cache writes | Cache hits and refreshes | Output tokens |
-| :----------------------------------------------------------------------------------------------------------------------------------- | :---------------- | :-------------- | :-------------- | :----------------------- | :------------ |
-| Claude Fable 5.1                                                                                                                     | $10 / MTok        | $12.50 / MTok   | $20 / MTok      | $0.25 / MTok<sup>1</sup> | $50 / MTok    |
-| Claude Mythos 5.1 ([limited availability](https://support.claude.com/en/articles/14604842))                                          | $10 / MTok        | $12.50 / MTok   | $20 / MTok      | $0.25 / MTok<sup>1</sup> | $50 / MTok    |
-| Claude Fable 5                                                                                                                       | $10 / MTok        | $12.50 / MTok   | $20 / MTok      | $1 / MTok                | $50 / MTok    |
-| Claude Mythos 5 ([limited availability](https://support.claude.com/en/articles/14604842))                                            | $10 / MTok        | $12.50 / MTok   | $20 / MTok      | $1 / MTok                | $50 / MTok    |
-| Claude Opus 5.5                                                                                                                      | $4 / MTok         | $5 / MTok       | $8 / MTok       | $0.20 / MTok<sup>2</sup> | $20 / MTok    |
-| Claude Opus 5                                                                                                                        | $5 / MTok         | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok             | $25 / MTok    |
-| Claude Opus 4.8                                                                                                                      | $5 / MTok         | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok             | $25 / MTok    |
-| Claude Opus 4.7                                                                                                                      | $5 / MTok         | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok             | $25 / MTok    |
-| Claude Opus 4.6                                                                                                                      | $5 / MTok         | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok             | $25 / MTok    |
-| Claude Opus 4.5                                                                                                                      | $5 / MTok         | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok             | $25 / MTok    |
-| Claude Opus 4.1 ([retired, except on Bedrock and Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations)) | $15 / MTok        | $18.75 / MTok   | $30 / MTok      | $1.50 / MTok             | $75 / MTok    |
-| Claude Opus 4 ([retired, except on Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations))               | $15 / MTok        | $18.75 / MTok   | $30 / MTok      | $1.50 / MTok             | $75 / MTok    |
-| Claude Sonnet 5.5                                                                                                                    | $2 / MTok         | $2.50 / MTok    | $4 / MTok       | $0.10 / MTok<sup>2</sup> | $10 / MTok    |
-| Claude Sonnet 5                                                                                                                      | $2 / MTok         | $2.50 / MTok    | $4 / MTok       | $0.20 / MTok             | $10 / MTok    |
-| Claude Sonnet 4.6                                                                                                                    | $3 / MTok         | $3.75 / MTok    | $6 / MTok       | $0.30 / MTok             | $15 / MTok    |
-| Claude Sonnet 4.5                                                                                                                    | $3 / MTok         | $3.75 / MTok    | $6 / MTok       | $0.30 / MTok             | $15 / MTok    |
-| Claude Sonnet 4 ([retired, except on Bedrock and Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations)) | $3 / MTok         | $3.75 / MTok    | $6 / MTok       | $0.30 / MTok             | $15 / MTok    |
-| Claude Haiku 5.5 (for prompts up to 100,000 tokens)                                                                                  | $0.10 / MTok      | $0.125 / MTok   | $0.20 / MTok    | $0.01 / MTok             | $0.50 / MTok  |
-| Claude Haiku 5.5 (for prompts over 100,000 tokens)                                                                                   | $0.50 / MTok      | $0.625 / MTok   | $1 / MTok       | $0.05 / MTok             | $2.50 / MTok  |
-| Claude Haiku 4.5                                                                                                                     | $1 / MTok         | $1.25 / MTok    | $2 / MTok       | $0.10 / MTok             | $5 / MTok     |
-| Claude Haiku 3.5 ([retired, except on Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations))            | $0.80 / MTok      | $1 / MTok       | $1.60 / MTok    | $0.08 / MTok             | $4 / MTok     |
+| Model                                                                                                                                                   | Base input tokens | 5m cache writes | 1h cache writes | Cache hits and refreshes | Output tokens |
+| :------------------------------------------------------------------------------------------------------------------------------------------------------ | :---------------- | :-------------- | :-------------- | :----------------------- | :------------ |
+| Claude Fable 5.1                                                                                                                                        | $10 / MTok        | $12.50 / MTok   | $20 / MTok      | $0.25 / MTok<sup>1</sup> | $50 / MTok    |
+| Claude Mythos 5.1 ([limited availability](https://support.claude.com/en/articles/14604842))                                                             | $10 / MTok        | $12.50 / MTok   | $20 / MTok      | $0.25 / MTok<sup>1</sup> | $50 / MTok    |
+| Claude Fable 5                                                                                                                                          | $10 / MTok        | $12.50 / MTok   | $20 / MTok      | $1 / MTok                | $50 / MTok    |
+| Claude Mythos 5 ([limited availability](https://support.claude.com/en/articles/14604842))                                                               | $10 / MTok        | $12.50 / MTok   | $20 / MTok      | $1 / MTok                | $50 / MTok    |
+| Claude Opus 5.5                                                                                                                                         | $4 / MTok         | $5 / MTok       | $8 / MTok       | $0.20 / MTok<sup>2</sup> | $20 / MTok    |
+| Claude Opus 5                                                                                                                                           | $5 / MTok         | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok             | $25 / MTok    |
+| Claude Opus 4.8                                                                                                                                         | $5 / MTok         | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok             | $25 / MTok    |
+| Claude Opus 4.7                                                                                                                                         | $5 / MTok         | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok             | $25 / MTok    |
+| Claude Opus 4.6                                                                                                                                         | $5 / MTok         | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok             | $25 / MTok    |
+| Claude Opus 4.5                                                                                                                                         | $5 / MTok         | $6.25 / MTok    | $10 / MTok      | $0.50 / MTok             | $25 / MTok    |
+| Claude Opus 4.1 ([retired, except on Bedrock and Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=curl)) | $15 / MTok        | $18.75 / MTok   | $30 / MTok      | $1.50 / MTok             | $75 / MTok    |
+| Claude Opus 4 ([retired, except on Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=curl))               | $15 / MTok        | $18.75 / MTok   | $30 / MTok      | $1.50 / MTok             | $75 / MTok    |
+| Claude Sonnet 5.5                                                                                                                                       | $2 / MTok         | $2.50 / MTok    | $4 / MTok       | $0.10 / MTok<sup>2</sup> | $10 / MTok    |
+| Claude Sonnet 5                                                                                                                                         | $2 / MTok         | $2.50 / MTok    | $4 / MTok       | $0.20 / MTok             | $10 / MTok    |
+| Claude Sonnet 4.6                                                                                                                                       | $3 / MTok         | $3.75 / MTok    | $6 / MTok       | $0.30 / MTok             | $15 / MTok    |
+| Claude Sonnet 4.5                                                                                                                                       | $3 / MTok         | $3.75 / MTok    | $6 / MTok       | $0.30 / MTok             | $15 / MTok    |
+| Claude Sonnet 4 ([retired, except on Bedrock and Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=curl)) | $3 / MTok         | $3.75 / MTok    | $6 / MTok       | $0.30 / MTok             | $15 / MTok    |
+| Claude Haiku 5.5 (for prompts up to 100,000 tokens)                                                                                                     | $0.10 / MTok      | $0.125 / MTok   | $0.20 / MTok    | $0.01 / MTok             | $0.50 / MTok  |
+| Claude Haiku 5.5 (for prompts over 100,000 tokens)                                                                                                      | $0.50 / MTok      | $0.625 / MTok   | $1 / MTok       | $0.05 / MTok             | $2.50 / MTok  |
+| Claude Haiku 4.5                                                                                                                                        | $1 / MTok         | $1.25 / MTok    | $2 / MTok       | $0.10 / MTok             | $5 / MTok     |
+| Claude Haiku 3.5 ([retired, except on Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=curl))            | $0.80 / MTok      | $1 / MTok       | $1.60 / MTok    | $0.08 / MTok             | $4 / MTok     |
 
 *<sup>1 Cache hits and refreshes on Claude Fable 5.1 and Claude Mythos 5.1 are priced at 0.025x the base input price.</sup>*
 
@@ -268,14 +116,14 @@ Prompt caching introduces a new pricing structure. The following table shows the
   * 1-hour cache write tokens are 2 times the base input tokens price
   * Cache read tokens are 0.1 times the base input tokens price (see the table footnote for per-model exceptions)
 
-  These multipliers stack with other pricing modifiers such as the Batch API discount, [long context pricing](https://platform.claude.com/docs/en/about-claude/pricing#long-context-pricing), and data residency. On a model priced by prompt length, cache reads and cache writes count toward a request's prompt length. See [pricing](https://platform.claude.com/docs/en/about-claude/pricing) for full details.
+  These multipliers stack with other pricing modifiers such as the Batch API discount, [long context pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=curl#long-context-pricing), and data residency. On a model priced by prompt length, cache reads and cache writes count toward a request's prompt length. See [pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=curl) for full details.
 </Note>
 
 ***
 
 ## Supported models
 
-Prompt caching (both automatic and explicit) is supported on all [active Claude models](https://platform.claude.com/docs/en/models/overview).
+Prompt caching (both automatic and explicit) is supported on all [active Claude models](https://platform.claude.com/docs/en/models/overview?sdk_languages=curl).
 
 ***
 
@@ -301,178 +149,6 @@ Automatic caching is the simplest way to enable prompt caching. Instead of placi
       ]
     }'
   ```
-
-  ```bash CLI
-  ant messages create --transform usage <<'YAML'
-  model: claude-opus-5-5
-  max_tokens: 1024
-  cache_control:
-    type: ephemeral
-  system: You are a helpful assistant that remembers our conversation.
-  messages:
-    - role: user
-      content: My name is Alex. I work on machine learning.
-    - role: assistant
-      content: Nice to meet you, Alex! How can I help with your ML work today?
-    - role: user
-      content: What did I say I work on?
-  YAML
-  ```
-
-  ```python Python
-  client = anthropic.Anthropic()
-
-  response = client.messages.create(
-      model="claude-opus-5-5",
-      max_tokens=1024,
-      cache_control={"type": "ephemeral"},
-      system="You are a helpful assistant that remembers our conversation.",
-      messages=[
-          {"role": "user", "content": "My name is Alex. I work on machine learning."},
-          {
-              "role": "assistant",
-              "content": "Nice to meet you, Alex! How can I help with your ML work today?",
-          },
-          {"role": "user", "content": "What did I say I work on?"},
-      ],
-  )
-  print(response.usage.model_dump_json())
-  ```
-
-  ```typescript TypeScript
-  const client = new Anthropic();
-
-  const response = await client.messages.create({
-    model: "claude-opus-5-5",
-    max_tokens: 1024,
-    cache_control: { type: "ephemeral" },
-    system: "You are a helpful assistant that remembers our conversation.",
-    messages: [
-      { role: "user", content: "My name is Alex. I work on machine learning." },
-      {
-        role: "assistant",
-        content: "Nice to meet you, Alex! How can I help with your ML work today?"
-      },
-      { role: "user", content: "What did I say I work on?" }
-    ]
-  });
-  console.log(response.usage);
-  ```
-
-  ```csharp C#
-  AnthropicClient client = new();
-
-  var parameters = new MessageCreateParams
-  {
-      Model = Model.ClaudeOpus5_5,
-      MaxTokens = 1024,
-      CacheControl = new CacheControlEphemeral(),
-      System = "You are a helpful assistant that remembers our conversation.",
-      Messages =
-      [
-          new()
-          {
-              Role = Role.User,
-              Content = "My name is Alex. I work on machine learning."
-          },
-          new()
-          {
-              Role = Role.Assistant,
-              Content = "Nice to meet you, Alex! How can I help with your ML work today?"
-          },
-          new()
-          {
-              Role = Role.User,
-              Content = "What did I say I work on?"
-          }
-      ]
-  };
-
-  var message = await client.Messages.Create(parameters);
-  Console.WriteLine(message.Usage);
-  ```
-
-  ```go Go
-  client := anthropic.NewClient()
-
-  response, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
-  	Model:        anthropic.ModelClaudeOpus5_5,
-  	MaxTokens:    1024,
-  	CacheControl: anthropic.NewCacheControlEphemeralParam(),
-  	System: []anthropic.TextBlockParam{
-  		{Text: "You are a helpful assistant that remembers our conversation."},
-  	},
-  	Messages: []anthropic.MessageParam{
-  		anthropic.NewUserMessage(anthropic.NewTextBlock("My name is Alex. I work on machine learning.")),
-  		anthropic.NewAssistantMessage(anthropic.NewTextBlock("Nice to meet you, Alex! How can I help with your ML work today?")),
-  		anthropic.NewUserMessage(anthropic.NewTextBlock("What did I say I work on?")),
-  	},
-  })
-  if err != nil {
-  	log.Fatal(err)
-  }
-  fmt.Println(response.Usage.RawJSON())
-  ```
-
-  ```java Java
-  import com.anthropic.models.messages.CacheControlEphemeral;
-  // ...
-  public class AutomaticCachingExample {
-
-      public static void main(String[] args) {
-          AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-          MessageCreateParams params = MessageCreateParams.builder()
-                  .model(Model.CLAUDE_OPUS_5_5)
-                  .maxTokens(1024)
-                  .cacheControl(CacheControlEphemeral.builder().build())
-                  .system("You are a helpful assistant that remembers our conversation.")
-                  .addUserMessage("My name is Alex. I work on machine learning.")
-                  .addAssistantMessage("Nice to meet you, Alex! How can I help with your ML work today?")
-                  .addUserMessage("What did I say I work on?")
-                  .build();
-
-          Message message = client.messages().create(params);
-          System.out.println(message.usage());
-      }
-  }
-  ```
-
-  ```php PHP
-  use Anthropic\Messages\CacheControlEphemeral;
-  // ...
-  $client = new Client();
-
-  $response = $client->messages->create(
-      maxTokens: 1024,
-      messages: [
-          ['role' => 'user', 'content' => 'My name is Alex. I work on machine learning.'],
-          ['role' => 'assistant', 'content' => 'Nice to meet you, Alex! How can I help with your ML work today?'],
-          ['role' => 'user', 'content' => 'What did I say I work on?'],
-      ],
-      model: 'claude-opus-5-5',
-      cacheControl: CacheControlEphemeral::with(),
-      system: 'You are a helpful assistant that remembers our conversation.',
-  );
-  echo json_encode($response->usage);
-  ```
-
-  ```ruby Ruby
-  client = Anthropic::Client.new
-
-  response = client.messages.create(
-    model: "claude-opus-5-5",
-    max_tokens: 1024,
-    cache_control: {type: "ephemeral"},
-    system: "You are a helpful assistant that remembers our conversation.",
-    messages: [
-      {role: "user", content: "My name is Alex. I work on machine learning."},
-      {role: "assistant", content: "Nice to meet you, Alex! How can I help with your ML work today?"},
-      {role: "user", content: "What did I say I work on?"}
-    ]
-  )
-  puts response.usage
-  ```
 </CodeGroup>
 
 ### How automatic caching works in multi-turn conversations
@@ -497,7 +173,7 @@ By default, automatic caching uses a 5-minute TTL. You can specify a 1-hour TTL 
 
 ### Combining with block-level caching
 
-Automatic caching is compatible with [explicit cache breakpoints](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#explicit-cache-breakpoints). When used together, the automatic cache breakpoint uses one of the 4 available breakpoint slots.
+Automatic caching is compatible with [explicit cache breakpoints](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#explicit-cache-breakpoints). When used together, the automatic cache breakpoint uses one of the 4 available breakpoint slots.
 
 This lets you combine both approaches. For example, use an explicit breakpoint to cache your system prompt, while automatic caching handles the conversation:
 
@@ -529,7 +205,7 @@ Automatic caching uses the same underlying caching infrastructure. Pricing, mini
 * If the last block is not eligible as an automatic cache breakpoint target, the system silently walks backward to find the nearest eligible block. If none is found, caching is skipped.
 
 <Note>
-  Automatic caching is available on every platform except the legacy [Amazon Bedrock (Opus 4.6 and earlier)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy) integration. On that integration, the API returns a 400 error for a top-level `cache_control` field, so use [explicit cache breakpoints](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#explicit-cache-breakpoints) instead.
+  Automatic caching is available on every platform except the legacy [Amazon Bedrock (Opus 4.6 and earlier)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy?sdk_languages=curl) integration. On that integration, the API returns a 400 error for a top-level `cache_control` field, so use [explicit cache breakpoints](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#explicit-cache-breakpoints) instead.
 </Note>
 
 ***
@@ -571,7 +247,7 @@ Your prompt has a large static system context (blocks 1 through 5) followed by a
 * **Request 1:** Cache write at block 6. The hash includes the timestamp.
 * **Request 2:** The timestamp differs, so the prefix hash at block 6 differs. The lookback walks through blocks 5, 4, 3, 2, and 1, but the system never wrote an entry at any of those positions. No cache hit. You pay for a fresh cache write on every request and never get a read.
 
-The lookback does not find stable content behind your breakpoint and cache it. It finds entries that prior requests already wrote, and writes happen only at breakpoints. Move `cache_control` to block 5, the last block that stays the same across requests, and every subsequent request reads the cached prefix. [Automatic caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#automatic-caching) hits the same trap: it places the breakpoint on the last cacheable block, which in this structure is the one that changes every request, so use an explicit breakpoint on block 5 instead.
+The lookback does not find stable content behind your breakpoint and cache it. It finds entries that prior requests already wrote, and writes happen only at breakpoints. Move `cache_control` to block 5, the last block that stays the same across requests, and every subsequent request reads the cached prefix. [Automatic caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#automatic-caching) hits the same trap: it places the breakpoint on the last cacheable block, which in this structure is the one that changes every request, so use an explicit breakpoint on block 5 instead.
 
 **Key takeaway:** Place `cache_control` on the last block whose prefix is identical across the requests you want to share a cache. In a growing conversation the final block works as long as each turn adds fewer than 20 blocks: earlier content never changes, so the next request's lookback finds the prior write. For a prompt with a varying suffix (timestamps, per-request context, the incoming message), place the breakpoint at the end of the static prefix, not on the varying block.
 
@@ -603,23 +279,23 @@ Adding more `cache_control` breakpoints doesn't increase your costs; you still p
 
 ### Cache limitations
 
-On the Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws), [Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai), and [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry), the minimum cacheable prompt length is:
+On the Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=curl), [Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai?sdk_languages=curl), and [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=curl), the minimum cacheable prompt length is:
 
-* 512 tokens for Claude Fable 5.1, [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview), Claude Opus 5.5, Claude Opus 5, Claude Sonnet 5.5, Claude Fable 5, [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview), and Claude Haiku 5.5
+* 512 tokens for Claude Fable 5.1, [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=curl), Claude Opus 5.5, Claude Opus 5, Claude Sonnet 5.5, Claude Fable 5, [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=curl), and Claude Haiku 5.5
 * 2,048 tokens for [Claude Mythos Preview](https://anthropic.com/glasswing) and Claude Opus 4.7
 * 4,096 tokens for Claude Opus 4.6 and Claude Opus 4.5
-* 1,024 tokens for Claude Opus 4.8, Claude Sonnet 5, Claude Sonnet 4.6, Claude Sonnet 4.5 ([deprecated](https://platform.claude.com/docs/en/about-claude/model-deprecations)), Claude Opus 4.1 ([retired, except on Bedrock and Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations)), Claude Opus 4 ([retired, except on Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations)), and Claude Sonnet 4 ([retired, except on Bedrock and Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations))
+* 1,024 tokens for Claude Opus 4.8, Claude Sonnet 5, Claude Sonnet 4.6, Claude Sonnet 4.5 ([deprecated](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=curl)), Claude Opus 4.1 ([retired, except on Bedrock and Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=curl)), Claude Opus 4 ([retired, except on Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=curl)), and Claude Sonnet 4 ([retired, except on Bedrock and Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=curl))
 * 4,096 tokens for Claude Haiku 4.5
-* 2,048 tokens for Claude Haiku 3.5 ([retired, except on Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations))
+* 2,048 tokens for Claude Haiku 3.5 ([retired, except on Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=curl))
 
 These minimums apply on every platform where each model is available.
 
-Shorter prompts cannot be cached, even if marked with `cache_control`. Any requests to cache fewer than this number of tokens will be processed without caching, and no error is returned. To verify whether a prompt was cached, check the [response usage fields](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#tracking-cache-performance): if both `cache_creation_input_tokens` and `cache_read_input_tokens` are 0, the prompt was not cached (likely because it did not meet the minimum length requirement).
+Shorter prompts cannot be cached, even if marked with `cache_control`. Any requests to cache fewer than this number of tokens will be processed without caching, and no error is returned. To verify whether a prompt was cached, check the [response usage fields](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#tracking-cache-performance): if both `cache_creation_input_tokens` and `cache_read_input_tokens` are 0, the prompt was not cached (likely because it did not meet the minimum length requirement).
 
 If your prompt falls just short of the minimum for your model and platform, expanding the cached content to reach the threshold is often worthwhile. Cache reads cost significantly less than uncached input tokens, so reaching the minimum can reduce costs for frequently reused prompts.
 
 <Note>
-  [Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock) is an AWS-operated platform. On Bedrock, see the [Bedrock prompt caching documentation](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html) for the per-model minimums, failure behavior, and usage-field names that apply.
+  [Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock?sdk_languages=curl) is an AWS-operated platform. On Bedrock, see the [Bedrock prompt caching documentation](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html) for the per-model minimums, failure behavior, and usage-field names that apply.
 </Note>
 
 For concurrent requests, note that a cache entry only becomes available after the first response begins. If you need cache hits for parallel requests, wait for the first response before sending subsequent requests.
@@ -644,7 +320,7 @@ While most request blocks can be cached, there are some exceptions:
 
 * Thinking blocks cannot be cached directly with `cache_control`. However, thinking blocks CAN be cached alongside other content when they appear in previous assistant turns. When cached this way, they DO count as input tokens when read from cache.
 
-* Sub-content blocks (like [citations](https://platform.claude.com/docs/en/build-with-claude/citations)) themselves cannot be cached directly. Instead, cache the top-level block.
+* Sub-content blocks (like [citations](https://platform.claude.com/docs/en/build-with-claude/citations?sdk_languages=curl)) themselves cannot be cached directly. Instead, cache the top-level block.
 
   In the case of citations, the top-level document content blocks that serve as the source material for citations can be cached. This allows you to use prompt caching with citations effectively by caching the documents that citations will reference.
 
@@ -654,32 +330,32 @@ While most request blocks can be cached, there are some exceptions:
 
 Modifications to cached content can invalidate some or all of the cache.
 
-As described in [Structuring your prompt](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#structuring-your-prompt), the cache follows the hierarchy: `tools` → `system` → `messages`. Changes at each level invalidate that level and all subsequent levels.
+As described in [Structuring your prompt](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#structuring-your-prompt), the cache follows the hierarchy: `tools` → `system` → `messages`. Changes at each level invalidate that level and all subsequent levels.
 
 The following table shows which parts of the cache are invalidated by different types of changes. ✘ indicates that the cache is invalidated, while ✓ indicates that the cache remains valid.
 
-| What changes                                          | Tools cache    | System cache   | Messages cache | Impact                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| ----------------------------------------------------- | -------------- | -------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Tool definitions**                                  | ✘              | ✘              | ✘              | Modifying tool definitions (names, descriptions, parameters) invalidates the entire cache                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| **Web search toggle**                                 | ✓              | ✘              | ✘              | Enabling/disabling web search modifies the system prompt                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| **Citations toggle**                                  | ✓              | ✘              | ✘              | Enabling/disabling citations modifies the system prompt                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| **Speed setting**                                     | ✓              | ✘              | ✘              | Switching between [`speed: "fast"` and standard speed](https://platform.claude.com/docs/en/build-with-claude/fast-mode) invalidates system and message caches                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| **Tool choice**                                       | ✓              | ✓              | ✘              | Changes to `tool_choice` parameter only affect message blocks                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| **Images**                                            | ✓              | ✓              | ✘              | Adding/removing images anywhere in the prompt affects message blocks                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| **Thinking parameters**                               | Model-specific | Model-specific | ✘              | The thinking configuration (mode, and `budget_tokens` in extended mode) is rendered into the prompt, so changing it always invalidates message blocks; tool and system caches are also invalidated on models that render the configuration ahead of them. See [Thinking and prompt caching](https://platform.claude.com/docs/en/build-with-claude/thinking#thinking-and-prompt-caching).                                                                                                                                                                                                           |
-| **Effort setting**                                    | Model-specific | Model-specific | ✘              | Changing the [`output_config.effort`](https://platform.claude.com/docs/en/build-with-claude/effort) value always invalidates message blocks, with the same model-specific effect on tool and system caches as thinking parameters. Setting effort explicitly to the model's default is equivalent to omitting it and does not invalidate. On models that support [per-message effort](https://platform.claude.com/docs/en/build-with-claude/effort#change-effort-mid-conversation-beta), an effort change carried in a `role: "system"` message inside `messages` leaves the cached prefix intact. |
-| **Non-tool results passed to requests with thinking** | ✓              | ✓              | Model-specific | On Opus 4.5+, Sonnet 4.6+, and Haiku 5.5, thinking blocks are preserved by default, so the cache remains valid (✓). On earlier Opus/Sonnet models and Haiku models through Claude Haiku 4.5, all previously-cached thinking blocks are stripped from context, and any messages that follow those thinking blocks are removed from the cache (✘). For more details, see [Caching with thinking blocks](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#caching-with-thinking-blocks).                                                                                          |
-| **Dropped thinking blocks**                           | ✓              | ✓              | ✘              | When the API drops a Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5.5, Claude Sonnet 5.5, or Claude Haiku 5.5 thinking block that isn't [preserved](https://platform.claude.com/docs/en/build-with-claude/thinking#preserved-thinking) on that request (for example, one you replay to a model that can't read it), the cached prefix changes from that block's position onward on that request. Blocks the receiving model can read, passed back unchanged, keep the cache intact.                                                                                                            |
+| What changes                                          | Tools cache    | System cache   | Messages cache | Impact                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ----------------------------------------------------- | -------------- | -------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Tool definitions**                                  | ✘              | ✘              | ✘              | Modifying tool definitions (names, descriptions, parameters) invalidates the entire cache                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| **Web search toggle**                                 | ✓              | ✘              | ✘              | Enabling/disabling web search modifies the system prompt                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| **Citations toggle**                                  | ✓              | ✘              | ✘              | Enabling/disabling citations modifies the system prompt                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| **Speed setting**                                     | ✓              | ✘              | ✘              | Switching between [`speed: "fast"` and standard speed](https://platform.claude.com/docs/en/build-with-claude/fast-mode?sdk_languages=curl) invalidates system and message caches                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| **Tool choice**                                       | ✓              | ✓              | ✘              | Changes to `tool_choice` parameter only affect message blocks                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| **Images**                                            | ✓              | ✓              | ✘              | Adding/removing images anywhere in the prompt affects message blocks                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| **Thinking parameters**                               | Model-specific | Model-specific | ✘              | The thinking configuration (mode, and `budget_tokens` in extended mode) is rendered into the prompt, so changing it always invalidates message blocks; tool and system caches are also invalidated on models that render the configuration ahead of them. See [Thinking and prompt caching](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl#thinking-and-prompt-caching).                                                                                                                                                                                                                              |
+| **Effort setting**                                    | Model-specific | Model-specific | ✘              | Changing the [`output_config.effort`](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=curl) value always invalidates message blocks, with the same model-specific effect on tool and system caches as thinking parameters. Setting effort explicitly to the model's default is equivalent to omitting it and does not invalidate. On models that support [per-message effort](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=curl#change-effort-mid-conversation-beta), an effort change carried in a `role: "system"` message inside `messages` leaves the cached prefix intact. |
+| **Non-tool results passed to requests with thinking** | ✓              | ✓              | Model-specific | On Opus 4.5+, Sonnet 4.6+, and Haiku 5.5, thinking blocks are preserved by default, so the cache remains valid (✓). On earlier Opus/Sonnet models and Haiku models through Claude Haiku 4.5, all previously-cached thinking blocks are stripped from context, and any messages that follow those thinking blocks are removed from the cache (✘). For more details, see [Caching with thinking blocks](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#caching-with-thinking-blocks).                                                                                                             |
+| **Dropped thinking blocks**                           | ✓              | ✓              | ✘              | When the API drops a Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5.5, Claude Sonnet 5.5, or Claude Haiku 5.5 thinking block that isn't [preserved](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl#preserved-thinking) on that request (for example, one you replay to a model that can't read it), the cached prefix changes from that block's position onward on that request. Blocks the receiving model can read, passed back unchanged, keep the cache intact.                                                                                                                               |
 
-On models that support [mid-conversation tool changes](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages#mid-conversation-tool-changes), the `inline-tools-2026-09-15` beta header lets you add a tool, or change a tool's definition, partway through a conversation without editing `tools`. Send the definition in a `tool_addition` block in a mid-conversation system message and leave `tools` exactly as you first sent it. The cached prefix still matches, so only the appended message is processed as new input. The one exception is a `tools` array with no non-deferred tool, where the first tool defined this way costs one full cache miss on that request. See [Define tools in a message](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages#define-tools-in-a-message-beta).
+On models that support [mid-conversation tool changes](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages?sdk_languages=curl#mid-conversation-tool-changes), the `inline-tools-2026-09-15` beta header lets you add a tool, or change a tool's definition, partway through a conversation without editing `tools`. Send the definition in a `tool_addition` block in a mid-conversation system message and leave `tools` exactly as you first sent it. The cached prefix still matches, so only the appended message is processed as new input. The one exception is a `tools` array with no non-deferred tool, where the first tool defined this way costs one full cache miss on that request. See [Define tools in a message](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages?sdk_languages=curl#define-tools-in-a-message-beta).
 
 <Note>
-  On Claude Fable 5.1, [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview), Claude Fable 5, [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview), Claude Opus 5.5, Claude Opus 4.8, Claude Opus 5, Claude Sonnet 5.5, and Claude Haiku 5.5, you can add a new system instruction partway through a conversation without invalidating the system or message caches. Append a `{"role": "system"}` message to `messages` instead of editing the top-level `system` field, so the cached prefix stays unchanged. This feature is not available on Claude Sonnet 5. Use the top-level `system` field instead. See [Mid-conversation system messages](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages).
+  On Claude Fable 5.1, [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=curl), Claude Fable 5, [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=curl), Claude Opus 5.5, Claude Opus 4.8, Claude Opus 5, Claude Sonnet 5.5, and Claude Haiku 5.5, you can add a new system instruction partway through a conversation without invalidating the system or message caches. Append a `{"role": "system"}` message to `messages` instead of editing the top-level `system` field, so the cached prefix stays unchanged. This feature is not available on Claude Sonnet 5. Use the top-level `system` field instead. See [Mid-conversation system messages](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages?sdk_languages=curl).
 </Note>
 
 ### Tracking cache performance
 
-Monitor cache performance using these API response fields, within `usage` in the response (or `message_start` event if [streaming](https://platform.claude.com/docs/en/build-with-claude/streaming)):
+Monitor cache performance using these API response fields, within `usage` in the response (or `message_start` event if [streaming](https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=curl)):
 
 * `cache_creation_input_tokens`: Number of tokens written to the cache when creating a new entry.
 * `cache_read_input_tokens`: Number of tokens retrieved from the cache for this request.
@@ -714,7 +390,7 @@ Monitor cache performance using these API response fields, within `usage` in the
 
 ### Caching with thinking blocks
 
-When using [thinking](https://platform.claude.com/docs/en/build-with-claude/thinking) with prompt caching, thinking blocks have special behavior:
+When using [thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl) with prompt caching, thinking blocks have special behavior:
 
 **Automatic caching alongside other content:** While thinking blocks cannot be explicitly marked with `cache_control`, they get cached as part of the request content when you make subsequent API calls with tool results. This commonly happens during tool use when you pass thinking blocks back to continue the conversation.
 
@@ -727,7 +403,7 @@ When using [thinking](https://platform.claude.com/docs/en/build-with-claude/thin
 * On earlier Opus/Sonnet models and Haiku models through Claude Haiku 4.5, cache gets invalidated when non-tool-result user content is added, causing all previous thinking blocks to be stripped from context
 * This caching behavior occurs even without explicit `cache_control` markers
 
-For more details on cache invalidation, see [What invalidates the cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#what-invalidates-the-cache).
+For more details on cache invalidation, see [What invalidates the cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#what-invalidates-the-cache).
 
 **Example with tool use:**
 
@@ -754,12 +430,12 @@ User: [Text response, cache=True]
 
 On earlier Opus/Sonnet models and Haiku models through Claude Haiku 4.5, all previous thinking blocks are removed from context at this point. On Opus 4.5+, Sonnet 4.6+, and Haiku 5.5, prior thinking blocks are kept by default and remain part of the cached prefix.
 
-For more detailed information, see [Thinking and prompt caching](https://platform.claude.com/docs/en/build-with-claude/thinking#thinking-and-prompt-caching).
+For more detailed information, see [Thinking and prompt caching](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl#thinking-and-prompt-caching).
 
 ### Cache storage and sharing
 
 <Warning>
-  Prompt caching uses [workspace](https://platform.claude.com/docs/en/manage-claude/workspaces)-level isolation. Caches are isolated per workspace, ensuring data separation between workspaces within the same organization. This applies to the Claude API, Claude Platform on AWS, and Microsoft Foundry; Bedrock and Google Cloud maintain organization-level cache isolation. If you use multiple workspaces, review your caching strategy to account for this difference.
+  Prompt caching uses [workspace](https://platform.claude.com/docs/en/manage-claude/workspaces?sdk_languages=curl)-level isolation. Caches are isolated per workspace, ensuring data separation between workspaces within the same organization. This applies to the Claude API, Claude Platform on AWS, and Microsoft Foundry; Bedrock and Google Cloud maintain organization-level cache isolation. If you use multiple workspaces, review your caching strategy to account for this difference.
 </Warning>
 
 * **Organization and workspace isolation:** Caches are isolated between organizations. Different organizations never share caches, even if they use identical prompts. Caches are also isolated per workspace within an organization on the Claude API, Claude Platform on AWS, and Microsoft Foundry; Bedrock and Google Cloud use organization-level isolation only.
@@ -772,8 +448,8 @@ For more detailed information, see [Thinking and prompt caching](https://platfor
 
 To optimize prompt caching performance:
 
-* Start with [automatic caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#automatic-caching) for multi-turn conversations. It handles breakpoint management automatically.
-* Use [explicit block-level breakpoints](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#explicit-cache-breakpoints) when you need to cache different sections with different change frequencies.
+* Start with [automatic caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#automatic-caching) for multi-turn conversations. It handles breakpoint management automatically.
+* Use [explicit block-level breakpoints](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#explicit-cache-breakpoints) when you need to cache different sections with different change frequencies.
 * Cache stable, reusable content like system instructions, background information, large contexts, or frequent tool definitions.
 * Place cached content at the prompt's beginning for best performance.
 * Use cache breakpoints strategically to separate different cacheable prefix sections.
@@ -796,29 +472,29 @@ Tailor your prompt caching strategy to your scenario:
 If experiencing unexpected behavior:
 
 <Tip>
-  [Cache diagnostics](https://platform.claude.com/docs/en/build-with-claude/cache-diagnostics) has the API compare consecutive requests and report where the prompt prefix diverged, which automatically handles many of the steps in this list.
+  [Cache diagnostics](https://platform.claude.com/docs/en/build-with-claude/cache-diagnostics?sdk_languages=curl) has the API compare consecutive requests and report where the prompt prefix diverged, which automatically handles many of the steps in this list.
 </Tip>
 
 * Ensure cached sections are identical across calls. For explicit breakpoints, verify that `cache_control` markers are in the same locations
 * Check that calls are made within the cache lifetime (5 minutes by default)
 * Verify that `tool_choice`, image usage, the thinking configuration, and `output_config.effort` remain consistent between calls
-* Validate that you are caching at least the minimum number of tokens for your model and platform (see [Cache limitations](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#cache-limitations))
+* Validate that you are caching at least the minimum number of tokens for your model and platform (see [Cache limitations](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#cache-limitations))
 * Confirm your breakpoint is on a block that stays identical across requests. Cache writes happen only at the breakpoint, and if that block changes (timestamps, per-request context, the incoming message), the prefix hash never matches. The lookback does not find stable content behind the breakpoint; it only finds entries that earlier requests wrote at their own breakpoints
 * Verify that the keys in your `tool_use` content blocks have stable ordering as some languages (for example, Swift, Go) randomize key order during JSON conversion, breaking caches
-* Use [cache diagnostics](https://platform.claude.com/docs/en/build-with-claude/cache-diagnostics) to have the API compare consecutive requests and report which part of the prompt diverged
+* Use [cache diagnostics](https://platform.claude.com/docs/en/build-with-claude/cache-diagnostics?sdk_languages=curl) to have the API compare consecutive requests and report which part of the prompt diverged
 
 <Note>
-  Changes to `tool_choice` or the presence/absence of images anywhere in the prompt will invalidate the cache, requiring a new cache entry to be created. For more details on cache invalidation, see [What invalidates the cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#what-invalidates-the-cache).
+  Changes to `tool_choice` or the presence/absence of images anywhere in the prompt will invalidate the cache, requiring a new cache entry to be created. For more details on cache invalidation, see [What invalidates the cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#what-invalidates-the-cache).
 </Note>
 
 ***
 
 ## 1-hour cache duration
 
-If you find that 5 minutes is too short, Anthropic also offers a 1-hour cache duration [at additional cost](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#pricing).
+If you find that 5 minutes is too short, Anthropic also offers a 1-hour cache duration [at additional cost](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#pricing).
 
 <Note>
-  The 1-hour cache duration is available on the Claude API, [Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock), [Amazon Bedrock (Opus 4.6 and earlier)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy), [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws), [Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai), and [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry).
+  The 1-hour cache duration is available on the Claude API, [Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock?sdk_languages=curl), [Amazon Bedrock (Opus 4.6 and earlier)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy?sdk_languages=curl), [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=curl), [Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai?sdk_languages=curl), and [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=curl).
 </Note>
 
 To use the extended cache, include `ttl` in the `cache_control` definition like this:
@@ -850,7 +526,7 @@ The response includes detailed cache information like the following:
 
 Note that the current `cache_creation_input_tokens` field equals the sum of the values in the `cache_creation` object.
 
-If you see `ephemeral_5m_input_tokens` writes you didn't request while using server tools such as web search, see [Tool use with prompt caching](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-use-with-prompt-caching#server-tool-results-are-cached-automatically).
+If you see `ephemeral_5m_input_tokens` writes you didn't request while using server tools such as web search, see [Tool use with prompt caching](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-use-with-prompt-caching?sdk_languages=curl#server-tool-results-are-cached-automatically).
 
 ### When to use the 1-hour cache
 
@@ -902,7 +578,7 @@ Cache pre-warming lets you load your system prompt or tool definitions into the 
 
 Set `max_tokens: 0` in your request. The API reads your prompt into the model and writes the cache at any `cache_control` breakpoint, then returns immediately without generating any output. The response has an empty `content` array, `stop_reason: "max_tokens"`, and a fully populated `usage` block.
 
-Place the `cache_control` breakpoint on the last block that is shared with the follow-up request (typically your system prompt or tool definitions), not on the placeholder user message. Otherwise the cache entry is keyed to the placeholder and the follow-up request won't hit it. Use the same thinking configuration and `output_config.effort` as your follow-up requests too: those values are rendered into the prompt (see [What invalidates the cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#what-invalidates-the-cache)), so a pre-warm with a different configuration can write an entry your real traffic never hits. This means using an [explicit cache breakpoint](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#explicit-cache-breakpoints) rather than [automatic caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#automatic-caching), since automatic caching places the breakpoint on the last block, which here is the placeholder. The placeholder user message can be any string with non-whitespace content (the examples here use `"warmup"`); its content is read into the model but never answered.
+Place the `cache_control` breakpoint on the last block that is shared with the follow-up request (typically your system prompt or tool definitions), not on the placeholder user message. Otherwise the cache entry is keyed to the placeholder and the follow-up request won't hit it. Use the same thinking configuration and `output_config.effort` as your follow-up requests too: those values are rendered into the prompt (see [What invalidates the cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#what-invalidates-the-cache)), so a pre-warm with a different configuration can write an entry your real traffic never hits. This means using an [explicit cache breakpoint](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#explicit-cache-breakpoints) rather than [automatic caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#automatic-caching), since automatic caching places the breakpoint on the last block, which here is the placeholder. The placeholder user message can be any string with non-whitespace content (the examples here use `"warmup"`); its content is read into the model but never answered.
 
 <Note>
   A pre-warm request incurs a **cache write** charge if the prefix is not already cached, the same as any other request. Check `usage.cache_creation_input_tokens` in the response to confirm a write occurred. Zero output tokens are billed.
@@ -926,177 +602,6 @@ Place the `cache_control` breakpoint on the last block that is shared with the f
       ],
       "messages": [{"role": "user", "content": "warmup"}]
     }'
-  ```
-
-  ```bash CLI
-  ant messages create \
-    --transform '{stop_reason,content,usage}' --format yaml <<'YAML'
-  model: claude-opus-5-5
-  max_tokens: 0
-  system:
-    - type: text
-      text: >-
-        You are an expert software engineer with deep knowledge of
-        distributed systems...
-      cache_control:
-        type: ephemeral
-  messages:
-    - role: user
-      content: warmup
-  YAML
-  ```
-
-  ```python Python
-  client = anthropic.Anthropic()
-
-  # Fire this before users arrive to warm the shared system-prompt cache.
-  prewarm = client.messages.create(
-      model="claude-opus-5-5",
-      max_tokens=0,
-      system=[
-          {
-              "type": "text",
-              "text": "You are an expert software engineer with deep knowledge of distributed systems...",
-              "cache_control": {"type": "ephemeral"},
-          }
-      ],
-      messages=[{"role": "user", "content": "warmup"}],
-  )
-  print(prewarm.stop_reason)  # "max_tokens"
-  print(prewarm.content)  # []
-  print(prewarm.usage)
-  ```
-
-  ```typescript TypeScript
-  const client = new Anthropic();
-
-  // Fire this before users arrive to warm the shared system-prompt cache.
-  const prewarm = await client.messages.create({
-    model: "claude-opus-5-5",
-    max_tokens: 0,
-    system: [
-      {
-        type: "text",
-        text: "You are an expert software engineer with deep knowledge of distributed systems...",
-        cache_control: { type: "ephemeral" }
-      }
-    ],
-    messages: [{ role: "user", content: "warmup" }]
-  });
-  console.log(prewarm.stop_reason); // "max_tokens"
-  console.log(prewarm.content); // []
-  console.log(prewarm.usage);
-  ```
-
-  ```csharp C#
-  AnthropicClient client = new();
-
-  var prewarm = await client.Messages.Create(
-      new()
-      {
-          Model = Model.ClaudeOpus5_5,
-          MaxTokens = 0,
-          System = new(
-              [
-                  new TextBlockParam
-                  {
-                      Text = "You are an expert software engineer with deep knowledge of distributed systems...",
-                      CacheControl = new(),
-                  },
-              ]
-          ),
-          Messages = [new() { Role = Role.User, Content = "warmup" }],
-      }
-  );
-
-  Console.WriteLine(prewarm.StopReason?.Raw()); // "max_tokens"
-  Console.WriteLine(prewarm.Content.Count); // 0
-  Console.WriteLine(prewarm.Usage);
-  ```
-
-  ```go Go
-  client := anthropic.NewClient()
-
-  prewarm, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
-  	Model:     anthropic.ModelClaudeOpus5_5,
-  	MaxTokens: 0,
-  	System: []anthropic.TextBlockParam{
-  		{
-  			Text:         "You are an expert software engineer with deep knowledge of distributed systems...",
-  			CacheControl: anthropic.NewCacheControlEphemeralParam(),
-  		},
-  	},
-  	Messages: []anthropic.MessageParam{
-  		anthropic.NewUserMessage(anthropic.NewTextBlock("warmup")),
-  	},
-  })
-  if err != nil {
-  	panic(err)
-  }
-
-  fmt.Println(prewarm.StopReason) // "max_tokens"
-  fmt.Println(prewarm.Content)    // []
-  fmt.Println(prewarm.Usage.RawJSON())
-  ```
-
-  ```java Java
-  AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-  Message prewarm = client.messages().create(MessageCreateParams.builder()
-          .model(Model.CLAUDE_OPUS_5_5)
-          .maxTokens(0)
-          .systemOfTextBlockParams(List.of(TextBlockParam.builder()
-                  .text("You are an expert software engineer with deep knowledge of distributed systems...")
-                  .cacheControl(CacheControlEphemeral.builder().build())
-                  .build()))
-          .addUserMessage("warmup")
-          .build());
-
-  IO.println(prewarm.stopReason()); // Optional[max_tokens]
-  IO.println(prewarm.content());    // []
-  IO.println(prewarm.usage());
-  ```
-
-  ```php PHP
-  $client = new Client();
-
-  $prewarm = $client->messages->create(
-      model: Model::CLAUDE_OPUS_5_5,
-      maxTokens: 0,
-      system: [
-          [
-              'type' => 'text',
-              'text' => 'You are an expert software engineer with deep knowledge of distributed systems...',
-              'cache_control' => ['type' => 'ephemeral'],
-          ],
-      ],
-      messages: [['role' => 'user', 'content' => 'warmup']],
-  );
-
-  echo $prewarm->stopReason, PHP_EOL; // "max_tokens"
-  echo json_encode($prewarm->content), PHP_EOL; // []
-  echo json_encode($prewarm->usage), PHP_EOL;
-  ```
-
-  ```ruby Ruby
-  client = Anthropic::Client.new
-
-  prewarm = client.messages.create(
-    model: Anthropic::Model::CLAUDE_OPUS_5_5,
-    max_tokens: 0,
-    system_: [
-      {
-        type: "text",
-        text: "You are an expert software engineer with deep knowledge of distributed systems...",
-        cache_control: {type: "ephemeral"}
-      }
-    ],
-    messages: [{role: "user", content: "warmup"}]
-  )
-
-  puts prewarm.stop_reason # :max_tokens
-  puts prewarm.content # []
-  puts prewarm.usage
   ```
 </CodeGroup>
 
@@ -1181,362 +686,20 @@ Fire a pre-warm request when your application starts (or on a scheduled interval
       "messages": [{"role": "user", "content": "How do I implement a binary search tree?"}]
     }'
   ```
-
-  ```bash CLI
-  # Warm the cache at application startup or on a scheduled interval.
-  ant messages create --transform usage <<'YAML'
-  model: claude-opus-5-5
-  max_tokens: 0
-  system:
-    - type: text
-      text: >-
-        You are an expert software engineer with deep knowledge of
-        distributed systems...
-      cache_control:
-        type: ephemeral
-  messages:
-    - role: user
-      content: warmup
-  YAML
-
-  # Later, when the user submits a message, the system-prompt prefix is already cached.
-  ant messages create --transform 'content.#(type=="text").text' --raw-output <<'YAML'
-  model: claude-opus-5-5
-  max_tokens: 1024
-  system:
-    - type: text
-      text: >-
-        You are an expert software engineer with deep knowledge of
-        distributed systems...
-      cache_control:
-        type: ephemeral
-  messages:
-    - role: user
-      content: How do I implement a binary search tree?
-  YAML
-  ```
-
-  ```python Python
-  client = anthropic.Anthropic()
-
-  SYSTEM_PROMPT = [
-      {
-          "type": "text",
-          "text": "You are an expert software engineer with deep knowledge of distributed systems...",
-          "cache_control": {"type": "ephemeral"},
-      }
-  ]
-
-
-  def prewarm_cache() -> None:
-      """Call this at application startup or on a scheduled interval."""
-      client.messages.create(
-          model="claude-opus-5-5",
-          max_tokens=0,
-          system=SYSTEM_PROMPT,
-          messages=[{"role": "user", "content": "warmup"}],
-      )
-
-
-  def respond(user_message: str) -> anthropic.types.Message:
-      """The real user request; benefits from a warm cache."""
-      return client.messages.create(
-          model="claude-opus-5-5",
-          max_tokens=1024,
-          system=SYSTEM_PROMPT,
-          messages=[{"role": "user", "content": user_message}],
-      )
-
-
-  # Warm the cache before any user traffic arrives.
-  prewarm_cache()
-
-  # Later, when the user submits a message, the system-prompt prefix is already cached.
-  response = respond("How do I implement a binary search tree?")
-  for block in response.content:
-      if block.type == "text":
-          print(block.text)
-  ```
-
-  ```typescript TypeScript
-  const client = new Anthropic();
-
-  const SYSTEM_PROMPT: Anthropic.TextBlockParam[] = [
-    {
-      type: "text",
-      text: "You are an expert software engineer with deep knowledge of distributed systems...",
-      cache_control: { type: "ephemeral" }
-    }
-  ];
-
-  // Call this at application startup or on a scheduled interval.
-  async function prewarmCache(): Promise<void> {
-    await client.messages.create({
-      model: "claude-opus-5-5",
-      max_tokens: 0,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: "user", content: "warmup" }]
-    });
-  }
-
-  // The real user request; benefits from a warm cache.
-  async function respond(userMessage: string): Promise<Anthropic.Message> {
-    return client.messages.create({
-      model: "claude-opus-5-5",
-      max_tokens: 1024,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: "user", content: userMessage }]
-    });
-  }
-
-  // Warm the cache before any user traffic arrives.
-  await prewarmCache();
-
-  // Later, when the user submits a message, the system-prompt prefix is already cached.
-  const response = await respond("How do I implement a binary search tree?");
-  const textBlock = response.content.find(
-    (block): block is Anthropic.TextBlock => block.type === "text"
-  );
-  console.log(textBlock?.text);
-  ```
-
-  ```csharp C#
-  AnthropicClient client = new();
-
-  List<TextBlockParam> systemPrompt =
-  [
-      new TextBlockParam
-      {
-          Text = "You are an expert software engineer with deep knowledge of distributed systems...",
-          CacheControl = new(),
-      },
-  ];
-
-  // Call this at application startup or on a scheduled interval.
-  async Task PrewarmCache() =>
-      await client.Messages.Create(
-          new()
-          {
-              Model = Model.ClaudeOpus5_5,
-              MaxTokens = 0,
-              System = new(systemPrompt),
-              Messages = [new() { Role = Role.User, Content = "warmup" }],
-          }
-      );
-
-  // The real user request; benefits from a warm cache.
-  async Task<Message> Respond(string userMessage) =>
-      await client.Messages.Create(
-          new()
-          {
-              Model = Model.ClaudeOpus5_5,
-              MaxTokens = 1024,
-              System = new(systemPrompt),
-              Messages = [new() { Role = Role.User, Content = userMessage }],
-          }
-      );
-
-  // Warm the cache before any user traffic arrives.
-  await PrewarmCache();
-
-  // Later, when the user submits a message, the system-prompt prefix is already cached.
-  var response = await Respond("How do I implement a binary search tree?");
-  foreach (var block in response.Content)
-  {
-      if (block.TryPickText(out var textBlock))
-      {
-          Console.WriteLine(textBlock.Text);
-      }
-  }
-  ```
-
-  ```go Go
-  var client = anthropic.NewClient()
-
-  var systemPrompt = []anthropic.TextBlockParam{
-  	{
-  		Text:         "You are an expert software engineer with deep knowledge of distributed systems...",
-  		CacheControl: anthropic.NewCacheControlEphemeralParam(),
-  	},
-  }
-
-  // Call this at application startup or on a scheduled interval.
-  func prewarmCache() error {
-  	_, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
-  		Model:     anthropic.ModelClaudeOpus5_5,
-  		MaxTokens: 0,
-  		System:    systemPrompt,
-  		Messages: []anthropic.MessageParam{
-  			anthropic.NewUserMessage(anthropic.NewTextBlock("warmup")),
-  		},
-  	})
-  	return err
-  }
-
-  // The real user request; benefits from a warm cache.
-  func respond(userMessage string) (*anthropic.Message, error) {
-  	return client.Messages.New(context.TODO(), anthropic.MessageNewParams{
-  		Model:     anthropic.ModelClaudeOpus5_5,
-  		MaxTokens: 1024,
-  		System:    systemPrompt,
-  		Messages: []anthropic.MessageParam{
-  			anthropic.NewUserMessage(anthropic.NewTextBlock(userMessage)),
-  		},
-  	})
-  }
-
-  func main() {
-  	// Warm the cache before any user traffic arrives.
-  	if err := prewarmCache(); err != nil {
-  		log.Fatal(err)
-  	}
-
-  	// Later, when the user submits a message, the system-prompt prefix is already cached.
-  	response, err := respond("How do I implement a binary search tree?")
-  	if err != nil {
-  		log.Fatal(err)
-  	}
-  	for _, block := range response.Content {
-  		if textBlock, ok := block.AsAny().(anthropic.TextBlock); ok {
-  			fmt.Println(textBlock.Text)
-  		}
-  	}
-  }
-  ```
-
-  ```java Java
-  AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-  List<TextBlockParam> systemPrompt = List.of(TextBlockParam.builder()
-          .text("You are an expert software engineer with deep knowledge of distributed systems...")
-          .cacheControl(CacheControlEphemeral.builder().build())
-          .build());
-
-  // Call this at application startup or on a scheduled interval.
-  void prewarmCache() {
-      client.messages().create(MessageCreateParams.builder()
-              .model(Model.CLAUDE_OPUS_5_5)
-              .maxTokens(0)
-              .systemOfTextBlockParams(systemPrompt)
-              .addUserMessage("warmup")
-              .build());
-  }
-
-  // The real user request; benefits from a warm cache.
-  Message respond(String userMessage) {
-      return client.messages().create(MessageCreateParams.builder()
-              .model(Model.CLAUDE_OPUS_5_5)
-              .maxTokens(1024)
-              .systemOfTextBlockParams(systemPrompt)
-              .addUserMessage(userMessage)
-              .build());
-  }
-
-  void main() {
-      // Warm the cache before any user traffic arrives.
-      prewarmCache();
-
-      // Later, when the user submits a message, the system-prompt prefix is already cached.
-      Message response = respond("How do I implement a binary search tree?");
-      response.content().stream()
-              .flatMap(block -> block.text().stream())
-              .forEach(textBlock -> IO.println(textBlock.text()));
-  }
-  ```
-
-  ```php PHP
-  $client = new Client();
-
-  $systemPrompt = [
-      [
-          'type' => 'text',
-          'text' => 'You are an expert software engineer with deep knowledge of distributed systems...',
-          'cache_control' => ['type' => 'ephemeral'],
-      ],
-  ];
-
-  // Call this at application startup or on a scheduled interval.
-  $prewarmCache = fn () => $client->messages->create(
-      model: Model::CLAUDE_OPUS_5_5,
-      maxTokens: 0,
-      system: $systemPrompt,
-      messages: [['role' => 'user', 'content' => 'warmup']],
-  );
-
-  // The real user request; benefits from a warm cache.
-  $respond = fn (string $userMessage) => $client->messages->create(
-      model: Model::CLAUDE_OPUS_5_5,
-      maxTokens: 1024,
-      system: $systemPrompt,
-      messages: [['role' => 'user', 'content' => $userMessage]],
-  );
-
-  // Warm the cache before any user traffic arrives.
-  $prewarmCache();
-
-  // Later, when the user submits a message, the system-prompt prefix is already cached.
-  $response = $respond('How do I implement a binary search tree?');
-  foreach ($response->content as $block) {
-      if ($block->type === 'text') {
-          echo $block->text, PHP_EOL;
-      }
-  }
-  ```
-
-  ```ruby Ruby
-  client = Anthropic::Client.new
-
-  SYSTEM_PROMPT = [
-    {
-      type: "text",
-      text: "You are an expert software engineer with deep knowledge of distributed systems...",
-      cache_control: {type: "ephemeral"}
-    }
-  ]
-
-  # Call this at application startup or on a scheduled interval.
-  def prewarm_cache(client)
-    client.messages.create(
-      model: Anthropic::Model::CLAUDE_OPUS_5_5,
-      max_tokens: 0,
-      system_: SYSTEM_PROMPT,
-      messages: [{role: "user", content: "warmup"}]
-    )
-  end
-
-  # The real user request; benefits from a warm cache.
-  def respond(client, user_message)
-    client.messages.create(
-      model: Anthropic::Model::CLAUDE_OPUS_5_5,
-      max_tokens: 1024,
-      system_: SYSTEM_PROMPT,
-      messages: [{role: "user", content: user_message}]
-    )
-  end
-
-  # Warm the cache before any user traffic arrives.
-  prewarm_cache(client)
-
-  # Later, when the user submits a message, the system-prompt prefix is already cached.
-  response = respond(client, "How do I implement a binary search tree?")
-  response.content.each do |block|
-    puts block.text if block.type == :text
-  end
-  ```
 </CodeGroup>
 
-Keep in mind that the cache TTL still applies. For the default 5-minute cache, send a new pre-warm request at least every 5 minutes to keep the cache warm. For longer gaps between user requests, use the [1-hour cache duration](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#1-hour-cache-duration) instead.
+Keep in mind that the cache TTL still applies. For the default 5-minute cache, send a new pre-warm request at least every 5 minutes to keep the cache warm. For longer gaps between user requests, use the [1-hour cache duration](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#1-hour-cache-duration) instead.
 
 ### Limitations
 
 A `max_tokens: 0` request is rejected with an `invalid_request_error` if any of the following are set, since each implies output that a zero-token budget cannot produce:
 
 * `stream: true`
-* [Extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking) (`thinking.type: "enabled"`)
-* [Structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs) (`output_config.format`)
+* [Extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=curl) (`thinking.type: "enabled"`)
+* [Structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=curl) (`output_config.format`)
 * `tool_choice` of `{"type": "tool", ...}` or `{"type": "any"}`
 
-`max_tokens: 0` is also rejected inside a [Message Batches](https://platform.claude.com/docs/en/build-with-claude/batch-processing) request. Pre-warming targets time-to-first-token, which does not apply to batch processing, and a cache entry written during batch processing would likely expire before the follow-up request runs.
+`max_tokens: 0` is also rejected inside a [Message Batches](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=curl) request. Pre-warming targets time-to-first-token, which does not apply to batch processing, and a cache entry written during batch processing would likely expire before the follow-up request runs.
 
 ### Replacing the max\_tokens=1 workaround
 
@@ -1579,228 +742,6 @@ The following code snippets showcase various prompt caching patterns. These exam
             }
           ]
         }'
-      ```
-
-      ```bash CLI
-      ant messages create --transform usage <<'YAML'
-      model: claude-opus-5-5
-      max_tokens: 1024
-      system:
-        - type: text
-          text: You are an AI assistant tasked with analyzing legal documents.
-        - type: text
-          text: >-
-            Here is the full text of a complex legal agreement:
-            [Insert full text of a 50-page legal agreement here]
-          cache_control:
-            type: ephemeral
-      messages:
-        - role: user
-          content: What are the key terms and conditions in this agreement?
-      YAML
-      ```
-
-      ```python Python
-      client = anthropic.Anthropic()
-
-      response = client.messages.create(
-          model="claude-opus-5-5",
-          max_tokens=1024,
-          system=[
-              {
-                  "type": "text",
-                  "text": "You are an AI assistant tasked with analyzing legal documents.",
-              },
-              {
-                  "type": "text",
-                  "text": "Here is the full text of a complex legal agreement: [Insert full text of a 50-page legal agreement here]",
-                  "cache_control": {"type": "ephemeral"},
-              },
-          ],
-          messages=[
-              {
-                  "role": "user",
-                  "content": "What are the key terms and conditions in this agreement?",
-              }
-          ],
-      )
-      print(response.usage.model_dump_json())
-      ```
-
-      ```typescript TypeScript
-      const client = new Anthropic();
-
-      const response = await client.messages.create({
-        model: "claude-opus-5-5",
-        max_tokens: 1024,
-        system: [
-          {
-            type: "text",
-            text: "You are an AI assistant tasked with analyzing legal documents."
-          },
-          {
-            type: "text",
-            text: "Here is the full text of a complex legal agreement: [Insert full text of a 50-page legal agreement here]",
-            cache_control: { type: "ephemeral" }
-          }
-        ],
-        messages: [
-          {
-            role: "user",
-            content: "What are the key terms and conditions in this agreement?"
-          }
-        ]
-      });
-      console.log(response.usage);
-      ```
-
-      ```csharp C#
-      AnthropicClient client = new()
-      {
-          ApiKey = Environment.GetEnvironmentVariable("ANTHROPIC_API_KEY")
-      };
-
-      var parameters = new MessageCreateParams
-      {
-          Model = Model.ClaudeOpus5_5,
-          MaxTokens = 1024,
-          System = new MessageCreateParamsSystem(new List<TextBlockParam>
-          {
-              new TextBlockParam()
-              {
-                  Text = "You are an AI assistant tasked with analyzing legal documents.",
-              },
-              new TextBlockParam()
-              {
-                  Text = "Here is the full text of a complex legal agreement: [Insert full text of a 50-page legal agreement here]",
-                  CacheControl = new CacheControlEphemeral(),
-              },
-          }),
-          Messages =
-          [
-              new()
-              {
-                  Role = Role.User,
-                  Content = "What are the key terms and conditions in this agreement?"
-              }
-          ]
-      };
-
-      var message = await client.Messages.Create(parameters);
-      Console.WriteLine(message.Usage);
-      ```
-
-      ```go Go
-      client := anthropic.NewClient()
-
-      response, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
-      	Model:     anthropic.ModelClaudeOpus5_5,
-      	MaxTokens: 1024,
-      	System: []anthropic.TextBlockParam{
-      		{
-      			Text: "You are an AI assistant tasked with analyzing legal documents.",
-      		},
-      		{
-      			Text:         "Here is the full text of a complex legal agreement: [Insert full text of a 50-page legal agreement here]",
-      			CacheControl: anthropic.NewCacheControlEphemeralParam(),
-      		},
-      	},
-      	Messages: []anthropic.MessageParam{
-      		anthropic.NewUserMessage(anthropic.NewTextBlock("What are the key terms and conditions in this agreement?")),
-      	},
-      })
-      if err != nil {
-      	log.Fatal(err)
-      }
-      fmt.Println(response.Usage.RawJSON())
-      ```
-
-      ```java Java
-      import com.anthropic.models.messages.CacheControlEphemeral;
-      // ...
-      public class LegalDocumentAnalysisExample {
-
-        public static void main(String[] args) {
-          AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-          MessageCreateParams params = MessageCreateParams.builder()
-            .model(Model.CLAUDE_OPUS_5_5)
-            .maxTokens(1024)
-            .systemOfTextBlockParams(
-              List.of(
-                TextBlockParam.builder()
-                  .text("You are an AI assistant tasked with analyzing legal documents.")
-                  .build(),
-                TextBlockParam.builder()
-                  .text(
-                    "Here is the full text of a complex legal agreement: [Insert full text of a 50-page legal agreement here]"
-                  )
-                  .cacheControl(CacheControlEphemeral.builder().build())
-                  .build()
-              )
-            )
-            .addUserMessage("What are the key terms and conditions in this agreement?")
-            .build();
-
-          Message message = client.messages().create(params);
-          System.out.println(message.usage());
-        }
-      }
-      ```
-
-      ```php PHP
-      $client = new Client();
-
-      $message = $client->messages->create(
-          maxTokens: 1024,
-          messages: [
-              [
-                  'role' => 'user',
-                  'content' => 'What are the key terms and conditions in this agreement?'
-              ]
-          ],
-          model: 'claude-opus-5-5',
-          system: [
-              [
-                  'type' => 'text',
-                  'text' => 'You are an AI assistant tasked with analyzing legal documents.'
-              ],
-              [
-                  'type' => 'text',
-                  'text' => 'Here is the full text of a complex legal agreement: [Insert full text of a 50-page legal agreement here]',
-                  'cache_control' => ['type' => 'ephemeral']
-              ]
-          ],
-      );
-
-      echo json_encode($message->usage), PHP_EOL;
-      ```
-
-      ```ruby Ruby
-      client = Anthropic::Client.new
-
-      message = client.messages.create(
-        model: "claude-opus-5-5",
-        max_tokens: 1024,
-        system: [
-          {
-            type: "text",
-            text: "You are an AI assistant tasked with analyzing legal documents."
-          },
-          {
-            type: "text",
-            text: "Here is the full text of a complex legal agreement: [Insert full text of a 50-page legal agreement here]",
-            cache_control: { type: "ephemeral" }
-          }
-        ],
-        messages: [
-          {
-            role: "user",
-            content: "What are the key terms and conditions in this agreement?"
-          }
-        ]
-      )
-      puts message.usage
       ```
     </CodeGroup>
 
@@ -1853,7 +794,7 @@ The following code snippets showcase various prompt caching patterns. These exam
 
     On the first request, `cache_creation_input_tokens` reflects the token count of all tool definitions. On subsequent requests within the cache lifetime, those tokens appear under `cache_read_input_tokens` instead.
 
-    For detailed interaction between tool definitions, `defer_loading`, and cache invalidation, see [Tool use with prompt caching](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-use-with-prompt-caching).
+    For detailed interaction between tool definitions, `defer_loading`, and cache invalidation, see [Tool use with prompt caching](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-use-with-prompt-caching?sdk_languages=curl).
   </Accordion>
 
   <Accordion title="Continuing a multi-turn conversation">
@@ -1903,347 +844,6 @@ The following code snippets showcase various prompt caching patterns. These exam
             }
           ]
         }'
-      ```
-
-      ```bash CLI
-      ant messages create --transform usage <<'YAML'
-      model: claude-opus-5-5
-      max_tokens: 1024
-      system:
-        - type: text
-          text: "...long system prompt"
-          cache_control:
-            type: ephemeral
-      messages:
-        - role: user
-          content:
-            - type: text
-              text: Hello, can you tell me more about the solar system?
-        - role: assistant
-          content: >-
-            Certainly! The solar system is the collection of celestial bodies that
-            orbit our Sun. It consists of eight planets, numerous moons, asteroids,
-            comets, and other objects. The planets, in order from closest to farthest
-            from the Sun, are: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus,
-            and Neptune. Each planet has its own unique characteristics and features.
-            Is there a specific aspect of the solar system you would like to know
-            more about?
-        - role: user
-          content:
-            - type: text
-              text: Good to know.
-            - type: text
-              text: Tell me more about Mars.
-              cache_control:
-                type: ephemeral
-      YAML
-      ```
-
-      ```python Python
-      client = anthropic.Anthropic()
-
-      response = client.messages.create(
-          model="claude-opus-5-5",
-          max_tokens=1024,
-          system=[
-              {
-                  "type": "text",
-                  "text": "...long system prompt",
-                  "cache_control": {"type": "ephemeral"},
-              }
-          ],
-          messages=[
-              # ...long conversation so far
-              {
-                  "role": "user",
-                  "content": [
-                      {
-                          "type": "text",
-                          "text": "Hello, can you tell me more about the solar system?",
-                      }
-                  ],
-              },
-              {
-                  "role": "assistant",
-                  "content": "Certainly! The solar system is the collection of celestial bodies that orbit our Sun. It consists of eight planets, numerous moons, asteroids, comets, and other objects. The planets, in order from closest to farthest from the Sun, are: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and Neptune. Each planet has its own unique characteristics and features. Is there a specific aspect of the solar system you'd like to know more about?",
-              },
-              {
-                  "role": "user",
-                  "content": [
-                      {"type": "text", "text": "Good to know."},
-                      {
-                          "type": "text",
-                          "text": "Tell me more about Mars.",
-                          "cache_control": {"type": "ephemeral"},
-                      },
-                  ],
-              },
-          ],
-      )
-      print(response.usage.model_dump_json())
-      ```
-
-      ```typescript TypeScript
-      const client = new Anthropic();
-
-      const response = await client.messages.create({
-        model: "claude-opus-5-5",
-        max_tokens: 1024,
-        system: [
-          {
-            type: "text",
-            text: "...long system prompt",
-            cache_control: { type: "ephemeral" }
-          }
-        ],
-        messages: [
-          // ...long conversation so far
-          {
-            role: "user",
-            content: [
-              {
-                type: "text",
-                text: "Hello, can you tell me more about the solar system?"
-              }
-            ]
-          },
-          {
-            role: "assistant",
-            content:
-              "Certainly! The solar system is the collection of celestial bodies that orbit our Sun. It consists of eight planets, numerous moons, asteroids, comets, and other objects. The planets, in order from closest to farthest from the Sun, are: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and Neptune. Each planet has its own unique characteristics and features. Is there a specific aspect of the solar system you'd like to know more about?"
-          },
-          {
-            role: "user",
-            content: [
-              {
-                type: "text",
-                text: "Good to know."
-              },
-              {
-                type: "text",
-                text: "Tell me more about Mars.",
-                cache_control: { type: "ephemeral" }
-              }
-            ]
-          }
-        ]
-      });
-      console.log(response.usage);
-      ```
-
-      ```csharp C#
-      AnthropicClient client = new();
-
-      var parameters = new MessageCreateParams
-      {
-          Model = Model.ClaudeOpus5_5,
-          MaxTokens = 1024,
-          System = new MessageCreateParamsSystem(new List<TextBlockParam>
-          {
-              new TextBlockParam()
-              {
-                  Text = "...long system prompt",
-                  CacheControl = new CacheControlEphemeral(),
-              },
-          }),
-          Messages =
-          [
-              new()
-              {
-                  Role = Role.User,
-                  Content = new MessageParamContent(new List<ContentBlockParam>
-                  {
-                      new ContentBlockParam(new TextBlockParam("Hello, can you tell me more about the solar system?")),
-                  }),
-              },
-              new()
-              {
-                  Role = Role.Assistant,
-                  Content = "Certainly! The solar system is the collection of celestial bodies that orbit our Sun. It consists of eight planets, numerous moons, asteroids, comets, and other objects. The planets, in order from closest to farthest from the Sun, are: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and Neptune. Each planet has its own unique characteristics and features. Is there a specific aspect of the solar system you would like to know more about?"
-              },
-              new()
-              {
-                  Role = Role.User,
-                  Content = new MessageParamContent(new List<ContentBlockParam>
-                  {
-                      new ContentBlockParam(new TextBlockParam("Good to know.")),
-                      new ContentBlockParam(new TextBlockParam()
-                      {
-                          Text = "Tell me more about Mars.",
-                          CacheControl = new CacheControlEphemeral(),
-                      }),
-                  })
-              }
-          ]
-      };
-
-      var message = await client.Messages.Create(parameters);
-      Console.WriteLine(message.Usage);
-      ```
-
-      ```go Go
-      client := anthropic.NewClient()
-
-      response, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
-      	Model:     anthropic.ModelClaudeOpus5_5,
-      	MaxTokens: 1024,
-      	System: []anthropic.TextBlockParam{
-      		{
-      			Text:         "...long system prompt",
-      			CacheControl: anthropic.NewCacheControlEphemeralParam(),
-      		},
-      	},
-      	Messages: []anthropic.MessageParam{
-      		anthropic.NewUserMessage(anthropic.NewTextBlock("Hello, can you tell me more about the solar system?")),
-      		anthropic.NewAssistantMessage(anthropic.NewTextBlock("Certainly! The solar system is the collection of celestial bodies that orbit our Sun. It consists of eight planets, numerous moons, asteroids, comets, and other objects. The planets, in order from closest to farthest from the Sun, are: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and Neptune. Each planet has its own unique characteristics and features. Is there a specific aspect of the solar system you would like to know more about?")),
-      		{
-      			Role: anthropic.MessageParamRoleUser,
-      			Content: []anthropic.ContentBlockParamUnion{
-      				anthropic.NewTextBlock("Good to know."),
-      				{OfText: &anthropic.TextBlockParam{
-      					Text:         "Tell me more about Mars.",
-      					CacheControl: anthropic.NewCacheControlEphemeralParam(),
-      				}},
-      			},
-      		},
-      	},
-      })
-      if err != nil {
-      	log.Fatal(err)
-      }
-      fmt.Println(response.Usage.RawJSON())
-      ```
-
-      ```java Java
-      import com.anthropic.models.messages.CacheControlEphemeral;
-      // ...
-      public class ConversationWithCacheControlExample {
-
-        public static void main(String[] args) {
-          AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-          // Create ephemeral system prompt
-          TextBlockParam systemPrompt = TextBlockParam.builder()
-            .text("...long system prompt")
-            .cacheControl(CacheControlEphemeral.builder().build())
-            .build();
-
-          // Create message params
-          MessageCreateParams params = MessageCreateParams.builder()
-            .model(Model.CLAUDE_OPUS_5_5)
-            .maxTokens(1024)
-            .systemOfTextBlockParams(List.of(systemPrompt))
-            // First user message (without cache control)
-            .addUserMessage("Hello, can you tell me more about the solar system?")
-            // Assistant response
-            .addAssistantMessage(
-              "Certainly! The solar system is the collection of celestial bodies that orbit our Sun. It consists of eight planets, numerous moons, asteroids, comets, and other objects. The planets, in order from closest to farthest from the Sun, are: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and Neptune. Each planet has its own unique characteristics and features. Is there a specific aspect of the solar system you would like to know more about?"
-            )
-            // Second user message (with cache control)
-            .addUserMessageOfBlockParams(
-              List.of(
-                ContentBlockParam.ofText(TextBlockParam.builder().text("Good to know.").build()),
-                ContentBlockParam.ofText(
-                  TextBlockParam.builder()
-                    .text("Tell me more about Mars.")
-                    .cacheControl(CacheControlEphemeral.builder().build())
-                    .build()
-                )
-              )
-            )
-            .build();
-
-          Message message = client.messages().create(params);
-          System.out.println(message.usage());
-        }
-      }
-      ```
-
-      ```php PHP
-      $client = new Client();
-
-      $message = $client->messages->create(
-          maxTokens: 1024,
-          messages: [
-              [
-                  'role' => 'user',
-                  'content' => [
-                      [
-                          'type' => 'text',
-                          'text' => 'Hello, can you tell me more about the solar system?'
-                      ]
-                  ]
-              ],
-              [
-                  'role' => 'assistant',
-                  'content' => "Certainly! The solar system is the collection of celestial bodies that orbit our Sun. It consists of eight planets, numerous moons, asteroids, comets, and other objects. The planets, in order from closest to farthest from the Sun, are: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and Neptune. Each planet has its own unique characteristics and features. Is there a specific aspect of the solar system you would like to know more about?"
-              ],
-              [
-                  'role' => 'user',
-                  'content' => [
-                      ['type' => 'text', 'text' => 'Good to know.'],
-                      [
-                          'type' => 'text',
-                          'text' => 'Tell me more about Mars.',
-                          'cache_control' => ['type' => 'ephemeral']
-                      ]
-                  ]
-              ]
-          ],
-          model: 'claude-opus-5-5',
-          system: [
-              [
-                  'type' => 'text',
-                  'text' => '...long system prompt',
-                  'cache_control' => ['type' => 'ephemeral']
-              ]
-          ],
-      );
-
-      echo json_encode($message->usage), PHP_EOL;
-      ```
-
-      ```ruby Ruby
-      client = Anthropic::Client.new
-
-      message = client.messages.create(
-        model: "claude-opus-5-5",
-        max_tokens: 1024,
-        system: [
-          {
-            type: "text",
-            text: "...long system prompt",
-            cache_control: { type: "ephemeral" }
-          }
-        ],
-        messages: [
-          {
-            role: "user",
-            content: [
-              {
-                type: "text",
-                text: "Hello, can you tell me more about the solar system?"
-              }
-            ]
-          },
-          {
-            role: "assistant",
-            content: "Certainly! The solar system is the collection of celestial bodies that orbit our Sun. It consists of eight planets, numerous moons, asteroids, comets, and other objects. The planets, in order from closest to farthest from the Sun, are: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and Neptune. Each planet has its own unique characteristics and features. Is there a specific aspect of the solar system you would like to know more about?"
-          },
-          {
-            role: "user",
-            content: [
-              { type: "text", text: "Good to know." },
-              {
-                type: "text",
-                text: "Tell me more about Mars.",
-                cache_control: { type: "ephemeral" }
-              }
-            ]
-          }
-        ]
-      )
-      puts message.usage
       ```
     </CodeGroup>
 
@@ -2363,787 +963,6 @@ The following code snippets showcase various prompt caching patterns. These exam
           ]
         }'
       ```
-
-      ```bash CLI
-      ant messages create --transform usage <<'YAML'
-      model: claude-opus-5-5
-      max_tokens: 1024
-      tools:
-        - name: search_documents
-          description: Search through the knowledge base
-          input_schema:
-            type: object
-            properties:
-              query:
-                type: string
-                description: Search query
-            required: [query]
-        - name: get_document
-          description: Retrieve a specific document by ID
-          input_schema:
-            type: object
-            properties:
-              doc_id:
-                type: string
-                description: Document ID
-            required: [doc_id]
-          cache_control:
-            type: ephemeral
-      system:
-        - type: text
-          text: |-
-            You are a helpful research assistant with access to a document knowledge base.
-
-            # Instructions
-            - Always search for relevant documents before answering
-            - Provide citations for your sources
-            - Be objective and accurate in your responses
-            - If multiple documents contain relevant information, synthesize them
-            - Acknowledge when information is not available in the knowledge base
-          cache_control:
-            type: ephemeral
-        - type: text
-          text: |-
-            # Knowledge Base Context
-
-            Here are the relevant documents for this conversation:
-
-            ## Document 1: Solar System Overview
-            The solar system consists of the Sun and all objects that orbit it...
-
-            ## Document 2: Planetary Characteristics
-            Each planet has unique features. Mercury is the smallest planet...
-
-            ## Document 3: Mars Exploration
-            Mars has been a target of exploration for decades...
-
-            [Additional documents...]
-          cache_control:
-            type: ephemeral
-      messages:
-        - role: user
-          content: Can you search for information about Mars rovers?
-        - role: assistant
-          content:
-            - type: tool_use
-              id: tool_1
-              name: search_documents
-              input:
-                query: Mars rovers
-        - role: user
-          content:
-            - type: tool_result
-              tool_use_id: tool_1
-              content: >-
-                Found 3 relevant documents: Document 3 (Mars Exploration),
-                Document 7 (Rover Technology), Document 9 (Mission History)
-        - role: assistant
-          content:
-            - type: text
-              text: >-
-                I found 3 relevant documents about Mars rovers. Let me get more
-                details from the Mars Exploration document.
-        - role: user
-          content:
-            - type: text
-              text: Yes, please tell me about the Perseverance rover specifically.
-              cache_control:
-                type: ephemeral
-      YAML
-      ```
-
-      ```python Python
-      client = anthropic.Anthropic()
-
-      response = client.messages.create(
-          model="claude-opus-5-5",
-          max_tokens=1024,
-          tools=[
-              {
-                  "name": "search_documents",
-                  "description": "Search through the knowledge base",
-                  "input_schema": {
-                      "type": "object",
-                      "properties": {
-                          "query": {"type": "string", "description": "Search query"}
-                      },
-                      "required": ["query"],
-                  },
-              },
-              {
-                  "name": "get_document",
-                  "description": "Retrieve a specific document by ID",
-                  "input_schema": {
-                      "type": "object",
-                      "properties": {
-                          "doc_id": {"type": "string", "description": "Document ID"}
-                      },
-                      "required": ["doc_id"],
-                  },
-                  "cache_control": {"type": "ephemeral"},
-              },
-          ],
-          system=[
-              {
-                  "type": "text",
-                  "text": "You are a helpful research assistant with access to a document knowledge base.\n\n# Instructions\n- Always search for relevant documents before answering\n- Provide citations for your sources\n- Be objective and accurate in your responses\n- If multiple documents contain relevant information, synthesize them\n- Acknowledge when information is not available in the knowledge base",
-                  "cache_control": {"type": "ephemeral"},
-              },
-              {
-                  "type": "text",
-                  "text": "# Knowledge Base Context\n\nHere are the relevant documents for this conversation:\n\n## Document 1: Solar System Overview\nThe solar system consists of the Sun and all objects that orbit it...\n\n## Document 2: Planetary Characteristics\nEach planet has unique features. Mercury is the smallest planet...\n\n## Document 3: Mars Exploration\nMars has been a target of exploration for decades...\n\n[Additional documents...]",
-                  "cache_control": {"type": "ephemeral"},
-              },
-          ],
-          messages=[
-              {
-                  "role": "user",
-                  "content": "Can you search for information about Mars rovers?",
-              },
-              {
-                  "role": "assistant",
-                  "content": [
-                      {
-                          "type": "tool_use",
-                          "id": "tool_1",
-                          "name": "search_documents",
-                          "input": {"query": "Mars rovers"},
-                      }
-                  ],
-              },
-              {
-                  "role": "user",
-                  "content": [
-                      {
-                          "type": "tool_result",
-                          "tool_use_id": "tool_1",
-                          "content": "Found 3 relevant documents: Document 3 (Mars Exploration), Document 7 (Rover Technology), Document 9 (Mission History)",
-                      }
-                  ],
-              },
-              {
-                  "role": "assistant",
-                  "content": [
-                      {
-                          "type": "text",
-                          "text": "I found 3 relevant documents about Mars rovers. Let me get more details from the Mars Exploration document.",
-                      }
-                  ],
-              },
-              {
-                  "role": "user",
-                  "content": [
-                      {
-                          "type": "text",
-                          "text": "Yes, please tell me about the Perseverance rover specifically.",
-                          "cache_control": {"type": "ephemeral"},
-                      }
-                  ],
-              },
-          ],
-      )
-      print(response.usage.model_dump_json())
-      ```
-
-      ```typescript TypeScript
-      const client = new Anthropic();
-
-      const response = await client.messages.create({
-        model: "claude-opus-5-5",
-        max_tokens: 1024,
-        tools: [
-          {
-            name: "search_documents",
-            description: "Search through the knowledge base",
-            input_schema: {
-              type: "object",
-              properties: {
-                query: {
-                  type: "string",
-                  description: "Search query"
-                }
-              },
-              required: ["query"]
-            }
-          },
-          {
-            name: "get_document",
-            description: "Retrieve a specific document by ID",
-            input_schema: {
-              type: "object",
-              properties: {
-                doc_id: {
-                  type: "string",
-                  description: "Document ID"
-                }
-              },
-              required: ["doc_id"]
-            },
-            cache_control: { type: "ephemeral" }
-          }
-        ],
-        system: [
-          {
-            type: "text",
-            text: "You are a helpful research assistant with access to a document knowledge base.\n\n# Instructions\n- Always search for relevant documents before answering\n- Provide citations for your sources\n- Be objective and accurate in your responses\n- If multiple documents contain relevant information, synthesize them\n- Acknowledge when information is not available in the knowledge base",
-            cache_control: { type: "ephemeral" }
-          },
-          {
-            type: "text",
-            text: "# Knowledge Base Context\n\nHere are the relevant documents for this conversation:\n\n## Document 1: Solar System Overview\nThe solar system consists of the Sun and all objects that orbit it...\n\n## Document 2: Planetary Characteristics\nEach planet has unique features. Mercury is the smallest planet...\n\n## Document 3: Mars Exploration\nMars has been a target of exploration for decades...\n\n[Additional documents...]",
-            cache_control: { type: "ephemeral" }
-          }
-        ],
-        messages: [
-          {
-            role: "user",
-            content: "Can you search for information about Mars rovers?"
-          },
-          {
-            role: "assistant",
-            content: [
-              {
-                type: "tool_use",
-                id: "tool_1",
-                name: "search_documents",
-                input: { query: "Mars rovers" }
-              }
-            ]
-          },
-          {
-            role: "user",
-            content: [
-              {
-                type: "tool_result",
-                tool_use_id: "tool_1",
-                content:
-                  "Found 3 relevant documents: Document 3 (Mars Exploration), Document 7 (Rover Technology), Document 9 (Mission History)"
-              }
-            ]
-          },
-          {
-            role: "assistant",
-            content: [
-              {
-                type: "text",
-                text: "I found 3 relevant documents about Mars rovers. Let me get more details from the Mars Exploration document."
-              }
-            ]
-          },
-          {
-            role: "user",
-            content: [
-              {
-                type: "text",
-                text: "Yes, please tell me about the Perseverance rover specifically.",
-                cache_control: { type: "ephemeral" }
-              }
-            ]
-          }
-        ]
-      });
-      console.log(response.usage);
-      ```
-
-      ```csharp C#
-      AnthropicClient client = new()
-      {
-          ApiKey = Environment.GetEnvironmentVariable("ANTHROPIC_API_KEY")
-      };
-
-      var parameters = new MessageCreateParams
-      {
-          Model = Model.ClaudeOpus5_5,
-          MaxTokens = 1024,
-          Tools =
-          [
-              new ToolUnion(new Tool()
-              {
-                  Name = "search_documents",
-                  Description = "Search through the knowledge base",
-                  InputSchema = new InputSchema()
-                  {
-                      Properties = new Dictionary<string, JsonElement>
-                      {
-                          ["query"] = JsonSerializer.SerializeToElement(new { type = "string", description = "Search query" }),
-                      },
-                      Required = ["query"],
-                  },
-              }),
-              new ToolUnion(new Tool()
-              {
-                  Name = "get_document",
-                  Description = "Retrieve a specific document by ID",
-                  InputSchema = new InputSchema()
-                  {
-                      Properties = new Dictionary<string, JsonElement>
-                      {
-                          ["doc_id"] = JsonSerializer.SerializeToElement(new { type = "string", description = "Document ID" }),
-                      },
-                      Required = ["doc_id"],
-                  },
-                  CacheControl = new CacheControlEphemeral(),
-              }),
-          ],
-          System = new MessageCreateParamsSystem(new List<TextBlockParam>
-          {
-              new TextBlockParam()
-              {
-                  Text = "You are a helpful research assistant with access to a document knowledge base.\n\n# Instructions\n- Always search for relevant documents before answering\n- Provide citations for your sources\n- Be objective and accurate in your responses\n- If multiple documents contain relevant information, synthesize them\n- Acknowledge when information is not available in the knowledge base",
-                  CacheControl = new CacheControlEphemeral(),
-              },
-              new TextBlockParam()
-              {
-                  Text = "# Knowledge Base Context\n\nHere are the relevant documents for this conversation:\n\n## Document 1: Solar System Overview\nThe solar system consists of the Sun and all objects that orbit it...\n\n## Document 2: Planetary Characteristics\nEach planet has unique features. Mercury is the smallest planet...\n\n## Document 3: Mars Exploration\nMars has been a target of exploration for decades...\n\n[Additional documents...]",
-                  CacheControl = new CacheControlEphemeral(),
-              },
-          }),
-          Messages =
-          [
-              new() { Role = Role.User, Content = "Can you search for information about Mars rovers?" },
-              new()
-              {
-                  Role = Role.Assistant,
-                  Content = new MessageParamContent(new List<ContentBlockParam>
-                  {
-                      new ContentBlockParam(new ToolUseBlockParam()
-                      {
-                          ID = "tool_1",
-                          Name = "search_documents",
-                          Input = new Dictionary<string, JsonElement>
-                          {
-                              ["query"] = JsonSerializer.SerializeToElement("Mars rovers"),
-                          },
-                      }),
-                  }),
-              },
-              new()
-              {
-                  Role = Role.User,
-                  Content = new MessageParamContent(new List<ContentBlockParam>
-                  {
-                      new ContentBlockParam(new ToolResultBlockParam()
-                      {
-                          ToolUseID = "tool_1",
-                          Content = "Found 3 relevant documents: Document 3 (Mars Exploration), Document 7 (Rover Technology), Document 9 (Mission History)",
-                      }),
-                  }),
-              },
-              new()
-              {
-                  Role = Role.Assistant,
-                  Content = "I found 3 relevant documents about Mars rovers. Let me get more details from the Mars Exploration document.",
-              },
-              new()
-              {
-                  Role = Role.User,
-                  Content = new MessageParamContent(new List<ContentBlockParam>
-                  {
-                      new ContentBlockParam(new TextBlockParam()
-                      {
-                          Text = "Yes, please tell me about the Perseverance rover specifically.",
-                          CacheControl = new CacheControlEphemeral(),
-                      }),
-                  }),
-              },
-          ]
-      };
-
-      var message = await client.Messages.Create(parameters);
-      Console.WriteLine(message.Usage);
-      ```
-
-      ```go Go
-      client := anthropic.NewClient()
-
-      response, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
-      	Model:     anthropic.ModelClaudeOpus5_5,
-      	MaxTokens: 1024,
-      	Tools: []anthropic.ToolUnionParam{
-      		{OfTool: &anthropic.ToolParam{
-      			Name:        "search_documents",
-      			Description: anthropic.String("Search through the knowledge base"),
-      			InputSchema: anthropic.ToolInputSchemaParam{
-      				Properties: map[string]any{
-      					"query": map[string]any{
-      						"type":        "string",
-      						"description": "Search query",
-      					},
-      				},
-      				Required: []string{"query"},
-      			},
-      		}},
-      		{OfTool: &anthropic.ToolParam{
-      			Name:        "get_document",
-      			Description: anthropic.String("Retrieve a specific document by ID"),
-      			InputSchema: anthropic.ToolInputSchemaParam{
-      				Properties: map[string]any{
-      					"doc_id": map[string]any{
-      						"type":        "string",
-      						"description": "Document ID",
-      					},
-      				},
-      				Required: []string{"doc_id"},
-      			},
-      			CacheControl: anthropic.NewCacheControlEphemeralParam(),
-      		}},
-      	},
-      	System: []anthropic.TextBlockParam{
-      		{
-      			Text:         "You are a helpful research assistant with access to a document knowledge base.\n\n# Instructions\n- Always search for relevant documents before answering\n- Provide citations for your sources\n- Be objective and accurate in your responses\n- If multiple documents contain relevant information, synthesize them\n- Acknowledge when information is not available in the knowledge base",
-      			CacheControl: anthropic.NewCacheControlEphemeralParam(),
-      		},
-      		{
-      			Text:         "# Knowledge Base Context\n\nHere are the relevant documents for this conversation:\n\n## Document 1: Solar System Overview\nThe solar system consists of the Sun and all objects that orbit it...\n\n## Document 2: Planetary Characteristics\nEach planet has unique features. Mercury is the smallest planet...\n\n## Document 3: Mars Exploration\nMars has been a target of exploration for decades...\n\n[Additional documents...]",
-      			CacheControl: anthropic.NewCacheControlEphemeralParam(),
-      		},
-      	},
-      	Messages: []anthropic.MessageParam{
-      		anthropic.NewUserMessage(anthropic.NewTextBlock("Can you search for information about Mars rovers?")),
-      		anthropic.NewAssistantMessage(anthropic.NewToolUseBlock(
-      			"tool_1",
-      			map[string]any{"query": "Mars rovers"},
-      			"search_documents",
-      		)),
-      		anthropic.NewUserMessage(anthropic.NewToolResultBlock(
-      			"tool_1",
-      			"Found 3 relevant documents: Document 3 (Mars Exploration), Document 7 (Rover Technology), Document 9 (Mission History)",
-      			false,
-      		)),
-      		anthropic.NewAssistantMessage(anthropic.NewTextBlock("I found 3 relevant documents about Mars rovers. Let me get more details from the Mars Exploration document.")),
-      		{
-      			Role: anthropic.MessageParamRoleUser,
-      			Content: []anthropic.ContentBlockParamUnion{
-      				{OfText: &anthropic.TextBlockParam{
-      					Text:         "Yes, please tell me about the Perseverance rover specifically.",
-      					CacheControl: anthropic.NewCacheControlEphemeralParam(),
-      				}},
-      			},
-      		},
-      	},
-      })
-      if err != nil {
-      	log.Fatal(err)
-      }
-      fmt.Println(response.Usage.RawJSON())
-      ```
-
-      ```java Java
-      import com.anthropic.models.messages.CacheControlEphemeral;
-      // ...
-      public class MultipleCacheBreakpointsExample {
-
-        public static void main(String[] args) {
-          AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-          // Search tool schema
-          InputSchema searchSchema = InputSchema.builder()
-            .properties(
-              JsonValue.from(
-                Map.of("query", Map.of("type", "string", "description", "Search query"))
-              )
-            )
-            .putAdditionalProperty("required", JsonValue.from(List.of("query")))
-            .build();
-
-          // Get document tool schema
-          InputSchema getDocSchema = InputSchema.builder()
-            .properties(
-              JsonValue.from(
-                Map.of("doc_id", Map.of("type", "string", "description", "Document ID"))
-              )
-            )
-            .putAdditionalProperty("required", JsonValue.from(List.of("doc_id")))
-            .build();
-
-          MessageCreateParams params = MessageCreateParams.builder()
-            .model(Model.CLAUDE_OPUS_5_5)
-            .maxTokens(1024)
-            // Tools with cache control on the last one
-            .addTool(
-              Tool.builder()
-                .name("search_documents")
-                .description("Search through the knowledge base")
-                .inputSchema(searchSchema)
-                .build()
-            )
-            .addTool(
-              Tool.builder()
-                .name("get_document")
-                .description("Retrieve a specific document by ID")
-                .inputSchema(getDocSchema)
-                .cacheControl(CacheControlEphemeral.builder().build())
-                .build()
-            )
-            // System prompts with cache control on instructions and context separately
-            .systemOfTextBlockParams(
-              List.of(
-                TextBlockParam.builder()
-                  .text(
-                    "You are a helpful research assistant with access to a document knowledge base.\n\n# Instructions\n- Always search for relevant documents before answering\n- Provide citations for your sources\n- Be objective and accurate in your responses\n- If multiple documents contain relevant information, synthesize them\n- Acknowledge when information is not available in the knowledge base"
-                  )
-                  .cacheControl(CacheControlEphemeral.builder().build())
-                  .build(),
-                TextBlockParam.builder()
-                  .text(
-                    "# Knowledge Base Context\n\nHere are the relevant documents for this conversation:\n\n## Document 1: Solar System Overview\nThe solar system consists of the Sun and all objects that orbit it...\n\n## Document 2: Planetary Characteristics\nEach planet has unique features. Mercury is the smallest planet...\n\n## Document 3: Mars Exploration\nMars has been a target of exploration for decades...\n\n[Additional documents...]"
-                  )
-                  .cacheControl(CacheControlEphemeral.builder().build())
-                  .build()
-              )
-            )
-            // Conversation history
-            .addUserMessage("Can you search for information about Mars rovers?")
-            .addAssistantMessageOfBlockParams(
-              List.of(
-                ContentBlockParam.ofToolUse(
-                  ToolUseBlockParam.builder()
-                    .id("tool_1")
-                    .name("search_documents")
-                    .input(JsonValue.from(Map.of("query", "Mars rovers")))
-                    .build()
-                )
-              )
-            )
-            .addUserMessageOfBlockParams(
-              List.of(
-                ContentBlockParam.ofToolResult(
-                  ToolResultBlockParam.builder()
-                    .toolUseId("tool_1")
-                    .content(
-                      "Found 3 relevant documents: Document 3 (Mars Exploration), Document 7 (Rover Technology), Document 9 (Mission History)"
-                    )
-                    .build()
-                )
-              )
-            )
-            .addAssistantMessageOfBlockParams(
-              List.of(
-                ContentBlockParam.ofText(
-                  TextBlockParam.builder()
-                    .text(
-                      "I found 3 relevant documents about Mars rovers. Let me get more details from the Mars Exploration document."
-                    )
-                    .build()
-                )
-              )
-            )
-            .addUserMessageOfBlockParams(
-              List.of(
-                ContentBlockParam.ofText(
-                  TextBlockParam.builder()
-                    .text("Yes, please tell me about the Perseverance rover specifically.")
-                    .cacheControl(CacheControlEphemeral.builder().build())
-                    .build()
-                )
-              )
-            )
-            .build();
-
-          Message message = client.messages().create(params);
-          System.out.println(message.usage());
-        }
-      }
-      ```
-
-      ```php PHP
-      $client = new Client();
-
-      $message = $client->messages->create(
-          maxTokens: 1024,
-          messages: [
-              [
-                  'role' => 'user',
-                  'content' => 'Can you search for information about Mars rovers?'
-              ],
-              [
-                  'role' => 'assistant',
-                  'content' => [
-                      [
-                          'type' => 'tool_use',
-                          'id' => 'tool_1',
-                          'name' => 'search_documents',
-                          'input' => ['query' => 'Mars rovers']
-                      ]
-                  ]
-              ],
-              [
-                  'role' => 'user',
-                  'content' => [
-                      [
-                          'type' => 'tool_result',
-                          'tool_use_id' => 'tool_1',
-                          'content' => 'Found 3 relevant documents: Document 3 (Mars Exploration), Document 7 (Rover Technology), Document 9 (Mission History)'
-                      ]
-                  ]
-              ],
-              [
-                  'role' => 'assistant',
-                  'content' => [
-                      [
-                          'type' => 'text',
-                          'text' => 'I found 3 relevant documents about Mars rovers. Let me get more details from the Mars Exploration document.'
-                      ]
-                  ]
-              ],
-              [
-                  'role' => 'user',
-                  'content' => [
-                      [
-                          'type' => 'text',
-                          'text' => 'Yes, please tell me about the Perseverance rover specifically.',
-                          'cache_control' => ['type' => 'ephemeral']
-                      ]
-                  ]
-              ]
-          ],
-          model: 'claude-opus-5-5',
-          system: [
-              [
-                  'type' => 'text',
-                  'text' => "You are a helpful research assistant with access to a document knowledge base.\n\n# Instructions\n- Always search for relevant documents before answering\n- Provide citations for your sources\n- Be objective and accurate in your responses\n- If multiple documents contain relevant information, synthesize them\n- Acknowledge when information is not available in the knowledge base",
-                  'cache_control' => ['type' => 'ephemeral']
-              ],
-              [
-                  'type' => 'text',
-                  'text' => "# Knowledge Base Context\n\nHere are the relevant documents for this conversation:\n\n## Document 1: Solar System Overview\nThe solar system consists of the Sun and all objects that orbit it...\n\n## Document 2: Planetary Characteristics\nEach planet has unique features. Mercury is the smallest planet...\n\n## Document 3: Mars Exploration\nMars has been a target of exploration for decades...\n\n[Additional documents...]",
-                  'cache_control' => ['type' => 'ephemeral']
-              ]
-          ],
-          tools: [
-              [
-                  'name' => 'search_documents',
-                  'description' => 'Search through the knowledge base',
-                  'input_schema' => [
-                      'type' => 'object',
-                      'properties' => [
-                          'query' => [
-                              'type' => 'string',
-                              'description' => 'Search query'
-                          ]
-                      ],
-                      'required' => ['query']
-                  ]
-              ],
-              [
-                  'name' => 'get_document',
-                  'description' => 'Retrieve a specific document by ID',
-                  'input_schema' => [
-                      'type' => 'object',
-                      'properties' => [
-                          'doc_id' => [
-                              'type' => 'string',
-                              'description' => 'Document ID'
-                          ]
-                      ],
-                      'required' => ['doc_id']
-                  ],
-                  'cache_control' => ['type' => 'ephemeral']
-              ]
-          ],
-      );
-
-      echo json_encode($message->usage), PHP_EOL;
-      ```
-
-      ```ruby Ruby
-      client = Anthropic::Client.new
-
-      message = client.messages.create(
-        model: "claude-opus-5-5",
-        max_tokens: 1024,
-        tools: [
-          {
-            name: "search_documents",
-            description: "Search through the knowledge base",
-            input_schema: {
-              type: "object",
-              properties: {
-                query: {
-                  type: "string",
-                  description: "Search query"
-                }
-              },
-              required: ["query"]
-            }
-          },
-          {
-            name: "get_document",
-            description: "Retrieve a specific document by ID",
-            input_schema: {
-              type: "object",
-              properties: {
-                doc_id: {
-                  type: "string",
-                  description: "Document ID"
-                }
-              },
-              required: ["doc_id"]
-            },
-            cache_control: { type: "ephemeral" }
-          }
-        ],
-        system: [
-          {
-            type: "text",
-            text: "You are a helpful research assistant with access to a document knowledge base.\n\n# Instructions\n- Always search for relevant documents before answering\n- Provide citations for your sources\n- Be objective and accurate in your responses\n- If multiple documents contain relevant information, synthesize them\n- Acknowledge when information is not available in the knowledge base",
-            cache_control: { type: "ephemeral" }
-          },
-          {
-            type: "text",
-            text: "# Knowledge Base Context\n\nHere are the relevant documents for this conversation:\n\n## Document 1: Solar System Overview\nThe solar system consists of the Sun and all objects that orbit it...\n\n## Document 2: Planetary Characteristics\nEach planet has unique features. Mercury is the smallest planet...\n\n## Document 3: Mars Exploration\nMars has been a target of exploration for decades...\n\n[Additional documents...]",
-            cache_control: { type: "ephemeral" }
-          }
-        ],
-        messages: [
-          {
-            role: "user",
-            content: "Can you search for information about Mars rovers?"
-          },
-          {
-            role: "assistant",
-            content: [
-              {
-                type: "tool_use",
-                id: "tool_1",
-                name: "search_documents",
-                input: { query: "Mars rovers" }
-              }
-            ]
-          },
-          {
-            role: "user",
-            content: [
-              {
-                type: "tool_result",
-                tool_use_id: "tool_1",
-                content: "Found 3 relevant documents: Document 3 (Mars Exploration), Document 7 (Rover Technology), Document 9 (Mission History)"
-              }
-            ]
-          },
-          {
-            role: "assistant",
-            content: [
-              {
-                type: "text",
-                text: "I found 3 relevant documents about Mars rovers. Let me get more details from the Mars Exploration document."
-              }
-            ]
-          },
-          {
-            role: "user",
-            content: [
-              {
-                type: "text",
-                text: "Yes, please tell me about the Perseverance rover specifically.",
-                cache_control: { type: "ephemeral" }
-              }
-            ]
-          }
-        ]
-      )
-      puts message.usage
-      ```
     </CodeGroup>
 
     This comprehensive example demonstrates how to use all 4 available cache breakpoints to optimize different parts of your prompt:
@@ -3190,7 +1009,7 @@ Prompt caching (both automatic and explicit) is ZDR eligible. Anthropic does not
 
 KV (key-value) cache representations and cryptographic hashes of cached content are held in memory only and are not stored at rest. Cached entries have a minimum lifetime of 5 minutes (standard) or 1 hour (extended), after which they are promptly, though not immediately, deleted. Cache entries are isolated between organizations and, on the Claude API, Claude Platform on AWS, and Microsoft Foundry, between workspaces within an organization.
 
-For ZDR eligibility across all features, see [API and data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention).
+For ZDR eligibility across all features, see [API and data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=curl).
 
 ***
 
@@ -3213,7 +1032,7 @@ For ZDR eligibility across all features, see [API and data retention](https://pl
     No, cache breakpoints themselves are free. You only pay for:
 
     * Writing content to cache (25% more than base input tokens for 5-minute TTL)
-    * Reading from cache (a fraction of the base input token price, see [Pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#pricing))
+    * Reading from cache (a fraction of the base input token price, see [Pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#pricing))
     * Regular input tokens for uncached content
 
     The number of breakpoints doesn't affect pricing; only the amount of content cached and read matters.
@@ -3239,19 +1058,19 @@ For ZDR eligibility across all features, see [API and data retention](https://pl
     * `input_tokens`: 50
     * **Total:** 200,050 tokens
 
-    This breakdown is critical for understanding both your costs and rate limit usage. See [Tracking cache performance](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#tracking-cache-performance) for more details.
+    This breakdown is critical for understanding both your costs and rate limit usage. See [Tracking cache performance](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#tracking-cache-performance) for more details.
   </Accordion>
 
   <Accordion title="What is the cache lifetime?">
     The cache's default minimum lifetime (TTL) is 5 minutes. This lifetime is refreshed each time the cached content is used.
 
-    If you find that 5 minutes is too short, Anthropic also offers a [1-hour cache TTL](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#1-hour-cache-duration).
+    If you find that 5 minutes is too short, Anthropic also offers a [1-hour cache TTL](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#1-hour-cache-duration).
   </Accordion>
 
   <Accordion title="When does the cache lifetime start?">
     The lifetime is measured from the start of the request that writes or reads the cache entry, not from the end of its response. Time spent generating a response counts against the lifetime, so the window for a follow-up request to reuse the cache is the lifetime minus the generation time.
 
-    If your requests produce long responses and the next request might not start until after the lifetime elapses, use the [1-hour cache TTL](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#1-hour-cache-duration).
+    If your requests produce long responses and the next request might not start until after the lifetime elapses, use the [1-hour cache TTL](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#1-hour-cache-duration).
   </Accordion>
 
   <Accordion title="How many cache breakpoints can I use?">
@@ -3259,29 +1078,29 @@ For ZDR eligibility across all features, see [API and data retention](https://pl
   </Accordion>
 
   <Accordion title="Is prompt caching available for all models?">
-    Prompt caching is supported on all [active Claude models](https://platform.claude.com/docs/en/models/overview).
+    Prompt caching is supported on all [active Claude models](https://platform.claude.com/docs/en/models/overview?sdk_languages=curl).
   </Accordion>
 
   <Accordion title="How does prompt caching work with thinking?">
-    Changing thinking parameters (switching modes, or changing the budget in extended mode) invalidates cached message prefixes, and can invalidate cached system prompts and tools as well, because the thinking configuration is rendered into the prompt. The [`output_config.effort`](https://platform.claude.com/docs/en/build-with-claude/effort) value behaves the same way.
+    Changing thinking parameters (switching modes, or changing the budget in extended mode) invalidates cached message prefixes, and can invalidate cached system prompts and tools as well, because the thinking configuration is rendered into the prompt. The [`output_config.effort`](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=curl) value behaves the same way.
 
-    For more details on cache invalidation, see [What invalidates the cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#what-invalidates-the-cache).
+    For more details on cache invalidation, see [What invalidates the cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#what-invalidates-the-cache).
 
-    For more on thinking, including its interaction with tool use and prompt caching, see [Thinking and prompt caching](https://platform.claude.com/docs/en/build-with-claude/thinking#thinking-and-prompt-caching).
+    For more on thinking, including its interaction with tool use and prompt caching, see [Thinking and prompt caching](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl#thinking-and-prompt-caching).
   </Accordion>
 
   <Accordion title="How do I enable prompt caching?">
-    The easiest way is to add `"cache_control": {"type": "ephemeral"}` at the top level of your request body ([automatic caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#automatic-caching)). Alternatively, include at least one `cache_control` breakpoint on individual content blocks ([explicit cache breakpoints](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#explicit-cache-breakpoints)).
+    The easiest way is to add `"cache_control": {"type": "ephemeral"}` at the top level of your request body ([automatic caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#automatic-caching)). Alternatively, include at least one `cache_control` breakpoint on individual content blocks ([explicit cache breakpoints](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#explicit-cache-breakpoints)).
   </Accordion>
 
   <Accordion title="Can I use prompt caching with other API features?">
     Yes, prompt caching can be used alongside other API features like tool use and vision capabilities. However, changing whether there are images in a prompt or modifying tool use settings will break the cache.
 
-    For more details on cache invalidation, see [What invalidates the cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#what-invalidates-the-cache).
+    For more details on cache invalidation, see [What invalidates the cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#what-invalidates-the-cache).
   </Accordion>
 
   <Accordion title="How does prompt caching affect pricing?">
-    Prompt caching introduces a new pricing structure where 5-minute cache writes cost 25% more than base input tokens, 1-hour cache writes cost 2x base input tokens, and cache hits cost a fraction of the base input token price (see [Pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#pricing) for the per-model multiplier).
+    Prompt caching introduces a new pricing structure where 5-minute cache writes cost 25% more than base input tokens, 1-hour cache writes cost 2x base input tokens, and cache hits cost a fraction of the base input token price (see [Pricing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#pricing) for the per-model multiplier).
   </Accordion>
 
   <Accordion title="Can I manually clear the cache?">
@@ -3293,7 +1112,7 @@ For ZDR eligibility across all features, see [API and data retention](https://pl
   </Accordion>
 
   <Accordion title="What can break the cache?">
-    See [What invalidates the cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#what-invalidates-the-cache) for more details on cache invalidation, including a list of changes that require creating a new cache entry.
+    See [What invalidates the cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#what-invalidates-the-cache) for more details on cache invalidation, including a list of changes that require creating a new cache entry.
   </Accordion>
 
   <Accordion title="How does prompt caching handle privacy and data separation?">
@@ -3301,7 +1120,7 @@ For ZDR eligibility across all features, see [API and data retention](https://pl
 
     1. Cache keys are generated using a cryptographic hash of the prompts up to the cache control point. This means only requests with identical prompts can access a specific cache.
 
-    2. On the Claude API, Claude Platform on AWS, and Microsoft Foundry, caches are isolated per workspace within an organization. On Bedrock and Google Cloud, caches are isolated per organization. In every case, caches are never shared across organizations, even for identical prompts. See [Cache storage and sharing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#cache-storage-and-sharing) for details.
+    2. On the Claude API, Claude Platform on AWS, and Microsoft Foundry, caches are isolated per workspace within an organization. On Bedrock and Google Cloud, caches are isolated per organization. In every case, caches are never shared across organizations, even for identical prompts. See [Cache storage and sharing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#cache-storage-and-sharing) for details.
 
     3. The caching mechanism is designed to maintain the integrity and privacy of each unique conversation or context.
 
@@ -3311,9 +1130,9 @@ For ZDR eligibility across all features, see [API and data retention](https://pl
   </Accordion>
 
   <Accordion title="Can I use prompt caching with the Batches API?">
-    Yes, it is possible to use prompt caching with your [Batches API](https://platform.claude.com/docs/en/build-with-claude/batch-processing) requests. However, because asynchronous batch requests can be processed concurrently and in any order, cache hits are provided on a best-effort basis.
+    Yes, it is possible to use prompt caching with your [Batches API](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=curl) requests. However, because asynchronous batch requests can be processed concurrently and in any order, cache hits are provided on a best-effort basis.
 
-    The [1-hour cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#1-hour-cache-duration) can help improve your cache hits. The most cost effective way of using it is the following:
+    The [1-hour cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl#1-hour-cache-duration) can help improve your cache hits. The most cost effective way of using it is the following:
 
     * Gather a set of message requests that have a shared prefix.
     * Send a batch request with a single request that has this shared prefix and a 1-hour cache block. This writes the prefix to the 1-hour cache.

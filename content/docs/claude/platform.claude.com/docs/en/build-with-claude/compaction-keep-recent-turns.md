@@ -27,7 +27,7 @@ featureMetadata:
     Microsoft Foundry: beta
 ---
 
-Keep-tail compaction keeps the last few turns of a conversation word for word after the summary. It changes two things in the [compaction loop](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand#compact-in-a-loop): which messages go into the compaction request, and what you send after the block. Everything in [Continue from the summary](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand#continue-from-the-summary) applies unchanged.
+Keep-tail compaction keeps the last few turns of a conversation word for word after the summary. It changes two things in the [compaction loop](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand?sdk_languages=cli#compact-in-a-loop): which messages go into the compaction request, and what you send after the block. Everything in [Continue from the summary](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand?sdk_languages=cli#continue-from-the-summary) applies unchanged.
 
 ## Choose which turns to keep
 
@@ -41,7 +41,7 @@ Put the cut where no tool call is left open, with each tool call and its result 
 
 To keep a tail of recent turns word for word, leave those turns out of the compaction request. The API summarizes every message it is sent, so send only the older turns, then put the block in front of the turns you kept.
 
-Send the kept turns exactly as they are in your history, thinking blocks included. Both requests carry the beta header, as in [Request a summary](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand#request-a-summary).
+Send the kept turns exactly as they are in your history, thinking blocks included. Both requests carry the beta header, as in [Request a summary](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand?sdk_languages=cli#request-a-summary).
 
 In the following example, the history holds two turns, and the cut keeps the second. The compaction request carries the first turn:
 
@@ -63,9 +63,9 @@ In the following example, the history holds two turns, and the cut keeps the sec
 }
 ```
 
-The next request sends the returned block first, then the kept turn exactly as it was, then the new `user` message. [Continue from the summary](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand#continue-from-the-summary) shows a request that starts with a block.
+The next request sends the returned block first, then the kept turn exactly as it was, then the new `user` message. [Continue from the summary](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand?sdk_languages=cli#continue-from-the-summary) shows a request that starts with a block.
 
-The following program is the loop from [Compact in a loop](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand#compact-in-a-loop), changed to keep the last two turns. The highlighted lines show where it differs from the loop.
+The following program is the loop from [Compact in a loop](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand?sdk_languages=cli#compact-in-a-loop), changed to keep the last two turns. The highlighted lines show where it differs from the loop.
 
 <CodeGroup exclude="shell">
   ```python Python
@@ -502,6 +502,6 @@ The `stop_reason` check and every request after the swap are unchanged from the 
 
 ## Keep thinking valid in the kept turns
 
-If you send thinking blocks back on a model with [preserved thinking](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking), the thinking in the kept turns stays valid only while the [conditions for kept thinking](https://platform.claude.com/docs/en/build-with-claude/compaction-thinking-blocks#conditions-for-kept-thinking-to-stay-valid) hold, and one of them limits where the cut can fall.
+If you send thinking blocks back on a model with [preserved thinking](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking?sdk_languages=cli), the thinking in the kept turns stays valid only while the [conditions for kept thinking](https://platform.claude.com/docs/en/build-with-claude/compaction-thinking-blocks?sdk_languages=cli#conditions-for-kept-thinking-to-stay-valid) hold, and one of them limits where the cut can fall.
 
 The program's cut, between a reply and the next `user` message, meets that condition. So does a cut at the end of a request you already made: compact exactly that request's `messages`, and keep everything your history has gained since.

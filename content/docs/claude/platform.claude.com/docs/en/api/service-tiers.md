@@ -20,9 +20,9 @@ The standard tier is the default service tier for all API requests. The API prio
 
 ## Priority Tier
 
-The API prioritizes requests in this tier over all other requests. This prioritization helps minimize ["server overloaded" errors](https://platform.claude.com/docs/en/api/errors#http-errors), even during peak times.
+The API prioritizes requests in this tier over all other requests. This prioritization helps minimize ["server overloaded" errors](https://platform.claude.com/docs/en/api/errors?sdk_languages=curl#http-errors), even during peak times.
 
-For more information, see [Existing Priority Tier commitments](https://platform.claude.com/docs/en/api/service-tiers#existing-priority-tier-commitments).
+For more information, see [Existing Priority Tier commitments](https://platform.claude.com/docs/en/api/service-tiers?sdk_languages=curl#existing-priority-tier-commitments).
 
 ## How requests get assigned tiers
 
@@ -38,12 +38,12 @@ Anthropic counts usage against Priority Tier capacity as follows:
 * Cache reads as 0.1 tokens per token read from the cache
 * Cache writes as 1.25 tokens per token written to the cache with a 5 minute TTL
 * Cache writes as 2.00 tokens per token written to the cache with a 1 hour TTL
-* For [US-only inference](https://platform.claude.com/docs/en/manage-claude/data-residency) (`inference_geo: "us"`) requests on Claude 4.6 and later models, input tokens are 1.1 tokens per token
+* For [US-only inference](https://platform.claude.com/docs/en/manage-claude/data-residency?sdk_languages=curl) (`inference_geo: "us"`) requests on Claude 4.6 and later models, input tokens are 1.1 tokens per token
 * All other input tokens are 1 token per token
 
 **Output tokens**
 
-* For [US-only inference](https://platform.claude.com/docs/en/manage-claude/data-residency) (`inference_geo: "us"`) requests on Claude 4.6 and later models, output tokens are 1.1 tokens per token
+* For [US-only inference](https://platform.claude.com/docs/en/manage-claude/data-residency?sdk_languages=curl) (`inference_geo: "us"`) requests on Claude 4.6 and later models, output tokens are 1.1 tokens per token
 * All other output tokens are 1 token per token
 
 Otherwise, requests proceed at standard tier.
@@ -72,111 +72,6 @@ You can control which service tiers can be used for a request by setting the `se
       "messages": [{"role": "user", "content": "Hello, Claude!"}],
       "service_tier": "auto"
     }'
-  ```
-
-  ```bash CLI
-  ant messages create --transform usage.service_tier --raw-output <<'YAML'
-  model: claude-opus-4-8
-  max_tokens: 1024
-  messages:
-    - role: user
-      content: Hello, Claude!
-  service_tier: auto  # Automatically use Priority Tier when available, fallback to standard
-  YAML
-  ```
-
-  ```python Python
-  client = anthropic.Anthropic()
-
-  message = client.messages.create(
-      model="claude-opus-4-8",
-      max_tokens=1024,
-      messages=[{"role": "user", "content": "Hello, Claude!"}],
-      service_tier="auto",  # Automatically use Priority Tier when available, fallback to standard
-  )
-  print(message.usage.service_tier)
-  ```
-
-  ```typescript TypeScript
-  const client = new Anthropic();
-
-  const message = await client.messages.create({
-    model: "claude-opus-4-8",
-    max_tokens: 1024,
-    messages: [{ role: "user", content: "Hello, Claude!" }],
-    service_tier: "auto" // Automatically use Priority Tier when available, fallback to standard
-  });
-  console.log(message.usage.service_tier);
-  ```
-
-  ```csharp C#
-  AnthropicClient client = new();
-
-  var message = await client.Messages.Create(new MessageCreateParams
-  {
-      Model = Model.ClaudeOpus4_8,
-      MaxTokens = 1024,
-      Messages = [new() { Role = Role.User, Content = "Hello, Claude!" }],
-      ServiceTier = ServiceTier.Auto, // Automatically use Priority Tier when available, fallback to standard
-  });
-  Console.WriteLine(message.Usage.ServiceTier);
-  ```
-
-  ```go Go
-  client := anthropic.NewClient()
-
-  message, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
-  	Model:     anthropic.ModelClaudeOpus4_8,
-  	MaxTokens: 1024,
-  	Messages: []anthropic.MessageParam{
-  		anthropic.NewUserMessage(anthropic.NewTextBlock("Hello, Claude!")),
-  	},
-  	// Automatically use Priority Tier when available, fallback to standard
-  	ServiceTier: anthropic.MessageNewParamsServiceTierAuto,
-  })
-  if err != nil {
-  	log.Fatal(err)
-  }
-  fmt.Println(message.Usage.ServiceTier)
-  ```
-
-  ```java Java
-  AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-  MessageCreateParams params = MessageCreateParams.builder()
-      .model(Model.CLAUDE_OPUS_4_8)
-      .maxTokens(1024L)
-      .addUserMessage("Hello, Claude!")
-      // Automatically use Priority Tier when available, fallback to standard
-      .serviceTier(MessageCreateParams.ServiceTier.AUTO)
-      .build();
-
-  Message message = client.messages().create(params);
-  IO.println(message.usage().serviceTier().orElseThrow());
-  ```
-
-  ```php PHP
-  $client = new Client();
-
-  $message = $client->messages->create(
-      model: 'claude-opus-4-8',
-      maxTokens: 1024,
-      messages: [['role' => 'user', 'content' => 'Hello, Claude!']],
-      serviceTier: 'auto', // Automatically use Priority Tier when available, fallback to standard
-  );
-  echo $message->usage->serviceTier;
-  ```
-
-  ```ruby Ruby
-  client = Anthropic::Client.new
-
-  message = client.messages.create(
-    model: "claude-opus-4-8",
-    max_tokens: 1024,
-    messages: [{ role: "user", content: "Hello, Claude!" }],
-    service_tier: :auto # Automatically use Priority Tier when available, fallback to standard
-  )
-  puts(message.usage.service_tier)
   ```
 </CodeGroup>
 
@@ -229,4 +124,4 @@ Priority Tier targets 99.5% uptime with prioritized computational resources. Req
 
 Priority Tier is supported on all available Claude models except Claude Fable 5.1, Claude Haiku 5.5, Claude Mythos 5.1, Claude Mythos 5, [Claude Mythos Preview](https://anthropic.com/glasswing), Claude Opus 5.5, Claude Opus 5, Claude Sonnet 5.5, and Claude Sonnet 5.
 
-Check the [Models overview](https://platform.claude.com/docs/en/models/overview) for more details on available models.
+Check the [Models overview](https://platform.claude.com/docs/en/models/overview?sdk_languages=curl) for more details on available models.

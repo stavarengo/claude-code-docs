@@ -4,7 +4,7 @@ url: https://platform.claude.com/docs/en/build-with-claude/context-windows
 description: Understand how the context window works, how extended thinking and tool use count toward it, and how to manage context as conversations grow.
 ---
 
-As conversations grow, you'll eventually approach context window limits. For long-running conversations and agentic workflows, [server-side compaction](https://platform.claude.com/docs/en/build-with-claude/compaction) is the primary strategy for context management.
+As conversations grow, you'll eventually approach context window limits. For long-running conversations and agentic workflows, [server-side compaction](https://platform.claude.com/docs/en/build-with-claude/compaction?sdk_languages=cli) is the primary strategy for context management.
 
 ## How the context window works
 
@@ -24,32 +24,32 @@ The following diagram illustrates the standard context window behavior for API r
 
 * **Progressive token accumulation:** As the conversation advances through turns, each user message and assistant response accumulates within the context window, and previous turns are preserved completely.
 
-* **Context window capacity:** The context window ([up to 1M tokens, depending on the model](https://platform.claude.com/docs/en/build-with-claude/context-windows#context-window-sizes-by-model)) holds the conversation history plus the new output Claude generates.
+* **Context window capacity:** The context window ([up to 1M tokens, depending on the model](https://platform.claude.com/docs/en/build-with-claude/context-windows?sdk_languages=cli#context-window-sizes-by-model)) holds the conversation history plus the new output Claude generates.
 
 * **Input-output flow:** Each turn consists of:
 
   * **Input phase:** Contains all previous conversation history plus the current user message
   * **Output phase:** Generates a text response that becomes part of the input for the next turn
 
-Everything in the request counts toward the context window: the system prompt, every message in `messages` (including tool results, images, and documents), and your tool definitions. The output Claude generates for the turn, including its extended thinking, counts too. Every response reports what the request consumed in its `usage` field. If you use [prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching), the input count is split across `input_tokens`, `cache_read_input_tokens`, and `cache_creation_input_tokens`, and all three count toward the window. To estimate a request before you send it, use the [token counting API](https://platform.claude.com/docs/en/build-with-claude/token-counting).
+Everything in the request counts toward the context window: the system prompt, every message in `messages` (including tool results, images, and documents), and your tool definitions. The output Claude generates for the turn, including its extended thinking, counts too. Every response reports what the request consumed in its `usage` field. If you use [prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli), the input count is split across `input_tokens`, `cache_read_input_tokens`, and `cache_creation_input_tokens`, and all three count toward the window. To estimate a request before you send it, use the [token counting API](https://platform.claude.com/docs/en/build-with-claude/token-counting?sdk_languages=cli).
 
 ## Context window sizes by model
 
 Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Opus 4.7, Claude Opus 4.6, Claude Sonnet 5.5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Haiku 5.5, and [Claude Mythos Preview](https://anthropic.com/glasswing) have a 1M-token context window. A single request to any of them can generate up to 128k output tokens (`max_tokens`). Other Claude models, including Claude Sonnet 4.5 (deprecated), have a 200k-token context window.
 
-For every model with a 1M-token context window, 1M is the default: you don't need a beta header, and long-context requests are billed at [standard pricing](https://platform.claude.com/docs/en/about-claude/pricing#long-context-pricing), except on Claude Haiku 5.5, where prompts over 100,000 tokens cost more.
+For every model with a 1M-token context window, 1M is the default: you don't need a beta header, and long-context requests are billed at [standard pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#long-context-pricing), except on Claude Haiku 5.5, where prompts over 100,000 tokens cost more.
 
-A single request can include up to 600 images or PDF pages (100 for models with a 200k-token context window). If you send many images or large documents, you might reach [request size limits](https://platform.claude.com/docs/en/api/overview#request-size-limits) before the token limit.
+A single request can include up to 600 images or PDF pages (100 for models with a 200k-token context window). If you send many images or large documents, you might reach [request size limits](https://platform.claude.com/docs/en/api/overview?sdk_languages=cli#request-size-limits) before the token limit.
 
-See the [model comparison](https://platform.claude.com/docs/en/models/overview#latest-models-comparison) table for a list of context window sizes by model.
+See the [model comparison](https://platform.claude.com/docs/en/models/overview?sdk_languages=cli#latest-models-comparison) table for a list of context window sizes by model.
 
 ## The context window with thinking
 
-With [thinking](https://platform.claude.com/docs/en/build-with-claude/thinking), all input and output tokens, including thinking tokens, count toward the context window limit, with a few nuances in multi-turn situations.
+With [thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli), all input and output tokens, including thinking tokens, count toward the context window limit, with a few nuances in multi-turn situations.
 
-Thinking tokens are a subset of your `max_tokens` parameter, are billed as output tokens, and count toward rate limits. With [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking), Claude determines its thinking allocation dynamically, so thinking token usage varies from request to request.
+Thinking tokens are a subset of your `max_tokens` parameter, are billed as output tokens, and count toward rate limits. With [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli), Claude determines its thinking allocation dynamically, so thinking token usage varies from request to request.
 
-Whether thinking blocks from previous assistant turns stay in the context window depends on the model. On Claude Opus 4.5 and later Opus models, Claude Sonnet 4.6 and later Sonnet models, Claude Haiku 5.5, Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, and Claude Mythos Preview, the API keeps previous thinking blocks by default, and they count toward the context window like any other input tokens. On earlier Opus and Sonnet models and all Haiku models through Claude Haiku 4.5, the API automatically strips previous thinking blocks from the conversation history when you pass them back, which preserves token capacity for conversation content. For the per-model defaults, see [thinking block preservation by model](https://platform.claude.com/docs/en/build-with-claude/thinking#thinking-block-preservation-by-model). To override the default in either direction, use [thinking block clearing](https://platform.claude.com/docs/en/build-with-claude/context-editing#thinking-block-clearing).
+Whether thinking blocks from previous assistant turns stay in the context window depends on the model. On Claude Opus 4.5 and later Opus models, Claude Sonnet 4.6 and later Sonnet models, Claude Haiku 5.5, Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, and Claude Mythos Preview, the API keeps previous thinking blocks by default, and they count toward the context window like any other input tokens. On earlier Opus and Sonnet models and all Haiku models through Claude Haiku 4.5, the API automatically strips previous thinking blocks from the conversation history when you pass them back, which preserves token capacity for conversation content. For the per-model defaults, see [thinking block preservation by model](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli#thinking-block-preservation-by-model). To override the default in either direction, use [thinking block clearing](https://platform.claude.com/docs/en/build-with-claude/context-editing?sdk_languages=cli#thinking-block-clearing).
 
 The following diagram shows how tokens are managed when thinking is enabled on a model that strips previous thinking blocks:
 
@@ -61,7 +61,7 @@ The following diagram shows how tokens are managed when thinking is enabled on a
 * **Billing:** Thinking tokens are billed as output tokens once, when they are generated. On models that keep previous thinking blocks, the kept blocks are then part of later requests' input and are billed as input tokens, like the rest of the conversation history.
 
 <Note>
-  You can read more about the context window and thinking in the [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking) guide.
+  You can read more about the context window and thinking in the [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli) guide.
 </Note>
 
 ## The context window with thinking and tool use
@@ -81,12 +81,12 @@ The following diagram illustrates how tokens are managed when you combine thinki
 
   <Step title="Tool result handling (turn 2)">
     * **Input components:** Every block in the first turn and the `tool_result`. You must return the thinking block with the corresponding tool results. This is the only case where you have to return thinking blocks.
-    * **Output components:** After tool results have been passed back to Claude, Claude responds with only text (no additional thinking until the next `user` message, unless [interleaved thinking](https://platform.claude.com/docs/en/build-with-claude/thinking#interleaved-thinking) is enabled).
+    * **Output components:** After tool results have been passed back to Claude, Claude responds with only text (no additional thinking until the next `user` message, unless [interleaved thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli#interleaved-thinking) is enabled).
     * **Token calculation:** All input and output components count toward the context window, and all output components are billed as output tokens.
   </Step>
 
   <Step title="New user turn (turn 3)">
-    * **Input components:** All inputs and the output from the previous turn are carried forward. The thinking block from the completed tool use cycle no longer has to stay in context: on models that strip previous thinking blocks, the API drops it automatically when you pass it back, and on models that keep previous thinking blocks, it stays unless you clear it with [thinking block clearing](https://platform.claude.com/docs/en/build-with-claude/context-editing#thinking-block-clearing). This is also where you add the next `user` turn.
+    * **Input components:** All inputs and the output from the previous turn are carried forward. The thinking block from the completed tool use cycle no longer has to stay in context: on models that strip previous thinking blocks, the API drops it automatically when you pass it back, and on models that keep previous thinking blocks, it stays unless you clear it with [thinking block clearing](https://platform.claude.com/docs/en/build-with-claude/context-editing?sdk_languages=cli#thinking-block-clearing). This is also where you add the next `user` turn.
     * **Output components:** Because there is a new `user` turn outside the tool use cycle, Claude generates a new thinking block and continues from there.
     * **Token calculation:** On models that strip previous thinking blocks, the previous thinking tokens no longer count toward the context window. All other previous blocks still count toward the context window, as does the thinking block in the current `assistant` turn.
   </Step>
@@ -98,12 +98,12 @@ The following diagram illustrates how tokens are managed when you combine thinki
   * The API uses cryptographic signatures to verify thinking block authenticity. If you modify a thinking block, the API returns an error.
 
 <Note>
-  Most current Claude models support [interleaved thinking](https://platform.claude.com/docs/en/build-with-claude/thinking#interleaved-thinking), which lets Claude think between tool calls, including after it receives tool results. It is automatic on models with adaptive thinking; Claude Opus 4.5, Claude Sonnet 4.5 (deprecated), and earlier Claude 4 models require the `interleaved-thinking-2025-05-14` beta header, and Claude Haiku 4.5 does not support it.
+  Most current Claude models support [interleaved thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli#interleaved-thinking), which lets Claude think between tool calls, including after it receives tool results. It is automatic on models with adaptive thinking; Claude Opus 4.5, Claude Sonnet 4.5 (deprecated), and earlier Claude 4 models require the `interleaved-thinking-2025-05-14` beta header, and Claude Haiku 4.5 does not support it.
 
-  For more information about using tools with thinking, see [Thinking with tool use](https://platform.claude.com/docs/en/build-with-claude/thinking#thinking-with-tool-use).
+  For more information about using tools with thinking, see [Thinking with tool use](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli#thinking-with-tool-use).
 </Note>
 
-To reduce the context consumed by the tool definitions themselves, see [Manage tool context](https://platform.claude.com/docs/en/agents-and-tools/tool-use/manage-tool-context), or defer tool definitions with the [tool search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool).
+To reduce the context consumed by the tool definitions themselves, see [Manage tool context](https://platform.claude.com/docs/en/agents-and-tools/tool-use/manage-tool-context?sdk_languages=cli), or defer tool definitions with the [tool search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool?sdk_languages=cli).
 
 ## Context awareness
 
@@ -127,49 +127,49 @@ After each tool call, the API gives Claude an update on its remaining capacity:
 
 Image tokens are included in these budgets.
 
-Claude Opus 4.7 and later Opus models, Claude Sonnet 5.5, Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, and Claude Haiku 5.5 don't receive these injected tags. On these models, you can give the model an explicit budget with [task budgets](https://platform.claude.com/docs/en/build-with-claude/task-budgets), which are in beta.
+Claude Opus 4.7 and later Opus models, Claude Sonnet 5.5, Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, and Claude Haiku 5.5 don't receive these injected tags. On these models, you can give the model an explicit budget with [task budgets](https://platform.claude.com/docs/en/build-with-claude/task-budgets?sdk_languages=cli), which are in beta.
 
 <Tip>
-  For agents that span multiple sessions, design your state artifacts so that context recovery is fast when a new session starts. The [memory tool's multisession pattern](https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool#multisession-software-development-pattern) walks through a concrete approach. See also [Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents).
+  For agents that span multiple sessions, design your state artifacts so that context recovery is fast when a new session starts. The [memory tool's multisession pattern](https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool?sdk_languages=cli#multisession-software-development-pattern) walks through a concrete approach. See also [Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents).
 </Tip>
 
-For prompting guidance on using context awareness, see [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices#context-awareness-and-multiwindow-workflows).
+For prompting guidance on using context awareness, see [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices?sdk_languages=cli#context-awareness-and-multiwindow-workflows).
 
 ## Manage context with compaction
 
-If your conversations regularly approach context window limits, use [server-side compaction](https://platform.claude.com/docs/en/build-with-claude/compaction). Compaction automatically summarizes earlier parts of the conversation on the server, so the conversation can continue past the context window limit. It is available in beta for Claude 4.6 and later models and [Claude Mythos Preview](https://anthropic.com/glasswing).
+If your conversations regularly approach context window limits, use [server-side compaction](https://platform.claude.com/docs/en/build-with-claude/compaction?sdk_languages=cli). Compaction automatically summarizes earlier parts of the conversation on the server, so the conversation can continue past the context window limit. It is available in beta for Claude 4.6 and later models and [Claude Mythos Preview](https://anthropic.com/glasswing).
 
-For more specialized needs, [context editing](https://platform.claude.com/docs/en/build-with-claude/context-editing) offers additional strategies:
+For more specialized needs, [context editing](https://platform.claude.com/docs/en/build-with-claude/context-editing?sdk_languages=cli) offers additional strategies:
 
 * **Tool result clearing:** Clear old tool results in agentic workflows
 * **Thinking block clearing:** Manage thinking blocks from earlier turns
 
-Cached prompt prefixes still occupy the context window: [prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) changes what you pay for those tokens, not whether they count.
+Cached prompt prefixes still occupy the context window: [prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) changes what you pay for those tokens, not whether they count.
 
 ## Context window overflow behavior
 
 If the input alone already exceeds the model's context window, the API returns a 400 `invalid_request_error` ("prompt is too long") on every model.
 
-On Claude 4.5 models and newer, if input tokens plus `max_tokens` exceeds the context window size, the API accepts the request. If generation then reaches the context window limit, it stops with `stop_reason: "model_context_window_exceeded"`. On earlier models, the API returns a [validation error](https://platform.claude.com/docs/en/api/errors) instead. To opt in to the `model_context_window_exceeded` behavior on those models, use the `model-context-window-exceeded-2025-08-26` beta header. See [Stop reasons and fallback](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons) for details.
+On Claude 4.5 models and newer, if input tokens plus `max_tokens` exceeds the context window size, the API accepts the request. If generation then reaches the context window limit, it stops with `stop_reason: "model_context_window_exceeded"`. On earlier models, the API returns a [validation error](https://platform.claude.com/docs/en/api/errors?sdk_languages=cli) instead. To opt in to the `model_context_window_exceeded` behavior on those models, use the `model-context-window-exceeded-2025-08-26` beta header. See [Stop reasons and fallback](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons?sdk_languages=cli) for details.
 
-To stay within context window limits, use the [token counting API](https://platform.claude.com/docs/en/build-with-claude/token-counting) to estimate token usage before sending messages to Claude.
+To stay within context window limits, use the [token counting API](https://platform.claude.com/docs/en/build-with-claude/token-counting?sdk_languages=cli) to estimate token usage before sending messages to Claude.
 
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Compaction" icon="stack" href="https://platform.claude.com/docs/en/build-with-claude/compaction">
+  <Card title="Compaction" icon="stack" href="https://platform.claude.com/docs/en/build-with-claude/compaction?sdk_languages=cli">
     Server-side context compaction for managing long conversations that approach context window limits.
   </Card>
 
-  <Card title="Context editing" icon="edit" href="https://platform.claude.com/docs/en/build-with-claude/context-editing">
+  <Card title="Context editing" icon="edit" href="https://platform.claude.com/docs/en/build-with-claude/context-editing?sdk_languages=cli">
     Automatically manage conversation context as it grows with context editing.
   </Card>
 
-  <Card title="Model comparison table" icon="scales" href="https://platform.claude.com/docs/en/models/overview#latest-models-comparison">
+  <Card title="Model comparison table" icon="scales" href="https://platform.claude.com/docs/en/models/overview?sdk_languages=cli#latest-models-comparison">
     See the model comparison table for a list of context window sizes and input/output token pricing by model.
   </Card>
 
-  <Card title="Thinking" icon="settings" href="https://platform.claude.com/docs/en/build-with-claude/thinking">
+  <Card title="Thinking" icon="settings" href="https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli">
     Give Claude enhanced reasoning for complex tasks and control how thinking content is returned.
   </Card>
 </CardGroup>

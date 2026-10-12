@@ -5,12 +5,12 @@ description: "Choose how self-hosted sandbox workers claim work and where sessio
 featureMetadata:
   topic:
     title: Managed Agents
-    url: https://platform.claude.com/docs/en/managed-agents/overview
+    url: https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli
   status: beta
   betaHeader: managed-agents-2026-04-01
 ---
 
-The [quickstart](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes#quickstart) runs one `ant` CLI worker that polls continuously and runs every session in one process. This page covers the other ways to run a worker and how to choose between them.
+The [quickstart](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes?sdk_languages=cli#quickstart) runs one `ant` CLI worker that polls continuously and runs every session in one process. This page covers the other ways to run a worker and how to choose between them.
 
 ## Choose a deployment pattern
 
@@ -19,7 +19,7 @@ When deploying workers, you need to make two choices: how the worker claims work
 **How the worker claims work:**
 
 * **Always-on:** A long-running process polls the queue continuously and needs only outbound HTTPS. This is the simplest setup.
-* **Webhook-triggered:** A handler wakes on `session.status_run_started` and starts polling. This avoids an idle poller, but requires a [webhook](https://platform.claude.com/docs/en/managed-agents/webhooks) endpoint that Anthropic can reach.
+* **Webhook-triggered:** A handler wakes on `session.status_run_started` and starts polling. This avoids an idle poller, but requires a [webhook](https://platform.claude.com/docs/en/managed-agents/webhooks?sdk_languages=cli) endpoint that Anthropic can reach.
 
 **Where each session runs:**
 
@@ -28,19 +28,19 @@ When deploying workers, you need to make two choices: how the worker claims work
 
 The CLI and SDK workers support different combinations:
 
-| Capability                                                                                            | `ant` CLI                       | SDK (Python, TypeScript, Go) |
-| ----------------------------------------------------------------------------------------------------- | ------------------------------- | ---------------------------- |
-| Always-on polling                                                                                     | Yes                             | Yes                          |
-| Webhook-triggered                                                                                     | No                              | Yes                          |
-| Sandbox per session                                                                                   | Yes                             | Yes                          |
-| [Memory stores](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-memory)      | Yes, with default sync settings | Yes, with configurable sync  |
-| [Custom tools](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-custom-tools) | No                              | Yes                          |
+| Capability                                                                                                              | `ant` CLI                       | SDK (Python, TypeScript, Go) |
+| ----------------------------------------------------------------------------------------------------------------------- | ------------------------------- | ---------------------------- |
+| Always-on polling                                                                                                       | Yes                             | Yes                          |
+| Webhook-triggered                                                                                                       | No                              | Yes                          |
+| Sandbox per session                                                                                                     | Yes                             | Yes                          |
+| [Memory stores](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-memory?sdk_languages=cli)      | Yes, with default sync settings | Yes, with configurable sync  |
+| [Custom tools](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-custom-tools?sdk_languages=cli) | No                              | Yes                          |
 
-See [Self-hosted worker reference](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-reference) for every CLI flag and SDK option. For more control, call the [Environments Work endpoints](https://platform.claude.com/docs/en/api/beta/environments/work) directly and implement your own worker.
+See [Self-hosted worker reference](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-reference?sdk_languages=cli) for every CLI flag and SDK option. For more control, call the [Environments Work endpoints](https://platform.claude.com/docs/en/api/beta/environments/work?sdk_languages=cli) directly and implement your own worker.
 
 ## Run an always-on worker
 
-Both workers authenticate with the [environment key](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes#run-your-first-session) from the quickstart.
+Both workers authenticate with the [environment key](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes?sdk_languages=cli#run-your-first-session) from the quickstart.
 
 With the `ant` CLI:
 
@@ -162,11 +162,11 @@ With the SDK, `EnvironmentWorker` does the same work:
 
 <Steps>
   <Step title="Subscribe to session webhooks">
-    In the [Console](https://platform.claude.com/settings/workspaces/default/webhooks), define a webhook endpoint that listens for `session.status_run_started` events. See [Webhooks](https://platform.claude.com/docs/en/managed-agents/webhooks) for details.
+    In the [Console](https://platform.claude.com/settings/workspaces/default/webhooks), define a webhook endpoint that listens for `session.status_run_started` events. See [Webhooks](https://platform.claude.com/docs/en/managed-agents/webhooks?sdk_languages=cli) for details.
   </Step>
 
   <Step title="Export the webhook signing key">
-    Along with the environment ID and key from the [quickstart](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes#run-your-first-session), export the webhook signing key on your handler host. The handler uses it to verify incoming payloads.
+    Along with the environment ID and key from the [quickstart](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes?sdk_languages=cli#run-your-first-session), export the webhook signing key on your handler host. The handler uses it to verify incoming payloads.
 
     ```bash
     export ANTHROPIC_WEBHOOK_SIGNING_KEY="whsec_..."
@@ -174,7 +174,7 @@ With the SDK, `EnvironmentWorker` does the same work:
   </Step>
 
   <Step title="Implement the webhook handler">
-    Invoke the worker when `session.status_run_started` fires. The handler drains the queue and hands each claimed work item to `handle_item()` (typescript: `handleItem()`; go: `HandleItem()`), which downloads skills, executes tool calls, posts results back, and returns.
+    Invoke the worker when `session.status_run_started` fires. The handler drains the queue and hands each claimed work item to `handle_item()`, which downloads skills, executes tool calls, posts results back, and returns.
 
     <CodeGroup exclude="shell">
       <CodeGroupItem>
@@ -431,11 +431,11 @@ With the SDK, `EnvironmentWorker` does the same work:
       ```
     </CodeGroup>
 
-    Because the handler claims work itself, it must [forward the work item's secret](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-workers#forward-the-work-items-secret), as the `work_secret` (typescript: `workSecret`; go: `WorkSecret`) argument does here.
+    Because the handler claims work itself, it must [forward the work item's secret](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-workers?sdk_languages=cli#forward-the-work-items-secret), as the `work_secret` argument does here.
   </Step>
 </Steps>
 
-This handler runs every claimed item in one process on one host. If your sessions attach the same memory store, see [Isolate sessions that share a store](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-memory#isolate-sessions-that-share-a-store).
+This handler runs every claimed item in one process on one host. If your sessions attach the same memory store, see [Isolate sessions that share a store](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-memory?sdk_languages=cli#isolate-sessions-that-share-a-store).
 
 ## Run one sandbox per session
 
@@ -476,7 +476,7 @@ A poller on the host claims work and calls your script once per work item. The s
       your-image
     ```
 
-    The poller sets the `ANTHROPIC_*` variables that the script forwards, except the secret. See [Environment variables](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-reference#environment-variables).
+    The poller sets the `ANTHROPIC_*` variables that the script forwards, except the secret. See [Environment variables](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-reference?sdk_languages=cli#environment-variables).
 
     `/host/outputs` is a host directory you choose. Mounting it at `/workspace` lets you retrieve the session's deliverables after the sandbox exits. The mount also picks up the downloaded `skills/` tree and any intermediate files.
   </Step>
@@ -490,226 +490,31 @@ A poller on the host claims work and calls your script once per work item. The s
 
 ### Forward the work item's secret
 
-Each claimed work item can carry a per-session `secret`, which Anthropic issues. The worker that runs the session needs it to mount [memory stores](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-memory).
+Each claimed work item can carry a per-session `secret` (java, php), which Anthropic issues. The worker that runs the session needs it to mount [memory stores](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-memory?sdk_languages=cli).
 
-A worker that claims and runs sessions in one process (`ant beta:worker poll` without `--on-work`, or `EnvironmentWorker` with `run()` (go: `Run()`)) passes the secret along itself. When your own code sits between the claim and the worker, you forward it:
+A worker that claims and runs sessions in one process (`ant beta:worker poll` without `--on-work`, or `EnvironmentWorker` with `run()`) passes the secret along itself. When your own code sits between the claim and the worker, you forward it:
 
-| You claim work with                                            | The secret arrives as                                                    | Pass it to the worker as                                                                                                                                                                             |
-| -------------------------------------------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ant beta:worker poll --on-work`                               | The `secret` field of the work item JSON on your script's standard input | `ANTHROPIC_WORK_SECRET` in the sandbox's environment                                                                                                                                                 |
-| The SDK's `work.poller()` (go: `environments.NewWorkPoller()`) | The `secret` field of each claimed work item                             | `ANTHROPIC_WORK_SECRET` in the sandbox's environment, or the `work_secret` (typescript: `workSecret`; go: `WorkSecret`) argument to `handle_item()` (typescript: `handleItem()`; go: `HandleItem()`) |
+| You claim work with              | The secret arrives as                                                    | Pass it to the worker as                                                                               |
+| -------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| `ant beta:worker poll --on-work` | The `secret` field of the work item JSON on your script's standard input | `ANTHROPIC_WORK_SECRET` in the sandbox's environment                                                   |
+| The SDK's `work.poller()`        | The `secret` field of each claimed work item                             | `ANTHROPIC_WORK_SECRET` in the sandbox's environment, or the `work_secret` argument to `handle_item()` |
 
-Pass the secret only into the sandbox that serves that session, and never log it. See [Security model](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-security) for how it relates to the environment key.
+Pass the secret only into the sandbox that serves that session, and never log it. See [Security model](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-security?sdk_languages=cli) for how it relates to the environment key.
 
 ### Launch sandboxes from the SDK poller
 
-To claim work from your own code instead of `ant beta:worker poll --on-work`, use `work.poller()` (go: `environments.NewWorkPoller()`). It polls the queue and gives you each claimed session, and you launch the sandbox:
+To claim work from your own code instead of `ant beta:worker poll --on-work`, use `work.poller()`. It polls the queue and gives you each claimed session, and you launch the sandbox:
 
 <CodeGroup>
-  ```bash cURL
-  # The work poller is an SDK helper (Python, TypeScript, Go), not a raw
-  # endpoint. From the shell, use `ant beta:worker poll --on-work` instead.
-  ```
-
   ```bash CLI
   # The work poller is an SDK helper (Python, TypeScript, Go), not a raw
   # endpoint. From the shell, use `ant beta:worker poll --on-work` instead.
-  ```
-
-  ```python Python
-  import asyncio
-  import os
-
-  from anthropic import AsyncAnthropic
-  from anthropic.types.beta.environments import BetaSelfHostedWork
-
-  SANDBOX_ENV = (
-      "ANTHROPIC_ENVIRONMENT_ID",
-      "ANTHROPIC_ENVIRONMENT_KEY",
-      "ANTHROPIC_WORK_ID",
-      "ANTHROPIC_SESSION_ID",
-      "ANTHROPIC_WORK_SECRET",
-      "ANTHROPIC_BASE_URL",  # forwarded only when set on this host
-  )
-
-
-  async def launch_container(work: BetaSelfHostedWork) -> None:
-      print(f"claimed session {work.data.id}")
-      # Replace `docker run` with your own sandbox launcher. Forward the environment
-      # key (never your API key) and the work item's per-session secret: the worker
-      # inside needs the secret to mount the session's memory stores.
-      env = os.environ | {
-          "ANTHROPIC_WORK_ID": work.id,
-          "ANTHROPIC_SESSION_ID": work.data.id,
-          "ANTHROPIC_WORK_SECRET": work.secret or "",
-      }
-      forward = [arg for name in SANDBOX_ENV for arg in ("-e", name)]
-      launcher = await asyncio.create_subprocess_exec(
-          "docker", "run", "--rm", "--detach", *forward, "your-image", env=env
-      )
-      await launcher.wait()
-
-
-  async def main() -> None:
-      environment_key = os.environ["ANTHROPIC_ENVIRONMENT_KEY"]
-      environment_id = os.environ["ANTHROPIC_ENVIRONMENT_ID"]
-      async with AsyncAnthropic(auth_token=environment_key) as client:
-          async for work in client.beta.environments.work.poller(
-              environment_id=environment_id,
-              environment_key=environment_key,
-              auto_stop=False,  # the launched sandbox owns the stop call
-          ):
-              await launch_container(work)
-
-
-  asyncio.run(main())
-  ```
-
-  ```typescript TypeScript
-  import { spawn } from "node:child_process";
-  import { once } from "node:events";
-  import Anthropic from "@anthropic-ai/sdk";
-  import { WorkPoller } from "@anthropic-ai/sdk/helpers/beta/environments";
-  import type { BetaSelfHostedWork } from "@anthropic-ai/sdk/resources/beta/environments";
-
-  const SANDBOX_ENV = [
-    "ANTHROPIC_ENVIRONMENT_ID",
-    "ANTHROPIC_ENVIRONMENT_KEY",
-    "ANTHROPIC_WORK_ID",
-    "ANTHROPIC_SESSION_ID",
-    "ANTHROPIC_WORK_SECRET",
-    "ANTHROPIC_BASE_URL" // forwarded only when set on this host
-  ];
-
-  const environmentKey = process.env.ANTHROPIC_ENVIRONMENT_KEY!;
-  const environmentId = process.env.ANTHROPIC_ENVIRONMENT_ID!;
-  const client = new Anthropic({ authToken: environmentKey });
-
-  async function launchContainer(work: BetaSelfHostedWork): Promise<void> {
-    console.log(`claimed session ${work.data.id}`);
-    // Replace `docker run` with your own sandbox launcher. Forward the environment
-    // key (never your API key) and the work item's per-session secret: the worker
-    // inside needs the secret to mount the session's memory stores.
-    const env = {
-      ...process.env,
-      ANTHROPIC_WORK_ID: work.id,
-      ANTHROPIC_SESSION_ID: work.data.id,
-      ANTHROPIC_WORK_SECRET: work.secret ?? ""
-    };
-    const forward = SANDBOX_ENV.flatMap((name) => ["-e", name]);
-    const launcher = spawn("docker", ["run", "--rm", "--detach", ...forward, "your-image"], {
-      env,
-      stdio: "inherit"
-    });
-    await once(launcher, "close");
-  }
-
-  const poller = new WorkPoller({
-    client,
-    environmentId,
-    environmentKey,
-    autoStop: false // the launched sandbox owns the stop call
-  });
-
-  for await (const work of poller) {
-    await launchContainer(work);
-  }
-  ```
-
-  ```csharp C#
-  // A work-polling helper is not currently available in the C# SDK.
-  // To claim work directly, see the Environments Work endpoints.
-  ```
-
-  ```go Go
-  package main
-
-  import (
-  	"context"
-  	"fmt"
-  	"log"
-  	"os"
-  	"os/exec"
-
-  	"github.com/anthropics/anthropic-sdk-go"
-  	"github.com/anthropics/anthropic-sdk-go/lib/environments"
-  	"github.com/anthropics/anthropic-sdk-go/option"
-  	"github.com/anthropics/anthropic-sdk-go/packages/param"
-  )
-
-  var sandboxEnv = []string{
-  	"ANTHROPIC_ENVIRONMENT_ID",
-  	"ANTHROPIC_ENVIRONMENT_KEY",
-  	"ANTHROPIC_WORK_ID",
-  	"ANTHROPIC_SESSION_ID",
-  	"ANTHROPIC_WORK_SECRET",
-  	"ANTHROPIC_BASE_URL", // forwarded only when set on this host
-  }
-
-  func launchContainer(ctx context.Context, work *anthropic.BetaSelfHostedWork) error {
-  	fmt.Printf("claimed session %s\n", work.Data.ID)
-  	// Replace `docker run` with your own sandbox launcher. Forward the environment
-  	// key (never your API key) and the work item's per-session secret: the worker
-  	// inside needs the secret to mount the session's memory stores.
-  	args := []string{"run", "--rm", "--detach"}
-  	for _, name := range sandboxEnv {
-  		args = append(args, "-e", name)
-  	}
-  	launcher := exec.CommandContext(ctx, "docker", append(args, "your-image")...)
-  	launcher.Env = append(os.Environ(),
-  		"ANTHROPIC_WORK_ID="+work.ID,
-  		"ANTHROPIC_SESSION_ID="+work.Data.ID,
-  		"ANTHROPIC_WORK_SECRET="+work.Secret,
-  	)
-  	launcher.Stdout, launcher.Stderr = os.Stdout, os.Stderr
-  	return launcher.Run()
-  }
-
-  func main() {
-  	environmentID := os.Getenv("ANTHROPIC_ENVIRONMENT_ID")
-  	environmentKey := os.Getenv("ANTHROPIC_ENVIRONMENT_KEY")
-
-  	client := anthropic.NewClient(option.WithAuthToken(environmentKey))
-
-  	ctx := context.Background()
-
-  	poller := environments.NewWorkPoller(ctx, client, environments.WorkPollerOptions{
-  		EnvironmentID:  environmentID,
-  		EnvironmentKey: environmentKey,
-  		AutoStop:       param.NewOpt(false), // the launched sandbox owns the stop call
-  	})
-  	defer poller.Close()
-
-  	for work, err := range poller.All() {
-  		if err != nil {
-  			log.Fatal(err)
-  		}
-  		if err := launchContainer(ctx, work); err != nil {
-  			log.Fatal(err)
-  		}
-  	}
-  }
-  ```
-
-  ```java Java
-  // A work-polling helper is not currently available in the Java SDK.
-  // To claim work directly, see the Environments Work endpoints.
-  ```
-
-  ```php PHP
-  // A work-polling helper is not currently available in the PHP SDK.
-  // To claim work directly, see the Environments Work endpoints.
-  ```
-
-  ```ruby Ruby
-  # A work-polling helper is not currently available in the Ruby SDK.
-  # To claim work directly, see the Environments Work endpoints.
   ```
 </CodeGroup>
 
 ### Run the SDK worker inside the sandbox
 
-Replace the `ant beta:worker run` entrypoint with an SDK entrypoint when the sandbox must [serve custom tools](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-custom-tools) or use [non-default memory sync settings](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-memory#configure-sync). The entrypoint constructs `EnvironmentWorker` and calls `handle_item()` (typescript: `handleItem()`; go: `HandleItem()`), which reads the same `ANTHROPIC_*` variables that the spawn script forwards.
+Replace the `ant beta:worker run` entrypoint with an SDK entrypoint when the sandbox must [serve custom tools](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-custom-tools?sdk_languages=cli) or use [non-default memory sync settings](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-memory?sdk_languages=cli#configure-sync). The entrypoint constructs `EnvironmentWorker` and calls `handle_item()`, which reads the same `ANTHROPIC_*` variables that the spawn script forwards.
 
 <CodeGroup exclude="shell">
   ```python Python
@@ -819,101 +624,22 @@ Anthropic doesn't mount files or GitHub repositories into self-hosted sandboxes.
 3. Stage the files into the working directory before tool execution begins.
 
 <CodeGroup>
-  ```bash cURL
-  curl -sS --fail-with-body https://api.anthropic.com/v1/sessions \
-    -H "x-api-key: $ANTHROPIC_API_KEY" \
-    -H "anthropic-version: 2023-06-01" \
-    -H "anthropic-beta: managed-agents-2026-04-01" \
-    -H "content-type: application/json" \
-    -d @- <<EOF
-  {
-    "agent": "$AGENT_ID",
-    "environment_id": "$ANTHROPIC_ENVIRONMENT_ID",
-    "metadata": {"input_file": "s3://my-bucket/data.csv"}
-  }
-  EOF
-  ```
-
   ```bash CLI
   ant beta:sessions create \
     --agent "$AGENT_ID" \
     --environment-id "$ANTHROPIC_ENVIRONMENT_ID" \
     --metadata '{"input_file": "s3://my-bucket/data.csv"}'
   ```
-
-  ```python Python
-  session = client.beta.sessions.create(
-      agent=agent.id,
-      environment_id=environment.id,
-      metadata={"input_file": "s3://my-bucket/data.csv"},
-  )
-  ```
-
-  ```typescript TypeScript
-  const session = await client.beta.sessions.create({
-    agent: agent.id,
-    environment_id: environment.id,
-    metadata: { input_file: "s3://my-bucket/data.csv" }
-  });
-  ```
-
-  ```csharp C#
-  var session = await client.Beta.Sessions.Create(new()
-  {
-      Agent = agent.ID,
-      EnvironmentID = environment.ID,
-      Metadata = new Dictionary<string, string> { ["input_file"] = "s3://my-bucket/data.csv" },
-  });
-  ```
-
-  ```go Go
-  session, err := client.Beta.Sessions.New(ctx, anthropic.BetaSessionNewParams{
-  	Agent:         anthropic.BetaSessionNewParamsAgentUnion{OfString: anthropic.String(agent.ID)},
-  	EnvironmentID: environment.ID,
-  	Metadata: map[string]string{
-  		"input_file": "s3://my-bucket/data.csv",
-  	},
-  })
-  if err != nil {
-  	panic(err)
-  }
-  ```
-
-  ```java Java
-  var session = client.beta().sessions().create(SessionCreateParams.builder()
-      .agent(agent.id())
-      .environmentId(environment.id())
-      .metadata(SessionCreateParams.Metadata.builder()
-          .putAdditionalProperty("input_file", JsonValue.from("s3://my-bucket/data.csv"))
-          .build())
-      .build());
-  ```
-
-  ```php PHP
-  $session = $client->beta->sessions->create(
-      agent: $agent->id,
-      environmentID: $environment->id,
-      metadata: ['input_file' => 's3://my-bucket/data.csv'],
-  );
-  ```
-
-  ```ruby Ruby
-  session = client.beta.sessions.create(
-    agent: agent.id,
-    environment_id: environment.id,
-    metadata: {input_file: "s3://my-bucket/data.csv"}
-  )
-  ```
 </CodeGroup>
 
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Monitor and troubleshoot" icon="lightning" href="https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-operations">
+  <Card title="Monitor and troubleshoot" icon="lightning" href="https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-operations?sdk_languages=cli">
     Read queue depth, stop sessions and workers cleanly, and fix common failures.
   </Card>
 
-  <Card title="Security model" icon="lock" href="https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-security">
+  <Card title="Security model" icon="lock" href="https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-security?sdk_languages=cli">
     Shared responsibility model for self-hosted sandbox environments.
   </Card>
 </CardGroup>

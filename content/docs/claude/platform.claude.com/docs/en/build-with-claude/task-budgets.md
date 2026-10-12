@@ -28,35 +28,13 @@ Task budgets work best for agentic workflows where Claude makes multiple tool ca
 * You have a predictable per-task cost or latency ceiling to enforce.
 * You want the model to finish gracefully (summarize findings, report progress) as it approaches the budget rather than cutting off mid-action.
 
-Task budgets complement the [effort parameter](https://platform.claude.com/docs/en/build-with-claude/effort): effort controls how thoroughly Claude reasons about each step, while task budgets cap the total work Claude can do across an agentic loop.
+Task budgets complement the [effort parameter](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=cli): effort controls how thoroughly Claude reasons about each step, while task budgets cap the total work Claude can do across an agentic loop.
 
 ## Setting a task budget
 
 Add `task_budget` to `output_config` and include the beta header:
 
 <CodeGroup>
-  ```bash cURL
-  curl https://api.anthropic.com/v1/messages \
-    -N \
-    -H "x-api-key: $ANTHROPIC_API_KEY" \
-    -H "anthropic-version: 2023-06-01" \
-    -H "anthropic-beta: task-budgets-2026-03-13" \
-    -H "content-type: application/json" \
-    -d '{
-      "model": "claude-opus-5-5",
-      "max_tokens": 128000,
-      "stream": true,
-      "messages": [{
-        "role": "user",
-        "content": "Review the codebase and propose a refactor plan."
-      }],
-      "output_config": {
-        "effort": "high",
-        "task_budget": {"type": "tokens", "total": 64000}
-      }
-    }'
-  ```
-
   ```bash CLI
   ant beta:messages create --beta task-budgets-2026-03-13 \
     --stream --format jsonl <<'YAML' | jq 'select(.type == "message_delta").usage'
@@ -72,174 +50,6 @@ Add `task_budget` to `output_config` and include the beta header:
       total: 64000
   YAML
   ```
-
-  ```python Python
-  client = anthropic.Anthropic()
-
-  with client.beta.messages.stream(
-      model="claude-opus-5-5",
-      max_tokens=128000,
-      output_config={
-          "effort": "high",
-          "task_budget": {"type": "tokens", "total": 64000},
-      },
-      messages=[
-          {"role": "user", "content": "Review the codebase and propose a refactor plan."}
-      ],
-      betas=["task-budgets-2026-03-13"],
-  ) as stream:
-      response = stream.get_final_message()
-
-  print(response.usage)
-  ```
-
-  ```typescript TypeScript
-  const client = new Anthropic();
-
-  const stream = client.beta.messages.stream({
-    model: "claude-opus-5-5",
-    max_tokens: 128000,
-    output_config: {
-      effort: "high",
-      task_budget: { type: "tokens", total: 64000 }
-    },
-    messages: [{ role: "user", content: "Review the codebase and propose a refactor plan." }],
-    betas: ["task-budgets-2026-03-13"]
-  });
-
-  const response = await stream.finalMessage();
-  console.log(response.usage);
-  ```
-
-  ```csharp C#
-
-  var client = new AnthropicClient();
-
-  var responseUpdates = client.Beta.Messages.CreateStreaming(new MessageCreateParams
-  {
-      Model = Messages::Model.ClaudeOpus5_5,
-      MaxTokens = 128000,
-      Messages = [new() { Role = Role.User, Content = "Review the codebase and propose a refactor plan." }],
-      OutputConfig = new BetaOutputConfig
-      {
-          Effort = Effort.High,
-          TaskBudget = new BetaTokenTaskBudget { Total = 64000 },
-      },
-      Betas = ["task-budgets-2026-03-13"],
-  });
-
-  var response = await responseUpdates.Aggregate();
-  Console.WriteLine(response.Usage);
-  ```
-
-  ```go Go
-  client := anthropic.NewClient()
-
-  stream := client.Beta.Messages.NewStreaming(context.TODO(), anthropic.BetaMessageNewParams{
-  	Model:     anthropic.ModelClaudeOpus5_5,
-  	MaxTokens: 128000,
-  	Betas:     []anthropic.AnthropicBeta{"task-budgets-2026-03-13"},
-  	Messages: []anthropic.BetaMessageParam{{
-  		Role: anthropic.BetaMessageParamRoleUser,
-  		Content: []anthropic.BetaContentBlockParamUnion{{
-  			OfText: &anthropic.BetaTextBlockParam{Text: "Review the codebase and propose a refactor plan."},
-  		}},
-  	}},
-  	OutputConfig: anthropic.BetaOutputConfigParam{
-  		Effort: anthropic.BetaOutputConfigEffortHigh,
-  		TaskBudget: anthropic.BetaTokenTaskBudgetParam{
-  			Total: 64000,
-  		},
-  	},
-  })
-
-  message := anthropic.BetaMessage{}
-  for stream.Next() {
-  	event := stream.Current()
-  	if err := message.Accumulate(event); err != nil {
-  		panic(err)
-  	}
-  }
-  if stream.Err() != nil {
-  	panic(stream.Err())
-  }
-
-  fmt.Printf("Usage: input_tokens=%d, output_tokens=%d\n", message.Usage.InputTokens, message.Usage.OutputTokens)
-  ```
-
-  ```java Java
-  AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-  MessageCreateParams params = MessageCreateParams.builder()
-      .model(Model.CLAUDE_OPUS_5_5)
-      .maxTokens(128000L)
-      .addUserMessage("Review the codebase and propose a refactor plan.")
-      .outputConfig(BetaOutputConfig.builder()
-          .effort(BetaOutputConfig.Effort.HIGH)
-          .taskBudget(BetaTokenTaskBudget.builder().total(64000L).build())
-          .build())
-      .addBeta("task-budgets-2026-03-13")
-      .build();
-
-  BetaMessageAccumulator accumulator = BetaMessageAccumulator.create();
-  try (StreamResponse<BetaRawMessageStreamEvent> stream =
-          client.beta().messages().createStreaming(params)) {
-      stream.stream().forEach(accumulator::accumulate);
-  }
-
-  BetaMessage response = accumulator.message();
-  IO.println(response.usage());
-  ```
-
-  ```php PHP
-  use Anthropic\Beta\Messages\BetaRawMessageDeltaEvent;
-
-  $client = new Client();
-
-  $stream = $client->beta->messages->createStream(
-      model: 'claude-opus-5-5',
-      maxTokens: 128000,
-      messages: [
-          ['role' => 'user', 'content' => 'Review the codebase and propose a refactor plan.'],
-      ],
-      outputConfig: [
-          'effort' => 'high',
-          'taskBudget' => ['type' => 'tokens', 'total' => 64000],
-      ],
-      betas: ['task-budgets-2026-03-13'],
-  );
-
-  // The final message_delta event carries the cumulative token usage for the request.
-  $usage = null;
-  foreach ($stream as $event) {
-      if ($event instanceof BetaRawMessageDeltaEvent) {
-          $usage = $event->usage;
-      }
-  }
-
-  echo $usage;
-  ```
-
-  ```ruby Ruby
-  client = Anthropic::Client.new
-
-  stream = client.beta.messages.stream(
-    model: "claude-opus-5-5",
-    max_tokens: 128_000,
-    messages: [
-      { role: "user", content: "Review the codebase and propose a refactor plan." }
-    ],
-    output_config: {
-      effort: :high,
-      task_budget: { type: :tokens, total: 64_000 }
-    },
-    betas: ["task-budgets-2026-03-13"]
-  )
-
-  response = stream.accumulated_message
-
-  puts response.usage
-  ```
 </CodeGroup>
 
 The `task_budget` object has three fields:
@@ -253,7 +63,7 @@ The `task_budget` object has three fields:
 Claude sees a budget-countdown marker injected server-side throughout the conversation. The marker shows how many tokens remain in the current agentic loop and updates as the model generates thinking, tool calls, and output, and as it processes tool results. Claude uses this signal to pace itself and finish gracefully as the budget is consumed.
 
 <Note>
-  **The countdown is visible only to the model.** API responses do not include a remaining-budget field: there is no `task_budget` information in the response `usage` object, and the SDK has no accessor for it. To track spend client-side, sum token usage across the requests in your loop as shown in [Measure your current usage](https://platform.claude.com/docs/en/build-with-claude/task-budgets#measure-your-current-usage), or pass your own figure forward with `remaining` when [carrying a budget across compaction](https://platform.claude.com/docs/en/build-with-claude/task-budgets#carrying-a-budget-across-compaction-with-remaining).
+  **The countdown is visible only to the model.** API responses do not include a remaining-budget field: there is no `task_budget` information in the response `usage` object, and the SDK has no accessor for it. To track spend client-side, sum token usage across the requests in your loop as shown in [Measure your current usage](https://platform.claude.com/docs/en/build-with-claude/task-budgets?sdk_languages=cli#measure-your-current-usage), or pass your own figure forward with `remaining` when [carrying a budget across compaction](https://platform.claude.com/docs/en/build-with-claude/task-budgets?sdk_languages=cli#carrying-a-budget-across-compaction-with-remaining).
 </Note>
 
 <Warning>
@@ -293,11 +103,11 @@ That holds even when the message adds new content alongside the tool results:
 }
 ```
 
-Server-side [compaction](https://platform.claude.com/docs/en/build-with-claude/compaction-threshold) during a turn does not reset the budget: tokens the turn consumed before the compaction still count against it. Tokens from before the turn began do not count, even when a compaction at the start of a turn summarizes them. Today, that exclusion applies only to the budget carried across a server-side compaction; earlier turns' history still counts while it remains in the context.
+Server-side [compaction](https://platform.claude.com/docs/en/build-with-claude/compaction-threshold?sdk_languages=cli) during a turn does not reset the budget: tokens the turn consumed before the compaction still count against it. Tokens from before the turn began do not count, even when a compaction at the start of a turn summarizes them. Today, that exclusion applies only to the budget carried across a server-side compaction; earlier turns' history still counts while it remains in the context.
 
 ### Worked example: budget counting across requests
 
-The task budget counts what Claude **sees** (thinking, tool calls and results, and text), not what's in your request payload. In an agentic loop your client resends the full conversation on every request, so the payload keeps growing, but the budget only decrements by what is new: the tokens Claude generates and the content it has not seen before. The following example is one [agentic turn](https://platform.claude.com/docs/en/build-with-claude/task-budgets#what-counts-as-a-turn) made of three requests: the first carries the user message, and the next two each resend the history with a tool result appended.
+The task budget counts what Claude **sees** (thinking, tool calls and results, and text), not what's in your request payload. In an agentic loop your client resends the full conversation on every request, so the payload keeps growing, but the budget only decrements by what is new: the tokens Claude generates and the content it has not seen before. The following example is one [agentic turn](https://platform.claude.com/docs/en/build-with-claude/task-budgets?sdk_languages=cli#what-counts-as-a-turn) made of three requests: the first carries the user message, and the next two each resend the history with a tool result appended.
 
 Consider a loop with `task_budget: {type: "tokens", total: 100000}` and a single `bash` tool.
 
@@ -483,13 +293,13 @@ If your own code compacts or rewrites the message history between requests (for 
   ```
 </CodeGroup>
 
-In this example, the tokens spent before compaction are the usage of all the messages you have removed from the history so far, measured as in [Measure your current usage](https://platform.claude.com/docs/en/build-with-claude/task-budgets#measure-your-current-usage). Leave out anything still present in the messages you send, including any summary you added, because the server counts those tokens itself. Update this figure only when you replace the history this way; don't decrement it per request. Pass the resulting `remaining` on every request, not only the one that compacts.
+In this example, the tokens spent before compaction are the usage of all the messages you have removed from the history so far, measured as in [Measure your current usage](https://platform.claude.com/docs/en/build-with-claude/task-budgets?sdk_languages=cli#measure-your-current-usage). Leave out anything still present in the messages you send, including any summary you added, because the server counts those tokens itself. Update this figure only when you replace the history this way; don't decrement it per request. Pass the resulting `remaining` on every request, not only the one that compacts.
 
 For loops that resend the full uncompacted history on every request, omit `remaining` and let the server track the countdown.
 
 ## Changing the budget mid-conversation
 
-`task_budget` is a request-level setting. To change the budget partway through a task, for example to extend it when the user broadens the request, set a new `task_budget` in `output_config` on the next request. Keep the caching consequence in mind: the budget value participates in the rendered prompt, so a changed value does not match cache entries created under the old one (see [Feature support](https://platform.claude.com/docs/en/build-with-claude/task-budgets#feature-support) below).
+`task_budget` is a request-level setting. To change the budget partway through a task, for example to extend it when the user broadens the request, set a new `task_budget` in `output_config` on the next request. Keep the caching consequence in mind: the budget value participates in the rendered prompt, so a changed value does not match cache entries created under the old one (see [Feature support](https://platform.claude.com/docs/en/build-with-claude/task-budgets?sdk_languages=cli#feature-support) below).
 
 ## Task budgets are advisory, not enforced
 
@@ -503,7 +313,7 @@ For a hard cap on cost or latency, combine task budgets with a reasonable `max_t
 Because `task_budget` spans the full agentic loop (potentially many requests) while `max_tokens` caps each individual request, the two values are independent; one is not required to be at or below the other.
 
 <Warning>
-  **A budget that is too small for the task can cause refusal-like behavior.** When Claude sees a budget that is clearly insufficient for the work being asked (for example, a 20,000-token budget for a multihour agentic coding task), it may decline to attempt the task at all, scope it down aggressively, or stop early with a partial result rather than start work it cannot finish. If you observe unexpected refusals or premature stops after setting a budget, raise the budget before debugging other parameters. Size budgets against your actual task-length distribution rather than a fixed default; see [Choosing a budget](https://platform.claude.com/docs/en/build-with-claude/task-budgets#choosing-a-budget).
+  **A budget that is too small for the task can cause refusal-like behavior.** When Claude sees a budget that is clearly insufficient for the work being asked (for example, a 20,000-token budget for a multihour agentic coding task), it may decline to attempt the task at all, scope it down aggressively, or stop early with a partial result rather than start work it cannot finish. If you observe unexpected refusals or premature stops after setting a budget, raise the budget before debugging other parameters. Size budgets against your actual task-length distribution rather than a fixed default; see [Choosing a budget](https://platform.claude.com/docs/en/build-with-claude/task-budgets?sdk_languages=cli#choosing-a-budget).
 </Warning>
 
 ## Choosing a budget
@@ -524,123 +334,18 @@ Run a representative sample of tasks **without** `task_budget` set and record th
       content: Review the codebase and propose a refactor plan.
   YAML
   ```
-
-  ```python Python
-  client = anthropic.Anthropic()
-
-  response = client.messages.create(
-      model="claude-opus-5-5",
-      max_tokens=4096,
-      messages=[
-          {"role": "user", "content": "Review the codebase and propose a refactor plan."}
-      ],
-  )
-
-  # Sum output_tokens (text + thinking + tool calls) across every request in your loop.
-  print(response.usage.output_tokens)
-  ```
-
-  ```typescript TypeScript
-  const client = new Anthropic();
-
-  const response = await client.messages.create({
-    model: "claude-opus-5-5",
-    max_tokens: 4096,
-    messages: [{ role: "user", content: "Review the codebase and propose a refactor plan." }]
-  });
-
-  // Sum output_tokens (text + thinking + tool calls) across every request in your loop.
-  console.log(response.usage.output_tokens);
-  ```
-
-  ```csharp C#
-
-  var client = new AnthropicClient();
-
-  var response = await client.Messages.Create(new MessageCreateParams
-  {
-      Model = Model.ClaudeOpus5_5,
-      MaxTokens = 4096,
-      Messages = [new() { Role = Role.User, Content = "Review the codebase and propose a refactor plan." }],
-  });
-
-  // Sum OutputTokens (text + thinking + tool calls) across every request in your loop.
-  Console.WriteLine(response.Usage.OutputTokens);
-  ```
-
-  ```go Go
-  client := anthropic.NewClient()
-
-  response, err := client.Messages.New(context.TODO(), anthropic.MessageNewParams{
-  	Model:     anthropic.ModelClaudeOpus5_5,
-  	MaxTokens: 4096,
-  	Messages: []anthropic.MessageParam{
-  		anthropic.NewUserMessage(anthropic.NewTextBlock("Review the codebase and propose a refactor plan.")),
-  	},
-  })
-  if err != nil {
-  	log.Fatal(err)
-  }
-
-  // Sum OutputTokens (text + thinking + tool calls) across every request in your loop.
-  fmt.Println(response.Usage.OutputTokens)
-  ```
-
-  ```java Java
-  AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-  MessageCreateParams params = MessageCreateParams.builder()
-      .model(Model.CLAUDE_OPUS_5_5)
-      .maxTokens(4096L)
-      .addUserMessage("Review the codebase and propose a refactor plan.")
-      .build();
-
-  Message response = client.messages().create(params);
-  // Sum outputTokens (text + thinking + tool calls) across every request in your loop.
-  IO.println(response.usage().outputTokens());
-  ```
-
-  ```php PHP
-  $client = new Client();
-
-  $response = $client->messages->create(
-      model: 'claude-opus-5-5',
-      maxTokens: 4096,
-      messages: [
-          ['role' => 'user', 'content' => 'Review the codebase and propose a refactor plan.'],
-      ],
-  );
-
-  // Sum outputTokens (text + thinking + tool calls) across every request in your loop.
-  echo $response->usage->outputTokens . "\n";
-  ```
-
-  ```ruby Ruby
-  client = Anthropic::Client.new
-
-  response = client.messages.create(
-    model: "claude-opus-5-5",
-    max_tokens: 4096,
-    messages: [
-      { role: "user", content: "Review the codebase and propose a refactor plan." }
-    ]
-  )
-
-  # Sum output_tokens (text + thinking + tool calls) across every request in your loop.
-  puts response.usage.output_tokens
-  ```
 </CodeGroup>
 
 Run this across a representative set of tasks and record the distribution. Start with the p99 of your per-task token spend to understand how providing the model with a task budget might modify the model's behavior, then test up or down as needed.
 
-The minimum accepted `task_budget.total` is **20,000 tokens** on every model that supports task budgets (see [Feature support](https://platform.claude.com/docs/en/build-with-claude/task-budgets#feature-support)). Smaller values return a 400 error.
+The minimum accepted `task_budget.total` is **20,000 tokens** on every model that supports task budgets (see [Feature support](https://platform.claude.com/docs/en/build-with-claude/task-budgets?sdk_languages=cli#feature-support)). Smaller values return a 400 error.
 
 ## Interaction with other parameters
 
 * **`max_tokens`:** Orthogonal to task budgets. `max_tokens` is a hard per-request cap on generated tokens, while `task_budget` is an advisory cap across the full agentic loop (potentially spanning many requests). At `xhigh` or `max` effort, set `max_tokens` to at least 64k to give Claude room to think and act on each request.
-* **[Effort](https://platform.claude.com/docs/en/build-with-claude/effort):** Effort controls how deeply Claude reasons per step. Task budgets control how much total work Claude does across an agentic loop. The two are complementary: effort tunes depth, task budgets tune breadth.
-* **[Adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking):** Task budgets include thinking tokens in the count, so adaptive thinking scales down as the budget depletes.
-* **[Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching):** The budget-countdown marker is injected server-side on each request, so it does not match across requests. If your client decrements `task_budget.remaining` on each follow-up request, the changed value invalidates any cache prefix that contains it. To preserve caching, set the budget once on the initial request and let the model self-regulate against the server-side countdown rather than mutating the budget client-side.
+* **[Effort](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=cli):** Effort controls how deeply Claude reasons per step. Task budgets control how much total work Claude does across an agentic loop. The two are complementary: effort tunes depth, task budgets tune breadth.
+* **[Adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli):** Task budgets include thinking tokens in the count, so adaptive thinking scales down as the budget depletes.
+* **[Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli):** The budget-countdown marker is injected server-side on each request, so it does not match across requests. If your client decrements `task_budget.remaining` on each follow-up request, the changed value invalidates any cache prefix that contains it. To preserve caching, set the budget once on the initial request and let the model self-regulate against the server-side countdown rather than mutating the budget client-side.
 
 ## Feature support
 
@@ -661,24 +366,24 @@ The minimum accepted `task_budget.total` is **20,000 tokens** on every model tha
 | Claude Sonnet 4.6 | Not supported                               |
 | Claude Haiku 4.5  | Not supported                               |
 
-Task budgets are not supported on [Claude Code](https://code.claude.com/docs/en/overview) or Cowork surfaces. Use task budgets directly through the Messages API on a [supported model](https://platform.claude.com/docs/en/build-with-claude/task-budgets#feature-support).
+Task budgets are not supported on [Claude Code](https://code.claude.com/docs/en/overview) or Cowork surfaces. Use task budgets directly through the Messages API on a [supported model](https://platform.claude.com/docs/en/build-with-claude/task-budgets?sdk_languages=cli#feature-support).
 
 ## Next steps
 
 <CardGroup>
-  <Card title="Effort" icon="gauge" href="https://platform.claude.com/docs/en/build-with-claude/effort">
+  <Card title="Effort" icon="gauge" href="https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=cli">
     Control how thoroughly Claude reasons about each step of an agentic loop.
   </Card>
 
-  <Card title="Adaptive thinking" icon="brain" href="https://platform.claude.com/docs/en/build-with-claude/thinking">
+  <Card title="Adaptive thinking" icon="brain" href="https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli">
     Let Claude determine when and how much to use extended thinking.
   </Card>
 
-  <Card title="Compaction" icon="arrows-clockwise" href="https://platform.claude.com/docs/en/build-with-claude/compaction">
+  <Card title="Compaction" icon="arrows-clockwise" href="https://platform.claude.com/docs/en/build-with-claude/compaction?sdk_languages=cli">
     Manage context in long-running conversations with server-side compaction.
   </Card>
 
-  <Card title="Prompt caching" icon="database" href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching">
+  <Card title="Prompt caching" icon="database" href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli">
     Reduce cost and latency on repeated prompts by caching prompt prefixes.
   </Card>
 </CardGroup>
