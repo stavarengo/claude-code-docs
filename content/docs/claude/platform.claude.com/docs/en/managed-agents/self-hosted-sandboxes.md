@@ -41,7 +41,7 @@ This quickstart runs one always-on worker with the `ant` CLI, sends it a session
 * **An agent:** If you don't have one, complete [Get started with Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/quickstart?sdk_languages=cli) first and note the agent ID.
 * **A Linux host:** The host needs `/bin/bash` at that exact path. The worker needs only outbound HTTPS.
 * **A Claude API key:** You use it from your own machine to create sessions and read queue stats. Keep it off the worker host, where agent tool calls could read it.
-* **The `ant` CLI on your own machine:** The session and stats commands in this quickstart run there, not on the worker host. Install it the same way the [install step](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes?sdk_languages=cli#run-your-first-session) does for the worker.
+* **The `ant` CLI or the SDK on your own machine:** The stats and session steps in this quickstart run there, not on the worker host. Install the CLI the same way the [install step](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes?sdk_languages=cli#run-your-first-session) does for the worker, or install the [SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli).
 
 <Note>
   On [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), the worker authenticates with AWS IAM (SigV4) or an [API key generated in the AWS Console](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli#api-key-authentication), not an environment key. Attach the [`AnthropicSelfHostedEnvironmentAccess`](https://platform.claude.com/docs/en/api/claude-platform-on-aws-iam-actions?sdk_languages=cli#managed-policies) managed policy to the IAM principal your worker runs as. Environment keys generated in the Claude Console don't work with the Claude Platform on AWS endpoint.
@@ -127,9 +127,11 @@ This quickstart runs one always-on worker with the `ant` CLI, sends it a session
   <Step title="Verify the worker is connected">
     On your own machine, set `ANTHROPIC_API_KEY` to your Claude API key (not the environment key) and `ANTHROPIC_ENVIRONMENT_ID` to the environment ID. Confirm that `workers_polling` is at least 1:
 
-    ```bash
-    ant beta:environments:work stats --environment-id "$ANTHROPIC_ENVIRONMENT_ID"
-    ```
+    <CodeGroup>
+      ```bash CLI
+      ant beta:environments:work stats --environment-id "$ANTHROPIC_ENVIRONMENT_ID"
+      ```
+    </CodeGroup>
 
     If `workers_polling` stays at 0, see [Troubleshooting](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-operations?sdk_languages=cli#troubleshooting).
   </Step>
@@ -137,20 +139,22 @@ This quickstart runs one always-on worker with the `ant` CLI, sends it a session
   <Step title="Start a session">
     Set `AGENT_ID` to your agent's ID. Create a session that targets the environment, then send it a task:
 
-    ```bash
-    SESSION_ID=$(ant beta:sessions create \
-      --agent "$AGENT_ID" \
-      --environment-id "$ANTHROPIC_ENVIRONMENT_ID" \
-      --transform id --raw-output)
+    <CodeGroup>
+      ```bash CLI
+      SESSION_ID=$(ant beta:sessions create \
+        --agent "$AGENT_ID" \
+        --environment-id "$ANTHROPIC_ENVIRONMENT_ID" \
+        --transform id --raw-output)
 
-    ant beta:sessions:events send --session-id "$SESSION_ID" <<'YAML'
-    events:
-      - type: user.message
-        content:
-          - type: text
-            text: Write the output of "uname -a" to hello.txt in your working directory.
-    YAML
-    ```
+      ant beta:sessions:events send --session-id "$SESSION_ID" <<'YAML'
+      events:
+        - type: user.message
+          content:
+            - type: text
+              text: Write the output of "uname -a" to hello.txt in your working directory.
+      YAML
+      ```
+    </CodeGroup>
 
     The session waits in the environment's queue until a worker claims it. If no worker is connected, the session stays queued rather than failing.
   </Step>

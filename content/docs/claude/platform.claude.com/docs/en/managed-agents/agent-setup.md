@@ -162,18 +162,11 @@ With the CLI, edit the agent's file and run `ant apply` again; apply supplies `v
 
 The preceding example supplies `version` from the create response, so the update only applies if nothing else has changed the agent since you read it. To apply an update unconditionally, omit `version` from the request:
 
-<CodeGroup exclude="shell:CLI, python, typescript, csharp, go, java, php, ruby">
-  ```bash cURL
-  updated_agent=$(curl -fsSL "https://api.anthropic.com/v1/agents/$AGENT_ID" \
-    -H "x-api-key: $ANTHROPIC_API_KEY" \
-    -H "anthropic-version: 2023-06-01" \
-    -H "anthropic-beta: managed-agents-2026-04-01" \
-    -H "content-type: application/json" \
-    -d '{
-      "description": "Writes and reviews code."
-    }')
-
-  echo "New version: $(jq -r '.version' <<< "$updated_agent")"
+<CodeGroup>
+  ```bash CLI
+  ant beta:agents update \
+    --agent-id "$AGENT_ID" \
+    --description "Writes and reviews code."
   ```
 </CodeGroup>
 
@@ -197,118 +190,32 @@ The preceding example supplies `version` from the create response, so the update
 
 The following update clears the description, deletes the `team` key from `metadata` (java, php), and sets `workflows` (java, php) to `null`, which turns dynamic workflows on:
 
-<CodeGroup exclude="shell:CLI">
-  ```bash cURL
-  cleared_agent=$(curl -fsSL "https://api.anthropic.com/v1/agents/$AGENT_ID" \
-    -H "x-api-key: $ANTHROPIC_API_KEY" \
-    -H "anthropic-version: 2023-06-01" \
-    -H "anthropic-beta: managed-agents-2026-04-01" \
-    -H "content-type: application/json" \
-    -d '{
-      "description": null,
-      "metadata": {"team": null},
-      "multiagent": {"type": "multiagent_20261001", "workflows": null}
-    }')
+<CodeGroup defaultLanguage="CLI">
+  <CodeGroupItem>
+    ```bash CLI
+    ant apply code-reviewer.md
+    ```
 
-  echo "Description: $(jq -r '.description' <<< "$cleared_agent")"
-  ```
+    <File filename="code-reviewer.md">
+      ```markdown
+      ---
+      name: Code Reviewer
+      model: claude-opus-5-5
+      tools:
+        - type: agent_toolset_20260401
+      metadata:
+        owner: docs
+      multiagent:
+        type: multiagent_20261001
+        workflows: null
+      ---
 
-  ```python Python
-  cleared_agent = client.beta.agents.update(
-      agent.id,
-      description=None,
-      metadata={"team": None},
-      multiagent={"type": "multiagent_20261001", "workflows": None},
-  )
+      You are a helpful coding agent.
+      ```
+    </File>
 
-  print(f"Description: {cleared_agent.description}")
-  ```
-
-  ```typescript TypeScript
-  const clearedAgent = await client.beta.agents.update(agent.id, {
-    description: null,
-    metadata: { team: null },
-    multiagent: { type: "multiagent_20261001", workflows: null },
-  });
-
-  console.log(`Description: ${clearedAgent.description}`);
-  ```
-
-  ```csharp C#
-  var clearedAgent = await client.Beta.Agents.Update(agent.ID, new()
-  {
-      Description = null,
-      Metadata = new Dictionary<string, string?> { ["team"] = null },
-      Multiagent = new BetaManagedAgentsMultiagent20261001Params { Workflows = null },
-  });
-
-  Console.WriteLine($"Description: {clearedAgent.Description}");
-  ```
-
-  ```go Go
-  // Metadata is a map[string]string, so send the null for team as a request option.
-  clearedAgent, err := client.Beta.Agents.Update(ctx, agent.ID, anthropic.BetaAgentUpdateParams{
-  	Description: param.Null[string](),
-  	Multiagent: anthropic.BetaManagedAgentsMultiagentParamsUnion{
-  		OfMultiagent20261001: &anthropic.BetaManagedAgentsMultiagent20261001Params{
-  			Workflows: param.NullStruct[anthropic.BetaManagedAgentsMultiagentWorkflowsParamsUnion](),
-  		},
-  	},
-  }, option.WithJSONSet("metadata.team", nil))
-  if err != nil {
-  	panic(err)
-  }
-
-  fmt.Printf("Description: %q\n", clearedAgent.Description)
-  ```
-
-  ```java Java
-  var clearedAgent = client.beta().agents().update(
-      agent.id(),
-      AgentUpdateParams.builder()
-          .description(Optional.empty())
-          .metadata(
-              AgentUpdateParams.Metadata.builder()
-                  .putAdditionalProperty("team", JsonValue.from(null))
-                  .build()
-          )
-          .multiagent(
-              BetaManagedAgentsMultiagent20261001Params.builder()
-                  .workflows(Optional.empty())
-                  .build()
-          )
-          .build()
-  );
-
-  IO.println("Description: " + clearedAgent.description().orElse(null));
-  ```
-
-  ```php PHP
-  // update() drops null arguments, so pass the nulls in extraBodyParams.
-  $clearedAgent = $client->beta->agents->update(
-      $agent->id,
-      requestOptions: [
-          'extraBodyParams' => [
-              'description' => null,
-              'metadata' => ['team' => null],
-              'multiagent' => ['type' => 'multiagent_20261001', 'workflows' => null],
-          ],
-      ],
-  );
-
-  echo 'Description: ' . json_encode($clearedAgent->description) . "\n";
-  ```
-
-  ```ruby Ruby
-  cleared_agent = client.beta.agents.update(
-    agent.id,
-    description: nil,
-    metadata: {team: nil},
-    multiagent: {type: :multiagent_20261001, workflows: nil}
-  )
-
-  puts "Description: #{cleared_agent.description.inspect}"
-  ```
+    The file no longer has `description` or the `team` key, so `ant apply` sends `null` for them. Deleting a setting inside `multiagent` keeps its stored value, so the file sets `workflows` to `null`.
+  </CodeGroupItem>
 </CodeGroup>
 
 ## Agent lifecycle

@@ -47,10 +47,10 @@ Claude Max and Team plans include monthly credits for the Claude API. To claim t
 
 You need both of the following roles:
 
-| Where                           | Required role                                  |
-| ------------------------------- | ---------------------------------------------- |
-| **Claude plan**                 | Max: the subscriber Team: Primary Owner, Owner |
-| **Claude Console organization** | Owner, Admin, or Billing                       |
+| Where                           | Required role                                       |
+| ------------------------------- | --------------------------------------------------- |
+| **Claude plan**                 | Max: the subscriber<br />Team: Primary Owner, Owner |
+| **Claude Console organization** | Owner, Admin, or Billing                            |
 
 If you don't have a Console organization, create one at [platform.claude.com](https://platform.claude.com/) first, or create one during the claim flow.
 
