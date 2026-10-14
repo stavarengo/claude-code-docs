@@ -3512,7 +3512,7 @@ the `background` parameter set to `true` can be cancelled.
 
           The ID of the compaction item.
 
-      - `ImageGenerationCall object { id, result, status, 7 more }`
+      - `ImageGenerationCall object { id, result, status, 8 more }`
 
         An image generation request made by the model.
 
@@ -3561,6 +3561,44 @@ the `background` parameter set to `true` can be cancelled.
           - `"opaque"`
 
           - `"auto"`
+
+        - `error: optional object { code, message, param, 2 more }`
+
+          Details of a moderation failure, when available.
+
+          - `code: string or null`
+
+            The error code.
+
+          - `message: string`
+
+            A description of the error.
+
+          - `param: string or null`
+
+            The related request parameter.
+
+          - `type: string`
+
+            The error type.
+
+          - `moderation_details: optional object { categories, moderation_stage }`
+
+            Public details for a `moderation_blocked` error, when available.
+
+            - `categories: array of string`
+
+              Public moderation categories. New category values may be added over time.
+
+            - `moderation_stage: "input" or "output" or "unknown"`
+
+              The stage where moderation blocked the image generation call.
+
+              - `"input"`
+
+              - `"output"`
+
+              - `"unknown"`
 
         - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -7151,7 +7189,7 @@ the `background` parameter set to `true` can be cancelled.
 
         The identifier of the actor that created the item.
 
-    - `ImageGenerationCall object { id, result, status, 7 more }`
+    - `ImageGenerationCall object { id, result, status, 8 more }`
 
       An image generation request made by the model.
 
@@ -7200,6 +7238,44 @@ the `background` parameter set to `true` can be cancelled.
         - `"opaque"`
 
         - `"auto"`
+
+      - `error: optional object { code, message, param, 2 more }`
+
+        Details of a moderation failure, when available.
+
+        - `code: string or null`
+
+          The error code.
+
+        - `message: string`
+
+          A description of the error.
+
+        - `param: string or null`
+
+          The related request parameter.
+
+        - `type: string`
+
+          The error type.
+
+        - `moderation_details: optional object { categories, moderation_stage }`
+
+          Public details for a `moderation_blocked` error, when available.
+
+          - `categories: array of string`
+
+            Public moderation categories. New category values may be added over time.
+
+          - `moderation_stage: "input" or "output" or "unknown"`
+
+            The stage where moderation blocked the image generation call.
+
+            - `"input"`
+
+            - `"output"`
+
+            - `"unknown"`
 
       - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -13466,7 +13542,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
         The ID of the compaction item.
 
-    - `ImageGenerationCall object { id, result, status, 7 more }`
+    - `ImageGenerationCall object { id, result, status, 8 more }`
 
       An image generation request made by the model.
 
@@ -13515,6 +13591,44 @@ Learn when and how to compact long-running conversations in the [conversation st
         - `"opaque"`
 
         - `"auto"`
+
+      - `error: optional object { code, message, param, 2 more }`
+
+        Details of a moderation failure, when available.
+
+        - `code: string or null`
+
+          The error code.
+
+        - `message: string`
+
+          A description of the error.
+
+        - `param: string or null`
+
+          The related request parameter.
+
+        - `type: string`
+
+          The error type.
+
+        - `moderation_details: optional object { categories, moderation_stage }`
+
+          Public details for a `moderation_blocked` error, when available.
+
+          - `categories: array of string`
+
+            Public moderation categories. New category values may be added over time.
+
+          - `moderation_stage: "input" or "output" or "unknown"`
+
+            The stage where moderation blocked the image generation call.
+
+            - `"input"`
+
+            - `"output"`
+
+            - `"unknown"`
 
       - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -17353,7 +17467,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             The URL of the page searched for the pattern.
 
-    - `ImageGenerationCall object { id, result, status, 7 more }`
+    - `ImageGenerationCall object { id, result, status, 8 more }`
 
       An image generation request made by the model.
 
@@ -17402,6 +17516,44 @@ Learn when and how to compact long-running conversations in the [conversation st
         - `"opaque"`
 
         - `"auto"`
+
+      - `error: optional object { code, message, param, 2 more }`
+
+        Details of a moderation failure, when available.
+
+        - `code: string or null`
+
+          The error code.
+
+        - `message: string`
+
+          A description of the error.
+
+        - `param: string or null`
+
+          The related request parameter.
+
+        - `type: string`
+
+          The error type.
+
+        - `moderation_details: optional object { categories, moderation_stage }`
+
+          Public details for a `moderation_blocked` error, when available.
+
+          - `categories: array of string`
+
+            Public moderation categories. New category values may be added over time.
+
+          - `moderation_stage: "input" or "output" or "unknown"`
+
+            The stage where moderation blocked the image generation call.
+
+            - `"input"`
+
+            - `"output"`
+
+            - `"unknown"`
 
       - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -22322,7 +22474,7 @@ as input for the model's response.
 
         The ID of the compaction item.
 
-    - `ImageGenerationCall object { id, result, status, 7 more }`
+    - `ImageGenerationCall object { id, result, status, 8 more }`
 
       An image generation request made by the model.
 
@@ -22371,6 +22523,44 @@ as input for the model's response.
         - `"opaque"`
 
         - `"auto"`
+
+      - `error: optional object { code, message, param, 2 more }`
+
+        Details of a moderation failure, when available.
+
+        - `code: string or null`
+
+          The error code.
+
+        - `message: string`
+
+          A description of the error.
+
+        - `param: string or null`
+
+          The related request parameter.
+
+        - `type: string`
+
+          The error type.
+
+        - `moderation_details: optional object { categories, moderation_stage }`
+
+          Public details for a `moderation_blocked` error, when available.
+
+          - `categories: array of string`
+
+            Public moderation categories. New category values may be added over time.
+
+          - `moderation_stage: "input" or "output" or "unknown"`
+
+            The stage where moderation blocked the image generation call.
+
+            - `"input"`
+
+            - `"output"`
+
+            - `"unknown"`
 
       - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -28485,7 +28675,7 @@ as input for the model's response.
 
           The ID of the compaction item.
 
-      - `ImageGenerationCall object { id, result, status, 7 more }`
+      - `ImageGenerationCall object { id, result, status, 8 more }`
 
         An image generation request made by the model.
 
@@ -28534,6 +28724,44 @@ as input for the model's response.
           - `"opaque"`
 
           - `"auto"`
+
+        - `error: optional object { code, message, param, 2 more }`
+
+          Details of a moderation failure, when available.
+
+          - `code: string or null`
+
+            The error code.
+
+          - `message: string`
+
+            A description of the error.
+
+          - `param: string or null`
+
+            The related request parameter.
+
+          - `type: string`
+
+            The error type.
+
+          - `moderation_details: optional object { categories, moderation_stage }`
+
+            Public details for a `moderation_blocked` error, when available.
+
+            - `categories: array of string`
+
+              Public moderation categories. New category values may be added over time.
+
+            - `moderation_stage: "input" or "output" or "unknown"`
+
+              The stage where moderation blocked the image generation call.
+
+              - `"input"`
+
+              - `"output"`
+
+              - `"unknown"`
 
         - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -32124,7 +32352,7 @@ as input for the model's response.
 
         The identifier of the actor that created the item.
 
-    - `ImageGenerationCall object { id, result, status, 7 more }`
+    - `ImageGenerationCall object { id, result, status, 8 more }`
 
       An image generation request made by the model.
 
@@ -32173,6 +32401,44 @@ as input for the model's response.
         - `"opaque"`
 
         - `"auto"`
+
+      - `error: optional object { code, message, param, 2 more }`
+
+        Details of a moderation failure, when available.
+
+        - `code: string or null`
+
+          The error code.
+
+        - `message: string`
+
+          A description of the error.
+
+        - `param: string or null`
+
+          The related request parameter.
+
+        - `type: string`
+
+          The error type.
+
+        - `moderation_details: optional object { categories, moderation_stage }`
+
+          Public details for a `moderation_blocked` error, when available.
+
+          - `categories: array of string`
+
+            Public moderation categories. New category values may be added over time.
+
+          - `moderation_stage: "input" or "output" or "unknown"`
+
+            The stage where moderation blocked the image generation call.
+
+            - `"input"`
+
+            - `"output"`
+
+            - `"unknown"`
 
       - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -39167,7 +39433,7 @@ Retrieves a model response with the given ID.
 
           The ID of the compaction item.
 
-      - `ImageGenerationCall object { id, result, status, 7 more }`
+      - `ImageGenerationCall object { id, result, status, 8 more }`
 
         An image generation request made by the model.
 
@@ -39216,6 +39482,44 @@ Retrieves a model response with the given ID.
           - `"opaque"`
 
           - `"auto"`
+
+        - `error: optional object { code, message, param, 2 more }`
+
+          Details of a moderation failure, when available.
+
+          - `code: string or null`
+
+            The error code.
+
+          - `message: string`
+
+            A description of the error.
+
+          - `param: string or null`
+
+            The related request parameter.
+
+          - `type: string`
+
+            The error type.
+
+          - `moderation_details: optional object { categories, moderation_stage }`
+
+            Public details for a `moderation_blocked` error, when available.
+
+            - `categories: array of string`
+
+              Public moderation categories. New category values may be added over time.
+
+            - `moderation_stage: "input" or "output" or "unknown"`
+
+              The stage where moderation blocked the image generation call.
+
+              - `"input"`
+
+              - `"output"`
+
+              - `"unknown"`
 
         - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -42806,7 +43110,7 @@ Retrieves a model response with the given ID.
 
         The identifier of the actor that created the item.
 
-    - `ImageGenerationCall object { id, result, status, 7 more }`
+    - `ImageGenerationCall object { id, result, status, 8 more }`
 
       An image generation request made by the model.
 
@@ -42855,6 +43159,44 @@ Retrieves a model response with the given ID.
         - `"opaque"`
 
         - `"auto"`
+
+      - `error: optional object { code, message, param, 2 more }`
+
+        Details of a moderation failure, when available.
+
+        - `code: string or null`
+
+          The error code.
+
+        - `message: string`
+
+          A description of the error.
+
+        - `param: string or null`
+
+          The related request parameter.
+
+        - `type: string`
+
+          The error type.
+
+        - `moderation_details: optional object { categories, moderation_stage }`
+
+          Public details for a `moderation_blocked` error, when available.
+
+          - `categories: array of string`
+
+            Public moderation categories. New category values may be added over time.
+
+          - `moderation_stage: "input" or "output" or "unknown"`
+
+            The stage where moderation blocked the image generation call.
+
+            - `"input"`
+
+            - `"output"`
+
+            - `"unknown"`
 
       - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -48411,7 +48753,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             The URL of the page searched for the pattern.
 
-    - `ImageGenerationCall object { id, result, status, 7 more }`
+    - `ImageGenerationCall object { id, result, status, 8 more }`
 
       An image generation request made by the model.
 
@@ -48460,6 +48802,44 @@ curl https://api.openai.com/v1/responses/resp_123 \
         - `"opaque"`
 
         - `"auto"`
+
+      - `error: optional object { code, message, param, 2 more }`
+
+        Details of a moderation failure, when available.
+
+        - `code: string or null`
+
+          The error code.
+
+        - `message: string`
+
+          A description of the error.
+
+        - `param: string or null`
+
+          The related request parameter.
+
+        - `type: string`
+
+          The error type.
+
+        - `moderation_details: optional object { categories, moderation_stage }`
+
+          Public details for a `moderation_blocked` error, when available.
+
+          - `categories: array of string`
+
+            Public moderation categories. New category values may be added over time.
+
+          - `moderation_stage: "input" or "output" or "unknown"`
+
+            The stage where moderation blocked the image generation call.
+
+            - `"input"`
+
+            - `"output"`
+
+            - `"unknown"`
 
       - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -54178,7 +54558,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           The ID of the compaction item.
 
-      - `ImageGenerationCall object { id, result, status, 7 more }`
+      - `ImageGenerationCall object { id, result, status, 8 more }`
 
         An image generation request made by the model.
 
@@ -54227,6 +54607,44 @@ curl https://api.openai.com/v1/responses/resp_123 \
           - `"opaque"`
 
           - `"auto"`
+
+        - `error: optional object { code, message, param, 2 more }`
+
+          Details of a moderation failure, when available.
+
+          - `code: string or null`
+
+            The error code.
+
+          - `message: string`
+
+            A description of the error.
+
+          - `param: string or null`
+
+            The related request parameter.
+
+          - `type: string`
+
+            The error type.
+
+          - `moderation_details: optional object { categories, moderation_stage }`
+
+            Public details for a `moderation_blocked` error, when available.
+
+            - `categories: array of string`
+
+              Public moderation categories. New category values may be added over time.
+
+            - `moderation_stage: "input" or "output" or "unknown"`
+
+              The stage where moderation blocked the image generation call.
+
+              - `"input"`
+
+              - `"output"`
+
+              - `"unknown"`
 
         - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -57817,7 +58235,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         The identifier of the actor that created the item.
 
-    - `ImageGenerationCall object { id, result, status, 7 more }`
+    - `ImageGenerationCall object { id, result, status, 8 more }`
 
       An image generation request made by the model.
 
@@ -57866,6 +58284,44 @@ curl https://api.openai.com/v1/responses/resp_123 \
         - `"opaque"`
 
         - `"auto"`
+
+      - `error: optional object { code, message, param, 2 more }`
+
+        Details of a moderation failure, when available.
+
+        - `code: string or null`
+
+          The error code.
+
+        - `message: string`
+
+          A description of the error.
+
+        - `param: string or null`
+
+          The related request parameter.
+
+        - `type: string`
+
+          The error type.
+
+        - `moderation_details: optional object { categories, moderation_stage }`
+
+          Public details for a `moderation_blocked` error, when available.
+
+          - `categories: array of string`
+
+            Public moderation categories. New category values may be added over time.
+
+          - `moderation_stage: "input" or "output" or "unknown"`
+
+            The stage where moderation blocked the image generation call.
+
+            - `"input"`
+
+            - `"output"`
+
+            - `"unknown"`
 
       - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -64076,7 +64532,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             The ID of the compaction item.
 
-        - `ImageGenerationCall object { id, result, status, 7 more }`
+        - `ImageGenerationCall object { id, result, status, 8 more }`
 
           An image generation request made by the model.
 
@@ -64125,6 +64581,44 @@ curl https://api.openai.com/v1/responses/resp_123 \
             - `"opaque"`
 
             - `"auto"`
+
+          - `error: optional object { code, message, param, 2 more }`
+
+            Details of a moderation failure, when available.
+
+            - `code: string or null`
+
+              The error code.
+
+            - `message: string`
+
+              A description of the error.
+
+            - `param: string or null`
+
+              The related request parameter.
+
+            - `type: string`
+
+              The error type.
+
+            - `moderation_details: optional object { categories, moderation_stage }`
+
+              Public details for a `moderation_blocked` error, when available.
+
+              - `categories: array of string`
+
+                Public moderation categories. New category values may be added over time.
+
+              - `moderation_stage: "input" or "output" or "unknown"`
+
+                The stage where moderation blocked the image generation call.
+
+                - `"input"`
+
+                - `"output"`
+
+                - `"unknown"`
 
           - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -67715,7 +68209,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           The identifier of the actor that created the item.
 
-      - `ImageGenerationCall object { id, result, status, 7 more }`
+      - `ImageGenerationCall object { id, result, status, 8 more }`
 
         An image generation request made by the model.
 
@@ -67764,6 +68258,44 @@ curl https://api.openai.com/v1/responses/resp_123 \
           - `"opaque"`
 
           - `"auto"`
+
+        - `error: optional object { code, message, param, 2 more }`
+
+          Details of a moderation failure, when available.
+
+          - `code: string or null`
+
+            The error code.
+
+          - `message: string`
+
+            A description of the error.
+
+          - `param: string or null`
+
+            The related request parameter.
+
+          - `type: string`
+
+            The error type.
+
+          - `moderation_details: optional object { categories, moderation_stage }`
+
+            Public details for a `moderation_blocked` error, when available.
+
+            - `categories: array of string`
+
+              Public moderation categories. New category values may be added over time.
+
+            - `moderation_stage: "input" or "output" or "unknown"`
+
+              The stage where moderation blocked the image generation call.
+
+              - `"input"`
+
+              - `"output"`
+
+              - `"unknown"`
 
         - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -74459,7 +74991,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             The ID of the compaction item.
 
-        - `ImageGenerationCall object { id, result, status, 7 more }`
+        - `ImageGenerationCall object { id, result, status, 8 more }`
 
           An image generation request made by the model.
 
@@ -74508,6 +75040,44 @@ curl https://api.openai.com/v1/responses/resp_123 \
             - `"opaque"`
 
             - `"auto"`
+
+          - `error: optional object { code, message, param, 2 more }`
+
+            Details of a moderation failure, when available.
+
+            - `code: string or null`
+
+              The error code.
+
+            - `message: string`
+
+              A description of the error.
+
+            - `param: string or null`
+
+              The related request parameter.
+
+            - `type: string`
+
+              The error type.
+
+            - `moderation_details: optional object { categories, moderation_stage }`
+
+              Public details for a `moderation_blocked` error, when available.
+
+              - `categories: array of string`
+
+                Public moderation categories. New category values may be added over time.
+
+              - `moderation_stage: "input" or "output" or "unknown"`
+
+                The stage where moderation blocked the image generation call.
+
+                - `"input"`
+
+                - `"output"`
+
+                - `"unknown"`
 
           - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -78098,7 +78668,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           The identifier of the actor that created the item.
 
-      - `ImageGenerationCall object { id, result, status, 7 more }`
+      - `ImageGenerationCall object { id, result, status, 8 more }`
 
         An image generation request made by the model.
 
@@ -78147,6 +78717,44 @@ curl https://api.openai.com/v1/responses/resp_123 \
           - `"opaque"`
 
           - `"auto"`
+
+        - `error: optional object { code, message, param, 2 more }`
+
+          Details of a moderation failure, when available.
+
+          - `code: string or null`
+
+            The error code.
+
+          - `message: string`
+
+            A description of the error.
+
+          - `param: string or null`
+
+            The related request parameter.
+
+          - `type: string`
+
+            The error type.
+
+          - `moderation_details: optional object { categories, moderation_stage }`
+
+            Public details for a `moderation_blocked` error, when available.
+
+            - `categories: array of string`
+
+              Public moderation categories. New category values may be added over time.
+
+            - `moderation_stage: "input" or "output" or "unknown"`
+
+              The stage where moderation blocked the image generation call.
+
+              - `"input"`
+
+              - `"output"`
+
+              - `"unknown"`
 
         - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -84331,7 +84939,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             The ID of the compaction item.
 
-        - `ImageGenerationCall object { id, result, status, 7 more }`
+        - `ImageGenerationCall object { id, result, status, 8 more }`
 
           An image generation request made by the model.
 
@@ -84380,6 +84988,44 @@ curl https://api.openai.com/v1/responses/resp_123 \
             - `"opaque"`
 
             - `"auto"`
+
+          - `error: optional object { code, message, param, 2 more }`
+
+            Details of a moderation failure, when available.
+
+            - `code: string or null`
+
+              The error code.
+
+            - `message: string`
+
+              A description of the error.
+
+            - `param: string or null`
+
+              The related request parameter.
+
+            - `type: string`
+
+              The error type.
+
+            - `moderation_details: optional object { categories, moderation_stage }`
+
+              Public details for a `moderation_blocked` error, when available.
+
+              - `categories: array of string`
+
+                Public moderation categories. New category values may be added over time.
+
+              - `moderation_stage: "input" or "output" or "unknown"`
+
+                The stage where moderation blocked the image generation call.
+
+                - `"input"`
+
+                - `"output"`
+
+                - `"unknown"`
 
           - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -87970,7 +88616,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           The identifier of the actor that created the item.
 
-      - `ImageGenerationCall object { id, result, status, 7 more }`
+      - `ImageGenerationCall object { id, result, status, 8 more }`
 
         An image generation request made by the model.
 
@@ -88019,6 +88665,44 @@ curl https://api.openai.com/v1/responses/resp_123 \
           - `"opaque"`
 
           - `"auto"`
+
+        - `error: optional object { code, message, param, 2 more }`
+
+          Details of a moderation failure, when available.
+
+          - `code: string or null`
+
+            The error code.
+
+          - `message: string`
+
+            A description of the error.
+
+          - `param: string or null`
+
+            The related request parameter.
+
+          - `type: string`
+
+            The error type.
+
+          - `moderation_details: optional object { categories, moderation_stage }`
+
+            Public details for a `moderation_blocked` error, when available.
+
+            - `categories: array of string`
+
+              Public moderation categories. New category values may be added over time.
+
+            - `moderation_stage: "input" or "output" or "unknown"`
+
+              The stage where moderation blocked the image generation call.
+
+              - `"input"`
+
+              - `"output"`
+
+              - `"unknown"`
 
         - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -94414,7 +95098,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             The ID of the compaction item.
 
-        - `ImageGenerationCall object { id, result, status, 7 more }`
+        - `ImageGenerationCall object { id, result, status, 8 more }`
 
           An image generation request made by the model.
 
@@ -94463,6 +95147,44 @@ curl https://api.openai.com/v1/responses/resp_123 \
             - `"opaque"`
 
             - `"auto"`
+
+          - `error: optional object { code, message, param, 2 more }`
+
+            Details of a moderation failure, when available.
+
+            - `code: string or null`
+
+              The error code.
+
+            - `message: string`
+
+              A description of the error.
+
+            - `param: string or null`
+
+              The related request parameter.
+
+            - `type: string`
+
+              The error type.
+
+            - `moderation_details: optional object { categories, moderation_stage }`
+
+              Public details for a `moderation_blocked` error, when available.
+
+              - `categories: array of string`
+
+                Public moderation categories. New category values may be added over time.
+
+              - `moderation_stage: "input" or "output" or "unknown"`
+
+                The stage where moderation blocked the image generation call.
+
+                - `"input"`
+
+                - `"output"`
+
+                - `"unknown"`
 
           - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -98053,7 +98775,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           The identifier of the actor that created the item.
 
-      - `ImageGenerationCall object { id, result, status, 7 more }`
+      - `ImageGenerationCall object { id, result, status, 8 more }`
 
         An image generation request made by the model.
 
@@ -98102,6 +98824,44 @@ curl https://api.openai.com/v1/responses/resp_123 \
           - `"opaque"`
 
           - `"auto"`
+
+        - `error: optional object { code, message, param, 2 more }`
+
+          Details of a moderation failure, when available.
+
+          - `code: string or null`
+
+            The error code.
+
+          - `message: string`
+
+            A description of the error.
+
+          - `param: string or null`
+
+            The related request parameter.
+
+          - `type: string`
+
+            The error type.
+
+          - `moderation_details: optional object { categories, moderation_stage }`
+
+            Public details for a `moderation_blocked` error, when available.
+
+            - `categories: array of string`
+
+              Public moderation categories. New category values may be added over time.
+
+            - `moderation_stage: "input" or "output" or "unknown"`
+
+              The stage where moderation blocked the image generation call.
+
+              - `"input"`
+
+              - `"output"`
+
+              - `"unknown"`
 
         - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -104133,7 +104893,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             The ID of the compaction item.
 
-        - `ImageGenerationCall object { id, result, status, 7 more }`
+        - `ImageGenerationCall object { id, result, status, 8 more }`
 
           An image generation request made by the model.
 
@@ -104182,6 +104942,44 @@ curl https://api.openai.com/v1/responses/resp_123 \
             - `"opaque"`
 
             - `"auto"`
+
+          - `error: optional object { code, message, param, 2 more }`
+
+            Details of a moderation failure, when available.
+
+            - `code: string or null`
+
+              The error code.
+
+            - `message: string`
+
+              A description of the error.
+
+            - `param: string or null`
+
+              The related request parameter.
+
+            - `type: string`
+
+              The error type.
+
+            - `moderation_details: optional object { categories, moderation_stage }`
+
+              Public details for a `moderation_blocked` error, when available.
+
+              - `categories: array of string`
+
+                Public moderation categories. New category values may be added over time.
+
+              - `moderation_stage: "input" or "output" or "unknown"`
+
+                The stage where moderation blocked the image generation call.
+
+                - `"input"`
+
+                - `"output"`
+
+                - `"unknown"`
 
           - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -107772,7 +108570,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           The identifier of the actor that created the item.
 
-      - `ImageGenerationCall object { id, result, status, 7 more }`
+      - `ImageGenerationCall object { id, result, status, 8 more }`
 
         An image generation request made by the model.
 
@@ -107821,6 +108619,44 @@ curl https://api.openai.com/v1/responses/resp_123 \
           - `"opaque"`
 
           - `"auto"`
+
+        - `error: optional object { code, message, param, 2 more }`
+
+          Details of a moderation failure, when available.
+
+          - `code: string or null`
+
+            The error code.
+
+          - `message: string`
+
+            A description of the error.
+
+          - `param: string or null`
+
+            The related request parameter.
+
+          - `type: string`
+
+            The error type.
+
+          - `moderation_details: optional object { categories, moderation_stage }`
+
+            Public details for a `moderation_blocked` error, when available.
+
+            - `categories: array of string`
+
+              Public moderation categories. New category values may be added over time.
+
+            - `moderation_stage: "input" or "output" or "unknown"`
+
+              The stage where moderation blocked the image generation call.
+
+              - `"input"`
+
+              - `"output"`
+
+              - `"unknown"`
 
         - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -114396,7 +115232,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
       The identifier of the actor that created the item.
 
-  - `ImageGenerationCall object { id, result, status, 7 more }`
+  - `ImageGenerationCall object { id, result, status, 8 more }`
 
     An image generation request made by the model.
 
@@ -114445,6 +115281,44 @@ curl https://api.openai.com/v1/responses/resp_123 \
       - `"opaque"`
 
       - `"auto"`
+
+    - `error: optional object { code, message, param, 2 more }`
+
+      Details of a moderation failure, when available.
+
+      - `code: string or null`
+
+        The error code.
+
+      - `message: string`
+
+        A description of the error.
+
+      - `param: string or null`
+
+        The related request parameter.
+
+      - `type: string`
+
+        The error type.
+
+      - `moderation_details: optional object { categories, moderation_stage }`
+
+        Public details for a `moderation_blocked` error, when available.
+
+        - `categories: array of string`
+
+          Public moderation categories. New category values may be added over time.
+
+        - `moderation_stage: "input" or "output" or "unknown"`
+
+          The stage where moderation blocked the image generation call.
+
+          - `"input"`
+
+          - `"output"`
+
+          - `"unknown"`
 
     - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -118522,7 +119396,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         The identifier of the actor that created the item.
 
-    - `ImageGenerationCall object { id, result, status, 7 more }`
+    - `ImageGenerationCall object { id, result, status, 8 more }`
 
       An image generation request made by the model.
 
@@ -118571,6 +119445,44 @@ curl https://api.openai.com/v1/responses/resp_123 \
         - `"opaque"`
 
         - `"auto"`
+
+      - `error: optional object { code, message, param, 2 more }`
+
+        Details of a moderation failure, when available.
+
+        - `code: string or null`
+
+          The error code.
+
+        - `message: string`
+
+          A description of the error.
+
+        - `param: string or null`
+
+          The related request parameter.
+
+        - `type: string`
+
+          The error type.
+
+        - `moderation_details: optional object { categories, moderation_stage }`
+
+          Public details for a `moderation_blocked` error, when available.
+
+          - `categories: array of string`
+
+            Public moderation categories. New category values may be added over time.
+
+          - `moderation_stage: "input" or "output" or "unknown"`
+
+            The stage where moderation blocked the image generation call.
+
+            - `"input"`
+
+            - `"output"`
+
+            - `"unknown"`
 
       - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -122659,7 +123571,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         The identifier of the actor that created the item.
 
-    - `ImageGenerationCall object { id, result, status, 7 more }`
+    - `ImageGenerationCall object { id, result, status, 8 more }`
 
       An image generation request made by the model.
 
@@ -122708,6 +123620,44 @@ curl https://api.openai.com/v1/responses/resp_123 \
         - `"opaque"`
 
         - `"auto"`
+
+      - `error: optional object { code, message, param, 2 more }`
+
+        Details of a moderation failure, when available.
+
+        - `code: string or null`
+
+          The error code.
+
+        - `message: string`
+
+          A description of the error.
+
+        - `param: string or null`
+
+          The related request parameter.
+
+        - `type: string`
+
+          The error type.
+
+        - `moderation_details: optional object { categories, moderation_stage }`
+
+          Public details for a `moderation_blocked` error, when available.
+
+          - `categories: array of string`
+
+            Public moderation categories. New category values may be added over time.
+
+          - `moderation_stage: "input" or "output" or "unknown"`
+
+            The stage where moderation blocked the image generation call.
+
+            - `"input"`
+
+            - `"output"`
+
+            - `"unknown"`
 
       - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -127691,7 +128641,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             The ID of the compaction item.
 
-        - `ImageGenerationCall object { id, result, status, 7 more }`
+        - `ImageGenerationCall object { id, result, status, 8 more }`
 
           An image generation request made by the model.
 
@@ -127740,6 +128690,44 @@ curl https://api.openai.com/v1/responses/resp_123 \
             - `"opaque"`
 
             - `"auto"`
+
+          - `error: optional object { code, message, param, 2 more }`
+
+            Details of a moderation failure, when available.
+
+            - `code: string or null`
+
+              The error code.
+
+            - `message: string`
+
+              A description of the error.
+
+            - `param: string or null`
+
+              The related request parameter.
+
+            - `type: string`
+
+              The error type.
+
+            - `moderation_details: optional object { categories, moderation_stage }`
+
+              Public details for a `moderation_blocked` error, when available.
+
+              - `categories: array of string`
+
+                Public moderation categories. New category values may be added over time.
+
+              - `moderation_stage: "input" or "output" or "unknown"`
+
+                The stage where moderation blocked the image generation call.
+
+                - `"input"`
+
+                - `"output"`
+
+                - `"unknown"`
 
           - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -131330,7 +132318,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           The identifier of the actor that created the item.
 
-      - `ImageGenerationCall object { id, result, status, 7 more }`
+      - `ImageGenerationCall object { id, result, status, 8 more }`
 
         An image generation request made by the model.
 
@@ -131379,6 +132367,44 @@ curl https://api.openai.com/v1/responses/resp_123 \
           - `"opaque"`
 
           - `"auto"`
+
+        - `error: optional object { code, message, param, 2 more }`
+
+          Details of a moderation failure, when available.
+
+          - `code: string or null`
+
+            The error code.
+
+          - `message: string`
+
+            A description of the error.
+
+          - `param: string or null`
+
+            The related request parameter.
+
+          - `type: string`
+
+            The error type.
+
+          - `moderation_details: optional object { categories, moderation_stage }`
+
+            Public details for a `moderation_blocked` error, when available.
+
+            - `categories: array of string`
+
+              Public moderation categories. New category values may be added over time.
+
+            - `moderation_stage: "input" or "output" or "unknown"`
+
+              The stage where moderation blocked the image generation call.
+
+              - `"input"`
+
+              - `"output"`
+
+              - `"unknown"`
 
         - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -139322,7 +140348,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               The ID of the compaction item.
 
-          - `ImageGenerationCall object { id, result, status, 7 more }`
+          - `ImageGenerationCall object { id, result, status, 8 more }`
 
             An image generation request made by the model.
 
@@ -139371,6 +140397,44 @@ curl https://api.openai.com/v1/responses/resp_123 \
               - `"opaque"`
 
               - `"auto"`
+
+            - `error: optional object { code, message, param, 2 more }`
+
+              Details of a moderation failure, when available.
+
+              - `code: string or null`
+
+                The error code.
+
+              - `message: string`
+
+                A description of the error.
+
+              - `param: string or null`
+
+                The related request parameter.
+
+              - `type: string`
+
+                The error type.
+
+              - `moderation_details: optional object { categories, moderation_stage }`
+
+                Public details for a `moderation_blocked` error, when available.
+
+                - `categories: array of string`
+
+                  Public moderation categories. New category values may be added over time.
+
+                - `moderation_stage: "input" or "output" or "unknown"`
+
+                  The stage where moderation blocked the image generation call.
+
+                  - `"input"`
+
+                  - `"output"`
+
+                  - `"unknown"`
 
             - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -142961,7 +144025,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             The identifier of the actor that created the item.
 
-        - `ImageGenerationCall object { id, result, status, 7 more }`
+        - `ImageGenerationCall object { id, result, status, 8 more }`
 
           An image generation request made by the model.
 
@@ -143010,6 +144074,44 @@ curl https://api.openai.com/v1/responses/resp_123 \
             - `"opaque"`
 
             - `"auto"`
+
+          - `error: optional object { code, message, param, 2 more }`
+
+            Details of a moderation failure, when available.
+
+            - `code: string or null`
+
+              The error code.
+
+            - `message: string`
+
+              A description of the error.
+
+            - `param: string or null`
+
+              The related request parameter.
+
+            - `type: string`
+
+              The error type.
+
+            - `moderation_details: optional object { categories, moderation_stage }`
+
+              Public details for a `moderation_blocked` error, when available.
+
+              - `categories: array of string`
+
+                Public moderation categories. New category values may be added over time.
+
+              - `moderation_stage: "input" or "output" or "unknown"`
+
+                The stage where moderation blocked the image generation call.
+
+                - `"input"`
+
+                - `"output"`
+
+                - `"unknown"`
 
           - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -146074,7 +147176,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         A compaction item generated by the [`v1/responses/compact` API](/api/reference/resources/responses/methods/compact).
 
-      - `ImageGenerationCall object { id, result, status, 7 more }`
+      - `ImageGenerationCall object { id, result, status, 8 more }`
 
         An image generation request made by the model.
 
@@ -150890,7 +151992,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             The ID of the compaction item.
 
-        - `ImageGenerationCall object { id, result, status, 7 more }`
+        - `ImageGenerationCall object { id, result, status, 8 more }`
 
           An image generation request made by the model.
 
@@ -150939,6 +152041,44 @@ curl https://api.openai.com/v1/responses/resp_123 \
             - `"opaque"`
 
             - `"auto"`
+
+          - `error: optional object { code, message, param, 2 more }`
+
+            Details of a moderation failure, when available.
+
+            - `code: string or null`
+
+              The error code.
+
+            - `message: string`
+
+              A description of the error.
+
+            - `param: string or null`
+
+              The related request parameter.
+
+            - `type: string`
+
+              The error type.
+
+            - `moderation_details: optional object { categories, moderation_stage }`
+
+              Public details for a `moderation_blocked` error, when available.
+
+              - `categories: array of string`
+
+                Public moderation categories. New category values may be added over time.
+
+              - `moderation_stage: "input" or "output" or "unknown"`
+
+                The stage where moderation blocked the image generation call.
+
+                - `"input"`
+
+                - `"output"`
+
+                - `"unknown"`
 
           - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -158670,7 +159810,7 @@ Returns a list of input items for a given response.
 
         The identifier of the actor that created the item.
 
-    - `ImageGenerationCall object { id, result, status, 7 more }`
+    - `ImageGenerationCall object { id, result, status, 8 more }`
 
       An image generation request made by the model.
 
@@ -158719,6 +159859,44 @@ Returns a list of input items for a given response.
         - `"opaque"`
 
         - `"auto"`
+
+      - `error: optional object { code, message, param, 2 more }`
+
+        Details of a moderation failure, when available.
+
+        - `code: string or null`
+
+          The error code.
+
+        - `message: string`
+
+          A description of the error.
+
+        - `param: string or null`
+
+          The related request parameter.
+
+        - `type: string`
+
+          The error type.
+
+        - `moderation_details: optional object { categories, moderation_stage }`
+
+          Public details for a `moderation_blocked` error, when available.
+
+          - `categories: array of string`
+
+            Public moderation categories. New category values may be added over time.
+
+          - `moderation_stage: "input" or "output" or "unknown"`
+
+            The stage where moderation blocked the image generation call.
+
+            - `"input"`
+
+            - `"output"`
+
+            - `"unknown"`
 
       - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -162982,7 +164160,7 @@ curl https://api.openai.com/v1/responses/resp_abc123/input_items \
 
         The identifier of the actor that created the item.
 
-    - `ImageGenerationCall object { id, result, status, 7 more }`
+    - `ImageGenerationCall object { id, result, status, 8 more }`
 
       An image generation request made by the model.
 
@@ -163031,6 +164209,44 @@ curl https://api.openai.com/v1/responses/resp_abc123/input_items \
         - `"opaque"`
 
         - `"auto"`
+
+      - `error: optional object { code, message, param, 2 more }`
+
+        Details of a moderation failure, when available.
+
+        - `code: string or null`
+
+          The error code.
+
+        - `message: string`
+
+          A description of the error.
+
+        - `param: string or null`
+
+          The related request parameter.
+
+        - `type: string`
+
+          The error type.
+
+        - `moderation_details: optional object { categories, moderation_stage }`
+
+          Public details for a `moderation_blocked` error, when available.
+
+          - `categories: array of string`
+
+            Public moderation categories. New category values may be added over time.
+
+          - `moderation_stage: "input" or "output" or "unknown"`
+
+            The stage where moderation blocked the image generation call.
+
+            - `"input"`
+
+            - `"output"`
+
+            - `"unknown"`
 
       - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -167311,7 +168527,7 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
         The ID of the compaction item.
 
-    - `ImageGenerationCall object { id, result, status, 7 more }`
+    - `ImageGenerationCall object { id, result, status, 8 more }`
 
       An image generation request made by the model.
 
@@ -167360,6 +168576,44 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
         - `"opaque"`
 
         - `"auto"`
+
+      - `error: optional object { code, message, param, 2 more }`
+
+        Details of a moderation failure, when available.
+
+        - `code: string or null`
+
+          The error code.
+
+        - `message: string`
+
+          A description of the error.
+
+        - `param: string or null`
+
+          The related request parameter.
+
+        - `type: string`
+
+          The error type.
+
+        - `moderation_details: optional object { categories, moderation_stage }`
+
+          Public details for a `moderation_blocked` error, when available.
+
+          - `categories: array of string`
+
+            Public moderation categories. New category values may be added over time.
+
+          - `moderation_stage: "input" or "output" or "unknown"`
+
+            The stage where moderation blocked the image generation call.
+
+            - `"input"`
+
+            - `"output"`
+
+            - `"unknown"`
 
       - `output_format: optional "png" or "webp" or "jpeg" or null`
 

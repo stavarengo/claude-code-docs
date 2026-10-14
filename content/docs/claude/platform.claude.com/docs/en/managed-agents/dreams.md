@@ -37,7 +37,7 @@ The dream produces another **output memory store**, separate from the input. The
       memory_store_id: $store_id
     - type: sessions
       session_ids: [$session_a, $session_b]
-  model: claude-opus-4-8
+  model: claude-opus-5-5
   instructions: Focus on coding-style preferences; ignore one-off debugging notes.
   YAML
   ```
@@ -57,7 +57,7 @@ The response is the full `dream` resource with `status: "pending"`:
     { "type": "sessions", "session_ids": ["sesn_01...", "sesn_02..."] }
   ],
   "outputs": [],
-  "model": { "id": "claude-opus-4-8" },
+  "model": { "id": "claude-opus-5-5" },
   "instructions": "Focus on coding-style preferences; ignore one-off debugging notes.",
   "session_id": null,
   "created_at": "2026-04-29T17:04:10Z",

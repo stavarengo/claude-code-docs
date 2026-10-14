@@ -32,7 +32,7 @@ The example defines a `get_weather` tool, lets Claude think and request a tool c
     <CodeGroup>
       ```bash CLI
       ant messages create --transform content <<'YAML'
-      model: claude-opus-4-8
+      model: claude-opus-5-5
       max_tokens: 16000
       thinking:
         type: adaptive
@@ -56,10 +56,10 @@ The example defines a `get_weather` tool, lets Claude think and request a tool c
   </Step>
 
   <Step title="Capture the content array to echo back">
-    You should see `thinking`, `text`, and `tool_use` blocks in the response content on a run where Claude chose to think (on simpler requests, adaptive mode may skip the thinking block). Keep this content array intact: the next step sends it back verbatim.
+    You should see `thinking` and `tool_use` blocks in the response content on a run where Claude chose to think (on simpler requests, adaptive mode may skip the thinking block). A note Claude writes before the tool call comes back as a `text` block or, on models that write [progress updates](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli#progress-updates), as another `thinking` block. Keep this content array intact: the next step sends it back verbatim.
 
     <Note>
-      To see thinking text like this output, add `display: "summarized"` to the request. On models where display defaults to omitted, including claude-opus-4-8, the `thinking` field otherwise comes back as an empty string with only the `signature` populated. Either way, echo the content array back unchanged; see [Controlling thinking display](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli#controlling-thinking-display).
+      To see thinking text like this output, add `display: "summarized"` to the request. On models where display defaults to omitted, including Claude Opus 5.5, the `thinking` field otherwise comes back as an empty string with only the `signature` populated. Either way, echo the content array back unchanged; see [Controlling thinking display](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli#controlling-thinking-display).
     </Note>
 
     ```json Output
@@ -69,10 +69,6 @@ The example defines a `get_weather` tool, lets Claude think and request a tool c
           "type": "thinking",
           "thinking": "The user wants to know the current weather in Paris. I have access to a function `get_weather`...",
           "signature": "BDaL4VrbR2Oj0hO4XpJxT28J5T...."
-        },
-        {
-          "type": "text",
-          "text": "I can help you get the current weather information for Paris. Let me check that for you"
         },
         {
           "type": "tool_use",
@@ -99,7 +95,7 @@ The example defines a `get_weather` tool, lets Claude think and request a tool c
       # through a file keeps it out of shell-expansion position later.
       ant messages create --transform content --format jsonl \
         > assistant_content.json <<'YAML'
-      model: claude-opus-4-8
+      model: claude-opus-5-5
       max_tokens: 16000
       thinking:
         type: adaptive
@@ -128,7 +124,7 @@ The example defines a `get_weather` tool, lets Claude think and request a tool c
           ($blocks[0][] | select(.type == "tool_use") | .id)
       ' <<'JSON' | ant messages create
       {
-        "model": "claude-opus-4-8",
+        "model": "claude-opus-5-5",
         "max_tokens": 16000,
         "thinking": {"type": "adaptive"},
         "tools": [{

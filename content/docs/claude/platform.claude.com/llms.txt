@@ -16,7 +16,7 @@ Connect an MCP client to https://platform.claude.com/docs/mcp (Streamable HTTP t
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 760 pages - /docs - Content included below
+- English (en) - 763 pages - /docs - Content included below
 - German (Deutsch) (de) - 278 pages - /docs/de - Visit website for content
 - Spanish (Español) (es) - 278 pages - /docs/es - Visit website for content
 - French (Français) (fr) - 278 pages - /docs/fr - Visit website for content
@@ -155,8 +155,11 @@ The full documentation is available in the following languages on https://platfo
 - [Event deltas](https://platform.claude.com/docs/en/managed-agents/event-deltas.md) - Preview responses with event deltas
 - [Managed Agents reference](https://platform.claude.com/docs/en/managed-agents/reference.md) - Reference
 - [Web tool restrictions](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions.md) - Restrict web search and web fetch domains
+- [Review and monitor sessions](https://platform.claude.com/docs/en/managed-agents/secure-deployment-monitoring.md) - Review and monitor agent sessions
 - [Scheduled deployments](https://platform.claude.com/docs/en/managed-agents/scheduled-deployments.md)
+- [Secure your deployment](https://platform.claude.com/docs/en/managed-agents/secure-deployment.md) - Secure your Managed Agents deployment
 - [Security model](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-security.md)
+- [Risks and boundaries](https://platform.claude.com/docs/en/managed-agents/secure-deployment-risks.md) - Security risks and sandbox boundaries
 - [Overview and quickstart](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes.md) - Self-hosted sandboxes
 - [Worker reference](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-reference.md) - Self-hosted worker reference
 - [Session budgets](https://platform.claude.com/docs/en/managed-agents/budgets.md)

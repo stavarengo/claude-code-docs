@@ -113,7 +113,7 @@ Pass any model ID or alias as the `model` query parameter to return only the ent
 
 <CodeGroup>
   ```bash CLI
-  ant organization:rate-limits list --model claude-opus-5
+  ant organization:rate-limits list --model claude-opus-5-5
   ```
 </CodeGroup>
 

@@ -3992,7 +3992,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             The canonical name of the agent that produced this item.
 
-      - `ImageGenerationCall object { id, result, status, 8 more }`
+      - `ImageGenerationCall object { id, result, status, 9 more }`
 
         An image generation request made by the model.
 
@@ -4049,6 +4049,44 @@ Schema name: `BetaResponseCreatedEvent`
           - `"opaque"`
 
           - `"auto"`
+
+        - `error: optional object { code, message, param, 2 more }`
+
+          Details of a moderation failure, when available.
+
+          - `code: string or null`
+
+            The error code.
+
+          - `message: string`
+
+            A description of the error.
+
+          - `param: string or null`
+
+            The related request parameter.
+
+          - `type: string`
+
+            The error type.
+
+          - `moderation_details: optional object { categories, moderation_stage }`
+
+            Public details for a `moderation_blocked` error, when available.
+
+            - `categories: array of string`
+
+              Public moderation categories. New category values may be added over time.
+
+            - `moderation_stage: "input" or "output" or "unknown"`
+
+              The stage where moderation blocked the image generation call.
+
+              - `"input"`
+
+              - `"output"`
+
+              - `"unknown"`
 
         - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -8348,7 +8386,7 @@ Schema name: `BetaResponseCreatedEvent`
 
         The identifier of the actor that created the item.
 
-    - `ImageGenerationCall object { id, result, status, 8 more }`
+    - `ImageGenerationCall object { id, result, status, 9 more }`
 
       An image generation request made by the model.
 
@@ -8405,6 +8443,44 @@ Schema name: `BetaResponseCreatedEvent`
         - `"opaque"`
 
         - `"auto"`
+
+      - `error: optional object { code, message, param, 2 more }`
+
+        Details of a moderation failure, when available.
+
+        - `code: string or null`
+
+          The error code.
+
+        - `message: string`
+
+          A description of the error.
+
+        - `param: string or null`
+
+          The related request parameter.
+
+        - `type: string`
+
+          The error type.
+
+        - `moderation_details: optional object { categories, moderation_stage }`
+
+          Public details for a `moderation_blocked` error, when available.
+
+          - `categories: array of string`
+
+            Public moderation categories. New category values may be added over time.
+
+          - `moderation_stage: "input" or "output" or "unknown"`
+
+            The stage where moderation blocked the image generation call.
+
+            - `"input"`
+
+            - `"output"`
+
+            - `"unknown"`
 
       - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -15154,7 +15230,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             The canonical name of the agent that produced this item.
 
-      - `ImageGenerationCall object { id, result, status, 8 more }`
+      - `ImageGenerationCall object { id, result, status, 9 more }`
 
         An image generation request made by the model.
 
@@ -15211,6 +15287,44 @@ Schema name: `BetaResponseInProgressEvent`
           - `"opaque"`
 
           - `"auto"`
+
+        - `error: optional object { code, message, param, 2 more }`
+
+          Details of a moderation failure, when available.
+
+          - `code: string or null`
+
+            The error code.
+
+          - `message: string`
+
+            A description of the error.
+
+          - `param: string or null`
+
+            The related request parameter.
+
+          - `type: string`
+
+            The error type.
+
+          - `moderation_details: optional object { categories, moderation_stage }`
+
+            Public details for a `moderation_blocked` error, when available.
+
+            - `categories: array of string`
+
+              Public moderation categories. New category values may be added over time.
+
+            - `moderation_stage: "input" or "output" or "unknown"`
+
+              The stage where moderation blocked the image generation call.
+
+              - `"input"`
+
+              - `"output"`
+
+              - `"unknown"`
 
         - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -19510,7 +19624,7 @@ Schema name: `BetaResponseInProgressEvent`
 
         The identifier of the actor that created the item.
 
-    - `ImageGenerationCall object { id, result, status, 8 more }`
+    - `ImageGenerationCall object { id, result, status, 9 more }`
 
       An image generation request made by the model.
 
@@ -19567,6 +19681,44 @@ Schema name: `BetaResponseInProgressEvent`
         - `"opaque"`
 
         - `"auto"`
+
+      - `error: optional object { code, message, param, 2 more }`
+
+        Details of a moderation failure, when available.
+
+        - `code: string or null`
+
+          The error code.
+
+        - `message: string`
+
+          A description of the error.
+
+        - `param: string or null`
+
+          The related request parameter.
+
+        - `type: string`
+
+          The error type.
+
+        - `moderation_details: optional object { categories, moderation_stage }`
+
+          Public details for a `moderation_blocked` error, when available.
+
+          - `categories: array of string`
+
+            Public moderation categories. New category values may be added over time.
+
+          - `moderation_stage: "input" or "output" or "unknown"`
+
+            The stage where moderation blocked the image generation call.
+
+            - `"input"`
+
+            - `"output"`
+
+            - `"unknown"`
 
       - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -26316,7 +26468,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             The canonical name of the agent that produced this item.
 
-      - `ImageGenerationCall object { id, result, status, 8 more }`
+      - `ImageGenerationCall object { id, result, status, 9 more }`
 
         An image generation request made by the model.
 
@@ -26373,6 +26525,44 @@ Schema name: `BetaResponseCompletedEvent`
           - `"opaque"`
 
           - `"auto"`
+
+        - `error: optional object { code, message, param, 2 more }`
+
+          Details of a moderation failure, when available.
+
+          - `code: string or null`
+
+            The error code.
+
+          - `message: string`
+
+            A description of the error.
+
+          - `param: string or null`
+
+            The related request parameter.
+
+          - `type: string`
+
+            The error type.
+
+          - `moderation_details: optional object { categories, moderation_stage }`
+
+            Public details for a `moderation_blocked` error, when available.
+
+            - `categories: array of string`
+
+              Public moderation categories. New category values may be added over time.
+
+            - `moderation_stage: "input" or "output" or "unknown"`
+
+              The stage where moderation blocked the image generation call.
+
+              - `"input"`
+
+              - `"output"`
+
+              - `"unknown"`
 
         - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -30672,7 +30862,7 @@ Schema name: `BetaResponseCompletedEvent`
 
         The identifier of the actor that created the item.
 
-    - `ImageGenerationCall object { id, result, status, 8 more }`
+    - `ImageGenerationCall object { id, result, status, 9 more }`
 
       An image generation request made by the model.
 
@@ -30729,6 +30919,44 @@ Schema name: `BetaResponseCompletedEvent`
         - `"opaque"`
 
         - `"auto"`
+
+      - `error: optional object { code, message, param, 2 more }`
+
+        Details of a moderation failure, when available.
+
+        - `code: string or null`
+
+          The error code.
+
+        - `message: string`
+
+          A description of the error.
+
+        - `param: string or null`
+
+          The related request parameter.
+
+        - `type: string`
+
+          The error type.
+
+        - `moderation_details: optional object { categories, moderation_stage }`
+
+          Public details for a `moderation_blocked` error, when available.
+
+          - `categories: array of string`
+
+            Public moderation categories. New category values may be added over time.
+
+          - `moderation_stage: "input" or "output" or "unknown"`
+
+            The stage where moderation blocked the image generation call.
+
+            - `"input"`
+
+            - `"output"`
+
+            - `"unknown"`
 
       - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -37502,7 +37730,7 @@ Schema name: `BetaResponseFailedEvent`
 
             The canonical name of the agent that produced this item.
 
-      - `ImageGenerationCall object { id, result, status, 8 more }`
+      - `ImageGenerationCall object { id, result, status, 9 more }`
 
         An image generation request made by the model.
 
@@ -37559,6 +37787,44 @@ Schema name: `BetaResponseFailedEvent`
           - `"opaque"`
 
           - `"auto"`
+
+        - `error: optional object { code, message, param, 2 more }`
+
+          Details of a moderation failure, when available.
+
+          - `code: string or null`
+
+            The error code.
+
+          - `message: string`
+
+            A description of the error.
+
+          - `param: string or null`
+
+            The related request parameter.
+
+          - `type: string`
+
+            The error type.
+
+          - `moderation_details: optional object { categories, moderation_stage }`
+
+            Public details for a `moderation_blocked` error, when available.
+
+            - `categories: array of string`
+
+              Public moderation categories. New category values may be added over time.
+
+            - `moderation_stage: "input" or "output" or "unknown"`
+
+              The stage where moderation blocked the image generation call.
+
+              - `"input"`
+
+              - `"output"`
+
+              - `"unknown"`
 
         - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -41858,7 +42124,7 @@ Schema name: `BetaResponseFailedEvent`
 
         The identifier of the actor that created the item.
 
-    - `ImageGenerationCall object { id, result, status, 8 more }`
+    - `ImageGenerationCall object { id, result, status, 9 more }`
 
       An image generation request made by the model.
 
@@ -41915,6 +42181,44 @@ Schema name: `BetaResponseFailedEvent`
         - `"opaque"`
 
         - `"auto"`
+
+      - `error: optional object { code, message, param, 2 more }`
+
+        Details of a moderation failure, when available.
+
+        - `code: string or null`
+
+          The error code.
+
+        - `message: string`
+
+          A description of the error.
+
+        - `param: string or null`
+
+          The related request parameter.
+
+        - `type: string`
+
+          The error type.
+
+        - `moderation_details: optional object { categories, moderation_stage }`
+
+          Public details for a `moderation_blocked` error, when available.
+
+          - `categories: array of string`
+
+            Public moderation categories. New category values may be added over time.
+
+          - `moderation_stage: "input" or "output" or "unknown"`
+
+            The stage where moderation blocked the image generation call.
+
+            - `"input"`
+
+            - `"output"`
+
+            - `"unknown"`
 
       - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -48668,7 +48972,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             The canonical name of the agent that produced this item.
 
-      - `ImageGenerationCall object { id, result, status, 8 more }`
+      - `ImageGenerationCall object { id, result, status, 9 more }`
 
         An image generation request made by the model.
 
@@ -48725,6 +49029,44 @@ Schema name: `BetaResponseIncompleteEvent`
           - `"opaque"`
 
           - `"auto"`
+
+        - `error: optional object { code, message, param, 2 more }`
+
+          Details of a moderation failure, when available.
+
+          - `code: string or null`
+
+            The error code.
+
+          - `message: string`
+
+            A description of the error.
+
+          - `param: string or null`
+
+            The related request parameter.
+
+          - `type: string`
+
+            The error type.
+
+          - `moderation_details: optional object { categories, moderation_stage }`
+
+            Public details for a `moderation_blocked` error, when available.
+
+            - `categories: array of string`
+
+              Public moderation categories. New category values may be added over time.
+
+            - `moderation_stage: "input" or "output" or "unknown"`
+
+              The stage where moderation blocked the image generation call.
+
+              - `"input"`
+
+              - `"output"`
+
+              - `"unknown"`
 
         - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -53024,7 +53366,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
         The identifier of the actor that created the item.
 
-    - `ImageGenerationCall object { id, result, status, 8 more }`
+    - `ImageGenerationCall object { id, result, status, 9 more }`
 
       An image generation request made by the model.
 
@@ -53081,6 +53423,44 @@ Schema name: `BetaResponseIncompleteEvent`
         - `"opaque"`
 
         - `"auto"`
+
+      - `error: optional object { code, message, param, 2 more }`
+
+        Details of a moderation failure, when available.
+
+        - `code: string or null`
+
+          The error code.
+
+        - `message: string`
+
+          A description of the error.
+
+        - `param: string or null`
+
+          The related request parameter.
+
+        - `type: string`
+
+          The error type.
+
+        - `moderation_details: optional object { categories, moderation_stage }`
+
+          Public details for a `moderation_blocked` error, when available.
+
+          - `categories: array of string`
+
+            Public moderation categories. New category values may be added over time.
+
+          - `moderation_stage: "input" or "output" or "unknown"`
+
+            The stage where moderation blocked the image generation call.
+
+            - `"input"`
+
+            - `"output"`
+
+            - `"unknown"`
 
       - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -59549,7 +59929,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
       The identifier of the actor that created the item.
 
-  - `ImageGenerationCall object { id, result, status, 8 more }`
+  - `ImageGenerationCall object { id, result, status, 9 more }`
 
     An image generation request made by the model.
 
@@ -59606,6 +59986,44 @@ Schema name: `BetaResponseOutputItemAddedEvent`
       - `"opaque"`
 
       - `"auto"`
+
+    - `error: optional object { code, message, param, 2 more }`
+
+      Details of a moderation failure, when available.
+
+      - `code: string or null`
+
+        The error code.
+
+      - `message: string`
+
+        A description of the error.
+
+      - `param: string or null`
+
+        The related request parameter.
+
+      - `type: string`
+
+        The error type.
+
+      - `moderation_details: optional object { categories, moderation_stage }`
+
+        Public details for a `moderation_blocked` error, when available.
+
+        - `categories: array of string`
+
+          Public moderation categories. New category values may be added over time.
+
+        - `moderation_stage: "input" or "output" or "unknown"`
+
+          The stage where moderation blocked the image generation call.
+
+          - `"input"`
+
+          - `"output"`
+
+          - `"unknown"`
 
     - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -64302,7 +64720,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
       The identifier of the actor that created the item.
 
-  - `ImageGenerationCall object { id, result, status, 8 more }`
+  - `ImageGenerationCall object { id, result, status, 9 more }`
 
     An image generation request made by the model.
 
@@ -64359,6 +64777,44 @@ Schema name: `BetaResponseOutputItemDoneEvent`
       - `"opaque"`
 
       - `"auto"`
+
+    - `error: optional object { code, message, param, 2 more }`
+
+      Details of a moderation failure, when available.
+
+      - `code: string or null`
+
+        The error code.
+
+      - `message: string`
+
+        A description of the error.
+
+      - `param: string or null`
+
+        The related request parameter.
+
+      - `type: string`
+
+        The error type.
+
+      - `moderation_details: optional object { categories, moderation_stage }`
+
+        Public details for a `moderation_blocked` error, when available.
+
+        - `categories: array of string`
+
+          Public moderation categories. New category values may be added over time.
+
+        - `moderation_stage: "input" or "output" or "unknown"`
+
+          The stage where moderation blocked the image generation call.
+
+          - `"input"`
+
+          - `"output"`
+
+          - `"unknown"`
 
     - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -71830,7 +72286,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             The canonical name of the agent that produced this item.
 
-      - `ImageGenerationCall object { id, result, status, 8 more }`
+      - `ImageGenerationCall object { id, result, status, 9 more }`
 
         An image generation request made by the model.
 
@@ -71887,6 +72343,44 @@ Schema name: `BetaResponseQueuedEvent`
           - `"opaque"`
 
           - `"auto"`
+
+        - `error: optional object { code, message, param, 2 more }`
+
+          Details of a moderation failure, when available.
+
+          - `code: string or null`
+
+            The error code.
+
+          - `message: string`
+
+            A description of the error.
+
+          - `param: string or null`
+
+            The related request parameter.
+
+          - `type: string`
+
+            The error type.
+
+          - `moderation_details: optional object { categories, moderation_stage }`
+
+            Public details for a `moderation_blocked` error, when available.
+
+            - `categories: array of string`
+
+              Public moderation categories. New category values may be added over time.
+
+            - `moderation_stage: "input" or "output" or "unknown"`
+
+              The stage where moderation blocked the image generation call.
+
+              - `"input"`
+
+              - `"output"`
+
+              - `"unknown"`
 
         - `output_format: optional "png" or "webp" or "jpeg" or null`
 
@@ -76186,7 +76680,7 @@ Schema name: `BetaResponseQueuedEvent`
 
         The identifier of the actor that created the item.
 
-    - `ImageGenerationCall object { id, result, status, 8 more }`
+    - `ImageGenerationCall object { id, result, status, 9 more }`
 
       An image generation request made by the model.
 
@@ -76243,6 +76737,44 @@ Schema name: `BetaResponseQueuedEvent`
         - `"opaque"`
 
         - `"auto"`
+
+      - `error: optional object { code, message, param, 2 more }`
+
+        Details of a moderation failure, when available.
+
+        - `code: string or null`
+
+          The error code.
+
+        - `message: string`
+
+          A description of the error.
+
+        - `param: string or null`
+
+          The related request parameter.
+
+        - `type: string`
+
+          The error type.
+
+        - `moderation_details: optional object { categories, moderation_stage }`
+
+          Public details for a `moderation_blocked` error, when available.
+
+          - `categories: array of string`
+
+            Public moderation categories. New category values may be added over time.
+
+          - `moderation_stage: "input" or "output" or "unknown"`
+
+            The stage where moderation blocked the image generation call.
+
+            - `"input"`
+
+            - `"output"`
+
+            - `"unknown"`
 
       - `output_format: optional "png" or "webp" or "jpeg" or null`
 

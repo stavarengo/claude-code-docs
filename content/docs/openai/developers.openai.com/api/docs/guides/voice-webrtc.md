@@ -8,7 +8,7 @@ Choose your API to see its connection steps and session events.
 
 ## Connect a browser to GPT-Live
 
-Use WebRTC for browser voice applications. Microphone input and generated speech travel on negotiated media tracks. A data channel carries JSON events for transcripts, session updates, and delegated work.
+We recommend WebRTC for GPT-Live audio connections in browser, mobile, and server applications. This guide walks through a browser example. Microphone input and generated speech travel on negotiated media tracks. A data channel carries JSON events for transcripts, session updates, and delegated work.
 
 Your browser creates a Session Description Protocol (SDP) offer. Your application server exchanges it for an answer with `POST /v1/live/sessions`, using the project API key. Keep the key and session configuration on your trusted server.
 
