@@ -102,8 +102,8 @@ Anthropic's [client SDKs](https://platform.claude.com/docs/en/cli-sdks-libraries
     <Tabs>
       <Tab title="Gradle">
         ```kotlin
-        implementation("com.anthropic:anthropic-java:2.71.0")
-        implementation("com.anthropic:anthropic-java-bedrock:2.71.0")
+        implementation("com.anthropic:anthropic-java:2.72.0")
+        implementation("com.anthropic:anthropic-java-bedrock:2.72.0")
         ```
       </Tab>
 
@@ -112,12 +112,12 @@ Anthropic's [client SDKs](https://platform.claude.com/docs/en/cli-sdks-libraries
         <dependency>
             <groupId>com.anthropic</groupId>
             <artifactId>anthropic-java</artifactId>
-            <version>2.71.0</version>
+            <version>2.72.0</version>
         </dependency>
         <dependency>
             <groupId>com.anthropic</groupId>
             <artifactId>anthropic-java-bedrock</artifactId>
-            <version>2.71.0</version>
+            <version>2.72.0</version>
         </dependency>
         ```
       </Tab>
@@ -152,7 +152,7 @@ The SDK resolves credentials and region using the standard AWS precedence: const
 </Tabs>
 
 <Tip>
-  You can also create the standard client with `Anthropic` (python, typescript): set `base_url` (python, ruby) to `https://bedrock-mantle.{region}.api.aws/anthropic` and pass your bearer token as `api_key` (python, ruby). This path supports bearer-token authentication only. SigV4 signing requires `AnthropicBedrockMantle`.
+  You can also create the standard client with `Anthropic`: set `base_url` to `https://bedrock-mantle.{region}.api.aws/anthropic` and pass your bearer token as `api_key`. This path supports bearer-token authentication only. SigV4 signing requires `AnthropicBedrockMantle`.
 </Tip>
 
 ## Supported models

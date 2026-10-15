@@ -5,7 +5,8 @@ description: Here you can find all the components available in the library. We a
 
 ## New Components
 
-- [Questionnaire](https://ui.shadcn.com/docs/components/questionnaire): A multi-step questionnaire with single-choice, multiple-choice, freeform, and skippable questions.
+- [Code Block](https://ui.shadcn.com/docs/components/code-block): Displays code, terminal output and diffs with an optional header, line numbers and a copy button.
+- [Trace](https://ui.shadcn.com/docs/components/trace): The building block for reasoning, tool calls, sources and more.
 
 ## All Components
 
@@ -25,6 +26,7 @@ description: Here you can find all the components available in the library. We a
 - [Carousel](https://ui.shadcn.com/docs/components/carousel): A carousel with motion and swipe built using Embla.
 - [Chart](https://ui.shadcn.com/docs/components/chart): Beautiful charts. Built using Recharts. Copy and paste into your apps.
 - [Checkbox](https://ui.shadcn.com/docs/components/checkbox): A control that allows the user to toggle between checked and not checked.
+- [Code Block](https://ui.shadcn.com/docs/components/code-block): Displays code, terminal output and diffs with an optional header, line numbers and a copy button.
 - [Collapsible](https://ui.shadcn.com/docs/components/collapsible): An interactive component which expands/collapses a panel.
 - [Combobox](https://ui.shadcn.com/docs/components/combobox): Autocomplete input with a list of suggestions.
 - [Command](https://ui.shadcn.com/docs/components/command): Command menu for search and quick actions.
@@ -72,6 +74,7 @@ description: Here you can find all the components available in the library. We a
 - [Toggle](https://ui.shadcn.com/docs/components/toggle): A two-state button that can be either on or off.
 - [Toggle Group](https://ui.shadcn.com/docs/components/toggle-group): A set of two-state buttons that can be toggled on or off.
 - [Tooltip](https://ui.shadcn.com/docs/components/tooltip): A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.
+- [Trace](https://ui.shadcn.com/docs/components/trace): The building block for reasoning, tool calls, sources and more.
 - [Typography](https://ui.shadcn.com/docs/components/typography): Styles for headings, paragraphs, lists, etc.
 
 ---

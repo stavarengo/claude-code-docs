@@ -21,9 +21,9 @@ This separation keeps secrets out of reusable agent definitions while letting ea
 
 ## Declare MCP servers on the agent
 
-Specify MCP servers in the `mcp_servers` array when creating an agent. Each server needs a `type` (java, php), a unique `name` (java, php), and a `url` (java, php). No authentication tokens are provided at this stage.
+Specify MCP servers in the `mcp_servers` array when creating an agent. Each server needs a `type`, a unique `name`, and a `url`. No authentication tokens are provided at this stage.
 
-Each declared server also needs a matching `mcp_toolset` entry in the `tools` (java, php) array. The toolset's `mcp_server_name` must match the server's `name` (java, php).
+Each declared server also needs a matching `mcp_toolset` entry in the `tools` array. The toolset's `mcp_server_name` must match the server's `name`.
 
 <CodeGroup defaultLanguage="CLI">
   <CodeGroupItem>
@@ -58,20 +58,20 @@ Each declared server also needs a matching `mcp_toolset` entry in the `tools` (j
 
 Each entry in the `mcp_servers` array defines one connection.
 
-| Field              | Description                                                                                                                                                                                                                                                                                           |
-| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `type` (java, php) | Required. Must be `"url"`.                                                                                                                                                                                                                                                                            |
-| `name` (java, php) | Required. A unique name for this server within the agent (1–255 characters). Used as the `mcp_server_name` in the `tools` (java, php) array and surfaced on MCP tool events in the [session event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli). |
-| `url` (java, php)  | Required. The endpoint of the remote MCP server (up to 2,048 characters). See [Supported MCP server types](https://platform.claude.com/docs/en/managed-agents/reference?sdk_languages=cli#supported-mcp-server-types) for transport requirements.                                                     |
+| Field  | Description                                                                                                                                                                                                                                                                               |
+| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type` | Required. Must be `"url"`.                                                                                                                                                                                                                                                                |
+| `name` | Required. A unique name for this server within the agent (1–255 characters). Used as the `mcp_server_name` in the `tools` array and surfaced on MCP tool events in the [session event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli). |
+| `url`  | Required. The endpoint of the remote MCP server (up to 2,048 characters). See [Supported MCP server types](https://platform.claude.com/docs/en/managed-agents/reference?sdk_languages=cli#supported-mcp-server-types) for transport requirements.                                         |
 
 Constraints:
 
 * An agent can declare up to 20 MCP servers. Server names must be unique within the array.
-* Every `mcp_servers` entry must be referenced by an `mcp_toolset` in the `tools` (java, php) array, and every `mcp_toolset` must reference a declared server. The API rejects agent definitions with unreferenced servers or dangling toolsets.
+* Every `mcp_servers` entry must be referenced by an `mcp_toolset` in the `tools` array, and every `mcp_toolset` must reference a declared server. The API rejects agent definitions with unreferenced servers or dangling toolsets.
 
 ## Configure which MCP tools are available
 
-The `mcp_toolset` entry supports a `default_config` object and a `configs` (java, php) array, applied to the tools the MCP server exposes. Each `configs` (java, php) entry accepts only `name` (java, php), `enabled` (java, php), and `permission_policy`. Unlike entries in the built-in agent toolset, MCP tool entries do not take a `type` (java, php) field, and the [web settings](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions?sdk_languages=cli#settings) available on `web_search` and `web_fetch` do not apply to MCP tools. The `name` (java, php) in each `configs` (java, php) entry is the bare tool name as reported by the server.
+The `mcp_toolset` entry supports a `default_config` object and a `configs` array, applied to the tools the MCP server exposes. Each `configs` entry accepts only `name`, `enabled`, and `permission_policy`. Unlike entries in the built-in agent toolset, MCP tool entries do not take a `type` field, and the [web settings](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions?sdk_languages=cli#settings) available on `web_search` and `web_fetch` do not apply to MCP tools. The `name` in each `configs` entry is the bare tool name as reported by the server.
 
 By default all tools exposed by the MCP server are enabled. To enable only specific tools, set `default_config.enabled` to `false` and explicitly enable the tools you want:
 
@@ -100,7 +100,7 @@ To disable specific tools while keeping the rest enabled, omit `default_config` 
 }
 ```
 
-See [configuring the toolset](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli#configuring-the-toolset) for the general `default_config` / `configs` (java, php) pattern, and [MCP toolset permissions](https://platform.claude.com/docs/en/managed-agents/permission-policies?sdk_languages=cli#mcp-toolset-permissions) for setting `permission_policy` on MCP tools and handling confirmation requests.
+See [configuring the toolset](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli#configuring-the-toolset) for the general `default_config` / `configs` pattern, and [MCP toolset permissions](https://platform.claude.com/docs/en/managed-agents/permission-policies?sdk_languages=cli#mcp-toolset-permissions) for setting `permission_policy` on MCP tools and handling confirmation requests.
 
 ### MCP tool output handling
 
@@ -122,7 +122,7 @@ With a `limited` [environment](https://platform.claude.com/docs/en/managed-agent
   ```
 </CodeGroup>
 
-Credentials are matched by URL, so the vault must contain a credential whose `mcp_server_url` refers to the same server as the `url` (java, php) declared in `mcp_servers`. Both URLs are normalized before matching (scheme and host lowercased, default ports and trailing slashes stripped), so differences in host casing, a default port, or a trailing slash don't prevent a match; a different path, subdomain, or non-default port does. If none matches, the connection is attempted unauthenticated. See [Add a credential](https://platform.claude.com/docs/en/managed-agents/vaults?sdk_languages=cli#add-a-credential) for the `static_bearer` and `mcp_oauth` credential types.
+Credentials are matched by URL, so the vault must contain a credential whose `mcp_server_url` refers to the same server as the `url` declared in `mcp_servers`. Both URLs are normalized before matching (scheme and host lowercased, default ports and trailing slashes stripped), so differences in host casing, a default port, or a trailing slash don't prevent a match; a different path, subdomain, or non-default port does. If none matches, the connection is attempted unauthenticated. See [Add a credential](https://platform.claude.com/docs/en/managed-agents/vaults?sdk_languages=cli#add-a-credential) for the `static_bearer` and `mcp_oauth` credential types.
 
 ### Handle connection and authentication failures
 

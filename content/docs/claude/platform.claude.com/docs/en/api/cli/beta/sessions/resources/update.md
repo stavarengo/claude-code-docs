@@ -1,0 +1,169 @@
+---
+title: Update Session Resource
+url: https://platform.claude.com/docs/en/api/cli/beta/sessions/resources/update
+---
+
+# Update Session Resource
+
+`$ ant beta:sessions:resources update`
+
+**POST** `/v1/sessions/{session_id}/resources/{resource_id}`
+
+Update Session Resource
+
+## Parameters
+
+- `--session-id: string` (path parameter)
+
+- `--resource-id: string` (path parameter)
+
+- `--authorization-token: string`
+
+  New authorization token for the resource. Currently only `github_repository` resources support token rotation.
+
+  minLength: 1, maxLength: 4096
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  Optional header to specify the beta version(s) you want to use.
+
+- `--workspace-id: optional string` (header parameter)
+
+  Optional header to select the Workspace for this request. The value is a Workspace ID (for example, `wrkspc_011CZkZaBF1tNoB5wlCeusgy`).
+
+  Only needed for credentials that can act on more than one Workspace. A credential that belongs to a specific Workspace may omit it; if sent, it must match that Workspace.
+
+## Returns
+
+- `BetaSessionResourceUpdateResponse: BetaManagedAgentsGitHubRepositoryResource or BetaManagedAgentsFileResource or BetaManagedAgentsMemoryStoreResource`
+
+  The updated session resource.
+
+  - `beta_managed_agents_github_repository_resource: object`
+
+    - `type: "github_repository"`
+
+    - `id: string`
+
+    - `created_at: string`
+
+      A timestamp in RFC 3339 format
+
+      format: date-time
+
+    - `mount_path: string`
+
+    - `updated_at: string`
+
+      A timestamp in RFC 3339 format
+
+      format: date-time
+
+    - `url: string`
+
+    - `checkout: optional BetaManagedAgentsBranchCheckout or BetaManagedAgentsCommitCheckout`
+
+      - `beta_managed_agents_branch_checkout: object`
+
+        - `type: "branch"`
+
+        - `name: string`
+
+          Branch name to check out.
+
+          minLength: 1, maxLength: 255
+
+      - `beta_managed_agents_commit_checkout: object`
+
+        - `type: "commit"`
+
+        - `sha: string`
+
+          Full commit SHA to check out.
+
+          minLength: 7, maxLength: 64
+
+  - `beta_managed_agents_file_resource: object`
+
+    - `type: "file"`
+
+    - `id: string`
+
+    - `created_at: string`
+
+      A timestamp in RFC 3339 format
+
+      format: date-time
+
+    - `file_id: string`
+
+    - `mount_path: string`
+
+    - `updated_at: string`
+
+      A timestamp in RFC 3339 format
+
+      format: date-time
+
+  - `beta_managed_agents_memory_store_resource: object`
+
+    A memory store attached to an agent session.
+
+    - `type: "memory_store"`
+
+    - `memory_store_id: string`
+
+      The memory store ID (memstore_...). Must belong to the caller's organization and workspace.
+
+    - `access: optional "read_write" or "read_only"`
+
+      Access mode for the mounted store. Defaults to `read_write`. `read_only` mounts the store as a read-only filesystem.
+
+      - `"read_write"`
+
+      - `"read_only"`
+
+    - `description: optional string`
+
+      Description of the memory store, snapshotted at attach time. Rendered into the agent's system prompt. Empty string when the store has no description.
+
+    - `instructions: optional string`
+
+      Per-attachment guidance for the agent on how to use this store. Rendered into the memory section of the system prompt. Max 4096 chars.
+
+      maxLength: 4096
+
+    - `mount_path: optional string`
+
+      Filesystem path where the store is mounted in the session container, e.g. /mnt/memory/user-preferences. Derived from the store's name. Output-only.
+
+    - `name: optional string`
+
+      Display name of the memory store, snapshotted at attach time. Later edits to the store's name do not propagate to this resource.
+
+## Example
+
+```bash
+ant beta:sessions:resources update \
+  --api-key my-anthropic-api-key \
+  --session-id sesn_011CZkZAtmR3yMPDzynEDxu7 \
+  --resource-id sesrsc_011CZkZBJq5dWxk9fVLNcPht \
+  --authorization-token ghp_exampletoken
+```
+
+### Response (200)
+
+```json
+{
+  "id": "sesrsc_011CZkZCKr6eXym1gWMPdQiu",
+  "created_at": "2026-03-15T10:00:00Z",
+  "mount_path": "/workspace/example-repo",
+  "type": "github_repository",
+  "updated_at": "2026-03-15T10:00:00Z",
+  "url": "https://github.com/example-org/example-repo",
+  "checkout": {
+    "name": "main",
+    "type": "branch"
+  }
+}
+```

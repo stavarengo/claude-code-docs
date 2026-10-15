@@ -196,7 +196,7 @@ export function MarkerShimmerDemo() {
 
 ## Separator
 
-Use the `separator` variant for labeled dividers, such as dates or section breaks, in a conversation.
+Use the `separator` variant for labeled dividers, such as dates or section breaks, in a conversation. A [Checkpoint](/docs/ai-elements/base/checkpoint) is a separator with a button that restores the thread to that point.
 
 ```tsx
 import { Marker, MarkerContent } from "@/components/ui/marker"

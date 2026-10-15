@@ -7,7 +7,7 @@ description: Access experimental features before they become part of the standar
 Beta headers allow you to access experimental features and new model capabilities before they become part of the standard API.
 
 <Info>
-  The [client SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) exposes a `client.beta` (python, typescript, ruby) namespace for calling the API with beta features enabled.
+  The [client SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) exposes a `client.beta` namespace for calling the API with beta features enabled.
 </Info>
 
 ## How to use beta headers
@@ -24,7 +24,7 @@ content-type: application/json
 
 Each feature's documentation states the exact beta name to send. The [API overview](https://platform.claude.com/docs/en/api/overview?sdk_languages=cli) lists the APIs currently in beta.
 
-The following examples show the same request with cURL, the `ant` CLI, and the SDK, using the [context editing](https://platform.claude.com/docs/en/build-with-claude/context-editing?sdk_languages=cli) beta as the example. The SDK takes beta names through `betas` (python, typescript, php, ruby) and sends the `anthropic-beta` header for you:
+The following examples show the same request with cURL, the `ant` CLI, and the SDK, using the [context editing](https://platform.claude.com/docs/en/build-with-claude/context-editing?sdk_languages=cli) beta as the example. The SDK takes beta names through `betas` and sends the `anthropic-beta` header for you:
 
 <CodeGroup>
   ```bash CLI
@@ -61,7 +61,7 @@ anthropic-beta: feature2
 anthropic-beta: feature3
 ```
 
-With the SDK, list each feature (for example, `betas=["feature1", "feature2"]` (python)). With the CLI, pass a single `--beta` flag with the feature names separated by commas (for example, `--beta feature1,feature2`). You can also repeat the flag (for example, `--beta feature1 --beta feature2`).
+With the SDK, list each feature (for example, `betas=["feature1", "feature2"]`). With the CLI, pass a single `--beta` flag with the feature names separated by commas (for example, `--beta feature1,feature2`). You can also repeat the flag (for example, `--beta feature1 --beta feature2`).
 
 ### Beta features on other platforms
 
@@ -82,7 +82,7 @@ Some beta APIs are scoped to specific endpoints and require a feature-specific b
 | `/v1/tunnels`                                    | `mcp-tunnels-2026-06-22`    |
 | `/v1/memory_stores` and sub-resources            | `agent-memory-2026-07-22`   |
 
-The SDK's `client.beta` (python, typescript, ruby) namespace adds these headers automatically. Add them yourself only when making raw HTTP requests. See the [Managed Agents overview](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli), [Using agent memory](https://platform.claude.com/docs/en/managed-agents/memory?sdk_languages=cli), and the [MCP tunnels reference](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/reference?sdk_languages=cli#tunnels-api) for details.
+The SDK's `client.beta` namespace adds these headers automatically. Add them yourself only when making raw HTTP requests. See the [Managed Agents overview](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli), [Using agent memory](https://platform.claude.com/docs/en/managed-agents/memory?sdk_languages=cli), and the [MCP tunnels reference](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/reference?sdk_languages=cli#tunnels-api) for details.
 
 Endpoint-specific headers that apply to the same endpoint aren't always combinable. On memory store endpoints, `agent-memory-2026-07-22` replaces `managed-agents-2026-04-01`: sending both on the same request returns a `400` error. The SDK sends the correct header for each endpoint automatically.
 

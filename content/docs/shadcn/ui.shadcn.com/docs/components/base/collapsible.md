@@ -271,7 +271,7 @@ export function CollapsibleSettings() {
 
 ## File Tree
 
-Use nested collapsibles to build a file tree.
+Use nested collapsibles to build a file tree. In a conversation, this is the [File Tree](/docs/ai-elements/base/file-tree) pattern.
 
 ```tsx
 import { ChevronRightIcon, FileIcon, FolderIcon } from "lucide-react"

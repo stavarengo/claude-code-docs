@@ -1,0 +1,505 @@
+---
+title: Send Events
+url: https://platform.claude.com/docs/en/api/cli/beta/sessions/events/send
+---
+
+# Send Events
+
+`$ ant beta:sessions:events send`
+
+**POST** `/v1/sessions/{session_id}/events`
+
+Send Events
+
+## Parameters
+
+- `--session-id: string` (path parameter)
+
+- `--event: array of BetaManagedAgentsEventParams`
+
+  Events to send to the `session`.
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  Optional header to specify the beta version(s) you want to use.
+
+- `--workspace-id: optional string` (header parameter)
+
+  Optional header to select the Workspace for this request. The value is a Workspace ID (for example, `wrkspc_011CZkZaBF1tNoB5wlCeusgy`).
+
+  Only needed for credentials that can act on more than one Workspace. A credential that belongs to a specific Workspace may omit it; if sent, it must match that Workspace.
+
+## Returns
+
+- `beta_managed_agents_send_session_events: object`
+
+  Events that were successfully sent to the session.
+
+  - `data: optional array of BetaManagedAgentsUserMessageEvent or BetaManagedAgentsUserInterruptEvent or BetaManagedAgentsUserToolConfirmationEvent or 4 more`
+
+    Sent events
+
+    - `beta_managed_agents_user_message_event: object`
+
+      A user message event in the session conversation.
+
+      - `type: "user.message"`
+
+      - `id: string`
+
+        Unique identifier for this event.
+
+      - `content: array of BetaManagedAgentsTextBlock or BetaManagedAgentsImageBlock or BetaManagedAgentsDocumentBlock or BetaManagedAgentsRedactedBlock`
+
+        Array of content blocks comprising the user message.
+
+        - `beta_managed_agents_text_block: object`
+
+          Regular text content.
+
+          - `type: "text"`
+
+          - `text: string`
+
+            The text content.
+
+            minLength: 1
+
+        - `beta_managed_agents_image_block: object`
+
+          Image content specified directly as base64 data or as a reference via a URL.
+
+          - `type: "image"`
+
+          - `source: BetaManagedAgentsBase64ImageSource or BetaManagedAgentsURLImageSource or BetaManagedAgentsFileImageSource`
+
+            The source of the image data.
+
+            - `beta_managed_agents_base64_image_source: object`
+
+              Base64-encoded image data.
+
+              - `type: "base64"`
+
+              - `data: string`
+
+                Base64-encoded image data.
+
+                minLength: 1
+
+              - `media_type: string`
+
+                MIME type of the image (e.g., "image/png", "image/jpeg", "image/gif", "image/webp").
+
+                minLength: 1
+
+            - `beta_managed_agents_url_image_source: object`
+
+              Image referenced by URL.
+
+              - `type: "url"`
+
+              - `url: string`
+
+                URL of the image to fetch.
+
+                minLength: 1
+
+            - `beta_managed_agents_file_image_source: object`
+
+              Image referenced by file ID.
+
+              - `type: "file"`
+
+              - `file_id: string`
+
+                ID of a previously uploaded file.
+
+                minLength: 1
+
+        - `beta_managed_agents_document_block: object`
+
+          Document content, either specified directly as base64 data, as text, or as a reference via a URL.
+
+          - `type: "document"`
+
+          - `source: BetaManagedAgentsBase64DocumentSource or BetaManagedAgentsPlainTextDocumentSource or BetaManagedAgentsURLDocumentSource or BetaManagedAgentsFileDocumentSource`
+
+            The source of the document data.
+
+            - `beta_managed_agents_base64_document_source: object`
+
+              Base64-encoded document data.
+
+              - `type: "base64"`
+
+              - `data: string`
+
+                Base64-encoded document data.
+
+                minLength: 1
+
+              - `media_type: string`
+
+                MIME type of the document (e.g., "application/pdf").
+
+                minLength: 1
+
+            - `beta_managed_agents_plain_text_document_source: object`
+
+              Plain text document content.
+
+              - `type: "text"`
+
+              - `data: string`
+
+                The plain text content.
+
+                minLength: 1
+
+              - `media_type: "text/plain"`
+
+                MIME type of the text content. Must be "text/plain".
+
+            - `beta_managed_agents_url_document_source: object`
+
+              Document referenced by URL.
+
+              - `type: "url"`
+
+              - `url: string`
+
+                URL of the document to fetch.
+
+                minLength: 1
+
+            - `beta_managed_agents_file_document_source: object`
+
+              Document referenced by file ID.
+
+              - `type: "file"`
+
+              - `file_id: string`
+
+                ID of a previously uploaded file.
+
+                minLength: 1
+
+          - `context: optional string`
+
+            Additional context about the document for the model.
+
+          - `title: optional string`
+
+            The title of the document.
+
+        - `beta_managed_agents_redacted_block: object`
+
+          Placeholder for content withheld by Anthropic model policy.
+
+          - `type: "redacted"`
+
+      - `processed_at: optional string`
+
+        Timestamp when the agent finished processing this message.
+
+        format: date-time
+
+    - `beta_managed_agents_user_interrupt_event: object`
+
+      An interrupt event that pauses agent execution and returns control to the user.
+
+      - `type: "user.interrupt"`
+
+      - `id: string`
+
+        Unique identifier for this event.
+
+      - `processed_at: optional string`
+
+        Timestamp when the interrupt was processed.
+
+        format: date-time
+
+      - `session_thread_id: optional string`
+
+        If absent, interrupts every non-archived thread in a multiagent session (or the primary alone in a single-agent session). If present, interrupts only the named thread.
+
+    - `beta_managed_agents_user_tool_confirmation_event: object`
+
+      A tool confirmation event that approves or denies a pending tool execution.
+
+      - `type: "user.tool_confirmation"`
+
+      - `id: string`
+
+        Unique identifier for this event.
+
+      - `result: "allow" or "deny"`
+
+        The confirmation result: 'allow' or 'deny'.
+
+        - `"allow"`
+
+        - `"deny"`
+
+      - `tool_use_id: string`
+
+        The id of the `agent.tool_use` or `agent.mcp_tool_use` event this result corresponds to, which can be found in the last `session.status_idle` [event's](https://platform.claude.com/docs/en/api/beta/sessions/events/list?sdk_languages=cli#beta_managed_agents_session_requires_action.event_ids) `stop_reason.event_ids` field.
+
+      - `deny_message: optional string`
+
+        Optional message providing context for a 'deny' decision. Only allowed when result is 'deny'.
+
+        maxLength: 10000
+
+      - `processed_at: optional string`
+
+        Timestamp when the confirmation was processed.
+
+        format: date-time
+
+      - `session_thread_id: optional string`
+
+        Set by the server to the subagent thread this confirmation was routed to. Omitted when it was routed to the primary thread.
+
+    - `beta_managed_agents_user_custom_tool_result_event: object`
+
+      Event sent by the client providing the result of a custom tool execution.
+
+      - `type: "user.custom_tool_result"`
+
+      - `id: string`
+
+        Unique identifier for this event.
+
+      - `custom_tool_use_id: string`
+
+        The id of the `agent.custom_tool_use` event this result corresponds to. It is also listed in the last `session.status_idle` [event's](https://platform.claude.com/docs/en/api/beta/sessions/events/list?sdk_languages=cli#beta_managed_agents_session_requires_action.event_ids) `stop_reason.event_ids` field.
+
+      - `content: optional array of BetaManagedAgentsTextBlock or BetaManagedAgentsImageBlock or BetaManagedAgentsDocumentBlock or BetaManagedAgentsSearchResultBlock`
+
+        The result content returned by the tool.
+
+        - `beta_managed_agents_text_block: object`
+
+          Regular text content.
+
+        - `beta_managed_agents_image_block: object`
+
+          Image content specified directly as base64 data or as a reference via a URL.
+
+        - `beta_managed_agents_document_block: object`
+
+          Document content, either specified directly as base64 data, as text, or as a reference via a URL.
+
+        - `beta_managed_agents_search_result_block: object`
+
+          A block containing a web search result.
+
+          - `type: "search_result"`
+
+          - `citations: object`
+
+            Citation settings for this search result.
+
+            - `enabled: boolean`
+
+              Whether citations are enabled for this search result.
+
+          - `content: array of BetaManagedAgentsSearchResultContent`
+
+            Array of text content blocks from the search result.
+
+            - `type: "text"`
+
+            - `text: string`
+
+              The text content.
+
+              minLength: 1
+
+          - `source: string`
+
+            The URL source of the search result.
+
+            minLength: 1
+
+          - `title: string`
+
+            The title of the search result.
+
+            minLength: 1
+
+      - `is_error: optional boolean`
+
+        Whether the tool execution resulted in an error.
+
+      - `processed_at: optional string`
+
+        Timestamp when this result was processed.
+
+        format: date-time
+
+      - `session_thread_id: optional string`
+
+        Set by the server to the subagent thread this result was routed to. Omitted when it was routed to the primary thread.
+
+    - `beta_managed_agents_user_define_outcome_event: object`
+
+      Echo of a `user.define_outcome` input event. Carries the server-generated `outcome_id` that subsequent `span.outcome_evaluation_*` events reference.
+
+      - `type: "user.define_outcome"`
+
+      - `id: string`
+
+        Unique identifier for this event.
+
+      - `description: string`
+
+        What the agent should produce. Copied from the input event.
+
+      - `max_iterations: number`
+
+        Evaluate-then-revise cycles before giving up. Default 3, max 20.
+
+        format: int32
+
+      - `outcome_id: string`
+
+        Server-generated `outc_` ID for this outcome. Referenced by `span.outcome_evaluation_*` events and the session's `outcome_evaluations` list.
+
+      - `processed_at: string`
+
+        Timestamp when the outcome was accepted.
+
+        format: date-time
+
+      - `rubric: BetaManagedAgentsFileRubric or BetaManagedAgentsTextRubric`
+
+        How to grade the outcome. File rubrics are currently resolved to their text content; clients should handle both variants.
+
+        - `beta_managed_agents_file_rubric: object`
+
+          Rubric referenced by a file uploaded via the Files API.
+
+          - `type: "file"`
+
+          - `file_id: string`
+
+            ID of the rubric file.
+
+        - `beta_managed_agents_text_rubric: object`
+
+          Rubric content provided inline as text.
+
+          - `type: "text"`
+
+          - `content: string`
+
+            Rubric content. Plain text or markdown — the grader treats it as freeform text.
+
+    - `beta_managed_agents_user_tool_result_event: object`
+
+      Event sent by the client providing the result of an agent-toolset tool execution. Only valid on `self_hosted` environments, where sandbox-routed tools are executed by the client rather than the server.
+
+      - `type: "user.tool_result"`
+
+      - `id: string`
+
+        Unique identifier for this event.
+
+      - `tool_use_id: string`
+
+        The id of the `agent.tool_use` event this result corresponds to, which can be found in the last `session.status_idle` [event's](https://platform.claude.com/docs/en/api/beta/sessions/events/list?sdk_languages=cli#beta_managed_agents_session_requires_action.event_ids) `stop_reason.event_ids` field.
+
+      - `content: optional array of BetaManagedAgentsTextBlock or BetaManagedAgentsImageBlock or BetaManagedAgentsDocumentBlock or BetaManagedAgentsSearchResultBlock`
+
+        The result content returned by the tool.
+
+        - `beta_managed_agents_text_block: object`
+
+          Regular text content.
+
+        - `beta_managed_agents_image_block: object`
+
+          Image content specified directly as base64 data or as a reference via a URL.
+
+        - `beta_managed_agents_document_block: object`
+
+          Document content, either specified directly as base64 data, as text, or as a reference via a URL.
+
+        - `beta_managed_agents_search_result_block: object`
+
+          A block containing a web search result.
+
+      - `is_error: optional boolean`
+
+        Whether the tool execution resulted in an error.
+
+      - `processed_at: optional string`
+
+        Timestamp when this result was processed.
+
+        format: date-time
+
+      - `session_thread_id: optional string`
+
+        Set by the server to the subagent thread this result was routed to. Omitted when it was routed to the primary thread.
+
+    - `beta_managed_agents_system_message_event: object`
+
+      A mid-conversation system message event. Carries system-role content that is appended to the session as a `role: "system"` turn.
+
+      - `type: "system.message"`
+
+      - `id: string`
+
+        Unique identifier for this event.
+
+      - `content: array of BetaManagedAgentsSystemContentBlock`
+
+        System content blocks. Text-only.
+
+        - `type: "text"`
+
+        - `text: string`
+
+          The text content.
+
+          minLength: 1
+
+      - `processed_at: optional string`
+
+        Timestamp when this system message was processed.
+
+        format: date-time
+
+## Example
+
+```bash
+ant beta:sessions:events send \
+  --api-key my-anthropic-api-key \
+  --session-id sesn_011CZkZAtmR3yMPDzynEDxu7 \
+  --event '{content: [{text: '\''Where is my order #1234?'\'', type: text}], type: user.message}'
+```
+
+### Response (200)
+
+```json
+{
+  "data": [
+    {
+      "id": "sevt_011CZkZGPp1iBcp4kaQSihUm",
+      "content": [
+        {
+          "text": "Where is my order #1234?",
+          "type": "text"
+        }
+      ],
+      "type": "user.message",
+      "processed_at": "2026-03-15T10:00:00Z"
+    }
+  ]
+}
+```

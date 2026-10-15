@@ -42,7 +42,7 @@ To set which agents the agent can call, see [Predefined and inline agents](https
 
 Every subagent, and every agent in a workflow run, is one of two kinds:
 
-* **Predefined agent:** An agent that you have already [created](https://platform.claude.com/docs/en/managed-agents/agent-setup?sdk_languages=cli), and that you list in the `multiagent` (java, php) block. It uses its own configuration: model, system prompt, tools, MCP servers, and skills.
+* **Predefined agent:** An agent that you have already [created](https://platform.claude.com/docs/en/managed-agents/agent-setup?sdk_languages=cli), and that you list in the `multiagent` block. It uses its own configuration: model, system prompt, tools, MCP servers, and skills.
 * **Inline agent:** An agent that is not saved. The agent that the session runs, or a workflow, defines it when it hands out the work. It uses that agent's model, tools, MCP servers, and skills.
 
 Both kinds work under `subagents` and under `workflows`:
@@ -107,7 +107,7 @@ Which configuration a subagent uses depends on whether it is a [predefined or an
 
 ### List the subagents
 
-When [defining your agent](https://platform.claude.com/docs/en/managed-agents/agent-setup?sdk_languages=cli), set the `predefined_agents` list of `subagents` (java, php) in the `multiagent` (java, php) block to list the agents that it can delegate to:
+When [defining your agent](https://platform.claude.com/docs/en/managed-agents/agent-setup?sdk_languages=cli), set the `predefined_agents` list of `subagents` in the `multiagent` block to list the agents that it can delegate to:
 
 <CodeGroup defaultLanguage="CLI">
   <CodeGroupItem>
@@ -167,22 +167,22 @@ When [defining your agent](https://platform.claude.com/docs/en/managed-agents/ag
   </CodeGroupItem>
 </CodeGroup>
 
-The agent can also delegate to inline agents unless you turn them off. For that setting, and for the forms that an entry of the `predefined_agents` list of `subagents` (java, php) takes, see [Predefined and inline agents](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#predefined-and-inline-agents).
+The agent can also delegate to inline agents unless you turn them off. For that setting, and for the forms that an entry of the `predefined_agents` list of `subagents` takes, see [Predefined and inline agents](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#predefined-and-inline-agents).
 
-`"advisor": {"type": "enabled", "model": "<model id>"}` gives the session's primary thread an advisor it can consult mid-turn. The advisor is a setting in the `multiagent` (java, php) block, not an entry in this list. See [Give the session an advisor](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#give-the-session-an-advisor).
+`"advisor": {"type": "enabled", "model": "<model id>"}` gives the session's primary thread an advisor it can consult mid-turn. The advisor is a setting in the `multiagent` block, not an entry in this list. See [Give the session an advisor](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#give-the-session-an-advisor).
 
 Dynamic workflows are also enabled by default with this type, so this agent can plan large work that runs many agents in the background. To turn them off, or to list agents that a workflow can use, see [Turn on dynamic workflows](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#turn-on-dynamic-workflows).
 
-The following rules apply to the agents you list in the `predefined_agents` list of `subagents` (java, php), and also to the agents you list in the `predefined_agents` list of `workflows` (java, php):
+The following rules apply to the agents you list in the `predefined_agents` list of `subagents`, and also to the agents you list in the `predefined_agents` list of `workflows`:
 
-* **Pinning:** The agent's configuration, including the `predefined_agents` list of its `subagents` (java, php), is snapshotted when the agent is created or updated. Referenced agents stay pinned to the versions resolved then and don't pick up later updates to their definitions. An update that doesn't send the list keeps the versions that are already pinned. To delegate to a newer version of a referenced agent, [update the agent](https://platform.claude.com/docs/en/managed-agents/agent-setup?sdk_languages=cli#update-an-agent) so the `predefined_agents` list of its `subagents` (java, php) references that version.
-* **One level:** The agent can delegate to only one level of agents. Referencing another agent that has `multiagent` (java, php) set fails the create or update request with a 400 validation error.
-* **Up to 20 agents:** The `predefined_agents` list of `subagents` (java, php) can list up to 20 unique agents. The limit is per list: the `predefined_agents` list of `workflows` (java, php) can also list up to 20. The agent can call multiple copies of each agent, within the session's [thread limit](https://platform.claude.com/docs/en/managed-agents/session-threads?sdk_languages=cli).
-* **Inference geography:** The agent and every agent that you list, in the `predefined_agents` list of `subagents` (java, php) or of `workflows` (java, php), must pin the same [inference geography](https://platform.claude.com/docs/en/manage-claude/data-residency?sdk_languages=cli) (`inference_geo` in the `model` (java, php) of the [agent definition](https://platform.claude.com/docs/en/managed-agents/agent-setup?sdk_languages=cli)), or none of them can pin one. A mismatch in either list is rejected with a 400 validation error. That check runs both when the agent is saved and when a [session-create override](https://platform.claude.com/docs/en/managed-agents/sessions?sdk_languages=cli#override-agent-configuration-for-a-session) changes any of the pins.
+* **Pinning:** The agent's configuration, including the `predefined_agents` list of `subagents`, is snapshotted when the agent is created or updated. Referenced agents stay pinned to the versions resolved then and don't pick up later updates to their definitions. An update that doesn't send the list keeps the versions that are already pinned. To delegate to a newer version of a referenced agent, [update the agent](https://platform.claude.com/docs/en/managed-agents/agent-setup?sdk_languages=cli#update-an-agent) so the `predefined_agents` list of `subagents` references that version.
+* **One level:** The agent can delegate to only one level of agents. Referencing another agent that has `multiagent` set fails the create or update request with a 400 validation error.
+* **Up to 20 agents:** The `predefined_agents` list of `subagents` can list up to 20 unique agents. The limit is per list: the `predefined_agents` list of `workflows` can also list up to 20. The agent can call multiple copies of each subagent, within the session's [thread limit](https://platform.claude.com/docs/en/managed-agents/session-threads?sdk_languages=cli).
+* **Inference geography:** The agent and every agent that you list, in the `predefined_agents` list of `subagents` or of `workflows`, must pin the same [inference geography](https://platform.claude.com/docs/en/manage-claude/data-residency?sdk_languages=cli) (`inference_geo` in the `model` of the [agent definition](https://platform.claude.com/docs/en/managed-agents/agent-setup?sdk_languages=cli)), or none of them can pin one. A mismatch in either list is rejected with a 400 validation error. That check runs both when the agent is saved and when a [session-create override](https://platform.claude.com/docs/en/managed-agents/sessions?sdk_languages=cli#override-agent-configuration-for-a-session) changes any of the pins.
 
 ### Create the session
 
-Create a session referencing the agent. The agent delegates to the agents you list in the `predefined_agents` list of `subagents` (java, php) as needed. It can also delegate to [inline agents](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#predefined-and-inline-agents) unless you turn them off.
+Create a session referencing the agent. The agent delegates to the agents you list in the `predefined_agents` list of `subagents` as needed. It can also delegate to [inline agents](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#predefined-and-inline-agents) unless you turn them off.
 
 <CodeGroup>
   ```bash CLI
@@ -197,11 +197,11 @@ Create a session referencing the agent. The agent delegates to the agents you li
 MCP servers are agent-scoped: each agent definition declares its own servers and tools. An inline agent has no agent definition, so it uses the MCP servers and tools of the agent that the session runs. Vault credentials are session-scoped: `vault_ids` passed at session creation apply to every thread. Two implications for your integration:
 
 * To authenticate MCP servers, include a vault credential for every MCP server used across all agents.
-* To limit an agent's access, declare only the servers it needs in its agent definition. You can't limit an inline agent this way. To allow only the agents you list, disable `inline_agents` in both `subagents` (java, php) and `workflows` (java, php), and list at least one agent in each. See [Predefined and inline agents](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#predefined-and-inline-agents).
+* To limit an agent's access, declare only the servers it needs in its agent definition. You can't limit an inline agent this way. To allow only the agents you list, disable `inline_agents` in both `subagents` and `workflows`, and list at least one agent in each. See [Predefined and inline agents](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#predefined-and-inline-agents).
 
 [Agent configuration overrides](https://platform.claude.com/docs/en/managed-agents/sessions?sdk_languages=cli#override-agent-configuration-for-a-session) at session creation can replace the MCP servers of the agent that the session runs and those of its `self` copies.
 
-With a `limited` [environment](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli#networking), session creation fails with a 400 error when the agent, or an agent you list in the `predefined_agents` list of `subagents` (java, php) or `workflows` (java, php), declares an MCP server whose host is not in `allowed_hosts`. Setting `allow_mcp_servers` to `true` in the environment's networking turns this check off.
+With a `limited` [environment](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli#networking), session creation fails with a 400 error when the agent, or an agent you list in the `predefined_agents` list of `subagents` or `workflows`, declares an MCP server whose host is not in `allowed_hosts`. Setting `allow_mcp_servers` to `true` in the environment's networking turns this check off.
 
 Create the researcher, which declares the GitHub MCP server, and the agent that delegates to the researcher:
 
@@ -276,11 +276,11 @@ Each agent's session thread has its own event stream. To list, interrupt, or arc
 
 ## Dynamic workflows
 
-With dynamic workflows, an agent can take on work with many pieces, such as reviewing hundreds of documents or cross-checking many sources. The agent writes a **workflow**: a program that runs many agents in phases and combines what they return. The server runs it in the background as a **workflow run**, while the agent keeps working or ends its turn. You turn dynamic workflows on or off with the `workflows` (java, php) setting in the agent's `multiagent` (java, php) block. A run's agents can work at the same time, so a long task can finish sooner than if one agent did each piece in turn.
+With dynamic workflows, an agent can take on work with many pieces, such as reviewing hundreds of documents or cross-checking many sources. The agent writes a **workflow**: a program that runs many agents in phases and combines what they return. The server runs it in the background as a **workflow run**, while the agent keeps working or ends its turn. You turn dynamic workflows on or off with the `workflows` setting in the agent's `multiagent` block. A run's agents can work at the same time, so a long task can finish sooner than if one agent did each piece in turn.
 
 * **How a run starts:** You describe the work in a `user.message`. From that, the agent determines whether and when to start a run, so there's no additional API call. Instead, you influence the agent's determination by describing when to use a run in `user.message` or in the agent's system prompt. (Permission policies apply to the tools that a run's agents call, not to starting the run.)
-* **Which agents it uses:** [Inline agents](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#predefined-and-inline-agents) that the workflow defines, predefined agents that you list in the `predefined_agents` list of `workflows` (java, php), or both. If you list none, the workflow defines them all. An inline agent uses the model of the agent that the session runs. To let a run use another model for some of its agents, create them as agents and list them in the `predefined_agents` list of `workflows` (java, php).
-* **How you follow it:** Run events arrive on the session's event stream, and each agent in the run works in a [session thread](https://platform.claude.com/docs/en/managed-agents/session-threads?sdk_languages=cli) that you can list, read, and stream. See [Workflow runs](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli) for the events, interrupts, limits, and [what a run's threads show](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli#a-runs-threads).
+* **Which agents it uses:** [Inline agents](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#predefined-and-inline-agents) that the workflow defines, predefined agents that you list in the `predefined_agents` list of `workflows`, or both. If you list none, the workflow defines them all. An inline agent uses the model of the agent that the session runs. To let a run use another model for some of its agents, create them as agents and list them in the `predefined_agents` list of `workflows`.
+* **How you follow it:** Run events arrive on the session's event stream, and each agent in the run works in a [session thread](https://platform.claude.com/docs/en/managed-agents/session-threads?sdk_languages=cli) that you can list, read, and stream. See [Workflow runs](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli) for the events, interrupts, [limits](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli#limits), and [what a run's threads show](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli#a-runs-threads).
 
 ### Turn on dynamic workflows
 
@@ -359,11 +359,11 @@ Keep the following in mind:
 
 * **Existing sessions:** A session copies the setting when it is created, so changing the agent later doesn't change a session that already exists.
 
-* **Agents you can list:** An agent that has `multiagent` (java, php) set can't be listed as a subagent of another agent, or in the `predefined_agents` list of `workflows` (java, php) in another agent. An agent can list itself in either list with `{"type": "self"}`, which reads back as its own `id` and `version`.
+* **Agents you can list:** An agent that has `multiagent` set can't be listed as a subagent of another agent, or in the `predefined_agents` list of `workflows` in another agent. An agent can list itself in either list with `{"type": "self"}`, which reads back as its own `id` and `version`.
 
-* **Tool names:** The `ant__` prefix is reserved. If your agent already has a custom tool whose name starts with `ant__`, every update fails with a 400 error until you send `tools` (java, php) without that name. A new session is refused with a 400 error too if its agent, or an agent in either list, has such a tool. Rename or remove the tool in the same update that turns dynamic workflows on. See [Custom tools](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli#custom-tools).
+* **Tool names:** The `ant__` prefix is reserved. If your agent already has a custom tool whose name starts with `ant__`, an update fails with a 400 error until you send `tools` without that name. A new session is refused with a 400 error too if its agent, or an agent in either list, has such a tool. Rename or remove the tool in the same update that turns dynamic workflows on. See [Custom tools](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli#custom-tools).
 
-* **Budget:** Set a [session budget](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli) when you create the session to cap the session's spend, runs included; you can't add one to an existing session. Runs pause when the session reaches the budget, and runs that the budget paused resume when you raise or remove it, unless an interrupt also paused them. See [Budgets and limits](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli#budgets-and-limits).
+* **Budget:** Set a [session budget](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli) when you create the session to cap the session's spend, runs included; you can't add one to an existing session. Runs pause when the session reaches the budget, and runs that the budget paused resume when you raise or remove it, unless an interrupt also paused them. See [Cost and budgets](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli#cost-and-budgets).
 
 ### Tell the agent when to use a run
 
@@ -387,7 +387,7 @@ For a run's events, interrupting a session with runs open, what changes while a 
 
 ## Give the session an advisor
 
-An enabled `advisor` setting in the agent's `multiagent` (java, php) block gives the session's primary thread an **advisor**: a model it can consult mid-turn for strategic guidance, such as planning an approach, getting unstuck, or reviewing work before finishing. The setting is disabled by default. To enable it, set `advisor` to `{"type": "enabled", "model": "..."}`, which has exactly two fields, `type` and `model`:
+An enabled `advisor` setting in the agent's `multiagent` block gives the session's primary thread an **advisor**: a model it can consult mid-turn for strategic guidance, such as planning an approach, getting unstuck, or reviewing work before finishing. The setting is disabled by default. To enable it, set `advisor` to `{"type": "enabled", "model": "..."}`, which has exactly two fields, `type` and `model`:
 
 <CodeGroup defaultLanguage="CLI">
   <CodeGroupItem>
@@ -413,13 +413,13 @@ An enabled `advisor` setting in the agent's `multiagent` (java, php) block gives
   </CodeGroupItem>
 </CodeGroup>
 
-This example sets only `advisor` (java, php). The other two settings, `subagents` (java, php) and `workflows` (java, php), keep their defaults, so both are enabled, and the agent can also delegate to inline agents and start workflow runs. For an agent that consults an advisor and does all the work itself, set both to `{"type": "disabled"}`.
+This example sets only `advisor`. The other two settings, `subagents` and `workflows`, keep their defaults, so both are enabled, and the agent can also delegate to inline agents and start workflow runs. For an agent that consults an advisor and does all the work itself, set both to `{"type": "disabled"}`.
 
-You can't list the advisor in the `predefined_agents` list of `subagents` (java, php) or `workflows` (java, php). An enabled `advisor` (java, php) reserves the name `anthropic.advisor`. While it is enabled, neither list can hold an agent literally named `anthropic.advisor`: the request is rejected with a 400 validation error.
+You can't list the advisor in the `predefined_agents` list of `subagents` or `workflows`. An enabled `advisor` reserves the name `anthropic.advisor`. While it is enabled, neither list can hold an agent literally named `anthropic.advisor`: the request is rejected with a 400 validation error.
 
 The advisor model must meet a minimum capability bar, and the agent's own model must not be more capable than its advisor; models of equal capability can pair. An invalid pairing is rejected with a 400 validation error when the agent is saved, and again when a session is created. The pairing is also checked when each consultation starts: if it's no longer valid, that consultation fails and the session continues. Valid pairings follow the advisor tool's [model compatibility](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool?sdk_languages=cli#model-compatibility) table.
 
-The advisor is also available as a [server tool on the Messages API](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool?sdk_languages=cli). The Managed Agents surface differs in configuration and delivery: the `advisor` (java, php) setting has no `max_uses`, `max_tokens`, or `caching` fields, and advice arrives through thread events rather than `advisor_tool_result` blocks.
+The advisor is also available as a [server tool on the Messages API](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool?sdk_languages=cli). The Managed Agents surface differs in configuration and delivery: the `advisor` setting has no `max_uses`, `max_tokens`, or `caching` fields, and advice arrives through thread events rather than `advisor_tool_result` blocks.
 
 ### How consultations work
 

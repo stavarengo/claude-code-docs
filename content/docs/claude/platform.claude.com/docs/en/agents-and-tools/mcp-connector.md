@@ -525,8 +525,8 @@ Install both the Anthropic SDK and the MCP SDK:
     <Tabs>
       <Tab title="Gradle">
         ```kotlin
-        implementation("com.anthropic:anthropic-java:2.71.0")
-        implementation("com.anthropic:anthropic-java-mcp:2.71.0")
+        implementation("com.anthropic:anthropic-java:2.72.0")
+        implementation("com.anthropic:anthropic-java-mcp:2.72.0")
         ```
       </Tab>
 
@@ -535,12 +535,12 @@ Install both the Anthropic SDK and the MCP SDK:
         <dependency>
             <groupId>com.anthropic</groupId>
             <artifactId>anthropic-java</artifactId>
-            <version>2.71.0</version>
+            <version>2.72.0</version>
         </dependency>
         <dependency>
             <groupId>com.anthropic</groupId>
             <artifactId>anthropic-java-mcp</artifactId>
-            <version>2.71.0</version>
+            <version>2.72.0</version>
         </dependency>
         ```
       </Tab>
@@ -615,12 +615,12 @@ Import the helpers for your language:
   ```
 </CodeGroup>
 
-| Helper                                       | Description                                                                                             |
-| -------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `async_mcp_tool(tool, mcp_client)` (python)  | Converts MCP tools to Claude API tools for use with `client.beta.messages.tool_runner()` (python, ruby) |
-| `mcp_message(message)` (python)              | Converts MCP prompt messages to Claude API message format                                               |
-| `mcp_resource_to_content(resource)` (python) | Converts an MCP resource to a Claude API content block                                                  |
-| `mcp_resource_to_file(resource)` (python)    | Converts an MCP resource to a file object for upload                                                    |
+| Helper                              | Description                                                                              |
+| ----------------------------------- | ---------------------------------------------------------------------------------------- |
+| `async_mcp_tool(tool, mcp_client)`  | Converts MCP tools to Claude API tools for use with `client.beta.messages.tool_runner()` |
+| `mcp_message(message)`              | Converts MCP prompt messages to Claude API message format                                |
+| `mcp_resource_to_content(resource)` | Converts an MCP resource to a Claude API content block                                   |
+| `mcp_resource_to_file(resource)`    | Converts an MCP resource to a file object for upload                                     |
 
 ### Use MCP tools
 

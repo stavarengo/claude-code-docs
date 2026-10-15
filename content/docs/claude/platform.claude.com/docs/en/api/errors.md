@@ -72,7 +72,7 @@ In accordance with the [versioning](https://platform.claude.com/docs/en/api/vers
 
 ## SDK error types
 
-The official SDK raises typed exceptions for these errors instead of returning raw JSON. For example, a 404 surfaces as `anthropic.NotFoundError` (python). The Go SDK has one error type for every status, `*anthropic.Error`: branch on `StatusCode`. Catch the SDK's typed classes rather than string-matching error messages, handling the most specific classes first. Your SDK's page documents the full exception hierarchy:
+The official SDK raises typed exceptions for these errors instead of returning raw JSON. For example, a 404 surfaces as `anthropic.NotFoundError`. The Go SDK has one error type for every status, `*anthropic.Error`: branch on `StatusCode`. Catch the SDK's typed classes rather than string-matching error messages, handling the most specific classes first. Your SDK's page documents the full exception hierarchy:
 
 * [Python](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/python?sdk_languages=curl#handling-errors) · [TypeScript](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/typescript?sdk_languages=curl#handling-errors) · [C#](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/csharp?sdk_languages=curl#error-handling) · [Go](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/go?sdk_languages=curl#error-handling) · [Java](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/java?sdk_languages=curl#error-handling) · [PHP](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/php?sdk_languages=curl#error-handling) · [Ruby](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/ruby?sdk_languages=curl#handling-errors)
 

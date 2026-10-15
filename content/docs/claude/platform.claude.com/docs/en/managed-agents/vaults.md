@@ -20,7 +20,7 @@ The vault reference is a per-session parameter, so you can manage your product a
   Vaults and credentials are workspace-scoped, meaning any API key with workspace access can reference them when creating a session. To revoke access, delete the vault or credential.
 </Warning>
 
-A vault is the collection of `credentials` associated with an end user. Give it a `display_name` and optionally tag it with `metadata` (java, php) so you can map it back to your own user records.
+A vault is the collection of `credentials` associated with an end user. Give it a `display_name` and optionally tag it with `metadata` so you can map it back to your own user records.
 
 <CodeGroup>
   <CodeGroupItem>
@@ -60,7 +60,7 @@ Two credential categories are supported:
 * **MCP credentials** (`mcp_oauth`, `static_bearer`): each credential is keyed by an `mcp_server_url`. When the agent connects to a server at that URL at session runtime, the token is injected automatically.
 * **Environment variables** (`environment_variable`): each credential is keyed by a `secret_name` (the environment variable name) and stored in the sandbox as an opaque placeholder. When the agent initiates an outbound request, the opaque placeholder is substituted with the real secret at egress. The agent never sees the secret value. Use this for any service that authenticates through an environment variable, such as CLIs, SDKs, or direct API calls.
 
-The actual credential values you supply (`token` (java, php), `access_token`, `refresh_token`, `client_secret`, `secret_value`) are treated as sensitive, write-only fields and never returned in API responses.
+The actual credential values you supply (`token`, `access_token`, `refresh_token`, `client_secret`, `secret_value`) are treated as sensitive, write-only fields and never returned in API responses.
 
 <Note>
   Environment variable credentials (`environment_variable`) are not yet supported with [self-hosted sandboxes](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes?sdk_languages=cli).
@@ -68,7 +68,7 @@ The actual credential values you supply (`token` (java, php), `access_token`, `r
 
 <Tabs>
   <Tab title="MCP OAuth">
-    Use `mcp_oauth` when the MCP server uses OAuth 2.0. If you supply a `refresh` (java, php) block, Anthropic refreshes the access token on your behalf when it expires.
+    Use `mcp_oauth` when the MCP server uses OAuth 2.0. If you supply a `refresh` block, Anthropic refreshes the access token on your behalf when it expires.
 
     The `refresh.token_endpoint_auth.type` field indicates how to authenticate the refresh call:
 
@@ -120,12 +120,12 @@ The actual credential values you supply (`token` (java, php), `access_token`, `r
   <Tab title="Environment variable">
     Use `environment_variable` to authenticate to external services through an environment variable, such as CLIs, SDKs, or direct API calls. Environment variable credentials work for clients that send the secret value verbatim in an outbound request, so check the client eligibility criteria in this tab before configuring one.
 
-    The `allowed_hosts` array in `networking` (java, php) controls which outbound hosts the secret can be substituted for. Use `"type": "limited"` with a specific list, or `"type": "unrestricted"` if the caller reaches domains you can't enumerate in advance.
+    The `allowed_hosts` array in `networking` controls which outbound hosts the secret can be substituted for. Use `"type": "limited"` with a specific list, or `"type": "unrestricted"` if the caller reaches domains you can't enumerate in advance.
 
     Limiting domains is strongly recommended for security purposes, and prevents your key from ever being shared with unauthorized hosts.
 
     <Note>
-      `allowed_hosts` in `networking` (java, php) on a vault credential controls which requests use the secret, not which requests are allowed. For the agent to actually reach a domain, it must also be allowed at the [environment level](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli). Both levels must include the domain (either through `unrestricted` networking or by explicitly listing the domain in `allowed_hosts`) for a secret-substituted request to succeed.
+      `allowed_hosts` in `networking` on a vault credential controls which requests use the secret, not which requests are allowed. For the agent to actually reach a domain, it must also be allowed at the [environment level](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli). Both levels must include the domain (either through `unrestricted` networking or by explicitly listing the domain in `allowed_hosts`) for a secret-substituted request to succeed.
     </Note>
 
     The optional `injection_location` field scopes where the secret is substituted; the full semantics follow the example.
@@ -147,9 +147,9 @@ The actual credential values you supply (`token` (java, php), `access_token`, `r
       ```
     </CodeGroup>
 
-    Request payloads are often assembled from content the agent is working with, so the request body is the broader exposure surface. Most services read an API key from a request header, so enabling only `header` (java, php) is the narrower configuration. It scopes substitution to request header values for that credential.
+    Request payloads are often assembled from content the agent is working with, so the request body is the broader exposure surface. Most services read an API key from a request header, so enabling only `header` is the narrower configuration. It scopes substitution to request header values for that credential.
 
-    The credential's `injection_location` controls which parts of an outbound request the secret is substituted into. It is an optional object, a sibling of `networking` (java, php), with two Boolean fields: `header` (java, php) (request headers) and `body` (java, php) (request body). `injection_location` is independent of `allowed_hosts` in `networking` (java, php): `allowed_hosts` scopes which hosts the secret is substituted for, and `injection_location` scopes which parts of the request it is substituted into.
+    The credential's `injection_location` controls which parts of an outbound request the secret is substituted into. It is an optional object, a sibling of `networking`, with two Boolean fields: `header` (request headers) and `body` (request body). `injection_location` is independent of `allowed_hosts` in `networking`: `allowed_hosts` scopes which hosts the secret is substituted for, and `injection_location` scopes which parts of the request it is substituted into.
 
     `injection_location` behaves differently on create and on update:
 
@@ -160,7 +160,7 @@ The actual credential values you supply (`token` (java, php), `access_token`, `r
 
     A credential must have at least one location enabled, so a create or update that would disable both locations returns a 400 error. Passing an explicit `null` for the `injection_location` object or for either field also returns a 400 error ("omit the field instead"). The response always returns both fields with their resolved values.
 
-    A placeholder in a disabled location is neither substituted nor stripped. The request is sent to the third party with the literal opaque placeholder string in that location. If a request arrives at the third party containing the literal placeholder string, either that location is disabled for the credential or the destination host is not covered by the `allowed_hosts` in the credential's `networking` (java, php).
+    A placeholder in a disabled location is neither substituted nor stripped. The request is sent to the third party with the literal opaque placeholder string in that location. If a request arrives at the third party containing the literal placeholder string, either that location is disabled for the credential or the destination host is not covered by the `allowed_hosts` in the credential's `networking`.
 
     <Note>
       Credentials created in the Console enable header injection only. If your client sends the secret in the request body, such as a form-encoded token request, the placeholder passes through literally and the service rejects it with its own authentication error. Enable body injection in the Console form when you create the credential, or update the credential with `{"injection_location": {"body": true}}`.
@@ -247,7 +247,7 @@ For `mcp_oauth` credentials, re-resolution also refreshes the access token if it
 
 To diagnose why a refresh failed, call `POST /v1/vaults/{vault_id}/credentials/{credential_id}/mcp_oauth_validate` (or `client.beta.vaults.credentials.mcp_oauth_validate(...)` in the SDK). This lets you decide how to handle the failure; the right action depends on the error type.
 
-The top-level `status` (java, php) tells you what to do next:
+The top-level `status` tells you what to do next:
 
 * `valid`: the token works; no action needed.
 * `invalid`: the grant is gone or the OAuth server rejected the refresh with a 4xx. Prompt the end user to re-authorize.

@@ -10,7 +10,7 @@ featureMetadata:
   betaHeader: managed-agents-2026-04-01
 ---
 
-Sessions on a self-hosted environment attach [memory stores](https://platform.claude.com/docs/en/managed-agents/memory?sdk_languages=cli) exactly as sessions on cloud environments do. List them in `resources` (java, php) when you create the session, as shown in [Attach a memory store to a session](https://platform.claude.com/docs/en/managed-agents/memory?sdk_languages=cli#attach-a-memory-store-to-a-session). A session accepts up to 8 memory stores.
+Sessions on a self-hosted environment attach [memory stores](https://platform.claude.com/docs/en/managed-agents/memory?sdk_languages=cli) exactly as sessions on cloud environments do. List them in `resources` when you create the session, as shown in [Attach a memory store to a session](https://platform.claude.com/docs/en/managed-agents/memory?sdk_languages=cli#attach-a-memory-store-to-a-session). A session accepts up to 8 memory stores.
 
 The difference is who materializes the store. On a self-hosted environment your worker, rather than Anthropic's infrastructure, downloads each store into the sandbox and syncs the agent's changes back.
 
@@ -68,18 +68,18 @@ Two `EnvironmentWorker` options control memory behavior. Set them wherever you c
 
 `memory_sync_interval` sets how often attached stores reconcile with the server while the session runs.
 
-| Setting                | Value           |
-| ---------------------- | --------------- |
-| Default                | 15 seconds      |
-| Minimum                | 5 seconds       |
-| Example (10 seconds)   | `10` (python)   |
-| Disable memory support | `None` (python) |
+| Setting                | Value      |
+| ---------------------- | ---------- |
+| Default                | 15 seconds |
+| Minimum                | 5 seconds  |
+| Example (10 seconds)   | `10`       |
+| Disable memory support | `None`     |
 
 A shorter interval narrows the window in which another session sees stale memories, at the cost of more memory store requests.
 
 Disable memory support only on workers whose sessions attach no memory stores. A disabled worker neither downloads nor syncs stores, so a session with stores attached runs without them even though its system prompt still describes them.
 
-While memory support is enabled, a work item that arrives without a `secret` (java, php) for a session with attached stores fails rather than running without memory. See [Memory stores fail to mount](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-operations?sdk_languages=cli#memory-stores-fail-to-mount).
+While memory support is enabled, a work item that arrives without a `secret` for a session with attached stores fails rather than running without memory. See [Memory stores fail to mount](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-operations?sdk_languages=cli#memory-stores-fail-to-mount).
 
 ### Deletions
 

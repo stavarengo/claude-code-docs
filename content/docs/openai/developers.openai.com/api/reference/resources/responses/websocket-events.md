@@ -7377,6 +7377,14 @@ Schema name: `ResponseCreatedEvent`
 
           The public continuation instruction.
 
+    - `param: optional string or null`
+
+      The request parameter associated with the error, or null if none was recorded.
+
+    - `type: optional string or null`
+
+      The original error type, or null if it was not recorded.
+
   - `incomplete_details: object { reason }  or null`
 
     Details about why the response is incomplete.
@@ -17190,6 +17198,14 @@ Schema name: `ResponseInProgressEvent`
 
           The public continuation instruction.
 
+    - `param: optional string or null`
+
+      The request parameter associated with the error, or null if none was recorded.
+
+    - `type: optional string or null`
+
+      The original error type, or null if it was not recorded.
+
   - `incomplete_details: object { reason }  or null`
 
     Details about why the response is incomplete.
@@ -27002,6 +27018,14 @@ Schema name: `ResponseCompletedEvent`
         - `message: string`
 
           The public continuation instruction.
+
+    - `param: optional string or null`
+
+      The request parameter associated with the error, or null if none was recorded.
+
+    - `type: optional string or null`
+
+      The original error type, or null if it was not recorded.
 
   - `incomplete_details: object { reason }  or null`
 
@@ -36840,6 +36864,14 @@ Schema name: `ResponseFailedEvent`
 
           The public continuation instruction.
 
+    - `param: optional string or null`
+
+      The request parameter associated with the error, or null if none was recorded.
+
+    - `type: optional string or null`
+
+      The original error type, or null if it was not recorded.
+
   - `incomplete_details: object { reason }  or null`
 
     Details about why the response is incomplete.
@@ -46656,6 +46688,14 @@ Schema name: `ResponseIncompleteEvent`
         - `message: string`
 
           The public continuation instruction.
+
+    - `param: optional string or null`
+
+      The request parameter associated with the error, or null if none was recorded.
+
+    - `type: optional string or null`
+
+      The original error type, or null if it was not recorded.
 
   - `incomplete_details: object { reason }  or null`
 
@@ -67291,6 +67331,14 @@ Schema name: `ResponseQueuedEvent`
         - `message: string`
 
           The public continuation instruction.
+
+    - `param: optional string or null`
+
+      The request parameter associated with the error, or null if none was recorded.
+
+    - `type: optional string or null`
+
+      The original error type, or null if it was not recorded.
 
   - `incomplete_details: object { reason }  or null`
 

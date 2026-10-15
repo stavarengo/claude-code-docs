@@ -161,7 +161,7 @@ Work down the groups and stop after the one that names your current model: every
 
 * Remove any assistant-message prefills; Claude Opus 4.6 already rejects them.
 * Verify tool call JSON parsing uses a standard JSON parser.
-* Move from `ant beta:messages create` (cli) to `ant messages create` (cli): adaptive thinking and effort need no beta namespace.
+* Move from `ant beta:messages create` (cli: `ant beta:messages create`) to `ant messages create` (cli: `ant messages create`): adaptive thinking and effort need no beta namespace.
 * Remove the `effort-2025-11-24` beta header (the effort parameter does not require it).
 * Remove the `fine-grained-tool-streaming-2025-05-14` beta header.
 * Remove the `interleaved-thinking-2025-05-14` beta header (adaptive thinking enables interleaved thinking automatically).
@@ -481,7 +481,7 @@ If you are migrating from Claude Opus 4.5, Claude Opus 4.1, or an earlier model 
 
 The first item is required on Claude Opus 5.5; the rest are recommended.
 
-1. **Migrate to adaptive thinking (required):** `thinking: {"type": "enabled", "budget_tokens": N}` returns a 400 error on Claude Opus 4.7 and later models. The before and after is item 1 of the [breaking changes for migrating from Claude Opus 4.6](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=cli#opus-46-breaking-changes). The migration also moves from `ant beta:messages create` (cli) to `ant messages create` (cli): adaptive thinking and effort do not require the beta SDK namespace or any beta headers.
+1. **Migrate to adaptive thinking (required):** `thinking: {"type": "enabled", "budget_tokens": N}` returns a 400 error on Claude Opus 4.7 and later models. The before and after is item 1 of the [breaking changes for migrating from Claude Opus 4.6](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=cli#opus-46-breaking-changes). The migration also moves from `ant beta:messages create` (cli: `ant beta:messages create`) to `ant messages create` (cli: `ant messages create`): adaptive thinking and effort do not require the beta SDK namespace or any beta headers.
 
 2. **Remove effort beta header:** The effort parameter does not require a beta header. Remove the `effort-2025-11-24` beta from your requests.
 

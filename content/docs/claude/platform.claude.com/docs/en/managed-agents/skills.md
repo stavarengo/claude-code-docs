@@ -12,7 +12,7 @@ featureMetadata:
 
 Skills are reusable, filesystem-based resources that give your agent domain-specific expertise: workflows, context, and best practices that turn a general-purpose agent into a specialist. Each skill you add incurs a modest cost on the session's context window, adding instructions and metadata that help the model use the skill. Learn more in the [Agent Skills](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview?sdk_languages=cli) overview.
 
-Skills reach your agent in two ways: attach them through the agent's `skills` (java, php) array, or [load them from a GitHub repository](https://platform.claude.com/docs/en/managed-agents/skills?sdk_languages=cli#load-skills-from-a-github-repository) mounted on the session. Attached skills come in two types. All skills work the same way: your agent invokes them automatically when they are relevant to the task.
+Skills reach your agent in two ways: attach them through the agent's `skills` array, or [load them from a GitHub repository](https://platform.claude.com/docs/en/managed-agents/skills?sdk_languages=cli#load-skills-from-a-github-repository) mounted on the session. Attached skills come in two types. All skills work the same way: your agent invokes them automatically when they are relevant to the task.
 
 * **Pre-built Anthropic skills:** Common document tasks such as PowerPoint, Excel, Word, and PDF handling (`pptx`, `xlsx`, `docx`, `pdf`).
 * **Custom skills:** Skills you author and upload to your workspace.
@@ -58,13 +58,13 @@ Attach skills when creating an agent. Each [session](https://platform.claude.com
   Mounting more skills increases the time it takes for the session's sandbox to start. Attach only the skills each agent needs for its task.
 </Note>
 
-Each entry in the `skills` (java, php) array uses the following fields:
+Each entry in the `skills` array uses the following fields:
 
-| Field                 | Description                                                                                                                                                                                                                                                                          |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `type` (java, php)    | Either `anthropic` for pre-built skills or `custom` for workspace-authored skills.                                                                                                                                                                                                   |
-| `skill_id`            | The skill identifier. For Anthropic skills, use the short name (for example, `xlsx`). For custom skills, use the `skill_*` ID returned at creation (see [Create a custom skill](https://platform.claude.com/docs/en/managed-agents/skills?sdk_languages=cli#create-a-custom-skill)). |
-| `version` (java, php) | Pin to a specific version or use `latest`. Optional. Defaults to `latest` when omitted. Applies to both Anthropic and custom skills.                                                                                                                                                 |
+| Field      | Description                                                                                                                                                                                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `type`     | Either `anthropic` for pre-built skills or `custom` for workspace-authored skills.                                                                                                                                                                                                   |
+| `skill_id` | The skill identifier. For Anthropic skills, use the short name (for example, `xlsx`). For custom skills, use the `skill_*` ID returned at creation (see [Create a custom skill](https://platform.claude.com/docs/en/managed-agents/skills?sdk_languages=cli#create-a-custom-skill)). |
+| `version`  | Pin to a specific version or use `latest`. Optional. Defaults to `latest` when omitted. Applies to both Anthropic and custom skills.                                                                                                                                                 |
 
 <CodeGroup defaultLanguage="CLI">
   <CodeGroupItem>
@@ -93,7 +93,7 @@ Each entry in the `skills` (java, php) array uses the following fields:
 
 ## Load skills from a GitHub repository
 
-Skills can also live in your codebase. When a session mounts a repository through the [`github_repository` resource](https://platform.claude.com/docs/en/managed-agents/github?sdk_languages=cli), the repository's root `.claude/skills` directory is scanned at session start, and each skill found there becomes available to the agent. No upload and no entry in the agent's `skills` (java, php) array are required. The agent sees each discovered skill's name, description, and path in the sandbox, and reads the skill's `SKILL.md` when a task matches, including any scripts and resources the skill ships. Discovery relies on the agent's `read` tool from the [agent toolset](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli), which is enabled by default; an agent with `read` disabled doesn't load repository skills.
+Skills can also live in your codebase. When a session mounts a repository through the [`github_repository` resource](https://platform.claude.com/docs/en/managed-agents/github?sdk_languages=cli), the repository's root `.claude/skills` directory is scanned at session start, and each skill found there becomes available to the agent. No upload and no entry in the agent's `skills` array are required. The agent sees each discovered skill's name, description, and path in the sandbox, and reads the skill's `SKILL.md` when a task matches, including any scripts and resources the skill ships. Discovery relies on the agent's `read` tool from the [agent toolset](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli), which is enabled by default; an agent with `read` disabled doesn't load repository skills.
 
 <Warning>
   Repository skills are agent instructions, so a mounted repository is part of your agent's trust boundary. Anyone who can commit to the repository (a merged external pull request, a compromised dependency, a contributor) can add or change a skill, the platform loads it at session start without a review step, and session tools such as `bash` and `web_fetch` give those instructions real reach. Mount only repositories you trust, and review `.claude/skills` before mounting a repository that accepts outside contributions.
@@ -152,9 +152,9 @@ To load skills from a repository, create a session that mounts it. This is the s
 
 For private repositories, the resource's `authorization_token` must have access to the repository. This is the same personal access token flow used for any repository mount; see [Accessing GitHub](https://platform.claude.com/docs/en/managed-agents/github?sdk_languages=cli#token-permissions).
 
-Discovered skills follow the checked-out state of the repository: the `checkout` (java, php) branch or commit when the resource sets one, otherwise the repository's default branch. The scan runs once, when the session starts. Commits pushed mid-session are not picked up; to load updated skills, start a new session.
+Discovered skills follow the checked-out state of the repository: the `checkout` branch or commit when the resource sets one, otherwise the repository's default branch. The scan runs once, when the session starts. Commits pushed mid-session are not picked up; to load updated skills, start a new session.
 
-Repository skills work alongside skills attached through the agent's `skills` (java, php) array. If a repository skill shares a name with an attached skill, or with a skill from another mounted repository, both are available; each is announced with its own path.
+Repository skills work alongside skills attached through the agent's `skills` array. If a repository skill shares a name with an attached skill, or with a skill from another mounted repository, both are available; each is announced with its own path.
 
 ## Next steps
 

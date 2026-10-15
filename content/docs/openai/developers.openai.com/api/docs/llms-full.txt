@@ -1870,6 +1870,7 @@ For information about the recommended replacements, see the [transcription guide
 | Feb 26, 2027  | `gpt-4o-transcribe`         | `gpt-live-transcribe` or `gpt-transcribe` |
 | Feb 26, 2027  | `gpt-4o-mini-transcribe`    | `gpt-live-transcribe` or `gpt-transcribe` |
 | Feb 26, 2027  | `gpt-4o-transcribe-diarize` | `gpt-live-transcribe` or `gpt-transcribe` |
+| Feb 26, 2027  | `/v1/audio/translations`    | `v1/realtime/translations`                |
 
 ### 2026-07-20: Legacy audio, realtime, and transcription models
 
@@ -44538,7 +44539,7 @@ Select **Open in Codex** to start a task, or **Copy prompt** to paste the prompt
 ```text
 Use Promptfoo to evaluate and improve an important AI workflow in this application.
 
-Read the repository instructions and reuse any existing eval setup. Choose a user-facing behavior to test, asking me if the goal is unclear. Build realistic test cases covering common requests, edge cases, and adversarial inputs. Define success with assertions that check the behavior users need.
+Read the repository instructions and reuse any existing eval setup. Choose a user-facing behavior to test, asking me if the goal is unclear. Build test cases based on the application's inputs, covering common requests, edge cases, and adversarial inputs. Define success with assertions that check the expected behavior.
 
 Run a baseline, inspect the failures, and test one targeted change to the prompt or configuration. Compare both versions using the same cases and assertions. Report improvements and regressions, including latency and cost when available. Keep the assertions fixed so the comparison stays meaningful.
 
@@ -90053,7 +90054,7 @@ The rewritten query will be available in the result's `search_query` field.
 
 ### Attribute filtering
 
-Attribute filtering helps narrow down results by applying criteria, such as restricting searches to a specific date range. You can define and combine criteria in `attribute_filter` to target files based on their attributes before performing semantic search.
+Attribute filtering helps narrow down results by applying criteria, such as restricting searches to a specific date range. You can define and combine criteria in `filters` to target files based on their attributes before performing semantic search.
 
 Use **comparison filters** to compare a specific `key` in a file's `attributes` with a given `value`, and **compound filters** to combine multiple filters using `and` and `or`.
 
@@ -90079,6 +90080,8 @@ Compound filter
 
 
 Below are some example filters.
+
+The filename examples below match a custom `filename` attribute, which you must explicitly set on each vector store file, such as `{"filename": "example.txt"}`. They don't automatically match the uploaded file's name.
 
 
 
@@ -90133,7 +90136,7 @@ Filenames
 ```json
 {
   "type": "in",
-  "property": "filename",
+  "key": "filename",
   "value": ["example.txt", "example2.txt"]
 }
 ```
@@ -90150,7 +90153,7 @@ Exclude filenames
 ```json
 {
   "type": "nin",
-  "property": "filename",
+  "key": "filename",
   "value": ["draft.txt", "internal_notes.md"]
 }
 ```

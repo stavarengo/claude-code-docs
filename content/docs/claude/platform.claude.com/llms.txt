@@ -16,18 +16,18 @@ Connect an MCP client to https://platform.claude.com/docs/mcp (Streamable HTTP t
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 763 pages - /docs - Content included below
-- German (Deutsch) (de) - 278 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 278 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 278 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 278 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 278 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 278 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 278 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 278 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 278 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 278 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 278 pages - /docs/id - Visit website for content
+- English (en) - 779 pages - /docs - Content included below
+- German (Deutsch) (de) - 283 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 283 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 283 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 283 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 283 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 283 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 283 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 283 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 283 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 283 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 283 pages - /docs/id - Visit website for content
 
 ---
 
@@ -196,6 +196,7 @@ The full documentation is available in the following languages on https://platfo
 - [Overview](https://platform.claude.com/docs/en/manage-claude/inference-hooks.md) - Inference hooks
 - [Organizations, users, roles, groups, and settings](https://platform.claude.com/docs/en/manage-claude/compliance-org-data.md) - List organizations, users, roles, groups, and settings
 - [Manage WIF via API](https://platform.claude.com/docs/en/manage-claude/wif-admin-api.md) - Manage WIF with the Admin API
+- [Overview](https://platform.claude.com/docs/en/manage-claude/opentelemetry.md) - OpenTelemetry for the Claude API
 - [Plugins API](https://platform.claude.com/docs/en/manage-claude/plugins-api.md)
 - [Activity Feed](https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed.md) - Query the Activity Feed
 - [Rate Limits API](https://platform.claude.com/docs/en/manage-claude/rate-limits-api.md)
@@ -204,6 +205,8 @@ The full documentation is available in the following languages on https://platfo
 - [Set up the Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api-access.md)
 - [Spend Limits API](https://platform.claude.com/docs/en/manage-claude/spend-limits-api.md)
 - [Usage and Cost API](https://platform.claude.com/docs/en/manage-claude/usage-cost-api.md)
+- [Get Claude API spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/api.md) - Use OpenTelemetry with the Claude API
+- [Get Claude SDK spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/sdk.md) - Use OpenTelemetry with the Claude SDK
 - [AWS](https://platform.claude.com/docs/en/manage-claude/wif-providers/aws.md) - Use WIF with AWS
 - [GitHub Actions](https://platform.claude.com/docs/en/manage-claude/wif-providers/github-actions.md) - Use WIF with GitHub Actions
 - [Google Cloud](https://platform.claude.com/docs/en/manage-claude/wif-providers/gcp.md) - Use WIF with Google Cloud
@@ -265,6 +268,7 @@ The full documentation is available in the following languages on https://platfo
 - [Model cards](https://platform.claude.com/docs/en/resources/overview.md)
 - [Models overview](https://platform.claude.com/docs/en/models/overview.md)
 - [Overview](https://platform.claude.com/docs/en/release-notes/system-prompts/overview.md) - System prompts
+- [API credits for subscribers](https://platform.claude.com/docs/en/about-claude/api-credits-for-subscribers.md) - API credits for Max and Team plans
 - [Choosing a model](https://platform.claude.com/docs/en/about-claude/models/choosing-a-model.md) - Choosing the right model
 - [Claude Fable 5](https://platform.claude.com/docs/en/release-notes/system-prompts/claude-fable-5.md) - Claude Fable 5 system prompts
 - [Migration guide](https://platform.claude.com/docs/en/models/fable-5-1/migration-guide.md) - Claude Fable 5.1 and Claude Mythos 5.1 migration guide
@@ -329,6 +333,7 @@ The full documentation is available in the following languages on https://platfo
 - [Errors](https://platform.claude.com/docs/en/api/errors.md) - Claude API errors
 - [IAM actions (Claude Platform on AWS)](https://platform.claude.com/docs/en/api/claude-platform-on-aws-iam-actions.md) - IAM actions for Claude Platform on AWS
 - [IP addresses](https://platform.claude.com/docs/en/api/ip-addresses.md)
+- [Spans](https://platform.claude.com/docs/en/api/opentelemetry/spans.md) - OpenTelemetry span reference
 - [Rate limits](https://platform.claude.com/docs/en/api/rate-limits.md)
 - [Service tiers](https://platform.claude.com/docs/en/api/service-tiers.md)
 - [Supported regions](https://platform.claude.com/docs/en/api/supported-regions.md)
@@ -347,6 +352,7 @@ The full documentation is available in the following languages on https://platfo
 
 - [Acknowledge Work (Beta)](https://platform.claude.com/docs/en/api/beta/environments/work/ack.md)
 - [Activities](https://platform.claude.com/docs/en/api/compliance/activities.md)
+- [Add a Telemetry Destination Workspace (Beta)](https://platform.claude.com/docs/en/api/beta/organization/telemetry_destinations/workspaces/add.md)
 - [Add Federation Rule Workspace](https://platform.claude.com/docs/en/api/organization/federation/rules/workspaces/add.md)
 - [Add Federation Rule Workspace (Beta)](https://platform.claude.com/docs/en/api/beta/organization/federation/rules/workspaces/add.md)
 - [Add RBAC Group Member (Beta)](https://platform.claude.com/docs/en/api/beta/organization/rbac_groups/members/add.md)
@@ -412,6 +418,7 @@ The full documentation is available in the following languages on https://platfo
 - [Create a Message (Beta)](https://platform.claude.com/docs/en/api/beta/messages/create.md)
 - [Create a Message Batch](https://platform.claude.com/docs/en/api/messages/batches/create.md)
 - [Create a Message Batch (Beta)](https://platform.claude.com/docs/en/api/beta/messages/batches/create.md)
+- [Create a Telemetry Destination (Beta)](https://platform.claude.com/docs/en/api/beta/organization/telemetry_destinations/create.md)
 - [Create a Text Completion](https://platform.claude.com/docs/en/api/completions/create.md)
 - [Create Agent (Beta)](https://platform.claude.com/docs/en/api/beta/agents/create.md)
 - [Create Credential (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/credentials/create.md)
@@ -452,6 +459,7 @@ The full documentation is available in the following languages on https://platfo
 - [Delete a memory store (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/delete.md)
 - [Delete a Message Batch](https://platform.claude.com/docs/en/api/messages/batches/delete.md)
 - [Delete a Message Batch (Beta)](https://platform.claude.com/docs/en/api/beta/messages/batches/delete.md)
+- [Delete a Telemetry Destination (Beta)](https://platform.claude.com/docs/en/api/beta/organization/telemetry_destinations/delete.md)
 - [Delete chat](https://platform.claude.com/docs/en/api/compliance/apps/chats/delete.md)
 - [Delete Code Artifact](https://platform.claude.com/docs/en/api/compliance/code/artifacts/delete.md)
 - [Delete Credential (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/credentials/delete.md)
@@ -656,6 +664,8 @@ The full documentation is available in the following languages on https://platfo
 - [List Skills (Beta)](https://platform.claude.com/docs/en/api/beta/skills/list.md)
 - [List Spend Limit Increase Requests (Beta)](https://platform.claude.com/docs/en/api/beta/organization/spend_limits/increase_requests/list.md)
 - [List Spend Limits (Beta)](https://platform.claude.com/docs/en/api/beta/organization/spend_limits/list.md)
+- [List Telemetry Destination Workspaces (Beta)](https://platform.claude.com/docs/en/api/beta/organization/telemetry_destinations/workspaces/list.md)
+- [List Telemetry Destinations (Beta)](https://platform.claude.com/docs/en/api/beta/organization/telemetry_destinations/list.md)
 - [List Tunnel Certificates (Beta)](https://platform.claude.com/docs/en/api/beta/tunnels/certificates/list.md)
 - [List Tunnel Certificates (Beta)](https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/tunnel_certificates/list.md)
 - [List Tunnels (Beta)](https://platform.claude.com/docs/en/api/beta/tunnels/list.md)
@@ -712,6 +722,7 @@ The full documentation is available in the following languages on https://platfo
 - [Record Heartbeat (Beta)](https://platform.claude.com/docs/en/api/beta/environments/work/heartbeat.md)
 - [Redact a memory version (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memory_versions/redact.md)
 - [Remote](https://platform.claude.com/docs/en/api/compliance/apps/sessions/remote.md)
+- [Remove a Telemetry Destination Workspace (Beta)](https://platform.claude.com/docs/en/api/beta/organization/telemetry_destinations/workspaces/remove.md)
 - [Remove Federation Rule Workspace](https://platform.claude.com/docs/en/api/organization/federation/rules/workspaces/remove.md)
 - [Remove Federation Rule Workspace (Beta)](https://platform.claude.com/docs/en/api/beta/organization/federation/rules/workspaces/remove.md)
 - [Remove Plugin Installation Setting (Beta)](https://platform.claude.com/docs/en/api/beta/organization/plugins/installation_settings/remove.md)
@@ -727,6 +738,7 @@ The full documentation is available in the following languages on https://platfo
 - [Retrieve a memory version (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memory_versions/retrieve.md)
 - [Retrieve a Message Batch](https://platform.claude.com/docs/en/api/messages/batches/retrieve.md)
 - [Retrieve a Message Batch (Beta)](https://platform.claude.com/docs/en/api/beta/messages/batches/retrieve.md)
+- [Retrieve a Telemetry Destination (Beta)](https://platform.claude.com/docs/en/api/beta/organization/telemetry_destinations/retrieve.md)
 - [Retrieve API Key (Admin API)](https://platform.claude.com/docs/en/api/organization/api_keys/retrieve.md)
 - [Retrieve API Key (Admin API) (Beta)](https://platform.claude.com/docs/en/api/beta/organization/api_keys/retrieve.md)
 - [Retrieve local session messages](https://platform.claude.com/docs/en/api/compliance/apps/sessions/local/messages/list.md)
@@ -760,12 +772,15 @@ The full documentation is available in the following languages on https://platfo
 - [Stream Events (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/events/stream.md)
 - [Stream Session Thread Events (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/threads/events/stream.md)
 - [Summaries (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/summaries.md)
+- [Telemetry Destinations (Beta)](https://platform.claude.com/docs/en/api/beta/organization/telemetry_destinations.md)
+- [Test a Telemetry Destination (Beta)](https://platform.claude.com/docs/en/api/beta/organization/telemetry_destinations/test.md)
 - [Threads (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/threads.md)
 - [Tunnel Certificates (Beta)](https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/tunnel_certificates.md)
 - [Tunnels (Beta)](https://platform.claude.com/docs/en/api/beta/tunnels.md)
 - [Unpause Deployment (Beta)](https://platform.claude.com/docs/en/api/beta/deployments/unpause.md)
 - [Update a memory (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memories/update.md)
 - [Update a memory store (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/update.md)
+- [Update a Telemetry Destination (Beta)](https://platform.claude.com/docs/en/api/beta/organization/telemetry_destinations/update.md)
 - [Update Agent (Beta)](https://platform.claude.com/docs/en/api/beta/agents/update.md)
 - [Update API Key](https://platform.claude.com/docs/en/api/organization/api_keys/update.md)
 - [Update API Key (Beta)](https://platform.claude.com/docs/en/api/beta/organization/api_keys/update.md)
@@ -827,6 +842,7 @@ The full documentation is available in the following languages on https://platfo
 - [Workspaces (Beta)](https://platform.claude.com/docs/en/api/beta/organization/federation/rules/workspaces.md)
 - [Workspaces (Beta)](https://platform.claude.com/docs/en/api/beta/organization/service_accounts/workspaces.md)
 - [Workspaces (Beta)](https://platform.claude.com/docs/en/api/beta/organization/workspaces.md)
+- [Workspaces (Beta)](https://platform.claude.com/docs/en/api/beta/organization/telemetry_destinations/workspaces.md)
 
 ### Other pages
 

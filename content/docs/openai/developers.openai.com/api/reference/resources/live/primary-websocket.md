@@ -1832,6 +1832,38 @@ Schema name: `LiveInputAudioUnmuteParam`
 }
 ```
 
+<a id="session.output_audio.fixture.play"></a>
+
+### session.output_audio.fixture.play
+
+Play one complete audio fixture through the session output. Send this event over the primary WebSocket or a server sideband. Audio must be raw mono PCM16 little-endian at 24 kHz, regardless of the session audio format, and at most 30 seconds. The entire payload is validated before model speech is interrupted and input is muted. Only one fixture can be active. fixture.playing acknowledges acceptance and fixture.played reports server mixer drain. These notifications are not exact transport-media boundaries. Input arriving during playback is dropped and not replayed.
+
+#### Schema
+
+Schema name: `LiveOutputAudioFixturePlayParam`
+
+- `audio: string`
+
+  Base64-encoded raw mono PCM16 audio, little-endian, at 24 kHz. Do not include a WAV or other container header.
+
+- `type: "session.output_audio.fixture.play"`
+
+  - `"session.output_audio.fixture.play"`
+
+- `event_id: optional string or null`
+
+  Optional client identifier for correlating this command with a server event's client_event_id or error.client_event_id.
+
+#### Example
+
+```json
+{
+  "type": "session.output_audio.fixture.play",
+  "event_id": "evt_play_001",
+  "audio": "AAAAAA=="
+}
+```
+
 <a id="session.instructions.append"></a>
 
 ### session.instructions.append
@@ -8642,6 +8674,70 @@ Schema name: `LiveInputAudioUnmuted`
 }
 ```
 
+<a id="session.output_audio.fixture.playing"></a>
+
+### session.output_audio.fixture.playing
+
+The existing playback path has accepted the validated audio fixture. This acknowledgment does not identify when the listener receives the first sample. The optional client_event_id echoes the play command.
+
+#### Schema
+
+Schema name: `LiveOutputAudioFixturePlaying`
+
+- `event_id: string`
+
+  The unique ID of the Live server event.
+
+- `type: "session.output_audio.fixture.playing"`
+
+  - `"session.output_audio.fixture.playing"`
+
+- `client_event_id: optional string`
+
+  The event_id of the client command associated with this server event, when supplied.
+
+#### Example
+
+```json
+{
+  "type": "session.output_audio.fixture.playing",
+  "event_id": "evt_playing_001",
+  "client_event_id": "evt_play_001"
+}
+```
+
+<a id="session.output_audio.fixture.played"></a>
+
+### session.output_audio.fixture.played
+
+The complete audio fixture has drained from the server mixer and normal inference has resumed. Transport buffers may still contain audio; this event does not prove listener-side completion. The optional client_event_id echoes the play command. This event is not emitted for canceled or failed playback.
+
+#### Schema
+
+Schema name: `LiveOutputAudioFixturePlayed`
+
+- `event_id: string`
+
+  The unique ID of the Live server event.
+
+- `type: "session.output_audio.fixture.played"`
+
+  - `"session.output_audio.fixture.played"`
+
+- `client_event_id: optional string`
+
+  The event_id of the client command associated with this server event, when supplied.
+
+#### Example
+
+```json
+{
+  "type": "session.output_audio.fixture.played",
+  "event_id": "evt_played_001",
+  "client_event_id": "evt_play_001"
+}
+```
+
 <a id="session.instructions.appended"></a>
 
 ### session.instructions.appended
@@ -10252,70 +10348,6 @@ Schema name: `LiveInfoEvent`
   "event_id": "evt_info_001",
   "code": "data_channel_permissions",
   "message": "The frontend data channel is configured with restricted event permissions."
-}
-```
-
-<a id="session.output_audio.fixture.playing"></a>
-
-### session.output_audio.fixture.playing
-
-The existing playback path has accepted the validated audio fixture. This acknowledgment does not identify when the listener receives the first sample. The optional client_event_id echoes the play command.
-
-#### Schema
-
-Schema name: `LiveOutputAudioFixturePlaying`
-
-- `event_id: string`
-
-  The unique ID of the Live server event.
-
-- `type: "session.output_audio.fixture.playing"`
-
-  - `"session.output_audio.fixture.playing"`
-
-- `client_event_id: optional string`
-
-  The event_id of the client command associated with this server event, when supplied.
-
-#### Example
-
-```json
-{
-  "type": "session.output_audio.fixture.playing",
-  "event_id": "evt_play_started_001",
-  "client_event_id": "evt_play_001"
-}
-```
-
-<a id="session.output_audio.fixture.played"></a>
-
-### session.output_audio.fixture.played
-
-The complete audio fixture has drained from the server mixer and normal inference has resumed. Transport buffers may still contain audio; this event does not prove listener-side completion. The optional client_event_id echoes the play command. This event is not emitted for canceled or failed playback.
-
-#### Schema
-
-Schema name: `LiveOutputAudioFixturePlayed`
-
-- `event_id: string`
-
-  The unique ID of the Live server event.
-
-- `type: "session.output_audio.fixture.played"`
-
-  - `"session.output_audio.fixture.played"`
-
-- `client_event_id: optional string`
-
-  The event_id of the client command associated with this server event, when supplied.
-
-#### Example
-
-```json
-{
-  "type": "session.output_audio.fixture.played",
-  "event_id": "evt_played_001",
-  "client_event_id": "evt_play_001"
 }
 ```
 

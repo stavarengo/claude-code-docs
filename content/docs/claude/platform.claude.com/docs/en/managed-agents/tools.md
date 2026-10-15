@@ -33,7 +33,7 @@ When a tool output exceeds 100,000 characters (about 25,000 tokens), it is autom
 
 ## Configuring the toolset
 
-Enable the full toolset with `agent_toolset_20260401` when creating an agent. Use the `configs` (java, php) array to disable specific tools or override their settings. Each entry is identified by its `name` (java, php), which takes a value from the Name column in [Available tools](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli#available-tools). An entry also accepts an optional `type` (java, php) field with the same value.
+Enable the full toolset with `agent_toolset_20260401` when creating an agent. Use the `configs` array to disable specific tools or override their settings. Each entry is identified by its `name`, which takes a value from the Name column in [Available tools](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli#available-tools). An entry also accepts an optional `type` field with the same value.
 
 Each config entry can also set a `permission_policy`. The policy controls whether the tool's calls run without confirmation, require confirmation, or are evaluated individually by the server. See [Permission policies](https://platform.claude.com/docs/en/managed-agents/permission-policies?sdk_languages=cli) for the available policy types.
 
@@ -97,11 +97,11 @@ The `web_search` and `web_fetch` entries also accept domain lists, a cap on fetc
 
 ### Config entry types in the SDKs
 
-The Python, TypeScript, Go, Java, C#, Ruby, and PHP SDKs type each `configs` (java, php) entry per tool. The type is a union with one member per built-in tool, discriminated by `type` (java, php).
+The Python, TypeScript, Go, Java, C#, Ruby, and PHP SDKs type each `configs` entry per tool. The type is a union with one member per built-in tool, discriminated by `type`.
 
-In Go, Java, C#, and PHP, you construct entries from typed values rather than plain dictionaries or hashes. In those SDKs, the element type of `configs` (java, php) is the union itself, so build each entry from its per-tool member type.
+In Go, Java, C#, and PHP, you construct entries from typed values rather than plain dictionaries or hashes. In those SDKs, the element type of `configs` is the union itself, so build each entry from its per-tool member type.
 
-You can omit `type` (java, php) when you construct an entry, because the server infers it from `name` (java, php). Responses always include it. This typing does not change the JSON that an entry serializes to. A request whose entries set only `name`, `enabled`, and `permission_policy` is valid with or without `type`.
+You can omit `type` when you construct an entry, because the server infers it from `name`. Responses always include it. This typing does not change the JSON that an entry serializes to. A request whose entries set only `name`, `enabled`, and `permission_policy` is valid with or without `type`.
 
 ## Custom tools
 
@@ -141,7 +141,7 @@ The following example creates an agent with the built-in toolset and one custom 
   </CodeGroupItem>
 </CodeGroup>
 
-A custom tool's name can't start with `mcp__` or `ant__`, or match the name of a built-in agent tool. A request that breaks this rule returns a 400 error. An agent that already has a custom tool whose name starts with `ant__` accepts an update only if the update sends `tools` (java, php) without that name, so rename or remove the tool in your next update. A new session is refused with a 400 error if such a tool is on its agent (after any [overrides](https://platform.claude.com/docs/en/managed-agents/sessions?sdk_languages=cli#override-agent-configuration-for-a-session)), on an agent in the `predefined_agents` list of `subagents` (java, php), or on an agent in the `predefined_agents` list of `workflows` (java, php). Sessions that already exist aren't affected.
+A custom tool's name can't start with `mcp__` or `ant__`, or match the name of a built-in agent tool. A request that breaks this rule returns a 400 error. An agent that already has a custom tool whose name starts with `ant__` accepts an update only if the update sends `tools` without that name, so rename or remove the tool in your next update. A new session is refused with a 400 error if such a tool is on its agent (after any [overrides](https://platform.claude.com/docs/en/managed-agents/sessions?sdk_languages=cli#override-agent-configuration-for-a-session)), on an agent in the `predefined_agents` list of `subagents`, or on an agent in the `predefined_agents` list of `workflows`. Sessions that already exist aren't affected.
 
 The agent calls its custom tools during a session. To receive the calls and return results, see [Session event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli#handling-custom-tool-calls).
 

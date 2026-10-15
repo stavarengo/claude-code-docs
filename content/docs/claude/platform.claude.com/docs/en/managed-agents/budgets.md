@@ -14,7 +14,7 @@ A session budget is an optional hard spend ceiling you set when you [create a se
 
 ## Set a budget at session creation
 
-Pass the optional `budget` (java, php) field when you create the session:
+Pass the optional `budget` field when you create the session:
 
 <CodeGroup>
   ```bash CLI
@@ -26,10 +26,10 @@ Pass the optional `budget` (java, php) field when you create the session:
   ```
 </CodeGroup>
 
-The `budget` (java, php) object has two fields:
+The `budget` object has two fields:
 
-* `type` (java, php) is always `"limit"`.
-* `max_list_cost` is the cap itself: `amount` (java, php) is a whole number of US cents written as a string with no leading zeros (`"125"` is $1.25 and `"50"` is 50 cents) and must be greater than zero. Decimal forms such as `"25.00"` are rejected. The amount is a string rather than a number so no float rounding is ever applied to it. `currency` (java, php) is an uppercase ISO-4217 currency code; `USD` is the only supported currency.
+* `type` is always `"limit"`.
+* `max_list_cost` is the cap itself: `amount` is a whole number of US cents written as a string with no leading zeros (`"125"` is $1.25 and `"50"` is 50 cents) and must be greater than zero. Decimal forms such as `"25.00"` are rejected. The amount is a string rather than a number so no float rounding is ever applied to it. `currency` is an uppercase ISO-4217 currency code; `USD` is the only supported currency.
 
 A budget can only be attached when the session is created. Adding a budget to an existing session that doesn't have one is rejected with a 400 error. A budgeted session's cap can be [changed](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli#change-the-budget) or [removed](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli#remove-the-budget) at any time.
 
@@ -94,7 +94,7 @@ Update the session with a new `max_list_cost`. The new value can be higher or lo
 
 ### Remove the budget
 
-Pass `--budget null` (cli) to remove the cap entirely. The work that the budget paused resumes, and the resulting `session.updated` event carries `budget` (java, php) set to `null`.
+Pass `--budget null` (cli: `--budget null`) to remove the cap entirely. The work that the budget paused resumes, and the resulting `session.updated` event carries `budget` set to `null`.
 
 <CodeGroup>
   ```bash CLI
@@ -108,9 +108,9 @@ Pass `--budget null` (cli) to remove the cap entirely. The work that the budget 
 
 ## Monitor spend
 
-The session object carries its `budget` (java, php) and a `usage` (java, php) object with the tracked spend: `usage.list_cost` is the session's consumed list cost, and `usage.active_seconds` is the running time its runtime cost is priced on. On a session paused at `budget_reached`, expect `usage.list_cost` to read at or a fraction past `max_list_cost`: the [request that crossed the cap](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli#when-a-session-reaches-its-budget) finished before the pause. Session-level `active_seconds` counts overlapping activity from concurrent threads once. Thread retrieval responses carry the same two fields on the thread's own `usage` (java, php), priced per thread. Per-thread figures are rounded independently and exclude the session's running-time cost, so they don't sum exactly to the session's `list_cost`; the session figure is the one the budget is enforced against.
+The session object carries its `budget` and a `usage` object with the tracked spend: `usage.list_cost` is the session's consumed list cost, and `usage.active_seconds` is the running time its runtime cost is priced on. On a session paused at `budget_reached`, expect `usage.list_cost` to read at or a fraction past `max_list_cost`: the [request that crossed the cap](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli#when-a-session-reaches-its-budget) finished before the pause. Session-level `active_seconds` counts overlapping activity from concurrent threads once. Thread retrieval responses carry the same two fields on the thread's own `usage`, priced per thread. Per-thread figures are rounded independently and exclude the session's running-time cost, so they don't sum exactly to the session's `list_cost`; the session figure is the one the budget is enforced against.
 
-The `session.usage` event is a snapshot of the session's cumulative usage and tracked list cost. It carries the session's token totals, `list_cost`, `active_seconds`, `server_tool_use` request counts (`web_search_requests`, priced into list cost per request, and `web_fetch_requests`, which reads `0` because web fetch requests carry no per-request charge and aren't metered), and an echo of the session's `budget` (java, php), or `null` when the session has none. It appears in the events list and the session stream. The session emits one immediately before it goes idle, whatever the stop reason, so a session that reaches its budget always emits one immediately before the budget-reached idle event.
+The `session.usage` event is a snapshot of the session's cumulative usage and tracked list cost. It carries the session's token totals, `list_cost`, `active_seconds`, `server_tool_use` request counts (`web_search_requests`, priced into list cost per request, and `web_fetch_requests`, which reads `0` because web fetch requests carry no per-request charge and aren't metered), and the session's `budget` if the session has one. It appears in the events list and the session stream. The session emits one immediately before it goes idle, whatever the stop reason, so a session that reaches its budget always emits one immediately before the budget-reached idle event.
 
 To read usage from the stream and the session object, see [Track usage](https://platform.claude.com/docs/en/managed-agents/session-observability?sdk_languages=cli#track-usage).
 
@@ -133,11 +133,11 @@ A [deployment](https://platform.claude.com/docs/en/managed-agents/scheduled-depl
 }
 ```
 
-The cap is copied onto each session the deployment starts, so it bounds each run separately rather than the deployment's cumulative spend. Changing the deployment's budget applies to sessions the deployment starts afterward, not to sessions already running. Unlike a session, a deployment's budget can be cleared with `--budget null` (cli) and set again later. See [Set a budget on each run](https://platform.claude.com/docs/en/managed-agents/scheduled-deployments?sdk_languages=cli#set-a-budget-on-each-run).
+The cap is copied onto each session the deployment starts, so it bounds each run separately rather than the deployment's cumulative spend. Changing the deployment's budget applies to sessions the deployment starts afterward, not to sessions already running. Unlike a session, a deployment's budget can be cleared with `--budget null` (cli: `--budget null`) and set again later. See [Set a budget on each run](https://platform.claude.com/docs/en/managed-agents/scheduled-deployments?sdk_languages=cli#set-a-budget-on-each-run).
 
 ## Models without a list price
 
-A budget can only track consumption the platform can price. Creating a budgeted session whose agent, or any agent listed in the `predefined_agents` list of `subagents` (java, php) or `workflows` (java, php), or the advisor set in its [multiagent configuration](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli), uses a model with no public list price is rejected with a 400 error stating that no list price is available for the model.
+A budget can only track consumption the platform can price. Creating a budgeted session whose agent, or any agent listed in the `predefined_agents` list of `subagents` or `workflows`, or the advisor set in its [multiagent configuration](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli), uses a model with no public list price is rejected with a 400 error stating that no list price is available for the model.
 
 If a budgeted session's usage comes to include a model with no list price, the budget can no longer measure the session's spend: the session can pause with a `stop_reason` of `budget_reached`, and changing the budget is rejected. Remove the budget to resume the session.
 
@@ -150,7 +150,7 @@ Budget-related requests are rejected in the following cases:
 | A work-starting event (for example, `user.message`) is sent while the session is at or over its budget; the error names the [accepted settle events](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli#events-accepted-at-the-cap) | 400    |
 | The budget is set to a value at or below the session's consumed list cost                                                                                                                                                                                     | 400    |
 | A budget is added to a session created without one, or re-added after removal                                                                                                                                                                                 | 400    |
-| `amount` (java, php) is not a whole number of cents (for example, `"25.00"`), is zero or negative, or `currency` (java, php) is not `USD`                                                                                                                     | 400    |
+| `amount` is not a whole number of cents (for example, `"25.00"`), is zero or negative, or `currency` is not `USD`                                                                                                                                             | 400    |
 | A budgeted create references a model with [no public list price](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli#models-without-a-list-price)                                                                                    | 400    |
 
 <Note>

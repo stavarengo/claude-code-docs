@@ -15,7 +15,7 @@ The Claude API is a RESTful API at `https://api.anthropic.com` that provides pro
 To use the Claude API, you'll need:
 
 * A [Claude Console account](https://platform.claude.com)
-* An [API key](https://platform.claude.com/settings/keys), or a configured [Workload Identity Federation](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation?sdk_languages=cli) rule
+* An [API key](https://platform.claude.com/settings/keys) from the Console, or a configured [Workload Identity Federation](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation?sdk_languages=cli) rule
 
 For step-by-step setup instructions, see [Get started](https://platform.claude.com/docs/en/get-started?sdk_languages=cli).
 
@@ -56,7 +56,7 @@ When accessing Claude through a [cloud platform](https://platform.claude.com/doc
 
 ### Getting API keys
 
-The API is made available through the web [Console](https://platform.claude.com/). You can use [playground](https://platform.claude.com/playground) to try out the API in the browser and then generate API keys in [Account Settings](https://platform.claude.com/settings/keys) (see [Get your Claude API key](https://platform.claude.com/docs/en/get-api-key?sdk_languages=cli)). You choose each key's type (see [Key types](https://platform.claude.com/docs/en/manage-claude/authentication?sdk_languages=cli#key-types)) and its [expiration](https://platform.claude.com/docs/en/manage-claude/authentication?sdk_languages=cli#key-expiration) when you create it. Use [workspaces](https://platform.claude.com/settings/workspaces) to separate environments and [control spend](https://platform.claude.com/docs/en/api/rate-limits?sdk_languages=cli) by use case.
+The API is made available through the web [Console](https://platform.claude.com/). In the Console, you can use [playground](https://platform.claude.com/playground) (`platform.claude.com/playground`) to try out the API in the browser and then generate API keys on the [API keys](https://platform.claude.com/settings/keys) page (`platform.claude.com/settings/keys`). To learn how, see [Get your Claude API key](https://platform.claude.com/docs/en/get-api-key?sdk_languages=cli). You choose each key's type (see [Key types](https://platform.claude.com/docs/en/manage-claude/authentication?sdk_languages=cli#key-types)) and its [expiration](https://platform.claude.com/docs/en/manage-claude/authentication?sdk_languages=cli#key-expiration) when you create it. Use [workspaces](https://platform.claude.com/settings/workspaces) in the Console to separate environments and [control spend](https://platform.claude.com/docs/en/api/rate-limits?sdk_languages=cli) by use case.
 
 ## Client SDKs
 
@@ -148,7 +148,7 @@ List endpoints return results in pages. Most newer list endpoints use the `page`
 
 To go back a page, pass `prev_page` as the `page` parameter. `prev_page` is `null` when you're on the first page. Not all list endpoints support `prev_page`. Only `GET /v1/sessions` returns `prev_page`; on list endpoints that do not support backward pagination, the field is absent from the response rather than `null`. For a request walkthrough, see [Listing sessions](https://platform.claude.com/docs/en/managed-agents/session-operations?sdk_languages=cli#listing-sessions).
 
-The SDK provides an auto-paginating iterator that follows `next_page` for you. For example, `for session in client.beta.sessions.list()` (python) walks through every session. SDK auto-pagination is forward-only; to go back a page, read `prev_page` from the response and pass it back as the `page` parameter yourself. See [client SDKs](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) for details.
+The SDK provides an auto-paginating iterator that follows `next_page` for you. For example, `for session in client.beta.sessions.list()` walks through every session. SDK auto-pagination is forward-only; to go back a page, read `prev_page` from the response and pass it back as the `page` parameter yourself. See [client SDKs](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) for details.
 
 <Note>
   Some list endpoints use a different cursor scheme. The [Message Batches API](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=cli), the [Models API](https://platform.claude.com/docs/en/api/models/list?sdk_languages=cli), and several [Admin API](https://platform.claude.com/docs/en/manage-claude/admin-api?sdk_languages=cli) endpoints take `after_id` and `before_id` query parameters instead of `page`. Their responses return `has_more`, `first_id`, and `last_id` instead of `next_page`. See the reference page for each endpoint for its exact pagination fields.

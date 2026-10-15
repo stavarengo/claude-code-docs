@@ -30,7 +30,7 @@ Each middleware can inspect or replace the request before calling `next()`, and 
 
 ## Registering middleware
 
-Each middleware is a function that receives the outgoing request and the next handler. Call `call_next(request)` (python) to forward the request to the rest of the chain (or directly to the SDK core if this is the last middleware), and return its response. Anything before that call runs on the way out; anything after runs on the way back.
+Each middleware is a function that receives the outgoing request and the next handler. Call `call_next(request)` to forward the request to the rest of the chain (or directly to the SDK core if this is the last middleware), and return its response. Anything before that call runs on the way out; anything after runs on the way back.
 
 <CodeGroup exclude="shell">
   ```python Python

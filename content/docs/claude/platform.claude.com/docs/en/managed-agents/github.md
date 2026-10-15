@@ -65,13 +65,13 @@ Then create a session that mounts the GitHub repository. With a `limited` [envir
 
 A `github_repository` resource accepts the following fields:
 
-| Field                  | Description                                                                                                                                                                                                         |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `type` (java, php)     | Required. Must be `"github_repository"`.                                                                                                                                                                            |
-| `url` (java, php)      | Required. The repository's HTTPS URL in the form `https://github.com/<owner>/<repo>`, without a `.git` suffix. Other forms, including SSH URLs, are rejected with an `invalid_request_error`.                       |
-| `authorization_token`  | Required. The GitHub token used to clone the repository. It is not echoed in API responses. See [Token permissions](https://platform.claude.com/docs/en/managed-agents/github?sdk_languages=cli#token-permissions). |
-| `mount_path`           | Optional. The directory under `/workspace` to clone the repository into. Defaults to `/workspace/<repo-name>`.                                                                                                      |
-| `checkout` (java, php) | Optional. A branch (`{"type": "branch", "name": "main"}`) or commit (`{"type": "commit", "sha": "..."}`) to check out. Defaults to the repository's default branch.                                                 |
+| Field                 | Description                                                                                                                                                                                                         |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`                | Required. Must be `"github_repository"`.                                                                                                                                                                            |
+| `url`                 | Required. The repository's HTTPS URL in the form `https://github.com/<owner>/<repo>`, without a `.git` suffix. Other forms, including SSH URLs, are rejected with an `invalid_request_error`.                       |
+| `authorization_token` | Required. The GitHub token used to clone the repository. It is not echoed in API responses. See [Token permissions](https://platform.claude.com/docs/en/managed-agents/github?sdk_languages=cli#token-permissions). |
+| `mount_path`          | Optional. The directory under `/workspace` to clone the repository into. Defaults to `/workspace/<repo-name>`.                                                                                                      |
+| `checkout`            | Optional. A branch (`{"type": "branch", "name": "main"}`) or commit (`{"type": "commit", "sha": "..."}`) to check out. Defaults to the repository's default branch.                                                 |
 
 Mounting a repository also loads any skills stored in its root `.claude/skills` directory. Skills are discovered once per session, from the repository state checked out at session start. See [Load skills from a GitHub repository](https://platform.claude.com/docs/en/managed-agents/skills?sdk_languages=cli#load-skills-from-a-github-repository).
 
@@ -92,7 +92,7 @@ When providing a GitHub token, use the minimum required permissions:
 
 ## Multiple repositories
 
-Mount multiple repositories by adding entries to the `resources` (java, php) array:
+Mount multiple repositories by adding entries to the `resources` array:
 
 <CodeGroup>
   ```bash CLI
@@ -113,7 +113,7 @@ Mount multiple repositories by adding entries to the `resources` (java, php) arr
 
 ## Managing repositories on a running session
 
-After a session is created, you can list its repository resources and rotate their authorization tokens. Each resource has an `id` (java, php) returned at session creation time (or through `ant beta:sessions:resources list` (cli)) that you use for updates. Repositories are attached for the lifetime of the session; to change which repositories are mounted, create a new session.
+After a session is created, you can list its repository resources and rotate their authorization tokens. Each resource has an `id` returned at session creation time (or through `ant beta:sessions:resources list` (cli: `ant beta:sessions:resources list`)) that you use for updates. Repositories are attached for the lifetime of the session; to change which repositories are mounted, create a new session.
 
 <CodeGroup>
   ```bash CLI
