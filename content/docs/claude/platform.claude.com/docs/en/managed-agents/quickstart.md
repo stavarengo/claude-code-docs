@@ -43,7 +43,7 @@ This guide walks you through creating an agent, setting up an environment, start
     For Linux environments, download the release binary directly.
 
     ```bash
-    VERSION=1.41.0
+    VERSION=1.42.0
     OS=$(uname -s | tr '[:upper:]' '[:lower:]')
     case $(uname -m) in
       x86_64) ARCH=amd64 ;;
@@ -94,7 +94,7 @@ ant --version
 
   <Tab title="Java">
     ```groovy Gradle
-    implementation("com.anthropic:anthropic-java:2.72.0")
+    implementation("com.anthropic:anthropic-java:2.73.0")
     ```
   </Tab>
 
@@ -187,9 +187,13 @@ export ANTHROPIC_API_KEY="your-api-key-here"
     </CodeGroup>
 
     <Tip>
-      To run the sandbox on your own infrastructure instead of a cloud sandbox, see 
+      This quickstart uses a cloud environment. To decide whether to run tools on your own infrastructure with a 
 
-      [Self-hosted sandboxes](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes?sdk_languages=cli)
+      [self-hosted sandbox](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes?sdk_languages=cli)
+
+       instead, see 
+
+      [Choosing an agent environment](https://platform.claude.com/docs/en/managed-agents/choosing-an-environment?sdk_languages=cli)
 
       .
     </Tip>
@@ -214,11 +218,10 @@ export ANTHROPIC_API_KEY="your-api-key-here"
   <Step title="Send a message and stream the response">
     Open a stream, send a user event, then process events as they arrive:
 
-    <CodeGroup>
-      ```bash CLI
-      # This workflow does not translate well to a one-off shell command.
-      # Use one of the SDK examples in this code group instead.
-      ```
+    <CodeGroup exclude="shell">
+      <CodeGroupItem language="CLI">
+        This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+      </CodeGroupItem>
     </CodeGroup>
 
     The agent writes a Python script, runs it in the sandbox, and verifies the output file was created. Your output looks similar to this:

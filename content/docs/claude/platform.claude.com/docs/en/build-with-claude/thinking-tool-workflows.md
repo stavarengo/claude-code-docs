@@ -88,7 +88,7 @@ The example defines a `get_weather` tool, lets Claude think and request a tool c
 
     Each sample is a self-contained script: it repeats the first request, then immediately sends the follow-up using the response it just received.
 
-    <CodeGroup>
+    <CodeGroup exclude="shell:cURL">
       ```bash CLI
       # First turn: write the assistant content array (thinking and tool_use
       # blocks, signatures intact) to a file. Routing model-generated text

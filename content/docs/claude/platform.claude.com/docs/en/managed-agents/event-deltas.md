@@ -107,11 +107,10 @@ Each SDK's helper handles the `index` bookkeeping. The Go, Java, Ruby, and C# he
 
 The following examples opt in to `agent.message` previews and reconcile them with the buffered event:
 
-<CodeGroup>
-  ```bash CLI
-  # This workflow does not translate well to a one-off shell command.
-  # Use one of the SDK examples in this code group instead.
-  ```
+<CodeGroup exclude="shell:CLI">
+  <CodeGroupItem language="CLI">
+    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+  </CodeGroupItem>
 </CodeGroup>
 
 ## Preview session thread events

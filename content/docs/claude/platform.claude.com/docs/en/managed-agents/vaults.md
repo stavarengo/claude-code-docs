@@ -66,6 +66,8 @@ The actual credential values you supply (`token`, `access_token`, `refresh_token
   Environment variable credentials (`environment_variable`) are not yet supported with [self-hosted sandboxes](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes?sdk_languages=cli).
 </Note>
 
+To get the same behavior with a self-hosted sandbox, you can run your own proxy that replaces placeholder values with the real secrets at egress.
+
 <Tabs>
   <Tab title="MCP OAuth">
     Use `mcp_oauth` when the MCP server uses OAuth 2.0. If you supply a `refresh` block, Anthropic refreshes the access token on your behalf when it expires.

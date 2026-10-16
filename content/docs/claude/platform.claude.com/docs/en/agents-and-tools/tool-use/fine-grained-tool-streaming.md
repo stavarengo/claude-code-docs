@@ -78,11 +78,10 @@ Guard the parse, as the following SDK examples do. A response can also stop at `
 
 The type mismatch between the initial `input: {}` (object) and `partial_json` (string) is by design. The empty object marks the slot in the content array. The delta strings build the real value.
 
-<CodeGroup>
-  ```bash CLI
-  # Accumulating per-block input deltas needs a programming language; the first
-  # example's CLI tab shows the raw fragments with jq. See the SDK tabs.
-  ```
+<CodeGroup exclude="shell">
+  <CodeGroupItem language="CLI">
+    Accumulating the input fragments of each `tool_use` block needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) for this. To see the raw fragments as they stream, run the request in [How to use fine-grained tool streaming](https://platform.claude.com/docs/en/agents-and-tools/tool-use/fine-grained-tool-streaming?sdk_languages=cli#how-to-use-fine-grained-tool-streaming).
+  </CodeGroupItem>
 </CodeGroup>
 
 <Tip>

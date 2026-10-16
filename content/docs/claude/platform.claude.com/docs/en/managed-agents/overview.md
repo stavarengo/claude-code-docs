@@ -56,7 +56,7 @@ Claude Managed Agents is built around four concepts:
   </Step>
 
   <Step title="Create an environment">
-    Configure where the agent runs: a cloud sandbox, or a [self-hosted sandbox](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes?sdk_languages=cli) on your own infrastructure.
+    [Configure where the agent runs](https://platform.claude.com/docs/en/managed-agents/choosing-an-environment?sdk_languages=cli): a cloud sandbox, or a [self-hosted sandbox](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes?sdk_languages=cli) on your own infrastructure.
   </Step>
 
   <Step title="Start a session">

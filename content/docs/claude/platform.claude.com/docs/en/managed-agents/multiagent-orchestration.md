@@ -376,8 +376,9 @@ You review contracts. When you're asked to review more than a few contracts, sta
 To adapt it, name the tasks in your agent's domain that call for a run, and the small tasks the agent should do itself. You can also guide how a run does the work, as in these examples:
 
 * **How to split the work:** "In a run, use one agent per contract. Then have a second agent review every contract, not only the ones where the first agent found something, and look for what the first agent missed. Anything that fails the review gets redone and reviewed again."
-* **What to do when an agent fails:** "One agent failing must not fail the run. If an agent fails to read a contract, list that contract as not covered."
+* **What to do when an agent fails:** "One agent failing must not fail the run. If an agent fails to read a contract, list that contract as not covered. When the run ends, tell me which contracts weren't covered."
 * **A time limit:** "Give the run a one-hour time limit."
+* **Plan first:** "Before you start a run, describe its phases and how many agents each one runs. Then wait for my go-ahead." There's no approval step before a run starts, so nothing enforces this.
 
 Keep runs to the tasks that need them, because every agent in a run uses tokens.
 

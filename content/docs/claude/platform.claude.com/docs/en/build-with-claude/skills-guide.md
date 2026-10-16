@@ -169,7 +169,7 @@ To provide input files for Skills to work on, [upload them with the Files API](h
 
 The response's `container` object carries the container's `id` and `expires_at` timestamp (see [Container reuse](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=cli#container-reuse) for lifetime details). Reuse the same container across multiple messages by specifying the container ID:
 
-<CodeGroup>
+<CodeGroup exclude="shell:cURL">
   ```bash CLI
   # First request creates container
   CONTAINER_ID=$(ant messages create \
@@ -645,7 +645,7 @@ For best caching performance, keep your Skills list, including its order, consis
 
 Handle Skill-related errors gracefully:
 
-<CodeGroup>
+<CodeGroup exclude="shell:cURL">
   ```bash CLI
   if ! RESULT=$(ant messages create \
     --transform-error error.message \

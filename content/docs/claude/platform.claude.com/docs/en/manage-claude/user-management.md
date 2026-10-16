@@ -47,13 +47,15 @@ Custom roles and their group attachments are managed in [claude.ai organization 
 
 ## Quick start
 
+Set the `ANTHROPIC_API_KEY` environment variable to your Admin API key. The examples on this page read the key from it. The SDK and the `ant` CLI send the `x-api-key` and `anthropic-version` headers for you.
+
 List the organization's members, newest first:
 
-```bash cURL
-curl "https://api.anthropic.com/v1/organizations/users?limit=20" \
-  -H "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  -H "anthropic-version: 2023-06-01"
-```
+<CodeGroup>
+  ```bash CLI
+  ant organization:users list --limit 20
+  ```
+</CodeGroup>
 
 ```json
 {
@@ -111,6 +113,8 @@ Admin API endpoints share a per-organization limit of **100 requests per minute*
 
 Member and invite lists use ID-based pagination: pass `limit` (default 20, max 1000) plus at most one of `before_id` or `after_id`, and page using the `first_id` and `last_id` fields of each response until `has_more` is `false`. Group and custom-role lists use an **opaque cursor** instead: the response's `next_page` value is passed unchanged as the `page` parameter on the next request, until `next_page` is `null`.
 
+When you iterate over the results, the SDK fetches more pages for you, so `limit` sets the page size, not the total. In the CLI, `--limit` sets the total number of results for member and invite lists. For group and role lists, it sets the page size.
+
 ## Error responses
 
 Error responses follow the standard shape documented in [Errors](https://platform.claude.com/docs/en/api/errors?sdk_languages=cli).
@@ -123,11 +127,11 @@ Error responses follow the standard shape documented in [Errors](https://platfor
 
 For complete parameter details and response schemas, see [List users](https://platform.claude.com/docs/en/api/organization/users/list?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl "https://api.anthropic.com/v1/organizations/users?email=jane@example.com" \
-  -H "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  -H "anthropic-version: 2023-06-01"
-```
+<CodeGroup>
+  ```bash CLI
+  ant organization:users list --email jane@example.com
+  ```
+</CodeGroup>
 
 ### Get a member
 
@@ -135,11 +139,11 @@ curl "https://api.anthropic.com/v1/organizations/users?email=jane@example.com" \
 
 For complete parameter details and response schemas, see [Get user](https://platform.claude.com/docs/en/api/organization/users/retrieve?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl "https://api.anthropic.com/v1/organizations/users/user_01AbCdEfGhIjKlMnOpQrSt" \
-  -H "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  -H "anthropic-version: 2023-06-01"
-```
+<CodeGroup>
+  ```bash CLI
+  ant organization:users retrieve --user-id user_01AbCdEfGhIjKlMnOpQrSt
+  ```
+</CodeGroup>
 
 ### Change a member's role
 
@@ -147,13 +151,13 @@ curl "https://api.anthropic.com/v1/organizations/users/user_01AbCdEfGhIjKlMnOpQr
 
 For complete parameter details and response schemas, see [Update user](https://platform.claude.com/docs/en/api/organization/users/update?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl -X POST "https://api.anthropic.com/v1/organizations/users/user_01AbCdEfGhIjKlMnOpQrSt" \
-  -H "content-type: application/json" \
-  -H "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  -H "anthropic-version: 2023-06-01" \
-  -d '{"role": "managed"}'
-```
+<CodeGroup>
+  ```bash CLI
+  ant organization:users update \
+    --user-id user_01AbCdEfGhIjKlMnOpQrSt \
+    --role managed
+  ```
+</CodeGroup>
 
 ### Remove a member
 
@@ -161,11 +165,11 @@ curl -X POST "https://api.anthropic.com/v1/organizations/users/user_01AbCdEfGhIj
 
 For complete parameter details and response schemas, see [Remove user](https://platform.claude.com/docs/en/api/organization/users/remove?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl -X DELETE "https://api.anthropic.com/v1/organizations/users/user_01AbCdEfGhIjKlMnOpQrSt" \
-  -H "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  -H "anthropic-version: 2023-06-01"
-```
+<CodeGroup>
+  ```bash CLI
+  ant organization:users remove --user-id user_01AbCdEfGhIjKlMnOpQrSt
+  ```
+</CodeGroup>
 
 ```json
 {
@@ -180,23 +184,20 @@ curl -X DELETE "https://api.anthropic.com/v1/organizations/users/user_01AbCdEfGh
 
 `POST /v1/organizations/invites` sends an invitation email and returns the invite with a server-assigned `expires_at`. `role` must be `user` or `managed`. If a pending invite already exists for the email address, or the address already belongs to a member, the request returns 400 naming the existing resource. Organizations whose identity provider provisions users automatically (JIT or SCIM) cannot create invites through the API. Requires the `write:members` scope, plus `write:rbac_groups` when `role` is `managed`.
 
-On plans that draw members from a finite seat pool, the invite automatically takes a seat from the lowest tier that has availability; the API does not take a tier parameter. If no seat is free, the request fails with a 400 error rather than purchasing a seat. Add seats through the organization's plan management and retry.
+On plans that draw members from a finite seat pool, the invite automatically takes a seat from the lowest tier that has availability. The API does not take a tier parameter. If no seat is free, the request fails with a 400 error rather than purchasing a seat. Add seats through the organization's plan management and retry.
 
 The optional `rbac_group_ids` field lists groups (by `rbac_group_`-prefixed ID) to assign to the member when they accept. Passing a non-empty `rbac_group_ids` additionally requires the key to carry the `write:rbac_groups` scope, because group assignment can grant the permissions attached to the group's roles.
 
 For complete parameter details and response schemas, see [Create invite](https://platform.claude.com/docs/en/api/organization/invites/create?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl -X POST "https://api.anthropic.com/v1/organizations/invites" \
-  -H "content-type: application/json" \
-  -H "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  -H "anthropic-version: 2023-06-01" \
-  -d '{
-    "email": "newhire@example.com",
-    "role": "managed",
-    "rbac_group_ids": ["rbac_group_01UvWxYzAbCdEfGhIjKlMn"]
-  }'
-```
+<CodeGroup>
+  ```bash CLI
+  ant organization:invites create \
+    --email newhire@example.com \
+    --role managed \
+    --rbac-group-id rbac_group_01UvWxYzAbCdEfGhIjKlMn
+  ```
+</CodeGroup>
 
 ```json
 {
@@ -218,11 +219,11 @@ curl -X POST "https://api.anthropic.com/v1/organizations/invites" \
 
 For complete parameter details and response schemas, see [List invites](https://platform.claude.com/docs/en/api/organization/invites/list?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl "https://api.anthropic.com/v1/organizations/invites?limit=20" \
-  -H "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  -H "anthropic-version: 2023-06-01"
-```
+<CodeGroup>
+  ```bash CLI
+  ant organization:invites list --limit 20
+  ```
+</CodeGroup>
 
 ### Get an invite
 
@@ -230,11 +231,11 @@ curl "https://api.anthropic.com/v1/organizations/invites?limit=20" \
 
 For complete parameter details and response schemas, see [Get invite](https://platform.claude.com/docs/en/api/organization/invites/retrieve?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl "https://api.anthropic.com/v1/organizations/invites/invite_01QrStUvWxYzAbCdEfGhIj" \
-  -H "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  -H "anthropic-version: 2023-06-01"
-```
+<CodeGroup>
+  ```bash CLI
+  ant organization:invites retrieve --invite-id invite_01QrStUvWxYzAbCdEfGhIj
+  ```
+</CodeGroup>
 
 ### Withdraw an invite
 
@@ -242,11 +243,11 @@ curl "https://api.anthropic.com/v1/organizations/invites/invite_01QrStUvWxYzAbCd
 
 For complete parameter details and response schemas, see [Delete invite](https://platform.claude.com/docs/en/api/organization/invites/delete?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl -X DELETE "https://api.anthropic.com/v1/organizations/invites/invite_01QrStUvWxYzAbCdEfGhIj" \
-  -H "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  -H "anthropic-version: 2023-06-01"
-```
+<CodeGroup>
+  ```bash CLI
+  ant organization:invites delete --invite-id invite_01QrStUvWxYzAbCdEfGhIj
+  ```
+</CodeGroup>
 
 ## Groups
 
@@ -258,11 +259,11 @@ Groups your enterprise creates directly, in [claude.ai organization settings](ht
 
 For complete parameter details and response schemas, see [List groups](https://platform.claude.com/docs/en/api/beta/organization/rbac_groups/list?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl "https://api.anthropic.com/v1/organizations/rbac_groups?limit=20" \
-  -H "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  -H "anthropic-version: 2023-06-01"
-```
+<CodeGroup>
+  ```bash CLI
+  ant beta:organization:rbac-groups list --limit 20
+  ```
+</CodeGroup>
 
 ```json
 {
@@ -289,11 +290,12 @@ curl "https://api.anthropic.com/v1/organizations/rbac_groups?limit=20" \
 
 For complete parameter details and response schemas, see [Get group](https://platform.claude.com/docs/en/api/beta/organization/rbac_groups/retrieve?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl "https://api.anthropic.com/v1/organizations/rbac_groups/rbac_group_01UvWxYzAbCdEfGhIjKlMn" \
-  -H "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  -H "anthropic-version: 2023-06-01"
-```
+<CodeGroup>
+  ```bash CLI
+  ant beta:organization:rbac-groups retrieve \
+    --rbac-group-id rbac_group_01UvWxYzAbCdEfGhIjKlMn
+  ```
+</CodeGroup>
 
 ### Create a group
 
@@ -301,13 +303,11 @@ curl "https://api.anthropic.com/v1/organizations/rbac_groups/rbac_group_01UvWxYz
 
 For complete parameter details and response schemas, see [Create group](https://platform.claude.com/docs/en/api/beta/organization/rbac_groups/create?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl -X POST "https://api.anthropic.com/v1/organizations/rbac_groups" \
-  -H "content-type: application/json" \
-  -H "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  -H "anthropic-version: 2023-06-01" \
-  -d '{"name": "Engineering"}'
-```
+<CodeGroup>
+  ```bash CLI
+  ant beta:organization:rbac-groups create --name Engineering
+  ```
+</CodeGroup>
 
 ```json
 {
@@ -328,13 +328,13 @@ curl -X POST "https://api.anthropic.com/v1/organizations/rbac_groups" \
 
 For complete parameter details and response schemas, see [Update group](https://platform.claude.com/docs/en/api/beta/organization/rbac_groups/update?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl -X POST "https://api.anthropic.com/v1/organizations/rbac_groups/rbac_group_01UvWxYzAbCdEfGhIjKlMn" \
-  -H "content-type: application/json" \
-  -H "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  -H "anthropic-version: 2023-06-01" \
-  -d '{"name": "Platform Engineering"}'
-```
+<CodeGroup>
+  ```bash CLI
+  ant beta:organization:rbac-groups update \
+    --rbac-group-id rbac_group_01UvWxYzAbCdEfGhIjKlMn \
+    --name "Platform Engineering"
+  ```
+</CodeGroup>
 
 ### Delete a group
 
@@ -342,11 +342,12 @@ curl -X POST "https://api.anthropic.com/v1/organizations/rbac_groups/rbac_group_
 
 For complete parameter details and response schemas, see [Delete group](https://platform.claude.com/docs/en/api/beta/organization/rbac_groups/delete?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl -X DELETE "https://api.anthropic.com/v1/organizations/rbac_groups/rbac_group_01UvWxYzAbCdEfGhIjKlMn" \
-  -H "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  -H "anthropic-version: 2023-06-01"
-```
+<CodeGroup>
+  ```bash CLI
+  ant beta:organization:rbac-groups delete \
+    --rbac-group-id rbac_group_01UvWxYzAbCdEfGhIjKlMn
+  ```
+</CodeGroup>
 
 ```json
 {
@@ -361,11 +362,13 @@ curl -X DELETE "https://api.anthropic.com/v1/organizations/rbac_groups/rbac_grou
 
 For complete parameter details and response schemas, see [List group members](https://platform.claude.com/docs/en/api/beta/organization/rbac_groups/members/list?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl "https://api.anthropic.com/v1/organizations/rbac_groups/rbac_group_01UvWxYzAbCdEfGhIjKlMn/members?limit=100" \
-  -H "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  -H "anthropic-version: 2023-06-01"
-```
+<CodeGroup>
+  ```bash CLI
+  ant beta:organization:rbac-groups:members list \
+    --rbac-group-id rbac_group_01UvWxYzAbCdEfGhIjKlMn \
+    --limit 100
+  ```
+</CodeGroup>
 
 ```json
 {
@@ -390,13 +393,13 @@ curl "https://api.anthropic.com/v1/organizations/rbac_groups/rbac_group_01UvWxYz
 
 For complete parameter details and response schemas, see [Add group member](https://platform.claude.com/docs/en/api/beta/organization/rbac_groups/members/add?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl -X POST "https://api.anthropic.com/v1/organizations/rbac_groups/rbac_group_01UvWxYzAbCdEfGhIjKlMn/members" \
-  -H "content-type: application/json" \
-  -H "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  -H "anthropic-version: 2023-06-01" \
-  -d '{"user_id": "user_01AbCdEfGhIjKlMnOpQrSt"}'
-```
+<CodeGroup>
+  ```bash CLI
+  ant beta:organization:rbac-groups:members add \
+    --rbac-group-id rbac_group_01UvWxYzAbCdEfGhIjKlMn \
+    --user-id user_01AbCdEfGhIjKlMnOpQrSt
+  ```
+</CodeGroup>
 
 ```json
 {
@@ -415,11 +418,13 @@ curl -X POST "https://api.anthropic.com/v1/organizations/rbac_groups/rbac_group_
 
 For complete parameter details and response schemas, see [Remove group member](https://platform.claude.com/docs/en/api/beta/organization/rbac_groups/members/remove?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl -X DELETE "https://api.anthropic.com/v1/organizations/rbac_groups/rbac_group_01UvWxYzAbCdEfGhIjKlMn/members/user_01AbCdEfGhIjKlMnOpQrSt" \
-  -H "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  -H "anthropic-version: 2023-06-01"
-```
+<CodeGroup>
+  ```bash CLI
+  ant beta:organization:rbac-groups:members remove \
+    --rbac-group-id rbac_group_01UvWxYzAbCdEfGhIjKlMn \
+    --user-id user_01AbCdEfGhIjKlMnOpQrSt
+  ```
+</CodeGroup>
 
 ```json
 {
@@ -442,11 +447,11 @@ Read a role's name from its `display_name` field. The deprecated `name` field is
 
 For complete parameter details and response schemas, see [List roles](https://platform.claude.com/docs/en/api/beta/organization/rbac_roles/list?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl "https://api.anthropic.com/v1/organizations/rbac_roles?limit=20" \
-  -H "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  -H "anthropic-version: 2023-06-01"
-```
+<CodeGroup>
+  ```bash CLI
+  ant beta:organization:rbac-roles list --limit 20
+  ```
+</CodeGroup>
 
 ```json
 {
@@ -471,11 +476,12 @@ curl "https://api.anthropic.com/v1/organizations/rbac_roles?limit=20" \
 
 For complete parameter details and response schemas, see [Get role](https://platform.claude.com/docs/en/api/beta/organization/rbac_roles/retrieve?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl "https://api.anthropic.com/v1/organizations/rbac_roles/rbac_role_01CdEfGhIjKlMnOpQrStUv" \
-  -H "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  -H "anthropic-version: 2023-06-01"
-```
+<CodeGroup>
+  ```bash CLI
+  ant beta:organization:rbac-roles retrieve \
+    --rbac-role-id rbac_role_01CdEfGhIjKlMnOpQrStUv
+  ```
+</CodeGroup>
 
 ### List a role's permissions
 
@@ -485,11 +491,13 @@ Two `action` values need special care: an `organization` permission whose action
 
 For complete parameter details and response schemas, see [List role permissions](https://platform.claude.com/docs/en/api/beta/organization/rbac_roles/permissions/list?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl "https://api.anthropic.com/v1/organizations/rbac_roles/rbac_role_01CdEfGhIjKlMnOpQrStUv/permissions?limit=20" \
-  -H "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  -H "anthropic-version: 2023-06-01"
-```
+<CodeGroup>
+  ```bash CLI
+  ant beta:organization:rbac-roles:permissions list \
+    --rbac-role-id rbac_role_01CdEfGhIjKlMnOpQrStUv \
+    --limit 20
+  ```
+</CodeGroup>
 
 ```json
 {
@@ -523,11 +531,11 @@ curl "https://api.anthropic.com/v1/organizations/rbac_roles/rbac_role_01CdEfGhIj
 
 1. Look up the member by email:
 
-   ```bash cURL
-   curl "https://api.anthropic.com/v1/organizations/users?email=departing@example.com" \
-     -H "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-     -H "anthropic-version: 2023-06-01"
-   ```
+   <CodeGroup>
+     ```bash CLI
+     ant organization:users list --email departing@example.com
+     ```
+   </CodeGroup>
 
 2. Remove them with `DELETE /v1/organizations/users/{user_id}`, using the `id` from the response. Their seat, if any, returns to the pool.
 

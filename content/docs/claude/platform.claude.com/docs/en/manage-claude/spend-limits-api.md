@@ -34,15 +34,17 @@ Use the **spend limits** endpoints to answer "what spend limit applies to each m
 * Your organization must be on a Claude Enterprise plan.
 * Usage credits must be turned on for your organization. Your primary owner can turn them on in claude.ai billing settings.
 
+The SDK exposes these endpoints under `client.beta.organization.spend_limits`, and the `ant` CLI under `ant beta:organization:spend-limits`. Both send the `anthropic-version` header for you. The examples read the Admin API key from the `ANTHROPIC_API_KEY` environment variable. The SDK and the CLI fetch more pages for you as you go through the results, so `limit` sets the page size, not the total (see [Pagination](https://platform.claude.com/docs/en/manage-claude/spend-limits-api?sdk_languages=cli#pagination)).
+
 ## Quick start
 
 List every member's effective monthly spend limit and period-to-date spend:
 
-```bash cURL
-curl "https://api.anthropic.com/v1/organizations/spend_limits/effective?limit=20" \
-  --header "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  --header "anthropic-version: 2023-06-01"
-```
+<CodeGroup>
+  ```bash CLI
+  ant beta:organization:spend-limits:effective list --limit 20
+  ```
+</CodeGroup>
 
 ## Key concepts
 
@@ -116,11 +118,11 @@ Error responses follow the standard shape documented in [Errors](https://platfor
 
 For complete parameter details and response schemas, see [List effective spend limits](https://platform.claude.com/docs/en/api/beta/organization/spend_limits/effective/list?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl "https://api.anthropic.com/v1/organizations/spend_limits/effective?limit=20" \
-  --header "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  --header "anthropic-version: 2023-06-01"
-```
+<CodeGroup>
+  ```bash CLI
+  ant beta:organization:spend-limits:effective list --limit 20
+  ```
+</CodeGroup>
 
 ```json
 {
@@ -152,11 +154,12 @@ curl "https://api.anthropic.com/v1/organizations/spend_limits/effective?limit=20
 
 For complete parameter details and response schemas, see [Retrieve a spend limit](https://platform.claude.com/docs/en/api/beta/organization/spend_limits/retrieve?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl "https://api.anthropic.com/v1/organizations/spend_limits/spl_01AbCdEfGhIjKlMnOpQrSt" \
-  --header "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  --header "anthropic-version: 2023-06-01"
-```
+<CodeGroup>
+  ```bash CLI
+  ant beta:organization:spend-limits retrieve \
+    --spend-limit-id spl_01AbCdEfGhIjKlMnOpQrSt
+  ```
+</CodeGroup>
 
 ### Set a per-user override
 
@@ -164,13 +167,13 @@ curl "https://api.anthropic.com/v1/organizations/spend_limits/spl_01AbCdEfGhIjKl
 
 For complete parameter details and response schemas, see [Create a spend limit](https://platform.claude.com/docs/en/api/beta/organization/spend_limits/set?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl --request POST "https://api.anthropic.com/v1/organizations/spend_limits" \
-  --header "content-type: application/json" \
-  --header "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  --header "anthropic-version: 2023-06-01" \
-  --data '{"scope": {"type": "user", "user_id": "user_01AbCdEfGh"}, "amount": "75000"}'
-```
+<CodeGroup>
+  ```bash CLI
+  ant beta:organization:spend-limits set \
+    --scope '{type: user, user_id: user_01AbCdEfGh}' \
+    --amount 75000
+  ```
+</CodeGroup>
 
 ```json
 {
@@ -191,11 +194,12 @@ curl --request POST "https://api.anthropic.com/v1/organizations/spend_limits" \
 
 For complete parameter details and response schemas, see [Delete a spend limit](https://platform.claude.com/docs/en/api/beta/organization/spend_limits/delete?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl --request DELETE "https://api.anthropic.com/v1/organizations/spend_limits/spl_01RsTuVwXyZaBcDeFgHiJk" \
-  --header "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  --header "anthropic-version: 2023-06-01"
-```
+<CodeGroup>
+  ```bash CLI
+  ant beta:organization:spend-limits delete \
+    --spend-limit-id spl_01RsTuVwXyZaBcDeFgHiJk
+  ```
+</CodeGroup>
 
 ## Spend limit increase requests
 
@@ -205,11 +209,13 @@ curl --request DELETE "https://api.anthropic.com/v1/organizations/spend_limits/s
 
 For complete parameter details and response schemas, see [List spend limit increase requests](https://platform.claude.com/docs/en/api/beta/organization/spend_limits/increase_requests/list?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl --globoff "https://api.anthropic.com/v1/organizations/spend_limit_increase_requests?status[]=pending&limit=50" \
-  --header "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  --header "anthropic-version: 2023-06-01"
-```
+<CodeGroup>
+  ```bash CLI
+  ant beta:organization:spend-limits:increase-requests list \
+    --status pending \
+    --limit 50
+  ```
+</CodeGroup>
 
 Each pending request carries a live `spend_summary` showing the requester's current effective spend limit and period-to-date spend, enough to decide without a separate lookup.
 
@@ -219,11 +225,12 @@ Each pending request carries a live `spend_summary` showing the requester's curr
 
 For complete parameter details and response schemas, see [Retrieve a spend limit increase request](https://platform.claude.com/docs/en/api/beta/organization/spend_limits/increase_requests/retrieve?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl "https://api.anthropic.com/v1/organizations/spend_limit_increase_requests/slir_01AbCdEfGhIjKlMnOpQrSt" \
-  --header "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  --header "anthropic-version: 2023-06-01"
-```
+<CodeGroup>
+  ```bash CLI
+  ant beta:organization:spend-limits:increase-requests retrieve \
+    --spend-limit-increase-request-id slir_01AbCdEfGhIjKlMnOpQrSt
+  ```
+</CodeGroup>
 
 ### Approve an increase request
 
@@ -231,13 +238,14 @@ curl "https://api.anthropic.com/v1/organizations/spend_limit_increase_requests/s
 
 For complete parameter details and response schemas, see [Approve a spend limit increase request](https://platform.claude.com/docs/en/api/beta/organization/spend_limits/increase_requests/approve?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl --request POST "https://api.anthropic.com/v1/organizations/spend_limit_increase_requests/slir_01AbCdEfGhIjKlMnOpQrSt/approve" \
-  --header "content-type: application/json" \
-  --header "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  --header "anthropic-version: 2023-06-01" \
-  --data '{"amount": "75000", "suppress_notification": true}'
-```
+<CodeGroup>
+  ```bash CLI
+  ant beta:organization:spend-limits:increase-requests approve \
+    --spend-limit-increase-request-id slir_01AbCdEfGhIjKlMnOpQrSt \
+    --amount 75000 \
+    --suppress-notification
+  ```
+</CodeGroup>
 
 ### Deny an increase request
 
@@ -245,19 +253,19 @@ curl --request POST "https://api.anthropic.com/v1/organizations/spend_limit_incr
 
 For complete parameter details and response schemas, see [Deny a spend limit increase request](https://platform.claude.com/docs/en/api/beta/organization/spend_limits/increase_requests/deny?sdk_languages=cli) in the API reference.
 
-```bash cURL
-curl --request POST "https://api.anthropic.com/v1/organizations/spend_limit_increase_requests/slir_01AbCdEfGhIjKlMnOpQrSt/deny" \
-  --header "content-type: application/json" \
-  --header "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-  --header "anthropic-version: 2023-06-01" \
-  --data '{"suppress_notification": true}'
-```
+<CodeGroup>
+  ```bash CLI
+  ant beta:organization:spend-limits:increase-requests deny \
+    --spend-limit-increase-request-id slir_01AbCdEfGhIjKlMnOpQrSt \
+    --suppress-notification
+  ```
+</CodeGroup>
 
 ## Example workflows
 
 Some of these workflows combine the Spend Limits API with the [Analytics APIs](https://platform.claude.com/docs/en/manage-claude/analytics-api?sdk_languages=cli) cost endpoints. The Analytics cost endpoints are designed for organization-wide spend reporting across a date range. `GET /spend_limits/effective` returns the cap that currently applies to each member. Start a sweep with Analytics to discover which members to look at, then read their current caps with `/effective`.
 
-Spend Limits endpoints require the `spend_limits` scopes and Analytics cost endpoints require `read:analytics`; see [Analytics APIs](https://platform.claude.com/docs/en/manage-claude/analytics-api?sdk_languages=cli) for how to provision access. All monetary values on both are decimal strings in minor units (cents). Both APIs paginate with an opaque cursor. Set an explicit `limit` and page through `next_page` until it's `null` to cover the whole organization.
+Spend Limits endpoints require the `spend_limits` scopes and Analytics cost endpoints require `read:analytics`; see [Analytics APIs](https://platform.claude.com/docs/en/manage-claude/analytics-api?sdk_languages=cli) for how to provision access. The examples use one Admin API key that has the scopes of every API they call. A primary owner [selects these scopes when creating the key](https://platform.claude.com/docs/en/manage-claude/admin-api-keys?sdk_languages=cli#choose-scopes-for-a-claude-enterprise-key). All monetary values on both are decimal strings in minor units (cents). Both APIs paginate with an opaque cursor. Set an explicit `limit` and page through `next_page` until it's `null` to cover the whole organization.
 
 ### Automate the increase-request review flow
 
@@ -265,11 +273,13 @@ Run a scheduled job that fetches pending requests, applies your organization's a
 
 1. List pending requests:
 
-   ```bash cURL
-   curl --globoff "https://api.anthropic.com/v1/organizations/spend_limit_increase_requests?status[]=pending&limit=100" \
-     --header "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-     --header "anthropic-version: 2023-06-01"
-   ```
+   <CodeGroup>
+     ```bash CLI
+     ant beta:organization:spend-limits:increase-requests list \
+       --status pending \
+       --limit 100
+     ```
+   </CodeGroup>
 
    Each request carries the requester's `actor.user_id` and a live `spend_summary` with their current effective `amount` and `period_to_date_spend`, enough to decide without a separate lookup.
 
@@ -277,15 +287,16 @@ Run a scheduled job that fetches pending requests, applies your organization's a
 
 3. Resolve each request. To approve, supply the new cap:
 
-   ```bash cURL
-   curl --request POST "https://api.anthropic.com/v1/organizations/spend_limit_increase_requests/{id}/approve" \
-     --header "content-type: application/json" \
-     --header "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-     --header "anthropic-version: 2023-06-01" \
-     --data '{"amount": "75000", "suppress_notification": true}'
-   ```
+   <CodeGroup>
+     ```bash CLI
+     ant beta:organization:spend-limits:increase-requests approve \
+       --spend-limit-increase-request-id slir_01AbCdEfGhIjKlMnOpQrSt \
+       --amount 75000 \
+       --suppress-notification
+     ```
+   </CodeGroup>
 
-   To deny, `POST` to `.../{id}/deny` instead. Pass `suppress_notification: true` when your own system notifies the requester.
+   To deny, call the [deny endpoint](https://platform.claude.com/docs/en/manage-claude/spend-limits-api?sdk_languages=cli#deny-an-increase-request) with the same ID instead. Pass `suppress_notification: true` when your own system notifies the requester.
 
 ### Identify members close to their spend limit
 
@@ -293,21 +304,26 @@ Find members approaching their cap so you can raise it before they're blocked.
 
 1. Pull each member's month-to-date spend from the Analytics API (one row per member, highest spend first by default):
 
-   ```bash cURL
-   curl "https://api.anthropic.com/v1/organizations/analytics/user_cost_report?starting_at=2026-06-01T00:00:00Z&limit=1000" \
-     --header "x-api-key: $ANALYTICS_API_KEY" \
-     --header "anthropic-version: 2023-06-01"
-   ```
+   <CodeGroup>
+     ```bash CLI
+     ant beta:organization:analytics:user-cost-report list \
+       --starting-at 2026-06-01T00:00:00Z \
+       --limit 1000
+     ```
+   </CodeGroup>
 
-   Each row carries `actor.user_id`, `actor.email`, and `amount` (the member's spend in cents). Page through `next_page` to cover the whole organization.
+   Each row contains `actor.user_id`, `actor.email_address`, and `amount` (the member's spend in cents). Page through `next_page` to cover the whole organization.
 
 2. For the top spenders (or everyone above a dollar threshold), fetch effective caps in batches:
 
-   ```bash cURL
-   curl --globoff "https://api.anthropic.com/v1/organizations/spend_limits/effective?user_ids[]=user_01Ab...&user_ids[]=user_01Cd...&limit=100" \
-     --header "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-     --header "anthropic-version: 2023-06-01"
-   ```
+   <CodeGroup>
+     ```bash CLI
+     ant beta:organization:spend-limits:effective list \
+       --user-id user_01AbCdEfGh \
+       --user-id user_01JkLmNoPq \
+       --limit 100
+     ```
+   </CodeGroup>
 
    Each row returns the cap as `amount` (`null` = unlimited, `"0"` = included usage only) alongside `period_to_date_spend`.
 
@@ -321,13 +337,17 @@ Surface members whose spend has jumped week over week.
 
 1. Pull per-member daily cost for the trailing two weeks from the Analytics API:
 
-   ```bash cURL
-   curl "https://api.anthropic.com/v1/organizations/analytics/user_cost_report?starting_at=2026-06-09T00:00:00Z&ending_at=2026-06-23T00:00:00Z&bucket_width=1d&limit=1000" \
-     --header "x-api-key: $ANALYTICS_API_KEY" \
-     --header "anthropic-version: 2023-06-01"
-   ```
+   <CodeGroup>
+     ```bash CLI
+     ant beta:organization:analytics:user-cost-report list \
+       --starting-at 2026-06-09T00:00:00Z \
+       --ending-at 2026-06-23T00:00:00Z \
+       --bucket-width 1d \
+       --limit 1000
+     ```
+   </CodeGroup>
 
-   With `bucket_width` set, each member spans one row per day with usage; page through `next_page` to collect every member's full series.
+   With `bucket_width` set, each member spans one row per day with usage. Page through `next_page` to collect every member's full series.
 
 2. Group rows by `actor.user_id`. For each member, sum the most recent seven days and the prior seven days. Flag members whose recent week exceeds the prior week by your chosen multiple (for example, three). Recent-day cost is provisional and can be revised upward; for repeatable comparisons, set `ending_at` at or before a previously returned `data_refreshed_at` (see [Data availability and freshness](https://platform.claude.com/docs/en/manage-claude/analytics-api?sdk_languages=cli#data-availability-and-freshness)).
 
@@ -339,31 +359,34 @@ Give an incident responder room to work while an incident is open: raise their s
 
 1. Read the member's current cap, and record it for the rollback:
 
-   ```bash cURL
-   curl --globoff "https://api.anthropic.com/v1/organizations/spend_limits/effective?user_ids[]=user_01AbCdEfGh&period[]=monthly" \
-     --header "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-     --header "anthropic-version: 2023-06-01"
-   ```
+   <CodeGroup>
+     ```bash CLI
+     ant beta:organization:spend-limits:effective list \
+       --user-id user_01AbCdEfGh \
+       --period monthly
+     ```
+   </CodeGroup>
 
 2. Raise the cap:
 
-   ```bash cURL
-   curl --request POST "https://api.anthropic.com/v1/organizations/spend_limits" \
-     --header "content-type: application/json" \
-     --header "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-     --header "anthropic-version: 2023-06-01" \
-     --data '{"scope": {"type": "user", "user_id": "user_01AbCdEfGh"}, "amount": "500000", "period": "monthly"}'
-   ```
+   <CodeGroup>
+     ```bash CLI
+     ant beta:organization:spend-limits set \
+       --scope '{type: user, user_id: user_01AbCdEfGh}' \
+       --amount 500000 \
+       --period monthly
+     ```
+   </CodeGroup>
 
 3. If responders need broader access during an incident, pre-provision an incident-responders group whose [custom role](https://platform.claude.com/docs/en/manage-claude/user-management?sdk_languages=cli#custom-roles) grants it, and add the member for the duration:
 
-   ```bash cURL
-   curl --request POST "https://api.anthropic.com/v1/organizations/rbac_groups/rbac_group_01UvWxYzAbCdEfGhIjKlMn/members" \
-     --header "content-type: application/json" \
-     --header "x-api-key: $ANTHROPIC_ADMIN_KEY" \
-     --header "anthropic-version: 2023-06-01" \
-     --data '{"user_id": "user_01AbCdEfGh"}'
-   ```
+   <CodeGroup>
+     ```bash CLI
+     ant beta:organization:rbac-groups:members add \
+       --rbac-group-id rbac_group_01UvWxYzAbCdEfGhIjKlMn \
+       --user-id user_01AbCdEfGh
+     ```
+   </CodeGroup>
 
    See [User management](https://platform.claude.com/docs/en/manage-claude/user-management?sdk_languages=cli#groups) for the group endpoints.
 

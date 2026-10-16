@@ -40,121 +40,11 @@ See [Self-hosted worker reference](https://platform.claude.com/docs/en/managed-a
 
 ## Run an always-on worker
 
-Both workers authenticate with the [environment key](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes?sdk_languages=cli#run-your-first-session) from the quickstart.
+Start a worker that polls the queue continuously. It authenticates with the [environment key](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes?sdk_languages=cli#run-your-first-session) from the quickstart:
 
-With the `ant` CLI:
-
-```bash
-ant beta:worker poll --workdir /workspace
-```
-
-With the SDK, `EnvironmentWorker` does the same work:
-
-<CodeGroup exclude="shell">
-  ```python Python
-  import asyncio
-  import contextlib
-  import os
-  import signal
-  from anthropic import AsyncAnthropic
-  from anthropic.lib.environments import EnvironmentWorker
-
-
-  async def main() -> None:
-      environment_key = os.environ["ANTHROPIC_ENVIRONMENT_KEY"]
-      environment_id = os.environ["ANTHROPIC_ENVIRONMENT_ID"]
-      async with AsyncAnthropic(auth_token=environment_key) as client:
-          worker = EnvironmentWorker(
-              client,
-              environment_id=environment_id,
-              environment_key=environment_key,
-              workdir="/workspace",
-          )
-          task = asyncio.create_task(worker.run())
-          # Cancelling the task, rather than killing the process, lets the worker stop its
-          # in-flight work item and upload changed memory files before it exits.
-          loop = asyncio.get_running_loop()
-          for signum in (signal.SIGINT, signal.SIGTERM):
-              loop.add_signal_handler(signum, task.cancel)
-          with contextlib.suppress(asyncio.CancelledError):
-              await task
-
-
-  asyncio.run(main())
-  ```
-
-  ```typescript TypeScript
-  import Anthropic from "@anthropic-ai/sdk";
-  import { EnvironmentWorker } from "@anthropic-ai/sdk/helpers/beta/environments";
-
-  const environmentKey = process.env.ANTHROPIC_ENVIRONMENT_KEY!;
-  const environmentId = process.env.ANTHROPIC_ENVIRONMENT_ID!;
-  const client = new Anthropic({ authToken: environmentKey });
-  const controller = new AbortController();
-  // Aborting on either signal lets the worker upload changed memory files and remove its
-  // store directories before the process exits.
-  process.once("SIGINT", () => controller.abort());
-  process.once("SIGTERM", () => controller.abort());
-
-  await new EnvironmentWorker({
-    client,
-    environmentId,
-    environmentKey,
-    workdir: "/workspace",
-    signal: controller.signal
-  }).run();
-  ```
-
-  ```csharp C#
-  // EnvironmentWorker is not currently available in the C# SDK. Use the ant CLI worker instead.
-  ```
-
-  ```go Go
-  package main
-
-  import (
-  	"context"
-  	"log"
-  	"os"
-  	"os/signal"
-  	"syscall"
-
-  	"github.com/anthropics/anthropic-sdk-go"
-  	"github.com/anthropics/anthropic-sdk-go/lib/environments"
-  	"github.com/anthropics/anthropic-sdk-go/option"
-  )
-
-  func main() {
-  	environmentKey := os.Getenv("ANTHROPIC_ENVIRONMENT_KEY")
-  	environmentID := os.Getenv("ANTHROPIC_ENVIRONMENT_ID")
-
-  	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
-  	defer stop()
-
-  	client := anthropic.NewClient(option.WithAuthToken(environmentKey))
-
-  	worker := environments.NewEnvironmentWorker(client, environments.EnvironmentWorkerOptions{
-  		EnvironmentID:  environmentID,
-  		EnvironmentKey: environmentKey,
-  		Workdir:        "/workspace",
-  	})
-  	if err := worker.Run(ctx); err != nil {
-  		log.Fatalf("worker: %v", err)
-  	}
-  }
-
-  ```
-
-  ```java Java
-  // EnvironmentWorker is not currently available in the Java SDK. Use the ant CLI worker instead.
-  ```
-
-  ```php PHP
-  // EnvironmentWorker is not currently available in the PHP SDK. Use the ant CLI worker instead.
-  ```
-
-  ```ruby Ruby
-  # EnvironmentWorker is not currently available in the Ruby SDK. Use the ant CLI worker instead.
+<CodeGroup exclude="shell:cURL, csharp, java, php, ruby">
+  ```bash CLI
+  ant beta:worker poll --workdir /workspace
   ```
 </CodeGroup>
 
@@ -176,7 +66,7 @@ With the SDK, `EnvironmentWorker` does the same work:
   <Step title="Implement the webhook handler">
     Invoke the worker when `session.status_run_started` fires. The handler drains the queue and hands each claimed work item to `handle_item()`, which downloads skills, executes tool calls, posts results back, and returns.
 
-    <CodeGroup exclude="shell">
+    <CodeGroup exclude="shell, csharp, java, php, ruby">
       <CodeGroupItem>
         To verify webhook signatures, install the webhooks extra: `pip install "anthropic[webhooks]"`.
 
@@ -299,10 +189,9 @@ With the SDK, `EnvironmentWorker` does the same work:
       }
       ```
 
-      ```csharp C#
-      // EnvironmentWorker is not currently available in the C# SDK.
-      // To handle work items directly, see the Environments Work endpoints.
-      ```
+      <CodeGroupItem language="C#">
+        The C# SDK does not have `EnvironmentWorker`. To handle work items from your own code, call the [Environments Work endpoints](https://platform.claude.com/docs/en/api/beta/environments/work?sdk_languages=cli).
+      </CodeGroupItem>
 
       ```go Go
       package main
@@ -415,20 +304,17 @@ With the SDK, `EnvironmentWorker` does the same work:
 
       ```
 
-      ```java Java
-      // EnvironmentWorker is not currently available in the Java SDK.
-      // To handle work items directly, see the Environments Work endpoints.
-      ```
+      <CodeGroupItem language="Java">
+        The Java SDK does not have `EnvironmentWorker`. To handle work items from your own code, call the [Environments Work endpoints](https://platform.claude.com/docs/en/api/beta/environments/work?sdk_languages=cli).
+      </CodeGroupItem>
 
-      ```php PHP
-      // EnvironmentWorker is not currently available in the PHP SDK.
-      // To handle work items directly, see the Environments Work endpoints.
-      ```
+      <CodeGroupItem language="PHP">
+        The PHP SDK does not have `EnvironmentWorker`. To handle work items from your own code, call the [Environments Work endpoints](https://platform.claude.com/docs/en/api/beta/environments/work?sdk_languages=cli).
+      </CodeGroupItem>
 
-      ```ruby Ruby
-      # EnvironmentWorker is not currently available in the Ruby SDK.
-      # To handle work items directly, see the Environments Work endpoints.
-      ```
+      <CodeGroupItem language="Ruby">
+        The Ruby SDK does not have `EnvironmentWorker`. To handle work items from your own code, call the [Environments Work endpoints](https://platform.claude.com/docs/en/api/beta/environments/work?sdk_languages=cli).
+      </CodeGroupItem>
     </CodeGroup>
 
     Because the handler claims work itself, it must [forward the work item's secret](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-workers?sdk_languages=cli#forward-the-work-items-secret), as the `work_secret` argument does here.
@@ -447,7 +333,7 @@ A poller on the host claims work and calls your script once per work item. The s
 
     ```dockerfile
     FROM your-base-image
-    ARG ANT_VERSION=1.41.0
+    ARG ANT_VERSION=1.42.0
     ARG TARGETARCH
     RUN ARCH=$([ "$TARGETARCH" = "arm64" ] && echo arm64 || echo amd64) && \
         curl -fsSL "https://github.com/anthropics/anthropic-cli/releases/download/v${ANT_VERSION}/ant_${ANT_VERSION}_linux_${ARCH}.tar.gz" \
@@ -505,18 +391,17 @@ Pass the secret only into the sandbox that serves that session, and never log it
 
 To claim work from your own code instead of `ant beta:worker poll --on-work`, use `work.poller()`. It polls the queue and gives you each claimed session, and you launch the sandbox:
 
-<CodeGroup>
-  ```bash CLI
-  # The work poller is an SDK helper (Python, TypeScript, Go), not a raw
-  # endpoint. From the shell, use `ant beta:worker poll --on-work` instead.
-  ```
+<CodeGroup exclude="shell, csharp, java, php, ruby">
+  <CodeGroupItem language="CLI">
+    To claim work from the shell and launch a sandbox for each session, run `ant beta:worker poll --on-work` with a spawn script, as in [Run one sandbox per session](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-workers?sdk_languages=cli#run-one-sandbox-per-session).
+  </CodeGroupItem>
 </CodeGroup>
 
 ### Run the SDK worker inside the sandbox
 
 Replace the `ant beta:worker run` entrypoint with an SDK entrypoint when the sandbox must [serve custom tools](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-custom-tools?sdk_languages=cli) or use [non-default memory sync settings](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-memory?sdk_languages=cli#configure-sync). The entrypoint constructs `EnvironmentWorker` and calls `handle_item()`, which reads the same `ANTHROPIC_*` variables that the spawn script forwards.
 
-<CodeGroup exclude="shell">
+<CodeGroup exclude="shell, csharp, java, php, ruby">
   ```python Python
   import asyncio
   import contextlib
@@ -564,9 +449,9 @@ Replace the `ant beta:worker run` entrypoint with an SDK entrypoint when the san
   }).handleItem();
   ```
 
-  ```csharp C#
-  // EnvironmentWorker is not currently available in the C# SDK.
-  ```
+  <CodeGroupItem language="C#">
+    The C# SDK does not have `EnvironmentWorker`.
+  </CodeGroupItem>
 
   ```go Go
   package main
@@ -602,17 +487,17 @@ Replace the `ant beta:worker run` entrypoint with an SDK entrypoint when the san
 
   ```
 
-  ```java Java
-  // EnvironmentWorker is not currently available in the Java SDK.
-  ```
+  <CodeGroupItem language="Java">
+    The Java SDK does not have `EnvironmentWorker`.
+  </CodeGroupItem>
 
-  ```php PHP
-  // EnvironmentWorker is not currently available in the PHP SDK.
-  ```
+  <CodeGroupItem language="PHP">
+    The PHP SDK does not have `EnvironmentWorker`.
+  </CodeGroupItem>
 
-  ```ruby Ruby
-  # EnvironmentWorker is not currently available in the Ruby SDK.
-  ```
+  <CodeGroupItem language="Ruby">
+    The Ruby SDK does not have `EnvironmentWorker`.
+  </CodeGroupItem>
 </CodeGroup>
 
 ## Stage files for a session

@@ -1068,9 +1068,9 @@ the `background` parameter set to `true` can be cancelled.
 
               - `"find_in_page"`
 
-            - `url: string`
+            - `url: optional string or null`
 
-              The URL of the page searched for the pattern.
+              The URL of the page searched for the pattern, when available.
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -5092,9 +5092,9 @@ the `background` parameter set to `true` can be cancelled.
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -11098,9 +11098,9 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
     - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -17471,9 +17471,9 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
     - `ImageGenerationCall object { id, result, status, 8 more }`
 
@@ -20030,9 +20030,9 @@ as input for the model's response.
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
     - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -26239,9 +26239,9 @@ as input for the model's response.
 
               - `"find_in_page"`
 
-            - `url: string`
+            - `url: optional string or null`
 
-              The URL of the page searched for the pattern.
+              The URL of the page searched for the pattern, when available.
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -30263,9 +30263,9 @@ as input for the model's response.
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -37005,9 +37005,9 @@ Retrieves a model response with the given ID.
 
               - `"find_in_page"`
 
-            - `url: string`
+            - `url: optional string or null`
 
-              The URL of the page searched for the pattern.
+              The URL of the page searched for the pattern, when available.
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -41029,9 +41029,9 @@ Retrieves a model response with the given ID.
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -48773,9 +48773,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
     - `ImageGenerationCall object { id, result, status, 8 more }`
 
@@ -52138,9 +52138,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `"find_in_page"`
 
-            - `url: string`
+            - `url: optional string or null`
 
-              The URL of the page searched for the pattern.
+              The URL of the page searched for the pattern, when available.
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -56162,9 +56162,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -62120,9 +62120,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `"find_in_page"`
 
-              - `url: string`
+              - `url: optional string or null`
 
-                The URL of the page searched for the pattern.
+                The URL of the page searched for the pattern, when available.
 
         - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -66144,9 +66144,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `"find_in_page"`
 
-            - `url: string`
+            - `url: optional string or null`
 
-              The URL of the page searched for the pattern.
+              The URL of the page searched for the pattern, when available.
 
       - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -72587,9 +72587,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `"find_in_page"`
 
-              - `url: string`
+              - `url: optional string or null`
 
-                The URL of the page searched for the pattern.
+                The URL of the page searched for the pattern, when available.
 
         - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -76611,9 +76611,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `"find_in_page"`
 
-            - `url: string`
+            - `url: optional string or null`
 
-              The URL of the page searched for the pattern.
+              The URL of the page searched for the pattern, when available.
 
       - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -82551,9 +82551,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `"find_in_page"`
 
-              - `url: string`
+              - `url: optional string or null`
 
-                The URL of the page searched for the pattern.
+                The URL of the page searched for the pattern, when available.
 
         - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -86575,9 +86575,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `"find_in_page"`
 
-            - `url: string`
+            - `url: optional string or null`
 
-              The URL of the page searched for the pattern.
+              The URL of the page searched for the pattern, when available.
 
       - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -92718,9 +92718,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `"find_in_page"`
 
-              - `url: string`
+              - `url: optional string or null`
 
-                The URL of the page searched for the pattern.
+                The URL of the page searched for the pattern, when available.
 
         - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -96742,9 +96742,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `"find_in_page"`
 
-            - `url: string`
+            - `url: optional string or null`
 
-              The URL of the page searched for the pattern.
+              The URL of the page searched for the pattern, when available.
 
       - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -102521,9 +102521,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `"find_in_page"`
 
-              - `url: string`
+              - `url: optional string or null`
 
-                The URL of the page searched for the pattern.
+                The URL of the page searched for the pattern, when available.
 
         - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -106545,9 +106545,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `"find_in_page"`
 
-            - `url: string`
+            - `url: optional string or null`
 
-              The URL of the page searched for the pattern.
+              The URL of the page searched for the pattern, when available.
 
       - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -112712,9 +112712,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `"find_in_page"`
 
-        - `url: string`
+        - `url: optional string or null`
 
-          The URL of the page searched for the pattern.
+          The URL of the page searched for the pattern, when available.
 
   - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -116876,9 +116876,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -121051,9 +121051,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -126277,9 +126277,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `"find_in_page"`
 
-              - `url: string`
+              - `url: optional string or null`
 
-                The URL of the page searched for the pattern.
+                The URL of the page searched for the pattern, when available.
 
         - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -130301,9 +130301,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `"find_in_page"`
 
-            - `url: string`
+            - `url: optional string or null`
 
-              The URL of the page searched for the pattern.
+              The URL of the page searched for the pattern, when available.
 
       - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -137992,9 +137992,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                   - `"find_in_page"`
 
-                - `url: string`
+                - `url: optional string or null`
 
-                  The URL of the page searched for the pattern.
+                  The URL of the page searched for the pattern, when available.
 
           - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -142016,9 +142016,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `"find_in_page"`
 
-              - `url: string`
+              - `url: optional string or null`
 
-                The URL of the page searched for the pattern.
+                The URL of the page searched for the pattern, when available.
 
         - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -149636,9 +149636,9 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `"find_in_page"`
 
-              - `url: string`
+              - `url: optional string or null`
 
-                The URL of the page searched for the pattern.
+                The URL of the page searched for the pattern, when available.
 
         - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -157464,9 +157464,9 @@ Returns a list of input items for a given response.
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
     - `FunctionCall object { id, arguments, call_id, 7 more }`
 
@@ -161814,9 +161814,9 @@ curl https://api.openai.com/v1/responses/resp_abc123/input_items \
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
     - `FunctionCall object { id, arguments, call_id, 7 more }`
 
@@ -166171,9 +166171,9 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
     - `FunctionCall object { arguments, call_id, name, 6 more }`
 

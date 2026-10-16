@@ -45,20 +45,20 @@ First, install Anthropic's [client SDK](https://platform.claude.com/docs/en/cli-
   <Tab title="Java">
     <CodeGroup exclude="shell, python, typescript, csharp, go, php, ruby">
       ```groovy Gradle
-      implementation("com.anthropic:anthropic-java:2.72.0")
-      implementation("com.anthropic:anthropic-java-vertex:2.72.0")
+      implementation("com.anthropic:anthropic-java:2.73.0")
+      implementation("com.anthropic:anthropic-java-vertex:2.73.0")
       ```
 
       ```xml Maven
       <dependency>
           <groupId>com.anthropic</groupId>
           <artifactId>anthropic-java</artifactId>
-          <version>2.72.0</version>
+          <version>2.73.0</version>
       </dependency>
       <dependency>
           <groupId>com.anthropic</groupId>
           <artifactId>anthropic-java-vertex</artifactId>
-          <version>2.72.0</version>
+          <version>2.73.0</version>
       </dependency>
       ```
 
@@ -155,10 +155,10 @@ Before running requests you might need to run `gcloud auth application-default l
 
 The following examples show how to generate text from Claude on Agent Platform:
 
-<CodeGroup>
-  ```bash CLI
-  # The ant CLI does not support Agent Platform.
-  ```
+<CodeGroup exclude="shell:CLI">
+  <CodeGroupItem language="CLI">
+    The `ant` CLI doesn't support Agent Platform.
+  </CodeGroupItem>
 </CodeGroup>
 
 See the [client SDKs](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) and the official [Agent Platform docs](https://cloud.google.com/vertex-ai/docs) for more details.
@@ -252,30 +252,30 @@ Regional and multi-region endpoints include a 10% pricing premium over global en
 
 Set the `region` parameter to `"global"` when initializing the client:
 
-<CodeGroup>
-  ```bash CLI
-  # The ant CLI does not support Agent Platform.
-  ```
+<CodeGroup exclude="shell:CLI">
+  <CodeGroupItem language="CLI">
+    The `ant` CLI doesn't support Agent Platform.
+  </CodeGroupItem>
 </CodeGroup>
 
 **Using multi-region endpoints:**
 
 Set the `region` parameter to a multi-region identifier: `"us"` for the United States or `"eu"` for the European Union. The SDK routes requests to the corresponding multi-region endpoint (`https://aiplatform.us.rep.googleapis.com` or `https://aiplatform.eu.rep.googleapis.com`), which dynamically balances traffic across regions within that geography.
 
-<CodeGroup>
-  ```bash CLI
-  # The ant CLI does not support Agent Platform.
-  ```
+<CodeGroup exclude="shell:CLI">
+  <CodeGroupItem language="CLI">
+    The `ant` CLI doesn't support Agent Platform.
+  </CodeGroupItem>
 </CodeGroup>
 
 **Using regional endpoints:**
 
 Specify a specific region such as `"us-east5"` or `"europe-west1"`:
 
-<CodeGroup>
-  ```bash CLI
-  # The ant CLI does not support Agent Platform.
-  ```
+<CodeGroup exclude="shell:CLI">
+  <CodeGroupItem language="CLI">
+    The `ant` CLI doesn't support Agent Platform.
+  </CodeGroupItem>
 </CodeGroup>
 
 <Note>

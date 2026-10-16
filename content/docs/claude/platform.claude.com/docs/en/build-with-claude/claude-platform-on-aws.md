@@ -305,20 +305,20 @@ Anthropic's [client SDKs](https://platform.claude.com/docs/en/cli-sdks-libraries
 
   <Tab title="Java">
     ```kotlin Gradle
-    implementation("com.anthropic:anthropic-java:2.72.0")
-    implementation("com.anthropic:anthropic-java-aws:2.72.0")
+    implementation("com.anthropic:anthropic-java:2.73.0")
+    implementation("com.anthropic:anthropic-java-aws:2.73.0")
     ```
 
     ```xml Maven
     <dependency>
       <groupId>com.anthropic</groupId>
       <artifactId>anthropic-java</artifactId>
-      <version>2.72.0</version>
+      <version>2.73.0</version>
     </dependency>
     <dependency>
       <groupId>com.anthropic</groupId>
       <artifactId>anthropic-java-aws</artifactId>
-      <version>2.72.0</version>
+      <version>2.73.0</version>
     </dependency>
     ```
   </Tab>
@@ -427,10 +427,11 @@ See the [comparison table](https://platform.claude.com/docs/en/build-with-claude
 
 [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli) is available on Claude Platform on AWS, including [agents](https://platform.claude.com/docs/en/managed-agents/agent-setup?sdk_languages=cli), [environments](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli), [sessions](https://platform.claude.com/docs/en/managed-agents/sessions?sdk_languages=cli), [scheduled deployments](https://platform.claude.com/docs/en/managed-agents/scheduled-deployments?sdk_languages=cli), [credential vaults](https://platform.claude.com/docs/en/managed-agents/vaults?sdk_languages=cli), [memory stores](https://platform.claude.com/docs/en/managed-agents/memory?sdk_languages=cli), [webhooks](https://platform.claude.com/docs/en/managed-agents/webhooks?sdk_languages=cli), [multiagent orchestration](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli), and [self-hosted sandboxes](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes?sdk_languages=cli).
 
-Session behavior on Claude Platform on AWS differs from first-party Claude Managed Agents in two ways:
+Sessions and self-hosted workers on Claude Platform on AWS differ from first-party Claude Managed Agents in three ways:
 
 * **Autonomous-session reauthentication:** A session can run autonomously, without any [user events](https://platform.claude.com/docs/en/managed-agents/reference?sdk_languages=cli#event-types), for up to 6 hours. After 6 hours, the session requires reauthentication before it continues. To reauthenticate, send any user-role event to the session (see [Events and streaming](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli)). First-party Claude Managed Agents has no autonomous-session runtime limit.
 * **[Memory stores on self-hosted environments](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-memory?sdk_languages=cli):** A session that runs on a self-hosted environment cannot attach memory stores; a session that includes one is rejected at creation. Sessions on cloud environments attach memory stores as usual. On first-party Claude Managed Agents, sessions on both cloud and self-hosted environments can attach memory stores.
+* **[Worker authentication on self-hosted environments](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes?sdk_languages=cli#prerequisites):** A worker authenticates with AWS IAM (SigV4) or an [API key generated in the AWS Console](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli#api-key-authentication), not an environment key. Environment keys generated in the Claude Console don't work with the Claude Platform on AWS endpoint.
 
 ### Features not supported
 
@@ -602,8 +603,19 @@ Each response includes two request IDs in the response headers:
 
 <CodeGroup>
   ```bash CLI
-  # The ant CLI's output formats print the response body, not response headers.
-  # To read x-amzn-requestid, use the cURL example (-i) or an SDK example.
+  # Replace us-west-2 with your AWS region
+  # ant reads ANTHROPIC_API_KEY and sends it as x-api-key. Generate a key in the
+  # AWS Console (see API key authentication).
+  export ANTHROPIC_API_KEY="YOUR_AWS_API_KEY"
+
+  # --debug prints the HTTP response, including the X-Amzn-Requestid and
+  # Request-Id headers, to stderr
+  ant --debug messages create \
+    --base-url https://aws-external-anthropic.us-west-2.api.aws \
+    --workspace-id "$ANTHROPIC_AWS_WORKSPACE_ID" \
+    --model claude-sonnet-5-5 \
+    --max-tokens 1024 \
+    --message '{role: user, content: "Hello!"}'
   ```
 </CodeGroup>
 

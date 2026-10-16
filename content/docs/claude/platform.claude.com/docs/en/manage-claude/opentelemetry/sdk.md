@@ -1,5 +1,5 @@
 ---
-title: Use OpenTelemetry with the Claude SDK
+title: Set up OpenTelemetry with the Claude SDK
 url: https://platform.claude.com/docs/en/manage-claude/opentelemetry/sdk
 description: Trace each request that the Claude SDK sends and each tool that its tool runner runs, and send the spans to your observability platform.
 featureMetadata:
@@ -84,14 +84,14 @@ Install or upgrade to the latest version of the Claude SDK:
 
     <CodeGroup exclude="shell, python, typescript, csharp, go, php, ruby">
       ```kotlin Gradle
-      implementation("com.anthropic:anthropic-java:2.72.0")
+      implementation("com.anthropic:anthropic-java:2.73.0")
       ```
 
       ```xml Maven
       <dependency>
           <groupId>com.anthropic</groupId>
           <artifactId>anthropic-java</artifactId>
-          <version>2.72.0</version>
+          <version>2.73.0</version>
       </dependency>
       ```
     </CodeGroup>
@@ -560,7 +560,7 @@ To get these spans:
 1. In the process that runs the worker, [set up SDK tracing](https://platform.claude.com/docs/en/manage-claude/opentelemetry/sdk?sdk_languages=cli#install-the-sdk) as in steps 1 to 4.
 2. Allow network traffic from the sandbox to your observability platform or OpenTelemetry Collector.
 
-When the worker sends a tool result, that request's API span is nested under its SDK span. For requests that the worker sends to Claude Platform on AWS, the API spans are in their own traces instead.
+When the worker sends a tool result, that request's API span is nested under its SDK span.
 
 ## Trace context and baggage
 

@@ -43,11 +43,10 @@ The most reliable approach is to resize your image yourself before uploading, so
 
 First check which resolution tier your model is on (see [Resolution and token cost](https://platform.claude.com/docs/en/build-with-claude/vision?sdk_languages=cli#evaluate-image-size)) and pass the matching edge and token limits. The following reference implementation computes the exact size Claude resizes an image to:
 
-<CodeGroup>
-  ```bash CLI
-  # This reference implementation is local math that makes no API request, so
-  # there's nothing to show for the CLI. See the SDK tabs.
-  ```
+<CodeGroup exclude="shell">
+  <CodeGroupItem language="CLI">
+    Compute this size in code.
+  </CodeGroupItem>
 </CodeGroup>
 
 1. Resize the image to the dimensions returned by the resize helper. If the image already fits within the model's limits, the helper returns its dimensions unchanged and no resize is needed.
@@ -95,11 +94,10 @@ If you cannot pre-resize (for example, when the image comes from an upstream sys
 
 Screenshots and zoom images that you return to the [computer use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool?sdk_languages=cli#handle-coordinate-scaling-for-higher-resolutions) and [browser use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool?sdk_languages=cli#targets-and-coordinates) toolsets are an exception to automatic resizing. The API rejects a `tool_result` image that exceeds the model's limits with a validation error instead of resizing it. Resize those images in your application before returning them, then scale the coordinates Claude returns back to your screen's dimensions.
 
-<CodeGroup>
-  ```bash CLI
-  # This local coordinate conversion makes no API request, so there's nothing
-  # to show for the CLI. See the SDK tabs.
-  ```
+<CodeGroup exclude="shell">
+  <CodeGroupItem language="CLI">
+    Convert the coordinates in code.
+  </CodeGroupItem>
 </CodeGroup>
 
 Padding is applied only to the bottom and right edges, so the origin doesn't shift and a per-axis linear rescale is sufficient. Clamp returned coordinates to the resized dimensions before rescaling, so a point slightly outside the image can't map outside your original.

@@ -27,11 +27,10 @@ These event type strings follow a `{domain}.{action}` naming convention. See [Ev
 
 Stream events from the session to receive real-time updates as the agent works. A stream delivers only the events emitted after it opens, so open the stream before you send events to avoid a race condition.
 
-<CodeGroup>
-  ```bash CLI
-  # This workflow does not translate well to a one-off shell command.
-  # Use one of the SDK examples in this code group instead.
-  ```
+<CodeGroup exclude="shell:CLI">
+  <CodeGroupItem language="CLI">
+    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+  </CodeGroupItem>
 </CodeGroup>
 
 The session reports errors through the `session.error` event. See [Event types](https://platform.claude.com/docs/en/managed-agents/reference?sdk_languages=cli#event-types) for its fields.
@@ -46,11 +45,10 @@ To reconnect to an existing session without missing events, combine a new stream
 2. [List the full event history](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli#list-past-events) to seed a set of seen event IDs.
 3. Tail the live stream, skipping any events already returned by the history list.
 
-<CodeGroup>
-  ```bash CLI
-  # This workflow does not translate well to a one-off shell command.
-  # Use one of the SDK examples in this code group instead.
-  ```
+<CodeGroup exclude="shell:CLI">
+  <CodeGroupItem language="CLI">
+    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+  </CodeGroupItem>
 </CodeGroup>
 
 ## Send events
@@ -104,11 +102,10 @@ When you [reconnect](https://platform.claude.com/docs/en/managed-agents/events-a
 
 The following example answers each call as it arrives:
 
-<CodeGroup>
-  ```bash CLI
-  # This workflow does not translate well to a one-off shell command.
-  # Use one of the SDK examples in this code group instead.
-  ```
+<CodeGroup exclude="shell:CLI">
+  <CodeGroupItem language="CLI">
+    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+  </CodeGroupItem>
 </CodeGroup>
 
 If the agent has [workflow runs](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli) open, a custom tool call can arrive while the session stays `running`. The `requires_action` idle event arrives only when none of the [session's threads](https://platform.claude.com/docs/en/managed-agents/session-threads?sdk_languages=cli) is working. Don't wait for it: answer each call when its `agent.custom_tool_use` event arrives. The sample in [Follow a run](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli#follow-a-run) shows how.
@@ -119,11 +116,10 @@ Send a `user.tool_confirmation` event, passing the event ID in the `tool_use_id`
 
 The following example approves every pending call:
 
-<CodeGroup>
-  ```bash CLI
-  # This workflow does not translate well to a one-off shell command.
-  # Use one of the SDK examples in this code group instead.
-  ```
+<CodeGroup exclude="shell:CLI">
+  <CodeGroupItem language="CLI">
+    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+  </CodeGroupItem>
 </CodeGroup>
 
 The previous example approves each call after the session goes idle. If the agent has [workflow runs](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli) open, a tool call can wait for your confirmation while the session stays `running`. Don't wait for the idle event: when an `agent.tool_use` or `agent.mcp_tool_use` event arrives whose [`evaluated_permission`](https://platform.claude.com/docs/en/managed-agents/permission-policies?sdk_languages=cli#see-how-each-call-was-evaluated) is `ask`, answer it. The sample in [Follow a run](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli#follow-a-run) answers custom tool calls this way, and its introduction says how to add confirmations.

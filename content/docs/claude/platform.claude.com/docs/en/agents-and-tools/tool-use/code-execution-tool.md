@@ -171,12 +171,10 @@ The Python environment can process various file types uploaded through the Files
 
 When Claude saves files to its output directory during code execution (see [How generated files are captured](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=cli#how-generated-files-are-captured)), each file's ID appears in the code execution tool result, and you can download it with the [Files API](https://platform.claude.com/docs/en/build-with-claude/files?sdk_languages=cli):
 
-<CodeGroup>
-  ```bash CLI
-  # Extracting every file ID from the tool results and downloading each one
-  # requires a loop, which doesn't translate well to a one-off CLI command.
-  # Use one of the SDK examples instead.
-  ```
+<CodeGroup exclude="shell">
+  <CodeGroupItem language="CLI">
+    Downloading every generated file takes a loop over the file IDs in the tool result, which needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) for this.
+  </CodeGroupItem>
 </CodeGroup>
 
 #### How generated files are captured

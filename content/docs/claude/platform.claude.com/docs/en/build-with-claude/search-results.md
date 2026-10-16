@@ -73,13 +73,10 @@ Returning search results from your custom tools enables dynamic RAG applications
 
 ### Example: Knowledge base tool
 
-<CodeGroup>
-  ```bash CLI
-  # The tool-calling flow needs application-side search logic that doesn't
-  # translate to a one-off shell command. See the SDK tabs for the full flow.
-  # The raw shape of a tool conversation with search results is shown in the
-  # Combining both methods cURL tab; Method 2 shows the top-level shape.
-  ```
+<CodeGroup exclude="shell">
+  <CodeGroupItem language="CLI">
+    The tool-calling flow needs search logic in your application, which needs more than a single shell command. Use the Claude SDK for the full flow. For the raw request shape of a tool conversation with search results, see [Combining both methods](https://platform.claude.com/docs/en/build-with-claude/search-results?sdk_languages=cli#combining-both-methods). For search results as top-level content, see [Method 2](https://platform.claude.com/docs/en/build-with-claude/search-results?sdk_languages=cli#method-2-search-results-as-top-level-content).
+  </CodeGroupItem>
 </CodeGroup>
 
 ## Method 2: Search results as top-level content

@@ -208,6 +208,10 @@ Schema name: `ImageGenCompletedEvent`
 
     The total number of tokens (images and text) used for the image generation.
 
+- `safety_identifier: optional string or null`
+
+  The effective safety identifier used for safety monitoring and abuse detection. This is the non-empty `safety_identifier` from the request, or the deprecated `user` value when `safety_identifier` is omitted, null, or empty.
+
 ### Example
 
 ```json

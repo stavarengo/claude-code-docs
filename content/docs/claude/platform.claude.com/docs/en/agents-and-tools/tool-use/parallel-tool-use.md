@@ -33,11 +33,10 @@ The [computer use tool](https://platform.claude.com/docs/en/agents-and-tools/too
 
 The following script sends a request that should trigger parallel tool calls, verifies the response contains them, and formats the tool results so parallelism keeps working. Run it with `ANTHROPIC_API_KEY` set in your environment:
 
-<CodeGroup>
-  ```bash CLI
-  # This end-to-end test flow doesn't translate well to a one-off shell command.
-  # See the SDK tabs for the full flow.
-  ```
+<CodeGroup exclude="shell">
+  <CodeGroupItem language="CLI">
+    This end-to-end test needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+  </CodeGroupItem>
 </CodeGroup>
 
 The summary lines at the end restate the two formatting rules that keep parallelism working: every tool result returns in a single user message, and no text content appears before the tool results in that message.
@@ -185,11 +184,10 @@ Default prompting might not be sufficient. Use the stronger system prompt from [
 
 To verify parallel tool calls are working:
 
-<CodeGroup>
-  ```bash CLI
-  # Measuring parallel tool use is client-side analysis of responses you've already
-  # collected, so it doesn't translate to a one-off shell command. See the SDK tabs.
-  ```
+<CodeGroup exclude="shell">
+  <CodeGroupItem language="CLI">
+    To measure parallel tool use, your code analyzes the responses that it already collected. This needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) for this.
+  </CodeGroupItem>
 </CodeGroup>
 
 **4. Calls in a batch appear to depend on each other**

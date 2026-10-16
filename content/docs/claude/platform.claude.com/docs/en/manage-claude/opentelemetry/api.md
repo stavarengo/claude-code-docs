@@ -1,5 +1,5 @@
 ---
-title: Use OpenTelemetry with the Claude API
+title: Set up OpenTelemetry with the Claude API
 url: https://platform.claude.com/docs/en/manage-claude/opentelemetry/api
 description: Add a destination in the Claude Console to send OpenTelemetry traces of your Messages API requests and Managed Agents sessions to your observability platform.
 featureMetadata:
@@ -73,7 +73,7 @@ You can also add a destination with the [Admin API](https://platform.claude.com/
   ```
 </CodeGroup>
 
-A create request takes the Console's settings except **Provider**, so enter your observability platform's endpoint URL and headers yourself. Set `traces.max_content_bytes`, in bytes, to fit what your observability platform accepts (see [Content limits](https://platform.claude.com/docs/en/manage-claude/opentelemetry?sdk_languages=cli#content-limits)). To list, change, or delete destinations, or to add or remove one workspace, use the other methods of the telemetry destinations API.
+A create request takes the Console's settings except **Provider**, so enter your observability platform's endpoint URL and headers yourself. Set `traces.max_content_bytes`, in bytes, to fit what your observability platform accepts (see [Content limits](https://platform.claude.com/docs/en/manage-claude/opentelemetry?sdk_languages=cli#content-limits)). To list, change, or delete destinations, or to add or remove one workspace, use the other methods of the [telemetry destinations API](https://platform.claude.com/docs/en/api/beta/organization/telemetry_destinations?sdk_languages=cli).
 
 ## 2. Choose workspaces for a destination
 
@@ -101,7 +101,7 @@ If the column shows **Failing**, hover over it to see the last error. To find th
 
 By default, the API spans for a Messages API request or a Managed Agents session are in their own traces. Connect them to your application's traces, so that they nest under your own spans.
 
-The API reads each request's trace context from the W3C [`traceparent` header](https://www.w3.org/TR/trace-context/). If the sampled flag in the header is off, the API doesn't emit the request's span or the spans under it. Claude Platform on AWS doesn't support this header yet. The spans for requests that you send to it always start their own traces, even when the sampled flag is off.
+The API reads each request's trace context from the W3C [`traceparent` header](https://www.w3.org/TR/trace-context/). If the sampled flag in the header is off, the API doesn't emit the request's span or the spans under it.
 
 <Tabs>
   <Tab title="With the Claude SDK">

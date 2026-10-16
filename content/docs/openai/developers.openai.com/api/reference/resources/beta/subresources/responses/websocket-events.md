@@ -1066,9 +1066,9 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
       - `agent: optional object { agent_name }  or null`
 
@@ -8237,9 +8237,9 @@ Schema name: `BetaResponseInjectEvent`
 
           - `"find_in_page"`
 
-        - `url: string`
+        - `url: optional string or null`
 
-          The URL of the page searched for the pattern.
+          The URL of the page searched for the pattern, when available.
 
     - `agent: optional object { agent_name }  or null`
 
@@ -14040,9 +14040,9 @@ Schema name: `BetaResponseInjectFailedEvent`
 
           - `"find_in_page"`
 
-        - `url: string`
+        - `url: optional string or null`
 
-          The URL of the page searched for the pattern.
+          The URL of the page searched for the pattern, when available.
 
     - `agent: optional object { agent_name }  or null`
 
@@ -19211,9 +19211,9 @@ Schema name: `BetaResponseCreatedEvent`
 
               - `"find_in_page"`
 
-            - `url: string`
+            - `url: optional string or null`
 
-              The URL of the page searched for the pattern.
+              The URL of the page searched for the pattern, when available.
 
         - `agent: optional object { agent_name }  or null`
 
@@ -24071,9 +24071,9 @@ Schema name: `BetaResponseCreatedEvent`
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
       - `agent: optional object { agent_name }  or null`
 
@@ -30463,9 +30463,9 @@ Schema name: `BetaResponseInProgressEvent`
 
               - `"find_in_page"`
 
-            - `url: string`
+            - `url: optional string or null`
 
-              The URL of the page searched for the pattern.
+              The URL of the page searched for the pattern, when available.
 
         - `agent: optional object { agent_name }  or null`
 
@@ -35323,9 +35323,9 @@ Schema name: `BetaResponseInProgressEvent`
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
       - `agent: optional object { agent_name }  or null`
 
@@ -41715,9 +41715,9 @@ Schema name: `BetaResponseCompletedEvent`
 
               - `"find_in_page"`
 
-            - `url: string`
+            - `url: optional string or null`
 
-              The URL of the page searched for the pattern.
+              The URL of the page searched for the pattern, when available.
 
         - `agent: optional object { agent_name }  or null`
 
@@ -46575,9 +46575,9 @@ Schema name: `BetaResponseCompletedEvent`
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
       - `agent: optional object { agent_name }  or null`
 
@@ -52991,9 +52991,9 @@ Schema name: `BetaResponseFailedEvent`
 
               - `"find_in_page"`
 
-            - `url: string`
+            - `url: optional string or null`
 
-              The URL of the page searched for the pattern.
+              The URL of the page searched for the pattern, when available.
 
         - `agent: optional object { agent_name }  or null`
 
@@ -57851,9 +57851,9 @@ Schema name: `BetaResponseFailedEvent`
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
       - `agent: optional object { agent_name }  or null`
 
@@ -64247,9 +64247,9 @@ Schema name: `BetaResponseIncompleteEvent`
 
               - `"find_in_page"`
 
-            - `url: string`
+            - `url: optional string or null`
 
-              The URL of the page searched for the pattern.
+              The URL of the page searched for the pattern, when available.
 
         - `agent: optional object { agent_name }  or null`
 
@@ -69107,9 +69107,9 @@ Schema name: `BetaResponseIncompleteEvent`
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
       - `agent: optional object { agent_name }  or null`
 
@@ -75284,9 +75284,9 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
           - `"find_in_page"`
 
-        - `url: string`
+        - `url: optional string or null`
 
-          The URL of the page searched for the pattern.
+          The URL of the page searched for the pattern, when available.
 
     - `agent: optional object { agent_name }  or null`
 
@@ -80081,9 +80081,9 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
           - `"find_in_page"`
 
-        - `url: string`
+        - `url: optional string or null`
 
-          The URL of the page searched for the pattern.
+          The URL of the page searched for the pattern, when available.
 
     - `agent: optional object { agent_name }  or null`
 
@@ -87815,9 +87815,9 @@ Schema name: `BetaResponseQueuedEvent`
 
               - `"find_in_page"`
 
-            - `url: string`
+            - `url: optional string or null`
 
-              The URL of the page searched for the pattern.
+              The URL of the page searched for the pattern, when available.
 
         - `agent: optional object { agent_name }  or null`
 
@@ -92675,9 +92675,9 @@ Schema name: `BetaResponseQueuedEvent`
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
       - `agent: optional object { agent_name }  or null`
 

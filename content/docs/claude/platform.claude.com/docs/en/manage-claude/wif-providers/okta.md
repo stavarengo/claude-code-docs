@@ -98,7 +98,7 @@ Unlike platform-native providers (AWS, Google Cloud, Kubernetes), which make a t
   ```
 </CodeGroup>
 
-Each SDK tab shows the callable pattern: the Anthropic SDK calls the function you passed to `identity_token_provider` each time the Anthropic access token approaches expiry, so your Okta fetcher should return a fresh token on each call rather than caching one indefinitely. The `ant` CLI re-reads `ANTHROPIC_IDENTITY_TOKEN_FILE` on each exchange, so refresh that file on a timer for long-running shells.
+Except in Java (see the comment in that example), the SDK example passes your Okta token fetch to `identity_token_provider` as a token provider. The Claude SDK calls it each time the Anthropic access token approaches expiry, so your Okta fetcher should return a fresh token on each call rather than caching one indefinitely. The `ant` CLI re-reads `ANTHROPIC_IDENTITY_TOKEN_FILE` on each exchange, so refresh that file on a timer for long-running shells.
 
 ## Verify the setup
 

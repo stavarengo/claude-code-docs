@@ -16,18 +16,18 @@ Connect an MCP client to https://platform.claude.com/docs/mcp (Streamable HTTP t
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 779 pages - /docs - Content included below
-- German (Deutsch) (de) - 283 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 283 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 283 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 283 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 283 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 283 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 283 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 283 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 283 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 283 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 283 pages - /docs/id - Visit website for content
+- English (en) - 782 pages - /docs - Content included below
+- German (Deutsch) (de) - 288 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 288 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 288 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 288 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 288 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 288 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 288 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 288 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 288 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 288 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 288 pages - /docs/id - Visit website for content
 
 ---
 
@@ -52,6 +52,7 @@ The full documentation is available in the following languages on https://platfo
 - [Authentication](https://platform.claude.com/docs/en/manage-claude/authentication.md)
 - [Bash tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/bash-tool.md)
 - [Batch processing](https://platform.claude.com/docs/en/build-with-claude/batch-processing.md)
+- [Browser and computer use (SDK)](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-sdk.md) - Browser and computer use with the SDK toolsets
 - [Browser use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool.md)
 - [Build an orchestration mode](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-effort-example.md)
 - [Cache diagnostics](https://platform.claude.com/docs/en/build-with-claude/cache-diagnostics.md)
@@ -79,7 +80,7 @@ The full documentation is available in the following languages on https://platfo
 - [Embeddings](https://platform.claude.com/docs/en/build-with-claude/embeddings.md)
 - [Extended thinking (legacy)](https://platform.claude.com/docs/en/build-with-claude/extended-thinking.md) - Extended thinking
 - [Fallback credit](https://platform.claude.com/docs/en/build-with-claude/fallback-credit.md)
-- [Fast mode (research preview)](https://platform.claude.com/docs/en/build-with-claude/fast-mode.md)
+- [Fast mode](https://platform.claude.com/docs/en/build-with-claude/fast-mode.md)
 - [Files API](https://platform.claude.com/docs/en/build-with-claude/files.md)
 - [Fine-grained tool streaming](https://platform.claude.com/docs/en/agents-and-tools/tool-use/fine-grained-tool-streaming.md)
 - [Get your API key](https://platform.claude.com/docs/en/get-api-key.md) - Get your Claude API key
@@ -138,6 +139,7 @@ The full documentation is available in the following languages on https://platfo
 - [Attach and download files](https://platform.claude.com/docs/en/managed-agents/files.md) - Adding files
 - [Authenticate with vaults](https://platform.claude.com/docs/en/managed-agents/vaults.md)
 - [Build in Console](https://platform.claude.com/docs/en/managed-agents/onboarding.md)
+- [Choose an environment](https://platform.claude.com/docs/en/managed-agents/choosing-an-environment.md) - Choosing an agent environment
 - [Cloud environment setup](https://platform.claude.com/docs/en/managed-agents/environments.md)
 - [Cloud sandbox reference](https://platform.claude.com/docs/en/managed-agents/cloud-sandboxes-reference.md)
 - [Custom tools and MCP servers](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-custom-tools.md) - Custom tools in self-hosted sandboxes
@@ -202,11 +204,11 @@ The full documentation is available in the following languages on https://platfo
 - [Rate Limits API](https://platform.claude.com/docs/en/manage-claude/rate-limits-api.md)
 - [Chats, files, and projects](https://platform.claude.com/docs/en/manage-claude/compliance-content-data.md) - Retrieve and delete chats, files, and projects
 - [Session transcripts](https://platform.claude.com/docs/en/manage-claude/compliance-sessions.md) - Retrieve session transcripts
+- [Get Claude API spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/api.md) - Set up OpenTelemetry with the Claude API
+- [Get Claude SDK spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/sdk.md) - Set up OpenTelemetry with the Claude SDK
 - [Set up the Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api-access.md)
 - [Spend Limits API](https://platform.claude.com/docs/en/manage-claude/spend-limits-api.md)
 - [Usage and Cost API](https://platform.claude.com/docs/en/manage-claude/usage-cost-api.md)
-- [Get Claude API spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/api.md) - Use OpenTelemetry with the Claude API
-- [Get Claude SDK spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/sdk.md) - Use OpenTelemetry with the Claude SDK
 - [AWS](https://platform.claude.com/docs/en/manage-claude/wif-providers/aws.md) - Use WIF with AWS
 - [GitHub Actions](https://platform.claude.com/docs/en/manage-claude/wif-providers/github-actions.md) - Use WIF with GitHub Actions
 - [Google Cloud](https://platform.claude.com/docs/en/manage-claude/wif-providers/gcp.md) - Use WIF with Google Cloud
@@ -388,7 +390,7 @@ The full documentation is available in the following languages on https://platfo
 - [Archive Workspace](https://platform.claude.com/docs/en/api/organization/workspaces/archive.md)
 - [Archive Workspace (Beta)](https://platform.claude.com/docs/en/api/beta/organization/workspaces/archive.md)
 - [Artifacts](https://platform.claude.com/docs/en/api/compliance/apps/artifacts.md)
-- [Artifacts](https://platform.claude.com/docs/en/api/compliance/code/artifacts.md)
+- [Artifacts](https://platform.claude.com/docs/en/api/compliance/apps/code/artifacts.md)
 - [Artifacts (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/artifacts.md)
 - [Attachments](https://platform.claude.com/docs/en/api/compliance/apps/projects/attachments.md)
 - [Batches](https://platform.claude.com/docs/en/api/messages/batches.md)
@@ -400,7 +402,7 @@ The full documentation is available in the following languages on https://platfo
 - [Certificates (Beta)](https://platform.claude.com/docs/en/api/beta/tunnels/certificates.md)
 - [Chat (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/apps/chat.md)
 - [Chats](https://platform.claude.com/docs/en/api/compliance/apps/chats.md)
-- [Code](https://platform.claude.com/docs/en/api/compliance/code.md)
+- [Code](https://platform.claude.com/docs/en/api/compliance/apps/code.md)
 - [Collaborators](https://platform.claude.com/docs/en/api/compliance/apps/projects/collaborators.md)
 - [Completions](https://platform.claude.com/docs/en/api/completions.md)
 - [Compliance API](https://platform.claude.com/docs/en/api/compliance.md)
@@ -461,7 +463,7 @@ The full documentation is available in the following languages on https://platfo
 - [Delete a Message Batch (Beta)](https://platform.claude.com/docs/en/api/beta/messages/batches/delete.md)
 - [Delete a Telemetry Destination (Beta)](https://platform.claude.com/docs/en/api/beta/organization/telemetry_destinations/delete.md)
 - [Delete chat](https://platform.claude.com/docs/en/api/compliance/apps/chats/delete.md)
-- [Delete Code Artifact](https://platform.claude.com/docs/en/api/compliance/code/artifacts/delete.md)
+- [Delete Code Artifact](https://platform.claude.com/docs/en/api/compliance/apps/code/artifacts/delete.md)
 - [Delete Credential (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/credentials/delete.md)
 - [Delete Environment (Beta)](https://platform.claude.com/docs/en/api/beta/environments/delete.md)
 - [Delete External Key](https://platform.claude.com/docs/en/api/organization/external_keys/delete.md)
@@ -493,7 +495,8 @@ The full documentation is available in the following languages on https://platfo
 - [Documents](https://platform.claude.com/docs/en/api/compliance/apps/projects/documents.md)
 - [Download a Claude-generated file](https://platform.claude.com/docs/en/api/compliance/apps/chats/generated_files/download.md)
 - [Download artifact content](https://platform.claude.com/docs/en/api/compliance/apps/artifacts/download.md)
-- [Download Code Artifact Version Content](https://platform.claude.com/docs/en/api/compliance/code/artifacts/retrieve_version.md)
+- [Download Code Artifact Content](https://platform.claude.com/docs/en/api/compliance/apps/code/artifacts/download.md)
+- [Download Code Artifact Version Content](https://platform.claude.com/docs/en/api/compliance/apps/code/artifacts/retrieve_version.md)
 - [Download File](https://platform.claude.com/docs/en/api/files/download.md)
 - [Download File (Beta)](https://platform.claude.com/docs/en/api/beta/files/download.md)
 - [Download file content](https://platform.claude.com/docs/en/api/compliance/apps/chats/files/download.md)
@@ -601,7 +604,7 @@ The full documentation is available in the following languages on https://platfo
 - [List API Keys](https://platform.claude.com/docs/en/api/organization/api_keys/list.md)
 - [List API Keys (Beta)](https://platform.claude.com/docs/en/api/beta/organization/api_keys/list.md)
 - [List chats](https://platform.claude.com/docs/en/api/compliance/apps/chats/list.md)
-- [List Code Artifacts](https://platform.claude.com/docs/en/api/compliance/code/artifacts/list.md)
+- [List Code Artifacts](https://platform.claude.com/docs/en/api/compliance/apps/code/artifacts/list.md)
 - [List Compliance Group Members](https://platform.claude.com/docs/en/api/compliance/groups/members/list.md)
 - [List Compliance Groups](https://platform.claude.com/docs/en/api/compliance/groups/list.md)
 - [List Compliance Role Permissions](https://platform.claude.com/docs/en/api/compliance/organizations/roles/permissions/list.md)

@@ -161,11 +161,10 @@ Under `auto`, your `user.message` events can lead the server to allow a call it 
 
 The following example goes inside the event loop of the [tool confirmation handler](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli#tool-confirmation). For each ID in `stop_reason.event_ids`, it sends a `user.tool_confirmation` that allows the call. The same pattern applies to `user.custom_tool_result`, which you can also send as soon as its `agent.custom_tool_use` event arrives.
 
-<CodeGroup>
-  ```bash CLI
-  # This workflow does not translate well to a one-off shell command.
-  # Use one of the SDK examples in this code group instead.
-  ```
+<CodeGroup exclude="shell:CLI">
+  <CodeGroupItem language="CLI">
+    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+  </CodeGroupItem>
 </CodeGroup>
 
 The previous pattern answers the calls that an idle event lists. On the primary stream, a subagent's `session.thread_status_idle` event can arrive before the `agent.tool_use` or `agent.mcp_tool_use` events that its `stop_reason.event_ids` lists. A `user.tool_confirmation` for a call whose event hasn't arrived yet can return 400. To avoid that, answer each call whose [`evaluated_permission`](https://platform.claude.com/docs/en/managed-agents/permission-policies?sdk_languages=cli#see-how-each-call-was-evaluated) is `ask` when its own event arrives on the primary stream.

@@ -1007,9 +1007,9 @@ as input for the model's response.
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
     - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -7216,9 +7216,9 @@ as input for the model's response.
 
               - `"find_in_page"`
 
-            - `url: string`
+            - `url: optional string or null`
 
-              The URL of the page searched for the pattern.
+              The URL of the page searched for the pattern, when available.
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -11240,9 +11240,9 @@ as input for the model's response.
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 

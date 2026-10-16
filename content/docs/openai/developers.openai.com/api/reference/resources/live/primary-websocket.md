@@ -268,9 +268,9 @@ Schema name: `LiveSessionStartEvent`
 
             The nested Responses event type. Required when type is 'response.event'; forbidden for other event types.
 
-  - `delegation: optional ClientDelegation or Responses { responses, type }  or null`
+  - `delegation: optional ClientDelegation or Responses { responses, type }  or Decisions { decisions, type }  or null`
 
-    Who handles tasks delegated by the Live model. Omitted or null selects your application; use `responses` to let the API manage a Responses backend.
+    Who handles tasks delegated by the Live model. Omitted or null selects your application; use `responses` or `decisions` to delegate to the corresponding API.
 
     - `ClientDelegation object { type }`
 
@@ -888,9 +888,85 @@ Schema name: `LiveSessionStartEvent`
 
         - `"responses"`
 
+    - `Decisions object { decisions, type }`
+
+      - `decisions: object { model, questions }`
+
+        - `model: string`
+
+        - `questions: array of Predicate { instructions, type, name }  or Choice { choices, instructions, type, name }  or Score { instructions, levels, type, name }`
+
+          Native Decision API questions evaluated together, in order.
+
+          - `Predicate object { instructions, type, name }`
+
+            Estimate how likely it is that a statement about the input is true.
+
+            - `instructions: string`
+
+            - `type: "predicate"`
+
+              The type of the object. Always `predicate`.
+
+              - `"predicate"`
+
+            - `name: optional string`
+
+          - `Choice object { choices, instructions, type, name }`
+
+            Choose from the supplied options based on the input.
+
+            - `choices: array of object { value, description }`
+
+              Provide between 2 and 255 choices. Each choice must be unique.
+
+              - `value: string or boolean`
+
+                Choice values are typed: a string and a boolean with the same text are distinct.
+
+                - `string`
+
+                - `boolean`
+
+              - `description: optional string`
+
+            - `instructions: string`
+
+            - `type: "choice"`
+
+              The type of the object. Always `choice`.
+
+              - `"choice"`
+
+            - `name: optional string`
+
+          - `Score object { instructions, levels, type, name }`
+
+            Rate the input against the supplied ordered levels.
+
+            - `instructions: string`
+
+            - `levels: array of object { label, description }`
+
+              - `label: string`
+
+              - `description: optional string`
+
+            - `type: "score"`
+
+              The type of the object. Always `score`.
+
+              - `"score"`
+
+            - `name: optional string`
+
+      - `type: "decisions"`
+
+        - `"decisions"`
+
   - `input: optional array of InitialItem`
 
-    Ordered text-only history supplied before startup. Supports developer, user, and assistant messages with one text part each; at most 128 messages and 8,192 rendered tokens in total.
+    Ordered text-only history supplied before startup. Supports developer, user, and assistant messages with one text part each; at most 128 messages and a configured rendered-token limit (8,192 by default).
 
     - `Developer object { content, role, id, 2 more }`
 
@@ -1044,6 +1120,90 @@ Schema name: `LiveSessionStartEvent`
 
     Whether to store the session for later forking and recording download. Defaults to false for new sessions.
 
+  - `triggers: optional array of object { decisions, event_type, type }`
+
+    At most one Decisions trigger per transcript event type. Triggers run independently of delegation. On update, omit triggers to keep the current configuration, send a list to replace it, or send an empty list to disable triggers.
+
+    - `decisions: object { questions }`
+
+      Questions evaluated using the current transcript and the session's shared Decision items.
+
+      - `questions: array of Predicate { instructions, type, name }  or Choice { choices, instructions, type, name }  or Score { instructions, levels, type, name }`
+
+        Native Decision API questions evaluated together, in order.
+
+        - `Predicate object { instructions, type, name }`
+
+          Estimate how likely it is that a statement about the input is true.
+
+          - `instructions: string`
+
+          - `type: "predicate"`
+
+            The type of the object. Always `predicate`.
+
+            - `"predicate"`
+
+          - `name: optional string`
+
+        - `Choice object { choices, instructions, type, name }`
+
+          Choose from the supplied options based on the input.
+
+          - `choices: array of object { value, description }`
+
+            Provide between 2 and 255 choices. Each choice must be unique.
+
+            - `value: string or boolean`
+
+              Choice values are typed: a string and a boolean with the same text are distinct.
+
+              - `string`
+
+              - `boolean`
+
+            - `description: optional string`
+
+          - `instructions: string`
+
+          - `type: "choice"`
+
+            The type of the object. Always `choice`.
+
+            - `"choice"`
+
+          - `name: optional string`
+
+        - `Score object { instructions, levels, type, name }`
+
+          Rate the input against the supplied ordered levels.
+
+          - `instructions: string`
+
+          - `levels: array of object { label, description }`
+
+            - `label: string`
+
+            - `description: optional string`
+
+          - `type: "score"`
+
+            The type of the object. Always `score`.
+
+            - `"score"`
+
+          - `name: optional string`
+
+    - `event_type: "session.input_transcript.delta" or "session.output_transcript.delta"`
+
+      - `"session.input_transcript.delta"`
+
+      - `"session.output_transcript.delta"`
+
+    - `type: "decisions"`
+
+      - `"decisions"`
+
 - `type: "session.start"`
 
   The Live client event type. Always `session.start`.
@@ -1083,7 +1243,7 @@ Schema name: `LiveSessionStartEvent`
 
 ### session.update
 
-Update the delegation settings of an active Live session. The server acknowledges accepted changes with `session.updated`.
+Update the delegation settings or transcript triggers of an active Live session. The server acknowledges accepted changes with `session.updated`.
 
 #### Schema
 
@@ -1091,9 +1251,9 @@ Schema name: `LiveSessionUpdateParam`
 
 - `session: SessionUpdateConfig`
 
-  Sparse delegation updates. Omitted settings retain their values. The delegation type cannot change, including resetting Responses delegation to null or client. Model, frontend instructions, audio, and startup input are immutable.
+  Sparse delegation and trigger updates. Omitted settings retain their values. The delegation type cannot change. Model, frontend instructions, audio, and startup input are immutable.
 
-  - `delegation: optional ClientDelegation or Responses { type, responses }  or null`
+  - `delegation: optional ClientDelegation or Responses { type, responses }  or Decisions { type, decisions }  or null`
 
     Delegation settings to update. The delegation type must match the current session; omitted settings retain their values.
 
@@ -1713,6 +1873,166 @@ Schema name: `LiveSessionUpdateParam`
 
               - `"apply_patch"`
 
+    - `Decisions object { type, decisions }`
+
+      - `type: "decisions"`
+
+        - `"decisions"`
+
+      - `decisions: optional DecisionsDelegationUpdateConfig`
+
+        - `model: optional string`
+
+        - `questions: optional array of Predicate { instructions, type, name }  or Choice { choices, instructions, type, name }  or Score { instructions, levels, type, name }`
+
+          Native Decision API questions evaluated together, in order.
+
+          - `Predicate object { instructions, type, name }`
+
+            Estimate how likely it is that a statement about the input is true.
+
+            - `instructions: string`
+
+            - `type: "predicate"`
+
+              The type of the object. Always `predicate`.
+
+              - `"predicate"`
+
+            - `name: optional string`
+
+          - `Choice object { choices, instructions, type, name }`
+
+            Choose from the supplied options based on the input.
+
+            - `choices: array of object { value, description }`
+
+              Provide between 2 and 255 choices. Each choice must be unique.
+
+              - `value: string or boolean`
+
+                Choice values are typed: a string and a boolean with the same text are distinct.
+
+                - `string`
+
+                - `boolean`
+
+              - `description: optional string`
+
+            - `instructions: string`
+
+            - `type: "choice"`
+
+              The type of the object. Always `choice`.
+
+              - `"choice"`
+
+            - `name: optional string`
+
+          - `Score object { instructions, levels, type, name }`
+
+            Rate the input against the supplied ordered levels.
+
+            - `instructions: string`
+
+            - `levels: array of object { label, description }`
+
+              - `label: string`
+
+              - `description: optional string`
+
+            - `type: "score"`
+
+              The type of the object. Always `score`.
+
+              - `"score"`
+
+            - `name: optional string`
+
+  - `triggers: optional array of object { decisions, event_type, type }`
+
+    At most one Decisions trigger per transcript event type. Triggers run independently of delegation. On update, omit triggers to keep the current configuration, send a list to replace it, or send an empty list to disable triggers.
+
+    - `decisions: object { questions }`
+
+      Questions evaluated using the current transcript and the session's shared Decision items.
+
+      - `questions: array of Predicate { instructions, type, name }  or Choice { choices, instructions, type, name }  or Score { instructions, levels, type, name }`
+
+        Native Decision API questions evaluated together, in order.
+
+        - `Predicate object { instructions, type, name }`
+
+          Estimate how likely it is that a statement about the input is true.
+
+          - `instructions: string`
+
+          - `type: "predicate"`
+
+            The type of the object. Always `predicate`.
+
+            - `"predicate"`
+
+          - `name: optional string`
+
+        - `Choice object { choices, instructions, type, name }`
+
+          Choose from the supplied options based on the input.
+
+          - `choices: array of object { value, description }`
+
+            Provide between 2 and 255 choices. Each choice must be unique.
+
+            - `value: string or boolean`
+
+              Choice values are typed: a string and a boolean with the same text are distinct.
+
+              - `string`
+
+              - `boolean`
+
+            - `description: optional string`
+
+          - `instructions: string`
+
+          - `type: "choice"`
+
+            The type of the object. Always `choice`.
+
+            - `"choice"`
+
+          - `name: optional string`
+
+        - `Score object { instructions, levels, type, name }`
+
+          Rate the input against the supplied ordered levels.
+
+          - `instructions: string`
+
+          - `levels: array of object { label, description }`
+
+            - `label: string`
+
+            - `description: optional string`
+
+          - `type: "score"`
+
+            The type of the object. Always `score`.
+
+            - `"score"`
+
+          - `name: optional string`
+
+    - `event_type: "session.input_transcript.delta" or "session.output_transcript.delta"`
+
+      - `"session.input_transcript.delta"`
+
+      - `"session.output_transcript.delta"`
+
+    - `type: "decisions"`
+
+      - `"decisions"`
+
 - `type: "session.update"`
 
   The Live client event type. Always `session.update`.
@@ -1978,6 +2298,160 @@ Schema name: `LiveCommentaryAppendParam`
   "event_id": "evt_commentary_001",
   "delegation_id": "del_abc123",
   "content": "There is an outdoor table for two at 7 PM. Ask whether to reserve it."
+}
+```
+
+<a id="decision.create"></a>
+
+### decision.create
+
+Evaluate the configured questions using the current conversation and Decision inputs. Reusing an event_id is rejected for the lifetime of the session.
+
+#### Schema
+
+Schema name: `LiveDecisionCreateParam`
+
+- `event_id: string`
+
+- `type: "decision.create"`
+
+  - `"decision.create"`
+
+#### Example
+
+```json
+{
+  "type": "decision.create",
+  "event_id": "decision_1"
+}
+```
+
+<a id="decision.item.create"></a>
+
+### decision.item.create
+
+Append an input item for future decisions without starting an evaluation or changing Live voice context.
+
+#### Schema
+
+Schema name: `LiveDecisionItemCreateParam`
+
+- `item: object { content, role, id, type }`
+
+  - `content: string or array of InputText { text, type }  or InputImage { image_url, type, detail }`
+
+    The text input to the model.
+
+    - `string`
+
+      The text input to the model.
+
+    - `array of InputText { text, type }  or InputImage { image_url, type, detail }`
+
+      - `InputText object { text, type }`
+
+        - `text: string`
+
+          The text input to the model.
+
+        - `type: "input_text"`
+
+          The type of the input item. Always `input_text`.
+
+          - `"input_text"`
+
+      - `InputImage object { image_url, type, detail }`
+
+        - `image_url: string`
+
+          An inline image encoded as a data URL.
+
+        - `type: "input_image"`
+
+          The type of the input item. Always `input_image`.
+
+          - `"input_image"`
+
+        - `detail: optional "low" or "high" or "auto" or "original" or null`
+
+          The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
+
+          - `"low"`
+
+          - `"high"`
+
+          - `"auto"`
+
+          - `"original"`
+
+  - `role: "user"`
+
+    The message role. Always `user`.
+
+    - `"user"`
+
+  - `id: optional string or null`
+
+    The unique ID of this message item.
+
+  - `type: optional "message"`
+
+    - `"message"`
+
+- `type: "decision.item.create"`
+
+  - `"decision.item.create"`
+
+- `event_id: optional string or null`
+
+  Optional client identifier for correlating this command with a server event's client_event_id or error.client_event_id.
+
+#### Example
+
+```json
+{
+  "type": "decision.item.create",
+  "event_id": "browser_1",
+  "item": {
+    "type": "message",
+    "role": "user",
+    "content": [
+      {
+        "type": "input_text",
+        "text": "Wikipedia is open."
+      }
+    ]
+  }
+}
+```
+
+<a id="decision.item.delete"></a>
+
+### decision.item.delete
+
+Delete an input item from future decisions without starting an evaluation or changing Live voice context.
+
+#### Schema
+
+Schema name: `LiveDecisionItemDeleteParam`
+
+- `item_id: string`
+
+- `type: "decision.item.delete"`
+
+  - `"decision.item.delete"`
+
+- `event_id: optional string or null`
+
+  Optional client identifier for correlating this command with a server event's client_event_id or error.client_event_id.
+
+#### Example
+
+```json
+{
+  "type": "decision.item.delete",
+  "event_id": "remove_browser_1",
+  "item_id": "msg_browser_1"
 }
 ```
 
@@ -2890,9 +3364,9 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `"find_in_page"`
 
-        - `url: string`
+        - `url: optional string or null`
 
-          The URL of the page searched for the pattern.
+          The URL of the page searched for the pattern, when available.
 
   - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -6754,9 +7228,9 @@ Schema name: `LiveSessionStarted`
 
             The nested Responses event type. Required when type is 'response.event'; forbidden for other event types.
 
-  - `delegation: optional ClientDelegation or Responses { responses, type }  or null`
+  - `delegation: optional ClientDelegation or Responses { responses, type }  or Decisions { decisions, type }  or null`
 
-    Who handles tasks delegated by the Live model. Omitted or null selects your application; use `responses` to let the API manage a Responses backend.
+    Who handles tasks delegated by the Live model. Omitted or null selects your application; use `responses` or `decisions` to delegate to the corresponding API.
 
     - `ClientDelegation object { type }`
 
@@ -7374,9 +7848,85 @@ Schema name: `LiveSessionStarted`
 
         - `"responses"`
 
+    - `Decisions object { decisions, type }`
+
+      - `decisions: object { model, questions }`
+
+        - `model: string`
+
+        - `questions: array of Predicate { instructions, type, name }  or Choice { choices, instructions, type, name }  or Score { instructions, levels, type, name }`
+
+          Native Decision API questions evaluated together, in order.
+
+          - `Predicate object { instructions, type, name }`
+
+            Estimate how likely it is that a statement about the input is true.
+
+            - `instructions: string`
+
+            - `type: "predicate"`
+
+              The type of the object. Always `predicate`.
+
+              - `"predicate"`
+
+            - `name: optional string`
+
+          - `Choice object { choices, instructions, type, name }`
+
+            Choose from the supplied options based on the input.
+
+            - `choices: array of object { value, description }`
+
+              Provide between 2 and 255 choices. Each choice must be unique.
+
+              - `value: string or boolean`
+
+                Choice values are typed: a string and a boolean with the same text are distinct.
+
+                - `string`
+
+                - `boolean`
+
+              - `description: optional string`
+
+            - `instructions: string`
+
+            - `type: "choice"`
+
+              The type of the object. Always `choice`.
+
+              - `"choice"`
+
+            - `name: optional string`
+
+          - `Score object { instructions, levels, type, name }`
+
+            Rate the input against the supplied ordered levels.
+
+            - `instructions: string`
+
+            - `levels: array of object { label, description }`
+
+              - `label: string`
+
+              - `description: optional string`
+
+            - `type: "score"`
+
+              The type of the object. Always `score`.
+
+              - `"score"`
+
+            - `name: optional string`
+
+      - `type: "decisions"`
+
+        - `"decisions"`
+
   - `input: optional array of InitialItem`
 
-    Ordered text-only history supplied before startup. Supports developer, user, and assistant messages with one text part each; at most 128 messages and 8,192 rendered tokens in total.
+    Ordered text-only history supplied before startup. Supports developer, user, and assistant messages with one text part each; at most 128 messages and a configured rendered-token limit (8,192 by default).
 
     - `Developer object { content, role, id, 2 more }`
 
@@ -7529,6 +8079,90 @@ Schema name: `LiveSessionStarted`
   - `store: optional boolean`
 
     Whether to store the session for later forking and recording download. Defaults to false for new sessions.
+
+  - `triggers: optional array of object { decisions, event_type, type }`
+
+    At most one Decisions trigger per transcript event type. Triggers run independently of delegation. On update, omit triggers to keep the current configuration, send a list to replace it, or send an empty list to disable triggers.
+
+    - `decisions: object { questions }`
+
+      Questions evaluated using the current transcript and the session's shared Decision items.
+
+      - `questions: array of Predicate { instructions, type, name }  or Choice { choices, instructions, type, name }  or Score { instructions, levels, type, name }`
+
+        Native Decision API questions evaluated together, in order.
+
+        - `Predicate object { instructions, type, name }`
+
+          Estimate how likely it is that a statement about the input is true.
+
+          - `instructions: string`
+
+          - `type: "predicate"`
+
+            The type of the object. Always `predicate`.
+
+            - `"predicate"`
+
+          - `name: optional string`
+
+        - `Choice object { choices, instructions, type, name }`
+
+          Choose from the supplied options based on the input.
+
+          - `choices: array of object { value, description }`
+
+            Provide between 2 and 255 choices. Each choice must be unique.
+
+            - `value: string or boolean`
+
+              Choice values are typed: a string and a boolean with the same text are distinct.
+
+              - `string`
+
+              - `boolean`
+
+            - `description: optional string`
+
+          - `instructions: string`
+
+          - `type: "choice"`
+
+            The type of the object. Always `choice`.
+
+            - `"choice"`
+
+          - `name: optional string`
+
+        - `Score object { instructions, levels, type, name }`
+
+          Rate the input against the supplied ordered levels.
+
+          - `instructions: string`
+
+          - `levels: array of object { label, description }`
+
+            - `label: string`
+
+            - `description: optional string`
+
+          - `type: "score"`
+
+            The type of the object. Always `score`.
+
+            - `"score"`
+
+          - `name: optional string`
+
+    - `event_type: "session.input_transcript.delta" or "session.output_transcript.delta"`
+
+      - `"session.input_transcript.delta"`
+
+      - `"session.output_transcript.delta"`
+
+    - `type: "decisions"`
+
+      - `"decisions"`
 
 - `type: "session.started"`
 
@@ -7784,9 +8418,9 @@ Schema name: `LiveSessionUpdated`
 
             The nested Responses event type. Required when type is 'response.event'; forbidden for other event types.
 
-  - `delegation: optional ClientDelegation or Responses { responses, type }  or null`
+  - `delegation: optional ClientDelegation or Responses { responses, type }  or Decisions { decisions, type }  or null`
 
-    Who handles tasks delegated by the Live model. Omitted or null selects your application; use `responses` to let the API manage a Responses backend.
+    Who handles tasks delegated by the Live model. Omitted or null selects your application; use `responses` or `decisions` to delegate to the corresponding API.
 
     - `ClientDelegation object { type }`
 
@@ -8404,9 +9038,85 @@ Schema name: `LiveSessionUpdated`
 
         - `"responses"`
 
+    - `Decisions object { decisions, type }`
+
+      - `decisions: object { model, questions }`
+
+        - `model: string`
+
+        - `questions: array of Predicate { instructions, type, name }  or Choice { choices, instructions, type, name }  or Score { instructions, levels, type, name }`
+
+          Native Decision API questions evaluated together, in order.
+
+          - `Predicate object { instructions, type, name }`
+
+            Estimate how likely it is that a statement about the input is true.
+
+            - `instructions: string`
+
+            - `type: "predicate"`
+
+              The type of the object. Always `predicate`.
+
+              - `"predicate"`
+
+            - `name: optional string`
+
+          - `Choice object { choices, instructions, type, name }`
+
+            Choose from the supplied options based on the input.
+
+            - `choices: array of object { value, description }`
+
+              Provide between 2 and 255 choices. Each choice must be unique.
+
+              - `value: string or boolean`
+
+                Choice values are typed: a string and a boolean with the same text are distinct.
+
+                - `string`
+
+                - `boolean`
+
+              - `description: optional string`
+
+            - `instructions: string`
+
+            - `type: "choice"`
+
+              The type of the object. Always `choice`.
+
+              - `"choice"`
+
+            - `name: optional string`
+
+          - `Score object { instructions, levels, type, name }`
+
+            Rate the input against the supplied ordered levels.
+
+            - `instructions: string`
+
+            - `levels: array of object { label, description }`
+
+              - `label: string`
+
+              - `description: optional string`
+
+            - `type: "score"`
+
+              The type of the object. Always `score`.
+
+              - `"score"`
+
+            - `name: optional string`
+
+      - `type: "decisions"`
+
+        - `"decisions"`
+
   - `input: optional array of InitialItem`
 
-    Ordered text-only history supplied before startup. Supports developer, user, and assistant messages with one text part each; at most 128 messages and 8,192 rendered tokens in total.
+    Ordered text-only history supplied before startup. Supports developer, user, and assistant messages with one text part each; at most 128 messages and a configured rendered-token limit (8,192 by default).
 
     - `Developer object { content, role, id, 2 more }`
 
@@ -8559,6 +9269,90 @@ Schema name: `LiveSessionUpdated`
   - `store: optional boolean`
 
     Whether to store the session for later forking and recording download. Defaults to false for new sessions.
+
+  - `triggers: optional array of object { decisions, event_type, type }`
+
+    At most one Decisions trigger per transcript event type. Triggers run independently of delegation. On update, omit triggers to keep the current configuration, send a list to replace it, or send an empty list to disable triggers.
+
+    - `decisions: object { questions }`
+
+      Questions evaluated using the current transcript and the session's shared Decision items.
+
+      - `questions: array of Predicate { instructions, type, name }  or Choice { choices, instructions, type, name }  or Score { instructions, levels, type, name }`
+
+        Native Decision API questions evaluated together, in order.
+
+        - `Predicate object { instructions, type, name }`
+
+          Estimate how likely it is that a statement about the input is true.
+
+          - `instructions: string`
+
+          - `type: "predicate"`
+
+            The type of the object. Always `predicate`.
+
+            - `"predicate"`
+
+          - `name: optional string`
+
+        - `Choice object { choices, instructions, type, name }`
+
+          Choose from the supplied options based on the input.
+
+          - `choices: array of object { value, description }`
+
+            Provide between 2 and 255 choices. Each choice must be unique.
+
+            - `value: string or boolean`
+
+              Choice values are typed: a string and a boolean with the same text are distinct.
+
+              - `string`
+
+              - `boolean`
+
+            - `description: optional string`
+
+          - `instructions: string`
+
+          - `type: "choice"`
+
+            The type of the object. Always `choice`.
+
+            - `"choice"`
+
+          - `name: optional string`
+
+        - `Score object { instructions, levels, type, name }`
+
+          Rate the input against the supplied ordered levels.
+
+          - `instructions: string`
+
+          - `levels: array of object { label, description }`
+
+            - `label: string`
+
+            - `description: optional string`
+
+          - `type: "score"`
+
+            The type of the object. Always `score`.
+
+            - `"score"`
+
+          - `name: optional string`
+
+    - `event_type: "session.input_transcript.delta" or "session.output_transcript.delta"`
+
+      - `"session.input_transcript.delta"`
+
+      - `"session.output_transcript.delta"`
+
+    - `type: "decisions"`
+
+      - `"decisions"`
 
 - `type: "session.updated"`
 
@@ -9009,7 +9803,7 @@ Schema name: `LiveOutputTranscriptDelta`
 
 ### session.delegation.created
 
-Returned when the Live model delegates work to your application or a Responses backend. Contains delegation metadata and the position on the session timeline where the work was delegated.
+Returned when the Live model delegates work to your application, Responses, or Decisions. Contains delegation metadata and the position on the session timeline where the work was delegated.
 
 #### Schema
 
@@ -9021,19 +9815,21 @@ Schema name: `LiveDelegationCreated`
 
   - `id: string`
 
-    The unique ID of the delegation. Use this as delegation_id when replying to client-owned work or correlating Responses events.
+    The unique ID of the delegation. Use this as delegation_id when replying to client-owned work or correlating backend events.
 
-  - `target: "client" or "responses"`
+  - `target: "client" or "responses" or "decisions"`
 
-    Where the Live model delegated the work: `client` for your application, or `responses` for the configured Responses backend.
+    Where the Live model delegated the work: `client`, `responses`, or `decisions`.
 
-    - `"client" or "responses"`
+    - `"client" or "responses" or "decisions"`
 
-      Where the Live model delegated the work: `client` for your application, or `responses` for the configured Responses backend.
+      Where the Live model delegated the work: `client`, `responses`, or `decisions`.
 
       - `"client"`
 
       - `"responses"`
+
+      - `"decisions"`
 
   - `type: "delegation"`
 
@@ -9075,6 +9871,338 @@ Schema name: `LiveDelegationCreated`
     "type": "delegation",
     "target": "client"
   }
+}
+```
+
+<a id="decision.event"></a>
+
+### decision.event
+
+A Decision API event for a Live delegation or transcript trigger. For a trigger, source_event_id identifies the transcript delta that caused this evaluation.
+
+#### Schema
+
+Schema name: `LiveDecisionEvent`
+
+- `delegation_id: string or null`
+
+  The Live delegation ID, or null for a transcript trigger.
+
+- `event: object { decision, type }`
+
+  - `decision: Decision`
+
+    The native Decision API response, including its model, ordered answers, and token usage.
+
+    - `answers: array of Predicate { name, probability, type }  or Choice { choice, confidence, name, 2 more }  or Score { confidence, name, probabilities, 2 more }  or Refusal { name, type }`
+
+      Answers in question order. Any question can return a refusal instead of an answer; other questions can still receive answers. A refusal has `type: "refusal"` and the question's `name`, or `null` if it was unnamed.
+
+      - `Predicate object { name, probability, type }`
+
+        - `name: string or null`
+
+        - `probability: number`
+
+        - `type: "predicate"`
+
+          The type of the object. Always `predicate`.
+
+          - `"predicate"`
+
+      - `Choice object { choice, confidence, name, 2 more }`
+
+        - `choice: string or boolean`
+
+          Choice values are typed: a string and a boolean with the same text are distinct.
+
+          - `string`
+
+          - `boolean`
+
+        - `confidence: number`
+
+        - `name: string or null`
+
+        - `probabilities: array of object { probability, value }`
+
+          - `probability: number`
+
+          - `value: string or boolean`
+
+            Choice values are typed: a string and a boolean with the same text are distinct.
+
+            - `string`
+
+            - `boolean`
+
+        - `type: "choice"`
+
+          The type of the object. Always `choice`.
+
+          - `"choice"`
+
+      - `Score object { confidence, name, probabilities, 2 more }`
+
+        - `confidence: number`
+
+        - `name: string or null`
+
+        - `probabilities: array of object { label, probability, value }`
+
+          - `label: string`
+
+          - `probability: number`
+
+          - `value: number`
+
+        - `score: number`
+
+        - `type: "score"`
+
+          The type of the object. Always `score`.
+
+          - `"score"`
+
+      - `Refusal object { name, type }`
+
+        The model declined to answer this question. Other questions in the same request can still receive answers.
+
+        - `name: string or null`
+
+        - `type: "refusal"`
+
+          The type of the object. Always `refusal`.
+
+          - `"refusal"`
+
+    - `model: string`
+
+      The model used.
+
+    - `usage: object { input_tokens, input_tokens_details, output_tokens, 2 more }`
+
+      Token usage for the request.
+
+      - `input_tokens: number`
+
+      - `input_tokens_details: object { cache_write_tokens, cached_tokens }`
+
+        - `cache_write_tokens: number`
+
+        - `cached_tokens: number`
+
+      - `output_tokens: number`
+
+      - `output_tokens_details: object { reasoning_tokens }`
+
+        - `reasoning_tokens: number`
+
+      - `total_tokens: number`
+
+  - `type: "decision.completed"`
+
+    - `"decision.completed"`
+
+- `event_id: string`
+
+  The unique ID of this Live server event.
+
+- `source_event_id: string or null`
+
+  The event_id of the transcript delta that fired this trigger, or null for a delegation.
+
+- `source_event_type: "session.input_transcript.delta" or "session.output_transcript.delta" or null`
+
+  - `"session.input_transcript.delta" or "session.output_transcript.delta"`
+
+    - `"session.input_transcript.delta"`
+
+    - `"session.output_transcript.delta"`
+
+- `trigger_id: string or null`
+
+  The Live-assigned ID of this trigger firing, or null for a delegation.
+
+- `type: "decision.event"`
+
+  - `"decision.event"`
+
+#### Example
+
+```json
+{
+  "type": "decision.event",
+  "event_id": "evt_decision_1",
+  "delegation_id": "del_abc123",
+  "trigger_id": null,
+  "source_event_type": null,
+  "source_event_id": null,
+  "event": {
+    "type": "decision.completed",
+    "decision": {
+      "model": "gpt-6-luna",
+      "answers": [
+        {
+          "type": "predicate",
+          "name": "damaged",
+          "probability": 0.95
+        }
+      ],
+      "usage": {
+        "input_tokens": 42,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 42
+      }
+    }
+  }
+}
+```
+
+<a id="decision.item.created"></a>
+
+### decision.item.created
+
+An input item was appended for future decisions.
+
+#### Schema
+
+Schema name: `LiveDecisionItemCreated`
+
+- `event_id: string`
+
+  The unique ID of the Live server event.
+
+- `item: object { id, content, role, type }`
+
+  - `id: string`
+
+    The ID of the stored Decision input item.
+
+  - `content: string or array of InputText { text, type }  or InputImage { image_url, type, detail }`
+
+    The text input to the model.
+
+    - `string`
+
+      The text input to the model.
+
+    - `array of InputText { text, type }  or InputImage { image_url, type, detail }`
+
+      - `InputText object { text, type }`
+
+        - `text: string`
+
+          The text input to the model.
+
+        - `type: "input_text"`
+
+          The type of the input item. Always `input_text`.
+
+          - `"input_text"`
+
+      - `InputImage object { image_url, type, detail }`
+
+        - `image_url: string`
+
+          An inline image encoded as a data URL.
+
+        - `type: "input_image"`
+
+          The type of the input item. Always `input_image`.
+
+          - `"input_image"`
+
+        - `detail: optional "low" or "high" or "auto" or "original" or null`
+
+          The detail level of the image to be sent to the model. One of `high`, `low`, `auto`, or `original`. Defaults to `auto`.
+
+          - `"low"`
+
+          - `"high"`
+
+          - `"auto"`
+
+          - `"original"`
+
+  - `role: "user"`
+
+    The message role. Always `user`.
+
+    - `"user"`
+
+  - `type: optional "message"`
+
+    - `"message"`
+
+- `type: "decision.item.created"`
+
+  - `"decision.item.created"`
+
+- `client_event_id: optional string`
+
+  The event_id of the client command associated with this server event, when supplied.
+
+#### Example
+
+```json
+{
+  "type": "decision.item.created",
+  "event_id": "evt_item_1",
+  "client_event_id": "browser_1",
+  "item": {
+    "id": "msg_browser_1",
+    "type": "message",
+    "role": "user",
+    "content": [
+      {
+        "type": "input_text",
+        "text": "Wikipedia is open."
+      }
+    ]
+  }
+}
+```
+
+<a id="decision.item.deleted"></a>
+
+### decision.item.deleted
+
+An input item was removed from future decisions.
+
+#### Schema
+
+Schema name: `LiveDecisionItemDeleted`
+
+- `event_id: string`
+
+  The unique ID of the Live server event.
+
+- `item_id: string`
+
+- `type: "decision.item.deleted"`
+
+  - `"decision.item.deleted"`
+
+- `client_event_id: optional string`
+
+  The event_id of the client command associated with this server event, when supplied.
+
+#### Example
+
+```json
+{
+  "type": "decision.item.deleted",
+  "event_id": "evt_item_deleted_1",
+  "client_event_id": "remove_browser_1",
+  "item_id": "msg_browser_1"
 }
 ```
 
@@ -9416,9 +10544,9 @@ Schema name: `LiveSessionClosed`
 
             The nested Responses event type. Required when type is 'response.event'; forbidden for other event types.
 
-  - `delegation: optional ClientDelegation or Responses { responses, type }  or null`
+  - `delegation: optional ClientDelegation or Responses { responses, type }  or Decisions { decisions, type }  or null`
 
-    Who handles tasks delegated by the Live model. Omitted or null selects your application; use `responses` to let the API manage a Responses backend.
+    Who handles tasks delegated by the Live model. Omitted or null selects your application; use `responses` or `decisions` to delegate to the corresponding API.
 
     - `ClientDelegation object { type }`
 
@@ -10036,9 +11164,85 @@ Schema name: `LiveSessionClosed`
 
         - `"responses"`
 
+    - `Decisions object { decisions, type }`
+
+      - `decisions: object { model, questions }`
+
+        - `model: string`
+
+        - `questions: array of Predicate { instructions, type, name }  or Choice { choices, instructions, type, name }  or Score { instructions, levels, type, name }`
+
+          Native Decision API questions evaluated together, in order.
+
+          - `Predicate object { instructions, type, name }`
+
+            Estimate how likely it is that a statement about the input is true.
+
+            - `instructions: string`
+
+            - `type: "predicate"`
+
+              The type of the object. Always `predicate`.
+
+              - `"predicate"`
+
+            - `name: optional string`
+
+          - `Choice object { choices, instructions, type, name }`
+
+            Choose from the supplied options based on the input.
+
+            - `choices: array of object { value, description }`
+
+              Provide between 2 and 255 choices. Each choice must be unique.
+
+              - `value: string or boolean`
+
+                Choice values are typed: a string and a boolean with the same text are distinct.
+
+                - `string`
+
+                - `boolean`
+
+              - `description: optional string`
+
+            - `instructions: string`
+
+            - `type: "choice"`
+
+              The type of the object. Always `choice`.
+
+              - `"choice"`
+
+            - `name: optional string`
+
+          - `Score object { instructions, levels, type, name }`
+
+            Rate the input against the supplied ordered levels.
+
+            - `instructions: string`
+
+            - `levels: array of object { label, description }`
+
+              - `label: string`
+
+              - `description: optional string`
+
+            - `type: "score"`
+
+              The type of the object. Always `score`.
+
+              - `"score"`
+
+            - `name: optional string`
+
+      - `type: "decisions"`
+
+        - `"decisions"`
+
   - `input: optional array of InitialItem`
 
-    Ordered text-only history supplied before startup. Supports developer, user, and assistant messages with one text part each; at most 128 messages and 8,192 rendered tokens in total.
+    Ordered text-only history supplied before startup. Supports developer, user, and assistant messages with one text part each; at most 128 messages and a configured rendered-token limit (8,192 by default).
 
     - `Developer object { content, role, id, 2 more }`
 
@@ -10191,6 +11395,90 @@ Schema name: `LiveSessionClosed`
   - `store: optional boolean`
 
     Whether to store the session for later forking and recording download. Defaults to false for new sessions.
+
+  - `triggers: optional array of object { decisions, event_type, type }`
+
+    At most one Decisions trigger per transcript event type. Triggers run independently of delegation. On update, omit triggers to keep the current configuration, send a list to replace it, or send an empty list to disable triggers.
+
+    - `decisions: object { questions }`
+
+      Questions evaluated using the current transcript and the session's shared Decision items.
+
+      - `questions: array of Predicate { instructions, type, name }  or Choice { choices, instructions, type, name }  or Score { instructions, levels, type, name }`
+
+        Native Decision API questions evaluated together, in order.
+
+        - `Predicate object { instructions, type, name }`
+
+          Estimate how likely it is that a statement about the input is true.
+
+          - `instructions: string`
+
+          - `type: "predicate"`
+
+            The type of the object. Always `predicate`.
+
+            - `"predicate"`
+
+          - `name: optional string`
+
+        - `Choice object { choices, instructions, type, name }`
+
+          Choose from the supplied options based on the input.
+
+          - `choices: array of object { value, description }`
+
+            Provide between 2 and 255 choices. Each choice must be unique.
+
+            - `value: string or boolean`
+
+              Choice values are typed: a string and a boolean with the same text are distinct.
+
+              - `string`
+
+              - `boolean`
+
+            - `description: optional string`
+
+          - `instructions: string`
+
+          - `type: "choice"`
+
+            The type of the object. Always `choice`.
+
+            - `"choice"`
+
+          - `name: optional string`
+
+        - `Score object { instructions, levels, type, name }`
+
+          Rate the input against the supplied ordered levels.
+
+          - `instructions: string`
+
+          - `levels: array of object { label, description }`
+
+            - `label: string`
+
+            - `description: optional string`
+
+          - `type: "score"`
+
+            The type of the object. Always `score`.
+
+            - `"score"`
+
+          - `name: optional string`
+
+    - `event_type: "session.input_transcript.delta" or "session.output_transcript.delta"`
+
+      - `"session.input_transcript.delta"`
+
+      - `"session.output_transcript.delta"`
+
+    - `type: "decisions"`
+
+      - `"decisions"`
 
 - `type: "session.closed"`
 

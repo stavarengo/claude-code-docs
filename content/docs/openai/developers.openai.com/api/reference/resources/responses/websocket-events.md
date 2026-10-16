@@ -1026,9 +1026,9 @@ Schema name: `ResponsesClientEventResponseCreate`
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
     - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -8317,9 +8317,9 @@ Schema name: `ResponseCreatedEvent`
 
               - `"find_in_page"`
 
-            - `url: string`
+            - `url: optional string or null`
 
-              The URL of the page searched for the pattern.
+              The URL of the page searched for the pattern, when available.
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -12341,9 +12341,9 @@ Schema name: `ResponseCreatedEvent`
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -18138,9 +18138,9 @@ Schema name: `ResponseInProgressEvent`
 
               - `"find_in_page"`
 
-            - `url: string`
+            - `url: optional string or null`
 
-              The URL of the page searched for the pattern.
+              The URL of the page searched for the pattern, when available.
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -22162,9 +22162,9 @@ Schema name: `ResponseInProgressEvent`
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -27959,9 +27959,9 @@ Schema name: `ResponseCompletedEvent`
 
               - `"find_in_page"`
 
-            - `url: string`
+            - `url: optional string or null`
 
-              The URL of the page searched for the pattern.
+              The URL of the page searched for the pattern, when available.
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -31983,9 +31983,9 @@ Schema name: `ResponseCompletedEvent`
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -37804,9 +37804,9 @@ Schema name: `ResponseFailedEvent`
 
               - `"find_in_page"`
 
-            - `url: string`
+            - `url: optional string or null`
 
-              The URL of the page searched for the pattern.
+              The URL of the page searched for the pattern, when available.
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -41828,9 +41828,9 @@ Schema name: `ResponseFailedEvent`
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -47629,9 +47629,9 @@ Schema name: `ResponseIncompleteEvent`
 
               - `"find_in_page"`
 
-            - `url: string`
+            - `url: optional string or null`
 
-              The URL of the page searched for the pattern.
+              The URL of the page searched for the pattern, when available.
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -51653,9 +51653,9 @@ Schema name: `ResponseIncompleteEvent`
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -57005,9 +57005,9 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `"find_in_page"`
 
-        - `url: string`
+        - `url: optional string or null`
 
-          The URL of the page searched for the pattern.
+          The URL of the page searched for the pattern, when available.
 
   - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -61207,9 +61207,9 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `"find_in_page"`
 
-        - `url: string`
+        - `url: optional string or null`
 
-          The URL of the page searched for the pattern.
+          The URL of the page searched for the pattern, when available.
 
   - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -68272,9 +68272,9 @@ Schema name: `ResponseQueuedEvent`
 
               - `"find_in_page"`
 
-            - `url: string`
+            - `url: optional string or null`
 
-              The URL of the page searched for the pattern.
+              The URL of the page searched for the pattern, when available.
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -72296,9 +72296,9 @@ Schema name: `ResponseQueuedEvent`
 
             - `"find_in_page"`
 
-          - `url: string`
+          - `url: optional string or null`
 
-            The URL of the page searched for the pattern.
+            The URL of the page searched for the pattern, when available.
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
