@@ -295,7 +295,7 @@ Because setting `max_retries` to `0` also disables retries for other transient e
   var message = await CreateMessageWithFastFallback(
       new MessageCreateParams
       {
-          Model = "claude-opus-5-5",
+          Model = Model.ClaudeOpus5_5,
           MaxTokens = 1024,
           Messages = [new() { Role = Role.User, Content = "Hello" }],
           Speed = Speed.Fast,

@@ -203,18 +203,18 @@ To migrate from Claude Fable 5, update your model ID:
   ```
 
   ```csharp C#
-  var model = "claude-fable-5"; // Before
-  model = "claude-fable-5-1"; // After
+  var model = Model.ClaudeFable5; // Before
+  model = Model.ClaudeFable5_1; // After
   ```
 
   ```go Go
-  model := "claude-fable-5"  // Before
-  model = "claude-fable-5-1" // After
+  model := anthropic.ModelClaudeFable5  // Before
+  model = anthropic.ModelClaudeFable5_1 // After
   ```
 
   ```java Java
-  String model = "claude-fable-5"; // Before
-  model = "claude-fable-5-1"; // After
+  Model model = Model.CLAUDE_FABLE_5; // Before
+  model = Model.CLAUDE_FABLE_5_1; // After
   ```
 
   ```php PHP

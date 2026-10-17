@@ -16,7 +16,7 @@ Connect an MCP client to https://platform.claude.com/docs/mcp (Streamable HTTP t
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 782 pages - /docs - Content included below
+- English (en) - 783 pages - /docs - Content included below
 - German (Deutsch) (de) - 288 pages - /docs/de - Visit website for content
 - Spanish (Español) (es) - 288 pages - /docs/es - Visit website for content
 - French (Français) (fr) - 288 pages - /docs/fr - Visit website for content
@@ -204,6 +204,7 @@ The full documentation is available in the following languages on https://platfo
 - [Rate Limits API](https://platform.claude.com/docs/en/manage-claude/rate-limits-api.md)
 - [Chats, files, and projects](https://platform.claude.com/docs/en/manage-claude/compliance-content-data.md) - Retrieve and delete chats, files, and projects
 - [Session transcripts](https://platform.claude.com/docs/en/manage-claude/compliance-sessions.md) - Retrieve session transcripts
+- [Claude Platform on AWS](https://platform.claude.com/docs/en/manage-claude/cmek-claude-platform-on-aws.md) - Set up CMEK on Claude Platform on AWS
 - [Get Claude API spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/api.md) - Set up OpenTelemetry with the Claude API
 - [Get Claude SDK spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/sdk.md) - Set up OpenTelemetry with the Claude SDK
 - [Set up the Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api-access.md)

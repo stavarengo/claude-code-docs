@@ -10663,6 +10663,336 @@ Use [Blaxel Agent Drive](https://docs.blaxel.ai/Agent-drive/Overview) to preserv
 
 ---
 
+# Browser and desktop drivers
+
+A driver translates allowed tool calls into actions in a browser or desktop you control. Use a browser driver when your application can report page text, controls, and tabs. Use a computer driver when the model must work from screenshots and coordinates. The SDK sends requests and dispatches calls; your application owns the session, permissions, and cleanup.
+
+## Configure common controls
+
+Start with the [browser example](https://developers.openai.com/api/docs/guides/tools-computer-use?sdk-task=browser#run-your-first-task) in Python or Node. It shows a complete driver, a confirmation policy, and a bounded Responses run. Keep the session open until the run ends. Python also provides synchronous `BrowserToolset` and `ResponsesToolRunner` classes for synchronous drivers.
+
+| Goal                            | Where to set it                                                                                                                                  | What to expect                                                                                                                                                                 |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Limit browser methods           | Set `members` when constructing `BrowserToolset` or `AsyncBrowserToolset`.                                                                       | Only selected, implemented methods are exposed. For read-only access with the example driver, choose `read_page` alone. [Select methods](#select-methods).                     |
+| Approve browser changes         | Pass `confirm` to the `BrowserToolset` or `AsyncBrowserToolset` constructor.                                                                     | Only an exact `true` or `True` allows the proposed action. Check its member, target, and arguments. [Approve actions](#approve-actions-and-own-the-session).                   |
+| Restrict browser navigation     | Pass `urlPolicy` in Node or `url_policy` in Python to the `BrowserToolset` or `AsyncBrowserToolset` constructor.                                 | Required if you enable `navigate` or `new_tab`. The SDK checks the requested URL before asking for confirmation. [Restrict URLs](#restrict-urls).                              |
+| Approve native computer actions | With `ResponsesToolRunner`, set Node's `computerOptions` in the run options; pass Python's `approve_safety_checks` and `before_action` to `run`. | Pending safety checks need explicit approval; the optional before-action callback can refuse any individual action. [Computer approval](#approve-actions-and-own-the-session). |
+| Bound a run                     | Set `maxSteps` in Node or `max_steps` in Python in the Responses runner's run options.                                                           | The default is 20 requests. The final allowed request cannot start new effects.                                                                                                |
+| Measure usage                   | Pass synchronous `onDiagnostic` in Node or `on_diagnostic` in Python to `ResponsesToolRunner.run`.                                               | Add token usage from completed request records. If a completed request has no usage, report the total as incomplete. [Inspect usage and timing](#inspect-usage-and-timing).    |
+
+### Approve actions and own the session
+
+Create drivers and approval callbacks in trusted application code. Keep executable configuration separate from untrusted page data, and return page data through the declared driver report fields.
+
+A selected browser method that changes state or reads diagnostics requires `confirm`. Only exactly `true` in Node or `True` in Python approves an action. `navigate` and `new_tab` also require `urlPolicy` (Node) or `url_policy` (Python). Both callbacks receive a detached object containing `member`, validated `arguments`, prior `state`, and `call_id`; URL policy also receives the requested URL. They cannot change the validated action by editing that object.
+
+`confirm` approves the fixed action arguments. Its `state` is a prior observation, not a lock on the document or focused control. A page can navigate or change focus while a person decides. For consent tied to a specific page or control, the driver must check the original target at execution. Disable `key` and refuse `type` with a null target in that flow; both use current focus. Apply equivalent target binding to other actions that depend on the current browser state.
+
+To ask before reading a private page, list the read members in `confirmReads` (Node) or `confirm_reads` (Python). The same `confirm` callback runs before any driver state or content read. Its context has `phase: "before_read"` and `state: null` in Node or `None` in Python. Handle that case without reading page metadata. A refusal returns no page content or state. Existing reads keep their current behavior when this option is absent; mandatory action approvals still apply.
+
+For computer calls, acknowledge all pending safety checks before the helper executes any actions. Node's `approveSafetyChecks` and Python's `approve_safety_checks` must return exactly true. A missing or declined callback stops the run. Optional `beforeAction` or `before_action` checks each action immediately before execution, including the final screenshot. If supplied, it must also approve explicitly. A model choice or completion message cannot grant approval. See [Computer use safety guidance](https://developers.openai.com/api/docs/guides/tools-computer-use#run-safely).
+
+Node passes `{ signal }` as the final argument to both computer approval callbacks. Python supplies the optional `cancelled` keyword when the callback accepts it. Existing callbacks with fewer arguments remain supported. Use this context to close a pending approval prompt when the run stops. The helper waits for the callback to settle before releasing the session.
+
+Computer approval covers the action's fixed arguments. It does not freeze the screen or focus while a person decides. If consent must apply to a particular target, the driver must bind the action to that target or reject it after a state change. Run computer actions in an isolated environment with limited network access.
+
+### Restrict URLs
+
+Enable `navigate` or `new_tab` only when the task needs them. Supply both `confirm` and `urlPolicy` in Node, or `confirm` and `url_policy` in Python. The URL callback receives `(context, url)`, with an optional execution context in Node or `cancelled` keyword in Python. It must return exactly true for the SDK to continue to `confirm`. A new blank tab with a null URL still requires confirmation but has no URL to check.
+
+Parse the requested URL. Compare its protocol, hostname, and port with the destinations your task permits. Do not rely on a string prefix: `https://example.com.evil.test` must not count as `https://example.com`. A browser driver without navigation needs no URL callback. The [browser example](https://developers.openai.com/api/docs/guides/tools-computer-use?sdk-task=browser#run-your-first-task) leaves these methods disabled.
+
+Enforce a network policy in the browser or environment as well. The callback checks a requested navigation, but it cannot restrict redirects, popups, page scripts, or embedded resources. Keep one isolated session between requests and close resources your application created. Leave borrowed resources with their owner.
+
+### Inspect usage and timing
+
+With `ResponsesToolRunner`, pass `onDiagnostic` in Node or `on_diagnostic` in Python to `run`. For each completed Responses request, the callback receives a record with `api: "responses"`, `stage: "request"`, `reason: "completed"`, and `usage`. The usage contains `input_tokens`, `output_tokens`, and `total_tokens` when the API supplies them; otherwise, the value is `null` in Node or `None` in Python. Sum each token field across completed requests to measure the run's usage. If any request has no usage, the totals are incomplete.
+
+`ComputerToolset.run` does not report request usage through its diagnostic callback. The returned response can contain usage for the final request only. Use `ResponsesToolRunner` with `ComputerToolset` when you need per-request usage.
+
+Diagnostic records also identify the API, stage, reason, call ID, member, and measured duration. They contain no raw error, page text, arguments, or image. An observer failure cannot approve an action or change its result. Keep call IDs and member names out of public logs if your application puts private data in them.
+
+Use a synchronous observer. The runner does not wait for diagnostic work; schedule any asynchronous storage in your application.
+
+Stage timings can overlap in eager runs because stream receipt may include action time. Do not add them together to calculate the run's total duration.
+
+### Close and cancel work
+
+A helper rejects overlapping calls with a busy error. A runner also rejects a second active run on the same instance. Keep one owner for each browser or desktop session.
+
+Call the helper's `close()` to refuse new work. Its `status` is `closed` when no call remains active, or `draining` when an earlier call may still have effects. If the status is `draining`, await the original execute call before closing the driver or handing the session to another owner. The helper does not close your browser or desktop. Calling `close()` inside a driver callback does not wait on that same callback.
+
+Cooperative Node driver methods and ordinary functions can accept a second context with `signal`. Python methods can accept the `cancelled` keyword. Check it during long work, including navigation and screenshots. Existing one-argument callbacks remain valid, but the SDK cannot force them to stop or undo an effect.
+
+## Browser driver contract
+
+Implement `state()` and only the operations you intend to expose. Node methods may return a value or a promise; Python supplies separate synchronous and asynchronous classes. Each operation receives one validated argument object or dictionary. For tab IDs and targets that allow no value, use explicit `null` in Node and `None` in Python.
+
+Python rejects known synchronous or asynchronous mismatches when you create the helper. Use `async def` methods with `AsyncBrowserToolset`; preserve decorator metadata or return annotations for wrappers. Opaque wrappers are checked when called. Optional protocols such as `BrowserReadDriver` and `AsyncBrowserReadDriver` help you type a partial driver without implementing every operation. Node exports `BrowserArguments<Member>` and `BrowserResult<Member>` for the matching inputs and outputs.
+
+`state()` reports `tabs`, an array of objects with `id`, `title`, `url`, and `active`. Use stable IDs and mark the real active tab. Exclude credentials and private information from titles and URLs. The SDK returns current state after ordinary operations, including failures. A refused [protected read](#approve-actions-and-own-the-session) returns a fixed refusal without reading or exposing state. If a required state read fails, the run stops. Node state readers receive `{ signal }`; Python state readers can accept the `cancelled` keyword. Use this context to end pending state reads when the caller stops the run. Existing readers without arguments remain supported.
+
+Tab state reports HTTP and HTTPS origins, such as `https://example.com:8443`, without credentials, paths, queries, or fragments. Legacy state, without observation metadata, preserves `about:blank` and reports only the scheme for other URLs, such as `data:` or `file:`. Its 2,048-byte UTF-8 limit applies to the reported value, so a long page path does not prevent a state read. State with V1 observation metadata truncates titles to 1,024 UTF-8 bytes at a character boundary and sets `title_truncated` when needed. Titles and page content still need your application's privacy rules.
+
+### Select methods
+
+By default, the SDK exposes the following 18 methods when implemented and derives `list_tabs` from `state()`. Do not implement `list_tabs`. A `members` list can expose fewer methods, or explicitly opt in to the [scoped and pointer methods](#opt-in-to-scoped-and-pointer-methods) or [diagnostics, scripts, and file methods](#opt-in-to-diagnostics-scripts-and-file-transfers). Names must be unique, fixed members that the driver implements; only `list_tabs` needs no method beyond `state()`. An empty list exposes no methods. The SDK copies the selection at construction, keeps its own tool order, and rejects disabled calls before reading state or asking for consent.
+
+To add an optional method while keeping implemented defaults, use `additionalMembers` in Node or `additional_members` in Python. Do not combine it with `members`. A requested addition must exist on the driver. `BROWSER_MEMBERS` and `DEFAULT_BROWSER_MEMBERS` list the fixed names without inspecting a driver.
+
+Disabling `list_tabs` does not hide state returned by other successful operations. In Python and Node, `members` filters the browser helper. Ordinary function names may start with `browser_`, but must not match an enabled browser tool.
+
+| Method          | Arguments                                   | Result                                   | Confirmation    |
+| --------------- | ------------------------------------------- | ---------------------------------------- | --------------- |
+| `navigate`      | `url`, `tab_id`                             | Text or no result                        | Yes; URL policy |
+| `read_page`     | `filter` ("all" or "interactive"), `tab_id` | Text or structured read                  | No              |
+| `get_page_text` | `tab_id`                                    | Text or structured read with no elements | No              |
+| `find`          | `query`, `tab_id`                           | Text or structured read                  | No              |
+| `click`         | `target`, `tab_id`                          | Text or no result                        | Yes             |
+| `type`          | `text`, `target` (may be null), `tab_id`    | Text or no result                        | Yes             |
+| `key`           | `keys` (strings), `tab_id`                  | Text or no result                        | Yes             |
+| `scroll`        | `direction`, nonnegative `amount`, `tab_id` | Text or no result                        | Yes             |
+| `scroll_to`     | `target`, `tab_id`                          | Text or no result                        | Yes             |
+| `wait_for`      | `text`, `timeout_ms`, `tab_id`              | Text or no result                        | No              |
+| `select_option` | `target`, `values` (strings), `tab_id`      | Text or no result                        | Yes             |
+| `hover`         | `target`, `tab_id`                          | Text or no result                        | Yes             |
+| `screenshot`    | `tab_id`                                    | Native input image                       | No              |
+| `zoom`          | `region`, `tab_id`                          | Native input image                       | No              |
+| `new_tab`       | `url` (may be null)                         | Text or no result                        | Yes; URL policy |
+| `list_tabs`     | None                                        | Derived current state                    | No              |
+| `switch_tab`    | required `tab_id`                           | Text or no result                        | Yes             |
+| `close_tab`     | required `tab_id`                           | Text or no result                        | Yes             |
+
+Except for `switch_tab` and `close_tab`, a listed `tab_id` may be null. Direction is `up`, `down`, `left`, or `right`. Node's `BrowserArguments<Member>` describes each argument object; Python exposes named input types such as `TabInput`, `ReadPageInput`, and `ClickInput`.
+
+For `read_page`, `find`, and `get_page_text`, return `null` or no value in Node, or `None` in Python, to supply only the updated browser state. Return an empty string when a read completes with no text.
+
+Each Node operation in this table except `list_tabs` receives `{ signal }` as a second argument. `list_tabs` uses the state reader described above. Python passes `cancelled` as a keyword argument when the method accepts it. Use this context to stop pending work, including navigation and input. Existing one-argument methods remain supported.
+
+For `wait_for`, use nonempty text of at most 256 UTF-8 bytes after whitespace normalization. The timeout must be from 1 through 30,000 milliseconds. Read the current page again after `scroll_to` before acting on a control.
+
+### Report structured reads
+
+`read_page`, `find`, and `get_page_text` can return `BrowserReadV1`: `version: 1`, visible `text`, an `elements` array, and an `omitted` array. Each element has a unique `ref`, a nonempty `label`, and one of seven roles: `button`, `textbox`, `combobox`, `checkbox`, `radio`, `slider`, or `listbox`.
+
+Only report a field's `value` or its `options` (`label` and `value` pairs) when your application allows the model to see them. A checkbox or radio can report boolean `checked`; `listbox` options can report boolean `selected`. The SDK omits these fields on other roles. Node omits optional fields set to `undefined`; it rejects `null` values for those fields. `get_page_text` must return an empty `elements` array. The SDK does not parse an ordinary string into a structured read.
+
+The SDK does not limit the number of elements or options, page text size, or complete report size. Refs and labels have a 256-byte limit; values have a 512-byte limit. Use valid Unicode scalar values. Drivers can report partial coverage with unique `omitted` codes: `report_limit`, `text_limit`, `target_limit`, `work_limit`, `frame_limit`, `unsupported_root`, `unsupported_control`, `remote_action`, `private`, `value`, or `name_limit`.
+
+The driver owns visibility, field privacy, and ref validity. Recheck a ref against the current page after approval and before acting. A control's label does not grant permission to read its value. Size limits alone do not make page contents safe.
+
+### Return browser images
+
+`screenshot` and `zoom` return a native `input_image` with at least one nonempty `image_url` or `file_id`. Both source fields may be present; each non-null source must be a nonempty string. The supported fields are `type`, `image_url`, `file_id`, `detail`, and `prompt_cache_breakpoint`. A cache breakpoint must be `{ mode: "explicit" }`; null is also accepted where the native content type permits it. The SDK validates and copies these fields before returning the image. Both Node methods return `ResponseInputImageContent`, where `detail` may be omitted or null. When set, use `auto`, `low`, `high`, or `original`.
+
+For `zoom`, `region` is `[left, top, right, bottom]`. Coordinates must be nonnegative safe integers with positive width and height. The driver owns cropping and bounds checks. All later coordinates still refer to the full visible area.
+
+### Opt in to scoped and pointer methods
+
+These six browser methods are off by default, even on drivers that implement them. Select them with `members`, or add them with `additionalMembers` in Node or `additional_members` in Python. The original 18 default methods retain their names, arguments, and result types. With `members`, include any default methods you still need, such as `screenshot` or `read_page`.
+
+| Method             | Required fields                                     | Result                | Confirmation |
+| ------------------ | --------------------------------------------------- | --------------------- | ------------ |
+| `read_page_scoped` | `tab_id`, `root`, `depth`, `filter`                 | `BrowserScopedReadV1` | No           |
+| `click_at`         | `tab_id`, `x`, `y`, `button`, `click_count`, `keys` | Text or no result     | Yes          |
+| `drag_path`        | `tab_id`, `path`, `keys`                            | Text or no result     | Yes          |
+| `hold_keys`        | `tab_id`, `keys`, `duration_ms`                     | Text or no result     | Yes          |
+| `hover_at`         | `tab_id`, `x`, `y`                                  | Text or no result     | Yes          |
+| `set_checked`      | `tab_id`, `target`, `checked`                       | Text or no result     | Yes          |
+
+Node uses `BrowserArguments<Member>`. Python exports `ReadPageScopedInput`, `ClickAtInput`, `DragPathInput`, `HoldKeysInput`, `HoverAtInput`, and `SetCheckedInput`. All fields are required; `tab_id` may be `null` or `None` for the active tab. Unknown fields are rejected, including extra fields in a path point. Numbers must be finite safe integers. Python rejects `True` and `False` where numbers are required.
+
+`click_at` accepts nonnegative `x` and `y`, `button` set to `left`, `right`, or `middle`, and `click_count` set to 1, 2, or 3. `drag_path` accepts 2 through 100 exact `{x, y}` points with nonnegative coordinates. Both use the full visible area of the page in CSS pixels, even after zooming. The driver must check current bounds. Their `keys` fields contain a list of unique `Control`, `Alt`, `Meta`, or `Shift` modifiers. The list may be empty.
+
+`hover_at` moves the pointer to current CSS coordinates without holding a button. `set_checked` sets a checkbox to the requested boolean state. Setting it to true twice must leave it checked. Even a no-op must use the original current target and pass confirmation; it must not accept a stale or replaced control.
+
+`hold_keys` takes 1 through 8 unique nonempty key names, each at most 64 UTF-8 bytes with valid Unicode scalar values. `duration_ms` must be from 1 through 3000. Methods that change state require `confirm` to return exactly true. Cooperative methods receive the per-call cancellation context: Node passes `{ signal }` as a second argument; Python passes the `cancelled` keyword when the method accepts it. Existing one-argument methods remain valid.
+
+### Read within a section
+
+For `read_page_scoped`, a null `root` discovers visible sections. A non-null root must be a driver-issued scope ref, not a selector: nonempty, valid Unicode, and at most 256 UTF-8 bytes. Set `depth` from 1 through 32 and `filter` to `all` or `interactive`. Depth counts DOM traversal within that root separately from frame or shadow limits.
+
+Return `BrowserScopedReadV1`, which extends the existing read with `scopes: [{ref, label}]`. Refs and labels must be nonempty, valid Unicode, and at most 256 UTF-8 bytes. Scope refs must be unique and must not match any element ref. This method rejects string and null results. The SDK copies known fields before it asks for final state.
+
+Use scope refs only to select another read root. Element mutations must reject them. Invalidate scope and element refs together when their tab, document, generation, or visibility changes. Keep the existing field privacy, total work, and read limits.
+
+### Opt in to diagnostics, scripts, and file transfers
+
+These four methods also stay off by default. Select each one in `members` or add it with `additionalMembers` or `additional_members`, and
+provide `confirm`, including for diagnostic reads. A driver's implementation alone
+does not expose them to the model.
+
+| Method             | Required arguments               | Result                    |
+| ------------------ | -------------------------------- | ------------------------- |
+| `read_diagnostics` | `tab_id`, `source`, `limit`      | Structured text-only read |
+| `run_script`       | `tab_id`, `source`, `timeout_ms` | Text                      |
+| `upload_file`      | `grant_id`                       | `BrowserFileOutcome`      |
+| `download_file`    | `grant_id`                       | `BrowserFileOutcome`      |
+
+For `read_diagnostics`, choose `console` or `network` as the source and a limit
+from 1 through 100. Return a structured read with an empty `elements` array.
+In Node, use the `BrowserTextReadV1` result type.
+The driver must filter private data and bound its history. Do not return raw
+headers, cookies, credentials, or unfiltered console messages.
+
+`run_script` takes nonempty source containing valid Unicode and a timeout
+from 1 through 30000 milliseconds. The SDK preserves the full source. Return text containing valid Unicode.
+An empty string is valid; a null result is not. The SDK preserves large results.
+Scripts run with the page's privileges. Use a fresh session without
+credentials, restrict its network access, and retire it if execution becomes
+uncertain. Stopping the local waiter does not prove that a page script stopped.
+
+File methods accept only a caller-issued `grant_id`: nonempty, valid Unicode,
+and at most 256 UTF-8 bytes. The grant identifies one approved, task-scoped file;
+it is not a path or URL. The file owner must obtain separate approval for the file. It must recheck expiry and
+ownership, enforce size limits, and permit the grant only once. Browser confirmation does not replace this file approval.
+
+Return exactly `version`, `status`, `effect`, and `cleanup`. Set `version` to 1.
+`cleanup` is `not_started`, `pending`, or `completed`. The valid status/effect
+pairs are:
+
+| `status`      | `effect`            |
+| ------------- | ------------------- |
+| `completed`   | `completed`         |
+| `refused`     | `none`              |
+| `unknown`     | `unknown`           |
+| `interrupted` | `none` or `unknown` |
+
+The SDK copies and validates this result before asking for final browser state.
+Only `completed` sets the tool output's `ok` to true. Other outcomes retain the
+structured result with `ok` false, so the runner skips dependent browser calls in
+that response. Check the actual file and application state before retrying an
+unknown transfer. A file result does not prove that a later form submission or
+business action succeeded.
+
+`run_script`, `upload_file`, and `download_file` receive per-call cancellation: Node
+passes `{ signal }` as a second argument; Python passes the `cancelled` keyword.
+Python exports `ReadDiagnosticsInput`, `RunScriptInput`, and `BrowserFileInput`.
+
+## Computer driver contract
+
+A computer driver receives native computer actions and returns screenshots. It must implement the following methods. Import `ComputerDriver` from `openai` in Node. In Python, import `ComputerDriver` or `AsyncComputerDriver` from `openai`. Import the matching `ComputerToolset` or Python `AsyncComputerToolset` from `openai` too.
+
+| Method         | Action the driver receives              |
+| -------------- | --------------------------------------- |
+| `click`        | Coordinates, button, and any held keys  |
+| `double_click` | Coordinates and any held keys           |
+| `drag`         | A path and any held keys                |
+| `keypress`     | A combination of keys                   |
+| `move`         | Pointer coordinates                     |
+| `scroll`       | Coordinates, `scroll_x`, and `scroll_y` |
+| `type`         | Text for the focused control            |
+| `wait`         | A request to let the environment settle |
+| `screenshot`   | No argument; return the current display |
+
+Action methods receive the existing generated computer action object, with its snake-case fields, and return no value. They must raise an error if they cannot execute the action; do not silently ignore unsupported input. Node supports synchronous results or promises; await Python async methods.
+
+In Python, use synchronous methods with `ComputerToolset` and `async def` methods with `AsyncComputerToolset`. The helper rejects known mismatches when you create it. Preserve decorator metadata or return annotations when wrapping methods. Opaque wrappers are checked when called, so their own code can run before the helper detects a mismatch.
+
+In Node, use `ComputerCallInput` for calls you pass to `ComputerToolset.execute()`. It accepts native calls and modern calls with an `actions` array that omit `pending_safety_checks`. Approval callbacks receive a detached call with an empty checklist for that valid omission. The replayed call keeps its original fields.
+
+`screenshot()` returns a `computer_screenshot` with an `image_url` (including a data URL) or `file_id`. Computer helpers require at least one image source and accept both source fields. The helper does not read local files. Actions run once, in order, and the helper captures the final screenshot after them. It does not retry driver actions.
+
+For a computer-only Responses loop, use `ComputerToolset.run` or Python's `AsyncComputerToolset.run`. Use a model available to your project that supports the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use). For mixed runs, pass the computer helper as the Responses runner's `computer` option. Node takes computer callbacks in its run option `computerOptions`; Python takes `approve_safety_checks` and `before_action` directly as run keyword arguments. The browser example controls a browser only. It does not implement or verify a native desktop.
+
+The computer helper and `ResponsesToolRunner` both accept Responses `context_management` compaction. They check the required item fields and replay the encrypted content unchanged. For `ResponsesToolRunner`, choose this native option or the local `contextBudget` or `context_budget` option; do not combine them.
+
+### Run a screenshot-based task
+
+[Run your first task](https://developers.openai.com/api/docs/guides/tools-computer-use#run-your-first-task) includes a complete Python or Node example. It uses the Responses computer tool to reveal pickup details in a local browser.
+
+#### Use an isolated desktop
+
+To control an operating-system desktop, see the full desktop example in [Python](https://github.com/openai/openai-python/blob/v3.31.0/examples/computer-desktop/README.md) or [Node](https://github.com/openai/openai-node/blob/v7.33.0/examples/computer-desktop/README.md). Both use an isolated Linux guest. On Macs with Apple silicon, the Linux guest runs in a virtual machine; on x86-64 Linux, it runs in Docker. Each example includes a local exercise without an API key. Its live task checks both the browser record and the saved file. For your own environment, start with the [Docker recipe](https://developers.openai.com/api/docs/guides/tools-computer-use-integration#prepare-an-environment) and adapt the driver contract above.
+
+## Mix browser actions with other tools
+
+The Responses runner can combine browser and computer helpers with ordinary functions, web search, file search, code interpreter, image generation and remote MCP tools. Server-tool results keep their native content and container IDs when the next request replays the response. Failed, incomplete or unfinished server results stop the turn before local actions.
+
+When a run declares server tools, local calls wait for the complete response even if `eager` is enabled. The runner must inspect later server results and approval requests before it can safely act.
+
+At that completed turn, `supplyOutputs` in Node or `supply_outputs` in Python can replace an unattempted ordinary function result when its registration allows overrides. This also works without an explicit early-execution policy. A replacement cannot answer a browser call, computer call, or MCP approval request.
+
+This runner needs stored responses to continue after image generation. It rejects `store: false` in Node or `store=False` in Python when you declare `image_generation`. Set storage to true when appropriate, or use `client.responses.create` for a single stateless request. The runner never enables storage for you.
+
+Reuse typed function tools instead of repeating their validation. In Node, wrap a `zodResponsesFunction` or `standardResponsesFunction` with `runnerFunction` from `openai/helpers/responses-tool-runner`. The tool must include its callback. In Python, use `RegisteredFunction.from_tool` or `AsyncRegisteredFunction.from_tool` with an existing `pydantic_responses_function_tool` and an explicit typed executor. Invalid arguments stop before that executor runs. Invalid callback output stops the run without repeating an effect. Raw `RunnerFunction` and `RegisteredFunction` registrations retain their existing argument behavior.
+
+For MCP, supply `approveMcp` in Node or `approve_mcp` in Python. The callback receives the actual detached approval request and returns true or false. The runner binds the response to that request's ID and declared server. It cannot invent approval or treat a final message as consent.
+
+Requests that declare MCP tools disable automatic SDK retries, with or without a ledger. If a request fails, check what the MCP server did before starting another run.
+
+## Handle failures
+
+Throw `BrowserError` only with text safe for the model, for a recoverable issue such as a stale ref. Other errors thrown by a browser operation produce a generic failure message. For these operation failures, the runner supplies an output for every browser call, skips the remaining browser operations in that response, and lets the model choose again on the next turn. Invalid returned results or invalid state stop the run. Failure to report state, failed ordinary functions, and unapproved native computer checks also stop it.
+
+Set `maxSteps` or `max_steps` to bound API requests. The default is 20. The final allowed request cannot start new effects. An SDK HTTP retry does not retry a driver action. Use `signal` in Node or `cancelled` in Python to stop between operations; arbitrary in-progress driver calls cannot always be undone.
+
+`ResponsesToolRunner` preserves `tool_choice` on every request. A choice that always requires a local tool cannot finish, so the runner rejects it before any work. Use `auto` for a loop, or `responses.create` for one forced request. Required choices that also allow a declared server tool remain valid.
+
+### Troubleshoot a run
+
+| Symptom                                               | Check and fix                                                                                                                                                                                                    |
+| ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ComputerToolset` or a browser helper fails to import | Check the installed package in the environment running the script. Use Python `openai==3.31.0` or Node `openai@7.33.0` or a later version that includes the helpers.                                             |
+| Chromium cannot launch                                | Run the Playwright install command in the same environment as the script. In a Linux container, install the required system libraries and run as a non-root user. Do not turn off the sandbox to hide the error. |
+| The API rejects the model or tool                     | Check your project's model access and the model's **Tools** section in the [models catalog](https://developers.openai.com/api/docs/models). The native `computer` tool and browser function tools have different model requirements.          |
+| An action or pending safety check is declined         | Inspect your application's approval policy. Check the fixed action arguments against current state. Ask for approval when needed; do not approve every request to make a run pass.                               |
+| The model reaches the step limit                      | Verify the actual page or file first. Check whether the task needs capabilities your driver refuses. Simplify the task before raising `maxSteps` or `max_steps`.                                                 |
+| The browser model answers without reading the page    | Enable a read method your driver implements, such as `read_page` in the example. Ask the model to read the current page and rerun the task. Verify the page or file result before accepting the answer.          |
+| Clicks miss the visible target                        | [Check the screenshot and coordinates](#fix-missed-clicks).                                                                                                                                                      |
+
+### Fix missed clicks
+
+Capture a fresh screenshot and check that it shows the intended window. Use the same coordinate space for the screenshot and the action. If you send an 800 × 600 screenshot from a 1600 × 1200 display, double both returned coordinates before clicking. If a computer driver sends a cropped screenshot, add the crop's offset after scaling. Browser driver pointer methods use CSS pixels in the full visible page area, even after zooming; do not confuse them with display pixels.
+
+Screenshot size affects input tokens and cost. See [capture screenshots](https://developers.openai.com/api/docs/guides/tools-computer-use-integration#capture-screenshots) for image sizing and model limits.
+
+### Stream and resume
+
+Responses runs are non-streaming by default. With `stream` and `onEvent` (Node) or `on_event` (Python), the runner supplies detached stream events and waits for the response to finish before execution. With `eager`, it may execute completed output items early, in order. It never executes argument deltas.
+
+Enable eager execution only if a completed item can safely run before the runner validates the full response. If a later event changes or removes that item, the runner stops and keeps its execution record. It cannot undo the action. Leave eager execution off, or use an empty policy for early execution, if all actions must wait for the complete response to pass validation.
+
+If completed items arrive out of order or their indexes have gaps, the runner waits for the full response before executing that part of the sequence. Effects already completed remain recorded if the stream fails.
+
+`earlyExecution` or `early_execution` can restrict early execution to selected function wire names and control the native computer dispatcher with a separate boolean. An empty object defers all local tools. Omission keeps normal blanket eager behavior. The first deferred tool also defers all later tools to preserve their order. With `iterate()`, inspect the completed turn before advancing; closing at that boundary executes no deferred tools. These options change timing, not approval.
+
+For one completed call, `beforeEarlyCall` or `before_early_call` can return `defer` before dispatch. It cannot make a call outside the early-execution allowlist run early. Mark an ordinary function `independent: true` only when it can run without depending on other actions. Without a ledger, independent functions can run while the stream advances. Durable runs, browser actions, and computer actions stay ordered. Started work keeps its execution record even if another call fails.
+
+By default, at most two independent eager calls run at once. Set `maxConcurrentCalls` in Node or `max_concurrent_calls` in Python to a positive integer to change that limit. The runner waits for the current group before reading more streamed calls. This option applies only to independent eager runs without a ledger. Each function must limit any work that it starts itself.
+
+On an interrupted eager run, inspect `ResponsesToolRunnerError.attemptedCallIds` and `completedCallIds` in Node, or `attempted_call_ids` and `completed_call_ids` in Python. They contain call IDs, not results, arguments, or driver messages. Effects may already have occurred. Read the authoritative application state before retrying an attempted or uncertain action.
+
+Use `contextBudget` or `context_budget` to limit the next request's input bytes and images, with or without durable storage. The projection keeps the current observations and required tool relationships. An in-memory limit does not make a run recoverable after the process exits.
+
+At a completed turn boundary, `appendUserText` or `append_user_text` queues human guidance. The runner appends it after recording pending outputs. It accepts text, not arbitrary tool output or approval objects, and does not reset the request budget.
+
+Use this method to clarify the current task, such as asking the agent to check a different date. If the user replaces the task, stop and await the current run before starting a new one. Read the application state again and obtain fresh approval for new actions. Keep the old run's record; changing instructions does not undo its effects.
+
+For durable recovery, supply a `ledger` that saves each checkpoint under exclusive run ownership. Only resume from a completed boundary; a pending or uncertain action needs reconciliation first. The remaining request budget and completed history survive resume. Local context-budget compaction keeps the full evidence in the ledger and pins current observations, safety checks, messages, and reasoning. It never grants approval.
+
+Every save receives a detached, complete checkpoint, including saves before and after local effects. The checkpoint includes the full batch and accumulated history. For large batches, copying and storing these records can take quadratic total work. Choose storage suited to that volume; `contextBudget` and `context_budget` limit request input, not ledger storage.
+
+An interrupted pending checkpoint contains the last saved prefix. It can omit later text and unattempted proposals; it never authorizes replay. Before and after an effect, the saved checkpoint includes the full observed prefix and execution records.
+
+A run that includes MCP tools saves a pending checkpoint before each request. If the connection fails, check what the MCP server did before starting another run. The pending checkpoint cannot resume automatically.
+
+Saved MCP declarations omit authorization and custom headers and replace server URLs with SHA-256 fingerprints. Native requests still use the original URL. Put credentials that must rotate in authorization or headers. Changing a URL path or an unrecognized query value changes its identity and requires a new run. Checkpoints containing raw MCP URLs cannot resume. Node requires `crypto.subtle.digest` to save an MCP URL. Other checkpoint inputs and outputs remain private application data.
+
+Supply current credentials when resuming, and verify that they address the intended server and account.
+
+Saved Code Interpreter declarations keep credential names and domains but clear their secret values. Supply current values in the tool configuration when resuming. For MCP approvals, an empty `always: {}` or `never: {}` filter applies to every tool.
+
+Supply `approveMcp` in Node or `approve_mcp` in Python when initial input or a saved ledger contains approved MCP requests. Before the first save or API request, the runner asks again for each approval that has no completed matching MCP call. This applies with or without a ledger or context budget. It keeps completed calls and earlier refusals unchanged. If fresh approval is needed, a missing callback stops the run.
+
+## Check a custom driver locally
+
+Run the local exercise in the [booking demo](https://developers.openai.com/api/docs/guides/tools-computer-use#see-and-approve-changes) or [isolated desktop example](#use-an-isolated-desktop) before adapting it. Add checks for your driver's actual page state, input effects, and cleanup. SDK validation does not prove that the environment performed an action correctly.
+
+See [Run your first task](https://developers.openai.com/api/docs/guides/tools-computer-use#run-your-first-task) for a working SDK workflow and [integration recipes](https://developers.openai.com/api/docs/guides/tools-computer-use-integration) for environment setup. After any change, verify the saved form, file, or other application record before reporting success.
+
+---
+
 # ChatKit
 
 ChatKit is the best way to build agentic chat experiences. Whether you’re building an internal knowledge base assistant, HR onboarding helper, research companion, shopping or scheduling assistant, troubleshooting bot, financial planning advisor, or support agent, ChatKit provides a customizable chat embed to handle all user experience details.
@@ -17449,9 +17779,495 @@ curl --fail-with-body "https://api.openai.com/v1/agents/sessions/$session_id/eve
 
 # Computer use
 
-Computer use lets a model operate browser and desktop interfaces. Use it to fill out forms, test user flows, or complete tasks in applications through their UI.
+Computer use lets a model operate a browser or desktop interface. Use it to fill out forms, test user flows, or complete tasks in an application.
 
-You provide the environment and execute the model's requests. The model uses screenshots and other tool results to decide what to do next. Choose how to connect it to your application:
+Choose a path based on what the model needs to see and who runs the environment:
+
+| Task | Start here |
+| --- | --- |
+| Use screenshots and mouse or keyboard actions in your browser or desktop | Use [`ComputerToolset`](https://developers.openai.com/api/docs/guides/tools-computer-use?sdk-task=computer#run-your-first-task) with the Responses computer tool. |
+| Read page text or use controls and tabs in your browser | Use [`BrowserToolset`](https://developers.openai.com/api/docs/guides/tools-computer-use?sdk-task=browser#run-your-first-task). Your driver exposes selected operations as function tools. |
+| Run a browser hosted by OpenAI | Follow the separate [Agents API computer use guide](https://developers.openai.com/api/docs/guides/agents-api/tools/computer-use). |
+
+For public information that needs no interaction, use [web search](https://developers.openai.com/api/docs/guides/tools-web-search).
+
+## Use the SDK
+
+The SDK runs the Responses tool loop in Python or Node. Your application supplies a **driver**: code that reads the environment or performs an allowed action. Your application owns the session, permissions, and cleanup.
+
+### Connect a hosted environment
+
+Use a partner's browser or desktop instead of running one yourself. Some integrations provide a driver; others expose controls that your application maps to the SDK. Follow the partner's guide for setup and supported package versions.
+
+| Environment | Integration |
+| --- | --- |
+| Browserbase | Use the Stagehand browser driver with a hosted Browserbase session. Follow the [Stagehand integration guide](https://docs.stagehand.dev/v4/integrations/agent-frameworks/openai-cua-toolset-quickstart) or see the [Python and TypeScript examples](https://github.com/browserbase/openai-cua-toolset). |
+| Browser Use | Use the [Browser Use library driver](https://docs.browser-use.com/open-source/customize/integrations/openai) or connect existing Playwright code with the [Browser Use Cloud integration](https://docs.browser-use.com/cloud/tutorials/integrations/openai). Both guides use Python. |
+| Daytona | Use `ComputerToolset` with a Daytona desktop sandbox. Follow the [Daytona computer-use helpers guide](https://www.daytona.io/docs/en/guides/openai/openai-computer-use-helpers/) (Python). For an Agents SDK example, see the [Daytona computer-use recipe](https://developers.openai.com/cookbook/examples/agents_sdk/computer_use_with_daytona/computer_use_with_daytona). |
+| E2B Desktop | Run computer actions or execute code in a desktop sandbox. Follow the [E2B computer-use guide](https://docs.e2b.dev/agents/openai-computer-use) or see the [Python](https://github.com/e2b-dev/e2b-cookbook/tree/main/examples/openai-computer-use-python) and [TypeScript](https://github.com/e2b-dev/e2b-cookbook/tree/main/examples/openai-computer-use-js) examples. |
+
+Set a session timeout and close or release the session even if the run fails. Check the provider dashboard if cleanup fails. Use provider network rules to restrict the sites and resources the session can reach.
+
+### Run your first task
+
+Use Python 3.11 or later, or Node.js 22.6 or later. [Create and export an API key](https://developers.openai.com/api/docs/quickstart#create-and-export-an-api-key). Both examples use a temporary local browser and make Responses API calls, which may incur charges.
+
+Install the packages and Chromium in a new folder:
+
+```sh
+# Python
+python3 -m venv .venv
+.venv/bin/python -m pip install openai==3.31.0 playwright==1.61.0
+.venv/bin/python -m playwright install chromium
+
+# Node
+npm install openai@7.33.0 playwright@1.61.1
+npx playwright install chromium
+```
+
+On Windows, use `py -3` instead of `python3` and `.venv\Scripts\python.exe` instead of `.venv/bin/python`.
+
+
+
+The model sees a screenshot of a fictional parcel pickup page and clicks to reveal the pickup details. The driver allows only screenshots and a left click on that control. It blocks page requests and closes the browser when the run ends. The script makes at most six Responses requests and checks the page before reporting success. Your project needs access to a model that supports the computer tool.
+
+Save the matching example as `pickup.py` or `pickup.mjs`:
+
+Reveal pickup details using computer actions
+
+```javascript
+import OpenAI, { ComputerToolset } from "openai";
+import { chromium } from "playwright";
+
+class PickupDriver {
+  constructor(page) {
+    this.page = page;
+  }
+
+  async screenshot() {
+    const image = await this.page.screenshot({ type: "png" });
+    return {
+      type: "computer_screenshot",
+      image_url: "data:image/png;base64," + image.toString("base64"),
+    };
+  }
+
+  async allowed(action) {
+    if (action.type === "screenshot") return true;
+    if (
+      action.type !== "click" ||
+      action.button !== "left" ||
+      action.keys?.length
+    )
+      return false;
+    const box = await this.page.locator("summary").boundingBox();
+    return Boolean(
+      box &&
+      box.x <= action.x &&
+      action.x < box.x + box.width &&
+      box.y <= action.y &&
+      action.y < box.y + box.height
+    );
+  }
+
+  async click(action) {
+    // The page may have changed after approval, so bind the click again.
+    if (!(await this.allowed(action)))
+      throw new Error("Pickup details moved or the click is not allowed.");
+    await this.page.mouse.click(action.x, action.y);
+  }
+
+  refuse(action) {
+    throw new Error(`This exercise does not allow ${action.type}.`);
+  }
+
+  double_click = this.refuse;
+  drag = this.refuse;
+  keypress = this.refuse;
+  move = this.refuse;
+  scroll = this.refuse;
+  type = this.refuse;
+  wait = this.refuse;
+}
+
+async function main() {
+  const client = new OpenAI({ timeout: 30_000, maxRetries: 0 });
+  const browser = await chromium.launch({ env: {}, chromiumSandbox: true });
+  try {
+    const page = await browser.newPage({
+      viewport: { width: 1024, height: 768 },
+    });
+    await page.route("**/*", (route) => route.abort());
+    await page.setContent(
+      "<title>Parcel pickup</title><main>" +
+        "<h1>Parcel pickup</h1><p>Order #1042 is ready.</p>" +
+        "<details><summary>Show pickup details</summary>" +
+        "<p>Locker 18. Pickup code: 6249.</p></details></main>"
+    );
+    const driver = new PickupDriver(page);
+    const tools = new ComputerToolset(driver);
+    try {
+      const response = await tools.run(
+        client,
+        {
+          model: "gpt-6.1-sol",
+          store: false,
+          input:
+            "Take a screenshot. Open 'Show pickup details' and report the locker and pickup code. Use only screenshots and left clicks.",
+        },
+        { beforeAction: (action) => driver.allowed(action), maxSteps: 6 }
+      );
+      if ((await page.locator("details").getAttribute("open")) === null) {
+        throw new Error("Pickup details are still closed.");
+      }
+      console.log(
+        "Verified pickup details:",
+        await page.locator("details p").innerText()
+      );
+      console.log("Answer:", response.output_text);
+    } finally {
+      tools.close();
+    }
+  } finally {
+    await browser.close();
+  }
+}
+
+await main();
+```
+
+```python
+import asyncio
+import base64
+
+from openai import AsyncComputerToolset, AsyncOpenAI
+from playwright.async_api import async_playwright
+
+
+class PickupDriver:
+    def __init__(self, page):
+        self.page = page
+
+    async def screenshot(self):
+        image = await self.page.screenshot(type="png")
+        return {
+            "type": "computer_screenshot",
+            "image_url": "data:image/png;base64," + base64.b64encode(image).decode(),
+        }
+
+    async def allowed(self, action):
+        if action.type == "screenshot":
+            return True
+        if action.type != "click" or action.button != "left" or action.keys:
+            return False
+        box = await self.page.locator("summary").bounding_box()
+        return bool(
+            box
+            and box["x"] <= action.x < box["x"] + box["width"]
+            and box["y"] <= action.y < box["y"] + box["height"]
+        )
+
+    async def click(self, action):
+        # The page may have changed after approval, so bind the click again.
+        if not await self.allowed(action):
+            raise RuntimeError("Pickup details moved or the click is not allowed.")
+        await self.page.mouse.click(action.x, action.y)
+
+    async def refuse(self, action):
+        raise RuntimeError(f"This exercise does not allow {action.type}.")
+
+    double_click = drag = keypress = move = scroll = type = wait = refuse
+
+
+async def main():
+    async with (
+        async_playwright() as playwright,
+        AsyncOpenAI(timeout=30, max_retries=0) as client,
+    ):
+        browser = await playwright.chromium.launch(env={}, chromium_sandbox=True)
+        try:
+            page = await browser.new_page(viewport={"width": 1024, "height": 768})
+            await page.route("**/*", lambda route: route.abort())
+            await page.set_content(
+                "<title>Parcel pickup</title><main>"
+                "<h1>Parcel pickup</h1><p>Order #1042 is ready.</p>"
+                "<details><summary>Show pickup details</summary>"
+                "<p>Locker 18. Pickup code: 6249.</p></details></main>"
+            )
+            driver = PickupDriver(page)
+            tools = AsyncComputerToolset(driver)
+            try:
+                response = await tools.run(
+                    client,
+                    {
+                        "model": "gpt-6.1-sol",
+                        "store": False,
+                        "input": "Take a screenshot. Open 'Show pickup details' and report the locker and pickup code. Use only screenshots and left clicks.",
+                    },
+                    before_action=driver.allowed,
+                    max_steps=6,
+                )
+                if await page.locator("details").get_attribute("open") is None:
+                    raise RuntimeError("Pickup details are still closed.")
+                print(
+                    "Verified pickup details:",
+                    await page.locator("details p").inner_text(),
+                )
+                print("Answer:", response.output_text)
+            finally:
+                tools.close()
+        finally:
+            await browser.close()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+
+Run `.venv/bin/python pickup.py` or `node pickup.mjs`. On success, the script prints `Verified pickup details: Locker 18. Pickup code: 6249.`, followed by the model's answer. Pending API safety checks stop this sample; add a human approval callback only when your application can handle them.
+
+  
+
+  
+
+
+The model types a name into a visitor badge form and clicks **Create badge**. The driver exposes only page reading, typing, and clicking. Its confirmation callback permits only this form's controls and the name Mira. The script verifies the page result before reporting success.
+
+Save the matching example as `badge.py` or `badge.mjs`:
+
+Create a visitor badge in a local browser
+
+```javascript
+import OpenAI from "openai";
+import { BrowserToolset } from "openai/helpers/browser";
+import { ResponsesToolRunner } from "openai/helpers/responses-tool-runner";
+import { chromium } from "playwright";
+
+class BadgeForm {
+  constructor(page) {
+    this.page = page;
+  }
+
+  async state() {
+    return {
+      tabs: [
+        {
+          id: "badge",
+          title: await this.page.title(),
+          url: this.page.url(),
+          active: true,
+        },
+      ],
+    };
+  }
+
+  async read_page(_args) {
+    return {
+      version: 1,
+      text: await this.page.locator("body").innerText(),
+      elements: [
+        { ref: "name", role: "textbox", label: "Name" },
+        { ref: "save", role: "button", label: "Create badge" },
+      ],
+      omitted: [],
+    };
+  }
+
+  async type(args) {
+    await this.page.locator("#name").fill(args.text);
+  }
+
+  async click(_args) {
+    await this.page.locator("#save").click();
+  }
+
+  async confirm({ member, arguments: args }) {
+    if (
+      this.page.url() !== "about:blank" ||
+      (args.tab_id !== null && args.tab_id !== "badge")
+    ) {
+      return false;
+    }
+    return (
+      (member === "type" && args.target === "name" && args.text === "Mira") ||
+      (member === "click" && args.target === "save")
+    );
+  }
+}
+
+async function main() {
+  const client = new OpenAI({ timeout: 30_000, maxRetries: 0 });
+  const browser = await chromium.launch({ env: {}, chromiumSandbox: true });
+  try {
+    const page = await browser.newPage();
+    await page.route("**/*", (route) => route.abort());
+    await page.setContent(`
+      <title>Visitor badge</title>
+      <label>Name <input id="name"></label>
+      <button id="save" onclick="document.querySelector('output').innerText =
+        'Badge ready: ' + document.querySelector('#name').value">Create badge</button>
+      <output></output>
+    `);
+    const driver = new BadgeForm(page);
+    const tools = new BrowserToolset(driver, {
+      members: ["read_page", "type", "click"],
+      confirm: driver.confirm.bind(driver),
+    });
+    const response = await new ResponsesToolRunner({ browser: tools }).run(
+      client,
+      {
+        model: "gpt-6-astra",
+        store: false,
+        input: "Create a visitor badge for Mira.",
+      },
+      { maxSteps: 6 }
+    );
+    const result = await page.locator("output").innerText();
+    if (result !== "Badge ready: Mira") {
+      throw new Error(`The badge was not created: ${JSON.stringify(result)}`);
+    }
+    console.log(result);
+    console.log("Answer:", response.output_text);
+  } finally {
+    await browser.close();
+  }
+}
+
+await main();
+```
+
+```python
+import asyncio
+
+from openai import AsyncOpenAI
+from openai.lib.browser import AsyncBrowserToolset
+from openai.lib.responses_tool_runner import AsyncResponsesToolRunner
+from playwright.async_api import async_playwright
+
+
+class BadgeForm:
+    def __init__(self, page):
+        self.page = page
+
+    async def state(self):
+        return {
+            "tabs": [
+                {
+                    "id": "badge",
+                    "title": await self.page.title(),
+                    "url": self.page.url,
+                    "active": True,
+                }
+            ]
+        }
+
+    async def read_page(self, args):
+        return {
+            "version": 1,
+            "text": await self.page.locator("body").inner_text(),
+            "elements": [
+                {"ref": "name", "role": "textbox", "label": "Name"},
+                {"ref": "save", "role": "button", "label": "Create badge"},
+            ],
+            "omitted": [],
+        }
+
+    async def type(self, args):
+        await self.page.locator("#name").fill(args["text"])
+
+    async def click(self, args):
+        await self.page.locator("#save").click()
+
+    async def confirm(self, context):
+        args = context["arguments"]
+        if self.page.url != "about:blank" or args["tab_id"] not in (None, "badge"):
+            return False
+        return (
+            context["member"] == "type"
+            and args["target"] == "name"
+            and args["text"] == "Mira"
+        ) or (context["member"] == "click" and args["target"] == "save")
+
+
+async def main():
+    async with (
+        async_playwright() as playwright,
+        AsyncOpenAI(timeout=30, max_retries=0) as client,
+    ):
+        browser = await playwright.chromium.launch(env={}, chromium_sandbox=True)
+        try:
+            page = await browser.new_page()
+            await page.route("**/*", lambda route: route.abort())
+            await page.set_content("""
+                <title>Visitor badge</title>
+                <label>Name <input id="name"></label>
+                <button id="save" onclick="document.querySelector('output').innerText =
+                  'Badge ready: ' + document.querySelector('#name').value">Create badge</button>
+                <output></output>
+            """)
+            driver = BadgeForm(page)
+            tools = AsyncBrowserToolset(
+                driver, members=["read_page", "type", "click"], confirm=driver.confirm
+            )
+            response = await AsyncResponsesToolRunner(browser=tools).run(
+                client,
+                {
+                    "model": "gpt-6-astra",
+                    "store": False,
+                    "input": "Create a visitor badge for Mira.",
+                },
+                max_steps=6,
+            )
+            result = await page.locator("output").inner_text()
+            if result != "Badge ready: Mira":
+                raise RuntimeError(f"The badge was not created: {result!r}")
+            print(result)
+            print("Answer:", response.output_text)
+        finally:
+            await browser.close()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+
+Run `.venv/bin/python badge.py` or `node badge.mjs`. On success, the script prints `Badge ready: Mira`, followed by the model's answer.
+
+
+
+If the API rejects the tool or Chromium cannot start, [troubleshoot the run](https://developers.openai.com/api/docs/guides/tools-computer-use-sdk-drivers#troubleshoot-a-run). If clicks miss, [check the screenshot and coordinates](https://developers.openai.com/api/docs/guides/tools-computer-use-sdk-drivers#fix-missed-clicks).
+
+### Check model access, cost, and data
+
+- **Model:** For browser function tools, check that the model supports Responses and function calling. If your driver returns images, check image input too. For screenshot-based computer actions, check the model's **Tools** section for computer use. See the [models catalog](https://developers.openai.com/api/docs/models) and check your project's access.
+- **Cost:** Each Responses request can incur charges for input and output tokens. Screenshots count as image input. Check [API pricing](https://developers.openai.com/api/docs/pricing#built-in-tools), [estimate image input cost](https://developers.openai.com/api/docs/guides/image-cost-calculator), or [inspect request usage](https://developers.openai.com/api/docs/guides/tools-computer-use-sdk-drivers#inspect-usage-and-timing). A hosted environment may charge separately.
+- **Data:** The SDK sends returned page text or screenshots to OpenAI. The examples set `store` to `false`, but that does not remove every form of data retention. Review [data controls](https://developers.openai.com/api/docs/guides/your-data#storage-requirements-and-retention-controls-per-endpoint) and [image-input exceptions](https://developers.openai.com/api/docs/guides/your-data#image-and-file-inputs). Your environment provider has its own data policy.
+
+### See and approve changes
+
+Next, try the booking demo in [Python](https://github.com/openai/openai-python/blob/v3.31.0/examples/browser-use-demo/README.md) or [Node](https://github.com/openai/openai-node/blob/v7.33.0/examples/browser-use-demo/README.md). It fills a fictional reservation, asks for approval before submission, and checks the saved fields and confirmation. You can watch the browser, take control, return control, or stop. Both versions include a local rehearsal with a real browser and no API call.
+
+To watch SDK actions on a desktop, try the [visual desktop demo](https://developers.openai.com/api/docs/guides/tools-computer-use-integration#watch-and-control-a-local-desktop).
+
+<a id="add-a-desktop"></a>
+
+### Adapt the driver
+
+Replace the sample page with an environment your application controls. For a browser driver, expose only the operations the task needs with `members`. For a computer driver, implement the required methods and reject unsupported actions. Keep the session open until the run ends, then close resources your application created.
+
+Page content can influence the model. Use a fresh browser profile or isolated desktop. Limit network access, and keep credentials out of page text and screenshots. Ask for approval before making changes, and check the saved result before reporting success. See the [driver reference](https://developers.openai.com/api/docs/guides/tools-computer-use-sdk-drivers) for method contracts, approval, URL policy, and recovery.
+
+### Switch to Decisions for bounded choices
+
+Use Responses when the model must choose actions and generate their arguments. Use Decisions only when your application already knows every allowed action and its complete arguments. For example, an app might offer `route_billing`, `route_technical`, and `review`. Decisions selects an option; your application still approves and performs it, then checks the result. Discard choices when the page changes. See the [Decisions guide](https://developers.openai.com/api/docs/guides/decisions).
+
+To try it in the booking demo, use a key with Decisions access, set `OPENAI_DECISIONS_MODEL`, and restart the server. Start a new run and select **Decisions**.
+
+## Use the API directly
+
+Use the Responses API directly when you need to manage the tool loop yourself. You provide the environment and execute the model's requests. Choose how to connect it to your application:
 
 <a id="choose-an-integration-path"></a>
 
@@ -17470,13 +18286,13 @@ If you already expose UI operations through [function calling](https://developer
 <a id="option-3-use-a-code-execution-harness"></a>
 <a id="use-a-code-execution-harness"></a>
 
-## Use code execution
+### Use code execution
 
 A code-execution integration gives the model a function tool that accepts a script. Your application runs the script in an isolated browser or desktop environment and returns its output, including screenshots. Keep the environment available between calls so the model can build on earlier work.
 
 <a id="before-running-the-examples"></a>
 
-### Run the sample app
+#### Run the sample app
 
 The [CUA sample app](https://github.com/openai/openai-cua-sample-app#first-run) includes JavaScript/Playwright and Python/PyAutoGUI implementations, with local tasks and a shared console:
 
@@ -17488,7 +18304,7 @@ Use the app's README for installation, desktop permissions, and supported enviro
 
 <a id="code-execution-harness-examples"></a>
 
-### Connect your own runtime
+#### Connect your own runtime
 
 The following example shows the API loop for a runtime you provide. Python, Ruby, and Go send Python code to a desktop runtime that uses PyAutoGUI; JavaScript uses Playwright to operate a browser. Each client exposes an ordinary function tool and returns text or images with the original `call_id`.
 
@@ -17823,7 +18639,7 @@ func runComputerUse(ctx context.Context, client openai.Client, endpoint, prompt 
 
 For a complete client adapter and the expected text and image output shape, see [Connect to your execution service](https://developers.openai.com/api/docs/guides/tools-computer-use-integration#connect-to-your-execution-service). The service interface in those examples belongs to your application; it is not an OpenAI-hosted endpoint.
 
-### Preserve state and return observations
+#### Preserve state and return observations
 
 Keep the browser or desktop session alive between calls. A persistent Python or JavaScript namespace can also preserve variables. Describe the available objects and helpers in the tool definition so the model knows what it can use.
 
@@ -17834,9 +18650,9 @@ The API conversation and the execution environment have separate state. Preserve
 <a id="provide-the-environment-and-control-the-loop"></a>
 <a id="option-1-run-the-built-in-computer-use-loop"></a>
 
-## Use the computer tool
+### Use the computer tool
 
-Use this alternative when your integration expects structured actions instead of generated code. For the recommended approach, start with [code execution](#use-code-execution).
+Use this alternative when your integration expects structured actions instead of generated code.
 
 To try this path, follow the [same sample-app setup](https://github.com/openai/openai-cua-sample-app#first-run), select **Native** mode, and run a built-in scenario. Use a model that supports the [computer tool](https://developers.openai.com/api/docs/models).
 
@@ -17852,7 +18668,7 @@ For environment setup and action handlers, use the [integration recipes](https:/
 <a id="2-send-the-task"></a>
 <a id="1-send-the-task"></a>
 
-### Send the task
+#### Send the task
 
 Enable `computer` in the `tools` array and describe the result you want:
 
@@ -17950,7 +18766,7 @@ puts(response.output)
 <a id="3-run-every-returned-action"></a>
 <a id="2-execute-the-requested-actions"></a>
 
-### Execute the requested actions
+#### Execute the requested actions
 
 A `computer_call` contains an ordered `actions` array. For example, this call selects the search field and types `penguin`:
 
@@ -17987,7 +18803,7 @@ Use the [action-handler examples](https://developers.openai.com/api/docs/guides/
 <a id="4-return-the-updated-screen"></a>
 <a id="3-return-the-screenshot"></a>
 
-### Return the screenshot
+#### Return the screenshot
 
 Return a `computer_call_output` whose `call_id` matches the call you handled. Use `previous_response_id` to continue the model conversation:
 
@@ -18194,7 +19010,402 @@ See the [confirmation and consent guidance](https://developers.openai.com/api/do
 
 # Computer use integration recipes
 
-These recipes support the [computer use guide](https://developers.openai.com/api/docs/guides/tools-computer-use). Use the sections you need to connect the tool to your environment or expose an existing browser or desktop interface.
+Use these recipes to connect the [computer use tool](https://developers.openai.com/api/docs/guides/tools-computer-use) to a browser or desktop you manage. They cover environment setup, action handling, screenshots, and user consent.
+
+For a first hands-on exercise, [try the booking demo](https://developers.openai.com/api/docs/guides/tools-computer-use#see-and-approve-changes) in Python or Node. Select the local rehearsal to fill a fictional reservation, approve submission, and check the saved result in a real local browser. Rehearsal uses scripted choices and needs no API key. It tests the sample's own driver. To adapt it, follow [Check a custom driver locally](https://developers.openai.com/api/docs/guides/tools-computer-use-sdk-drivers#check-a-custom-driver-locally) and add checks for your environment.
+
+If you use the SDK helpers, the [driver reference](https://developers.openai.com/api/docs/guides/tools-computer-use-sdk-drivers) covers driver methods, approvals, session cleanup, and failure handling. The direct API recipes below show how to manage the action loop yourself.
+
+## Choose a hosted environment
+
+See [hosted environment options](https://developers.openai.com/api/docs/guides/tools-computer-use#connect-a-hosted-environment) for partner guides.
+
+## Watch and control a local desktop
+
+Run this on your own computer with a local Docker engine and Docker Compose. It starts a Linux desktop with an editor. You can see and control the desktop in your browser. The initial exercise uses `ComputerToolset.execute` with fixed actions and needs no API key. The optional live run lets the Responses computer tool choose actions.
+
+1. Create an empty directory. Save these two files there.
+
+Dockerfile
+
+```dockerfile
+FROM debian:bookworm-slim
+ENV DEBIAN_FRONTEND=noninteractive
+ENV DISPLAY=:99
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    xfce4 \
+    dbus-x11 \
+    xvfb \
+    xdotool \
+    imagemagick \
+    x11-utils \
+    firefox-esr \
+ && rm -rf /var/lib/apt/lists/* \
+ && useradd --create-home --shell /bin/sh myuser
+
+USER myuser
+WORKDIR /home/myuser
+
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    mousepad novnc websockify x11vnc \
+ && rm -rf /var/lib/apt/lists/*
+USER myuser
+RUN touch /home/myuser/dispatch.txt
+CMD set -eu; \
+    Xvfb :99 -screen 0 1280x800x24 -nolisten tcp & \
+    display_pid=$!; \
+    until xdpyinfo -display :99 >/dev/null 2>&1; do \
+      kill -0 "$display_pid"; sleep 0.2; \
+    done; \
+    dbus-run-session -- startxfce4 & \
+    xdotool search --sync --onlyvisible --class xfce4-panel >/dev/null; \
+    mousepad /home/myuser/dispatch.txt & \
+    exec x11vnc -display :99 -listen 0.0.0.0 -forever -shared -nopw -rfbport 5900
+```
+
+
+compose.yaml
+
+```plain
+services:
+  desktop:
+    build:
+      context: .
+    image: cua-visual-desktop-demo
+    container_name: cua-visual-desktop
+    init: true
+    networks: [desktop]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 256
+    mem_limit: 2g
+    cpus: 2
+    shm_size: 512m
+  viewer:
+    image: cua-visual-desktop-demo
+    pull_policy: never
+    command: ["websockify", "--web=/usr/share/novnc", "6080", "desktop:5900"]
+    depends_on: [desktop]
+    init: true
+    ports:
+      - "127.0.0.1:6080:6080"
+    networks: [desktop, viewer]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 64
+    mem_limit: 512m
+    cpus: 1
+networks:
+  desktop:
+    internal: true
+  viewer: {}
+```
+
+
+2. Start the desktop from that directory:
+
+```bash
+docker compose up --build -d
+```
+
+Open [the local desktop](http://127.0.0.1:6080/vnc.html?autoconnect=1&resize=scale). Wait until `dispatch.txt` appears in the editor. This is the live Linux desktop, so you can type in the window yourself.
+
+3. Install one SDK on the host:
+
+```bash
+# Python 3.11+
+python3 -m venv .venv
+.venv/bin/python -m pip install openai==3.31.0
+
+# Or Node.js 22.6+
+npm install openai@7.33.0
+```
+
+On Windows, use `py -3` instead of `python3` and `.venv\Scripts\python.exe` instead of `.venv/bin/python`.
+
+Save the matching sample as `dispatch.py` or `dispatch.mjs` in the same directory.
+
+Write and verify a dispatch note
+
+```javascript
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+import { setTimeout as delay } from "node:timers/promises";
+import OpenAI, { ComputerToolset } from "openai";
+
+const note = "Dispatch #1042: ready for pickup.";
+const exec = promisify(execFile);
+
+async function desktop(...args) {
+  const { stdout } = await exec(
+    "docker",
+    ["exec", "cua-visual-desktop", ...args],
+    {
+      encoding: "buffer",
+      timeout: 10_000,
+      maxBuffer: 4 * 1024 * 1024,
+    }
+  );
+  return stdout;
+}
+
+class EditorDriver {
+  async screenshot() {
+    const image = await desktop("import", "-window", "root", "png:-");
+    return {
+      type: "computer_screenshot",
+      image_url: "data:image/png;base64," + image.toString("base64"),
+    };
+  }
+
+  async focusEditor() {
+    const windows = await desktop(
+      "xdotool",
+      "search",
+      "--onlyvisible",
+      "--class",
+      "mousepad"
+    );
+    const window = windows.toString().trim().split("\n").at(-1);
+    if (!window) throw new Error("The dispatch editor is not open.");
+    await desktop("xdotool", "windowactivate", "--sync", window);
+  }
+
+  async type(action) {
+    if (action.text !== note)
+      throw new Error("Only the dispatch note is allowed.");
+    await this.focusEditor();
+    await desktop(
+      "xdotool",
+      "type",
+      "--clearmodifiers",
+      "--delay",
+      "25",
+      "--",
+      action.text
+    );
+  }
+
+  async keypress(action) {
+    const keys = action.keys.join("+");
+    if (keys !== "CTRL+A" && keys !== "CTRL+S") {
+      throw new Error("Only Select All and Save are allowed.");
+    }
+    await this.focusEditor();
+    await desktop("xdotool", "key", "--clearmodifiers", keys.toLowerCase());
+  }
+
+  refuse(action) {
+    throw new Error(`This exercise does not allow ${action.type}.`);
+  }
+
+  click = this.refuse;
+  double_click = this.refuse;
+  drag = this.refuse;
+  move = this.refuse;
+  scroll = this.refuse;
+  wait = this.refuse;
+}
+
+const tools = new ComputerToolset(new EditorDriver());
+try {
+  if (process.argv.includes("--live")) {
+    const existing = (await desktop("cat", "/home/myuser/dispatch.txt"))
+      .toString()
+      .trim();
+    if (existing === note) {
+      throw new Error(
+        "Clear the note in the editor and save before a live run."
+      );
+    }
+    const client = new OpenAI({ timeout: 30_000, maxRetries: 0 });
+    await tools.run(
+      client,
+      {
+        model: "gpt-6.1-sol",
+        store: false,
+        input:
+          `The open editor has dispatch.txt. Replace its content with exactly "${note}". ` +
+          "Use screenshot, CTRL+A, type, CTRL+S only. The driver focuses the editor.",
+      },
+      { maxSteps: 6 }
+    );
+  } else {
+    await tools.execute({
+      id: "cu_dispatch",
+      call_id: "call_dispatch",
+      type: "computer_call",
+      status: "completed",
+      pending_safety_checks: [],
+      actions: [
+        { type: "keypress", keys: ["CTRL", "A"] },
+        { type: "type", text: note },
+        { type: "keypress", keys: ["CTRL", "S"] },
+      ],
+    });
+  }
+  // Saving is asynchronous; check the file independently of the screenshot.
+  let saved = "";
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    saved = (await desktop("cat", "/home/myuser/dispatch.txt"))
+      .toString()
+      .trim();
+    if (saved === note) break;
+    await delay(100);
+  }
+  if (saved !== note)
+    throw new Error(`The editor did not save the note: ${saved}`);
+  console.log("Verified:", saved);
+} finally {
+  tools.close();
+}
+```
+
+```python
+import base64
+import subprocess
+import sys
+import time
+
+from openai import ComputerToolset, OpenAI
+from openai.types.responses import ResponseComputerToolCall, computer_action
+
+NOTE = "Dispatch #1042: ready for pickup."
+
+
+def desktop(*args):
+    return subprocess.check_output(
+        ["docker", "exec", "cua-visual-desktop", *args], timeout=10
+    )
+
+
+class EditorDriver:
+    def screenshot(self):
+        image = desktop("import", "-window", "root", "png:-")
+        return {
+            "type": "computer_screenshot",
+            "image_url": "data:image/png;base64," + base64.b64encode(image).decode(),
+        }
+
+    def focus_editor(self):
+        window = desktop(
+            "xdotool", "search", "--onlyvisible", "--class", "mousepad"
+        ).splitlines()[-1]
+        desktop("xdotool", "windowactivate", "--sync", window.decode())
+
+    def type(self, action):
+        if action.text != NOTE:
+            raise ValueError("Only the dispatch note is allowed.")
+        self.focus_editor()
+        desktop(
+            "xdotool", "type", "--clearmodifiers", "--delay", "25", "--", action.text
+        )
+
+    def keypress(self, action):
+        keys = tuple(action.keys)
+        if keys not in (("CTRL", "A"), ("CTRL", "S")):
+            raise ValueError("Only Select All and Save are allowed.")
+        self.focus_editor()
+        desktop("xdotool", "key", "--clearmodifiers", "ctrl+" + keys[1].lower())
+
+    def refuse(self, action):
+        raise ValueError(f"This exercise does not allow {action.type}.")
+
+    click = double_click = drag = move = scroll = wait = refuse
+
+
+tools = ComputerToolset(EditorDriver())
+try:
+    if "--live" in sys.argv:
+        if desktop("cat", "/home/myuser/dispatch.txt").decode().strip() == NOTE:
+            raise RuntimeError(
+                "Clear the note in the editor and save before a live run."
+            )
+        with OpenAI(timeout=30, max_retries=0) as client:
+            tools.run(
+                client,
+                {
+                    "model": "gpt-6.1-sol",
+                    "store": False,
+                    "input": (
+                        f'The open editor has dispatch.txt. Replace its content with exactly "{NOTE}". '
+                        "Use screenshot, CTRL+A, type, CTRL+S only. The driver focuses the editor."
+                    ),
+                },
+                max_steps=6,
+            )
+    else:
+        tools.execute(
+            ResponseComputerToolCall(
+                id="cu_dispatch",
+                call_id="call_dispatch",
+                type="computer_call",
+                status="completed",
+                pending_safety_checks=[],
+                actions=[
+                    computer_action.Keypress(type="keypress", keys=["CTRL", "A"]),
+                    computer_action.Type(type="type", text=NOTE),
+                    computer_action.Keypress(type="keypress", keys=["CTRL", "S"]),
+                ],
+            )
+        )
+    # Saving is asynchronous; check the file independently of the screenshot.
+    for _ in range(20):
+        saved = desktop("cat", "/home/myuser/dispatch.txt").decode().strip()
+        if saved == NOTE:
+            break
+        time.sleep(0.1)
+    if saved != NOTE:
+        raise RuntimeError(f"The editor did not save the note: {saved!r}")
+    print("Verified:", saved)
+finally:
+    tools.close()
+```
+
+
+4. Keep the viewer open and run the sample:
+
+```bash
+.venv/bin/python dispatch.py
+# Or:
+node dispatch.mjs
+```
+
+The SDK selects the editor's text, types a fictional note, saves it, and captures the desktop. It independently reads the guest file and prints `Verified: Dispatch #1042: ready for pickup.` The text should also appear in the viewer. The driver focuses the editor before every action and refuses inputs beyond the fixed note, Select All, and Save. Wait for the command to finish before typing in the viewer again.
+
+
+
+### Run the same task with the Responses API
+
+
+
+Set `OPENAI_API_KEY` on the host using the [API key setup instructions](https://developers.openai.com/api/docs/quickstart#create-and-export-an-api-key). Use a project with access to the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use). Clear the editor and save the empty file before testing the live path. The sample refuses to run if the note is already saved, so a previous run cannot pass the check for it.
+
+```bash
+.venv/bin/python dispatch.py --live
+# Or:
+node dispatch.mjs --live
+```
+
+This run uses at most six Responses requests and verifies the file in the same way. It stops if the model requests a safety check or an input this driver does not support. API usage is billed to your project. Only the host SDK reads the API key; screenshots and prompts go to OpenAI.
+
+
+
+
+
+5. Stop and remove the guest after either run, including a failed run:
+
+```bash
+docker compose down
+```
+
+The helper closes when the script exits; the guest stays open so you can inspect the result. `docker compose down` removes the guest, viewer, and their networks. It leaves the local build image and files in your working directory.
+
+Use a local Docker engine on a trusted single-user host. The viewer has no password and listens at `127.0.0.1:6080` on the Docker host. Other local users can access it. Only the viewer connects to both networks; it serves the desktop at the fixed address `desktop:5900`. The guest stays on the internal network with no host files, credentials, or Docker socket mounted. Keep those networks and the port binding for this exercise. For a deployed service, authenticate each session and restrict outbound network access.
+
+If the page will not connect, run `docker compose logs desktop viewer`. If the guest name is in use, stop only your previous demo; do not reuse someone else's desktop. If port 6080 is occupied, free the port or choose a different host port in `compose.yaml` and open that port in your browser. Keep the `127.0.0.1` binding. If the editor is closed or the command fails, run `docker compose down`, start again, and wait for the editor before retrying.
 
 ## Prepare an environment
 
@@ -18258,52 +19469,44 @@ with sync_playwright() as p:
 
 
 
-### Set up a local virtual machine
+### Set up a caller-managed Docker container
 
 
 
-For a desktop application, provide a VM or container and translate the returned actions into operating system input events.
+This recipe uses a container you manage and translates returned actions into operating system input events. It is separate from the [isolated desktop example](https://developers.openai.com/api/docs/guides/tools-computer-use-sdk-drivers#use-an-isolated-desktop).
 
 #### Create a Docker image
 
-The following Dockerfile starts an Ubuntu desktop with `Xvfb`, `x11vnc`, and Firefox:
+Save this Dockerfile in an empty directory. It installs a Debian desktop with `Xvfb` and Firefox. The container runs as an ordinary user. The action and screenshot helpers below use `docker exec`, so this recipe does not start a VNC server or publish any ports.
 
 Dockerfile
 
 ```dockerfile
-FROM ubuntu:22.04
+FROM debian:bookworm-slim
 ENV DEBIAN_FRONTEND=noninteractive
+ENV DISPLAY=:99
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     xfce4 \
-    xfce4-goodies \
-    x11vnc \
+    dbus-x11 \
     xvfb \
     xdotool \
     imagemagick \
-    x11-apps \
-    sudo \
-    software-properties-common \
+    x11-utils \
     firefox-esr \
- && apt-get remove -y light-locker xfce4-screensaver xfce4-power-manager || true \
- && apt-get clean && rm -rf /var/lib/apt/lists/*
+ && rm -rf /var/lib/apt/lists/* \
+ && useradd --create-home --shell /bin/sh myuser
 
-RUN useradd -ms /bin/bash myuser \
-    && echo "myuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER myuser
 WORKDIR /home/myuser
 
-RUN x11vnc -storepasswd secret /home/myuser/.vncpass
-
-EXPOSE 5900
-CMD ["/bin/sh", "-c", "\
-    Xvfb :99 -screen 0 1280x800x24 >/dev/null 2>&1 & \
-    x11vnc -display :99 -forever -rfbauth /home/myuser/.vncpass -listen 0.0.0.0 -rfbport 5900 >/dev/null 2>&1 & \
-    export DISPLAY=:99 && \
-    startxfce4 >/dev/null 2>&1 & \
-    sleep 2 && echo 'Container running!' && \
-    tail -f /dev/null \
-"]
+CMD set -eu; \
+    Xvfb :99 -screen 0 1280x800x24 -nolisten tcp & \
+    display_pid=$!; \
+    until xdpyinfo -display :99 >/dev/null 2>&1; do \
+      kill -0 "$display_pid"; sleep 0.2; \
+    done; \
+    exec dbus-run-session -- startxfce4
 ```
 
 
@@ -18313,13 +19516,29 @@ Build the image:
 docker build -t cua-image .
 ```
 
-Run the container:
+Run the container without a network:
 
 ```bash
-docker run --rm -it --name cua-image -p 5900:5900 -e DISPLAY=:99 cua-image
+docker run --rm -d --name cua-image \
+  --network none \
+  --cap-drop ALL --security-opt no-new-privileges \
+  --pids-limit 256 --memory 2g --cpus 2 --shm-size 512m \
+  cua-image
 ```
 
-Create a helper for shelling into the container:
+Check that the desktop is ready and save its current screen on the host:
+
+```bash
+docker exec cua-image xdpyinfo -display :99
+docker exec cua-image xdotool search --sync --onlyvisible --class xfce4-panel
+docker exec cua-image import -window root png:- > desktop.png
+```
+
+The second command waits until the desktop panel appears. Open `desktop.png` to view the desktop. Run the screenshot command again after actions to view the latest screen. If the display is still starting, wait a moment and repeat the commands. For a complete Python or Node task, use the [isolated desktop example](https://developers.openai.com/api/docs/guides/tools-computer-use-sdk-drivers#use-an-isolated-desktop).
+
+The container can use its own loopback interface but cannot reach external sites, other containers, or the host network. Do not mount your personal files, credentials, or the Docker socket. For internet tasks, use a VM or an environment with egress rules that allow only the sites required by the task.
+
+Create a helper that passes the command arguments directly to the container:
 
 Execute commands on the container
 
@@ -18366,13 +19585,23 @@ const vm = {
 import subprocess
 
 
-def docker_exec(cmd: str, container_name: str, decode: bool = True):
-    safe_cmd = cmd.replace('"', '\\"')
-    docker_cmd = f'docker exec {container_name} sh -c "{safe_cmd}"'
-    output = subprocess.check_output(docker_cmd, shell=True)
-    if decode:
-        return output.decode("utf-8", errors="ignore")
-    return output
+def docker_exec(container_name, executable, args, *, decode=True, env=None):
+    environment_args = [
+        part
+        for name, value in (env or {}).items()
+        for part in ("--env", f"{name}={value}")
+    ]
+    output = subprocess.check_output(
+        [
+            "docker",
+            "exec",
+            *environment_args,
+            container_name,
+            executable,
+            *map(str, args),
+        ]
+    )
+    return output.decode("utf-8", errors="ignore") if decode else output
 
 
 class VM:
@@ -18384,6 +19613,14 @@ class VM:
 vm = VM(display=":99", container_name="cua-image")
 ```
 
+
+When you finish, stop the container:
+
+```bash
+docker stop cua-image
+```
+
+`--rm` discards the files inside the container when it stops. Screenshots you saved on the host remain until you remove them. This setup is for local experiments on a trusted host. For a deployed service, use per-session authentication, isolated hosts or VMs, resource and egress policies, and audited cleanup.
 
 
 
@@ -19018,7 +20255,7 @@ async function handleComputerActions(vm, actions) {
         await dockerExec(
           vm.containerName,
           "xdotool",
-          ["type", "--delay", 0, action.text],
+          ["type", "--delay", 0, "--", action.text],
           { env: { DISPLAY: vm.display } }
         );
         break;
@@ -19057,14 +20294,18 @@ def handle_computer_actions(vm, actions):
                 reject_modifiers(action)
                 button = normalize_xdotool_button(getattr(action, "button", "left"))
                 docker_exec(
-                    f"DISPLAY={vm.display} xdotool mousemove {action.x} {action.y} click {button}",
                     vm.container_name,
+                    "xdotool",
+                    ["mousemove", action.x, action.y, "click", button],
+                    env={"DISPLAY": vm.display},
                 )
             case "double_click":
                 reject_modifiers(action)
                 docker_exec(
-                    f"DISPLAY={vm.display} xdotool mousemove {action.x} {action.y} click --repeat 2 1",
                     vm.container_name,
+                    "xdotool",
+                    ["mousemove", action.x, action.y, "click", "--repeat", 2, 1],
+                    env={"DISPLAY": vm.display},
                 )
             case "drag":
                 reject_modifiers(action)
@@ -19073,23 +20314,31 @@ def handle_computer_actions(vm, actions):
                     raise ValueError("drag action requires at least two path points")
                 start_x, start_y = path[0]
                 docker_exec(
-                    f"DISPLAY={vm.display} xdotool mousemove {start_x} {start_y} mousedown 1",
                     vm.container_name,
+                    "xdotool",
+                    ["mousemove", start_x, start_y, "mousedown", 1],
+                    env={"DISPLAY": vm.display},
                 )
                 for x, y in path[1:]:
                     docker_exec(
-                        f"DISPLAY={vm.display} xdotool mousemove {x} {y}",
                         vm.container_name,
+                        "xdotool",
+                        ["mousemove", x, y],
+                        env={"DISPLAY": vm.display},
                     )
                 docker_exec(
-                    f"DISPLAY={vm.display} xdotool mouseup 1",
                     vm.container_name,
+                    "xdotool",
+                    ["mouseup", 1],
+                    env={"DISPLAY": vm.display},
                 )
             case "move":
                 reject_modifiers(action)
                 docker_exec(
-                    f"DISPLAY={vm.display} xdotool mousemove {action.x} {action.y}",
                     vm.container_name,
+                    "xdotool",
+                    ["mousemove", action.x, action.y],
+                    env={"DISPLAY": vm.display},
                 )
             case "scroll":
                 reject_modifiers(action)
@@ -19099,24 +20348,32 @@ def handle_computer_actions(vm, actions):
                 )
 
                 docker_exec(
-                    f"DISPLAY={vm.display} xdotool mousemove {action.x} {action.y}",
                     vm.container_name,
+                    "xdotool",
+                    ["mousemove", action.x, action.y],
+                    env={"DISPLAY": vm.display},
                 )
                 for button in buttons:
                     docker_exec(
-                        f"DISPLAY={vm.display} xdotool click {button}",
                         vm.container_name,
+                        "xdotool",
+                        ["click", button],
+                        env={"DISPLAY": vm.display},
                     )
             case "keypress":
                 keys = "+".join(normalize_xdotool_key(key) for key in action.keys)
                 docker_exec(
-                    f"DISPLAY={vm.display} xdotool key '{keys}'",
                     vm.container_name,
+                    "xdotool",
+                    ["key", keys],
+                    env={"DISPLAY": vm.display},
                 )
             case "type":
                 docker_exec(
-                    f"DISPLAY={vm.display} xdotool type --delay 0 '{action.text}'",
                     vm.container_name,
+                    "xdotool",
+                    ["type", "--delay", 0, "--", action.text],
+                    env={"DISPLAY": vm.display},
                 )
             case "wait":
                 time.sleep(2)
@@ -19476,7 +20733,7 @@ async function handleComputerActions(vm, actions) {
         await dockerExec(
           vm.containerName,
           "xdotool",
-          ["type", "--delay", 0, action.text],
+          ["type", "--delay", 0, "--", action.text],
           { env: { DISPLAY: vm.display } }
         );
         break;
@@ -19507,8 +20764,10 @@ def with_modifiers(vm, keys, callback):
     try:
         for key in normalized_keys:
             docker_exec(
-                f"DISPLAY={vm.display} xdotool keydown '{key}'",
                 vm.container_name,
+                "xdotool",
+                ["keydown", key],
+                env={"DISPLAY": vm.display},
             )
             pressed_keys.append(key)
 
@@ -19516,8 +20775,10 @@ def with_modifiers(vm, keys, callback):
     finally:
         for key in reversed(pressed_keys):
             docker_exec(
-                f"DISPLAY={vm.display} xdotool keyup '{key}'",
                 vm.container_name,
+                "xdotool",
+                ["keyup", key],
+                env={"DISPLAY": vm.display},
             )
 
 
@@ -19530,8 +20791,10 @@ def handle_computer_actions(vm, actions):
                     vm,
                     getattr(action, "keys", None),
                     lambda: docker_exec(
-                        f"DISPLAY={vm.display} xdotool mousemove {action.x} {action.y} click {button}",
                         vm.container_name,
+                        "xdotool",
+                        ["mousemove", action.x, action.y, "click", button],
+                        env={"DISPLAY": vm.display},
                     ),
                 )
             case "double_click":
@@ -19539,8 +20802,10 @@ def handle_computer_actions(vm, actions):
                     vm,
                     getattr(action, "keys", None),
                     lambda: docker_exec(
-                        f"DISPLAY={vm.display} xdotool mousemove {action.x} {action.y} click --repeat 2 1",
                         vm.container_name,
+                        "xdotool",
+                        ["mousemove", action.x, action.y, "click", "--repeat", 2, 1],
+                        env={"DISPLAY": vm.display},
                     ),
                 )
             case "drag":
@@ -19551,17 +20816,23 @@ def handle_computer_actions(vm, actions):
                 def do_drag():
                     start_x, start_y = path[0]
                     docker_exec(
-                        f"DISPLAY={vm.display} xdotool mousemove {start_x} {start_y} mousedown 1",
                         vm.container_name,
+                        "xdotool",
+                        ["mousemove", start_x, start_y, "mousedown", 1],
+                        env={"DISPLAY": vm.display},
                     )
                     for x, y in path[1:]:
                         docker_exec(
-                            f"DISPLAY={vm.display} xdotool mousemove {x} {y}",
                             vm.container_name,
+                            "xdotool",
+                            ["mousemove", x, y],
+                            env={"DISPLAY": vm.display},
                         )
                     docker_exec(
-                        f"DISPLAY={vm.display} xdotool mouseup 1",
                         vm.container_name,
+                        "xdotool",
+                        ["mouseup", 1],
+                        env={"DISPLAY": vm.display},
                     )
 
                 with_modifiers(vm, getattr(action, "keys", None), do_drag)
@@ -19570,8 +20841,10 @@ def handle_computer_actions(vm, actions):
                     vm,
                     getattr(action, "keys", None),
                     lambda: docker_exec(
-                        f"DISPLAY={vm.display} xdotool mousemove {action.x} {action.y}",
                         vm.container_name,
+                        "xdotool",
+                        ["mousemove", action.x, action.y],
+                        env={"DISPLAY": vm.display},
                     ),
                 )
             case "scroll":
@@ -19582,26 +20855,34 @@ def handle_computer_actions(vm, actions):
 
                 def do_scroll():
                     docker_exec(
-                        f"DISPLAY={vm.display} xdotool mousemove {action.x} {action.y}",
                         vm.container_name,
+                        "xdotool",
+                        ["mousemove", action.x, action.y],
+                        env={"DISPLAY": vm.display},
                     )
                     for button in buttons:
                         docker_exec(
-                            f"DISPLAY={vm.display} xdotool click {button}",
                             vm.container_name,
+                            "xdotool",
+                            ["click", button],
+                            env={"DISPLAY": vm.display},
                         )
 
                 with_modifiers(vm, getattr(action, "keys", None), do_scroll)
             case "keypress":
                 keys = "+".join(normalize_xdotool_key(key) for key in action.keys)
                 docker_exec(
-                    f"DISPLAY={vm.display} xdotool key '{keys}'",
                     vm.container_name,
+                    "xdotool",
+                    ["key", keys],
+                    env={"DISPLAY": vm.display},
                 )
             case "type":
                 docker_exec(
-                    f"DISPLAY={vm.display} xdotool type --delay 0 '{action.text}'",
                     vm.container_name,
+                    "xdotool",
+                    ["type", "--delay", 0, "--", action.text],
+                    env={"DISPLAY": vm.display},
                 )
             case "wait":
                 time.sleep(2)
@@ -20018,8 +21299,10 @@ async function captureScreenshot(vm) {
 ```python
 def capture_screenshot(vm):
     return docker_exec(
-        f"export DISPLAY={vm.display} && import -window root png:-",
         vm.container_name,
+        "import",
+        ["-window", "root", "png:-"],
+        env={"DISPLAY": vm.display},
         decode=False,
     )
 ```
@@ -30046,10 +31329,9 @@ Native delegation skips a round trip through your app. With [custom delegation](
 
 ## Let Live delegate
 
-Use delegation when you want Live to recognize a request and hand the next step to your app. Consider two requests a driver might make:
+In one request, Live can ask Decisions to choose among actions you define and decide whether your app should call the [Responses API](https://developers.openai.com/api/reference/responses/overview).
 
-- **“Make it warmer.”** Decisions selects `increase` for the cabin temperature and `none` for the other questions. Raise the cabin setting from 70°F to 71°F, read it back from the dashboard, and give Live the result so it can say, “It’s set to 71 degrees.”
-- **“Why is my windshield fogging up?”** Decisions selects `on` for the defogger and `explain` for the explanation. Turn on the defogger, read its actual state, and use the [Responses API](https://developers.openai.com/api/reference/responses/overview) to explain why the windshield fogged up. Live can then say, “The defogger is on. Moisture in the cabin condenses on the cold glass.”
+Say you are building a voice assistant for a car. A driver can ask to turn the temperature up or down, turn the windshield defogger on or off, or get directions and find a place to eat. A choice of `none` leaves that cabin control unchanged.
 
 ### Adjust the cabin
 
@@ -30058,7 +31340,7 @@ Use delegation when you want Live to recognize a request and hand the next step 
 Driver
 
     
-“Make it warmer.”
+“I feel a little cold.”
 
   
 
@@ -30074,22 +31356,22 @@ Decision results
           
 Cabin temperature
 
-          **+1°F**
+          **Up**
         </li>
         <li>
           
 Defogger
 
           
-No-op
+None
 
         </li>
         <li>
           
-Responses
+Call Responses
 
           
-No-op
+No
 
         </li>
       </ul>
@@ -30097,35 +31379,13 @@ No-op
 
     
 
+      **Your app**
       
 
-        **Your app**
-        
-Cabin temperature
-
+        {
+          "Raise the temperature, read back the new setting, and append the full cabin state to Decisions. Wait for confirmation, then send the result to Live."
+        }
       
-
-      
-
-        
-
-          70
-°F
-
-        
-
-        
-→
-
-        **
-          71
-°F
-
-        **
-      
-
-      
-Set and verified on the dashboard
 
     
 
@@ -30137,18 +31397,22 @@ Set and verified on the dashboard
 Live replies
 
     
-“It’s set to 71 degrees.”
+“I turned up the temperature a bit.”
 
 
 
-### Add a Responses explanation
+### Handle a request beyond cabin controls
 
 
 
 Driver
 
     
-“Why is my windshield fogging up?”
+
+      {
+        "“My windshield is foggy, so please defog it, navigate to San Francisco, and find me some good restaurants there.”"
+      }
+    
 
   
 
@@ -30165,7 +31429,7 @@ Decision results
 Cabin temperature
 
           
-No-op
+None
 
         </li>
         <li data-action="true">
@@ -30176,9 +31440,9 @@ Defogger
         </li>
         <li data-action="true">
           
-Responses
+Call Responses
 
-          **Explain**
+          **Yes**
         </li>
       </ul>
     
@@ -30201,10 +31465,11 @@ On
         
 
           
-2. Ask Responses why
 
+            {
+              "2. Send the driver’s full request and the cabin results to Responses"
+            }
           
-Explanation
 
         
 
@@ -30212,7 +31477,8 @@ Explanation
 
       
 
-        Return the observed state and explanation to Live.
+        Use the tool calls from Responses to start navigation to San Francisco
+        and find restaurants there. Return both results to Responses.
       
 
     
@@ -30222,11 +31488,12 @@ Explanation
   
 
     
-Live replies
+Live reports
 
     
 
-      “The defogger is on. Moisture in the cabin condenses on the cold glass.”
+      The defogger state, whether navigation started, and the restaurants your
+      search found.
 
 
 
@@ -30239,7 +31506,7 @@ In your WebRTC session request, put this object under `session`, alongside your 
 ```json
 {
   "model": "gpt-live-1",
-  "instructions": "Delegate requests to warm the cabin or clear windshield fog, and questions about windshield fogging. Wait for the app to report the result before describing it.",
+  "instructions": "Delegate the driver’s whole request, including cabin controls, navigation, and local search. Wait for the app to report what happened, then tell the driver in natural language.",
   "delegation": {
     "type": "decisions",
     "decisions": {
@@ -30248,20 +31515,28 @@ In your WebRTC session request, put this object under `session`, alongside your 
         {
           "type": "choice",
           "name": "cabin_temperature",
-          "instructions": "Choose increase if the driver asks to make the cabin warmer. Otherwise choose none.",
-          "choices": [{ "value": "increase" }, { "value": "none" }]
+          "instructions": "Choose temperature_up if the driver feels cold or wants more heat, temperature_down if they feel hot or want to cool down, or none if the request is unrelated.",
+          "choices": [
+            { "value": "temperature_up" },
+            { "value": "temperature_down" },
+            { "value": "none" }
+          ]
         },
         {
           "type": "choice",
           "name": "windshield_defogger",
-          "instructions": "Choose on if the driver asks to clear windshield fog or asks why the windshield is fogging up. Otherwise choose none.",
-          "choices": [{ "value": "on" }, { "value": "none" }]
+          "instructions": "Choose on if the driver reports a foggy windshield or asks to defog it, off if they say the glass is clear now or ask to turn the defogger off, or none if the request is unrelated.",
+          "choices": [
+            { "value": "on" },
+            { "value": "off" },
+            { "value": "none" }
+          ]
         },
         {
           "type": "choice",
-          "name": "explanation",
-          "instructions": "Choose explain if the driver asks why the windshield is fogging up. Otherwise choose none.",
-          "choices": [{ "value": "explain" }, { "value": "none" }]
+          "name": "needs_response",
+          "instructions": "Choose yes if any part of the request goes beyond these cabin controls, such as getting directions or finding restaurants. Otherwise choose no.",
+          "choices": [{ "value": "yes" }, { "value": "no" }]
         }
       ]
     }
@@ -30269,42 +31544,44 @@ In your WebRTC session request, put this object under `session`, alongside your 
 }
 ```
 
-Decisions receives the conversation transcript and any context you add with `decision.item.create`. After `session.started`, send the current dashboard state and wait for `decision.item.created`:
+Live sends the conversation transcript to Decisions automatically.
+
+### Run actions and report results
+
+Save `delegation.id` from `session.delegation.created`. On the `decision.event` with that `delegation_id`, look for `event.type` of `decision.completed` and read each choice by its question name in `event.decision.answers`. An answer of `none` is a no-op for that action. If you filter WebRTC events, allow both `session.delegation.created` and `decision.event`.
+
+For “I feel a little cold,” Decisions selects `temperature_up`, `none`, and `no`. Raise the temperature and read back the actual setting. Suppose the dashboard now shows a target of 22 °C in automatic mode, with the defogger off. Send that confirmed cabin state to Decisions with `decision.item.create`.
 
 ```json
 {
   "type": "decision.item.create",
-  "event_id": "evt_cabin_70",
+  "event_id": "evt_cabin_after_temperature_up_1",
   "item": {
     "type": "message",
     "role": "user",
     "content": [
       {
         "type": "input_text",
-        "text": "Cabin set to 70°F. Windshield defogger off."
+        "text": "Use the latest cabin state snapshot as the current state. Cabin temperature is set to 22 °C in automatic mode. Windshield defogger is off."
       }
     ]
   }
 }
 ```
 
-Keep the returned `item.id`. When the setting changes, remove the old state with `decision.item.delete`, wait for `decision.item.deleted`, then add the new state.
+Append a compact snapshot of the full cabin state only when the dashboard state changes. Treat the newest snapshot as current. Keeping earlier inputs in place preserves the prefix for prompt caching.
 
-### Run actions and report results
-
-Save `delegation.id` from `session.delegation.created`. On the `decision.event` with that `delegation_id`, look for `event.type` of `decision.completed` and read each choice by its question name in `event.decision.answers`. An answer of `none` is a no-op for that action. If you filter WebRTC events, allow both `session.delegation.created` and `decision.event`.
-
-When `cabin_temperature` is `increase`, change the setting, verify it, and send the result with [`session.commentary.append`](https://developers.openai.com/api/docs/guides/live-delegation#send-the-right-kind-of-update). Use the delegation ID from this request:
+Wait for `decision.item.created`, then send the result to Live with [`session.commentary.append`](https://developers.openai.com/api/docs/guides/live-delegation#send-the-right-kind-of-update), using the delegation ID from this request.
 
 ```json
 {
   "type": "session.commentary.append",
   "delegation_id": "del_cabin_1",
-  "content": "The dashboard now shows the cabin is set to 71°F."
+  "content": "I raised the cabin temperature and confirmed the new setting on the dashboard."
 }
 ```
 
-When `windshield_defogger` is `on`, turn on the defogger and read its state. When `explanation` is `explain`, call Responses from your server with `api.responses.write` permission. Include the driver’s question and the state you observed:
+For the San Francisco request, Decisions selects `none`, `on`, and `yes`. Turn on the defogger, read back its state, and append the updated cabin snapshot as above. Then call Responses from your server with `api.responses.write` permission. Include the cabin results and the driver’s full request so Responses can connect “there” to San Francisco.
 
 ```bash
 curl https://api.openai.com/v1/responses \
@@ -30312,13 +31589,41 @@ curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -d '{
     "model": "gpt-6.1-sol",
-    "instructions": "Explain why the windshield fogged up in one short, conversational sentence. The app will report the actual defogger state.",
-    "input": "Driver: Why is my windshield fogging up? Dashboard: windshield defogger is now on."
+    "instructions": "The car has handled the cabin controls. Use the tools for the rest of the request, then briefly tell the driver what happened based on the results.",
+    "input": "Driver: My windshield is foggy, so please defog it, navigate to San Francisco, and find me some good restaurants there.\nCabin results: Windshield defogger confirmed on. Temperature unchanged.",
+    "tools": [
+      {
+        "type": "function",
+        "name": "start_navigation",
+        "description": "Start navigation to a destination and report whether the route started.",
+        "parameters": {
+          "type": "object",
+          "properties": { "destination": { "type": "string" } },
+          "required": ["destination"],
+          "additionalProperties": false
+        },
+        "strict": true
+      },
+      {
+        "type": "function",
+        "name": "find_restaurants",
+        "description": "Find well-rated restaurants in the named city or area.",
+        "parameters": {
+          "type": "object",
+          "properties": { "location": { "type": "string" } },
+          "required": ["location"],
+          "additionalProperties": false
+        },
+        "strict": true
+      }
+    ]
   }'
 ```
 
 
-Send the observed defogger state and the explanation to Live with `session.commentary.append` and this request’s delegation ID.
+This is the initial request in the [Responses function-calling flow](https://developers.openai.com/api/docs/guides/function-calling#handling-function-calls). For each `function_call`, run the named function with the supplied arguments, then return a `function_call_output` with the actual result or error and the matching `call_id`. Continue until Responses returns its final answer.
+
+Send Live only the concise final answer from Responses and the confirmed cabin state. Use `session.commentary.append` with the same `delegation_id`.
 
 ## React to transcripts
 
@@ -33045,13 +34350,147 @@ standard of care. Adapt them to your service, risk profile, and applicable law.
 
 # Custom voices
 
-Custom voices enable you to create a unique voice for your agent or application. These voices can be used for audio output with the [Text to Speech API](https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create), the [Realtime API](https://developers.openai.com/api/reference/resources/realtime), or the [Chat Completions API with audio output](https://developers.openai.com/api/docs/guides/audio-chat-completions).
+Custom voices enable you to create a voice for your agent or application. Choose how to create the voice:
 
-To create a custom voice, you’ll provide a short sample audio reference that the model will seek to replicate.
+- **From a description:** Use prompt-to-voice to generate a voice for [GPT-Live](https://developers.openai.com/api/docs/guides/live). Describe the vocal qualities you want in a text prompt.
+- **From a recording:** Provide a consent recording and a short reference sample. These voices can be used with GPT-Live, the [Text to Speech API](https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create), the [Realtime API](https://developers.openai.com/api/reference/resources/realtime), or the [Chat Completions API with audio output](https://developers.openai.com/api/docs/guides/audio-chat-completions).
+
+To choose an existing GPT-Live voice, see [Voice options](https://developers.openai.com/api/docs/guides/live-conversations#voice-options).
+
+## Create a voice from a description
+
+Prompt-to-voice creates and saves a voice from a text description. You don't need a reference recording or a consent recording for this workflow.
+
+Prompt-to-voice is generally available to all API customers. Prompt-generated
+  voices work with GPT-Live. They aren't supported by the Text to Speech,
+  Realtime, or Chat Completions APIs.
+
+### Responsible use
+
+- **Use voices responsibly.** Don’t impersonate others or violate our [Usage Policies](https://openai.com/policies/usage-policies/).
+- **Use adult voices.** Children's voices aren't allowed.
+- **Be transparent.** Tell listeners that the speech is AI-generated, and preserve any provenance metadata, watermarks, or other indicators of its synthetic origin.
+- **Voices aren’t guaranteed to be unique.** Others may generate similar voices or output. Your output ownership rights remain governed by your Agreement with OpenAI.
+- **[Terms](https://openai.com/policies/service-terms/)** apply to your and your end users’ use of prompt-to-voice.
+
+### Create and save the voice
+
+Create a voice through the API or in the [voice Playground](https://platform.openai.com/audio/voices/edit). Creating a prompt-generated voice is free. Using it to generate speech in GPT-Live is billed at regular session rates.
+
+Send a JSON request to `/v1/audio/voices` with `type` set to `prompt`:
+
+```bash
+curl --fail-with-body https://api.openai.com/v1/audio/voices \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "prompt",
+    "name": "Support assistant",
+    "prompt": "A calm, reassuring adult voice for a customer support assistant. Speak with an American English accent, a mid-range pitch, a smooth, warm tone, and a steady, conversational pace.",
+    "model": "auto"
+  }' \
+  -o voice.json
+```
+
+
+`script_hint` is an optional example script used to guide voice generation. If you leave it out, the service generates a script from your voice description. To supply your own, include up to 2,000 characters of representative speech. Blank or too-short scripts are rejected.
+
+Each successful request creates a new saved voice. The response contains metadata, including its ID, creation time in Unix seconds, and original voice-description prompt. It doesn't include audio or a preview:
+
+```json
+{
+  "object": "audio.voice",
+  "id": "voice_123",
+  "name": "Support assistant",
+  "created_at": 0,
+  "type": "prompt",
+  "prompt": "A calm, reassuring adult voice for a customer support assistant. Speak with an American English accent, a mid-range pitch, a smooth, warm tone, and a steady, conversational pace."
+}
+```
+
+Save the returned `id` and retain the original voice prompt. Reuse a saved voice when you want the same voice in another session. You can create up to 100 prompt-generated voices per organization. This limit also applies when your application creates voices for its customers.
+
+### Describe the voice
+
+Describe vocal qualities in plain language. For example:
+
+```text
+A calm, reassuring adult voice for a customer support assistant. Speak with an
+American English accent, a mid-range pitch, a smooth, warm tone, and a steady,
+conversational pace.
+```
+
+The following examples show qualities you can describe. These are words in your prompt, rather than separate API parameters:
+
+| Quality         | What to describe                                          | Example wording                        |
+| --------------- | --------------------------------------------------------- | -------------------------------------- |
+| Accent          | Regional pronunciation and accent strength                | American English, with a strong accent |
+| Age             | The perceived age of the voice                            | An adult in their 30s                  |
+| Presentation    | How the voice presents                                    | Feminine                               |
+| Pitch           | How low or high the voice sounds                          | Mid-range pitch                        |
+| Timbre          | The tone of the voice                                     | Smooth and rich                        |
+| Texture         | Raspiness, hoarseness, or clarity                         | Smooth                                 |
+| Loudness        | Vocal effort                                              | Moderate vocal effort                  |
+| Speech rate     | How quickly the voice speaks                              | Medium pace                            |
+| Distinctiveness | How pronounced the voice's individual character should be | Moderately distinctive                 |
+
+Describe the qualities themselves. Don't request imitation of a named person, public figure, or fictional character. Children's voices aren't allowed; describe an adult voice.
+
+### Example descriptions
+
+Use these descriptions as starting points and listen to the results in your application.
+
+**Calm assistant**
+
+```text
+A warm adult voice with a mid-range pitch and smooth, rich timbre.
+Use moderate vocal effort and an unhurried, reassuring delivery.
+```
+
+**Lively guide**
+
+```text
+A bright, clear adult voice with a slightly higher pitch and a lightly textured timbre.
+Use a lively, conversational delivery at a brisk but easy-to-follow pace.
+```
+
+Keep conversation rules, such as answer length, interruptions, and when to delegate, in your [GPT-Live session instructions](https://developers.openai.com/api/docs/guides/live-prompting).
+
+### Listen to the voice in GPT-Live
+
+Listening to a voice in the Playground runs a GPT-Live session and is billed as a regular session.
+
+Set `session.audio.output.voice.id` to the returned voice ID. For voice performance, include the original voice description in `session.instructions` alongside your application's conversation instructions.
+
+Replace `voice_123` with the ID returned by your creation request:
+
+```json
+{
+  "model": "gpt-live-1",
+  "instructions": "You are a helpful voice assistant. A calm, reassuring adult voice for a customer support assistant. Speak with an American English accent, a mid-range pitch, a smooth, warm tone, and a steady, conversational pace.",
+  "audio": { "output": { "voice": { "id": "voice_123" } } }
+}
+```
+
+For [WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc?api=live), include this configuration in the JSON `session` field alongside `transport`. For [WebSockets](https://developers.openai.com/api/docs/guides/voice-websockets?api=live), include it in the first `session.start` event. Follow the connection guide to send audio and hear the voice. Choose the voice at startup; start a new session to try a different voice.
+
+Voice creation through `/v1/audio/voices`, including creation from recordings, isn't compatible with Zero Data Retention. GPT-Live speech generations are eligible for Zero Data Retention when it's enabled for your organization or project. Stored session recordings, recording downloads, and session forking aren't available with Zero Data Retention. See the [data controls](https://developers.openai.com/api/docs/guides/your-data#v1livesessions) for session storage and retention requirements.
+
+### Refine and reuse
+
+Change one quality at a time and compare the results using the same short passage and a few conversational turns. Listen for the accent, pace, and other qualities your application needs. Keep the voice ID you prefer and reuse it.
+
+Each creation request saves a new voice. To try another saved voice, start a new GPT-Live session with its ID.
+
+## Create a voice from a recording
+
+To create a voice from a recording, provide a short sample audio reference that the model will seek to replicate.
 
 
 
-    {"Custom voices are limited to eligible customers. Contact our "}
+    {
+      "Custom voices created from recordings are limited to eligible customers. Contact our "
+    }
     [{"sales team"}](https://openai.com/contact-sales/)
     {
       " to learn more. Once enabled for your organization, you’ll have access to the "
@@ -33061,11 +34500,15 @@ To create a custom voice, you’ll provide a short sample audio reference that t
   
 
 
-## Creating a voice
 
-Currently, voices must be created through an API request. See the API reference for the full set of API operations.
 
-Creating a voice requires two separate audio recordings:
+
+
+### Prepare and upload the recordings
+
+Voices from recordings must be created through an API request. See the API reference for the full set of API operations.
+
+Creating a voice from a recording requires two separate audio recordings:
 
 1. **Consent recording:** This recording captures the voice actor providing consent to create a likeness of their voice. The actor must read one of the consent phrases provided below.
 2. **Sample recording:** The actual audio sample that the model will try to adhere to. The voice must match the consent recording.
@@ -33082,7 +34525,7 @@ The quality of your custom voice is highly dependent on the quality of the sampl
 
 **Requirements and limitations**
 
-- At most 20 voices can be created per organization.
+- At most 20 voices from recordings can be created per organization.
 - The audio samples must be 30 seconds or less.
 - The audio samples must be one of the following types: `mpeg`, `wav`, `ogg`, `aac`, `flac`, `webm`, or `mp4`.
 
@@ -33093,24 +34536,24 @@ Refer to the Text-to-Speech Supplemental Agreement for additional terms of use.
 The consent audio recording must only include one of the following phrases. Any divergence from the script will lead to a failure.
 
 
-| Language | Phrase                                                                                                                                                |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `de`     | Ich bin der Eigentümer dieser Stimme und bin damit einverstanden, dass OpenAI diese Stimme zur Erstellung eines synthetischen Stimmmodells verwendet. |
-| `en`     | I am the owner of this voice and I consent to OpenAI using this voice to create a synthetic voice model.                                              |
-| `es`     | Soy el propietario de esta voz y doy mi consentimiento para que OpenAI la utilice para crear un modelo de voz sintética.                              |
-| `fr`     | Je suis le propriétaire de cette voix et j'autorise OpenAI à utiliser cette voix pour créer un modèle de voix synthétique.                            |
-| `hi`     | मैं इस आवाज का मालिक हूं और मैं सिंथेटिक आवाज मॉडल बनाने के लिए OpenAI को इस आवाज का उपयोग करने की सहमति देता हूं                                     |
-| `id`     | Saya adalah pemilik suara ini dan saya memberikan persetujuan kepada OpenAI untuk menggunakan suara ini guna membuat model suara sintetis.            |
-| `it`     | Sono il proprietario di questa voce e acconsento che OpenAI la utilizzi per creare un modello di voce sintetica.                                      |
-| `ja`     | 私はこの音声の所有者であり、OpenAIがこの音声を使用して音声合成 モデルを作成することを承認します。                                                     |
-| `ko`     | 나는 이 음성의 소유자이며 OpenAI가 이 음성을 사용하여 음성 합성 모델을 생성할 것을 허용합니다.                                                        |
-| `nl`     | Ik ben de eigenaar van deze stem en ik geef OpenAI toestemming om deze stem te gebruiken om een synthetisch stemmodel te maken.                       |
-| `pl`     | Jestem właścicielem tego głosu i wyrażam zgodę na wykorzystanie go przez OpenAI w celu utworzenia syntetycznego modelu głosu.                         |
-| `pt`     | Eu sou o proprietário desta voz e autorizo o OpenAI a usá-la para criar um modelo de voz sintética.                                                   |
-| `ru`     | Я являюсь владельцем этого голоса и даю согласие OpenAI на использование этого голоса для создания модели синтетического голоса.                      |
-| `uk`     | Я є власником цього голосу і даю згоду OpenAI використовувати цей голос для створення синтетичної голосової моделі.                                   |
-| `vi`     | Tôi là chủ sở hữu giọng nói này và tôi đồng ý cho OpenAI sử dụng giọng nói này để tạo mô hình giọng nói tổng hợp.                                     |
-| `zh`     | 我是此声音的拥有者并授权OpenAI使用此声音创建语音合成模型                                                                                              |
+| Language          | Phrase                                                                                                                                                |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| German (`de`)     | Ich bin der Eigentümer dieser Stimme und bin damit einverstanden, dass OpenAI diese Stimme zur Erstellung eines synthetischen Stimmmodells verwendet. |
+| English (`en`)    | I am the owner of this voice and I consent to OpenAI using this voice to create a synthetic voice model.                                              |
+| Spanish (`es`)    | Soy el propietario de esta voz y doy mi consentimiento para que OpenAI la utilice para crear un modelo de voz sintética.                              |
+| French (`fr`)     | Je suis le propriétaire de cette voix et j'autorise OpenAI à utiliser cette voix pour créer un modèle de voix synthétique.                            |
+| Hindi (`hi`)      | मैं इस आवाज का मालिक हूं और मैं सिंथेटिक आवाज मॉडल बनाने के लिए OpenAI को इस आवाज का उपयोग करने की सहमति देता हूं                                     |
+| Indonesian (`id`) | Saya adalah pemilik suara ini dan saya memberikan persetujuan kepada OpenAI untuk menggunakan suara ini guna membuat model suara sintetis.            |
+| Italian (`it`)    | Sono il proprietario di questa voce e acconsento che OpenAI la utilizzi per creare un modello di voce sintetica.                                      |
+| Japanese (`ja`)   | 私はこの音声の所有者であり、OpenAIがこの音声を使用して音声合成 モデルを作成することを承認します。                                                     |
+| Korean (`ko`)     | 나는 이 음성의 소유자이며 OpenAI가 이 음성을 사용하여 음성 합성 모델을 생성할 것을 허용합니다.                                                        |
+| Dutch (`nl`)      | Ik ben de eigenaar van deze stem en ik geef OpenAI toestemming om deze stem te gebruiken om een synthetisch stemmodel te maken.                       |
+| Polish (`pl`)     | Jestem właścicielem tego głosu i wyrażam zgodę na wykorzystanie go przez OpenAI w celu utworzenia syntetycznego modelu głosu.                         |
+| Portuguese (`pt`) | Eu sou o proprietário desta voz e autorizo o OpenAI a usá-la para criar um modelo de voz sintética.                                                   |
+| Russian (`ru`)    | Я являюсь владельцем этого голоса и даю согласие OpenAI на использование этого голоса для создания модели синтетического голоса.                      |
+| Ukrainian (`uk`)  | Я є власником цього голосу і даю згоду OpenAI використовувати цей голос для створення синтетичної голосової моделі.                                   |
+| Vietnamese (`vi`) | Tôi là chủ sở hữu giọng nói này và tôi đồng ý cho OpenAI sử dụng giọng nói này để tạo mô hình giọng nói tổng hợp.                                     |
+| Chinese (`zh`)    | 我是此声音的拥有者并授权OpenAI使用此声音创建语音合成模型                                                                                              |
 
 Then upload the recording via the API. A successful upload will return the consent recording ID that you’ll reference later. Note the consent can be used for multiple different voice creations if the same voice actor is making multiple attempts.
 
@@ -33140,7 +34583,11 @@ curl https://api.openai.com/v1/audio/voices \
 
 If successful, the created voice will be listed under the [Audio tab](https://platform.openai.com/audio/voices).
 
-## Using a voice during speech generation
+
+
+
+
+## Using a voice from a recording during speech generation
 
 Speech generation will work as usual. Specify the ID of the voice in the `voice` parameter when [creating speech](https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create), or when initiating a [realtime session](https://developers.openai.com/api/reference/resources/realtime/subresources/calls/methods/create#realtime_create_call-session-audio-output-voice).
 
@@ -33197,7 +34644,11 @@ puts(session_config)
 ```
 
 
-## Use a custom voice with GPT-Live
+
+
+
+
+## Use a voice from a recording with GPT-Live
 
 Use a project-scoped API key approved for both GPT-Live and custom voice
 creation. Reading consent phrases and using a custom voice require
@@ -46942,6 +48393,21 @@ To ensure these models are used responsibly, you may need to complete the [API
   console](https://platform.openai.com/settings/organization/general) before
   using GPT Image models.
 
+### Safety identifiers
+
+If your application serves individual end users, include a stable,
+privacy-preserving `safety_identifier` in each [image generation](https://developers.openai.com/api/reference/resources/images/methods/generate)
+or [image edit](https://developers.openai.com/api/reference/resources/images/methods/edit) request. Hash a
+username or email address instead of sending identifying information, and keep
+the identifier to 128 characters or fewer. Safety identifiers are recommended
+but not required.
+
+The Images API `user` parameter is deprecated. Send the same identifier as
+`safety_identifier` instead. Existing requests using `user` remain supported. A
+nonempty `safety_identifier` takes precedence over `user`; when
+`safety_identifier` is omitted, `null`, or an empty string, the API uses `user`
+when available.
+
 <div
   className="not-prose"
   style={{ float: "right", margin: "10px 0 10px 10px" }}
@@ -50473,9 +51939,9 @@ A larger non-square resolution can sometimes produce fewer output tokens than
       <th style={{ textAlign: "left", padding: "8px", width: "14%" }}>
         Quality
       </th>
-      <th style={{ padding: "8px", width: "19.33%" }}>1024 x 1024</th>
-      <th style={{ padding: "8px", width: "19.33%" }}>1024 x 1536</th>
-      <th style={{ padding: "8px", width: "19.34%" }}>1536 x 1024</th>
+      <th style={{ padding: "8px", width: "19.33%" }}>1024 × 1024</th>
+      <th style={{ padding: "8px", width: "19.33%" }}>1024 × 1536</th>
+      <th style={{ padding: "8px", width: "19.34%" }}>1536 × 1024</th>
     </tr>
   </thead>
   <tbody>
@@ -50593,6 +52059,12 @@ To learn more about image generation, refer to our dedicated [image generation
 When you include the `image_generation` tool in your request, the model can decide when and how to generate images as part of the conversation, using your prompt and any provided image inputs.
 
 The `image_generation_call` tool call result will include a base64-encoded image.
+
+If your application serves individual end users, include a stable,
+privacy-preserving `safety_identifier` on each top-level Responses request,
+including later edits. It is a request parameter, not an `image_generation`
+tool option. See [image safety identifiers](https://developers.openai.com/api/docs/guides/image-generation#safety-identifiers)
+for guidance on both image APIs.
 
 Generate an image
 
@@ -57400,8 +58872,17 @@ Choose a voice when you create the session. Set `audio.output.voice` to the API 
 | Beacon   | `beacon`   | English    | Filipino           | Masculine    | Generated |
 | Delta    | `delta`    | English    | Southern U.S.      | Feminine     | Generated |
 | Cinder   | `cinder`   | English    | Southern U.S.      | Masculine    | Generated |
+| Nuri     | `nuri`     | German     | —                  | Feminine     | Natural   |
+| Juni     | `juni`     | German     | —                  | Feminine     | Natural   |
+| Flitz    | `flitz`    | German     | —                  | Masculine    | Natural   |
+| Brise    | `brise`    | French     | —                  | Feminine     | Natural   |
+| Sillage  | `sillage`  | French     | —                  | Masculine    | Natural   |
+| Nira     | `nira`     | Hindi      | —                  | Feminine     | Natural   |
+| Harema   | `harema`   | Japanese   | —                  | Feminine     | Natural   |
+| Shida    | `shida`    | Japanese   | —                  | Masculine    | Natural   |
+| Noeul    | `noeul`    | Korean     | —                  | Feminine     | Natural   |
 
-Regional influence describes a voice’s speaking style. Test the voice with the languages and pronunciation your application needs. For an approved voice created from your own recording, see [Custom voices](https://developers.openai.com/api/docs/guides/custom-voices).
+Regional influence describes a voice’s speaking style. Test the voice with the languages and pronunciation your application needs. To create a voice from a text description or an approved recording, see [Custom voices](https://developers.openai.com/api/docs/guides/custom-voices).
 
 
 
@@ -83724,7 +85205,7 @@ import java.util.Base64;
 // Pass the complete PCM16, 24 kHz, mono recording from your application.
 static void sendAudioItem(RealtimeConnection connection, byte[] pcmAudio) throws Exception {
   String fullAudio = Base64.getEncoder().encodeToString(pcmAudio);
-  connection.send(
+  var event =
       RealtimeClientEvent.ofConversationItemCreate(
           ConversationItemCreateEvent.builder()
               .item(
@@ -83735,7 +85216,18 @@ static void sendAudioItem(RealtimeConnection connection, byte[] pcmAudio) throws
                               .audio(fullAudio)
                               .build())
                       .build())
-              .build()));
+              .build());
+  // Retry only explicit admission rejections; these guarantee nothing was sent.
+  long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(5);
+  while (true) {
+    try {
+      connection.send(event);
+      return;
+    } catch (com.openai.core.http.WebSocketWriteNotAttempted.Busy busy) {
+      if (System.nanoTime() >= deadline) throw busy;
+      Thread.sleep(10);
+    }
+  }
 }
 ```
 
@@ -94171,9 +95663,11 @@ If your org engages in suspicious activity that violates our safety policies, we
 
 To route warning and deactivation notices for a safety identifier to your investigation or support workflow, see [Safety enforcement notifications](https://developers.openai.com/api/docs/guides/safety-enforcement).
 
-The `safety_identifier` parameter is available in both the [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create) and older [Chat Completions API](https://developers.openai.com/api/reference/resources/chat). The Realtime API supports the same concept through the `OpenAI-Safety-Identifier` header. To use safety identifiers, provide a stable ID for your end user on each request. Hash user email or internal user IDs to avoid passing any personal information.
+The `safety_identifier` parameter is available in the [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create), [Chat Completions API](https://developers.openai.com/api/reference/resources/chat), and [Images API](https://developers.openai.com/api/docs/guides/image-generation#safety-identifiers). The Realtime API supports the same concept through the `OpenAI-Safety-Identifier` header. To use safety identifiers, provide a stable ID for your end user on each request. Hash user email or internal user IDs to avoid passing any personal information.
 
-Safety identifiers do not carry over between APIs or sessions. If your application already sends `safety_identifier` with Responses API requests, pass the same stable value separately when you create or connect each Realtime session.
+Safety identifiers do not carry over between APIs or sessions. If your application already sends `safety_identifier` with Responses API requests, pass the same stable value separately in each Images API request and when you create or connect each Realtime session.
+
+For the Images API, include `safety_identifier` in each image generation or edit request. Keep the identifier to 128 characters or fewer. See [image safety identifiers](https://developers.openai.com/api/docs/guides/image-generation#safety-identifiers) for migration from the deprecated `user` parameter.
 
 
 
@@ -127703,7 +129197,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.82.0</version>
+  <version>4.83.0</version>
 </dependency>
 ```
 
@@ -129928,7 +131422,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.82.0</version>
+  <version>4.83.0</version>
 </dependency>
 ```
 

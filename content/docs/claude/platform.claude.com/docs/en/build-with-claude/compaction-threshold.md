@@ -259,7 +259,7 @@ This example appears in the SDK languages only: its value is the budget-tracking
   var response = await client.Beta.Messages.Create(new()
   {
       Betas = ["compact-2026-01-12"],
-      Model = "claude-opus-5-5",
+      Model = Model.ClaudeOpus5_5,
       MaxTokens = 4096,
       Messages = messages,
       ContextManagement = new BetaContextManagementConfig
@@ -354,7 +354,7 @@ This example appears in the SDK languages only: its value is the budget-tracking
 
           MessageCreateParams params = MessageCreateParams.builder()
               .addBeta("compact-2026-01-12")
-              .model("claude-opus-5-5")
+              .model(Model.CLAUDE_OPUS_5_5)
               .maxTokens(4096L)
               .messages(messages)
               .contextManagement(BetaContextManagementConfig.builder()
