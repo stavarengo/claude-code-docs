@@ -8,7 +8,7 @@ This tutorial shows you how to use Agent Skills to create a PowerPoint presentat
 
 ## Prerequisites
 
-* A [Claude API key](https://platform.claude.com/settings/keys) or a logged-in [ant CLI](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/authentication?sdk_languages=cli)
+* A [Claude API key](https://platform.claude.com/settings/keys) from the Claude Console, or a logged-in [ant CLI](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/authentication?sdk_languages=cli)
 * A [client SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) for your language, or `curl` and `jq`
 * Basic familiarity with making API requests
 
@@ -102,9 +102,7 @@ The presentation was created in the code execution container and saved as a file
 
   if [[ -n "$file_id" ]]; then
     # Download the file and save it
-    output_path="${TMPDIR:-/tmp}/renewable_energy.pptx"
-    ant files download --file-id "$file_id" --output "$output_path"
-    echo "Presentation saved to $output_path"
+    ant files download --file-id "$file_id" --output "${TMPDIR:-/tmp}/renewable_energy.pptx"
   fi
   ```
 </CodeGroup>

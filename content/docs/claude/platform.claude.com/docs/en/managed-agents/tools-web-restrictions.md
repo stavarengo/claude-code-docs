@@ -23,7 +23,7 @@ Each tool carries its own list, so `web_search` and `web_fetch` can have differe
 
 ## Set domain lists on an agent
 
-The following example creates an agent that limits `web_search` to two sites and blocks one host for `web_fetch`. It also sets `user_location` and `max_content_tokens`, which [Settings](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions?sdk_languages=cli#settings) describes. The example then prints the `configs` array from the response.
+The following example creates an agent that limits `web_search` to two sites and blocks one host for `web_fetch`. It also sets `user_location` and `max_content_tokens`, which [Settings](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions?sdk_languages=cli#settings) describes. The response echoes the `configs` array.
 
 <CodeGroup defaultLanguage="CLI">
   <CodeGroupItem>

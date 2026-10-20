@@ -178,10 +178,11 @@ claude/platform.claude.com/docs/en/api/compliance/apps/sessions/remote:{list.md,
 claude/platform.claude.com/docs/en/api/compliance/apps/sessions/remote/messages:{list.md}
 claude/platform.claude.com/docs/en/api/compliance/groups:{list.md,members.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/compliance/groups/members:{list.md}
-claude/platform.claude.com/docs/en/api/compliance/organizations:{list.md,roles.md,settings.md,users.md}
+claude/platform.claude.com/docs/en/api/compliance/organizations:{list.md,roles.md,settings.md,user_preferences.md,users.md}
 claude/platform.claude.com/docs/en/api/compliance/organizations/roles:{list.md,permissions.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/compliance/organizations/roles/permissions:{list.md}
 claude/platform.claude.com/docs/en/api/compliance/organizations/settings:{retrieve.md}
+claude/platform.claude.com/docs/en/api/compliance/organizations/user_preferences:{list.md}
 claude/platform.claude.com/docs/en/api/compliance/organizations/users:{list.md}
 claude/platform.claude.com/docs/en/api/files:{delete.md,download.md,list.md,retrieve_metadata.md,upload.md}
 claude/platform.claude.com/docs/en/api/http:{compliance.md,messages.md,organization.md}
@@ -212,6 +213,8 @@ claude/platform.claude.com/docs/en/api/http/beta/sessions/threads:{archive.md,li
 claude/platform.claude.com/docs/en/api/http/beta/sessions/threads/events:{list.md,stream.md}
 claude/platform.claude.com/docs/en/api/http/beta/skills/versions:{download.md}
 claude/platform.claude.com/docs/en/api/http/beta/tunnels:{archive.md,list.md}
+claude/platform.claude.com/docs/en/api/http/beta/vaults:{list.md}
+claude/platform.claude.com/docs/en/api/http/beta/vaults/credentials:{list.md}
 claude/platform.claude.com/docs/en/api/http/compliance:{apps.md,organizations.md}
 claude/platform.claude.com/docs/en/api/http/compliance/activities:{list.md}
 claude/platform.claude.com/docs/en/api/http/compliance/apps/artifacts:{download.md,retrieve.md}
@@ -310,7 +313,7 @@ openai/developers.openai.com/api/docs/guides/agent-builder:{migrate-from-agent-b
 openai/developers.openai.com/api/docs/guides/agents:{define-agents.md,guardrails-approvals.md,integrations-observability.md,models.md,orchestration.md,quickstart.md,results.md,running-agents.md,sandboxes.md,sdk.md}
 openai/developers.openai.com/api/docs/guides/agents-api:{architecture.md,bedrock-managed-agents.md,configuration.md,errors.md,multi-agent.md,observability.md,overview.md,quickstart.md,sessions.md,tracing.md}
 openai/developers.openai.com/api/docs/guides/agents-api/environments:{files.md,lifecycle.md,openai-hosted.md,prewarmed.md,security.md,self-hosted.md}
-openai/developers.openai.com/api/docs/guides/agents-api/environments/providers:{aws.md,blaxel.md,cloudflare.md,daytona.md,digitalocean.md,e2b.md,modal.md,oci.md,runloop.md,vercel.md}
+openai/developers.openai.com/api/docs/guides/agents-api/environments/providers:{aws.md,blaxel.md,cloudflare.md,daytona.md,digitalocean.md,e2b.md,modal.md,oci.md,vercel.md}
 openai/developers.openai.com/api/docs/guides/agents-api/sessions:{events.md,manage.md,webhooks.md}
 openai/developers.openai.com/api/docs/guides/agents-api/tools:{computer-use.md,functions.md,mcp.md,plugins.md,vaults.md,web-search.md}
 openai/developers.openai.com/api/docs/guides/latest-model:{gpt-4.1.md,gpt-5.1.md,gpt-5.2.md,gpt-5.3-codex.md,gpt-5.4.md,gpt-5.5.md,gpt-5.6.md,gpt-5.md,gpt-6-astra.md}

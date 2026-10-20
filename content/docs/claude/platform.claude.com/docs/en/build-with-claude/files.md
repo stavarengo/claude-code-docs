@@ -42,11 +42,7 @@ Upload a file to be referenced in future API calls:
 
 <CodeGroup>
   ```bash CLI
-  FILE_ID=$(ant files upload \
-    --file /path/to/document.pdf \
-    --transform id \
-    --raw-output)
-  echo "$FILE_ID"
+  ant files upload --file /path/to/document.pdf
   ```
 </CodeGroup>
 
@@ -153,9 +149,7 @@ The following examples read a text file and send its contents as plain text:
   # The "@./path" reference inlines the file contents directly into the field.
   ant messages create \
     --model claude-opus-5-5 \
-    --max-tokens 1024 \
-    --transform 'content.#(type=="text").text' \
-    --raw-output <<'YAML'
+    --max-tokens 1024 <<'YAML'
   messages:
     - role: user
       content:

@@ -106,7 +106,7 @@ The `default_config` on the toolset shows its default [permission policy](https:
 
 Like `speed` and `effort`, `inference_geo` is set through the object form of `model`: pass `model` as an object and set `inference_geo` alongside `id`. The field accepts `"us"` or `"global"`. When it's unset, each model request follows the workspace's default inference geo at the time it's served. See [Data residency](https://platform.claude.com/docs/en/manage-claude/data-residency?sdk_languages=cli) for the workspace-level geo controls and pricing.
 
-The following example pins an agent to US inference and prints the `inference_geo` value from the agent's `model` object:
+The following example pins an agent to US inference. The response carries the `inference_geo` value in the agent's `model` object:
 
 <CodeGroup defaultLanguage="CLI">
   <CodeGroupItem>

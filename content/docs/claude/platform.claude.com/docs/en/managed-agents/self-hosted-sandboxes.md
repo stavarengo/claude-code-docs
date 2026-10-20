@@ -135,11 +135,12 @@ This quickstart runs one always-on worker with the `ant` CLI, sends it a session
 
     <CodeGroup>
       ```bash CLI
-      SESSION_ID=$(ant beta:sessions create \
+      # Create a session
+      ant beta:sessions create \
         --agent "$AGENT_ID" \
-        --environment-id "$ANTHROPIC_ENVIRONMENT_ID" \
-        --transform id --raw-output)
+        --environment-id "$ANTHROPIC_ENVIRONMENT_ID"
 
+      # Send it a task: SESSION_ID is the id from the create response
       ant beta:sessions:events send --session-id "$SESSION_ID" <<'YAML'
       events:
         - type: user.message

@@ -116,9 +116,7 @@ When `status` reaches `completed`, the `memory_store` entry in `outputs` referen
 
 <CodeGroup>
   ```bash CLI
-  output_store_id=$(ant beta:dreams retrieve --dream-id "$dream_id" --format json |
-    jq -r 'first(.outputs[] | select(.type == "memory_store")).memory_store_id')
-
+  # $output_store_id is the memory_store_id of the completed dream's memory_store output
   ant beta:sessions create <<YAML
   agent: $agent_id
   environment_id: $environment_id

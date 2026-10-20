@@ -21,7 +21,7 @@ ant auth login --workspace-id wrkspc_01...
 
 # If the named profile you pass with --profile doesn't exist,
 # a new named profile will be created with that name.
-ant auth login --profile <profile-name>
+ant auth login --profile work
 ```
 
 During the browser flow, you select an organization and then a [workspace](https://platform.claude.com/docs/en/manage-claude/workspaces?sdk_languages=cli). The issued token is [scoped to that workspace](https://platform.claude.com/docs/en/manage-claude/workspaces?sdk_languages=cli#api-keys-and-resource-scoping), so the CLI can only see resources that belong to it. Pass `--workspace-id` to bind directly and skip the picker. To work in more than one workspace, see [Switch between workspaces](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/authentication?sdk_languages=cli#switch-between-workspaces).
@@ -71,7 +71,7 @@ The CLI also reads your API key from the `ANTHROPIC_API_KEY` environment variabl
   </Tab>
 </Tabs>
 
-To override the key for a single invocation, pass `--api-key`. To point at a different API host, set `ANTHROPIC_BASE_URL` or pass `--base-url`.
+To override the key for a single invocation, pass [`--api-key-stdin`](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/using?sdk_languages=cli#global-flags) and pipe the key to the command. To point at a different API host, set `ANTHROPIC_BASE_URL` or pass `--base-url`.
 
 If you are using an API key scoped to multiple workspaces, such as a [personal or service account key](https://platform.claude.com/docs/en/manage-claude/authentication?sdk_languages=cli#key-types), you must [specify the workspace](https://platform.claude.com/docs/en/manage-claude/authentication?sdk_languages=cli#select-a-workspace) to run your command in. Do this by setting an `ANTHROPIC_WORKSPACE_ID` environment variable, which the CLI reads automatically, or by using the [`--workspace-id` flag](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/using?sdk_languages=cli#global-flags). The value must be a `wrkspc_...` ID.
 

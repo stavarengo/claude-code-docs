@@ -49,17 +49,15 @@ Then create a session that mounts the GitHub repository. With a `limited` [envir
 
 <CodeGroup>
   ```bash CLI
-  SESSION_ID=$(ant beta:sessions create \
+  ant beta:sessions create \
     --agent "$AGENT_ID" \
-    --environment-id "$ENVIRONMENT_ID" \
-    --transform id --raw-output <<'EOF'
+    --environment-id "$ENVIRONMENT_ID" <<'EOF'
   resources:
     - type: github_repository
       url: https://github.com/org/repo
       mount_path: /workspace/repo
       authorization_token: ghp_your_github_token
   EOF
-  )
   ```
 </CodeGroup>
 
@@ -96,7 +94,9 @@ Mount multiple repositories by adding entries to the `resources` array:
 
 <CodeGroup>
   ```bash CLI
-  RESOURCES_BODY=$(cat <<'EOF'
+  ant beta:sessions create \
+    --agent "$AGENT_ID" \
+    --environment-id "$ENVIRONMENT_ID" <<'EOF'
   resources:
     - type: github_repository
       url: https://github.com/org/frontend
@@ -107,7 +107,6 @@ Mount multiple repositories by adding entries to the `resources` array:
       mount_path: /workspace/backend
       authorization_token: ghp_your_github_token
   EOF
-  )
   ```
 </CodeGroup>
 
@@ -134,7 +133,7 @@ With the GitHub MCP server, the agent can create branches, commit changes, and p
 
 <CodeGroup>
   ```bash CLI
-  ant beta:sessions:events send --session-id "$SESSION_ID" > /dev/null <<'EOF'
+  ant beta:sessions:events send --session-id "$SESSION_ID" <<'EOF'
   events:
     - type: user.message
       content:

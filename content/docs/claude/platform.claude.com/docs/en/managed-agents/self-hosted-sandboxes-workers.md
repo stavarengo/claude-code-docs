@@ -301,7 +301,6 @@ Start a worker that polls the queue continuously. It authenticates with the [env
       		slog.Error("http shutdown", "err", err)
       	}
       }
-
       ```
 
       <CodeGroupItem language="Java">
@@ -412,7 +411,9 @@ Replace the `ant beta:worker run` entrypoint with an SDK entrypoint when the san
 
 
   async def main() -> None:
-      async with AsyncAnthropic(auth_token=os.environ["ANTHROPIC_ENVIRONMENT_KEY"]) as client:
+      async with AsyncAnthropic(
+          auth_token=os.environ["ANTHROPIC_ENVIRONMENT_KEY"]
+      ) as client:
           worker = EnvironmentWorker(client, workdir="/workspace")
           # With no arguments, handle_item() reads the ANTHROPIC_* variables the spawn
           # script forwarded, including ANTHROPIC_WORK_SECRET.
@@ -484,7 +485,6 @@ Replace the `ant beta:worker run` entrypoint with an SDK entrypoint when the san
   		log.Fatalf("worker: %v", err)
   	}
   }
-
   ```
 
   <CodeGroupItem language="Java">

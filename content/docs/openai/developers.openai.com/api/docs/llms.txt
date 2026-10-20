@@ -191,7 +191,6 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Results and state](https://developers.openai.com/api/docs/guides/agents/results.md): Learn which result surfaces matter most in the OpenAI Agents SDK and how they connect to resumable workflow state.
 - [Retrieval](https://developers.openai.com/api/docs/guides/retrieval.md): Learn how to search your data using semantic similarity with the OpenAI API.
 - [Run and continue sessions](https://developers.openai.com/api/docs/guides/agents-api/sessions.md): Start work, follow progress, and continue the conversation.
-- [Runloop](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/runloop.md): Connect a Runloop Devbox to an Agents API session.
 - [Running agents](https://developers.openai.com/api/docs/guides/agents/running-agents.md): Learn how to run agents, stream output, and choose the right conversation-state strategy in the OpenAI Agents SDK.
 - [Safety best practices](https://developers.openai.com/api/docs/guides/safety-best-practices.md): Learn how to implement safety measures like moderation, adversarial testing, human oversight, and prompt engineering to ensure responsible AI deployment.
 - [Safety classifiers](https://developers.openai.com/api/docs/guides/safety-checks.md): Learn how API safety classifiers identify potential abuse and how safety identifiers help limit disruption to other users.

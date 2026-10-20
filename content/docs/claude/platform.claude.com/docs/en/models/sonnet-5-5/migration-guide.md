@@ -11,7 +11,7 @@ This guide lists the code changes for moving to Claude Sonnet 5.5 from Claude So
 </Note>
 
 <Tip>
-  **Automate your migration with the Claude API skill.** In Claude Code, run `/claude-api migrate` to invoke the bundled [Claude API skill](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/claude-api-skill?sdk_languages=cli#migrating-to-a-newer-claude-model). It works for any current Claude model as the target:
+  **Automate your migration with the [Claude API skill](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/claude-api-skill?sdk_languages=cli#migrating-to-a-newer-claude-model).** It comes bundled with Claude Code and works for any current Claude model as the target:
 
   Let Claude Code migrate your code for you
 
@@ -106,7 +106,7 @@ Work down the groups and stop after the one that names your model. On Claude Hai
 * Change the model ID to `claude-sonnet-5-5`.
 * [Read content blocks by `type`](https://platform.claude.com/docs/en/models/sonnet-5-5/migration-guide?sdk_languages=cli#thinking-in-responses), and pass `thinking` blocks back unchanged.
 * To keep running without up-front thinking, send [the lowest thinking setting](https://platform.claude.com/docs/en/models/sonnet-5-5/migration-guide?sdk_languages=cli#turn-off-up-front-thinking) at `high` effort or below.
-* Replace [forced tool use](https://platform.claude.com/docs/en/models/sonnet-5-5/migration-guide?sdk_languages=cli#forced-tool-use) with `auto` and strict tools, or with `auto` alone on Amazon Bedrock.
+* Replace [forced tool use](https://platform.claude.com/docs/en/models/sonnet-5-5/migration-guide?sdk_languages=cli#forced-tool-use) with `auto` and strict tools.
 * Keep conversations [append-only](https://platform.claude.com/docs/en/models/sonnet-5-5/migration-guide?sdk_languages=cli#thinking-blocks).
 * On the Claude API and Google Cloud, move computer use to the [toolset](https://platform.claude.com/docs/en/models/sonnet-5-5/migration-guide?sdk_languages=cli#computer-use-toolset), without the `fine-grained-tool-streaming-2025-05-14` beta header.
 * Pair the [advisor tool](https://platform.claude.com/docs/en/models/sonnet-5-5/migration-guide?sdk_languages=cli#advisor-tool) with a supported advisor, and expect encrypted advice.
@@ -158,7 +158,7 @@ Every earlier model on this page accepts a `tool_choice` of type `any` or `tool`
 tool_choice: type "tool" and "any" are not supported for this model.
 ```
 
-Send `tool_choice: {"type": "auto"}`, and mark the tool `strict: true` so its input matches the schema. The model can then answer without calling the tool, so say in the prompt when to use it. [Strict tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use?sdk_languages=cli) supports a subset of JSON Schema and needs `additionalProperties: false` on every object. See [JSON Schema limitations](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli#json-schema-limitations). On Amazon Bedrock, [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli), which include strict tool use, aren't available for Claude Sonnet 5.5. There, send `auto` without `strict`, say in the prompt when to call the tool, and validate the tool input in your code.
+Send `tool_choice: {"type": "auto"}`, and mark the tool `strict: true` so its input matches the schema. The model can then answer without calling the tool, so say in the prompt when to use it. [Strict tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use?sdk_languages=cli) supports a subset of JSON Schema and needs `additionalProperties: false` on every object. See [JSON Schema limitations](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli#json-schema-limitations).
 
 Before (Claude Sonnet 5):
 
@@ -344,7 +344,7 @@ This model does not support assistant message prefill. The conversation must end
 
 Replace each prefill according to what it was for:
 
-* **Output format:** use [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli), or tools with enum fields for classification. On Amazon Bedrock, structured outputs aren't available for Claude Sonnet 5.5. There, describe the format in the prompt or use a tool without `strict`, and validate the output in your code.
+* **Output format:** use [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli), or tools with enum fields for classification.
 * **Preambles:** ask in the system prompt for a direct answer.
 * **Unwanted refusals:** clear instructions in the user message are usually enough.
 * **Continuations:** move them to the user message, for example "Your previous response was interrupted and ended with `[previous_response]`. Continue from where you left off."

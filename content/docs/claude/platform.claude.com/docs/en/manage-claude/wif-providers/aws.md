@@ -103,15 +103,14 @@ Call `GetWebIdentityToken` with `https://api.anthropic.com` as the audience, the
 
 <CodeGroup>
   ```bash CLI
-  TOKEN_FILE=$(mktemp)
+  export ANTHROPIC_IDENTITY_TOKEN_FILE=$(mktemp)
   aws sts get-web-identity-token \
     --region us-east-1 \
     --audience "https://api.anthropic.com" \
     --signing-algorithm RS256 \
     --duration-seconds 900 \
-    --query WebIdentityToken --output text > "$TOKEN_FILE"
+    --query WebIdentityToken --output text > "$ANTHROPIC_IDENTITY_TOKEN_FILE"
 
-  export ANTHROPIC_IDENTITY_TOKEN_FILE="$TOKEN_FILE"
   # ANTHROPIC_FEDERATION_RULE_ID, ANTHROPIC_ORGANIZATION_ID, and
   # ANTHROPIC_SERVICE_ACCOUNT_ID, and ANTHROPIC_WORKSPACE_ID are read from the environment
   ant messages create \
@@ -135,14 +134,16 @@ JWT=$(aws sts get-web-identity-token \
 
 curl -sS https://api.anthropic.com/v1/oauth/token \
   -H "content-type: application/json" \
-  -d "{
-    \"grant_type\": \"urn:ietf:params:oauth:grant-type:jwt-bearer\",
-    \"assertion\": \"$JWT\",
-    \"federation_rule_id\": \"fdrl_...\",
-    \"organization_id\": \"00000000-0000-0000-0000-000000000000\",
-    \"service_account_id\": \"svac_...\",
-    \"workspace_id\": \"wrkspc_...\"
-  }" | jq
+  --data @- <<JSON
+{
+  "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+  "assertion": "$JWT",
+  "federation_rule_id": "fdrl_...",
+  "organization_id": "00000000-0000-0000-0000-000000000000",
+  "service_account_id": "svac_...",
+  "workspace_id": "wrkspc_..."
+}
+JSON
 ```
 
 A successful exchange returns an `access_token` beginning with `sk-ant-oat01-` and an `expires_in` value in seconds. If the exchange fails with the opaque `401` `authentication_error` response (message `Authentication failed`), check the [authentication history page](https://platform.claude.com/settings/workload-identity-federation?tab=history) in the Claude Console for the deny reason and see [Troubleshoot a failed exchange](https://platform.claude.com/docs/en/manage-claude/wif-reference?sdk_languages=cli#troubleshoot-a-failed-exchange); the most common AWS-side cause is an `iss` mismatch (the per-account STS issuer URL must match the registered `issuer_url` exactly).
@@ -303,14 +304,16 @@ JWT=$(cat "$ANTHROPIC_IDENTITY_TOKEN_FILE")
 
 curl -sS https://api.anthropic.com/v1/oauth/token \
   -H "content-type: application/json" \
-  -d "{
-    \"grant_type\": \"urn:ietf:params:oauth:grant-type:jwt-bearer\",
-    \"assertion\": \"$JWT\",
-    \"federation_rule_id\": \"$ANTHROPIC_FEDERATION_RULE_ID\",
-    \"organization_id\": \"$ANTHROPIC_ORGANIZATION_ID\",
-    \"service_account_id\": \"$ANTHROPIC_SERVICE_ACCOUNT_ID\",
-    \"workspace_id\": \"$ANTHROPIC_WORKSPACE_ID\"
-  }" | jq
+  --data @- <<JSON
+{
+  "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+  "assertion": "$JWT",
+  "federation_rule_id": "$ANTHROPIC_FEDERATION_RULE_ID",
+  "organization_id": "$ANTHROPIC_ORGANIZATION_ID",
+  "service_account_id": "$ANTHROPIC_SERVICE_ACCOUNT_ID",
+  "workspace_id": "$ANTHROPIC_WORKSPACE_ID"
+}
+JSON
 ```
 
 A successful exchange returns an `access_token` beginning with `sk-ant-oat01-` and an `expires_in` value in seconds. If the exchange fails with the opaque `401` `authentication_error` response (message `Authentication failed`), check the [authentication history page](https://platform.claude.com/settings/workload-identity-federation?tab=history) in the Claude Console for the deny reason and see [Troubleshoot a failed exchange](https://platform.claude.com/docs/en/manage-claude/wif-reference?sdk_languages=cli#troubleshoot-a-failed-exchange); the most common EKS-side cause is the projected token's `aud` not matching the rule (project a token with `audience: https://api.anthropic.com`, not the IRSA default `sts.amazonaws.com`).

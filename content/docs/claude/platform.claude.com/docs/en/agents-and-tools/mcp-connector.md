@@ -346,7 +346,9 @@ The following example sends one request with an unpinned toolset, copies the ret
 
 <CodeGroup>
   ```bash CLI
-  request=$(cat <<'YAML'
+  # First request: the toolset isn't pinned, so the API asks the server for
+  # its tools and the response starts with an mcp_tool_listing block.
+  ant beta:messages create --beta mcp-client-2026-09-15 <<'YAML'
   model: claude-opus-5-5
   max_tokens: 1024
   mcp_servers:
@@ -361,22 +363,35 @@ The following example sends one request with an unpinned toolset, copies the ret
     - role: user
       content: What tools do you have available?
   YAML
-  )
 
-  # First request: the toolset isn't pinned, so the API asks the server for
-  # its tools and the response starts with an mcp_tool_listing block.
-  # tee shows the response on stderr while the variable captures it.
-  first=$(ant beta:messages create --beta mcp-client-2026-09-15 --format json \
-    <<<"$request" | tee /dev/stderr)
-  tools=$(jq -c '.content[] | select(.type == "mcp_tool_listing") | .tools' \
-    <<<"$first")
-
-  # Pin the list: copy the block's tools into the toolset. The --tool flag
-  # replaces the body's tools array. The API uses exactly these entries and
-  # doesn't ask the server again, so the response has no mcp_tool_listing block.
-  ant beta:messages create --beta mcp-client-2026-09-15 \
-    --tool "{type: mcp_toolset, mcp_server_name: example-mcp, tools: $tools}" \
-    <<<"$request"
+  # Pin the list: copy the block's tools into the toolset. The API uses
+  # exactly these entries and doesn't ask the server again, so the response
+  # has no mcp_tool_listing block.
+  ant beta:messages create --beta mcp-client-2026-09-15 <<'YAML'
+  model: claude-opus-5-5
+  max_tokens: 1024
+  mcp_servers:
+    - type: url
+      url: https://example-server.modelcontextprotocol.io/sse
+      name: example-mcp
+      authorization_token: YOUR_TOKEN
+  tools:
+    - type: mcp_toolset
+      mcp_server_name: example-mcp
+      tools:
+        - name: echo
+          description: Returns the text it receives.
+          input_schema:
+            type: object
+            properties:
+              text:
+                type: string
+            required:
+              - text
+  messages:
+    - role: user
+      content: What tools do you have available?
+  YAML
   ```
 </CodeGroup>
 
@@ -596,7 +611,6 @@ Import the helpers for your language:
   import (
   	"github.com/anthropics/anthropic-sdk-go/mcp"
   )
-
   ```
 
   ```java Java
@@ -779,7 +793,6 @@ Convert MCP tools for use with the SDK's [tool runner](https://platform.claude.c
   	}
   	fmt.Println(finalMessage.RawJSON())
   }
-
   ```
 
   ```java Java

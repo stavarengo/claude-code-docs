@@ -146,7 +146,15 @@ Lifecycle terms (Deprecated, Retired) are defined in [Model deprecations](https:
 | Claude Haiku 3.5 ([deprecated](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli))  | `claude-3-5-haiku@20241022`  |
 
 <Tip>
-  Upgrading to a newer Claude model? In Claude Code, run `/claude-api migrate` to apply model ID swaps and breaking parameter changes across your codebase. The skill detects which cloud platform your code targets and adjusts model ID formats and feature changes for that platform. See [Migrating to a newer Claude model](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/claude-api-skill?sdk_languages=cli#migrating-to-a-newer-claude-model).
+  Upgrading to a newer Claude model? The [Claude API skill](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/claude-api-skill?sdk_languages=cli#migrating-to-a-newer-claude-model) in Claude Code applies model ID swaps and breaking parameter changes across your code base:
+
+  Let Claude Code migrate your code for you
+
+  ```text
+  /claude-api migrate this project to the latest Claude Opus model
+  ```
+
+  The skill detects which cloud platform your code targets and adjusts model ID formats and feature changes for that platform.
 </Tip>
 
 ### Making requests

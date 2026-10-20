@@ -46,8 +46,7 @@ The following example creates a session with a single `user.message` in `initial
 
 <CodeGroup>
   ```bash CLI
-  SEEDED_SESSION_ID=$(ant beta:sessions create \
-    --transform id --raw-output <<YAML
+  ant beta:sessions create <<YAML
   agent: $AGENT_ID
   environment_id: $ENVIRONMENT_ID
   initial_events:
@@ -56,16 +55,10 @@ The following example creates a session with a single `user.message` in `initial
         - type: text
           text: List the files in the working directory.
   YAML
-  )
-
-  # initial_events aren't echoed on the create response; list the session's
-  # events to see the seeded message.
-  echo "Seeded event: $(ant beta:sessions:events list \
-    --session-id "$SEEDED_SESSION_ID" \
-    --format raw \
-    --transform 'data.#(type=="user.message").content.0.text' --raw-output)"
   ```
 </CodeGroup>
+
+`initial_events` are not echoed on the create response. To see the seeded message, list the session's events.
 
 No other event type is accepted. Events that respond to an agent turn (`user.tool_confirmation`, `user.tool_result`, and `user.custom_tool_result`) aren't accepted because no agent turn exists yet, and `user.interrupt` isn't accepted because there is no turn to stop. Unlike `initial_events` on a scheduled deployment, a session's `initial_events` don't accept `system.message`.
 
@@ -124,12 +117,12 @@ The following example starts a session that overrides the model and clears the s
 
 Because a `model` override replaces the agent's `model` object in full, it also sets or clears the model's [inference geo](https://platform.claude.com/docs/en/manage-claude/data-residency?sdk_languages=cli) pin for the session: an override that includes `inference_geo` pins the geography that serves the session's model requests, and one that omits it clears the agent's pin so the session follows the workspace's `default_inference_geo`. The overridden value is validated against the workspace's `allowed_inference_geos` when the session is created.
 
-The following example starts a session from an agent whose model has no geo pin, pins the session's model requests to US inference by including `inference_geo` in the `model` override, and prints the value echoed in the response's `agent.model`:
+The following example starts a session from an agent whose model has no geo pin, and pins the session's model requests to US inference by including `inference_geo` in the `model` override. The response echoes the value in `agent.model`:
 
 <CodeGroup>
   ```bash CLI
-  # Replaces the agent's `model` in full: restate `id`, add `inference_geo` to pin.
-  session=$(ant beta:sessions create <<YAML
+  # Replaces the whole model object of the agent: restate id, add inference_geo to pin.
+  ant beta:sessions create <<YAML
   agent:
     type: agent_with_overrides
     id: $AGENT_ID
@@ -138,8 +131,6 @@ The following example starts a session from an agent whose model has no geo pin,
       inference_geo: us
   environment_id: $ENVIRONMENT_ID
   YAML
-  )
-  echo "Inference geo: $(jq -r '.agent.model.inference_geo' <<< "$session")"
   ```
 </CodeGroup>
 

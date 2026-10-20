@@ -108,7 +108,7 @@ The simplest approach is to reference a PDF directly from a URL:
 
 <CodeGroup>
   ```bash CLI
-  ant messages create --transform content --format yaml <<'YAML'
+  ant messages create <<'YAML'
   model: claude-opus-5-5
   max_tokens: 1024
   messages:
@@ -154,9 +154,7 @@ If you need to send PDFs from your local system or when a URL isn't available:
   ```bash CLI
   ant messages create \
     --model claude-opus-5-5 \
-    --max-tokens 1024 \
-    --transform content \
-    --format yaml <<'YAML'
+    --max-tokens 1024 <<'YAML'
   messages:
     - role: user
       content:
@@ -178,15 +176,11 @@ For PDFs you'll use repeatedly, or when you want to avoid encoding overhead, use
 <CodeGroup>
   ```bash CLI
   # First, upload your PDF to the Files API
-  FILE_ID=$(ant files upload \
-    --file ./document.pdf \
-    --transform id \
-    --raw-output)
+  ant files upload \
+    --file ./document.pdf
 
-  # Then use the returned file_id in your message
-  ant messages create \
-    --transform content \
-    --format yaml <<YAML
+  # Then use the file_id from the upload response in your message
+  ant messages create <<YAML
   model: claude-opus-5-5
   max_tokens: 1024
   messages:
@@ -259,7 +253,7 @@ Cache PDFs with [prompt caching](https://platform.claude.com/docs/en/build-with-
 
 <CodeGroup>
   ```bash CLI
-  ant messages create --transform content --format yaml <<'YAML'
+  ant messages create <<'YAML'
   model: claude-opus-5-5
   max_tokens: 1024
   messages:

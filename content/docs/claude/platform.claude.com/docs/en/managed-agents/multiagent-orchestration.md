@@ -112,36 +112,29 @@ When [defining your agent](https://platform.claude.com/docs/en/managed-agents/ag
 <CodeGroup defaultLanguage="CLI">
   <CodeGroupItem>
     ```bash CLI
-    # Create the subagents, then read their IDs from the lockfile.
-    ant apply reviewer.md test-writer.md
-    REVIEWER_AGENT_ID=$(jq -er '.resources["./reviewer.md"].id' claude-lock.json)
-    TEST_WRITER_AGENT_ID=$(jq -er '.resources["./test-writer.md"].id' claude-lock.json)
-
-    # Write the agent's definition, listing each subagent by ID.
-    cat > engineering-lead.md <<EOF
-    ---
-    name: Engineering Lead
-    model: claude-opus-5-5
-    tools:
-      - type: agent_toolset_20260401
-    multiagent:
-      type: multiagent_20261001
-      subagents:
-        type: enabled
-        predefined_agents:
-          - type: agent
-            id: $REVIEWER_AGENT_ID
-          - type: agent
-            id: $TEST_WRITER_AGENT_ID
-    ---
-
-    You coordinate engineering work. Delegate code review to the reviewer agent
-    and test writing to the test agent.
-    EOF
-
-    # Create the agent.
     ant apply engineering-lead.md reviewer.md test-writer.md
     ```
+
+    <File filename="engineering-lead.md">
+      ```markdown
+      ---
+      name: Engineering Lead
+      model: claude-opus-5-5
+      tools:
+        - type: agent_toolset_20260401
+      multiagent:
+        type: multiagent_20261001
+        subagents:
+          type: enabled
+          predefined_agents: # ant apply replaces each path with {type: agent, id, version}
+            - ./reviewer.md
+            - ./test-writer.md
+      ---
+
+      You coordinate engineering work. Delegate code review to the reviewer agent
+      and test writing to the test agent.
+      ```
+    </File>
 
     <File filename="reviewer.md">
       ```markdown
@@ -208,30 +201,25 @@ Create the researcher, which declares the GitHub MCP server, and the agent that 
 <CodeGroup defaultLanguage="CLI">
   <CodeGroupItem>
     ```bash CLI
-    # Create the researcher, then read its ID from the lockfile.
-    ant apply researcher.md
-    research_agent_id=$(jq -er '.resources["./researcher.md"].id' claude-lock.json)
-
-    # Write the agent's definition, listing the researcher by ID.
-    cat > lead.md <<EOF
-    ---
-    name: lead
-    model: claude-opus-5-5
-    tools:
-      - type: agent_toolset_20260401
-    multiagent:
-      type: multiagent_20261001
-      subagents:
-        type: enabled
-        predefined_agents:
-          - type: agent
-            id: $research_agent_id
-    ---
-    EOF
-
-    # Create the agent.
     ant apply lead.md researcher.md
     ```
+
+    <File filename="lead.md">
+      ```markdown
+      ---
+      name: lead
+      model: claude-opus-5-5
+      tools:
+        - type: agent_toolset_20260401
+      multiagent:
+        type: multiagent_20261001
+        subagents:
+          type: enabled
+          predefined_agents: # ant apply replaces each path with {type: agent, id, version}
+            - ./researcher.md
+      ---
+      ```
+    </File>
 
     <File filename="researcher.md">
       ```markdown
@@ -255,12 +243,10 @@ Then create the session with the vault that holds the GitHub credential:
 
 <CodeGroup>
   ```bash CLI
-  session_id=$(ant beta:sessions create \
+  ant beta:sessions create \
     --agent "$lead_agent_id" \
     --environment-id "$environment_id" \
-    --vault-id "$vault_id" \
-    --transform id --raw-output)
-  echo "$session_id"
+    --vault-id "$vault_id"
   ```
 </CodeGroup>
 

@@ -54,8 +54,7 @@ Pre-load a store with reference material before any agent runs:
   ant beta:memory-stores:memories create \
     --memory-store-id "$store_id" \
     --path "/formatting_standards.md" \
-    --content "All reports use GAAP formatting. Dates are ISO-8601..." \
-    > /dev/null
+    --content "All reports use GAAP formatting. Dates are ISO-8601..."
   ```
 </CodeGroup>
 
@@ -168,8 +167,7 @@ See the [Create a memory reference](https://platform.claude.com/docs/en/api/beta
   ant beta:memory-stores:memories update \
     --memory-store-id "$store_id" \
     --memory-id "$mem_id" \
-    --path "/archive/2026_q1_formatting.md" \
-    > /dev/null
+    --path "/archive/2026_q1_formatting.md"
   ```
 </CodeGroup>
 
@@ -185,8 +183,7 @@ To avoid clobbering a concurrent write, pass a `content_sha256` precondition. Th
     --memory-store-id "$store_id" \
     --memory-id "$mem_id" \
     --content "CORRECTED: Always use 2-space indentation." \
-    --precondition "{type: content_sha256, content_sha256: $mem_sha}" \
-    > /dev/null
+    --precondition "{type: content_sha256, content_sha256: $mem_sha}"
   ```
 </CodeGroup>
 
@@ -196,8 +193,7 @@ To avoid clobbering a concurrent write, pass a `content_sha256` precondition. Th
   ```bash CLI
   ant beta:memory-stores:memories delete \
     --memory-store-id "$store_id" \
-    --memory-id "$mem_id" \
-    > /dev/null
+    --memory-id "$mem_id"
   ```
 </CodeGroup>
 

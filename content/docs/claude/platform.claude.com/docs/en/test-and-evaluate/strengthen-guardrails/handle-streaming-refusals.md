@@ -56,18 +56,10 @@ When you receive **`stop_reason`: `refusal`**, you must reset the conversation c
 
 Here's how to detect and handle streaming refusals in your application:
 
-<CodeGroup>
-  ```bash CLI
-  response=$(ant messages create --stream --format jsonl \
-    --model claude-opus-5-5 \
-    --max-tokens 1024 \
-    --message '{role: user, content: Hello}')
-
-  if echo "$response" | jq -e 'select(.delta.stop_reason == "refusal")' >/dev/null; then
-    echo "Response refused - resetting conversation context"
-    # Reset your conversation state here
-  fi
-  ```
+<CodeGroup exclude="shell:cURL, shell:CLI">
+  <CodeGroupItem language="CLI">
+    Detecting a refusal in the stream and resetting the conversation needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+  </CodeGroupItem>
 </CodeGroup>
 
 ## Current refusal types

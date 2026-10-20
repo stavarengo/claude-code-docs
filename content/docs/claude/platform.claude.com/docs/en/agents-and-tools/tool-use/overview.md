@@ -31,65 +31,10 @@ Tools differ primarily by where the code executes. **Client tools** (including u
 
 Here's that round trip in full for a client tool. The first request defines a `get_weather` tool, and Claude answers the question by calling it: the response carries a `tool_use` block, your code runs the lookup, and a second request sends the result back in a `tool_result` block so Claude can reply with the answer.
 
-<CodeGroup>
-  ```bash cURL
-  # Claude replies with a tool_use block naming the tool and its arguments.
-  TOOLS='[
-    {
-      "name": "get_weather",
-      "description": "Get the current weather for a given location.",
-      "input_schema": {
-        "type": "object",
-        "properties": {
-          "location": {"type": "string", "description": "City and state, e.g. San Francisco, CA"}
-        },
-        "required": ["location"]
-      }
-    }
-  ]'
-  USER_MSG="What's the weather in San Francisco?"
-  RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
-    -H "x-api-key: $ANTHROPIC_API_KEY" \
-    -H "anthropic-version: 2023-06-01" \
-    -H "content-type: application/json" \
-    -d "$(jq -n --argjson tools "$TOOLS" --arg msg "$USER_MSG" '{
-      model: "claude-opus-5-5",
-      max_tokens: 1024,
-      tools: $tools,
-      # Ask for at most one tool call per turn.
-      tool_choice: {type: "auto", disable_parallel_tool_use: true},
-      messages: [{role: "user", content: $msg}]
-    }')")
-  TOOL_USE=$(echo "$RESPONSE" | jq '.content[] | select(.type == "tool_use")')
-  echo "Claude called $(echo "$TOOL_USE" | jq -r '.name') with $(echo "$TOOL_USE" | jq -c '.input')"
-
-  # Run the tool, then send the result back in a tool_result block.
-  # Claude uses the result to answer the original question.
-  WEATHER="15 degrees Celsius, partly cloudy"
-  curl -s https://api.anthropic.com/v1/messages \
-    -H "x-api-key: $ANTHROPIC_API_KEY" \
-    -H "anthropic-version: 2023-06-01" \
-    -H "content-type: application/json" \
-    -d "$(jq -n \
-      --argjson tools "$TOOLS" \
-      --arg msg "$USER_MSG" \
-      --argjson assistant "$(echo "$RESPONSE" | jq '.content')" \
-      --arg tool_use_id "$(echo "$TOOL_USE" | jq -r '.id')" \
-      --arg weather "$WEATHER" \
-      '{
-        model: "claude-opus-5-5",
-        max_tokens: 1024,
-        tools: $tools,
-        tool_choice: {type: "auto", disable_parallel_tool_use: true},
-        messages: [
-          {role: "user", content: $msg},
-          {role: "assistant", content: $assistant},
-          {role: "user", content: [
-            {type: "tool_result", tool_use_id: $tool_use_id, content: $weather}
-          ]}
-        ]
-      }')"
-  ```
+<CodeGroup exclude="shell:cURL, shell:CLI">
+  <CodeGroupItem language="cURL">
+    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=curl) to run it.
+  </CodeGroupItem>
 </CodeGroup>
 
 ```text Output wrap

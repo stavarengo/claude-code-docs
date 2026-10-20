@@ -73,22 +73,11 @@ A `page` cursor is opaque and encodes the `order` of the request that produced i
   ```bash CLI
   # --format raw returns one page envelope with its prev_page and next_page
   # cursors; the default output auto-paginates and emits only the sessions.
-  cursors=$(ant beta:sessions list \
-    --agent-id "$AGENT_ID" \
-    --limit 1 \
-    --format raw \
-    --transform '{prev_page,next_page}')
-  printf '%s\n' "$cursors"
-
-  # Pass the next_page cursor back as --page to fetch the next page.
-  NEXT_PAGE=$(jq -r '.next_page' <<< "$cursors")
   ant beta:sessions list \
     --agent-id "$AGENT_ID" \
     --limit 1 \
-    --page "$NEXT_PAGE" \
-    --format raw \
-    --transform '{prev_page,next_page}'
-  # Pass that response's prev_page as --page to go back the same way.
+    --format raw
+  # Pass next_page back as --page to fetch the next page, or prev_page to go back.
   ```
 </CodeGroup>
 

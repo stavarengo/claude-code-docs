@@ -114,11 +114,10 @@ With a `limited` [environment](https://platform.claude.com/docs/en/managed-agent
 
 <CodeGroup>
   ```bash CLI
-  SESSION_ID=$(ant beta:sessions create \
+  ant beta:sessions create \
     --agent "$AGENT_ID" \
     --environment-id "$ENVIRONMENT_ID" \
-    --vault-id "$VAULT_ID" \
-    --transform id --raw-output)
+    --vault-id "$VAULT_ID"
   ```
 </CodeGroup>
 

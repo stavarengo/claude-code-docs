@@ -46,33 +46,10 @@ The `fallback_has_prefill_claim` field tells you whether the retry can continue 
 
 The following example makes a request that may be refused and redeems the credit token on a retry against Claude Opus 4.8. When a retry attempt is rejected, the example degrades through the rejection ladder: the sequence of progressively simpler retry shapes covered in [When a retry is rejected](https://platform.claude.com/docs/en/build-with-claude/fallback-credit?sdk_languages=cli#when-a-retry-is-rejected).
 
-<CodeGroup>
-  ```bash CLI
-  # Initial request (may be refused)
-  response=$(ant beta:messages create \
-    --model claude-fable-5 \
-    --max-tokens 1024 \
-    --message '{"role":"user","content":"Hello, Claude"}' \
-    --beta fallback-credit-2026-07-01 \
-    --format json)
-
-  # A refusal carries a one-time credit token in stop_details
-  token=$(jq -r '.stop_details.fallback_credit_token // empty' <<<"${response}")
-
-  if [[ -n "${token}" ]]; then
-    # Retry on the fallback model with the credit token
-    response=$(ant beta:messages create \
-      --model claude-opus-4-8 \
-      --max-tokens 1024 \
-      --message '{"role":"user","content":"Hello, Claude"}' \
-      --fallback-credit-token "${token}" \
-      --beta fallback-credit-2026-07-01 \
-      --format json)
-  fi
-
-  # See the SDK examples for the full rejection-handling ladder.
-  jq -c '{stop_reason, model}' <<<"${response}"
-  ```
+<CodeGroup exclude="shell:cURL, shell:CLI">
+  <CodeGroupItem language="CLI">
+    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+  </CodeGroupItem>
 </CodeGroup>
 
 ## Where it works
@@ -82,7 +59,7 @@ Fallback credit is in beta on the Claude API, Amazon Bedrock, Claude Platform on
 The retry model must be one of the refused model's permitted fallback targets. For Claude Fable 5.1, Claude Fable 5, and Claude Opus 5.5, those are Claude Opus 4.8 (`claude-opus-4-8`) and Claude Opus 5 (`claude-opus-5`). For Claude Opus 5, it is Claude Opus 4.8. For Claude Sonnet 5.5, it is Claude Sonnet 5 (`claude-sonnet-5`).
 
 <Accordion title="Looking up permitted fallback targets programmatically">
-  On the Claude API and Claude Platform on AWS, the target list is published as `allowed_fallback_models` on each model's entry in the [Models API](https://platform.claude.com/docs/en/api/models/list?sdk_languages=cli) when the `server-side-fallback-2026-07-01` beta header is set. The list is not yet visible under the `fallback-credit-*` header alone. It is not exposed on Amazon Bedrock, Google Cloud, or Microsoft Foundry.
+  On the Claude API and Claude Platform on AWS, the target list is published as `allowed_fallback_models` on each model's entry in the [Models API](https://platform.claude.com/docs/en/api/beta/models/list?sdk_languages=cli) when the `server-side-fallback-2026-07-01` beta header is set. The list is not yet visible under the `fallback-credit-*` header alone. It is not exposed on Amazon Bedrock, Google Cloud, or Microsoft Foundry.
 </Accordion>
 
 ## Checking that the credit applied

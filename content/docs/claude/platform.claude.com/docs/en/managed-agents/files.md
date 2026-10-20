@@ -18,7 +18,7 @@ First, upload a file using the [Files API](https://platform.claude.com/docs/en/b
 
 <CodeGroup>
   ```bash CLI
-  FILE_ID=$(ant files upload --file data.csv --transform id --raw-output)
+  ant files upload --file data.csv
   ```
 </CodeGroup>
 

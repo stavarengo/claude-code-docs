@@ -13,7 +13,13 @@ featureMetadata:
 This guide walks you through creating an agent, setting up an environment, starting a session, and streaming agent responses.
 
 <Tip>
-  **Prefer an interactive walkthrough?** Run `/claude-api managed-agents-onboard` in the latest version of [Claude Code](https://claude.com/product/claude-code) for a guided setup and interactive question-answering.
+  **Prefer an interactive walkthrough?** The latest version of [Claude Code](https://claude.com/product/claude-code) can guide you through the setup and answer your questions:
+
+  Let Claude Code set up your agent for you
+
+  ```text
+  /claude-api managed-agents-onboard
+  ```
 </Tip>
 
 ## Core concepts
@@ -28,7 +34,7 @@ This guide walks you through creating an agent, setting up an environment, start
 ## Prerequisites
 
 * A [Claude Console account](https://platform.claude.com)
-* An [API key](https://platform.claude.com/settings/keys)
+* An [API key](https://platform.claude.com/settings/keys) from the Console
 
 ## Install the CLI
 
@@ -204,13 +210,10 @@ export ANTHROPIC_API_KEY="your-api-key-here"
 
     <CodeGroup>
       ```bash CLI
-      SESSION_ID=$(ant beta:sessions create \
+      ant beta:sessions create \
         --agent "$AGENT_ID" \
         --environment-id "$ENVIRONMENT_ID" \
-        --title "Quickstart session" \
-        --transform id --raw-output)
-
-      echo "Session ID: $SESSION_ID"
+        --title "Quickstart session"
       ```
     </CodeGroup>
   </Step>

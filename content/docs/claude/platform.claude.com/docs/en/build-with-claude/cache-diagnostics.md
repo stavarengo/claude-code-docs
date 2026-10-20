@@ -29,9 +29,8 @@ Include the `diagnostics` object on every turn. The object is the opt-in: the AP
 
 <CodeGroup>
   ```bash CLI
-  # Turn 1
-  turn1=$(ant beta:messages create \
-    --transform '{id,usage,diagnostics}' <<'YAML'
+  # Turn 1: establish the cache and opt in to diagnostics
+  ant beta:messages create <<'YAML'
   model: claude-opus-5-5
   max_tokens: 1024
   cache_control:
@@ -43,13 +42,9 @@ Include the `diagnostics` object on every turn. The object is the opt-in: the AP
   diagnostics:
     previous_message_id: null
   YAML
-  )
-  printf '%s\n' "$turn1"
 
-  # Turn 2: pass the id from turn 1 as previous_message_id
-  message_id=$(jq -r '.id' <<<"$turn1")
-  ant beta:messages create \
-    --transform '{id,usage,diagnostics}' <<YAML
+  # Turn 2: pass the id from the turn 1 response as previous_message_id
+  ant beta:messages create <<YAML
   model: claude-opus-5-5
   max_tokens: 1024
   cache_control:
@@ -75,9 +70,8 @@ In streaming responses, `diagnostics` appears on the `message_start` event.
 <CodeGroup>
   ```bash CLI
   # Turn 2: stream. With --stream the CLI emits each SSE event as one JSON object.
-  # diagnostics arrives on the message_start event; pick it out with jq.
-  ant beta:messages create \
-    --stream --format jsonl <<YAML |
+  # diagnostics arrives on the message_start event.
+  ant beta:messages create --stream <<YAML
   model: claude-opus-5-5
   max_tokens: 1024
   cache_control:
@@ -93,7 +87,6 @@ In streaming responses, `diagnostics` appears on the `message_start` event.
   diagnostics:
     previous_message_id: $message_id
   YAML
-    jq -c 'select(.type == "message_start") | .message | {id,usage,diagnostics}'
   ```
 </CodeGroup>
 

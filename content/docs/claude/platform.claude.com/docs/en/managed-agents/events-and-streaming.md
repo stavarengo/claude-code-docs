@@ -27,10 +27,11 @@ These event type strings follow a `{domain}.{action}` naming convention. See [Ev
 
 Stream events from the session to receive real-time updates as the agent works. A stream delivers only the events emitted after it opens, so open the stream before you send events to avoid a race condition.
 
-<CodeGroup exclude="shell:CLI">
-  <CodeGroupItem language="CLI">
-    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
-  </CodeGroupItem>
+<CodeGroup>
+  ```bash CLI
+  # Open the stream before you send the first event: only later events are delivered.
+  ant beta:sessions:events stream --session-id "$SESSION_ID"
+  ```
 </CodeGroup>
 
 The session reports errors through the `session.error` event. See [Event types](https://platform.claude.com/docs/en/managed-agents/reference?sdk_languages=cli#event-types) for its fields.
@@ -45,7 +46,7 @@ To reconnect to an existing session without missing events, combine a new stream
 2. [List the full event history](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli#list-past-events) to seed a set of seen event IDs.
 3. Tail the live stream, skipping any events already returned by the history list.
 
-<CodeGroup exclude="shell:CLI">
+<CodeGroup exclude="shell:cURL, shell:CLI">
   <CodeGroupItem language="CLI">
     This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
   </CodeGroupItem>
@@ -102,7 +103,7 @@ When you [reconnect](https://platform.claude.com/docs/en/managed-agents/events-a
 
 The following example answers each call as it arrives:
 
-<CodeGroup exclude="shell:CLI">
+<CodeGroup exclude="shell:cURL, shell:CLI">
   <CodeGroupItem language="CLI">
     This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
   </CodeGroupItem>
@@ -116,7 +117,7 @@ Send a `user.tool_confirmation` event, passing the event ID in the `tool_use_id`
 
 The following example approves every pending call:
 
-<CodeGroup exclude="shell:CLI">
+<CodeGroup exclude="shell:cURL, shell:CLI">
   <CodeGroupItem language="CLI">
     This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
   </CodeGroupItem>

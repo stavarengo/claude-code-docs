@@ -246,16 +246,16 @@ anthropic-workspace-id: wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ
 
 The header is absent when the credential doesn't resolve to a workspace (for example, on Admin API requests) or when the request fails before authentication completes, such as a 401 error.
 
-The following examples send a Messages API request and print the workspace ID from the response headers:
+The following examples send a Messages API request and read the workspace ID from the response headers:
 
 <CodeGroup>
   ```bash CLI
   # --debug prints the HTTP response, including the Anthropic-Workspace-Id
-  # header, to stderr; > /dev/null hides the JSON body on stdout
+  # header, to stderr
   ant --debug messages create \
     --model claude-opus-5-5 \
     --max-tokens 1024 \
-    --message '{role: user, content: "Hello, Claude"}' > /dev/null
+    --message '{role: user, content: "Hello, Claude"}'
   ```
 </CodeGroup>
 

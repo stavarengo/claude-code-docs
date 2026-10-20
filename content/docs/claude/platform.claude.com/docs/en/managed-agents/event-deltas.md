@@ -107,7 +107,7 @@ Each SDK's helper handles the `index` bookkeeping. The Go, Java, Ruby, and C# he
 
 The following examples opt in to `agent.message` previews and reconcile them with the buffered event:
 
-<CodeGroup exclude="shell:CLI">
+<CodeGroup exclude="shell:cURL, shell:CLI">
   <CodeGroupItem language="CLI">
     This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
   </CodeGroupItem>
@@ -125,41 +125,12 @@ A thread stream's path ends in `/threads/{thread_id}/stream`. `/events/stream` e
 
 <CodeGroup>
   ```bash CLI
-  # List the session's threads and pick a child: child threads carry a non-null
-  # parent_thread_id, and the primary thread's parent_thread_id is null
-  # (--transform's #(parent_thread_id!=~null) query matches non-null values).
-  THREAD_ID=$(ant beta:sessions:threads list \
-    --session-id "$SESSION_ID" \
-    --format raw --transform 'data.#(parent_thread_id!=~null).id' --raw-output)
-
-  # The child thread's stream takes the same event_deltas parameter as the
-  # session stream, one --event-delta flag per event type to preview. @tostr
-  # re-encodes each text field as a JSON string, so every value stays on one
-  # YAML line and jq's fromjson recovers the original text.
-  transform='{type,frag:delta.content.text|@tostr,text:content.#(type=="text").text|@tostr}'
-  exec {stream}< <(ant beta:sessions:threads:events stream \
+  # The thread stream takes the same event_deltas parameter as the session stream,
+  # one --event-delta flag per event type to preview.
+  ant beta:sessions:threads:events stream \
     --session-id "$SESSION_ID" \
     --thread-id "$THREAD_ID" \
-    --event-delta agent.message \
-    --transform "$transform" \
-    --format yaml)
-
-  type=
-  while IFS= read -r -u "$stream" line; do
-    case "$line" in
-      type:\ session.thread_status_idle) break ;;
-      type:\ *) type=${line#type: } ;;
-      frag:*)
-        [[ $type == event_delta ]] || continue
-        jq -j fromjson <<<"${line#frag: }" ;;
-      text:*)
-        [[ $type == agent.message ]] || continue
-        # The buffered event is the authoritative record; render its content.
-        printf '\n'
-        jq -r fromjson <<<"${line#text: }" ;;
-    esac
-  done
-  exec {stream}<&-
+    --event-delta agent.message
   ```
 </CodeGroup>
 

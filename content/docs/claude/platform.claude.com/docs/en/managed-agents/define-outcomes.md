@@ -69,13 +69,13 @@ The following examples create a [session](https://platform.claude.com/docs/en/ma
 <CodeGroup>
   ```bash CLI
   # Create a session
-  SESSION_ID=$(ant beta:sessions create \
+  ant beta:sessions create \
     --agent "$AGENT_ID" \
     --environment-id "$ENVIRONMENT_ID" \
-    --title "Financial analysis on Costco" \
-    --transform id --raw-output)
+    --title "Financial analysis on Costco"
 
-  # Define the outcome — agent starts working on receipt
+  # Define the outcome: SESSION_ID is the id from the create response
+  # The agent starts working when it receives the event
   ant beta:sessions:events send --session-id "$SESSION_ID" <<YAML
   events:
     - type: user.define_outcome
@@ -197,13 +197,8 @@ The agent writes output files to `/mnt/session/outputs/` inside the sandbox. To 
   # scope_id filtering requires the managed-agents beta on the files request
   ant beta:files list --scope-id "$SESSION_ID" --beta managed-agents-2026-04-01
 
-  # Download a file
-  FILE_ID=$(ant beta:files list --scope-id "$SESSION_ID" \
-    --beta managed-agents-2026-04-01 \
-    --transform 'data[0].id' --raw-output)
-  if [[ -n $FILE_ID ]]; then
-    ant files download --file-id "$FILE_ID" --output /tmp/output.txt
-  fi
+  # Download a file by the ID from the list
+  ant files download --file-id "$FILE_ID" --output /tmp/output.txt
   ```
 </CodeGroup>
 

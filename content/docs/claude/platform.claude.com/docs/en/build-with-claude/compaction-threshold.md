@@ -488,39 +488,10 @@ A long-running conversation might result in multiple compactions. The last compa
 
 You must pass the `compaction` block back to the API on subsequent requests to continue the conversation with the shortened prompt. The simplest approach is to append the entire response content to your messages:
 
-<CodeGroup>
-  ```bash CLI
-  ant beta:messages create \
-    --beta compact-2026-01-12 \
-    --transform content \
-    --format jsonl <<'YAML' > content.json
-  model: claude-opus-5-5
-  max_tokens: 4096
-  messages:
-    - role: user
-      content: Hello, Claude
-  context_management:
-    edits:
-      - type: compact_20260112
-  YAML
-
-  # After receiving a response with a compaction block, append it as the
-  # assistant turn and continue the conversation
-  ant beta:messages create --beta compact-2026-01-12 <<YAML
-  model: claude-opus-5-5
-  max_tokens: 4096
-  messages:
-    - role: user
-      content: Hello, Claude
-    - role: assistant
-      content: $(cat content.json)
-    - role: user
-      content: Now add error handling
-  context_management:
-    edits:
-      - type: compact_20260112
-  YAML
-  ```
+<CodeGroup exclude="shell:cURL, shell:CLI">
+  <CodeGroupItem language="CLI">
+    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+  </CodeGroupItem>
 </CodeGroup>
 
 In Python, use `client.beta.messages`, as the samples on this page do. If you call `client.messages` and serialize blocks yourself, a plain `model_dump()` adds `text: null` and `citations: null` to the `compaction` block. The API then rejects the request with a 400 error (`Extra inputs are not permitted`). Use `to_dict()` or `model_dump(exclude_none=True)` instead. [Continue from the summary](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand?sdk_languages=cli#continue-from-the-summary) gives the same advice for on-demand compaction.
@@ -651,10 +622,8 @@ The token counting endpoint (`/v1/messages/count_tokens`) applies existing `comp
 
 <CodeGroup>
   ```bash CLI
-  CURRENT=$(ant beta:messages count-tokens \
-    --beta compact-2026-01-12 \
-    --transform input_tokens \
-    --raw-output <<'YAML'
+  ant beta:messages count-tokens \
+    --beta compact-2026-01-12 <<'YAML'
   model: claude-opus-5-5
   messages:
     - role: user
@@ -663,24 +632,6 @@ The token counting endpoint (`/v1/messages/count_tokens`) applies existing `comp
     edits:
       - type: compact_20260112
   YAML
-  )
-
-  ORIGINAL=$(ant beta:messages count-tokens \
-    --beta compact-2026-01-12 \
-    --transform context_management.original_input_tokens \
-    --raw-output <<'YAML'
-  model: claude-opus-5-5
-  messages:
-    - role: user
-      content: Hello, Claude
-  context_management:
-    edits:
-      - type: compact_20260112
-  YAML
-  )
-
-  printf 'Current tokens: %s\n' "$CURRENT"
-  printf 'Original tokens: %s\n' "$ORIGINAL"
   ```
 </CodeGroup>
 
@@ -688,57 +639,20 @@ The token counting endpoint (`/v1/messages/count_tokens`) applies existing `comp
 
 Here's a complete example of a long-running conversation with compaction:
 
-<CodeGroup>
-  ```bash CLI
-  # The CLI handles individual turns; maintain the messages array in the
-  # calling script. See the SDK tabs for the full chat() loop. Single-turn
-  # request shape:
-  ant beta:messages create \
-    --beta compact-2026-01-12 \
-    --transform 'content.#(type=="text").text' \
-    --raw-output <<'YAML'
-  model: claude-opus-5-5
-  max_tokens: 4096
-  messages:
-    - role: user
-      content: Help me build a Python web scraper
-  context_management:
-    edits:
-      - type: compact_20260112
-        trigger:
-          type: input_tokens
-          value: 100000
-  YAML
-  ```
+<CodeGroup exclude="shell:cURL, shell:CLI">
+  <CodeGroupItem language="CLI">
+    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+  </CodeGroupItem>
 </CodeGroup>
 
 On Claude Fable 5.1, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5, remove the `thinking` and `redacted_thinking` blocks from any assistant turn you re-insert after the compaction block, or send `thinking.block_binding.prefix_mismatch_behavior: "drop_block"` with the `thinking-binding-controls-2026-08-01` [beta header](https://platform.claude.com/docs/en/api/beta-headers?sdk_languages=cli). Those blocks were produced when the full history was present, so they no longer pass the [conversation check](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli#preserved-in-conversation). Where the check is enforced, the continuation request is rejected with a 400 error. The preserved text and tool blocks can stay as they are. Letting the API summarize everything, without re-inserting earlier turns, avoids this. On Claude Sonnet 5.5, `block_binding` works only with `thinking: {"type": "adaptive"}`. With `between_tools`, remove the blocks instead. On Claude Haiku 5.5, `block_binding` works only with `thinking: {"type": "adaptive"}`, so with `thinking: {"type": "disabled"}`, remove the blocks instead.
 
 Here's an example that uses `pause_after_compaction` to preserve the prior exchange and the current user message (three messages total) instead of summarizing them. It keeps their text and tool blocks unchanged, removes the `thinking` and `redacted_thinking` blocks from the preserved assistant turn, and drops that turn if nothing else is left:
 
-<CodeGroup>
-  ```bash CLI
-  # The CLI handles individual turns; maintain the messages array in the
-  # calling script. See the SDK tabs for the full chat() loop with
-  # pause-and-preserve handling. Single-turn request shape:
-  ant beta:messages create \
-    --beta compact-2026-01-12 \
-    --transform 'content.#(type=="text").text' \
-    --raw-output <<'YAML'
-  model: claude-opus-5-5
-  max_tokens: 4096
-  messages:
-    - role: user
-      content: Help me build a Python web scraper
-  context_management:
-    edits:
-      - type: compact_20260112
-        trigger:
-          type: input_tokens
-          value: 100000
-        pause_after_compaction: true
-  YAML
-  ```
+<CodeGroup exclude="shell:cURL, shell:CLI">
+  <CodeGroupItem language="CLI">
+    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+  </CodeGroupItem>
 </CodeGroup>
 
 ## Current limitations
