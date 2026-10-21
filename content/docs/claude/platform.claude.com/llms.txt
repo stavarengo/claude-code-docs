@@ -12,22 +12,26 @@ https://platform.claude.com
 
 Connect an MCP client to https://platform.claude.com/docs/mcp (Streamable HTTP transport) to search and read these docs. The server card is at https://platform.claude.com/docs/mcp/server-card.
 
+## SDK versions
+
+The latest version of each Claude Platform SDK and of the ant CLI is at https://platform.claude.com/docs/sdk-versions.json, as JSON.
+
 ## Available Languages on Website
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 785 pages - /docs - Content included below
-- German (Deutsch) (de) - 288 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 288 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 288 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 288 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 288 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 288 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 288 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 288 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 288 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 288 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 288 pages - /docs/id - Visit website for content
+- English (en) - 808 pages - /docs - Content included below
+- German (Deutsch) (de) - 292 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 292 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 292 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 292 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 292 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 292 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 292 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 292 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 292 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 292 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 292 pages - /docs/id - Visit website for content
 
 ---
 
@@ -199,11 +203,13 @@ The full documentation is available in the following languages on https://platfo
 - [Organizations, users, roles, groups, and settings](https://platform.claude.com/docs/en/manage-claude/compliance-org-data.md) - List organizations, users, roles, groups, and settings
 - [Manage WIF via API](https://platform.claude.com/docs/en/manage-claude/wif-admin-api.md) - Manage WIF with the Admin API
 - [Overview](https://platform.claude.com/docs/en/manage-claude/opentelemetry.md) - OpenTelemetry for the Claude API
+- [Organization webhooks (beta)](https://platform.claude.com/docs/en/manage-claude/organization-webhooks.md) - Organization webhooks
 - [Plugins API](https://platform.claude.com/docs/en/manage-claude/plugins-api.md)
 - [Activity Feed](https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed.md) - Query the Activity Feed
 - [Rate Limits API](https://platform.claude.com/docs/en/manage-claude/rate-limits-api.md)
 - [Chats, files, and projects](https://platform.claude.com/docs/en/manage-claude/compliance-content-data.md) - Retrieve and delete chats, files, and projects
 - [Session transcripts](https://platform.claude.com/docs/en/manage-claude/compliance-sessions.md) - Retrieve session transcripts
+- [Verification Portal links](https://platform.claude.com/docs/en/manage-claude/user-profiles-verification-portal.md) - Send an end customer a link to the Verification Portal
 - [Claude Platform on AWS](https://platform.claude.com/docs/en/manage-claude/cmek-claude-platform-on-aws.md) - Set up CMEK on Claude Platform on AWS
 - [Get Claude API spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/api.md) - Set up OpenTelemetry with the Claude API
 - [Get Claude SDK spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/sdk.md) - Set up OpenTelemetry with the Claude SDK
@@ -218,6 +224,7 @@ The full documentation is available in the following languages on https://platfo
 - [Okta](https://platform.claude.com/docs/en/manage-claude/wif-providers/okta.md) - Use WIF with Okta
 - [SPIFFE](https://platform.claude.com/docs/en/manage-claude/wif-providers/spiffe.md) - Use WIF with SPIFFE
 - [User management](https://platform.claude.com/docs/en/manage-claude/user-management.md)
+- [User profiles](https://platform.claude.com/docs/en/manage-claude/user-profiles.md) - User profiles for end-customer attribution
 - [Transparency log (beta)](https://platform.claude.com/docs/en/manage-claude/access-transparency-log.md) - Verify Access Transparency events with the transparency log
 - [WIF reference](https://platform.claude.com/docs/en/manage-claude/wif-reference.md)
 - [Workload Identity Federation](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation.md)
@@ -354,6 +361,8 @@ The full documentation is available in the following languages on https://platfo
 ### API Reference
 
 - [Acknowledge Work (Beta)](https://platform.claude.com/docs/en/api/beta/environments/work/ack.md)
+- [Action URLs](https://platform.claude.com/docs/en/api/user_profiles/action_urls.md)
+- [Action URLs (Beta)](https://platform.claude.com/docs/en/api/beta/user_profiles/action_urls.md)
 - [Activities](https://platform.claude.com/docs/en/api/compliance/activities.md)
 - [Add a Telemetry Destination Workspace (Beta)](https://platform.claude.com/docs/en/api/beta/organization/telemetry_destinations/workspaces/add.md)
 - [Add Federation Rule Workspace](https://platform.claude.com/docs/en/api/organization/federation/rules/workspaces/add.md)
@@ -371,7 +380,7 @@ The full documentation is available in the following languages on https://platfo
 - [Apps (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/apps.md)
 - [Archive a Credential (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/credentials/archive.md)
 - [Archive a Dream (Beta)](https://platform.claude.com/docs/en/api/beta/dreams/archive.md)
-- [Archive a memory store (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/archive.md)
+- [Archive a Memory Store (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/archive.md)
 - [Archive a Vault (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/archive.md)
 - [Archive Agent (Beta)](https://platform.claude.com/docs/en/api/beta/agents/archive.md)
 - [Archive Deployment (Beta)](https://platform.claude.com/docs/en/api/beta/deployments/archive.md)
@@ -416,8 +425,8 @@ The full documentation is available in the following languages on https://platfo
 - [Count tokens in a Message (Beta)](https://platform.claude.com/docs/en/api/beta/messages/count_tokens.md)
 - [Create a Credential (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/credentials/create.md)
 - [Create a Dream (Beta)](https://platform.claude.com/docs/en/api/beta/dreams/create.md)
-- [Create a memory (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memories/create.md)
-- [Create a memory store (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/create.md)
+- [Create a Memory (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memories/create.md)
+- [Create a Memory Store (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/create.md)
 - [Create a Message](https://platform.claude.com/docs/en/api/messages/create.md)
 - [Create a Message (Beta)](https://platform.claude.com/docs/en/api/beta/messages/create.md)
 - [Create a Message Batch](https://platform.claude.com/docs/en/api/messages/batches/create.md)
@@ -425,6 +434,8 @@ The full documentation is available in the following languages on https://platfo
 - [Create a Telemetry Destination (Beta)](https://platform.claude.com/docs/en/api/beta/organization/telemetry_destinations/create.md)
 - [Create a Text Completion](https://platform.claude.com/docs/en/api/completions/create.md)
 - [Create a Vault (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/create.md)
+- [Create Action URL](https://platform.claude.com/docs/en/api/user_profiles/action_urls/create.md)
+- [Create Action URL (Beta)](https://platform.claude.com/docs/en/api/beta/user_profiles/action_urls/create.md)
 - [Create Agent (Beta)](https://platform.claude.com/docs/en/api/beta/agents/create.md)
 - [Create Deployment (Beta)](https://platform.claude.com/docs/en/api/beta/deployments/create.md)
 - [Create Enrollment URL (Beta)](https://platform.claude.com/docs/en/api/beta/user_profiles/create_enrollment_url.md)
@@ -437,6 +448,7 @@ The full documentation is available in the following languages on https://platfo
 - [Create Federation Rule (Beta)](https://platform.claude.com/docs/en/api/beta/organization/federation/rules/create.md)
 - [Create Invite](https://platform.claude.com/docs/en/api/organization/invites/create.md)
 - [Create Invite (Beta)](https://platform.claude.com/docs/en/api/beta/organization/invites/create.md)
+- [Create Organization Webhook Endpoint (Beta)](https://platform.claude.com/docs/en/api/beta/organization/webhooks/create.md)
 - [Create Plugin (Beta)](https://platform.claude.com/docs/en/api/beta/organization/plugins/create.md)
 - [Create Plugin Version (Beta)](https://platform.claude.com/docs/en/api/beta/organization/plugins/versions/create.md)
 - [Create RBAC Group (Beta)](https://platform.claude.com/docs/en/api/beta/organization/rbac_groups/create.md)
@@ -452,6 +464,7 @@ The full documentation is available in the following languages on https://platfo
 - [Create Tunnel (Beta)](https://platform.claude.com/docs/en/api/beta/tunnels/create.md)
 - [Create Tunnel Certificate (Beta)](https://platform.claude.com/docs/en/api/beta/tunnels/certificates/create.md)
 - [Create Tunnel Certificate (Beta)](https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/tunnel_certificates/create.md)
+- [Create User Profile](https://platform.claude.com/docs/en/api/user_profiles/create.md)
 - [Create User Profile (Beta)](https://platform.claude.com/docs/en/api/beta/user_profiles/create.md)
 - [Create Workspace](https://platform.claude.com/docs/en/api/organization/workspaces/create.md)
 - [Create Workspace (Beta)](https://platform.claude.com/docs/en/api/beta/organization/workspaces/create.md)
@@ -459,8 +472,8 @@ The full documentation is available in the following languages on https://platfo
 - [Create Workspace Member (Beta)](https://platform.claude.com/docs/en/api/beta/organization/workspaces/members/add.md)
 - [Credentials (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/credentials.md)
 - [Delete a Credential (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/credentials/delete.md)
-- [Delete a memory (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memories/delete.md)
-- [Delete a memory store (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/delete.md)
+- [Delete a Memory (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memories/delete.md)
+- [Delete a Memory Store (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/delete.md)
 - [Delete a Message Batch](https://platform.claude.com/docs/en/api/messages/batches/delete.md)
 - [Delete a Message Batch (Beta)](https://platform.claude.com/docs/en/api/beta/messages/batches/delete.md)
 - [Delete a Telemetry Destination (Beta)](https://platform.claude.com/docs/en/api/beta/organization/telemetry_destinations/delete.md)
@@ -475,6 +488,7 @@ The full documentation is available in the following languages on https://platfo
 - [Delete File (Beta)](https://platform.claude.com/docs/en/api/beta/files/delete.md)
 - [Delete Invite](https://platform.claude.com/docs/en/api/organization/invites/delete.md)
 - [Delete Invite (Beta)](https://platform.claude.com/docs/en/api/beta/organization/invites/delete.md)
+- [Delete Organization Webhook Endpoint (Beta)](https://platform.claude.com/docs/en/api/beta/organization/webhooks/delete.md)
 - [Delete Plugin (Beta)](https://platform.claude.com/docs/en/api/beta/organization/plugins/delete.md)
 - [Delete project](https://platform.claude.com/docs/en/api/compliance/apps/projects/delete.md)
 - [Delete project document](https://platform.claude.com/docs/en/api/compliance/apps/projects/documents/delete.md)
@@ -488,6 +502,8 @@ The full documentation is available in the following languages on https://platfo
 - [Delete Skill Version](https://platform.claude.com/docs/en/api/skills/versions/delete.md)
 - [Delete Skill Version (Beta)](https://platform.claude.com/docs/en/api/beta/skills/versions/delete.md)
 - [Delete Spend Limit (Beta)](https://platform.claude.com/docs/en/api/beta/organization/spend_limits/delete.md)
+- [Delete User Profile](https://platform.claude.com/docs/en/api/user_profiles/delete.md)
+- [Delete User Profile (Beta)](https://platform.claude.com/docs/en/api/beta/user_profiles/delete.md)
 - [Delete Workspace Member](https://platform.claude.com/docs/en/api/organization/workspaces/members/remove.md)
 - [Delete Workspace Member (Beta)](https://platform.claude.com/docs/en/api/beta/organization/workspaces/members/remove.md)
 - [Deny Spend Limit Increase Request (Beta)](https://platform.claude.com/docs/en/api/beta/organization/spend_limits/increase_requests/deny.md)
@@ -552,6 +568,7 @@ The full documentation is available in the following languages on https://platfo
 - [Get Invite](https://platform.claude.com/docs/en/api/organization/invites/retrieve.md)
 - [Get Invite (Beta)](https://platform.claude.com/docs/en/api/beta/organization/invites/retrieve.md)
 - [Get Messages Usage Report (Beta)](https://platform.claude.com/docs/en/api/beta/organization/usage_report/retrieve_messages.md)
+- [Get Organization Webhook Endpoint (Beta)](https://platform.claude.com/docs/en/api/beta/organization/webhooks/retrieve.md)
 - [Get Per-User Cost (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/user_cost_report/list.md)
 - [Get Per-User Token Usage (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/user_usage_report/list.md)
 - [Get Plugin (Beta)](https://platform.claude.com/docs/en/api/beta/organization/plugins/retrieve.md)
@@ -585,6 +602,7 @@ The full documentation is available in the following languages on https://platfo
 - [Get Tunnel Certificate (Beta)](https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/tunnel_certificates/retrieve.md)
 - [Get User](https://platform.claude.com/docs/en/api/organization/users/retrieve.md)
 - [Get User (Beta)](https://platform.claude.com/docs/en/api/beta/organization/users/retrieve.md)
+- [Get User Profile](https://platform.claude.com/docs/en/api/user_profiles/retrieve.md)
 - [Get User Profile (Beta)](https://platform.claude.com/docs/en/api/beta/user_profiles/retrieve.md)
 - [Get Work Item (Beta)](https://platform.claude.com/docs/en/api/beta/environments/work/retrieve.md)
 - [Get Workspace](https://platform.claude.com/docs/en/api/organization/workspaces/retrieve.md)
@@ -628,9 +646,9 @@ The full documentation is available in the following languages on https://platfo
 - [List Invites](https://platform.claude.com/docs/en/api/organization/invites/list.md)
 - [List Invites (Beta)](https://platform.claude.com/docs/en/api/beta/organization/invites/list.md)
 - [List local sessions](https://platform.claude.com/docs/en/api/compliance/apps/sessions/local/list.md)
-- [List memories (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memories/list.md)
-- [List memory stores (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/list.md)
-- [List memory versions (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memory_versions/list.md)
+- [List Memories (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memories/list.md)
+- [List Memory Stores (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/list.md)
+- [List Memory Versions (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memory_versions/list.md)
 - [List Message Batches](https://platform.claude.com/docs/en/api/messages/batches/list.md)
 - [List Message Batches (Beta)](https://platform.claude.com/docs/en/api/beta/messages/batches/list.md)
 - [List Models](https://platform.claude.com/docs/en/api/models/list.md)
@@ -639,6 +657,7 @@ The full documentation is available in the following languages on https://platfo
 - [List Organization Rate Limits](https://platform.claude.com/docs/en/api/organization/rate_limits/list.md)
 - [List Organization Rate Limits (Beta)](https://platform.claude.com/docs/en/api/beta/organization/rate_limits/list.md)
 - [List organization users](https://platform.claude.com/docs/en/api/compliance/organizations/users/list.md)
+- [List Organization Webhook Endpoints (Beta)](https://platform.claude.com/docs/en/api/beta/organization/webhooks/list.md)
 - [List organizations](https://platform.claude.com/docs/en/api/compliance/organizations/list.md)
 - [List Plugin Installation Settings (Beta)](https://platform.claude.com/docs/en/api/beta/organization/plugins/installation_settings/list.md)
 - [List Plugin Marketplaces (Beta)](https://platform.claude.com/docs/en/api/beta/organization/plugin_marketplaces/list.md)
@@ -674,6 +693,7 @@ The full documentation is available in the following languages on https://platfo
 - [List Tunnels (Beta)](https://platform.claude.com/docs/en/api/beta/tunnels/list.md)
 - [List Tunnels (Beta)](https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/list.md)
 - [List User Activity (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/users/list.md)
+- [List User Profiles](https://platform.claude.com/docs/en/api/user_profiles/list.md)
 - [List User Profiles (Beta)](https://platform.claude.com/docs/en/api/beta/user_profiles/list.md)
 - [List Users](https://platform.claude.com/docs/en/api/organization/users/list.md)
 - [List Users (Beta)](https://platform.claude.com/docs/en/api/beta/organization/users/list.md)
@@ -723,7 +743,8 @@ The full documentation is available in the following languages on https://platfo
 - [RBAC Groups (Beta)](https://platform.claude.com/docs/en/api/beta/organization/rbac_groups.md)
 - [RBAC Roles (Beta)](https://platform.claude.com/docs/en/api/beta/organization/rbac_roles.md)
 - [Record Heartbeat (Beta)](https://platform.claude.com/docs/en/api/beta/environments/work/heartbeat.md)
-- [Redact a memory version (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memory_versions/redact.md)
+- [Redact a Memory Version (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memory_versions/redact.md)
+- [Regenerate Organization Webhook Endpoint Signing Secret (Beta)](https://platform.claude.com/docs/en/api/beta/organization/webhooks/regenerate_signing_secret.md)
 - [Remote](https://platform.claude.com/docs/en/api/compliance/apps/sessions/remote.md)
 - [Remove a Telemetry Destination Workspace (Beta)](https://platform.claude.com/docs/en/api/beta/organization/telemetry_destinations/workspaces/remove.md)
 - [Remove Federation Rule Workspace](https://platform.claude.com/docs/en/api/organization/federation/rules/workspaces/remove.md)
@@ -737,9 +758,9 @@ The full documentation is available in the following languages on https://platfo
 - [Resources (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/resources.md)
 - [Retrieve a Credential (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/credentials/retrieve.md)
 - [Retrieve a local session](https://platform.claude.com/docs/en/api/compliance/apps/sessions/local/retrieve.md)
-- [Retrieve a memory (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memories/retrieve.md)
-- [Retrieve a memory store (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/retrieve.md)
-- [Retrieve a memory version (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memory_versions/retrieve.md)
+- [Retrieve a Memory (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memories/retrieve.md)
+- [Retrieve a Memory Store (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/retrieve.md)
+- [Retrieve a Memory Version (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memory_versions/retrieve.md)
 - [Retrieve a Message Batch](https://platform.claude.com/docs/en/api/messages/batches/retrieve.md)
 - [Retrieve a Message Batch (Beta)](https://platform.claude.com/docs/en/api/beta/messages/batches/retrieve.md)
 - [Retrieve a Telemetry Destination (Beta)](https://platform.claude.com/docs/en/api/beta/organization/telemetry_destinations/retrieve.md)
@@ -767,6 +788,8 @@ The full documentation is available in the following languages on https://platfo
 - [Sessions (Beta)](https://platform.claude.com/docs/en/api/beta/sessions.md)
 - [Set Plugin Installation Setting (Beta)](https://platform.claude.com/docs/en/api/beta/organization/plugins/installation_settings/set.md)
 - [Set Spend Limit (Beta)](https://platform.claude.com/docs/en/api/beta/organization/spend_limits/set.md)
+- [Set Workspace Rate Limits](https://platform.claude.com/docs/en/api/organization/workspaces/rate_limits/update.md)
+- [Set Workspace Rate Limits (Beta)](https://platform.claude.com/docs/en/api/beta/organization/workspaces/rate_limits/update.md)
 - [Settings](https://platform.claude.com/docs/en/api/compliance/organizations/settings.md)
 - [Shares (Beta)](https://platform.claude.com/docs/en/api/beta/organization/plugins/shares.md)
 - [Skills](https://platform.claude.com/docs/en/api/skills.md)
@@ -784,8 +807,8 @@ The full documentation is available in the following languages on https://platfo
 - [Tunnels (Beta)](https://platform.claude.com/docs/en/api/beta/tunnels.md)
 - [Unpause Deployment (Beta)](https://platform.claude.com/docs/en/api/beta/deployments/unpause.md)
 - [Update a Credential (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/credentials/update.md)
-- [Update a memory (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memories/update.md)
-- [Update a memory store (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/update.md)
+- [Update a Memory (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/memories/update.md)
+- [Update a Memory Store (Beta)](https://platform.claude.com/docs/en/api/beta/memory_stores/update.md)
 - [Update a Telemetry Destination (Beta)](https://platform.claude.com/docs/en/api/beta/organization/telemetry_destinations/update.md)
 - [Update a Vault (Beta)](https://platform.claude.com/docs/en/api/beta/vaults/update.md)
 - [Update Agent (Beta)](https://platform.claude.com/docs/en/api/beta/agents/update.md)
@@ -801,6 +824,7 @@ The full documentation is available in the following languages on https://platfo
 - [Update Federation Issuer (Beta)](https://platform.claude.com/docs/en/api/beta/organization/federation/issuers/update.md)
 - [Update Federation Rule](https://platform.claude.com/docs/en/api/organization/federation/rules/update.md)
 - [Update Federation Rule (Beta)](https://platform.claude.com/docs/en/api/beta/organization/federation/rules/update.md)
+- [Update Organization Webhook Endpoint (Beta)](https://platform.claude.com/docs/en/api/beta/organization/webhooks/update.md)
 - [Update Plugin (Beta)](https://platform.claude.com/docs/en/api/beta/organization/plugins/update.md)
 - [Update Plugin Marketplace (Beta)](https://platform.claude.com/docs/en/api/beta/organization/plugin_marketplaces/update.md)
 - [Update RBAC Group (Beta)](https://platform.claude.com/docs/en/api/beta/organization/rbac_groups/update.md)
@@ -812,6 +836,7 @@ The full documentation is available in the following languages on https://platfo
 - [Update Session Resource (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/resources/update.md)
 - [Update User](https://platform.claude.com/docs/en/api/organization/users/update.md)
 - [Update User (Beta)](https://platform.claude.com/docs/en/api/beta/organization/users/update.md)
+- [Update User Profile](https://platform.claude.com/docs/en/api/user_profiles/update.md)
 - [Update User Profile (Beta)](https://platform.claude.com/docs/en/api/beta/user_profiles/update.md)
 - [Update Work Item (Beta)](https://platform.claude.com/docs/en/api/beta/environments/work/update.md)
 - [Update Workspace](https://platform.claude.com/docs/en/api/organization/workspaces/update.md)
@@ -824,6 +849,7 @@ The full documentation is available in the following languages on https://platfo
 - [Usage Report (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/usage_report.md)
 - [User Cost Report (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/user_cost_report.md)
 - [User Preferences](https://platform.claude.com/docs/en/api/compliance/organizations/user_preferences.md)
+- [User Profiles](https://platform.claude.com/docs/en/api/user_profiles.md)
 - [User Profiles (Beta)](https://platform.claude.com/docs/en/api/beta/user_profiles.md)
 - [User Usage Report (Beta)](https://platform.claude.com/docs/en/api/beta/organization/analytics/user_usage_report.md)
 - [Users](https://platform.claude.com/docs/en/api/organization/users.md)
@@ -840,6 +866,7 @@ The full documentation is available in the following languages on https://platfo
 - [Versions (Beta)](https://platform.claude.com/docs/en/api/beta/agents/versions.md)
 - [Versions (Beta)](https://platform.claude.com/docs/en/api/beta/skills/versions.md)
 - [Versions (Beta)](https://platform.claude.com/docs/en/api/beta/organization/plugins/versions.md)
+- [Webhooks (Beta)](https://platform.claude.com/docs/en/api/beta/organization/webhooks.md)
 - [Webhooks (Beta)](https://platform.claude.com/docs/en/api/beta/webhooks.md)
 - [Work (Beta)](https://platform.claude.com/docs/en/api/beta/environments/work.md)
 - [Workspaces](https://platform.claude.com/docs/en/api/organization/federation/rules/workspaces.md)

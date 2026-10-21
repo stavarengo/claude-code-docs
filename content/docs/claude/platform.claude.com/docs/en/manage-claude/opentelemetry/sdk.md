@@ -84,14 +84,14 @@ Install or upgrade to the latest version of the Claude SDK:
 
     <CodeGroup exclude="shell, python, typescript, csharp, go, php, ruby">
       ```kotlin Gradle
-      implementation("com.anthropic:anthropic-java:2.73.0")
+      implementation("com.anthropic:anthropic-java:2.75.0")
       ```
 
       ```xml Maven
       <dependency>
           <groupId>com.anthropic</groupId>
           <artifactId>anthropic-java</artifactId>
-          <version>2.73.0</version>
+          <version>2.75.0</version>
       </dependency>
       ```
     </CodeGroup>
@@ -192,10 +192,8 @@ The following example registers a tracer provider that prints each span to the c
   using OpenTelemetry.Trace;
 
   // Register a tracer provider that prints each span to the console.
-  // The SDK emits its spans from the source com.anthropic.sdk.csharp. Add com.anthropic.sdk.csharp*
-  // instead to include the SDK's clients for cloud platforms.
   using var tracerProvider = Sdk.CreateTracerProviderBuilder()
-      .AddSource("com.anthropic.sdk.csharp")
+      .AddSource("com.anthropic.sdk.csharp*")
       .AddConsoleExporter()
       .Build();
 
@@ -416,7 +414,7 @@ The following example shows how to use each option:
   ```csharp C#
   // Use a specific tracer provider: add the SDK's source to it.
   using var tracerProvider = Sdk.CreateTracerProviderBuilder()
-      .AddSource("com.anthropic.sdk.csharp")
+      .AddSource("com.anthropic.sdk.csharp*")
       .AddConsoleExporter()
       .Build();
 
@@ -518,7 +516,12 @@ The following example shows how to use each option:
   ```ruby Ruby
   # Use a specific tracer provider and record content.
   # Setting open_telemetry overrides all ANTHROPIC_OPEN_TELEMETRY* environment variables.
-  client = Anthropic::Client.new(open_telemetry: {tracer_provider: provider, traces: {content_mode: :content}})
+  client = Anthropic::Client.new(
+    open_telemetry: {
+      tracer_provider: OpenTelemetry.tracer_provider,
+      traces: {content_mode: :content}
+    }
+  )
 
   # Turn spans off for one client.
   quiet_client = Anthropic::Client.new(open_telemetry: false)
@@ -604,6 +607,8 @@ To stop the SDK from sending these headers, for example when your HTTP client in
   </CodeGroupItem>
 
   ```csharp C#
+  using System.Diagnostics;
+
   // The SDK writes these headers with .NET's DistributedContextPropagator.
   // The no-output propagator stops these headers for every HttpClient in the process.
   // Set it before you create any client.

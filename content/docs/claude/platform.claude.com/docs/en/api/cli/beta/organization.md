@@ -6536,6 +6536,217 @@ ant beta:organization:workspaces:rate-limits list \
 }
 ```
 
+### Set Workspace Rate Limits
+
+`$ ant beta:organization:workspaces:rate-limits update`
+
+**POST** `/v1/organizations/workspaces/{workspace_id}/rate_limits/{rate_limit_id}`
+
+Set or clear rate-limit overrides for one rate-limit group in a workspace.
+
+Only the limiter types named in `limits` change: an integer `value` sets
+that type's override and `null` clears it. Types not named keep their
+current value. A value above the organization's own limit is stored, but
+the organization limit still applies, so the lower of the two is
+enforced.
+
+Returns the targeted group's entry with this request applied, in the shape
+`GET /v1/organizations/workspaces/{workspace_id}/rate_limits` returns.
+Changes take effect within about an hour.
+
+#### Parameters
+
+- `--workspace-id: string` (path parameter)
+
+  The ID of the workspace.
+
+- `--rate-limit-id: string` (path parameter)
+
+  The `id` of the organization's rate-limit entry to set overrides for.
+
+- `--limit: array of BetaWorkspaceRateLimitUpdateValue`
+
+  Limits to set or clear. Unspecified limit types are unchanged.
+
+  minItems: 1, maxItems: 16
+
+#### Returns
+
+- `beta_workspace_rate_limit: object`
+
+  - `type: "workspace_rate_limit"`
+
+    Object type. Always `workspace_rate_limit` for workspace rate-limit entries.
+
+  - `group: BetaOrganizationRateLimitModelGroup or BetaOrganizationRateLimitBatchGroup or BetaOrganizationRateLimitTokenCountGroup or 3 more`
+
+    The rate-limit group this entry's limits apply to. Its `type` equals `group_type`.
+
+    - `beta_organization_rate_limit_model_group: object`
+
+      - `type: "model_group"`
+
+        Always `model_group`: a family of models.
+
+      - `id: string`
+
+        Opaque identifier of the rate-limit group (for example, `rlg_01VPTCmyiu5ZLsWkcxYG2pY8`). It is the same in every organization and never changes, unlike the entry's own identifier, which differs per organization.
+
+      - `display_name: string`
+
+        Human-readable name of the model group (for example, `Claude Sonnet 4.x`). For display only; it may change.
+
+    - `beta_organization_rate_limit_batch_group: object`
+
+      - `type: "batch"`
+
+        Always `batch`: the Message Batches API.
+
+      - `id: string`
+
+        Opaque identifier of the rate-limit group (for example, `rlg_01VPTCmyiu5ZLsWkcxYG2pY8`). It is the same in every organization and never changes, unlike the entry's own identifier, which differs per organization.
+
+    - `beta_organization_rate_limit_token_count_group: object`
+
+      - `type: "token_count"`
+
+        Always `token_count`: the Token Count API.
+
+      - `id: string`
+
+        Opaque identifier of the rate-limit group (for example, `rlg_01VPTCmyiu5ZLsWkcxYG2pY8`). It is the same in every organization and never changes, unlike the entry's own identifier, which differs per organization.
+
+    - `beta_organization_rate_limit_files_group: object`
+
+      - `type: "files"`
+
+        Always `files`: the Files API.
+
+      - `id: string`
+
+        Opaque identifier of the rate-limit group (for example, `rlg_01VPTCmyiu5ZLsWkcxYG2pY8`). It is the same in every organization and never changes, unlike the entry's own identifier, which differs per organization.
+
+    - `beta_organization_rate_limit_skills_group: object`
+
+      - `type: "skills"`
+
+        Always `skills`: the Skills API.
+
+      - `id: string`
+
+        Opaque identifier of the rate-limit group (for example, `rlg_01VPTCmyiu5ZLsWkcxYG2pY8`). It is the same in every organization and never changes, unlike the entry's own identifier, which differs per organization.
+
+    - `beta_organization_rate_limit_web_search_group: object`
+
+      - `type: "web_search"`
+
+        Always `web_search`: the Messages API web search tool.
+
+      - `id: string`
+
+        Opaque identifier of the rate-limit group (for example, `rlg_01VPTCmyiu5ZLsWkcxYG2pY8`). It is the same in every organization and never changes, unlike the entry's own identifier, which differs per organization.
+
+  - `limits: array of BetaWorkspaceRateLimitValue`
+
+    The workspace's limiter values for this group. By default only the limiter types with a workspace-level override are listed. With `include_inherited` set to `true`, the limiter types the workspace inherits from the organization are listed too, each marked by `source`.
+
+    - `type: string`
+
+      The limiter type (for example, `requests_per_minute` or `input_tokens_per_minute`).
+
+    - `org_limit: number`
+
+      The organization-level value for the same limiter type, for reference. `null` when the organization has no limit configured for this limiter type.
+
+    - `source: BetaWorkspaceRateLimitWorkspaceSource or BetaWorkspaceRateLimitOrganizationSource`
+
+      Where `value` comes from. `organization` values are listed only when `include_inherited` is `true`, and then `value` equals `org_limit`.
+
+      - `beta_workspace_rate_limit_workspace_source: object`
+
+        - `type: "workspace"`
+
+          Always `workspace`: a workspace-level override is stored.
+
+      - `beta_workspace_rate_limit_organization_source: object`
+
+        - `type: "organization"`
+
+          Always `organization`: no workspace-level override is stored, so the organization's value applies.
+
+    - `value: number`
+
+      The workspace's value for this limiter type: the workspace-level override when `source.type` is `workspace`, otherwise the organization's value.
+
+  - `models: array of string`
+
+    Model names this entry's limits apply to, including aliases. `null` when `group_type` is not `"model_group"`.
+
+  - `rate_limit_id: string`
+
+    The `id` of the organization's RateLimit entry this entry applies to.
+
+  - `workspace_id: string`
+
+    ID of the Workspace this entry applies to.
+
+  - `group_type: "batch" or "files" or "model_group" or 3 more`
+
+    **Deprecated**: Use `group.type` instead. `group_type` is still returned and always equals `group.type`.
+
+    Deprecated: use `group.type` instead. The kind of rate-limit group this entry represents. `model_group` entries apply to a family of models (listed in `models`); other values apply to an API-surface category and have `models` set to `null`. Always equal to `group.type`.
+
+    - `"batch"`
+
+    - `"files"`
+
+    - `"model_group"`
+
+    - `"skills"`
+
+    - `"token_count"`
+
+    - `"web_search"`
+
+#### Example
+
+```bash
+ant beta:organization:workspaces:rate-limits update \
+  --api-key my-anthropic-api-key \
+  --workspace-id workspace_id \
+  --rate-limit-id rate_limit_id \
+  --limit '{type: fast_itpmca, value: 0}'
+```
+
+##### Response (200)
+
+```json
+{
+  "group": {
+    "id": "id",
+    "display_name": "display_name",
+    "type": "model_group"
+  },
+  "group_type": "batch",
+  "limits": [
+    {
+      "org_limit": 0,
+      "source": {
+        "type": "workspace"
+      },
+      "type": "type",
+      "value": 0
+    }
+  ],
+  "models": [
+    "string"
+  ],
+  "rate_limit_id": "rate_limit_id",
+  "type": "workspace_rate_limit",
+  "workspace_id": "workspace_id"
+}
+```
+
 ## Organization › Workspaces › Members
 
 ### List Workspace Members
@@ -7418,7 +7629,7 @@ the remaining entries.
 
     - `id: string`
 
-      Identifier of this rate-limit entry. It is stable within the organization and differs between organizations; the group's own identifier is `group.id`.
+      Identifier of this rate-limit entry. It is stable within the organization and differs between organizations; the group's own identifier is `group.id`. Pass it as `rate_limit_id` to set a workspace's overrides for this group.
 
     - `group: BetaOrganizationRateLimitModelGroup or BetaOrganizationRateLimitBatchGroup or BetaOrganizationRateLimitTokenCountGroup or 3 more`
 
@@ -18709,5 +18920,602 @@ ant beta:organization:telemetry-destinations:workspaces remove \
   "telemetry_destination_id": "telemetry_destination_id",
   "type": "telemetry_destination_workspace_deleted",
   "workspace_id": "workspace_id"
+}
+```
+
+## Organization › Webhooks
+
+### Create Organization Webhook Endpoint
+
+`$ ant beta:organization:webhooks create`
+
+**POST** `/v1/organizations/webhooks`
+
+Create an organization webhook endpoint.
+
+An organization webhook endpoint belongs to the organization rather than to one of its workspaces. An organization can have at most 32 organization
+webhook endpoints, enabled or disabled.
+
+The response includes the endpoint's signing secret. No read returns it, so store
+it when you receive it.
+
+Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`. A request without it returns `404`, exactly as if this API did not exist. Anthropic turns organization webhook endpoints on for each organization; until yours is on, requests also return `404`. Organization webhook endpoints are in beta and are not available to organizations with HIPAA readiness enabled.
+
+#### Parameters
+
+- `--enabled-event: array of "user_profile.enforcement_action_opened" or "user_profile.enforcement_action_resolved"`
+
+  The event types to deliver to the endpoint. Must list at least one.
+
+- `--url: string`
+
+  The HTTPS URL that deliveries are sent to.
+
+  minLength: 1
+
+- `--description: optional string`
+
+  Notes about the endpoint.
+
+- `--name: optional string`
+
+  A short label for the endpoint.
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  This endpoint is in beta: requests must send `webhooks-2026-10-07` in this header.
+
+#### Returns
+
+- `beta_new_organization_webhook_endpoint: object`
+
+  A new organization webhook endpoint, with its signing secret.
+
+  - `id: string`
+
+    ID of the webhook endpoint.
+
+  - `created_at: string`
+
+    When the endpoint was created, in RFC 3339 format.
+
+    format: date-time
+
+  - `description: string`
+
+    Notes about the endpoint. An empty string when none were given.
+
+  - `disabled_reason: string`
+
+    Why Anthropic disabled the endpoint automatically. An empty string when the endpoint is enabled, or when you disabled it.
+
+  - `enabled_events: array of "user_profile.enforcement_action_opened" or "user_profile.enforcement_action_resolved"`
+
+    The event types delivered to the endpoint.
+
+    - `"user_profile.enforcement_action_opened"`
+
+    - `"user_profile.enforcement_action_resolved"`
+
+  - `name: string`
+
+    A short label for the endpoint. An empty string when none was given.
+
+  - `signing_secret: string`
+
+    The secret Anthropic signs deliveries to the endpoint with (prefix `whsec_`). No other response returns it, so store it now. To replace it, regenerate the signing secret.
+
+  - `state: "disabled" or "enabled"`
+
+    Whether deliveries are sent to the endpoint.
+
+    - `"disabled"`
+
+    - `"enabled"`
+
+  - `updated_at: string`
+
+    When the endpoint was last changed, in RFC 3339 format.
+
+    format: date-time
+
+  - `url: string`
+
+    The HTTPS URL that deliveries are sent to.
+
+#### Example
+
+```bash
+ant beta:organization:webhooks create \
+  --api-key my-anthropic-api-key \
+  --enabled-event user_profile.enforcement_action_opened \
+  --url x
+```
+
+##### Response (200)
+
+```json
+{
+  "id": "id",
+  "created_at": "2019-12-27T18:11:19.117Z",
+  "description": "description",
+  "disabled_reason": "disabled_reason",
+  "enabled_events": [
+    "user_profile.enforcement_action_opened"
+  ],
+  "name": "name",
+  "signing_secret": "signing_secret",
+  "state": "disabled",
+  "updated_at": "2019-12-27T18:11:19.117Z",
+  "url": "url"
+}
+```
+
+### List Organization Webhook Endpoints
+
+`$ ant beta:organization:webhooks list`
+
+**GET** `/v1/organizations/webhooks`
+
+List the organization's webhook endpoints.
+
+An organization webhook endpoint belongs to the organization rather than to one of its workspaces. The list does not include webhook endpoints that
+belong to a workspace.
+
+Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`. A request without it returns `404`, exactly as if this API did not exist. Anthropic turns organization webhook endpoints on for each organization; until yours is on, requests also return `404`. Organization webhook endpoints are in beta and are not available to organizations with HIPAA readiness enabled.
+
+#### Parameters
+
+- `--after-id: optional string` (query parameter)
+
+  ID of the object to use as a cursor for pagination. When provided, returns the page of results immediately after this object.
+
+- `--before-id: optional string` (query parameter)
+
+  ID of a webhook endpoint to use as a cursor. Returns the first `limit` endpoints that come before it in list order, not the `limit` endpoints just before it.
+
+- `--limit: optional number` (query parameter)
+
+  Number of items to return per page, up to `100`. The default, `0`, means `20`.
+
+  minimum: 0, maximum: 100
+
+- `--order: optional "asc" or "desc"` (query parameter)
+
+  Sort order by `created_at`. Defaults to `desc`, newest first.
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  This endpoint is in beta: requests must send `webhooks-2026-10-07` in this header.
+
+#### Returns
+
+- `BetaOrganizationWebhookEndpointList: object`
+
+  A page of organization webhook endpoints.
+
+  - `data: array of BetaOrganizationWebhookEndpoint`
+
+    The organization webhook endpoints on this page.
+
+    - `id: string`
+
+      ID of the webhook endpoint.
+
+    - `created_at: string`
+
+      When the endpoint was created, in RFC 3339 format.
+
+      format: date-time
+
+    - `description: string`
+
+      Notes about the endpoint. An empty string when none were given.
+
+    - `disabled_reason: string`
+
+      Why Anthropic disabled the endpoint automatically. An empty string when the endpoint is enabled, or when you disabled it.
+
+    - `enabled_events: array of "user_profile.enforcement_action_opened" or "user_profile.enforcement_action_resolved"`
+
+      The event types delivered to the endpoint.
+
+      - `"user_profile.enforcement_action_opened"`
+
+      - `"user_profile.enforcement_action_resolved"`
+
+    - `name: string`
+
+      A short label for the endpoint. An empty string when none was given.
+
+    - `state: "disabled" or "enabled"`
+
+      Whether deliveries are sent to the endpoint.
+
+      - `"disabled"`
+
+      - `"enabled"`
+
+    - `updated_at: string`
+
+      When the endpoint was last changed, in RFC 3339 format.
+
+      format: date-time
+
+    - `url: string`
+
+      The HTTPS URL that deliveries are sent to.
+
+  - `has_more: boolean`
+
+    Whether more endpoints follow this page in list order. With `before_id`, only endpoints before the cursor count.
+
+  - `first_id: optional string`
+
+    First ID in the `data` list.
+
+  - `last_id: optional string`
+
+    Last ID in the `data` list. Can be used as the `after_id` for the next page.
+
+#### Example
+
+```bash
+ant beta:organization:webhooks list \
+  --api-key my-anthropic-api-key
+```
+
+##### Response (200)
+
+```json
+{
+  "data": [
+    {
+      "id": "id",
+      "created_at": "2019-12-27T18:11:19.117Z",
+      "description": "description",
+      "disabled_reason": "disabled_reason",
+      "enabled_events": [
+        "user_profile.enforcement_action_opened"
+      ],
+      "name": "name",
+      "state": "disabled",
+      "updated_at": "2019-12-27T18:11:19.117Z",
+      "url": "url"
+    }
+  ],
+  "has_more": true,
+  "first_id": "first_id",
+  "last_id": "last_id"
+}
+```
+
+### Get Organization Webhook Endpoint
+
+`$ ant beta:organization:webhooks retrieve`
+
+**GET** `/v1/organizations/webhooks/{webhook_endpoint_id}`
+
+Retrieve an organization webhook endpoint by ID.
+
+Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`. A request without it returns `404`, exactly as if this API did not exist. Anthropic turns organization webhook endpoints on for each organization; until yours is on, requests also return `404`. Organization webhook endpoints are in beta and are not available to organizations with HIPAA readiness enabled.
+
+#### Parameters
+
+- `--webhook-endpoint-id: string` (path parameter)
+
+  ID of the webhook endpoint.
+
+  maxLength: 2048
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  This endpoint is in beta: requests must send `webhooks-2026-10-07` in this header.
+
+#### Returns
+
+- `beta_organization_webhook_endpoint: object`
+
+  A webhook endpoint that belongs to the organization rather than to one of
+  its workspaces.
+
+  - `id: string`
+
+    ID of the webhook endpoint.
+
+  - `created_at: string`
+
+    When the endpoint was created, in RFC 3339 format.
+
+    format: date-time
+
+  - `description: string`
+
+    Notes about the endpoint. An empty string when none were given.
+
+  - `disabled_reason: string`
+
+    Why Anthropic disabled the endpoint automatically. An empty string when the endpoint is enabled, or when you disabled it.
+
+  - `enabled_events: array of "user_profile.enforcement_action_opened" or "user_profile.enforcement_action_resolved"`
+
+    The event types delivered to the endpoint.
+
+    - `"user_profile.enforcement_action_opened"`
+
+    - `"user_profile.enforcement_action_resolved"`
+
+  - `name: string`
+
+    A short label for the endpoint. An empty string when none was given.
+
+  - `state: "disabled" or "enabled"`
+
+    Whether deliveries are sent to the endpoint.
+
+    - `"disabled"`
+
+    - `"enabled"`
+
+  - `updated_at: string`
+
+    When the endpoint was last changed, in RFC 3339 format.
+
+    format: date-time
+
+  - `url: string`
+
+    The HTTPS URL that deliveries are sent to.
+
+#### Example
+
+```bash
+ant beta:organization:webhooks retrieve \
+  --api-key my-anthropic-api-key \
+  --webhook-endpoint-id webhook_endpoint_id
+```
+
+##### Response (200)
+
+```json
+{
+  "id": "id",
+  "created_at": "2019-12-27T18:11:19.117Z",
+  "description": "description",
+  "disabled_reason": "disabled_reason",
+  "enabled_events": [
+    "user_profile.enforcement_action_opened"
+  ],
+  "name": "name",
+  "state": "disabled",
+  "updated_at": "2019-12-27T18:11:19.117Z",
+  "url": "url"
+}
+```
+
+### Update Organization Webhook Endpoint
+
+`$ ant beta:organization:webhooks update`
+
+**POST** `/v1/organizations/webhooks/{webhook_endpoint_id}`
+
+Update an organization webhook endpoint. Only the fields you send are changed.
+
+Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`. A request without it returns `404`, exactly as if this API did not exist. Anthropic turns organization webhook endpoints on for each organization; until yours is on, requests also return `404`. Organization webhook endpoints are in beta and are not available to organizations with HIPAA readiness enabled.
+
+#### Parameters
+
+- `--webhook-endpoint-id: string` (path parameter)
+
+  ID of the webhook endpoint.
+
+  maxLength: 2048
+
+- `--description: optional string`
+
+  Notes about the endpoint.
+
+- `--enabled-event: optional array of "user_profile.enforcement_action_opened" or "user_profile.enforcement_action_resolved"`
+
+  The event types to deliver to the endpoint. Replaces the whole set; an empty list leaves it unchanged.
+
+- `--name: optional string`
+
+  A short label for the endpoint.
+
+- `--state: optional "disabled" or "enabled"`
+
+  `disabled` stops deliveries. `enabled` resumes them and clears `disabled_reason`. Events that happen while the endpoint is disabled are never delivered.
+
+- `--url: optional string`
+
+  The HTTPS URL that deliveries are sent to.
+
+  minLength: 1
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  This endpoint is in beta: requests must send `webhooks-2026-10-07` in this header.
+
+#### Returns
+
+- `beta_organization_webhook_endpoint: object`
+
+  A webhook endpoint that belongs to the organization rather than to one of
+  its workspaces.
+
+  - `id: string`
+
+    ID of the webhook endpoint.
+
+  - `created_at: string`
+
+    When the endpoint was created, in RFC 3339 format.
+
+    format: date-time
+
+  - `description: string`
+
+    Notes about the endpoint. An empty string when none were given.
+
+  - `disabled_reason: string`
+
+    Why Anthropic disabled the endpoint automatically. An empty string when the endpoint is enabled, or when you disabled it.
+
+  - `enabled_events: array of "user_profile.enforcement_action_opened" or "user_profile.enforcement_action_resolved"`
+
+    The event types delivered to the endpoint.
+
+    - `"user_profile.enforcement_action_opened"`
+
+    - `"user_profile.enforcement_action_resolved"`
+
+  - `name: string`
+
+    A short label for the endpoint. An empty string when none was given.
+
+  - `state: "disabled" or "enabled"`
+
+    Whether deliveries are sent to the endpoint.
+
+    - `"disabled"`
+
+    - `"enabled"`
+
+  - `updated_at: string`
+
+    When the endpoint was last changed, in RFC 3339 format.
+
+    format: date-time
+
+  - `url: string`
+
+    The HTTPS URL that deliveries are sent to.
+
+#### Example
+
+```bash
+ant beta:organization:webhooks update \
+  --api-key my-anthropic-api-key \
+  --webhook-endpoint-id webhook_endpoint_id
+```
+
+##### Response (200)
+
+```json
+{
+  "id": "id",
+  "created_at": "2019-12-27T18:11:19.117Z",
+  "description": "description",
+  "disabled_reason": "disabled_reason",
+  "enabled_events": [
+    "user_profile.enforcement_action_opened"
+  ],
+  "name": "name",
+  "state": "disabled",
+  "updated_at": "2019-12-27T18:11:19.117Z",
+  "url": "url"
+}
+```
+
+### Delete Organization Webhook Endpoint
+
+`$ ant beta:organization:webhooks delete`
+
+**DELETE** `/v1/organizations/webhooks/{webhook_endpoint_id}`
+
+Delete an organization webhook endpoint.
+
+Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`. A request without it returns `404`, exactly as if this API did not exist. Anthropic turns organization webhook endpoints on for each organization; until yours is on, requests also return `404`. Organization webhook endpoints are in beta and are not available to organizations with HIPAA readiness enabled.
+
+#### Parameters
+
+- `--webhook-endpoint-id: string` (path parameter)
+
+  ID of the webhook endpoint.
+
+  maxLength: 2048
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  This endpoint is in beta: requests must send `webhooks-2026-10-07` in this header.
+
+#### Returns
+
+- `beta_deleted_organization_webhook_endpoint: object`
+
+  A deleted organization webhook endpoint.
+
+  - `type: "webhook_endpoint_deleted"`
+
+    Always `webhook_endpoint_deleted`.
+
+  - `id: string`
+
+    ID of the deleted webhook endpoint.
+
+#### Example
+
+```bash
+ant beta:organization:webhooks delete \
+  --api-key my-anthropic-api-key \
+  --webhook-endpoint-id webhook_endpoint_id
+```
+
+##### Response (200)
+
+```json
+{
+  "id": "id",
+  "type": "webhook_endpoint_deleted"
+}
+```
+
+### Regenerate Organization Webhook Endpoint Signing Secret
+
+`$ ant beta:organization:webhooks regenerate-signing-secret`
+
+**POST** `/v1/organizations/webhooks/{webhook_endpoint_id}/regenerate_signing_secret`
+
+Replace an organization webhook endpoint's signing secret. The old secret stops
+working immediately. The new secret is returned only in this response.
+
+Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`. A request without it returns `404`, exactly as if this API did not exist. Anthropic turns organization webhook endpoints on for each organization; until yours is on, requests also return `404`. Organization webhook endpoints are in beta and are not available to organizations with HIPAA readiness enabled.
+
+#### Parameters
+
+- `--webhook-endpoint-id: string` (path parameter)
+
+  ID of the webhook endpoint.
+
+  maxLength: 2048
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  This endpoint is in beta: requests must send `webhooks-2026-10-07` in this header.
+
+#### Returns
+
+- `beta_organization_webhook_endpoint_signing_secret: object`
+
+  An organization webhook endpoint's new signing secret.
+
+  - `signing_secret: string`
+
+    The new signing secret. Deliveries are signed with it from now on, and no other response returns it.
+
+#### Example
+
+```bash
+ant beta:organization:webhooks regenerate-signing-secret \
+  --api-key my-anthropic-api-key \
+  --webhook-endpoint-id webhook_endpoint_id
+```
+
+##### Response (200)
+
+```json
+{
+  "signing_secret": "signing_secret"
 }
 ```

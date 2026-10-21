@@ -12,6 +12,12 @@ The Claude Platform release notes list changes to the Claude API, the client SDK
   For updates to Claude Code, see the [complete CHANGELOG.md](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) in the `claude-code` repository.
 </Tip>
 
+### October 20, 2026
+
+* [Inference hooks](https://platform.claude.com/docs/en/manage-claude/inference-hooks?sdk_languages=cli) are out of beta for Claude Enterprise organizations.
+* We've launched [user profiles](https://platform.claude.com/docs/en/manage-claude/user-profiles?sdk_languages=cli), so you can tell Anthropic which of your end customers each API request is for. If you operate a platform or gateway, or resell API access, a safety enforcement action can then apply to one end customer instead of your whole organization. The SDK and the `ant` CLI support the new [`/v1/user_profiles` endpoints](https://platform.claude.com/docs/en/api/user_profiles?sdk_languages=cli).
+* We've added [organization webhooks](https://platform.claude.com/docs/en/manage-claude/organization-webhooks?sdk_languages=cli) to the [Admin API](https://platform.claude.com/docs/en/manage-claude/admin-api?sdk_languages=cli), in beta with the `webhooks-2026-10-07` beta header. Its [`/v1/organizations/webhooks` endpoints](https://platform.claude.com/docs/en/api/beta/organization/webhooks?sdk_languages=cli) register webhook endpoints for two event types: one for when Anthropic restricts or bans one of your organization's user profiles, and one for when the restriction or ban ends. To request access, contact your Anthropic account team.
+
 ### October 15, 2026
 
 * We've added `capabilities.thinking.types.between_tools` to the [Models API](https://platform.claude.com/docs/en/api/models/list?sdk_languages=cli). `GET /v1/models` and `GET /v1/models/{model_id}` now report whether each model accepts `thinking: {type: "between_tools"}`, which turns off up-front thinking. See [Using the Models API](https://platform.claude.com/docs/en/models/overview?sdk_languages=cli#using-the-models-api).
@@ -22,8 +28,7 @@ The Claude Platform release notes list changes to the Claude API, the client SDK
 ### October 14, 2026
 
 * We've launched [OpenTelemetry export](https://platform.claude.com/docs/en/manage-claude/opentelemetry?sdk_languages=cli) in beta, so you can trace Messages API requests and Claude Managed Agents sessions in your observability backend. The Claude SDK emits spans in Python, TypeScript, C#, Go, Java, PHP, and Ruby. To get spans from the API, [add an OpenTelemetry destination](https://platform.claude.com/docs/en/manage-claude/opentelemetry/api?sdk_languages=cli#add-a-destination) in the Claude Console.
-
-- Claude Managed Agents [scheduled deployments](https://platform.claude.com/docs/en/managed-agents/scheduled-deployments?sdk_languages=cli) are now available on [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli#claude-managed-agents).
+* Claude Managed Agents [scheduled deployments](https://platform.claude.com/docs/en/managed-agents/scheduled-deployments?sdk_languages=cli) are now available on [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli#claude-managed-agents).
 
 ### October 9, 2026
 

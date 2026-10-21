@@ -1182,7 +1182,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
               - `"input_text"`
 
-            - `prompt_cache_breakpoint: optional object { mode }  or null`
+            - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
               Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -1191,6 +1191,14 @@ Schema name: `BetaResponsesClientEventResponseCreate`
                 The breakpoint mode. Always `explicit`.
 
                 - `"explicit"`
+
+              - `ttl: optional "30m" or "12h"`
+
+                The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                - `"30m"`
+
+                - `"12h"`
 
           - `BetaResponseInputImageContent object { type, detail, file_id, 2 more }`
 
@@ -1214,7 +1222,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
               The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
-            - `prompt_cache_breakpoint: optional object { mode }  or null`
+            - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
               Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -1223,6 +1231,14 @@ Schema name: `BetaResponsesClientEventResponseCreate`
                 The breakpoint mode. Always `explicit`.
 
                 - `"explicit"`
+
+              - `ttl: optional "30m" or "12h"`
+
+                The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                - `"30m"`
+
+                - `"12h"`
 
           - `BetaResponseInputFileContent object { type, detail, file_data, 4 more }`
 
@@ -1260,7 +1276,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
               The name of the file to be sent to the model.
 
-            - `prompt_cache_breakpoint: optional object { mode }  or null`
+            - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
               Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -1269,6 +1285,14 @@ Schema name: `BetaResponsesClientEventResponseCreate`
                 The breakpoint mode. Always `explicit`.
 
                 - `"explicit"`
+
+              - `ttl: optional "30m" or "12h"`
+
+                The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                - `"30m"`
+
+                - `"12h"`
 
       - `type: "function_call_output"`
 
@@ -7035,7 +7059,7 @@ Schema name: `BetaResponseSteerEvent`
 
               - `"input_text"`
 
-            - `prompt_cache_breakpoint: optional object { mode }  or null`
+            - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
               Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -7044,6 +7068,14 @@ Schema name: `BetaResponseSteerEvent`
                 The breakpoint mode. Always `explicit`.
 
                 - `"explicit"`
+
+              - `ttl: optional "30m" or "12h"`
+
+                The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                - `"30m"`
+
+                - `"12h"`
 
           - `BetaResponseInputImageContent object { type, detail, file_id, 2 more }`
 
@@ -7075,7 +7107,7 @@ Schema name: `BetaResponseSteerEvent`
 
               The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
-            - `prompt_cache_breakpoint: optional object { mode }  or null`
+            - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
               Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -7084,6 +7116,14 @@ Schema name: `BetaResponseSteerEvent`
                 The breakpoint mode. Always `explicit`.
 
                 - `"explicit"`
+
+              - `ttl: optional "30m" or "12h"`
+
+                The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                - `"30m"`
+
+                - `"12h"`
 
           - `BetaResponseInputFileContent object { type, detail, file_data, 4 more }`
 
@@ -7121,7 +7161,7 @@ Schema name: `BetaResponseSteerEvent`
 
               The name of the file to be sent to the model.
 
-            - `prompt_cache_breakpoint: optional object { mode }  or null`
+            - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
               Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -7130,6 +7170,14 @@ Schema name: `BetaResponseSteerEvent`
                 The breakpoint mode. Always `explicit`.
 
                 - `"explicit"`
+
+              - `ttl: optional "30m" or "12h"`
+
+                The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                - `"30m"`
+
+                - `"12h"`
 
         - `string`
 
@@ -8353,7 +8401,7 @@ Schema name: `BetaResponseInjectEvent`
 
             - `"input_text"`
 
-          - `prompt_cache_breakpoint: optional object { mode }  or null`
+          - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
             Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -8362,6 +8410,14 @@ Schema name: `BetaResponseInjectEvent`
               The breakpoint mode. Always `explicit`.
 
               - `"explicit"`
+
+            - `ttl: optional "30m" or "12h"`
+
+              The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+              - `"30m"`
+
+              - `"12h"`
 
         - `BetaResponseInputImageContent object { type, detail, file_id, 2 more }`
 
@@ -8385,7 +8441,7 @@ Schema name: `BetaResponseInjectEvent`
 
             The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
-          - `prompt_cache_breakpoint: optional object { mode }  or null`
+          - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
             Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -8394,6 +8450,14 @@ Schema name: `BetaResponseInjectEvent`
               The breakpoint mode. Always `explicit`.
 
               - `"explicit"`
+
+            - `ttl: optional "30m" or "12h"`
+
+              The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+              - `"30m"`
+
+              - `"12h"`
 
         - `BetaResponseInputFileContent object { type, detail, file_data, 4 more }`
 
@@ -8431,7 +8495,7 @@ Schema name: `BetaResponseInjectEvent`
 
             The name of the file to be sent to the model.
 
-          - `prompt_cache_breakpoint: optional object { mode }  or null`
+          - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
             Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -8440,6 +8504,14 @@ Schema name: `BetaResponseInjectEvent`
               The breakpoint mode. Always `explicit`.
 
               - `"explicit"`
+
+            - `ttl: optional "30m" or "12h"`
+
+              The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+              - `"30m"`
+
+              - `"12h"`
 
     - `type: "function_call_output"`
 
@@ -12651,7 +12723,7 @@ Schema name: `BetaResponseSteerFailedEvent`
 
                 - `"input_text"`
 
-              - `prompt_cache_breakpoint: optional object { mode }  or null`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -12660,6 +12732,14 @@ Schema name: `BetaResponseSteerFailedEvent`
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `BetaResponseInputImageContent object { type, detail, file_id, 2 more }`
 
@@ -12691,7 +12771,7 @@ Schema name: `BetaResponseSteerFailedEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
-              - `prompt_cache_breakpoint: optional object { mode }  or null`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -12700,6 +12780,14 @@ Schema name: `BetaResponseSteerFailedEvent`
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `BetaResponseInputFileContent object { type, detail, file_data, 4 more }`
 
@@ -12737,7 +12825,7 @@ Schema name: `BetaResponseSteerFailedEvent`
 
                 The name of the file to be sent to the model.
 
-              - `prompt_cache_breakpoint: optional object { mode }  or null`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -12746,6 +12834,14 @@ Schema name: `BetaResponseSteerFailedEvent`
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
           - `string`
 
@@ -14156,7 +14252,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
             - `"input_text"`
 
-          - `prompt_cache_breakpoint: optional object { mode }  or null`
+          - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
             Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -14165,6 +14261,14 @@ Schema name: `BetaResponseInjectFailedEvent`
               The breakpoint mode. Always `explicit`.
 
               - `"explicit"`
+
+            - `ttl: optional "30m" or "12h"`
+
+              The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+              - `"30m"`
+
+              - `"12h"`
 
         - `BetaResponseInputImageContent object { type, detail, file_id, 2 more }`
 
@@ -14188,7 +14292,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
             The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
-          - `prompt_cache_breakpoint: optional object { mode }  or null`
+          - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
             Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -14197,6 +14301,14 @@ Schema name: `BetaResponseInjectFailedEvent`
               The breakpoint mode. Always `explicit`.
 
               - `"explicit"`
+
+            - `ttl: optional "30m" or "12h"`
+
+              The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+              - `"30m"`
+
+              - `"12h"`
 
         - `BetaResponseInputFileContent object { type, detail, file_data, 4 more }`
 
@@ -14234,7 +14346,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
             The name of the file to be sent to the model.
 
-          - `prompt_cache_breakpoint: optional object { mode }  or null`
+          - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
             Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -14243,6 +14355,14 @@ Schema name: `BetaResponseInjectFailedEvent`
               The breakpoint mode. Always `explicit`.
 
               - `"explicit"`
+
+            - `ttl: optional "30m" or "12h"`
+
+              The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+              - `"30m"`
+
+              - `"12h"`
 
     - `type: "function_call_output"`
 
@@ -19327,7 +19447,7 @@ Schema name: `BetaResponseCreatedEvent`
 
                 - `"input_text"`
 
-              - `prompt_cache_breakpoint: optional object { mode }  or null`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -19336,6 +19456,14 @@ Schema name: `BetaResponseCreatedEvent`
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `BetaResponseInputImageContent object { type, detail, file_id, 2 more }`
 
@@ -19359,7 +19487,7 @@ Schema name: `BetaResponseCreatedEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
-              - `prompt_cache_breakpoint: optional object { mode }  or null`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -19368,6 +19496,14 @@ Schema name: `BetaResponseCreatedEvent`
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `BetaResponseInputFileContent object { type, detail, file_data, 4 more }`
 
@@ -19405,7 +19541,7 @@ Schema name: `BetaResponseCreatedEvent`
 
                 The name of the file to be sent to the model.
 
-              - `prompt_cache_breakpoint: optional object { mode }  or null`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -19414,6 +19550,14 @@ Schema name: `BetaResponseCreatedEvent`
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
         - `type: "function_call_output"`
 
@@ -30579,7 +30723,7 @@ Schema name: `BetaResponseInProgressEvent`
 
                 - `"input_text"`
 
-              - `prompt_cache_breakpoint: optional object { mode }  or null`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -30588,6 +30732,14 @@ Schema name: `BetaResponseInProgressEvent`
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `BetaResponseInputImageContent object { type, detail, file_id, 2 more }`
 
@@ -30611,7 +30763,7 @@ Schema name: `BetaResponseInProgressEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
-              - `prompt_cache_breakpoint: optional object { mode }  or null`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -30620,6 +30772,14 @@ Schema name: `BetaResponseInProgressEvent`
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `BetaResponseInputFileContent object { type, detail, file_data, 4 more }`
 
@@ -30657,7 +30817,7 @@ Schema name: `BetaResponseInProgressEvent`
 
                 The name of the file to be sent to the model.
 
-              - `prompt_cache_breakpoint: optional object { mode }  or null`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -30666,6 +30826,14 @@ Schema name: `BetaResponseInProgressEvent`
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
         - `type: "function_call_output"`
 
@@ -41831,7 +41999,7 @@ Schema name: `BetaResponseCompletedEvent`
 
                 - `"input_text"`
 
-              - `prompt_cache_breakpoint: optional object { mode }  or null`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -41840,6 +42008,14 @@ Schema name: `BetaResponseCompletedEvent`
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `BetaResponseInputImageContent object { type, detail, file_id, 2 more }`
 
@@ -41863,7 +42039,7 @@ Schema name: `BetaResponseCompletedEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
-              - `prompt_cache_breakpoint: optional object { mode }  or null`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -41872,6 +42048,14 @@ Schema name: `BetaResponseCompletedEvent`
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `BetaResponseInputFileContent object { type, detail, file_data, 4 more }`
 
@@ -41909,7 +42093,7 @@ Schema name: `BetaResponseCompletedEvent`
 
                 The name of the file to be sent to the model.
 
-              - `prompt_cache_breakpoint: optional object { mode }  or null`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -41918,6 +42102,14 @@ Schema name: `BetaResponseCompletedEvent`
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
         - `type: "function_call_output"`
 
@@ -53107,7 +53299,7 @@ Schema name: `BetaResponseFailedEvent`
 
                 - `"input_text"`
 
-              - `prompt_cache_breakpoint: optional object { mode }  or null`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -53116,6 +53308,14 @@ Schema name: `BetaResponseFailedEvent`
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `BetaResponseInputImageContent object { type, detail, file_id, 2 more }`
 
@@ -53139,7 +53339,7 @@ Schema name: `BetaResponseFailedEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
-              - `prompt_cache_breakpoint: optional object { mode }  or null`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -53148,6 +53348,14 @@ Schema name: `BetaResponseFailedEvent`
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `BetaResponseInputFileContent object { type, detail, file_data, 4 more }`
 
@@ -53185,7 +53393,7 @@ Schema name: `BetaResponseFailedEvent`
 
                 The name of the file to be sent to the model.
 
-              - `prompt_cache_breakpoint: optional object { mode }  or null`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -53194,6 +53402,14 @@ Schema name: `BetaResponseFailedEvent`
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
         - `type: "function_call_output"`
 
@@ -64363,7 +64579,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
                 - `"input_text"`
 
-              - `prompt_cache_breakpoint: optional object { mode }  or null`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -64372,6 +64588,14 @@ Schema name: `BetaResponseIncompleteEvent`
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `BetaResponseInputImageContent object { type, detail, file_id, 2 more }`
 
@@ -64395,7 +64619,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
-              - `prompt_cache_breakpoint: optional object { mode }  or null`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -64404,6 +64628,14 @@ Schema name: `BetaResponseIncompleteEvent`
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `BetaResponseInputFileContent object { type, detail, file_data, 4 more }`
 
@@ -64441,7 +64673,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
                 The name of the file to be sent to the model.
 
-              - `prompt_cache_breakpoint: optional object { mode }  or null`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -64450,6 +64682,14 @@ Schema name: `BetaResponseIncompleteEvent`
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
         - `type: "function_call_output"`
 
@@ -87931,7 +88171,7 @@ Schema name: `BetaResponseQueuedEvent`
 
                 - `"input_text"`
 
-              - `prompt_cache_breakpoint: optional object { mode }  or null`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -87940,6 +88180,14 @@ Schema name: `BetaResponseQueuedEvent`
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `BetaResponseInputImageContent object { type, detail, file_id, 2 more }`
 
@@ -87963,7 +88211,7 @@ Schema name: `BetaResponseQueuedEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
-              - `prompt_cache_breakpoint: optional object { mode }  or null`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -87972,6 +88220,14 @@ Schema name: `BetaResponseQueuedEvent`
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `BetaResponseInputFileContent object { type, detail, file_data, 4 more }`
 
@@ -88009,7 +88265,7 @@ Schema name: `BetaResponseQueuedEvent`
 
                 The name of the file to be sent to the model.
 
-              - `prompt_cache_breakpoint: optional object { mode }  or null`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
@@ -88018,6 +88274,14 @@ Schema name: `BetaResponseQueuedEvent`
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
         - `type: "function_call_output"`
 

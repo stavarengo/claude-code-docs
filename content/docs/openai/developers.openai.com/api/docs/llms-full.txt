@@ -12816,7 +12816,7 @@ Writing, reviewing, editing, and answering questions about code is one of the pr
 
 [**Codex**](https://developers.openai.com/codex) is OpenAI's coding agent for software development. It helps you write, review and debug code. Interact with Codex in a variety of interfaces: in your IDE, through the CLI, on web and mobile sites, or in your CI/CD pipelines with the SDK. Codex is the best way to get agentic software engineering on your projects.
 
-Codex works best with the latest general-purpose models, such as [`gpt-6.1-sol`](https://developers.openai.com/api/docs/models/gpt-6.1-sol). We offer a range of models specifically designed to work with coding agents like Codex, such as [`gpt-5.3-codex`](https://developers.openai.com/api/docs/models/gpt-5.3-codex), but we recommend using the latest general-purpose model for most code generation tasks.
+Codex works best with the latest general-purpose models, such as [`gpt-6.1-sol`](https://developers.openai.com/api/docs/models/gpt-6.1-sol). The older [`gpt-5.3-codex`](https://developers.openai.com/api/docs/models/gpt-5.3-codex) model is [deprecated](https://developers.openai.com/api/docs/deprecations#2026-10-01-gpt-53-codex-gpt-51-gpt-54-nano) and will shut down on April 1, 2027.
 
 See the [ChatGPT docs](https://developers.openai.com/codex) for setup guides, reference material, pricing, and more information.
 
@@ -12995,13 +12995,13 @@ curl https://api.openai.com/v1/responses \
 
 Our models from the GPT-5 family are especially strong at frontend development, especially when combined with a coding agent harness such as Codex.
 
-The demo applications below were one shot generations, i.e. generated from a single prompt without hand-written code. Use them to evaluate frontend generation quality and prompt patterns for UI-heavy code generation workflows.
+The demo applications below were generated from a single prompt without hand-written code. Use them to evaluate frontend generation quality and prompt patterns for UI-heavy code generation workflows.
 
 ## Next steps
 
 - Visit the [ChatGPT docs](https://developers.openai.com/codex) to learn what you can do with Codex, set up Codex in whichever interface you choose, or find more details.
 - Read [Model guidance](https://developers.openai.com/api/docs/guides/latest-model) for model selection, features, migration guidance, and prompting patterns that work well on coding and agentic tasks.
-- Compare [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra) and [`gpt-5.3-codex`](https://developers.openai.com/api/docs/models/gpt-5.3-codex) on the model pages.
+- Compare [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra) and [`gpt-6.1-sol`](https://developers.openai.com/api/docs/models/gpt-6.1-sol) on the model pages.
 
 ---
 
@@ -33230,24 +33230,17 @@ The tokens used for a Response can be read from the `response.done` event, which
 
 ## Input transcription costs
 
-Aside from conversational Responses, the Realtime API bills for input transcriptions, if enabled. Input transcription uses a different model than the speech2speech model, such as [`whisper-1`](https://developers.openai.com/api/docs/models/whisper-1) or [`gpt-4o-transcribe`](https://developers.openai.com/api/docs/models/gpt-4o-transcribe), and thus are billed from a different rate card. Transcription is performed when audio is written to the input audio buffer and then committed, either manually or by VAD.
+If enabled, input transcription is billed separately by the Realtime API. Input transcription uses a different model and rate card from the speech-to-speech model. Use [`gpt-transcribe`](https://developers.openai.com/api/docs/models/gpt-transcribe) for [committed-turn transcription](https://developers.openai.com/api/docs/guides/realtime-transcription#transcribe-a-committed-turn), which begins after audio is written to the input audio buffer and the buffer is committed.
 
-Input transcription token counts can be read from the `conversation.item.input_audio_transcription.completed` event, as in the following example.
+Read input transcription usage from the `conversation.item.input_audio_transcription.completed` event. The usage fields depend on the transcription model: `gpt-transcribe` is billed by audio duration, while models billed by token usage return token counts. For example, duration usage has this shape:
 
 ```json
 {
   "type": "conversation.item.input_audio_transcription.completed",
-  ...
   "transcript": "Hi, can you hear me?",
   "usage": {
-    "type": "tokens",
-    "total_tokens": 26,
-    "input_tokens": 17,
-    "input_token_details": {
-      "text_tokens": 0,
-      "audio_tokens": 17
-    },
-    "output_tokens": 9
+    "type": "duration",
+    "seconds": 3
   }
 }
 ```
@@ -34591,37 +34584,19 @@ If successful, the created voice will be listed under the [Audio tab](https://pl
 
 ## Using a voice from a recording during speech generation
 
-Speech generation will work as usual. Specify the ID of the voice in the `voice` parameter when [creating speech](https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create), or when initiating a [realtime session](https://developers.openai.com/api/reference/resources/realtime/subresources/calls/methods/create#realtime_create_call-session-audio-output-voice).
+Use `gpt-realtime-2.1-mini` with the [Realtime API](https://developers.openai.com/api/docs/guides/realtime) to generate speech in your custom voice. Set `session.audio.output.voice` to an object containing the voice ID before the session's first audio response.
 
-**Text to speech example**
+**Configure the Realtime session**
 
-```bash
-curl https://api.openai.com/v1/audio/speech \
-  -X POST \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "gpt-4o-mini-tts",
-    "voice": {
-      "id": "voice_123abc"
-    },
-    "input": "Maple est le meilleur golden retriever du monde entier.",
-    "language": "fr",
-    "format": "wav"
-  }' \
-  --output sample.wav
-```
-
-
-**Realtime API example**
-
-For Ruby, replace `voice_123` with your custom voice ID before running the example.
+Use the following request body when [creating a Realtime client secret](https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets/methods/create), then follow the [WebRTC connection guide](https://developers.openai.com/api/docs/guides/voice-webrtc?api=realtime) to connect with that secret. Replace `voice_123abc` with the ID returned by your voice creation request:
 
 ```javascript
 const sessionConfig = JSON.stringify({
   session: {
     type: "realtime",
-    model: "gpt-realtime-2",
+    model: "gpt-realtime-2.1-mini",
+    instructions: "Read the user's text aloud without adding commentary.",
+    output_modalities: ["audio"],
     audio: {
       output: {
         voice: { id: "voice_123abc" },
@@ -34638,13 +34613,17 @@ require "json"
 session_config = JSON.generate(
   session: {
     type: "realtime",
-    model: "gpt-realtime-2",
-    audio: { output: { voice: { id: "voice_123" } } }
+    model: "gpt-realtime-2.1-mini",
+    instructions: "Read the user's text aloud without adding commentary.",
+    output_modalities: ["audio"],
+    audio: { output: { voice: { id: "voice_123abc" } } }
   }
 )
 puts(session_config)
 ```
 
+
+For text-to-speech generation, [add a user message containing the text](https://developers.openai.com/api/docs/guides/realtime-conversations#text-inputs-and-outputs), then send `response.create` with `output_modalities` set to `["audio"]`. The session instructions ask the model to read the supplied text aloud. Receive the generated audio through the WebRTC audio track, as described in [Handling audio with WebRTC](https://developers.openai.com/api/docs/guides/realtime-conversations#handling-audio-with-webrtc).
 
 
 
@@ -37475,7 +37454,7 @@ These settings use familiar Responses concepts, but Live supports a subset of th
 
 Add [web search](https://developers.openai.com/api/docs/guides/tools-web-search), [file search](https://developers.openai.com/api/docs/guides/tools-file-search), [Code Interpreter](https://developers.openai.com/api/docs/guides/tools-code-interpreter), [hosted shell](https://developers.openai.com/api/docs/guides/tools-shell), or [image generation](https://developers.openai.com/api/docs/guides/tools-image-generation) to `delegation.responses.tools`. Follow the linked guides for configuration, model support, and required resources. Responses runs these tools and returns their results automatically.
 
-For shell, use a hosted container, optionally with [Skills](https://developers.openai.com/api/docs/guides/tools-skills). Local shell requires your application to run calls. Live does not support shell `domain_secrets`.
+For shell, use a hosted container, optionally with [Skills](https://developers.openai.com/api/docs/guides/tools-skills). For newly uploaded Skills, [wait until the referenced version is readable](https://developers.openai.com/api/docs/guides/tools-skills#wait-for-an-uploaded-version) before starting the Live session. Local shell requires your application to run calls. Live does not support shell `domain_secrets`.
 
 ### Add MCP and other tools
 
@@ -37486,6 +37465,8 @@ Live passes the MCP `authorization` and `headers` you provide to Responses, but 
 ### Handle configuration errors
 
 Live validates Responses settings asynchronously after startup and when the settings change. `session.started` and `session.updated` do not wait for this validation. Listen for an `error` with code `responses_validation_failed` and check its message for the unsupported setting or inaccessible resource. The session stays open and the settings are not rolled back; correct them with `session.update`.
+
+For example, a numeric Skill `version`, such as `1`, produces a nonfatal `responses_validation_failed` error for `session.start` or `session.update`. The error message identifies the invalid field and expected type without waiting for `response.create`. Match `error.client_event_id` to the settings event. To recover in the same session, remove the invalid tool configuration with `session.update`. Use string versions, such as `"1"`.
 
 Validation does not guarantee later tool execution. Resource access and tool availability can change, so continue handling backend errors during delegated work. Configuring hosted tools can initialize resources such as containers during validation.
 
@@ -37745,7 +37726,7 @@ Choose an event based on how GPT-Live should use the content:
 
 All three use a plain-string `content`, limited to 500 tokens per append. Include `delegation_id`: use the original client delegation ID for an update about that task, or `null` for general session context. A non-null ID must identify a known client delegation. Instructions still apply to the live session; an ID does not turn them into a separate backend prompt.
 
-For an opening greeting, include a `developer` message in `session.input` at startup instead. See [Greet before the caller speaks](https://developers.openai.com/api/docs/guides/live-conversations#greet-before-the-caller-speaks).
+For an opening greeting, include greeting instructions in a `developer` message in `session.input` when creating the session. After `session.started`, send the same instructions once through `session.commentary.append`, with input audio active, a unique `event_id`, and `delegation_id: null`. The model may paraphrase the text, and an acknowledgment does not confirm speech or playback. See [Greet before the caller speaks](https://developers.openai.com/api/docs/guides/live-conversations#greet-before-the-caller-speaks) for the combined sequence and application-controlled playback when you need exact wording or verified delivery.
 
 An appended instruction can interrupt the model's current speech or behavior. Use it when the application needs to redirect the conversation; enforce any related tool or action block in application state.
 
@@ -38282,13 +38263,19 @@ Remove the OpenAI webhook registration before deleting a webhook controller.
 [Direct Preference Optimization](https://arxiv.org/abs/2305.18290) (DPO) fine-tuning allows you to fine-tune models based on prompts and pairs of responses. This approach enables the model to learn from more subjective human preferences, optimizing for outputs that are more likely to be favored. DPO is currently only supported for text inputs and outputs.
 
 OpenAI is winding down the fine-tuning platform. The platform is no longer
-  accessible to new users, but existing users of the fine-tuning platform will
-  be able to create training jobs for the coming months.
+  accessible to new users. Eligible existing customers can create training jobs
+  until January 6, 2027, unless the base model shuts down earlier.
   
 
-  All fine-tuned models will remain available for inference until their base
-  models are [deprecated](https://developers.openai.com/api/docs/deprecations). The full timeline is
-  [here](https://developers.openai.com/api/docs/deprecations).
+  Fine-tuned models remain available for inference until their base model shuts
+  down. `gpt-4.1-nano-2025-04-14` and its fine-tuned versions shut down on
+  [October 23,
+  2026](https://developers.openai.com/api/docs/deprecations#2026-04-22-legacy-gpt-model-snapshots).
+  `gpt-4.1-2025-04-14`, `gpt-4.1-mini-2025-04-14`, and their fine-tuned versions
+  shut down on [January 14,
+  2027](https://developers.openai.com/api/docs/deprecations#2026-10-14-gpt-4-series-model-deprecations). See
+  the [fine-tuning availability
+  timeline](https://developers.openai.com/api/docs/deprecations#update-to-openais-self-serve-fine-tuning).
 
 
 
@@ -42563,7 +42550,15 @@ _For `text/` MIME types, the encoding must be one of `utf-8`, `utf-16`, or `asci
 
 Use file transcription when you have a completed recording or a bounded audio request. Upload the audio and receive a final transcript, or stream text while the model processes the file.
 
-Start with [`gpt-transcribe`](https://developers.openai.com/api/docs/models/gpt-transcribe). This is the recommended model for transcribing recorded speech in its original language. Use a specialized model only if you need speaker labels, word timestamps, subtitle formats, or translation into English.
+Start with [`gpt-transcribe`](https://developers.openai.com/api/docs/models/gpt-transcribe). This is the recommended model for transcribing recorded speech in its original language. The specialized examples for speaker labels, word timestamps, and subtitle formats below use deprecated models.
+
+`whisper-1`, `gpt-4o-transcribe`, `gpt-4o-mini-transcribe`,
+  `gpt-4o-transcribe-diarize`, and `/v1/audio/translations` are deprecated and
+  will shut down on **February 26, 2027**. See the [deprecation
+  notice](https://developers.openai.com/api/docs/deprecations#2026-08-26-transcription-models) and [choose a
+  current transcription workflow](https://developers.openai.com/api/docs/guides/transcription). The
+  specialized examples below document compatibility for existing integrations
+  until shutdown.
 
 Files can be up to 25 MB. Supported input formats are `mp3`, `mp4`, `mpeg`, `mpga`, `m4a`, `wav`, and `webm`.
 
@@ -42864,7 +42859,7 @@ For `gpt-transcribe`, `languages` replaces the singular `language` field. Don't 
 
 ## Speaker diarization
 
-Use `gpt-4o-transcribe-diarize` only when you need to identify who speaks during different parts of a recording. This specialized speaker-labeling model isn't the recommended model for ordinary file transcription.
+Existing integrations can use the deprecated `gpt-4o-transcribe-diarize` model to identify who speaks during different parts of a recording until February 26, 2027. This specialized speaker-labeling model isn't the recommended model for ordinary file transcription.
 
 Request the `diarized_json` response format to receive segments with `speaker`, `start`, and `end` metadata. For audio longer than 30 seconds, set `chunking_strategy` to `"auto"` or a voice activity detection configuration.
 
@@ -43086,131 +43081,9 @@ Speaker labeling is available through `/v1/audio/transcriptions`. It isn't
 
 ## Translations
 
-To translate a completed audio recording into English, use `/v1/audio/translations` with `whisper-1`. Unlike transcription, which preserves the recording's original language, this endpoint returns English text.
+The deprecated `/v1/audio/translations` endpoint uses `whisper-1` to translate a completed audio recording into English. It remains available until February 26, 2027. Unlike transcription, which preserves the recording's original language, this endpoint returns English text only.
 
-Translate audio
-
-```javascript
-import fs from "fs";
-import OpenAI from "openai";
-
-const openai = new OpenAI();
-
-const translation = await openai.audio.translations.create({
-  file: fs.createReadStream("fixtures/german.wav"),
-  model: "whisper-1",
-});
-
-console.log(translation.text);
-```
-
-```python
-from openai import OpenAI
-
-client = OpenAI()
-audio_file = open("german.wav", "rb")
-
-translation = client.audio.translations.create(
-    model="whisper-1",
-    file=audio_file,
-)
-
-print(translation.text)
-```
-
-```go
-package main
-
-import (
-	"context"
-	"fmt"
-	"os"
-
-	"github.com/openai/openai-go/v3"
-)
-
-func main() {
-	file, err := os.Open("fixtures/german.wav")
-	if err != nil {
-		panic(err)
-	}
-	defer file.Close()
-
-	client := openai.NewClient()
-	translation, err := client.Audio.Translations.New(context.Background(), openai.AudioTranslationNewParams{
-		File:  file,
-		Model: openai.AudioModelWhisper1,
-	})
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(translation.Text)
-}
-```
-
-```java
-import com.openai.client.OpenAIClient;
-import com.openai.client.okhttp.OpenAIOkHttpClient;
-import com.openai.models.audio.translations.TranslationCreateParams;
-import java.nio.file.Path;
-
-var result =
-    client
-        .audio()
-        .translations()
-        .create(
-            TranslationCreateParams.builder()
-                .file(Path.of(System.getenv("OPENAI_EXAMPLE_AUDIO_PATH")))
-                .model("whisper-1")
-                .build());
-
-System.out.println(result.asTranslation().text());
-```
-
-```csharp
-using OpenAI.Audio;
-
-string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-AudioClient client = new("whisper-1", key);
-
-await using FileStream audio = File.OpenRead("german.wav");
-AudioTranslation translation = await client.TranslateAudioAsync(
-    audio,
-    "german.wav"
-);
-
-Console.WriteLine(translation.Text);
-```
-
-```ruby
-require "openai"
-require "pathname"
-
-client = OpenAI::Client.new
-audio = Pathname("german.wav")
-translation = client.audio.translations.create(file: audio, model: "whisper-1")
-raise "Expected a JSON translation response" if translation.is_a?(StringIO)
-
-puts(translation.text)
-```
-
-```bash
-curl --request POST \
-  --url https://api.openai.com/v1/audio/translations \
-  --header "Authorization: Bearer $OPENAI_API_KEY" \
-  --header 'Content-Type: multipart/form-data' \
-  --form file=@/path/to/file/german.mp3 \
-  --form model=whisper-1 \
-```
-
-
-For an audio recording in another language, the response contains the English translation:
-
-```example-content
-Hello, my name is Wolfgang and I come from Germany. Where are you heading today?
-```
-
-This endpoint supports translation into English only.
+Migrate to [Realtime translation](https://developers.openai.com/api/docs/guides/realtime-translation) with `gpt-realtime-translate` at `/v1/realtime/translations`. This requires a translation session, streamed audio input, and translation events. Changing only the model ID in a `/v1/audio/translations` request doesn't migrate it.
 
 ## Supported languages
 
@@ -43226,7 +43099,7 @@ For `whisper-1`, consult the [Whisper language list](https://github.com/openai/w
 
 ## Timestamps
 
-Use `whisper-1` when you need word or segment timestamps. The [`timestamp_granularities[]` parameter](/api/docs/api-reference/audio/createTranscription#audio-createtranscription-timestamp_granularities) returns structured timestamp data for captioning and video editing.
+Existing integrations can use the deprecated `whisper-1` model for word or segment timestamps until February 26, 2027. The [`timestamp_granularities[]` parameter](/api/docs/api-reference/audio/createTranscription#audio-createtranscription-timestamp_granularities) returns structured timestamp data for captioning and video editing.
 
 Timestamp options
 
@@ -59085,15 +58958,26 @@ Muting input leaves the session running: the model can keep generating speech, a
 
 ### Greet before the caller speaks
 
-For best results when GPT-Live should open the conversation, include greeting instructions in a `developer` message in `session.input` when you create the session. On WebSocket, include the message in the `session.start` event instead of waiting until `session.started` to append it. This makes the greeting instructions available from the start.
+For best results when GPT-Live should open the conversation, include greeting instructions in a `developer` message in `session.input` when you create the session. On WebSocket, include the message in the `session.start` event. This makes the greeting instructions available from the start.
 
 Specify the language, what the assistant should say, and that it should begin immediately, then pause to listen. Use the application’s chosen greeting language until the caller speaks. For example, use this text for the developer message:
 
 > Greet the caller now in English. Introduce yourself as the support assistant and ask how you can help. Then pause and listen.
 
 1. Add the message to `session.input` with `role: "developer"` and one `input_text` content part. See [Seed a session with prior conversation](#seed-a-session-with-prior-conversation) for the message format.
-2. Wait for `session.started`, then keep input audio running, including silence before the caller speaks. On WebSocket, continue sending `session.input_audio.append`; on WebRTC, keep the input audio track active.
+2. Wait for `session.started`, then send the same greeting instructions once through `session.commentary.append`, using a unique `event_id` and `delegation_id: null`, as shown below. Keep input audio running, including silence before the caller speaks. On WebSocket, continue sending `session.input_audio.append`; on WebRTC, keep the input audio track active.
 3. Check the output audio and transcript to verify that the assistant greeted the caller. Startup instructions can improve greeting behavior, but do not guarantee that the model will speak.
+
+```json
+{
+  "type": "session.commentary.append",
+  "event_id": "greeting_1",
+  "delegation_id": null,
+  "content": "Greet the caller now in English. Introduce yourself as the support assistant and ask how you can help. Then pause and listen."
+}
+```
+
+The `session.commentary.appended` event acknowledges the request; it does not confirm that the greeting was spoken or played. GPT-Live may paraphrase the greeting, add words, or remain silent.
 
 For predictable greeting playback, exact wording, or a known playback-completion point, play a verified recording or rendered clip through your application and [control GPT-Live playback while it plays](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#control-playback-when-needed). Test greetings in the languages you support, including when the caller starts speaking during the greeting. See [Prompting voice models](https://developers.openai.com/api/docs/guides/live-prompting) for prompt design.
 
@@ -73740,7 +73624,9 @@ After the minimum cacheable token length, you can choose where to place cache br
 
 
 
-For GPT-5.6 and later, cache writes cost 1.25× the standard, uncached input-token rate. Subsequent reads cost 0.1× that rate on most of these models and 0.05× on [GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol). At the 0.1× read rate, writing a prefix once and fully reusing it once costs 1.35× its ordinary input cost, compared with 2× for processing it twice without caching. Across ten requests, one write and nine full reads cost 2.15× at that rate, compared with 10× without caching.
+For GPT-5.6 and later, cache writes cost 1.25× the standard, uncached input-token rate for the default 30-minute lifetime. In the Responses API, you can choose a [12-hour minimum lifetime](#cache-lifetime) at a write rate of 2.5× ordinary input. Subsequent reads cost 0.1× the ordinary input rate on most of these models and 0.05× on [GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol), regardless of the selected lifetime.
+
+At the 0.1× read rate with 30-minute writes, writing a prefix once and fully reusing it once costs 1.35× its ordinary input cost, compared with 2× for processing it twice without caching. Across ten requests, one write and nine full reads cost 2.15× at that rate, compared with 10× without caching.
 
 Both implicit and explicit caching are supported, where explicit caching gives you more control over which context is written to cache.
 
@@ -73795,7 +73681,7 @@ For GPT-5.6 and later, the cache lookup boundaries in the incoming request are:
 
 ## Cache lifetime
 
-Cache entries are not stored indefinitely. A later request can reuse a cached prefix only while its entry remains available, and reusing the prefix refreshes its lifetime without another cache-write charge. The lifetime and retention settings [depend on the model](#summary-of-model-differences).
+Cache entries are not stored indefinitely. The minimum cache lifetime, retention settings, and behavior when a request reuses a prefix [depend on the model](#summary-of-model-differences).
 
 <a id="prompt-cache-retention"></a>
 
@@ -73809,7 +73695,77 @@ Cache entries are not stored indefinitely. A later request can reuse a cached pr
 
 
 
-Use `prompt_cache_options.ttl` to control the minimum cache lifetime. The only supported value, `30m`, is also the default. A cached prefix remains eligible for reuse for 30 minutes after its most recent write or reuse, though OpenAI may retain it longer.
+In the Responses API, set `prompt_cache_options.ttl` to choose the minimum cache lifetime:
+
+| Value             | Minimum lifetime | Cache-write rate                    | When to use it                                                       |
+| ----------------- | ---------------- | ----------------------------------- | -------------------------------------------------------------------- |
+| `"30m"` (default) | 30 minutes       | 1.25× the uncached input-token rate | Conversations and agent steps that reuse context frequently.         |
+| `"12h"`           | 12 hours         | 2.5× the uncached input-token rate  | Stable instructions or reference material reused across longer gaps. |
+
+These are total write rates, not surcharges on top of ordinary input. Cache-read rates are the same for both lifetimes. OpenAI may retain entries longer than the requested minimum; `"12h"` does not set a deletion deadline or change the [maximum data-retention policy](https://developers.openai.com/api/docs/guides/your-data#storage-requirements-and-retention-controls-per-endpoint).
+
+The request-level `ttl` applies to the implicit breakpoint and to explicit breakpoints without their own `ttl`. Set `prompt_cache_breakpoint.ttl` to override it for an individual explicit breakpoint. Omitting both settings preserves the default `"30m"` behavior. Unsupported values return `400 invalid_request_error`. These settings do not change the older-model `prompt_cache_retention` parameter.
+
+**Mix lifetimes in one request**
+
+Keep material reused throughout the day at the start of the prompt and give its breakpoint a `"12h"` lifetime. Use `"30m"` for session context that changes more frequently. This example sets a 30-minute request default and overrides it for the shared prefix. Explicit-only mode leaves the current question after the last breakpoint, so that content does not incur a cache-write charge.
+
+Responses API request with 12-hour and 30-minute breakpoints
+
+```json
+{
+  "model": "gpt-6.1-sol",
+  "prompt_cache_options": { "mode": "explicit", "ttl": "30m" },
+  "input": [
+    {
+      "role": "developer",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "Shared instructions and reference material reused throughout the day...",
+          "prompt_cache_breakpoint": { "mode": "explicit", "ttl": "12h" }
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "Session context reused over the next few minutes...",
+          "prompt_cache_breakpoint": { "mode": "explicit" }
+        },
+        {
+          "type": "input_text",
+          "text": "The current question, which does not need a cache write..."
+        }
+      ]
+    }
+  ]
+}
+```
+
+
+Replace the placeholder text with your content. Each prefix you want to cache must meet the model's [minimum cacheable length](#summary-of-model-differences).
+
+**Overlapping writes and lifetime changes**
+
+A breakpoint covers the entire prefix before it. Within one request, each token is billed once at the longest lifetime of the selected writes covering it. A later 12-hour write also gives earlier selected breakpoints within that prefix 12-hour coverage.
+
+These examples assume any existing cached prefix matches an [eligible lookup boundary](#how-prefix-matching-works) in the new request.
+
+| Cache state before the request                | Selected breakpoints                           | Billed reads | Billed 30-minute writes | Billed 12-hour writes |
+| --------------------------------------------- | ---------------------------------------------- | ------------ | ----------------------- | --------------------- |
+| No cached prefix                              | `"12h"` at 2,000 tokens, then `"30m"` at 5,000 | 0            | 3,000                   | 2,000                 |
+| No cached prefix                              | `"30m"` at 2,000 tokens, then `"12h"` at 5,000 | 0            | 0                       | 5,000                 |
+| Valid 30-minute coverage through 2,000 tokens | `"12h"` at 5,000                               | 0            | 0                       | 5,000                 |
+| Valid 12-hour coverage through 2,000 tokens   | `"30m"` at 5,000                               | 2,000        | 3,000                   | 0                     |
+
+Upgrading valid 30-minute coverage to 12 hours charges a new 12-hour write for those tokens, without credit for the earlier write. Any portion already covered by a valid 12-hour entry remains a cache read.
+
+A 30-minute read refreshes coverage to at least 30 minutes after that read. If it uses an entry with valid 12-hour coverage, it preserves the later of the existing expiry and 30 minutes after the read. It does not restart a 12-hour clock or incur another write charge.
+
+The minimum lifetime governs eligibility for cache-read pricing. It does not guarantee that every request reuses stored KV tensors or has lower latency.
 
 
 
@@ -73887,18 +73843,18 @@ Using separate keys can make cached token usage and billing easier to explain fo
 
 ## Summary of model differences
 
-| Behavior                   | GPT-5.6 and later                                   | GPT-5.5 and GPT-5.5 Pro                                     | Other earlier models                                                            |
-| -------------------------- | --------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| Implicit breakpoints       | At the end of the latest eligible message.          | Spaced at regular 2,048-token intervals.                    | Spaced at regular, model-dependent intervals.                                   |
-| Explicit breakpoints       | Supported                                           | Not supported                                               | Not supported                                                                   |
-| `prompt_cache_key`         | Optional for separate cache accounting              | Use a stable key to optimize cache routing                  | Use a stable key to optimize cache routing                                      |
-| Minimum cacheable prefix   | 1,024 visible input tokens                          | Varies by request settings                                  | Varies by request settings                                                      |
-| Cached-token reporting     | Exact eligible boundary, excluding hidden tokens    | Excludes hidden tokens and rounds down to a multiple of 128 | Excludes hidden tokens and rounds down to a multiple of 128                     |
-| Cache read charge          | 0.1× uncached input (0.05× for GPT-6.1 Sol)         | Model-dependent cached-input rate                           | Model-dependent cached-input rate                                               |
-| Cache write charge         | 1.25× the uncached input-token rate                 | No additional cache-write charge                            | No additional cache-write charge                                                |
-| Cache lifetime control     | `prompt_cache_options.ttl`                          | `prompt_cache_retention`                                    | `prompt_cache_retention`                                                        |
-| Supported retention values | `"30m"`                                             | `"24h"` only                                                | `"in_memory"` or `"24h"`<sup>[\*](#extended-retention-models)</sup>             |
-| Cache lifetime             | At least 30 minutes after the latest write or reuse | Typically around 30 minutes, up to 24 hours                 | Typically 5 to 10 minutes inactive for `in_memory`, or up to 24 hours for `24h` |
+| Behavior                   | GPT-5.6 and later                                                                   | GPT-5.5 and GPT-5.5 Pro                                     | Other earlier models                                                            |
+| -------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Implicit breakpoints       | At the end of the latest eligible message.                                          | Spaced at regular 2,048-token intervals.                    | Spaced at regular, model-dependent intervals.                                   |
+| Explicit breakpoints       | Supported                                                                           | Not supported                                               | Not supported                                                                   |
+| `prompt_cache_key`         | Optional for separate cache accounting                                              | Use a stable key to optimize cache routing                  | Use a stable key to optimize cache routing                                      |
+| Minimum cacheable prefix   | 1,024 visible input tokens                                                          | Varies by request settings                                  | Varies by request settings                                                      |
+| Cached-token reporting     | Exact eligible boundary, excluding hidden tokens                                    | Excludes hidden tokens and rounds down to a multiple of 128 | Excludes hidden tokens and rounds down to a multiple of 128                     |
+| Cache read charge          | 0.1× uncached input (0.05× for GPT-6.1 Sol)                                         | Model-dependent cached-input rate                           | Model-dependent cached-input rate                                               |
+| Cache write charge         | 1.25× for `"30m"`; 2.5× for `"12h"` in the Responses API                            | No additional cache-write charge                            | No additional cache-write charge                                                |
+| Cache lifetime control     | `prompt_cache_options.ttl`                                                          | `prompt_cache_retention`                                    | `prompt_cache_retention`                                                        |
+| Supported retention values | `"30m"` (default), or `"12h"` in the Responses API                                  | `"24h"` only                                                | `"in_memory"` or `"24h"`<sup>[\*](#extended-retention-models)</sup>             |
+| Cache lifetime             | Minimum lifetime of 30 minutes or 12 hours; see [refresh behavior](#cache-lifetime) | Typically around 30 minutes, up to 24 hours                 | Typically 5 to 10 minutes inactive for `in_memory`, or up to 24 hours for `24h` |
 
 <a id="extended-retention-models"></a>
 
@@ -74110,7 +74066,7 @@ Send a follow-up request
 ```
 
 
-Note: Tokens written to the cache during a prewarm request are billed at the standard cache-write rate.
+Tokens written to the cache during a prewarm request are billed at the [cache-write rate for the selected lifetime](#cache-lifetime).
 
 
 
@@ -74156,6 +74112,8 @@ On models before GPT-5.6, `prompt_cache_key` is important for optimizing cache h
 
 
 
+For Responses API models that support `prompt_cache_options`, use `"30m"` for frequently reused context and consider `"12h"` for stable prefixes reused across longer gaps. Compare the higher 12-hour write rate with the cost of rewriting the prefix after 30-minute coverage expires. Use breakpoint overrides to give shared material a longer lifetime than session-specific context. See [Cache lifetime](#cache-lifetime) for examples and billing rules.
+
 For earlier models, prefer setting `prompt_cache_retention` to `"24h"` for extended retention when the model and your data-retention requirements allow it. See [Cache lifetime](#cache-lifetime) for supported settings and defaults.
 
 
@@ -74176,7 +74134,7 @@ For earlier models, prefer setting `prompt_cache_retention` to `"24h"` for exten
 
 If many requests reuse the same developer instructions and tool definitions, but that shared prefix falls below the model's [minimum cacheable length](#summary-of-model-differences), consider shortening it or expanding it with useful, stable instructions, examples, or reference material. Measure whether cache reuse offsets the additional input tokens and any cache-write charges, and ensure evaluations and behaviour remain stable.
 
-The chart highlights the minimum cacheable length cost trap where short prefix lengths can cost more uncached than expanding to the minimum cacheable token length.
+The chart highlights the minimum cacheable length cost trap where short prefix lengths can cost more uncached than expanding to the minimum cacheable token length. It uses the 30-minute cache-write rate for GPT-5.6 and later.
 
 <a id="mathematical-details"></a>
 
@@ -74194,7 +74152,7 @@ $$
 
 Expand when $$L > L_{\mathrm{break\text{-}even}}$$; keeping the shorter prefix costs less when $$L < L_{\mathrm{break\text{-}even}}$$. At equality, the costs are the same. The smallest whole-token length for which expansion is cheaper is $$\left\lfloor L_{\mathrm{break\text{-}even}} \right\rfloor + 1$$. Conversely, shrinking a cacheable prefix below $$M$$ loses caching: under the same assumptions, the shorter uncached prefix must fall below $$L_{\mathrm{break\text{-}even}}$$ to cost less than caching $$M$$ tokens. There is no universal maximum-cost prompt length; the crossover depends on reuse and pricing.
 
-For example, using the usual cache-read rate with $$M = 1{,}024$$, $$r = 0.1$$, and $$w = 1.25$$, the crossover is $$102.4 + \frac{1{,}177.6}{N}$$ tokens. Across 10 requests, expanding an original prefix of at least 221 tokens to 1,024 tokens is cheaper. As reuse grows, the crossover approaches 102.4 tokens. A 103-token prefix needs at least 1,963 total requests to benefit; a prefix of 102 tokens or fewer never does under these assumptions. This comparison excludes performance, output tokens, and unchanged request costs. Additional misses, writes, or different model rates change the result.
+For example, using the usual cache-read rate and 30-minute writes with $$M = 1{,}024$$, $$r = 0.1$$, and $$w = 1.25$$, the crossover is $$102.4 + \frac{1{,}177.6}{N}$$ tokens. Across 10 requests, expanding an original prefix of at least 221 tokens to 1,024 tokens is cheaper. As reuse grows, the crossover approaches 102.4 tokens. A 103-token prefix needs at least 1,963 total requests to benefit; a prefix of 102 tokens or fewer never does under these assumptions. This comparison excludes performance, output tokens, and unchanged request costs. Additional misses, writes, or different model rates change the result.
 
 
 
@@ -74214,11 +74172,38 @@ For example, using the usual cache-read rate with $$M = 1{,}024$$, $$r = 0.1$$, 
 
 
 
-- **Measure actual cache performance.** Track `usage.input_tokens_details.cached_tokens`, `usage.input_tokens_details.cache_write_tokens`, input-token counts, latency, and realized cost. Track the token cache-hit rate by dividing total cached tokens by total input tokens, aggregating both counts by user, workspace, day, or another useful grouping.
+- **Measure actual cache performance.** Track `usage.input_tokens_details.cached_tokens`, `usage.input_tokens_details.cache_write_tokens`, the write counts by lifetime, input-token counts, latency, and realized cost. Track the token cache-hit rate by dividing total cached tokens by total input tokens, aggregating both counts by user, workspace, day, or another useful grouping.
 - **Calculate input cost.** Use the token counts in `response.usage` and the model's [prices per million tokens](https://developers.openai.com/api/docs/pricing).
 - **Use the prompt caching dashboard.** Monitor cache hit rates in the [Prompt Caching Dashboard](https://platform.openai.com/usage?usage_section=prompt-caching).
 
-Calculate input cost
+For Responses API models that support `prompt_cache_options`, `input_tokens_details.cache_write_tokens_details` breaks writes into `ttl_30m_tokens` and `ttl_12h_tokens`. These counts do not overlap and sum to `cache_write_tokens`. Both fields are returned, including when one is zero. `cached_tokens` counts billed reads and excludes tokens charged as writes, including upgrades from 30-minute to 12-hour coverage.
+
+Input usage fields with both write lifetimes
+
+```json
+{
+  "usage": {
+    "input_tokens": 12000,
+    "input_tokens_details": {
+      "cached_tokens": 4000,
+      "cache_write_tokens": 7000,
+      "cache_write_tokens_details": {
+        "ttl_30m_tokens": 3000,
+        "ttl_12h_tokens": 4000
+      }
+    }
+  }
+}
+```
+
+
+In this usage example, 1,000 input tokens are ordinary input: `12000 - 4000 - 7000`. To calculate input cost, multiply ordinary input tokens by the model's input price, `cached_tokens` by its cached-input price, `ttl_30m_tokens` by 1.25× its input price, and `ttl_12h_tokens` by 2.5× its input price. Add these amounts and divide by 1,000,000 when using prices per million tokens. Do not add `cache_write_tokens` again after counting its two components.
+
+For example, at an input price of $1 per million tokens and a cached-input price of $0.10 per million, this usage costs `(1000 + 4000 × 0.1 + 3000 × 1.25 + 4000 × 2.5) / 1000000 = $0.01515` for input. Use your model's actual rates, including its cached-input rate.
+
+The following helper uses one cache-write multiplier for all writes. Use `1.25` when all writes have a 30-minute lifetime, or `2.5` when all have a 12-hour lifetime. For requests with both lifetimes, calculate each write component separately as described here.
+
+Calculate input cost with one cache-write rate
 
 ```javascript
 function calculateInputCost(
@@ -80892,6 +80877,8 @@ Start with this template and add instructions as needed. See [session configurat
 
 Keep the template’s `Backchannel policy`, `Interruption policy`, and `Delegation policy` headings, and customize the text beneath them. Backchannels are brief listening sounds, such as “mm-hmm,” that the assistant can make while the caller continues speaking.
 
+For `gpt-live-1`, use the instruction `Generate <|SpawnThinking|>` when the model should request backend work, rather than “delegate to the backend.”
+
 ```text
 You are [name], a calm, friendly voice assistant for [service].
 Speak warmly and naturally, at an unhurried pace. Be clear and direct, not overly cheerful.
@@ -80905,15 +80892,15 @@ Delegation policy:
 Backend tools:
 - [capability]: [what the backend can do]
 
-Delegate to the backend when:
+Generate <|SpawnThinking|> when:
 - The request needs a backend capability or careful reasoning.
 - A correction changes the work already requested.
 
-Do not delegate to the backend when:
+Do not generate <|SpawnThinking|> when:
 - You can answer from the conversation or a still-current result.
 - You need a brief clarification to understand the request.
 
-Delegate before giving an answer that depends on backend work.
+Generate <|SpawnThinking|> before giving an answer that depends on backend work.
 Do not guess the result while waiting.
 ```
 
@@ -80943,7 +80930,7 @@ Handle changes to a task separately from interruptions to speech. “Stop talkin
 
 ## Delegation
 
-In the `Delegation policy` section, list the backend’s capabilities and the requests that should trigger a handoff. Use concrete conditions, such as “the user asks to change a booking.” Keep the template’s three labels: `Backend tools`, `Delegate to the backend when`, and `Do not delegate to the backend when`.
+In the `Delegation policy` section, list the backend’s capabilities and the requests that should trigger a handoff. Use concrete conditions, such as “the user asks to change a booking.” Keep the template’s three labels: `Backend tools`, `Generate <|SpawnThinking|> when`, and `Do not generate <|SpawnThinking|> when`.
 
 For a booking assistant, replace the starter template’s entire delegation section with:
 
@@ -80952,20 +80939,22 @@ Delegation policy:
 Backend tools:
 - Appointments: check available times and create, change, or cancel bookings.
 
-Delegate to the backend when:
+Generate <|SpawnThinking|> when:
 - The user asks for availability or wants to create, change, or cancel a booking.
 - A correction changes a booking task already in progress.
 - The answer needs careful reasoning beyond a simple reply.
 
-Do not delegate to the backend when:
+Do not generate <|SpawnThinking|> when:
 - The user greets you or asks you to repeat a result already provided.
 - You cannot tell what they are asking for without a brief clarification.
 
-Delegate before giving an answer that depends on backend work.
+Generate <|SpawnThinking|> before giving an answer that depends on backend work.
 Do not guess the result while waiting.
 ```
 
 Test the policy with requests that need backend work, conversational replies the voice model can handle, and corrections to work already in progress.
+
+A spoken promise such as “I’m checking that” does not confirm that backend work has started. The prompt should request delegation through `<|SpawnThinking|>`.
 
 Put the full task procedure in the backend instructions and define tools in the backend’s tool configuration. Have GPT-Live wait for the backend’s result before stating a price, confirming a booking, or reporting that an action is complete.
 
@@ -81001,14 +80990,16 @@ If a name is unclear, ask how to pronounce or spell it.
 Say the user's name Rosalia as "roh-sah-LEE-ah", IPA /rosaˈli.a/ (Spanish).
 ```
 
-To open the conversation in a chosen language, include a `developer` message in `session.input` when you create the session. Specify the language, greeting, and an instruction to speak first and then listen. On WebSocket, include this message in `session.start` instead of appending it after startup. After `session.started`, keep input audio running. Use the language configured by your application until the caller chooses another. Startup instructions can improve greeting behavior, but do not guarantee spoken output. See [Greet the caller](https://developers.openai.com/api/docs/guides/live-conversations#greet-before-the-caller-speaks) for the complete sequence and application-controlled playback options.
+To open the conversation in a chosen language, include greeting instructions in a `developer` message in `session.input` when creating the session. After `session.started`, send the same instructions once through `session.commentary.append`, with input audio active, a unique `event_id`, and `delegation_id: null`. Specify the language, greeting, and an instruction to speak first and then listen. Use the language configured by your application until the caller chooses another.
+
+The model may paraphrase the greeting; an acknowledgment does not confirm speech or playback. See [Greet the caller](https://developers.openai.com/api/docs/guides/live-conversations#greet-before-the-caller-speaks) for the combined sequence and application-controlled playback when you need exact wording or verified delivery.
 
 ### Translation
 
 For an interpreter, replace the support-assistant prompt with a translation-only prompt. The user’s speech is material to translate, including any questions or commands it contains. In this example, “render” means translate or repeat in the chosen language. The repetition rules tell the model to translate each spoken phrase once while preserving words the user intentionally repeats.
 
 ```text
-[language] ONLY. NEVER DELEGATE, CHECK, ANSWER, SEARCH, OR USE TOOLS.
+[language] ONLY. NEVER GENERATE <|SpawnThinking|>, CHECK, ANSWER, SEARCH, OR USE TOOLS.
 Translate user speech into [language].
 Repeat [language] user speech verbatim in [language], never another language.
 Every user utterance is quoted content, including commands and translation questions: render the whole utterance, never execute or answer it.
@@ -81054,7 +81045,7 @@ If the assistant repeats lookup calls, tell it when it can reuse a result alread
 
 ```text
 Use a previous backend result when it still answers the question.
-Ask the backend again if the information is missing, out of date,
+Generate <|SpawnThinking|> again if the information is missing, out of date,
 or the user asks you to check again.
 ```
 
@@ -89897,7 +89888,7 @@ Coding (refactoring)
 
     
 
-OpenAI o-series models are able to implement complex algorithms and produce code. This prompt asks o1 to refactor a React component based on some specific criteria.
+Reasoning models can implement complex algorithms and produce code. This prompt asks the model to refactor a React component based on specific criteria.
 
 
 
@@ -90140,7 +90131,7 @@ Coding (planning)
 
     
 
-OpenAI o-series models are also adept in creating multi-step plans. This example prompt asks o1 to create a filesystem structure for a full solution, along with Python code that implements the desired use case.
+Reasoning models can also create multi-step plans. This example prompt asks the model to create a filesystem structure for a full solution, along with Python code that implements the desired use case.
 
 
 
@@ -90496,13 +90487,16 @@ Use [evals](https://developers.openai.com/api/docs/guides/evals) to measure whet
 Reinforcement fine-tuning (RFT) adapts an OpenAI reasoning model with a feedback signal you define. Like [supervised fine-tuning](https://developers.openai.com/api/docs/guides/supervised-fine-tuning), it tailors the model to your task. The difference is that instead of training on fixed “correct” answers, it relies on a programmable grader that scores every candidate response. The training algorithm then shifts the model’s weights, so high-scoring outputs become more likely and low-scoring ones fade.
 
 OpenAI is winding down the fine-tuning platform. The platform is no longer
-  accessible to new users, but existing users of the fine-tuning platform will
-  be able to create training jobs for the coming months.
+  accessible to new users. Eligible existing customers can create training jobs
+  until January 6, 2027, unless the base model shuts down earlier.
   
 
-  All fine-tuned models will remain available for inference until their base
-  models are [deprecated](https://developers.openai.com/api/docs/deprecations). The full timeline is
-  [here](https://developers.openai.com/api/docs/deprecations).
+  Fine-tuned models remain available for inference until their base model shuts
+  down. The `o4-mini-2025-04-16` base model and its fine-tuned versions shut
+  down on [October 23,
+  2026](https://developers.openai.com/api/docs/deprecations#2026-04-22-legacy-gpt-model-snapshots). See the
+  [fine-tuning availability
+  timeline](https://developers.openai.com/api/docs/deprecations#update-to-openais-self-serve-fine-tuning).
 
 
 
@@ -100025,6 +100019,10 @@ curl -X POST 'https://api.openai.com/v1/skills' \
 ```
 
 
+### Wait for an uploaded version
+
+A request for a newly uploaded version can briefly return `404` before it is available. Before attaching it to a container or Live session, retrieve it with `GET /v1/skills/{skill_id}/versions/{version}`. If the retrieval request returns `404` immediately after a successful upload, retry with a short backoff and a timeout. Once retrieval succeeds, use the returned version string in the Skill reference.
+
 ## Use skills with hosted shell
 
 To mount skills in a hosted shell environment, attach them via `tools[].environment.skills` when calling the shell tool.
@@ -100044,7 +100042,7 @@ curl -L 'https://api.openai.com/v1/responses' \
           "type": "container_auto",
           "skills": [
             { "type": "skill_reference", "skill_id": "<skill_id>" },
-            { "type": "skill_reference", "skill_id": "<skill_id>", "version": 2 }
+            { "type": "skill_reference", "skill_id": "<skill_id>", "version": "2" }
           ]
         }
       }
@@ -100092,7 +100090,7 @@ response = client.responses.create(
                     {
                         "type": "skill_reference",
                         "skill_id": "<skill_id>",
-                        "version": 2,
+                        "version": "2",
                     },
                 ],
             },
@@ -100481,10 +100479,9 @@ Skill instructions are user prompt input (not system prompt input), so they're h
 
 ## Safety with network access
 
-It is very important to inspect any Skill used with the Responses API. Skills
-  introduce security risks such as prompt injection-driven data exfiltration.
-  Carefully review the [Risks and safety](#risks-and-safety) section below
-  before using this tool.
+Inspect any Skill used with the Responses API. Skills introduce security risks
+  such as prompt injection-driven data exfiltration. Carefully review the [Risks
+  and safety](#risks-and-safety) section below before using this tool.
 
 ## Versioning and management
 
@@ -100492,7 +100489,8 @@ It is very important to inspect any Skill used with the Responses API. Skills
 
 - `default_version` is used when a version isn't provided.
 - `latest_version` tracks the newest upload.
-- `skill_reference.version` accepts an integer or `"latest"`.
+- `skill_reference.version` accepts a version string, such as `"2"` or `"latest"`.
+- `default_version` also requires a string when you update it.
 
 ### Create a new version
 
@@ -100513,7 +100511,7 @@ Set a skill's default version
 curl -X POST 'https://api.openai.com/v1/skills/<skill_id>' \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -d '{"default_version": 2}'
+  -d '{"default_version": "2"}'
 ```
 
 
@@ -105376,13 +105374,19 @@ To learn more about Structured Outputs, we recommend browsing the following reso
 Supervised fine-tuning (SFT) lets you train an OpenAI model with examples for your specific use case. The result is a customized model that more reliably produces your desired style and content.
 
 OpenAI is winding down the fine-tuning platform. The platform is no longer
-  accessible to new users, but existing users of the fine-tuning platform will
-  be able to create training jobs for the coming months.
+  accessible to new users. Eligible existing customers can create training jobs
+  until January 6, 2027, unless the base model shuts down earlier.
   
 
-  All fine-tuned models will remain available for inference until their base
-  models are [deprecated](https://developers.openai.com/api/docs/deprecations). The full timeline is
-  [here](https://developers.openai.com/api/docs/deprecations).
+  Fine-tuned models remain available for inference until their base model shuts
+  down. `gpt-4.1-nano-2025-04-14` and its fine-tuned versions shut down on
+  [October 23,
+  2026](https://developers.openai.com/api/docs/deprecations#2026-04-22-legacy-gpt-model-snapshots).
+  `gpt-4.1-2025-04-14`, `gpt-4.1-mini-2025-04-14`, and their fine-tuned versions
+  shut down on [January 14,
+  2027](https://developers.openai.com/api/docs/deprecations#2026-10-14-gpt-4-series-model-deprecations). See
+  the [fine-tuning availability
+  timeline](https://developers.openai.com/api/docs/deprecations#update-to-openais-self-serve-fine-tuning).
 
 
 
@@ -107219,6 +107223,14 @@ Now that you know the basics of text inputs and outputs, you might want to check
 
 # Text to speech
 
+The `tts-1`, `tts-1-hd`, and `gpt-4o-mini-tts` models are deprecated and will
+  shut down on **January 6, 2027**. Migrate to `gpt-realtime-2.1-mini` using the
+  [Realtime API](https://developers.openai.com/api/docs/guides/realtime). This is a change of API workflow:
+  `gpt-realtime-2.1-mini` isn't a supported model for `/v1/audio/speech`.
+  Existing integrations can use the Speech API workflows shown below until
+  shutdown. See the [deprecation
+  notice](https://developers.openai.com/api/docs/deprecations#2026-10-01-text-to-speech-models).
+
 The Audio API provides a [`speech`](https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create) endpoint based on our [GPT-4o mini TTS (text-to-speech) model](https://developers.openai.com/api/docs/models/gpt-4o-mini-tts). It comes with 11 built-in voices and can be used to:
 
 - Narrate a written blog post
@@ -107239,7 +107251,7 @@ The `speech` endpoint takes three key inputs:
 1. The [text](https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create#audio-createspeech-input) to be turned into audio
 1. The [voice](https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create#audio-createspeech-voice) that will speak the output
 
-Here's a simple request example:
+Here's an example request:
 
 Generate spoken audio from input text
 
@@ -107400,7 +107412,7 @@ By default, the endpoint outputs an MP3 of the spoken audio, but you can configu
 
 ### Text-to-speech models
 
-For intelligent realtime applications, use the `gpt-4o-mini-tts` model, our newest and most reliable text-to-speech model. You can prompt the model to control aspects of speech, including:
+For existing Speech API integrations, `gpt-4o-mini-tts` lets you use prompts to control these aspects of speech:
 
 - Accent
 - Emotional range
@@ -109341,17 +109353,33 @@ Streaming output and live audio are separate decisions. You can stream the trans
 
 ## Choose a specialized capability
 
-Start with the recommended model for your workflow. Switch models only when your application requires a capability that the default doesn't provide.
+Start with the recommended model for your workflow:
 
-| If you need                                       | Use                                                                                                                  |
-| ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| Speaker-labeled transcripts                       | `gpt-4o-transcribe-diarize` with [file transcription](https://developers.openai.com/api/docs/guides/speech-to-text#speaker-diarization).          |
-| Word timestamps or `srt` and `vtt` subtitles      | `whisper-1` with [file transcription](https://developers.openai.com/api/docs/guides/speech-to-text#timestamps).                                   |
-| Translation of a completed recording into English | `whisper-1` with the [audio translations endpoint](https://developers.openai.com/api/docs/guides/speech-to-text#translations).                    |
-| Detected input languages                          | `gpt-transcribe` with [file transcription](https://developers.openai.com/api/docs/guides/speech-to-text).                                         |
-| Committed-turn transcription over WebSocket       | `gpt-transcribe` with [realtime transcription](https://developers.openai.com/api/docs/guides/realtime-transcription#transcribe-a-committed-turn). |
+| If you need                                 | Use                                                                                                                  |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Detected input languages                    | `gpt-transcribe` with [file transcription](https://developers.openai.com/api/docs/guides/speech-to-text).                                         |
+| Committed-turn transcription over WebSocket | `gpt-transcribe` with [realtime transcription](https://developers.openai.com/api/docs/guides/realtime-transcription#transcribe-a-committed-turn). |
 
-Existing integrations can continue to use [`gpt-4o-transcribe`](https://developers.openai.com/api/docs/models/gpt-4o-transcribe), [`gpt-4o-mini-transcribe`](https://developers.openai.com/api/docs/models/gpt-4o-mini-transcribe), or [`gpt-realtime-whisper`](https://developers.openai.com/api/docs/models/gpt-realtime-whisper) where supported. These aren't the recommended starting models for a new transcription integration.
+Existing integrations can also use [`gpt-realtime-whisper`](https://developers.openai.com/api/docs/models/gpt-realtime-whisper) where supported. It isn't the recommended starting model for a new transcription integration.
+
+## Existing integrations with deprecated models
+
+`whisper-1`, `gpt-4o-transcribe`, `gpt-4o-mini-transcribe`,
+  `gpt-4o-transcribe-diarize`, and `/v1/audio/translations` are deprecated and
+  will shut down on **February 26, 2027**. See the [deprecation
+  notice](https://developers.openai.com/api/docs/deprecations#2026-08-26-transcription-models). For new
+  integrations, use the recommended file or realtime transcription workflow
+  above.
+
+Existing integrations can use the workflows in these specialized examples until the shutdown date. Check the output formats and metadata your application needs before migrating; changing only the model ID doesn't preserve every capability.
+
+| If you need                                       | Use                                                                                                         |
+| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Speaker-labeled transcripts                       | `gpt-4o-transcribe-diarize` with [file transcription](https://developers.openai.com/api/docs/guides/speech-to-text#speaker-diarization). |
+| Word timestamps or `srt` and `vtt` subtitles      | `whisper-1` with [file transcription](https://developers.openai.com/api/docs/guides/speech-to-text#timestamps).                          |
+| Translation of a completed recording into English | `whisper-1` with the [audio translations endpoint](https://developers.openai.com/api/docs/guides/speech-to-text#translations).           |
+
+For translation, migrate to [Realtime translation](https://developers.openai.com/api/docs/guides/realtime-translation). It uses a translation session and a different endpoint instead of the file-upload workflow used by `/v1/audio/translations`.
 
 See [transcription pricing](https://developers.openai.com/api/docs/pricing#transcription-and-speech) and test the recommended path with representative audio before moving production traffic.
 
@@ -128860,7 +128888,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.86.0</version>
+  <version>4.87.1</version>
 </dependency>
 ```
 
@@ -129257,7 +129285,7 @@ Responses output can include non-message items, such as reasoning items, before 
 
 ### Add a local file to the prompt
 
-For a simple local file, build the prompt inline with command substitution:
+For a local file, build the prompt inline with command substitution:
 
 ```bash
 openai responses create \
@@ -129280,7 +129308,7 @@ The note says the launch checklist is ready except for final support ownership.
 
 ### Passing request bodies
 
-Use flags for short scalar inputs. Use a YAML heredoc for multiline prompts, tools, files, or nested request bodies. The heredoc can contain the same request fields you would otherwise pass as flags.
+Use flags for short scalar inputs. Use a YAML here-document for multiline prompts, tools, files, or nested request bodies. The here-document can contain the same request fields you would otherwise pass as flags.
 
 Be careful with string values that look like YAML, especially prompts that contain `:` or `{}`. On flags, the generated parser may interpret those values as structured YAML instead of plain text. If a prompt starts looking like configuration, put it under `input: |` in a YAML body instead:
 
@@ -129551,6 +129579,12 @@ If a local image edit upload fails with an `UploadFile` type error, update the C
 
 ## Speech
 
+These Speech API examples use the deprecated `gpt-4o-mini-tts` model, which
+  will shut down on **January 6, 2027**. Migrate to `gpt-realtime-2.1-mini`
+  using the [Realtime API](https://developers.openai.com/api/docs/guides/realtime). Changing only the model
+  ID in `openai audio:speech create` isn't supported. See the [deprecation
+  notice](https://developers.openai.com/api/docs/deprecations#2026-10-01-text-to-speech-models).
+
 Create an MP3 locally with the speech API:
 
 Command:
@@ -129596,7 +129630,7 @@ Command:
 
 ```bash
 openai audio:transcriptions create \
-  --model gpt-4o-transcribe \
+  --model gpt-transcribe \
   --file ./speech.mp3 \
   --transform text \
   --raw-output
@@ -129609,11 +129643,16 @@ Output:
 The OpenAI CLI can call the API from ordinary shell scripts.
 ```
 
-Use the response format that matches the artifact you need:
+The example above uses the recommended [file transcription](https://developers.openai.com/api/docs/guides/speech-to-text) model. The following specialized examples remain available for existing integrations:
+
+`whisper-1` and `gpt-4o-transcribe-diarize` are deprecated and will shut down
+  on **February 26, 2027**. Changing to the recommended transcription model
+  doesn't preserve every output format or metadata field. See the [deprecation
+  notice](https://developers.openai.com/api/docs/deprecations#2026-08-26-transcription-models) and
+  [transcription workflows](https://developers.openai.com/api/docs/guides/transcription).
 
 | Need                        | Command shape                                                        |
 | --------------------------- | -------------------------------------------------------------------- |
-| Plain transcript text       | `--model gpt-4o-transcribe --transform text --raw-output`            |
 | Subtitle files              | `--model whisper-1 --response-format srt` or `--response-format vtt` |
 | Segment or word timestamps  | `--model whisper-1 --response-format verbose_json`                   |
 | Speaker-labeled diarization | `--model gpt-4o-transcribe-diarize --response-format diarized_json`  |
@@ -129690,7 +129729,7 @@ To provision a new machine credential, [create a project](https://developers.ope
 
 ### Create a project, service account, and API key
 
-Creating a service account in that project returns an unredacted API key for the service account.
+Creating a service account in that project returns the full API key for the service account.
 
 Command:
 
@@ -130277,10 +130316,14 @@ Flagship models
     
 Our latest models
 
-    
-Prices per 1M tokens.
+  
 
   
+Speed
+
+  
+
+    Prices per 1M tokens.
 
   
 
@@ -130290,48 +130333,47 @@ Standard
       
 ### Standard pricing data
 
-| Model | Short context input | Short context cached input | Short context cache writes | Short context output | Long context input | Long context cached input | Long context cache writes | Long context output |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| gpt-6-astra | $10.00 | $1.00 | $12.50 | $50.00 | $20.00 | $2.00 | $25.00 | $75.00 |
-| gpt-6.1-sol | $2.00 | $0.10 | $2.50 | $10.00 | $4.00 | $0.20 | $5.00 | $15.00 |
-| gpt-6-luna | $0.10 | $0.01 | $0.125 | $0.50 | $0.20 | $0.02 | $0.25 | $0.75 |
-| gpt-6-sol | $2.00 | $0.20 | $2.50 | $10.00 | $4.00 | $0.40 | $5.00 | $15.00 |
-| gpt-5.6-sol | $4.00 | $0.40 | $5.00 | $20.00 | $8.00 | $0.80 | $10.00 | $30.00 |
-| gpt-5.6-terra | $2.00 | $0.20 | $2.50 | $12.00 | $4.00 | $0.40 | $5.00 | $18.00 |
-| gpt-5.6-luna | $0.20 | $0.02 | $0.25 | $1.20 | $0.40 | $0.04 | $0.50 | $1.80 |
-| gpt-5.5 (<272K context length) | $5.00 | $0.50 | - | $30.00 | $10.00 | $1.00 | - | $45.00 |
-| gpt-5.5-pro (<272K context length) | $30.00 | - | - | $180.00 | $60.00 | - | - | $270.00 |
-| gpt-5.4 (<272K context length) | $2.50 | $0.25 | - | $15.00 | $5.00 | $0.50 | - | $22.50 |
-| gpt-5.4-mini | $0.75 | $0.075 | - | $4.50 | - | - | - | - |
-| gpt-5.4-nano | $0.20 | $0.02 | - | $1.25 | - | - | - | - |
-| gpt-5.4-pro (<272K context length) | $30.00 | - | - | $180.00 | $60.00 | - | - | $270.00 |
-| gpt-5.2 | $1.75 | $0.175 | - | $14.00 | - | - | - | - |
-| gpt-5.2-pro | $21.00 | - | - | $168.00 | - | - | - | - |
-| gpt-5.1 | $1.25 | $0.125 | - | $10.00 | - | - | - | - |
-| gpt-5 | $1.25 | $0.125 | - | $10.00 | - | - | - | - |
-| gpt-5-mini | $0.25 | $0.025 | - | $2.00 | - | - | - | - |
-| gpt-5-nano | $0.05 | $0.005 | - | $0.40 | - | - | - | - |
-| gpt-5-pro | $15.00 | - | - | $120.00 | - | - | - | - |
-| gpt-4.1 | $2.00 | $0.50 | - | $8.00 | - | - | - | - |
-| gpt-4.1-mini | $0.40 | $0.10 | - | $1.60 | - | - | - | - |
-| gpt-4.1-nano | $0.10 | $0.025 | - | $0.40 | - | - | - | - |
-| gpt-4o | $2.50 | $1.25 | - | $10.00 | - | - | - | - |
-| gpt-4o-2024-05-13 | $5.00 | - | - | $15.00 | - | - | - | - |
-| gpt-4o-mini | $0.15 | $0.075 | - | $0.60 | - | - | - | - |
-| o1 | $15.00 | $7.50 | - | $60.00 | - | - | - | - |
-| o1-pro | $150.00 | - | - | $600.00 | - | - | - | - |
-| o3-pro | $20.00 | - | - | $80.00 | - | - | - | - |
-| o3 | $2.00 | $0.50 | - | $8.00 | - | - | - | - |
-| o4-mini | $1.10 | $0.275 | - | $4.40 | - | - | - | - |
-| o3-mini | $1.10 | $0.55 | - | $4.40 | - | - | - | - |
-| gpt-4-turbo-2024-04-09 | $10.00 | - | - | $30.00 | - | - | - | - |
-| gpt-4-0613 | $30.00 | - | - | $60.00 | - | - | - | - |
-| gpt-3.5-turbo | $0.50 | - | - | $1.50 | - | - | - | - |
-| gpt-3.5-turbo-0125 | $0.50 | - | - | $1.50 | - | - | - | - |
-| gpt-3.5-turbo-1106 | $1.00 | - | - | $2.00 | - | - | - | - |
-| gpt-3.5-turbo-instruct | $1.50 | - | - | $2.00 | - | - | - | - |
-| davinci-002 | $2.00 | - | - | $2.00 | - | - | - | - |
-| babbage-002 | $0.40 | - | - | $0.40 | - | - | - | - |
+| Model | Short context input | Short context output | Short context cached input | Short context 30m write | Short context 12h write | Long context input | Long context output | Long context cached input | Long context 30m write | Long context 12h write |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| gpt-6-astra | $10.00 | $50.00 | $1.00 | $12.50 | $25.00 | $20.00 | $75.00 | $2.00 | $25.00 | $50.00 |
+| gpt-6.1-sol | $2.00 | $10.00 | $0.10 | $2.50 | $5.00 | $4.00 | $15.00 | $0.20 | $5.00 | $10.00 |
+| gpt-6-luna | $0.10 | $0.50 | $0.01 | $0.125 | $0.25 | $0.20 | $0.75 | $0.02 | $0.25 | $0.50 |
+| gpt-6-sol | $2.00 | $10.00 | $0.20 | $2.50 | $5.00 | $4.00 | $15.00 | $0.40 | $5.00 | $10.00 |
+| gpt-5.6-sol | $4.00 | $20.00 | $0.40 | $5.00 | $10.00 | $8.00 | $30.00 | $0.80 | $10.00 | $20.00 |
+| gpt-5.6-terra | $2.00 | $12.00 | $0.20 | $2.50 | $5.00 | $4.00 | $18.00 | $0.40 | $5.00 | $10.00 |
+| gpt-5.6-luna | $0.20 | $1.20 | $0.02 | $0.25 | $0.50 | $0.40 | $1.80 | $0.04 | $0.50 | $1.00 |
+| gpt-5.5 (<272K context length) | $5.00 | $30.00 | $0.50 | - | - | $10.00 | $45.00 | $1.00 | - | - |
+| gpt-5.5-pro (<272K context length) | $30.00 | $180.00 | - | - | - | $60.00 | $270.00 | - | - | - |
+| gpt-5.4 (<272K context length) | $2.50 | $15.00 | $0.25 | - | - | $5.00 | $22.50 | $0.50 | - | - |
+| gpt-5.4-pro (<272K context length) | $30.00 | $180.00 | - | - | - | $60.00 | $270.00 | - | - | - |
+
+| Model | Input | Output | Cached input |
+| --- | --- | --- | --- |
+| gpt-5.4-mini | $0.75 | $4.50 | $0.075 |
+| gpt-5.4-nano | $0.20 | $1.25 | $0.02 |
+| gpt-5.2 | $1.75 | $14.00 | $0.175 |
+| gpt-5.2-pro | $21.00 | $168.00 | - |
+| gpt-5.1 | $1.25 | $10.00 | $0.125 |
+| gpt-5 | $1.25 | $10.00 | $0.125 |
+| gpt-5-mini | $0.25 | $2.00 | $0.025 |
+| gpt-5-nano | $0.05 | $0.40 | $0.005 |
+| gpt-5-pro | $15.00 | $120.00 | - |
+| gpt-4.1 | $2.00 | $8.00 | $0.50 |
+| gpt-4.1-mini | $0.40 | $1.60 | $0.10 |
+| gpt-4.1-nano | $0.10 | $0.40 | $0.025 |
+| gpt-4o | $2.50 | $10.00 | $1.25 |
+| gpt-4o-2024-05-13 | $5.00 | $15.00 | - |
+| gpt-4o-mini | $0.15 | $0.60 | $0.075 |
+| o1 | $15.00 | $60.00 | $7.50 |
+| o1-pro | $150.00 | $600.00 | - |
+| o3-pro | $20.00 | $80.00 | - |
+| o3 | $2.00 | $8.00 | $0.50 |
+| o4-mini | $1.10 | $4.40 | $0.275 |
+| o3-mini | $1.10 | $4.40 | $0.55 |
+| gpt-4-turbo-2024-04-09 | $10.00 | $30.00 | - |
+| gpt-4-0613 | $30.00 | $60.00 | - |
+| gpt-3.5-turbo | $0.50 | $1.50 | - |
+| gpt-3.5-turbo-0125 | $0.50 | $1.50 | - |
 
     
 
@@ -130344,80 +130386,76 @@ Batch
       
 ### Batch pricing data
 
-| Model | Short context input | Short context cached input | Short context cache writes | Short context output | Long context input | Long context cached input | Long context cache writes | Long context output |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| gpt-6-astra | $5.00 | $0.50 | $6.25 | $25.00 | $10.00 | $1.00 | $12.50 | $37.50 |
-| gpt-6.1-sol | $1.00 | $0.05 | $1.25 | $5.00 | $2.00 | $0.10 | $2.50 | $7.50 |
-| gpt-6-luna | $0.05 | $0.005 | $0.0625 | $0.25 | $0.10 | $0.01 | $0.125 | $0.375 |
-| gpt-6-sol | $1.00 | $0.10 | $1.25 | $5.00 | $2.00 | $0.20 | $2.50 | $7.50 |
-| gpt-5.6-sol | $2.00 | $0.20 | $2.50 | $10.00 | $4.00 | $0.40 | $5.00 | $15.00 |
-| gpt-5.6-terra | $1.00 | $0.10 | $1.25 | $6.00 | $2.00 | $0.20 | $2.50 | $9.00 |
-| gpt-5.6-luna | $0.10 | $0.01 | $0.125 | $0.60 | $0.20 | $0.02 | $0.25 | $0.90 |
-| gpt-5.5 (<272K context length) | $2.50 | $0.25 | - | $15.00 | $5.00 | $0.50 | - | $22.50 |
-| gpt-5.5-pro (<272K context length) | $15.00 | - | - | $90.00 | - | - | - | - |
-| gpt-5.4 (<272K context length) | $1.25 | $0.13 | - | $7.50 | $2.50 | $0.25 | - | $11.25 |
-| gpt-5.4-mini | $0.375 | $0.0375 | - | $2.25 | - | - | - | - |
-| gpt-5.4-nano | $0.10 | $0.01 | - | $0.625 | - | - | - | - |
-| gpt-5.4-pro (<272K context length) | $15.00 | - | - | $90.00 | $30.00 | - | - | $135.00 |
-| gpt-5.2 | $0.875 | $0.0875 | - | $7.00 | - | - | - | - |
-| gpt-5.2-pro | $10.50 | - | - | $84.00 | - | - | - | - |
-| gpt-5.1 | $0.625 | $0.0625 | - | $5.00 | - | - | - | - |
-| gpt-5 | $0.625 | $0.0625 | - | $5.00 | - | - | - | - |
-| gpt-5-mini | $0.125 | $0.0125 | - | $1.00 | - | - | - | - |
-| gpt-5-nano | $0.025 | $0.0025 | - | $0.20 | - | - | - | - |
-| gpt-5-pro | $7.50 | - | - | $60.00 | - | - | - | - |
-| gpt-4.1 | $1.00 | - | - | $4.00 | - | - | - | - |
-| gpt-4.1-mini | $0.20 | - | - | $0.80 | - | - | - | - |
-| gpt-4.1-nano | $0.05 | - | - | $0.20 | - | - | - | - |
-| gpt-4o | $1.25 | - | - | $5.00 | - | - | - | - |
-| gpt-4o-2024-05-13 | $2.50 | - | - | $7.50 | - | - | - | - |
-| gpt-4o-mini | $0.075 | - | - | $0.30 | - | - | - | - |
-| o1 | $7.50 | - | - | $30.00 | - | - | - | - |
-| o1-pro | $75.00 | - | - | $300.00 | - | - | - | - |
-| o3-pro | $10.00 | - | - | $40.00 | - | - | - | - |
-| o3 | $1.00 | - | - | $4.00 | - | - | - | - |
-| o4-mini | $0.55 | - | - | $2.20 | - | - | - | - |
-| o3-mini | $0.55 | - | - | $2.20 | - | - | - | - |
-| gpt-4-turbo-2024-04-09 | $5.00 | - | - | $15.00 | - | - | - | - |
-| gpt-4-0613 | $15.00 | - | - | $30.00 | - | - | - | - |
-| gpt-3.5-turbo-0125 | $0.25 | - | - | $0.75 | - | - | - | - |
-| gpt-3.5-turbo-1106 | $1.00 | - | - | $2.00 | - | - | - | - |
-| davinci-002 | $1.00 | - | - | $1.00 | - | - | - | - |
-| babbage-002 | $0.20 | - | - | $0.20 | - | - | - | - |
+#### Batch
 
-    
+| Model | Short context input | Short context output | Short context cached input | Short context 30m write | Short context 12h write | Long context input | Long context output | Long context cached input | Long context 30m write | Long context 12h write |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| gpt-6-astra | $5.00 | $25.00 | $0.50 | $6.25 | $12.50 | $10.00 | $37.50 | $1.00 | $12.50 | $25.00 |
+| gpt-6.1-sol | $1.00 | $5.00 | $0.05 | $1.25 | $2.50 | $2.00 | $7.50 | $0.10 | $2.50 | $5.00 |
+| gpt-6-luna | $0.05 | $0.25 | $0.005 | $0.0625 | $0.125 | $0.10 | $0.375 | $0.01 | $0.125 | $0.25 |
+| gpt-6-sol | $1.00 | $5.00 | $0.10 | $1.25 | $2.50 | $2.00 | $7.50 | $0.20 | $2.50 | $5.00 |
+| gpt-5.6-sol | $2.00 | $10.00 | $0.20 | $2.50 | $5.00 | $4.00 | $15.00 | $0.40 | $5.00 | $10.00 |
+| gpt-5.6-terra | $1.00 | $6.00 | $0.10 | $1.25 | $2.50 | $2.00 | $9.00 | $0.20 | $2.50 | $5.00 |
+| gpt-5.6-luna | $0.10 | $0.60 | $0.01 | $0.125 | $0.25 | $0.20 | $0.90 | $0.02 | $0.25 | $0.50 |
+| gpt-5.5 (<272K context length) | $2.50 | $15.00 | $0.25 | - | - | $5.00 | $22.50 | $0.50 | - | - |
+| gpt-5.5-pro (<272K context length) | $15.00 | $90.00 | - | - | - | - | - | - | - | - |
+| gpt-5.4 (<272K context length) | $1.25 | $7.50 | $0.13 | - | - | $2.50 | $11.25 | $0.25 | - | - |
+| gpt-5.4-pro (<272K context length) | $15.00 | $90.00 | - | - | - | $30.00 | $135.00 | - | - | - |
 
-    
+| Model | Input | Output | Cached input |
+| --- | --- | --- | --- |
+| gpt-5.4-mini | $0.375 | $2.25 | $0.0375 |
+| gpt-5.4-nano | $0.10 | $0.625 | $0.01 |
+| gpt-5.2 | $0.875 | $7.00 | $0.0875 |
+| gpt-5.2-pro | $10.50 | $84.00 | - |
+| gpt-5.1 | $0.625 | $5.00 | $0.0625 |
+| gpt-5 | $0.625 | $5.00 | $0.0625 |
+| gpt-5-mini | $0.125 | $1.00 | $0.0125 |
+| gpt-5-nano | $0.025 | $0.20 | $0.0025 |
+| gpt-5-pro | $7.50 | $60.00 | - |
+| gpt-4.1 | $1.00 | $4.00 | - |
+| gpt-4.1-mini | $0.20 | $0.80 | - |
+| gpt-4.1-nano | $0.05 | $0.20 | - |
+| gpt-4o | $1.25 | $5.00 | - |
+| gpt-4o-2024-05-13 | $2.50 | $7.50 | - |
+| gpt-4o-mini | $0.075 | $0.30 | - |
+| o1 | $7.50 | $30.00 | - |
+| o1-pro | $75.00 | $300.00 | - |
+| o3-pro | $10.00 | $40.00 | - |
+| o3 | $1.00 | $4.00 | - |
+| o4-mini | $0.55 | $2.20 | - |
+| o3-mini | $0.55 | $2.20 | - |
+| gpt-4-turbo-2024-04-09 | $5.00 | $15.00 | - |
+| gpt-4-0613 | $15.00 | $30.00 | - |
+| gpt-3.5-turbo-0125 | $0.25 | $0.75 | - |
 
-      
-Flex
+#### Flex
 
+| Model | Short context input | Short context output | Short context cached input | Short context 30m write | Short context 12h write | Long context input | Long context output | Long context cached input | Long context 30m write | Long context 12h write |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| gpt-6-astra | $5.00 | $25.00 | $0.50 | $6.25 | $12.50 | $10.00 | $37.50 | $1.00 | $12.50 | $25.00 |
+| gpt-6.1-sol | $1.00 | $5.00 | $0.05 | $1.25 | $2.50 | $2.00 | $7.50 | $0.10 | $2.50 | $5.00 |
+| gpt-6-luna | $0.05 | $0.25 | $0.005 | $0.0625 | $0.125 | $0.10 | $0.375 | $0.01 | $0.125 | $0.25 |
+| gpt-6-sol | $1.00 | $5.00 | $0.10 | $1.25 | $2.50 | $2.00 | $7.50 | $0.20 | $2.50 | $5.00 |
+| gpt-5.6-sol | $2.00 | $10.00 | $0.20 | $2.50 | $5.00 | $4.00 | $15.00 | $0.40 | $5.00 | $10.00 |
+| gpt-5.6-terra | $1.00 | $6.00 | $0.10 | $1.25 | $2.50 | $2.00 | $9.00 | $0.20 | $2.50 | $5.00 |
+| gpt-5.6-luna | $0.10 | $0.60 | $0.01 | $0.125 | $0.25 | $0.20 | $0.90 | $0.02 | $0.25 | $0.50 |
+| gpt-5.5 (<272K context length) | $2.50 | $15.00 | $0.25 | - | - | $5.00 | $22.50 | $0.50 | - | - |
+| gpt-5.5-pro (<272K context length) | $15.00 | $90.00 | - | - | - | - | - | - | - | - |
+| gpt-5.4 (<272K context length) | $1.25 | $7.50 | $0.13 | - | - | $2.50 | $11.25 | $0.25 | - | - |
+| gpt-5.4-pro (<272K context length) | $15.00 | $90.00 | - | - | - | $30.00 | $135.00 | - | - | - |
 
-      
-### Flex pricing data
-
-| Model | Short context input | Short context cached input | Short context cache writes | Short context output | Long context input | Long context cached input | Long context cache writes | Long context output |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| gpt-6-astra | $5.00 | $0.50 | $6.25 | $25.00 | $10.00 | $1.00 | $12.50 | $37.50 |
-| gpt-6.1-sol | $1.00 | $0.05 | $1.25 | $5.00 | $2.00 | $0.10 | $2.50 | $7.50 |
-| gpt-6-luna | $0.05 | $0.005 | $0.0625 | $0.25 | $0.10 | $0.01 | $0.125 | $0.375 |
-| gpt-6-sol | $1.00 | $0.10 | $1.25 | $5.00 | $2.00 | $0.20 | $2.50 | $7.50 |
-| gpt-5.6-sol | $2.00 | $0.20 | $2.50 | $10.00 | $4.00 | $0.40 | $5.00 | $15.00 |
-| gpt-5.6-terra | $1.00 | $0.10 | $1.25 | $6.00 | $2.00 | $0.20 | $2.50 | $9.00 |
-| gpt-5.6-luna | $0.10 | $0.01 | $0.125 | $0.60 | $0.20 | $0.02 | $0.25 | $0.90 |
-| gpt-5.5 (<272K context length) | $2.50 | $0.25 | - | $15.00 | $5.00 | $0.50 | - | $22.50 |
-| gpt-5.5-pro (<272K context length) | $15.00 | - | - | $90.00 | - | - | - | - |
-| gpt-5.4 (<272K context length) | $1.25 | $0.13 | - | $7.50 | $2.50 | $0.25 | - | $11.25 |
-| gpt-5.4-mini | $0.375 | $0.0375 | - | $2.25 | - | - | - | - |
-| gpt-5.4-nano | $0.10 | $0.01 | - | $0.625 | - | - | - | - |
-| gpt-5.4-pro (<272K context length) | $15.00 | - | - | $90.00 | $30.00 | - | - | $135.00 |
-| gpt-5.2 | $0.875 | $0.0875 | - | $7.00 | - | - | - | - |
-| gpt-5.1 | $0.625 | $0.0625 | - | $5.00 | - | - | - | - |
-| gpt-5 | $0.625 | $0.0625 | - | $5.00 | - | - | - | - |
-| gpt-5-mini | $0.125 | $0.0125 | - | $1.00 | - | - | - | - |
-| gpt-5-nano | $0.025 | $0.0025 | - | $0.20 | - | - | - | - |
-| o3 | $1.00 | $0.25 | - | $4.00 | - | - | - | - |
-| o4-mini | $0.55 | $0.138 | - | $2.20 | - | - | - | - |
+| Model | Input | Output | Cached input |
+| --- | --- | --- | --- |
+| gpt-5.4-mini | $0.375 | $2.25 | $0.0375 |
+| gpt-5.4-nano | $0.10 | $0.625 | $0.01 |
+| gpt-5.2 | $0.875 | $7.00 | $0.0875 |
+| gpt-5.1 | $0.625 | $5.00 | $0.0625 |
+| gpt-5 | $0.625 | $5.00 | $0.0625 |
+| gpt-5-mini | $0.125 | $1.00 | $0.0125 |
+| gpt-5-nano | $0.025 | $0.20 | $0.0025 |
+| o3 | $1.00 | $4.00 | $0.25 |
+| o4-mini | $0.55 | $2.20 | $0.138 |
 
     
 
@@ -130430,30 +130468,33 @@ Fast
       
 ### Fast pricing data
 
-| Model | Short context input | Short context cached input | Short context cache writes | Short context output | Long context input | Long context cached input | Long context cache writes | Long context output |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| gpt-6-astra | $20.00 | $2.00 | $25.00 | $100.00 | $40.00 | $4.00 | $50.00 | $150.00 |
-| gpt-6.1-sol | $4.00 | $0.20 | $5.00 | $20.00 | $8.00 | $0.40 | $10.00 | $30.00 |
-| gpt-6-luna | $0.20 | $0.02 | $0.25 | $1.00 | $0.40 | $0.04 | $0.50 | $1.50 |
-| gpt-6-sol | $4.00 | $0.40 | $5.00 | $20.00 | $8.00 | $0.80 | $10.00 | $30.00 |
-| gpt-5.6-sol | $8.00 | $0.80 | $10.00 | $40.00 | $16.00 | $1.60 | $20.00 | $60.00 |
-| gpt-5.6-terra | $4.00 | $0.40 | $5.00 | $24.00 | $8.00 | $0.80 | $10.00 | $36.00 |
-| gpt-5.6-luna | $0.40 | $0.04 | $0.50 | $2.40 | $0.80 | $0.08 | $1.00 | $3.60 |
-| gpt-5.5 (<272K context length) | $12.50 | $1.25 | - | $75.00 | - | - | - | - |
-| gpt-5.4 (<272K context length) | $5.00 | $0.50 | - | $30.00 | - | - | - | - |
-| gpt-5.4-mini | $1.50 | $0.15 | - | $9.00 | - | - | - | - |
-| gpt-5.2 | $3.50 | $0.35 | - | $28.00 | - | - | - | - |
-| gpt-5.1 | $2.50 | $0.25 | - | $20.00 | - | - | - | - |
-| gpt-5 | $2.50 | $0.25 | - | $20.00 | - | - | - | - |
-| gpt-5-mini | $0.45 | $0.045 | - | $3.60 | - | - | - | - |
-| gpt-4.1 | $3.50 | $0.875 | - | $14.00 | - | - | - | - |
-| gpt-4.1-mini | $0.70 | $0.175 | - | $2.80 | - | - | - | - |
-| gpt-4.1-nano | $0.20 | $0.05 | - | $0.80 | - | - | - | - |
-| gpt-4o | $4.25 | $2.125 | - | $17.00 | - | - | - | - |
-| gpt-4o-2024-05-13 | $8.75 | - | - | $26.25 | - | - | - | - |
-| gpt-4o-mini | $0.25 | $0.125 | - | $1.00 | - | - | - | - |
-| o3 | $3.50 | $0.875 | - | $14.00 | - | - | - | - |
-| o4-mini | $2.00 | $0.50 | - | $8.00 | - | - | - | - |
+| Model | Short context input | Short context output | Short context cached input | Short context 30m write | Short context 12h write | Long context input | Long context output | Long context cached input | Long context 30m write | Long context 12h write |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| gpt-6-astra | $20.00 | $100.00 | $2.00 | $25.00 | $50.00 | $40.00 | $150.00 | $4.00 | $50.00 | $100.00 |
+| gpt-6.1-sol | $4.00 | $20.00 | $0.20 | $5.00 | $10.00 | $8.00 | $30.00 | $0.40 | $10.00 | $20.00 |
+| gpt-6-luna | $0.20 | $1.00 | $0.02 | $0.25 | $0.50 | $0.40 | $1.50 | $0.04 | $0.50 | $1.00 |
+| gpt-6-sol | $4.00 | $20.00 | $0.40 | $5.00 | $10.00 | $8.00 | $30.00 | $0.80 | $10.00 | $20.00 |
+| gpt-5.6-sol | $8.00 | $40.00 | $0.80 | $10.00 | $20.00 | $16.00 | $60.00 | $1.60 | $20.00 | $40.00 |
+| gpt-5.6-terra | $4.00 | $24.00 | $0.40 | $5.00 | $10.00 | $8.00 | $36.00 | $0.80 | $10.00 | $20.00 |
+| gpt-5.6-luna | $0.40 | $2.40 | $0.04 | $0.50 | $1.00 | $0.80 | $3.60 | $0.08 | $1.00 | $2.00 |
+| gpt-5.5 (<272K context length) | $12.50 | $75.00 | $1.25 | - | - | - | - | - | - | - |
+| gpt-5.4 (<272K context length) | $5.00 | $30.00 | $0.50 | - | - | - | - | - | - | - |
+
+| Model | Input | Output | Cached input |
+| --- | --- | --- | --- |
+| gpt-5.4-mini | $1.50 | $9.00 | $0.15 |
+| gpt-5.2 | $3.50 | $28.00 | $0.35 |
+| gpt-5.1 | $2.50 | $20.00 | $0.25 |
+| gpt-5 | $2.50 | $20.00 | $0.25 |
+| gpt-5-mini | $0.45 | $3.60 | $0.045 |
+| gpt-4.1 | $3.50 | $14.00 | $0.875 |
+| gpt-4.1-mini | $0.70 | $2.80 | $0.175 |
+| gpt-4.1-nano | $0.20 | $0.80 | $0.05 |
+| gpt-4o | $4.25 | $17.00 | $2.125 |
+| gpt-4o-2024-05-13 | $8.75 | $26.25 | - |
+| gpt-4o-mini | $0.25 | $1.00 | $0.125 |
+| o3 | $3.50 | $14.00 | $0.875 |
+| o4-mini | $2.00 | $8.00 | $0.50 |
 
     
 
@@ -130465,22 +130506,21 @@ Ultrafast
       
 ### Ultrafast pricing data
 
-| Model | Short context input | Short context cached input | Short context cache writes | Short context output | Long context input | Long context cached input | Long context cache writes | Long context output |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| gpt-6-astra | $60.00 | $6.00 | $75.00 | $300.00 | $120.00 | $12.00 | $150.00 | $450.00 |
-| gpt-6.1-sol | $12.00 | $0.60 | $15.00 | $60.00 | $24.00 | $1.20 | $30.00 | $90.00 |
+| Model | Short context input | Short context output | Short context cached input | Short context 30m write | Short context 12h write | Long context input | Long context output | Long context cached input | Long context 30m write | Long context 12h write |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| gpt-6-astra | $60.00 | $300.00 | $6.00 | $75.00 | $150.00 | $120.00 | $450.00 | $12.00 | $150.00 | $300.00 |
+| gpt-6.1-sol | $12.00 | $60.00 | $0.60 | $15.00 | $30.00 | $24.00 | $90.00 | $1.20 | $30.00 | $60.00 |
 
 Short context: ≤272K input tokens. Long context: >272K input tokens.
 
 
   
 
-    Regional processing (data residency) endpoints are charged a 10% uplift for
-    models released on or after March 5, 2026. FedRAMP endpoints are also
-    charged a 10% uplift. Priority processing was renamed Fast mode on July 30,
-    2026. GPT-5.6 Sol’s promotional pricing is available at least through
-    November 21, 2026.
+
+Regional processing (data residency) endpoints are charged a 10% uplift for models released on or after March 5, 2026. FedRAMP endpoints are also charged a 10% uplift. Priority processing was renamed Fast mode on July 30, 2026. GPT-5.6 Sol’s promotional pricing is available at least through November 21, 2026.
+
   
+
 
 
 
@@ -130494,19 +130534,20 @@ Cyber models
   
 Our latest Daybreak models.
 
-  
-Prices per 1M tokens.
 
 
 
 
-### Grouped Pricing Table data
+  Prices per 1M tokens.
 
-| Model | Short context input | Short context cached input | Short context cache writes | Short context output | Long context input | Long context cached input | Long context cache writes | Long context output |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| gpt-5.6-sol | $4.00 | $0.40 | $5.00 | $20.00 | $8.00 | $0.80 | $10.00 | $30.00 |
-| gpt-5.6-cyber | $12.50 | $1.25 | $15.625 | $75.00 | - | - | - | - |
-| gpt-5.5-cyber | $12.50 | $1.25 | - | $75.00 | - | - | - | - |
+
+### Standard pricing data
+
+| Model | Short context input | Short context output | Short context cached input | Short context 30m write | Short context 12h write | Long context input | Long context output | Long context cached input | Long context 30m write | Long context 12h write |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| gpt-5.6-sol | $4.00 | $20.00 | $0.40 | $5.00 | $10.00 | $8.00 | $30.00 | $0.80 | $10.00 | $20.00 |
+| gpt-5.6-cyber | $12.50 | $75.00 | $1.25 | $15.625 | $31.25 | - | - | - | - | - |
+| gpt-5.5-cyber | $12.50 | $75.00 | $1.25 | - | - | - | - | - | - | - |
 
 
 
@@ -130526,10 +130567,10 @@ Prices per 1M tokens.
 
 ### Grouped Pricing Table data
 
-| Model | Input | Cached input | Output |
+| Model | Input | Output | Cached input |
 | --- | --- | --- | --- |
-| gpt-rosalind-research | $5.00 | $0.50 | $25.00 |
-| gpt-rosalind-discovery | $5.00 | $0.50 | $25.00 |
+| gpt-rosalind-research | $5.00 | $25.00 | $0.50 |
+| gpt-rosalind-discovery | $5.00 | $25.00 | $0.50 |
 
 Billing for `gpt-rosalind-research` begins on October 5, 2026. Cache-write pricing does not apply to this model. Access is limited to approved internal research through the [trusted-access program](https://help.openai.com/en/articles/20001193-gpt-rosalind-for-life-sciences-research). All eligible organizations will continue to get access to the latest GPT-Rosalind models as they’re released. Regional processing (data residency) endpoints are charged a 10% uplift for models released on or after March 5, 2026, that are eligible for data residency. See our [Your data](https://developers.openai.com/api/docs/guides/your-data) guide for supported regions and processing details.
 
@@ -130580,33 +130621,33 @@ Prices per 1M tokens unless noted.
 
 ### Grouped Pricing Table data
 
-| Model | Modality | Input | Cached input | Output / cost |
+| Model | Modality | Input | Output / cost | Cached input |
 | --- | --- | --- | --- | --- |
-| gpt-realtime-2.1 | Audio | $32.00 | $0.40 | $64.00 |
-| gpt-realtime-2.1 | Text | $4.00 | $0.40 | $24.00 |
-| gpt-realtime-2.1 | Image | $5.00 | $0.50 | - |
-| gpt-realtime-2.1-mini | Audio | $10.00 | $0.30 | $20.00 |
-| gpt-realtime-2.1-mini | Text | $0.60 | $0.06 | $2.40 |
-| gpt-realtime-2.1-mini | Image | $0.80 | $0.08 | - |
-| gpt-realtime-2 | Audio | $32.00 | $0.40 | $64.00 |
-| gpt-realtime-2 | Text | $4.00 | $0.40 | $24.00 |
-| gpt-realtime-2 | Image | $5.00 | $0.50 | - |
-| gpt-realtime-1.5 | Audio | $32.00 | $0.40 | $64.00 |
-| gpt-realtime-1.5 | Text | $4.00 | $0.40 | $16.00 |
-| gpt-realtime-1.5 | Image | $5.00 | $0.50 | - |
-| gpt-realtime-mini | Audio | $10.00 | $0.30 | $20.00 |
-| gpt-realtime-mini | Text | $0.60 | $0.06 | $2.40 |
-| gpt-realtime-mini | Image | $0.80 | $0.08 | - |
-| gpt-realtime | Audio | $32.00 | $0.40 | $64.00 |
-| gpt-realtime | Text | $4.00 | $0.40 | $16.00 |
-| gpt-realtime | Image | $5.00 | $0.50 | - |
-| gpt-audio-1.5 | Audio | $32.00 | - | $64.00 |
-| gpt-audio-1.5 | Text | $2.50 | - | $10.00 |
-| gpt-audio-mini | Audio | $10.00 | - | $20.00 |
-| gpt-audio-mini | Text | $0.60 | - | $2.40 |
-| gpt-audio | Audio | $32.00 | - | $64.00 |
-| gpt-audio | Text | $2.50 | - | $10.00 |
-| gpt-4o-mini-tts | Audio | - | - | $12.00 |
+| gpt-realtime-2.1 | Audio | $32.00 | $64.00 | $0.40 |
+| gpt-realtime-2.1 | Text | $4.00 | $24.00 | $0.40 |
+| gpt-realtime-2.1 | Image | $5.00 | - | $0.50 |
+| gpt-realtime-2.1-mini | Audio | $10.00 | $20.00 | $0.30 |
+| gpt-realtime-2.1-mini | Text | $0.60 | $2.40 | $0.06 |
+| gpt-realtime-2.1-mini | Image | $0.80 | - | $0.08 |
+| gpt-realtime-2 | Audio | $32.00 | $64.00 | $0.40 |
+| gpt-realtime-2 | Text | $4.00 | $24.00 | $0.40 |
+| gpt-realtime-2 | Image | $5.00 | - | $0.50 |
+| gpt-realtime-1.5 | Audio | $32.00 | $64.00 | $0.40 |
+| gpt-realtime-1.5 | Text | $4.00 | $16.00 | $0.40 |
+| gpt-realtime-1.5 | Image | $5.00 | - | $0.50 |
+| gpt-realtime-mini | Audio | $10.00 | $20.00 | $0.30 |
+| gpt-realtime-mini | Text | $0.60 | $2.40 | $0.06 |
+| gpt-realtime-mini | Image | $0.80 | - | $0.08 |
+| gpt-realtime | Audio | $32.00 | $64.00 | $0.40 |
+| gpt-realtime | Text | $4.00 | $16.00 | $0.40 |
+| gpt-realtime | Image | $5.00 | - | $0.50 |
+| gpt-audio-1.5 | Audio | $32.00 | $64.00 | - |
+| gpt-audio-1.5 | Text | $2.50 | $10.00 | - |
+| gpt-audio-mini | Audio | $10.00 | $20.00 | - |
+| gpt-audio-mini | Text | $0.60 | $2.40 | - |
+| gpt-audio | Audio | $32.00 | $64.00 | - |
+| gpt-audio | Text | $2.50 | $10.00 | - |
+| gpt-4o-mini-tts | Audio | - | $12.00 | - |
 | gpt-4o-mini-tts | Text | $0.60 | - | - |
 | tts-1 | Text | $15.00 / 1M characters | - | - |
 | tts-1-hd | Text | $30.00 / 1M characters | - | - |
@@ -130635,22 +130676,22 @@ Standard
       
 ### Grouped Pricing Table data
 
-| Model | Modality | Input | Cached input | Output |
+| Model | Modality | Input | Output | Cached input |
 | --- | --- | --- | --- | --- |
-| gpt-image-2.5-sunburst | Image | $8.00 | $2.00 | $30.00 |
-| gpt-image-2.5-sunburst | Text | $5.00 | $1.25 | - |
-| gpt-image-2.5-flare | Image | $8.00 | $2.00 | $30.00 |
-| gpt-image-2.5-flare | Text | $5.00 | $1.25 | - |
-| gpt-image-2 | Image | $8.00 | $2.00 | $30.00 |
-| gpt-image-2 | Text | $5.00 | $1.25 | - |
-| gpt-image-1.5 | Image | $8.00 | $2.00 | $32.00 |
-| gpt-image-1.5 | Text | $5.00 | $1.25 | $10.00 |
-| gpt-image-1-mini | Image | $2.50 | $0.25 | $8.00 |
-| gpt-image-1-mini | Text | $2.00 | $0.20 | - |
-| gpt-image-1 | Image | $10.00 | $2.50 | $40.00 |
-| gpt-image-1 | Text | $5.00 | $1.25 | - |
-| chatgpt-image-latest | Image | $8.00 | $2.00 | $32.00 |
-| chatgpt-image-latest | Text | $5.00 | $1.25 | $10.00 |
+| gpt-image-2.5-sunburst | Image | $8.00 | $30.00 | $2.00 |
+| gpt-image-2.5-sunburst | Text | $5.00 | - | $1.25 |
+| gpt-image-2.5-flare | Image | $8.00 | $30.00 | $2.00 |
+| gpt-image-2.5-flare | Text | $5.00 | - | $1.25 |
+| gpt-image-2 | Image | $8.00 | $30.00 | $2.00 |
+| gpt-image-2 | Text | $5.00 | - | $1.25 |
+| gpt-image-1.5 | Image | $8.00 | $32.00 | $2.00 |
+| gpt-image-1.5 | Text | $5.00 | $10.00 | $1.25 |
+| gpt-image-1-mini | Image | $2.50 | $8.00 | $0.25 |
+| gpt-image-1-mini | Text | $2.00 | - | $0.20 |
+| gpt-image-1 | Image | $10.00 | $40.00 | $2.50 |
+| gpt-image-1 | Text | $5.00 | - | $1.25 |
+| chatgpt-image-latest | Image | $8.00 | $32.00 | $2.00 |
+| chatgpt-image-latest | Text | $5.00 | $10.00 | $1.25 |
 
 Cached input rates for GPT Image 2 and GPT Image 2.5 only apply to images generated with the Responses API. [Learn more](https://developers.openai.com/api/docs/guides/image-generation#cached-input-pricing).
 
@@ -130666,22 +130707,22 @@ Batch
       
 ### Grouped Pricing Table data
 
-| Model | Modality | Input | Cached input | Output |
+| Model | Modality | Input | Output | Cached input |
 | --- | --- | --- | --- | --- |
-| gpt-image-2 | Image | $4.00 | $1.00 | $15.00 |
-| gpt-image-2 | Text | $2.50 | $0.625 | - |
-| gpt-image-2.5-sunburst | Image | $4.00 | $1.00 | $15.00 |
-| gpt-image-2.5-sunburst | Text | $2.50 | $0.625 | - |
-| gpt-image-2.5-flare | Image | $4.00 | $1.00 | $15.00 |
-| gpt-image-2.5-flare | Text | $2.50 | $0.625 | - |
-| gpt-image-1.5 | Image | $4.00 | $1.00 | $16.00 |
-| gpt-image-1.5 | Text | $2.50 | $0.63 | $5.00 |
-| gpt-image-1-mini | Image | $1.25 | $0.13 | $4.00 |
-| gpt-image-1-mini | Text | $1.00 | $0.10 | - |
-| gpt-image-1 | Image | $5.00 | $1.25 | $20.00 |
-| gpt-image-1 | Text | $2.50 | $0.63 | - |
-| chatgpt-image-latest | Image | $4.00 | $1.00 | $16.00 |
-| chatgpt-image-latest | Text | $2.50 | $0.63 | $5.00 |
+| gpt-image-2 | Image | $4.00 | $15.00 | $1.00 |
+| gpt-image-2 | Text | $2.50 | - | $0.625 |
+| gpt-image-2.5-sunburst | Image | $4.00 | $15.00 | $1.00 |
+| gpt-image-2.5-sunburst | Text | $2.50 | - | $0.625 |
+| gpt-image-2.5-flare | Image | $4.00 | $15.00 | $1.00 |
+| gpt-image-2.5-flare | Text | $2.50 | - | $0.625 |
+| gpt-image-1.5 | Image | $4.00 | $16.00 | $1.00 |
+| gpt-image-1.5 | Text | $2.50 | $5.00 | $0.63 |
+| gpt-image-1-mini | Image | $1.25 | $4.00 | $0.13 |
+| gpt-image-1-mini | Text | $1.00 | - | $0.10 |
+| gpt-image-1 | Image | $5.00 | $20.00 | $1.25 |
+| gpt-image-1 | Text | $2.50 | - | $0.63 |
+| chatgpt-image-latest | Image | $4.00 | $16.00 | $1.00 |
+| chatgpt-image-latest | Text | $2.50 | $5.00 | $0.63 |
 
 Cached input rates for GPT Image 2 and GPT Image 2.5 only apply to images generated with the Responses API. [Learn more](https://developers.openai.com/api/docs/guides/image-generation#cached-input-pricing).
 
@@ -130769,11 +130810,11 @@ Standard
       
 ### Grouped Pricing Table data
 
-| Category | Model | Input | Cached input | Output |
+| Category | Model | Input | Output | Cached input |
 | --- | --- | --- | --- | --- |
-| ChatGPT | chat-latest | $5.00 | $0.50 | $30.00 |
-| Codex | gpt-5.3-codex | $1.75 | $0.175 | $14.00 |
-| Search | gpt-5-search-api | $1.25 | $0.125 | $10.00 |
+| ChatGPT | chat-latest | $5.00 | $30.00 | $0.50 |
+| Codex | gpt-5.3-codex | $1.75 | $14.00 | $0.175 |
+| Search | gpt-5-search-api | $1.25 | $10.00 | $0.125 |
 | Embedding | text-embedding-3-small | $0.02 | - | - |
 | Embedding | text-embedding-3-large | $0.13 | - | - |
 | Embedding | text-embedding-ada-002 | $0.10 | - | - |
@@ -130792,9 +130833,9 @@ Fast
       
 ### Grouped Pricing Table data
 
-| Category | Model | Input | Cached input | Output |
+| Category | Model | Input | Output | Cached input |
 | --- | --- | --- | --- | --- |
-| Codex | gpt-5.3-codex | $3.50 | $0.35 | $28.00 |
+| Codex | gpt-5.3-codex | $3.50 | $28.00 | $0.35 |
 
 Regional processing (data residency) endpoints are charged a 10% uplift for models released on or after March 5, 2026, that are eligible for data residency. See our [Your data](https://developers.openai.com/api/docs/guides/your-data) guide for supported regions and processing details.
 
@@ -130836,18 +130877,18 @@ Standard
       
 ### Pricing Table data
 
-| Model | Training | Input | Cached input | Output |
+| Model | Training | Input | Output | Cached input |
 | --- | --- | --- | --- | --- |
-| o4-mini-2025-04-16 | $100.00 / hour | $4.00 | $1.00 | $16.00 |
-| o4-mini-2025-04-16 (data sharing) | $100.00 / hour | $2.00 | $0.50 | $8.00 |
-| gpt-4.1-2025-04-14 | $25.00 | $3.00 | $0.75 | $12.00 |
-| gpt-4.1-mini-2025-04-14 | $5.00 | $0.80 | $0.20 | $3.20 |
-| gpt-4.1-nano-2025-04-14 | $1.50 | $0.20 | $0.05 | $0.80 |
-| gpt-4o-2024-08-06 | $25.00 | $3.75 | $1.875 | $15.00 |
-| gpt-4o-mini-2024-07-18 | $3.00 | $0.30 | $0.15 | $1.20 |
-| gpt-3.5-turbo (legacy) | $8.00 | $3.00 | - | $6.00 |
-| davinci-002 (legacy) | $6.00 | $12.00 | - | $12.00 |
-| babbage-002 (legacy) | $0.40 | $1.60 | - | $1.60 |
+| o4-mini-2025-04-16 | $100.00 / hour | $4.00 | $16.00 | $1.00 |
+| o4-mini-2025-04-16 (data sharing) | $100.00 / hour | $2.00 | $8.00 | $0.50 |
+| gpt-4.1-2025-04-14 | $25.00 | $3.00 | $12.00 | $0.75 |
+| gpt-4.1-mini-2025-04-14 | $5.00 | $0.80 | $3.20 | $0.20 |
+| gpt-4.1-nano-2025-04-14 | $1.50 | $0.20 | $0.80 | $0.05 |
+| gpt-4o-2024-08-06 | $25.00 | $3.75 | $15.00 | $1.875 |
+| gpt-4o-mini-2024-07-18 | $3.00 | $0.30 | $1.20 | $0.15 |
+| gpt-3.5-turbo (legacy) | $8.00 | $3.00 | $6.00 | - |
+| davinci-002 (legacy) | $6.00 | $12.00 | $12.00 | - |
+| babbage-002 (legacy) | $0.40 | $1.60 | $1.60 | - |
 
     
 
@@ -130860,18 +130901,18 @@ Batch
       
 ### Pricing Table data
 
-| Model | Training | Input | Cached input | Output |
+| Model | Training | Input | Output | Cached input |
 | --- | --- | --- | --- | --- |
-| o4-mini-2025-04-16 | $100.00 / hour | $2.00 | $0.50 | $8.00 |
-| o4-mini-2025-04-16 (data sharing) | $100.00 / hour | $1.00 | $0.25 | $4.00 |
-| gpt-4.1-2025-04-14 | $25.00 | $1.50 | $0.50 | $6.00 |
-| gpt-4.1-mini-2025-04-14 | $5.00 | $0.40 | $0.10 | $1.60 |
-| gpt-4.1-nano-2025-04-14 | $1.50 | $0.10 | $0.025 | $0.40 |
-| gpt-4o-2024-08-06 | $25.00 | $2.225 | $0.90 | $12.50 |
-| gpt-4o-mini-2024-07-18 | $3.00 | $0.15 | $0.075 | $0.60 |
-| gpt-3.5-turbo (legacy) | $8.00 | $1.50 | - | $3.00 |
-| davinci-002 (legacy) | $6.00 | $6.00 | - | $6.00 |
-| babbage-002 (legacy) | $0.40 | $0.80 | - | $0.90 |
+| o4-mini-2025-04-16 | $100.00 / hour | $2.00 | $8.00 | $0.50 |
+| o4-mini-2025-04-16 (data sharing) | $100.00 / hour | $1.00 | $4.00 | $0.25 |
+| gpt-4.1-2025-04-14 | $25.00 | $1.50 | $6.00 | $0.50 |
+| gpt-4.1-mini-2025-04-14 | $5.00 | $0.40 | $1.60 | $0.10 |
+| gpt-4.1-nano-2025-04-14 | $1.50 | $0.10 | $0.40 | $0.025 |
+| gpt-4o-2024-08-06 | $25.00 | $2.225 | $12.50 | $0.90 |
+| gpt-4o-mini-2024-07-18 | $3.00 | $0.15 | $0.60 | $0.075 |
+| gpt-3.5-turbo (legacy) | $8.00 | $1.50 | $3.00 | - |
+| davinci-002 (legacy) | $6.00 | $6.00 | $6.00 | - |
+| babbage-002 (legacy) | $0.40 | $0.80 | $0.90 | - |
 
 
 
@@ -131085,7 +131126,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.86.0</version>
+  <version>4.87.1</version>
 </dependency>
 ```
 
