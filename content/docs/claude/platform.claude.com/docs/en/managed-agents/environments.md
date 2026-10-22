@@ -34,7 +34,7 @@ This page covers `type: cloud` environments. To run sandboxes on your own infras
       ```
     </File>
 
-    [`ant apply`](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/apply?sdk_languages=cli) creates the environment from `environment.yaml`, prints its ID, and records it in `claude-lock.json`. Commit `claude-lock.json` so the next `ant apply` updates this environment instead of trying to create it again.
+    [`ant apply`](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/apply?sdk_languages=cli) creates the environment from `environment.yaml`, prints its ID, and records it in `claude-lock.json`. Commit `claude-lock.json` so the next `ant apply` updates this environment instead of attempting to create it again.
   </CodeGroupItem>
 </CodeGroup>
 
@@ -174,7 +174,7 @@ With `unrestricted` networking, code in the sandbox can send requests to any hos
 * **The agent can change things on external sites, not only read them:** The `bash` tool can send any request. The agent can post data, submit forms, call APIs, and run scripts that change data on external sites. Even a request that only fetches a URL can change data on some sites.
 * **Nothing pauses these requests by default:** The agent toolset's default [permission policy](https://platform.claude.com/docs/en/managed-agents/permission-policies?sdk_languages=cli) is `always_allow`, so `bash` commands run without approval.
 * **Anything in the sandbox can leave it:** This includes files, tool outputs, and any credentials or secrets you put in the sandbox.
-* **Fetched content can steer the agent:** Web pages, API responses, and other content the agent reads can contain instructions (prompt injection) that change what it does next.
+* **Fetched content can steer the agent:** Webpages, API responses, and other content the agent reads can contain instructions (prompt injection) that change what it does next.
 * **The agent acts on your behalf:** Its actions can violate a site's terms of service, or create accounts and records there.
 * **Model behavior is not a security control:** The agent can act on external sites in ways you did not ask for, including retrying in a different way after a site blocks a request. Use network settings and permission policies to limit what it can do.
 * **The safety blocklist is not an allowlist:** It does not limit which other sites the agent reaches, or what the agent does on them.

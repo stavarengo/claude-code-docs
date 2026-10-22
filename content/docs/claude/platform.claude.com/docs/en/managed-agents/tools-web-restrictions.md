@@ -18,8 +18,12 @@ To control which sites the agent's web tools can reach, set a domain list on the
 Each tool carries its own list, so `web_search` and `web_fetch` can have different restrictions.
 
 <Note>
-  `web_search` and `web_fetch` run on Anthropic's servers, not in the sandbox. A cloud environment with `limited` [networking](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli#networking) also applies its `allowed_hosts` to them; see [Set domain lists on an agent](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions?sdk_languages=cli#set-domain-lists-on-an-agent). `unrestricted` networking and self-hosted environments do not limit them. The per-tool lists restrict these tools further. Organization-level web search and web fetch settings in the Claude Console apply to the Messages API. They do not apply to Managed Agents sessions.
+  `web_search` and `web_fetch` run on Anthropic's servers, not in the sandbox. A cloud environment with `limited` [networking](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli#networking) also applies its `allowed_hosts` to them; see [Set domain lists on an agent](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions?sdk_languages=cli#set-domain-lists-on-an-agent). `unrestricted` networking and self-hosted environments do not limit them. The per-tool lists restrict these tools further.
 </Note>
+
+Your organization's web search settings on the [**Capabilities**](https://platform.claude.com/settings/capabilities) page of the Claude Console also apply to `web_search` in a session. If an administrator disables web search, `web_search` calls return an error result to the agent, and the session continues. If the organization restricts web search domains, the agent receives only the search results that both the organization's domain restrictions and the agent's per-tool lists allow.
+
+Your organization's web fetch settings on the same page also apply to `web_fetch` in a session. If an administrator turns off web fetch, `web_fetch` calls return an error result to the agent, and the session continues. If the organization sets allowed or blocked domains for web fetch, a URL must pass the organization's list and the agent's per-tool lists, and so must any URL a redirect leads to. A `web_fetch` call for a URL that any of them excludes also returns an error result to the agent.
 
 ## Set domain lists on an agent
 
@@ -73,17 +77,17 @@ In addition to `enabled` and `permission_policy`, the web tool entries accept th
 | `max_content_tokens` | `web_fetch`               | Caps the amount of fetched page content included in the context. Must be a positive integer. See [content limits](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-fetch-tool?sdk_languages=cli#content-limits). |
 | `user_location`      | `web_search`              | Localizes search results. An object with the same fields as the Messages API [`user_location`](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=cli#localization) parameter.           |
 
-For how the SDKs type these entries, see [Config entry types in the SDKs](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli#config-entry-types-in-the-sdks).
+For the types the SDK uses for these entries, see [Config entry types in the SDKs](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli#config-entry-types-in-the-sdks).
 
-## When a domain is not permitted
+## When a domain is not allowed
 
-`web_search` omits results that its domain list does not permit. A `web_fetch` call for a URL that its domain list does not permit returns an error result to the agent. The `agent.tool_result` event has `is_error: true`, and its content names the error code `url_not_allowed`.
+`web_search` omits results that its domain list does not allow. A `web_fetch` call for a URL that its domain list does not allow returns an error result to the agent. The `agent.tool_result` event has `is_error: true`, and its content names the error code `url_not_allowed`.
 
 ## Domain list rules
 
 These rules apply to `allowed_domains` and `blocked_domains` alike. A request that breaks one is rejected, as [Validation errors](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions?sdk_languages=cli#validation-errors) describes.
 
-* **One list per entry:** Set either `allowed_domains` or `blocked_domains` on an entry, not both.
+* **One list for each entry:** Set either `allowed_domains` or `blocked_domains` on an entry, not both.
 * **List size:** Each list holds 1 to 64 domains, each 1 to 255 characters.
 * **No empty lists:** To apply no restriction, omit the field or send `null`.
 * **No duplicates:** A domain can appear only once in a list. `www.example.com` and `example.com` count as different domains.
@@ -98,7 +102,7 @@ Hostnames are compared without regard to case.
 
 ### Domain format
 
-Each domain is a registrable domain name, or a subdomain of one, written as a plain hostname. It can contain ASCII letters, digits, hyphens, underscores, and dots. A single trailing `/` is ignored.
+Each domain is a registrable domain name, or a subdomain of one, written as a plain hostname. It can contain ASCII letters, digits, hyphens, underscores, and dots. A single trailing `/` is ignored. A `web_search` domain can also carry a path, as [Path suffixes on web search domains](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions?sdk_languages=cli#path-suffixes-on-web-search-domains) describes.
 
 | Not accepted                                                                   | Example                  | Use instead                           |
 | ------------------------------------------------------------------------------ | ------------------------ | ------------------------------------- |
@@ -111,7 +115,7 @@ Each domain is a registrable domain name, or a subdomain of one, written as a pl
 | A single-label name                                                            | `intranet`               | A full domain such as `example.co.uk` |
 | Non-ASCII characters, as in an internationalized domain name                   |                          | The `xn--` (Punycode) form            |
 
-A domain is also rejected if it contains credentials or whitespace, or if one of its labels begins or ends with a hyphen. `localhost` and hosts ending in `.localhost`, `.local`, `.internal`, `.localdomain`, or `.invalid` are rejected too.
+A domain is also rejected if it contains credentials or whitespace, or if one of its labels starts or ends with a hyphen. `localhost` and hosts ending in `.localhost`, `.local`, `.internal`, `.localdomain`, or `.invalid` are rejected too.
 
 ### Path suffixes on web search domains
 
@@ -133,7 +137,7 @@ Format and limit violations are rejected with a 400 `invalid_request_error`:
 
 On the same requests, the API also rejects three settings that depend on the search and fetch providers:
 
-* A domain in `allowed_domains` that Anthropic's crawler is not permitted to access.
+* A domain in `allowed_domains` that Anthropic's crawler is not allowed to access.
 * A `user_location.country` that the search provider does not support. The message ends in `user_location.country: not a country the search provider supports`.
 * A `user_location.timezone` that is not a valid IANA name.
 
@@ -151,7 +155,7 @@ To continue the session:
 
 ## Multiagent and outcome-driven sessions
 
-In a [multiagent session](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli), every domain list that applies to a thread is enforced at the same time. An agent listed in the `predefined_agents` list of `subagents` is bound by three sets of lists:
+In a [multiagent session](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli), every domain list that applies to a thread is enforced at the same time. An agent listed in the `predefined_agents` list of `subagents` is bound by three sets of per-tool lists:
 
 * Its own `allowed_domains` and `blocked_domains`
 * Those of any agent that called it
@@ -172,7 +176,7 @@ A listed agent can therefore narrow what a tool reaches but never widen it:
 
 A `{"type": "self"}` entry in the `predefined_agents` list of `subagents` has no web settings of its own and follows the current settings of the session's agent.
 
-If the combined `allowed_domains` lists have no domain in common, the tool stays available to that agent but every call fails. Each call returns a `url_not_allowed` error stating that no domain is permitted. The tool description tells the model the same. To avoid this, keep each listed agent's `allowed_domains` inside the `allowed_domains` of the session's agent.
+If the combined `allowed_domains` lists have no domain in common, the tool stays available to that agent, but every call fails. Each call returns a `url_not_allowed` error stating that no domain is allowed. The tool description tells the model the same. To avoid this, keep each listed agent's `allowed_domains` inside the `allowed_domains` of the session's agent.
 
 The grader in [outcome-driven sessions](https://platform.claude.com/docs/en/managed-agents/define-outcomes?sdk_languages=cli) runs without `web_search` and `web_fetch`, regardless of these settings.
 
@@ -199,7 +203,7 @@ These settings use the same `allowed_domains` and `blocked_domains` fields as [d
   </Card>
 
   <Card title="Permission policies" icon="lock" href="https://platform.claude.com/docs/en/managed-agents/permission-policies?sdk_languages=cli">
-    Control when agent and MCP tools execute.
+    Control when agent and MCP tools run.
   </Card>
 
   <Card title="Cloud environment setup" icon="settings" href="https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli">

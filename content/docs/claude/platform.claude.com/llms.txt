@@ -92,7 +92,7 @@ The full documentation is available in the following languages on https://platfo
 - [Handle tool calls](https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md)
 - [How tool use works](https://platform.claude.com/docs/en/agents-and-tools/tool-use/how-tool-use-works.md)
 - [Manage tool context](https://platform.claude.com/docs/en/agents-and-tools/tool-use/manage-tool-context.md)
-- [Manage in the Console](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/console.md) - Manage tunnels in the Console
+- [Manage in the Console](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/console.md) - Manage tunnels in the Claude Console
 - [MCP connector](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector.md)
 - [Reference](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/reference.md) - MCP tunnels reference
 - [Security](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/security.md) - MCP tunnels security
@@ -122,7 +122,7 @@ The full documentation is available in the following languages on https://platfo
 - [Token counting](https://platform.claude.com/docs/en/build-with-claude/token-counting.md)
 - [Tool combinations](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-combinations.md)
 - [Tool reference](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference.md)
-- [Tool Runner (SDK)](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-runner.md) - Tool runner (SDK)
+- [Tool runner (SDK)](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-runner.md)
 - [Tool search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool.md)
 - [Tool use with prompt caching](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-use-with-prompt-caching.md)
 - [Troubleshooting](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/troubleshooting.md) - Troubleshoot MCP tunnels
@@ -201,7 +201,7 @@ The full documentation is available in the following languages on https://platfo
 - [Errors](https://platform.claude.com/docs/en/manage-claude/compliance-errors.md) - Handle Compliance API errors
 - [Overview](https://platform.claude.com/docs/en/manage-claude/inference-hooks.md) - Inference hooks
 - [Organizations, users, roles, groups, and settings](https://platform.claude.com/docs/en/manage-claude/compliance-org-data.md) - List organizations, users, roles, groups, and settings
-- [Manage WIF via API](https://platform.claude.com/docs/en/manage-claude/wif-admin-api.md) - Manage WIF with the Admin API
+- [Manage WIF with the Admin API](https://platform.claude.com/docs/en/manage-claude/wif-admin-api.md)
 - [Overview](https://platform.claude.com/docs/en/manage-claude/opentelemetry.md) - OpenTelemetry for the Claude API
 - [Organization webhooks (beta)](https://platform.claude.com/docs/en/manage-claude/organization-webhooks.md) - Organization webhooks
 - [Plugins API](https://platform.claude.com/docs/en/manage-claude/plugins-api.md)
@@ -341,7 +341,7 @@ The full documentation is available in the following languages on https://platfo
 - [Features overview](https://platform.claude.com/docs/en/api/overview.md) - API overview
 - [Beta headers](https://platform.claude.com/docs/en/api/beta-headers.md)
 - [Errors](https://platform.claude.com/docs/en/api/errors.md) - Claude API errors
-- [IAM actions (Claude Platform on AWS)](https://platform.claude.com/docs/en/api/claude-platform-on-aws-iam-actions.md) - IAM actions for Claude Platform on AWS
+- [AWS IAM actions](https://platform.claude.com/docs/en/api/claude-platform-on-aws-iam-actions.md) - IAM actions for Claude Platform on AWS
 - [IP addresses](https://platform.claude.com/docs/en/api/ip-addresses.md)
 - [Spans](https://platform.claude.com/docs/en/api/opentelemetry/spans.md) - OpenTelemetry span reference
 - [Rate limits](https://platform.claude.com/docs/en/api/rate-limits.md)

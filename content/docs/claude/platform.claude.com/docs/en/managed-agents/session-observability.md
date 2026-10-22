@@ -18,7 +18,7 @@ The session viewer is only accessible to Developers and Admins. To open it, go t
 
 The session viewer shows:
 
-* **Timeline minimap:** A zoomable overview of the session's activity over time, with one lane per thread in [multiagent](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli) sessions. Select a lane to view that thread, or select a mark to jump to its event.
+* **Timeline minimap:** A zoomable overview of the session's activity over time, with one lane for each thread in [multiagent](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli) sessions. Select a lane to view that thread, or select a mark to jump to its event.
 * **Transcript:** The conversation grouped by model request, including thinking, tool calls with their inputs and results, and message text as it streams. You can filter the events and copy or download them as JSON.
 * **Inspector:** A resizable side panel with details about the session, in five tabs.
 
@@ -38,7 +38,7 @@ With `ant beta:sessions connect`, you can open the same viewer from the `ant` CL
 
 The session object includes a `usage` field with the session's cumulative usage: token counts, server tool use, active time, and the tracked list cost. Fetch the session after it goes idle to read the latest totals.
 
-```json
+```text wrap
 {
   "id": "sesn_01...",
   "status": "idle",
@@ -97,7 +97,7 @@ To enforce a spend limit, set a session budget rather than polling usage and sto
 ## Debugging tips
 
 * **Check session events:** The session reports errors through [`session.error`](https://platform.claude.com/docs/en/managed-agents/reference?sdk_languages=cli#event-types) events.
-* **Review tool results:** Tool execution failures often explain unexpected agent behavior. The Inspector's **Tools** tab shows each tool's failures.
+* **Review tool results:** Tool failures often explain unexpected agent behavior. The Inspector's **Tools** tab shows each tool's failures.
 * **Use system prompts:** Add logging instructions to the system prompt so the agent summarizes what it did and what it found.
 * **Troubleshoot previews:** If a stream that opts in to event deltas doesn't behave as you expect, see [Troubleshoot previews](https://platform.claude.com/docs/en/managed-agents/event-deltas?sdk_languages=cli#troubleshoot-previews).
 
@@ -105,7 +105,7 @@ To enforce a spend limit, set a session budget rather than polling usage and sto
 
 <CardGroup cols={2}>
   <Card title="Session event stream" icon="lightning" href="https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli">
-    Send events, stream responses, and interrupt or redirect your session mid-execution.
+    Send events, stream responses, and interrupt or redirect your session while it runs.
   </Card>
 
   <Card title="Session budgets" icon="coins" href="https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli">

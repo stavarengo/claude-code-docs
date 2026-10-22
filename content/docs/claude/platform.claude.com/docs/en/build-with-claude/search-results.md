@@ -1,7 +1,7 @@
 ---
 title: Search results
 url: https://platform.claude.com/docs/en/build-with-claude/search-results
-description: Enable natural citations for RAG applications by providing search results with source attribution
+description: Get natural citations for RAG applications by providing search results with source attribution
 ---
 
 <Note>
@@ -16,8 +16,8 @@ All [active models](https://platform.claude.com/docs/en/models/overview?sdk_lang
 
 Search results can be provided in two ways:
 
-1. **From tool calls:** Your custom tools return search results, enabling dynamic RAG applications
-2. **As top-level content:** You provide search results directly in user messages for pre-fetched or cached content
+1. **From tool calls:** Your custom tools return search results, which lets you build dynamic RAG applications.
+2. **As top-level content:** You provide search results directly in user messages for pre-fetched or cached content.
 
 In both cases, Claude cites the search results automatically when citations are enabled. No special prompting is needed: ask your question, and citations appear on the text blocks that draw on your content.
 
@@ -69,13 +69,13 @@ Search results hold text only. Images and other media are not supported inside t
 
 ## Method 1: Search results from tool calls
 
-Returning search results from your custom tools enables dynamic RAG applications: tools fetch content at runtime, and Claude cites it in the response. The following example forces the tool call with [`tool_choice`](https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools?sdk_languages=cli#forcing-tool-use), so the retrieval step runs every time.
+Returning search results from your custom tools lets you build dynamic RAG applications: tools fetch content at runtime, and Claude cites it in the response. The following example forces the tool call with [`tool_choice`](https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools?sdk_languages=cli#forcing-tool-use), so the retrieval step runs every time.
 
 ### Example: Knowledge base tool
 
 <CodeGroup exclude="shell">
   <CodeGroupItem language="CLI">
-    The tool-calling flow needs search logic in your application, which needs more than a single shell command. Use the Claude SDK for the full flow. For the raw request shape of a tool conversation with search results, see [Combining both methods](https://platform.claude.com/docs/en/build-with-claude/search-results?sdk_languages=cli#combining-both-methods). For search results as top-level content, see [Method 2](https://platform.claude.com/docs/en/build-with-claude/search-results?sdk_languages=cli#method-2-search-results-as-top-level-content).
+    The tool-calling flow needs search logic in your application, which needs more than a single shell command. Use the Claude SDK for the full flow. For the raw request shape of a tool conversation with search results, see [Combining both methods](https://platform.claude.com/docs/en/build-with-claude/search-results?sdk_languages=cli#combining-both-methods). To provide search results directly in user messages, see [Method 2: Search results as top-level content](https://platform.claude.com/docs/en/build-with-claude/search-results?sdk_languages=cli#method-2-search-results-as-top-level-content).
   </CodeGroupItem>
 </CodeGroup>
 
@@ -132,7 +132,7 @@ You can also provide search results directly in user messages. This is useful fo
 
 Regardless of how search results are provided, Claude automatically includes citations when using information from them:
 
-```json
+```text
 {
   "role": "assistant",
   "content": [
@@ -219,7 +219,7 @@ Search results can contain multiple text blocks in the `content` array:
 
 A citation referencing the rate limits block looks like:
 
-```json
+```text wrap
 {
   "type": "search_result_location",
   "cited_text": "Rate Limits: The API allows 1000 requests per hour per key.",
@@ -301,7 +301,7 @@ The following example replays a complete conversation. The first user message ca
 
 The response cites both sources. The pre-fetched result is `search_result_index: 0` and the tool-returned result is `search_result_index: 1`, matching the order the `search_result` blocks appear in the conversation:
 
-```json
+```text
 {
   "role": "assistant",
   "content": [
@@ -403,8 +403,8 @@ When `citations.enabled` is set to `true`, Claude attaches citation references t
 ### For top-level search (Method 2)
 
 * **Pre-fetched content:** Use when you already have search results
-* **Batch processing:** Ideal for processing multiple search results at once
-* **Testing:** Great for testing citation behavior with known content
+* **Batch processing:** Use for processing multiple search results at once
+* **Testing:** Use for testing citation behavior with known content
 
 ### General best practices
 

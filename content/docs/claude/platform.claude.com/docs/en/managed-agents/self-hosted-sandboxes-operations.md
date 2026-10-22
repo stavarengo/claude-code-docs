@@ -47,7 +47,7 @@ The monitoring calls on this page run from your monitoring or operations tooling
 
 Use `ant beta:environments:work stop` (cli: `ant beta:environments:work stop`) to ask the worker handling a specific session to shut it down.
 
-By default the work item moves to `stopping`. The worker notices on its next lease heartbeat, cancels the session's in-flight tool call, and confirms the shutdown. The work item then becomes `stopped`.
+By default the work item moves to `stopping`. The worker detects this on its next lease heartbeat, cancels the session's in-flight tool call, and confirms the shutdown. The work item then becomes `stopped`.
 
 Pass `--force` (cli: `--force`) to mark the work item `stopped` immediately instead of waiting for the worker's confirmation.
 
@@ -63,7 +63,7 @@ Because these calls run from your operations tooling rather than the worker host
 
 ## Stop workers gracefully
 
-A worker that is cancelled while a session runs stops its in-flight work before it exits. If the session has [memory stores](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-memory?sdk_languages=cli) attached, the worker skips the final sync but still uploads changed files and removes the store directories.
+A worker that is canceled while a session runs stops its in-flight work before it exits. If the session has [memory stores](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-memory?sdk_languages=cli) attached, the worker skips the final sync but still uploads changed files and removes the store directories.
 
 A killed process runs no teardown. To stop a worker cleanly:
 
@@ -110,8 +110,8 @@ If the session sits paused with a `requires_action` stop reason, no worker or cl
 
 Without a timeout on the MCP client, a hung call to a [wrapped MCP server](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-custom-tools?sdk_languages=cli#wrap-an-mcp-server-as-custom-tools) becomes an error tool result only when a backstop fires:
 
-| SDK        | Backstop                                                       | Fires after                  |
-| ---------- | -------------------------------------------------------------- | ---------------------------- |
-| Python     | The worker's own tool call limit                               | About two and a half minutes |
-| TypeScript | The MCP SDK's default request timeout                          | About a minute               |
-| Go         | The worker cancels a tool call that outlives its default limit | 120 seconds                  |
+| SDK        | Backstop                                                       | Fires after       |
+| ---------- | -------------------------------------------------------------- | ----------------- |
+| Python     | The worker's own tool call limit                               | About 2.5 minutes |
+| TypeScript | The MCP SDK's default request timeout                          | About a minute    |
+| Go         | The worker cancels a tool call that outlives its default limit | 120 seconds       |

@@ -16,7 +16,7 @@ In a [multiagent session](https://platform.claude.com/docs/en/managed-agents/mul
 
 The **session-level event stream** (`/v1/sessions/{session_id}/events/stream`) is considered the **primary thread**, containing a condensed view of all activity across all threads. You don't see the full activity from [subagents](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#delegate-to-subagents), but you do see the start and end of their work, and blocking events such as tool permission requests.
 
-**Session threads** are where you drill into a specific agent's activity.
+**Session threads** are where you examine a specific agent's activity.
 
 The session `status` is an aggregation of all agent activity; if at least one thread is `running`, then the overall session status is `running` as well. A [workflow run](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli) that's running can keep the session `running` too, even while none of its threads is working. When no thread is working and a thread waits on your client, the session is `idle`; see [Know when the work is done](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli#know-when-the-work-is-done).
 
@@ -140,7 +140,7 @@ A thread's stream doesn't replay earlier events. Right after `session.thread_cre
 
 If a subagent needs something from your client, such as [permission](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli#tool-confirmation) to run a tool call or the [result of a custom tool](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli#handling-custom-tool-calls), the event is cross-posted to the **primary thread** with `session_thread_id` identifying the originating session thread. A tool call needs your permission under `always_ask`, or under [`auto`](https://platform.claude.com/docs/en/managed-agents/permission-policies?sdk_languages=cli#let-the-server-evaluate-each-call-with-auto) when the server reaches no determination.
 
-```json
+```text wrap
 {
   "type": "session.thread_status_idle",
   "id": "sevt_01ABC...",

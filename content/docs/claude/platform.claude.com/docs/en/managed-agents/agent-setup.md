@@ -34,7 +34,7 @@ You can also override `model`, `system`, `tools`, `mcp_servers`, and `skills` fo
 
 The following example defines a coding agent that uses the newest Claude Opus model with access to the pre-built agent toolset. The toolset lets the agent write code, read files, search the web, and more. See the [agent tools reference](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli) for the full list of supported tools.
 
-The examples use curl, the `ant` CLI, or one of the SDKs. If you haven't set one up, the [quickstart](https://platform.claude.com/docs/en/managed-agents/quickstart?sdk_languages=cli#install-the-cli) covers installation and client setup.
+The examples use curl, the `ant` CLI, or the SDK. If you haven't set one up, the [quickstart](https://platform.claude.com/docs/en/managed-agents/quickstart?sdk_languages=cli#install-the-cli) covers installation and client setup.
 
 <CodeGroup defaultLanguage="CLI">
   <CodeGroupItem>
@@ -61,7 +61,7 @@ The examples use curl, the `ant` CLI, or one of the SDKs. If you haven't set one
 
 The response echoes your configuration and adds `id`, `type`, `version`, `created_at`, `updated_at`, and `archived_at` fields, and fills in `model` fields you omit, such as `effort`, with their defaults. The `version` starts at 1 and increments each time an update changes the agent.
 
-```json
+```text wrap
 {
   "id": "agent_01HqR2k7vXbZ9mNpL3wYcT8f",
   "type": "agent",
@@ -258,7 +258,7 @@ Archiving makes the agent read-only and cannot be undone. Existing sessions cont
   </Card>
 
   <Card title="Start a session" icon="play" href="https://platform.claude.com/docs/en/managed-agents/sessions?sdk_languages=cli">
-    Create a session to run your agent and begin executing tasks.
+    Create a session to run your agent and start running tasks.
   </Card>
 
   <Card title="Reference" icon="book" href="https://platform.claude.com/docs/en/managed-agents/reference?sdk_languages=cli">

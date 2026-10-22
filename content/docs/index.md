@@ -17,7 +17,7 @@ claude/platform.claude.com/docs/en/agents-and-tools:{mcp-connector.md,remote-mcp
 claude/platform.claude.com/docs/en/agents-and-tools/agent-skills:{best-practices.md,claude-api-skill.md,enterprise.md,overview.md,quickstart.md}
 claude/platform.claude.com/docs/en/agents-and-tools/mcp-tunnels:{concepts.md,console.md,deploy-compose.md,deploy-helm.md,overview.md,quickstart.md,reference.md,security.md,troubleshooting.md}
 claude/platform.claude.com/docs/en/agents-and-tools/tool-use:{advisor-tool.md,bash-tool.md,browser-use-sdk.md,browser-use-tool.md,build-a-tool-using-agent.md,code-execution-tool.md,computer-use-tool.md,define-tools.md,fine-grained-tool-streaming.md,handle-tool-calls.md,how-tool-use-works.md,manage-tool-context.md,memory-tool.md,overview.md,parallel-tool-use.md,programmatic-tool-calling.md,server-tools.md,strict-tool-use.md,text-editor-tool.md,tool-combinations.md,tool-reference.md,tool-runner.md,tool-search-tool.md,tool-use-with-prompt-caching.md,troubleshooting-tool-use.md,web-fetch-tool.md,web-search-tool.md}
-claude/platform.claude.com/docs/en/api:{beta-headers.md,beta.md,claude-platform-on-aws-iam-actions.md,completions.md,compliance.md,errors.md,files.md,ip-addresses.md,messages.md,models.md,organization.md,overview.md,rate-limits.md,service-tiers.md,skills.md,supported-regions.md,user_profiles.md,versioning.md}
+claude/platform.claude.com/docs/en/api:{beta-headers.md,beta.md,claude-platform-on-aws-iam-actions.md,completions.md,compliance.md,errors.md,files.md,ip-addresses.md,messages.md,migration-2026-10-21.md,models.md,organization.md,overview.md,rate-limits.md,service-tiers.md,skills.md,supported-regions.md,user_profiles.md,versioning.md}
 claude/platform.claude.com/docs/en/api/beta:{agents.md,deployment_runs.md,deployments.md,dreams.md,environments.md,files.md,memory_stores.md,messages.md,models.md,organization.md,sessions.md,skills.md,tunnels.md,user_profiles.md,vaults.md,webhooks.md}
 claude/platform.claude.com/docs/en/api/beta/agents:{archive.md,create.md,list.md,retrieve.md,update.md,versions.md}
 claude/platform.claude.com/docs/en/api/beta/agents/versions:{list.md}
@@ -108,6 +108,9 @@ claude/platform.claude.com/docs/en/api/cli/beta/memory_stores/memory_versions:{l
 claude/platform.claude.com/docs/en/api/cli/beta/messages:{create.md}
 claude/platform.claude.com/docs/en/api/cli/beta/models:{list.md}
 claude/platform.claude.com/docs/en/api/cli/beta/organization:{analytics.md,mcp_tunnels.md,retrieve.md,spend_limits.md,telemetry_destinations.md,webhooks.md}
+claude/platform.claude.com/docs/en/api/cli/beta/organization/analytics/summaries:{list.md}
+claude/platform.claude.com/docs/en/api/cli/beta/organization/analytics/user_cost_report:{list.md}
+claude/platform.claude.com/docs/en/api/cli/beta/organization/analytics/user_usage_report:{list.md}
 claude/platform.claude.com/docs/en/api/cli/beta/organization/api_keys:{list.md}
 claude/platform.claude.com/docs/en/api/cli/beta/organization/cost_report:{retrieve.md}
 claude/platform.claude.com/docs/en/api/cli/beta/organization/rbac_groups:{create.md,delete.md,list.md,retrieve.md,update.md}
@@ -201,6 +204,9 @@ claude/platform.claude.com/docs/en/api/http/beta/memory_stores/memory_versions:{
 claude/platform.claude.com/docs/en/api/http/beta/messages:{create.md}
 claude/platform.claude.com/docs/en/api/http/beta/models:{list.md}
 claude/platform.claude.com/docs/en/api/http/beta/organization:{analytics.md,mcp_tunnels.md,retrieve.md,spend_limits.md,telemetry_destinations.md,webhooks.md}
+claude/platform.claude.com/docs/en/api/http/beta/organization/analytics/summaries:{list.md}
+claude/platform.claude.com/docs/en/api/http/beta/organization/analytics/user_cost_report:{list.md}
+claude/platform.claude.com/docs/en/api/http/beta/organization/analytics/user_usage_report:{list.md}
 claude/platform.claude.com/docs/en/api/http/beta/organization/api_keys:{list.md}
 claude/platform.claude.com/docs/en/api/http/beta/organization/cost_report:{retrieve.md}
 claude/platform.claude.com/docs/en/api/http/beta/organization/rbac_groups:{create.md,delete.md,list.md,retrieve.md,update.md}

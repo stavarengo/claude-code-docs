@@ -53,7 +53,7 @@ The following example shows how to enable citations on a plain text document wit
 
   Compared to prompting Claude to cite sources, the citations feature offers the following advantages:
 
-  * **Cost savings:** If your prompt-based approach asks Claude to output direct quotes, you may see cost savings because `cited_text` does not count toward your output tokens.
+  * **Cost savings:** If your prompt-based approach asks Claude to output direct quotes, you might see cost savings because `cited_text` does not count toward your output tokens.
   * **Better citation reliability:** Because the API parses citations into the response formats described in the following sections and extracts `cited_text` directly, citations are guaranteed to contain valid pointers to the provided documents.
   * **Improved citation quality:** In Anthropic's evaluations, the citations feature is significantly more likely to cite the most relevant quotes from documents than purely prompt-based approaches.
 </Tip>
@@ -80,7 +80,7 @@ Integrate citations with Claude in these steps:
   </Step>
 
   <Step title="Claude provides cited response">
-    * Responses may now include multiple text blocks where each text block can contain a claim that Claude is making and a list of citations that support the claim.
+    * Responses might now include multiple text blocks where each text block can contain a claim that Claude is making and a list of citations that support the claim.
 
     * Citations reference specific locations in source documents. The format of these citations is dependent on the type of document being cited from.
 
@@ -116,7 +116,7 @@ Integrate citations with Claude in these steps:
 ### Token costs
 
 * Enabling citations incurs a slight increase in input tokens because of system prompt additions and document chunking.
-* However, the citations feature is very efficient with output tokens. Internally, the model outputs citations in a standardized format that are then parsed into cited text and document location indices. The `cited_text` field is provided for convenience and does not count toward output tokens.
+* However, the citations feature is very efficient with output tokens. Internally, the model outputs citations in a standardized format, and those citations are then parsed into cited text and document location indices. The `cited_text` field is provided for convenience and does not count toward output tokens.
 * When passed back in subsequent conversation turns, `cited_text` is also not counted toward input tokens.
 
 ### Feature compatibility
@@ -232,7 +232,7 @@ Plain text documents are automatically chunked into sentences. You can provide t
 </Tabs>
 
 <Accordion title="Example plain text citation">
-  ```json
+  ```text
   {
     "type": "char_location",
     "cited_text": "The exact text being cited", // not counted toward output tokens
@@ -246,7 +246,7 @@ Plain text documents are automatically chunked into sentences. You can provide t
 
 ### PDF documents
 
-PDF documents can be provided as base64-encoded data, a URL, or by `file_id`. PDF text is extracted and chunked into sentences. As image citations are not yet supported, PDFs that are scans of documents and do not contain extractable text are not citable.
+PDF documents can be provided as base64-encoded data, as a URL, or by `file_id`. PDF text is extracted and chunked into sentences. As image citations are not yet supported, PDFs that are scans of documents and do not contain extractable text are not citable.
 
 <Tabs>
   <Tab title="Base64">
@@ -326,7 +326,7 @@ PDF documents can be provided as base64-encoded data, a URL, or by `file_id`. PD
 </Tabs>
 
 <Accordion title="Example PDF citation">
-  ```json
+  ```text
   {
     "type": "page_location",
     "cited_text": "The exact text being cited", // not counted toward output tokens
@@ -369,7 +369,7 @@ Custom content documents give you control over citation granularity. No addition
 </CodeGroup>
 
 <Accordion title="Example citation">
-  ```json
+  ```text
   {
     "type": "content_block_location",
     "cited_text": "The exact text being cited", // not counted toward output tokens
@@ -387,7 +387,7 @@ Custom content documents give you control over citation granularity. No addition
 
 When citations are enabled, responses include multiple text blocks with citations:
 
-```json
+```text wrap
 {
   "content": [
     { "type": "text", "text": "According to the document, " },
@@ -466,7 +466,7 @@ For streaming responses, citations arrive as a `citations_delta` delta type insi
 
 <AccordionGroup>
   <Accordion title="Example streaming events">
-    ```sse
+    ```text
     event: message_start
     data: {"type": "message_start", ...}
 

@@ -12,7 +12,7 @@ This page lists common Compliance API error responses by HTTP status code, with 
 
 The Compliance API returns errors in the standard [Anthropic error format](https://platform.claude.com/docs/en/api/errors?sdk_languages=cli): a non-2xx status code, a `request-id` response header, and a JSON body with an `error` object containing `type` and `message`. Include the `request-id` header value when you escalate to support.
 
-```json
+```text
 {
   "error": {
     "type": "permission_error",
@@ -25,7 +25,7 @@ On this page, local sessions run on users' machines and remote sessions run in t
 
 Match on the HTTP status code and `error.type`, not on the message string. Messages are stable enough to copy into runbooks but might be reworded over time; the status codes and type values are part of the API contract. A few responses that share a status code and type are told apart by an error code in `error.details.error_code` when the response carries one, and otherwise by their message; each is called out where it applies.
 
-The following table tells you at a glance whether to retry. Each section that follows shows the verbatim error body and the fix.
+The following table tells you whether to retry. Each section that follows shows the verbatim error body and the fix.
 
 | Status                                                                                                                                       | Retry?                      | When                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | -------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -423,7 +423,7 @@ Once your API key authenticates, Compliance API responses report the shared budg
 
 A 429 response also carries a `retry-after` header with the number of seconds to wait before sending the next request. This value might include a small safety margin beyond `anthropic-ratelimit-requests-reset`; honor `retry-after`.
 
-```http
+```text wrap
 HTTP/1.1 429 Too Many Requests
 date: Tue, 21 Apr 2026 14:38:02 GMT
 retry-after: 25
@@ -432,7 +432,7 @@ anthropic-ratelimit-requests-remaining: 0
 anthropic-ratelimit-requests-reset: 2026-04-21T14:38:25Z
 ```
 
-```json
+```text
 {
   "error": {
     "type": "rate_limit_error",
@@ -469,7 +469,7 @@ Too many large session transcripts are being read at once. This is not a limit o
 
 A 500 from the Compliance API carries an `x-should-retry: false` response header when the failure is deterministic. The Claude SDK honors this header automatically. If you use a generic HTTP retry library that retries on every 5xx, suppress retries when `x-should-retry` is `false`; retrying this error fails identically on every attempt.
 
-A 500 without the `x-should-retry: false` header is transient: retry with exponential backoff (start at 1 second, double up to 60 seconds). The same applies to 502, 503, 504, and 529 responses. The exception is a small set of local session 503s, described next, that depend on an organization's settings or encryption key rather than on load. See [Errors](https://platform.claude.com/docs/en/api/errors?sdk_languages=cli) for the platform-wide retry semantics.
+A 500 without the `x-should-retry: false` header is transient: retry with exponential backoff (start at 1 second, double up to 60 seconds). The same applies to 502, 503, 504, and 529 responses. The exception is a small set of local session 503s, described next, that depend on an organization's settings or encryption key rather than on load. See [Claude API errors](https://platform.claude.com/docs/en/api/errors?sdk_languages=cli) for the platform-wide retry semantics.
 
 ### Local sessions temporarily unavailable
 

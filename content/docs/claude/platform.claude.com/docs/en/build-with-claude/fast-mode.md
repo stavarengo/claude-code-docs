@@ -82,8 +82,8 @@ Fast mode is priced at a multiplier on standard rates across the full context wi
 
 Fast mode pricing stacks with other pricing modifiers:
 
-* [Prompt caching multipliers](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=curl#prompt-caching) apply on top of fast mode pricing
-* [Data residency](https://platform.claude.com/docs/en/manage-claude/data-residency?sdk_languages=curl) multipliers apply on top of fast mode pricing
+* [Prompt caching multipliers](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=curl#prompt-caching) apply on top of fast mode pricing.
+* [Data residency](https://platform.claude.com/docs/en/manage-claude/data-residency?sdk_languages=curl) multipliers apply on top of fast mode pricing.
 
 For complete pricing details, see the [Pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=curl#fast-mode-pricing) page.
 
@@ -125,7 +125,7 @@ The response `usage` object includes a `speed` field that indicates which speed 
   ```
 </CodeGroup>
 
-```json Output
+```text Output wrap
 {
   "id": "msg_01XFDUDYJgAACzvnptvVoYEL",
   "type": "message",
@@ -152,7 +152,7 @@ The SDK automatically retries fast mode `429` errors up to 2 times by default (c
 If you'd prefer to fall back to standard speed rather than wait for fast mode capacity, catch the rate limit error and retry without `speed: "fast"`. Set `max_retries` to `0` on the initial fast request to skip automatic retries and fail immediately on rate limit errors.
 
 <Note>
-  Falling back from fast to standard speed will result in a [prompt cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl) miss. Requests at different speeds do not share cached prefixes.
+  Falling back from fast to standard speed results in a [prompt cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl) miss. Requests at different speeds do not share cached prefixes.
 </Note>
 
 Because setting `max_retries` to `0` also disables retries for other transient errors (overloaded, internal server errors), the following examples reissue the original request with default retries for those cases.
@@ -270,7 +270,7 @@ Because setting `max_retries` to `0` also disables retries for other transient e
       {
           Model = Model.ClaudeOpus5_5,
           MaxTokens = 1024,
-          Messages = [new() { Role = Role.User, Content = "Hello" }],
+          Messages = [new UserMessageParam { Content = "Hello" }],
           Speed = Speed.Fast,
       },
       maxRetries: 0);

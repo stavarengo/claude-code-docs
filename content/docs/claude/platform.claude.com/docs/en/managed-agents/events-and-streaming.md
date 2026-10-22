@@ -1,7 +1,7 @@
 ---
 title: Session event stream
 url: https://platform.claude.com/docs/en/managed-agents/events-and-streaming
-description: Send events, stream responses, and interrupt or redirect your session mid-execution.
+description: Send events, stream responses, and interrupt or redirect your session while it runs.
 featureMetadata:
   topic:
     title: Managed Agents
@@ -36,7 +36,7 @@ Stream events from the session to receive real-time updates as the agent works. 
 
 The session reports errors through the `session.error` event. See [Event types](https://platform.claude.com/docs/en/managed-agents/reference?sdk_languages=cli#event-types) for its fields.
 
-The agent's response text arrives as buffered `agent.message` events, each emitted only after the model request that produced it finishes. To render the text while the model is still generating it, see [Preview responses with event deltas](https://platform.claude.com/docs/en/managed-agents/event-deltas?sdk_languages=cli).
+The agent's response text arrives as buffered `agent.message` events, each emitted only after the model request that produced it completes. To render the text while the model is still generating it, see [Preview responses with event deltas](https://platform.claude.com/docs/en/managed-agents/event-deltas?sdk_languages=cli).
 
 ### Reconnect without missing events
 
@@ -84,7 +84,7 @@ No event you send resumes a session paused at its budget. The work that the budg
 
 ## Answer tool calls that pause the session
 
-A session pauses when the agent invokes a [custom tool](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli#custom-tools), and when a tool call needs your confirmation under a [permission policy](https://platform.claude.com/docs/en/managed-agents/permission-policies?sdk_languages=cli). Both pauses follow the same sequence:
+A session pauses when the agent calls a [custom tool](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli#custom-tools), and when a tool call needs your confirmation under a [permission policy](https://platform.claude.com/docs/en/managed-agents/permission-policies?sdk_languages=cli). Both pauses follow the same sequence:
 
 1. The session emits the tool call as an `agent.custom_tool_use`, `agent.tool_use`, or `agent.mcp_tool_use` event.
 2. The session pauses with a `session.status_idle` event whose `stop_reason.type` is `requires_action`. The blocking event IDs are in the `stop_reason.event_ids` array.
@@ -150,7 +150,7 @@ Conversation history is preserved unless the session is explicitly deleted. When
 
 ## Interrupt the agent
 
-Send a `user.interrupt` event to stop the agent mid-execution, then follow up with a `user.message` event to redirect it:
+Send a `user.interrupt` event to stop the agent while it runs, then follow up with a `user.message` event to redirect it:
 
 <CodeGroup>
   ```bash CLI
@@ -173,7 +173,7 @@ The call returns as soon as the events are queued. The interrupt then takes effe
 2. The `user.interrupt` event appears on the stream, and the interrupted turn ends with a `session.status_idle` event.
 3. The agent starts its next turn with the `user.message` you sent after the interrupt.
 
-The idle event's `stop_reason.type` is `end_turn`, the same value as a turn that finishes on its own. If workflow runs are open, the interrupt ends none of them. A run that's running can keep the session `running`, so the `session.status_idle` event in step 2 might not arrive. See [Interrupt a session with runs open](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli#interrupt-a-session-with-runs-open).
+The idle event's `stop_reason.type` is `end_turn`, the same value as a turn that completes on its own. If workflow runs are open, the interrupt ends none of them. A run that's running can keep the session `running`, so the `session.status_idle` event in step 2 might not arrive. See [Interrupt a session with runs open](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli#interrupt-a-session-with-runs-open).
 
 ## List past events
 
@@ -199,7 +199,7 @@ Pass a `--type` (cli: `--type`) filter to return only specific event types:
 
 On a [supported model](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli#supported-models), send a `system.message` event to give the agent privileged system-level context. The context applies to the accompanying turn and all subsequent turns. Use it when the agent needs updated system-level guidance mid-session, for example a different persona, revised constraints, or context fetched at runtime.
 
-The event's `content` accepts 1–1000 text items. The content is appended to the session's system context as a `role: "system"` turn. It doesn't replace the top-level system prompt, which the `system` field on the agent definition sets.
+The event's `content` accepts 1–1,000 text items. The content is appended to the session's system context as a `role: "system"` turn. It doesn't replace the top-level system prompt, which the `system` field on the agent definition sets.
 
 <CodeGroup>
   ```bash CLI
@@ -245,7 +245,7 @@ While the session is idle with a `requires_action` stop reason, a `system.messag
   </Card>
 
   <Card title="Subscribe to webhooks" icon="link" href="https://platform.claude.com/docs/en/managed-agents/webhooks?sdk_languages=cli">
-    Get notified when major events happen without polling.
+    Get notified when major events occur without polling.
   </Card>
 
   <Card title="Event types" icon="book" href="https://platform.claude.com/docs/en/managed-agents/reference?sdk_languages=cli#event-types">

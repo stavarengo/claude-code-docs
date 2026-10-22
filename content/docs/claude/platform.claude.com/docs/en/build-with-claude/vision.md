@@ -1,7 +1,7 @@
 ---
 title: Vision
 url: https://platform.claude.com/docs/en/build-with-claude/vision
-description: Claude's vision capabilities allow it to understand and analyze images, opening up exciting possibilities for multimodal interaction.
+description: Claude's vision capabilities allow it to process and analyze images, opening up exciting possibilities for multimodal interaction.
 ---
 
 This guide describes how to send images to Claude, the limits and costs that apply, and where to find guidance for [coordinate-based workflows](https://platform.claude.com/docs/en/build-with-claude/vision-coordinates?sdk_languages=cli).
@@ -13,7 +13,7 @@ This guide describes how to send images to Claude, the limits and costs that app
 Use Claude's vision capabilities through:
 
 * [claude.ai](https://claude.ai/). Upload an image like you would a file, or drag and drop an image directly into the chat window.
-* [Playground](https://platform.claude.com/playground) in the Claude Console. Add images directly to any User message block.
+* [Playground](https://platform.claude.com/playground) in the Claude Console. Add images directly to any **User** message block.
 * API request. See the following examples.
 
 On the API, provide images to Claude as `image` content blocks using one of three source types:
@@ -88,8 +88,7 @@ For images you'll use repeatedly or when you want to avoid encoding overhead, us
     https://platform.claude.com/docs/images/vision-example.jpg
 
   # First, upload your image to the Files API
-  ant files upload \
-    --file ./vision-example.jpg
+  ant files upload --file ./vision-example.jpg
 
   # Then use the file_id from the upload response in your message
   ant messages create <<YAML
@@ -150,13 +149,13 @@ In a multi-turn conversation, add new images in later `user` turns the same way.
 
 ### Request limits
 
-The maximum number of images per message or request is:
+The maximum number of images for each message or request is:
 
-* 20 per message on [claude.ai](https://claude.ai/).
-* 100 per request on the API, for models with a 200k-token context window.
-* 600 per request on the API, for all other models.
+* 20 for each message on [claude.ai](https://claude.ai/)
+* 100 for each request on the API, for models with a 200k-token context window
+* 600 for each request on the API, for all other models
 
-The maximum dimensions per image are 8000x8000 px.
+The maximum dimensions for each image are 8000x8000 px.
 
 If a single API request contains more than 20 images, a stricter per-image dimension limit applies to every image in that request. All `image` blocks in the request count toward this threshold, including images from earlier conversation turns that you resend and images nested inside `tool_result` content (for example, screenshots returned to the computer use tool). On Amazon Bedrock and Google Cloud, document blocks such as PDFs also count toward this threshold. Images exceeding the stricter limit are rejected with an `invalid_request_error` whose message references "many-image requests" and states the current limit in pixels. To stay under the limit on all platforms, either resize each image so that neither dimension exceeds 2000 px, or keep the request to 20 or fewer image and document blocks.
 
@@ -178,14 +177,14 @@ Claude supports JPEG, PNG, GIF, and WebP images (`image/jpeg`, `image/png`, `ima
 
 ### Resolution and token cost
 
-Claude views images in patches instead of pixels. Each patch is a 28×28-pixel block of the image, referred to as a visual token. An image, therefore, costs `⌈width / 28⌉ × ⌈height / 28⌉` visual tokens.
+Claude processes images in patches instead of pixels. Each patch is a 28×28-pixel block of the image, referred to as a visual token. An image, therefore, costs `⌈width / 28⌉ × ⌈height / 28⌉` visual tokens.
 
 Each model has a maximum native image resolution, expressed as a long-edge limit and a visual-token limit. Images larger than either limit are downscaled before processing; see [How Claude resizes and pads images](https://platform.claude.com/docs/en/build-with-claude/vision-coordinates?sdk_languages=cli#how-claude-resizes-and-pads-images) for the exact rule. The exception is screenshots and zoom images that you return to the [computer use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool?sdk_languages=cli#handle-coordinate-scaling-for-higher-resolutions) and [browser use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool?sdk_languages=cli#targets-and-coordinates) toolsets: the API rejects a `tool_result` image that exceeds the model's limits with a validation error instead of downscaling it, so resize those images in your application before returning them. To have any other oversized image rejected with an error instead of downscaled, set the image block's [`transformations` field](https://platform.claude.com/docs/en/build-with-claude/vision-coordinates?sdk_languages=cli#oversized-image-error).
 
 | Resolution tier | Models                      | Max long edge | Max visual tokens |
 | --------------- | --------------------------- | ------------- | ----------------- |
-| High-resolution | Claude 4.7 and later models | 2576 px       | 4784              |
-| Standard        | All other models            | 1568 px       | 1568              |
+| High-resolution | Claude 4.7 and later models | 2,576 px      | 4,784             |
+| Standard        | All other models            | 1,568 px      | 1,568             |
 
 High-resolution support is automatic on the listed models and requires no beta header or client-side opt-in.
 
@@ -194,11 +193,11 @@ The following table shows the downsized resolution and visual-token cost for sev
 | Image size                     | Standard tier: downsized to | Standard tier: tokens | High-resolution tier: downsized to | High-resolution tier: tokens |
 | ------------------------------ | --------------------------- | --------------------- | ---------------------------------- | ---------------------------- |
 | 200x200 px (0.04 megapixels)   | Not resized                 | 64                    | Not resized                        | 64                           |
-| 1000x1000 px (1 megapixel)     | Not resized                 | 1296                  | Not resized                        | 1296                         |
-| 1092x1092 px (1.19 megapixels) | Not resized                 | 1521                  | Not resized                        | 1521                         |
-| 1920x1080 px (2.07 megapixels) | 1456x819 px                 | 1560                  | Not resized                        | 2691                         |
-| 2000x1500 px (3 megapixels)    | 1269x952 px                 | 1564                  | Not resized                        | 3888                         |
-| 3840x2160 px (8.29 megapixels) | 1456x819 px                 | 1560                  | 2576x1449 px                       | 4784                         |
+| 1000x1000 px (1 megapixel)     | Not resized                 | 1,296                 | Not resized                        | 1,296                        |
+| 1092x1092 px (1.19 megapixels) | Not resized                 | 1,521                 | Not resized                        | 1,521                        |
+| 1920x1080 px (2.07 megapixels) | 1456x819 px                 | 1,560                 | Not resized                        | 2,691                        |
+| 2000x1500 px (3 megapixels)    | 1269x952 px                 | 1,564                 | Not resized                        | 3,888                        |
+| 3840x2160 px (8.29 megapixels) | 1456x819 px                 | 1,560                 | 2576x1449 px                       | 4,784                        |
 
 When an image is downsized, Claude scales it to the largest size that fits the tier's limits while preserving its aspect ratio. This caps the token cost. For the precise rule and a reference implementation, see [How Claude resizes and pads images](https://platform.claude.com/docs/en/build-with-claude/vision-coordinates?sdk_languages=cli#how-claude-resizes-and-pads-images).
 
@@ -219,20 +218,20 @@ When providing images to Claude, keep the following in mind for best results:
 
 ## Coordinates and bounding boxes
 
-For bounding boxes, points, and pixel coordinates, see [Coordinates and bounding boxes](https://platform.claude.com/docs/en/build-with-claude/vision-coordinates?sdk_languages=cli). Claude returns absolute pixel coordinates relative to the image it sees after resizing; that guide covers how Claude resizes and pads images and how to pre-resize or rescale so coordinates line up with your original image.
+For bounding boxes, points, and pixel coordinates, see [Coordinates and bounding boxes](https://platform.claude.com/docs/en/build-with-claude/vision-coordinates?sdk_languages=cli). Claude returns absolute pixel coordinates relative to the image it processes after resizing; that guide covers how Claude resizes and pads images and how to pre-resize or rescale so coordinates line up with your original image.
 
 ***
 
 ## Limitations
 
-Although Claude's image understanding capabilities are cutting-edge, there are some limitations to be aware of:
+Although Claude's image understanding capabilities are advanced, there are some limitations to be aware of:
 
-* **People identification:** Claude [cannot be used](https://www.anthropic.com/legal/aup) to name people in images and refuses to do so.
+* **People identification:** Claude cannot be used to name people in images and refuses to do so (see the [Usage Policy](https://www.anthropic.com/legal/aup)).
 * **Accuracy:** Claude might hallucinate or make mistakes when interpreting low-quality, rotated, or very small images under 200 pixels.
 * **Spatial reasoning:** Claude's coordinate and localization outputs are approximate. Follow the guidance in [Coordinates and bounding boxes](https://platform.claude.com/docs/en/build-with-claude/vision-coordinates?sdk_languages=cli) and verify outputs before relying on them.
 * **Counting:** Claude can give approximate counts of objects in an image but might not always be precisely accurate, especially with large numbers of small objects.
 * **AI-generated images:** Claude cannot determine whether an image is AI-generated and might be incorrect if asked. Do not rely on it to detect fake or synthetic images.
-* **Inappropriate content:** Claude does not process inappropriate or explicit images that violate the [Acceptable Use Policy](https://www.anthropic.com/legal/aup).
+* **Inappropriate content:** Claude does not process inappropriate or explicit images that violate the [Usage Policy](https://www.anthropic.com/legal/aup).
 * **Healthcare applications:** Although Claude can analyze general medical images, it is not designed to interpret complex diagnostic scans such as CTs or MRIs. Claude's outputs should not be considered a substitute for professional medical advice or diagnosis.
 
 Always carefully review and verify Claude's image interpretations, especially for high-stakes use cases. Do not use Claude for tasks requiring perfect precision or sensitive image analysis without human oversight.
@@ -255,7 +254,7 @@ Always carefully review and verify Claude's image interpretations, especially fo
   </Accordion>
 
   <Accordion title="How many images can I include in one request?">
-    Up to 600 per API request (100 for models with a 200k-token context window) and 20 per turn on claude.ai. See [Request limits](https://platform.claude.com/docs/en/build-with-claude/vision?sdk_languages=cli#request-limits) for details and the lower per-image dimension limit that applies above 20 images.
+    Up to 600 for each API request (100 for models with a 200k-token context window) and 20 for each turn on claude.ai. See [Request limits](https://platform.claude.com/docs/en/build-with-claude/vision?sdk_languages=cli#request-limits) for details and the lower per-image dimension limit that applies above 20 images.
   </Accordion>
 
   <Accordion title="Does Claude read image metadata?">
@@ -290,7 +289,7 @@ Always carefully review and verify Claude's image interpretations, especially fo
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Multimodal cookbook" icon="image" href="https://platform.claude.com/cookbook/multimodal-getting-started-with-vision">
+  <Card title="Multimodal recipe" icon="image" href="https://platform.claude.com/cookbook/multimodal-getting-started-with-vision">
     Get tips and best-practice techniques for tasks such as interpreting charts and extracting content from forms.
   </Card>
 

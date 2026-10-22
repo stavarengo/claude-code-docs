@@ -96,10 +96,10 @@ The following examples use `web_search_20260318`:
 ## How to use web search
 
 <Note>
-  Web search is enabled for your organization unless an administrator has disabled it in the [Claude Console](https://platform.claude.com/settings/capabilities), where they can also restrict which domains it searches. If it's disabled, a request that includes the tool fails with a 400 `invalid_request_error` that says web search is not enabled, rather than an [error code](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=curl#errors) inside a search result.
+  Web search is enabled for your organization unless an administrator has disabled it in the [Claude Console](https://platform.claude.com/settings/capabilities), where they can also restrict which domains it searches. If it's disabled, a Messages API request that includes the tool fails with a 400 `invalid_request_error` that says web search is not enabled, rather than an [error code](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=curl#errors) inside a search result. With web search off, `web_search` calls in a [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=curl) session return an error result to the agent, and the session continues.
 </Note>
 
-These organization-level settings in the Claude Console apply to Messages API requests only. [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=curl) sessions use the per-tool `allowed_domains` and `blocked_domains` lists on the agent toolset instead; see [Restrict web search and web fetch domains](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions?sdk_languages=curl). For a session in a cloud environment with `limited` networking, the environment's `allowed_hosts` also applies to `web_search` and `web_fetch`; see [Networking](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=curl#networking). The per-tool lists restrict these tools further, within the hosts that `allowed_hosts` allows.
+Your organization's web search settings in the Claude Console apply to Messages API requests and to Managed Agents sessions. In a session, the agent receives only the search results that both the organization's domain restrictions and the agent's per-tool lists allow; see [Restrict web search and web fetch domains](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions?sdk_languages=curl). For a session in a cloud environment with `limited` networking, the environment's `allowed_hosts` also applies to `web_search` and `web_fetch`; see [Networking](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=curl#networking). The per-tool lists restrict these tools further, within the hosts that `allowed_hosts` allows.
 
 Provide the web search tool in your API request:
 
@@ -157,7 +157,7 @@ The web search tool supports the following parameters:
 }
 ```
 
-All web search tool versions accept `allowed_callers`, which controls whether Claude calls web search directly or from code execution through [dynamic filtering](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=curl#dynamic-filtering). On `web_search_20260209` and later it defaults to `["code_execution_20260120"]` instead of `["direct"]`. See [Server tools](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=curl#zdr-and-allowed-callers) for how to configure it. `web_search_20260318` and later also accept [`response_inclusion`](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=curl#response-inclusion).
+All web search tool versions accept `allowed_callers`, which controls whether Claude calls web search directly or from code execution through [dynamic filtering](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=curl#dynamic-filtering). On `web_search_20260209` and later it defaults to `["code_execution_20260120"]` instead of `["direct"]`. See [ZDR and allowed\_callers](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=curl#zdr-and-allowed-callers) for how to configure it. `web_search_20260318` and later also accept [`response_inclusion`](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=curl#response-inclusion).
 
 ### Max uses
 
@@ -180,8 +180,8 @@ The `user_location` parameter allows you to localize search results based on a u
 * `type`: The type of location (must be `approximate`)
 * `city`: The city name
 * `region`: The region or state
-* `country`: The two-letter [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code. The API rejects unsupported country codes with a 400 error.
-* `timezone`: The [IANA timezone ID](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+* `country`: The two-letter [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code (the API rejects an unsupported code with a 400 error)
+* `timezone`: The [IANA time zone ID](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
 
 On Claude Managed Agents, the `web_search` entry of the agent toolset accepts a `user_location` object with the same fields. The API rejects an unsupported `country` code with a 400 error when you create or update the agent, or when you create or update a session that supplies the setting. See the [web tool settings](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions?sdk_languages=curl#settings).
 
@@ -209,7 +209,7 @@ The `response_inclusion` parameter controls how search result blocks appear in t
 
 Here's an example response structure:
 
-```json Output
+```text Output
 {
   "role": "assistant",
   "content": [
@@ -272,7 +272,7 @@ Here's an example response structure:
 }
 ```
 
-This example shows a direct search. When a search runs through [dynamic filtering](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=curl#dynamic-filtering), the response also contains the [code execution tool's](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=curl) result blocks, and each nested `server_tool_use` and `web_search_tool_result` pair carries a `caller` field identifying the code execution call that made it.
+This example shows a direct search. When a search runs through [dynamic filtering](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=curl#dynamic-filtering), the response also contains the result blocks of the [code execution tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=curl), and each nested `server_tool_use` and `web_search_tool_result` pair carries a `caller` field identifying the code execution call that made it.
 
 ### Search results
 
@@ -304,7 +304,7 @@ The web search citation fields `cited_text`, `title`, and `url` do not count tow
 
 When the web search tool encounters an error (such as hitting rate limits), the Claude API still returns a 200 (success) response. The error is represented within the response body using the following structure:
 
-```json Output
+```text Output wrap
 {
   "type": "web_search_tool_result",
   "tool_use_id": "srvtoolu_a93jad",
@@ -340,9 +340,9 @@ To cache tool definitions across turns, see [Tool use with prompt caching](https
 
 ## Streaming
 
-With streaming enabled, you'll receive search events as part of the stream. There will be a pause while the search runs:
+With streaming enabled, you'll receive search events as part of the stream. There is a pause while the search runs:
 
-```sse Output
+```text Output
 event: message_start
 data: {"type": "message_start", "message": {"id": "msg_abc123", "type": "message"}}
 
@@ -358,7 +358,7 @@ data: {"type": "content_block_start", "index": 1, "content_block": {"type": "ser
 event: content_block_delta
 data: {"type": "content_block_delta", "index": 1, "delta": {"type": "input_json_delta", "partial_json": "{\"query\":\"latest quantum computing breakthroughs 2025\"}"}}
 
-// Pause while search executes
+// Pause while search runs
 
 // Search results streamed
 event: content_block_start
@@ -371,13 +371,13 @@ data: {"type": "content_block_start", "index": 2, "content_block": {"type": "web
 
 You can include the web search tool in the [Messages Batches API](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=curl). Web search tool calls through the Messages Batches API are priced the same as those in regular Messages API requests.
 
-To protect shared capacity, the Batches API throttles web search requests per organization, so large batches with many searches might take longer to complete. You can see your organization's web search rate limit on the [Rate limits](https://platform.claude.com/usage/limits) page in the Claude Console. To request a higher limit, contact sales from that page.
+To protect shared capacity, the Batches API throttles web search requests for each organization, so large batches with many searches might take longer to complete. You can see your organization's web search rate limit on the [Rate limits](https://platform.claude.com/usage/limits) page in the Claude Console. To request a higher limit, contact sales from that page.
 
 ## Usage and pricing
 
 Web search usage is charged in addition to token usage:
 
-```json
+```text wrap
 {
   "usage": {
     "input_tokens": 105,
@@ -391,7 +391,7 @@ Web search usage is charged in addition to token usage:
 }
 ```
 
-Web search is available on the Claude API for **$10 per 1,000 searches**, plus standard token costs for search-generated content. Web search results retrieved throughout a conversation are counted as input tokens, in search iterations executed during a single turn and in subsequent conversation turns.
+Web search is available on the Claude API for **$10 USD per 1,000 searches**, plus standard token costs for search-generated content. Web search results retrieved throughout a conversation are counted as input tokens, in search iterations run during a single turn and in subsequent conversation turns.
 
 Each web search counts as one use, regardless of the number of results returned. If an error occurs during web search, the web search will not be billed.
 
@@ -403,7 +403,7 @@ Each web search counts as one use, regardless of the number of results returned.
   </Card>
 
   <Card title="Server tools" icon="tool" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=curl">
-    Work with Anthropic-executed tools: server\_tool\_use blocks, pause\_turn continuation, and domain filtering.
+    Work with tools that Anthropic runs: `server_tool_use` blocks, `pause_turn` continuation, and domain filtering.
   </Card>
 
   <Card title="Tool reference" icon="book" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference?sdk_languages=curl">

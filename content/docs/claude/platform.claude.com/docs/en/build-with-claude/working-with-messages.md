@@ -20,7 +20,7 @@ This guide covers common patterns for working with the Messages API, including b
 ## Basic request and response
 
 <Note>
-  The `temperature`, `top_p`, and `top_k` sampling parameters are not supported on Claude 4.7 and later models and Claude Mythos Preview. Setting them to a non-default value returns a 400 error. Omit them from request payloads and use prompting to guide the model's behavior instead. See the [migration guide](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=curl#opus-46-breaking-changes).
+  The `temperature`, `top_p`, and `top_k` sampling parameters are not supported on Claude 4.7 and later models and Claude Mythos Preview, or on any model starting with [API version `2026-10-21`](https://platform.claude.com/docs/en/api/migration-2026-10-21?sdk_languages=curl#sampling-parameters). Setting them to a non-default value returns a 400 error, and starting with `2026-10-21` any value does. Omit them from request payloads and use prompting to guide the model's behavior instead. See the [breaking changes in the migration guide](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=curl#opus-46-breaking-changes).
 </Note>
 
 <CodeGroup>
@@ -40,7 +40,7 @@ This guide covers common patterns for working with the Messages API, including b
   ```
 </CodeGroup>
 
-```json Output
+```text Output wrap
 {
   "id": "msg_01XFDUDYJgAACzvnptvVoYEL",
   "type": "message",
@@ -87,7 +87,7 @@ The Messages API is stateless, which means that you always send the full convers
   ```
 </CodeGroup>
 
-```json Output
+```text Output wrap
 {
   "id": "msg_018gCsTGsXkYJVqYPxTgDHBU",
   "type": "message",
@@ -118,7 +118,7 @@ See [Mid-conversation system messages](https://platform.claude.com/docs/en/build
 
 ## Prefilling Claude's response
 
-You can pre-fill part of Claude's response in the last position of the input messages list. Use this technique to shape Claude's response. The following example uses `"max_tokens": 1` to get a single multiple choice answer from Claude.
+You can prefill part of Claude's response in the last position of the input messages list. Use this technique to shape Claude's response. The following example uses `"max_tokens": 1` to get a single multiple choice answer from Claude.
 
 <Warning>
   Prefilling is not supported on Claude 4.6 and later models and [Claude Mythos Preview](https://anthropic.com/glasswing). Requests using prefill with these models return a 400 error. Use [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=curl) on models that support it, or system prompt instructions, instead. See the [migration guide](https://platform.claude.com/docs/en/about-claude/models/migration-guide?sdk_languages=curl) for migration patterns.
@@ -142,7 +142,7 @@ You can pre-fill part of Claude's response in the last position of the input mes
   ```
 </CodeGroup>
 
-```json Output
+```text Output wrap
 {
   "id": "msg_01Q8Faay6S7QPTvEUUQARt7h",
   "type": "message",
@@ -165,7 +165,7 @@ You can pre-fill part of Claude's response in the last position of the input mes
 
 ## Vision
 
-Claude can read both text and images in requests. You can supply images using the `base64`, `url`, or `file` source types. The `file` source type references an image uploaded through the [Files API](https://platform.claude.com/docs/en/build-with-claude/files?sdk_languages=curl). Supported media types are `image/jpeg`, `image/png`, `image/gif`, and `image/webp`. See the [vision guide](https://platform.claude.com/docs/en/build-with-claude/vision?sdk_languages=curl) for more details.
+Claude can read both text and images in requests. You can supply images using the `base64`, `url`, or `file` source types. The `file` source type references an image uploaded through the [Files API](https://platform.claude.com/docs/en/build-with-claude/files?sdk_languages=curl). Supported media types are `image/jpeg`, `image/png`, `image/gif`, and `image/webp`. See the [Vision](https://platform.claude.com/docs/en/build-with-claude/vision?sdk_languages=curl) guide for more details.
 
 <CodeGroup>
   ```bash cURL
@@ -216,7 +216,7 @@ Claude can read both text and images in requests. You can supply images using th
   ```
 </CodeGroup>
 
-```json Output
+```text Output
 {
   "id": "msg_011CdKmWtV3oFx1C5yUbf5CY",
   "type": "message",

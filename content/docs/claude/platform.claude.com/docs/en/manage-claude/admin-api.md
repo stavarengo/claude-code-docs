@@ -30,7 +30,7 @@ The Admin API accepts any of these three credentials:
 
 An Admin API key covers most endpoints. The service-account, federation-issuer, and federation-rule endpoints accept only an `org:admin` OAuth token. Send a personal key or service account key in the `x-api-key` header, as you would an Admin API key. The following examples call the [organization info endpoint](https://platform.claude.com/docs/en/manage-claude/admin-api?sdk_languages=cli#accessing-organization-info) with an OAuth token and with an Admin API key.
 
-The Python, TypeScript, C#, Go, Java, PHP, and Ruby SDKs expose the endpoints on this page under `client.organization`, and the `ant` CLI under `ant organization`. The examples on this page use the default client, which reads an Admin API key from `ANTHROPIC_API_KEY` or an OAuth bearer token from `ANTHROPIC_AUTH_TOKEN`. SDK list methods in Python, TypeScript, C#, Go, and Java return an iterator that fetches more pages on demand, so `limit` sets the page size, not the total. The PHP, Ruby, and curl examples return one page. In the CLI, `--limit` caps the results on the member, invite, workspace, workspace-member, and API-key lists. For each endpoint's parameters and responses, see the [Admin API reference](https://platform.claude.com/docs/en/api/organization?sdk_languages=cli).
+The SDK exposes the endpoints on this page under `client.organization`, and the `ant` CLI under `ant organization`. The examples on this page use the default client, which reads an Admin API key from `ANTHROPIC_API_KEY` or an OAuth bearer token from `ANTHROPIC_AUTH_TOKEN`. SDK list methods in Python, TypeScript, C#, Go, and Java return an iterator that fetches more pages on demand, so `limit` sets the page size, not the total. The PHP, Ruby, and curl examples return one page. In the CLI, `--limit` caps the results on the member, invite, workspace, workspace-member, and API-key lists. For each endpoint's parameters and responses, see the [Admin API reference](https://platform.claude.com/docs/en/api/organization?sdk_languages=cli).
 
 ### OAuth bearer token
 
@@ -43,7 +43,7 @@ export ANTHROPIC_AUTH_TOKEN=$(ant auth print-credentials --profile admin --acces
 
 Interactive tokens are short-lived. If requests start returning 401, re-run the `export` command to refresh the token.
 
-The SDKs and the `ant` CLI read `ANTHROPIC_AUTH_TOKEN` automatically. Leave `ANTHROPIC_API_KEY` unset in the same shell so they send the bearer token. Automated workloads skip the login: they authenticate through workload identity federation, and the SDKs and CLI perform the token exchange from the federation environment variables. See [Bootstrap a workload to manage WIF](https://platform.claude.com/docs/en/manage-claude/wif-admin-api?sdk_languages=cli#bootstrap-a-workload-to-manage-wif).
+The SDK and the `ant` CLI read `ANTHROPIC_AUTH_TOKEN` automatically. Leave `ANTHROPIC_API_KEY` unset in the same shell so they send the bearer token. Automated workloads skip the login: they authenticate through workload identity federation, and the SDK and CLI perform the token exchange from the federation environment variables. See [Bootstrap a workload to manage WIF](https://platform.claude.com/docs/en/manage-claude/wif-admin-api?sdk_languages=cli#bootstrap-a-workload-to-manage-wif).
 
 Call the Admin API with the exported token:
 
@@ -205,7 +205,7 @@ Remove a member from a workspace:
 
 ### API keys
 
-Monitor and manage [API keys](https://platform.claude.com/docs/en/api/organization/api_keys/list?sdk_languages=cli). Each key in the response includes its `expires_at` timestamp (`null` for keys without an [expiration](https://platform.claude.com/docs/en/manage-claude/authentication?sdk_languages=cli#key-expiration)) and `principal`, the identity it acts as (see [Key types](https://platform.claude.com/docs/en/manage-claude/authentication?sdk_languages=cli#key-types)). For a personal key, `principal` is `{"type": "user_actor", "user_id": "user_..."}`; for a service account key, `{"type": "service_account_actor", "service_account_id": "svac_..."}`; and for a workspace key, `null`. Each key also has a `scope` object: `{"type": "workspace", "workspace_id": "wrkspc_..."}` for a key bound to one workspace, or `{"type": "organization"}` for a key that can work across any workspace the account has access to. The top-level `workspace_id` field is deprecated and is `null` both for keys bound to the Default Workspace and for keys without a workspace scope; use `scope` to tell them apart. Filtering the list by `workspace_id` with the Default Workspace's ID returns only keys bound to the Default Workspace; keys without a workspace scope aren't returned under any `workspace_id` filter.
+Monitor and manage [API keys](https://platform.claude.com/docs/en/api/organization/api_keys/list?sdk_languages=cli). Each key in the response includes its `expires_at` timestamp (`null` for keys without an [expiration](https://platform.claude.com/docs/en/manage-claude/authentication?sdk_languages=cli#key-expiration)) and `principal`, the identity it acts as (see [Key types](https://platform.claude.com/docs/en/manage-claude/authentication?sdk_languages=cli#key-types)). For a personal key, `principal` is `{"type": "user_actor", "user_id": "user_..."}`. For a service account key, it is `{"type": "service_account_actor", "service_account_id": "svac_..."}`. For a workspace key, it is `null`. Each key also has a `scope` object: `{"type": "workspace", "workspace_id": "wrkspc_..."}` for a key bound to one workspace, or `{"type": "organization"}` for a key that can work across any workspace the account has access to. Filtering the list by `workspace_id` with the Default Workspace's ID returns only keys bound to the Default Workspace; keys without a workspace scope aren't returned under any `workspace_id` filter.
 
 List the active API keys in a workspace:
 
@@ -231,15 +231,15 @@ Rename or deactivate an API key:
 
 ### Service accounts
 
-Create and manage service accounts (`svac_...`), the non-human identities that [service account keys](https://platform.claude.com/docs/en/manage-claude/authentication?sdk_languages=cli#key-types) and [Workload Identity Federation](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation?sdk_languages=cli) tokens act as. These endpoints, like the federation-issuer and federation-rule endpoints, require an `org:admin` OAuth token. See [Manage WIF with the Admin API](https://platform.claude.com/docs/en/manage-claude/wif-admin-api?sdk_languages=cli#service-accounts).
+Create and manage service accounts (`svac_...`), the non-human identities that [service account keys](https://platform.claude.com/docs/en/manage-claude/authentication?sdk_languages=cli#key-types) and [Workload Identity Federation](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation?sdk_languages=cli) tokens act as. These endpoints, like the federation-issuer and federation-rule endpoints, require an `org:admin` OAuth token. See [Service accounts in Manage WIF with the Admin API](https://platform.claude.com/docs/en/manage-claude/wif-admin-api?sdk_languages=cli#service-accounts).
 
 ### Federation issuers
 
-Register the OIDC identity providers (`fdis_...`) whose tokens may assert workload identity for your organization. See [Manage WIF with the Admin API](https://platform.claude.com/docs/en/manage-claude/wif-admin-api?sdk_languages=cli#federation-issuers).
+Register the OIDC identity providers (`fdis_...`) whose tokens may assert workload identity for your organization. See [Federation issuers in Manage WIF with the Admin API](https://platform.claude.com/docs/en/manage-claude/wif-admin-api?sdk_languages=cli#federation-issuers).
 
 ### Federation rules
 
-Manage the rules (`fdrl_...`) that map issuer tokens to service accounts and scopes. See [Manage WIF with the Admin API](https://platform.claude.com/docs/en/manage-claude/wif-admin-api?sdk_languages=cli#federation-rules).
+Manage the rules (`fdrl_...`) that map issuer tokens to service accounts and scopes. See [Federation rules in Manage WIF with the Admin API](https://platform.claude.com/docs/en/manage-claude/wif-admin-api?sdk_languages=cli#federation-rules).
 
 ## Accessing organization info
 
@@ -251,7 +251,7 @@ The `/v1/organizations/me` endpoint returns the organization that your credentia
   ```
 </CodeGroup>
 
-```json
+```text wrap
 {
   "id": "12345678-1234-5678-1234-567812345678",
   "type": "organization",

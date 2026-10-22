@@ -22,9 +22,9 @@ anthropic-beta: BETA_FEATURE_NAME
 content-type: application/json
 ```
 
-Each feature's documentation states the exact beta name to send. The [API overview](https://platform.claude.com/docs/en/api/overview?sdk_languages=cli) lists the APIs currently in beta.
+Each feature's documentation states the exact beta name to send. The [API overview](https://platform.claude.com/docs/en/api/overview?sdk_languages=cli) lists the APIs in beta.
 
-The following examples show the same request with cURL, the `ant` CLI, and the SDK, using the [context editing](https://platform.claude.com/docs/en/build-with-claude/context-editing?sdk_languages=cli) beta as the example. The SDK takes beta names through `betas` and sends the `anthropic-beta` header for you:
+The following example sends a request with the [context editing](https://platform.claude.com/docs/en/build-with-claude/context-editing?sdk_languages=cli) beta. The SDK takes beta names through `betas` and sends the `anthropic-beta` header for you:
 
 <CodeGroup>
   ```bash CLI
@@ -70,7 +70,7 @@ Beta names are the same on every platform that accepts them, but not every platf
 On Amazon Bedrock, where beta names go depends on the API you call:
 
 * [Claude in Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock?sdk_languages=cli) (`bedrock-mantle` endpoints) takes them in the `anthropic-beta` header.
-* The [InvokeModel API](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy?sdk_languages=cli) reads them from the request body, not from a header. List them in the body's `anthropic_beta` array, one name per element, for example `"anthropic_beta": ["feature1", "feature2"]`.
+* The [InvokeModel API](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy?sdk_languages=cli) reads them from the request body, not from a header. List them in the body's `anthropic_beta` array, one name for each element, for example `"anthropic_beta": ["feature1", "feature2"]`.
 
 ### Endpoint-specific headers
 
@@ -94,7 +94,7 @@ Beta feature names typically follow the pattern `feature-name-YYYY-MM-DD`, where
 
 If you use an invalid beta name, or a beta your organization doesn't have access to, you'll receive a `400` error response:
 
-```json Output
+```text Output
 {
   "type": "error",
   "error": {
@@ -117,6 +117,6 @@ For updates to beta features, see the [release notes](https://platform.claude.co
   </Card>
 
   <Card title="API overview" icon="compass" href="https://platform.claude.com/docs/en/api/overview?sdk_languages=cli">
-    Explore the Claude API's features, including the APIs currently in beta.
+    Explore the Claude API's features, including the APIs in beta.
   </Card>
 </CardGroup>

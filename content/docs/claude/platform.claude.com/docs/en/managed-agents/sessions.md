@@ -1,7 +1,7 @@
 ---
 title: Start a session
 url: https://platform.claude.com/docs/en/managed-agents/sessions
-description: Create a session to run your agent and begin executing tasks.
+description: Create a session to run your agent and start running tasks.
 featureMetadata:
   topic:
     title: Managed Agents
@@ -18,9 +18,7 @@ A session requires an `agent` ID and an `environment` ID. Agents are versioned r
 
 <CodeGroup>
   ```bash CLI
-  ant beta:sessions create \
-    --agent "$AGENT_ID" \
-    --environment-id "$ENVIRONMENT_ID"
+  ant beta:sessions create --agent "$AGENT_ID" --environment-id "$ENVIRONMENT_ID"
   ```
 </CodeGroup>
 
@@ -77,7 +75,7 @@ A `user.define_outcome` event in `initial_events` is accepted under the same con
 
 ### Override agent configuration for a session
 
-You can pass `agent` in three forms: an agent ID string, a pinned-version object (`type: "agent"`), or an overrides object. The overrides form changes parts of the agent's configuration for a single session. Use it to try a different model or grant an extra tool in one session without versioning the agent. For the overrides form, set `type` to `agent_with_overrides` and pass the agent's `id` and optionally a `version` (omit `version` to use the agent's latest version). Then include any of `model`, `system`, `tools`, `mcp_servers`, or `skills` with the values the session should use.
+You can pass `agent` in three forms: an agent ID string, a pinned-version object (`type: "agent"`), or an overrides object (`type: "agent_with_overrides"`). The overrides form changes parts of the agent's configuration for a single session. Use it to try a different model or grant an extra tool in one session without versioning the agent. For the overrides form, pass the agent's `id` and optionally a `version` (omit `version` to use the agent's latest version). Then include any of `model`, `system`, `tools`, `mcp_servers`, or `skills` with the values the session should use.
 
 Each overridable field follows the same three rules:
 
@@ -85,8 +83,8 @@ Each overridable field follows the same three rules:
 
 * **Set the field to `null`, or to an empty array for list fields:** The session runs with that field cleared. This rule applies in full to `system` and `skills`. There are three exceptions:
 
-  * `model` is never clearable. A session always needs a model, so `model: null` returns a 400 `agent_model_required` error.
-  * Clearing `tools` returns a 400 error when the session's effective `skills` is non-empty, because skills require the `read` tool. Otherwise, `tools: null` and `tools: []` clear the field.
+  * `model` is never clearable. A session always needs a model, so setting `model` to `null` returns a 400 `agent_model_required` error.
+  * Clearing `tools` returns a 400 error when the session's effective `skills` is non-empty, because skills require the `read` tool. Otherwise, setting `tools` to `null` or to an empty array clears the field.
   * Clearing `mcp_servers` returns a 400 error when the session's effective `tools` still contains an `mcp_toolset` that references one of the agent's servers. Override `tools` in the same request to remove those `mcp_toolset` entries, then clear `mcp_servers`.
 
 * **Set the field to a value:** The value replaces the agent's value in full. Overrides never merge with the agent's configuration, so a `tools` override must list every tool the session should have. Likewise, a `model` override replaces the agent's `model` object in full, so the agent's own `effort` isn't carried over. To run the session at a specific effort level, set `effort` inside the override's `model` object. A level the model doesn't support returns a 400 error, and a `model` override without `effort` runs at that model's default effort level.
@@ -100,7 +98,7 @@ The following example starts a session that overrides the model and clears the s
 <CodeGroup>
   ```bash CLI
   # The response's `agent` is the resolved snapshot: each override replaces that
-  # field for this session only, and the agent resource keeps its id and version.
+  # field for this session only, and the agent resource keeps its ID and version.
   ant beta:sessions create <<YAML
   agent:
     type: agent_with_overrides
@@ -140,9 +138,9 @@ The following example starts a session from an agent whose model has no geo pin,
 
 ### Set a session budget
 
-To cap what a session can spend, pass the optional `budget` object when you create it. A budget is a hard ceiling on the session's list cost: the platform prices everything the session consumes at public list rates, and the session stops issuing new model requests once that running total reaches `max_list_cost`. Set `type` to `limit` and give `max_list_cost` an `amount` and a `currency`. `amount` is a whole number of US cents written as a string, such as `"125"` for $1.25. The API takes a string rather than a number so no floating-point rounding is ever applied. `USD` is the only currency currently supported. When the session reaches the cap, it pauses and goes idle with the stop reason `budget_reached`. The cap is enforced between model requests, so the request that crosses it finishes first and the session's final list cost can land [a fraction past the cap](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli#when-a-session-reaches-its-budget). A budget can only be attached at creation: you can [change or remove](https://platform.claude.com/docs/en/managed-agents/session-operations?sdk_languages=cli#updating-the-session-budget) it later, but you can't add one to a session created without it.
+To cap what a session can spend, pass the optional `budget` object when you create it. A budget is a hard ceiling on the session's list cost: the platform prices everything the session consumes at public list rates, and the session stops issuing new model requests once that running total reaches `max_list_cost`. The budget's `type` is always `limit`. Give `max_list_cost` an `amount` and a `currency`. `amount` is a whole number of US cents written as a string, such as `"125"` for $1.25 USD. The API takes a string rather than a number so no floating-point rounding is ever applied. `USD` is the only currency currently supported. When the session reaches the cap, it pauses and goes idle with the stop reason `budget_reached`. The cap is enforced between model requests, so the request that crosses it completes first and the session's final list cost can land [a fraction past the cap](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli#when-a-session-reaches-its-budget). A budget can only be attached at creation: you can [change or remove the budget](https://platform.claude.com/docs/en/managed-agents/session-operations?sdk_languages=cli#updating-the-session-budget) later, but you can't add one to a session created without it.
 
-The following example creates a session with a $1.25 budget:
+The following example creates a session with a $1.25 USD budget:
 
 <CodeGroup>
   ```bash CLI
@@ -177,8 +175,7 @@ Creating a session without `initial_events` registers the session but does not s
 
 <CodeGroup>
   ```bash CLI
-  ant beta:sessions:events send \
-    --session-id "$SESSION_ID" <<'YAML'
+  ant beta:sessions:events send --session-id "$SESSION_ID" <<'YAML'
   events:
     - type: user.message
       content:
@@ -200,7 +197,7 @@ See [Session statuses](https://platform.claude.com/docs/en/managed-agents/sessio
   </Card>
 
   <Card title="Session event stream" icon="lightning" href="https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli">
-    Send events, stream responses, and interrupt or redirect your session mid-execution.
+    Send events, stream responses, and interrupt or redirect your session while it runs.
   </Card>
 
   <Card title="Scheduled deployments" icon="arrows-clockwise" href="https://platform.claude.com/docs/en/managed-agents/scheduled-deployments?sdk_languages=cli">

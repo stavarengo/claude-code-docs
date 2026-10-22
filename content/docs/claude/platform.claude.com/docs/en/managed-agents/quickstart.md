@@ -33,7 +33,7 @@ This guide walks you through creating an agent, setting up an environment, start
 
 ## Prerequisites
 
-* A [Claude Console account](https://platform.claude.com)
+* A [Claude Console account](https://platform.claude.com/)
 * An [API key](https://platform.claude.com/settings/keys) from the Console
 
 ## Install the CLI
@@ -49,7 +49,7 @@ This guide walks you through creating an agent, setting up an environment, start
     For Linux environments, download the release binary directly.
 
     ```bash
-    VERSION=1.44.0
+    VERSION=2.1.0
     OS=$(uname -s | tr '[:upper:]' '[:lower:]')
     case $(uname -m) in
       x86_64) ARCH=amd64 ;;
@@ -66,7 +66,7 @@ This guide walks you through creating an agent, setting up an environment, start
     You can also install the CLI from source using `go install`. Requires Go 1.25 or later.
 
     ```bash
-    go install github.com/anthropics/anthropic-cli/cmd/ant@latest
+    go install github.com/anthropics/anthropic-cli/v2/cmd/ant@latest
     ```
 
     The binary is placed in `$(go env GOPATH)/bin`. Add it to your `PATH` if it isn't already:
@@ -100,7 +100,7 @@ ant --version
 
   <Tab title="Java">
     ```groovy Gradle
-    implementation("com.anthropic:anthropic-java:2.75.0")
+    implementation("com.anthropic:anthropic-java:3.1.0")
     ```
   </Tab>
 
@@ -286,7 +286,7 @@ Each of these quickstarts pairs Claude Managed Agents with a popular chat framew
   </Card>
 
   <Card title="Session event stream" icon="lightning" href="https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli">
-    Handle events and steer the agent mid-execution
+    Handle events and steer the agent while it runs
   </Card>
 
   <Card title="Scheduled deployments" icon="arrows-clockwise" href="https://platform.claude.com/docs/en/managed-agents/scheduled-deployments?sdk_languages=cli">

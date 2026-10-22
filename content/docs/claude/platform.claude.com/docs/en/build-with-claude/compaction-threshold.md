@@ -167,7 +167,7 @@ When enabled, the API returns a message with the `compaction` stop reason after 
 
 #### Enforcing a total token budget
 
-When a model works on long tasks with many tool-use iterations, total token consumption can grow significantly. You can combine `pause_after_compaction` with a compaction counter to estimate cumulative usage and gracefully wrap up the task once a budget is reached.
+When a model works on long tasks with many tool-use iterations, total token consumption can grow significantly. You can combine `pause_after_compaction` with a compaction counter to estimate cumulative usage and gracefully end the task once a budget is reached.
 
 This example appears in the SDK languages only: its value is the budget-tracking logic around the request. The raw request combines the `trigger` from [Trigger configuration](https://platform.claude.com/docs/en/build-with-claude/compaction-threshold?sdk_languages=cli#trigger-configuration) with `pause_after_compaction` from [Pausing after compaction](https://platform.claude.com/docs/en/build-with-claude/compaction-threshold?sdk_languages=cli#pausing-after-compaction).
 
@@ -250,7 +250,7 @@ This example appears in the SDK languages only: its value is the budget-tracking
 
   ```csharp C#
   AnthropicClient client = new();
-  List<BetaMessageParam> messages = [new() { Role = Role.User, Content = "Hello, Claude" }];
+  List<BetaMessageParam> messages = [new BetaUserMessageParam { Content = "Hello, Claude" }];
 
   const int TriggerThreshold = 100_000;
   const int TotalTokenBudget = 3_000_000;
@@ -275,18 +275,16 @@ This example appears in the SDK languages only: its value is the budget-tracking
   if (response.StopReason == BetaStopReason.Compaction)
   {
       compactionCount += 1;
-      messages.Add(new()
+      messages.Add(new BetaAssistantMessageParam
       {
-          Role = Role.Assistant,
           Content = response.Content.Select(b => new BetaContentBlockParam(b.Json)).ToList()
       });
 
       // Estimate total tokens consumed; prompt wrap-up if over budget
       if (compactionCount * TriggerThreshold >= TotalTokenBudget)
       {
-          messages.Add(new()
+          messages.Add(new BetaUserMessageParam
           {
-              Role = Role.User,
               Content = "Please wrap up your current work and summarize the final state."
           });
       }
@@ -347,10 +345,7 @@ This example appears in the SDK languages only: its value is the budget-tracking
           int compactionCount = 0;
 
           List<BetaMessageParam> messages = new ArrayList<>();
-          messages.add(BetaMessageParam.builder()
-              .role(BetaMessageParam.Role.USER)
-              .content("Hello, Claude")
-              .build());
+          messages.add(BetaMessageParam.ofUser("Hello, Claude"));
 
           MessageCreateParams params = MessageCreateParams.builder()
               .addBeta("compact-2026-01-12")
@@ -376,10 +371,8 @@ This example appears in the SDK languages only: its value is the budget-tracking
 
               // Estimate total tokens consumed; prompt wrap-up if over budget
               if (compactionCount * triggerThreshold >= totalTokenBudget) {
-                  messages.add(BetaMessageParam.builder()
-                      .role(BetaMessageParam.Role.USER)
-                      .content("Please wrap up your current work and summarize the final state.")
-                      .build());
+                  messages.add(BetaMessageParam.ofUser(
+                      "Please wrap up your current work and summarize the final state."));
               }
           }
 
@@ -434,7 +427,7 @@ This example appears in the SDK languages only: its value is the budget-tracking
 
   response = client.beta.messages.create(
     betas: ["compact-2026-01-12"],
-    model: "claude-opus-5-5",
+    model: Anthropic::Model::CLAUDE_OPUS_5_5,
     max_tokens: 4096,
     messages: messages,
     context_management: {
@@ -469,7 +462,7 @@ When compaction is triggered, the API returns a `compaction` block at the start 
 
 A long-running conversation might result in multiple compactions. The last compaction block reflects the final state of the prompt, replacing content prior to it with the generated summary.
 
-```json Output
+```text Output
 {
   "content": [
     {
@@ -499,7 +492,7 @@ In Python, use `client.beta.messages`, as the samples on this page do. If you ca
 When the API receives a `compaction` block, all content blocks before it are ignored. You can either:
 
 * Keep the original messages in your list and let the API handle removing the compacted content
-* Manually drop the compacted messages and only include the compaction block onwards
+* Manually drop the compacted messages and only include the compaction block onward
 
 On Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5, thinking blocks from before a `compaction` block aren't carried forward, so the summary is all the model has of that earlier work. If you write your own `instructions`, tell the model what the summary must retain; see [Tell the model what to preserve in compaction summaries](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1?sdk_languages=cli#tell-the-model-what-to-preserve-in-compaction-summaries).
 
@@ -581,7 +574,7 @@ This keeps long system prompts cached across multiple compaction events througho
 
 Compaction requires an additional sampling step, which contributes to rate limits and billing. The API returns detailed usage information in the response:
 
-```json Output
+```text Output wrap
 {
   "usage": {
     "input_tokens": 23000,
@@ -622,8 +615,7 @@ The token counting endpoint (`/v1/messages/count_tokens`) applies existing `comp
 
 <CodeGroup>
   ```bash CLI
-  ant beta:messages count-tokens \
-    --beta compact-2026-01-12 <<'YAML'
+  ant beta:messages count-tokens --beta compact-2026-01-12 <<'YAML'
   model: claude-opus-5-5
   messages:
     - role: user
@@ -676,7 +668,7 @@ Here's an example that uses `pause_after_compaction` to preserve the prior excha
     Learn about context window sizes and management strategies.
   </Card>
 
-  <Card title="Session memory compaction cookbook" icon="book" href="https://platform.claude.com/cookbook/misc-session-memory-compaction">
+  <Card title="Session memory compaction recipe" icon="book" href="https://platform.claude.com/cookbook/misc-session-memory-compaction">
     Explore a practical implementation that manages long-running conversations with instant session memory compaction using background threading and prompt caching.
   </Card>
 </CardGroup>

@@ -1,7 +1,7 @@
 ---
 title: Dreams
 url: https://platform.claude.com/docs/en/managed-agents/dreams
-description: Let Claude reflect on past sessions to curate an agent's memory and surface new insights.
+description: Let Claude review past sessions to curate an agent's memory and surface new insights.
 ---
 
 <Tip>
@@ -47,7 +47,7 @@ Dreaming inputs include the pre-existing memory store and an array of sessions. 
 
 The response is the full `dream` resource with `status: "pending"`:
 
-```json
+```text
 {
   "type": "dream",
   "id": "drm_01AbCDefGhIjKlMnOpQrStUv",
@@ -81,7 +81,7 @@ The response is the full `dream` resource with `status: "pending"`:
 
 The optional `instructions` field steers what the dreaming pipeline synthesizes. It is applied throughout the pipeline: what to read closely, what to merge or drop, and how to structure the output store.
 
-Use `instructions` for high-level synthesis guidance such as focus areas ("focus on coding-style preferences"), content to preserve unchanged, or output conventions you want applied across the store. The pipeline is a synthesis pass over the inputs, not an editor applied to the text of the store, so imperative directives that target specific lines ("change sentence X to Y", "fix the count in section Z") generally produce no change. To make targeted edits to individual memories, use the [Memory Stores API](https://platform.claude.com/docs/en/managed-agents/memory?sdk_languages=cli#view-and-edit-memories) on the output store directly.
+Use `instructions` for high-level synthesis guidance such as focus areas ("focus on coding-style preferences"), content to preserve unchanged, or output conventions you want applied across the store. The pipeline is a synthesis pass over the inputs, not an editor applied to the text of the store, so imperative directives that target specific lines ("change sentence X to Y," "fix the count in section Z") generally produce no change. To make targeted edits to individual memories, use the [Memory Stores API](https://platform.claude.com/docs/en/managed-agents/memory?sdk_languages=cli#view-and-edit-memories) on the output store directly.
 
 ## Track progress
 
@@ -109,9 +109,9 @@ Once a dream is `running`, its `session_id` field points at the underlying [sess
 
 ## Use the output
 
-When `status` reaches `completed`, the `memory_store` entry in `outputs` references a fully populated store. It's an ordinary memory store in your workspace. Review it with the [Memory Stores API](https://platform.claude.com/docs/en/managed-agents/memory?sdk_languages=cli#view-and-edit-memories) or in the Console, then either:
+When `status` reaches `completed`, the `memory_store` entry in `outputs` references a fully populated store. It's an ordinary memory store in your workspace. Review it with the [Memory Stores API](https://platform.claude.com/docs/en/managed-agents/memory?sdk_languages=cli#view-and-edit-memories) or in the Claude Console, then either:
 
-* **Leverage it:** attach it to future sessions as a `memory_store` resource in place of (or alongside) the input memory store, or
+* **Use it:** attach it to future sessions as a `memory_store` resource in place of (or alongside) the input memory store, or
 * **Discard it:** [delete the memory store](https://platform.claude.com/docs/en/api/beta/memory_stores/delete?sdk_languages=cli) or [archive the memory store](https://platform.claude.com/docs/en/api/beta/memory_stores/archive?sdk_languages=cli).
 
 <CodeGroup>

@@ -12,22 +12,22 @@ featureMetadata:
 
 Claude Managed Agents provides a set of built-in tools that Claude can use autonomously within a [session](https://platform.claude.com/docs/en/managed-agents/sessions?sdk_languages=cli). You control which tools are available by specifying them in the agent configuration.
 
-Claude Managed Agents also supports custom, user-defined tools. Your application executes these tools separately and returns the results to Claude, which uses them to continue the task. To give the agent tools from an MCP server, use the [MCP connector](https://platform.claude.com/docs/en/managed-agents/mcp-connector?sdk_languages=cli) instead.
+Claude Managed Agents also supports custom, user-defined tools. Your application runs these tools separately and returns the results to Claude, which uses them to continue the task. To give the agent tools from an MCP server, use the [MCP connector](https://platform.claude.com/docs/en/managed-agents/mcp-connector?sdk_languages=cli) instead.
 
 ## Available tools
 
 The agent toolset includes the following tools. All are enabled by default when you include the toolset in the agent configuration.
 
-| Tool       | Name         | Description                                    |
-| ---------- | ------------ | ---------------------------------------------- |
-| Bash       | `bash`       | Execute bash commands in a shell session       |
-| Read       | `read`       | Read a file from the sandbox filesystem        |
-| Write      | `write`      | Write a file to the sandbox filesystem         |
-| Edit       | `edit`       | Perform string replacement in a file           |
-| Glob       | `glob`       | Fast file pattern matching using glob patterns |
-| Grep       | `grep`       | Text search using regex patterns               |
-| Web fetch  | `web_fetch`  | Fetch content from a URL                       |
-| Web search | `web_search` | Search the web for information                 |
+| Tool       | Name         | Description                                            |
+| ---------- | ------------ | ------------------------------------------------------ |
+| Bash       | `bash`       | Run bash commands in a shell session                   |
+| Read       | `read`       | Read a file from the sandbox filesystem                |
+| Write      | `write`      | Write a file to the sandbox filesystem                 |
+| Edit       | `edit`       | Perform string replacement in a file                   |
+| Glob       | `glob`       | Perform fast file pattern matching using glob patterns |
+| Grep       | `grep`       | Search text using regex patterns                       |
+| Web fetch  | `web_fetch`  | Fetch content from a URL                               |
+| Web search | `web_search` | Search the web for information                         |
 
 When a tool output exceeds 100,000 characters (about 25,000 tokens), it is automatically written to a file in the [sandbox](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli). The model receives a truncated preview with the file path and can read the full content from there.
 
@@ -97,7 +97,7 @@ The `web_search` and `web_fetch` entries also accept domain lists, a cap on fetc
 
 ### Config entry types in the SDKs
 
-The Python, TypeScript, Go, Java, C#, Ruby, and PHP SDKs type each `configs` entry per tool. The type is a union with one member per built-in tool, discriminated by `type`.
+The SDK types each `configs` entry by tool. The type is a union with one member for each built-in tool, discriminated by `type`.
 
 In Go, Java, C#, and PHP, you construct entries from typed values rather than plain dictionaries or hashes. In those SDKs, the element type of `configs` is the union itself, so build each entry from its per-tool member type.
 
@@ -143,7 +143,7 @@ The following example creates an agent with the built-in toolset and one custom 
 
 A custom tool's name can't start with `mcp__` or `ant__`, or match the name of a built-in agent tool. A request that breaks this rule returns a 400 error. An agent that already has a custom tool whose name starts with `ant__` accepts an update only if the update sends `tools` without that name, so rename or remove the tool in your next update. A new session is refused with a 400 error if such a tool is on its agent (after any [overrides](https://platform.claude.com/docs/en/managed-agents/sessions?sdk_languages=cli#override-agent-configuration-for-a-session)), on an agent in the `predefined_agents` list of `subagents`, or on an agent in the `predefined_agents` list of `workflows`. Sessions that already exist aren't affected.
 
-The agent calls its custom tools during a session. To receive the calls and return results, see [Session event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli#handling-custom-tool-calls).
+The agent calls its custom tools during a session. To receive the calls and return results, see [Answer tool calls that pause the session](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli#handling-custom-tool-calls).
 
 For sessions that run in a self-hosted sandbox, the environment worker can [serve custom tools from the sandbox](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-custom-tools?sdk_languages=cli). These can include tools that wrap an MCP server inside your network.
 
@@ -174,10 +174,10 @@ For sessions that run in a self-hosted sandbox, the environment worker can [serv
   </Card>
 
   <Card title="Permission policies" icon="lock" href="https://platform.claude.com/docs/en/managed-agents/permission-policies?sdk_languages=cli">
-    Control when agent and MCP tools execute.
+    Control when agent and MCP tools run.
   </Card>
 
   <Card title="Session event stream" icon="lightning" href="https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli">
-    Send events, stream responses, and interrupt or redirect your session mid-execution.
+    Send events, stream responses, and interrupt or redirect your session while it runs.
   </Card>
 </CardGroup>

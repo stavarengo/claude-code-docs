@@ -1,7 +1,7 @@
 ---
 title: Permission policies
 url: https://platform.claude.com/docs/en/managed-agents/permission-policies
-description: Control when agent and MCP tools execute.
+description: Control when agent and MCP tools run.
 featureMetadata:
   topic:
     title: Managed Agents
@@ -10,7 +10,7 @@ featureMetadata:
   betaHeader: managed-agents-2026-04-01
 ---
 
-Permission policies control whether server-executed tools (the pre-built agent toolset and MCP toolset) run automatically, wait for your approval, or have each call evaluated by the server. Custom tools are executed by your application and controlled by you, so they are not governed by permission policies.
+Permission policies control whether server-executed tools (the pre-built agent toolset and MCP toolset) run automatically, wait for your approval, or have each call evaluated by the server. Custom tools are run by your application and controlled by you, so they are not governed by permission policies.
 
 ## Permission policy types
 
@@ -58,7 +58,7 @@ When creating an agent, you can apply a policy to every tool in `agent_toolset_2
 
 ### MCP toolset permissions
 
-MCP toolsets default to `always_ask`. This ensures that new tools added to an MCP server do not execute in your application without approval. To auto-approve tools from a trusted MCP server, set `default_config.permission_policy` on the `mcp_toolset` entry.
+MCP toolsets default to `always_ask`. This ensures that new tools added to an MCP server do not run in your application without approval. To auto-approve tools from a trusted MCP server, set `default_config.permission_policy` on the `mcp_toolset` entry.
 
 The `mcp_server_name` must match the `name` of a server in the `mcp_servers` array.
 
@@ -183,7 +183,7 @@ Under any permission policy, each `agent.tool_use` and `agent.mcp_tool_use` even
 
 For example, when `bash` is under `auto` and the server evaluates a call as high-risk, the denied call appears on the event stream as follows:
 
-```json
+```text wrap
 {
   "type": "agent.tool_use",
   "id": "sevt_01pqr...",
@@ -221,16 +221,16 @@ Write your client to tolerate an `evaluation.type` or `reason_code` it does not 
 
 ## Respond to confirmation requests
 
-A tool call evaluates to `ask` under an `always_ask` policy, or under `auto` when the server reaches no determination. When that happens:
+A tool call evaluates to `ask` under an `always_ask` policy, or under `auto` when the server reaches no determination. When that occurs:
 
 1. The session emits an `agent.tool_use` or `agent.mcp_tool_use` event.
 2. The session pauses with a `session.status_idle` event whose `stop_reason.type` is `requires_action`. The blocking event IDs are in the `stop_reason.event_ids` array. The session waits indefinitely for a response. A call from a thread of a [workflow run](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli#while-a-run-is-open) reaches your client on the primary stream. While anything else in the session is working, the session can stay `running` and send no `session.status_idle`, so answer the tool-use event itself. The call waits only until the run finishes with that thread or the run ends. An interrupt might leave it waiting, so allow or deny it yourself.
 3. Send a `user.tool_confirmation` event for each blocking event, passing the event ID in the `tool_use_id` parameter. Set `result` to `"allow"` or `"deny"`. Use `deny_message` to explain a denial. You can send several confirmations in a single `events` request.
-4. Once all blocking events are resolved, the session transitions back to `running`. Allowed tools execute. Denied tools do not run, and the agent receives a tool result saying the call was rejected, including your `deny_message`.
+4. Once all blocking events are resolved, the session transitions back to `running`. Allowed tools run. Denied tools do not run, and the agent receives a tool result saying the call was rejected, including your `deny_message`.
 
 For example, a `bash` call paused under an `always_ask` policy appears on the stream as follows:
 
-```json
+```text wrap
 {
   "type": "agent.tool_use",
   "id": "sevt_01def...",
@@ -250,7 +250,7 @@ If you send a `user.tool_confirmation` for an event whose `evaluated_permission`
 
 To answer interactively instead, use `ant beta:sessions connect`, which shows the waiting call and sends this event when you allow or deny it. See [Connect to a Managed Agents session from your terminal](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/sessions-connect?sdk_languages=cli#follow-and-steer-the-session).
 
-In the following examples, the tool-use event IDs come from the `stop_reason.event_ids` array of the `session.status_idle` event. Learn more about receiving events in the [Session event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli#stream-events) guide, or [subscribe to webhooks](https://platform.claude.com/docs/en/managed-agents/webhooks?sdk_languages=cli) to be notified when a session pauses for input.
+In the following examples, the tool-use event IDs come from the `stop_reason.event_ids` array of the `session.status_idle` event. Learn more about [receiving events](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli#stream-events) in the Session event stream guide, or [subscribe to webhooks](https://platform.claude.com/docs/en/managed-agents/webhooks?sdk_languages=cli) to be notified when a session pauses for input.
 
 <CodeGroup>
   ```bash CLI
@@ -269,7 +269,7 @@ In the following examples, the tool-use event IDs come from the `stop_reason.eve
 
 ## Custom tools
 
-Permission policies do not apply to custom tools. When the agent invokes a custom tool, your application receives an `agent.custom_tool_use` event and is responsible for deciding whether to execute it before sending back a `user.custom_tool_result`. See [Session event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli#answer-tool-calls-that-pause-the-session) for the full flow.
+Permission policies do not apply to custom tools. When the agent calls a custom tool, your application receives an `agent.custom_tool_use` event and is responsible for deciding whether to run it before sending back a `user.custom_tool_result`. See [Answer tool calls that pause the session](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli#answer-tool-calls-that-pause-the-session) for the full flow.
 
 ## Next steps
 
@@ -279,6 +279,6 @@ Permission policies do not apply to custom tools. When the agent invokes a custo
   </Card>
 
   <Card title="Session event stream" icon="lightning" href="https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli">
-    Send events, stream responses, and interrupt or redirect your session mid-execution.
+    Send events, stream responses, and interrupt or redirect your session while it runs.
   </Card>
 </CardGroup>
