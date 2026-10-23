@@ -35,7 +35,6 @@ Remove a member from the organization.
 
 ```bash
 ant organization:users remove \
-  --api-key my-anthropic-api-key \
   --user-id user_id
 ```
 

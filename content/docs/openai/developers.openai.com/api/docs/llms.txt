@@ -92,7 +92,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Cybersecurity checks](https://developers.openai.com/api/docs/guides/safety-checks/cybersecurity.md): Learn about API cybersecurity safeguards, authorized access, request-level checks, access restrictions, and appeals.
 - [Data controls in the OpenAI platform](https://developers.openai.com/api/docs/guides/your-data.md): Your data is your data. An overview of how OpenAI uses your data, including retention and usage policies.
 - [Daytona](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/daytona.md): Run an Agents API session in a Daytona Sandbox.
-- [Decisions](https://developers.openai.com/api/docs/guides/decisions.md): Use the Decisions API to check conditions, select from fixed options, and score text and images against a rubric.
+- [Decisions](https://developers.openai.com/api/docs/guides/decisions.md): Use the Decisions API to check conditions, select from fixed options, and score text, images, and JSON against a rubric.
 - [Deep research](https://developers.openai.com/api/docs/guides/deep-research.md): Use deep research models for complex analysis and research tasks.
 - [Delegation and tools in GPT-Live](https://developers.openai.com/api/docs/guides/live-delegation.md): Configure GPT-Live client or Responses delegation, use hosted tools, return tool results and approvals, and reduce backend latency.
 - [DigitalOcean](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/digitalocean.md): Connect a DigitalOcean sandbox to an Agents API session.

@@ -96,7 +96,7 @@ You can also steer thinking on a per-message basis from the user turn, independe
 
 Per-message steering is useful when only some requests in a conversation warrant extended reasoning. An agent harness, for example, can append the encouraging phrase on planning steps and the discouraging phrase on routine confirmations, without touching the system prompt or changing any request parameters between turns.
 
-On Claude Haiku 5.5, the discouraging phrase doesn't reliably reduce thinking. On the Claude API and Google Cloud, run routine turns on that model with less thinking by using a [per-message effort change](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=curl#change-effort-mid-conversation-beta) (beta) instead, which also keeps the prompt cache.
+On Claude Haiku 5.5, the discouraging phrase doesn't reliably reduce thinking. On the Claude API and Claude Models on Google Cloud (Google managed), run routine turns on that model with less thinking by using a [per-message effort change](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=curl#change-effort-mid-conversation-beta) (beta) instead, which also keeps the prompt cache.
 
 ### Verify steering on your workload
 
@@ -116,7 +116,7 @@ Assistant turns don't need to start with a thinking block. (Models using a legac
 
 For multi-turn applications, this means you can pass back conversation history in whatever shape you have it:
 
-* Assistant turns without thinking are valid history as-is.
+* Assistant turns that Claude produced without thinking are valid history as-is.
 * You can resume a conversation that started without thinking, or that used a different thinking configuration, without rewriting its history.
 * History assembled from mixed sources doesn't need thinking blocks reinserted at the start of each assistant turn to pass validation.
 
@@ -131,13 +131,11 @@ The practical consequence: pick a thinking configuration and a top-level effort 
 The following example demonstrates the invalidation with a multi-turn script you can run yourself:
 
 <Accordion title="Effort changes invalidate the prompt cache">
-  <Tabs>
-    <Tab title="cURL">
-      <Note>
-        This workflow doesn't translate well to a one-off shell command. Use the Claude SDK to run it; per-turn HTTP requests follow the examples on the [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl) page.
-      </Note>
-    </Tab>
-  </Tabs>
+  <CodeGroup exclude="shell:cURL, shell:CLI">
+    <CodeGroupItem language="cURL">
+      This workflow needs more logic than a single shell command. Use the Claude SDK to run it; per-turn HTTP requests follow the examples on the [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl) page.
+    </CodeGroupItem>
+  </CodeGroup>
 
   Here is the output of the script (you might see slightly different numbers):
 

@@ -111,7 +111,7 @@ Retrieve information about a single API key in your organization, looked up by i
 
       - `workspace_id: string`
 
-        ID of the Workspace the API key belongs to. Unlike the deprecated top-level `workspace_id`, this is the Workspace's real ID even for the organization's default Workspace.
+        ID of the Workspace the API key belongs to, including when it is the organization's default Workspace.
 
   - `status: "active" or "archived" or "expired" or "inactive"`
 
@@ -129,7 +129,6 @@ Retrieve information about a single API key in your organization, looked up by i
 
 ```bash
 ant organization:api-keys retrieve \
-  --api-key my-anthropic-api-key \
   --api-key-id api_key_id
 ```
 
@@ -155,7 +154,6 @@ ant organization:api-keys retrieve \
     "workspace_id": "wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ"
   },
   "status": "active",
-  "type": "api_key",
-  "workspace_id": "wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ"
+  "type": "api_key"
 }
 ```

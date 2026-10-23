@@ -198,8 +198,7 @@ organizations.
 ## Example
 
 ```bash
-ant beta:organization:spend-limits:effective list \
-  --api-key my-anthropic-api-key
+ant beta:organization:spend-limits:effective list
 ```
 
 ### Response (200)

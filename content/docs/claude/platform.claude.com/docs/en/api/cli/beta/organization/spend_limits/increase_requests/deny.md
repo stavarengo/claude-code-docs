@@ -232,7 +232,6 @@ Idempotent on `denied`; denying an already-`approved` request returns
 
 ```bash
 ant beta:organization:spend-limits:increase-requests deny \
-  --api-key my-anthropic-api-key \
   --spend-limit-increase-request-id spend_limit_increase_request_id
 ```
 

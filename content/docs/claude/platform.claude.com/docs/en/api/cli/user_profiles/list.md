@@ -13,6 +13,10 @@ List User Profiles
 
 ## Parameters
 
+- `--enforcement-status: optional array of UserProfileEnforcementStatus` (query parameter)
+
+  Return only the user profiles whose `enforcement_status` is one of these values: `unrestricted`, `pending`, `restricted` or `banned`. Repeat the parameter to match any of several. With it set, a page may hold fewer than `limit` profiles, or none, and still carry a `next_page`: the service examines a bounded number of profiles per request, and only a null `next_page` means the listing is complete. Rejected with `invalid_request_error` under the `user-profiles-2026-09-04` and earlier beta headers. Fails with `overloaded_error` when a profile's enforcement actions cannot be read for the moment.
+
 - `--limit: optional number` (query parameter)
 
   The maximum number of user profiles to return, from 1 to 100. Defaults to 20.
@@ -74,6 +78,106 @@ List User Profiles
       When this user profile was created, in RFC 3339 format.
 
       format: date-time
+
+    - `enforcement_actions: array of UserProfileEnforcementAction`
+
+      The enforcement actions open on this profile; empty when none is open. Absent under the `user-profiles-2026-09-04` and earlier beta headers.
+
+      - `user_profile_enforcement_action_restriction: object`
+
+        Anthropic has limited how it serves the end user until the action is resolved. The end user may still be served in part.
+
+        - `type: "restriction"`
+
+        - `id: string`
+
+          The action's ID (`enac_...`), stable while the action is open.
+
+        - `action: "verify"`
+
+          The next step on the action: `verify` or `null`. `verify`: the end user can clear it now by passing an identity check. `null`: there is nothing the end user can do now to clear it, including while Anthropic reviews an identity check the end user submitted.
+
+        - `expires_at: string`
+
+          When the action ends on its own, in RFC 3339 format; it stops showing once this time has passed. `null` when it has no end date, and always `null` when `reason` is `account_compromise`.
+
+          format: date-time
+
+        - `opened_at: string`
+
+          When Anthropic opened the action, in RFC 3339 format.
+
+          format: date-time
+
+        - `reason: "unsupported_region" or "fraud_or_abuse" or "high_harm" or 3 more`
+
+          Why Anthropic placed the limit: `unsupported_region`, `fraud_or_abuse`, `high_harm`, `usage_policy_violation`, `account_compromise` or `unspecified`.
+
+          - `"unsupported_region"`
+
+          - `"fraud_or_abuse"`
+
+          - `"high_harm"`
+
+          - `"usage_policy_violation"`
+
+          - `"account_compromise"`
+
+          - `"unspecified"`
+
+      - `user_profile_enforcement_action_ban: object`
+
+        Anthropic has stopped serving the end user where the ban applies and does not plan to serve them there again.
+
+        - `type: "ban"`
+
+        - `id: string`
+
+          The action's ID (`enac_...`), stable while the action is open.
+
+        - `action: "verify"`
+
+          Always `null`: the end user cannot clear a ban.
+
+        - `expires_at: string`
+
+          Always `null`: a ban has no end date.
+
+          format: date-time
+
+        - `opened_at: string`
+
+          When Anthropic opened the action, in RFC 3339 format.
+
+          format: date-time
+
+        - `reason: "unsupported_region" or "fraud_or_abuse" or "high_harm" or 3 more`
+
+          Why Anthropic placed the limit: `unsupported_region`, `fraud_or_abuse`, `high_harm`, `usage_policy_violation`, `account_compromise` or `unspecified`.
+
+          - `"unsupported_region"`
+
+          - `"fraud_or_abuse"`
+
+          - `"high_harm"`
+
+          - `"usage_policy_violation"`
+
+          - `"account_compromise"`
+
+          - `"unspecified"`
+
+    - `enforcement_status: "unrestricted" or "pending" or "restricted" or "banned"`
+
+      Anthropic's enforcement status of this profile, from its open enforcement actions and any identity check under review, by the first rule that applies: `banned` while any open action is a `ban`; `pending` while a restriction that an identity check can clear is open, the end user has submitted that check, Anthropic's review of it has not ended, and no open action's `reason` is `account_compromise`; `restricted` while any action is open; `unrestricted` while none is. Absent under the `user-profiles-2026-09-04` and earlier beta headers.
+
+      - `"unrestricted"`
+
+      - `"pending"`
+
+      - `"restricted"`
+
+      - `"banned"`
 
     - `external_user_details: object`
 
@@ -230,8 +334,7 @@ List User Profiles
 ## Example
 
 ```bash
-ant user-profiles list \
-  --api-key my-anthropic-api-key
+ant user-profiles list
 ```
 
 ### Response (200)
@@ -243,6 +346,17 @@ ant user-profiles list \
       "id": "uprof_011CZkZCu8hGbp5mYRQgUmz9",
       "access_type": "application",
       "created_at": "2026-03-15T10:00:00Z",
+      "enforcement_actions": [
+        {
+          "id": "enac_011CZkZCu8hGbp5mYRQgUmz9",
+          "action": "verify",
+          "expires_at": null,
+          "opened_at": "2026-10-02T19:30:00Z",
+          "reason": "fraud_or_abuse",
+          "type": "restriction"
+        }
+      ],
+      "enforcement_status": "unrestricted",
       "external_user_details": {
         "account_status": "active",
         "country": "US",

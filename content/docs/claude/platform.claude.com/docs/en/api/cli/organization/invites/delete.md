@@ -35,7 +35,6 @@ Delete a pending invite.
 
 ```bash
 ant organization:invites delete \
-  --api-key my-anthropic-api-key \
   --invite-id invite_id
 ```
 

@@ -82,29 +82,29 @@ A small number of Messages API parameters are **not** supported in batch request
 
 The Batches API offers significant cost savings. All usage is charged at 50 percent of the standard API prices.
 
-| Model                                                                                                                                                  | Batch input  | Batch output  |
-| :----------------------------------------------------------------------------------------------------------------------------------------------------- | :----------- | :------------ |
-| Claude Fable 5.1                                                                                                                                       | $5 / MTok    | $25 / MTok    |
-| Claude Mythos 5.1 ([limited availability](https://support.claude.com/en/articles/14604842))                                                            | $5 / MTok    | $25 / MTok    |
-| Claude Fable 5                                                                                                                                         | $5 / MTok    | $25 / MTok    |
-| Claude Mythos 5 ([limited availability](https://support.claude.com/en/articles/14604842))                                                              | $5 / MTok    | $25 / MTok    |
-| Claude Opus 5.5                                                                                                                                        | $2 / MTok    | $10 / MTok    |
-| Claude Opus 5                                                                                                                                          | $2.50 / MTok | $12.50 / MTok |
-| Claude Opus 4.8                                                                                                                                        | $2.50 / MTok | $12.50 / MTok |
-| Claude Opus 4.7                                                                                                                                        | $2.50 / MTok | $12.50 / MTok |
-| Claude Opus 4.6                                                                                                                                        | $2.50 / MTok | $12.50 / MTok |
-| Claude Opus 4.5                                                                                                                                        | $2.50 / MTok | $12.50 / MTok |
-| Claude Opus 4.1 ([retired, except on Bedrock and Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli)) | $7.50 / MTok | $37.50 / MTok |
-| Claude Opus 4 ([retired, except on Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli))               | $7.50 / MTok | $37.50 / MTok |
-| Claude Sonnet 5.5                                                                                                                                      | $1 / MTok    | $5 / MTok     |
-| Claude Sonnet 5                                                                                                                                        | $1 / MTok    | $5 / MTok     |
-| Claude Sonnet 4.6                                                                                                                                      | $1.50 / MTok | $7.50 / MTok  |
-| Claude Sonnet 4.5                                                                                                                                      | $1.50 / MTok | $7.50 / MTok  |
-| Claude Sonnet 4 ([retired, except on Bedrock and Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli)) | $1.50 / MTok | $7.50 / MTok  |
-| Claude Haiku 5.5 (for prompts up to 100,000 tokens)                                                                                                    | $0.05 / MTok | $0.25 / MTok  |
-| Claude Haiku 5.5 (for prompts over 100,000 tokens)                                                                                                     | $0.25 / MTok | $1.25 / MTok  |
-| Claude Haiku 4.5                                                                                                                                       | $0.50 / MTok | $2.50 / MTok  |
-| Claude Haiku 3.5 ([retired, except on Google Cloud](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli))            | $0.40 / MTok | $2 / MTok     |
+| Model                                                                                                                                                                                    | Batch input  | Batch output  |
+| :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------- | :------------ |
+| Claude Fable 5.1                                                                                                                                                                         | $5 / MTok    | $25 / MTok    |
+| Claude Mythos 5.1 ([limited availability](https://support.claude.com/en/articles/14604842))                                                                                              | $5 / MTok    | $25 / MTok    |
+| Claude Fable 5                                                                                                                                                                           | $5 / MTok    | $25 / MTok    |
+| Claude Mythos 5 ([limited availability](https://support.claude.com/en/articles/14604842))                                                                                                | $5 / MTok    | $25 / MTok    |
+| Claude Opus 5.5                                                                                                                                                                          | $2 / MTok    | $10 / MTok    |
+| Claude Opus 5                                                                                                                                                                            | $2.50 / MTok | $12.50 / MTok |
+| Claude Opus 4.8                                                                                                                                                                          | $2.50 / MTok | $12.50 / MTok |
+| Claude Opus 4.7                                                                                                                                                                          | $2.50 / MTok | $12.50 / MTok |
+| Claude Opus 4.6                                                                                                                                                                          | $2.50 / MTok | $12.50 / MTok |
+| Claude Opus 4.5                                                                                                                                                                          | $2.50 / MTok | $12.50 / MTok |
+| Claude Opus 4.1 ([retired, except on Bedrock and Claude Models on Google Cloud (Google managed)](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli)) | $7.50 / MTok | $37.50 / MTok |
+| Claude Opus 4 ([retired, except on Claude Models on Google Cloud (Google managed)](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli))               | $7.50 / MTok | $37.50 / MTok |
+| Claude Sonnet 5.5                                                                                                                                                                        | $1 / MTok    | $5 / MTok     |
+| Claude Sonnet 5                                                                                                                                                                          | $1 / MTok    | $5 / MTok     |
+| Claude Sonnet 4.6                                                                                                                                                                        | $1.50 / MTok | $7.50 / MTok  |
+| Claude Sonnet 4.5                                                                                                                                                                        | $1.50 / MTok | $7.50 / MTok  |
+| Claude Sonnet 4 ([retired, except on Bedrock and Claude Models on Google Cloud (Google managed)](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli)) | $1.50 / MTok | $7.50 / MTok  |
+| Claude Haiku 5.5 (for prompts up to 100,000 tokens)                                                                                                                                      | $0.05 / MTok | $0.25 / MTok  |
+| Claude Haiku 5.5 (for prompts over 100,000 tokens)                                                                                                                                       | $0.25 / MTok | $1.25 / MTok  |
+| Claude Haiku 4.5                                                                                                                                                                         | $0.50 / MTok | $2.50 / MTok  |
+| Claude Haiku 3.5 ([retired, except on Claude Models on Google Cloud (Google managed)](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli))            | $0.40 / MTok | $2 / MTok     |
 
 * **MTok:** Million tokens. $5 / MTok is $5 for every million tokens.
 * **Limited access:** Available only to organizations verified through Anthropic’s verification programs, such as the [Cyber Verification Program](https://support.claude.com/en/articles/14604842). To request access, apply to the program that covers your use case.
@@ -184,8 +184,7 @@ To poll a Message Batch, you'll need its `id`, which is provided in the response
 <CodeGroup>
   ```bash CLI
   # Check the status; repeat until processing_status is "ended"
-  ant messages:batches retrieve \
-    --message-batch-id "$MESSAGE_BATCH_ID"
+  ant messages:batches retrieve --message-batch-id "$MESSAGE_BATCH_ID"
   ```
 </CodeGroup>
 
@@ -217,8 +216,8 @@ Results of the batch are available for download at the `results_url` property on
 
 <CodeGroup>
   ```bash CLI
-  # Prints one result per line, for example `{"custom_id":"test-1","result":{"type":"succeeded",…}}`.
-  # For per-result handling (retries, validation errors), use the SDK
+  # Prints one result on each line, for example `{"custom_id":"test-1","result":{"type":"succeeded",…}}`.
+  # For per-result handling (retries, validation errors), use the Claude SDK
   # examples in the other tabs.
   ant messages:batches results \
     --message-batch-id msgbatch_01HkcTjaV5uDC8jWR4ZsDV8d \
@@ -335,7 +334,7 @@ In this example, both requests in the batch include identical system messages an
 
 All [server tools](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=cli) (web search, web fetch, code execution, MCP connectors, advisor, and tool search) work in batch requests. The batch worker runs the same server-side agentic loop as the synchronous Messages API.
 
-Because there is no open connection to maintain, the batch loop runs **more iterations per turn** than a synchronous request before it returns `stop_reason: "pause_turn"`. If a batch result comes back with `pause_turn`, the turn did not complete; you can continue it by submitting the paused assistant content in a follow-up request (batch or synchronous) exactly as shown in the [pause\_turn continuation pattern](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=cli#the-server-side-loop-and-pause-turn).
+Because there is no open connection to maintain, the batch loop can run **more iterations in a turn** than a synchronous request before it returns `stop_reason: "pause_turn"`. If a batch result comes back with `pause_turn`, the turn did not complete; you can continue it by submitting the paused assistant content in a follow-up request (batch or synchronous) exactly as shown in the [pause\_turn continuation pattern](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=cli#the-server-side-loop-and-pause-turn).
 
 The batch worker additionally throttles `web_search` for each organization so that highly concurrent batch processing does not exhaust your organization's web-search rate limit. The batch retries throttled requests automatically; you don't need to handle this yourself, but very large web-search batches might take longer to complete.
 
@@ -344,7 +343,7 @@ The batch worker additionally throttles `web_search` for each organization so th
 The `output-300k-2026-03-24` beta header raises the `max_tokens` cap to 300,000 for batch requests using Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Opus 4.7, Claude Opus 4.6, Claude Sonnet 5.5, Claude Sonnet 5, Claude Sonnet 4.6, or Claude Haiku 5.5. Include the header to generate outputs far longer than the standard 128k `max_tokens` limit in a single turn.
 
 <Note>
-  Extended output is available on the Message Batches API only, not the synchronous Messages API. It is supported on the Claude API and Claude Platform on AWS, and is not currently available on Amazon Bedrock, Google Cloud, or Microsoft Foundry.
+  Extended output is available on the Message Batches API only, not the synchronous Messages API. It is supported on the Claude API and Claude Platform on AWS, and is not currently available on Amazon Bedrock, Claude Models on Google Cloud (Google managed), or Microsoft Foundry.
 </Note>
 
 Use extended output for long-form generation such as book-length drafts and technical documentation, exhaustive structured data extraction, large code-generation scaffolds, and long reasoning chains.

@@ -34,8 +34,7 @@ Retrieve information about the organization associated with the authenticated AP
 ## Example
 
 ```bash
-ant beta:organization retrieve \
-  --api-key my-anthropic-api-key
+ant beta:organization retrieve
 ```
 
 ### Response (200)

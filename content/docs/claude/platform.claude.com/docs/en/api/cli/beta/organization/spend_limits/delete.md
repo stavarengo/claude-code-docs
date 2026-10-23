@@ -36,7 +36,6 @@ workspace limits through the API is in an early access preview.
 
 ```bash
 ant beta:organization:spend-limits delete \
-  --api-key my-anthropic-api-key \
   --spend-limit-id spend_limit_id
 ```
 

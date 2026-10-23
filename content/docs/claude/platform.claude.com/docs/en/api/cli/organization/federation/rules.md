@@ -202,7 +202,6 @@ manage rules whose `oauth_scope` is `workspace:developer` or
 
 ```bash
 ant organization:federation:rules create \
-  --api-key my-anthropic-api-key \
   --issuer-id issuer_id \
   --match '{}' \
   --name x \
@@ -406,8 +405,7 @@ unless `include_archived=true`.
 ### Example
 
 ```bash
-ant organization:federation:rules list \
-  --api-key my-anthropic-api-key
+ant organization:federation:rules list
 ```
 
 #### Response (200)
@@ -600,7 +598,6 @@ Retrieve a federation rule by its ID (`fdrl_...`).
 
 ```bash
 ant organization:federation:rules retrieve \
-  --api-key my-anthropic-api-key \
   --federation-rule-id federation_rule_id
 ```
 
@@ -845,7 +842,6 @@ Console session.
 
 ```bash
 ant organization:federation:rules update \
-  --api-key my-anthropic-api-key \
   --federation-rule-id federation_rule_id
 ```
 
@@ -1042,7 +1038,6 @@ other scopes require a Console session.
 
 ```bash
 ant organization:federation:rules archive \
-  --api-key my-anthropic-api-key \
   --federation-rule-id federation_rule_id
 ```
 
@@ -1352,7 +1347,6 @@ other scopes require a Console session.
 
 ```bash
 ant organization:federation:rules:workspaces add \
-  --api-key my-anthropic-api-key \
   --federation-rule-id federation_rule_id \
   --workspace-id workspace_id
 ```
@@ -1440,7 +1434,6 @@ rules with `applies_to_all_workspaces` or a legacy single
 
 ```bash
 ant organization:federation:rules:workspaces list \
-  --api-key my-anthropic-api-key \
   --federation-rule-id federation_rule_id
 ```
 
@@ -1505,7 +1498,6 @@ Console session.
 
 ```bash
 ant organization:federation:rules:workspaces remove \
-  --api-key my-anthropic-api-key \
   --federation-rule-id federation_rule_id \
   --workspace-id workspace_id
 ```

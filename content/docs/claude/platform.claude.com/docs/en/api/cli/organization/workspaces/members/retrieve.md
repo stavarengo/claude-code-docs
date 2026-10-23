@@ -57,7 +57,6 @@ Get Workspace Member
 
 ```bash
 ant organization:workspaces:members retrieve \
-  --api-key my-anthropic-api-key \
   --workspace-id workspace_id \
   --user-id user_id
 ```

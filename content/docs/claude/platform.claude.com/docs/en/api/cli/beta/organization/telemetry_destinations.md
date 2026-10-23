@@ -229,7 +229,6 @@ See the [OpenTelemetry export guide](https://platform.claude.com/docs/en/manage-
 
 ```bash
 ant beta:organization:telemetry-destinations create \
-  --api-key my-anthropic-api-key \
   --endpoint-url x \
   --workspaces '{type: all}'
 ```
@@ -480,8 +479,7 @@ See the [OpenTelemetry export guide](https://platform.claude.com/docs/en/manage-
 ### Example
 
 ```bash
-ant beta:organization:telemetry-destinations list \
-  --api-key my-anthropic-api-key
+ant beta:organization:telemetry-destinations list
 ```
 
 #### Response (200)
@@ -716,7 +714,6 @@ See the [OpenTelemetry export guide](https://platform.claude.com/docs/en/manage-
 
 ```bash
 ant beta:organization:telemetry-destinations retrieve \
-  --api-key my-anthropic-api-key \
   --destination-id destination_id
 ```
 
@@ -989,7 +986,6 @@ See the [OpenTelemetry export guide](https://platform.claude.com/docs/en/manage-
 
 ```bash
 ant beta:organization:telemetry-destinations update \
-  --api-key my-anthropic-api-key \
   --destination-id destination_id
 ```
 
@@ -1064,7 +1060,6 @@ See the [OpenTelemetry export guide](https://platform.claude.com/docs/en/manage-
 
 ```bash
 ant beta:organization:telemetry-destinations delete \
-  --api-key my-anthropic-api-key \
   --destination-id destination_id
 ```
 
@@ -1127,7 +1122,6 @@ Send one test span, named `anthropic.test`, to the destination with its register
 
 ```bash
 ant beta:organization:telemetry-destinations test \
-  --api-key my-anthropic-api-key \
   --destination-id destination_id
 ```
 
@@ -1944,7 +1938,6 @@ See the [OpenTelemetry export guide](https://platform.claude.com/docs/en/manage-
 
 ```bash
 ant beta:organization:telemetry-destinations:workspaces list \
-  --api-key my-anthropic-api-key \
   --destination-id destination_id
 ```
 
@@ -2020,7 +2013,6 @@ See the [OpenTelemetry export guide](https://platform.claude.com/docs/en/manage-
 
 ```bash
 ant beta:organization:telemetry-destinations:workspaces add \
-  --api-key my-anthropic-api-key \
   --destination-id destination_id \
   --workspace-id workspace_id
 ```
@@ -2084,7 +2076,6 @@ See the [OpenTelemetry export guide](https://platform.claude.com/docs/en/manage-
 
 ```bash
 ant beta:organization:telemetry-destinations:workspaces remove \
-  --api-key my-anthropic-api-key \
   --destination-id destination_id \
   --workspace-id workspace_id
 ```

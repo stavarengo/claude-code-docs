@@ -111,7 +111,6 @@ On plans that draw members from a finite pool of purchased seats, the invite aut
 
 ```bash
 ant organization:invites create \
-  --api-key my-anthropic-api-key \
   --email user@emaildomain.com \
   --role user
 ```

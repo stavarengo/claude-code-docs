@@ -77,7 +77,6 @@ Update a member's organization role.
 
 ```bash
 ant organization:users update \
-  --api-key my-anthropic-api-key \
   --user-id user_id \
   --role user
 ```

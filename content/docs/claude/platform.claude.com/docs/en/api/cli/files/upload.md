@@ -85,7 +85,6 @@ Upload File
 
 ```bash
 ant files upload \
-  --api-key my-anthropic-api-key \
   --file 'Example data'
 ```
 

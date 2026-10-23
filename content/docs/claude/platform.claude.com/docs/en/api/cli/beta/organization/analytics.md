@@ -3089,7 +3089,6 @@ Enterprise plan. Requires an API key with the `read:analytics` scope.
 
 ```bash
 ant beta:organization:analytics:summaries list \
-  --api-key my-anthropic-api-key \
   --starting-date ''\''2019-12-27'\'''
 ```
 
@@ -3133,43 +3132,7 @@ ant beta:organization:analytics:summaries list \
       "science_weekly_active_user_count": 0
     }
   ],
-  "next_page": "next_page",
-  "summaries": [
-    {
-      "assigned_seat_count": 0,
-      "cowork_daily_active_user_count": 0,
-      "cowork_monthly_active_user_count": 0,
-      "cowork_weekly_active_user_count": 0,
-      "daily_active_user_count": 0,
-      "daily_adoption_rate": 0,
-      "ending_at": "2019-12-27T18:11:19.117Z",
-      "monthly_active_user_count": 0,
-      "monthly_adoption_rate": 0,
-      "pending_invite_count": 0,
-      "starting_at": "2019-12-27T18:11:19.117Z",
-      "weekly_active_user_count": 0,
-      "weekly_adoption_rate": 0,
-      "chat_cowork_unified_daily_active_user_count": 0,
-      "chat_cowork_unified_monthly_active_user_count": 0,
-      "chat_cowork_unified_weekly_active_user_count": 0,
-      "chat_daily_active_user_count": 0,
-      "chat_monthly_active_user_count": 0,
-      "chat_weekly_active_user_count": 0,
-      "claude_code_daily_active_user_count": 0,
-      "claude_code_monthly_active_user_count": 0,
-      "claude_code_weekly_active_user_count": 0,
-      "claude_design_daily_active_user_count": 0,
-      "claude_design_monthly_active_user_count": 0,
-      "claude_design_weekly_active_user_count": 0,
-      "office_agent_daily_active_user_count": 0,
-      "office_agent_monthly_active_user_count": 0,
-      "office_agent_weekly_active_user_count": 0,
-      "science_daily_active_user_count": 0,
-      "science_entitled_user_count": 0,
-      "science_monthly_active_user_count": 0,
-      "science_weekly_active_user_count": 0
-    }
-  ]
+  "next_page": "next_page"
 }
 ```
 
@@ -3794,8 +3757,7 @@ the `read:analytics` scope.
 #### Example
 
 ```bash
-ant beta:organization:analytics:users list \
-  --api-key my-anthropic-api-key
+ant beta:organization:analytics:users list
 ```
 
 ##### Response (200)
@@ -4104,8 +4066,7 @@ plan. Requires an API key with the `read:analytics` scope.
 #### Example
 
 ```bash
-ant beta:organization:analytics:apps:chat:projects list \
-  --api-key my-anthropic-api-key
+ant beta:organization:analytics:apps:chat:projects list
 ```
 
 ##### Response (200)
@@ -4349,8 +4310,7 @@ organizations on a Claude Enterprise plan. Requires an API key with the
 #### Example
 
 ```bash
-ant beta:organization:analytics:connectors list \
-  --api-key my-anthropic-api-key
+ant beta:organization:analytics:connectors list
 ```
 
 ##### Response (200)
@@ -4555,8 +4515,7 @@ range-rollup mode like `/skills`.
 #### Example
 
 ```bash
-ant beta:organization:analytics:plugins list \
-  --api-key my-anthropic-api-key
+ant beta:organization:analytics:plugins list
 ```
 
 ##### Response (200)
@@ -4811,8 +4770,7 @@ on a Claude Enterprise plan. Requires an API key with the
 #### Example
 
 ```bash
-ant beta:organization:analytics:skills list \
-  --api-key my-anthropic-api-key
+ant beta:organization:analytics:skills list
 ```
 
 ##### Response (200)
@@ -4974,7 +4932,6 @@ can be broken out per product, per member, or per RBAC group via
 
 ```bash
 ant beta:organization:analytics:artifacts list \
-  --api-key my-anthropic-api-key \
   --date ''\''2019-12-27'\'''
 ```
 
@@ -5252,7 +5209,6 @@ key with the `read:analytics` scope.
 
 ```bash
 ant beta:organization:analytics:usage-report list \
-  --api-key my-anthropic-api-key \
   --starting-at ''\''2019-12-27T18:11:19.117Z'\'''
 ```
 
@@ -5589,7 +5545,6 @@ organizations on a Claude Enterprise plan. Requires an API key with the
 
 ```bash
 ant beta:organization:analytics:user-usage-report list \
-  --api-key my-anthropic-api-key \
   --starting-at ''\''2019-12-27T18:11:19.117Z'\'''
 ```
 
@@ -5601,7 +5556,6 @@ ant beta:organization:analytics:user-usage-report list \
     {
       "actor": {
         "deleted": true,
-        "email": "jane@example.com",
         "email_address": "jane@example.com",
         "name": "Jane Smith",
         "type": "user_actor",
@@ -5892,7 +5846,6 @@ Requires an API key with the `read:analytics` scope.
 
 ```bash
 ant beta:organization:analytics:cost-report list \
-  --api-key my-anthropic-api-key \
   --starting-at ''\''2019-12-27T18:11:19.117Z'\'''
 ```
 
@@ -6220,7 +6173,6 @@ organizations on a Claude Enterprise plan. Requires an API key with the
 
 ```bash
 ant beta:organization:analytics:user-cost-report list \
-  --api-key my-anthropic-api-key \
   --starting-at ''\''2019-12-27T18:11:19.117Z'\'''
 ```
 
@@ -6232,7 +6184,6 @@ ant beta:organization:analytics:user-cost-report list \
     {
       "actor": {
         "deleted": true,
-        "email": "jane@example.com",
         "email_address": "jane@example.com",
         "name": "Jane Smith",
         "type": "user_actor",

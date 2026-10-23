@@ -289,7 +289,6 @@ organizations on a Claude Enterprise plan. Requires an API key with the
 
 ```bash
 ant beta:organization:analytics:user-cost-report list \
-  --api-key my-anthropic-api-key \
   --starting-at ''\''2019-12-27T18:11:19.117Z'\'''
 ```
 
@@ -301,7 +300,6 @@ ant beta:organization:analytics:user-cost-report list \
     {
       "actor": {
         "deleted": true,
-        "email": "jane@example.com",
         "email_address": "jane@example.com",
         "name": "Jane Smith",
         "type": "user_actor",

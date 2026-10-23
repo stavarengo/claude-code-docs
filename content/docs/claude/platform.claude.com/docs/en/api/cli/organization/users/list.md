@@ -108,8 +108,7 @@ List the organization's members.
 ## Example
 
 ```bash
-ant organization:users list \
-  --api-key my-anthropic-api-key
+ant organization:users list
 ```
 
 ### Response (200)

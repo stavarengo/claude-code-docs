@@ -37,7 +37,6 @@ The RBAC Groups API is available to Claude Enterprise organizations only.
 
 ```bash
 ant beta:organization:rbac-groups delete \
-  --api-key my-anthropic-api-key \
   --rbac-group-id rbac_group_id
 ```
 

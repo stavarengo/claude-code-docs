@@ -314,7 +314,6 @@ the member was blocked on. Anthropic emails the requester unless
 
 ```bash
 ant beta:organization:spend-limits:increase-requests approve \
-  --api-key my-anthropic-api-key \
   --spend-limit-increase-request-id spend_limit_increase_request_id \
   --amount 50000
 ```

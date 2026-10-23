@@ -247,8 +247,7 @@ Requests whose requester is no longer a member are excluded.
 ### Example
 
 ```bash
-ant beta:organization:spend-limits:increase-requests list \
-  --api-key my-anthropic-api-key
+ant beta:organization:spend-limits:increase-requests list
 ```
 
 #### Response (200)
@@ -532,7 +531,6 @@ requester at the request's period.
 
 ```bash
 ant beta:organization:spend-limits:increase-requests retrieve \
-  --api-key my-anthropic-api-key \
   --spend-limit-increase-request-id spend_limit_increase_request_id
 ```
 
@@ -896,7 +894,6 @@ the member was blocked on. Anthropic emails the requester unless
 
 ```bash
 ant beta:organization:spend-limits:increase-requests approve \
-  --api-key my-anthropic-api-key \
   --spend-limit-increase-request-id spend_limit_increase_request_id \
   --amount 50000
 ```
@@ -1193,7 +1190,6 @@ Idempotent on `denied`; denying an already-`approved` request returns
 
 ```bash
 ant beta:organization:spend-limits:increase-requests deny \
-  --api-key my-anthropic-api-key \
   --spend-limit-increase-request-id spend_limit_increase_request_id
 ```
 

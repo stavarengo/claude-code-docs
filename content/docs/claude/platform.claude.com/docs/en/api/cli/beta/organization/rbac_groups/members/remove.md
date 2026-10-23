@@ -43,7 +43,6 @@ The RBAC Groups API is available to Claude Enterprise organizations only.
 
 ```bash
 ant beta:organization:rbac-groups:members remove \
-  --api-key my-anthropic-api-key \
   --rbac-group-id rbac_group_id \
   --user-id user_id
 ```
@@ -52,7 +51,6 @@ ant beta:organization:rbac-groups:members remove \
 
 ```json
 {
-  "group_id": "rbac_group_012rppKaSVsmTo6NqRDXQXNF",
   "rbac_group_id": "rbac_group_012rppKaSVsmTo6NqRDXQXNF",
   "type": "rbac_group_member_deleted",
   "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"

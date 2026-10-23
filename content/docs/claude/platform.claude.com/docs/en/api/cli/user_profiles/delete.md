@@ -39,7 +39,6 @@ Delete User Profile
 
 ```bash
 ant user-profiles delete \
-  --api-key my-anthropic-api-key \
   --user-profile-id uprof_011CZkZCu8hGbp5mYRQgUmz9
 ```
 

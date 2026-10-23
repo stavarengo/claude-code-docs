@@ -137,7 +137,7 @@ List API Keys
 
         - `workspace_id: string`
 
-          ID of the Workspace the API key belongs to. Unlike the deprecated top-level `workspace_id`, this is the Workspace's real ID even for the organization's default Workspace.
+          ID of the Workspace the API key belongs to, including when it is the organization's default Workspace.
 
     - `status: "active" or "archived" or "expired" or "inactive"`
 
@@ -166,8 +166,7 @@ List API Keys
 ## Example
 
 ```bash
-ant organization:api-keys list \
-  --api-key my-anthropic-api-key
+ant organization:api-keys list
 ```
 
 ### Response (200)
@@ -194,8 +193,7 @@ ant organization:api-keys list \
         "workspace_id": "wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ"
       },
       "status": "active",
-      "type": "api_key",
-      "workspace_id": "wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ"
+      "type": "api_key"
     }
   ],
   "first_id": "first_id",

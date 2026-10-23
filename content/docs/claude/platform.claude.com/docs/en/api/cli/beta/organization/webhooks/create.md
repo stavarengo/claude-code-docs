@@ -105,7 +105,6 @@ Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`
 
 ```bash
 ant beta:organization:webhooks create \
-  --api-key my-anthropic-api-key \
   --enabled-event user_profile.enforcement_action_opened \
   --url x
 ```

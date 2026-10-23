@@ -230,7 +230,6 @@ requester at the request's period.
 
 ```bash
 ant beta:organization:spend-limits:increase-requests retrieve \
-  --api-key my-anthropic-api-key \
   --spend-limit-increase-request-id spend_limit_increase_request_id
 ```
 

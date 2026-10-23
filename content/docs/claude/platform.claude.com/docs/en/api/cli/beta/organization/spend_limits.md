@@ -151,7 +151,6 @@ Anthropic account team.
 
 ```bash
 ant beta:organization:spend-limits set \
-  --api-key my-anthropic-api-key \
   --amount 50000 \
   --scope '{type: user, user_id: user_01WCz1FkmYMm4gnmykNKUu3Q}'
 ```
@@ -303,7 +302,6 @@ Retrieve a spend limit by ID.
 
 ```bash
 ant beta:organization:spend-limits retrieve \
-  --api-key my-anthropic-api-key \
   --spend-limit-id spend_limit_id
 ```
 
@@ -359,7 +357,6 @@ workspace limits through the API is in an early access preview.
 
 ```bash
 ant beta:organization:spend-limits delete \
-  --api-key my-anthropic-api-key \
   --spend-limit-id spend_limit_id
 ```
 
@@ -380,10 +377,12 @@ ant beta:organization:spend-limits delete \
 
 List the organization's spend limits.
 
-Limits are grouped by scope type, in the order `organization`, `seat_tier`,
-`rbac_group`, `organization_service`, `user`; within a type they come in a
-fixed order that is not creation order. Supported for Claude Enterprise
-organizations only, not for Claude Console organizations.
+A Claude Console organization's limits, including any read-only `usage_tier`
+limit, come newest first. Listing them is in an early access preview. To
+request access, contact your Anthropic account team. A Claude Enterprise
+organization's limits are grouped by scope type, in the order `organization`,
+`seat_tier`, `rbac_group`, `organization_service`, `user`; within a type they
+come in a fixed order that is not creation order.
 
 ### Parameters
 
@@ -397,11 +396,15 @@ organizations only, not for Claude Console organizations.
 
   Opaque cursor from a previous response's `next_page` field.
 
-- `--scope-type: optional array of "organization" or "organization_service" or "rbac_group" or 3 more` (query parameter)
+- `--scope-type: optional array of "organization" or "organization_service" or "rbac_group" or 4 more` (query parameter)
 
-  Return only limits with these scope types. Omit for all.
+  Return only limits with these scope types. Omit for all. A scope type that doesn't apply to the organization gets a 400 error.
 
   maxItems: 100
+
+- `--workspace-id: optional string` (query parameter)
+
+  Return only the limits whose `scope.workspace_id` is this workspace (`wrkspc_...`). Claude Console organizations only; other organizations get a 400 error.
 
 - `--beta: optional array of AnthropicBeta` (header parameter)
 
@@ -522,8 +525,7 @@ organizations only, not for Claude Console organizations.
 ### Example
 
 ```bash
-ant beta:organization:spend-limits list \
-  --api-key my-anthropic-api-key
+ant beta:organization:spend-limits list
 ```
 
 #### Response (200)
@@ -1131,8 +1133,7 @@ organizations.
 #### Example
 
 ```bash
-ant beta:organization:spend-limits:effective list \
-  --api-key my-anthropic-api-key
+ant beta:organization:spend-limits:effective list
 ```
 
 ##### Response (200)
@@ -1411,8 +1412,7 @@ Requests whose requester is no longer a member are excluded.
 #### Example
 
 ```bash
-ant beta:organization:spend-limits:increase-requests list \
-  --api-key my-anthropic-api-key
+ant beta:organization:spend-limits:increase-requests list
 ```
 
 ##### Response (200)
@@ -1696,7 +1696,6 @@ requester at the request's period.
 
 ```bash
 ant beta:organization:spend-limits:increase-requests retrieve \
-  --api-key my-anthropic-api-key \
   --spend-limit-increase-request-id spend_limit_increase_request_id
 ```
 
@@ -2060,7 +2059,6 @@ the member was blocked on. Anthropic emails the requester unless
 
 ```bash
 ant beta:organization:spend-limits:increase-requests approve \
-  --api-key my-anthropic-api-key \
   --spend-limit-increase-request-id spend_limit_increase_request_id \
   --amount 50000
 ```
@@ -2357,7 +2355,6 @@ Idempotent on `denied`; denying an already-`approved` request returns
 
 ```bash
 ant beta:organization:spend-limits:increase-requests deny \
-  --api-key my-anthropic-api-key \
   --spend-limit-increase-request-id spend_limit_increase_request_id
 ```
 

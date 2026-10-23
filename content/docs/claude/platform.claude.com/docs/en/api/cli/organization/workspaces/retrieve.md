@@ -115,7 +115,6 @@ Get Workspace
 
 ```bash
 ant organization:workspaces retrieve \
-  --api-key my-anthropic-api-key \
   --workspace-id workspace_id
 ```
 

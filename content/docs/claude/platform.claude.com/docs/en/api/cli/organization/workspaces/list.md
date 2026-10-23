@@ -148,8 +148,7 @@ List Workspaces
 ## Example
 
 ```bash
-ant organization:workspaces list \
-  --api-key my-anthropic-api-key
+ant organization:workspaces list
 ```
 
 ### Response (200)

@@ -254,7 +254,7 @@ In the following examples, the tool-use event IDs come from the `stop_reason.eve
 
 <CodeGroup>
   ```bash CLI
-  # Allow the tool to execute
+  # Allow the tool to run
   ant beta:sessions:events send \
     --session-id "$SESSION_ID" \
     --event "{type: user.tool_confirmation, tool_use_id: $AGENT_TOOL_USE_EVENT_ID, result: allow}"
@@ -269,7 +269,7 @@ In the following examples, the tool-use event IDs come from the `stop_reason.eve
 
 ## Custom tools
 
-Permission policies do not apply to custom tools. When the agent calls a custom tool, your application receives an `agent.custom_tool_use` event and is responsible for deciding whether to run it before sending back a `user.custom_tool_result`. See [Answer tool calls that pause the session](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli#answer-tool-calls-that-pause-the-session) for the full flow.
+Permission policies do not apply to custom tools. When the agent calls a custom tool, your application receives an `agent.custom_tool_use` event and is responsible for determining whether to run it before sending back a `user.custom_tool_result`. See [Answer tool calls that pause the session](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli#answer-tool-calls-that-pause-the-session) for the full flow.
 
 ## Next steps
 

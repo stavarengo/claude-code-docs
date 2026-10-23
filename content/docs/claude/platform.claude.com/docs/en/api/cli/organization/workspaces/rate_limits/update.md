@@ -47,7 +47,7 @@ Changes take effect within about an hour.
 
   - `group: OrganizationRateLimitModelGroup or OrganizationRateLimitBatchGroup or OrganizationRateLimitTokenCountGroup or 3 more`
 
-    The rate-limit group this entry's limits apply to. Its `type` equals `group_type`.
+    The rate-limit group this entry's limits apply to.
 
     - `organization_rate_limit_model_group: object`
 
@@ -147,7 +147,7 @@ Changes take effect within about an hour.
 
   - `models: array of string`
 
-    Model names this entry's limits apply to, including aliases. `null` when `group_type` is not `"model_group"`.
+    Model names this entry's limits apply to, including aliases. `null` when `group.type` is not `"model_group"`. The list covers the models this workspace has access to, so it can differ between workspaces.
 
   - `rate_limit_id: string`
 
@@ -161,7 +161,6 @@ Changes take effect within about an hour.
 
 ```bash
 ant organization:workspaces:rate-limits update \
-  --api-key my-anthropic-api-key \
   --workspace-id workspace_id \
   --rate-limit-id rate_limit_id \
   --limit '{type: fast_itpmca, value: 0}'
@@ -176,7 +175,6 @@ ant organization:workspaces:rate-limits update \
     "display_name": "display_name",
     "type": "model_group"
   },
-  "group_type": "batch",
   "limits": [
     {
       "org_limit": 0,

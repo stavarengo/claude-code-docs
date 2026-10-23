@@ -107,7 +107,6 @@ Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`
 
 ```bash
 ant beta:organization:webhooks create \
-  --api-key my-anthropic-api-key \
   --enabled-event user_profile.enforcement_action_opened \
   --url x
 ```
@@ -241,8 +240,7 @@ Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`
 ### Example
 
 ```bash
-ant beta:organization:webhooks list \
-  --api-key my-anthropic-api-key
+ant beta:organization:webhooks list
 ```
 
 #### Response (200)
@@ -351,7 +349,6 @@ Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`
 
 ```bash
 ant beta:organization:webhooks retrieve \
-  --api-key my-anthropic-api-key \
   --webhook-endpoint-id webhook_endpoint_id
 ```
 
@@ -476,7 +473,6 @@ Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`
 
 ```bash
 ant beta:organization:webhooks update \
-  --api-key my-anthropic-api-key \
   --webhook-endpoint-id webhook_endpoint_id
 ```
 
@@ -538,7 +534,6 @@ Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`
 
 ```bash
 ant beta:organization:webhooks delete \
-  --api-key my-anthropic-api-key \
   --webhook-endpoint-id webhook_endpoint_id
 ```
 
@@ -588,7 +583,6 @@ Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`
 
 ```bash
 ant beta:organization:webhooks regenerate-signing-secret \
-  --api-key my-anthropic-api-key \
   --webhook-endpoint-id webhook_endpoint_id
 ```
 

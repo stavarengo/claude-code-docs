@@ -171,7 +171,7 @@ Claude can read both text and images in requests. You can supply images using th
   ```bash cURL
   #!/bin/sh
 
-  # Option 1: Base64-encoded image
+  # Option 1: base64-encoded image
   IMAGE_BASE64=$(curl "https://platform.claude.com/docs/images/vision-example.jpg" | base64 | tr -d '\n')
 
   curl https://api.anthropic.com/v1/messages \

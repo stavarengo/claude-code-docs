@@ -149,7 +149,6 @@ Anthropic account team.
 
 ```bash
 ant beta:organization:spend-limits set \
-  --api-key my-anthropic-api-key \
   --amount 50000 \
   --scope '{type: user, user_id: user_01WCz1FkmYMm4gnmykNKUu3Q}'
 ```

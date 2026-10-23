@@ -106,7 +106,6 @@ accounts.
 
 ```bash
 ant organization:service-accounts create \
-  --api-key my-anthropic-api-key \
   --name ci-deploy-bot
 ```
 
@@ -223,8 +222,7 @@ archived service accounts.
 ### Example
 
 ```bash
-ant organization:service-accounts list \
-  --api-key my-anthropic-api-key
+ant organization:service-accounts list
 ```
 
 #### Response (200)
@@ -331,7 +329,6 @@ Retrieve a service account by its ID (`svac_...`).
 
 ```bash
 ant organization:service-accounts retrieve \
-  --api-key my-anthropic-api-key \
   --service-account-id service_account_id
 ```
 
@@ -449,7 +446,6 @@ interactive credential (a user OAuth token or a Console session).
 
 ```bash
 ant organization:service-accounts update \
-  --api-key my-anthropic-api-key \
   --service-account-id service_account_id
 ```
 
@@ -557,7 +553,6 @@ those rules first or change their target to another service account.
 
 ```bash
 ant organization:service-accounts archive \
-  --api-key my-anthropic-api-key \
   --service-account-id service_account_id
 ```
 
@@ -751,7 +746,6 @@ rejected.
 
 ```bash
 ant organization:service-accounts:workspaces add \
-  --api-key my-anthropic-api-key \
   --service-account-id service_account_id \
   --workspace-id workspace_id \
   --workspace-role workspace_admin
@@ -856,7 +850,6 @@ page to recover.
 
 ```bash
 ant organization:service-accounts:workspaces list \
-  --api-key my-anthropic-api-key \
   --service-account-id service_account_id
 ```
 
@@ -924,7 +917,6 @@ to the implicit `workspace_user` membership. Archived workspaces return
 
 ```bash
 ant organization:service-accounts:workspaces remove \
-  --api-key my-anthropic-api-key \
   --service-account-id service_account_id \
   --workspace-id workspace_id
 ```

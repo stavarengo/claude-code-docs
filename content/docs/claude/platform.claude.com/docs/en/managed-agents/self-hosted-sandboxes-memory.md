@@ -23,6 +23,8 @@ The difference is who materializes the store. On a self-hosted environment your 
 
 <Note>
   Memory stores cannot be attached to sessions on self-hosted environments on [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli).
+
+  On [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli), memory stores aren't supported for sessions on self-hosted environments.
 </Note>
 
 ## Prepare the host

@@ -147,7 +147,6 @@ The RBAC Roles API is available to Claude Enterprise organizations only.
 
 ```bash
 ant beta:organization:rbac-roles:permissions list \
-  --api-key my-anthropic-api-key \
   --rbac-role-id rbac_role_id
 ```
 

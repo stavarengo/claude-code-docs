@@ -131,7 +131,6 @@ Retrieve a spend limit by ID.
 
 ```bash
 ant beta:organization:spend-limits retrieve \
-  --api-key my-anthropic-api-key \
   --spend-limit-id spend_limit_id
 ```
 

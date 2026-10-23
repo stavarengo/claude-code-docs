@@ -13,11 +13,11 @@ You can use Claude Code even if you've never used a terminal before. This guide 
 
 > [!NOTE]
 >
-> Don't want to use the terminal? The Claude Code desktop app lets you skip the terminal entirely. Download it for [macOS](https://claude.ai/api/desktop/darwin/universal/dmg/latest/redirect?utm_source=claude_code\&utm_medium=docs) or [Windows](https://claude.com/download?utm_source=claude_code\&utm_medium=docs), then see the [Desktop quickstart](/docs/en/desktop-quickstart) to get started. On Linux, install the app with apt by following the [Linux install instructions](/docs/en/desktop-linux).
+> Don't want to use the terminal? The Claude Code desktop app lets you skip the terminal entirely. Download it for [macOS](https://claude.ai/api/desktop/darwin/universal/dmg/latest/redirect?utm_source=claude_code\&utm_medium=docs) or [Windows](https://claude.com/download?utm_source=claude_code\&utm_medium=docs), then see the [Desktop quickstart](/docs/en/desktop-quickstart.md) to get started. On Linux, install the app with apt by following the [Linux install instructions](/docs/en/desktop-linux.md).
 
 ## Install Claude Code on macOS or Linux
 
-Follow these steps to install and start Claude Code from a macOS or Linux terminal. Claude Code requires macOS 13.0 or later. See the [system requirements](/docs/en/setup#system-requirements) for supported Linux distributions.
+Follow these steps to install and start Claude Code from a macOS or Linux terminal. Claude Code requires macOS 13.0 or later. See the [system requirements](/docs/en/setup.md#system-requirements) for supported Linux distributions.
 
 **1. Open a terminal**
 
@@ -47,7 +47,7 @@ claude
 
 If you see `command not found: claude`, the install directory isn't on your PATH yet. Follow the ['command not found: claude'](#macos-and-linux-troubleshooting) fix below, then open a new terminal window and try again.
 
-You'll be prompted to [log in](/docs/en/authentication) with your Claude account. Follow the on-screen instructions. A browser window will open for you to sign in.
+You'll be prompted to [log in](/docs/en/authentication.md) with your Claude account. Follow the on-screen instructions. A browser window will open for you to sign in.
 
 **4. Start using Claude Code**
 
@@ -62,7 +62,7 @@ Once logged in, you can start asking Claude questions about your code or anythin
 
 ## Install Claude Code on Windows
 
-Follow these steps to optionally install Git for Windows, set up PowerShell, and start Claude Code on Windows. Claude Code requires Windows 10 version 1809 or later. See the [system requirements](/docs/en/setup#system-requirements) for full details.
+Follow these steps to optionally install Git for Windows, set up PowerShell, and start Claude Code on Windows. Claude Code requires Windows 10 version 1809 or later. See the [system requirements](/docs/en/setup.md#system-requirements) for full details.
 
 **1. Install Git for Windows (optional)**
 
@@ -120,7 +120,7 @@ Run `claude`. If PowerShell says `'claude' is not recognized`, the install direc
 claude
 ```
 
-You'll be prompted to [log in](/docs/en/authentication) with your Claude account. Follow the on-screen instructions. A browser window will open for you to sign in.
+You'll be prompted to [log in](/docs/en/authentication.md) with your Claude account. Follow the on-screen instructions. A browser window will open for you to sign in.
 
 **5. Start using Claude Code**
 
@@ -169,18 +169,18 @@ If you don't have a project yet, that's fine. Claude can help you start a new on
 
 You don't have to use the terminal. Claude Code is also available in:
 
-* [VS Code](/docs/en/vs-code) and [JetBrains IDEs](/docs/en/jetbrains) as editor extensions
-* The [desktop app](/docs/en/desktop-quickstart), with no terminal required
-* The [web](/docs/en/claude-code-on-the-web) at claude.ai/code for cloud sessions
-* [GitHub Actions](/docs/en/github-actions) and [GitLab CI/CD](/docs/en/gitlab-ci-cd) for automation
+* [VS Code](/docs/en/vs-code.md) and [JetBrains IDEs](/docs/en/jetbrains.md) as editor extensions
+* The [desktop app](/docs/en/desktop-quickstart.md), with no terminal required
+* The [web](/docs/en/claude-code-on-the-web.md) at claude.ai/code for cloud sessions
+* [GitHub Actions](/docs/en/github-actions.md) and [GitLab CI/CD](/docs/en/gitlab-ci-cd.md) for automation
 
 ### Learn more
 
-* [Quickstart](/docs/en/quickstart): a guided walkthrough of your first project with Claude Code
-* [How Claude Code works](/docs/en/how-claude-code-works): understand how Claude reads your files, runs commands, and makes edits
-* [Best practices](/docs/en/best-practices): get better results with effective prompting and project setup
-* [Common workflows](/docs/en/common-workflows): step-by-step guides for debugging, testing, refactoring, and more
-* [Terminal configuration](/docs/en/terminal-config): customize your terminal for the best Claude Code experience
+* [Quickstart](/docs/en/quickstart.md): a guided walkthrough of your first project with Claude Code
+* [How Claude Code works](/docs/en/how-claude-code-works.md): understand how Claude reads your files, runs commands, and makes edits
+* [Best practices](/docs/en/best-practices.md): get better results with effective prompting and project setup
+* [Common workflows](/docs/en/common-workflows.md): step-by-step guides for debugging, testing, refactoring, and more
+* [Terminal configuration](/docs/en/terminal-config.md): customize your terminal for the best Claude Code experience
 
 ***
 
@@ -208,9 +208,9 @@ If you run into problems installing on macOS or Linux, check these common issues
 > source ~/.bashrc
 > ```
 >
-> For Bash on macOS, follow the macOS Bash step in [fix your PATH](/docs/en/troubleshoot-install#verify-your-path) instead.
+> For Bash on macOS, follow the macOS Bash step in [fix your PATH](/docs/en/troubleshoot-install.md#verify-your-path) instead.
 >
-> Then open a new terminal and try `claude` again. If it still isn't found, check that the file `~/.local/bin/claude` exists. If it doesn't, the install didn't finish. For more details, see [fix your PATH](/docs/en/troubleshoot-install#verify-your-path).
+> Then open a new terminal and try `claude` again. If it still isn't found, check that the file `~/.local/bin/claude` exists. If it doesn't, the install didn't finish. For more details, see [fix your PATH](/docs/en/troubleshoot-install.md#verify-your-path).
 
 > **Error with HTML code or 'syntax error near unexpected token'**
 >
@@ -230,9 +230,9 @@ If you run into problems installing on macOS or Linux, check these common issues
 >
 > If you see `dyld: cannot load`, `dyld: Symbol not found`, or `built for Mac OS X 13.0`, your macOS version is likely older than Claude Code supports.
 >
-> Open the Apple menu and select About This Mac to check your version. If it's older than 13.0, update macOS through Software Update. See the [macOS troubleshooting guide](/docs/en/troubleshoot-install#dyld-cannot-load-on-macos) for more details.
+> Open the Apple menu and select About This Mac to check your version. If it's older than 13.0, update macOS through Software Update. See the [macOS troubleshooting guide](/docs/en/troubleshoot-install.md#dyld-cannot-load-on-macos) for more details.
 
-For other errors, see the full [installation troubleshooting guide](/docs/en/troubleshoot-install).
+For other errors, see the full [installation troubleshooting guide](/docs/en/troubleshoot-install.md).
 
 ### Windows troubleshooting
 
@@ -273,7 +273,7 @@ If you run into problems installing on Windows, check these common issues:
 >    ```
 >    Look for the `Git\bin` folder in that path and use it instead.
 >
-> To make this permanent so you don't have to set it every time, see [configure Git Bash path](/docs/en/troubleshoot-install#claude-code-on-windows-requires-either-git-for-windows-for-bash-or-powershell).
+> To make this permanent so you don't have to set it every time, see [configure Git Bash path](/docs/en/troubleshoot-install.md#claude-code-on-windows-requires-either-git-for-windows-for-bash-or-powershell).
 
 > **'claude is not recognized'**
 >
@@ -286,10 +286,10 @@ If you run into problems installing on Windows, check these common issues:
 > [Environment]::SetEnvironmentVariable('PATH', "$currentPath;$env:USERPROFILE\.local\bin", 'User')
 > ```
 >
-> Close PowerShell, open a new window, and try `claude` again. You should see the Claude Code welcome screen. See [verify your PATH](/docs/en/troubleshoot-install#verify-your-path) for more details.
+> Close PowerShell, open a new window, and try `claude` again. You should see the Claude Code welcome screen. See [verify your PATH](/docs/en/troubleshoot-install.md#verify-your-path) for more details.
 
 > **'Claude Code does not support 32-bit Windows'**
 >
-> On a 64-bit machine, this error means you opened `Windows PowerShell (x86)` instead of `Windows PowerShell`. The x86 entry runs as a 32-bit process. Close it, open the Start menu entry without `(x86)` in its name, and run the install command again. If you're not sure your machine is 64-bit, or the error persists, see [the full explanation](/docs/en/troubleshoot-install#claude-code-does-not-support-32-bit-windows).
+> On a 64-bit machine, this error means you opened `Windows PowerShell (x86)` instead of `Windows PowerShell`. The x86 entry runs as a 32-bit process. Close it, open the Start menu entry without `(x86)` in its name, and run the install command again. If you're not sure your machine is 64-bit, or the error persists, see [the full explanation](/docs/en/troubleshoot-install.md#claude-code-does-not-support-32-bit-windows).
 
-For other errors, see the full [installation troubleshooting guide](/docs/en/troubleshoot-install).
+For other errors, see the full [installation troubleshooting guide](/docs/en/troubleshoot-install.md).

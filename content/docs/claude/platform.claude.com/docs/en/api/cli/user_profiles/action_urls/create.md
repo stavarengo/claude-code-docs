@@ -51,7 +51,6 @@ Create Action URL
 
 ```bash
 ant user-profiles:action-urls create \
-  --api-key my-anthropic-api-key \
   --user-profile-id uprof_011CZkZCu8hGbp5mYRQgUmz9 \
   --action '{type: enroll_end_user}'
 ```

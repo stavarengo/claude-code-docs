@@ -270,7 +270,7 @@ Get details about a specific Skill:
 
 ### Deleting a Skill
 
-Deleting a Skill also removes all of its versions.
+Deleting a Skill also deletes all of its versions.
 
 <CodeGroup>
   ```bash CLI
@@ -401,7 +401,7 @@ Then use it with the Excel Skill to create a financial model. Pass the ID of the
 
 ### Request limits
 
-* **Maximum Skills per request:** 20
+* **Maximum Skills for each request:** 20
 
 * **Maximum Skill upload size:** 30 MB (all files combined, uncompressed)
 
@@ -511,7 +511,7 @@ If you use [Prompt caching](https://platform.claude.com/docs/en/build-with-claud
       name: code_execution
   YAML
 
-  # Changing the Skills list ([xlsx] vs [xlsx, pptx]) changes the prefix: a cache miss, while an identical list is a cache hit
+  # Changing the Skills list ([xlsx] versus [xlsx, pptx]) changes the prefix: a cache miss, whereas an identical list is a cache hit
   ant messages create <<'YAML'
   model: claude-opus-5-5
   max_tokens: 4096

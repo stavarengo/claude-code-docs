@@ -95,7 +95,6 @@ Retrieve an invite by ID.
 
 ```bash
 ant organization:invites retrieve \
-  --api-key my-anthropic-api-key \
   --invite-id invite_id
 ```
 

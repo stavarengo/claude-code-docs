@@ -96,8 +96,7 @@ List Files
 ## Example
 
 ```bash
-ant files list \
-  --api-key my-anthropic-api-key
+ant files list
 ```
 
 ### Response (200)

@@ -136,6 +136,8 @@ Set `allowed_domains` on `web_fetch` to the sites the agent needs. Any URL the a
 
 A `blocked_domains` list blocks the hosts you list and their subdomains, and no other host. The same content can still reach the agent from web archives, caches, mirrors, or related domains you did not list. Do not rely on `blocked_domains` for security. Use `allowed_domains` and name the hosts you trust.
 
+An administrator can turn off web search or web fetch, or restrict their domains, on the [**Capabilities**](https://platform.claude.com/settings/capabilities) page of the Claude Console. These settings also apply in a session. With a tool turned off, its calls return an error result to the agent, and the session continues. With domain restrictions set, a search result or a fetched URL must pass both the organization's restrictions and the tool's own domain lists. See [Restrict web search and web fetch domains](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions?sdk_languages=cli).
+
 In a `limited` environment, the `allowed_hosts` list from [Limit the network](https://platform.claude.com/docs/en/managed-agents/secure-deployment?sdk_languages=cli#limit-the-network) also limits the web tools. An `unrestricted` environment or a self-hosted sandbox does not limit the web tools.
 
 | In a `limited` environment                                                   | Result                                                                                                                                                                                                                                                       |

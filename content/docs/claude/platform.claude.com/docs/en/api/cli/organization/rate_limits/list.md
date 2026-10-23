@@ -59,7 +59,7 @@ the remaining entries.
 
     - `group: OrganizationRateLimitModelGroup or OrganizationRateLimitBatchGroup or OrganizationRateLimitTokenCountGroup or 3 more`
 
-      The rate-limit group this entry's limits apply to. Its `type` equals `group_type`.
+      The rate-limit group this entry's limits apply to.
 
       - `organization_rate_limit_model_group: object`
 
@@ -139,7 +139,7 @@ the remaining entries.
 
     - `models: array of string`
 
-      Model names this entry's limits apply to, including aliases. `null` when `group_type` is not `"model_group"`.
+      Model names this entry's limits apply to, including aliases. `null` when `group.type` is not `"model_group"`. The list covers the models your organization has access to, so it can differ between organizations.
 
   - `next_page: string`
 
@@ -148,8 +148,7 @@ the remaining entries.
 ## Example
 
 ```bash
-ant organization:rate-limits list \
-  --api-key my-anthropic-api-key
+ant organization:rate-limits list
 ```
 
 ### Response (200)
@@ -164,7 +163,6 @@ ant organization:rate-limits list \
         "display_name": "display_name",
         "type": "model_group"
       },
-      "group_type": "batch",
       "limits": [
         {
           "type": "type",

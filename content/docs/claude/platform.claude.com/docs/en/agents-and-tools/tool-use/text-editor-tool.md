@@ -505,18 +505,18 @@ The tool type is `type: "text_editor_20250728"` for Claude 4 and later models.
 
       ```java Java
       static void handleEditorTool(Map<String, Object> input) {
-        var command = (String) input.getOrDefault("command", "");
-        var filePath = (String) input.getOrDefault("path", "");
+          var command = (String) input.getOrDefault("command", "");
+          var filePath = (String) input.getOrDefault("path", "");
 
-        if (command.equals("view")) {
-          // Read and return file contents
-        } else if (command.equals("str_replace")) {
-          // Replace text in file
-        } else if (command.equals("create")) {
-          // Create new file
-        } else if (command.equals("insert")) {
-          // Insert text at location
-        }
+          if (command.equals("view")) {
+              // Read and return file contents
+          } else if (command.equals("str_replace")) {
+              // Replace text in file
+          } else if (command.equals("create")) {
+              // Create new file
+          } else if (command.equals("insert")) {
+              // Insert text at location
+          }
       }
       ```
 
@@ -576,7 +576,7 @@ The tool type is `type: "text_editor_20250728"` for Claude 4 and later models.
       # Process tool use in Claude's response
       for content in response.content:
           if content.type == "tool_use":
-              # Execute the tool based on command
+              # Run the tool based on command
               result = handle_editor_tool(content)
 
               # Return result to Claude
@@ -591,7 +591,7 @@ The tool type is `type: "text_editor_20250728"` for Claude 4 and later models.
       // Process tool use in Claude's response
       for (const block of response.content) {
         if (block.type === "tool_use") {
-          // Execute the tool based on command
+          // Run the tool based on command
           const result = handleEditorTool(block);
 
           // Return result to Claude
@@ -639,17 +639,17 @@ The tool type is `type: "text_editor_20250728"` for Claude 4 and later models.
       ```java Java
       // Process tool use in Claude's response
       for (var block : response.content()) {
-        if (block.type().equals("tool_use")) {
-          // Execute the tool based on command
-          var result = handleEditorTool(block);
+          if (block.type().equals("tool_use")) {
+              // Run the tool based on command
+              var result = handleEditorTool(block);
 
-          // Return result to Claude
-          var toolResult = Map.of(
-            "type", "tool_result",
-            "tool_use_id", block.id(),
-            "content", result
-          );
-        }
+              // Return result to Claude
+              var toolResult = Map.of(
+                  "type", "tool_result",
+                  "tool_use_id", block.id(),
+                  "content", result
+              );
+          }
       }
       ```
 
@@ -657,7 +657,7 @@ The tool type is `type: "text_editor_20250728"` for Claude 4 and later models.
       // Process tool use in Claude's response
       foreach ($response->content as $block) {
           if ($block->type === 'tool_use') {
-              // Execute the tool based on command
+              // Run the tool based on command
               $result = handle_editor_tool($block->input);
 
               // Return result to Claude
@@ -840,11 +840,11 @@ When using the text editor tool, various errors might occur. Here is guidance on
 
       ```java Java
       static void backupFile(String filePath) throws IOException {
-        Path source = Path.of(filePath);
-        Path backupPath = Path.of(filePath + ".backup");
-        if (Files.exists(source)) {
-          Files.copy(source, backupPath, StandardCopyOption.REPLACE_EXISTING);
-        }
+          Path source = Path.of(filePath);
+          Path backupPath = Path.of(filePath + ".backup");
+          if (Files.exists(source)) {
+              Files.copy(source, backupPath, StandardCopyOption.REPLACE_EXISTING);
+          }
       }
       ```
 
@@ -958,18 +958,18 @@ When using the text editor tool, various errors might occur. Here is guidance on
 
       ```java Java
       static String safeReplace(String filePath, String oldText, String newText) throws IOException {
-        String content = Files.readString(Path.of(filePath));
+          String content = Files.readString(Path.of(filePath));
 
-        int count = content.split(Pattern.quote(oldText), -1).length - 1;
-        if (count == 0) {
-          return "Error: No match found";
-        } else if (count > 1) {
-          return "Error: Found " + count + " matches";
-        } else {
-          String newContent = content.replace(oldText, newText);
-          Files.writeString(Path.of(filePath), newContent);
-          return "Successfully replaced text";
-        }
+          int count = content.split(Pattern.quote(oldText), -1).length - 1;
+          if (count == 0) {
+              return "Error: No match found";
+          } else if (count > 1) {
+              return "Error: Found " + count + " matches";
+          } else {
+              String newContent = content.replace(oldText, newText);
+              Files.writeString(Path.of(filePath), newContent);
+              return "Successfully replaced text";
+          }
       }
       ```
 
@@ -1092,21 +1092,21 @@ When using the text editor tool, various errors might occur. Here is guidance on
 
       ```java Java
       static String verifyChanges(String filePath) {
-        try {
-          // For Python files, check for syntax errors
-          if (filePath.endsWith(".py")) {
-            Process proc = new ProcessBuilder("python3", "-m", "py_compile", filePath)
-              .redirectErrorStream(true)
-              .start();
-            if (proc.waitFor() != 0) {
-              return "Verification failed: " + new String(proc.getInputStream().readAllBytes());
-            }
-            return "Syntax check passed";
+          try {
+              // For Python files, check for syntax errors
+              if (filePath.endsWith(".py")) {
+                  Process proc = new ProcessBuilder("python3", "-m", "py_compile", filePath)
+                      .redirectErrorStream(true)
+                      .start();
+                  if (proc.waitFor() != 0) {
+                      return "Verification failed: " + new String(proc.getInputStream().readAllBytes());
+                  }
+                  return "Syntax check passed";
+              }
+              return "No checks defined for this file type";
+          } catch (IOException | InterruptedException e) {
+              return "Verification failed: " + e.getMessage();
           }
-          return "No checks defined for this file type";
-        } catch (IOException | InterruptedException e) {
-          return "Verification failed: " + e.getMessage();
-        }
       }
       ```
 

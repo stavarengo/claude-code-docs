@@ -20,18 +20,18 @@ The latest version of each Claude Platform SDK and of the ant CLI is at https://
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 808 pages - /docs - Content included below
-- German (Deutsch) (de) - 292 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 292 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 292 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 292 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 292 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 292 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 292 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 292 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 292 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 292 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 292 pages - /docs/id - Visit website for content
+- English (en) - 812 pages - /docs - Content included below
+- German (Deutsch) (de) - 296 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 296 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 296 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 296 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 296 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 296 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 296 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 296 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 296 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 296 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 296 pages - /docs/id - Visit website for content
 
 ---
 
@@ -44,6 +44,7 @@ The full documentation is available in the following languages on https://platfo
 ### Messages
 
 - [Overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview.md) - Agent Skills
+- [Overview](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/overview.md) - Claude Models on Google Cloud
 - [Features overview](https://platform.claude.com/docs/en/build-with-claude/overview.md)
 - [Quickstart](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/quickstart.md) - Get started with Agent Skills in the API
 - [Quickstart](https://platform.claude.com/docs/en/get-started.md) - Get started with Claude
@@ -63,8 +64,9 @@ The full documentation is available in the following languages on https://platfo
 - [Citations](https://platform.claude.com/docs/en/build-with-claude/citations.md)
 - [Amazon Bedrock (Opus 4.7 and later)](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock.md) - Claude in Amazon Bedrock (Opus 4.7 and later)
 - [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry.md) - Claude in Microsoft Foundry
+- [Anthropic-managed](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed.md) - Claude Models on Google Cloud (Anthropic managed)
+- [Google-managed](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/google-managed.md) - Claude Models on Google Cloud (Google managed)
 - [Amazon Bedrock (Opus 4.6 and earlier)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy.md) - Claude on Amazon Bedrock (Opus 4.6 and earlier)
-- [Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-on-vertex-ai.md) - Claude on Google Cloud
 - [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws.md)
 - [Code execution tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool.md)
 - [Keep thinking blocks valid](https://platform.claude.com/docs/en/build-with-claude/compaction-thinking-blocks.md) - Compaction and preserved thinking
@@ -342,7 +344,9 @@ The full documentation is available in the following languages on https://platfo
 - [Beta headers](https://platform.claude.com/docs/en/api/beta-headers.md)
 - [Errors](https://platform.claude.com/docs/en/api/errors.md) - Claude API errors
 - [AWS IAM actions](https://platform.claude.com/docs/en/api/claude-platform-on-aws-iam-actions.md) - IAM actions for Claude Platform on AWS
+- [Google Cloud IAM permissions](https://platform.claude.com/docs/en/api/claude-models-on-google-cloud-anthropic-managed-iam-permissions.md) - IAM permissions for Claude Models on Google Cloud (Anthropic managed)
 - [IP addresses](https://platform.claude.com/docs/en/api/ip-addresses.md)
+- [Migrating to API version 2026-10-21](https://platform.claude.com/docs/en/api/migration-2026-10-21.md)
 - [Spans](https://platform.claude.com/docs/en/api/opentelemetry/spans.md) - OpenTelemetry span reference
 - [Rate limits](https://platform.claude.com/docs/en/api/rate-limits.md)
 - [Service tiers](https://platform.claude.com/docs/en/api/service-tiers.md)

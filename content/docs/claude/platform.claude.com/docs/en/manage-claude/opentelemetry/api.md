@@ -83,7 +83,7 @@ A destination receives the spans of the workspaces that it covers. Choose them w
 * **Selected:** Only the workspaces that you select.
 * **All except:** Like **All**, but without the workspaces that you select.
 
-For **Selected** or **All except**, select the workspaces in the search box that appears under the options. To change a destination's workspaces later, open its **More actions** menu on the [OpenTelemetry settings page](https://platform.claude.com/settings/telemetry-destinations) in the Console while the **Workspace** filter shows **All**. Click **Edit**, then choose another **Workspaces** option or change the workspaces in the search box.
+For **Selected** or **All except**, select the workspaces in the search box that appears under the options. To change a destination's workspaces later, open its **More actions** menu on the [OpenTelemetry settings page](https://platform.claude.com/settings/telemetry-destinations) in the Console while the **Workspace** filter shows **All**. Click **Edit**, then select another **Workspaces** option or change the workspaces in the search box.
 
 If you have the developer role in the organization and the Workspace Admin role in a workspace, you can add that workspace to a **Selected** destination or remove it. Set the **Workspace** filter to that workspace, then open the destination's **More actions** menu. On Claude Platform on AWS, the Console has no Workspace Admin role. There, your [IAM policy](https://platform.claude.com/docs/en/api/claude-platform-on-aws-iam-actions?sdk_languages=cli) determines who can add a workspace to a destination or remove it.
 

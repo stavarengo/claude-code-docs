@@ -49,17 +49,10 @@ The RBAC Roles API is available to Claude Enterprise organizations only.
 
     format: date-time
 
-  - `name: string`
-
-    **Deprecated**: Use `display_name` instead; `name` always has the same value.
-
-    Deprecated: use `display_name` instead. Name of the RBAC Role; always the same value as `display_name`.
-
 ## Example
 
 ```bash
 ant beta:organization:rbac-roles retrieve \
-  --api-key my-anthropic-api-key \
   --rbac-role-id rbac_role_id
 ```
 
@@ -70,7 +63,6 @@ ant beta:organization:rbac-roles retrieve \
   "id": "rbac_role_016J8xVtKpDq3Wy9ZmN2hR4s",
   "created_at": "2024-10-30T23:58:27.427722Z",
   "display_name": "Project Editor",
-  "name": "Project Editor",
   "type": "rbac_role",
   "updated_at": "2024-10-30T23:58:27.427722Z"
 }

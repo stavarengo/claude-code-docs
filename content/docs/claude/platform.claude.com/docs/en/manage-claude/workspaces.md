@@ -231,7 +231,7 @@ Some resources are managed differently:
 To look up your organization's workspace IDs, call the [List Workspaces](https://platform.claude.com/docs/en/api/organization/workspaces/list?sdk_languages=cli) endpoint (pass `include_default=true` to include the Default Workspace) or find them on the [Workspaces](https://platform.claude.com/settings/workspaces) page in the Claude Console.
 
 <Note>
-  [Prompt caches](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) are also isolated per workspace on the Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), and [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli). On Amazon Bedrock and Google Cloud, prompt caches are isolated per organization.
+  [Prompt caches](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) are also isolated by workspace on the Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), and [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli). On Amazon Bedrock and Claude Models on Google Cloud (Google managed), prompt caches are isolated by organization.
 </Note>
 
 ## Identify the workspace behind an API response

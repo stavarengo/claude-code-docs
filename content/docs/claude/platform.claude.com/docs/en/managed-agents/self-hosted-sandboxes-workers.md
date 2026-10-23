@@ -207,10 +207,10 @@ Start a worker that polls the queue continuously. It authenticates with the [env
       	"os/signal"
       	"syscall"
 
-      	"github.com/anthropics/anthropic-sdk-go"
-      	"github.com/anthropics/anthropic-sdk-go/lib/environments"
-      	"github.com/anthropics/anthropic-sdk-go/option"
-      	"github.com/anthropics/anthropic-sdk-go/packages/param"
+      	"github.com/anthropics/anthropic-sdk-go/v2"
+      	"github.com/anthropics/anthropic-sdk-go/v2/lib/environments"
+      	"github.com/anthropics/anthropic-sdk-go/v2/option"
+      	"github.com/anthropics/anthropic-sdk-go/v2/packages/param"
       )
 
       var (
@@ -464,9 +464,9 @@ Replace the `ant beta:worker run` entrypoint with an SDK entrypoint when the san
   	"os/signal"
   	"syscall"
 
-  	"github.com/anthropics/anthropic-sdk-go"
-  	"github.com/anthropics/anthropic-sdk-go/lib/environments"
-  	"github.com/anthropics/anthropic-sdk-go/option"
+  	"github.com/anthropics/anthropic-sdk-go/v2"
+  	"github.com/anthropics/anthropic-sdk-go/v2/lib/environments"
+  	"github.com/anthropics/anthropic-sdk-go/v2/option"
   )
 
   func main() {

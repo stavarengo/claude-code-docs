@@ -194,7 +194,6 @@ matched as the JWT's `iss` claim and is not fetched.
 
 ```bash
 ant organization:federation:issuers create \
-  --api-key my-anthropic-api-key \
   --issuer-url x \
   --name x
 ```
@@ -398,8 +397,7 @@ Archived issuers are excluded unless `include_archived=true`.
 ### Example
 
 ```bash
-ant organization:federation:issuers list \
-  --api-key my-anthropic-api-key
+ant organization:federation:issuers list
 ```
 
 #### Response (200)
@@ -594,7 +592,6 @@ Retrieve a federation issuer by its ID (`fdis_...`).
 
 ```bash
 ant organization:federation:issuers retrieve \
-  --api-key my-anthropic-api-key \
   --federation-issuer-id federation_issuer_id
 ```
 
@@ -822,7 +819,6 @@ session.
 
 ```bash
 ant organization:federation:issuers update \
-  --api-key my-anthropic-api-key \
   --federation-issuer-id federation_issuer_id
 ```
 
@@ -1018,7 +1014,6 @@ issuer cannot be changed), or recreate them against another issuer.
 
 ```bash
 ant organization:federation:issuers archive \
-  --api-key my-anthropic-api-key \
   --federation-issuer-id federation_issuer_id
 ```
 

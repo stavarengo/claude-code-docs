@@ -36,8 +36,7 @@ Retrieve information about the organization associated with the authenticated AP
 ### Example
 
 ```bash
-ant organization retrieve \
-  --api-key my-anthropic-api-key
+ant organization retrieve
 ```
 
 #### Response (200)
@@ -230,7 +229,7 @@ List API Keys
 
         - `workspace_id: string`
 
-          ID of the Workspace the API key belongs to. Unlike the deprecated top-level `workspace_id`, this is the Workspace's real ID even for the organization's default Workspace.
+          ID of the Workspace the API key belongs to, including when it is the organization's default Workspace.
 
     - `status: "active" or "archived" or "expired" or "inactive"`
 
@@ -259,8 +258,7 @@ List API Keys
 #### Example
 
 ```bash
-ant organization:api-keys list \
-  --api-key my-anthropic-api-key
+ant organization:api-keys list
 ```
 
 ##### Response (200)
@@ -287,8 +285,7 @@ ant organization:api-keys list \
         "workspace_id": "wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ"
       },
       "status": "active",
-      "type": "api_key",
-      "workspace_id": "wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ"
+      "type": "api_key"
     }
   ],
   "first_id": "first_id",
@@ -405,7 +402,7 @@ Retrieve information about a single API key in your organization, looked up by i
 
       - `workspace_id: string`
 
-        ID of the Workspace the API key belongs to. Unlike the deprecated top-level `workspace_id`, this is the Workspace's real ID even for the organization's default Workspace.
+        ID of the Workspace the API key belongs to, including when it is the organization's default Workspace.
 
   - `status: "active" or "archived" or "expired" or "inactive"`
 
@@ -423,7 +420,6 @@ Retrieve information about a single API key in your organization, looked up by i
 
 ```bash
 ant organization:api-keys retrieve \
-  --api-key my-anthropic-api-key \
   --api-key-id api_key_id
 ```
 
@@ -449,8 +445,7 @@ ant organization:api-keys retrieve \
     "workspace_id": "wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ"
   },
   "status": "active",
-  "type": "api_key",
-  "workspace_id": "wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ"
+  "type": "api_key"
 }
 ```
 
@@ -572,7 +567,7 @@ Update API Key
 
       - `workspace_id: string`
 
-        ID of the Workspace the API key belongs to. Unlike the deprecated top-level `workspace_id`, this is the Workspace's real ID even for the organization's default Workspace.
+        ID of the Workspace the API key belongs to, including when it is the organization's default Workspace.
 
   - `status: "active" or "archived" or "expired" or "inactive"`
 
@@ -590,7 +585,6 @@ Update API Key
 
 ```bash
 ant organization:api-keys update \
-  --api-key my-anthropic-api-key \
   --api-key-id api_key_id
 ```
 
@@ -616,8 +610,7 @@ ant organization:api-keys update \
     "workspace_id": "wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ"
   },
   "status": "active",
-  "type": "api_key",
-  "workspace_id": "wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ"
+  "type": "api_key"
 }
 ```
 
@@ -741,7 +734,6 @@ Create an external key config owned by the caller's organization.
 
 ```bash
 ant organization:external-keys create \
-  --api-key my-anthropic-api-key \
   --provider-config '{kms_arn: arn:aws:kms:us-east-1:111122223333:key/abcd1234-5678-90ab-cdef-000011112222, type: aws}'
 ```
 
@@ -885,8 +877,7 @@ Results are ordered by creation time (newest first). Use the
 #### Example
 
 ```bash
-ant organization:external-keys list \
-  --api-key my-anthropic-api-key
+ant organization:external-keys list
 ```
 
 ##### Response (200)
@@ -1026,7 +1017,6 @@ Retrieve a single external key config in the caller's organization by ID.
 
 ```bash
 ant organization:external-keys retrieve \
-  --api-key my-anthropic-api-key \
   --external-key-id external_key_id
 ```
 
@@ -1180,7 +1170,6 @@ encrypted data requires the original key identity to decrypt.
 
 ```bash
 ant organization:external-keys update \
-  --api-key my-anthropic-api-key \
   --external-key-id external_key_id
 ```
 
@@ -1238,7 +1227,6 @@ The request is rejected if any workspace still references this config.
 
 ```bash
 ant organization:external-keys delete \
-  --api-key my-anthropic-api-key \
   --external-key-id external_key_id
 ```
 
@@ -1299,7 +1287,6 @@ message if it failed or timed out.
 
 ```bash
 ant organization:external-keys validate \
-  --api-key my-anthropic-api-key \
   --external-key-id external_key_id
 ```
 
@@ -1504,7 +1491,6 @@ matched as the JWT's `iss` claim and is not fetched.
 
 ```bash
 ant organization:federation:issuers create \
-  --api-key my-anthropic-api-key \
   --issuer-url x \
   --name x
 ```
@@ -1708,8 +1694,7 @@ Archived issuers are excluded unless `include_archived=true`.
 #### Example
 
 ```bash
-ant organization:federation:issuers list \
-  --api-key my-anthropic-api-key
+ant organization:federation:issuers list
 ```
 
 ##### Response (200)
@@ -1904,7 +1889,6 @@ Retrieve a federation issuer by its ID (`fdis_...`).
 
 ```bash
 ant organization:federation:issuers retrieve \
-  --api-key my-anthropic-api-key \
   --federation-issuer-id federation_issuer_id
 ```
 
@@ -2132,7 +2116,6 @@ session.
 
 ```bash
 ant organization:federation:issuers update \
-  --api-key my-anthropic-api-key \
   --federation-issuer-id federation_issuer_id
 ```
 
@@ -2328,7 +2311,6 @@ issuer cannot be changed), or recreate them against another issuer.
 
 ```bash
 ant organization:federation:issuers archive \
-  --api-key my-anthropic-api-key \
   --federation-issuer-id federation_issuer_id
 ```
 
@@ -2561,7 +2543,6 @@ manage rules whose `oauth_scope` is `workspace:developer` or
 
 ```bash
 ant organization:federation:rules create \
-  --api-key my-anthropic-api-key \
   --issuer-id issuer_id \
   --match '{}' \
   --name x \
@@ -2765,8 +2746,7 @@ unless `include_archived=true`.
 #### Example
 
 ```bash
-ant organization:federation:rules list \
-  --api-key my-anthropic-api-key
+ant organization:federation:rules list
 ```
 
 ##### Response (200)
@@ -2959,7 +2939,6 @@ Retrieve a federation rule by its ID (`fdrl_...`).
 
 ```bash
 ant organization:federation:rules retrieve \
-  --api-key my-anthropic-api-key \
   --federation-rule-id federation_rule_id
 ```
 
@@ -3204,7 +3183,6 @@ Console session.
 
 ```bash
 ant organization:federation:rules update \
-  --api-key my-anthropic-api-key \
   --federation-rule-id federation_rule_id
 ```
 
@@ -3401,7 +3379,6 @@ other scopes require a Console session.
 
 ```bash
 ant organization:federation:rules archive \
-  --api-key my-anthropic-api-key \
   --federation-rule-id federation_rule_id
 ```
 
@@ -3510,7 +3487,6 @@ other scopes require a Console session.
 
 ```bash
 ant organization:federation:rules:workspaces add \
-  --api-key my-anthropic-api-key \
   --federation-rule-id federation_rule_id \
   --workspace-id workspace_id
 ```
@@ -3598,7 +3574,6 @@ rules with `applies_to_all_workspaces` or a legacy single
 
 ```bash
 ant organization:federation:rules:workspaces list \
-  --api-key my-anthropic-api-key \
   --federation-rule-id federation_rule_id
 ```
 
@@ -3663,7 +3638,6 @@ Console session.
 
 ```bash
 ant organization:federation:rules:workspaces remove \
-  --api-key my-anthropic-api-key \
   --federation-rule-id federation_rule_id \
   --workspace-id workspace_id
 ```
@@ -3788,7 +3762,6 @@ On plans that draw members from a finite pool of purchased seats, the invite aut
 
 ```bash
 ant organization:invites create \
-  --api-key my-anthropic-api-key \
   --email user@emaildomain.com \
   --role user
 ```
@@ -3944,8 +3917,7 @@ List the organization's invites.
 #### Example
 
 ```bash
-ant organization:invites list \
-  --api-key my-anthropic-api-key
+ant organization:invites list
 ```
 
 ##### Response (200)
@@ -4065,7 +4037,6 @@ Retrieve an invite by ID.
 
 ```bash
 ant organization:invites retrieve \
-  --api-key my-anthropic-api-key \
   --invite-id invite_id
 ```
 
@@ -4119,7 +4090,6 @@ Delete a pending invite.
 
 ```bash
 ant organization:invites delete \
-  --api-key my-anthropic-api-key \
   --invite-id invite_id
 ```
 
@@ -4235,7 +4205,6 @@ accounts.
 
 ```bash
 ant organization:service-accounts create \
-  --api-key my-anthropic-api-key \
   --name ci-deploy-bot
 ```
 
@@ -4352,8 +4321,7 @@ archived service accounts.
 #### Example
 
 ```bash
-ant organization:service-accounts list \
-  --api-key my-anthropic-api-key
+ant organization:service-accounts list
 ```
 
 ##### Response (200)
@@ -4460,7 +4428,6 @@ Retrieve a service account by its ID (`svac_...`).
 
 ```bash
 ant organization:service-accounts retrieve \
-  --api-key my-anthropic-api-key \
   --service-account-id service_account_id
 ```
 
@@ -4578,7 +4545,6 @@ interactive credential (a user OAuth token or a Console session).
 
 ```bash
 ant organization:service-accounts update \
-  --api-key my-anthropic-api-key \
   --service-account-id service_account_id
 ```
 
@@ -4686,7 +4652,6 @@ those rules first or change their target to another service account.
 
 ```bash
 ant organization:service-accounts archive \
-  --api-key my-anthropic-api-key \
   --service-account-id service_account_id
 ```
 
@@ -4781,7 +4746,6 @@ rejected.
 
 ```bash
 ant organization:service-accounts:workspaces add \
-  --api-key my-anthropic-api-key \
   --service-account-id service_account_id \
   --workspace-id workspace_id \
   --workspace-role workspace_admin
@@ -4886,7 +4850,6 @@ page to recover.
 
 ```bash
 ant organization:service-accounts:workspaces list \
-  --api-key my-anthropic-api-key \
   --service-account-id service_account_id
 ```
 
@@ -4954,7 +4917,6 @@ to the implicit `workspace_user` membership. Archived workspaces return
 
 ```bash
 ant organization:service-accounts:workspaces remove \
-  --api-key my-anthropic-api-key \
   --service-account-id service_account_id \
   --workspace-id workspace_id
 ```
@@ -5076,8 +5038,7 @@ List the organization's members.
 #### Example
 
 ```bash
-ant organization:users list \
-  --api-key my-anthropic-api-key
+ant organization:users list
 ```
 
 ##### Response (200)
@@ -5168,7 +5129,6 @@ Retrieve a member of the organization by user ID.
 
 ```bash
 ant organization:users retrieve \
-  --api-key my-anthropic-api-key \
   --user-id user_id
 ```
 
@@ -5259,7 +5219,6 @@ Update a member's organization role.
 
 ```bash
 ant organization:users update \
-  --api-key my-anthropic-api-key \
   --user-id user_id \
   --role user
 ```
@@ -5309,7 +5268,6 @@ Remove a member from the organization.
 
 ```bash
 ant organization:users remove \
-  --api-key my-anthropic-api-key \
   --user-id user_id
 ```
 
@@ -5469,8 +5427,7 @@ List Workspaces
 #### Example
 
 ```bash
-ant organization:workspaces list \
-  --api-key my-anthropic-api-key
+ant organization:workspaces list
 ```
 
 ##### Response (200)
@@ -5646,7 +5603,6 @@ Create Workspace
 
 ```bash
 ant organization:workspaces create \
-  --api-key my-anthropic-api-key \
   --name x
 ```
 
@@ -5786,7 +5742,6 @@ Get Workspace
 
 ```bash
 ant organization:workspaces retrieve \
-  --api-key my-anthropic-api-key \
   --workspace-id workspace_id
 ```
 
@@ -5958,7 +5913,6 @@ Update Workspace
 
 ```bash
 ant organization:workspaces update \
-  --api-key my-anthropic-api-key \
   --workspace-id workspace_id
 ```
 
@@ -6096,7 +6050,6 @@ Archive Workspace
 
 ```bash
 ant organization:workspaces archive \
-  --api-key my-anthropic-api-key \
   --workspace-id workspace_id
 ```
 
@@ -6184,7 +6137,7 @@ the remaining entries.
 
     - `group: OrganizationRateLimitModelGroup or OrganizationRateLimitBatchGroup or OrganizationRateLimitTokenCountGroup or 3 more`
 
-      The rate-limit group this entry's limits apply to. Its `type` equals `group_type`.
+      The rate-limit group this entry's limits apply to.
 
       - `organization_rate_limit_model_group: object`
 
@@ -6284,7 +6237,7 @@ the remaining entries.
 
     - `models: array of string`
 
-      Model names this entry's limits apply to, including aliases. `null` when `group_type` is not `"model_group"`.
+      Model names this entry's limits apply to, including aliases. `null` when `group.type` is not `"model_group"`. The list covers the models this workspace has access to, so it can differ between workspaces.
 
     - `rate_limit_id: string`
 
@@ -6302,7 +6255,6 @@ the remaining entries.
 
 ```bash
 ant organization:workspaces:rate-limits list \
-  --api-key my-anthropic-api-key \
   --workspace-id workspace_id
 ```
 
@@ -6317,7 +6269,6 @@ ant organization:workspaces:rate-limits list \
         "display_name": "display_name",
         "type": "model_group"
       },
-      "group_type": "batch",
       "limits": [
         {
           "org_limit": 0,
@@ -6384,7 +6335,7 @@ Changes take effect within about an hour.
 
   - `group: OrganizationRateLimitModelGroup or OrganizationRateLimitBatchGroup or OrganizationRateLimitTokenCountGroup or 3 more`
 
-    The rate-limit group this entry's limits apply to. Its `type` equals `group_type`.
+    The rate-limit group this entry's limits apply to.
 
     - `organization_rate_limit_model_group: object`
 
@@ -6484,7 +6435,7 @@ Changes take effect within about an hour.
 
   - `models: array of string`
 
-    Model names this entry's limits apply to, including aliases. `null` when `group_type` is not `"model_group"`.
+    Model names this entry's limits apply to, including aliases. `null` when `group.type` is not `"model_group"`. The list covers the models this workspace has access to, so it can differ between workspaces.
 
   - `rate_limit_id: string`
 
@@ -6498,7 +6449,6 @@ Changes take effect within about an hour.
 
 ```bash
 ant organization:workspaces:rate-limits update \
-  --api-key my-anthropic-api-key \
   --workspace-id workspace_id \
   --rate-limit-id rate_limit_id \
   --limit '{type: fast_itpmca, value: 0}'
@@ -6513,7 +6463,6 @@ ant organization:workspaces:rate-limits update \
     "display_name": "display_name",
     "type": "model_group"
   },
-  "group_type": "batch",
   "limits": [
     {
       "org_limit": 0,
@@ -6615,7 +6564,6 @@ List Workspace Members
 
 ```bash
 ant organization:workspaces:members list \
-  --api-key my-anthropic-api-key \
   --workspace-id workspace_id
 ```
 
@@ -6695,7 +6643,6 @@ Create Workspace Member
 
 ```bash
 ant organization:workspaces:members add \
-  --api-key my-anthropic-api-key \
   --workspace-id workspace_id \
   --user-id user_01WCz1FkmYMm4gnmykNKUu3Q \
   --workspace-role workspace_admin
@@ -6766,7 +6713,6 @@ Get Workspace Member
 
 ```bash
 ant organization:workspaces:members retrieve \
-  --api-key my-anthropic-api-key \
   --workspace-id workspace_id \
   --user-id user_id
 ```
@@ -6840,7 +6786,6 @@ Update Workspace Member
 
 ```bash
 ant organization:workspaces:members update \
-  --api-key my-anthropic-api-key \
   --workspace-id workspace_id \
   --user-id user_id \
   --workspace-role workspace_admin
@@ -6897,7 +6842,6 @@ Delete Workspace Member
 
 ```bash
 ant organization:workspaces:members remove \
-  --api-key my-anthropic-api-key \
   --workspace-id workspace_id \
   --user-id user_id
 ```
@@ -6993,7 +6937,6 @@ omitted from the results.
 
 ```bash
 ant organization:workspaces:service-accounts list \
-  --api-key my-anthropic-api-key \
   --workspace-id workspace_id
 ```
 
@@ -7088,7 +7031,6 @@ accounts cannot be added and are rejected.
 
 ```bash
 ant organization:workspaces:service-accounts add \
-  --api-key my-anthropic-api-key \
   --workspace-id workspace_id \
   --service-account-id service_account_id \
   --workspace-role workspace_admin
@@ -7174,7 +7116,6 @@ account returns 404.
 
 ```bash
 ant organization:workspaces:service-accounts retrieve \
-  --api-key my-anthropic-api-key \
   --workspace-id workspace_id \
   --service-account-id service_account_id
 ```
@@ -7263,7 +7204,6 @@ rejected.
 
 ```bash
 ant organization:workspaces:service-accounts update \
-  --api-key my-anthropic-api-key \
   --workspace-id workspace_id \
   --service-account-id service_account_id \
   --workspace-role workspace_admin
@@ -7326,7 +7266,6 @@ membership. Archived workspaces return 400.
 
 ```bash
 ant organization:workspaces:service-accounts remove \
-  --api-key my-anthropic-api-key \
   --workspace-id workspace_id \
   --service-account-id service_account_id
 ```
@@ -7399,7 +7338,7 @@ the remaining entries.
 
     - `group: OrganizationRateLimitModelGroup or OrganizationRateLimitBatchGroup or OrganizationRateLimitTokenCountGroup or 3 more`
 
-      The rate-limit group this entry's limits apply to. Its `type` equals `group_type`.
+      The rate-limit group this entry's limits apply to.
 
       - `organization_rate_limit_model_group: object`
 
@@ -7479,7 +7418,7 @@ the remaining entries.
 
     - `models: array of string`
 
-      Model names this entry's limits apply to, including aliases. `null` when `group_type` is not `"model_group"`.
+      Model names this entry's limits apply to, including aliases. `null` when `group.type` is not `"model_group"`. The list covers the models your organization has access to, so it can differ between organizations.
 
   - `next_page: string`
 
@@ -7488,8 +7427,7 @@ the remaining entries.
 #### Example
 
 ```bash
-ant organization:rate-limits list \
-  --api-key my-anthropic-api-key
+ant organization:rate-limits list
 ```
 
 ##### Response (200)
@@ -7504,7 +7442,6 @@ ant organization:rate-limits list \
         "display_name": "display_name",
         "type": "model_group"
       },
-      "group_type": "batch",
       "limits": [
         {
           "type": "type",
@@ -7557,8 +7494,7 @@ organization reads the state inherited from the parent's configuration.
 #### Example
 
 ```bash
-ant organization:compliance-settings retrieve \
-  --api-key my-anthropic-api-key
+ant organization:compliance-settings retrieve
 ```
 
 ##### Response (200)
@@ -7621,7 +7557,6 @@ compliance settings.
 
 ```bash
 ant organization:compliance-settings update \
-  --api-key my-anthropic-api-key \
   --state '{type: enabled}'
 ```
 

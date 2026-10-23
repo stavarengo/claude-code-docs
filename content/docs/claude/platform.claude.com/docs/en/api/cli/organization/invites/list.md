@@ -136,8 +136,7 @@ List the organization's invites.
 ## Example
 
 ```bash
-ant organization:invites list \
-  --api-key my-anthropic-api-key
+ant organization:invites list
 ```
 
 ### Response (200)

@@ -147,7 +147,6 @@ Update Workspace
 
 ```bash
 ant organization:workspaces update \
-  --api-key my-anthropic-api-key \
   --workspace-id workspace_id
 ```
 

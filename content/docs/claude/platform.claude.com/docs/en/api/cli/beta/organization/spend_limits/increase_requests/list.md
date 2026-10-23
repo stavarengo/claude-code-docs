@@ -245,8 +245,7 @@ Requests whose requester is no longer a member are excluded.
 ## Example
 
 ```bash
-ant beta:organization:spend-limits:increase-requests list \
-  --api-key my-anthropic-api-key
+ant beta:organization:spend-limits:increase-requests list
 ```
 
 ### Response (200)

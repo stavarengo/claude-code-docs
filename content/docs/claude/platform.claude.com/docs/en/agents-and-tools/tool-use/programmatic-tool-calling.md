@@ -83,7 +83,7 @@ The response stops with `stop_reason: "tool_use"`, a `container` ID, and a `tool
 
 When you configure a tool to be callable from code execution and Claude determines that tool is needed:
 
-1. Claude writes Python code that invokes the tool as a function, potentially including multiple tool calls and pre/post-processing logic.
+1. Claude writes Python code that calls the tool as a function. The code can include multiple tool calls and pre/post-processing logic.
 2. Claude runs this code in a sandboxed container through code execution.
 3. When a tool function is called, code execution pauses and the API returns a `tool_use` block.
 4. You provide the tool result, and code execution continues (intermediate results are not loaded into Claude's context window).

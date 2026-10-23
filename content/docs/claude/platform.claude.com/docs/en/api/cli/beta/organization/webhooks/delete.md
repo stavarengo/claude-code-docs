@@ -43,7 +43,6 @@ Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`
 
 ```bash
 ant beta:organization:webhooks delete \
-  --api-key my-anthropic-api-key \
   --webhook-endpoint-id webhook_endpoint_id
 ```
 

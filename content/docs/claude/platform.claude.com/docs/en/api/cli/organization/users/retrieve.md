@@ -71,7 +71,6 @@ Retrieve a member of the organization by user ID.
 
 ```bash
 ant organization:users retrieve \
-  --api-key my-anthropic-api-key \
   --user-id user_id
 ```
 

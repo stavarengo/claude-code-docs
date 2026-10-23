@@ -69,8 +69,8 @@ You can find a workspace's ID in the **ID** column on the [Workspaces](https://p
 
 <CodeGroup>
   ```bash CLI
-  # Required on every command for a multi-workspace key.
-  # Omit --workspace-id for a single-workspace key.
+  # Required on every command for a key that isn't scoped to a workspace.
+  # Omit --workspace-id for a key scoped to one workspace.
   ant messages create \
     --workspace-id wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ \
     --model claude-opus-5-5 \

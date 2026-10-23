@@ -65,7 +65,6 @@ The RBAC Groups API is available to Claude Enterprise organizations only.
 
 ```bash
 ant beta:organization:rbac-groups retrieve \
-  --api-key my-anthropic-api-key \
   --rbac-group-id rbac_group_id
 ```
 
@@ -77,9 +76,6 @@ ant beta:organization:rbac-groups retrieve \
   "created_at": "2024-10-30T23:58:27.427722Z",
   "name": "Engineering",
   "role_ids": [
-    "rbac_role_016J8xVtKpDq3Wy9ZmN2hR4s"
-  ],
-  "roles": [
     "rbac_role_016J8xVtKpDq3Wy9ZmN2hR4s"
   ],
   "source_type": "direct",
