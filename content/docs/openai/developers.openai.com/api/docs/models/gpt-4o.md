@@ -6,6 +6,8 @@
 
 Model ID: `gpt-4o`
 
+Status: Deprecated
+
 GPT-4o (“o” for “omni”) is our versatile, high-intelligence flagship model.
 It accepts both text and image inputs, and produces text outputs (including Structured Outputs).
 It is the best model for most tasks, and is our most capable model outside of our o-series models.
@@ -89,9 +91,9 @@ Tools supported by this model when using the Responses API.
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4o.
 
-- `gpt-4o-2024-11-20`
-- `gpt-4o-2024-08-06`
-- `gpt-4o-2024-05-13`
+- `gpt-4o-2024-11-20` — Deprecated
+- `gpt-4o-2024-08-06` — Deprecated
+- `gpt-4o-2024-05-13` — Shut down
 
 ## Rate limits
 

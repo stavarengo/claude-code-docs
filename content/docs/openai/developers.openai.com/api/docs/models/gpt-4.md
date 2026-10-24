@@ -6,6 +6,8 @@
 
 Model ID: `gpt-4`
 
+Status: Shut down
+
 GPT-4 is an older version of a high-intelligence GPT model, usable in Chat Completions.
 
 ## Model details
@@ -68,8 +70,8 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4.
 
-- `gpt-4-0613`
-- `gpt-4-0314`
+- `gpt-4-0613` — Shut down
+- `gpt-4-0314` — Shut down
 
 ## Rate limits
 

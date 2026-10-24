@@ -6,6 +6,8 @@
 
 Model ID: `computer-use-preview`
 
+Status: Shut down
+
 The computer-use-preview model is a specialized model for the computer use 
 tool. It is trained to understand and execute computer tasks.
 See the [computer use guide](/api/docs/guides/tools-computer-use) for more
@@ -72,7 +74,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for computer-use-preview.
 
-- `computer-use-preview-2025-03-11`
+- `computer-use-preview-2025-03-11` — Shut down
 
 ## Rate limits
 

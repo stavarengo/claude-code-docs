@@ -197,7 +197,7 @@ Internally, the API excludes deferred tools from the system-prompt prefix. When 
 
 When Claude uses the tool search tool, the response includes the following block types:
 
-```text JSON
+```json JSON
 {
   "role": "assistant",
   "content": [
@@ -286,7 +286,7 @@ These errors prevent the API from processing the request:
 
 **All tools deferred:**
 
-```text
+```json
 {
   "type": "error",
   "error": {
@@ -298,7 +298,7 @@ These errors prevent the API from processing the request:
 
 **Missing tool definition:**
 
-```text wrap
+```json
 {
   "type": "error",
   "error": {
@@ -312,7 +312,7 @@ These errors prevent the API from processing the request:
 
 When a tool search operation fails during execution, the API returns a 200 response with the error in the body:
 
-```text JSON
+```json JSON
 {
   "type": "tool_search_tool_result",
   "tool_use_id": "srvtoolu_01ABC123",
@@ -386,7 +386,7 @@ A tool with `defer_loading: true` can't also carry `cache_control`: the API retu
 
 With streaming enabled, you'll receive tool search events as part of the stream:
 
-```text
+```sse
 event: content_block_start
 data: {"type": "content_block_start", "index": 1, "content_block": {"type": "server_tool_use", "id": "srvtoolu_xyz789", "name": "tool_search_tool_regex"}}
 

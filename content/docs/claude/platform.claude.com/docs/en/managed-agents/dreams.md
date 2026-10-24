@@ -47,7 +47,7 @@ Dreaming inputs include the pre-existing memory store and an array of sessions. 
 
 The response is the full `dream` resource with `status: "pending"`:
 
-```text
+```json
 {
   "type": "dream",
   "id": "drm_01AbCDefGhIjKlMnOpQrStUv",

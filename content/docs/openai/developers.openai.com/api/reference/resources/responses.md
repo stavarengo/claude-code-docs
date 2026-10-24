@@ -1979,23 +1979,29 @@ the `background` parameter set to `true` can be cancelled.
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `"gpt-image-1"`
 
@@ -3041,23 +3047,29 @@ the `background` parameter set to `true` can be cancelled.
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `"gpt-image-1"`
 
@@ -5919,23 +5931,29 @@ the `background` parameter set to `true` can be cancelled.
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -6825,23 +6843,29 @@ the `background` parameter set to `true` can be cancelled.
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -8838,23 +8862,29 @@ the `background` parameter set to `true` can be cancelled.
 
       - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-        The image generation model to use. One of `gpt-image-1`,
-        `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+        The image generation model to use. One of `gpt-image-1-mini`,
+        `gpt-image-1.5`, `gpt-image-2`,
         `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
         `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
         `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-        `gpt-image-1`.
+        `gpt-image-2`.
+
+        `gpt-image-1` was shut down on October 23, 2026. Use
+        `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
         - `string`
 
         - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-          The image generation model to use. One of `gpt-image-1`,
-          `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+          The image generation model to use. One of `gpt-image-1-mini`,
+          `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-          `gpt-image-1`.
+          `gpt-image-2`.
+
+          `gpt-image-1` was shut down on October 23, 2026. Use
+          `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
           - `"gpt-image-1"`
 
@@ -12033,23 +12063,29 @@ Learn when and how to compact long-running conversations in the [conversation st
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -13095,23 +13131,29 @@ Learn when and how to compact long-running conversations in the [conversation st
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -15840,23 +15882,29 @@ Learn when and how to compact long-running conversations in the [conversation st
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -16896,23 +16944,29 @@ Learn when and how to compact long-running conversations in the [conversation st
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -21007,23 +21061,29 @@ as input for the model's response.
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -22069,23 +22129,29 @@ as input for the model's response.
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -24871,23 +24937,29 @@ as input for the model's response.
 
     - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-      The image generation model to use. One of `gpt-image-1`,
-      `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+      The image generation model to use. One of `gpt-image-1-mini`,
+      `gpt-image-1.5`, `gpt-image-2`,
       `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
       `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
       `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-      `gpt-image-1`.
+      `gpt-image-2`.
+
+      `gpt-image-1` was shut down on October 23, 2026. Use
+      `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
       - `string`
 
       - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-        The image generation model to use. One of `gpt-image-1`,
-        `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+        The image generation model to use. One of `gpt-image-1-mini`,
+        `gpt-image-1.5`, `gpt-image-2`,
         `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
         `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
         `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-        `gpt-image-1`.
+        `gpt-image-2`.
+
+        `gpt-image-1` was shut down on October 23, 2026. Use
+        `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
         - `"gpt-image-1"`
 
@@ -27240,23 +27312,29 @@ as input for the model's response.
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `"gpt-image-1"`
 
@@ -28302,23 +28380,29 @@ as input for the model's response.
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `"gpt-image-1"`
 
@@ -31180,23 +31264,29 @@ as input for the model's response.
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -32086,23 +32176,29 @@ as input for the model's response.
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -34099,23 +34195,29 @@ as input for the model's response.
 
       - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-        The image generation model to use. One of `gpt-image-1`,
-        `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+        The image generation model to use. One of `gpt-image-1-mini`,
+        `gpt-image-1.5`, `gpt-image-2`,
         `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
         `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
         `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-        `gpt-image-1`.
+        `gpt-image-2`.
+
+        `gpt-image-1` was shut down on October 23, 2026. Use
+        `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
         - `string`
 
         - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-          The image generation model to use. One of `gpt-image-1`,
-          `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+          The image generation model to use. One of `gpt-image-1-mini`,
+          `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-          `gpt-image-1`.
+          `gpt-image-2`.
+
+          `gpt-image-1` was shut down on October 23, 2026. Use
+          `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
           - `"gpt-image-1"`
 
@@ -38030,23 +38132,29 @@ Retrieves a model response with the given ID.
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `"gpt-image-1"`
 
@@ -39092,23 +39200,29 @@ Retrieves a model response with the given ID.
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `"gpt-image-1"`
 
@@ -41970,23 +42084,29 @@ Retrieves a model response with the given ID.
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -42876,23 +42996,29 @@ Retrieves a model response with the given ID.
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -44889,23 +45015,29 @@ Retrieves a model response with the given ID.
 
       - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-        The image generation model to use. One of `gpt-image-1`,
-        `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+        The image generation model to use. One of `gpt-image-1-mini`,
+        `gpt-image-1.5`, `gpt-image-2`,
         `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
         `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
         `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-        `gpt-image-1`.
+        `gpt-image-2`.
+
+        `gpt-image-1` was shut down on October 23, 2026. Use
+        `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
         - `string`
 
         - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-          The image generation model to use. One of `gpt-image-1`,
-          `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+          The image generation model to use. One of `gpt-image-1-mini`,
+          `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-          `gpt-image-1`.
+          `gpt-image-2`.
+
+          `gpt-image-1` was shut down on October 23, 2026. Use
+          `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
           - `"gpt-image-1"`
 
@@ -47232,23 +47364,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -48288,23 +48426,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -53187,23 +53331,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `"gpt-image-1"`
 
@@ -54249,23 +54399,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `"gpt-image-1"`
 
@@ -57127,23 +57283,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -58033,23 +58195,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -60046,23 +60214,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
       - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-        The image generation model to use. One of `gpt-image-1`,
-        `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+        The image generation model to use. One of `gpt-image-1-mini`,
+        `gpt-image-1.5`, `gpt-image-2`,
         `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
         `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
         `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-        `gpt-image-1`.
+        `gpt-image-2`.
+
+        `gpt-image-1` was shut down on October 23, 2026. Use
+        `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
         - `string`
 
         - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-          The image generation model to use. One of `gpt-image-1`,
-          `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+          The image generation model to use. One of `gpt-image-1-mini`,
+          `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-          `gpt-image-1`.
+          `gpt-image-2`.
+
+          `gpt-image-1` was shut down on October 23, 2026. Use
+          `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
           - `"gpt-image-1"`
 
@@ -63193,23 +63367,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `string`
 
                 - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                  The image generation model to use. One of `gpt-image-1`,
-                  `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                  The image generation model to use. One of `gpt-image-1-mini`,
+                  `gpt-image-1.5`, `gpt-image-2`,
                   `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                   `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                   `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                  `gpt-image-1`.
+                  `gpt-image-2`.
+
+                  `gpt-image-1` was shut down on October 23, 2026. Use
+                  `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                   - `"gpt-image-1"`
 
@@ -64255,23 +64435,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `string`
 
                 - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                  The image generation model to use. One of `gpt-image-1`,
-                  `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                  The image generation model to use. One of `gpt-image-1-mini`,
+                  `gpt-image-1.5`, `gpt-image-2`,
                   `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                   `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                   `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                  `gpt-image-1`.
+                  `gpt-image-2`.
+
+                  `gpt-image-1` was shut down on October 23, 2026. Use
+                  `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                   - `"gpt-image-1"`
 
@@ -67133,23 +67319,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `"gpt-image-1"`
 
@@ -68039,23 +68231,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `"gpt-image-1"`
 
@@ -70052,23 +70250,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-          The image generation model to use. One of `gpt-image-1`,
-          `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+          The image generation model to use. One of `gpt-image-1-mini`,
+          `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-          `gpt-image-1`.
+          `gpt-image-2`.
+
+          `gpt-image-1` was shut down on October 23, 2026. Use
+          `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
           - `string`
 
           - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `"gpt-image-1"`
 
@@ -73684,23 +73888,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `string`
 
                 - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                  The image generation model to use. One of `gpt-image-1`,
-                  `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                  The image generation model to use. One of `gpt-image-1-mini`,
+                  `gpt-image-1.5`, `gpt-image-2`,
                   `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                   `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                   `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                  `gpt-image-1`.
+                  `gpt-image-2`.
+
+                  `gpt-image-1` was shut down on October 23, 2026. Use
+                  `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                   - `"gpt-image-1"`
 
@@ -74746,23 +74956,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `string`
 
                 - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                  The image generation model to use. One of `gpt-image-1`,
-                  `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                  The image generation model to use. One of `gpt-image-1-mini`,
+                  `gpt-image-1.5`, `gpt-image-2`,
                   `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                   `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                   `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                  `gpt-image-1`.
+                  `gpt-image-2`.
+
+                  `gpt-image-1` was shut down on October 23, 2026. Use
+                  `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                   - `"gpt-image-1"`
 
@@ -77624,23 +77840,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `"gpt-image-1"`
 
@@ -78530,23 +78752,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `"gpt-image-1"`
 
@@ -80543,23 +80771,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-          The image generation model to use. One of `gpt-image-1`,
-          `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+          The image generation model to use. One of `gpt-image-1-mini`,
+          `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-          `gpt-image-1`.
+          `gpt-image-2`.
+
+          `gpt-image-1` was shut down on October 23, 2026. Use
+          `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
           - `string`
 
           - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `"gpt-image-1"`
 
@@ -83672,23 +83906,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `string`
 
                 - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                  The image generation model to use. One of `gpt-image-1`,
-                  `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                  The image generation model to use. One of `gpt-image-1-mini`,
+                  `gpt-image-1.5`, `gpt-image-2`,
                   `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                   `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                   `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                  `gpt-image-1`.
+                  `gpt-image-2`.
+
+                  `gpt-image-1` was shut down on October 23, 2026. Use
+                  `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                   - `"gpt-image-1"`
 
@@ -84734,23 +84974,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `string`
 
                 - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                  The image generation model to use. One of `gpt-image-1`,
-                  `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                  The image generation model to use. One of `gpt-image-1-mini`,
+                  `gpt-image-1.5`, `gpt-image-2`,
                   `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                   `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                   `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                  `gpt-image-1`.
+                  `gpt-image-2`.
+
+                  `gpt-image-1` was shut down on October 23, 2026. Use
+                  `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                   - `"gpt-image-1"`
 
@@ -87612,23 +87858,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `"gpt-image-1"`
 
@@ -88518,23 +88770,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `"gpt-image-1"`
 
@@ -90531,23 +90789,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-          The image generation model to use. One of `gpt-image-1`,
-          `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+          The image generation model to use. One of `gpt-image-1-mini`,
+          `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-          `gpt-image-1`.
+          `gpt-image-2`.
+
+          `gpt-image-1` was shut down on October 23, 2026. Use
+          `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
           - `string`
 
           - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `"gpt-image-1"`
 
@@ -93863,23 +94127,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `string`
 
                 - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                  The image generation model to use. One of `gpt-image-1`,
-                  `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                  The image generation model to use. One of `gpt-image-1-mini`,
+                  `gpt-image-1.5`, `gpt-image-2`,
                   `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                   `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                   `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                  `gpt-image-1`.
+                  `gpt-image-2`.
+
+                  `gpt-image-1` was shut down on October 23, 2026. Use
+                  `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                   - `"gpt-image-1"`
 
@@ -94925,23 +95195,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `string`
 
                 - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                  The image generation model to use. One of `gpt-image-1`,
-                  `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                  The image generation model to use. One of `gpt-image-1-mini`,
+                  `gpt-image-1.5`, `gpt-image-2`,
                   `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                   `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                   `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                  `gpt-image-1`.
+                  `gpt-image-2`.
+
+                  `gpt-image-1` was shut down on October 23, 2026. Use
+                  `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                   - `"gpt-image-1"`
 
@@ -97803,23 +98079,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `"gpt-image-1"`
 
@@ -98709,23 +98991,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `"gpt-image-1"`
 
@@ -100722,23 +101010,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-          The image generation model to use. One of `gpt-image-1`,
-          `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+          The image generation model to use. One of `gpt-image-1-mini`,
+          `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-          `gpt-image-1`.
+          `gpt-image-2`.
+
+          `gpt-image-1` was shut down on October 23, 2026. Use
+          `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
           - `string`
 
           - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `"gpt-image-1"`
 
@@ -103690,23 +103984,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `string`
 
                 - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                  The image generation model to use. One of `gpt-image-1`,
-                  `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                  The image generation model to use. One of `gpt-image-1-mini`,
+                  `gpt-image-1.5`, `gpt-image-2`,
                   `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                   `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                   `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                  `gpt-image-1`.
+                  `gpt-image-2`.
+
+                  `gpt-image-1` was shut down on October 23, 2026. Use
+                  `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                   - `"gpt-image-1"`
 
@@ -104752,23 +105052,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `string`
 
                 - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                  The image generation model to use. One of `gpt-image-1`,
-                  `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                  The image generation model to use. One of `gpt-image-1-mini`,
+                  `gpt-image-1.5`, `gpt-image-2`,
                   `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                   `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                   `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                  `gpt-image-1`.
+                  `gpt-image-2`.
+
+                  `gpt-image-1` was shut down on October 23, 2026. Use
+                  `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                   - `"gpt-image-1"`
 
@@ -107630,23 +107936,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `"gpt-image-1"`
 
@@ -108536,23 +108848,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `"gpt-image-1"`
 
@@ -110549,23 +110867,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-          The image generation model to use. One of `gpt-image-1`,
-          `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+          The image generation model to use. One of `gpt-image-1-mini`,
+          `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-          `gpt-image-1`.
+          `gpt-image-2`.
+
+          `gpt-image-1` was shut down on October 23, 2026. Use
+          `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
           - `string`
 
           - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `"gpt-image-1"`
 
@@ -114166,23 +114490,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-          The image generation model to use. One of `gpt-image-1`,
-          `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+          The image generation model to use. One of `gpt-image-1-mini`,
+          `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-          `gpt-image-1`.
+          `gpt-image-2`.
+
+          `gpt-image-1` was shut down on October 23, 2026. Use
+          `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
           - `string`
 
           - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `"gpt-image-1"`
 
@@ -115222,23 +115552,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-          The image generation model to use. One of `gpt-image-1`,
-          `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+          The image generation model to use. One of `gpt-image-1-mini`,
+          `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-          `gpt-image-1`.
+          `gpt-image-2`.
+
+          `gpt-image-1` was shut down on October 23, 2026. Use
+          `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
           - `string`
 
           - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `"gpt-image-1"`
 
@@ -118330,23 +118666,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -119386,23 +119728,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -122505,23 +122853,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -123561,23 +123915,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -127494,23 +127854,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `string`
 
                 - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                  The image generation model to use. One of `gpt-image-1`,
-                  `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                  The image generation model to use. One of `gpt-image-1-mini`,
+                  `gpt-image-1.5`, `gpt-image-2`,
                   `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                   `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                   `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                  `gpt-image-1`.
+                  `gpt-image-2`.
+
+                  `gpt-image-1` was shut down on October 23, 2026. Use
+                  `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                   - `"gpt-image-1"`
 
@@ -128556,23 +128922,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `string`
 
                 - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                  The image generation model to use. One of `gpt-image-1`,
-                  `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                  The image generation model to use. One of `gpt-image-1-mini`,
+                  `gpt-image-1.5`, `gpt-image-2`,
                   `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                   `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                   `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                  `gpt-image-1`.
+                  `gpt-image-2`.
+
+                  `gpt-image-1` was shut down on October 23, 2026. Use
+                  `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                   - `"gpt-image-1"`
 
@@ -131434,23 +131806,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `"gpt-image-1"`
 
@@ -132340,23 +132718,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `string`
 
               - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `"gpt-image-1"`
 
@@ -134353,23 +134737,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-          The image generation model to use. One of `gpt-image-1`,
-          `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+          The image generation model to use. One of `gpt-image-1-mini`,
+          `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-          `gpt-image-1`.
+          `gpt-image-2`.
+
+          `gpt-image-1` was shut down on October 23, 2026. Use
+          `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
           - `string`
 
           - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `"gpt-image-1"`
 
@@ -139305,23 +139695,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                  The image generation model to use. One of `gpt-image-1`,
-                  `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                  The image generation model to use. One of `gpt-image-1-mini`,
+                  `gpt-image-1.5`, `gpt-image-2`,
                   `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                   `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                   `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                  `gpt-image-1`.
+                  `gpt-image-2`.
+
+                  `gpt-image-1` was shut down on October 23, 2026. Use
+                  `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                   - `string`
 
                   - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                    The image generation model to use. One of `gpt-image-1`,
-                    `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                    The image generation model to use. One of `gpt-image-1-mini`,
+                    `gpt-image-1.5`, `gpt-image-2`,
                     `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                     `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                     `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                    `gpt-image-1`.
+                    `gpt-image-2`.
+
+                    `gpt-image-1` was shut down on October 23, 2026. Use
+                    `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                     - `"gpt-image-1"`
 
@@ -140367,23 +140763,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
                 - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                  The image generation model to use. One of `gpt-image-1`,
-                  `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                  The image generation model to use. One of `gpt-image-1-mini`,
+                  `gpt-image-1.5`, `gpt-image-2`,
                   `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                   `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                   `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                  `gpt-image-1`.
+                  `gpt-image-2`.
+
+                  `gpt-image-1` was shut down on October 23, 2026. Use
+                  `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                   - `string`
 
                   - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                    The image generation model to use. One of `gpt-image-1`,
-                    `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                    The image generation model to use. One of `gpt-image-1-mini`,
+                    `gpt-image-1.5`, `gpt-image-2`,
                     `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                     `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                     `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                    `gpt-image-1`.
+                    `gpt-image-2`.
+
+                    `gpt-image-1` was shut down on October 23, 2026. Use
+                    `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                     - `"gpt-image-1"`
 
@@ -143245,23 +143647,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `string`
 
                 - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                  The image generation model to use. One of `gpt-image-1`,
-                  `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                  The image generation model to use. One of `gpt-image-1-mini`,
+                  `gpt-image-1.5`, `gpt-image-2`,
                   `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                   `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                   `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                  `gpt-image-1`.
+                  `gpt-image-2`.
+
+                  `gpt-image-1` was shut down on October 23, 2026. Use
+                  `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                   - `"gpt-image-1"`
 
@@ -144151,23 +144559,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `string`
 
                 - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                  The image generation model to use. One of `gpt-image-1`,
-                  `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                  The image generation model to use. One of `gpt-image-1-mini`,
+                  `gpt-image-1.5`, `gpt-image-2`,
                   `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                   `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                   `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                  `gpt-image-1`.
+                  `gpt-image-2`.
+
+                  `gpt-image-1` was shut down on October 23, 2026. Use
+                  `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                   - `"gpt-image-1"`
 
@@ -146164,23 +146578,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -150973,23 +151393,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `string`
 
                 - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                  The image generation model to use. One of `gpt-image-1`,
-                  `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                  The image generation model to use. One of `gpt-image-1-mini`,
+                  `gpt-image-1.5`, `gpt-image-2`,
                   `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                   `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                   `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                  `gpt-image-1`.
+                  `gpt-image-2`.
+
+                  `gpt-image-1` was shut down on October 23, 2026. Use
+                  `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                   - `"gpt-image-1"`
 
@@ -152035,23 +152461,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
               - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                The image generation model to use. One of `gpt-image-1`,
-                `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                The image generation model to use. One of `gpt-image-1-mini`,
+                `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                `gpt-image-1`.
+                `gpt-image-2`.
+
+                `gpt-image-1` was shut down on October 23, 2026. Use
+                `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                 - `string`
 
                 - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-                  The image generation model to use. One of `gpt-image-1`,
-                  `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+                  The image generation model to use. One of `gpt-image-1-mini`,
+                  `gpt-image-1.5`, `gpt-image-2`,
                   `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                   `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                   `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-                  `gpt-image-1`.
+                  `gpt-image-2`.
+
+                  `gpt-image-1` was shut down on October 23, 2026. Use
+                  `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
                   - `"gpt-image-1"`
 
@@ -154847,23 +155279,29 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
         - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-          The image generation model to use. One of `gpt-image-1`,
-          `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+          The image generation model to use. One of `gpt-image-1-mini`,
+          `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-          `gpt-image-1`.
+          `gpt-image-2`.
+
+          `gpt-image-1` was shut down on October 23, 2026. Use
+          `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
           - `string`
 
           - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `"gpt-image-1"`
 
@@ -158770,23 +159208,29 @@ Returns a list of input items for a given response.
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -159826,23 +160270,29 @@ Returns a list of input items for a given response.
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -163120,23 +163570,29 @@ curl https://api.openai.com/v1/responses/resp_abc123/input_items \
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -164176,23 +164632,29 @@ curl https://api.openai.com/v1/responses/resp_abc123/input_items \
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -167556,23 +168018,29 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -168618,23 +169086,29 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-            The image generation model to use. One of `gpt-image-1`,
-            `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+            The image generation model to use. One of `gpt-image-1-mini`,
+            `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-            `gpt-image-1`.
+            `gpt-image-2`.
+
+            `gpt-image-1` was shut down on October 23, 2026. Use
+            `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
             - `string`
 
             - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-              The image generation model to use. One of `gpt-image-1`,
-              `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+              The image generation model to use. One of `gpt-image-1-mini`,
+              `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-              `gpt-image-1`.
+              `gpt-image-2`.
+
+              `gpt-image-1` was shut down on October 23, 2026. Use
+              `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
               - `"gpt-image-1"`
 
@@ -170987,23 +171461,29 @@ Returns an object with `object` set to `response.input_tokens` and an `input_tok
 
     - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-      The image generation model to use. One of `gpt-image-1`,
-      `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+      The image generation model to use. One of `gpt-image-1-mini`,
+      `gpt-image-1.5`, `gpt-image-2`,
       `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
       `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
       `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-      `gpt-image-1`.
+      `gpt-image-2`.
+
+      `gpt-image-1` was shut down on October 23, 2026. Use
+      `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
       - `string`
 
       - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
-        The image generation model to use. One of `gpt-image-1`,
-        `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`,
+        The image generation model to use. One of `gpt-image-1-mini`,
+        `gpt-image-1.5`, `gpt-image-2`,
         `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
         `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
         `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
-        `gpt-image-1`.
+        `gpt-image-2`.
+
+        `gpt-image-1` was shut down on October 23, 2026. Use
+        `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
 
         - `"gpt-image-1"`
 

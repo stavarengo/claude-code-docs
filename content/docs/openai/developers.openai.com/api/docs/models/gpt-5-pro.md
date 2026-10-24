@@ -6,6 +6,8 @@
 
 Model ID: `gpt-5-pro`
 
+Status: Deprecated
+
 GPT-5 Pro uses more compute to think harder and provide consistently better answers.
 
  GPT-5 Pro is available in the [Responses API only](/api/docs/api-reference/responses)
@@ -92,7 +94,7 @@ Tools supported by this model when using the Responses API.
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-5 Pro.
 
-- `gpt-5-pro-2025-10-06`
+- `gpt-5-pro-2025-10-06` — Deprecated
 
 ## Rate limits
 

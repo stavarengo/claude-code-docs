@@ -6,6 +6,8 @@
 
 Model ID: `text-moderation-stable`
 
+Status: Shut down
+
 Moderation models are free models designed to detect harmful content. This is our text only moderation model; we expect omni-moderation-* models to be the best default moving forward.
 
 ## Model details
@@ -43,4 +45,4 @@ Moderation models are free models designed to detect harmful content. This is ou
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for text-moderation-stable.
 
-- `text-moderation-007`
+- `text-moderation-007` — Shut down

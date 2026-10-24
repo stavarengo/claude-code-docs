@@ -6,6 +6,8 @@
 
 Model ID: `whisper-1`
 
+Status: Deprecated
+
 Whisper is a general-purpose speech recognition model, trained on a large dataset of diverse audio. You can also use it as a multitask model to perform multilingual speech recognition as well as speech translation and language identification.
 
 ## Model details
@@ -52,7 +54,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for Whisper.
 
-- `whisper-1`
+- `whisper-1` — Deprecated
 
 ## Rate limits
 

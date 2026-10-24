@@ -776,6 +776,16 @@ Schema name: `SessionEventAgentSessionCreated`
 
           - `"computer_use"`
 
+      - `Automations object { type }`
+
+        Lets the agent manage its own scheduled wakeups.
+
+        - `type: "automations"`
+
+          The type of the object. Always `automations`.
+
+          - `"automations"`
+
   - `created_at: number`
 
     The Unix timestamp, in seconds, when the session was created.
@@ -3976,6 +3986,16 @@ Schema name: `SessionEventAgentSessionIdle`
 
           - `"computer_use"`
 
+      - `Automations object { type }`
+
+        Lets the agent manage its own scheduled wakeups.
+
+        - `type: "automations"`
+
+          The type of the object. Always `automations`.
+
+          - `"automations"`
+
   - `created_at: number`
 
     The Unix timestamp, in seconds, when the session was created.
@@ -4873,6 +4893,16 @@ Schema name: `SessionEventAgentSessionInProgress`
           The type of the object. Always `computer_use`.
 
           - `"computer_use"`
+
+      - `Automations object { type }`
+
+        Lets the agent manage its own scheduled wakeups.
+
+        - `type: "automations"`
+
+          The type of the object. Always `automations`.
+
+          - `"automations"`
 
   - `created_at: number`
 
@@ -5772,6 +5802,16 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
           - `"computer_use"`
 
+      - `Automations object { type }`
+
+        Lets the agent manage its own scheduled wakeups.
+
+        - `type: "automations"`
+
+          The type of the object. Always `automations`.
+
+          - `"automations"`
+
   - `created_at: number`
 
     The Unix timestamp, in seconds, when the session was created.
@@ -6669,6 +6709,16 @@ Schema name: `SessionEventAgentSessionFailed`
           The type of the object. Always `computer_use`.
 
           - `"computer_use"`
+
+      - `Automations object { type }`
+
+        Lets the agent manage its own scheduled wakeups.
+
+        - `type: "automations"`
+
+          The type of the object. Always `automations`.
+
+          - `"automations"`
 
   - `created_at: number`
 

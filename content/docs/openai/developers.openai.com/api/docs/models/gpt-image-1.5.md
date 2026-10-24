@@ -6,6 +6,8 @@
 
 Model ID: `gpt-image-1.5`
 
+Status: Deprecated
+
 GPT Image 1.5 is our previous image generation model, with better instruction following and adherence to prompts. Learn more in our [GPT Image 1.5 usage guide](/api/docs/guides/image-generation).
 
 ## Model details
@@ -92,7 +94,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-Image-1.5.
 
-- `gpt-image-1.5-2025-12-16`
+- `gpt-image-1.5-2025-12-16` — Deprecated
 
 ## Rate limits
 

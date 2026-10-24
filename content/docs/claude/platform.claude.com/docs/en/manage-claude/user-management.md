@@ -4,7 +4,16 @@ url: https://platform.claude.com/docs/en/manage-claude/user-management
 description: "Manage the people in your Claude Enterprise organization with the Admin API: list members and change roles, send and withdraw invites, manage groups, and read custom roles."
 ---
 
-This page covers managing the people in your **Claude Enterprise** (claude.ai) organization programmatically, using the [Admin API](https://platform.claude.com/docs/en/api/beta/organization?sdk_languages=cli): list members and look them up by email address, change a member's role, remove members, send and withdraw invites, manage your enterprise's groups and their membership, and read your organization's custom roles. For Claude Console (Claude Platform) organizations, see the [Admin API guide for Claude Console](https://platform.claude.com/docs/en/manage-claude/admin-api?sdk_languages=cli).
+This page covers managing the people in your **Claude Enterprise** (claude.ai) organization programmatically, using the [Admin API](https://platform.claude.com/docs/en/api/beta/organization?sdk_languages=cli):
+
+* List members and look them up by email address
+* Change a member's role
+* Remove members
+* Send and withdraw invites
+* Manage your enterprise's groups and their membership
+* Read your organization's custom roles
+
+For Claude Console (Claude Platform) organizations, see the [Admin API guide for Claude Console](https://platform.claude.com/docs/en/manage-claude/admin-api?sdk_languages=cli).
 
 <Note>
   Group and custom-role requests don't require the `anthropic-beta: ce-user-management-2026-07-13` [beta header](https://platform.claude.com/docs/en/api/beta-headers?sdk_languages=cli). Requests that still send it are accepted and behave identically.
@@ -19,7 +28,7 @@ The Admin API is a single set of endpoints under `https://api.anthropic.com/v1/o
 | [Members](https://platform.claude.com/docs/en/manage-claude/user-management?sdk_languages=cli#members) and [invites](https://platform.claude.com/docs/en/manage-claude/user-management?sdk_languages=cli#invites)                                                                                                                                                                                                                     | Available; see the [Admin API guide](https://platform.claude.com/docs/en/manage-claude/admin-api?sdk_languages=cli)         | Available (this page)                                                                                                                                                                        |
 | [Groups](https://platform.claude.com/docs/en/manage-claude/user-management?sdk_languages=cli#groups)                                                                                                                                                                                                                                                                                                                                  | Not available                                                                                                               | Available (this page)                                                                                                                                                                        |
 | [Custom roles](https://platform.claude.com/docs/en/manage-claude/user-management?sdk_languages=cli#custom-roles)                                                                                                                                                                                                                                                                                                                      | Not available                                                                                                               | Available, read-only (this page)                                                                                                                                                             |
-| [Plugins](https://platform.claude.com/docs/en/manage-claude/plugins-api?sdk_languages=cli)                                                                                                                                                                                                                                                                                                                                            | Not available                                                                                                               | Available in beta                                                                                                                                                                            |
+| [Plugins](https://platform.claude.com/docs/en/manage-claude/plugins-api?sdk_languages=cli) and [Claude Tag](https://platform.claude.com/docs/en/manage-claude/claude-tag-api?sdk_languages=cli)                                                                                                                                                                                                                                       | Not available                                                                                                               | Available in beta                                                                                                                                                                            |
 | [Spend limits](https://platform.claude.com/docs/en/manage-claude/spend-limits-api?sdk_languages=cli)                                                                                                                                                                                                                                                                                                                                  | Not available                                                                                                               | Available                                                                                                                                                                                    |
 | Usage and cost reports                                                                                                                                                                                                                                                                                                                                                                                                                | Available; see the [Usage and Cost API](https://platform.claude.com/docs/en/manage-claude/usage-cost-api?sdk_languages=cli) | Available through the [Claude Enterprise Analytics API](https://platform.claude.com/docs/en/manage-claude/analytics-api?sdk_languages=cli#get-access-to-the-claude-enterprise-analytics-api) |
 | [Workspaces](https://platform.claude.com/docs/en/manage-claude/workspaces?sdk_languages=cli), [API keys](https://platform.claude.com/docs/en/manage-claude/admin-api?sdk_languages=cli#api-keys), [rate limits](https://platform.claude.com/docs/en/manage-claude/rate-limits-api?sdk_languages=cli), and the other endpoints in the [Admin API guide](https://platform.claude.com/docs/en/manage-claude/admin-api?sdk_languages=cli) | Available                                                                                                                   | Not available                                                                                                                                                                                |
@@ -58,7 +67,7 @@ List the organization's members, newest first:
   ```
 </CodeGroup>
 
-```text wrap
+```json
 {
   "data": [
     {
@@ -172,7 +181,7 @@ For complete parameter details and response schemas, see [Remove user](https://p
   ```
 </CodeGroup>
 
-```text wrap
+```json
 {
   "type": "user_deleted",
   "id": "user_01AbCdEfGhIjKlMnOpQrSt"
@@ -200,7 +209,7 @@ For complete parameter details and response schemas, see [Create invite](https:/
   ```
 </CodeGroup>
 
-```text wrap
+```json
 {
   "type": "invite",
   "id": "invite_01QrStUvWxYzAbCdEfGhIj",
@@ -266,7 +275,7 @@ For complete parameter details and response schemas, see [List groups](https://p
   ```
 </CodeGroup>
 
-```text wrap
+```json
 {
   "data": [
     {
@@ -310,7 +319,7 @@ For complete parameter details and response schemas, see [Create group](https://
   ```
 </CodeGroup>
 
-```text wrap
+```json
 {
   "type": "rbac_group",
   "id": "rbac_group_01UvWxYzAbCdEfGhIjKlMn",
@@ -350,7 +359,7 @@ For complete parameter details and response schemas, see [Delete group](https://
   ```
 </CodeGroup>
 
-```text wrap
+```json
 {
   "id": "rbac_group_01UvWxYzAbCdEfGhIjKlMn",
   "type": "rbac_group_deleted"
@@ -371,7 +380,7 @@ For complete parameter details and response schemas, see [List group members](ht
   ```
 </CodeGroup>
 
-```text wrap
+```json
 {
   "data": [
     {
@@ -402,7 +411,7 @@ For complete parameter details and response schemas, see [Add group member](http
   ```
 </CodeGroup>
 
-```text wrap
+```json
 {
   "type": "rbac_group_member",
   "rbac_group_id": "rbac_group_01UvWxYzAbCdEfGhIjKlMn",
@@ -427,7 +436,7 @@ For complete parameter details and response schemas, see [Remove group member](h
   ```
 </CodeGroup>
 
-```text wrap
+```json
 {
   "rbac_group_id": "rbac_group_01UvWxYzAbCdEfGhIjKlMn",
   "group_id": "rbac_group_01UvWxYzAbCdEfGhIjKlMn",
@@ -454,7 +463,7 @@ For complete parameter details and response schemas, see [List roles](https://pl
   ```
 </CodeGroup>
 
-```text wrap
+```json
 {
   "data": [
     {
@@ -500,7 +509,7 @@ For complete parameter details and response schemas, see [List role permissions]
   ```
 </CodeGroup>
 
-```text wrap
+```json
 {
   "data": [
     {

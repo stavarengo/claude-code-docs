@@ -6,6 +6,8 @@
 
 Model ID: `gpt-realtime`
 
+Status: Deprecated
+
 This is our first general-availability realtime model, capable of responding to audio and text inputs in realtime over WebRTC, WebSocket, or SIP connections.
 
 ## Model details
@@ -76,7 +78,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-Realtime.
 
-- `gpt-realtime-2025-08-28`
+- `gpt-realtime-2025-08-28` — Deprecated
 
 ## Rate limits
 

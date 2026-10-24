@@ -6,6 +6,8 @@
 
 Model ID: `gpt-4.1-nano`
 
+Status: Shut down
+
 GPT-4.1 nano excels at instruction following and tool calling. It features a 
 1M token context window, and low latency without a reasoning step.
 
@@ -90,7 +92,7 @@ Tools supported by this model when using the Responses API.
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4.1 nano.
 
-- `gpt-4.1-nano-2025-04-14`
+- `gpt-4.1-nano-2025-04-14` — Shut down
 
 ## Rate limits
 

@@ -540,7 +540,7 @@ This SDK will also return an error if a non-streaming request is expected to be 
 
 ## File uploads
 
-Request parameters that correspond to file uploads in multipart requests are typed as `io.Reader`. The contents of the `io.Reader` are sent by default as a multipart form part with the file name of `anonymous_file` and content type of `application/octet-stream`, so the recommended approach is to specify a custom content type with the `anthropic.File(reader io.Reader, filename string, contentType string)` helper, which wraps any `io.Reader` with the appropriate file name and content type.
+Request parameters that correspond to file uploads in multipart requests are typed as `io.Reader`. The contents of the `io.Reader` are sent by default as a multipart form part with the file name of `anonymous_file` and content type of `application/octet-stream`. For this reason, the recommended approach is to specify a custom content type with the `anthropic.File(reader io.Reader, filename string, contentType string)` helper. This helper wraps any `io.Reader` with the appropriate file name and content type.
 
 ```go
 // A file from the filesystem
@@ -673,6 +673,10 @@ fmt.Printf("%+v\n", message.Content)
 fmt.Printf("Status Code: %d\n", response.StatusCode)
 fmt.Printf("Headers: %+#v\n", response.Header)
 ```
+
+### OpenTelemetry tracing
+
+When your application registers an OpenTelemetry tracer provider, the SDK emits a span for each request that it sends. To send the spans to your observability platform, see [Set up OpenTelemetry with the Claude SDK](https://platform.claude.com/docs/en/manage-claude/opentelemetry/sdk?sdk_languages=cli).
 
 ### Making custom/undocumented requests
 

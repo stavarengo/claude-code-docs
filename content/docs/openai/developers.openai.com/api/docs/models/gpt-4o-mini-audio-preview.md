@@ -6,6 +6,8 @@
 
 Model ID: `gpt-4o-mini-audio-preview`
 
+Status: Shut down
+
 This is a preview release of the smaller GPT-4o Audio Mini model. It's designed to input audio or create audio outputs via the REST API.
 
 ## Model details
@@ -76,7 +78,7 @@ Tools supported by this model when using the Responses API.
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4o Mini Audio.
 
-- `gpt-4o-mini-audio-preview-2024-12-17`
+- `gpt-4o-mini-audio-preview-2024-12-17` — Shut down
 
 ## Rate limits
 

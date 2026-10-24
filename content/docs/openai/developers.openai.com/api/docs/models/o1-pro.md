@@ -6,6 +6,8 @@
 
 Model ID: `o1-pro`
 
+Status: Shut down
+
 The o1 series of models are trained with reinforcement learning to think 
 before they answer and perform complex reasoning. The o1-pro model uses more 
 compute to think harder and provide consistently better answers.
@@ -84,7 +86,7 @@ Tools supported by this model when using the Responses API.
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for o1-pro.
 
-- `o1-pro-2025-03-19`
+- `o1-pro-2025-03-19` — Shut down
 
 ## Rate limits
 

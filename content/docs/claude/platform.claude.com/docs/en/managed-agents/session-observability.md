@@ -10,7 +10,7 @@ featureMetadata:
   betaHeader: managed-agents-2026-04-01
 ---
 
-Use the session viewer in the Claude Console to inspect what an agent did in a session, without writing any code. Use the session's `usage` totals to see what that work consumed.
+Use the session viewer in the Claude Console to inspect what an agent did in a session, without writing any code. Use the session's `usage` totals to see what that work consumed. To see a session's turns, model requests, and tool uses in your observability platform, set up [OpenTelemetry tracing](https://platform.claude.com/docs/en/manage-claude/opentelemetry?sdk_languages=cli).
 
 ## Inspect a session in the Console
 
@@ -38,7 +38,7 @@ With `ant beta:sessions connect`, you can open the same viewer from the `ant` CL
 
 The session object includes a `usage` field with the session's cumulative usage: token counts, server tool use, active time, and the tracked list cost. Fetch the session after it goes idle to read the latest totals.
 
-```text wrap
+```json
 {
   "id": "sesn_01...",
   "status": "idle",

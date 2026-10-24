@@ -6,6 +6,8 @@
 
 Model ID: `gpt-5.4-nano`
 
+Status: Deprecated
+
 GPT-5.4 nano is designed for tasks where speed and cost matter most like
 classification, data extraction, ranking, and sub-agents. Learn more in our
 [Model guidance](/api/docs/guides/latest-model) page. Reasoning.effort supports: none (default), low, medium, high and xhigh.
@@ -95,7 +97,7 @@ Tools supported by this model when using the Responses API.
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-5.4 nano.
 
-- `gpt-5.4-nano-2026-03-17`
+- `gpt-5.4-nano-2026-03-17` — Deprecated
 
 ## Rate limits
 

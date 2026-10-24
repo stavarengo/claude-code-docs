@@ -6,6 +6,8 @@
 
 Model ID: `gpt-5.1-codex-mini`
 
+Status: Shut down
+
 GPT-5.1-Codex Mini is a smaller, more cost-effective, less-capable version of GPT-5.1-Codex.
 
 ## Model details
@@ -82,7 +84,7 @@ Tools supported by this model when using the Responses API.
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-5.1-Codex Mini.
 
-- `gpt-5.1-codex-mini`
+- `gpt-5.1-codex-mini` — Shut down
 
 ## Rate limits
 

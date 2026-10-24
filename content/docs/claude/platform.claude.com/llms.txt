@@ -20,18 +20,18 @@ The latest version of each Claude Platform SDK and of the ant CLI is at https://
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 812 pages - /docs - Content included below
-- German (Deutsch) (de) - 296 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 296 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 296 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 296 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 296 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 296 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 296 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 296 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 296 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 296 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 296 pages - /docs/id - Visit website for content
+- English (en) - 821 pages - /docs - Content included below
+- German (Deutsch) (de) - 305 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 305 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 305 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 305 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 305 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 305 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 305 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 305 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 305 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 305 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 305 pages - /docs/id - Visit website for content
 
 ---
 
@@ -184,16 +184,16 @@ The full documentation is available in the following languages on https://platfo
 ### Admin
 
 - [Overview](https://platform.claude.com/docs/en/manage-claude/access-transparency.md) - Access Transparency
+- [Admin API](https://platform.claude.com/docs/en/manage-claude/cmek-admin-api.md) - Add and attach an encryption key with the Admin API
 - [Admin API](https://platform.claude.com/docs/en/manage-claude/admin-api.md)
 - [Analytics APIs](https://platform.claude.com/docs/en/manage-claude/analytics-api.md)
 - [API and data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention.md)
 - [App Attest](https://platform.claude.com/docs/en/manage-claude/app-attest.md) - App Attest for iOS and macOS apps
 - [Claude Code Analytics API](https://platform.claude.com/docs/en/manage-claude/claude-code-analytics-api.md)
+- [Claude Tag API](https://platform.claude.com/docs/en/manage-claude/claude-tag-api.md)
+- [Data retention and ZDR](https://platform.claude.com/docs/en/manage-claude/cmek-data-retention.md) - CMEK, data retention, and ZDR
 - [Overview](https://platform.claude.com/docs/en/manage-claude/compliance-api.md) - Compliance API
 - [FAQ](https://platform.claude.com/docs/en/manage-claude/compliance-faq.md) - Compliance API FAQ
-- [AWS KMS](https://platform.claude.com/docs/en/manage-claude/cmek-aws-kms.md) - Configure AWS KMS for CMEK
-- [Azure Key Vault](https://platform.claude.com/docs/en/manage-claude/cmek-azure-key-vault.md) - Configure Azure Key Vault for CMEK
-- [Google Cloud KMS](https://platform.claude.com/docs/en/manage-claude/cmek-google-cloud-kms.md) - Configure Google Cloud KMS for CMEK
 - [Configure Inference hooks](https://platform.claude.com/docs/en/manage-claude/inference-hooks-configuration.md)
 - [Create an Admin API key](https://platform.claude.com/docs/en/manage-claude/admin-api-keys.md)
 - [Overview](https://platform.claude.com/docs/en/manage-claude/cmek.md) - Customer-managed encryption keys
@@ -201,10 +201,12 @@ The full documentation is available in the following languages on https://platfo
 - [Design your integration](https://platform.claude.com/docs/en/manage-claude/compliance-integration-patterns.md) - Design your compliance integration
 - [Build an integration](https://platform.claude.com/docs/en/manage-claude/inference-hooks-endpoint.md) - Develop an Inference hooks integration
 - [Errors](https://platform.claude.com/docs/en/manage-claude/compliance-errors.md) - Handle Compliance API errors
+- [How it works](https://platform.claude.com/docs/en/manage-claude/cmek-how-it-works.md) - How CMEK works
 - [Overview](https://platform.claude.com/docs/en/manage-claude/inference-hooks.md) - Inference hooks
+- [Limit key to workspaces](https://platform.claude.com/docs/en/manage-claude/cmek-aws-kms-workspaces.md) - Limit an AWS KMS key to specific workspaces
 - [Organizations, users, roles, groups, and settings](https://platform.claude.com/docs/en/manage-claude/compliance-org-data.md) - List organizations, users, roles, groups, and settings
 - [Manage WIF with the Admin API](https://platform.claude.com/docs/en/manage-claude/wif-admin-api.md)
-- [Overview](https://platform.claude.com/docs/en/manage-claude/opentelemetry.md) - OpenTelemetry for the Claude API
+- [Overview](https://platform.claude.com/docs/en/manage-claude/opentelemetry.md) - OpenTelemetry tracing for the Claude API
 - [Organization webhooks (beta)](https://platform.claude.com/docs/en/manage-claude/organization-webhooks.md) - Organization webhooks
 - [Plugins API](https://platform.claude.com/docs/en/manage-claude/plugins-api.md)
 - [Activity Feed](https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed.md) - Query the Activity Feed
@@ -213,10 +215,14 @@ The full documentation is available in the following languages on https://platfo
 - [Session transcripts](https://platform.claude.com/docs/en/manage-claude/compliance-sessions.md) - Retrieve session transcripts
 - [Verification Portal links](https://platform.claude.com/docs/en/manage-claude/user-profiles-verification-portal.md) - Send an end customer a link to the Verification Portal
 - [Claude Platform on AWS](https://platform.claude.com/docs/en/manage-claude/cmek-claude-platform-on-aws.md) - Set up CMEK on Claude Platform on AWS
+- [AWS KMS](https://platform.claude.com/docs/en/manage-claude/cmek-aws-kms.md) - Set up CMEK with AWS KMS
+- [Azure Key Vault](https://platform.claude.com/docs/en/manage-claude/cmek-azure-key-vault.md) - Set up CMEK with Azure Key Vault
+- [Google Cloud KMS](https://platform.claude.com/docs/en/manage-claude/cmek-google-cloud-kms.md) - Set up CMEK with Google Cloud KMS
 - [Get Claude API spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/api.md) - Set up OpenTelemetry with the Claude API
 - [Get Claude SDK spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/sdk.md) - Set up OpenTelemetry with the Claude SDK
 - [Set up the Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api-access.md)
 - [Spend Limits API](https://platform.claude.com/docs/en/manage-claude/spend-limits-api.md)
+- [Troubleshooting](https://platform.claude.com/docs/en/manage-claude/cmek-troubleshooting.md) - Troubleshoot CMEK
 - [Usage and Cost API](https://platform.claude.com/docs/en/manage-claude/usage-cost-api.md)
 - [AWS](https://platform.claude.com/docs/en/manage-claude/wif-providers/aws.md) - Use WIF with AWS
 - [GitHub Actions](https://platform.claude.com/docs/en/manage-claude/wif-providers/github-actions.md) - Use WIF with GitHub Actions
@@ -228,6 +234,9 @@ The full documentation is available in the following languages on https://platfo
 - [User management](https://platform.claude.com/docs/en/manage-claude/user-management.md)
 - [User profiles](https://platform.claude.com/docs/en/manage-claude/user-profiles.md) - User profiles for end-customer attribution
 - [Transparency log (beta)](https://platform.claude.com/docs/en/manage-claude/access-transparency-log.md) - Verify Access Transparency events with the transparency log
+- [Coverage: Claude Enterprise](https://platform.claude.com/docs/en/manage-claude/cmek-coverage-claude-enterprise.md) - What CMEK covers on Claude Enterprise
+- [Coverage: Claude Platform](https://platform.claude.com/docs/en/manage-claude/cmek-coverage-claude-platform.md) - What CMEK covers on Claude Platform
+- [Rotate, disable, delete](https://platform.claude.com/docs/en/manage-claude/cmek-key-lifecycle.md) - What happens when you rotate, disable, or delete your encryption key
 - [WIF reference](https://platform.claude.com/docs/en/manage-claude/wif-reference.md)
 - [Workload Identity Federation](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation.md)
 - [Workspaces](https://platform.claude.com/docs/en/manage-claude/workspaces.md)

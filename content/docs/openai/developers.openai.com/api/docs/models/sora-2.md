@@ -6,6 +6,8 @@
 
 Model ID: `sora-2`
 
+Status: Shut down
+
 The Sora 2 models and Videos API were shut down on September 24, 2026 and are no longer available. There is no one-to-one replacement API. See the [deprecation notice](/api/docs/deprecations#2026-03-24-sora-2-video-generation-models-and-videos-api).
 
 
@@ -66,9 +68,9 @@ Landscape: 1920x1080 |
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for Sora 2.
 
-- `sora-2-2025-12-08`
-- `sora-2-2025-10-06`
-- `sora-2`
+- `sora-2-2025-12-08` — Shut down
+- `sora-2-2025-10-06` — Shut down
+- `sora-2` — Shut down
 
 ## Rate limits
 

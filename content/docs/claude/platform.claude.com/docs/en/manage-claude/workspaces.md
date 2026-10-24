@@ -182,7 +182,7 @@ Add a member to a workspace:
   ```bash CLI
   ant organization:workspaces:members add \
     --workspace-id wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ \
-    --user-id user_01XyDMpzjS89pFZXqSFUBDr6 \
+    --user-id user_01WxYzAbCdEfGhJkMnPqRsTu \
     --workspace-role workspace_developer
   ```
 </CodeGroup>
@@ -192,7 +192,7 @@ Update a member's role:
 <CodeGroup>
   ```bash CLI
   ant organization:workspaces:members update \
-    --user-id user_01XyDMpzjS89pFZXqSFUBDr6 \
+    --user-id user_01WxYzAbCdEfGhJkMnPqRsTu \
     --workspace-id wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ \
     --workspace-role workspace_admin
   ```
@@ -203,7 +203,7 @@ Remove a member from a workspace:
 <CodeGroup>
   ```bash CLI
   ant organization:workspaces:members remove \
-    --user-id user_01XyDMpzjS89pFZXqSFUBDr6 \
+    --user-id user_01WxYzAbCdEfGhJkMnPqRsTu \
     --workspace-id wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ
   ```
 </CodeGroup>
@@ -238,7 +238,7 @@ To look up your organization's workspace IDs, call the [List Workspaces](https:/
 
 Claude API responses include an `anthropic-workspace-id` header alongside the `request-id` and `anthropic-organization-id` [response headers](https://platform.claude.com/docs/en/api/overview?sdk_languages=cli#response-headers). Its value is the `wrkspc_`-prefixed ID of the workspace that the request's API key or access token resolved to, including when that workspace is the Default Workspace. For example, a successful response includes headers like these:
 
-```text wrap
+```http
 HTTP/1.1 200 OK
 request-id: req_018EeWyXxfu5pfWkrYcMdjWG
 anthropic-organization-id: 0d0e7a3b-52f1-4c7e-9a51-3f6f2f7c1b9e

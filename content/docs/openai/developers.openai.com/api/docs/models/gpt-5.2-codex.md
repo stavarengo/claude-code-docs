@@ -6,6 +6,8 @@
 
 Model ID: `gpt-5.2-codex`
 
+Status: Shut down
+
 GPT-5.2-Codex is an upgraded version of GPT-5.2 optimized for agentic coding tasks in [Codex](https://developers.openai.com/codex) or similar environments.
 GPT-5.2-Codex supports `low`, `medium`, `high`, and `xhigh` reasoning effort settings.
 If you want to learn more about prompting GPT-5.2-Codex, refer to our [dedicated guide](/cookbook/examples/gpt-5/codex_prompting_guide).
@@ -85,7 +87,7 @@ Tools supported by this model when using the Responses API.
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-5.2-Codex.
 
-- `gpt-5.2-codex`
+- `gpt-5.2-codex` — Shut down
 
 ## Rate limits
 

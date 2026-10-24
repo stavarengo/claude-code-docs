@@ -124,7 +124,7 @@ For complete parameter details and response schemas, see [List effective spend l
   ```
 </CodeGroup>
 
-```text wrap
+```json
 {
   "data": [
     {
@@ -175,7 +175,7 @@ For complete parameter details and response schemas, see [Create a spend limit](
   ```
 </CodeGroup>
 
-```text wrap
+```json
 {
   "type": "spend_limit",
   "id": "spl_01RsTuVwXyZaBcDeFgHiJk",

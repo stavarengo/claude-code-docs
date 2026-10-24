@@ -6,6 +6,8 @@
 
 Model ID: `dall-e-3`
 
+Status: Shut down
+
 DALL·E 3 has been deprecated and removed from the API. We recommend [GPT-Image-2.5 Sunburst](/api/docs/models/gpt-image-2.5-sunburst) for current image generation and editing.
 
 ## Model details
@@ -41,7 +43,7 @@ DALL·E 3 has been deprecated and removed from the API. We recommend [GPT-Image-
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for DALL·E 3.
 
-- `dall-e-3`
+- `dall-e-3` — Shut down
 
 ## Rate limits
 

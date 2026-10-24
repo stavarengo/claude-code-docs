@@ -175,20 +175,20 @@ Install the package that provides the client:
 
   <Tab title="Java">
     ```kotlin Gradle
-    implementation("com.anthropic:anthropic-java:3.1.0")
-    implementation("com.anthropic:anthropic-java-google-cloud:3.1.0")
+    implementation("com.anthropic:anthropic-java:3.3.0")
+    implementation("com.anthropic:anthropic-java-google-cloud:3.3.0")
     ```
 
     ```xml Maven
     <dependency>
       <groupId>com.anthropic</groupId>
       <artifactId>anthropic-java</artifactId>
-      <version>3.1.0</version>
+      <version>3.3.0</version>
     </dependency>
     <dependency>
       <groupId>com.anthropic</groupId>
       <artifactId>anthropic-java-google-cloud</artifactId>
-      <version>3.1.0</version>
+      <version>3.3.0</version>
     </dependency>
     ```
   </Tab>
@@ -363,9 +363,9 @@ The following features work on Claude Models on Google Cloud (Anthropic managed)
 
 * **Fast mode:** [Fast mode](https://platform.claude.com/docs/en/build-with-claude/fast-mode?sdk_languages=cli) for Claude Opus 5.5.
 
-- **Beta features:** If a beta is limited to selected organizations on the Claude API, the Anthropic organization that setup creates needs the same access.
+* **Beta features:** If a beta is limited to selected organizations on the Claude API, the Anthropic organization that setup creates needs the same access.
 
-- **Tools:** [Tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=cli), including:
+* **Tools:** [Tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=cli), including:
 
   * Web search
   * Web fetch
@@ -374,9 +374,9 @@ The following features work on Claude Models on Google Cloud (Anthropic managed)
   * The advisor tool
   * The MCP connector
 
-- **Skills and files:** [Agent Skills](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview?sdk_languages=cli) and the [Files API](https://platform.claude.com/docs/en/build-with-claude/files?sdk_languages=cli).
+* **Skills and files:** [Agent Skills](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview?sdk_languages=cli) and the [Files API](https://platform.claude.com/docs/en/build-with-claude/files?sdk_languages=cli).
 
-- **Model capabilities:**
+* **Model capabilities:**
 
   * [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli)
   * [Extended thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli)
@@ -385,11 +385,11 @@ The following features work on Claude Models on Google Cloud (Anthropic managed)
   * [Structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli)
   * [Token counting](https://platform.claude.com/docs/en/build-with-claude/token-counting?sdk_languages=cli)
 
-- **Batches and models:** The [Message Batches API](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=cli) and the Models API.
+* **Batches and models:** The [Message Batches API](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=cli) and the Models API.
 
 To turn the [Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api?sdk_languages=cli) on or off for the Anthropic organization that setup creates, [open the Claude Console](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli#using-the-claude-console), go to **Settings > Compliance**, and use the **Compliance API** toggle.
 
-Customer-managed encryption keys (CMEK) are available with Google Cloud KMS keys. To activate CMEK for the Anthropic organization that setup creates, see [Customer-managed encryption keys](https://platform.claude.com/docs/en/manage-claude/cmek?sdk_languages=cli). To set up a key, follow [Configure Google Cloud KMS for CMEK](https://platform.claude.com/docs/en/manage-claude/cmek-google-cloud-kms?sdk_languages=cli). Then register, verify, and attach the key in the [Claude Console](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli#using-the-claude-console), as the setup page's **Claude Console** tab describes.
+Customer-managed encryption keys (CMEK) are available with Google Cloud KMS keys. To activate CMEK for the Anthropic organization that setup creates, see [Who can use CMEK](https://platform.claude.com/docs/en/manage-claude/cmek?sdk_languages=cli#availability). To set up a key, follow [Set up CMEK with Google Cloud KMS](https://platform.claude.com/docs/en/manage-claude/cmek-google-cloud-kms?sdk_languages=cli). Then register, verify, and attach the key in the [Claude Console](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli#using-the-claude-console), as the setup page's **Claude Platform** tab describes.
 
 ### Claude Managed Agents
 

@@ -6,6 +6,8 @@
 
 Model ID: `gpt-5.1`
 
+Status: Deprecated
+
 GPT-5.1 is our flagship model for coding and agentic tasks with configurable reasoning and non-reasoning effort.
 Learn more in our [GPT-5.1 model guidance](/api/docs/guides/latest-model?model=gpt-5.1). Reasoning.effort supports: none (default), low, medium, and high.
 
@@ -89,7 +91,7 @@ Tools supported by this model when using the Responses API.
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-5.1.
 
-- `gpt-5.1-2025-11-13`
+- `gpt-5.1-2025-11-13` — Deprecated
 
 ## Rate limits
 

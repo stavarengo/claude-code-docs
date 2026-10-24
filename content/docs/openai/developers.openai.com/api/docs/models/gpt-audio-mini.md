@@ -6,6 +6,8 @@
 
 Model ID: `gpt-audio-mini`
 
+Status: Deprecated
+
 A cost-efficient version of GPT Audio. It accepts audio inputs and outputs, and can be used in the Chat Completions REST API.
 
 ## Model details
@@ -66,8 +68,8 @@ Tools supported by this model when using the Responses API.
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-Audio Mini.
 
-- `gpt-audio-mini-2025-10-06`
-- `gpt-audio-mini-2025-12-15`
+- `gpt-audio-mini-2025-10-06` — Shut down
+- `gpt-audio-mini-2025-12-15` — Deprecated
 
 ## Rate limits
 

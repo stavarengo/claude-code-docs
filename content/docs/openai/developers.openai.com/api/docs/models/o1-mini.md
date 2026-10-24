@@ -6,6 +6,8 @@
 
 Model ID: `o1-mini`
 
+Status: Shut down
+
 The o1 reasoning model is designed to solve hard problems across domains. o1-mini is a faster and more affordable reasoning model, but we recommend using the newer o3-mini model that features higher intelligence at the same latency and price as o1-mini.
 
 ## Model details
@@ -79,7 +81,7 @@ Tools supported by this model when using the Responses API.
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for o1-mini.
 
-- `o1-mini-2024-09-12`
+- `o1-mini-2024-09-12` — Shut down
 
 ## Rate limits
 

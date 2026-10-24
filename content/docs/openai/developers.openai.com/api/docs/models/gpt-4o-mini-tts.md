@@ -6,6 +6,8 @@
 
 Model ID: `gpt-4o-mini-tts`
 
+Status: Deprecated
+
 GPT-4o Mini TTS is a text-to-speech model built on GPT-4o Mini, a fast and powerful language model. Use it to convert text to natural sounding spoken text. The maximum number of input tokens is 2000.
 
 ## Model details
@@ -65,8 +67,8 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4o Mini TTS.
 
-- `gpt-4o-mini-tts-2025-03-20`
-- `gpt-4o-mini-tts-2025-12-15`
+- `gpt-4o-mini-tts-2025-03-20` — Deprecated
+- `gpt-4o-mini-tts-2025-12-15` — Deprecated
 
 ## Rate limits
 

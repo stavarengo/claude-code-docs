@@ -6,6 +6,8 @@
 
 Model ID: `gpt-daybreak-red-latest`
 
+Status: Deprecated
+
 This alias is deprecated, please use the latest cyber model available to you. You can apply to join the Daybreak program [here](https://openai.com/daybreak/).
 
 ## Model details

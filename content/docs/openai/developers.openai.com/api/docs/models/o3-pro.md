@@ -6,6 +6,8 @@
 
 Model ID: `o3-pro`
 
+Status: Deprecated
+
 The o-series of models are trained with reinforcement learning to think 
 before they answer and perform complex reasoning. The o3-pro model uses more 
 compute to think harder and provide consistently better answers.
@@ -88,7 +90,7 @@ Tools supported by this model when using the Responses API.
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for o3-pro.
 
-- `o3-pro-2025-06-10`
+- `o3-pro-2025-06-10` — Deprecated
 
 ## Rate limits
 

@@ -6,7 +6,9 @@
 
 Model ID: `gpt-3.5-turbo`
 
-GPT-3.5 Turbo models can understand and generate natural language or code and have been optimized for chat using the Chat Completions API but work well for non-chat tasks as well. As of July 2024, use gpt-4o-mini in place of GPT-3.5 Turbo, as it is cheaper, more capable, multimodal, and just as fast. GPT-3.5 Turbo is still available for use in the API.
+Status: Shut down
+
+GPT-3.5 Turbo models can understand and generate natural language or code and have been optimized for chat using the Chat Completions API but work well for non-chat tasks as well. As of July 2024, use gpt-4o-mini in place of GPT-3.5 Turbo, as it is cheaper, more capable, multimodal, and just as fast. GPT-3.5 Turbo was shut down on October 23, 2026, and is no longer available in the API.
 
 ## Model details
 
@@ -67,9 +69,9 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-3.5 Turbo.
 
-- `gpt-3.5-turbo-0125`
-- `gpt-3.5-turbo-1106`
-- `gpt-3.5-turbo-instruct`
+- `gpt-3.5-turbo-0125` — Shut down
+- `gpt-3.5-turbo-1106` — Shut down
+- `gpt-3.5-turbo-instruct` — Shut down
 
 ## Rate limits
 

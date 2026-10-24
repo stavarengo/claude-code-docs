@@ -6,6 +6,8 @@
 
 Model ID: `gpt-4.5-preview`
 
+Status: Shut down
+
 Deprecated - a research preview of GPT-4.5. We recommend using gpt-4.1 or o3 
 models instead for most use cases
 
@@ -75,7 +77,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4.5 Preview.
 
-- `gpt-4.5-preview-2025-02-27`
+- `gpt-4.5-preview-2025-02-27` — Shut down
 
 ## Rate limits
 

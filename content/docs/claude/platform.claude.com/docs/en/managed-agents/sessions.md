@@ -113,7 +113,7 @@ The following example starts a session that overrides the model and clears the s
 
 #### Pin the inference geo for a session
 
-Because a `model` override replaces the agent's `model` object in full, it also sets or clears the model's [inference geo](https://platform.claude.com/docs/en/manage-claude/data-residency?sdk_languages=cli) pin for the session: an override that includes `inference_geo` pins the geography that serves the session's model requests, and one that omits it clears the agent's pin so the session follows the workspace's `default_inference_geo`. The overridden value is validated against the workspace's `allowed_inference_geos` when the session is created.
+Because a `model` override replaces the agent's `model` object in full, it also sets or clears the model's [inference geo](https://platform.claude.com/docs/en/manage-claude/data-residency?sdk_languages=cli) pin for the session. An override that includes `inference_geo` pins the geography that serves the session's model requests. An override that omits it clears the agent's pin, so the session follows the workspace's `default_inference_geo`. The overridden value is validated against the workspace's `allowed_inference_geos` when the session is created.
 
 The following example starts a session from an agent whose model has no geo pin, and pins the session's model requests to US inference by including `inference_geo` in the `model` override. The response echoes the value in `agent.model`:
 
@@ -171,7 +171,7 @@ If your agent uses MCP tools that require authentication, pass `vault_ids` at se
 
 ## Starting the session
 
-Creating a session without `initial_events` registers the session but does not start any work; the environment's sandbox starts provisioning as soon as the session is created, so the first tool call does not wait on it. To delegate a task, send events to the session using a [user event](https://platform.claude.com/docs/en/managed-agents/reference?sdk_languages=cli#event-types). To supply the first event in the create request instead, see [Seed the session with initial events](https://platform.claude.com/docs/en/managed-agents/sessions?sdk_languages=cli#seed-the-session-with-initial-events). The session acts as a state machine that tracks progress while events drive the actual execution.
+Creating a session without `initial_events` registers the session but does not start any work; the environment's sandbox starts provisioning as soon as the session is created, so the first tool call does not wait on it. To delegate a task, send events to the session using a [user event](https://platform.claude.com/docs/en/managed-agents/reference?sdk_languages=cli#event-types). To supply the first event in the create request instead, see [Seed the session with initial events](https://platform.claude.com/docs/en/managed-agents/sessions?sdk_languages=cli#seed-the-session-with-initial-events). The session acts as a state machine that tracks progress, and events drive the actual execution.
 
 <CodeGroup>
   ```bash CLI

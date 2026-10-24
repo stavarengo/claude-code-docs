@@ -6,6 +6,8 @@
 
 Model ID: `gpt-audio`
 
+Status: Deprecated
+
 The gpt-audio model is our first generally available audio model. It accepts
 audio inputs and outputs, and can be used in the Chat Completions REST API.
 
@@ -68,7 +70,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-Audio.
 
-- `gpt-audio-2025-08-28`
+- `gpt-audio-2025-08-28` — Deprecated
 
 ## Rate limits
 

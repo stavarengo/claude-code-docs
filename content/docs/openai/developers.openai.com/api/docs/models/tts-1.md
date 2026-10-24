@@ -6,6 +6,8 @@
 
 Model ID: `tts-1`
 
+Status: Deprecated
+
 TTS is a model that converts text to natural sounding spoken text. The tts-1 model is optimized for realtime text-to-speech use cases. Use it with the Speech endpoint in the Audio API.
 
 ## Model details
@@ -60,7 +62,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for TTS-1.
 
-- `tts-1`
+- `tts-1` — Deprecated
 
 ## Rate limits
 

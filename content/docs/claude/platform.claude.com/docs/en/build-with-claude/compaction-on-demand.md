@@ -64,7 +64,7 @@ Send the conversation as it stands with `"compaction": {"type": "summarize"}`. T
   ```
 </CodeGroup>
 
-```text Response
+```json Response
 {
   "id": "msg_013Zva2CMHLNnXjNJJKqJ2EF",
   "type": "message",

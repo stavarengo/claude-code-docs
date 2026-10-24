@@ -6,6 +6,8 @@
 
 Model ID: `gpt-4-turbo`
 
+Status: Shut down
+
 GPT-4 Turbo is the next generation of GPT-4, an older high-intelligence GPT model. It was designed to be a cheaper, better version of GPT-4. Today, we recommend using a newer model like GPT-4o.
 
 ## Model details
@@ -69,7 +71,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4 Turbo.
 
-- `gpt-4-turbo-2024-04-09`
+- `gpt-4-turbo-2024-04-09` — Shut down
 
 ## Rate limits
 

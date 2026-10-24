@@ -6,6 +6,8 @@
 
 Model ID: `gpt-5`
 
+Status: Deprecated
+
 GPT-5 is our previous model for coding, reasoning, and agentic tasks across domains.
 We recommend using the latest [GPT-6 Astra](/api/docs/models/gpt-6-astra). Learn more on the [Model guidance](/api/docs/guides/latest-model) page. Reasoning.effort supports: minimal, low, medium, and high.
 
@@ -89,7 +91,7 @@ Tools supported by this model when using the Responses API.
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-5.
 
-- `gpt-5-2025-08-07`
+- `gpt-5-2025-08-07` — Deprecated
 
 ## Rate limits
 

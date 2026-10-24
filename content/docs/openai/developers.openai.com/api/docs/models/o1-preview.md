@@ -6,6 +6,8 @@
 
 Model ID: `o1-preview`
 
+Status: Shut down
+
 Research preview of the o1 series of models, trained with reinforcement learning to perform complex reasoning. o1 models think before they answer, producing a long internal chain of thought before responding to the user.
 
 ## Model details
@@ -73,7 +75,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for o1 Preview.
 
-- `o1-preview-2024-09-12`
+- `o1-preview-2024-09-12` — Shut down
 
 ## Rate limits
 

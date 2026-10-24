@@ -324,7 +324,7 @@ Console.WriteLine(await chatClient.GetResponseAsync("Tell me about IChatClient",
 
 To send a request to the Claude API, build an instance of a `Params` class and pass it to the corresponding client method. When the response is received, it's deserialized into an instance of a C# class.
 
-For example, `client.Messages.Create` should be called with an instance of `MessageCreateParams`, and it returns an instance of `Task<Message>`.
+For example, `client.Messages.Create` takes an instance of `MessageCreateParams` and returns an instance of `Task<Message>`.
 
 ## Advanced usage
 
@@ -402,6 +402,10 @@ Enable debug logging by setting an environment variable:
 ```bash
 export ANTHROPIC_LOG=debug
 ```
+
+### OpenTelemetry tracing
+
+When your application adds the SDK's sources to its OpenTelemetry tracer provider with `AddSource("com.anthropic.sdk.csharp*")`, the SDK emits a span for each request that it sends. To send the spans to your observability platform, see [Set up OpenTelemetry with the Claude SDK](https://platform.claude.com/docs/en/manage-claude/opentelemetry/sdk?sdk_languages=cli).
 
 ### Undocumented API functionality
 

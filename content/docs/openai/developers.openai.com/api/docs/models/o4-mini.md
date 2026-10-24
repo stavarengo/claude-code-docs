@@ -6,6 +6,8 @@
 
 Model ID: `o4-mini`
 
+Status: Shut down
+
 o4-mini is our latest small o-series model. It's optimized for fast, 
 effective reasoning with exceptionally efficient performance in coding and 
 visual tasks. It's succeeded by [GPT-5 Mini](/api/docs/models/gpt-5-mini).
@@ -93,7 +95,7 @@ Tools supported by this model when using the Responses API.
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for o4-mini.
 
-- `o4-mini-2025-04-16`
+- `o4-mini-2025-04-16` — Shut down
 
 ## Rate limits
 

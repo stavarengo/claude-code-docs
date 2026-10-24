@@ -93,7 +93,7 @@ The `allow_package_managers` and `allow_mcp_servers` settings add no hosts for w
 Leave `allow_mcp_servers` off, which is the default, and list the host of each MCP server you operate or trust in `allowed_hosts`. Each host you list is also open to code in the sandbox. With `allow_mcp_servers` off, a check at session creation rejects the request if an MCP server's host is not listed. See [Provide authentication at session creation](https://platform.claude.com/docs/en/managed-agents/mcp-connector?sdk_languages=cli#provide-authentication-at-session-creation). The same check runs when a session update changes `mcp_servers`.
 
 <Warning>
-  Network access is granted for each host, not for each operation. The sandbox can send any request to an allowed host, including uploads such as `git push` and package publishing. It can also use any credential the command supplies, even one that someone hid in text the agent reads.
+  Network access is granted by host, not by operation. The sandbox can send any request to an allowed host, including uploads such as `git push` and package publishing. It can also use any credential the command supplies, even one that someone hid in text the agent reads.
 </Warning>
 
 When you choose hosts for `allowed_hosts`, follow these two rules:

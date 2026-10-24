@@ -44,7 +44,7 @@ description: Make your first API call to Claude and build a simple web search as
 
         Claude returns a JSON response containing the assistant's message:
 
-        ```text Output
+        ```json Output
         {
           "model": "claude-opus-5-5",
           "id": "msg_013mHbppMPd2PrVJzGMZPt2D",

@@ -6,6 +6,8 @@
 
 Model ID: `gpt-4o-search-preview`
 
+Status: Shut down
+
 GPT-4o Search Preview is a specialized model trained to understand and execute [web search](/api/docs/guides/tools-web-search?api-mode=chat) queries with the Chat Completions API. In addition to token fees, web search queries have a fee per tool call. Learn more in the [pricing](/api/docs/pricing) page.
 
 ## Model details
@@ -69,7 +71,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4o Search Preview.
 
-- `gpt-4o-search-preview-2025-03-11`
+- `gpt-4o-search-preview-2025-03-11` — Shut down
 
 ## Rate limits
 

@@ -6,6 +6,8 @@
 
 Model ID: `gpt-5-mini`
 
+Status: Deprecated
+
 GPT-5 Mini is a faster, more cost-efficient version of GPT-5. It's great for
 well-defined tasks and precise prompts. For most new low-latency,
 high-volume workloads, we recommend starting with
@@ -89,7 +91,7 @@ Tools supported by this model when using the Responses API.
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-5 Mini.
 
-- `gpt-5-mini-2025-08-07`
+- `gpt-5-mini-2025-08-07` — Deprecated
 
 ## Rate limits
 

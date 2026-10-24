@@ -6,6 +6,8 @@
 
 Model ID: `gpt-5.1-codex`
 
+Status: Shut down
+
 GPT-5.1-Codex is a version of GPT-5 optimized for agentic coding tasks in [Codex](https://developers.openai.com/codex) or similar environments.
 It's available in the [Responses API](/api/docs/api-reference/responses) only and the underlying model snapshot will be regularly updated.
 If you want to learn more about prompting GPT-5.1-Codex, refer to our [dedicated guide](/cookbook/examples/gpt-5/codex_prompting_guide)
@@ -82,7 +84,7 @@ Tools supported by this model when using the Responses API.
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-5.1-Codex.
 
-- `gpt-5.1-codex`
+- `gpt-5.1-codex` — Shut down
 
 ## Rate limits
 

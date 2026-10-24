@@ -6,6 +6,8 @@
 
 Model ID: `gpt-5.2-chat-latest`
 
+Status: Shut down
+
 GPT-5.2 Chat points to the GPT-5.2 snapshot used in ChatGPT. This model has been deprecated. We recommend [GPT-6 Astra](/api/docs/models/gpt-6-astra) for most API usage.
 
 ## Model details
@@ -75,7 +77,7 @@ Tools supported by this model when using the Responses API.
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-5.2 Chat.
 
-- `gpt-5.2-chat-latest`
+- `gpt-5.2-chat-latest` — Shut down
 
 ## Rate limits
 

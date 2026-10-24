@@ -6,6 +6,8 @@
 
 Model ID: `babbage-002`
 
+Status: Shut down
+
 GPT base models can understand and generate natural language or code but are not trained with instruction following. These models are made to be replacements for our original GPT-3 base models and use the legacy Completions API. Most customers should use GPT-3.5 or GPT-4.
 
 ## Model details
@@ -66,7 +68,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for babbage-002.
 
-- `babbage-002`
+- `babbage-002` — Shut down
 
 ## Rate limits
 

@@ -6,6 +6,8 @@
 
 Model ID: `gpt-5-chat-latest`
 
+Status: Shut down
+
 GPT-5 Chat points to the GPT-5 snapshot previously used in ChatGPT.
 For the latest Chat model, please refer to our [models page](/api/docs/models).
 We recommend using our [Model guidance](https://developers.openai.com/api/docs/guides/latest-model) for most API usage.
@@ -85,7 +87,7 @@ Tools supported by this model when using the Responses API.
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-5 Chat.
 
-- `gpt-5-chat-latest`
+- `gpt-5-chat-latest` — Shut down
 
 ## Rate limits
 

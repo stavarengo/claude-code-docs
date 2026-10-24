@@ -92,7 +92,7 @@ Add the computer use toolset to the `tools` array of a [Messages API](https://pl
 
 When Claude acts on the desktop, the response has a `stop_reason` of `tool_use` and contains one or more member `tool_use` blocks, each naming a member tool and carrying `"toolset_name": "computer"`. Partway through this task, after Claude has received a screenshot of the desktop, a response might look like this:
 
-```text Output wrap
+```json Output
 {
   "id": "msg_01UZ3bXcQH8mTqNhVfL9eK2p",
   "type": "message",
@@ -162,7 +162,7 @@ Claude can plan a short sequence of actions, such as click, type, and then take 
 
 A response with a three-action batch looks like this:
 
-```text wrap
+```json
 {
   "role": "assistant",
   "content": [
@@ -576,7 +576,7 @@ Keep the following in mind when implementing the members:
 
   Shift+click at a position, for example, to extend a selection. Unlike `hold_key`, `text` holds the modifiers only for the duration of that click or scroll:
 
-  ```text wrap
+  ```json
   {
     "type": "tool_use",
     "id": "toolu_01Qg8m3XqC5aRy7tD2eS4jUg",
@@ -588,7 +588,7 @@ Keep the following in mind when implementing the members:
 
   Drag from one point to another:
 
-  ```text wrap
+  ```json
   {
     "type": "tool_use",
     "id": "toolu_01Ed6j9VnA3yPw5rB8cQ2gSe",
@@ -603,7 +603,7 @@ Keep the following in mind when implementing the members:
 
   Scroll down three clicks of the wheel:
 
-  ```text wrap
+  ```json
   {
     "type": "tool_use",
     "id": "toolu_01Yc5h8UmZ2xNv4qA7bP9fRd",
@@ -619,7 +619,7 @@ Keep the following in mind when implementing the members:
 
   Press Tab four times:
 
-  ```text wrap
+  ```json
   {
     "type": "tool_use",
     "id": "toolu_01Sb4g7TkY9wLu3pX6zM8eQc",
@@ -631,7 +631,7 @@ Keep the following in mind when implementing the members:
 
   Zoom in to inspect a region at full resolution:
 
-  ```text wrap
+  ```json
   {
     "type": "tool_use",
     "id": "toolu_01Kf7k2WpB4zQx6sC9dR3hTf",
@@ -643,7 +643,7 @@ Keep the following in mind when implementing the members:
 
   Report the cursor position. Answer this call with a short text result that gives the position in screenshot pixels, for example, `X=512, Y=384`:
 
-  ```text wrap
+  ```json
   {
     "type": "tool_use",
     "id": "toolu_01Ekh3vqB6yTs2mNc4Rw8pLd",
@@ -702,7 +702,7 @@ To combine computer use with thinking, see [Thinking](https://platform.claude.co
 
 To add other tools alongside computer use, include them in the same `tools` array. The [Quick start](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool?sdk_languages=cli#quick-start) section shows this pattern with the [bash tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/bash-tool?sdk_languages=cli) and [text editor tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/text-editor-tool?sdk_languages=cli). You can add your own [custom tool definitions](https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools?sdk_languages=cli) the same way.
 
-For tasks that stay inside webpages, you can also [declare the browser use tool in the same request](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool?sdk_languages=cli#combine-with-other-tools): the two toolsets work independently, each in its own coordinate frame, and calls to members that share a name, such as `screenshot` or `key`, are told apart by `toolset_name`.
+For tasks that stay inside webpages, you can also [declare the browser use tool in the same request](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool?sdk_languages=cli#combine-with-other-tools). The two toolsets work independently, each in its own coordinate frame. The `toolset_name` value distinguishes calls to members that share a name, such as `screenshot` or `key`.
 
 ### Build a custom computer use environment
 
@@ -1674,7 +1674,7 @@ If clicks miss their targets, the cause is usually one of the following:
       ```typescript TypeScript
       async function clickAndWait(x: number, y: number, waitMs = 500): Promise<void> {
         clickAt(x, y);
-        await setTimeout(waitMs); // Allow UI to update
+        await new Promise((resolve) => setTimeout(resolve, waitMs)); // Allow UI to update
       }
       ```
 

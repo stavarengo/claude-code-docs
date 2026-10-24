@@ -6,6 +6,8 @@
 
 Model ID: `codex-mini-latest`
 
+Status: Shut down
+
 codex-mini-latest is a fine-tuned version of o4-mini specifically
 for use in Codex CLI. For direct use in the API, we recommend starting
 with gpt-4.1.
@@ -77,7 +79,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for codex-mini-latest.
 
-- `codex-mini-latest`
+- `codex-mini-latest` — Shut down
 
 ## Rate limits
 

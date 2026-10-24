@@ -611,7 +611,7 @@ message = (
 print(message.content)
 ```
 
-These methods return an `APIResponse` object. On the async client they return an `AsyncAPIResponse`, and `.parse()`, `.read()`, `.text()`, and `.json()` must be awaited.
+These methods return an `APIResponse` object. On the async client they return an `AsyncAPIResponse`, and you must await `.parse()`, `.read()`, `.text()`, and `.json()`.
 
 ### Streaming response body
 
@@ -640,6 +640,10 @@ You can enable logging by setting the environment variable `ANTHROPIC_LOG` to `d
 ```bash
 export ANTHROPIC_LOG=debug
 ```
+
+### OpenTelemetry tracing
+
+When your application registers an OpenTelemetry tracer provider, the SDK emits a span for each request that it sends. To send the spans to your observability platform, see [Set up OpenTelemetry with the Claude SDK](https://platform.claude.com/docs/en/manage-claude/opentelemetry/sdk?sdk_languages=cli).
 
 ### Making custom/undocumented requests
 

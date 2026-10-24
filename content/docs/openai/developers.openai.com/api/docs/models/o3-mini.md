@@ -6,6 +6,8 @@
 
 Model ID: `o3-mini`
 
+Status: Shut down
+
 o3-mini is our newest small reasoning model, providing high intelligence at the same cost and latency targets of o1-mini. o3-mini supports key developer features, like Structured Outputs, function calling, and Batch API.
 
 ## Model details
@@ -83,7 +85,7 @@ Tools supported by this model when using the Responses API.
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for o3-mini.
 
-- `o3-mini-2025-01-31`
+- `o3-mini-2025-01-31` — Shut down
 
 ## Rate limits
 

@@ -183,7 +183,7 @@ Under any permission policy, each `agent.tool_use` and `agent.mcp_tool_use` even
 
 For example, when `bash` is under `auto` and the server evaluates a call as high-risk, the denied call appears on the event stream as follows:
 
-```text wrap
+```json
 {
   "type": "agent.tool_use",
   "id": "sevt_01pqr...",
@@ -230,7 +230,7 @@ A tool call evaluates to `ask` under an `always_ask` policy, or under `auto` whe
 
 For example, a `bash` call paused under an `always_ask` policy appears on the stream as follows:
 
-```text wrap
+```json
 {
   "type": "agent.tool_use",
   "id": "sevt_01def...",

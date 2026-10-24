@@ -6,6 +6,8 @@
 
 Model ID: `gpt-image-1-mini`
 
+Status: Deprecated
+
 A cost-efficient version of GPT Image 1. It is a natively multimodal language model that accepts both text and image inputs, and produces image outputs.
 
 ## Model details
@@ -87,7 +89,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-Image-1 Mini.
 
-- `gpt-image-1-mini`
+- `gpt-image-1-mini` — Deprecated
 
 ## Rate limits
 

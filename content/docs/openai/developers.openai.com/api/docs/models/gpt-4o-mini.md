@@ -6,6 +6,8 @@
 
 Model ID: `gpt-4o-mini`
 
+Status: Deprecated
+
 GPT-4o Mini (“o” for “omni”) is a fast, affordable small model for focused tasks.
 It accepts both text and image inputs, and produces text outputs (including Structured Outputs). 
 It is ideal for fine-tuning, and model outputs from a larger model like GPT-4o can be distilled to GPT-4o-Mini to produce similar results at lower cost and latency.
@@ -89,7 +91,7 @@ Tools supported by this model when using the Responses API.
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4o Mini.
 
-- `gpt-4o-mini-2024-07-18`
+- `gpt-4o-mini-2024-07-18` — Deprecated
 
 ## Rate limits
 

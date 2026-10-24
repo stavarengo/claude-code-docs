@@ -102,7 +102,7 @@ Structured outputs guarantee schema-compliant responses through constrained deco
 
     Claude returns JSON like this in the response's text content block:
 
-    ```text Output wrap
+    ```json Output
     {
       "name": "John Smith",
       "email": "john@example.com",
@@ -160,7 +160,7 @@ To use a JSON schema from a file, an OpenAPI spec, or code that builds it at run
 
     Claude returns JSON like this in the response's text content block:
 
-    ```text Output wrap
+    ```json Output
     {
       "name": "John Smith",
       "email": "john@example.com",

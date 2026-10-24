@@ -6,6 +6,8 @@
 
 Model ID: `gpt-4o-audio-preview`
 
+Status: Shut down
+
 This is a preview release of the GPT-4o Audio models. These models accept 
 audio inputs and outputs, and can be used in the Chat Completions REST API.
 
@@ -68,9 +70,9 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4o Audio.
 
-- `gpt-4o-audio-preview-2025-06-03`
-- `gpt-4o-audio-preview-2024-12-17`
-- `gpt-4o-audio-preview-2024-10-01`
+- `gpt-4o-audio-preview-2025-06-03` — Shut down
+- `gpt-4o-audio-preview-2024-12-17` — Shut down
+- `gpt-4o-audio-preview-2024-10-01` — Shut down
 
 ## Rate limits
 

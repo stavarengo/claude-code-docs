@@ -6,6 +6,8 @@
 
 Model ID: `o3-deep-research`
 
+Status: Shut down
+
 o3-deep-research is our most advanced model for deep research, 
 designed to tackle complex, multi-step research tasks. It can 
 search and synthesize information from across the internet as 
@@ -88,7 +90,7 @@ Tools supported by this model when using the Responses API.
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for o3-deep-research.
 
-- `o3-deep-research-2025-06-26`
+- `o3-deep-research-2025-06-26` — Shut down
 
 ## Rate limits
 

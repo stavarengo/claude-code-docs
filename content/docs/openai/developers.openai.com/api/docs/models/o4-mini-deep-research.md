@@ -6,6 +6,8 @@
 
 Model ID: `o4-mini-deep-research`
 
+Status: Shut down
+
 o4-mini-deep-research is our faster, more affordable deep 
 research model—ideal for tackling complex, multi-step research 
 tasks. It can search and synthesize information from across the 
@@ -89,7 +91,7 @@ Tools supported by this model when using the Responses API.
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for o4-mini-deep-research.
 
-- `o4-mini-deep-research-2025-06-26`
+- `o4-mini-deep-research-2025-06-26` — Shut down
 
 ## Rate limits
 

@@ -6,6 +6,8 @@
 
 Model ID: `gpt-4o-transcribe-diarize`
 
+Status: Deprecated
+
 GPT-4o Transcribe Diarize is an automatic speech recognition (ASR) model with built-in speaker diarization, meaning it associates audio segments with different speakers in a conversation. This model is only available in the Transcription API.
 
 ## Model details
@@ -55,7 +57,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4o Transcribe Diarize.
 
-- `gpt-4o-transcribe-diarize`
+- `gpt-4o-transcribe-diarize` — Deprecated
 
 ## Rate limits
 

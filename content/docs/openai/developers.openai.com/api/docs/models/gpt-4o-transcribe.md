@@ -6,6 +6,8 @@
 
 Model ID: `gpt-4o-transcribe`
 
+Status: Deprecated
+
 GPT-4o Transcribe is a speech-to-text model that uses GPT-4o to transcribe audio.
 It offers improvements to word error rate and better language recognition and accuracy compared to original Whisper models. Use it for more accurate transcripts.
 
@@ -63,7 +65,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4o Transcribe.
 
-- `gpt-4o-transcribe`
+- `gpt-4o-transcribe` — Deprecated
 
 ## Rate limits
 

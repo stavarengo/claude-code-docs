@@ -6,6 +6,8 @@
 
 Model ID: `gpt-4-turbo-preview`
 
+Status: Shut down
+
 This is a research preview of the GPT-4 Turbo model, an older high-intelligence GPT model.
 
 ## Model details
@@ -67,8 +69,8 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4 Turbo Preview.
 
-- `gpt-4-0125-preview`
-- `gpt-4-1106-vision-preview`
+- `gpt-4-0125-preview` — Shut down
+- `gpt-4-1106-vision-preview` — Shut down
 
 ## Rate limits
 

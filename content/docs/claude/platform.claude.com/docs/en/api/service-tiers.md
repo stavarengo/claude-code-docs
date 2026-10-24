@@ -82,7 +82,7 @@ The `service_tier` parameter accepts the following values:
 
 The response `usage` object also includes the service tier assigned to the request:
 
-```text wrap
+```json
 {
   "usage": {
     "input_tokens": 410,

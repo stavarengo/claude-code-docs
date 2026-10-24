@@ -91,6 +91,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Custom voices](https://developers.openai.com/api/docs/guides/custom-voices.md): Create a voice from a text prompt for GPT-Live, or use an approved recording for speech generation and voice agents.
 - [Cybersecurity checks](https://developers.openai.com/api/docs/guides/safety-checks/cybersecurity.md): Learn about API cybersecurity safeguards, authorized access, request-level checks, access restrictions, and appeals.
 - [Data controls in the OpenAI platform](https://developers.openai.com/api/docs/guides/your-data.md): Your data is your data. An overview of how OpenAI uses your data, including retention and usage policies.
+- [Databricks Sandbox](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/databricks.md): Connect a Databricks Sandbox to an Agents API session and verify that the agent can write a file.
 - [Daytona](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/daytona.md): Run an Agents API session in a Daytona Sandbox.
 - [Decisions](https://developers.openai.com/api/docs/guides/decisions.md): Use the Decisions API to check conditions, select from fixed options, and score text, images, and JSON against a rubric.
 - [Deep research](https://developers.openai.com/api/docs/guides/deep-research.md): Use deep research models for complex analysis and research tasks.
@@ -199,6 +200,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Sandbox Agents](https://developers.openai.com/api/docs/guides/agents/sandboxes.md): Learn how sandboxes fit into Agents SDK workflows, when to use them, and how orchestration stays separate from execution.
 - [Sandbox lifecycle](https://developers.openai.com/api/docs/guides/agents-api/environments/lifecycle.md): Start, reconnect, and stop your agent's environment.
 - [Sandbox security](https://developers.openai.com/api/docs/guides/agents-api/environments/security.md): Isolate workloads, restrict network access, and protect credentials.
+- [Scheduled automations](https://developers.openai.com/api/docs/guides/agents-api/sessions/automations.md): Run agent work on a schedule or let an agent schedule future work.
 - [Secure MCP Tunnel](https://developers.openai.com/api/docs/guides/secure-mcp-tunnels.md): Connect private or on-prem MCP servers to supported OpenAI products with an outbound-only MCP tunnel, without exposing them to the public internet.
 - [Self-hosted sandboxes](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted.md): Connect your compute and files to an agent session.
 - [Server-side controls](https://developers.openai.com/api/docs/guides/voice-server-controls.md): Keep session control and private tool execution on your server.

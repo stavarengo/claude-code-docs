@@ -56,7 +56,7 @@ For complete parameter details and response schemas, see the [Organization Rate 
   ```
 </CodeGroup>
 
-```text wrap
+```json
 {
   "data": [
     {
@@ -145,7 +145,7 @@ For complete parameter details and response schemas, see the [Workspace Rate Lim
   ```
 </CodeGroup>
 
-```text wrap
+```json
 {
   "data": [
     {
@@ -227,7 +227,7 @@ To read a workspace's applicable limits in one request, add the optional `includ
   ```
 </CodeGroup>
 
-```text wrap
+```json
 {
   "data": [
     {

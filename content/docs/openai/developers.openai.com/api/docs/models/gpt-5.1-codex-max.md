@@ -6,6 +6,8 @@
 
 Model ID: `gpt-5.1-codex-max`
 
+Status: Shut down
+
 GPT‑5.1-Codex-Max is purpose-built for agentic coding.
 It's only available in the [Responses API](/api/docs/api-reference/responses).
 Learn how to get the most of GPT-5.1-Codex-Max in the [prompting guide](/cookbook/examples/gpt-5/codex_prompting_guide).
@@ -82,7 +84,7 @@ Tools supported by this model when using the Responses API.
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-5.1-Codex-Max.
 
-- `gpt-5.1-codex-max`
+- `gpt-5.1-codex-max` — Shut down
 
 ## Rate limits
 

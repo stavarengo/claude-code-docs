@@ -6,6 +6,8 @@
 
 Model ID: `chatgpt-image-latest`
 
+Status: Deprecated
+
 This points to the Image snapshot previously used in ChatGPT. We recommend [GPT-Image-2.5 Sunburst](/api/docs/models/gpt-image-2.5-sunburst) for API use.
 
 ## Model details
@@ -92,7 +94,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for chatgpt-image-latest.
 
-- `chatgpt-image-latest`
+- `chatgpt-image-latest` — Deprecated
 
 ## Rate limits
 

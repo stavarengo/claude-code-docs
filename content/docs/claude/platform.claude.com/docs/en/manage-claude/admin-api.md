@@ -10,7 +10,7 @@ The [Admin API](https://platform.claude.com/docs/en/api/organization?sdk_languag
 
 The Admin API is unavailable for individual accounts. To collaborate with teammates and add members, set up your organization on the [Organization](https://platform.claude.com/settings/organization) page (`platform.claude.com/settings/organization`) in the Claude Console.
 
-Claude Enterprise (claude.ai) organizations call the Admin API with a scoped API key created in claude.ai. From this page, only the members and invites endpoints apply to them. They also get Enterprise-only endpoints: group and custom-role reads, and [spend limits](https://platform.claude.com/docs/en/manage-claude/spend-limits-api?sdk_languages=cli). The [Plugins API](https://platform.claude.com/docs/en/manage-claude/plugins-api?sdk_languages=cli), also Enterprise-only, is in beta. See [User management](https://platform.claude.com/docs/en/manage-claude/user-management?sdk_languages=cli).
+Claude Enterprise (claude.ai) organizations call the Admin API with a scoped API key created in claude.ai. From this page, only the members and invites endpoints apply to them. They also get Enterprise-only endpoints: group and custom-role reads, and [spend limits](https://platform.claude.com/docs/en/manage-claude/spend-limits-api?sdk_languages=cli). The [Plugins API](https://platform.claude.com/docs/en/manage-claude/plugins-api?sdk_languages=cli), also Enterprise-only, is in beta. So is the [Claude Tag API](https://platform.claude.com/docs/en/manage-claude/claude-tag-api?sdk_languages=cli). See [User management](https://platform.claude.com/docs/en/manage-claude/user-management?sdk_languages=cli).
 
 On [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), only these Admin API endpoints are available:
 
@@ -112,7 +112,7 @@ Update a member's role:
 <CodeGroup>
   ```bash CLI
   ant organization:users update \
-    --user-id user_01XyDMpzjS89pFZXqSFUBDr6 \
+    --user-id user_01WxYzAbCdEfGhJkMnPqRsTu \
     --role developer
   ```
 </CodeGroup>
@@ -121,7 +121,7 @@ Remove a member from the organization:
 
 <CodeGroup>
   ```bash CLI
-  ant organization:users remove --user-id user_01XyDMpzjS89pFZXqSFUBDr6
+  ant organization:users remove --user-id user_01WxYzAbCdEfGhJkMnPqRsTu
   ```
 </CodeGroup>
 
@@ -167,7 +167,7 @@ Add a member to a workspace:
   ```bash CLI
   ant organization:workspaces:members add \
     --workspace-id wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ \
-    --user-id user_01XyDMpzjS89pFZXqSFUBDr6 \
+    --user-id user_01WxYzAbCdEfGhJkMnPqRsTu \
     --workspace-role workspace_developer
   ```
 </CodeGroup>
@@ -187,7 +187,7 @@ Update a workspace member's role:
 <CodeGroup>
   ```bash CLI
   ant organization:workspaces:members update \
-    --user-id user_01XyDMpzjS89pFZXqSFUBDr6 \
+    --user-id user_01WxYzAbCdEfGhJkMnPqRsTu \
     --workspace-id wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ \
     --workspace-role workspace_admin
   ```
@@ -198,7 +198,7 @@ Remove a member from a workspace:
 <CodeGroup>
   ```bash CLI
   ant organization:workspaces:members remove \
-    --user-id user_01XyDMpzjS89pFZXqSFUBDr6 \
+    --user-id user_01WxYzAbCdEfGhJkMnPqRsTu \
     --workspace-id wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ
   ```
 </CodeGroup>
@@ -251,7 +251,7 @@ The `/v1/organizations/me` endpoint returns the organization that your credentia
   ```
 </CodeGroup>
 
-```text wrap
+```json
 {
   "id": "12345678-1234-5678-1234-567812345678",
   "type": "organization",
