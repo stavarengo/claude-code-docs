@@ -6,7 +6,7 @@ description: Declare agents, environments, skills, memory stores, deployments, a
 
 `ant apply` creates and updates Claude API resources from files: agents, environments, skills, memory stores, deployments, and vaults. They live in your repository and change through the same review as your code. You describe each resource in a file, run `ant apply`, and approve the plan it shows. Then you commit the `claude-lock.json` it writes, so the next run updates the same resources instead of creating new ones.
 
-To install and authenticate the CLI, see the [CLI quickstart](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/quickstart?sdk_languages=cli). `ant apply` requires CLI version 1.30.0 or later.
+To install and authenticate the CLI, see the [CLI quickstart](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/quickstart?sdk_languages=curl). `ant apply` requires CLI version 1.30.0 or later.
 
 ## Apply your first agent
 
@@ -33,7 +33,7 @@ Write the agent as a Markdown file under `agents/` and apply it:
   </CodeGroupItem>
 </CodeGroup>
 
-The frontmatter holds the agent's configuration (the fields from [Define your agent](https://platform.claude.com/docs/en/managed-agents/agent-setup?sdk_languages=cli)) and the body is its system prompt. `ant apply` [infers](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/apply?sdk_languages=cli#kind-inference) that the file is an agent from its path, here the `agents/` directory.
+The frontmatter holds the agent's configuration (the fields from [Define your agent](https://platform.claude.com/docs/en/managed-agents/agent-setup?sdk_languages=curl)) and the body is its system prompt. `ant apply` [infers](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/apply?sdk_languages=curl#kind-inference) that the file is an agent from its path, here the `agents/` directory.
 
 In an interactive terminal, `ant apply` prints the plan and waits for your approval:
 
@@ -93,17 +93,17 @@ The first `ant apply` writes `claude-lock.json`, the lockfile, in the directory 
 }
 ```
 
-Commit it with your files. It's how the next run, on your machine or in CI, finds these resources instead of creating them again, and it's where you read an agent's ID to [start a session](https://platform.claude.com/docs/en/managed-agents/sessions?sdk_languages=cli). The two hashes fingerprint what was last sent and what the API returned. That's how a later run detects an edited file, or a resource changed outside these files.
+Commit it with your files. It's how the next run, on your machine or in CI, finds these resources instead of creating them again, and it's where you read an agent's ID to [start a session](https://platform.claude.com/docs/en/managed-agents/sessions?sdk_languages=curl). The two hashes fingerprint what was last sent and what the API returned. That's how a later run detects an edited file, or a resource changed outside these files.
 
 ## Grow it into a project
 
 You can declaratively define the other resources as files as well. A file holds the request body you would send to that kind's create endpoint:
 
-* An [environment](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli) is a YAML file in `environments/`.
-* A [memory store](https://platform.claude.com/docs/en/managed-agents/memory?sdk_languages=cli) is a YAML file in `memory_stores/`.
-* A [deployment](https://platform.claude.com/docs/en/managed-agents/scheduled-deployments?sdk_languages=cli) is a Markdown file in `deployments/`: the frontmatter is the request body and the prose becomes the message that starts each session.
-* A [skill](https://platform.claude.com/docs/en/managed-agents/skills?sdk_languages=cli) is a directory with a `SKILL.md` at its root, conventionally under `skills/`, uploaded as one bundle.
-* A [vault](https://platform.claude.com/docs/en/managed-agents/vaults?sdk_languages=cli) is a YAML file in `vaults/` whose only fields are `display_name` and, optionally, `metadata`. Vault files need CLI version 1.34.0 or later.
+* An [environment](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=curl) is a YAML file in `environments/`.
+* A [memory store](https://platform.claude.com/docs/en/managed-agents/memory?sdk_languages=curl) is a YAML file in `memory_stores/`.
+* A [deployment](https://platform.claude.com/docs/en/managed-agents/scheduled-deployments?sdk_languages=curl) is a Markdown file in `deployments/`: the frontmatter is the request body and the prose becomes the message that starts each session.
+* A [skill](https://platform.claude.com/docs/en/managed-agents/skills?sdk_languages=curl) is a directory with a `SKILL.md` at its root, conventionally under `skills/`, uploaded as one bundle.
+* A [vault](https://platform.claude.com/docs/en/managed-agents/vaults?sdk_languages=curl) is a YAML file in `vaults/` whose only fields are `display_name` and, optionally, `metadata`. Vault files need CLI version 1.34.0 or later.
 
 Any resource except a skill can be written as YAML, JSON, or Markdown. In Markdown, the frontmatter is the body and the prose fills the kind's text field: an agent's `system`, an environment's or memory store's `description`, a deployment's first message. A vault has no text field, so `ant apply` refuses a vault Markdown file that has prose.
 
@@ -271,7 +271,7 @@ Without a terminal, `ant apply` prints the plan and stops with `cannot ask for c
 * On pull requests, run `ant apply --dry-run .` to print the plan for reviewers. It's informational only and exits 0 even when the plan is blocked.
 * Commit the updated `claude-lock.json` at the end of the job, even when the apply step failed partway, because a partial apply still records what it created.
 * Run one apply at a time, because nothing locks the lockfile.
-* Authenticate with [Workload Identity Federation](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation?sdk_languages=cli) rather than a stored API key, as an identity that reaches the organization and workspace recorded in `claude-lock.json`. `ant apply` refuses credentials that resolve to any other organization or workspace.
+* Authenticate with [Workload Identity Federation](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation?sdk_languages=curl) rather than a stored API key, as an identity that reaches the organization and workspace recorded in `claude-lock.json`. `ant apply` refuses credentials that resolve to any other organization or workspace.
 
 This GitHub Actions workflow does all of that except the pull request plan. It applies on every push to `main`:
 
@@ -320,7 +320,7 @@ jobs:
 
 Run the first `ant apply` on your machine and commit `claude-lock.json` before you turn the workflow on. The last step commits changes only to a lockfile that Git already tracks.
 
-To create the federation rule and service account that the `env` block names, see [Use WIF with GitHub Actions](https://platform.claude.com/docs/en/manage-claude/wif-providers/github-actions?sdk_languages=cli). Enable the rule for a single workspace, the one recorded in `claude-lock.json`, so that the token exchange doesn't need a workspace ID. Because the job names an environment, its identity token's `sub` claim is `repo:<owner>/<repo>:environment:agents-prod`, so that's the value the rule's `subject_prefix` must match.
+To create the federation rule and service account that the `env` block names, see [Use WIF with GitHub Actions](https://platform.claude.com/docs/en/manage-claude/wif-providers/github-actions?sdk_languages=curl). Enable the rule for a single workspace, the one recorded in `claude-lock.json`, so that the token exchange doesn't need a workspace ID. Because the job names an environment, its identity token's `sub` claim is `repo:<owner>/<repo>:environment:agents-prod`, so that's the value the rule's `subject_prefix` must match.
 
 ## Flags
 
@@ -337,15 +337,15 @@ To create the federation rule and service account that the `env` block names, se
 ## Next steps
 
 <CardGroup cols={3}>
-  <Card title="Start a session" icon="terminal" href="https://platform.claude.com/docs/en/managed-agents/sessions?sdk_languages=cli">
+  <Card title="Start a session" icon="terminal" href="https://platform.claude.com/docs/en/managed-agents/sessions?sdk_languages=curl">
     Run the agents you applied, from the CLI or an SDK
   </Card>
 
-  <Card title="Scheduled deployments" icon="clock" href="https://platform.claude.com/docs/en/managed-agents/scheduled-deployments?sdk_languages=cli">
+  <Card title="Scheduled deployments" icon="clock" href="https://platform.claude.com/docs/en/managed-agents/scheduled-deployments?sdk_languages=curl">
     Deployment fields, run history, and pausing
   </Card>
 
-  <Card title="CLI scripting and automation" icon="code" href="https://platform.claude.com/docs/en/cli-sdks-libraries/cli/scripting?sdk_languages=cli">
+  <Card title="CLI scripting and automation" icon="code" href="https://platform.claude.com/docs/en/cli-sdks-libraries/cli/scripting?sdk_languages=curl">
     Scripting patterns and use from Claude Code
   </Card>
 </CardGroup>
