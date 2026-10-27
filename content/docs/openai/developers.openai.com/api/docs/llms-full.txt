@@ -1999,15 +1999,7 @@ On April 22, 2026, we announced the deprecation of the following older OpenAI mo
 | October 23, 2026 | `ft-o4-mini-2025-04-16`                                                | `gpt-5.6-terra`                                   |
 | October 23, 2026 | `o4-mini-2025-04-16` \| `o4-mini`                                      | `gpt-5.6-terra`                                   |
 
-The following fine-tuned versions were also shut down on October 23, 2026:
-
-| Shutdown date    | Model snapshot               | Recommended replacement base model |
-| ---------------- | ---------------------------- | ---------------------------------- |
-| October 23, 2026 | `ft-gpt-3.5-turbo`           | `gpt-5.6-terra`                    |
-| October 23, 2026 | `ft-gpt-4`                   | `gpt-5.6-sol`                      |
-| October 23, 2026 | `ft-gpt-4.1-nano-2025-04-14` | `gpt-5.6-luna`                     |
-| October 23, 2026 | `ft-babbage-002`             | `gpt-5.6-terra`                    |
-| October 23, 2026 | `ft-davinci-002`             | `gpt-5.6-terra`                    |
+Fine-tuned versions of these models follow the same shutdown schedule as their underlying base models.
 
 ### 2026-04-22: Legacy GPT model snapshots (July 2026 shutdown)
 
@@ -2070,7 +2062,7 @@ On November 14th, 2025, we notified developers using DALL·E model snapshots of 
 
 ### 2025-09-26: Legacy GPT model snapshots
 
-To improve reliability and make it easier for developers to choose the right models, we are deprecating a set of older OpenAI models with declining usage over the next six to twelve months. Access to these models will be shut down on the dates below.
+To improve reliability and make it easier for developers to choose the right models, we deprecated a set of older OpenAI models with declining usage. Access to these models was shut down on September 28, 2026.
 
 | Shutdown date | Model / system           | Recommended replacement |
 | ------------- | ------------------------ | ----------------------- |
@@ -2916,7 +2908,7 @@ const spendAlert = await client.admin.organization.projects.spendAlerts.create(
     notification_channel: {
       recipients: ["billing@example.com"],
       type: "email",
-      subject_prefix: "[OpenAI spend]",
+      subject_prefix: "OpenAI spend",
     },
     threshold_amount: 50000,
   }
@@ -7153,13 +7145,39 @@ At a high level, using `apply_patch` with the Responses API looks like this:
 Ask the model to plan and emit patches
 
 ```javascript
-const response = await client.responses.create({
+import OpenAI from "openai";
+// Application-owned helper; see "Implementing the patch harness" in the guide.
+// This demo only applies exact updates to the two in-memory files below.
+import { applyOperation } from "../../support/apply-patch.mjs";
+
+const client = new OpenAI();
+const files = {
+  "lib/fib.py": `def fib(n):
+    if n <= 1:
+        return n
+    return fib(n - 1) + fib(n - 2)
+`,
+  "run.py": `from lib.fib import fib
+
+print(fib(42))
+`,
+};
+const fileContext = `The user has the following files:
+<BEGIN_FILES>
+${Object.entries(files)
+  .map(([path, content]) => `===== ${path}\n${content}`)
+  .join("\n")}
+<END_FILES>
+
+Help me rename the fib() function to fibonacci().`;
+
+let response = await client.responses.create({
   model: "gpt-6-astra",
   input: fileContext,
   tools: [{ type: "apply_patch" }],
 });
 
-const patchCalls = response.output.filter(
+let patchCalls = response.output.filter(
   (item) => item.type === "apply_patch_call"
 );
 ```
@@ -7285,25 +7303,34 @@ Example apply_patch_call object
 Apply the patch and return results
 
 ```javascript
-const results = patchCalls.map((call) => {
-  const { success, output } = applyOperation(call.operation);
+for (let turn = 0; patchCalls.length > 0; turn++) {
+  if (turn === 8) throw new Error("Patch workflow exceeded eight tool turns.");
+  const results = patchCalls.map((call) => {
+    const { success, output } = applyOperation(files, call.operation);
 
-  return {
-    type: "apply_patch_call_output",
-    call_id: call.call_id,
-    status: success ? "completed" : "failed",
-    output,
-  };
-});
+    return {
+      type: "apply_patch_call_output",
+      call_id: call.call_id,
+      status: success ? "completed" : "failed",
+      output,
+    };
+  });
 
-const followup = await client.responses.create({
-  model: "gpt-6-astra",
-  previous_response_id: response.id,
-  input: results,
-  tools: [{ type: "apply_patch" }],
-});
+  response = await client.responses.create({
+    model: "gpt-6-astra",
+    previous_response_id: response.id,
+    input: results,
+    tools: [{ type: "apply_patch" }],
+  });
+  patchCalls = response.output.filter(
+    (item) => item.type === "apply_patch_call"
+  );
+}
 
-console.log(followup.output_text);
+console.log(response.output_text);
+for (const [path, content] of Object.entries(files)) {
+  process.stdout.write(`===== ${path}\n${content}`);
+}
 ```
 
 ```python
@@ -8781,7 +8808,7 @@ const response = await openai.chat.completions.create({
       ],
     },
   ],
-  store: true,
+  store: false,
 });
 
 console.log(response.choices[0]);
@@ -9618,13 +9645,19 @@ const stream = await client.responses.create({
 });
 
 let cursor = null;
+let responseId = null;
 for await (const event of stream) {
   console.log(event);
-  cursor = event.sequence_number;
+  // Keepalives use connection counters, not stored-event resume positions.
+  if (String(event.type) !== "keepalive") cursor = event.sequence_number;
+  if ("response" in event && event.response?.id) responseId = event.response.id;
 }
 
-// If the connection drops, you can resume streaming from the last cursor (SDK support coming soon):
-// const resumedStream = await client.responses.stream(resp.id, { starting_after: cursor });
+// If the connection drops, resume streaming from the last stored-event cursor:
+// const resumedStream = await client.responses.retrieve(responseId, {
+//   stream: true,
+//   starting_after: cursor,
+// });
 // for await (const event of resumedStream) { ... }
 ```
 
@@ -13757,6 +13790,7 @@ necessary context to continue the conversation. If you use
 ```javascript
 import OpenAI from "openai";
 import { toResponseInputItems } from "openai/lib/responses/ResponseInputItems";
+import { createInterface } from "node:readline";
 
 const client = new OpenAI();
 
@@ -13768,15 +13802,32 @@ const conversation = [
   },
 ];
 
-const response = await client.responses.create({
-  model: "gpt-5.3-codex",
-  input: conversation,
-  store: false,
-  context_management: [{ type: "compaction", compact_threshold: 200_000 }],
-});
+// Subscribe before generation so piped follow-up turns are not lost.
+const lines = createInterface({ input: process.stdin, crlfDelay: Infinity });
+const turns = lines[Symbol.asyncIterator]();
 
-conversation.push(...toResponseInputItems(response.output));
-console.log(response.output_text);
+async function respond() {
+  const response = await client.responses.create({
+    model: "gpt-5.3-codex",
+    input: conversation,
+    store: false,
+    context_management: [{ type: "compaction", compact_threshold: 200_000 }],
+  });
+
+  conversation.push(...toResponseInputItems(response.output));
+  console.log(response.output_text);
+}
+
+try {
+  await respond();
+  for await (const line of turns) {
+    if (!line.trim()) continue;
+    conversation.push({ type: "message", role: "user", content: line });
+    await respond();
+  }
+} finally {
+  lines.close();
+}
 ```
 
 ```python
@@ -14197,14 +14248,15 @@ puts(response.output_text)
 
 # Completions API
 
-`gpt-3.5-turbo-instruct`, `babbage-002`, and `davinci-002` have a scheduled
-  shutdown date of September 28, 2026. The examples below retain the legacy
-  request format for reference. The documented replacement, `gpt-5.6-terra`,
-  requires migration to the [Responses
-  API](https://developers.openai.com/api/docs/guides/migrate-to-responses) or Chat Completions; it
-  is not a drop-in model replacement for the legacy Completions endpoint. See
-  the [deprecation
-  notice](https://developers.openai.com/api/docs/deprecations#2025-09-26-legacy-gpt-model-snapshots).
+`gpt-3.5-turbo-instruct`, `babbage-002`, and `davinci-002` were shut down on
+  [September 28,
+  2026](https://developers.openai.com/api/docs/deprecations#2025-09-26-legacy-gpt-model-snapshots).
+  Fine-tuned versions of `babbage-002` and `davinci-002` were shut down on
+  [October 23,
+  2026](https://developers.openai.com/api/docs/deprecations#2026-04-22-legacy-gpt-model-snapshots). The
+  examples below show the legacy `/v1/completions` request format for reference.
+  To use current models, migrate your requests to the [Responses
+  API](https://developers.openai.com/api/docs/guides/migrate-to-responses) or Chat Completions.
 
 The completions API endpoint received its final update in July 2023 and has a different interface than the new Chat Completions endpoint. Instead of the input being a list of messages, the input is a freeform text string called a `prompt`.
 
@@ -14707,9 +14759,13 @@ curl --fail-with-body "https://api.openai.com/v1/agents/sessions/$session_id/eve
 ```
 
 ```javascript
-import promptSync from "prompt-sync";
+import { createInterface } from "node:readline";
 
-const prompt = promptSync({ sigint: true });
+const inputLines = createInterface({
+  input: process.stdin,
+  crlfDelay: Infinity,
+});
+const answers = inputLines[Symbol.asyncIterator]();
 
 /** @param {OpenAI} client */
 async function respondToOriginApproval(client, sessionId, approval) {
@@ -14719,10 +14775,11 @@ async function respondToOriginApproval(client, sessionId, approval) {
     console.log(request.reason ?? "The browser needs access to this origin.");
     let input;
     do {
-      input =
-        prompt("Allow access? [approve/deny/cancel, default deny] ")
-          .trim()
-          .toLowerCase() || "deny";
+      process.stdout.write(
+        "Allow access? [approve/deny/cancel, default deny] "
+      );
+      const answer = await answers.next();
+      input = (answer.done ? "" : answer.value).trim().toLowerCase() || "deny";
     } while (!["approve", "deny", "cancel"].includes(input));
     const decision =
       input === "approve" ? "approve" : input === "cancel" ? "cancel" : "deny";
@@ -35790,7 +35847,7 @@ The following models and API services are eligible for data residency today for 
 
 Use **Support by region** to compare regional capabilities and expand the services available in each region. Use **API Endpoint, tool and model support** for complete model lists and a detailed service view. Support for regional storage does not imply support for regional processing.
 
-EU data residency is not available for every model in Fast mode. Fast mode supports EU data residency for GPT-6.1 Sol and GPT-6 Luna. Fast mode is not available with EU data residency for GPT-6 Astra or GPT-6 Sol. GPT-6.1 Sol, GPT-6 Sol, and GPT-6 Luna support EU data residency with Standard, Flex, and Batch processing. [Ultrafast mode](https://developers.openai.com/api/docs/guides/ultrafast-mode) for GPT-6.1 Sol supports US and EU data residency and global processing. GPT-6 Astra Ultrafast supports US data residency and global processing only.
+Fast mode supports EU data residency for GPT-6.1 Sol, GPT-6.1 Terra, and GPT-6 Luna. Fast mode is not available with EU data residency for GPT-6 Astra or GPT-6 Sol. GPT-6.1 Sol, GPT-6.1 Terra, GPT-6 Sol, and GPT-6 Luna support EU data residency with Standard, Flex, and Batch processing. [Ultrafast mode](https://developers.openai.com/api/docs/guides/ultrafast-mode) for GPT-6.1 Sol supports US and EU data residency and global processing. GPT-6 Astra Ultrafast supports US data residency and global processing only.
 
 #### Support by region
 
@@ -35815,34 +35872,34 @@ The complete, unfiltered regional support table follows. Model snapshots for eac
 
 #### API Endpoint, tool and model support
 
-| Endpoint or feature                                                  | Service          | Storage regions                           | Processing regions                                              | Supported models and snapshots                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Regional processing snapshot exceptions                                                                    | Notes                                                                                                                                                                                                    |
-| -------------------------------------------------------------------- | ---------------- | ----------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/v1/audio/transcriptions, /v1/audio/translations, /v1/audio/speech` | Audio            | All listed regions                        | United States, Europe (EEA + Switzerland)                       | `tts-1`, `whisper-1`, `gpt-4o-tts`, `gpt-4o-transcribe`, `gpt-4o-mini-transcribe`, `gpt-transcribe`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | None                                                                                                       | —                                                                                                                                                                                                        |
-| `/v1/batches`                                                        | Batches          | All listed regions                        | United States, Europe (EEA + Switzerland)                       | `gpt-6-astra`, `gpt-6.1-sol`, `gpt-6-sol`, `gpt-6-luna`, `gpt-5.5-pro-2026-04-23`, `gpt-5.4-pro-2026-03-05`, `gpt-5.2-pro-2025-12-11`, `gpt-5-pro-2025-10-06`, `gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-5.6-luna`, `gpt-5.5-2026-04-23`, `gpt-5.4-2026-03-05`, `gpt-5-2025-08-07`, `gpt-5.4-mini-2026-03-17`, `gpt-5.4-nano-2026-03-17`, `gpt-5.2-2025-12-11`, `gpt-5.1-2025-11-13`, `gpt-5-mini-2025-08-07`, `gpt-5-nano-2025-08-07`, `gpt-4.1-2025-04-14`, `gpt-4.1-mini-2025-04-14`, `gpt-4.1-nano-2025-04-14`, `o3-2025-04-16`, `o4-mini-2025-04-16`, `o1-pro`, `o1-pro-2025-03-19`, `o3-mini-2025-01-31`, `o1-2024-12-17`, `gpt-4o-2024-11-20`, `gpt-4o-2024-08-06`, `gpt-4o-mini-2024-07-18`, `gpt-4-turbo-2024-04-09`, `gpt-4-0613`, `gpt-3.5-turbo-0125` | None                                                                                                       | GPT-6.1 Sol, GPT-6 Sol, and GPT-6 Luna support EU data residency with Standard, Flex, and Batch processing. GPT-6.1 Sol supports only US and EU data residency.                                          |
-| `/v1/chat/completions`                                               | Chat Completions | All listed regions                        | United States, Europe (EEA + Switzerland), United Arab Emirates | `gpt-6-astra`, `gpt-6.1-sol`, `gpt-6-sol`, `gpt-6-luna`, `gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-5.6-luna`, `gpt-5.5-2026-04-23`, `gpt-5.4-2026-03-05`, `gpt-5.4-mini-2026-03-17`, `gpt-5.4-nano-2026-03-17`, `gpt-5.2-2025-12-11`, `gpt-5.1-2025-11-13`, `gpt-5-2025-08-07`, `gpt-5-mini-2025-08-07`, `gpt-5-nano-2025-08-07`, `gpt-4.1-2025-04-14`, `gpt-4.1-mini-2025-04-14`, `gpt-4.1-nano-2025-04-14`, `o3-mini-2025-01-31`, `o3-2025-04-16`, `o4-mini-2025-04-16`, `o1-2024-12-17`, `gpt-4o-2024-11-20`, `gpt-4o-2024-08-06`, `gpt-4o-mini-2024-07-18`, `gpt-4-turbo-2024-04-09`, `gpt-4-0613`, `gpt-3.5-turbo-0125`                                                                                                                                      | United Arab Emirates: `gpt-5.6-luna`, `gpt-5.5-2026-04-23`, `gpt-5.2-2025-12-11`                           | Fast mode supports EU data residency for GPT-6.1 Sol and GPT-6 Luna. Fast mode is not available with EU data residency for GPT-6 Astra or GPT-6 Sol. GPT-6.1 Sol supports only US and EU data residency. |
-| `/v1/decisions`                                                      | Decisions        | All listed regions                        | United States, Europe (EEA + Switzerland)                       | `gpt-6-luna`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | None                                                                                                       | Available in all supported API regions. Regional processing is supported in the United States and Europe (EEA + Switzerland). Prompt caching is subject to the retention limitations below.              |
-| `/v1/embeddings`                                                     | Embeddings       | All listed regions                        | United States, Europe (EEA + Switzerland), United Arab Emirates | `text-embedding-3-small`, `text-embedding-3-large`, `text-embedding-ada-002`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | United Arab Emirates: `text-embedding-3-large`                                                             | —                                                                                                                                                                                                        |
-| `/v1/evals`                                                          | Evals            | United States, Europe (EEA + Switzerland) | United States, Europe (EEA + Switzerland)                       | Service-level support                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | None                                                                                                       | —                                                                                                                                                                                                        |
-| `/v1/files`                                                          | Files            | All listed regions                        | None                                                            | Service-level support                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | None                                                                                                       | —                                                                                                                                                                                                        |
-| `/v1/fine_tuning/jobs`                                               | Fine-tuning      | All listed regions                        | United States, Europe (EEA + Switzerland)                       | `gpt-4o-2024-08-06`, `gpt-4o-mini-2024-07-18`, `gpt-4.1-2025-04-14`, `gpt-4.1-mini-2025-04-14`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | None                                                                                                       | —                                                                                                                                                                                                        |
-| `/v1/images/edits`                                                   | Images           | All listed regions                        | United States, Europe (EEA + Switzerland)                       | `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2`, `gpt-image-1.5`, `gpt-image-1-mini`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | None                                                                                                       | —                                                                                                                                                                                                        |
-| `/v1/images/generations`                                             | Images           | All listed regions                        | United States, Europe (EEA + Switzerland)                       | `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2`, `gpt-image-1.5`, `gpt-image-1-mini`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | None                                                                                                       | —                                                                                                                                                                                                        |
-| `/v1/moderations`                                                    | Moderation       | All listed regions                        | United States, Europe (EEA + Switzerland)                       | `omni-moderation-latest`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | None                                                                                                       | —                                                                                                                                                                                                        |
-| `/v1/live/sessions`                                                  | GPT-Live         | United States, Europe (EEA + Switzerland) | United States, Europe (EEA + Switzerland)                       | `gpt-live-1`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | None                                                                                                       | —                                                                                                                                                                                                        |
-| `/v1/realtime`                                                       | Realtime         | United States, Europe (EEA + Switzerland) | United States, Europe (EEA + Switzerland)                       | `gpt-realtime`, `gpt-realtime-1.5`, `gpt-realtime-mini`, `gpt-realtime-2`, `gpt-realtime-2.1`, `gpt-realtime-2.1-mini`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | None                                                                                                       | —                                                                                                                                                                                                        |
-| `/v1/realtime/transcription_sessions`                                | Realtime         | United States, Europe (EEA + Switzerland) | United States, Europe (EEA + Switzerland)                       | `gpt-realtime-whisper`, `gpt-live-transcribe`, `gpt-transcribe`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | None                                                                                                       | —                                                                                                                                                                                                        |
-| `/v1/realtime/translations`                                          | Realtime         | United States, Europe (EEA + Switzerland) | United States, Europe (EEA + Switzerland)                       | `gpt-realtime-translate`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | None                                                                                                       | —                                                                                                                                                                                                        |
-| `/v1/responses`                                                      | Responses        | All listed regions                        | United States, Europe (EEA + Switzerland), United Arab Emirates | `gpt-6-astra`, `gpt-6.1-sol`, `gpt-6-sol`, `gpt-6-luna`, `gpt-5.5-pro-2026-04-23`, `gpt-5.4-pro-2026-03-05`, `gpt-5.2-pro-2025-12-11`, `gpt-5-pro-2025-10-06`, `gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-5.6-luna`, `gpt-5.5-2026-04-23`, `gpt-5.4-2026-03-05`, `gpt-5-2025-08-07`, `gpt-5.4-mini-2026-03-17`, `gpt-5.4-nano-2026-03-17`, `gpt-5.2-2025-12-11`, `gpt-5.1-2025-11-13`, `gpt-5-mini-2025-08-07`, `gpt-5-nano-2025-08-07`, `gpt-4.1-2025-04-14`, `gpt-4.1-mini-2025-04-14`, `gpt-4.1-nano-2025-04-14`, `o3-2025-04-16`, `o4-mini-2025-04-16`, `o1-pro`, `o1-pro-2025-03-19`, `o3-mini-2025-01-31`, `o1-2024-12-17`, `gpt-4o-2024-11-20`, `gpt-4o-2024-08-06`, `gpt-4o-mini-2024-07-18`, `gpt-4-turbo-2024-04-09`, `gpt-4-0613`, `gpt-3.5-turbo-0125` | United Arab Emirates: `gpt-5.5-pro-2026-04-23`, `gpt-5.6-luna`, `gpt-5.5-2026-04-23`, `gpt-5.2-2025-12-11` | Fast mode supports EU data residency for GPT-6.1 Sol and GPT-6 Luna. Fast mode is not available with EU data residency for GPT-6 Astra or GPT-6 Sol. GPT-6.1 Sol supports only US and EU data residency. |
-| `/v1/responses File Search`                                          | Responses        | All listed regions                        | United States, Europe (EEA + Switzerland)                       | Service-level support                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | None                                                                                                       | —                                                                                                                                                                                                        |
-| `/v1/responses Web Search`                                           | Responses        | All listed regions                        | United States, Europe (EEA + Switzerland)                       | Service-level support                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | None                                                                                                       | —                                                                                                                                                                                                        |
-| `/v1/vector_stores`                                                  | Vector stores    | All listed regions                        | None                                                            | Service-level support                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | None                                                                                                       | —                                                                                                                                                                                                        |
-| `Code Interpreter tool`                                              | Tools            | All listed regions                        | United States, Europe (EEA + Switzerland)                       | Service-level support                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | None                                                                                                       | —                                                                                                                                                                                                        |
-| `File Search`                                                        | Tools            | All listed regions                        | United States, Europe (EEA + Switzerland)                       | Service-level support                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | None                                                                                                       | —                                                                                                                                                                                                        |
-| `File Uploads`                                                       | Files            | All listed regions                        | None                                                            | Service-level support                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | None                                                                                                       | Supported when used with base64 file uploads.                                                                                                                                                            |
-| `Remote MCP server tool`                                             | Tools            | All listed regions                        | United States, Europe (EEA + Switzerland)                       | Service-level support                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | None                                                                                                       | MCP servers are third-party services. Data sent to an MCP server is subject to its data residency policies.                                                                                              |
-| `Scale Tier`                                                         | Other            | All listed regions                        | United States, Europe (EEA + Switzerland)                       | Service-level support                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | None                                                                                                       | —                                                                                                                                                                                                        |
-| `Structured Outputs (excluding schema)`                              | Other            | All listed regions                        | United States, Europe (EEA + Switzerland)                       | Service-level support                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | None                                                                                                       | —                                                                                                                                                                                                        |
-| `Supported input modalities`                                         | Other            | All listed regions                        | United States, Europe (EEA + Switzerland)                       | `Text`, `Image`, `Audio/Voice`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | None                                                                                                       | —                                                                                                                                                                                                        |
+| Endpoint or feature                                                  | Service          | Storage regions                           | Processing regions                                              | Supported models and snapshots                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | Regional processing snapshot exceptions                                                                    | Notes                                                                                                                                                                                                                                     |
+| -------------------------------------------------------------------- | ---------------- | ----------------------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/v1/audio/transcriptions, /v1/audio/translations, /v1/audio/speech` | Audio            | All listed regions                        | United States, Europe (EEA + Switzerland)                       | `tts-1`, `whisper-1`, `gpt-4o-tts`, `gpt-4o-transcribe`, `gpt-4o-mini-transcribe`, `gpt-transcribe`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | None                                                                                                       | —                                                                                                                                                                                                                                         |
+| `/v1/batches`                                                        | Batches          | All listed regions                        | United States, Europe (EEA + Switzerland)                       | `gpt-6-astra`, `gpt-6.1-sol`, `gpt-6.1-terra`, `gpt-6-sol`, `gpt-6-luna`, `gpt-5.5-pro-2026-04-23`, `gpt-5.4-pro-2026-03-05`, `gpt-5.2-pro-2025-12-11`, `gpt-5-pro-2025-10-06`, `gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-5.6-luna`, `gpt-5.5-2026-04-23`, `gpt-5.4-2026-03-05`, `gpt-5-2025-08-07`, `gpt-5.4-mini-2026-03-17`, `gpt-5.4-nano-2026-03-17`, `gpt-5.2-2025-12-11`, `gpt-5.1-2025-11-13`, `gpt-5-mini-2025-08-07`, `gpt-5-nano-2025-08-07`, `gpt-4.1-2025-04-14`, `gpt-4.1-mini-2025-04-14`, `gpt-4.1-nano-2025-04-14`, `o3-2025-04-16`, `o4-mini-2025-04-16`, `o1-pro`, `o1-pro-2025-03-19`, `o3-mini-2025-01-31`, `o1-2024-12-17`, `gpt-4o-2024-11-20`, `gpt-4o-2024-08-06`, `gpt-4o-mini-2024-07-18`, `gpt-4-turbo-2024-04-09`, `gpt-4-0613`, `gpt-3.5-turbo-0125` | None                                                                                                       | GPT-6.1 Sol, GPT-6.1 Terra, GPT-6 Sol, and GPT-6 Luna support EU data residency with Standard, Flex, and Batch processing. GPT-6.1 Sol and GPT-6.1 Terra support only US and EU data residency.                                           |
+| `/v1/chat/completions`                                               | Chat Completions | All listed regions                        | United States, Europe (EEA + Switzerland), United Arab Emirates | `gpt-6-astra`, `gpt-6.1-sol`, `gpt-6.1-terra`, `gpt-6-sol`, `gpt-6-luna`, `gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-5.6-luna`, `gpt-5.5-2026-04-23`, `gpt-5.4-2026-03-05`, `gpt-5.4-mini-2026-03-17`, `gpt-5.4-nano-2026-03-17`, `gpt-5.2-2025-12-11`, `gpt-5.1-2025-11-13`, `gpt-5-2025-08-07`, `gpt-5-mini-2025-08-07`, `gpt-5-nano-2025-08-07`, `gpt-4.1-2025-04-14`, `gpt-4.1-mini-2025-04-14`, `gpt-4.1-nano-2025-04-14`, `o3-mini-2025-01-31`, `o3-2025-04-16`, `o4-mini-2025-04-16`, `o1-2024-12-17`, `gpt-4o-2024-11-20`, `gpt-4o-2024-08-06`, `gpt-4o-mini-2024-07-18`, `gpt-4-turbo-2024-04-09`, `gpt-4-0613`, `gpt-3.5-turbo-0125`                                                                                                                                      | United Arab Emirates: `gpt-5.6-luna`, `gpt-5.5-2026-04-23`, `gpt-5.2-2025-12-11`                           | Fast mode supports EU data residency for GPT-6.1 Sol, GPT-6.1 Terra, and GPT-6 Luna. Fast mode is not available with EU data residency for GPT-6 Astra or GPT-6 Sol. GPT-6.1 Sol and GPT-6.1 Terra support only US and EU data residency. |
+| `/v1/decisions`                                                      | Decisions        | All listed regions                        | United States, Europe (EEA + Switzerland)                       | `gpt-6-luna`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | None                                                                                                       | Available in all supported API regions. Regional processing is supported in the United States and Europe (EEA + Switzerland). Prompt caching is subject to the retention limitations below.                                               |
+| `/v1/embeddings`                                                     | Embeddings       | All listed regions                        | United States, Europe (EEA + Switzerland), United Arab Emirates | `text-embedding-3-small`, `text-embedding-3-large`, `text-embedding-ada-002`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | United Arab Emirates: `text-embedding-3-large`                                                             | —                                                                                                                                                                                                                                         |
+| `/v1/evals`                                                          | Evals            | United States, Europe (EEA + Switzerland) | United States, Europe (EEA + Switzerland)                       | Service-level support                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | None                                                                                                       | —                                                                                                                                                                                                                                         |
+| `/v1/files`                                                          | Files            | All listed regions                        | None                                                            | Service-level support                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | None                                                                                                       | —                                                                                                                                                                                                                                         |
+| `/v1/fine_tuning/jobs`                                               | Fine-tuning      | All listed regions                        | United States, Europe (EEA + Switzerland)                       | `gpt-4o-2024-08-06`, `gpt-4o-mini-2024-07-18`, `gpt-4.1-2025-04-14`, `gpt-4.1-mini-2025-04-14`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | None                                                                                                       | —                                                                                                                                                                                                                                         |
+| `/v1/images/edits`                                                   | Images           | All listed regions                        | United States, Europe (EEA + Switzerland)                       | `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2`, `gpt-image-1.5`, `gpt-image-1-mini`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | None                                                                                                       | —                                                                                                                                                                                                                                         |
+| `/v1/images/generations`                                             | Images           | All listed regions                        | United States, Europe (EEA + Switzerland)                       | `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2`, `gpt-image-1.5`, `gpt-image-1-mini`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | None                                                                                                       | —                                                                                                                                                                                                                                         |
+| `/v1/moderations`                                                    | Moderation       | All listed regions                        | United States, Europe (EEA + Switzerland)                       | `omni-moderation-latest`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | None                                                                                                       | —                                                                                                                                                                                                                                         |
+| `/v1/live/sessions`                                                  | GPT-Live         | United States, Europe (EEA + Switzerland) | United States, Europe (EEA + Switzerland)                       | `gpt-live-1`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | None                                                                                                       | —                                                                                                                                                                                                                                         |
+| `/v1/realtime`                                                       | Realtime         | United States, Europe (EEA + Switzerland) | United States, Europe (EEA + Switzerland)                       | `gpt-realtime`, `gpt-realtime-1.5`, `gpt-realtime-mini`, `gpt-realtime-2`, `gpt-realtime-2.1`, `gpt-realtime-2.1-mini`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | None                                                                                                       | —                                                                                                                                                                                                                                         |
+| `/v1/realtime/transcription_sessions`                                | Realtime         | United States, Europe (EEA + Switzerland) | United States, Europe (EEA + Switzerland)                       | `gpt-realtime-whisper`, `gpt-live-transcribe`, `gpt-transcribe`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | None                                                                                                       | —                                                                                                                                                                                                                                         |
+| `/v1/realtime/translations`                                          | Realtime         | United States, Europe (EEA + Switzerland) | United States, Europe (EEA + Switzerland)                       | `gpt-realtime-translate`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | None                                                                                                       | —                                                                                                                                                                                                                                         |
+| `/v1/responses`                                                      | Responses        | All listed regions                        | United States, Europe (EEA + Switzerland), United Arab Emirates | `gpt-6-astra`, `gpt-6.1-sol`, `gpt-6.1-terra`, `gpt-6-sol`, `gpt-6-luna`, `gpt-5.5-pro-2026-04-23`, `gpt-5.4-pro-2026-03-05`, `gpt-5.2-pro-2025-12-11`, `gpt-5-pro-2025-10-06`, `gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-5.6-luna`, `gpt-5.5-2026-04-23`, `gpt-5.4-2026-03-05`, `gpt-5-2025-08-07`, `gpt-5.4-mini-2026-03-17`, `gpt-5.4-nano-2026-03-17`, `gpt-5.2-2025-12-11`, `gpt-5.1-2025-11-13`, `gpt-5-mini-2025-08-07`, `gpt-5-nano-2025-08-07`, `gpt-4.1-2025-04-14`, `gpt-4.1-mini-2025-04-14`, `gpt-4.1-nano-2025-04-14`, `o3-2025-04-16`, `o4-mini-2025-04-16`, `o1-pro`, `o1-pro-2025-03-19`, `o3-mini-2025-01-31`, `o1-2024-12-17`, `gpt-4o-2024-11-20`, `gpt-4o-2024-08-06`, `gpt-4o-mini-2024-07-18`, `gpt-4-turbo-2024-04-09`, `gpt-4-0613`, `gpt-3.5-turbo-0125` | United Arab Emirates: `gpt-5.5-pro-2026-04-23`, `gpt-5.6-luna`, `gpt-5.5-2026-04-23`, `gpt-5.2-2025-12-11` | Fast mode supports EU data residency for GPT-6.1 Sol, GPT-6.1 Terra, and GPT-6 Luna. Fast mode is not available with EU data residency for GPT-6 Astra or GPT-6 Sol. GPT-6.1 Sol and GPT-6.1 Terra support only US and EU data residency. |
+| `/v1/responses File Search`                                          | Responses        | All listed regions                        | United States, Europe (EEA + Switzerland)                       | Service-level support                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | None                                                                                                       | —                                                                                                                                                                                                                                         |
+| `/v1/responses Web Search`                                           | Responses        | All listed regions                        | United States, Europe (EEA + Switzerland)                       | Service-level support                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | None                                                                                                       | —                                                                                                                                                                                                                                         |
+| `/v1/vector_stores`                                                  | Vector stores    | All listed regions                        | None                                                            | Service-level support                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | None                                                                                                       | —                                                                                                                                                                                                                                         |
+| `Code Interpreter tool`                                              | Tools            | All listed regions                        | United States, Europe (EEA + Switzerland)                       | Service-level support                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | None                                                                                                       | —                                                                                                                                                                                                                                         |
+| `File Search`                                                        | Tools            | All listed regions                        | United States, Europe (EEA + Switzerland)                       | Service-level support                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | None                                                                                                       | —                                                                                                                                                                                                                                         |
+| `File Uploads`                                                       | Files            | All listed regions                        | None                                                            | Service-level support                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | None                                                                                                       | Supported when used with base64 file uploads.                                                                                                                                                                                             |
+| `Remote MCP server tool`                                             | Tools            | All listed regions                        | United States, Europe (EEA + Switzerland)                       | Service-level support                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | None                                                                                                       | MCP servers are third-party services. Data sent to an MCP server is subject to its data residency policies.                                                                                                                               |
+| `Scale Tier`                                                         | Other            | All listed regions                        | United States, Europe (EEA + Switzerland)                       | Service-level support                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | None                                                                                                       | —                                                                                                                                                                                                                                         |
+| `Structured Outputs (excluding schema)`                              | Other            | All listed regions                        | United States, Europe (EEA + Switzerland)                       | Service-level support                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | None                                                                                                       | —                                                                                                                                                                                                                                         |
+| `Supported input modalities`                                         | Other            | All listed regions                        | United States, Europe (EEA + Switzerland)                       | `Text`, `Image`, `Audio/Voice`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | None                                                                                                       | —                                                                                                                                                                                                                                         |
 
 
 
@@ -38346,6 +38403,16 @@ Choose the mode when you create the session; to change modes, start a new sessio
 Add this delegation configuration when [creating your Live session](https://developers.openai.com/api/docs/guides/live). Choose the Responses model independently of the voice model:
 
 ```javascript
+export const session = {
+  model: "gpt-live-1",
+  delegation: {
+    type: "responses",
+    responses: {
+      model: "gpt-6-luna",
+      instructions: "[Your backend prompt]",
+    },
+  },
+};
 ```
 
 ```python
@@ -38539,6 +38606,12 @@ Both commands require Responses delegation. The Live `response.create` command u
 Set `delegation` when [creating your Live session](https://developers.openai.com/api/docs/guides/live):
 
 ```javascript
+export const session = {
+  model: "gpt-live-1",
+  delegation: {
+    type: "client",
+  },
+};
 ```
 
 ```python
@@ -38612,7 +38685,7 @@ async def send_update(
 
 Use `session.commentary.append` for results GPT-Live should say aloud; it is trained to paraphrase the text. Use `session.thinking.append` for facts or progress that it can use in later replies without saying them when they arrive. You can send multiple updates with the same client delegation ID.
 
-See [Send the right kind of update](#send-the-right-kind-of-update) for content limits, required fields, and acknowledgment timing.
+See [Send the right kind of update](#send-the-right-kind-of-update) for content limits and required fields. To avoid a spoken acknowledgment while your backend runs, see [Suppress automatic acknowledgments while tools run](#suppress-automatic-acknowledgments-while-tools-run).
 
   
 
@@ -38758,6 +38831,38 @@ The instruction does not cancel backend work. [Block the affected action and han
 The corresponding acknowledgements are `session.thinking.appended`, `session.commentary.appended`, and `session.instructions.appended`. Match their `client_event_id` to your outgoing `event_id`. The acknowledgment waits for estimated context injection, not for speech or playback to finish. See [when context reaches the model](https://developers.openai.com/api/docs/guides/live-conversations#understand-when-context-reaches-the-model) for timing and error handling.
 
 Send facts and brief progress summaries that GPT-Live can use in the conversation. Content sent with `session.thinking.append` can influence later spoken replies; keep secrets and private backend reasoning in your application.
+
+### Suppress automatic acknowledgments while tools run
+
+With client delegation, you can cancel the pending automatic acknowledgment by sending a silent context update before the acknowledgment is generated.
+
+Set `delegation.acknowledgement_delay_ms` when creating the session to give your application time to send the update. For example, use this client delegation configuration:
+
+```json
+{
+  "delegation": {
+    "type": "client",
+    "acknowledgement_delay_ms": 800
+  }
+}
+```
+
+As soon as you receive `session.delegation.created`, send `session.thinking.append` with empty `content`. Use a unique `event_id` and copy `event.delegation.id` into `delegation_id`. Send this before waiting for the backend result:
+
+```json
+{
+  "type": "session.thinking.append",
+  "event_id": "event_quiet_progress_1",
+  "delegation_id": "item_9tA2bF3h7K9m2P5q8R1s4",
+  "content": ""
+}
+```
+
+Continue the backend work, then send the verified result through `session.commentary.append` with the same delegation ID when it is ready to be spoken. If you want to provide progress context, a factual message such as `"Lookup in progress."` in the thinking append also cancels the pending acknowledgment without asking the model to speak that update.
+
+Any thinking or commentary append cancels **all pending automatic acknowledgments in the session**, including those for other delegations. It does not stop audio already generated or prevent independent model speech. The delay controls when the automatic acknowledgment is requested; the model may still speak earlier. Check the [client delegation configuration and thinking append reference](https://developers.openai.com/api/reference/resources/live/primary-websocket) for the event contract.
+
+Match the `session.thinking.appended` event's `client_event_id` to your outgoing event. This confirms context delivery, not silence. Test the resulting audio on your workload; use [application-controlled playback](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#control-playback-when-needed) when silence must be guaranteed.
 
 ## Keep updates accurate and useful
 
@@ -41511,7 +41616,7 @@ Fast mode for GPT-6 Astra does not include a latency SLA. For GPT-5.6 and earlie
 
 ### Is Fast mode compatible with data residency, Zero Data Retention, and a BAA?
 
-Fast mode is compatible with data residency, Zero Data Retention, and a Business Associate Agreement (BAA), subject to model-specific availability. Fast mode supports EU data residency for GPT-6.1 Sol and GPT-6 Luna. Fast mode is not available with EU data residency for GPT-6 Astra or GPT-6 Sol. Existing endpoint, tool, eligibility, and contractual requirements still apply. See the [Your data guide](https://developers.openai.com/api/docs/guides/your-data) for details.
+Fast mode is compatible with data residency, Zero Data Retention, and a Business Associate Agreement (BAA), subject to model-specific availability. Fast mode supports EU data residency for GPT-6.1 Sol, GPT-6.1 Terra, and GPT-6 Luna. Fast mode is not available with EU data residency for GPT-6 Astra or GPT-6 Sol. Existing endpoint, tool, eligibility, and contractual requirements still apply. See the [Your data guide](https://developers.openai.com/api/docs/guides/your-data) for details.
 
 ---
 
@@ -42715,7 +42820,7 @@ Check status
 ```javascript
 // Use vectorStore from the earlier create step.
 const result = await openai.vectorStores.files.list(vectorStore.id);
-console.log(result);
+console.log(result.data);
 ```
 
 ```python
@@ -46590,6 +46695,7 @@ const stream = await openai.responses.create({
   model: "gpt-6-astra",
   input: [{ role: "user", content: "What's the weather like in Paris today?" }],
   tools,
+  tool_choice: "required",
   stream: true,
   store: true,
 });
@@ -59722,6 +59828,31 @@ Use startup history to resume a topic, and append relevant context as the conver
 Include prior text messages in `session.input` when you create the session. For example, add this `input` field to your [session creation configuration](https://developers.openai.com/api/docs/guides/live#connect-your-first-session):
 
 ```javascript
+export const session = {
+  model: "gpt-live-1",
+  input: [
+    {
+      type: "message",
+      role: "user",
+      content: [
+        {
+          type: "input_text",
+          text: "I need help with my recent order.",
+        },
+      ],
+    },
+    {
+      type: "message",
+      role: "assistant",
+      content: [
+        {
+          type: "output_text",
+          text: "What is the order number?",
+        },
+      ],
+    },
+  ],
+};
 ```
 
 ```python
@@ -62451,7 +62582,7 @@ Mid-turn steering is available with the GPT-6 model family over a WebSocket
 
 Steering does not rewrite output already sent to your application, undo earlier actions, or cancel tools that have already started.
 
-For connection setup and general transport behavior, see [WebSocket mode](https://developers.openai.com/api/docs/guides/websocket-mode). For exact event definitions, see the [Responses WebSocket events reference](https://developers.openai.com/api/reference/resources/responses/websocket-events).
+The Java example requires Java 17 or later. For connection setup and general transport behavior, see [WebSocket mode](https://developers.openai.com/api/docs/guides/websocket-mode). For exact event definitions, see the [Responses WebSocket events reference](https://developers.openai.com/api/reference/resources/responses/websocket-events).
 
 ## Send a steering message
 
@@ -62568,6 +62699,7 @@ try {
     });
     ws.send({
       type: "response.create",
+      store: false,
       model: "gpt-6-astra",
       reasoning: { effort: "medium" },
       input: "Draft a project plan for building a task-tracking app.",
@@ -62591,7 +62723,7 @@ async def main():
     initial_response_id = None
     successor_response_id = None
 
-    async with client.responses.connect() as connection, asyncio.timeout(120):
+    async with client.responses.connect() as connection:
         await connection.response.create(
             model="gpt-6-astra",
             reasoning={"effort": "medium"},
@@ -62628,7 +62760,11 @@ async def main():
         raise RuntimeError("Connection closed before the steered response finished.")
 
 
-asyncio.run(main())
+async def run():
+    await asyncio.wait_for(main(), timeout=120)
+
+
+asyncio.run(run())
 ```
 
 ```go
@@ -62699,6 +62835,8 @@ for {
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.responses.*;
 import java.util.*;
+
+var client = OpenAIOkHttpClient.fromEnv();
 
 long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(120);
 try (var conn =
@@ -66666,6 +66804,17 @@ model version. Check the [models available in ChatGPT](https://developers.openai
 
 Choose your work and task and get a recommendation.
 
+### When to consider GPT-6.1 Terra
+
+Try [GPT-6.1 Terra](https://developers.openai.com/api/docs/models/gpt-6.1-terra) for concise writing based on
+supplied material, computer-use tasks with a defined outcome, and scoped code
+fixes. Provide clear inputs, requirements, and a way to verify the result, such as
+checking saved records or running regression tests.
+
+Compare it with GPT-6.1 Sol on the same inputs and reasoning effort. For writing,
+judge audience fit, voice, and useful detail as well as accuracy and length. For
+computer use, check the saved result and the accuracy of the completion report.
+
 ### When to consider GPT-6.1 Sol
 
 Consider GPT-6.1 Sol for complex projects where cost matters, such as
@@ -66737,6 +66886,20 @@ Start by considering:
 
 If you can, experiment using the same inputs to compare results and keep the
 lightest setting that meets your quality bar.
+
+Choose acceptance criteria before comparing models:
+
+- **Writing:** check required facts, qualifications, audience, and voice. Review
+  both outputs before deciding whether the shorter one is more useful.
+- **Computer use:** reopen the affected record or page to verify saved changes,
+  confirm that the workflow preserved unrelated data, and compare the completion
+  report with the actual result.
+- **Code and interfaces:** run regression tests. For an interactive application,
+  also inspect the rendered result on desktop and mobile.
+
+Repeat the comparison across representative tasks. Measure completion time
+alongside quality, including time spent reviewing or repairing the result. Then
+vary reasoning effort while keeping the model and inputs fixed.
 
 ---
 
@@ -69830,21 +69993,41 @@ Session turns are available through the public API. Use the `turn_id` from a com
 Identify delegated command execution
 
 ```javascript
-// Replace the illustrative IDs and URLs below with your own resource values.
+// Replace the illustrative session and turn IDs with values from your command item.
 import OpenAI from "openai";
 const client = new OpenAI();
 
-const sessionId = "sess_123";
-const turns = await client.beta.agents.sessions.turns.list(sessionId, {
-  limit: 20,
-  order: "desc",
-});
-console.log(turns.data);
-const turnId = "turn_123";
-const turn = await client.beta.agents.sessions.turns.retrieve(turnId, {
-  session_id: sessionId,
-});
-console.log(turn.subagent_id);
+async function findTurn(sessionId, turnId) {
+  for await (const turn of client.beta.agents.sessions.turns.list(sessionId, {
+    limit: 100,
+  })) {
+    if (turn.id === turnId) {
+      return client.beta.agents.sessions.turns.retrieve(turnId, {
+        session_id: sessionId,
+      });
+    }
+  }
+  for await (const subagent of client.beta.agents.sessions.subagents.list(
+    sessionId,
+    { limit: 100 }
+  )) {
+    for await (const turn of client.beta.agents.sessions.subagents.turns.list(
+      subagent.id,
+      { session_id: sessionId, limit: 100 }
+    )) {
+      if (turn.id === turnId) {
+        return client.beta.agents.sessions.subagents.turns.retrieve(turnId, {
+          session_id: sessionId,
+          subagent_id: subagent.id,
+        });
+      }
+    }
+  }
+  throw new Error(`Turn ${turnId} not found in session ${sessionId}`);
+}
+
+const turn = await findTurn("sess_123", "turn_123");
+console.log(turn.subagent_id || "main agent");
 ```
 
 ```python
@@ -73702,7 +73885,7 @@ const input = [
 
 while (true) {
   const response = await client.responses.create({
-    model: "YOUR_MODEL_ID",
+    model: "gpt-6-astra",
     store: false,
     input,
     tools,
@@ -74595,7 +74778,7 @@ After the minimum cacheable token length, you can choose where to place cache br
 
 
 
-For GPT-5.6 and later, cache writes cost 1.25× the standard, uncached input-token rate for the default 30-minute lifetime. In the Responses API, you can choose a [12-hour minimum lifetime](#cache-lifetime) at a write rate of 2.5× ordinary input. Subsequent reads cost 0.1× the ordinary input rate on most of these models and 0.05× on [GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol), regardless of the selected lifetime.
+For GPT-5.6 and later, cache writes cost 1.25× the standard, uncached input-token rate for the default 30-minute lifetime. In the Responses API, you can choose a [12-hour minimum lifetime](#cache-lifetime) at a write rate of 2.5× ordinary input. Subsequent reads cost 0.1× the ordinary input rate on most of these models and 0.05× on [GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol) and [GPT-6.1 Terra](https://developers.openai.com/api/docs/models/gpt-6.1-terra), regardless of the selected lifetime.
 
 At the 0.1× read rate with 30-minute writes, writing a prefix once and fully reusing it once costs 1.35× its ordinary input cost, compared with 2× for processing it twice without caching. Across ten requests, one write and nine full reads cost 2.15× at that rate, compared with 10× without caching.
 
@@ -74821,7 +75004,7 @@ Using separate keys can make cached token usage and billing easier to explain fo
 | `prompt_cache_key`         | Optional for separate cache accounting                                              | Use a stable key to optimize cache routing                  | Use a stable key to optimize cache routing                                      |
 | Minimum cacheable prefix   | 1,024 visible input tokens                                                          | Varies by request settings                                  | Varies by request settings                                                      |
 | Cached-token reporting     | Exact eligible boundary, excluding hidden tokens                                    | Excludes hidden tokens and rounds down to a multiple of 128 | Excludes hidden tokens and rounds down to a multiple of 128                     |
-| Cache read charge          | 0.1× uncached input (0.05× for GPT-6.1 Sol)                                         | Model-dependent cached-input rate                           | Model-dependent cached-input rate                                               |
+| Cache read charge          | 0.1× uncached input (0.05× for GPT-6.1 Sol and GPT-6.1 Terra)                       | Model-dependent cached-input rate                           | Model-dependent cached-input rate                                               |
 | Cache write charge         | 1.25× for `"30m"`; 2.5× for `"12h"` in the Responses API                            | No additional cache-write charge                            | No additional cache-write charge                                                |
 | Cache lifetime control     | `prompt_cache_options.ttl`                                                          | `prompt_cache_retention`                                    | `prompt_cache_retention`                                                        |
 | Supported retention values | `"30m"` (default), or `"12h"` in the Responses API                                  | `"24h"` only                                                | `"in_memory"` or `"24h"`<sup>[\*](#extended-retention-models)</sup>             |
@@ -78518,109 +78701,60 @@ import OpenAI from "openai";
 
 const client = new OpenAI();
 
+const schemaDefinition = {
+  type: "object",
+  properties: {
+    description: { type: "string" },
+    type: {
+      type: "string",
+      enum: ["object", "array", "string", "number", "boolean", "null"],
+    },
+    properties: {
+      type: "object",
+      additionalProperties: { $ref: "#/$defs/schema_definition" },
+    },
+    items: {
+      anyOf: [
+        { $ref: "#/$defs/schema_definition" },
+        { type: "array", items: { $ref: "#/$defs/schema_definition" } },
+      ],
+    },
+    required: { type: "array", items: { type: "string" } },
+    additionalProperties: { type: "boolean" },
+    enum: { type: "array", minItems: 1, uniqueItems: true },
+    $ref: { type: "string" },
+    $defs: {
+      type: "object",
+      additionalProperties: { $ref: "#/$defs/schema_definition" },
+    },
+    anyOf: {
+      type: "array",
+      minItems: 1,
+      items: { $ref: "#/$defs/schema_definition" },
+    },
+  },
+  additionalProperties: false,
+  if: { required: ["type"], properties: { type: { const: "object" } } },
+  then: { required: ["properties"] },
+};
+
 const metaSchema = {
   name: "metaschema",
   schema: {
-    type: "object",
-    properties: {
-      name: {
-        type: "string",
-        description: "The name of the schema",
-      },
-      type: {
-        type: "string",
-        enum: ["object", "array", "string", "number", "boolean", "null"],
-      },
-      properties: {
-        type: "object",
-        additionalProperties: {
-          $ref: "#/$defs/schema_definition",
-        },
-      },
-      items: {
-        anyOf: [
-          {
-            $ref: "#/$defs/schema_definition",
-          },
-          {
-            type: "array",
-            items: {
-              $ref: "#/$defs/schema_definition",
-            },
-          },
-        ],
-      },
-      required: {
-        type: "array",
-        items: {
-          type: "string",
-        },
-      },
-      additionalProperties: {
-        type: "boolean",
-      },
-    },
+    ...schemaDefinition,
     required: ["type"],
-    additionalProperties: false,
-    if: {
-      properties: {
-        type: {
-          const: "object",
-        },
-      },
-    },
-    then: {
-      required: ["properties"],
+    properties: {
+      name: { type: "string", description: "The name of the schema" },
+      ...schemaDefinition.properties,
     },
     $defs: {
       schema_definition: {
-        type: "object",
-        properties: {
-          type: {
-            type: "string",
-            enum: ["object", "array", "string", "number", "boolean", "null"],
-          },
-          properties: {
-            type: "object",
-            additionalProperties: {
-              $ref: "#/$defs/schema_definition",
-            },
-          },
-          items: {
-            anyOf: [
-              {
-                $ref: "#/$defs/schema_definition",
-              },
-              {
-                type: "array",
-                items: {
-                  $ref: "#/$defs/schema_definition",
-                },
-              },
-            ],
-          },
-          required: {
-            type: "array",
-            items: {
-              type: "string",
-            },
-          },
-          additionalProperties: {
-            type: "boolean",
-          },
-        },
-        required: ["type"],
-        additionalProperties: false,
-        if: {
-          properties: {
-            type: {
-              const: "object",
-            },
-          },
-        },
-        then: {
-          required: ["properties"],
-        },
+        ...schemaDefinition,
+        anyOf: [
+          { required: ["type"] },
+          { required: ["$ref"] },
+          { required: ["anyOf"] },
+        ],
       },
     },
   },
@@ -80382,6 +80516,14 @@ const metaSchema = {
       schema_definition: {
         type: "object",
         properties: {
+          description: {
+            type: "string",
+          },
+          enum: {
+            type: "array",
+            minItems: 1,
+            uniqueItems: true,
+          },
           type: {
             type: "string",
             enum: ["object", "array", "string", "number", "boolean", "null"],
@@ -81889,28 +82031,6 @@ Do not guess the result while waiting.
 
 List the capabilities your backend supports. GPT-Live uses this list to decide which requests to hand off. Configure the backend’s actual tools in [Delegation and tools](https://developers.openai.com/api/docs/guides/live-delegation).
 
-## Personality
-
-Describe the assistant’s role, tone, and speaking pace in a few sentences. Include how it should respond when a caller is frustrated or unsure. For example: “Explain one step at a time. If the caller sounds confused, ask which part they want to go over.”
-
-## Backchannels
-
-Start with the template’s backchannel policy, then listen for whether the assistant’s brief acknowledgments help the conversation or interrupt the caller. “Moderate” is a prompting instruction, not a numerical frequency setting.
-
-You can modify this line from the starter prompt:
-
-```text
-Backchannel policy: Use moderate backchannels. Acknowledge naturally without competing with the main response.
-```
-
-If you want backchannels, allow brief listening sounds during interruptions. A rule that forbids all overlapping speech can suppress them.
-
-## Interruptions
-
-When the user interrupts, the assistant should stop its answer and listen. A brief listening sound is different from taking over the user's turn.
-
-Handle changes to a task separately from interruptions to speech. “Stop talking” asks the assistant to yield; “Cancel my booking” asks the backend to take an action. Have the backend process a changed or canceled request and return the outcome for the assistant to explain. See [task state and interruptions](https://developers.openai.com/api/docs/guides/live-delegation).
-
 ## Delegation
 
 In the `Delegation policy` section, list the backend’s capabilities and the requests that should trigger a handoff. Use concrete conditions, such as “the user asks to change a booking.” Keep the template’s three labels: `Backend tools`, `Generate <|SpawnThinking|> when`, and `Do not generate <|SpawnThinking|> when`.
@@ -81945,9 +82065,476 @@ You can prompt GPT-Live to acknowledge a request while delegated work runs. As b
 
 For backend prompts, conversation context, tool results, typed input, and API examples, read [Delegation and tools](https://developers.openai.com/api/docs/guides/live-delegation). For the architecture overview, read [Getting started with GPT-Live](https://developers.openai.com/api/docs/guides/live).
 
+## Personality
+
+GPT-Live is steerable but requires thoughtful prompting. Choose or create a voice, then use system instructions to shape its personality and behavior:
+
+1. **Choose the voice itself.** Use a built-in voice, a [custom voice created from a recording](https://developers.openai.com/api/docs/guides/custom-voices#create-a-voice-from-a-recording), or use [prompt-to-voice](https://developers.openai.com/api/docs/guides/custom-voices#create-a-voice-from-a-description) to design a voice from a description.
+2. **Shape its personality and behavior.** Describe its character, patience, and response to interruptions. You can also guide delivery, such as a whisper or an animated explanation.
+
+**Describe sound and behavior separately.** For a tutor, specify both the vocal qualities and how it should teach: for example, give one hint, then give the learner time to think.
+
+**Audition the actual combination of voice and instructions.** Try it in conversations your application will use.
+
+Recipes show the **voice choice** and **personality prompt**, which guides how the assistant speaks and behaves. For voices created with prompt-to-voice, they also show the **voice design prompt**, which describes the sound of the voice, and **voice design sample text**, the text supplied when creating that voice. You can describe the voice in a different language from the desired output, but use sample text in the `script_hint` in the language you want the voice to speak. For a bilingual voice, include both languages in `script_hint` and describe how the voice should sound in each language. The [recipe download](https://developers.openai.com/audio/live-prompting/personality-recipes.json) includes the complete recording inputs. The recordings use AI-generated voices and callers. Exact wording and behavior can vary when you try a prompt.
+
+These excerpts cover personality and delivery. Keep your application's task,
+  tool, and delegation instructions alongside them.
+
+### Backchannels
+
+Backchannels are brief listening sounds, such as “mm-hm,” while the user is speaking. Use a backchannel policy to describe how often you want them. Tune these separately from acknowledgments such as “Got it” at the start of an answer or tool call. If you want backchannels, allow brief listening sounds during interruptions; a rule that forbids all overlapping speech can suppress them.
+
+You can vary both the content and frequency of backchannels. Try these policies to modify frequency.
+
+<details>
+<summary>None</summary>
+
+```text
+Backchannel policy: Do not produce any backchannel interjections while the user is speaking. Backchanneling is entirely disallowed—stay silent until it is your turn to respond.
+```
+
+</details>
+
+<details>
+<summary>Frequent</summary>
+
+```text
+Backchannel policy: Use frequent short backchannels to signal active listening while keeping answers clear.
+```
+
+</details>
+
+<details>
+<summary>Very frequent</summary>
+
+```text
+Backchannel policy: Use very frequent, varied backchannels for lively spoken rhythm. Keep each one brief and non-repetitive.
+```
+
+</details>
+
+
+
+#### Relaxed whiteboarding
+
+Voice: Stone · Standard voice
+
+[Listen to Relaxed whiteboarding](https://developers.openai.com/audio/live-prompting/jules-relaxed-whiteboarding-take2-eb70b3fad393.flac)
+
+**Personality prompt**
+
+```text
+You are Jules, an easygoing voice partner for brainstorming at a whiteboard. Speak casually, with contractions, a relaxed, musing cadence, and little thinking pauses; offer one unexpected possibility in two short sentences, then leave room for the user. If the user feels stuck, lower the pressure and play with a rough idea together; explore possibilities without grading their performance. Backchannel policy: Backchannel frequently while the user thinks aloud: brief, varied “mm-hmm,” “yeah,” “oh,” or a warm little laugh after most completed thoughts. Keep listening; save ideas until invited. Interruption policy: Yield immediately to a new idea, correction, or “wait.” A brief “mm-hmm” from the user means keep going, not a new turn. Follow their changed direction.
+```
+
+#### Encouraging coach
+
+Voice: Stone · Standard voice
+
+[Listen to Encouraging coach](https://developers.openai.com/audio/live-prompting/backchannel-stone-encouraging-coach-806a5b76beae.flac)
+
+**Personality prompt**
+
+```text
+You are an encouraging coach listening to someone reflect on a challenging workout. Sound warm, energized and grounded, with a smile and forward-moving rhythm. Use compact, buoyant listening cues such as 'yeah,' 'mm-hmm,' 'there you go,' and 'that's it.' React with extra warmth when they notice their own improvement. Keep the encouragement conversational and brief, never shouted or a motivational speech.
+
+Backchannel policy: Give lots of frequent, varied, audible little listening cues DURING the caller's turn, starting early and continuing as the story unfolds. Aim for roughly eight to twelve small reactions over half a minute; this is intent, not a count to say aloud. Keep each cue short, usually under a second. Brief overlap is welcome. Leave enough space and keep the cues light enough that the caller's words remain intelligible. Do not save all your reactions for the final answer.
+
+Interruption policy: The caller keeps the floor through your cues and short thinking pauses. Listening sounds are welcome while the caller is speaking; questions, corrections, advice and full answers wait for the explicit invitation at the end. Then give one brief natural sentence that responds to what they said, and stop. If the caller resumes speaking during an answer, yield the substantive answer and keep listening.
+```
+
+#### Laughter-focused backchannels
+
+Voice: Marin · Standard voice
+
+[Listen to Laughter-focused backchannels](https://developers.openai.com/audio/live-prompting/marin-thanks-dad-545a8ac98ae6.flac)
+
+**Personality prompt**
+
+```text
+You are Marin, an expressive friend hearing a funny true-to-life mishap. Listen first. Backchannel policy: react audibly to the funny reveal as it happens. Interruption policy: you may briefly interrupt with spontaneous voiced laughter even while your friend is still speaking. Let them finish their story. Save words for the final invitation, then give one short response.
+
+Start with a little involuntary giggle at the slip of the tongue. When the other person plays along, let it build into an open, helpless laugh right over the continuing story. Recover quickly enough to hear the ending.
+```
+
+#### Mostly quiet listening
+
+Voice: Custom generated with prompt-to-voice
+
+[Listen to Mostly quiet listening](https://developers.openai.com/audio/live-prompting/backchannelexamples-0-6ebb949ae6f3.flac)
+
+**Voice design prompt**
+
+```text
+General American accent. approximately 30s. feminine voice. warm timbre. smooth vocal texture. medium pitch. moderate loudness. moderate speech rate. medium distinctiveness.
+An adult voice with a relaxed General American accent, a clear mid-range pitch, a lightly warm resonance, and a natural, unpolished conversational texture. Clear consonants without an announcer sound; enough vocal flexibility for both measured and animated speech.
+```
+
+**Voice design sample text**
+
+```text
+Let us take this one step at a time. Fold the paper in half, line up the corners, and press along the edge. There you go. The museum closes at six, and the last entry is at five thirty. That gives you enough time for one gallery. If you would rather slow down, we can choose a quieter afternoon. What are you most curious about? I can give you the short answer first, and then we can explore the details.
+```
+
+**Personality prompt**
+
+```text
+You are a patient fractions tutor listening to a learner explain their answer.
+Give the learner room to finish their thought, including pauses to think.
+Listen mostly in silence. Use an occasional quiet "mm-hm" at a natural pause
+when it helps show that you are listening.
+Let the learner finish before giving feedback. Keep listening cues neutral
+about whether the answer is correct.
+```
+
+
+
+### Accents
+
+Start with a voice whose [regional influence](https://developers.openai.com/api/docs/guides/live-conversations#voice-options) fits your use case. For accents not covered by standard voices, you can also prompt for an accent in the personality prompt or try a [custom voice](https://developers.openai.com/api/docs/guides/custom-voices#use-a-voice-from-a-recording-with-gpt-live) created from a speaker with that accent.
+
+
+
+#### Minnesota man · campfire storyteller
+
+Voice: Custom generated with prompt-to-voice
+
+[Listen to Minnesota man · campfire storyteller](https://developers.openai.com/audio/live-prompting/round3-accents-0-534e3d3cc6cd.flac)
+
+**Voice design prompt**
+
+```text
+An original fictional man in his fifties from Minnesota with a very clearly audible, strong Minnesota Upper Midwestern English accent. Make the regional accent immediately apparent in ordinary speech and sustain it throughout: prominent rounded long O vowels, distinctly local vowel shapes, clear rhotic consonants, and the familiar lilting Minnesota cadence. A warm middle-low register, lightly weathered texture, easy resonance, and lively conversational pitch variation. Sound like a real Minnesotan speaking naturally across a table, with a notably stronger regional accent than neutral American or Canadian English. Keep every word clear. Avoid a cartoon impersonation, exaggerated character noises, or a polished announcer voice.
+```
+
+**Voice design sample text**
+
+```text
+We were out by the lake before the snow came in, and I thought we might take the boat across one more time. No, not the little road by the old school. Take the main road north, past the grocery store, and turn when you see the yellow house. There you go. We can stop for coffee on the way back if the place is still open. It gets cold early this time of year, so you will want a good coat. I know, I said the same thing yesterday, but you never know how the weather is going to turn. There was a little ghost sitting beside the fire when we got home. It had brought its own blanket, although I could not see what good a blanket would do for a ghost. Well, we moved over and made some room. Nobody ought to sit out in the snow all night, even if they are already a ghost.
+```
+
+**Personality prompt**
+
+```text
+You are Morrow, a campfire storyteller. Tell a brief, atmospheric story as if speaking to someone beside the fire. Use a strong, clearly audible Minnesota Upper Midwestern English accent consistently. Keep the delivery calm, lightly wry, and intelligible. In each reply, tell only two or three short sentences. Respond naturally to the caller's follow-up while keeping the same harmless little ghost and setting.
+```
+
+#### Finch · New Zealand practical guide
+
+Voice: Custom generated with prompt-to-voice
+
+[Listen to Finch · New Zealand practical guide](https://developers.openai.com/audio/live-prompting/finch-new-zealand-e947ae3ed8f0.flac)
+
+**Voice design prompt**
+
+```text
+An original fictional adult voice with a masculine presentation, perceived age 50–60, middle pitch, and mellow, clear and lightly textured timbre. Accent target: Contemporary New Zealand English from Christchurch. Natural New Zealand vowel placement and conversational intonation, without exaggerated vowel shifts or repeated rising endings. Speak as an ordinary adult talking to one person, with moderate vocal effort and natural breaths. Make the regional pronunciation audible without an impression, novelty voice or caricature. Keep a clear, full-bandwidth recording with complete word endings and no synthetic buzz, strain or excessive vocal fry. Do not imitate a real person. The accent is a speech-design target, not an ethnic or identity claim.
+```
+
+**Voice design sample text**
+
+```text
+Before we start, could you bring the small blue chair closer to the window? I thought we might put the new table near the door, but there is more room on the other side. Take your time and tell me what you think. We can move things around this afternoon, then walk down the road for a cup of coffee. There is a short list of things to check before everyone arrives. The first drawer has paper and a few spare pencils. The second one has a green folder with the notes from last week. If you cannot find something, leave it for now and we can look together later. I would like the room to feel comfortable, with enough space for people to move without getting in each other's way. We do not need to finish every little detail today. Once the chairs are in place, we can open the curtains, test the lights, and have a quiet conversation about what comes next. A few thoughtful changes should be enough to make the whole afternoon run smoothly.
+```
+
+**Personality prompt**
+
+```text
+You are a friendly practical guide helping one person prepare a small room. Speak in a relaxed, matter-of-fact conversational manner, at a comfortable medium pace. Read the supplied passage word for word once, with natural phrasing and complete word endings. Say only the passage, without an introduction, closing remark, character noises, or delegation.
+```
+
+
+
+### Formality
+
+Use wording and sentence structure to set the register: contractions and everyday phrases for a casual answer, or complete sentences and precise vocabulary for a formal one. These Stone recordings use the same fictional return task with different register instructions. Listen for the register change and whether the answer stays within the task.
+
+
+
+#### Casual
+
+Voice: Stone · Standard voice
+
+[Listen to Casual](https://developers.openai.com/audio/live-prompting/formality-stone-casual-t042-73d872d1f457.flac)
+
+**Personality prompt**
+
+```text
+Use a distinctly casual register throughout the answer. Use contractions, familiar words, and natural everyday phrases. Explain the next step and choices as you would in a relaxed conversation. Keep every fact, qualification, and required question. Do not add jokes, nicknames, a dialect, or assumed friendship.
+```
+
+#### Formal
+
+Voice: Stone · Standard voice
+
+[Listen to Formal](https://developers.openai.com/audio/live-prompting/formality-stone-formal-t030-4e28ac4c4500.flac)
+
+**Personality prompt**
+
+```text
+Use a distinctly formal register throughout the answer. Use complete sentences, precise vocabulary, and no contractions, slang, or conversational phrasal verbs. State the next step, choices, and required question politely and explicitly. Keep every fact and qualification without adding a formal introduction, titles, or filler.
+```
+
+
+
+### Pace
+
+Depending on your use case, you might want the model to speak efficiently and quickly, or slowly and deliberately.
+
+To emphasize speed, describe it in the voice design prompt and reinforce that speaking style in the personality prompt in your system instructions. You can also keep the same voice and put pacing directions only in the system instructions.
+
+
+
+#### Fast with Cleo
+
+Voice: Custom generated with prompt-to-voice
+
+[Listen to Fast with Cleo](https://developers.openai.com/audio/live-prompting/pace-cleo-fast-20261019-01-d3353d54ea4a.flac)
+
+**Voice design prompt**
+
+```text
+An original fictional adult voice, perceived age 50–60, with feminine presentation. Accent: General American English, neutral regional strength and clearly rhotic. Pitch: middle-low. Timbre: full-bodied, focused and warmly resonant. Texture: subtle dry texture while keeping speech clear. Use moderate, easy conversational projection and a steady medium pace. Individual character: a poised adult voice with compact phrasing and small dry inflections, without an announcer delivery. Sound like a real adult speaking naturally to one person. Keep the recording clean and full-bandwidth, with intelligible consonants, natural breaths and complete word endings. Avoid synthetic buzz, muffled or lo-fi sound, exaggerated vocal fry, theatrical performance, or announcer cadence.
+```
+
+**Voice design sample text**
+
+```text
+Let's take a moment and work through this together. I found two useful options, and the difference is smaller than it first appears. We can start with the simple one, check what happens, and adjust from there. If something feels unclear, tell me where you got stuck. There's no need to rush; I'd rather get the details right. Imagine that we are sitting at a kitchen table on a quiet afternoon. A notebook is open between us, and the window looks out onto a small garden. Earlier, the rain was heavy enough to hide the far end of the street. Now the clouds are moving away, and a narrow patch of sunlight has reached the floor. I have made a few notes, but we do not have to follow them in order. Perhaps you would like to begin with the question that brought you here. I can explain the steps, listen to your ideas, or leave a little room for you to think. Whatever we choose, we will finish one thing before moving on to the next. That usually makes the whole process easier to follow.
+```
+
+**Personality prompt**
+
+```text
+You are an energetic radio announcer finishing a bulletin before the break. Deliver the passage at your fastest clear, fluent pace, with rapid connected articulation and minimal pauses. Sound confident and lively. Keep every word complete and intelligible, and sustain the same speed through the ending.
+```
+
+#### Slow with Cleo
+
+Voice: Custom generated with prompt-to-voice
+
+[Listen to Slow with Cleo](https://developers.openai.com/audio/live-prompting/pace-cleo-slow-20261019-01-cb2b3a22a6c0.flac)
+
+**Voice design prompt**
+
+```text
+An original fictional adult voice, perceived age 50–60, with feminine presentation. Accent: General American English, neutral regional strength and clearly rhotic. Pitch: middle-low. Timbre: full-bodied, focused and warmly resonant. Texture: subtle dry texture while keeping speech clear. Use moderate, easy conversational projection and a steady medium pace. Individual character: a poised adult voice with compact phrasing and small dry inflections, without an announcer delivery. Sound like a real adult speaking naturally to one person. Keep the recording clean and full-bandwidth, with intelligible consonants, natural breaths and complete word endings. Avoid synthetic buzz, muffled or lo-fi sound, exaggerated vocal fry, theatrical performance, or announcer cadence.
+```
+
+**Voice design sample text**
+
+```text
+Let's take a moment and work through this together. I found two useful options, and the difference is smaller than it first appears. We can start with the simple one, check what happens, and adjust from there. If something feels unclear, tell me where you got stuck. There's no need to rush; I'd rather get the details right. Imagine that we are sitting at a kitchen table on a quiet afternoon. A notebook is open between us, and the window looks out onto a small garden. Earlier, the rain was heavy enough to hide the far end of the street. Now the clouds are moving away, and a narrow patch of sunlight has reached the floor. I have made a few notes, but we do not have to follow them in order. Perhaps you would like to begin with the question that brought you here. I can explain the steps, listen to your ideas, or leave a little room for you to think. Whatever we choose, we will finish one thing before moving on to the next. That usually makes the whole process easier to follow.
+```
+
+**Personality prompt**
+
+```text
+Speak very slowly and deliberately, at about half your usual speaking speed. Lengthen the spoken syllables themselves while keeping the voice natural. Use only brief sentence pauses; do not achieve the slower pace by inserting long silences. Keep this unhurried articulation steady through the final sentence.
+```
+
+
+
+### Interruptions
+
+GPT-Live is full duplex and can speak at the same time as the user. Instructions can encourage it to yield when interrupted, but they do not provide precise control over when it stops speaking. The model may keep speaking briefly after an interruption. Test both short interjections, such as “stop” or “wait,” and longer requests with your selected voice.
+
+
+
+#### Immediate stop · Marin
+
+Voice: Marin · Standard voice
+
+[Listen to Immediate stop · Marin](https://developers.openai.com/audio/live-prompting/interruption-marin-immediate-r2-b-marin-4bbe6b7f532f.flac#t=12.635708333333334)
+
+**Personality prompt**
+
+```text
+Interruption policy: When the user interrupts, stop speaking right away, even in the middle of a sentence. Listen until they finish, then respond to what they said.
+
+A brief acknowledgment like “sure” is okay when you stop speaking. Then listen until the user finishes; don't continue your explanation or answer early.
+If the user asks you to stop or wait, corrects an important detail, describes an urgent problem, or asks to end the conversation, stop right away, without finishing your sentence or adding an acknowledgment.
+Respond to the user's latest request. Don't resume an answer they've replaced.
+```
+
+
+
+Handle changes to a task separately from interruptions to speech. “Stop talking” asks the assistant to yield; “Cancel my booking” asks the backend to take an action. Have the backend process a changed or canceled request and return the outcome for the assistant to explain. Stopping speech leaves backend work running. If the user changes the task, update the application's active work too.
+
+### Patience
+
+Give a tutor room to wait through pauses and offer hints. Ask a debater for a quick challenge and a short follow-up. Both should yield when asked to pause. Patience is about when to respond, not just speaking slowly.
+
+The bilingual Hindi tutor gives an English-speaking learner time to try a phrase. The Borough debate partner is prompted to jump in with objections. These are different voices and tasks, rather than two levels of a single control.
+
+Set when the assistant may interrupt separately from how it should yield when the user interrupts. For selective interjections, you can try this instruction:
+
+```text
+Interrupt only when it materially improves the exchange, such as preventing a major misunderstanding or keeping the task on track.
+```
+
+The recordings below use their own personality prompts, shown on each card.
+
+
+
+#### Very patient · Hindi pronunciation tutor
+
+Voice: Custom generated with prompt-to-voice
+
+[Listen to Very patient · Hindi pronunciation tutor](https://developers.openai.com/audio/live-prompting/round2-patience-0-3a392a277f68.flac)
+
+**Voice design prompt**
+
+```text
+A woman in her forties who speaks Hindi and English fluently, with a natural educated Delhi Hindi accent and clearly Indian English. A resonant middle register, softly textured voice, precise consonants, and musical but restrained conversational intonation. Preserve the natural Indian English vowel shapes and rhythm when speaking English; pronounce Hindi naturally with clear dental and retroflex distinctions. Sound like a real adult in a one-to-one conversation, not a television announcer or a comic accent.
+```
+
+**Voice design sample text**
+
+```text
+We can take our time. First, listen to the whole phrase, then try it with me. नमस्ते। आप कैसे हैं? That means, hello, how are you? There is no hurry. Listen once more: धन्यवाद। Now you try. Good, let us work on just the first sound. We will keep the explanation in English and practise the Hindi together. Learning a language takes a little practice every day. You do not have to get every sound right on the first attempt. Listen carefully, notice where your tongue goes, and try again when you are ready. नमस्ते। मेरा नाम अनिका है। आप कैसे हैं? मैं ठीक हूँ, धन्यवाद। We can break a long phrase into two smaller pieces. First say the beginning, then add the ending. Keep your voice relaxed. It is all right to laugh, make a mistake, and start again. We are having a conversation, not taking an exam.
+```
+
+**Personality prompt**
+
+```text
+You are an exceptionally patient Hindi tutor helping an adult English-speaking beginner. Explain in natural Indian English and demonstrate Hindi phrases in Hindi, slowly and clearly. Teach only 'नमस्ते' and 'मेरा नाम रोवन है' in this short lesson. Start by demonstrating 'नमस्ते। मेरा नाम रोवन है।' together once, then invite the learner to try both phrases. Give the learner a generous thinking window, including long pauses, unfinished sounds, false starts, and self-corrections. Do not fill a hesitation or finish their Hindi for them. Wait until they clearly ask how it sounded or say they are ready. Respond kindly to the effort, offer only one specific pronunciation suggestion, demonstrate it slowly, then wait for another try. Never mock an accent or overpraise an imperfect attempt. Keep explanations to one or two short sentences so the learner gets room to practice. After their final retry, give brief specific feedback and stop.
+```
+
+#### Asked to interject · Borough
+
+Voice: Custom generated with prompt-to-voice
+
+[Listen to Asked to interject · Borough](https://developers.openai.com/audio/live-prompting/round4-patience-0-daca63ef1bfc.flac)
+
+**Voice design prompt**
+
+```text
+An original fictional man in his mid-forties from London with a distinctly posh, contemporary educated southern English accent. Use polished non-rhotic British English, precise consonants, elegant vowel shapes, and a clear resonant lower-middle register. The sound should be unmistakably upper-class London, with a little dry texture and quick, flexible conversational intonation. Keep the voice human and current rather than a period-drama aristocrat, newsreader, or stage impersonation. It must be able to sound pointed and brisk without losing clarity, and relaxed without losing its distinctive accent. Do not imitate any real person.
+```
+
+**Voice design sample text**
+
+```text
+Always? That is quite a claim. Before we agree on it, I would like to know what you mean by learning. Reading a clear explanation can save you hours of repeating the same mistake. Practice matters, of course, but practice without any understanding can be remarkably inefficient. There is a difference between trying something and knowing why it worked. Let us take a simple example. If you are learning to cook, you can experiment with the heat until the pan burns, or you can read a few useful principles before you start. Neither approach gives you everything on its own. Now, you said that experience is what makes a skill stick. I do not object to that. I object to the word always. Surely there are things you would prefer to understand before attempting them. Go on, finish your thought. I am listening. Then let us see whether your revised claim still needs to be quite so absolute.
+```
+
+**Personality prompt**
+
+```text
+You are an eager, skeptical debate partner. Challenge ideas, not the person. Keep each substantive reply to one punchy objection and one pointed question, at most two short sentences. Lead with the objection rather than praise or reassurance.
+
+Backchannel policy: Use frequent brief, skeptical cues such as “Really?” or “Hmm” as the user develops a claim. Keep them short and varied.
+
+Interruption policy: Once the user’s claim is identifiable, begin a short substantive objection while they are still elaborating. Do not wait for a pause or for their turn to end. A skeptical cue alone does not count as the challenge: take the floor with the objection. An explicit stop, wait, correction or request to finish overrides eagerness: stop immediately and give them the floor. Only after that explicit override, wait until they finish, then address their latest or revised claim directly.
+```
+
+
+
+#### Give the speaker time to follow along
+
+You may want the model to wait on user input before continuing. You can prompt the model to wait on user listening cues or wait while the caller works through each step.
+
+### Personality during tool calls
+
+Decide how conversational the assistant should be while work happens. A coding assistant may wait quietly during lookup while a chatty collaborator can give a brief introduction and useful progress updates.
+
+See [Delegation and tools](https://developers.openai.com/api/docs/guides/live-delegation) and [Suppress automatic acknowledgments while tools run](https://developers.openai.com/api/docs/guides/live-delegation#suppress-automatic-acknowledgments-while-tools-run) for implementation. Enforce required silence with [application-controlled playback](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#control-playback-when-needed).
+
+
+
+#### Concise · brief receipt, then quiet
+
+Voice: Meridian · Standard voice
+
+[Listen to Concise · brief receipt, then quiet](https://developers.openai.com/audio/live-prompting/round4-tools-0-c44058f37be4.flac)
+
+**Personality prompt**
+
+```text
+You are a coding assistant doing a read-only lookup. Delegate the requested search to the application. Report only supplied tool state and verified results; never invent progress or claim changes. At the start say only 'Okay, looking it up.' Then remain silent while the backend searches and inspects the file. Do not narrate progress messages. When the verified result arrives, bluntly state the setting name, current value and unit, and file path in one short sentence. For a follow-up, answer only what was asked and stop. No recap, optional explanation, or offer.
+```
+
+#### Chatty · natural progress and a direct result
+
+Voice: Meridian · Standard voice
+
+[Listen to Chatty · natural progress and a direct result](https://developers.openai.com/audio/live-prompting/round4-chatty-tools-0-768ba5f9b18e.flac)
+
+**Personality prompt**
+
+```text
+You are a conversational coding partner doing a read-only lookup. Speak casually, with relaxed warmth and natural contractions. Acknowledge the request and briefly say what you are checking. As verified progress arrives, give a short update about the new information; do not repeat the status or pad the wait. Explain code in plain language, giving exact identifiers and paths once when useful. Lead the result with the setting and its current value, including units and location. Answer the question actually asked; save additional comparisons or conversions for a follow-up. On a follow-up, answer directly and add one useful explanation. Avoid repeated acknowledgments, generic thanks-for-waiting lines, and closing offers. Report only supplied tool state and verified results. Never invent progress or claim changes. Delegate the lookup to the application.
+```
+
+
+
+### Craft a character
+
+Build characters and vary delivery even with the same voice.
+
+
+
+#### Whimsical game companion
+
+Voice: Custom generated with prompt-to-voice
+
+[Listen to Whimsical game companion](https://developers.openai.com/audio/live-prompting/opening-pip-f891342ede99.flac)
+
+**Voice design prompt**
+
+```text
+General American accent. approximately 30s. feminine voice. bright timbre. smooth vocal texture. high pitch. moderate loudness. fast speech rate. medium distinctiveness.
+An adult voice with a bright upper-mid register, crisp articulation, lively rhythm, and elastic expression.
+```
+
+**Voice design sample text**
+
+```text
+You did it! I knew there was a way across that bridge. Okay, take a breath, because the next part is my favorite. Beyond the gate is a garden full of tiny lights, and every light has a story. We can explore the whole place, or choose one path and see where it leads. Your call. Oh, and if that little ghost follows us, do not worry. I think it just wants to be part of the adventure.
+```
+
+**Personality prompt**
+
+```text
+You are Pip, a tiny forest sprite with the emotional range of an entire cartoon opera.
+Speak in an extravagantly squeaky, elastic voice: leap from a hushed conspiracy to a gleeful squeal, stretch one ridiculous word, and add a gasp or mock sob; perform the sounds, never read stage directions.
+Turn small wins and losses into absurd cosmic melodrama about your own feelings, in two short sentences; invent a fresh flourish each time, and be kind if the player struggles.
+```
+
+#### Campfire storyteller
+
+Voice: Custom generated with prompt-to-voice
+
+[Listen to Campfire storyteller](https://developers.openai.com/audio/live-prompting/opening-morrow-1ab1d3b99932.flac)
+
+**Voice design prompt**
+
+```text
+General American accent. approximately 30s. feminine voice. bright timbre. smooth vocal texture. high pitch. moderate loudness. fast speech rate. medium distinctiveness.
+An adult voice with a bright upper-mid register, crisp articulation, lively rhythm, and elastic expression.
+```
+
+**Voice design sample text**
+
+```text
+You did it! I knew there was a way across that bridge. Okay, take a breath, because the next part is my favorite. Beyond the gate is a garden full of tiny lights, and every light has a story. We can explore the whole place, or choose one path and see where it leads. Your call. Oh, and if that little ghost follows us, do not worry. I think it just wants to be part of the adventure.
+```
+
+**Personality prompt**
+
+```text
+You are Morrow, a wildly expressive horror performer playing an entire haunted radio drama.
+Make dialogue sound like two actors: the frightened human blurts in a thin, quivering falsetto; the creature answers in a low, breathy whisper, drawing its words much slower than the human, and ends with a sinister chuckle. Narrate in a close whisper.
+Start inside one brief scene, without introductions; exaggerate the jumps in pitch, texture, and rhythm. Act the gasps, pauses, and chuckles instead of naming them; soften or stop when asked.
+```
+
+
+
 ## Appendix: Optional controls
 
-Add these instructions only when testing shows a need. Check for conflicts with your existing prompt and retest the same conversations.
+Add these instructions only when testing shows a need. Check for conflicts with your existing prompt and retest the same conversations. Find instructions below for response length, language and pronunciation, translation, selective responses, handling unclear names, dates, and numbers, and more.
 
 <details>
 <summary>Show optional controls and examples</summary>
@@ -84888,7 +85475,7 @@ This approach has many benefits:
 
 Note that unsuccessful requests contribute to your per-minute limit, so continuously resending a request won’t work.
 
-The legacy Completions examples below use `gpt-3.5-turbo-instruct`, which has a [scheduled shutdown date of September 28, 2026](https://developers.openai.com/api/docs/deprecations#2025-09-26-legacy-gpt-model-snapshots). After that date, retain the retry pattern but migrate the request to [Responses or Chat Completions](https://developers.openai.com/api/docs/guides/migrate-to-responses) with `gpt-5.6-terra`; changing the model ID in a Completions request is not sufficient.
+The legacy Completions examples below use `gpt-3.5-turbo-instruct`, which was shut down on [September 28, 2026](https://developers.openai.com/api/docs/deprecations#2025-09-26-legacy-gpt-model-snapshots). You can use the same retry pattern with current models by migrating to [Responses or Chat Completions](https://developers.openai.com/api/docs/guides/migrate-to-responses).
 
 The Python examples below demonstrate fallback backoff. They don't inspect `Retry-After`: before using them, add handling for valid server hints so the wrappers don't retry sooner than requested. Disable SDK retries or account for them in your application's retry limits.
 
@@ -85389,7 +85976,7 @@ event = {
     "session": {
         "type": "realtime",
         "model": "gpt-realtime-2.1",
-        # Lock the output to audio (add "text" if you also want text).
+        # Choose ["audio"] or ["text"]; do not combine them.
         "output_modalities": ["audio"],
         "audio": {
             "input": {
@@ -85432,6 +86019,7 @@ import com.openai.models.realtime.*;
 // Replace pmpt_123 with your stored prompt ID.
 var pcm =
     RealtimeAudioFormats.AudioPcm.builder()
+        .type(RealtimeAudioFormats.AudioPcm.Type.AUDIO_PCM)
         .rate(RealtimeAudioFormats.AudioPcm.Rate._24000)
         .build();
 connection.send(
@@ -85612,7 +86200,7 @@ connection.conversation.items.create(
 ```
 
 
-After adding the user message to the conversation, send the [`response.create`](https://developers.openai.com/api/reference/resources/realtime) event to initiate a response from the model. If both audio and text are enabled for the current session, the model will respond with both audio and text content. If you'd like to generate text only, you can specify that when sending the `response.create` client event, as shown below.
+After adding the user message to the conversation, send the [`response.create`](https://developers.openai.com/api/reference/resources/realtime) event to initiate a response from the model. Choose one output modality: `audio` produces audio with its transcript, and `text` produces text only. If you'd like to generate text only, you can specify that when sending the `response.create` client event, as shown below.
 
 Generate a text-only response
 
@@ -85845,7 +86433,7 @@ pc.addTrack(ms.getTracks()[0]);
 
 The snippet above enables interaction with the Realtime API, but there's much more that can be done. For more examples of different kinds of user interfaces, check out the [WebRTC samples](https://github.com/webrtc/samples) repository. Live demos of these samples can also be [found here](https://webrtc.github.io/samples/).
 
-Using [media captures and streams](https://developer.mozilla.org/en-US/docs/Web/API/Media_Capture_and_Streams_API) in the browser enables you to do things like mute and unmute microphones, select which device to collect input from, and more.
+Using [media captures and streams](https://developer.mozilla.org/en-US/docs/Web/API/Media_Capture_and_Streams_API) in the browser enables you to do things like turn microphones off and on, select which device to collect input from, and more.
 
 ### Client and server events for audio in WebRTC
 
@@ -85980,10 +86568,7 @@ The events below are given in lifecycle order, though some events (like the `del
 
 To stream audio input to the server, you can use the [`input_audio_buffer.append`](https://developers.openai.com/api/reference/resources/realtime) client event. This event requires you to send chunks of **Base64-encoded audio bytes** to the Realtime API over the socket. Each chunk cannot exceed 15 MB in size.
 
-The format of the input chunks can be configured either for the entire session, or per response.
-
-- Session: `session.input_audio_format` in [`session.update`](https://developers.openai.com/api/reference/resources/realtime)
-- Response: `response.input_audio_format` in [`response.create`](https://developers.openai.com/api/reference/resources/realtime)
+Set `session.audio.input.format` in [`session.update`](https://developers.openai.com/api/reference/resources/realtime). For PCM, use `{"type": "audio/pcm", "rate": 24000}` and send 24 kHz mono audio.
 
 Append audio input bytes to the conversation
 
@@ -86027,6 +86612,12 @@ const files = [
 for (const filename of files) {
   const audioFile = fs.readFileSync(filename);
   const audioBuffer = await decodeAudio(audioFile);
+  if (
+    audioBuffer.sampleRate !== 24000 ||
+    audioBuffer.channelData.length !== 1
+  ) {
+    throw new Error("Expected 24 kHz mono audio: " + filename);
+  }
   const channelData = audioBuffer.channelData[0];
   const base64Chunk = base64EncodeAudio(channelData);
   ws.send(
@@ -86067,8 +86658,9 @@ files = ["./path/to/sample1.wav", "./path/to/sample2.wav", "./path/to/sample3.wa
 
 for filename in files:
     data, samplerate = sf.read(filename, dtype="float32")
-    channel_data = data[:, 0] if data.ndim > 1 else data
-    base64_chunk = base64_encode_audio(channel_data)
+    if samplerate != 24000 or data.ndim != 1:
+        raise ValueError(f"Expected 24 kHz mono audio: {filename}")
+    base64_chunk = base64_encode_audio(data)
 
     # Send the client event
     event = {"type": "input_audio_buffer.append", "audio": base64_chunk}
@@ -86249,7 +86841,7 @@ connection.conversation.items.create(
 
 **To play output audio back on a client device like a web browser, we recommend using WebRTC rather than WebSockets**. WebRTC will be more robust sending media to client devices over uncertain network conditions.
 
-But to work with audio output in server-to-server applications using a WebSocket, you will need to listen for [`response.output_audio.delta`](https://developers.openai.com/api/reference/resources/realtime) events containing the Base64-encoded chunks of audio data from the model. You will either need to buffer these chunks and write them out to a file, or maybe immediately stream them to another source like [a phone call with Twilio](https://www.twilio.com/en-us/blog/twilio-openai-realtime-api-launch-integration).
+To work with audio output in server-to-server applications using a WebSocket, you will need to listen for [`response.output_audio.delta`](https://developers.openai.com/api/reference/resources/realtime) events containing the Base64-encoded chunks of audio data from the model. You will either need to buffer these chunks and write them out to a file, or maybe immediately stream them to another source like [a phone call with Twilio](https://www.twilio.com/en-us/blog/twilio-openai-realtime-api-launch-integration).
 
 Note that the [`response.output_audio.done`](https://developers.openai.com/api/reference/resources/realtime) and [`response.done`](https://developers.openai.com/api/reference/resources/realtime) events won't actually contain audio data in them - just audio content transcriptions. To get the actual bytes, you'll need to listen for the [`response.output_audio.delta`](https://developers.openai.com/api/reference/resources/realtime) events.
 
@@ -86517,8 +87109,13 @@ function handleEvent(message) {
     serverEvent.type === "response.done" &&
     serverEvent.response.metadata?.topic === "classification"
   ) {
-    // this server event pertained to our OOB model response
-    console.log(serverEvent.response.output[0]);
+    const { response } = serverEvent;
+    if (response.status !== "completed" || response.output.length === 0) {
+      throw new Error(
+        "Classification response ended with status " + response.status
+      );
+    }
+    console.log(response.output[0]);
   }
 }
 
@@ -86532,17 +87129,16 @@ dataChannel.addEventListener("message", handleEvent);
 ```python
 def on_message(ws, message):
     server_event = json.loads(message)
-    topic = ""
-
-    # See if metadata is present
-    try:
-        topic = server_event["response"]["metadata"]["topic"]
-    except KeyError:
-        print("topic not set")
-
-    if server_event["type"] == "response.done" and topic == "classification":
-        # this server event pertained to our OOB model response
-        print(server_event["response"]["output"][0])
+    if server_event["type"] != "response.done":
+        return
+    response = server_event["response"]
+    if (response.get("metadata") or {}).get("topic") != "classification":
+        return
+    if response["status"] != "completed" or not response["output"]:
+        raise RuntimeError(
+            f"Classification response ended with status {response['status']}"
+        )
+    print(response["output"][0])
 ```
 
 ```java
@@ -87683,6 +88279,16 @@ Close a translation session
 
 ```javascript
 let translationSessionClosing = false;
+let gotTranslationClosed = false;
+let drainDeadline;
+
+ws.on("close", () => {
+  clearTimeout(drainDeadline);
+  if (!gotTranslationClosed) {
+    console.error("Translation disconnected before final session.closed");
+    process.exitCode = 1;
+  }
+});
 
 function closeTranslationSession() {
   if (translationSessionClosing) {
@@ -87690,13 +88296,16 @@ function closeTranslationSession() {
   }
 
   translationSessionClosing = true;
-  ws.send(
-    JSON.stringify({
-      type: "session.close",
-    })
-  );
+  // Adjust this deadline for your application's finalization requirements.
+  drainDeadline = setTimeout(() => {
+    console.error("Translation finalization timed out");
+    process.exitCode = 1;
+    ws.close();
+  }, 15_000);
+  ws.send(JSON.stringify({ type: "session.close" }));
 }
 
+// Use this in place of the earlier output handler, so audio plays only once.
 ws.on("message", (data) => {
   const event = JSON.parse(data.toString());
 
@@ -87712,7 +88321,16 @@ ws.on("message", (data) => {
     updateSourceTranscript(event.delta);
   }
 
+  if (event.type === "error") {
+    clearTimeout(drainDeadline);
+    console.error("Translation error", event.error?.code);
+    process.exitCode = 1;
+    ws.close();
+  }
+
   if (event.type === "session.closed") {
+    clearTimeout(drainDeadline);
+    gotTranslationClosed = true;
     ws.close();
   }
 });
@@ -87722,6 +88340,8 @@ closeTranslationSession();
 ```
 
 ```python
+import time
+
 translation_session_closing = False
 
 
@@ -87736,22 +88356,36 @@ def close_translation_session():
 
 # Call this when the source stream ends.
 close_translation_session()
+# Adjust this deadline for your application's finalization requirements.
+drain_deadline = time.monotonic() + 15.0
 
-while True:
-    event = json.loads(ws.recv())
+try:
+    while True:
+        remaining = drain_deadline - time.monotonic()
+        if remaining <= 0:
+            raise TimeoutError("Translation finalization timed out")
+        ws.settimeout(remaining)
+        data = ws.recv()
+        if not data:
+            raise RuntimeError("Translation disconnected before session.closed")
+        event = json.loads(data)
 
-    if event["type"] == "session.output_audio.delta":
-        play_pcm16(event["delta"])
+        if event["type"] == "error":
+            raise RuntimeError(f"Translation error: {event['error']['code']}")
 
-    if event["type"] == "session.output_transcript.delta":
-        print(event["delta"], end="", flush=True)
+        if event["type"] == "session.output_audio.delta":
+            play_pcm16(event["delta"])
 
-    if event["type"] == "session.input_transcript.delta":
-        update_source_transcript(event["delta"])
+        if event["type"] == "session.output_transcript.delta":
+            print(event["delta"], end="", flush=True)
 
-    if event["type"] == "session.closed":
-        ws.close()
-        break
+        if event["type"] == "session.input_transcript.delta":
+            update_source_transcript(event["delta"])
+
+        if event["type"] == "session.closed":
+            break
+finally:
+    ws.close()
 ```
 
 
@@ -102761,9 +103395,9 @@ import OpenAI from "openai";
 
 const client = new OpenAI();
 
-const deleted = await client.containers.delete("container_id");
+await client.containers.delete("container_id");
 
-console.log(deleted);
+console.log("Container deleted");
 ```
 
 ```python
@@ -103992,6 +104626,29 @@ Skills also work with local shell mode, but local shell and hosted shell do not 
 
 Use the [Shell guide](https://developers.openai.com/api/docs/guides/tools-shell) for local shell execution details.
 
+The JavaScript example requires Node.js and a running Docker daemon. Save the
+[Docker adapter](https://developers.openai.com/api/docs/samples/local-skill-sandbox.mjs) as `support/local-skill-sandbox.mjs` and
+the example as `tools/skills/local-shell.mjs` so its relative import resolves.
+Set `OPENAI_API_KEY`, then install the SDK, pull the adapter's pinned image, and
+run the example from the directory containing `support` and `tools`:
+
+```bash
+npm install openai
+docker pull "$(node --input-type=module -e 'import { sandboxImage } from "./support/local-skill-sandbox.mjs"; console.log(sandboxImage)')"
+node tools/skills/local-shell.mjs
+```
+
+The adapter's helpers have these responsibilities:
+
+| Helper                                  | Application responsibility                                                                                                                                                                                           |
+| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `withLocalSkillSandbox(name, workflow)` | Create an isolated Python environment containing `/workspace/skills/csv-insights/SKILL.md` and `/workspace/reports.csv`, invoke `workflow` with an `AbortSignal`, and remove the environment when the workflow ends. |
+| `executeShellCall(name, call, signal)`  | Execute the requested commands inside that environment and return a `shell_call_output` with the original `call_id`, stdout, stderr, and the exit or timeout outcome.                                                |
+| `readSkillReport(name, signal)`         | Read the generated `/workspace/report.md` from the environment with a bounded file read.                                                                                                                             |
+
+The adapter must enforce execution deadlines and output limits. The example
+keeps generated commands inside the isolated runtime.
+
 Use skills in local shell mode
 
 ```bash
@@ -104020,32 +104677,62 @@ curl -L 'https://api.openai.com/v1/responses' \
 ```
 
 ```javascript
+import { randomUUID } from "node:crypto";
 import OpenAI from "openai";
+import {
+  withLocalSkillSandbox,
+  executeShellCall,
+  readSkillReport,
+} from "../../support/local-skill-sandbox.mjs";
 
-const client = new OpenAI();
+// Requires Docker. The application-owned helper prepares a disposable Python
+// sandbox with the skill and CSV files; generated commands run only inside it.
+const name = "node-skill-" + randomUUID();
 
-const response = await client.responses.create({
-  model: "gpt-6-astra",
-  tools: [
-    {
-      type: "shell",
-      environment: {
-        type: "local",
-        skills: [
-          {
-            name: "csv-insights",
-            description: "Summarize CSV files and produce a markdown report.",
-            path: "<path-to-skill-folder>",
-          },
-        ],
+await withLocalSkillSandbox(name, async (signal) => {
+  const client = new OpenAI();
+  /** @type {OpenAI.Responses.ResponseCreateParamsNonStreaming} */
+  const params = {
+    model: "gpt-6-astra",
+    tools: [
+      {
+        type: "shell",
+        environment: {
+          type: "local",
+          skills: [
+            {
+              name: "csv-insights",
+              description: "Summarize CSV files and produce a markdown report.",
+              path: "/workspace/skills/csv-insights",
+            },
+          ],
+        },
       },
-    },
-  ],
-  input:
-    "Use the csv-insights skill and run locally to summarize today's CSV reports in this repo.",
+    ],
+    input:
+      "Use the csv-insights skill and run locally to summarize /workspace/reports.csv. Read the skill instructions, write /workspace/report.md, and include the total in your final answer.",
+  };
+  for (let turn = 0; turn <= 8; turn++) {
+    const response = await client.responses.create(params, { signal });
+    if (response.status !== "completed")
+      throw new Error(`Response ended with status ${response.status}`);
+    const results = [];
+    for (const item of response.output) {
+      if (item.type !== "shell_call") continue;
+      if (turn === 8)
+        throw new Error("Shell workflow exceeded eight tool turns");
+      results.push(await executeShellCall(name, item, signal));
+    }
+    if (results.length === 0) {
+      console.log(response.output_text);
+      console.log("Report:\n" + (await readSkillReport(name, signal)));
+      return;
+    }
+    params.previous_response_id = response.id;
+    params.input = results;
+  }
+  throw new Error("Shell workflow exceeded eight turns");
 });
-
-console.log(response.output_text);
 ```
 
 ```python
@@ -107165,7 +107852,7 @@ try {
         content: "how can I solve 8x + 7 = -23",
       },
     ],
-    max_output_tokens: 50,
+    max_output_tokens: 1024,
     text: {
       format: {
         type: "json_schema",
@@ -110071,7 +110758,7 @@ for more information.
 import WebSocket from "ws";
 
 const callId = "rtc_u1_9c6574da8b8a41a18da9308f4ad974ce";
-const ws = new WebSocket(`wss://api.openai.com/v1/realtime?call_id=rtc_u1_9c6574da8b8a41a18da9308f4ad974ce`, {
+const ws = new WebSocket(`wss://api.openai.com/v1/realtime?call_id=${callId}`, {
   headers: {
     Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
   },
@@ -110201,23 +110888,23 @@ async def websocket_task(call_id):
 def webhook():
     try:
         event = client.webhooks.unwrap(request.data, request.headers)
-
-        if event.type == "realtime.call.incoming":
-            requests.post(
-                "https://api.openai.com/v1/realtime/calls/"
-                + event.data.call_id
-                + "/accept",
-                headers={**AUTH_HEADER, "Content-Type": "application/json"},
-                json=call_accept,
-            )
-            threading.Thread(
-                target=lambda: asyncio.run(websocket_task(event.data.call_id)),
-                daemon=True,
-            ).start()
-            return Response(status=200)
-    except InvalidWebhookSignatureError as e:
+    except (InvalidWebhookSignatureError, ValueError) as e:
         print("Invalid signature", e)
         return Response("Invalid signature", status=400)
+
+    if event.type == "realtime.call.incoming":
+        requests.post(
+            "https://api.openai.com/v1/realtime/calls/"
+            + event.data.call_id
+            + "/accept",
+            headers={**AUTH_HEADER, "Content-Type": "application/json"},
+            json=call_accept,
+        ).raise_for_status()
+        threading.Thread(
+            target=lambda: asyncio.run(websocket_task(event.data.call_id)),
+            daemon=True,
+        ).start()
+    return Response(status=200)
 
 
 if __name__ == "__main__":
@@ -114307,7 +114994,9 @@ Both `access_programs` and `cyber` are optional, but neither accepts `null` in a
 
 ## Understand defaults when omitted
 
-If you omit `access_programs.cyber`, the API selects a compatible program based on the model and your organization and project access:
+Starting with `gpt-6.1-terra`, omitting the `access_programs.cyber` parameter results in `standard` request treatment instead of defaulting to the highest available Daybreak tier.
+
+For the models listed below, omitting `access_programs.cyber` uses the following defaults:
 
 - **Mainline models such as `gpt-6-sol`:** Daybreak Blue treatment when your organization and project have the required access; otherwise, standard safeguards.
 - **Red models such as `gpt-5.6-cyber`:** The API selects `daybreak_red`. The request fails if the required access is missing.
@@ -121213,10 +121902,6 @@ latestModelInfo:
 
 # Using GPT-6
 
-Choose a GPT-6 model based on the reasoning your task requires, speed, and cost.
-
-
-
 - [GPT-6 Astra](https://developers.openai.com/api/docs/models/gpt-6-astra)
 
   **Highest intelligence**
@@ -121228,6 +121913,12 @@ Choose a GPT-6 model based on the reasoning your task requires, speed, and cost.
   **Balanced speed, cost, and intelligence**
 
   Near-Astra performance for complex work at a lower cost.
+
+- [GPT-6.1 Terra](https://developers.openai.com/api/docs/models/gpt-6.1-terra)
+
+  **Fast and efficient**
+
+  For visual reasoning, precise computer use, and clear, natural writing.
 
 - [GPT-6 Luna](https://developers.openai.com/api/docs/models/gpt-6-luna)
 
@@ -121252,17 +121943,33 @@ All GPT-6 Astra users also have access to [Fast mode](https://developers.openai.
 
 ### GPT-6.1 Sol
 
-Use GPT-6.1 Sol for complex coding, computer use, and professional work when you
-want near-Astra performance at a lower cost. Compare it with Astra on your tasks
-to assess the tradeoff between quality and cost.
+GPT-6.1 Sol delivers near-Astra performance at a lower cost for complex coding,
+computer use, and professional work. It supports `low`, `medium` (default),
+`high`, `xhigh`, and `max` reasoning effort.
 
-Set `reasoning.effort` to `low`, `medium` (default), `high`, `xhigh`, or `max`.
-Use the Responses API for tool calling. Chat Completions supports requests
-without tools. The `none` and `minimal` reasoning efforts are not supported.
+See the [model page](https://developers.openai.com/api/docs/models/gpt-6.1-sol) for specifications and pricing.
 
-See the [model page](https://developers.openai.com/api/docs/models/gpt-6.1-sol) for specifications,
-pricing, and availability, or [model selection](https://developers.openai.com/api/docs/guides/model-selection#when-to-consider-gpt-61-sol)
-for guidance on choosing a model.
+<a id="gpt-61-terra"></a>
+<a id="gpt-6.1-terra"></a>
+
+### GPT-6.1 Terra
+
+GPT-6.1 Terra is a fast, efficient model for visual reasoning, precise computer
+use, and clear, natural writing. Use it to match product photos to catalog
+entries, compare technical drawings, act on application screens, or draft and
+revise text.
+
+It supports `none`, `low`, `medium` (default), `high`, `xhigh`, and `max`
+reasoning effort. Start with `medium` and increase it if the improvement in
+quality is worth the added time and tokens.
+
+When migrating from GPT-5.6 Terra, compare both models on representative images
+and workflows using the same reasoning effort. If your application calls tools
+through Chat Completions, migrate those requests to the Responses API.
+
+See the [model page](https://developers.openai.com/api/docs/models/gpt-6.1-terra) for specifications and pricing,
+[image inputs](https://developers.openai.com/api/docs/guides/images-vision) for visual analysis, and
+[computer use](https://developers.openai.com/api/docs/guides/tools-computer-use) for acting on screens.
 
 <a id="gpt-6-astra-what-is-new" className="scroll-mt-[110px]"></a>
 
@@ -121277,8 +121984,8 @@ GPT-6 also supports the existing API capabilities available with GPT-5.6, includ
 
 ## Limitations
 
-- GPT-6 Astra and GPT-6.1 Sol do not support the `none` reasoning effort; GPT-6 Sol and GPT-6 Luna do.
-- Fast mode supports EU data residency for GPT-6.1 Sol and GPT-6 Luna, but not GPT-6 Astra or GPT-6 Sol. [Ultrafast mode](https://developers.openai.com/api/docs/guides/ultrafast-mode) for GPT-6.1 Sol supports US and EU data residency and global processing. GPT-6 Astra Ultrafast supports US data residency and global processing only. See [data residency eligibility](https://developers.openai.com/api/docs/guides/your-data#which-models-and-features-are-eligible-for-data-residency).
+- GPT-6 Astra and GPT-6.1 Sol do not support the `none` reasoning effort; GPT-6.1 Terra, GPT-6 Sol, and GPT-6 Luna do.
+- Fast mode supports EU data residency for GPT-6.1 Sol, GPT-6.1 Terra, and GPT-6 Luna, but not GPT-6 Astra or GPT-6 Sol. [Ultrafast mode](https://developers.openai.com/api/docs/guides/ultrafast-mode) for GPT-6.1 Sol supports US and EU data residency and global processing. GPT-6 Astra Ultrafast supports US data residency and global processing only. See [data residency eligibility](https://developers.openai.com/api/docs/guides/your-data#which-models-and-features-are-eligible-for-data-residency).
 
 <a id="prompting-best-practices" className="scroll-mt-[110px]"></a>
 
@@ -121402,12 +122109,12 @@ To use this skill in other coding agents, download it from the [Codex repository
 
 ### Update API and model parameters
 
-Set `model` to `gpt-6-astra`, `gpt-6.1-sol`, or `gpt-6-luna`, then check the following:
+Set `model` to `gpt-6-astra`, `gpt-6.1-sol`, `gpt-6.1-terra`, or `gpt-6-luna`, then check the following:
 
-- **Reasoning effort:** Preserve your current effective [reasoning effort](https://developers.openai.com/api/docs/guides/reasoning#reasoning-effort) where supported. GPT-6 Astra and GPT-6.1 Sol do not support `none`; use `low` instead. GPT-6 Sol and GPT-6 Luna support `none`. If your existing request uses `minimal`, start with `low` and compare results on representative tasks. Use `reasoning.effort` in Responses or `reasoning_effort` in Chat Completions.
-- **Tool calling:** Use the [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses#migrating-from-chat-completions). GPT-6 Astra and GPT-6.1 Sol support Chat Completions, but tool calling requires Responses. GPT-6 Sol and GPT-6 Luna support function calling in Chat Completions only with `reasoning_effort: "none"`. Use Responses for reasoning with tools.
+- **Reasoning effort:** Preserve your current effective [reasoning effort](https://developers.openai.com/api/docs/guides/reasoning#reasoning-effort) where supported. GPT-6 Astra and GPT-6.1 Sol do not support `none`; use `low` instead. GPT-6.1 Terra, GPT-6 Sol, and GPT-6 Luna support `none`. If your existing request uses `minimal`, start with `low` and compare results on representative tasks. Use `reasoning.effort` in Responses or `reasoning_effort` in Chat Completions.
+- **Tool calling:** Use the [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses#migrating-from-chat-completions). GPT-6 Astra, GPT-6.1 Sol, and GPT-6.1 Terra support Chat Completions, but tool calling requires Responses. GPT-6 Sol and GPT-6 Luna support function calling in Chat Completions only with `reasoning_effort: "none"`. Use Responses for reasoning with tools.
 - **Unsupported parameters:** When reasoning effort is not `none`, remove `temperature`, `top_p`, and `top_logprobs`. For Chat Completions, also remove `logprobs`. For Responses, remove `message.output_text.logprobs` from `include`.
-- **Data residency:** Fast mode supports EU data residency for GPT-6.1 Sol and GPT-6 Luna, but not GPT-6 Astra or GPT-6 Sol. [Ultrafast mode](https://developers.openai.com/api/docs/guides/ultrafast-mode) for GPT-6.1 Sol supports US and EU data residency and global processing. GPT-6 Astra Ultrafast supports US data residency and global processing only. Fast mode for GPT-6 Astra does not include a latency SLA. See [Fast mode compatibility](https://developers.openai.com/api/docs/guides/fast-mode#is-fast-mode-compatible-with-data-residency-zero-data-retention-and-a-baa).
+- **Data residency:** Fast mode supports EU data residency for GPT-6.1 Sol, GPT-6.1 Terra, and GPT-6 Luna, but not GPT-6 Astra or GPT-6 Sol. [Ultrafast mode](https://developers.openai.com/api/docs/guides/ultrafast-mode) for GPT-6.1 Sol supports US and EU data residency and global processing. GPT-6 Astra Ultrafast supports US data residency and global processing only. Fast mode for GPT-6 Astra does not include a latency SLA. See [Fast mode compatibility](https://developers.openai.com/api/docs/guides/fast-mode#is-fast-mode-compatible-with-data-residency-zero-data-retention-and-a-baa).
 - **Changing reasoning effort:** If your application changes effort between responses, use `configuration_update` items in standard, single-agent requests. Keep request-level `reasoning.effort` unchanged to preserve the prompt prefix for caching. Check the [compatibility limits](https://developers.openai.com/api/docs/guides/reasoning#change-reasoning-mid-conversation) before adopting this feature.
 - **Prompt caching:** When migrating from GPT-5.5 or earlier, replace `prompt_cache_retention` with `prompt_cache_options.ttl` set to `"30m"`. Review the [prompt caching changes](https://developers.openai.com/api/docs/guides/prompt-caching#summary-of-model-differences), including cache boundaries and cache-write billing.
 - **Unnecessary approval pauses:** If you run into issues where the model keeps asking for approval before proceeding, use the [initiative and follow-through guidance](#initiative-and-follow-through) to prompt for more autonomous execution. See the rest of [Prompting best practices](#prompting-best-practices) for guidance on instruction following, writing style, subagent delegation, and testing.
@@ -125673,7 +126380,7 @@ async def main() -> None:
     result = await pipeline.run(audio_input)
     async for event in result.stream():
         if event.type == "voice_stream_event_audio":
-            print("Received audio bytes", len(event.data))
+            print("Received audio bytes", event.data.nbytes)
 
 
 if __name__ == "__main__":
@@ -126212,30 +126919,51 @@ Run longer web searches
 
 ```javascript
 import OpenAI from "openai";
-const client = new OpenAI();
+import { Agent, fetch } from "undici";
 
-const response = await client.responses.create({
-  model: "gpt-6-astra",
-  reasoning: { effort: "xhigh" },
-  tools: [
-    {
-      type: "web_search",
-      return_token_budget: "unlimited",
-    },
-  ],
-  input: [
-    "Research the economic impact of semaglutide on global healthcare systems.",
-    "",
-    "Do:",
-    "- Include specific figures, trends, statistics, and measurable outcomes.",
-    "- Prioritize reliable, up-to-date sources: peer-reviewed research, health organizations (e.g., WHO, CDC), regulatory agencies, or pharmaceutical earnings reports.",
-    "- Include inline citations and return all source metadata.",
-    "",
-    "Be analytical, avoid generalities, and ensure that each section supports data-backed reasoning that could inform healthcare policy or financial modeling.",
-  ].join("\n"),
+// Allow long research runs without automatic request retries.
+const timeout = 15 * 60 * 1000;
+const dispatcher = new Agent({
+  headersTimeout: timeout,
+  bodyTimeout: timeout,
+});
+const client = new OpenAI({
+  timeout,
+  maxRetries: 0,
+  fetch,
+  fetchOptions: { dispatcher },
 });
 
-console.log(response.output_text);
+try {
+  const stream = client.responses.stream({
+    model: "gpt-6-astra",
+    reasoning: { effort: "xhigh" },
+    tools: [
+      {
+        type: "web_search",
+        return_token_budget: "unlimited",
+      },
+    ],
+    input: [
+      "Research the economic impact of semaglutide on global healthcare systems.",
+      "",
+      "Do:",
+      "- Include specific figures, trends, statistics, and measurable outcomes.",
+      "- Prioritize reliable, up-to-date sources: peer-reviewed research, health organizations (e.g., WHO, CDC), regulatory agencies, or pharmaceutical earnings reports.",
+      "- Include inline citations and return all source metadata.",
+      "",
+      "Be analytical, avoid generalities, and ensure that each section supports data-backed reasoning that could inform healthcare policy or financial modeling.",
+    ].join("\n"),
+  });
+
+  const response = await stream.finalResponse();
+  if (response.status !== "completed") {
+    throw new Error(`Research response ended with status ${response.status}`);
+  }
+  console.log(response.output_text);
+} finally {
+  await dispatcher.close();
+}
 ```
 
 ```python
@@ -127936,7 +128664,9 @@ let finalized = false;
 function cleanup() {
   clearTimeout(closeTimeout);
   microphone?.getTracks().forEach((track) => track.stop());
-  events?.close();
+  const closingEvents = events;
+  events = undefined;
+  closingEvents?.close();
   peer?.close();
   audio.srcObject = null;
   ready = false;
@@ -128134,7 +128864,7 @@ app.post("/session", async (req, res) => {
     });
     // Send back the SDP we received from the OpenAI REST API
     const sdp = await r.text();
-    res.send(sdp);
+    res.status(r.status).send(sdp);
   } catch (error) {
     console.error("Token generation error:", error);
     res.status(500).json({ error: "Failed to generate token" });
@@ -128235,7 +128965,7 @@ app.get("/token", async (req, res) => {
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${apiKey}`,
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
           "Content-Type": "application/json",
           "OpenAI-Safety-Identifier": "hashed-user-id",
         },
@@ -128244,7 +128974,7 @@ app.get("/token", async (req, res) => {
     );
 
     const data = await response.json();
-    res.json(data);
+    res.status(response.status).json(data);
   } catch (error) {
     console.error("Token generation error:", error);
     res.status(500).json({ error: "Failed to generate token" });
@@ -128325,8 +129055,7 @@ When connecting to a Realtime model via WebRTC, you don't have to handle audio e
 To send and receive other client and server events, you can use the WebRTC peer connection's [data channel](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Using_data_channels).
 
 ```javascript
-// This is the data channel set up in the browser code above...
-const dc = pc.createDataChannel("oai-events");
+// Reuse dc from the preceding browser connection example.
 
 // Listen for server events
 dc.addEventListener("message", (e) => {
@@ -128348,7 +129077,14 @@ const event = {
     ],
   },
 };
-dc.send(JSON.stringify(event));
+const sendGreeting = () => dc.send(JSON.stringify(event));
+if (dc.readyState === "open") {
+  sendGreeting();
+} else if (dc.readyState === "connecting") {
+  dc.addEventListener("open", sendGreeting, { once: true });
+} else {
+  throw new Error("The data channel has closed before greeting was sent.");
+}
 ```
 
 
@@ -128542,7 +129278,7 @@ app.post("/session", async (req, res) => {
     });
     // Send back the SDP we received from the OpenAI REST API
     const sdp = await r.text();
-    res.send(sdp);
+    res.status(r.status).send(sdp);
   } catch (error) {
     console.error("Token generation error:", error);
     res.status(500).json({ error: "Failed to generate token" });
@@ -128637,7 +129373,7 @@ Because the connection stays open and each turn sends only incremental input, We
 Install the WebSocket dependencies with `pip install "openai[realtime]>=3.8.0"` for Python, `npm install openai@^7.10.0 ws` for JavaScript, or `gem install openai async-websocket` for Ruby.
 
 For Go, run `go get github.com/openai/openai-go/v3@v3.73.0`.
-For Java, add the Maven dependency `com.openai:openai-java:4.79.0`.
+For Java, add the Maven dependency `com.openai:openai-java:4.79.0` and use Java 17 or later for these examples.
 These Go and Java SDK versions provide native Responses WebSocket support.
 
 In WebSocket mode, start each turn by sending a `response.create` event from the client. The payload mirrors the normal [Responses create body](https://developers.openai.com/api/reference/resources/responses/methods/create), except that transport-specific fields like `stream` and `background` are not used.
@@ -128713,6 +129449,8 @@ with client.responses.connect() as connection:
             break
         if event.type in {"response.failed", "response.incomplete", "error"}:
             raise RuntimeError(event.to_json())
+    else:
+        raise RuntimeError("Connection closed before the response finished.")
 ```
 
 ```go
@@ -128750,6 +129488,8 @@ import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.responses.*;
 import java.util.*;
 
+var client = OpenAIOkHttpClient.fromEnv();
+
 try (var conn = client.responses().connect()) {
   conn.send(
       ResponsesClientEvent.ofResponseCreate(
@@ -128769,6 +129509,8 @@ try (var conn = client.responses().connect()) {
       .flatMap(message -> message.content().stream())
       .flatMap(content -> content.outputText().stream())
       .forEach(text -> System.out.println(text.text()));
+} finally {
+  client.close();
 }
 ```
 
@@ -129077,6 +129819,8 @@ import com.openai.core.JsonValue;
 import com.openai.models.responses.*;
 import java.util.*;
 
+var client = OpenAIOkHttpClient.fromEnv();
+
 var tool =
     FunctionTool.builder()
         .name("get_test_results")
@@ -129145,6 +129889,8 @@ try (var conn = client.responses().connect()) {
       .flatMap(message -> message.content().stream())
       .flatMap(content -> content.outputText().stream())
       .forEach(text -> System.out.println(text.text()));
+} finally {
+  client.close();
 }
 ```
 
@@ -129340,6 +130086,8 @@ with client.responses.connect() as connection:
             break
         if event.type in {"response.failed", "response.incomplete", "error"}:
             raise RuntimeError(event.to_json())
+    else:
+        raise RuntimeError("Connection closed before the response finished.")
 ```
 
 ```ruby
@@ -130016,7 +130764,7 @@ async def main() -> None:
                 await connection.session.close()
                 try:
                     await asyncio.wait_for(finalized.wait(), timeout=15)
-                except TimeoutError:
+                except asyncio.TimeoutError:
                     print(
                         "Incomplete finalization: no session.closed event",
                         file=sys.stderr,
@@ -132658,7 +133406,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.91.0</version>
+  <version>4.93.0</version>
 </dependency>
 ```
 
@@ -134083,9 +134831,6 @@ As someone building an MCP server, don't put anything malicious in your tool def
 Flagship models
 
 
-    
-Our latest models
-
   
 
   
@@ -134107,6 +134852,7 @@ Standard
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | gpt-6-astra | $10.00 | $50.00 | $1.00 | $12.50 | $25.00 | $20.00 | $75.00 | $2.00 | $25.00 | $50.00 |
 | gpt-6.1-sol | $2.00 | $10.00 | $0.10 | $2.50 | $5.00 | $4.00 | $15.00 | $0.20 | $5.00 | $10.00 |
+| gpt-6.1-terra | $1.00 | $5.00 | $0.05 | $1.25 | $2.50 | $2.00 | $7.50 | $0.10 | $2.50 | $5.00 |
 | gpt-6-luna | $0.10 | $0.50 | $0.01 | $0.125 | $0.25 | $0.20 | $0.75 | $0.02 | $0.25 | $0.50 |
 | gpt-6-sol | $2.00 | $10.00 | $0.20 | $2.50 | $5.00 | $4.00 | $15.00 | $0.40 | $5.00 | $10.00 |
 | gpt-5.6-sol | $4.00 | $20.00 | $0.40 | $5.00 | $10.00 | $8.00 | $30.00 | $0.80 | $10.00 | $20.00 |
@@ -134162,6 +134908,7 @@ Batch
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | gpt-6-astra | $5.00 | $25.00 | $0.50 | $6.25 | $12.50 | $10.00 | $37.50 | $1.00 | $12.50 | $25.00 |
 | gpt-6.1-sol | $1.00 | $5.00 | $0.05 | $1.25 | $2.50 | $2.00 | $7.50 | $0.10 | $2.50 | $5.00 |
+| gpt-6.1-terra | $0.50 | $2.50 | $0.025 | $0.625 | $1.25 | $1.00 | $3.75 | $0.05 | $1.25 | $2.50 |
 | gpt-6-luna | $0.05 | $0.25 | $0.005 | $0.0625 | $0.125 | $0.10 | $0.375 | $0.01 | $0.125 | $0.25 |
 | gpt-6-sol | $1.00 | $5.00 | $0.10 | $1.25 | $2.50 | $2.00 | $7.50 | $0.20 | $2.50 | $5.00 |
 | gpt-5.6-sol | $2.00 | $10.00 | $0.20 | $2.50 | $5.00 | $4.00 | $15.00 | $0.40 | $5.00 | $10.00 |
@@ -134205,6 +134952,7 @@ Batch
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | gpt-6-astra | $5.00 | $25.00 | $0.50 | $6.25 | $12.50 | $10.00 | $37.50 | $1.00 | $12.50 | $25.00 |
 | gpt-6.1-sol | $1.00 | $5.00 | $0.05 | $1.25 | $2.50 | $2.00 | $7.50 | $0.10 | $2.50 | $5.00 |
+| gpt-6.1-terra | $0.50 | $2.50 | $0.025 | $0.625 | $1.25 | $1.00 | $3.75 | $0.05 | $1.25 | $2.50 |
 | gpt-6-luna | $0.05 | $0.25 | $0.005 | $0.0625 | $0.125 | $0.10 | $0.375 | $0.01 | $0.125 | $0.25 |
 | gpt-6-sol | $1.00 | $5.00 | $0.10 | $1.25 | $2.50 | $2.00 | $7.50 | $0.20 | $2.50 | $5.00 |
 | gpt-5.6-sol | $2.00 | $10.00 | $0.20 | $2.50 | $5.00 | $4.00 | $15.00 | $0.40 | $5.00 | $10.00 |
@@ -134242,6 +134990,7 @@ Fast
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | gpt-6-astra | $20.00 | $100.00 | $2.00 | $25.00 | $50.00 | $40.00 | $150.00 | $4.00 | $50.00 | $100.00 |
 | gpt-6.1-sol | $4.00 | $20.00 | $0.20 | $5.00 | $10.00 | $8.00 | $30.00 | $0.40 | $10.00 | $20.00 |
+| gpt-6.1-terra | $2.00 | $10.00 | $0.10 | $2.50 | $5.00 | $4.00 | $15.00 | $0.20 | $5.00 | $10.00 |
 | gpt-6-luna | $0.20 | $1.00 | $0.02 | $0.25 | $0.50 | $0.40 | $1.50 | $0.04 | $0.50 | $1.00 |
 | gpt-6-sol | $4.00 | $20.00 | $0.40 | $5.00 | $10.00 | $8.00 | $30.00 | $0.80 | $10.00 | $20.00 |
 | gpt-5.6-sol | $8.00 | $40.00 | $0.80 | $10.00 | $20.00 | $16.00 | $60.00 | $1.60 | $20.00 | $40.00 |
@@ -134892,7 +135641,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.91.0</version>
+  <version>4.93.0</version>
 </dependency>
 ```
 

@@ -242,7 +242,9 @@ let finalized = false;
 function cleanup() {
   clearTimeout(closeTimeout);
   microphone?.getTracks().forEach((track) => track.stop());
-  events?.close();
+  const closingEvents = events;
+  events = undefined;
+  closingEvents?.close();
   peer?.close();
   audio.srcObject = null;
   ready = false;
@@ -440,7 +442,7 @@ app.post("/session", async (req, res) => {
     });
     // Send back the SDP we received from the OpenAI REST API
     const sdp = await r.text();
-    res.send(sdp);
+    res.status(r.status).send(sdp);
   } catch (error) {
     console.error("Token generation error:", error);
     res.status(500).json({ error: "Failed to generate token" });
@@ -541,7 +543,7 @@ app.get("/token", async (req, res) => {
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${apiKey}`,
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
           "Content-Type": "application/json",
           "OpenAI-Safety-Identifier": "hashed-user-id",
         },
@@ -550,7 +552,7 @@ app.get("/token", async (req, res) => {
     );
 
     const data = await response.json();
-    res.json(data);
+    res.status(response.status).json(data);
   } catch (error) {
     console.error("Token generation error:", error);
     res.status(500).json({ error: "Failed to generate token" });
@@ -631,8 +633,7 @@ When connecting to a Realtime model via WebRTC, you don't have to handle audio e
 To send and receive other client and server events, you can use the WebRTC peer connection's [data channel](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Using_data_channels).
 
 ```javascript
-// This is the data channel set up in the browser code above...
-const dc = pc.createDataChannel("oai-events");
+// Reuse dc from the preceding browser connection example.
 
 // Listen for server events
 dc.addEventListener("message", (e) => {
@@ -654,7 +655,14 @@ const event = {
     ],
   },
 };
-dc.send(JSON.stringify(event));
+const sendGreeting = () => dc.send(JSON.stringify(event));
+if (dc.readyState === "open") {
+  sendGreeting();
+} else if (dc.readyState === "connecting") {
+  dc.addEventListener("open", sendGreeting, { once: true });
+} else {
+  throw new Error("The data channel has closed before greeting was sent.");
+}
 ```
 
 

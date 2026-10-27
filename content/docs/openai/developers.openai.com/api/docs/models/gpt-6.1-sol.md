@@ -6,24 +6,15 @@
 
 Model ID: `gpt-6.1-sol`
 
-GPT-6.1 Sol delivers near-Astra performance at a lower cost for complex coding,
-computer use, and professional work. Compare it with Astra on your tasks to
-assess the tradeoff between quality and cost.
+Use GPT-6.1 Sol for complex coding, computer use, and professional work.
 
 `reasoning.effort` supports `low`, `medium` (default), `high`, `xhigh`, and
-`max`. The `none` and `minimal` reasoning efforts are not supported.
+`max`.
 
-Use the Responses API for tool calling. Chat Completions is supported without
-tool calling.
+Tool calling requires the Responses API.
 
-For the fastest response speeds, use [Ultrafast mode](/api/docs/guides/ultrafast-mode)
-with `model: "gpt-6.1-sol"` and `service_tier: "ultrafast"` in the Responses API.
-
-GPT-6.1 Sol supports US and EU data residency, including with Fast and Ultrafast
-modes. See [data residency eligibility](/api/docs/guides/your-data#which-models-and-features-are-eligible-for-data-residency).
-
-See [GPT-6.1 Sol in the GPT-6 guide](/api/docs/guides/latest-model?model=gpt-6-astra#gpt-61-sol) and
-[model-selection guidance](/api/docs/guides/model-selection#when-to-consider-gpt-61-sol).
+See the [GPT-6 guide](/api/docs/guides/latest-model?model=gpt-6-astra#gpt-61-sol)
+for prompting and migration guidance.
 
 ## Model details
 
@@ -112,7 +103,7 @@ Tools supported by this model when using the Responses API.
 
 ## Snapshots
 
-Use `gpt-6.1-sol` to select this model.
+Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-6.1 Sol.
 
 - `gpt-6.1-sol`
 

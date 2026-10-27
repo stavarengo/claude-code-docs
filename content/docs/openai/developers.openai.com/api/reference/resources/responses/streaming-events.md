@@ -222,15 +222,23 @@ Schema name: `ResponseCreatedEvent`
 
                 - `"input_text"`
 
-              - `prompt_cache_breakpoint: optional object { mode }`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
@@ -262,15 +270,23 @@ Schema name: `ResponseCreatedEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
-              - `prompt_cache_breakpoint: optional object { mode }`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -308,15 +324,23 @@ Schema name: `ResponseCreatedEvent`
 
                 The name of the file to be sent to the model.
 
-              - `prompt_cache_breakpoint: optional object { mode }`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
         - `role: "user" or "assistant" or "system" or "developer"`
 
@@ -1183,7 +1207,7 @@ Schema name: `ResponseCreatedEvent`
 
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
@@ -1223,7 +1247,7 @@ Schema name: `ResponseCreatedEvent`
 
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
@@ -1277,7 +1301,7 @@ Schema name: `ResponseCreatedEvent`
 
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
@@ -4582,11 +4606,13 @@ Schema name: `ResponseCreatedEvent`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 86 more`
+    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 87 more`
 
       - `"gpt-6-astra"`
 
       - `"gpt-6.1-sol"`
+
+      - `"gpt-6.1-terra"`
 
       - `"gpt-6-sol"`
 
@@ -10091,15 +10117,23 @@ Schema name: `ResponseInProgressEvent`
 
                 - `"input_text"`
 
-              - `prompt_cache_breakpoint: optional object { mode }`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
@@ -10131,15 +10165,23 @@ Schema name: `ResponseInProgressEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
-              - `prompt_cache_breakpoint: optional object { mode }`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -10177,15 +10219,23 @@ Schema name: `ResponseInProgressEvent`
 
                 The name of the file to be sent to the model.
 
-              - `prompt_cache_breakpoint: optional object { mode }`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
         - `role: "user" or "assistant" or "system" or "developer"`
 
@@ -11052,7 +11102,7 @@ Schema name: `ResponseInProgressEvent`
 
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
@@ -11092,7 +11142,7 @@ Schema name: `ResponseInProgressEvent`
 
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
@@ -11146,7 +11196,7 @@ Schema name: `ResponseInProgressEvent`
 
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
@@ -14451,11 +14501,13 @@ Schema name: `ResponseInProgressEvent`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 86 more`
+    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 87 more`
 
       - `"gpt-6-astra"`
 
       - `"gpt-6.1-sol"`
+
+      - `"gpt-6.1-terra"`
 
       - `"gpt-6-sol"`
 
@@ -19960,15 +20012,23 @@ Schema name: `ResponseCompletedEvent`
 
                 - `"input_text"`
 
-              - `prompt_cache_breakpoint: optional object { mode }`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
@@ -20000,15 +20060,23 @@ Schema name: `ResponseCompletedEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
-              - `prompt_cache_breakpoint: optional object { mode }`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -20046,15 +20114,23 @@ Schema name: `ResponseCompletedEvent`
 
                 The name of the file to be sent to the model.
 
-              - `prompt_cache_breakpoint: optional object { mode }`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
         - `role: "user" or "assistant" or "system" or "developer"`
 
@@ -20921,7 +20997,7 @@ Schema name: `ResponseCompletedEvent`
 
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
@@ -20961,7 +21037,7 @@ Schema name: `ResponseCompletedEvent`
 
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
@@ -21015,7 +21091,7 @@ Schema name: `ResponseCompletedEvent`
 
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
@@ -24320,11 +24396,13 @@ Schema name: `ResponseCompletedEvent`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 86 more`
+    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 87 more`
 
       - `"gpt-6-astra"`
 
       - `"gpt-6.1-sol"`
+
+      - `"gpt-6.1-terra"`
 
       - `"gpt-6-sol"`
 
@@ -29853,15 +29931,23 @@ Schema name: `ResponseFailedEvent`
 
                 - `"input_text"`
 
-              - `prompt_cache_breakpoint: optional object { mode }`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
@@ -29893,15 +29979,23 @@ Schema name: `ResponseFailedEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
-              - `prompt_cache_breakpoint: optional object { mode }`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -29939,15 +30033,23 @@ Schema name: `ResponseFailedEvent`
 
                 The name of the file to be sent to the model.
 
-              - `prompt_cache_breakpoint: optional object { mode }`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
         - `role: "user" or "assistant" or "system" or "developer"`
 
@@ -30814,7 +30916,7 @@ Schema name: `ResponseFailedEvent`
 
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
@@ -30854,7 +30956,7 @@ Schema name: `ResponseFailedEvent`
 
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
@@ -30908,7 +31010,7 @@ Schema name: `ResponseFailedEvent`
 
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
@@ -34213,11 +34315,13 @@ Schema name: `ResponseFailedEvent`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 86 more`
+    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 87 more`
 
       - `"gpt-6-astra"`
 
       - `"gpt-6.1-sol"`
+
+      - `"gpt-6.1-terra"`
 
       - `"gpt-6-sol"`
 
@@ -39726,15 +39830,23 @@ Schema name: `ResponseIncompleteEvent`
 
                 - `"input_text"`
 
-              - `prompt_cache_breakpoint: optional object { mode }`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
@@ -39766,15 +39878,23 @@ Schema name: `ResponseIncompleteEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
-              - `prompt_cache_breakpoint: optional object { mode }`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -39812,15 +39932,23 @@ Schema name: `ResponseIncompleteEvent`
 
                 The name of the file to be sent to the model.
 
-              - `prompt_cache_breakpoint: optional object { mode }`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
         - `role: "user" or "assistant" or "system" or "developer"`
 
@@ -40687,7 +40815,7 @@ Schema name: `ResponseIncompleteEvent`
 
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
@@ -40727,7 +40855,7 @@ Schema name: `ResponseIncompleteEvent`
 
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
@@ -40781,7 +40909,7 @@ Schema name: `ResponseIncompleteEvent`
 
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
@@ -44086,11 +44214,13 @@ Schema name: `ResponseIncompleteEvent`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 86 more`
+    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 87 more`
 
       - `"gpt-6-astra"`
 
       - `"gpt-6.1-sol"`
+
+      - `"gpt-6.1-terra"`
 
       - `"gpt-6-sol"`
 
@@ -49762,15 +49892,23 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             - `"input_text"`
 
-          - `prompt_cache_breakpoint: optional object { mode }`
+          - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-            Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+            Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
             - `mode: "explicit"`
 
               The breakpoint mode. Always `explicit`.
 
               - `"explicit"`
+
+            - `ttl: optional "30m" or "12h"`
+
+              The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+              - `"30m"`
+
+              - `"12h"`
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
@@ -49802,15 +49940,23 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
-          - `prompt_cache_breakpoint: optional object { mode }`
+          - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-            Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+            Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
             - `mode: "explicit"`
 
               The breakpoint mode. Always `explicit`.
 
               - `"explicit"`
+
+            - `ttl: optional "30m" or "12h"`
+
+              The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+              - `"30m"`
+
+              - `"12h"`
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -49848,15 +49994,23 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             The name of the file to be sent to the model.
 
-          - `prompt_cache_breakpoint: optional object { mode }`
+          - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-            Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+            Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
             - `mode: "explicit"`
 
               The breakpoint mode. Always `explicit`.
 
               - `"explicit"`
+
+            - `ttl: optional "30m" or "12h"`
+
+              The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+              - `"30m"`
+
+              - `"12h"`
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
@@ -53970,15 +54124,23 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             - `"input_text"`
 
-          - `prompt_cache_breakpoint: optional object { mode }`
+          - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-            Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+            Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
             - `mode: "explicit"`
 
               The breakpoint mode. Always `explicit`.
 
               - `"explicit"`
+
+            - `ttl: optional "30m" or "12h"`
+
+              The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+              - `"30m"`
+
+              - `"12h"`
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
@@ -54010,15 +54172,23 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
-          - `prompt_cache_breakpoint: optional object { mode }`
+          - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-            Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+            Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
             - `mode: "explicit"`
 
               The breakpoint mode. Always `explicit`.
 
               - `"explicit"`
+
+            - `ttl: optional "30m" or "12h"`
+
+              The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+              - `"30m"`
+
+              - `"12h"`
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -54056,15 +54226,23 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             The name of the file to be sent to the model.
 
-          - `prompt_cache_breakpoint: optional object { mode }`
+          - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-            Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+            Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
             - `mode: "explicit"`
 
               The breakpoint mode. Always `explicit`.
 
               - `"explicit"`
+
+            - `ttl: optional "30m" or "12h"`
+
+              The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+              - `"30m"`
+
+              - `"12h"`
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
@@ -60201,15 +60379,23 @@ Schema name: `ResponseQueuedEvent`
 
                 - `"input_text"`
 
-              - `prompt_cache_breakpoint: optional object { mode }`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
@@ -60241,15 +60427,23 @@ Schema name: `ResponseQueuedEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
-              - `prompt_cache_breakpoint: optional object { mode }`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
             - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -60287,15 +60481,23 @@ Schema name: `ResponseQueuedEvent`
 
                 The name of the file to be sent to the model.
 
-              - `prompt_cache_breakpoint: optional object { mode }`
+              - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
                   The breakpoint mode. Always `explicit`.
 
                   - `"explicit"`
+
+                - `ttl: optional "30m" or "12h"`
+
+                  The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                  - `"30m"`
+
+                  - `"12h"`
 
         - `role: "user" or "assistant" or "system" or "developer"`
 
@@ -61162,7 +61364,7 @@ Schema name: `ResponseQueuedEvent`
 
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
@@ -61202,7 +61404,7 @@ Schema name: `ResponseQueuedEvent`
 
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
@@ -61256,7 +61458,7 @@ Schema name: `ResponseQueuedEvent`
 
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
-                Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+                Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
                 - `mode: "explicit"`
 
@@ -64561,11 +64763,13 @@ Schema name: `ResponseQueuedEvent`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 86 more`
+    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 87 more`
 
       - `"gpt-6-astra"`
 
       - `"gpt-6.1-sol"`
+
+      - `"gpt-6.1-terra"`
 
       - `"gpt-6-sol"`
 

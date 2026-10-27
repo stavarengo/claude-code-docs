@@ -614,8 +614,7 @@ Attach a Bundle to a channel:
   ```bash CLI
   ant beta:organization:claude-tag:bundles:targets create \
     --bundle-id capp_011CZkZjLP1cWxj5EtMmdgbq \
-    --type slack_channel \
-    --slack-channel-id slch_011CZkZmRt4vNq8sHbYw2KdX
+    --target '{type: slack_channel, slack_channel_id: slch_011CZkZmRt4vNq8sHbYw2KdX}'
   ```
 </CodeGroup>
 
@@ -634,8 +633,7 @@ Attach a Bundle to a workspace:
   ```bash CLI
   ant beta:organization:claude-tag:bundles:targets create \
     --bundle-id capp_011CZkZjLP1cWxj5EtMmdgbq \
-    --type slack_workspace \
-    --slack-workspace-id slws_011CZkZnWa7xPc3uJfZe5LgT
+    --target '{type: slack_workspace, slack_workspace_id: slws_011CZkZnWa7xPc3uJfZe5LgT}'
   ```
 </CodeGroup>
 

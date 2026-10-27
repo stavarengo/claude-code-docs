@@ -10,17 +10,19 @@ Learn when and how to compact long-running conversations in the [conversation st
 
 ### Body Parameters
 
-- `model: "gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 106 more or string or null`
+- `model: "gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 107 more or string or null`
 
   Model ID used to generate the response, like `gpt-6-astra`. OpenAI offers a wide range of models with different capabilities, performance characteristics, and price points. Refer to the [model guide](/api/docs/models) to browse and compare available models.
 
-  - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 106 more`
+  - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 107 more`
 
     Model ID used to generate the response, like `gpt-6-astra`. OpenAI offers a wide range of models with different capabilities, performance characteristics, and price points. Refer to the [model guide](/api/docs/models) to browse and compare available models.
 
     - `"gpt-6-astra"`
 
     - `"gpt-6.1-sol"`
+
+    - `"gpt-6.1-terra"`
 
     - `"gpt-6-sol"`
 
@@ -286,15 +288,23 @@ Learn when and how to compact long-running conversations in the [conversation st
 
               - `"input_text"`
 
-            - `prompt_cache_breakpoint: optional object { mode }`
+            - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-              Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+              Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
               - `mode: "explicit"`
 
                 The breakpoint mode. Always `explicit`.
 
                 - `"explicit"`
+
+              - `ttl: optional "30m" or "12h"`
+
+                The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                - `"30m"`
+
+                - `"12h"`
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
@@ -326,15 +336,23 @@ Learn when and how to compact long-running conversations in the [conversation st
 
               The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
-            - `prompt_cache_breakpoint: optional object { mode }`
+            - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-              Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+              Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
               - `mode: "explicit"`
 
                 The breakpoint mode. Always `explicit`.
 
                 - `"explicit"`
+
+              - `ttl: optional "30m" or "12h"`
+
+                The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                - `"30m"`
+
+                - `"12h"`
 
           - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -372,15 +390,23 @@ Learn when and how to compact long-running conversations in the [conversation st
 
               The name of the file to be sent to the model.
 
-            - `prompt_cache_breakpoint: optional object { mode }`
+            - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-              Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+              Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
               - `mode: "explicit"`
 
                 The breakpoint mode. Always `explicit`.
 
                 - `"explicit"`
+
+              - `ttl: optional "30m" or "12h"`
+
+                The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+                - `"30m"`
+
+                - `"12h"`
 
       - `role: "user" or "assistant" or "system" or "developer"`
 
@@ -1247,7 +1273,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
-              Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+              Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
               - `mode: "explicit"`
 
@@ -1287,7 +1313,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
-              Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+              Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
               - `mode: "explicit"`
 
@@ -1341,7 +1367,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
-              Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+              Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
               - `mode: "explicit"`
 
@@ -4730,15 +4756,23 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             - `"input_text"`
 
-          - `prompt_cache_breakpoint: optional object { mode }`
+          - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-            Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+            Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
             - `mode: "explicit"`
 
               The breakpoint mode. Always `explicit`.
 
               - `"explicit"`
+
+            - `ttl: optional "30m" or "12h"`
+
+              The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+              - `"30m"`
+
+              - `"12h"`
 
         - `ResponseOutputText object { annotations, logprobs, text, type }`
 
@@ -4952,15 +4986,23 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
-          - `prompt_cache_breakpoint: optional object { mode }`
+          - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-            Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+            Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
             - `mode: "explicit"`
 
               The breakpoint mode. Always `explicit`.
 
               - `"explicit"`
+
+            - `ttl: optional "30m" or "12h"`
+
+              The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+              - `"30m"`
+
+              - `"12h"`
 
         - `ComputerScreenshotContent object { detail, file_id, image_url, 2 more }`
 
@@ -4984,15 +5026,23 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             - `"computer_screenshot"`
 
-          - `prompt_cache_breakpoint: optional object { mode }`
+          - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-            Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+            Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
             - `mode: "explicit"`
 
               The breakpoint mode. Always `explicit`.
 
               - `"explicit"`
+
+            - `ttl: optional "30m" or "12h"`
+
+              The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+              - `"30m"`
+
+              - `"12h"`
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
@@ -5030,15 +5080,23 @@ Learn when and how to compact long-running conversations in the [conversation st
 
             The name of the file to be sent to the model.
 
-          - `prompt_cache_breakpoint: optional object { mode }`
+          - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
-            Marks the exact end of a reusable prompt prefix. The breakpoint inherits its TTL from the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
+            Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
             - `mode: "explicit"`
 
               The breakpoint mode. Always `explicit`.
 
               - `"explicit"`
+
+            - `ttl: optional "30m" or "12h"`
+
+              The minimum lifetime of this cache breakpoint. Defaults to the request TTL.
+
+              - `"30m"`
+
+              - `"12h"`
 
       - `role: "unknown" or "user" or "assistant" or 5 more`
 

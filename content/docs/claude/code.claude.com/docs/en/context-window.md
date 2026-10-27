@@ -70,6 +70,6 @@ For deeper coverage of the features shown in the timeline, see these pages:
 * [Extend Claude Code](./features-overview.md): when to use CLAUDE.md vs skills vs rules vs hooks vs MCP
 * [Store instructions and memories](./memory.md): CLAUDE.md hierarchy and auto memory
 * [Subagents](./sub-agents.md): delegate research to a separate context window
-* [Best practices](./best-practices.md): managing context as your primary constraint
+* [Best practices](./best-practices.md#keep-cost-and-context-down): keep sessions focused and costs down
 * [Prompt caching](./prompt-caching.md): which actions invalidate the cached prefix
 * [Reduce token usage](./costs.md#reduce-token-usage): strategies for keeping context usage low

@@ -234,7 +234,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Using GPT-5.4](https://developers.openai.com/api/docs/guides/latest-model/gpt-5.4.md): Learn how to use, migrate to, and prompt GPT-5.4 in the OpenAI API.
 - [Using GPT-5.5](https://developers.openai.com/api/docs/guides/latest-model/gpt-5.5.md): Learn how to use and migrate to GPT-5.5 in the OpenAI API.
 - [Using GPT-5.6](https://developers.openai.com/api/docs/guides/latest-model/gpt-5.6.md): Learn how to use and migrate to GPT-5.6, the latest model family in the OpenAI API.
-- [Using GPT-6](https://developers.openai.com/api/docs/guides/latest-model/gpt-6-astra.md): Learn how to use GPT-6 Astra, GPT-6.1 Sol, GPT-6 Sol, and GPT-6 Luna for reasoning, coding, professional work, and tool-using workflows, and how to migrate from GPT-5.6.
+- [Using GPT-6](https://developers.openai.com/api/docs/guides/latest-model/gpt-6-astra.md): Learn how to use GPT-6 Astra, GPT-6.1 Sol, GPT-6.1 Terra, GPT-6 Sol, and GPT-6 Luna for reasoning, coding, professional work, and tool-using workflows, and how to migrate from GPT-5.6.
 - [Using tools](https://developers.openai.com/api/docs/guides/tools.md): Use powerful tools like remote MCP servers, or built-in tools like web search and file search to extend the model's capabilities.
 - [Vaults](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults.md): Store secrets for MCPs or requests originating from the sandbox.
 - [Vector embeddings](https://developers.openai.com/api/docs/guides/embeddings.md): Learn how to turn text into numbers, unlocking use cases like search, clustering, and more with OpenAI API embeddings.
