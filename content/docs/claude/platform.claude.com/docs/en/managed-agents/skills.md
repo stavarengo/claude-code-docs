@@ -10,9 +10,9 @@ featureMetadata:
   betaHeader: managed-agents-2026-04-01
 ---
 
-Skills are reusable, filesystem-based resources that give your agent domain-specific expertise: workflows, context, and best practices that turn a general-purpose agent into a specialist. Each skill you add incurs a modest cost on the session's context window, adding instructions and metadata that help the model use the skill. Learn more in the [Agent Skills](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview?sdk_languages=cli) overview.
+Skills are reusable, filesystem-based resources that give your agent domain-specific expertise: workflows, context, and best practices that turn a general-purpose agent into a specialist. Each skill you add incurs a modest cost on the session’s context window, adding instructions and metadata that help the model use the skill. Learn more in the [Agent Skills](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview?sdk_languages=cli) overview.
 
-Skills reach your agent in two ways: attach them through the agent's `skills` array, or [load them from a GitHub repository](https://platform.claude.com/docs/en/managed-agents/skills?sdk_languages=cli#load-skills-from-a-github-repository) mounted on the session. Attached skills come in two types. All skills work the same way: your agent uses them automatically when they are relevant to the task.
+Skills reach your agent in two ways: attach them through the agent’s `skills` array, or [load them from a GitHub repository](https://platform.claude.com/docs/en/managed-agents/skills?sdk_languages=cli#load-skills-from-a-github-repository) mounted on the session. Attached skills come in two types. All skills work the same way: your agent uses them automatically when they are relevant to the task.
 
 * **Pre-built Anthropic skills:** Common document tasks such as PowerPoint, Excel, Word, and PDF handling (`pptx`, `xlsx`, `docx`, `pdf`).
 * **Custom skills:** Skills you author and upload to your workspace.
@@ -21,9 +21,9 @@ To learn how to author custom skills, see [Agent Skills](https://platform.claude
 
 ## Create a custom skill
 
-A custom skill is a directory containing a `SKILL.md` file plus any supporting files, uploaded to your workspace as a zip archive or as individual files. Creating the skill returns the `skill_*` ID you reference when attaching it to an agent. Anthropic pre-built skills are already available in every workspace and don't require this step. To use only pre-built skills, skip to [Attach skills to an agent](https://platform.claude.com/docs/en/managed-agents/skills?sdk_languages=cli#attach-skills-to-an-agent).
+A custom skill is a directory containing a `SKILL.md` file plus any supporting files, uploaded to your workspace as a zip archive or as individual files. Creating the skill returns the `skill_*` ID you reference when attaching it to an agent. Anthropic pre-built skills are already available in every workspace and don’t require this step. To use only pre-built skills, skip to [Attach skills to an agent](https://platform.claude.com/docs/en/managed-agents/skills?sdk_languages=cli#attach-skills-to-an-agent).
 
-These examples omit the optional `display_name` field, so the skill's display name is derived from the `name` field in `SKILL.md`. An explicit `display_name` can be up to 255 characters and doesn't need to be unique within your workspace.
+These examples omit the optional `display_name` field, so the skill’s display name is derived from the `name` field in `SKILL.md`. An explicit `display_name` can be up to 255 characters and doesn’t need to be unique within your workspace.
 
 <CodeGroup defaultLanguage="CLI">
   <CodeGroupItem>
@@ -44,7 +44,7 @@ These examples omit the optional `display_name` field, so the skill's display na
       ```
     </File>
 
-    [`ant apply`](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/apply?sdk_languages=cli) uploads the `skills/pr-summary` directory, prints the new skill's ID, and records it in `claude-lock.json`. Commit `claude-lock.json` so the next `ant apply` uploads your edits as a new version instead of creating a second skill.
+    [`ant apply`](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/apply?sdk_languages=cli) uploads the `skills/pr-summary` directory, prints the new skill’s ID, and records it in `claude-lock.json`. Commit `claude-lock.json` so the next `ant apply` uploads your edits as a new version instead of creating a second skill.
   </CodeGroupItem>
 </CodeGroup>
 
@@ -55,7 +55,7 @@ To list, retrieve, delete, and version custom skills, see [Managing custom skill
 Attach skills when creating an agent. Each [session](https://platform.claude.com/docs/en/managed-agents/sessions?sdk_languages=cli) supports up to 500 skills, counted as the deduplicated set across every agent in the session (see [Multiagent orchestration](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli)).
 
 <Note>
-  Mounting more skills increases the time it takes for the session's sandbox to start. Attach only the skills each agent needs for its task.
+  Mounting more skills increases the time it takes for the session’s sandbox to start. Attach only the skills each agent needs for its task.
 </Note>
 
 Each entry in the `skills` array uses the following fields:
@@ -93,14 +93,14 @@ Each entry in the `skills` array uses the following fields:
 
 ## Load skills from a GitHub repository
 
-Skills can also live in your code base. When a session mounts a repository through the [`github_repository` resource](https://platform.claude.com/docs/en/managed-agents/github?sdk_languages=cli), the repository's root `.claude/skills` directory is scanned at session start, and each skill found there becomes available to the agent. No upload and no entry in the agent's `skills` array are required. The agent receives each discovered skill's name, description, and path in the sandbox, and reads the skill's `SKILL.md` when a task matches, including any scripts and resources the skill ships. Discovery relies on the agent's `read` tool from the [agent toolset](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli), which is enabled by default; an agent with `read` disabled doesn't load repository skills.
+Skills can also live in your code base. When a session mounts a repository through the [`github_repository` resource](https://platform.claude.com/docs/en/managed-agents/github?sdk_languages=cli), the repository’s root `.claude/skills` directory is scanned at session start, and each skill found there becomes available to the agent. No upload and no entry in the agent’s `skills` array are required. The agent receives each discovered skill’s name, description, and path in the sandbox, and reads the skill’s `SKILL.md` when a task matches, including any scripts and resources the skill ships. Discovery relies on the agent’s `read` tool from the [agent toolset](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli), which is enabled by default; an agent with `read` disabled doesn’t load repository skills.
 
 <Warning>
-  Repository skills are agent instructions, so a mounted repository is part of your agent's trust boundary. Anyone who can commit to the repository (a merged external pull request, a compromised dependency, a contributor) can add or change a skill. The platform loads that skill at session start without a review step, and session tools such as `bash` and `web_fetch` give its instructions real reach. Mount only repositories you trust, and review `.claude/skills` before mounting a repository that accepts outside contributions.
+  Repository skills are agent instructions, so a mounted repository is part of your agent’s trust boundary. Anyone who can commit to the repository (a merged external pull request, a compromised dependency, a contributor) can add or change a skill. The platform loads that skill at session start without a review step, and session tools such as `bash` and `web_fetch` give its instructions real reach. Mount only repositories you trust, and review `.claude/skills` before mounting a repository that accepts outside contributions.
 </Warning>
 
 <Note>
-  Repository skill discovery runs in cloud sandboxes. [Self-hosted sandboxes](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes?sdk_languages=cli) don't support GitHub repository resources.
+  Repository skill discovery runs in cloud sandboxes. [Self-hosted sandboxes](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes?sdk_languages=cli) don’t support GitHub repository resources.
 </Note>
 
 Discovery finds skills at exactly `.claude/skills/<skill-name>/SKILL.md`, one directory level deep at the repository root:
@@ -122,13 +122,13 @@ Discovery finds skills at exactly `.claude/skills/<skill-name>/SKILL.md`, one di
 
   * `src/`
 
-Locations that don't match this layout aren't discovered at session start:
+Locations that don’t match this layout aren’t discovered at session start:
 
 * `.claude/skills/SKILL.md`: a `SKILL.md` with no skill directory around it
 * `.claude/skills/tools/code-review/SKILL.md`: nested more than one directory level deep
 * `skills/code-review/SKILL.md`: a `skills` directory outside `.claude`
 
-A `.claude/skills` directory elsewhere in the repository, such as inside a package subdirectory, isn't announced at session start; those skills can still surface when the agent reads files under that subtree.
+A `.claude/skills` directory elsewhere in the repository, such as inside a package subdirectory, isn’t announced at session start; those skills can still surface when the agent reads files under that subtree.
 
 Repository skills use the same `SKILL.md` format as the custom skills you upload. For the format and authoring guidance, see [Agent Skills](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview?sdk_languages=cli) and [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices?sdk_languages=cli).
 
@@ -148,11 +148,11 @@ To load skills from a repository, create a session that mounts it. This is the s
   ```
 </CodeGroup>
 
-For private repositories, the resource's `authorization_token` must have access to the repository. This is the same personal access token flow used for any repository mount; see [Accessing GitHub](https://platform.claude.com/docs/en/managed-agents/github?sdk_languages=cli#token-permissions).
+For private repositories, the resource’s `authorization_token` must have access to the repository. This is the same personal access token flow used for any repository mount; see [Accessing GitHub](https://platform.claude.com/docs/en/managed-agents/github?sdk_languages=cli#token-permissions).
 
-Discovered skills follow the checked-out state of the repository: the `checkout` branch or commit when the resource sets one, otherwise the repository's default branch. The scan runs once, when the session starts. Commits pushed mid-session are not picked up; to load updated skills, start a new session.
+Discovered skills follow the checked-out state of the repository: the `checkout` branch or commit when the resource sets one, otherwise the repository’s default branch. The scan runs once, when the session starts. Commits pushed mid-session are not picked up; to load updated skills, start a new session.
 
-Repository skills work alongside skills attached through the agent's `skills` array. If a repository skill shares a name with an attached skill, or with a skill from another mounted repository, both are available; each is announced with its own path.
+Repository skills work alongside skills attached through the agent’s `skills` array. If a repository skill shares a name with an attached skill, or with a skill from another mounted repository, both are available; each is announced with its own path.
 
 ## Next steps
 
@@ -162,7 +162,7 @@ Repository skills work alongside skills attached through the agent's `skills` ar
   </Card>
 
   <Card title="Using Agent Skills with the API" icon="code" href="https://platform.claude.com/docs/en/build-with-claude/skills-guide?sdk_languages=cli">
-    Learn how to use Agent Skills to extend Claude's capabilities through the API.
+    Learn how to use Agent Skills to extend Claude’s capabilities through the API.
   </Card>
 
   <Card title="Files API" icon="file" href="https://platform.claude.com/docs/en/build-with-claude/files?sdk_languages=cli">

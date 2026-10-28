@@ -94,6 +94,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Databricks Sandbox](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/databricks.md): Connect a Databricks Sandbox to an Agents API session and verify that the agent can write a file.
 - [Daytona](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/daytona.md): Run an Agents API session in a Daytona Sandbox.
 - [Decisions](https://developers.openai.com/api/docs/guides/decisions.md): Use the Decisions API to check conditions, select from fixed options, and score text, images, and JSON against a rubric.
+- [Decrypt PSP records](https://developers.openai.com/api/docs/guides/psp-decryption.md): Decrypt PSP records from your cloud storage using standard cryptographic libraries and your cloud key-management service.
 - [Deep research](https://developers.openai.com/api/docs/guides/deep-research.md): Use deep research models for complex analysis and research tasks.
 - [Delegation and tools in GPT-Live](https://developers.openai.com/api/docs/guides/live-delegation.md): Configure GPT-Live client or Responses delegation, use hosted tools, return tool results and approvals, and reduce backend latency.
 - [DigitalOcean](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/digitalocean.md): Connect a DigitalOcean sandbox to an Agents API session.
@@ -205,6 +206,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Self-hosted sandboxes](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted.md): Connect your compute and files to an agent session.
 - [Server-side controls](https://developers.openai.com/api/docs/guides/voice-server-controls.md): Keep session control and private tool execution on your server.
 - [Session webhooks](https://developers.openai.com/api/docs/guides/agents-api/sessions/webhooks.md): React to agent lifecycle changes.
+- [Set up asymmetric keys](https://developers.openai.com/api/docs/guides/asymmetric-keys.md): Set up and register an asymmetric key in AWS KMS, Azure Key Vault, or Google Cloud KMS for use with OpenAI.
 - [Shell](https://developers.openai.com/api/docs/guides/tools-shell.md): Run shell commands in hosted containers or your own local runtime.
 - [Skills](https://developers.openai.com/api/docs/guides/tools-skills.md): Create reusable skills for Responses API shell tools and Agents API sandboxes.
 - [Spend limits](https://developers.openai.com/api/docs/guides/spend-limits.md): Control API spend with organization and project monthly spend limits.

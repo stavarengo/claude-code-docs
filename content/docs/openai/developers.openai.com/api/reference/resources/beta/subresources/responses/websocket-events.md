@@ -2222,7 +2222,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -3379,7 +3379,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -6518,7 +6518,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
     - `input_fidelity: optional "high" or "low" or null`
 
-      Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+      Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
       - `"high"`
 
@@ -9485,7 +9485,7 @@ Schema name: `BetaResponseInjectEvent`
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
           - `"high"`
 
@@ -10642,7 +10642,7 @@ Schema name: `BetaResponseInjectEvent`
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
           - `"high"`
 
@@ -15372,7 +15372,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
           - `"high"`
 
@@ -16529,7 +16529,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
           - `"high"`
 
@@ -20603,7 +20603,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -21760,7 +21760,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -25266,7 +25266,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -26299,7 +26299,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -28559,7 +28559,7 @@ Schema name: `BetaResponseCreatedEvent`
 
       - `input_fidelity: optional "high" or "low" or null`
 
-        Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+        Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
         - `"high"`
 
@@ -29550,6 +29550,77 @@ Schema name: `BetaResponseCreatedEvent`
       - `"medium"`
 
       - `"high"`
+
+  - `tool_usage: optional object { image_gen, web_search }`
+
+    Usage reported by hosted tools, separate from base model `usage`. The field
+    can be omitted when tool usage is unavailable. When present, tool families
+    with no recorded usage have zero counts.
+
+    `image_gen` sums available token counts across image generation calls.
+    Calls with missing or incomplete usage records may be skipped. Output
+    token details and cached input counts can be omitted. An omitted cache
+    count means cache usage is unknown.
+
+    `web_search.num_requests` counts billable searches. Discounted searches
+    and actions such as opening a page are excluded. Use billing records to
+    reconcile final charges.
+
+    - `image_gen: object { input_tokens, input_tokens_details, output_tokens, 4 more }`
+
+      Aggregated usage statistics for image generation tool calls.
+
+      - `input_tokens: number`
+
+        The number of tokens (images and text) in the input prompt.
+
+      - `input_tokens_details: object { image_tokens, text_tokens }`
+
+        The input tokens detailed information for the image generation.
+
+        - `image_tokens: number`
+
+          The number of image tokens in the input prompt.
+
+        - `text_tokens: number`
+
+          The number of text tokens in the input prompt.
+
+      - `output_tokens: number`
+
+        The number of output tokens generated by the model.
+
+      - `total_tokens: number`
+
+        The total number of tokens (images and text) used for the image generation.
+
+      - `cached_tokens: optional number`
+
+      - `cached_tokens_details: optional object { cached_image_tokens, cached_text_tokens }`
+
+        - `cached_image_tokens: number`
+
+        - `cached_text_tokens: number`
+
+      - `output_tokens_details: optional object { image_tokens, text_tokens }`
+
+        The output token details for the image generation.
+
+        - `image_tokens: number`
+
+          The number of image output tokens generated by the model.
+
+        - `text_tokens: number`
+
+          The number of text output tokens generated by the model.
+
+    - `web_search: object { num_requests }`
+
+      Aggregated billable usage statistics for web search tool calls.
+
+      - `num_requests: number`
+
+        The number of billable web search requests issued.
 
   - `top_logprobs: optional number or null`
 
@@ -31943,7 +32014,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -33100,7 +33171,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -36606,7 +36677,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -37639,7 +37710,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -39899,7 +39970,7 @@ Schema name: `BetaResponseInProgressEvent`
 
       - `input_fidelity: optional "high" or "low" or null`
 
-        Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+        Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
         - `"high"`
 
@@ -40890,6 +40961,77 @@ Schema name: `BetaResponseInProgressEvent`
       - `"medium"`
 
       - `"high"`
+
+  - `tool_usage: optional object { image_gen, web_search }`
+
+    Usage reported by hosted tools, separate from base model `usage`. The field
+    can be omitted when tool usage is unavailable. When present, tool families
+    with no recorded usage have zero counts.
+
+    `image_gen` sums available token counts across image generation calls.
+    Calls with missing or incomplete usage records may be skipped. Output
+    token details and cached input counts can be omitted. An omitted cache
+    count means cache usage is unknown.
+
+    `web_search.num_requests` counts billable searches. Discounted searches
+    and actions such as opening a page are excluded. Use billing records to
+    reconcile final charges.
+
+    - `image_gen: object { input_tokens, input_tokens_details, output_tokens, 4 more }`
+
+      Aggregated usage statistics for image generation tool calls.
+
+      - `input_tokens: number`
+
+        The number of tokens (images and text) in the input prompt.
+
+      - `input_tokens_details: object { image_tokens, text_tokens }`
+
+        The input tokens detailed information for the image generation.
+
+        - `image_tokens: number`
+
+          The number of image tokens in the input prompt.
+
+        - `text_tokens: number`
+
+          The number of text tokens in the input prompt.
+
+      - `output_tokens: number`
+
+        The number of output tokens generated by the model.
+
+      - `total_tokens: number`
+
+        The total number of tokens (images and text) used for the image generation.
+
+      - `cached_tokens: optional number`
+
+      - `cached_tokens_details: optional object { cached_image_tokens, cached_text_tokens }`
+
+        - `cached_image_tokens: number`
+
+        - `cached_text_tokens: number`
+
+      - `output_tokens_details: optional object { image_tokens, text_tokens }`
+
+        The output token details for the image generation.
+
+        - `image_tokens: number`
+
+          The number of image output tokens generated by the model.
+
+        - `text_tokens: number`
+
+          The number of text output tokens generated by the model.
+
+    - `web_search: object { num_requests }`
+
+      Aggregated billable usage statistics for web search tool calls.
+
+      - `num_requests: number`
+
+        The number of billable web search requests issued.
 
   - `top_logprobs: optional number or null`
 
@@ -43283,7 +43425,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -44440,7 +44582,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -47946,7 +48088,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -48979,7 +49121,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -51239,7 +51381,7 @@ Schema name: `BetaResponseCompletedEvent`
 
       - `input_fidelity: optional "high" or "low" or null`
 
-        Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+        Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
         - `"high"`
 
@@ -52230,6 +52372,77 @@ Schema name: `BetaResponseCompletedEvent`
       - `"medium"`
 
       - `"high"`
+
+  - `tool_usage: optional object { image_gen, web_search }`
+
+    Usage reported by hosted tools, separate from base model `usage`. The field
+    can be omitted when tool usage is unavailable. When present, tool families
+    with no recorded usage have zero counts.
+
+    `image_gen` sums available token counts across image generation calls.
+    Calls with missing or incomplete usage records may be skipped. Output
+    token details and cached input counts can be omitted. An omitted cache
+    count means cache usage is unknown.
+
+    `web_search.num_requests` counts billable searches. Discounted searches
+    and actions such as opening a page are excluded. Use billing records to
+    reconcile final charges.
+
+    - `image_gen: object { input_tokens, input_tokens_details, output_tokens, 4 more }`
+
+      Aggregated usage statistics for image generation tool calls.
+
+      - `input_tokens: number`
+
+        The number of tokens (images and text) in the input prompt.
+
+      - `input_tokens_details: object { image_tokens, text_tokens }`
+
+        The input tokens detailed information for the image generation.
+
+        - `image_tokens: number`
+
+          The number of image tokens in the input prompt.
+
+        - `text_tokens: number`
+
+          The number of text tokens in the input prompt.
+
+      - `output_tokens: number`
+
+        The number of output tokens generated by the model.
+
+      - `total_tokens: number`
+
+        The total number of tokens (images and text) used for the image generation.
+
+      - `cached_tokens: optional number`
+
+      - `cached_tokens_details: optional object { cached_image_tokens, cached_text_tokens }`
+
+        - `cached_image_tokens: number`
+
+        - `cached_text_tokens: number`
+
+      - `output_tokens_details: optional object { image_tokens, text_tokens }`
+
+        The output token details for the image generation.
+
+        - `image_tokens: number`
+
+          The number of image output tokens generated by the model.
+
+        - `text_tokens: number`
+
+          The number of text output tokens generated by the model.
+
+    - `web_search: object { num_requests }`
+
+      Aggregated billable usage statistics for web search tool calls.
+
+      - `num_requests: number`
+
+        The number of billable web search requests issued.
 
   - `top_logprobs: optional number or null`
 
@@ -54647,7 +54860,7 @@ Schema name: `BetaResponseFailedEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -55804,7 +56017,7 @@ Schema name: `BetaResponseFailedEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -59310,7 +59523,7 @@ Schema name: `BetaResponseFailedEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -60343,7 +60556,7 @@ Schema name: `BetaResponseFailedEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -62603,7 +62816,7 @@ Schema name: `BetaResponseFailedEvent`
 
       - `input_fidelity: optional "high" or "low" or null`
 
-        Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+        Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
         - `"high"`
 
@@ -63594,6 +63807,77 @@ Schema name: `BetaResponseFailedEvent`
       - `"medium"`
 
       - `"high"`
+
+  - `tool_usage: optional object { image_gen, web_search }`
+
+    Usage reported by hosted tools, separate from base model `usage`. The field
+    can be omitted when tool usage is unavailable. When present, tool families
+    with no recorded usage have zero counts.
+
+    `image_gen` sums available token counts across image generation calls.
+    Calls with missing or incomplete usage records may be skipped. Output
+    token details and cached input counts can be omitted. An omitted cache
+    count means cache usage is unknown.
+
+    `web_search.num_requests` counts billable searches. Discounted searches
+    and actions such as opening a page are excluded. Use billing records to
+    reconcile final charges.
+
+    - `image_gen: object { input_tokens, input_tokens_details, output_tokens, 4 more }`
+
+      Aggregated usage statistics for image generation tool calls.
+
+      - `input_tokens: number`
+
+        The number of tokens (images and text) in the input prompt.
+
+      - `input_tokens_details: object { image_tokens, text_tokens }`
+
+        The input tokens detailed information for the image generation.
+
+        - `image_tokens: number`
+
+          The number of image tokens in the input prompt.
+
+        - `text_tokens: number`
+
+          The number of text tokens in the input prompt.
+
+      - `output_tokens: number`
+
+        The number of output tokens generated by the model.
+
+      - `total_tokens: number`
+
+        The total number of tokens (images and text) used for the image generation.
+
+      - `cached_tokens: optional number`
+
+      - `cached_tokens_details: optional object { cached_image_tokens, cached_text_tokens }`
+
+        - `cached_image_tokens: number`
+
+        - `cached_text_tokens: number`
+
+      - `output_tokens_details: optional object { image_tokens, text_tokens }`
+
+        The output token details for the image generation.
+
+        - `image_tokens: number`
+
+          The number of image output tokens generated by the model.
+
+        - `text_tokens: number`
+
+          The number of text output tokens generated by the model.
+
+    - `web_search: object { num_requests }`
+
+      Aggregated billable usage statistics for web search tool calls.
+
+      - `num_requests: number`
+
+        The number of billable web search requests issued.
 
   - `top_logprobs: optional number or null`
 
@@ -65991,7 +66275,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -67148,7 +67432,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -70654,7 +70938,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -71687,7 +71971,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -73947,7 +74231,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
       - `input_fidelity: optional "high" or "low" or null`
 
-        Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+        Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
         - `"high"`
 
@@ -74938,6 +75222,77 @@ Schema name: `BetaResponseIncompleteEvent`
       - `"medium"`
 
       - `"high"`
+
+  - `tool_usage: optional object { image_gen, web_search }`
+
+    Usage reported by hosted tools, separate from base model `usage`. The field
+    can be omitted when tool usage is unavailable. When present, tool families
+    with no recorded usage have zero counts.
+
+    `image_gen` sums available token counts across image generation calls.
+    Calls with missing or incomplete usage records may be skipped. Output
+    token details and cached input counts can be omitted. An omitted cache
+    count means cache usage is unknown.
+
+    `web_search.num_requests` counts billable searches. Discounted searches
+    and actions such as opening a page are excluded. Use billing records to
+    reconcile final charges.
+
+    - `image_gen: object { input_tokens, input_tokens_details, output_tokens, 4 more }`
+
+      Aggregated usage statistics for image generation tool calls.
+
+      - `input_tokens: number`
+
+        The number of tokens (images and text) in the input prompt.
+
+      - `input_tokens_details: object { image_tokens, text_tokens }`
+
+        The input tokens detailed information for the image generation.
+
+        - `image_tokens: number`
+
+          The number of image tokens in the input prompt.
+
+        - `text_tokens: number`
+
+          The number of text tokens in the input prompt.
+
+      - `output_tokens: number`
+
+        The number of output tokens generated by the model.
+
+      - `total_tokens: number`
+
+        The total number of tokens (images and text) used for the image generation.
+
+      - `cached_tokens: optional number`
+
+      - `cached_tokens_details: optional object { cached_image_tokens, cached_text_tokens }`
+
+        - `cached_image_tokens: number`
+
+        - `cached_text_tokens: number`
+
+      - `output_tokens_details: optional object { image_tokens, text_tokens }`
+
+        The output token details for the image generation.
+
+        - `image_tokens: number`
+
+          The number of image output tokens generated by the model.
+
+        - `text_tokens: number`
+
+          The number of text output tokens generated by the model.
+
+    - `web_search: object { num_requests }`
+
+      Aggregated billable usage statistics for web search tool calls.
+
+      - `num_requests: number`
+
+        The number of billable web search requests issued.
 
   - `top_logprobs: optional number or null`
 
@@ -77155,7 +77510,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
           - `"high"`
 
@@ -78306,7 +78661,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
           - `"high"`
 
@@ -81996,7 +82351,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
           - `"high"`
 
@@ -83147,7 +83502,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
           - `"high"`
 
@@ -89735,7 +90090,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -90892,7 +91247,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -94398,7 +94753,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -95431,7 +95786,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -97691,7 +98046,7 @@ Schema name: `BetaResponseQueuedEvent`
 
       - `input_fidelity: optional "high" or "low" or null`
 
-        Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
+        Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
         - `"high"`
 
@@ -98682,6 +99037,77 @@ Schema name: `BetaResponseQueuedEvent`
       - `"medium"`
 
       - `"high"`
+
+  - `tool_usage: optional object { image_gen, web_search }`
+
+    Usage reported by hosted tools, separate from base model `usage`. The field
+    can be omitted when tool usage is unavailable. When present, tool families
+    with no recorded usage have zero counts.
+
+    `image_gen` sums available token counts across image generation calls.
+    Calls with missing or incomplete usage records may be skipped. Output
+    token details and cached input counts can be omitted. An omitted cache
+    count means cache usage is unknown.
+
+    `web_search.num_requests` counts billable searches. Discounted searches
+    and actions such as opening a page are excluded. Use billing records to
+    reconcile final charges.
+
+    - `image_gen: object { input_tokens, input_tokens_details, output_tokens, 4 more }`
+
+      Aggregated usage statistics for image generation tool calls.
+
+      - `input_tokens: number`
+
+        The number of tokens (images and text) in the input prompt.
+
+      - `input_tokens_details: object { image_tokens, text_tokens }`
+
+        The input tokens detailed information for the image generation.
+
+        - `image_tokens: number`
+
+          The number of image tokens in the input prompt.
+
+        - `text_tokens: number`
+
+          The number of text tokens in the input prompt.
+
+      - `output_tokens: number`
+
+        The number of output tokens generated by the model.
+
+      - `total_tokens: number`
+
+        The total number of tokens (images and text) used for the image generation.
+
+      - `cached_tokens: optional number`
+
+      - `cached_tokens_details: optional object { cached_image_tokens, cached_text_tokens }`
+
+        - `cached_image_tokens: number`
+
+        - `cached_text_tokens: number`
+
+      - `output_tokens_details: optional object { image_tokens, text_tokens }`
+
+        The output token details for the image generation.
+
+        - `image_tokens: number`
+
+          The number of image output tokens generated by the model.
+
+        - `text_tokens: number`
+
+          The number of text output tokens generated by the model.
+
+    - `web_search: object { num_requests }`
+
+      Aggregated billable usage statistics for web search tool calls.
+
+      - `num_requests: number`
+
+        The number of billable web search requests issued.
 
   - `top_logprobs: optional number or null`
 

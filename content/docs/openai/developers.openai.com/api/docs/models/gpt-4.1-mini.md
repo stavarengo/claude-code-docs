@@ -77,6 +77,7 @@ Tools supported by this model when using the Responses API.
 - function_calling
 - web_search
 - file_search
+- image_generation
 - code_interpreter
 - mcp
 

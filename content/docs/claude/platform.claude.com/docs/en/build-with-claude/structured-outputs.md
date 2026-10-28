@@ -33,9 +33,9 @@ featureMetadata:
     Microsoft Foundry: ga
 ---
 
-Structured outputs constrain Claude's responses to follow a specific schema, ensuring valid, parseable output for downstream processing. Structured outputs provide two complementary features:
+Structured outputs constrain Claude’s responses to follow a specific schema, ensuring valid, parseable output for downstream processing. Structured outputs provide two complementary features:
 
-* **JSON outputs** (`output_config.format`): Get Claude's response in a specific JSON format, for example to extract data from images or text, generate structured reports, or format API responses. This page covers JSON outputs.
+* **JSON outputs** (`output_config.format`): Get Claude’s response in a specific JSON format, for example to extract data from images or text, generate structured reports, or format API responses. This page covers JSON outputs.
 * **Strict tool use** (`strict: true`): Guarantee schema validation on tool names and inputs. See [Strict tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use?sdk_languages=cli).
 
 You can use these features independently or [together in the same request](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli#using-both-features-together).
@@ -67,7 +67,7 @@ Structured outputs guarantee schema-compliant responses through constrained deco
   </Step>
 
   <Step title="Read the response">
-    Claude returns valid JSON that matches your schema in the response's text content block. SDK helpers parse it into your type.
+    Claude returns valid JSON that matches your schema in the response’s text content block. SDK helpers parse it into your type.
   </Step>
 </Steps>
 
@@ -100,7 +100,7 @@ Structured outputs guarantee schema-compliant responses through constrained deco
     YAML
     ```
 
-    Claude returns JSON like this in the response's text content block:
+    Claude returns JSON like this in the response’s text content block:
 
     ```json Output
     {
@@ -118,14 +118,14 @@ Structured outputs guarantee schema-compliant responses through constrained deco
 Most SDK helpers transform schemas that use unsupported features. The transformation steps:
 
 1. **Remove unsupported constraints** (for example, `minimum`, `maximum`, `minLength`, `maxLength`)
-2. **Update descriptions** by adding each unsupported constraint to the field's description (for example, `{minimum: 100}`)
+2. **Update descriptions** by adding each unsupported constraint to the field’s description (for example, `{minimum: 100}`)
 3. **Add `additionalProperties: false`** to all objects
 4. **Filter string formats** to the supported list only
 5. **Validate responses** against your original schema and all its constraints, if the helper validates responses
 
 Claude receives a simplified schema, but a helper that validates responses still enforces every constraint in your code.
 
-**Example:** A field with `minimum: 100` becomes a plain integer in the sent schema, and the SDK adds `{minimum: 100}` to the field's description. A helper that validates responses still checks the response against `minimum: 100`.
+**Example:** A field with `minimum: 100` becomes a plain integer in the sent schema, and the SDK adds `{minimum: 100}` to the field’s description. A helper that validates responses still checks the response against `minimum: 100`.
 
 ## Using a raw JSON schema
 
@@ -158,7 +158,7 @@ To use a JSON schema from a file, an OpenAPI spec, or code that builds it at run
     YAML
     ```
 
-    Claude returns JSON like this in the response's text content block:
+    Claude returns JSON like this in the response’s text content block:
 
     ```json Output
     {
@@ -292,7 +292,7 @@ To enforce JSON Schema compliance on tool inputs with grammar-constrained sampli
 
 JSON outputs and strict tool use solve different problems and work together:
 
-* **JSON outputs** control Claude's response format (what Claude says).
+* **JSON outputs** control Claude’s response format (what Claude says).
 * **Strict tool use** validates tool parameters (how Claude calls your functions).
 
 When combined, Claude can call tools with guaranteed-valid parameters AND return structured JSON responses. This is useful for agentic workflows where you need both reliable tool calls and structured final outputs.
@@ -381,7 +381,7 @@ Structured outputs support standard JSON Schema with some limitations. Both JSON
   * Array constraints beyond `minItems` of 0 or 1
   * `additionalProperties` set to anything other than `false`
 
-  If you use an unsupported feature, you'll receive a 400 error with details.
+  If you use an unsupported feature, you’ll receive a 400 error with details.
 </Accordion>
 
 <Accordion title="Pattern support (regex)">
@@ -455,11 +455,11 @@ Although structured outputs guarantee schema compliance in most cases, there are
 Claude maintains its safety and helpfulness properties even when using structured outputs. If Claude refuses a request for safety reasons:
 
 * The response has `stop_reason: "refusal"`.
-* You'll receive a 200 status code.
-* You'll be billed for the tokens generated.
+* You’ll receive a 200 status code.
+* You’ll be billed for the tokens generated.
 * The output might not match your schema because the refusal message takes precedence over schema constraints.
 
-A property that asks for the model's thinking or step-by-step reasoning might lead to a `reasoning_extraction` refusal. Ask for a short explanation instead. See [Keep reasoning in thinking blocks](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback?sdk_languages=cli#keep-reasoning-in-thinking-blocks).
+A property that asks for the model’s thinking or step-by-step reasoning might lead to a `reasoning_extraction` refusal. Ask for a short explanation instead. See [Keep reasoning in thinking blocks](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback?sdk_languages=cli#keep-reasoning-in-thinking-blocks).
 
 **Token limit reached** (`stop_reason: "max_tokens"`)
 
@@ -471,7 +471,7 @@ If the response is cut off because it reached the `max_tokens` limit:
 
 **Enum value casing**
 
-Structured outputs don't guarantee the capitalization of string `enum` and `const` values: Claude might return a value that differs from your schema only in capitalization, typically in the first letter of a word following a space. For example, given this schema:
+Structured outputs don’t guarantee the capitalization of string `enum` and `const` values: Claude might return a value that differs from your schema only in capitalization, typically in the first letter of a word following a space. For example, given this schema:
 
 ```json
 {
@@ -480,11 +480,11 @@ Structured outputs don't guarantee the capitalization of string `enum` and `cons
 }
 ```
 
-The output might contain `"Conversation Topic 3"` (capital "T") even though that exact value isn't in the enum. The response completes normally, with no error and no special `stop_reason`. This applies to both JSON outputs and strict tool use. Compare enum values case-insensitively, and avoid enum values that differ only in capitalization.
+The output might contain `"Conversation Topic 3"` (capital “T”) even though that exact value isn’t in the enum. The response completes normally, with no error and no special `stop_reason`. This applies to both JSON outputs and strict tool use. Compare enum values case-insensitively, and avoid enum values that differ only in capitalization.
 
 ### Schema complexity limits
 
-Structured outputs work by compiling your JSON schemas into a grammar that constrains Claude's output. More complex schemas produce larger grammars that take longer to compile. To protect against excessive compilation times, the API enforces several complexity limits.
+Structured outputs work by compiling your JSON schemas into a grammar that constrains Claude’s output. More complex schemas produce larger grammars that take longer to compile. To protect against excessive compilation times, the API enforces several complexity limits.
 
 #### Explicit limits
 
@@ -492,27 +492,27 @@ The following limits apply to all requests with `output_config.format` or `stric
 
 | Limit                       | Value | Description                                                                                                                                                                                              |
 | --------------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Strict tools per request    | 20    | Maximum number of tools with `strict: true`. Non-strict tools don't count toward this limit.                                                                                                             |
+| Strict tools per request    | 20    | Maximum number of tools with `strict: true`. Non-strict tools don’t count toward this limit.                                                                                                             |
 | Optional parameters         | 24    | Total optional parameters across all strict tool schemas and JSON output schemas. Each parameter not listed in `required` counts toward this limit.                                                      |
 | Parameters with union types | 16    | Total parameters that use `anyOf` or type arrays (for example, `"type": ["string", "null"]`) across all strict schemas. These are especially expensive because they create exponential compilation cost. |
 
 <Note>
-  These limits apply to the combined total across all strict schemas in a single request. For example, if you have 4 strict tools with 6 optional parameters each, you'll reach the 24-parameter limit even though no single tool seems complex.
+  These limits apply to the combined total across all strict schemas in a single request. For example, if you have 4 strict tools with 6 optional parameters each, you’ll reach the 24-parameter limit even though no single tool seems complex.
 </Note>
 
 #### Additional internal limits
 
-Beyond the explicit limits in the preceding table, there are additional internal limits on the compiled grammar size. These limits exist because schema complexity doesn't reduce to a single dimension: features such as optional parameters, union types, nested objects, and number of tools interact with each other in ways that can make the compiled grammar disproportionately large.
+Beyond the explicit limits in the preceding table, there are additional internal limits on the compiled grammar size. These limits exist because schema complexity doesn’t reduce to a single dimension: features such as optional parameters, union types, nested objects, and number of tools interact with each other in ways that can make the compiled grammar disproportionately large.
 
-When these limits are exceeded, you'll receive a 400 error with the message "Schema is too complex for compilation." These errors mean the combined complexity of your schemas exceeds what can be efficiently compiled, even if each individual limit in the preceding table is satisfied. As a final stop-gap, the API also enforces a **compilation timeout of 180 seconds**. Schemas that pass all explicit checks but produce very large compiled grammars might hit this timeout.
+When these limits are exceeded, you’ll receive a 400 error with the message “Schema is too complex for compilation.” These errors mean the combined complexity of your schemas exceeds what can be efficiently compiled, even if each individual limit in the preceding table is satisfied. As a final stop-gap, the API also enforces a **compilation timeout of 180 seconds**. Schemas that pass all explicit checks but produce very large compiled grammars might hit this timeout.
 
 #### Tips for reducing schema complexity
 
-If you're hitting complexity limits, try these strategies in order:
+If you’re hitting complexity limits, try these strategies in order:
 
-1. **Mark only critical tools as strict.** If you have many tools, reserve strict tool use for those where schema violations cause real problems, and rely on Claude's natural adherence for simpler tools.
+1. **Mark only critical tools as strict.** If you have many tools, reserve strict tool use for those where schema violations cause real problems, and rely on Claude’s natural adherence for simpler tools.
 
-2. **Reduce optional parameters.** Make parameters `required` where possible. Each optional parameter roughly doubles a portion of the grammar's state space. If a parameter always has a reasonable default, consider making it required and having Claude provide that default explicitly.
+2. **Reduce optional parameters.** Make parameters `required` where possible. Each optional parameter roughly doubles a portion of the grammar’s state space. If a parameter always has a reasonable default, consider making it required and having Claude provide that default explicitly.
 
 3. **Simplify nested structures.** Deeply nested objects with optional fields compound the complexity. Flatten structures where possible.
 
@@ -549,7 +549,7 @@ For ZDR and HIPAA eligibility across all features, see [API and data retention](
 * **Message prefilling:** Prefilling is incompatible with JSON outputs.
 
 <Tip>
-  **Grammar scope:** Grammars apply only to Claude's direct output, not to tool use calls, tool results, or thinking tags (when using [thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli)). Grammar state resets between sections, allowing Claude to think freely while still producing structured output in the final response.
+  **Grammar scope:** Grammars apply only to Claude’s direct output, not to tool use calls, tool results, or thinking tags (when using [thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli)). Grammar state resets between sections, allowing Claude to think freely while still producing structured output in the final response.
 </Tip>
 
 ## Next steps
@@ -560,7 +560,7 @@ For ZDR and HIPAA eligibility across all features, see [API and data retention](
   </Card>
 
   <Card title="Strict tool use" icon="check" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use?sdk_languages=cli">
-    Enforce JSON Schema compliance on Claude's tool inputs with grammar-constrained sampling.
+    Enforce JSON Schema compliance on Claude’s tool inputs with grammar-constrained sampling.
   </Card>
 
   <Card title="Tool use with Claude" icon="wrench" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=cli">
@@ -568,6 +568,6 @@ For ZDR and HIPAA eligibility across all features, see [API and data retention](
   </Card>
 
   <Card title="Pricing" icon="calculator" href="https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli">
-    Learn about Anthropic's pricing structure for models and features.
+    Learn about Anthropic’s pricing structure for models and features.
   </Card>
 </CardGroup>

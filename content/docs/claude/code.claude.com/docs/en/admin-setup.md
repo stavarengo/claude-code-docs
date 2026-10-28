@@ -191,6 +191,7 @@ With provider and delivery mechanism chosen, move on to detailed configuration:
 * [Server-managed settings](./server-managed-settings.md): deliver managed policy from the Claude admin console
 * [All settings](./settings-reference.md): every setting key, with where it goes and an example
 * [Which value Claude Code uses](./settings.md#which-value-claude-code-uses): the precedence rules across managed, project, local, and user settings
+* [Manage plugins for your organization](./plugins/org.md): install shared plugins on every machine through managed settings
 * [Monorepos and large repos](./large-codebases.md): per-directory configuration patterns for organizations deploying into a monorepo
 * [Amazon Bedrock](./amazon-bedrock.md), [Google Cloud's Agent Platform](./google-vertex-ai.md), [Microsoft Foundry](./microsoft-foundry.md): provider-specific deployment
 * [Claude Enterprise Administrator Guide](https://claude.com/resources/tutorials/claude-enterprise-administrator-guide): SSO, SCIM, seat management, and rollout playbook

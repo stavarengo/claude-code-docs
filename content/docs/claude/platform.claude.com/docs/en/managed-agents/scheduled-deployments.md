@@ -19,7 +19,7 @@ For the launch context and examples of what teams run on schedules, see [schedul
 When creating a deployment, you pass the [session configurations](https://platform.claude.com/docs/en/managed-agents/sessions?sdk_languages=cli) required for execution, in addition to a `schedule`.
 
 * Deployments require [agent configuration](https://platform.claude.com/docs/en/managed-agents/agent-setup?sdk_languages=cli) and [environment configuration](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli), and optionally accept [files](https://platform.claude.com/docs/en/managed-agents/files?sdk_languages=cli), [GitHub](https://platform.claude.com/docs/en/managed-agents/github?sdk_languages=cli), [memory stores](https://platform.claude.com/docs/en/managed-agents/memory?sdk_languages=cli), and [vaults](https://platform.claude.com/docs/en/managed-agents/vaults?sdk_languages=cli). A deployment that targets a [self-hosted environment](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-memory?sdk_languages=cli) can attach memory stores; `file` and `github_repository` resources require a cloud environment. The Claude Console deployment form does not currently offer memory stores for self-hosted environments; attach them through the API or the SDK instead.
-* Deployments also require at least one initial event, a `user.message` or `user.define_outcome`, that starts each session's work. In a deployment file for `ant apply`, the text below the frontmatter becomes that `user.message`.
+* Deployments also require at least one initial event, a `user.message` or `user.define_outcome`, that starts each session’s work. In a deployment file for `ant apply`, the text below the frontmatter becomes that `user.message`.
 * In the `schedule`, you define a cron `expression` and a `timezone`. Maximum granularity supported is at the minute level.
 
 <Note>
@@ -52,7 +52,7 @@ When creating a deployment, you pass the [session configurations](https://platfo
       ```
     </File>
 
-    [`ant apply`](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/apply?sdk_languages=cli) prints the new deployment's ID and records it in `claude-lock.json`. To see the deployment object, run `ant beta:deployments retrieve`.
+    [`ant apply`](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/apply?sdk_languages=cli) prints the new deployment’s ID and records it in `claude-lock.json`. To see the deployment object, run `ant beta:deployments retrieve`.
   </CodeGroupItem>
 </CodeGroup>
 
@@ -97,7 +97,7 @@ See the [Create Deployment](https://platform.claude.com/docs/en/api/beta/deploym
 
 Pass the optional `budget` object when you create or update the deployment. It takes the same shape as a [session budget](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli). The deployment copies the cap onto each session it starts, so the budget bounds every run separately rather than acting as a cumulative ceiling across runs: a deployment with a `"2000"` cap can spend up to about $20 USD on every run.
 
-A session started by the deployment behaves exactly like any other budgeted session: it pauses with `budget_reached` when its own list cost [reaches the cap](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli#when-a-session-reaches-its-budget). Changing the deployment's budget applies to runs started afterward; a session already running keeps the cap it started with, which you can [change through the session itself](https://platform.claude.com/docs/en/managed-agents/session-operations?sdk_languages=cli#updating-the-session-budget). Unlike a session budget, a deployment's budget can be removed with `--budget null` (cli: `--budget null`) and set again later.
+A session started by the deployment behaves exactly like any other budgeted session: it pauses with `budget_reached` when its own list cost [reaches the cap](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli#when-a-session-reaches-its-budget). Changing the deployment’s budget applies to runs started afterward; a session already running keeps the cap it started with, which you can [change through the session itself](https://platform.claude.com/docs/en/managed-agents/session-operations?sdk_languages=cli#updating-the-session-budget). Unlike a session budget, a deployment’s budget can be removed with `--budget null` (cli: `--budget null`) and set again later.
 
 The following example sets a budget on an existing deployment:
 
@@ -134,7 +134,7 @@ The following example sets a budget on an existing deployment:
 
 Deployments can fail to trigger for a variety of reasons: for example, if the `environment` resource has been archived, or if session creation is rate-limited. Each attempt generates a **deployment run** record, allowing you to track successes and failures independent of the session lifecycle.
 
-Successful deployments generate active sessions, and a successful deployment run contains the associated `session_id`. To follow a session's lifecycle, track the session events through the [event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli) or [webhooks](https://platform.claude.com/docs/en/managed-agents/webhooks?sdk_languages=cli). Deployment lifecycle changes and the outcome of each scheduled run are also delivered as webhook events, listed in the **Deployment events** and **Deployment run events** tabs of [Supported event types](https://platform.claude.com/docs/en/managed-agents/webhooks?sdk_languages=cli#supported-event-types).
+Successful deployments generate active sessions, and a successful deployment run contains the associated `session_id`. To follow a session’s lifecycle, track the session events through the [event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli) or [webhooks](https://platform.claude.com/docs/en/managed-agents/webhooks?sdk_languages=cli). Deployment lifecycle changes and the outcome of each scheduled run are also delivered as webhook events, listed in the **Deployment events** and **Deployment run events** tabs of [Supported event types](https://platform.claude.com/docs/en/managed-agents/webhooks?sdk_languages=cli#supported-event-types).
 
 List all deployment runs for a deployment as follows:
 
@@ -204,7 +204,7 @@ Each lifecycle change emits a [webhook event](https://platform.claude.com/docs/e
 
 Session creation rate-limit responses are recorded immediately as a `session_rate_limited_error` run without retry; the schedule attempts again at the next scheduled occurrence. Rate limits on underlying API calls within a session are handled by the session itself.
 
-If a deployment's agent has been archived, the deployment is automatically archived in the same operation. If the agent has been deleted, the next scheduled trigger detects the missing agent and automatically archives the deployment. In both cases no deployment run is recorded. If a subagent referenced by the agent has been archived, the next trigger records a failed run with `error.type: "agent_archived_error"` and the deployment is automatically paused so you can update the agent and resume. Other unrecoverable session-creation errors, such as an archived environment or vault, behave the same way: the trigger records a failed run and the deployment is automatically paused. The deployment's `paused_reason.error.type` mirrors the failed run's `error.type`.
+If a deployment’s agent has been archived, the deployment is automatically archived in the same operation. If the agent has been deleted, the next scheduled trigger detects the missing agent and automatically archives the deployment. In both cases no deployment run is recorded. If a subagent referenced by the agent has been archived, the next trigger records a failed run with `error.type: "agent_archived_error"` and the deployment is automatically paused so you can update the agent and resume. Other unrecoverable session-creation errors, such as an archived environment or vault, behave the same way: the trigger records a failed run and the deployment is automatically paused. The deployment’s `paused_reason.error.type` mirrors the failed run’s `error.type`.
 
 ## Trigger a manual run
 

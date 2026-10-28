@@ -56,9 +56,9 @@ The following example creates a session with a single `user.message` in `initial
   ```
 </CodeGroup>
 
-`initial_events` are not echoed on the create response. To see the seeded message, list the session's events.
+`initial_events` are not echoed on the create response. To see the seeded message, list the session’s events.
 
-No other event type is accepted. Events that respond to an agent turn (`user.tool_confirmation`, `user.tool_result`, and `user.custom_tool_result`) aren't accepted because no agent turn exists yet, and `user.interrupt` isn't accepted because there is no turn to stop. Unlike `initial_events` on a scheduled deployment, a session's `initial_events` don't accept `system.message`.
+No other event type is accepted. Events that respond to an agent turn (`user.tool_confirmation`, `user.tool_result`, and `user.custom_tool_result`) aren’t accepted because no agent turn exists yet, and `user.interrupt` isn’t accepted because there is no turn to stop. Unlike `initial_events` on a scheduled deployment, a session’s `initial_events` don’t accept `system.message`.
 
 Each event in `initial_events` is validated and persisted before the create response returns, in list order, with a server-assigned ID, exactly as if you had posted it to the [send events](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli#send-events) endpoint immediately after creation. Per-event content rules are also the same as on that endpoint. An empty list is equivalent to omitting the field. Validation is all-or-nothing: if any event fails validation, the whole request is rejected and no session is created.
 
@@ -75,7 +75,7 @@ A `user.define_outcome` event in `initial_events` is accepted under the same con
 
 ### Override agent configuration for a session
 
-You can pass `agent` in three forms: an agent ID string, a pinned-version object (`type: "agent"`), or an overrides object (`type: "agent_with_overrides"`). The overrides form changes parts of the agent's configuration for a single session. Use it to try a different model or grant an extra tool in one session without versioning the agent. For the overrides form, pass the agent's `id` and optionally a `version` (omit `version` to use the agent's latest version). Then include any of `model`, `system`, `tools`, `mcp_servers`, or `skills` with the values the session should use.
+You can pass `agent` in three forms: an agent ID string, a pinned-version object (`type: "agent"`), or an overrides object (`type: "agent_with_overrides"`). The overrides form changes parts of the agent’s configuration for a single session. Use it to try a different model or grant an extra tool in one session without versioning the agent. For the overrides form, pass the agent’s `id` and optionally a `version` (omit `version` to use the agent’s latest version). Then include any of `model`, `system`, `tools`, `mcp_servers`, or `skills` with the values the session should use.
 
 Each overridable field follows the same three rules:
 
@@ -84,10 +84,10 @@ Each overridable field follows the same three rules:
 * **Set the field to `null`, or to an empty array for list fields:** The session runs with that field cleared. This rule applies in full to `system` and `skills`. There are three exceptions:
 
   * `model` is never clearable. A session always needs a model, so setting `model` to `null` returns a 400 `agent_model_required` error.
-  * Clearing `tools` returns a 400 error when the session's effective `skills` is non-empty, because skills require the `read` tool. Otherwise, setting `tools` to `null` or to an empty array clears the field.
-  * Clearing `mcp_servers` returns a 400 error when the session's effective `tools` still contains an `mcp_toolset` that references one of the agent's servers. Override `tools` in the same request to remove those `mcp_toolset` entries, then clear `mcp_servers`.
+  * Clearing `tools` returns a 400 error when the session’s effective `skills` is non-empty, because skills require the `read` tool. Otherwise, setting `tools` to `null` or to an empty array clears the field.
+  * Clearing `mcp_servers` returns a 400 error when the session’s effective `tools` still contains an `mcp_toolset` that references one of the agent’s servers. Override `tools` in the same request to remove those `mcp_toolset` entries, then clear `mcp_servers`.
 
-* **Set the field to a value:** The value replaces the agent's value in full. Overrides never merge with the agent's configuration, so a `tools` override must list every tool the session should have. Likewise, a `model` override replaces the agent's `model` object in full, so the agent's own `effort` isn't carried over. To run the session at a specific effort level, set `effort` inside the override's `model` object. A level the model doesn't support returns a 400 error, and a `model` override without `effort` runs at that model's default effort level.
+* **Set the field to a value:** The value replaces the agent’s value in full. Overrides never merge with the agent’s configuration, so a `tools` override must list every tool the session should have. Likewise, a `model` override replaces the agent’s `model` object in full, so the agent’s own `effort` isn’t carried over. To run the session at a specific effort level, set `effort` inside the override’s `model` object. A level the model doesn’t support returns a 400 error, and a `model` override without `effort` runs at that model’s default effort level.
 
 Overrides apply only to the session you create. They do not modify the agent resource or create a new agent version, so other sessions that reference the same agent are unaffected.
 
@@ -113,9 +113,9 @@ The following example starts a session that overrides the model and clears the s
 
 #### Pin the inference geo for a session
 
-Because a `model` override replaces the agent's `model` object in full, it also sets or clears the model's [inference geo](https://platform.claude.com/docs/en/manage-claude/data-residency?sdk_languages=cli) pin for the session. An override that includes `inference_geo` pins the geography that serves the session's model requests. An override that omits it clears the agent's pin, so the session follows the workspace's `default_inference_geo`. The overridden value is validated against the workspace's `allowed_inference_geos` when the session is created.
+Because a `model` override replaces the agent’s `model` object in full, it also sets or clears the model’s [inference geo](https://platform.claude.com/docs/en/manage-claude/data-residency?sdk_languages=cli) pin for the session. An override that includes `inference_geo` pins the geography that serves the session’s model requests. An override that omits it clears the agent’s pin, so the session follows the workspace’s `default_inference_geo`. The overridden value is validated against the workspace’s `allowed_inference_geos` when the session is created.
 
-The following example starts a session from an agent whose model has no geo pin, and pins the session's model requests to US inference by including `inference_geo` in the `model` override. The response echoes the value in `agent.model`:
+The following example starts a session from an agent whose model has no geo pin, and pins the session’s model requests to US inference by including `inference_geo` in the `model` override. The response echoes the value in `agent.model`:
 
 <CodeGroup>
   ```bash CLI
@@ -138,7 +138,7 @@ The following example starts a session from an agent whose model has no geo pin,
 
 ### Set a session budget
 
-To cap what a session can spend, pass the optional `budget` object when you create it. A budget is a hard ceiling on the session's list cost: the platform prices everything the session consumes at public list rates, and the session stops issuing new model requests once that running total reaches `max_list_cost`. The budget's `type` is always `limit`. Give `max_list_cost` an `amount` and a `currency`. `amount` is a whole number of US cents written as a string, such as `"125"` for $1.25 USD. The API takes a string rather than a number so no floating-point rounding is ever applied. `USD` is the only currency currently supported. When the session reaches the cap, it pauses and goes idle with the stop reason `budget_reached`. The cap is enforced between model requests, so the request that crosses it completes first and the session's final list cost can land [a fraction past the cap](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli#when-a-session-reaches-its-budget). A budget can only be attached at creation: you can [change or remove the budget](https://platform.claude.com/docs/en/managed-agents/session-operations?sdk_languages=cli#updating-the-session-budget) later, but you can't add one to a session created without it.
+To cap what a session can spend, pass the optional `budget` object when you create it. A budget is a hard ceiling on the session’s list cost: the platform prices everything the session consumes at public list rates, and the session stops issuing new model requests once that running total reaches `max_list_cost`. The budget’s `type` is always `limit`. Give `max_list_cost` an `amount` and a `currency`. `amount` is a whole number of US cents written as a string, such as `"125"` for $1.25 USD. The API takes a string rather than a number so no floating-point rounding is ever applied. `USD` is the only currency currently supported. When the session reaches the cap, it pauses and goes idle with the stop reason `budget_reached`. The cap is enforced between model requests, so the request that crosses it completes first and the session’s final list cost can land [a fraction past the cap](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli#when-a-session-reaches-its-budget). A budget can only be attached at creation: you can [change or remove the budget](https://platform.claude.com/docs/en/managed-agents/session-operations?sdk_languages=cli#updating-the-session-budget) later, but you can’t add one to a session created without it.
 
 The following example creates a session with a $1.25 USD budget:
 
@@ -171,7 +171,7 @@ If your agent uses MCP tools that require authentication, pass `vault_ids` at se
 
 ## Starting the session
 
-Creating a session without `initial_events` registers the session but does not start any work; the environment's sandbox starts provisioning as soon as the session is created, so the first tool call does not wait on it. To delegate a task, send events to the session using a [user event](https://platform.claude.com/docs/en/managed-agents/reference?sdk_languages=cli#event-types). To supply the first event in the create request instead, see [Seed the session with initial events](https://platform.claude.com/docs/en/managed-agents/sessions?sdk_languages=cli#seed-the-session-with-initial-events). The session acts as a state machine that tracks progress, and events drive the actual execution.
+Creating a session without `initial_events` registers the session but does not start any work; the environment’s sandbox starts provisioning as soon as the session is created, so the first tool call does not wait on it. To delegate a task, send events to the session using a [user event](https://platform.claude.com/docs/en/managed-agents/reference?sdk_languages=cli#event-types). To supply the first event in the create request instead, see [Seed the session with initial events](https://platform.claude.com/docs/en/managed-agents/sessions?sdk_languages=cli#seed-the-session-with-initial-events). The session acts as a state machine that tracks progress, and events drive the actual execution.
 
 <CodeGroup>
   ```bash CLI
@@ -185,7 +185,7 @@ Creating a session without `initial_events` registers the session but does not s
   ```
 </CodeGroup>
 
-See [Session event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli) for how to stream the agent's responses and handle tool confirmations.
+See [Session event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli) for how to stream the agent’s responses and handle tool confirmations.
 
 See [Session statuses](https://platform.claude.com/docs/en/managed-agents/session-operations?sdk_languages=cli#session-statuses) for the statuses a session moves through.
 

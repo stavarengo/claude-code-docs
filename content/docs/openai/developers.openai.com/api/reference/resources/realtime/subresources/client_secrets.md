@@ -2056,7 +2056,7 @@ curl https://api.openai.com/v1/realtime/client_secrets \
           "languages": [
             "string"
           ],
-          "model": "whisper-1",
+          "model": "gpt-transcribe",
           "prompt": "prompt"
         },
         "turn_detection": {
@@ -2084,7 +2084,7 @@ curl https://api.openai.com/v1/realtime/client_secrets \
     ],
     "instructions": "instructions",
     "max_output_tokens": "inf",
-    "model": "gpt-realtime",
+    "model": "gpt-realtime-1.5",
     "output_modalities": [
       "text"
     ],

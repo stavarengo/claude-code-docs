@@ -42,7 +42,7 @@ description: Make your first API call to Claude and build a simple web search as
           }'
         ```
 
-        Claude returns a JSON response containing the assistant's message:
+        Claude returns a JSON response containing the assistant’s message:
 
         ```json Output
         {
@@ -72,13 +72,13 @@ description: Make your first API call to Claude and build a simple web search as
 
 ## Next steps
 
-You made your first API call. Next, learn the Messages API patterns you'll use in every Claude integration.
+You made your first API call. Next, learn the Messages API patterns you’ll use in every Claude integration.
 
 <Card title="Working with the Messages API" icon="messages" href="https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=curl">
   Learn multi-turn conversations, system prompts, stop reasons, and other core patterns.
 </Card>
 
-Once you're comfortable with the basics, explore further:
+Once you’re comfortable with the basics, explore further:
 
 <CardGroup cols={2}>
   <Card title="Models overview" icon="brain" href="https://platform.claude.com/docs/en/models/overview?sdk_languages=curl">

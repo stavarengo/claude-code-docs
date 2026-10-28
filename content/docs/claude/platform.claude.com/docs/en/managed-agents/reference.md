@@ -14,7 +14,7 @@ This page collects reference material for Claude Managed Agents. For task-orient
 
 ## Event types
 
-Persisted event type strings follow a `{domain}.{action}` naming convention; the stream-only event deltas (see the **Event deltas** tab) are the exception. See [Session event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli) for sending, streaming, and listing events. Webhook event types are listed separately in [Subscribe to webhooks](https://platform.claude.com/docs/en/managed-agents/webhooks?sdk_languages=cli#supported-event-types), and some of their names differ from the stream's (for example, `session.status_idled` rather than `session.status_idle`).
+Persisted event type strings follow a `{domain}.{action}` naming convention; the stream-only event deltas (see the **Event deltas** tab) are the exception. See [Session event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli) for sending, streaming, and listing events. Webhook event types are listed separately in [Subscribe to webhooks](https://platform.claude.com/docs/en/managed-agents/webhooks?sdk_languages=cli#supported-event-types), and some of their names differ from the stream’s (for example, `session.status_idled` rather than `session.status_idle`).
 
 <Tabs>
   <Tab title="User events">
@@ -55,20 +55,20 @@ Persisted event type strings follow a `{domain}.{action}` naming convention; the
     | `session.deleted`                   | Session was deleted. Ends any active event stream; no further events are emitted for this session.                                                                                                                                                                                                                                               |
     | `session.updated`                   | Session update request changed at least one field. Includes only the fields that changed. Updates apply on the next turn.                                                                                                                                                                                                                        |
     | `session.error`                     | An error occurred during processing. Includes a typed `error` object with a `retry_status`.                                                                                                                                                                                                                                                      |
-    | `session.usage`                     | Snapshot of the session's cumulative usage and tracked list cost. Carries the session's usage totals and, if the session has one, its [budget](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli).                                                                                                                    |
-    | `session.thread_created`            | A [multiagent](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli) thread was created. It includes `workflow_run_id`: the run's ID for a [workflow run's thread](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli#a-runs-threads), and `null` for any other thread. |
+    | `session.usage`                     | Snapshot of the session’s cumulative usage and tracked list cost. Carries the session’s usage totals and, if the session has one, its [budget](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli).                                                                                                                    |
+    | `session.thread_created`            | A [multiagent](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli) thread was created. It includes `workflow_run_id`: the run’s ID for a [workflow run’s thread](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli#a-runs-threads), and `null` for any other thread. |
     | `session.thread_status_running`     | A session thread began executing. Every session emits this for its primary thread; in [multiagent](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli) sessions, child-thread transitions are also cross-posted to the primary stream.                                                                |
     | `session.thread_status_idle`        | A session thread finished its turn and is awaiting input. Includes `stop_reason`.                                                                                                                                                                                                                                                                |
     | `session.thread_status_rescheduled` | A session thread hit a transient error and is retrying automatically.                                                                                                                                                                                                                                                                            |
-    | `session.thread_status_terminated`  | A session thread terminated and accepts no further input, for example because it was archived or hit an unrecoverable error. An advisor thread also terminates when its consultation ends. The server archives a workflow run's threads itself.                                                                                                  |
+    | `session.thread_status_terminated`  | A session thread terminated and accepts no further input, for example because it was archived or hit an unrecoverable error. An advisor thread also terminates when its consultation ends. The server archives a workflow run’s threads itself.                                                                                                  |
 
-    In a session whose agent has [dynamic workflows](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#dynamic-workflows) turned on, these `workflow_run.*` events arrive on the session's stream:
+    In a session whose agent has [dynamic workflows](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#dynamic-workflows) turned on, these `workflow_run.*` events arrive on the session’s stream:
 
     | Type                          | Description                                                                                                                                                                                                                                                                                                                        |
     | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-    | `workflow_run.created`        | A workflow run was created. Includes `workflow_run_id`, the run's `name` and `description`, and `phases`, the phases declared for the run. A status event follows, though after an interrupt it might not.                                                                                                                         |
+    | `workflow_run.created`        | A workflow run was created. Includes `workflow_run_id`, the run’s `name` and `description`, and `phases`, the phases declared for the run. A status event follows, though after an interrupt it might not.                                                                                                                         |
     | `workflow_run.status_running` | A workflow run is running. Sent when the run starts to execute, which can be a while after `workflow_run.created`, and again when it resumes after a pause at the budget. A resume after an interrupt might not send it. A run that is idle from the start might get `workflow_run.status_idle` first. Includes `workflow_run_id`. |
-    | `workflow_run.status_idle`    | A workflow run went idle: it was paused, for example at the session's budget. A pause after an interrupt might not send it. Includes `workflow_run_id`.                                                                                                                                                                            |
+    | `workflow_run.status_idle`    | A workflow run went idle: it was paused, for example at the session’s budget. A pause after an interrupt might not send it. Includes `workflow_run_id`.                                                                                                                                                                            |
     | `workflow_run.status_ended`   | A workflow run ended. Includes `workflow_run_id` and `result`, whose `type` says how the run ended.                                                                                                                                                                                                                                |
     | `workflow_run.error`          | An error of a workflow run, or a start that the server refused. A run that ends in error gets it, with the same error, before its `workflow_run.status_ended`. Includes `error` and `workflow_run_id`, which is `null` when no run was created.                                                                                    |
     | `workflow_run.phase_started`  | A workflow run entered one of its phases. Includes `workflow_run_id` and `workflow_run_phase_id`.                                                                                                                                                                                                                                  |
@@ -94,11 +94,11 @@ Persisted event type strings follow a `{domain}.{action}` naming convention; the
   </Tab>
 
   <Tab title="Event deltas">
-    Event deltas are stream-only preview events. They are emitted on stream connections (session-level or per-thread) that opt in with the `--event-delta` (cli: `--event-delta`) parameter, and they are never persisted to the session's event history. See [Preview responses with event deltas](https://platform.claude.com/docs/en/managed-agents/event-deltas?sdk_languages=cli) for opting in, accumulating, and reconciling them.
+    Event deltas are stream-only preview events. They are emitted on stream connections (session-level or per-thread) that opt in with the `--event-delta` (cli: `--event-delta`) parameter, and they are never persisted to the session’s event history. See [Preview responses with event deltas](https://platform.claude.com/docs/en/managed-agents/event-deltas?sdk_languages=cli) for opting in, accumulating, and reconciling them.
 
     | Type          | Description                                                                                                              |
     | ------------- | ------------------------------------------------------------------------------------------------------------------------ |
-    | `event_start` | A previewed event has started generating. Carries the upcoming event's `type` and `id`. Stream-only and never persisted. |
+    | `event_start` | A previewed event has started generating. Carries the upcoming event’s `type` and `id`. Stream-only and never persisted. |
     | `event_delta` | Incremental content for a previewed event, identified by `event_id`. Stream-only and never persisted.                    |
   </Tab>
 </Tabs>
@@ -109,7 +109,7 @@ See [Self-hosted worker reference](https://platform.claude.com/docs/en/managed-a
 
 ## Supported MCP server types
 
-Claude Managed Agents connects to [remote MCP servers](https://platform.claude.com/docs/en/agents-and-tools/remote-mcp-servers?sdk_languages=cli) that expose an HTTP endpoint, or to private MCP servers through [MCP tunnels](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/overview?sdk_languages=cli). The server should support the MCP protocol's streamable HTTP transport; servers that only support the deprecated SSE transport still work through an automatic fallback. See [MCP connector](https://platform.claude.com/docs/en/managed-agents/mcp-connector?sdk_languages=cli) for declaring servers on an agent.
+Claude Managed Agents connects to [remote MCP servers](https://platform.claude.com/docs/en/agents-and-tools/remote-mcp-servers?sdk_languages=cli) that expose an HTTP endpoint, or to private MCP servers through [MCP tunnels](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/overview?sdk_languages=cli). The server should support the MCP protocol’s streamable HTTP transport; servers that only support the deprecated SSE transport still work through an automatic fallback. See [MCP connector](https://platform.claude.com/docs/en/managed-agents/mcp-connector?sdk_languages=cli) for declaring servers on an agent.
 
 For more information on MCP and building MCP servers, see the [MCP documentation](https://modelcontextprotocol.io).
 
@@ -130,14 +130,14 @@ For partners integrating Claude Managed Agents, use of Claude branding is option
 
 **Allowed:**
 
-* "Claude Agent" (preferred for dropdown menus)
-* "Claude" (when within a menu already labeled "Agents")
-* "\{YourAgentName} Powered by Claude" (if you have an existing agent name)
+* “Claude Agent” (preferred for dropdown menus)
+* “Claude” (when within a menu already labeled “Agents”)
+* “\{YourAgentName} Powered by Claude” (if you have an existing agent name)
 
 **Not permitted:**
 
-* "Claude Code" or "Claude Code Agent"
-* "Claude Cowork" or "Claude Cowork Agent"
+* “Claude Code” or “Claude Code Agent”
+* “Claude Cowork” or “Claude Cowork Agent”
 * Claude Code-branded ASCII art or visual elements that mimic Claude Code
 
 Your product should maintain its own branding and not appear to be Claude Code, Claude Cowork, or any other Anthropic product. For questions about branding compliance, contact the Anthropic [sales team](https://www.anthropic.com/contact-sales).
